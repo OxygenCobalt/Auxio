@@ -38,12 +38,13 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 /**
  * The single [AppCompatActivity] for Auxio.
  *
- * TODO: Add error screens. This likely has to be an external activity, so it is blocked by
- * eliminating exitProcess from the app.
+ * TODO: Add error screens.
  *
  * TODO: Custom language support
  *
  * TODO: Add multi-select
+ *
+ * TODO: Bug test runtime rescanning
  *
  * @author OxygenCobalt
  */

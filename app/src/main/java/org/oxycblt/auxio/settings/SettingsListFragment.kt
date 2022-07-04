@@ -50,9 +50,9 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
  * @author OxygenCobalt
  *
- * TODO: Add option to restore the previous state
- *
  * TODO: Add option to not restore state
+ *
+ * TODO: Disable playback state options when music is loading
  */
 @Suppress("UNUSED")
 class SettingsListFragment : PreferenceFragmentCompat() {
@@ -120,10 +120,16 @@ class SettingsListFragment : PreferenceFragmentCompat() {
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
             getString(R.string.set_key_save_state) -> {
-                playbackModel.savePlaybackState(requireContext()) {
-                    context?.showToast(R.string.lbl_state_saved)
-                }
+                playbackModel.savePlaybackState { context?.showToast(R.string.lbl_state_saved) }
             }
+            getString(R.string.set_key_restore_state) ->
+                playbackModel.restorePlaybackState { restored ->
+                    if (restored) {
+                        context?.showToast(R.string.lbl_state_restored)
+                    } else {
+                        context?.showToast(R.string.err_did_not_restore)
+                    }
+                }
             getString(R.string.set_key_reindex) -> {
                 indexerModel.reindex()
             }

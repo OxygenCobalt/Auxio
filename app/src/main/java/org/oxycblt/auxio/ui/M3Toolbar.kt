@@ -25,7 +25,10 @@ import com.google.android.material.appbar.MaterialToolbar
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getDimenSizeSafe
 
-/** [MaterialToolbar] that automatically fixes padding in order to align with the M3 specs. */
+/**
+ * [MaterialToolbar] that automatically fixes padding in order to align with the M3 specs.
+ * @author OxygenCobalt
+ */
 class M3Toolbar : MaterialToolbar {
     constructor(context: Context) : super(context)
 

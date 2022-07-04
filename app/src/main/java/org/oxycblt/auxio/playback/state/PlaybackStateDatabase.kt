@@ -38,7 +38,7 @@ import org.oxycblt.auxio.util.requireBackgroundThread
  * But that would needlessly bloat my app and has crippling bugs.
  * @author OxygenCobalt
  */
-class PlaybackStateDatabase(context: Context) :
+class PlaybackStateDatabase private constructor(context: Context) :
     SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {

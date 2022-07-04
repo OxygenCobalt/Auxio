@@ -83,6 +83,7 @@ class BitmapProvider(private val context: Context) {
      * Release this instance, canceling all image load jobs. This should be ran when the object is
      * no longer used.
      */
+    @Synchronized
     fun release() {
         currentRequest?.run { disposable.dispose() }
         currentRequest = null

@@ -30,6 +30,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /** [Item] variant that represents a music item. */
 sealed class Music : Item() {
+    // TODO: Split ID into an ID derived from all fields and a persistent ID derived from stable fields
+
     /** The raw name of this item. Null if unknown. */
     abstract val rawName: String?
 

@@ -53,7 +53,10 @@
     <string name="lbl_bitrate">Bit rate</string>
     <string name="lbl_sample_rate">Sample rate</string>
 
+    <!-- Referring to playback state -->
     <string name="lbl_state_saved">State saved</string>
+    <!-- Referring to playback state -->
+    <string name="lbl_state_restored">State restored</string>
 
     <!-- Limit to 10 characters -->
     <string name="lbl_shuffle_shortcut_short">Shuffle</string>
@@ -131,6 +134,8 @@
     <string name="set_content">Content</string>
     <string name="set_save">Save playback state</string>
     <string name="set_save_desc">Save the current playback state now</string>
+    <string name="set_restore">Restore playback state</string>
+    <string name="set_restore_desc">Restore the previously saved playback state (if any)</string>
     <string name="set_reindex">Reload music</string>
     <string name="set_reindex_desc">May wipe playback state</string>
     <string name="set_dirs">Music folders</string>
@@ -151,6 +156,8 @@
     <string name="err_no_dirs">No Folders</string>
     <string name="err_bad_dir">This folder is not supported</string>
     <string name="err_too_small">Auxio does not support this window size</string>
+    <!-- Referring to playback state -->
+    <string name="err_did_not_restore">No state could be restored</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Search your library…</string>
@@ -190,11 +197,17 @@
     <string name="def_widget_artist">Artist Name</string>
 
     <!-- Codec Namespace | Format names -->
+    <!-- "Audio" should be translated -->
     <string name="cdc_mp3">MPEG-1 Audio</string>
+    <!-- "Audio" should be translated -->
     <string name="cdc_mp4">MPEG-4 Audio</string>
+    <!-- "Audio" should be translated -->
     <string name="cdc_ogg">Ogg Audio</string>
+    <!-- "Audio" should be translated -->
     <string name="cdc_mka">Matroska Audio</string>
+    <!-- "Advanced Audio Coding" can optionally be translated -->
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
+    <!-- "Free Lossless Audio Codec" can optionally be translated -->
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
 
     <!-- Color Label namespace | Accent names -->
@@ -219,9 +232,13 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_disc_no">Disc %d</string>
 
+    <!-- Use your native country's abbreviation for decibel units. -->
     <string name="fmt_db_pos">+%.1f dB</string>
+    <!-- Use your native country's abbreviation for decibel units. -->
     <string name="fmt_db_neg">-%.1f dB</string>
+    <!-- Use your native country's abbreviation for bitrate units. -->
     <string name="fmt_bitrate">%d kbps</string>
+    <!-- Use your native country's abbreviation for hertz units. -->
     <string name="fmt_sample_rate">%d Hz</string>
 
     <string name="fmt_indexing">Loading your music library… (%1$d/%2$d)</string>

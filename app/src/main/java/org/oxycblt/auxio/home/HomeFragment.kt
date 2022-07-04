@@ -315,7 +315,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     }
 
     private fun handleIndexingState(binding: FragmentHomeBinding, indexing: Indexer.Indexing) {
-        updateFab()
         binding.homeIndexingContainer.visibility = View.VISIBLE
         binding.homeIndexingProgress.visibility = View.VISIBLE
         binding.homeIndexingAction.visibility = View.INVISIBLE

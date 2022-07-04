@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.playback
 
 import android.app.Application
-import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -276,10 +275,19 @@ class PlaybackViewModel(application: Application) :
     // --- SAVE/RESTORE FUNCTIONS ---
 
     /** Force save the current [PlaybackStateManager] state to the database. */
-    fun savePlaybackState(context: Context, onDone: () -> Unit) {
+    fun savePlaybackState(onDone: () -> Unit) {
         viewModelScope.launch {
-            playbackManager.saveState(PlaybackStateDatabase.getInstance(context))
+            playbackManager.saveState(PlaybackStateDatabase.getInstance(application))
             onDone()
+        }
+    }
+
+    /** Force restore the last [PlaybackStateManager] saved state */
+    fun restorePlaybackState(onDone: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val restored =
+                playbackManager.restoreState(PlaybackStateDatabase.getInstance(application))
+            onDone(restored)
         }
     }
 

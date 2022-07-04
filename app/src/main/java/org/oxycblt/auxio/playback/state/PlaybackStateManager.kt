@@ -30,6 +30,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * Master class (and possible god object) for the playback state.
@@ -357,17 +358,20 @@ class PlaybackStateManager private constructor() {
 
     // --- PERSISTENCE FUNCTIONS ---
 
-    /** Restore the state from the [database] */
-    suspend fun restoreState(database: PlaybackStateDatabase) {
-        val library = musicStore.library ?: return
+    /** Restore the state from the [database]. Returns if a state was restored. */
+    suspend fun restoreState(database: PlaybackStateDatabase): Boolean {
+        val library = musicStore.library ?: return false
         val state = withContext(Dispatchers.IO) { database.read(library) }
 
         synchronized(this) {
-            if (state != null) {
-                applyStateImpl(state)
+            val exists = state != null
+            if (exists) {
+                applyStateImpl(unlikelyToBeNull(state))
             }
 
             isInitialized = true
+
+            return exists
         }
     }
 
@@ -383,6 +387,8 @@ class PlaybackStateManager private constructor() {
     suspend fun sanitize(database: PlaybackStateDatabase, newLibrary: MusicStore.Library) {
         // Since we need to sanitize the state and re-save it for consistency, take the
         // easy way out and just write a new state and restore from it. Don't really care.
+        // FIXME: This hack actually creates bugs if a user were to save the state at just
+        //  the right time, replace it with something that operates at runtime
         logD("Sanitizing state")
         val state = synchronized(this) { makeStateImpl() }
 
@@ -394,7 +400,7 @@ class PlaybackStateManager private constructor() {
 
         synchronized(this) {
             if (sanitizedState != null) {
-                applyStateImpl(state)
+                applyStateImpl(sanitizedState)
             }
         }
     }

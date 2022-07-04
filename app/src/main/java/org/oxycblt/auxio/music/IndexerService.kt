@@ -119,10 +119,15 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
                             imageLoader.memoryCache?.clear()
 
                             // PlaybackStateManager needs to be updated. We would do this in the
-                            // playback module, but this service could is the only component
-                            // capable of doing long-running background work as it stands.
-                            playbackManager.sanitize(
-                                PlaybackStateDatabase.getInstance(this@IndexerService), newLibrary)
+                            // playback module, but this service could be the only component capable
+                            // of doing this at a particular point. Note that while it's certain
+                            // that PlaybackStateManager is initialized by now, it's best to be safe
+                            // and check first.
+                            if (playbackManager.isInitialized) {
+                                playbackManager.sanitize(
+                                    PlaybackStateDatabase.getInstance(this@IndexerService),
+                                    newLibrary)
+                            }
                         }
 
                         musicStore.updateLibrary(newLibrary)

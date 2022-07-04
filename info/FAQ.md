@@ -43,6 +43,11 @@ This is expected since reading from the audio database takes awhile, especially 
 This is a current limitation with the music loader. To remedy this, go to Settings -> Reload music whenever new songs are added.
 I hope to make the app rescan music on the fly eventually.
 
+#### Why does playback pause whenever music is reloaded?
+Whenever the music library signifigantly changes, updating the player's data while it is still playing may result in
+unwanted bugs or unexpected music playing. To safeguard against this, Auxio will pause whenever it reloads a new
+music library. 
+
 #### There should be one artist, but instead I get a bunch of "Artist & Collaborator" artists!
 This likely means your tags are wrong. By default, Auxio will use the "album artist" tag for
 grouping if present, falling back to the "artist" tag otherwise. If your music does not have
