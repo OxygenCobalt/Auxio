@@ -112,17 +112,15 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
                     // Load was completed successfully. However, we still need to do some
                     // extra work to update the app's state.
                     updateScope.launch {
-                        // Invalidate the image cache, as there may be some covers that are
-                        // no longer valid.
-                        imageLoader.memoryCache?.clear()
-
                         if (musicStore.library != null) {
-                            // This is a new library, so we need to make sure the playback state
-                            // is coherent. This seems a bit muddly, but PlaybackService (or any
-                            // other playback component capable of handling this) may not be
-                            // capable of long-running background work as the library is being
-                            // updated. The initialization steps on the other hand are firmly in
-                            // the place of the playback module.
+                            // This is a new library to replace a pre-existing one.
+
+                            // Wipe possibly-invalidated album covers
+                            imageLoader.memoryCache?.clear()
+
+                            // PlaybackStateManager needs to be updated. We would do this in the
+                            // playback module, but this service could is the only component
+                            // capable of doing long-running background work as it stands.
                             playbackManager.sanitize(
                                 PlaybackStateDatabase.getInstance(this@IndexerService), newLibrary)
                         }

@@ -177,13 +177,13 @@ abstract class MediaStoreBackend : Indexer.Backend {
         cursor: Cursor,
         emitIndexing: (Indexer.Indexing) -> Unit
     ): List<Song> {
-        // Note: We do not actually update the callback with a current/total value, this is because
-        // loading music from MediaStore tends to be quite fast, with the only bottlenecks being
-        // with genre loading and querying the media database itself. As a result, a progress bar
-        // is not really that applicable.
         val audios = mutableListOf<Audio>()
         while (cursor.moveToNext()) {
             audios.add(buildAudio(context, cursor))
+            if (cursor.position % 50 == 0) {
+                // Only check for a cancellation every 50 songs or so (~20ms).
+                emitIndexing(Indexer.Indexing.Indeterminate)
+            }
         }
 
         // The audio is not actually complete at this point, as we cannot obtain a genre
@@ -212,9 +212,18 @@ abstract class MediaStoreBackend : Indexer.Backend {
                     while (cursor.moveToNext()) {
                         val songId = cursor.getLong(songIdIndex)
                         audios.find { it.id == songId }?.let { song -> song.genre = name }
+
+                        if (cursor.position % 50 == 0) {
+                            // Only check for a cancellation every 50 songs or so (~20ms).
+                            emitIndexing(Indexer.Indexing.Indeterminate)
+                        }
                     }
                 }
             }
+
+            // Check for a cancellation every time we finish a genre too, in the case that
+            // the genre has <50 songs.
+            emitIndexing(Indexer.Indexing.Indeterminate)
         }
 
         return audios.map { it.toSong() }

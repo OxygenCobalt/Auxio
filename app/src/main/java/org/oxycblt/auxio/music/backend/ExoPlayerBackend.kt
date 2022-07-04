@@ -242,7 +242,6 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
     }
 
     private fun populateVorbis(tags: Map<String, String>) {
-        logD(tags)
         // Title
         tags["TITLE"]?.let { audio.title = it }
 

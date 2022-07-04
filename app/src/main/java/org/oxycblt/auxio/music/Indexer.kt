@@ -167,10 +167,9 @@ class Indexer {
     }
 
     /**
-     * "Cancel" the last job by making it unable to send further state updates. This should be
-     * called if an object that called [index] is about to be destroyed and thus will have it's task
-     * canceled, in which it would be useful for any ongoing loading process to not accidentally
-     * corrupt the current state.
+     * "Cancel" the last job by making it unable to send further state updates. This will cause the
+     * worker operating the job for that specific generation to cancel as soon as it tries to send a
+     * state update.
      */
     @Synchronized
     fun cancelLast() {
@@ -182,9 +181,15 @@ class Indexer {
     @Synchronized
     private fun emitIndexing(indexing: Indexing?, generation: Long) {
         if (currentGeneration != generation) {
-            // Not the running task anymore, cancel this co-routine
-            // We do this instead of using yield since it is *far* cheaper.
+            // Not the running task anymore, cancel this co-routine. This allows a yield-like
+            // behavior to be implemented in a far cheaper manner for each backend.
             throw CancellationException()
+        }
+
+        if (indexing == indexingState) {
+            // Ignore redundant states used when the backends just want to check for
+            // a cancellation
+            return
         }
 
         indexingState = indexing
@@ -201,10 +206,13 @@ class Indexer {
     @Synchronized
     private fun emitCompletion(response: Response, generation: Long) {
         if (currentGeneration != generation) {
-            // Not the running task anymore, cancel this co-routine
-            // We do this instead of using yield since it is *far* cheaper.
+            // Not the running task anymore, cancel this co-routine. This allows a yield-like
+            // behavior to be implemented in a far cheaper manner for each backend.
             throw CancellationException()
         }
+
+        // Do not check for redundancy here, as we actually need to notify a switch
+        // from Indexing -> Complete and not Indexing -> Indexing or Complete -> Complete.
 
         lastResponse = response
         indexingState = null
@@ -284,9 +292,7 @@ class Indexer {
                     "Successfully queried media database " +
                         "in ${System.currentTimeMillis() - start}ms")
 
-                backend.buildSongs(context, cursor) { indexing ->
-                    emitIndexing(indexing, generation)
-                }
+                backend.buildSongs(context, cursor) { emitIndexing(it, generation) }
             }
 
         // Deduplicate songs to prevent (most) deformed music clones

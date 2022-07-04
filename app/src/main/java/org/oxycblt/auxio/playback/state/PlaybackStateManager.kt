@@ -384,11 +384,7 @@ class PlaybackStateManager private constructor() {
         // Since we need to sanitize the state and re-save it for consistency, take the
         // easy way out and just write a new state and restore from it. Don't really care.
         logD("Sanitizing state")
-        val state =
-            synchronized(this) {
-                isPlaying = false
-                makeStateImpl()
-            }
+        val state = synchronized(this) { makeStateImpl() }
 
         val sanitizedState =
             withContext(Dispatchers.IO) {
@@ -413,6 +409,10 @@ class PlaybackStateManager private constructor() {
             repeatMode = repeatMode)
 
     private fun applyStateImpl(state: PlaybackStateDatabase.SavedState) {
+        // Continuing playback while also possibly doing drastic state updates is
+        // a bad idea, so pause.
+        isPlaying = false
+
         index = state.index
         parent = state.parent
         _queue = state.queue.toMutableList()

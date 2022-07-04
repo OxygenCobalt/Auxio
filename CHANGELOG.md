@@ -8,7 +8,7 @@
 - Added a shuffle shortcut
 - Widgets now have a more sleek and consistent button layout
 - "Rounded album covers" is now "Round mode"
-- You can now customize what occurs when a song is played from an album/artist/genre [#164]
+- Added option to customize what occurs when a song is played from an album/artist/genre [#164]
 
 #### What's Improved
 - Made "timeline" elements (like playback controls) always left-to-right
