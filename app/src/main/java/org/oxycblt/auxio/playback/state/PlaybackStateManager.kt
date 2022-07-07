@@ -30,7 +30,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * Master class (and possible god object) for the playback state.
@@ -364,10 +363,27 @@ class PlaybackStateManager private constructor() {
         val state = withContext(Dispatchers.IO) { database.read(library) }
 
         synchronized(this) {
-            val exists = state != null
-            if (exists) {
-                applyStateImpl(unlikelyToBeNull(state))
-            }
+            val exists =
+                if (state != null) {
+                    // Continuing playback while also possibly doing drastic state updates is
+                    // a bad idea, so pause.
+                    isPlaying = false
+
+                    index = state.index
+                    parent = state.parent
+                    _queue = state.queue.toMutableList()
+                    repeatMode = state.repeatMode
+                    isShuffled = state.isShuffled
+
+                    notifyNewPlayback()
+                    seekTo(state.positionMs)
+                    notifyRepeatModeChanged()
+                    notifyShuffledChanged()
+
+                    true
+                } else {
+                    false
+                }
 
             isInitialized = true
 
@@ -384,40 +400,47 @@ class PlaybackStateManager private constructor() {
         withContext(Dispatchers.IO) { database.write(state) }
     }
 
-    @Synchronized
-    fun sanitize(newLibrary: MusicStore.Library) {
-        if (!isInitialized) {
-            logD("Not initialized, no need to sanitize")
-            return
-        }
-
-        logD("Sanitizing state")
-
-        val oldSongId = song?.id
-        val oldPosition = positionMs
-
-        parent =
-            parent?.let {
-                when (it) {
-                    is Album -> newLibrary.sanitize(it)
-                    is Artist -> newLibrary.sanitize(it)
-                    is Genre -> newLibrary.sanitize(it)
+    /** Sanitize the state with [newLibrary]. Writes the state to [database] */
+    suspend fun sanitize(database: PlaybackStateDatabase, newLibrary: MusicStore.Library) {
+        val state =
+            synchronized(this) {
+                if (!isInitialized) {
+                    logD("Not initialized, no need to sanitize")
+                    return
                 }
+
+                logD("Sanitizing state")
+
+                val oldSongId = song?.id
+                val oldPosition = positionMs
+
+                parent =
+                    parent?.let {
+                        when (it) {
+                            is Album -> newLibrary.sanitize(it)
+                            is Artist -> newLibrary.sanitize(it)
+                            is Genre -> newLibrary.sanitize(it)
+                        }
+                    }
+
+                _queue = newLibrary.sanitize(_queue).toMutableList()
+
+                while (song?.id != oldSongId && index > -1) {
+                    index--
+                }
+
+                // Continuing playback while also possibly doing drastic state updates is
+                // a bad idea, so pause.
+                isPlaying = false
+                notifyNewPlayback()
+
+                // Controller may have reloaded the media item, re-seek to the previous position
+                seekTo(oldPosition)
+
+                makeStateImpl()
             }
 
-        _queue = newLibrary.sanitize(_queue).toMutableList()
-
-        while (song?.id != oldSongId && index > -1) {
-            index--
-        }
-
-        // Continuing playback while also possibly doing drastic state updates is
-        // a bad idea, so pause.
-        isPlaying = false
-        notifyNewPlayback()
-
-        // Controller may have reloaded the media item, re-seek to the previous position
-        seekTo(oldPosition)
+        withContext(Dispatchers.IO) { database.write(state) }
     }
 
     private fun makeStateImpl() =
@@ -428,23 +451,6 @@ class PlaybackStateManager private constructor() {
             positionMs = positionMs,
             isShuffled = isShuffled,
             repeatMode = repeatMode)
-
-    private fun applyStateImpl(state: PlaybackStateDatabase.SavedState) {
-        // Continuing playback while also possibly doing drastic state updates is
-        // a bad idea, so pause.
-        isPlaying = false
-
-        index = state.index
-        parent = state.parent
-        _queue = state.queue.toMutableList()
-        repeatMode = state.repeatMode
-        isShuffled = state.isShuffled
-
-        notifyNewPlayback()
-        seekTo(state.positionMs)
-        notifyRepeatModeChanged()
-        notifyShuffledChanged()
-    }
 
     // --- CALLBACKS ---
 

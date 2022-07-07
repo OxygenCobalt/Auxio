@@ -28,6 +28,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
@@ -117,10 +118,9 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
                             // Wipe possibly-invalidated album covers
                             imageLoader.memoryCache?.clear()
 
-                            // Clear invalid models from PlaybackStateManager. Shared objects
-                            // shouldn't be plugged into the callback system of other shared
-                            // objects, so we must update it here.
-                            playbackManager.sanitize(newLibrary)
+                            // Clear invalid models from PlaybackStateManager.
+                            playbackManager.sanitize(
+                                PlaybackStateDatabase.getInstance(this@IndexerService), newLibrary)
                         }
 
                         musicStore.updateLibrary(newLibrary)

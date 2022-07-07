@@ -83,10 +83,15 @@ class MusicStore private constructor() {
                 songs.find { it.path.name == displayName }
             }
 
+        /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(song: Song) = songs.find { it.id == song.id }
+        /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(songs: List<Song>) = songs.mapNotNull { sanitize(it) }
+        /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(album: Album) = albums.find { it.id == album.id }
+        /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(artist: Artist) = artists.find { it.id == artist.id }
+        /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(genre: Genre) = genres.find { it.id == genre.id }
     }
 

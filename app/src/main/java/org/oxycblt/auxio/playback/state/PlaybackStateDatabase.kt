@@ -107,6 +107,7 @@ class PlaybackStateDatabase private constructor(context: Context) :
         val rawState = readRawState() ?: return null
         val queue = readQueue(library)
 
+        // Correct the index to match up with a possibly shortened queue (file removals/changes)
         var actualIndex = rawState.index
         while (queue.getOrNull(actualIndex)?.id != rawState.songId && actualIndex > -1) {
             actualIndex--
