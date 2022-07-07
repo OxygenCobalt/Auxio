@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
+// TODO: Differentiate between replace and diffing w/item updates
 /**
  * An adapter for one viewholder tied to one type of data. All functionality is derived from the
  * overridden values.
@@ -40,7 +41,7 @@ abstract class MonoAdapter<T, L, VH : BindingViewHolder<T, L>>(private val liste
 
     /**
      * An optional override to further modify the given [viewHolder]. The normal operation is to
-     * bind the viewholder, with nothing more.
+     * bind the viewholder.
      */
     open fun onBind(viewHolder: VH, item: T, listener: L, payload: List<Any>) {
         viewHolder.bind(item, listener)

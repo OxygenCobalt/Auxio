@@ -1,5 +1,9 @@
 # Licenses
-Auxio uses a number of third-party libraries, which are listed below with their licenses:
+
+Auxio is licensed under the GPLv3.
+
+Alongside this, Auxio uses a number of third-party libraries. These are listed below with
+their licenses:
 
 | Library Name | Author(s) | Purpose | License |
 |--------------|-----------|---------|---------|

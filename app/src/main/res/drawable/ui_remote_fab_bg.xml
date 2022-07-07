@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <corners android:radius="@dimen/size_corners_large" />
+            <corners android:radius="@dimen/size_corners_medium" />
             <solid android:color="?attr/colorPrimary" />
         </shape>
     </item>
@@ -12,7 +12,7 @@
             <item android:id="@android:id/mask">
                 <shape android:shape="rectangle">
                     <solid android:color="@android:color/white" />
-                    <corners android:radius="@dimen/size_corners_large" />
+                    <corners android:radius="@dimen/size_corners_medium" />
                 </shape>
             </item>
         </ripple>

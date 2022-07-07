@@ -6,9 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <org.oxycblt.auxio.ui.M3Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/playback_toolbar"
-        style="@style/Widget.Auxio.Toolbar.Icon.Down"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:navigationIcon="@drawable/ic_down_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/menu_playback"
@@ -73,7 +75,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <org.oxycblt.auxio.playback.NoRtlFrameLayout
+    <org.oxycblt.auxio.playback.ForcedLTRFrameLayout
         android:id="@+id/playback_controls_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -152,6 +154,6 @@
                 app:tint="@color/sel_accented" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </org.oxycblt.auxio.playback.NoRtlFrameLayout>
+    </org.oxycblt.auxio.playback.ForcedLTRFrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

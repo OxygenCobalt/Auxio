@@ -30,6 +30,7 @@
         <item name="android:textColorHighlightInverse">@color/overlay_text_highlight_inverse</item>
 
         <!-- Material configuration -->
+        <item name="toolbarStyle">@style/Widget.Auxio.Toolbar</item>
         <item name="materialAlertDialogTheme">@style/Theme.Auxio.Dialog</item>
         <item name="sliderStyle">@style/Widget.Auxio.Slider</item>
         <item name="linearProgressIndicatorStyle">@style/Widget.Auxio.LinearProgressIndicator</item>

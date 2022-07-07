@@ -282,7 +282,10 @@ class PlaybackViewModel(application: Application) :
         }
     }
 
-    /** Force restore the last [PlaybackStateManager] saved state */
+    /**
+     * Force restore the last [PlaybackStateManager] saved state, regardless of if a library exists
+     * or not.
+     */
     fun restorePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
             val restored =

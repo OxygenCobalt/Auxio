@@ -387,8 +387,7 @@ class PlaybackStateManager private constructor() {
     suspend fun sanitize(database: PlaybackStateDatabase, newLibrary: MusicStore.Library) {
         // Since we need to sanitize the state and re-save it for consistency, take the
         // easy way out and just write a new state and restore from it. Don't really care.
-        // FIXME: This hack actually creates bugs if a user were to save the state at just
-        //  the right time, replace it with something that operates at runtime
+        // TODO: Do we even need to save here? Doesn't seem like it's required for
         logD("Sanitizing state")
         val state = synchronized(this) { makeStateImpl() }
 

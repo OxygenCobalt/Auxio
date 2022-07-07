@@ -64,7 +64,6 @@ import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
-import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 
 /**
@@ -98,7 +97,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
                 binding.homeToolbar.alpha = 1f - (abs(offset.toFloat()) / (range.toFloat() / 2))
 
-                binding.homePager.updatePadding(
+                binding.homeContent.updatePadding(
                     bottom = binding.homeAppbar.totalScrollRange + offset)
             }
         }
@@ -106,11 +105,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         binding.homeToolbar.setOnMenuItemClickListener(this@HomeFragment)
 
         updateTabConfiguration()
-
-        binding.homeIndexingWrapper.setOnApplyWindowInsetsListener { view, insets ->
-            view.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
-            insets
-        }
 
         // Load the track color in manually as it's unclear whether the track actually supports
         // using a ColorStateList in the resources
@@ -141,7 +135,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         // --- VIEWMODEL SETUP ---
 
-        collect(homeModel.isFastScrolling) { updateFab() }
+        collectImmediately(homeModel.songs, homeModel.isFastScrolling, ::updateFab)
         collect(homeModel.recreateTabs, ::handleRecreateTabs)
         collectImmediately(homeModel.currentTab, ::updateCurrentTab)
         collectImmediately(indexerModel.state, ::handleIndexerState)
@@ -265,8 +259,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 binding.homeIndexingContainer.visibility = View.INVISIBLE
             }
         }
-
-        updateFab()
     }
 
     private fun handleIndexerResponse(binding: FragmentHomeBinding, response: Indexer.Response) {
@@ -336,12 +328,9 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun updateFab() {
+    private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
         val binding = requireBinding()
-        val fastScrolling = homeModel.isFastScrolling.value
-        val state = indexerModel.state.value
-        if (fastScrolling ||
-            !(state is Indexer.State.Complete && state.response is Indexer.Response.Ok)) {
+        if (isFastScrolling || songs.isEmpty()) {
             binding.homeFab.hide()
         } else {
             binding.homeFab.show()

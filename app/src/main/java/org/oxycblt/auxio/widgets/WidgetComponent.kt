@@ -88,7 +88,7 @@ class WidgetComponent(private val context: Context) :
                             context.getDimenSizeSafe(android.R.dimen.system_app_widget_inner_radius)
                         } else if (settings.roundMode) {
                             // < Android 12, but the user still enabled round mode.
-                            context.getDimenSizeSafe(R.dimen.size_corners_large)
+                            context.getDimenSizeSafe(R.dimen.size_corners_medium)
                         } else {
                             // User did not enable round mode.
                             0

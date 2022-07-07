@@ -8,17 +8,12 @@
     </style>
 
     <!-- Base toolbar style -->
-    <style name="Widget.Auxio.Toolbar.Base" parent="">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="Widget.Auxio.Toolbar.Icon" parent="Widget.Auxio.Toolbar.Base">
-        <item name="navigationIcon">@drawable/ic_back_24</item>
-    </style>
-
-    <style name="Widget.Auxio.Toolbar.Icon.Down" parent="Widget.Auxio.Toolbar.Base">
-        <item name="navigationIcon">@drawable/ic_down_24</item>
+    <style name="Widget.Auxio.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="maxButtonHeight">@dimen/size_btn</item>
+        <item name="android:paddingLeft">@dimen/spacing_tiny</item>
+        <item name="android:paddingStart">@dimen/spacing_tiny</item>
+        <item name="android:paddingRight">@dimen/spacing_tiny</item>
+        <item name="android:paddingEnd">@dimen/spacing_tiny</item>
     </style>
 
     <style name="Widget.Auxio.Slider" parent="Widget.Material3.Slider">
@@ -31,7 +26,7 @@
 
     <style name="Widget.Auxio.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
         <item name="trackColor">@color/sel_track</item>
-        <item name="trackCornerRadius">@dimen/size_corners_large</item>
+        <item name="trackCornerRadius">@dimen/size_corners_medium</item>
     </style>
 
     <style name="Widget.Auxio.Button.Icon.Base" parent="Widget.Material3.Button.TextButton">
@@ -81,21 +76,21 @@
     <style name="Widget.Auxio.Image.Large" parent="">
         <item name="android:layout_width">@dimen/size_cover_large</item>
         <item name="android:layout_height">@dimen/size_cover_large</item>
-        <item name="cornerRadius">@dimen/size_corners_large</item>
+        <item name="cornerRadius">@dimen/size_corners_medium</item>
         <item name="useLargeIcon">true</item>
     </style>
 
     <style name="Widget.Auxio.Image.MidHuge" parent="">
         <item name="android:layout_width">@dimen/size_cover_mid_huge</item>
         <item name="android:layout_height">@dimen/size_cover_mid_huge</item>
-        <item name="cornerRadius">@dimen/size_corners_large</item>
+        <item name="cornerRadius">@dimen/size_corners_medium</item>
         <item name="useLargeIcon">true</item>
     </style>
 
     <style name="Widget.Auxio.Image.Huge" parent="">
         <item name="android:layout_width">@dimen/size_cover_huge</item>
         <item name="android:layout_height">@dimen/size_cover_huge</item>
-        <item name="cornerRadius">@dimen/size_corners_large</item>
+        <item name="cornerRadius">@dimen/size_corners_medium</item>
         <item name="useLargeIcon">true</item>
     </style>
 
@@ -103,7 +98,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
         <item name="layout_constraintDimensionRatio">1</item>
-        <item name="cornerRadius">@dimen/size_corners_large</item>
+        <item name="cornerRadius">@dimen/size_corners_medium</item>
         <item name="useLargeIcon">true</item>
     </style>
 
@@ -215,6 +210,7 @@
         1. We upscale the play icon to 32dp, so the total FAB size also needs to increase to
         compensate.
         2. For some reason elevation behaves strangely in the playback panel, so we disable it.
+        TODO: I think I could just make a tonal button instead of this
         -->
         <item name="maxImageSize">@dimen/size_icon_large</item>
         <item name="fabCustomSize">@dimen/size_play_pause_button</item>

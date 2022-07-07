@@ -34,7 +34,7 @@ import org.oxycblt.auxio.util.getDimenSizeSafe
  * used in dialogs.
  * @author OxygenCobalt
  */
-class DialogRecyclerView
+class ScrollIndicatorRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     RecyclerView(context, attrs, defStyleAttr) {

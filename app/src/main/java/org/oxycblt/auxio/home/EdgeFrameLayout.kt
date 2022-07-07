@@ -26,10 +26,10 @@ import androidx.core.view.updatePadding
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
- * A container for a FloatingActionButton that enables edge-to-edge support.
+ * A [FrameLayout] that automatically applies bottom insets.
  * @author OxygenCobalt
  */
-class EdgeFabContainer
+class EdgeFrameLayout
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     FrameLayout(context, attrs, defStyleAttr) {

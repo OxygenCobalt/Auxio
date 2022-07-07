@@ -61,7 +61,7 @@ val Long.albumCoverUri: Uri
  * they are invalid.
  */
 val String.plainTrackNo: Int?
-    get() = toIntOrNull()?.let { if (it > 0) it else null }
+    get() = toIntOrNull()?.nonZeroOrNull()
 
 /**
  * Parse out the track number field as if the given Int is formatted as DTTT, where D Is the disc
@@ -69,28 +69,28 @@ val String.plainTrackNo: Int?
  * invalid.
  */
 val Int.packedTrackNo: Int?
-    get() = div(1000).let { if (it > 0) it else null }
+    get() = div(1000).nonZeroOrNull()
 
 /**
  * Parse out the disc number field as if the given Int is formatted as DTTT, where D Is the disc and
  * T is the track number. Values of zero will be ignored under the assumption that they are invalid.
  */
 val Int.packedDiscNo: Int?
-    get() = mod(1000).let { if (it > 0) it else null }
+    get() = mod(1000).nonZeroOrNull()
 
 /**
  * Parse out the number field from an NN/TT string that is typically found in DISC_NUMBER and
  * CD_TRACK_NUMBER. Values of zero will be ignored under the assumption that they are invalid.
  */
 val String.trackDiscNo: Int?
-    get() = split('/', limit = 2)[0].toIntOrNull()?.let { if (it > 0) it else null }
+    get() = split('/', limit = 2)[0].toIntOrNull()?.nonZeroOrNull()
 
 /**
  * Parse out a plain year from a string. Values of 0 will be ignored under the assumption that they
  * are invalid.
  */
 val String.year: Int?
-    get() = toIntOrNull()?.let { if (it > 0) it else null }
+    get() = toIntOrNull()?.nonZeroOrNull()
 
 /**
  * Parse out the year field from a (presumably) ISO-8601-like date. This differs across tag formats
@@ -99,7 +99,9 @@ val String.year: Int?
  * under the assumption that they are invalid.
  */
 val String.iso8601year: Int?
-    get() = split('-', limit = 2)[0].toIntOrNull()?.let { if (it > 0) it else null }
+    get() = split('-', limit = 2)[0].toIntOrNull()?.nonZeroOrNull()
+
+private fun Int.nonZeroOrNull() = if (this > 0) this else null
 
 /**
  * Slice a string so that any preceding articles like The/A(n) are truncated. This is hilariously
@@ -181,6 +183,7 @@ private val GENRE_RE = Regex("((?:\\(([0-9]+|RX|CR)\\))*)(.+)?")
 
 /**
  * A complete table of all the constant genre values for ID3(v2), including non-standard extensions.
+ * Note that we do not translate these, as that greatly increases technical complexity.
  */
 private val GENRE_TABLE =
     arrayOf(

@@ -69,6 +69,8 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  *
  * TODO: Android Auto
  *
+ * TODO: Attempt to re-unify delayed actions again
+ *
  * @author OxygenCobalt
  */
 class PlaybackService :
@@ -285,10 +287,10 @@ class PlaybackService :
     // --- SETTINGSMANAGER OVERRIDES ---
 
     override fun onSettingChanged(key: String) {
-        when (key) {
-            getString(R.string.set_key_replay_gain),
-            getString(R.string.set_key_pre_amp_with),
-            getString(R.string.set_key_pre_amp_without) -> onTracksChanged(player.currentTracks)
+        if (key == getString(R.string.set_key_replay_gain) ||
+            key == getString(R.string.set_key_pre_amp_with) ||
+            key == getString(R.string.set_key_pre_amp_without)) {
+            onTracksChanged(player.currentTracks)
         }
     }
 

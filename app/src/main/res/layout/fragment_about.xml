@@ -12,9 +12,11 @@
         style="@style/Widget.Auxio.AppBarLayout"
         app:liftOnScroll="true">
 
-        <org.oxycblt.auxio.ui.M3Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/about_toolbar"
-            style="@style/Widget.Auxio.Toolbar.Icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:navigationIcon="@drawable/ic_back_24"
             app:title="@string/lbl_about" />
 
     </org.oxycblt.auxio.ui.coordinator.EdgeAppBarLayout>
@@ -77,47 +79,41 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/about_auxio_icon" />
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/version_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="@dimen/spacing_medium"
-                        app:layout_constraintTop_toBottomOf="@+id/about_desc"
-                        app:layout_constraintVertical_chainStyle="packed">
 
-                        <ImageView
-                            android:id="@+id/about_version_icon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/lbl_version"
-                            android:src="@drawable/ic_about_24"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                    <ImageView
+                        android:id="@+id/about_version_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/lbl_version"
+                        android:src="@drawable/ic_about_24"
+                        android:layout_marginStart="@dimen/spacing_medium"
+                        app:layout_constraintBottom_toBottomOf="@+id/about_version"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/about_version_title" />
 
-                        <TextView
-                            android:id="@+id/about_version_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/spacing_medium"
-                            android:text="@string/lbl_version"
-                            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-                            app:layout_constraintBottom_toTopOf="@+id/about_version"
-                            app:layout_constraintStart_toEndOf="@+id/about_version_icon"
-                            app:layout_constraintTop_toTopOf="@+id/about_version_icon" />
+                    <TextView
+                        android:id="@+id/about_version_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:layout_marginStart="@dimen/spacing_medium"
+                        android:text="@string/lbl_version"
+                        android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+                        app:layout_constraintBottom_toTopOf="@+id/about_version"
+                        app:layout_constraintStart_toEndOf="@+id/about_version_icon"
+                        app:layout_constraintTop_toBottomOf="@+id/about_desc" />
 
-                        <TextView
-                            android:id="@+id/about_version"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/spacing_medium"
-                            android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
-                            app:layout_constraintBottom_toBottomOf="@+id/about_version_icon"
-                            app:layout_constraintStart_toEndOf="@+id/about_version_icon"
-                            app:layout_constraintTop_toBottomOf="@+id/about_version_title"
-                            tools:text="16.16.16" />
+                    <TextView
+                        android:id="@+id/about_version"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
+                        app:layout_constraintStart_toStartOf="@+id/about_version_title"
+                        app:layout_constraintTop_toBottomOf="@+id/about_version_title"
+                        android:layout_marginBottom="@dimen/spacing_medium"
+                        tools:text="16.16.16" />
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                     <TextView
                         android:id="@+id/about_code"
@@ -125,11 +121,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/lbl_code"
+                        android:layout_marginTop="@dimen/spacing_medium"
                         app:drawableStartCompat="@drawable/ic_code_24"
                         app:layout_constraintBottom_toTopOf="@+id/about_faq"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/version_container" />
+                        app:layout_constraintTop_toBottomOf="@+id/about_version" />
 
                     <TextView
                         android:id="@+id/about_faq"
@@ -159,7 +156,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/lbl_author"
-                        app:drawableStartCompat="@drawable/ic_artist_24"
+                        app:drawableStartCompat="@drawable/ic_author_24"
                         app:drawableTint="?attr/colorControlNormal"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

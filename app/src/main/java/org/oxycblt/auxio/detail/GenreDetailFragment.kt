@@ -191,7 +191,6 @@ class GenreDetailFragment :
         if (parent is Genre && parent.id == unlikelyToBeNull(detailModel.currentGenre.value).id) {
             detailAdapter.highlightSong(song)
         } else {
-            // Clear any highlighting if playback is not occuring from this item.
             detailAdapter.highlightSong(null)
         }
     }

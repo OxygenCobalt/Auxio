@@ -51,7 +51,7 @@ constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
 ) :
-    NoRtlFrameLayout(context, attrs, defStyleAttr),
+    ForcedLTRFrameLayout(context, attrs, defStyleAttr),
     Slider.OnSliderTouchListener,
     Slider.OnChangeListener {
     private val binding = ViewSeekBarBinding.inflate(context.inflater, this, true)

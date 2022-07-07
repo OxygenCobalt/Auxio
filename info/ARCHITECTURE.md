@@ -270,7 +270,7 @@ Shared views and view configuration models. This contains:
 Shared utilities. This is primarily for QoL when developing Auxio. Documentation is provided on each method.
 
 Utilities are separated into a few groups:
-- Context utilties are extensions of `Context` and generally act as shortcuts for that class.
+- Context utilities are extensions of `Context` and generally act as shortcuts for that class.
 - Framework utilities extend a variety of view implementations to add new behavior or shortcuts.
 - Primitive utilities operate on basic datatypes and are mostly shortcuts.
 - Log utilities are a more light-weight logging framework that Auxio leverages instead of
@@ -288,5 +288,5 @@ of the problems with using a volatile shared object.
 
 `WidgetProvider` is the widget "implementation" exposed in the manifest. When `WidgetComponent` updates it, the class will create
 a series of layouts [e.g "Forms"] for a variety of "size buckets" that would adequately contain the widget. This is then used as
-the widget views, either with the native responsive behavior on Android 12 and above, or with the responsive behavior backported
+the widget views, either with the native responsive behavior on Android 12 and above, or with the responsive behavior back-ported
 to older devices.

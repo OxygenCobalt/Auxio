@@ -97,7 +97,7 @@ private fun RemoteViews.applyRoundingToBackground(context: Context): RemoteViews
 
 private fun RemoteViews.applyRoundingToBar(context: Context): RemoteViews {
     if (Settings(context).roundMode && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-        setInt(R.id.widget_controls, "setBackgroundResource", R.drawable.ui_widget_bg_round)
+        setInt(R.id.widget_controls, "setBackgroundResource", R.drawable.ui_widget_bar_round)
     } else {
         setInt(R.id.widget_controls, "setBackgroundResource", R.drawable.ui_widget_bar)
     }

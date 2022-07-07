@@ -35,7 +35,7 @@ import android.widget.FrameLayout
  *
  * @author OxygenCobalt
  */
-open class NoRtlFrameLayout
+open class ForcedLTRFrameLayout
 @JvmOverloads
 constructor(
     context: Context,
@@ -44,7 +44,7 @@ constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
     override fun onFinishInflate() {
         super.onFinishInflate()
-        check(childCount == 1) { "This view should only contain one child" }
+        check(childCount == 1) { "This layout should only contain one child" }
         getChildAt(0).layoutDirection = View.LAYOUT_DIRECTION_LTR
     }
 }

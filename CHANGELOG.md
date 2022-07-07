@@ -18,7 +18,7 @@
 - Fixed broken tablet layouts
 - Fixed seam that would appear on some album covers
 - Fixed visual issue with the queue opening animation
-- Fixed miscellanious startup issues
+- Fixed miscellaneous startup issues
 - Fixed crash if settings was navigated away before playback state
 finished saving
 - Fixed broken album menu
@@ -63,7 +63,7 @@ finished saving
 - Fixed unusable excluded directory UI
 - Songs with no data (i.e size of 0) are now filtered out
 - Fixed nonsensical menu items from appearing on songs
-- Fixed issue where multiple menus would open if long-clicks occured simultaneously
+- Fixed issue where multiple menus would open if long-clicks occurred simultaneously
 
 #### Dev/Meta
 - New translations [Fjuro -> Czech, Konstantin Tutsch -> German]
