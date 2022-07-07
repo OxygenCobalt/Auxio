@@ -77,7 +77,7 @@
         extracting metadata, and constructing the music library.
         -->
         <service
-            android:name=".music.IndexerService"
+            android:name=".music.system.IndexerService"
             android:foregroundServiceType="dataSync"
             android:icon="@mipmap/ic_launcher"
             android:exported="false"

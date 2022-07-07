@@ -23,8 +23,18 @@ import android.provider.OpenableColumns
 import org.oxycblt.auxio.util.contentResolverSafe
 
 /**
- * The main storage for music items. The items themselves are located in a [Library], however this
- * might not be available at all times.
+ * The main storage for music items.
+ *
+ * Whereas other apps load music from MediaStore as it is shown, Auxio does not do that, as it
+ * cripples any kind of advanced metadata functionality. Instead, Auxio loads all music into a
+ * in-memory relational data-structure called [Library]. This costs more memory-wise, but is also
+ * much more sensible.
+ *
+ * The only other, memory-efficient option is to create our own hybrid database that leverages both
+ * a typical DB and a mem-cache, like Vinyl. But why would we do that when I've encountered no real
+ * issues with the current system.
+ *
+ * [Library] may not be available at all times, so leveraging [Callback] is recommended.
  *
  * @author OxygenCobalt
  */

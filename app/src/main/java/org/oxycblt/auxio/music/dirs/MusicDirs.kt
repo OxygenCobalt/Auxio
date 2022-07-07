@@ -17,7 +17,7 @@
  
 package org.oxycblt.auxio.music.dirs
 
-import org.oxycblt.auxio.music.Directory
+import org.oxycblt.auxio.music.system.Directory
 
 /** Represents a the configuration for the "Folder Management" setting */
 data class MusicDirs(val dirs: List<Directory>, val shouldInclude: Boolean)

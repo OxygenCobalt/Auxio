@@ -511,7 +511,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         // TODO: Improve accessibility by:
         // 1. Adding a (non-visible) handle. Material components now technically does have
         // this, but it relies on the busted BottomSheetBehavior.
-        // 2. Adding the controls that BottomSheetBehavior defines in-app.
+        // 2. Adding the controls that BottomSheetBehavior defines
         sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
     }
 

@@ -31,8 +31,8 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.Coil
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.TabCustomizeDialog
-import org.oxycblt.auxio.music.IndexerViewModel
 import org.oxycblt.auxio.music.dirs.MusicDirsDialog
+import org.oxycblt.auxio.music.system.IndexerViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.replaygain.PreAmpCustomizeDialog
 import org.oxycblt.auxio.settings.ui.IntListPreference
@@ -53,6 +53,8 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * TODO: Add option to not restore state
  *
  * TODO: Disable playback state options when music is loading
+ *
+ * TODO: Indicate music loading in the "reload music" option???
  */
 @Suppress("UNUSED")
 class SettingsListFragment : PreferenceFragmentCompat() {

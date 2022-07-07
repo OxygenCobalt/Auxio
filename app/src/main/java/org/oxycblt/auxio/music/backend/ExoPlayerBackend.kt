@@ -24,12 +24,12 @@ import com.google.android.exoplayer2.MetadataRetriever
 import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
-import org.oxycblt.auxio.music.Indexer
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.iso8601year
 import org.oxycblt.auxio.music.plainTrackNo
+import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.music.trackDiscNo
 import org.oxycblt.auxio.music.year
 import org.oxycblt.auxio.util.logD

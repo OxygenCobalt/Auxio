@@ -23,6 +23,8 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.system.MimeType
+import org.oxycblt.auxio.music.system.Path
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -30,9 +32,6 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /** [Item] variant that represents a music item. */
 sealed class Music : Item() {
-    // TODO: Split ID into an ID derived from all fields and a persistent ID derived from stable
-    // fields
-
     /** The raw name of this item. Null if unknown. */
     abstract val rawName: String?
 

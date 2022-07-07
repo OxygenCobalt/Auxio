@@ -19,7 +19,7 @@ package org.oxycblt.auxio.music.dirs
 
 import android.content.Context
 import org.oxycblt.auxio.databinding.ItemMusicDirBinding
-import org.oxycblt.auxio.music.Directory
+import org.oxycblt.auxio.music.system.Directory
 import org.oxycblt.auxio.ui.recycler.BackingData
 import org.oxycblt.auxio.ui.recycler.BindingViewHolder
 import org.oxycblt.auxio.ui.recycler.MonoAdapter

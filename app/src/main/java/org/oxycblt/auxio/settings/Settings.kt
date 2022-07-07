@@ -25,8 +25,8 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
-import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.music.dirs.MusicDirs
+import org.oxycblt.auxio.music.system.Directory
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
 import org.oxycblt.auxio.playback.state.PlaybackMode

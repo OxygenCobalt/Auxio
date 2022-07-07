@@ -69,6 +69,8 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  *
  * TODO: Android Auto
  *
+ * TODO: Get MediaSessionConnector (or the media3 equivalent) working or die trying
+ *
  * @author OxygenCobalt
  */
 class PlaybackService :

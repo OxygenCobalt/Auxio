@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.system
 
 import android.Manifest
 import android.content.Context
@@ -24,7 +24,14 @@ import android.database.Cursor
 import android.os.Build
 import androidx.core.content.ContextCompat
 import kotlin.coroutines.cancellation.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.backend.Api21MediaStoreBackend
 import org.oxycblt.auxio.music.backend.Api29MediaStoreBackend
 import org.oxycblt.auxio.music.backend.Api30MediaStoreBackend
@@ -34,6 +41,7 @@ import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.requireBackgroundThread
 
 /**
  * Auxio's media indexer.
@@ -122,7 +130,9 @@ class Indexer {
         this.callback = null
     }
 
-    fun index(context: Context) {
+    suspend fun index(context: Context) {
+        requireBackgroundThread()
+
         val generation = synchronized(this) { ++currentGeneration }
 
         val notGranted =
@@ -180,11 +190,7 @@ class Indexer {
 
     @Synchronized
     private fun emitIndexing(indexing: Indexing?, generation: Long) {
-        if (currentGeneration != generation) {
-            // Not the running task anymore, cancel this co-routine. This allows a yield-like
-            // behavior to be implemented in a far cheaper manner for each backend.
-            throw CancellationException()
-        }
+        checkGenerationImpl(generation)
 
         if (indexing == indexingState) {
             // Ignore redundant states used when the backends just want to check for
@@ -203,23 +209,33 @@ class Indexer {
         callback?.onIndexerStateChanged(state)
     }
 
-    @Synchronized
-    private fun emitCompletion(response: Response, generation: Long) {
+    private suspend fun emitCompletion(response: Response, generation: Long) {
+        synchronized(this) {
+            checkGenerationImpl(generation)
+
+            // Do not check for redundancy here, as we actually need to notify a switch
+            // from Indexing -> Complete and not Indexing -> Indexing or Complete -> Complete.
+
+            lastResponse = response
+            indexingState = null
+        }
+
+        val state = State.Complete(response)
+
+        // Swap to the Main thread so that downstream callbacks don't crash from being on
+        // a background thread. Does not occur in emitIndexing due to efficiency reasons.
+        withContext(Dispatchers.Main) {
+            controller?.onIndexerStateChanged(state)
+            callback?.onIndexerStateChanged(state)
+        }
+    }
+
+    private fun checkGenerationImpl(generation: Long) {
         if (currentGeneration != generation) {
             // Not the running task anymore, cancel this co-routine. This allows a yield-like
             // behavior to be implemented in a far cheaper manner for each backend.
             throw CancellationException()
         }
-
-        // Do not check for redundancy here, as we actually need to notify a switch
-        // from Indexing -> Complete and not Indexing -> Indexing or Complete -> Complete.
-
-        lastResponse = response
-        indexingState = null
-
-        val state = State.Complete(response)
-        controller?.onIndexerStateChanged(state)
-        callback?.onIndexerStateChanged(state)
     }
 
     /**

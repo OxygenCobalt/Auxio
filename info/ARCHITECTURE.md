@@ -205,8 +205,12 @@ This package also contains the two UI components used for all covers in Auxio:
 This package contains all `Music` implementations, the music loading implementation, and the music folder system. This is the second
 most complicated package in the app, as loading music in a sane way is horribly difficult.
 
+Unlike other apps, Auxio does not load music from `MediaStore` as it is shown in the UI. That is dumb and stupid and prevents
+any advanced features like Album Artists. Instead, we have a single loading process that constructs an entire in-memory music
+library, which does increase memory usage, but allows for very high-quality metadata.
+
 The major classes are:
-- `MusicStore`, which is the container for a `Library` instance. Any code wanting to access the library should use this
+- `MusicStore`, which is the container for a `Library` instance. Any code wanting to access the library should use this.
 - `Indexer`, which manages how music is loaded. This is only used by code that must reflect the music loading state.
 
 Internally, there are several other major systems:

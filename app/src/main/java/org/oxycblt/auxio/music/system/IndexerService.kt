@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.system
 
 import android.app.Service
 import android.content.Intent
@@ -28,6 +28,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
@@ -51,7 +52,6 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
 
     private val serviceJob = Job()
     private val indexScope = CoroutineScope(serviceJob + Dispatchers.IO)
-    private val updateScope = CoroutineScope(serviceJob + Dispatchers.Main)
 
     private val playbackManager = PlaybackStateManager.getInstance()
     private lateinit var settings: Settings
@@ -108,30 +108,26 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
 
                     val newLibrary = state.response.library
 
-                    // Load was completed successfully. However, we still need to do some
-                    // extra work to update the app's state.
-                    updateScope.launch {
-                        if (musicStore.library != null) {
-                            // This is a new library to replace a pre-existing one.
+                    if (musicStore.library != null) {
+                        // This is a new library to replace a pre-existing one.
 
-                            // Wipe possibly-invalidated album covers
-                            imageLoader.memoryCache?.clear()
+                        // Wipe possibly-invalidated album covers
+                        imageLoader.memoryCache?.clear()
 
-                            // Clear invalid models from PlaybackStateManager.
-                            playbackManager.sanitize(newLibrary)
-                        }
-
-                        musicStore.updateLibrary(newLibrary)
-
-                        stopForegroundSession()
+                        // Clear invalid models from PlaybackStateManager. This is not connected
+                        // to a callback as it is bad practice for a shared object to attach to
+                        // the callback system of another.
+                        playbackManager.sanitize(newLibrary)
                     }
-                } else {
-                    // On errors, while we would want to show a notification that displays the
-                    // error, in practice that comes into conflict with the upcoming Android 13
-                    // notification permission, and there is no point implementing permission
-                    // on-boarding for such when it will only be used for this.
-                    stopForegroundSession()
+
+                    musicStore.updateLibrary(newLibrary)
                 }
+
+                // On errors, while we would want to show a notification that displays the
+                // error, in practice that comes into conflict with the upcoming Android 13
+                // notification permission, and there is no point implementing permission
+                // on-boarding for such when it will only be used for this.
+                stopForegroundSession()
             }
             is Indexer.State.Indexing -> {
                 // When loading, we want to enter the foreground state so that android does

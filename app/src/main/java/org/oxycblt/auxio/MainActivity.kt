@@ -26,7 +26,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
 import org.oxycblt.auxio.databinding.ActivityMainBinding
-import org.oxycblt.auxio.music.IndexerService
+import org.oxycblt.auxio.music.system.IndexerService
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.Settings
