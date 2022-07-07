@@ -32,7 +32,7 @@ If you have the knowledge, you can also implement the feature yourself and creat
 Its also recommended that you read about [Auxio's Architecture](../info/ARCHITECTURE.md) as well to make changes better and more efficient.
 
 ## Translations
-I don't really see the use in weblate, so currently you should see the [Translations Megathread]](https://github.com/OxygenCobalt/Auxio/issues/3) to see how to propose translations.
+Go to Auxio's weblate project [here](https://hosted.weblate.org/engage/auxio/).
 
 ## Code Contributions
 If you have knowledge of Android/Kotlin, feel free to to contribute to the project.

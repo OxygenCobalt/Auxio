@@ -384,24 +384,40 @@ class PlaybackStateManager private constructor() {
         withContext(Dispatchers.IO) { database.write(state) }
     }
 
-    suspend fun sanitize(database: PlaybackStateDatabase, newLibrary: MusicStore.Library) {
-        // Since we need to sanitize the state and re-save it for consistency, take the
-        // easy way out and just write a new state and restore from it. Don't really care.
-        // TODO: Do we even need to save here? Doesn't seem like it's required for
-        logD("Sanitizing state")
-        val state = synchronized(this) { makeStateImpl() }
-
-        val sanitizedState =
-            withContext(Dispatchers.IO) {
-                database.write(state)
-                database.read(newLibrary)
-            }
-
-        synchronized(this) {
-            if (sanitizedState != null) {
-                applyStateImpl(sanitizedState)
-            }
+    @Synchronized
+    fun sanitize(newLibrary: MusicStore.Library) {
+        if (!isInitialized) {
+            logD("Not initialized, no need to sanitize")
+            return
         }
+
+        logD("Sanitizing state")
+
+        val oldSongId = song?.id
+        val oldPosition = positionMs
+
+        parent =
+            parent?.let {
+                when (it) {
+                    is Album -> newLibrary.sanitize(it)
+                    is Artist -> newLibrary.sanitize(it)
+                    is Genre -> newLibrary.sanitize(it)
+                }
+            }
+
+        _queue = newLibrary.sanitize(_queue).toMutableList()
+
+        while (song?.id != oldSongId && index > -1) {
+            index--
+        }
+
+        // Continuing playback while also possibly doing drastic state updates is
+        // a bad idea, so pause.
+        isPlaying = false
+        notifyNewPlayback()
+
+        // Controller may have reloaded the media item, re-seek to the previous position
+        seekTo(oldPosition)
     }
 
     private fun makeStateImpl() =

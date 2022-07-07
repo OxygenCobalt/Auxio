@@ -29,6 +29,7 @@ import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
 
+/** The notification responsible for showing the indexer state. */
 class IndexerNotification(private val context: Context) :
     NotificationCompat.Builder(context, CHANNEL_ID) {
     private val notificationManager = context.getSystemServiceSafe(NotificationManager::class)

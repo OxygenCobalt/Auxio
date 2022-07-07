@@ -84,6 +84,7 @@ class MusicStore private constructor() {
             }
 
         fun sanitize(song: Song) = songs.find { it.id == song.id }
+        fun sanitize(songs: List<Song>) = songs.mapNotNull { sanitize(it) }
         fun sanitize(album: Album) = albums.find { it.id == album.id }
         fun sanitize(artist: Artist) = artists.find { it.id == artist.id }
         fun sanitize(genre: Genre) = genres.find { it.id == genre.id }
