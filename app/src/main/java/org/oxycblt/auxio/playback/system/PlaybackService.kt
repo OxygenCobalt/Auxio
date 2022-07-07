@@ -69,8 +69,6 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  *
  * TODO: Android Auto
  *
- * TODO: Attempt to re-unify delayed actions again
- *
  * @author OxygenCobalt
  */
 class PlaybackService :

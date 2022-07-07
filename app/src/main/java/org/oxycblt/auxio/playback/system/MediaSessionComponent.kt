@@ -221,6 +221,10 @@ class MediaSessionComponent(
         playbackManager.seekTo(position)
     }
 
+    override fun onFastForward() {
+        playbackManager.next()
+    }
+
     override fun onRewind() {
         playbackManager.rewind()
         playbackManager.isPlaying = true

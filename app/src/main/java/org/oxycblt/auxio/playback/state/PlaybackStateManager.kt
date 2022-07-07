@@ -70,7 +70,7 @@ class PlaybackStateManager private constructor() {
             notifyPlayingChanged()
         }
     /** The current playback progress */
-    private var positionMs = 0L
+    var positionMs = 0L
     /** The current [RepeatMode] */
     var repeatMode = RepeatMode.NONE
         set(value) {
@@ -81,7 +81,7 @@ class PlaybackStateManager private constructor() {
     var isShuffled = false
         private set
 
-    /** Whether this instance has been initialized */
+    /** Whether this instance has played something or restored a state. */
     var isInitialized = false
         private set
 
@@ -141,10 +141,7 @@ class PlaybackStateManager private constructor() {
 
     // --- PLAYING FUNCTIONS ---
 
-    /**
-     * Play a [song].
-     * @param playbackMode The [PlaybackMode] to construct the queue off of.
-     */
+    /** Play a [song]. */
     @Synchronized
     fun play(song: Song, playbackMode: PlaybackMode, settings: Settings) {
         val library = musicStore.library ?: return
@@ -165,10 +162,7 @@ class PlaybackStateManager private constructor() {
         isInitialized = true
     }
 
-    /**
-     * Play a [parent], such as an artist or album.
-     * @param shuffled Whether the queue is shuffled or not
-     */
+    /** Play a [parent], such as an artist or album. */
     @Synchronized
     fun play(parent: MusicParent, shuffled: Boolean, settings: Settings) {
         val library = musicStore.library ?: return
@@ -321,11 +315,7 @@ class PlaybackStateManager private constructor() {
 
     // --- STATE FUNCTIONS ---
 
-    /**
-     * Update the current [positionMs]. Will not notify listeners of a seek event.
-     * @param positionMs The new position in millis.
-     * @see seekTo
-     */
+    /** Update the current [positionMs]. Only meant for use by [Controller] */
     @Synchronized
     fun synchronizePosition(controller: Controller, positionMs: Long) {
         if (BuildConfig.DEBUG && this.controller !== controller) {
@@ -400,47 +390,41 @@ class PlaybackStateManager private constructor() {
         withContext(Dispatchers.IO) { database.write(state) }
     }
 
-    /** Sanitize the state with [newLibrary]. Writes the state to [database] */
-    suspend fun sanitize(database: PlaybackStateDatabase, newLibrary: MusicStore.Library) {
-        val state =
-            synchronized(this) {
-                if (!isInitialized) {
-                    logD("Not initialized, no need to sanitize")
-                    return
+    /** Sanitize the state with [newLibrary]. */
+    @Synchronized
+    fun sanitize(newLibrary: MusicStore.Library) {
+        if (!isInitialized) {
+            logD("Not initialized, no need to sanitize")
+            return
+        }
+
+        logD("Sanitizing state")
+
+        val oldSongId = song?.id
+        val oldPosition = positionMs
+
+        parent =
+            parent?.let {
+                when (it) {
+                    is Album -> newLibrary.sanitize(it)
+                    is Artist -> newLibrary.sanitize(it)
+                    is Genre -> newLibrary.sanitize(it)
                 }
-
-                logD("Sanitizing state")
-
-                val oldSongId = song?.id
-                val oldPosition = positionMs
-
-                parent =
-                    parent?.let {
-                        when (it) {
-                            is Album -> newLibrary.sanitize(it)
-                            is Artist -> newLibrary.sanitize(it)
-                            is Genre -> newLibrary.sanitize(it)
-                        }
-                    }
-
-                _queue = newLibrary.sanitize(_queue).toMutableList()
-
-                while (song?.id != oldSongId && index > -1) {
-                    index--
-                }
-
-                // Continuing playback while also possibly doing drastic state updates is
-                // a bad idea, so pause.
-                isPlaying = false
-                notifyNewPlayback()
-
-                // Controller may have reloaded the media item, re-seek to the previous position
-                seekTo(oldPosition)
-
-                makeStateImpl()
             }
 
-        withContext(Dispatchers.IO) { database.write(state) }
+        _queue = newLibrary.sanitize(_queue).toMutableList()
+
+        while (song?.id != oldSongId && index > -1) {
+            index--
+        }
+
+        // Continuing playback while also possibly doing drastic state updates is
+        // a bad idea, so pause.
+        isPlaying = false
+        notifyNewPlayback()
+
+        // Controller may have reloaded the media item, re-seek to the previous position
+        seekTo(oldPosition)
     }
 
     private fun makeStateImpl() =
