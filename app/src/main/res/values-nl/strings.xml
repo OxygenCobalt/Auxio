@@ -195,7 +195,6 @@
     <string name="fmt_lib_artist_count">Artiesten geladen: %d</string>
     <string name="fmt_lib_genre_count">Genres geladen: %d</string>
     <string name="info_indexer_channel_name">Muziek aan het laden</string>
-    <string name="lbl_indexing">Uw muziekbibliotheek wordt geladen…</string>
     <string name="lbl_sort_album">Album</string>
     <string name="lbl_sort_duration">Looptijd</string>
     <string name="lbl_sort_count">Aantal Liedjes</string>
