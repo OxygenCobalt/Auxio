@@ -40,8 +40,8 @@ often than not it results in UTF-8 tags (Seen on FLAC/OGG/OPUS files most often)
 This is expected since reading from the audio database takes awhile, especially with libraries containing 10k songs or more.
 
 #### Auxio does not detect new music!
-This is a current limitation with the music loader. To remedy this, go to Settings -> Reload music whenever new songs are added.
-I hope to make the app rescan music on the fly eventually.
+This is Auxio's default behavior due to limitations regarding android's filesystem APIs. To enable such behavior, turn on
+"Automatic reloading" in settings. Note that this option does require a persistent notification and higher battery usage.
 
 #### Why does playback pause whenever music is reloaded?
 Whenever the music library signifigantly changes, updating the player's data while it is still playing may result in
