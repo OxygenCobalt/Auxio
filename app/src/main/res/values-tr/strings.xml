@@ -193,4 +193,13 @@
     <string name="clr_deep_blue">Koyu mavi</string>
     <string name="clr_cyan">Camgöbeği</string>
     <string name="clr_teal">Deniz mavisi</string>
+    <string name="set_round_mode_desc">Ek arayüz öğelerinde yuvarlatılmış köşeleri etkinleştirir (Albüm kapaklarının yuvarlatılmış olmasını gerektirir)</string>
+    <string name="lbl_state_restored">Durum geri yüklendi</string>
+    <string name="set_restore_desc">Önceden kaydedilmiş oynatma durumunu geri getirir (varsa)</string>
+    <string name="set_round_mode">Yuvarlak mod</string>
+    <string name="set_restore">Oynatma durumunu eski haline getir</string>
+    <string name="set_quality_tags">MediaStore etiketlerini yoksay</string>
+    <string name="set_quality_tags_desc">Etiket kalitesini artırır, ancak daha uzun yükleme süreleri gerektirir</string>
+    <string name="err_did_not_restore">Hiçbir durum geri getirelemedi</string>
+    <string name="set_repeat_pause">Tekrarda duraklat</string>
 </resources>
