@@ -1,32 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Простой и рациональный музыкальный проигрыватель</string>
     <string name="info_playback_channel_name">Воспроизведение</string>
     <string name="info_widget_desc">Настройки воспроизведения</string>
-
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Повторить попытку</string>
     <string name="lbl_grant">Разрешить</string>
-
     <string name="lbl_genres">Жанры</string>
     <string name="lbl_artists">Исполнители</string>
     <string name="lbl_albums">Альбомы</string>
     <string name="lbl_songs">Треки</string>
     <string name="lbl_all_songs">Все треки</string>
-
     <string name="lbl_search">Поиск</string>
     <string name="lbl_filter">Фильтр</string>
     <string name="lbl_filter_all">Все</string>
-
     <string name="lbl_sort">Сортировать</string>
     <string name="lbl_sort_name">Название</string>
     <string name="lbl_sort_artist">Исполнитель</string>
     <string name="lbl_sort_album">Альбом</string>
     <string name="lbl_sort_year">Год</string>
     <string name="lbl_sort_asc">По возрастанию</string>
-
     <string name="lbl_playback">Сейчас играет</string>
     <string name="lbl_play">Играть</string>
     <string name="lbl_shuffle">Перемешать</string>
@@ -34,28 +28,22 @@
     <string name="set_playback_mode_album">Играть альбом</string>
     <string name="set_playback_mode_artist">Играть исполнителя</string>
     <string name="set_playback_mode_genre">Играть жанр</string>
-
     <string name="lbl_queue">Очередь</string>
     <string name="lbl_play_next">Играть далее</string>
     <string name="lbl_queue_add">Добавить в очередь</string>
     <string name="lbl_queue_added">Добавлено в очередь</string>
-
     <string name="lbl_go_artist">Перейти к исполнителю</string>
     <string name="lbl_go_album">Перейти к альбому</string>
-
     <string name="lbl_state_saved">Позиция сохранена</string>
-
     <string name="lbl_add">Добавить</string>
     <string name="lbl_save">Сохранить</string>
     <string name="err_no_dirs">Папок нет</string>
-
     <string name="lbl_about">О программе</string>
     <string name="lbl_version">Версия</string>
     <string name="lbl_code">Страница на GitHub</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Лицензии</string>
     <string name="lbl_author">Разработчик: OxygenCobalt</string>
-
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Настройки</string>
     <string name="set_ui">Внешний вид</string>
@@ -66,7 +54,6 @@
     <string name="set_accent">Цветовой акцент</string>
     <string name="set_black_mode">Чёрная тема</string>
     <string name="set_black_mode_desc">Использовать полностью чёрный цвет</string>
-
     <string name="set_display">Экран</string>
     <string name="set_lib_tabs">Вкладки</string>
     <string name="set_lib_tabs_desc">Изменить видимость и порядок вкладок</string>
@@ -79,7 +66,6 @@
     <string name="set_alt_action">Кнопка в уведомлении</string>
     <string name="set_alt_repeat">Режим повтора</string>
     <string name="set_alt_shuffle">Режим перемешивания</string>
-
     <string name="set_audio">Звук</string>
     <string name="set_headset_autoplay">Воспроизводить при подключении</string>
     <string name="set_headset_autoplay_desc">Всегда начинать воспроизведение при подключении наушников (может работать не на всех устройствах)</string>
@@ -88,7 +74,6 @@
     <string name="set_replay_gain_track">По треку</string>
     <string name="set_replay_gain_album">По альбому</string>
     <string name="set_replay_gain_dynamic">Динамический</string>
-
     <string name="set_behavior">Поведение</string>
     <string name="set_library_song_playback_mode">При выборе трека</string>
     <string name="set_keep_shuffle">Запоминать перемешивание</string>
@@ -97,13 +82,11 @@
     <string name="set_rewind_prev_desc">Перематывать трек перед возвратом к предыдущему треку</string>
     <string name="set_repeat_pause">Пауза при повторе</string>
     <string name="set_repeat_pause_desc">Ставить на паузу при повторе трека</string>
-
     <string name="set_content">Библиотека</string>
     <string name="set_save">Запоминать позицию</string>
     <string name="set_save_desc">Запоминать позицию в треке</string>
     <string name="set_reindex">Перезагрузить музыку</string>
     <string name="set_reindex_desc">Это перезапустит приложение</string>
-
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Треков нет</string>
     <string name="err_index_failed">Ошибка чтения библиотеки</string>
@@ -111,32 +94,26 @@
     <string name="err_no_app">Нет приложений для открытия данной ссылки</string>
     <string name="err_bad_dir">Эта папка не поддерживается</string>
     <string name="err_too_small">Auxio не поддерживает данное разрешние экрана</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Найти в библиотеке…</string>
-
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Трек %d</string>
-
     <string name="desc_play_pause">Играть или остановить</string>
     <string name="desc_skip_next">Перейти к следующему треку</string>
     <string name="desc_skip_prev">Вернуться к предыдущему треку</string>
     <string name="desc_change_repeat">Режим повтора</string>
     <string name="desc_shuffle">Перемешивание</string>
     <string name="desc_shuffle_all">Перемешать все треки</string>
-
     <string name="desc_clear_queue_item">Удалить трек из очереди</string>
     <string name="desc_queue_handle">Переместить трек в очереди</string>
     <string name="desc_tab_handle">Переместить вкладку</string>
     <string name="desc_clear_search">Очистить поисковый запрос</string>
     <string name="desc_music_dir_delete">Удалить исключенную папку</string>
-
     <string name="desc_auxio_icon">Иконка Auxio</string>
     <string name="desc_no_cover">Обложка альбома</string>
     <string name="desc_album_cover">Обложка альбома %s</string>
     <string name="desc_artist_image">Фото исполнителя %s</string>
     <string name="desc_genre_image">Картинка жанра %s</string>
-
     <!-- Default Namespace | Placeholder values -->
     <string name="def_artist">Неизвестный исполнитель</string>
     <string name="def_genre">Неизвестный жанр</string>
@@ -144,7 +121,6 @@
     <string name="def_playback">Музыка не играет</string>
     <string name="def_widget_song">Название трека</string>
     <string name="def_widget_artist">Имя исполнителя</string>
-
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Красный</string>
     <string name="clr_pink">Розовый</string>
@@ -162,21 +138,19 @@
     <string name="clr_orange">Оранжевый</string>
     <string name="clr_brown">Коричневый</string>
     <string name="clr_grey">Серый</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_lib_song_count">Всего треков: %d</string>
-
     <plurals name="fmt_song_count">
         <item quantity="one">%d трек</item>
         <item quantity="few">%d трека</item>
         <item quantity="many">%d треков</item>
         <item quantity="other">%d трека</item>
     </plurals>
-
     <plurals name="fmt_album_count">
         <item quantity="one">%d альбом</item>
         <item quantity="few">%d альбома</item>
         <item quantity="many">%d альбомов</item>
         <item quantity="other">%d альбомы</item>
     </plurals>
+    <string name="info_indexer_channel_name">Музыка загружается</string>
 </resources>
