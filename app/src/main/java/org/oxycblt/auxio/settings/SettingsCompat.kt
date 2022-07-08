@@ -27,10 +27,10 @@ import android.util.Log
 import androidx.core.content.edit
 import java.io.File
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.system.Directory
-import org.oxycblt.auxio.music.system.directoryCompat
-import org.oxycblt.auxio.music.system.isInternalCompat
-import org.oxycblt.auxio.music.system.storageVolumesCompat
+import org.oxycblt.auxio.music.Directory
+import org.oxycblt.auxio.music.directoryCompat
+import org.oxycblt.auxio.music.isInternalCompat
+import org.oxycblt.auxio.music.storageVolumesCompat
 import org.oxycblt.auxio.ui.accent.Accent
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.queryAll

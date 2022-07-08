@@ -6,7 +6,7 @@
     <string name="info_indexer_channel_name">Načítání hudby</string>
     <string name="info_widget_desc">Zobrazení a ovládání přehrávání hudby</string>
     <!-- Label Namespace | Static Labels -->
-    <string name="lbl_indexing">Načítání vaší hudební knihovny…</string>
+    <string name="lbl_indexing_desc">Načítání vaší hudební knihovny…</string>
     <string name="lbl_retry">Zkusit znovu</string>
     <string name="lbl_grant">Udělit</string>
     <string name="lbl_genres">Žánry</string>

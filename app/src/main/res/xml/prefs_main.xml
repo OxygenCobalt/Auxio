@@ -187,5 +187,13 @@
             app:summary="@string/set_quality_tags_desc"
             app:title="@string/set_quality_tags" />
 
+        <org.oxycblt.auxio.settings.ui.M3SwitchPreference
+            app:allowDividerBelow="false"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="@string/set_key_observing"
+            app:summary="@string/set_observing_desc"
+            app:title="@string/set_observing" />
+
     </PreferenceCategory>
 </PreferenceScreen>

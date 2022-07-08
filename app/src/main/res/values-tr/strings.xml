@@ -76,7 +76,7 @@
     <string name="info_widget_desc">Müzik çalmayı görüntüle ve kontrol et</string>
     <string name="info_app_desc">Android için basit, rasyonel bir müzik çalar.</string>
     <string name="info_indexer_channel_name">Müzik Yükleniyor</string>
-    <string name="lbl_indexing">Müzik kitaplığınız yükleniyor…</string>
+    <string name="lbl_indexing_desc">Müzik kitaplığınız yükleniyor…</string>
     <string name="lbl_sort_name">İsim</string>
     <string name="lbl_sort_artist">Sanatçı</string>
     <string name="lbl_sort_album">Albüm</string>

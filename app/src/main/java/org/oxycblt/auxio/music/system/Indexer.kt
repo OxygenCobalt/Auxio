@@ -32,10 +32,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.backend.Api21MediaStoreBackend
-import org.oxycblt.auxio.music.backend.Api29MediaStoreBackend
-import org.oxycblt.auxio.music.backend.Api30MediaStoreBackend
-import org.oxycblt.auxio.music.backend.ExoPlayerBackend
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
@@ -130,6 +126,10 @@ class Indexer {
         this.callback = null
     }
 
+    /**
+     * Start the indexing process. This should be done by [Controller] in a background thread. When
+     * complete, a new completion state will be pushed to each callback.
+     */
     suspend fun index(context: Context) {
         requireBackgroundThread()
 
@@ -190,7 +190,7 @@ class Indexer {
 
     @Synchronized
     private fun emitIndexing(indexing: Indexing?, generation: Long) {
-        checkGenerationImpl(generation)
+        checkGeneration(generation)
 
         if (indexing == indexingState) {
             // Ignore redundant states used when the backends just want to check for
@@ -211,7 +211,7 @@ class Indexer {
 
     private suspend fun emitCompletion(response: Response, generation: Long) {
         synchronized(this) {
-            checkGenerationImpl(generation)
+            checkGeneration(generation)
 
             // Do not check for redundancy here, as we actually need to notify a switch
             // from Indexing -> Complete and not Indexing -> Indexing or Complete -> Complete.
@@ -230,7 +230,7 @@ class Indexer {
         }
     }
 
-    private fun checkGenerationImpl(generation: Long) {
+    private fun checkGeneration(generation: Long) {
         if (currentGeneration != generation) {
             // Not the running task anymore, cancel this co-routine. This allows a yield-like
             // behavior to be implemented in a far cheaper manner for each backend.

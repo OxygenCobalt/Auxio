@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.system
+package org.oxycblt.auxio.music
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -109,7 +109,7 @@ val StorageVolume.directoryCompat: String?
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             directory?.absolutePath
         } else {
-            // Replicate getDirectory: getPath if mounted, null if not
+            // Replicate API: getPath if mounted, null if not
             when (stateCompat) {
                 Environment.MEDIA_MOUNTED,
                 Environment.MEDIA_MOUNTED_READ_ONLY ->

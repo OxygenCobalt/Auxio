@@ -25,8 +25,8 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
+import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.music.dirs.MusicDirs
-import org.oxycblt.auxio.music.system.Directory
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
 import org.oxycblt.auxio.playback.state.PlaybackMode
@@ -184,6 +184,10 @@ class Settings(private val context: Context, private val callback: Callback? = n
      */
     val pauseOnRepeat: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_repeat_pause), false)
+
+    /** Whether to be actively watching for changes in the music library. */
+    val shouldBeObserving: Boolean
+        get() = inner.getBoolean(context.getString(R.string.set_key_observing), false)
 
     /** Whether to parse metadata directly with ExoPlayer. */
     val useQualityTags: Boolean

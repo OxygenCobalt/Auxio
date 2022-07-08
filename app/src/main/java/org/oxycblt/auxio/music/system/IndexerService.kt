@@ -17,9 +17,14 @@
  
 package org.oxycblt.auxio.music.system
 
+import android.app.Notification
 import android.app.Service
 import android.content.Intent
+import android.database.ContentObserver
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
+import android.provider.MediaStore
 import androidx.core.app.ServiceCompat
 import coil.imageLoader
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +36,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -43,8 +49,6 @@ import org.oxycblt.auxio.util.logD
  * boilerplate you skip is not worth the insanity of androidx.
  *
  * @author OxygenCobalt
- *
- * TODO: Add file observing
  */
 class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     private val indexer = Indexer.getInstance()
@@ -52,18 +56,23 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
 
     private val serviceJob = Job()
     private val indexScope = CoroutineScope(serviceJob + Dispatchers.IO)
+    private lateinit var indexerContentObserver: SystemContentObserver
 
     private val playbackManager = PlaybackStateManager.getInstance()
     private lateinit var settings: Settings
 
     private var isForeground = false
-    private lateinit var notification: IndexerNotification
+    private lateinit var indexingNotification: IndexingNotification
+    private lateinit var observingNotification: ObservingNotification
 
     override fun onCreate() {
         super.onCreate()
 
-        notification = IndexerNotification(this)
         settings = Settings(this, this)
+        indexerContentObserver = SystemContentObserver()
+
+        indexingNotification = IndexingNotification(this)
+        observingNotification = ObservingNotification(this)
 
         indexer.registerController(this)
         if (musicStore.library == null && indexer.isIndeterminate) {
@@ -81,12 +90,14 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     override fun onDestroy() {
         super.onDestroy()
 
-        // cancelLast actually stops foreground for us as it updates the loading state to
-        // null or completed.
-        indexer.cancelLast()
-        indexer.unregisterController(this)
-        serviceJob.cancel()
+        // De-initialize the components first to prevent stray reloading events
         settings.release()
+        indexerContentObserver.release()
+        indexer.unregisterController(this)
+
+        // Then cancel the other components.
+        indexer.cancelLast()
+        serviceJob.cancel()
     }
 
     // --- CONTROLLER CALLBACKS ---
@@ -109,7 +120,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
                     val newLibrary = state.response.library
 
                     if (musicStore.library != null) {
-                        // This is a new library to replace a pre-existing one.
+                        // This is a new library to replace an existing one.
 
                         // Wipe possibly-invalidated album covers
                         imageLoader.memoryCache?.clear()
@@ -127,46 +138,115 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
                 // error, in practice that comes into conflict with the upcoming Android 13
                 // notification permission, and there is no point implementing permission
                 // on-boarding for such when it will only be used for this.
-                stopForegroundSession()
+                updateIdleSession()
             }
             is Indexer.State.Indexing -> {
-                // When loading, we want to enter the foreground state so that android does
-                // not shut off the loading process. Note that while we will always post the
-                // notification when initially starting, we will not update the notification
-                // unless it indicates that we have changed it.
-                val changed = notification.updateIndexingState(state.indexing)
-                if (!isForeground) {
-                    logD("Starting foreground session")
-                    startForeground(IntegerTable.INDEXER_NOTIFICATION_CODE, notification.build())
-                    isForeground = true
-                } else if (changed) {
-                    logD("Notification changed, re-posting notification")
-                    notification.renotify()
-                }
+                updateActiveSession(state.indexing)
             }
             null -> {
                 // Null is the indeterminate state that occurs on app startup or after
                 // the cancellation of a load, so in that case we want to stop foreground
                 // since (technically) nothing is loading.
-                stopForegroundSession()
+                updateIdleSession()
             }
         }
+    }
+
+    // --- INTERNAL ---
+
+    private fun updateActiveSession(state: Indexer.Indexing) {
+        // When loading, we want to enter the foreground state so that android does
+        // not shut off the loading process. Note that while we will always post the
+        // notification when initially starting, we will not update the notification
+        // unless it indicates that we have changed it.
+        val changed = indexingNotification.updateIndexingState(state)
+        if (!tryStartForeground(indexingNotification.build()) && changed) {
+            logD("Notification changed, re-posting notification")
+            indexingNotification.renotify()
+        }
+    }
+
+    private fun updateIdleSession() {
+        if (settings.shouldBeObserving) {
+            // There are a few reasons why we stay in the foreground with automatic rescanning:
+            // 1. Newer versions of Android have become more and more restrictive regarding
+            // how a foreground service starts. Thus, it's best to go foreground now so that
+            // we can go foreground later.
+            // 2. If a non-foreground service is killed, the app will probably still be alive,
+            // and thus the music library will not be updated at all.
+            if (!tryStartForeground(observingNotification.build())) {
+                observingNotification.renotify()
+            }
+        } else {
+            tryStopForeground()
+        }
+    }
+
+    private fun tryStartForeground(notification: Notification): Boolean {
+        if (isForeground) {
+            return false
+        }
+
+        startForeground(IntegerTable.INDEXER_NOTIFICATION_CODE, notification)
+        isForeground = true
+
+        return true
+    }
+
+    private fun tryStopForeground() {
+        if (!isForeground) {
+            return
+        }
+
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+        isForeground = false
     }
 
     // --- SETTING CALLBACKS ---
 
     override fun onSettingChanged(key: String) {
-        if (key == getString(R.string.set_key_music_dirs) ||
-            key == getString(R.string.set_key_music_dirs_include) ||
-            key == getString(R.string.set_key_quality_tags)) {
-            onStartIndexing()
+        when (key) {
+            getString(R.string.set_key_music_dirs),
+            getString(R.string.set_key_music_dirs_include),
+            getString(R.string.set_key_quality_tags) -> onStartIndexing()
+            getString(R.string.set_key_observing) -> {
+                if (!indexer.isIndexing) {
+                    updateIdleSession()
+                }
+            }
         }
     }
 
-    private fun stopForegroundSession() {
-        if (isForeground) {
-            ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
-            isForeground = false
+    /** Internal content observer intended to work with the automatic reloading framework. */
+    private inner class SystemContentObserver(
+        private val handler: Handler = Handler(Looper.getMainLooper())
+    ) : ContentObserver(handler), Runnable {
+        init {
+            contentResolverSafe.registerContentObserver(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, this)
         }
+
+        fun release() {
+            contentResolverSafe.unregisterContentObserver(this)
+        }
+
+        override fun onChange(selfChange: Boolean) {
+            // Batch rapid-fire updates to the library into a single call to run after an
+            // arbitrary amount of time.
+            handler.removeCallbacks(this)
+            handler.postDelayed(this, REINDEX_DELAY)
+        }
+
+        override fun run() {
+            // Check here if we should even start a reindex. This is much less bug-prone than
+            // registering and de-registering this component as this setting changes.
+            if (settings.shouldBeObserving) {
+                onStartIndexing()
+            }
+        }
+    }
+
+    companion object {
+        const val REINDEX_DELAY = 500L
     }
 }

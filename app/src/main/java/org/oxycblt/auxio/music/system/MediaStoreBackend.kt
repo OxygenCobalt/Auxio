@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.backend
+package org.oxycblt.auxio.music.system
 
 import android.content.Context
 import android.database.Cursor
@@ -27,20 +27,19 @@ import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import java.io.File
+import org.oxycblt.auxio.music.Directory
+import org.oxycblt.auxio.music.MimeType
+import org.oxycblt.auxio.music.Path
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.albumCoverUri
 import org.oxycblt.auxio.music.audioUri
+import org.oxycblt.auxio.music.directoryCompat
 import org.oxycblt.auxio.music.id3GenreName
+import org.oxycblt.auxio.music.mediaStoreVolumeNameCompat
 import org.oxycblt.auxio.music.packedDiscNo
 import org.oxycblt.auxio.music.packedTrackNo
 import org.oxycblt.auxio.music.queryCursor
-import org.oxycblt.auxio.music.system.Directory
-import org.oxycblt.auxio.music.system.Indexer
-import org.oxycblt.auxio.music.system.MimeType
-import org.oxycblt.auxio.music.system.Path
-import org.oxycblt.auxio.music.system.directoryCompat
-import org.oxycblt.auxio.music.system.mediaStoreVolumeNameCompat
-import org.oxycblt.auxio.music.system.storageVolumesCompat
+import org.oxycblt.auxio.music.storageVolumesCompat
 import org.oxycblt.auxio.music.trackDiscNo
 import org.oxycblt.auxio.music.useQuery
 import org.oxycblt.auxio.settings.Settings
@@ -182,6 +181,8 @@ abstract class MediaStoreBackend : Indexer.Backend {
             audios.add(buildAudio(context, cursor))
             if (cursor.position % 50 == 0) {
                 // Only check for a cancellation every 50 songs or so (~20ms).
+                // While this seems redundant, each call to emitIndexing checks for a
+                // cancellation of the co-routine this loading task is running on.
                 emitIndexing(Indexer.Indexing.Indeterminate)
             }
         }
@@ -462,8 +463,8 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
 }
 
 /**
- * A [MediaStoreBackend] that selects directories and builds paths using the modern volume
- * primitives available from API 29 onwards.
+ * A [MediaStoreBackend] that selects directories and builds paths using the modern volume fields
+ * available from API 29 onwards.
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -503,7 +504,7 @@ open class VolumeAwareMediaStoreBackend : MediaStoreBackend() {
         val relativePath = cursor.getString(relativePathIndex)
 
         // Find the StorageVolume whose MediaStore name corresponds to this song.
-        // This is what we use for the Directory.
+        // This is what we use for the Directory's volume.
         val volume = volumes.find { it.mediaStoreVolumeNameCompat == volumeName }
         if (volume != null) {
             audio.dir = Directory(volume, relativePath.removeSuffix(File.separator))
@@ -532,7 +533,7 @@ open class Api29MediaStoreBackend : VolumeAwareMediaStoreBackend() {
             trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
         }
 
-        // This backend is volume-aware, but does not support the modern track primitives.
+        // This backend is volume-aware, but does not support the modern track fields.
         // Use the packed utilities instead.
         val rawTrack = cursor.getIntOrNull(trackIndex)
         if (rawTrack != null) {

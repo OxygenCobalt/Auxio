@@ -73,7 +73,7 @@
     <string name="lbl_size">Ukuran</string>
     <string name="lbl_sample_rate">Tingkat sampel</string>
     <string name="set_lib_tabs">Tab Pustaka</string>
-    <string name="lbl_indexing">Memuat perpustakaan musik Anda…</string>
+    <string name="lbl_indexing_desc">Memuat perpustakaan musik Anda…</string>
     <string name="lbl_sort_name">Nama</string>
     <string name="lbl_sort_artist">Artis</string>
     <string name="lbl_sort_album">Album</string>

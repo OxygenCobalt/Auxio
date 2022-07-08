@@ -33,9 +33,9 @@ import org.oxycblt.auxio.detail.recycler.SortHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.MimeType
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.system.MimeType
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Header

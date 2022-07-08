@@ -101,7 +101,7 @@
     <string name="info_playback_channel_name">Lecture de musique</string>
     <string name="info_indexer_channel_name">Chargement de musique</string>
     <string name="info_widget_desc">Afficher et contrôler la lecture de la musique</string>
-    <string name="lbl_indexing">Chargement de votre bibliothèque musicale…</string>
+    <string name="lbl_indexing_desc">Chargement de votre bibliothèque musicale…</string>
     <string name="lbl_sort_name">Nom</string>
     <string name="lbl_sort_artist">Artiste</string>
     <string name="lbl_sort_album">Album</string>

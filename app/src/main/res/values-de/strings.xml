@@ -192,7 +192,7 @@
     <string name="lbl_shuffle_shortcut_short">Mischen</string>
     <string name="lbl_shuffle_shortcut_long">Alle mischen</string>
     <string name="info_indexer_channel_name">Musik wird geladen</string>
-    <string name="lbl_indexing">Lade deine Musikbibliothek…</string>
+    <string name="lbl_indexing_desc">Lade deine Musikbibliothek…</string>
     <string name="lbl_sample_rate">Abtastrate</string>
     <string name="lbl_song_detail">Zeige Eigenschaften an</string>
     <string name="lbl_props">Lied-Eigenschaften</string>

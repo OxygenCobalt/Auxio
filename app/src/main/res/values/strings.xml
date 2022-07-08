@@ -2,14 +2,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">A simple, rational music player for android.</string>
-    <string name="info_playback_channel_name">Music Playback</string>
-    <string name="info_indexer_channel_name">Music Loading</string>
+    <string name="info_playback_channel_name">Music playback</string>
+    <string name="info_indexer_channel_name">Music loading</string>
     <string name="info_widget_desc">View and control music playback</string>
 
     <!-- Label Namespace | Static Labels -->
-    <string name="lbl_indexing">Loading your music library…</string>
     <string name="lbl_retry">Retry</string>
     <string name="lbl_grant">Grant</string>
+    <string name="lbl_indexing_desc">Loading your music library…</string>
+    <string name="lbl_observing">Automatic reloading</string>
+    <string name="lbl_observing_desc">Monitoring your music library for changes… (You can disable this in settings)</string>
 
     <string name="lbl_genres">Genres</string>
     <string name="lbl_artists">Artists</string>
@@ -146,7 +148,9 @@
     <string name="set_dirs_mode_include">Include</string>
     <string name="set_dirs_mode_include_desc">Music will <b>only</b> be loaded from the folders you add.</string>
     <string name="set_quality_tags">Ignore MediaStore tags</string>
-    <string name="set_quality_tags_desc">Increases tag quality, but requires longer loading times</string>
+    <string name="set_quality_tags_desc">Increases tag quality, but requires longer loading times (Experimental)</string>
+    <string name="set_observing">Automatic reloading</string>
+    <string name="set_observing_desc">Reload music whenever your audio files change (Experimental)</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">No music found</string>
@@ -227,6 +231,7 @@
     <string name="clr_orange">Orange</string>
     <string name="clr_brown">Brown</string>
     <string name="clr_grey">Grey</string>
+    <!-- As in "Dynamic Colors"/Material You theming -->
     <string name="clr_dynamic">Dynamic</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
@@ -247,6 +252,7 @@
     <string name="fmt_lib_album_count">Albums loaded: %d</string>
     <string name="fmt_lib_artist_count">Artists loaded: %d</string>
     <string name="fmt_lib_genre_count">Genres loaded: %d</string>
+    <!-- AS in the total duration of all songs in the music library -->
     <string name="fmt_lib_total_duration">Total duration: %s</string>
 
     <plurals name="fmt_song_count">

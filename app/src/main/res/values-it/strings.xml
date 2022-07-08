@@ -185,7 +185,7 @@
     <string name="def_sample_rate">Nessuna frequenza di campionamento</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="info_indexer_channel_name">Caricamento musica</string>
-    <string name="lbl_indexing">Caricamento libreria musicale…</string>
+    <string name="lbl_indexing_desc">Caricamento libreria musicale…</string>
     <string name="lbl_sort_duration">Durata</string>
     <string name="lbl_sort_count">Conteggio canzoni</string>
     <string name="lbl_sort_disc">Disco</string>

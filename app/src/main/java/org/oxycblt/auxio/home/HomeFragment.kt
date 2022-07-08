@@ -46,10 +46,10 @@ import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.IndexerViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.system.Indexer
-import org.oxycblt.auxio.music.system.IndexerViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.MainNavigationAction
@@ -313,7 +313,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         when (indexing) {
             is Indexer.Indexing.Indeterminate -> {
-                binding.homeIndexingStatus.textSafe = getString(R.string.lbl_indexing)
+                binding.homeIndexingStatus.textSafe = getString(R.string.lbl_indexing_desc)
                 binding.homeIndexingProgress.isIndeterminate = true
             }
             is Indexer.Indexing.Songs -> {

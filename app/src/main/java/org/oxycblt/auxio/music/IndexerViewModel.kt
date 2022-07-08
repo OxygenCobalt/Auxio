@@ -15,15 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.system
+package org.oxycblt.auxio.music
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.oxycblt.auxio.music.system.Indexer
 
 /**
  * A ViewModel representing the current music indexing state.
  * @author OxygenCobalt
+ *
+ * TODO: Indeterminate state for Home + Settings
  */
 class IndexerViewModel : ViewModel(), Indexer.Callback {
     private val indexer = Indexer.getInstance()

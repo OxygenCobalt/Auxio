@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.backend
+package org.oxycblt.auxio.music.system
 
 import android.content.Context
 import android.database.Cursor
@@ -29,7 +29,6 @@ import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.iso8601year
 import org.oxycblt.auxio.music.plainTrackNo
-import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.music.trackDiscNo
 import org.oxycblt.auxio.music.year
 import org.oxycblt.auxio.util.logD

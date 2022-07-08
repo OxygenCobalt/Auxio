@@ -185,7 +185,7 @@
     <string name="fmt_lib_album_count">已加载专辑数量：%d</string>
     <string name="def_sample_rate">没有采样率信息</string>
     <string name="info_indexer_channel_name">音乐加载中</string>
-    <string name="lbl_indexing">正在加载您的音乐库……</string>
+    <string name="lbl_indexing_desc">正在加载您的音乐库……</string>
     <string name="lbl_sort_disc">碟片</string>
     <string name="lbl_sort_duration">时长</string>
     <string name="lbl_sort_count">歌曲计数</string>

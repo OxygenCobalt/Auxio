@@ -3,8 +3,10 @@
 ## dev
 
 #### What's New
+- Massively overhauled how music is loaded [#72]:
+	- Auxio can now reload music without requiring a restart
+	- Added a new option to reload music when device files change
 - Added direct metadata parsing, allowing more correct metadata at the cost of longer loading times
-- Auxio can now reload music without requiring a restart
 - Added a shuffle shortcut
 - Widgets now have a more sleek and consistent button layout
 - "Rounded album covers" is now "Round mode"

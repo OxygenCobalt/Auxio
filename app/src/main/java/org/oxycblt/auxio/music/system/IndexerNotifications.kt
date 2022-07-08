@@ -30,7 +30,7 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
 
 /** The notification responsible for showing the indexer state. */
-class IndexerNotification(private val context: Context) :
+class IndexingNotification(private val context: Context) :
     NotificationCompat.Builder(context, CHANNEL_ID) {
     private val notificationManager = context.getSystemServiceSafe(NotificationManager::class)
 
@@ -52,7 +52,7 @@ class IndexerNotification(private val context: Context) :
         setContentIntent(context.newMainPendingIntent())
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         setContentTitle(context.getString(R.string.info_indexer_channel_name))
-        setContentText(context.getString(R.string.lbl_indexing))
+        setContentText(context.getString(R.string.lbl_indexing_desc))
         setProgress(0, 0, true)
     }
 
@@ -64,7 +64,7 @@ class IndexerNotification(private val context: Context) :
         when (indexing) {
             is Indexer.Indexing.Indeterminate -> {
                 logD("Updating state to $indexing")
-                setContentText(context.getString(R.string.lbl_indexing))
+                setContentText(context.getString(R.string.lbl_indexing_desc))
                 setProgress(0, 0, true)
                 return true
             }
@@ -81,6 +81,40 @@ class IndexerNotification(private val context: Context) :
         }
 
         return false
+    }
+
+    companion object {
+        const val CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel.INDEXER"
+    }
+}
+
+/** The notification responsible for showing the indexer state. */
+class ObservingNotification(context: Context) : NotificationCompat.Builder(context, CHANNEL_ID) {
+    private val notificationManager = context.getSystemServiceSafe(NotificationManager::class)
+
+    init {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel =
+                NotificationChannel(
+                    CHANNEL_ID,
+                    context.getString(R.string.info_indexer_channel_name),
+                    NotificationManager.IMPORTANCE_LOW)
+
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        setSmallIcon(R.drawable.ic_indexer_24)
+        setCategory(NotificationCompat.CATEGORY_SERVICE)
+        setShowWhen(false)
+        setSilent(true)
+        setContentIntent(context.newMainPendingIntent())
+        setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+        setContentTitle(context.getString(R.string.lbl_observing))
+        setContentText(context.getString(R.string.lbl_observing_desc))
+    }
+
+    fun renotify() {
+        notificationManager.notify(IntegerTable.INDEXER_NOTIFICATION_CODE, build())
     }
 
     companion object {
