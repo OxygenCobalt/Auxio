@@ -478,8 +478,7 @@ open class BaseApi29MediaStoreBackend : MediaStoreBackend() {
             super.projection +
                 arrayOf(
                     MediaStore.Audio.AudioColumns.VOLUME_NAME,
-                    MediaStore.Audio.AudioColumns.RELATIVE_PATH,
-                    MediaStore.Audio.AudioColumns.DATE_TAKEN)
+                    MediaStore.Audio.AudioColumns.RELATIVE_PATH)
 
     override val dirSelector: String
         get() =
@@ -513,8 +512,6 @@ open class BaseApi29MediaStoreBackend : MediaStoreBackend() {
             audio.dir = Directory(volume, relativePath.removeSuffix(File.separator))
         }
 
-        // If the YEAR value is empty, see if DATE_TAKEN can fill in.
-        logD("${audio.title} ${cursor.getString(dateTakenIndex)}")
 
         return audio
     }
