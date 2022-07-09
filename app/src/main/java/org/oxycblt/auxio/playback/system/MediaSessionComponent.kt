@@ -43,6 +43,9 @@ import org.oxycblt.auxio.util.logD
  * using something like MediaSessionConnector is more or less impossible.
  *
  * @author OxygenCobalt
+ *
+ * TODO: Update textual metadata first, then cover metadata later. Janky, yes, but also resolves
+ *  some coherency issues.
  */
 class MediaSessionComponent(
     private val context: Context,
@@ -54,12 +57,13 @@ class MediaSessionComponent(
     PlaybackStateManager.Callback,
     Settings.Callback {
     interface Callback {
-        fun onPostNotification(notification: NotificationComponent)
+        fun onPostNotification(notification: NotificationComponent?)
     }
+
+    val mediaSession = MediaSessionCompat(context, context.packageName).apply { isActive = true }
 
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settings = Settings(context, this)
-    val mediaSession = MediaSessionCompat(context, context.packageName).apply { isActive = true }
     private val notification = NotificationComponent(context, mediaSession.sessionToken)
     private val provider = BitmapProvider(context)
 
@@ -98,6 +102,7 @@ class MediaSessionComponent(
     private fun updateMediaMetadata(song: Song?, parent: MusicParent?) {
         if (song == null) {
             mediaSession.setMetadata(emptyMetadata)
+            callback.onPostNotification(null)
             return
         }
 

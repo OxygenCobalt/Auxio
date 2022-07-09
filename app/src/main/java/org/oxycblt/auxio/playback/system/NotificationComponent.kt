@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.playback.system
 
 import android.annotation.SuppressLint
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
@@ -31,7 +30,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.util.getSystemServiceSafe
+import org.oxycblt.auxio.ui.system.ServiceNotification
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 
@@ -43,20 +42,8 @@ import org.oxycblt.auxio.util.newMainPendingIntent
  */
 @SuppressLint("RestrictedApi")
 class NotificationComponent(private val context: Context, sessionToken: MediaSessionCompat.Token) :
-    NotificationCompat.Builder(context, CHANNEL_ID) {
-    private val notificationManager = context.getSystemServiceSafe(NotificationManager::class)
-
+    ServiceNotification(context, CHANNEL_INFO) {
     init {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel =
-                NotificationChannel(
-                    CHANNEL_ID,
-                    context.getString(R.string.info_playback_channel_name),
-                    NotificationManager.IMPORTANCE_DEFAULT)
-
-            notificationManager.createNotificationChannel(channel)
-        }
-
         setSmallIcon(R.drawable.ic_auxio_24)
         setCategory(NotificationCompat.CATEGORY_TRANSPORT)
         setShowWhen(false)
@@ -75,9 +62,8 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
         setStyle(MediaStyle().setMediaSession(sessionToken).setShowActionsInCompactView(1, 2, 3))
     }
 
-    fun renotify() {
-        notificationManager.notify(IntegerTable.PLAYBACK_NOTIFICATION_CODE, build())
-    }
+    override val code: Int
+        get() = IntegerTable.PLAYBACK_NOTIFICATION_CODE
 
     // --- STATE FUNCTIONS ---
 
@@ -164,6 +150,10 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
     }
 
     companion object {
-        const val CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel.PLAYBACK"
+        val CHANNEL_INFO =
+            ChannelInfo(
+                id = BuildConfig.APPLICATION_ID + ".channel.PLAYBACK",
+                nameRes = R.string.info_playback_channel_name,
+                importance = NotificationManager.IMPORTANCE_LOW)
     }
 }

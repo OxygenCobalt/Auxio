@@ -24,7 +24,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.IBinder
-import androidx.core.app.ServiceCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -45,7 +44,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
@@ -53,6 +51,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.ui.system.ForegroundManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
@@ -93,7 +92,7 @@ class PlaybackService :
     private lateinit var settings: Settings
 
     // State
-    private var isForeground = false
+    private lateinit var foregroundManager: ForegroundManager
     private var hasPlayed = false
 
     // Coroutines
@@ -105,6 +104,8 @@ class PlaybackService :
 
     override fun onCreate() {
         super.onCreate()
+
+        foregroundManager = ForegroundManager(this)
 
         // --- PLAYER SETUP ---
 
@@ -163,8 +164,7 @@ class PlaybackService :
     override fun onDestroy() {
         super.onDestroy()
 
-        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
-        isForeground = false
+        foregroundManager.release()
 
         // Pause just in case this destruction was unexpected.
         playbackManager.isPlaying = false
@@ -272,14 +272,17 @@ class PlaybackService :
         player.playWhenReady = isPlaying
     }
 
-    override fun onPostNotification(notification: NotificationComponent) {
-        if (hasPlayed && playbackManager.song != null) {
-            if (!isForeground) {
-                startForeground(IntegerTable.PLAYBACK_NOTIFICATION_CODE, notification.build())
-                isForeground = true
-            } else {
-                // If we are already in foreground just update the notification
-                notification.renotify()
+    override fun onPostNotification(notification: NotificationComponent?) {
+        if (notification == null) {
+            // This case is only here if I ever need to move foreground stopping from
+            // the player code to the notification code.
+            logD("No notification, ignoring")
+            return
+        }
+
+        if (hasPlayed) {
+            if (!foregroundManager.tryStartForeground(notification)) {
+                notification.post()
             }
         }
     }
@@ -329,10 +332,11 @@ class PlaybackService :
 
     /** Stop the foreground state and hide the notification */
     private fun stopAndSave() {
-        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
-        isForeground = false
-        saveScope.launch {
-            playbackManager.saveState(PlaybackStateDatabase.getInstance(this@PlaybackService))
+        if (foregroundManager.tryStopForeground()) {
+            logD("Saving playback state")
+            saveScope.launch {
+                playbackManager.saveState(PlaybackStateDatabase.getInstance(this@PlaybackService))
+            }
         }
     }
 

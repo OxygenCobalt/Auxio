@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.music.system
 
-import android.app.Notification
 import android.app.Service
 import android.content.Intent
 import android.database.ContentObserver
@@ -25,17 +24,16 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.provider.MediaStore
-import androidx.core.app.ServiceCompat
 import coil.imageLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.ui.system.ForegroundManager
 import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.logD
 
@@ -49,8 +47,6 @@ import org.oxycblt.auxio.util.logD
  * boilerplate you skip is not worth the insanity of androidx.
  *
  * @author OxygenCobalt
- *
- * TODO: Add abstractions for services. notifications, and generations
  */
 class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     private val indexer = Indexer.getInstance()
@@ -63,18 +59,19 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     private val playbackManager = PlaybackStateManager.getInstance()
     private lateinit var settings: Settings
 
-    private var isForeground = false
+    private lateinit var foregroundManager: ForegroundManager
     private lateinit var indexingNotification: IndexingNotification
     private lateinit var observingNotification: ObservingNotification
 
     override fun onCreate() {
         super.onCreate()
 
-        settings = Settings(this, this)
-        indexerContentObserver = SystemContentObserver()
-
+        foregroundManager = ForegroundManager(this)
         indexingNotification = IndexingNotification(this)
         observingNotification = ObservingNotification(this)
+
+        settings = Settings(this, this)
+        indexerContentObserver = SystemContentObserver()
 
         indexer.registerController(this)
         if (musicStore.library == null && indexer.isIndeterminate) {
@@ -91,6 +88,8 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
 
     override fun onDestroy() {
         super.onDestroy()
+
+        foregroundManager.release()
 
         // De-initialize the components first to prevent stray reloading events
         settings.release()
@@ -162,9 +161,9 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         // notification when initially starting, we will not update the notification
         // unless it indicates that we have changed it.
         val changed = indexingNotification.updateIndexingState(state)
-        if (!tryStartForeground(indexingNotification.build()) && changed) {
+        if (!foregroundManager.tryStartForeground(indexingNotification) && changed) {
             logD("Notification changed, re-posting notification")
-            indexingNotification.renotify()
+            indexingNotification.post()
         }
     }
 
@@ -176,32 +175,12 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
             // we can go foreground later.
             // 2. If a non-foreground service is killed, the app will probably still be alive,
             // and thus the music library will not be updated at all.
-            if (!tryStartForeground(observingNotification.build())) {
-                observingNotification.renotify()
+            if (!foregroundManager.tryStartForeground(observingNotification)) {
+                observingNotification.post()
             }
         } else {
-            tryStopForeground()
+            foregroundManager.tryStopForeground()
         }
-    }
-
-    private fun tryStartForeground(notification: Notification): Boolean {
-        if (isForeground) {
-            return false
-        }
-
-        startForeground(IntegerTable.INDEXER_NOTIFICATION_CODE, notification)
-        isForeground = true
-
-        return true
-    }
-
-    private fun tryStopForeground() {
-        if (!isForeground) {
-            return
-        }
-
-        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
-        isForeground = false
     }
 
     // --- SETTING CALLBACKS ---

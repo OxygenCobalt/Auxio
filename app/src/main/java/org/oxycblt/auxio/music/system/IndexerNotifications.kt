@@ -17,34 +17,20 @@
  
 package org.oxycblt.auxio.music.system
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.getSystemServiceSafe
+import org.oxycblt.auxio.ui.system.ServiceNotification
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
 
 /** The notification responsible for showing the indexer state. */
 class IndexingNotification(private val context: Context) :
-    NotificationCompat.Builder(context, CHANNEL_ID) {
-    private val notificationManager = context.getSystemServiceSafe(NotificationManager::class)
-
+    ServiceNotification(context, INDEXER_CHANNEL) {
     init {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel =
-                NotificationChannel(
-                    CHANNEL_ID,
-                    context.getString(R.string.info_indexer_channel_name),
-                    NotificationManager.IMPORTANCE_LOW)
-
-            notificationManager.createNotificationChannel(channel)
-        }
-
         setSmallIcon(R.drawable.ic_indexer_24)
         setCategory(NotificationCompat.CATEGORY_PROGRESS)
         setShowWhen(false)
@@ -56,9 +42,8 @@ class IndexingNotification(private val context: Context) :
         setProgress(0, 0, true)
     }
 
-    fun renotify() {
-        notificationManager.notify(IntegerTable.INDEXER_NOTIFICATION_CODE, build())
-    }
+    override val code: Int
+        get() = IntegerTable.INDEXER_NOTIFICATION_CODE
 
     fun updateIndexingState(indexing: Indexer.Indexing): Boolean {
         when (indexing) {
@@ -82,27 +67,11 @@ class IndexingNotification(private val context: Context) :
 
         return false
     }
-
-    companion object {
-        const val CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel.INDEXER"
-    }
 }
 
 /** The notification responsible for showing the indexer state. */
-class ObservingNotification(context: Context) : NotificationCompat.Builder(context, CHANNEL_ID) {
-    private val notificationManager = context.getSystemServiceSafe(NotificationManager::class)
-
+class ObservingNotification(context: Context) : ServiceNotification(context, INDEXER_CHANNEL) {
     init {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel =
-                NotificationChannel(
-                    CHANNEL_ID,
-                    context.getString(R.string.info_indexer_channel_name),
-                    NotificationManager.IMPORTANCE_LOW)
-
-            notificationManager.createNotificationChannel(channel)
-        }
-
         setSmallIcon(R.drawable.ic_indexer_24)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
         setShowWhen(false)
@@ -113,11 +82,12 @@ class ObservingNotification(context: Context) : NotificationCompat.Builder(conte
         setContentText(context.getString(R.string.lbl_observing_desc))
     }
 
-    fun renotify() {
-        notificationManager.notify(IntegerTable.INDEXER_NOTIFICATION_CODE, build())
-    }
-
-    companion object {
-        const val CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel.INDEXER"
-    }
+    override val code: Int
+        get() = IntegerTable.INDEXER_NOTIFICATION_CODE
 }
+
+private val INDEXER_CHANNEL =
+    ServiceNotification.ChannelInfo(
+        id = BuildConfig.APPLICATION_ID + ".channel.INDEXER",
+        R.string.info_indexer_channel_name,
+        NotificationManager.IMPORTANCE_LOW)

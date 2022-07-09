@@ -423,8 +423,10 @@ class PlaybackStateManager private constructor() {
         isPlaying = false
         notifyNewPlayback()
 
-        // Controller may have reloaded the media item, re-seek to the previous position
-        seekTo(oldPosition)
+        if (index > -1) {
+            // Controller may have reloaded the media item, re-seek to the previous position
+            seekTo(oldPosition)
+        }
     }
 
     private fun makeStateImpl() =
