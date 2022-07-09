@@ -471,7 +471,6 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
 open class BaseApi29MediaStoreBackend : MediaStoreBackend() {
     private var volumeIndex = -1
     private var relativePathIndex = -1
-    private var dateTakenIndex = -1
 
     override val projection: Array<String>
         get() =
@@ -499,7 +498,6 @@ open class BaseApi29MediaStoreBackend : MediaStoreBackend() {
             volumeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
             relativePathIndex =
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
-            dateTakenIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_TAKEN)
         }
 
         val volumeName = cursor.getString(volumeIndex)
@@ -511,7 +509,6 @@ open class BaseApi29MediaStoreBackend : MediaStoreBackend() {
         if (volume != null) {
             audio.dir = Directory(volume, relativePath.removeSuffix(File.separator))
         }
-
 
         return audio
     }

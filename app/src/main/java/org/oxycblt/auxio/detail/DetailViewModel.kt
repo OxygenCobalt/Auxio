@@ -39,6 +39,7 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
+import org.oxycblt.auxio.util.GenerationGuard
 import org.oxycblt.auxio.util.application
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
@@ -112,6 +113,8 @@ class DetailViewModel(application: Application) :
             currentGenre.value?.let(::refreshGenreData)
         }
 
+    private val songGuard = GenerationGuard()
+
     fun setSongId(id: Long) {
         if (_currentSong.value?.run { song.id } == id) return
         val library = unlikelyToBeNull(musicStore.library)
@@ -158,14 +161,10 @@ class DetailViewModel(application: Application) :
     private fun generateDetailSong(song: Song) {
         _currentSong.value = DetailSong(song, null)
         viewModelScope.launch(Dispatchers.IO) {
+            val generation = songGuard.newHandle()
             val info = generateDetailSongInfo(song)
-
-            // Theoretically, the song could have been changed again while we were
-            // extracting song information, so make sure that we can update the song
-            // in the first place.
-            if (_currentSong.value?.run { this.song.id } == song.id) {
-                _currentSong.value = DetailSong(song, info)
-            }
+            songGuard.yield(generation)
+            _currentSong.value = DetailSong(song, info)
         }
     }
 

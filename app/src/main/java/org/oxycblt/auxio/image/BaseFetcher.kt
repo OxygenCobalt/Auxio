@@ -53,7 +53,7 @@ import org.oxycblt.auxio.util.logW
  * The base implementation for all image fetchers in Auxio.
  * @author OxygenCobalt
  *
- * TODO: Artist images
+ * TODO: File-system derived images [cover.jpg, Artist Images]
  */
 abstract class BaseFetcher : Fetcher {
     /**

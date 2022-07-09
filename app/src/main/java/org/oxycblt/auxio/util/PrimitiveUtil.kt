@@ -22,6 +22,7 @@ import android.text.format.DateUtils
 import androidx.core.math.MathUtils
 import java.lang.reflect.Field
 import java.lang.reflect.Method
+import java.util.concurrent.CancellationException
 import kotlin.reflect.KClass
 import org.oxycblt.auxio.BuildConfig
 
@@ -76,4 +77,35 @@ fun lazyReflectedField(clazz: KClass<*>, field: String) = lazy {
 /** Lazily reflect to retrieve a [Method]. */
 fun lazyReflectedMethod(clazz: KClass<*>, method: String) = lazy {
     clazz.java.getDeclaredMethod(method).also { it.isAccessible = true }
+}
+
+/**
+ * A generation-based abstraction that allows cheap cooperative multi-threading in shared object
+ * contexts. Every new task should call [newHandle], while every running task should call [check] or
+ * [yield] depending on the context.
+ *
+ * @author OxygenCobalt
+ */
+class GenerationGuard {
+    private var currentHandle = 0L
+
+    /**
+     * Returns a new handle to the calling task while invalidating the generations of the previous
+     * task.
+     */
+    @Synchronized fun newHandle() = ++currentHandle
+
+    /** Check if the given [handle] is still the one represented by this class. */
+    @Synchronized fun check(handle: Long) = handle == currentHandle
+
+    /**
+     * Alternative to [kotlinx.coroutines.yield], that achieves the same behavior but in a much
+     * cheaper manner.
+     */
+    @Synchronized
+    fun yield(handle: Long) {
+        if (!check(handle)) {
+            throw CancellationException()
+        }
+    }
 }

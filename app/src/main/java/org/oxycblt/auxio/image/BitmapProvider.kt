@@ -25,6 +25,7 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.size.Size
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.GenerationGuard
 
 /**
  * A utility to provide bitmaps in a manner less prone to race conditions.
@@ -39,7 +40,7 @@ import org.oxycblt.auxio.music.Song
  */
 class BitmapProvider(private val context: Context) {
     private var currentRequest: Request? = null
-    private var currentGeneration = 0L
+    private var guard = GenerationGuard()
 
     /** If this provider is currently attempting to load something. */
     val isBusy: Boolean
@@ -51,9 +52,7 @@ class BitmapProvider(private val context: Context) {
      */
     @Synchronized
     fun load(song: Song, target: Target) {
-        // Increment the generation value so that previous requests are invalidated.
-        // This is a second safeguard to mitigate instruction-by-instruction race conditions.
-        val generation = ++currentGeneration
+        val generation = guard.newHandle()
 
         currentRequest?.run { disposable.dispose() }
         currentRequest = null
@@ -65,12 +64,12 @@ class BitmapProvider(private val context: Context) {
                     .size(Size.ORIGINAL)
                     .target(
                         onSuccess = {
-                            if (generation == currentGeneration) {
+                            if (guard.check(generation)) {
                                 target.onCompleted(it.toBitmap())
                             }
                         },
                         onError = {
-                            if (generation == currentGeneration) {
+                            if (guard.check(generation)) {
                                 target.onCompleted(null)
                             }
                         })
