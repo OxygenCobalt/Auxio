@@ -49,6 +49,8 @@ import org.oxycblt.auxio.util.logD
  * boilerplate you skip is not worth the insanity of androidx.
  *
  * @author OxygenCobalt
+ *
+ * TODO: Add abstractions for services. notifications, and generations
  */
 class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     private val indexer = Indexer.getInstance()

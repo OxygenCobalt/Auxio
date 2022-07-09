@@ -22,6 +22,7 @@ import android.text.format.Formatter
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isGone
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSongDetailBinding
@@ -29,6 +30,7 @@ import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.formatDuration
+import org.oxycblt.auxio.util.logD
 
 class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
     private val detailModel: DetailViewModel by androidActivityViewModels()
@@ -56,28 +58,38 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
     private fun updateSong(song: DetailViewModel.DetailSong?) {
         val binding = requireBinding()
 
+        logD("$song")
+
         if (song != null) {
-            binding.detailContainer.isGone = false
-            binding.detailFileName.setText(song.song.path.name)
-            binding.detailRelativeDir.setText(song.song.path.parent.resolveName(requireContext()))
-            binding.detailFormat.setText(song.resolvedMimeType.resolveName(requireContext()))
-            binding.detailSize.setText(Formatter.formatFileSize(requireContext(), song.song.size))
-            binding.detailDuration.setText(song.song.durationSecs.formatDuration(true))
+            if (song.info != null) {
+                binding.detailContainer.isGone = false
+                binding.detailFileName.setText(song.song.path.name)
+                binding.detailRelativeDir.setText(
+                    song.song.path.parent.resolveName(requireContext()))
+                binding.detailFormat.setText(
+                    song.info.resolvedMimeType.resolveName(requireContext()))
+                binding.detailSize.setText(
+                    Formatter.formatFileSize(requireContext(), song.song.size))
+                binding.detailDuration.setText(song.song.durationSecs.formatDuration(true))
 
-            if (song.bitrateKbps != null) {
-                binding.detailBitrate.setText(getString(R.string.fmt_bitrate, song.bitrateKbps))
-            } else {
-                binding.detailBitrate.setText(R.string.def_bitrate)
-            }
+                if (song.info.bitrateKbps != null) {
+                    binding.detailBitrate.setText(
+                        getString(R.string.fmt_bitrate, song.info.bitrateKbps))
+                } else {
+                    binding.detailBitrate.setText(R.string.def_bitrate)
+                }
 
-            if (song.sampleRate != null) {
-                binding.detailSampleRate.setText(
-                    getString(R.string.fmt_sample_rate, song.sampleRate))
+                if (song.info.sampleRate != null) {
+                    binding.detailSampleRate.setText(
+                        getString(R.string.fmt_sample_rate, song.info.sampleRate))
+                } else {
+                    binding.detailSampleRate.setText(R.string.def_sample_rate)
+                }
             } else {
-                binding.detailSampleRate.setText(R.string.def_sample_rate)
+                binding.detailContainer.isGone = true
             }
         } else {
-            binding.detailContainer.isGone = true
+            findNavController().navigateUp()
         }
     }
 }

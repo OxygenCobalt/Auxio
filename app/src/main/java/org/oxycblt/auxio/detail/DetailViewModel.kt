@@ -26,7 +26,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.recycler.DiscHeader
 import org.oxycblt.auxio.detail.recycler.SortHeader
@@ -54,8 +53,9 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 class DetailViewModel(application: Application) :
     AndroidViewModel(application), MusicStore.Callback {
-    data class DetailSong(
-        val song: Song,
+    data class DetailSong(val song: Song, val info: SongInfo?)
+
+    data class SongInfo(
         val bitrateKbps: Int?,
         val sampleRate: Int?,
         val resolvedMimeType: MimeType
@@ -156,12 +156,20 @@ class DetailViewModel(application: Application) :
     }
 
     private fun generateDetailSong(song: Song) {
-        viewModelScope.launch {
-            _currentSong.value = withContext(Dispatchers.IO) { generateDetailSongImpl(song) }
+        _currentSong.value = DetailSong(song, null)
+        viewModelScope.launch(Dispatchers.IO) {
+            val info = generateDetailSongInfo(song)
+
+            // Theoretically, the song could have been changed again while we were
+            // extracting song information, so make sure that we can update the song
+            // in the first place.
+            if (_currentSong.value?.run { this.song.id } == song.id) {
+                _currentSong.value = DetailSong(song, info)
+            }
         }
     }
 
-    private fun generateDetailSongImpl(song: Song): DetailSong {
+    private fun generateDetailSongInfo(song: Song): SongInfo {
         val extractor = MediaExtractor()
 
         try {
@@ -169,7 +177,7 @@ class DetailViewModel(application: Application) :
         } catch (e: Exception) {
             logW("Unable to extract song attributes.")
             logW(e.stackTraceToString())
-            return DetailSong(song, null, null, song.mimeType)
+            return SongInfo(null, null, song.mimeType)
         }
 
         val format = extractor.getTrackFormat(0)
@@ -203,7 +211,7 @@ class DetailViewModel(application: Application) :
                 MimeType(song.mimeType.fromExtension, formatMimeType)
             }
 
-        return DetailSong(song, bitrate, sampleRate, resolvedMimeType)
+        return SongInfo(bitrate, sampleRate, resolvedMimeType)
     }
 
     private fun refreshAlbumData(album: Album) {
@@ -258,6 +266,8 @@ class DetailViewModel(application: Application) :
                 val newSong = library.sanitize(song.song)
                 if (newSong != null) {
                     generateDetailSong(newSong)
+                } else {
+                    _currentSong.value = null
                 }
             }
 
