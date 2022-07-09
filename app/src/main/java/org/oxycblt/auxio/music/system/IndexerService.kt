@@ -217,7 +217,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         }
     }
 
-    /** Internal content observer intended to work with the automatic reloading framework. */
+    /** Internal content observer intended to work with the automatic reloading system. */
     private inner class SystemContentObserver(
         private val handler: Handler = Handler(Looper.getMainLooper())
     ) : ContentObserver(handler), Runnable {

@@ -9,9 +9,10 @@
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Retry</string>
     <string name="lbl_grant">Grant</string>
+    <string name="lbl_indexing">Loading music</string>
     <string name="lbl_indexing_desc">Loading your music library…</string>
-    <string name="lbl_observing">Automatic reloading</string>
-    <string name="lbl_observing_desc">Monitoring your music library for changes… (You can disable this in settings)</string>
+    <string name="lbl_observing">Monitoring music library</string>
+    <string name="lbl_observing_desc">Monitoring your music library for changes…</string>
 
     <string name="lbl_genres">Genres</string>
     <string name="lbl_artists">Artists</string>
@@ -150,7 +151,7 @@
     <string name="set_quality_tags">Ignore MediaStore tags</string>
     <string name="set_quality_tags_desc">Increases tag quality, but requires longer loading times (Experimental)</string>
     <string name="set_observing">Automatic reloading</string>
-    <string name="set_observing_desc">Reload music whenever your audio files change (Experimental)</string>
+    <string name="set_observing_desc">Reload your music library whenever it changes (Experimental)</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">No music found</string>

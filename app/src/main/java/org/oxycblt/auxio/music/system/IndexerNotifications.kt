@@ -51,7 +51,7 @@ class IndexingNotification(private val context: Context) :
         setSilent(true)
         setContentIntent(context.newMainPendingIntent())
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-        setContentTitle(context.getString(R.string.info_indexer_channel_name))
+        setContentTitle(context.getString(R.string.lbl_indexing))
         setContentText(context.getString(R.string.lbl_indexing_desc))
         setProgress(0, 0, true)
     }

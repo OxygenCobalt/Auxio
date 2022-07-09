@@ -57,7 +57,6 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 ## To come in the future:
 
-- Automatic music rescanning
 - Even better metadata support
 - Playlists
 - Liked songs

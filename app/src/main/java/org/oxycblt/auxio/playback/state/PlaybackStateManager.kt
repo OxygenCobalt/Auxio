@@ -70,7 +70,7 @@ class PlaybackStateManager private constructor() {
             notifyPlayingChanged()
         }
     /** The current playback progress */
-    var positionMs = 0L
+    private var positionMs = 0L
     /** The current [RepeatMode] */
     var repeatMode = RepeatMode.NONE
         set(value) {

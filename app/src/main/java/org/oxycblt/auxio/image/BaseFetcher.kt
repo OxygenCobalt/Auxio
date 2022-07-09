@@ -116,7 +116,7 @@ abstract class BaseFetcher : Fetcher {
     private fun fetchAospMetadataCovers(context: Context, album: Album): InputStream? {
         MediaMetadataRetriever().apply {
             // This call is time-consuming but it also doesn't seem to hold up the main thread,
-            // so it's probably fine not to wrap it.
+            // so it's probably fine not to wrap it.rmt
             setDataSource(context, album.songs[0].uri)
 
             // Get the embedded picture from MediaMetadataRetriever, which will return a full

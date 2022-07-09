@@ -468,16 +468,18 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class VolumeAwareMediaStoreBackend : MediaStoreBackend() {
+open class BaseApi29MediaStoreBackend : MediaStoreBackend() {
     private var volumeIndex = -1
     private var relativePathIndex = -1
+    private var dateTakenIndex = -1
 
     override val projection: Array<String>
         get() =
             super.projection +
                 arrayOf(
                     MediaStore.Audio.AudioColumns.VOLUME_NAME,
-                    MediaStore.Audio.AudioColumns.RELATIVE_PATH)
+                    MediaStore.Audio.AudioColumns.RELATIVE_PATH,
+                    MediaStore.Audio.AudioColumns.DATE_TAKEN)
 
     override val dirSelector: String
         get() =
@@ -498,6 +500,7 @@ open class VolumeAwareMediaStoreBackend : MediaStoreBackend() {
             volumeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
             relativePathIndex =
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
+            dateTakenIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_TAKEN)
         }
 
         val volumeName = cursor.getString(volumeIndex)
@@ -510,6 +513,9 @@ open class VolumeAwareMediaStoreBackend : MediaStoreBackend() {
             audio.dir = Directory(volume, relativePath.removeSuffix(File.separator))
         }
 
+        // If the YEAR value is empty, see if DATE_TAKEN can fill in.
+        logD("${audio.title} ${cursor.getString(dateTakenIndex)}")
+
         return audio
     }
 }
@@ -520,11 +526,14 @@ open class VolumeAwareMediaStoreBackend : MediaStoreBackend() {
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class Api29MediaStoreBackend : VolumeAwareMediaStoreBackend() {
+open class Api29MediaStoreBackend : BaseApi29MediaStoreBackend() {
     private var trackIndex = -1
 
     override val projection: Array<String>
-        get() = super.projection + arrayOf(MediaStore.Audio.AudioColumns.TRACK)
+        get() =
+            super.projection +
+                arrayOf(
+                    MediaStore.Audio.AudioColumns.TRACK, MediaStore.Audio.AudioColumns.DATE_TAKEN)
 
     override fun buildAudio(context: Context, cursor: Cursor): Audio {
         val audio = super.buildAudio(context, cursor)
@@ -551,7 +560,7 @@ open class Api29MediaStoreBackend : VolumeAwareMediaStoreBackend() {
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.R)
-class Api30MediaStoreBackend : VolumeAwareMediaStoreBackend() {
+class Api30MediaStoreBackend : BaseApi29MediaStoreBackend() {
     private var trackIndex: Int = -1
     private var discIndex: Int = -1
 
