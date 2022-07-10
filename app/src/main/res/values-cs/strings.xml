@@ -214,8 +214,9 @@
     <string name="lbl_state_restored">Stav obnoven</string>
     <string name="set_restore_desc">Obnovit dříve uložený stav přehrávání (pokud existuje)</string>
     <string name="err_did_not_restore">Nemohl být obnoven žádný stav</string>
-    <string name="lbl_observing">Automatické znovunačítání</string>
+    <string name="lbl_observing">Monitorování hudební knihovny</string>
     <string name="set_observing">Automatické znovunačítání</string>
-    <string name="lbl_observing_desc">Sledování změn v hudební knihovně… (tuto funkci můžete zakázat v nastavení)</string>
-    <string name="set_observing_desc">Znovu načíst hudbu při změně zvukových souborů (experimentální)</string>
+    <string name="lbl_observing_desc">Sledování změn v hudební knihovně…</string>
+    <string name="set_observing_desc">Znovu načíst vaší hudební knihovnu při změně (experimentální)</string>
+    <string name="lbl_indexing">Načítání hudby</string>
 </resources>
