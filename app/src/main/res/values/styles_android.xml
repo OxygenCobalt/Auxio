@@ -2,10 +2,6 @@
 <resources>
     <!-- ANDROID COMPONENT-SPECIFIC STYLES.-->
 
-    <!--
-    A dialog theme that doesn't suck. This is the only non-Material3 usage in the entire
-    project since the Material3 dialogs [and especially the button panel] are unusable.
-    -->
     <style name="Theme.Auxio.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="android:checkedTextViewStyle">@style/Widget.Auxio.Dialog.CheckedTextView</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.Material3.Button.TextButton.Dialog

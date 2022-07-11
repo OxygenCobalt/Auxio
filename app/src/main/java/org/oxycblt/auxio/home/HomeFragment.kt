@@ -46,8 +46,8 @@ import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.IndexerViewModel
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -75,7 +75,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private val homeModel: HomeViewModel by androidActivityViewModels()
-    private val indexerModel: IndexerViewModel by activityViewModels()
+    private val indexerModel: MusicViewModel by activityViewModels()
 
     // lifecycleObject builds this in the creation step, so doing this is okay.
     private val storagePermissionLauncher: ActivityResultLauncher<String> by lifecycleObject {
@@ -135,10 +135,10 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         // --- VIEWMODEL SETUP ---
 
-        collectImmediately(homeModel.songs, homeModel.isFastScrolling, ::updateFab)
         collect(homeModel.recreateTabs, ::handleRecreateTabs)
         collectImmediately(homeModel.currentTab, ::updateCurrentTab)
-        collectImmediately(indexerModel.state, ::handleIndexerState)
+        collectImmediately(indexerModel.libraryExists, homeModel.isFastScrolling, ::updateFab)
+        collectImmediately(indexerModel.indexerState, ::handleIndexerState)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
@@ -328,9 +328,9 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
+    private fun updateFab(hasLoaded: Boolean, isFastScrolling: Boolean) {
         val binding = requireBinding()
-        if (isFastScrolling || songs.isEmpty()) {
+        if (!hasLoaded || isFastScrolling) {
             binding.homeFab.hide()
         } else {
             binding.homeFab.show()

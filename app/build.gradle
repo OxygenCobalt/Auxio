@@ -82,7 +82,6 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
 
     // Media
-    // TODO: Dumpster this for Media3
     implementation "androidx.media:media:1.6.0"
 
     // Preferences

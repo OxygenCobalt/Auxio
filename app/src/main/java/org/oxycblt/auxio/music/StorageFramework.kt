@@ -51,15 +51,14 @@ data class Directory(val volume: StorageVolume, val relativePath: String) {
         context.getString(R.string.fmt_path, volume.getDescriptionCompat(context), relativePath)
 
     /** Converts this dir into an opaque document URI in the form of VOLUME:PATH. */
-    fun toDocumentUri(): String? {
+    fun toDocumentUri() =
         // "primary" actually corresponds to the internal storage, not the primary volume.
         // Removable storage is represented with the UUID.
-        return if (volume.isInternalCompat) {
+        if (volume.isInternalCompat) {
             "${DOCUMENT_URI_PRIMARY_NAME}:${relativePath}"
         } else {
-            "${(volume.uuidCompat ?: return null).uppercase()}:${relativePath}"
+            volume.uuidCompat?.let { uuid -> "${uuid}:${relativePath}" }
         }
-    }
 
     companion object {
         private const val DOCUMENT_URI_PRIMARY_NAME = "primary"

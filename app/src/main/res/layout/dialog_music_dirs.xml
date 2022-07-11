@@ -27,9 +27,9 @@
             android:id="@+id/dirs_empty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/spacing_mid_large"
+            android:paddingStart="@dimen/spacing_large"
             android:paddingTop="@dimen/spacing_medium"
-            android:paddingEnd="@dimen/spacing_mid_large"
+            android:paddingEnd="@dimen/spacing_large"
             android:paddingBottom="@dimen/spacing_medium"
             android:text="@string/err_no_dirs"
             android:textAlignment="center"
@@ -40,8 +40,8 @@
             style="@style/Widget.Auxio.TextView.Header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/spacing_mid_large"
-            android:paddingEnd="@dimen/spacing_mid_large"
+            android:paddingStart="@dimen/spacing_large"
+            android:paddingEnd="@dimen/spacing_large"
             android:text="@string/set_dirs_mode" />
 
         <com.google.android.material.divider.MaterialDivider
@@ -52,9 +52,9 @@
             android:id="@+id/folder_mode_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_mid_large"
+            android:layout_marginStart="@dimen/spacing_large"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:layout_marginEnd="@dimen/spacing_mid_large"
+            android:layout_marginEnd="@dimen/spacing_large"
             android:gravity="center"
             app:checkedButton="@+id/dirs_mode_exclude"
             app:selectionRequired="true"
@@ -82,9 +82,9 @@
             android:id="@+id/dirs_mode_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_mid_large"
+            android:layout_marginStart="@dimen/spacing_large"
             android:layout_marginTop="@dimen/spacing_small"
-            android:layout_marginEnd="@dimen/spacing_mid_large"
+            android:layout_marginEnd="@dimen/spacing_large"
             android:textAlignment="viewStart"
             tools:text="Mode description" />
 

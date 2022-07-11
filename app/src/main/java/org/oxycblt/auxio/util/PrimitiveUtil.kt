@@ -19,7 +19,6 @@ package org.oxycblt.auxio.util
 
 import android.os.Looper
 import android.text.format.DateUtils
-import androidx.core.math.MathUtils
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.util.concurrent.CancellationException
@@ -37,16 +36,12 @@ fun requireBackgroundThread() {
  * Sanitizes a nullable value that is not likely to be null. On debug builds, requireNotNull is
  * used, while on release builds, the unsafe assertion operator [!!] ]is used
  */
-fun <T> unlikelyToBeNull(value: T?): T {
-    return if (BuildConfig.DEBUG) {
+fun <T> unlikelyToBeNull(value: T?) =
+    if (BuildConfig.DEBUG) {
         requireNotNull(value)
     } else {
         value!!
     }
-}
-
-/** Shortcut to clamp an integer between [min] and [max] */
-fun Int.clamp(min: Int, max: Int): Int = MathUtils.clamp(this, min, max)
 
 /**
  * Convert a [Long] of seconds into a string duration.
@@ -80,22 +75,21 @@ fun lazyReflectedMethod(clazz: KClass<*>, method: String) = lazy {
 }
 
 /**
- * A generation-based abstraction that allows cheap cooperative multi-threading in shared object
- * contexts. Every new task should call [newHandle], while every running task should call [check] or
- * [yield] depending on the context.
+ * An abstraction that allows cheap cooperative multi-threading in shared object contexts. Every new
+ * task should call [newHandle], while every running task should call [check] or [yield] depending
+ * on the context.
  *
  * @author OxygenCobalt
  */
-class GenerationGuard {
+class TaskGuard {
     private var currentHandle = 0L
 
     /**
-     * Returns a new handle to the calling task while invalidating the generations of the previous
-     * task.
+     * Returns a new handle to the calling task while invalidating the handle of the previous task.
      */
     @Synchronized fun newHandle() = ++currentHandle
 
-    /** Check if the given [handle] is still the one represented by this class. */
+    /** Check if the given [handle] is still the one stored by this class. */
     @Synchronized fun check(handle: Long) = handle == currentHandle
 
     /**

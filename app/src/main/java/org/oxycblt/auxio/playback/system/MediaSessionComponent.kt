@@ -44,8 +44,9 @@ import org.oxycblt.auxio.util.logD
  *
  * @author OxygenCobalt
  *
- * TODO: Update textual metadata first, then cover metadata later. Janky, yes, but also resolves
- *  some coherency issues.
+ * TODO: Queue functionality
+ *
+ * TODO: Remove the player callback once smooth seeking is implemented
  */
 class MediaSessionComponent(
     private val context: Context,
@@ -60,10 +61,12 @@ class MediaSessionComponent(
         fun onPostNotification(notification: NotificationComponent?)
     }
 
-    val mediaSession = MediaSessionCompat(context, context.packageName).apply { isActive = true }
+    private val mediaSession =
+        MediaSessionCompat(context, context.packageName).apply { isActive = true }
 
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settings = Settings(context, this)
+
     private val notification = NotificationComponent(context, mediaSession.sessionToken)
     private val provider = BitmapProvider(context)
 
@@ -138,10 +141,18 @@ class MediaSessionComponent(
             builder.putString(MediaMetadataCompat.METADATA_KEY_DATE, song.album.year.toString())
         }
 
-        // Normally, android expects one to provide a URI to the metadata instance instead of
-        // a full blown bitmap. In practice, this is not ideal in the slightest, as we cannot
-        // provide any user customization or quality of life improvements with a flat URI.
-        // Instead, we load a full size bitmap and use it within it's respective fields.
+        // Cover loading is a mess. Android expects you to provide a clean, easy URI for it to
+        // leverage, but Auxio cannot do that as quality-of-life features like scaling or
+        // 1:1 cropping could not be used
+        //
+        // Thus, we have two options to handle album art:
+        // 1. Load the bitmap, then post the notification
+        // 2. Post the notification with text metadata, then post it with the bitmap when it's
+        // loaded.
+        //
+        // Neither of these are good, but 1 is the only one that will work on all versions
+        // without the notification being eaten by rate-limiting.
+
         provider.load(
             song,
             object : BitmapProvider.Target {
@@ -262,10 +273,16 @@ class MediaSessionComponent(
     private fun invalidateSessionState() {
         logD("Updating media session playback state")
 
-        // Position updates arrive faster when you upload a state that is different, as it
-        // forces the system to re-poll the position.
-        // FIXME: For some reason however, positions just DON'T UPDATE AT ALL when you
-        //  change from FROM THE APP ONLY WHEN THE PLAYER IS PAUSED.
+        // There are two unfixable issues with this code:
+        // 1. If the position is changed while paused (from the app), the position just won't
+        // update unless I re-post the notification. However, I cannot do such without being
+        // rate-limited. I cannot believe android rate-limits media notifications when they
+        // have to be updated as often as they need to.
+        // 2. Due to metadata updates being delayed but playback remaining ongoing, the position
+        // will be wonky until we can upload a duration. Again, this ties back to how I must
+        // aggressively batch notification updates to prevent rate-limiting.
+        // Android 13 seems to resolve these, but I'm still stuck with these issues below that
+        // version.
         // TODO: Add the custom actions for Android 13
         val state =
             PlaybackStateCompat.Builder()
@@ -277,10 +294,6 @@ class MediaSessionComponent(
                             R.drawable.ic_repeat_off_24)
                         .build())
                 .setBufferedPosition(player.bufferedPosition)
-
-        state.setState(PlaybackStateCompat.STATE_NONE, player.bufferedPosition, 1.0f)
-
-        mediaSession.setPlaybackState(state.build())
 
         val playerState =
             if (playbackManager.isPlaying) {

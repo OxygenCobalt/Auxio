@@ -70,19 +70,21 @@ fun handleAccentCompat(context: Context, prefs: SharedPreferences): Accent {
  * was a dumb idea, as the choice of a full-blown database for a few paths was overkill, version
  * boundaries were not respected, and the data format limited us to grokking DATA.
  *
- * In 2.4.0, Auxio switched to a system based on SharedPreferences, also switching from a flat
- * path-based excluded system to a volume-based excluded system at the same time. These are both
- * rolled into this conversion.
+ * In 2.4.0, Auxio switched to a system based on SharedPreferences, also switching from a path-based
+ * excluded system to a volume-based excluded system at the same time. These are both rolled into
+ * this conversion.
  */
 fun handleExcludedCompat(context: Context, storageManager: StorageManager): List<Directory> {
     Log.d("Auxio.SettingsCompat", "Migrating old excluded database")
-    val db = LegacyExcludedDatabase(context)
+
     // /storage/emulated/0 (the old path prefix) should correspond to primary *emulated* storage.
     val primaryVolume =
         storageManager.storageVolumesCompat.find { it.isInternalCompat } ?: return emptyList()
+
     val primaryDirectory =
         (primaryVolume.directoryCompat ?: return emptyList()) + File.separatorChar
-    return db.readPaths().map { path ->
+
+    return LegacyExcludedDatabase(context).readPaths().map { path ->
         val relativePath = path.removePrefix(primaryDirectory)
         Log.d("Auxio.SettingsCompat", "Migrate $path -> $relativePath")
         Directory(primaryVolume, relativePath)

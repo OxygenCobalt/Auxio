@@ -26,7 +26,8 @@ import androidx.core.app.NotificationCompat
 import org.oxycblt.auxio.util.getSystemServiceSafe
 
 /**
- * Wrapper around [NotificationCompat.Builder] that automates parts of the notification setup.
+ * Wrapper around [NotificationCompat.Builder] that automates parts of the notification setup, under
+ * the assumption that the notification will be used in a service.
  * @author OxygenCobalt
  */
 abstract class ServiceNotification(context: Context, info: ChannelInfo) :
@@ -35,7 +36,6 @@ abstract class ServiceNotification(context: Context, info: ChannelInfo) :
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
             val channel =
                 NotificationChannel(info.id, context.getString(info.nameRes), info.importance)
 

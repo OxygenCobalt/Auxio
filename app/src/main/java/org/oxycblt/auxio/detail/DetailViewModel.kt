@@ -39,7 +39,7 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.util.GenerationGuard
+import org.oxycblt.auxio.util.TaskGuard
 import org.oxycblt.auxio.util.application
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
@@ -113,7 +113,7 @@ class DetailViewModel(application: Application) :
             currentGenre.value?.let(::refreshGenreData)
         }
 
-    private val songGuard = GenerationGuard()
+    private val songGuard = TaskGuard()
 
     fun setSongId(id: Long) {
         if (_currentSong.value?.run { song.id } == id) return
@@ -123,6 +123,7 @@ class DetailViewModel(application: Application) :
     }
 
     fun clearSong() {
+        songGuard.newHandle()
         _currentSong.value = null
     }
 
@@ -161,9 +162,9 @@ class DetailViewModel(application: Application) :
     private fun generateDetailSong(song: Song) {
         _currentSong.value = DetailSong(song, null)
         viewModelScope.launch(Dispatchers.IO) {
-            val generation = songGuard.newHandle()
+            val handle = songGuard.newHandle()
             val info = generateDetailSongInfo(song)
-            songGuard.yield(generation)
+            songGuard.yield(handle)
             _currentSong.value = DetailSong(song, info)
         }
     }
@@ -220,7 +221,7 @@ class DetailViewModel(application: Application) :
 
         // To create a good user experience regarding disc numbers, we intersperse
         // items that show the disc number throughout the album's songs. In the case
-        // that the album does not have distinct disc numbers, we omit the header.
+        // that the album does not have distinct disc numbers, we omit such a header
         val songs = albumSort.songs(album.songs)
         val byDisc = songs.groupBy { it.disc ?: 1 }
         if (byDisc.size > 1) {

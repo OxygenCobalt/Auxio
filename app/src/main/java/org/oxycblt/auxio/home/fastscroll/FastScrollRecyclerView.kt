@@ -36,7 +36,6 @@ import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.recycler.EdgeRecyclerView
 import org.oxycblt.auxio.util.canScroll
-import org.oxycblt.auxio.util.clamp
 import org.oxycblt.auxio.util.getDimenOffsetSafe
 import org.oxycblt.auxio.util.getDimenSizeSafe
 import org.oxycblt.auxio.util.getDrawableSafe
@@ -260,9 +259,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val thumbAnchorY = thumbView.paddingTop
 
         val popupTop =
-            (thumbTop + thumbAnchorY - popupAnchorY).clamp(
-                thumbPadding.top + popupLayoutParams.topMargin,
-                height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight)
+            (thumbTop + thumbAnchorY - popupAnchorY)
+                .coerceAtLeast(thumbPadding.top + popupLayoutParams.topMargin)
+                .coerceAtMost(
+                    height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight)
 
         popupView.layout(popupLeft, popupTop, popupLeft + popupWidth, popupTop + popupHeight)
     }
@@ -358,7 +358,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun scrollToThumbOffset(thumbOffset: Int) {
-        val clampedThumbOffset = thumbOffset.clamp(0, thumbOffsetRange)
+        val clampedThumbOffset = thumbOffset.coerceAtLeast(0).coerceAtMost(thumbOffsetRange)
 
         val scrollOffset =
             (scrollOffsetRange.toLong() * clampedThumbOffset / thumbOffsetRange).toInt() -

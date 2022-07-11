@@ -33,7 +33,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Sort
-import org.oxycblt.auxio.util.GenerationGuard
+import org.oxycblt.auxio.util.TaskGuard
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
@@ -64,7 +64,7 @@ class Indexer {
     private var lastResponse: Response? = null
     private var indexingState: Indexing? = null
 
-    private var guard = GenerationGuard()
+    private var guard = TaskGuard()
     private var controller: Controller? = null
     private var callback: Callback? = null
 
@@ -133,21 +133,21 @@ class Indexer {
     suspend fun index(context: Context) {
         requireBackgroundThread()
 
-        val generation = guard.newHandle()
+        val handle = guard.newHandle()
 
         val notGranted =
             ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_DENIED
 
         if (notGranted) {
-            emitCompletion(Response.NoPerms, generation)
+            emitCompletion(Response.NoPerms, handle)
             return
         }
 
         val response =
             try {
                 val start = System.currentTimeMillis()
-                val library = indexImpl(context, generation)
+                val library = indexImpl(context, handle)
                 if (library != null) {
                     logD(
                         "Music indexing completed successfully in " +
@@ -163,7 +163,7 @@ class Indexer {
                 Response.Err(e)
             }
 
-        emitCompletion(response, generation)
+        emitCompletion(response, handle)
     }
 
     /**
@@ -178,63 +178,22 @@ class Indexer {
 
     /**
      * "Cancel" the last job by making it unable to send further state updates. This will cause the
-     * worker operating the job for that specific generation to cancel as soon as it tries to send a
+     * worker operating the job for that specific handle to cancel as soon as it tries to send a
      * state update.
      */
     @Synchronized
     fun cancelLast() {
         logD("Cancelling last job")
-        val generation = guard.newHandle()
-        emitIndexing(null, generation)
-    }
-
-    @Synchronized
-    private fun emitIndexing(indexing: Indexing?, generation: Long) {
-        guard.yield(generation)
-
-        if (indexing == indexingState) {
-            // Ignore redundant states used when the backends just want to check for
-            // a cancellation
-            return
-        }
-
-        indexingState = indexing
-
-        // If we have canceled the loading process, we want to revert to a previous completion
-        // whenever possible to prevent state inconsistency.
-        val state =
-            indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
-
-        controller?.onIndexerStateChanged(state)
-        callback?.onIndexerStateChanged(state)
-    }
-
-    private suspend fun emitCompletion(response: Response, generation: Long) {
-        guard.yield(generation)
-
-        // Swap to the Main thread so that downstream callbacks don't crash from being on
-        // a background thread. Does not occur in emitIndexing due to efficiency reasons.
-        withContext(Dispatchers.Main) {
-            synchronized(this) {
-                // Do not check for redundancy here, as we actually need to notify a switch
-                // from Indexing -> Complete and not Indexing -> Indexing or Complete -> Complete.
-                lastResponse = response
-                indexingState = null
-
-                val state = State.Complete(response)
-
-                controller?.onIndexerStateChanged(state)
-                callback?.onIndexerStateChanged(state)
-            }
-        }
+        val handle = guard.newHandle()
+        emitIndexing(null, handle)
     }
 
     /**
-     * Run the proper music loading process. [generation] must be a truthful value of the generation
-     * calling this function.
+     * Run the proper music loading process. [handle] must be a truthful handle of the task calling
+     * this function.
      */
-    private fun indexImpl(context: Context, generation: Long): MusicStore.Library? {
-        emitIndexing(Indexing.Indeterminate, generation)
+    private fun indexImpl(context: Context, handle: Long): MusicStore.Library? {
+        emitIndexing(Indexing.Indeterminate, handle)
 
         // Since we have different needs for each version, we determine a "Backend" to use
         // when loading music and then leverage that to create the initial song list.
@@ -256,7 +215,7 @@ class Indexer {
                 mediaStoreBackend
             }
 
-        val songs = buildSongs(context, backend, generation)
+        val songs = buildSongs(context, backend, handle)
         if (songs.isEmpty()) {
             return null
         }
@@ -290,7 +249,7 @@ class Indexer {
      * [buildGenres] functions must be called with the returned list so that all songs are properly
      * linked up.
      */
-    private fun buildSongs(context: Context, backend: Backend, generation: Long): List<Song> {
+    private fun buildSongs(context: Context, backend: Backend, handle: Long): List<Song> {
         val start = System.currentTimeMillis()
 
         var songs =
@@ -299,7 +258,7 @@ class Indexer {
                     "Successfully queried media database " +
                         "in ${System.currentTimeMillis() - start}ms")
 
-                backend.buildSongs(context, cursor) { emitIndexing(it, generation) }
+                backend.buildSongs(context, cursor) { emitIndexing(it, handle) }
             }
 
         // Deduplicate songs to prevent (most) deformed music clones
@@ -401,6 +360,47 @@ class Indexer {
         logD("Successfully built ${genres.size} genres")
 
         return genres
+    }
+
+    @Synchronized
+    private fun emitIndexing(indexing: Indexing?, handle: Long) {
+        guard.yield(handle)
+
+        if (indexing == indexingState) {
+            // Ignore redundant states used when the backends just want to check for
+            // a cancellation
+            return
+        }
+
+        indexingState = indexing
+
+        // If we have canceled the loading process, we want to revert to a previous completion
+        // whenever possible to prevent state inconsistency.
+        val state =
+            indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
+
+        controller?.onIndexerStateChanged(state)
+        callback?.onIndexerStateChanged(state)
+    }
+
+    private suspend fun emitCompletion(response: Response, handle: Long) {
+        guard.yield(handle)
+
+        // Swap to the Main thread so that downstream callbacks don't crash from being on
+        // a background thread. Does not occur in emitIndexing due to efficiency reasons.
+        withContext(Dispatchers.Main) {
+            synchronized(this) {
+                // Do not check for redundancy here, as we actually need to notify a switch
+                // from Indexing -> Complete and not Indexing -> Indexing or Complete -> Complete.
+                lastResponse = response
+                indexingState = null
+
+                val state = State.Complete(response)
+
+                controller?.onIndexerStateChanged(state)
+                callback?.onIndexerStateChanged(state)
+            }
+        }
     }
 
     /** Represents the current indexer state. */

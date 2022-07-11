@@ -44,8 +44,6 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Add multi-select
  *
- * TODO: Bug test runtime rescanning
- *
  * @author OxygenCobalt
  */
 class MainActivity : AppCompatActivity() {

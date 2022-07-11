@@ -400,6 +400,9 @@ class PlaybackStateManager private constructor() {
 
         logD("Sanitizing state")
 
+        // While we could just save and reload the state, we instead sanitize the state
+        // at runtime for better efficiency (and to sidestep a co-routine on behalf of the caller).
+
         val oldSongId = song?.id
         val oldPosition = positionMs
 

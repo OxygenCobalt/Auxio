@@ -29,7 +29,6 @@ import kotlin.math.pow
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.clamp
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -42,6 +41,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * when the active track changes.
  *
  * @author OxygenCobalt
+ *
+ * TODO: Convert a low-level audio processor capable of handling any kind of PCM data.
  */
 class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
     private data class Gain(val track: Float, val album: Float)
@@ -235,7 +236,8 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
             sample =
                 (sample * volume)
                     .toInt()
-                    .clamp(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
+                    .coerceAtLeast(Short.MIN_VALUE.toInt())
+                    .coerceAtMost(Short.MAX_VALUE.toInt())
                     .toShort()
             buffer.putLeShort(sample)
         }

@@ -23,16 +23,19 @@ import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.system.Indexer
 
 /**
- * A ViewModel representing the current music indexing state.
+ * A ViewModel representing the current indexing state.
  * @author OxygenCobalt
- *
- * TODO: Indeterminate state for Home + Settings
  */
-class IndexerViewModel : ViewModel(), Indexer.Callback {
+class MusicViewModel : ViewModel(), Indexer.Callback {
     private val indexer = Indexer.getInstance()
 
-    private val _state = MutableStateFlow<Indexer.State?>(null)
-    val state: StateFlow<Indexer.State?> = _state
+    private val _indexerState = MutableStateFlow<Indexer.State?>(null)
+    /** The current music indexing state. */
+    val indexerState: StateFlow<Indexer.State?> = _indexerState
+
+    private val _libraryExists = MutableStateFlow(false)
+    /** Whether a music library has successfully been loaded. */
+    val libraryExists: StateFlow<Boolean> = _libraryExists
 
     init {
         indexer.registerCallback(this)
@@ -43,7 +46,11 @@ class IndexerViewModel : ViewModel(), Indexer.Callback {
     }
 
     override fun onIndexerStateChanged(state: Indexer.State?) {
-        _state.value = state
+        _indexerState.value = state
+
+        if (state is Indexer.State.Complete && state.response is Indexer.Response.Ok) {
+            _libraryExists.value = true
+        }
     }
 
     override fun onCleared() {

@@ -15,8 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingStart="@dimen/spacing_mid_large"
-            android:paddingEnd="@dimen/spacing_mid_large"
+            android:paddingStart="@dimen/spacing_large"
+            android:paddingEnd="@dimen/spacing_large"
             android:showDividers="middle"
             android:visibility="gone"
             tools:visibility="visible">

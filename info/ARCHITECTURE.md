@@ -1,5 +1,6 @@
 # Architecture
-This document is designed to provide an overview of Auxio's architecture and design decisions. It will be updated as Auxio changes.
+This document is designed to provide an overview of Auxio's architecture and design decisions. It will be updated as Auxio changes,
+however it may not completely line up as parts of the codebase will change rapidly at times.
 
 ## Core Facets
 Auxio has a couple of core systems or concepts that should be understood when working with the codebase.

@@ -33,8 +33,8 @@ class ForegroundManager(private val service: Service) {
     }
 
     /**
-     * Try to enter a foreground state. Returns false if already in foreground, returns true
-     * if state was entered.
+     * Try to enter a foreground state. Returns false if already in foreground, returns true if
+     * state was entered.
      */
     fun tryStartForeground(notification: ServiceNotification): Boolean {
         if (isForeground) {
@@ -50,8 +50,8 @@ class ForegroundManager(private val service: Service) {
     }
 
     /**
-     * Try to stop a foreground state. Returns false if already in backend, returns true
-     * if state was stopped.
+     * Try to stop a foreground state. Returns false if already in backend, returns true if state
+     * was stopped.
      */
     fun tryStopForeground(): Boolean {
         if (!isForeground) {

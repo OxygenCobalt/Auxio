@@ -68,8 +68,6 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  *
  * TODO: Android Auto
  *
- * TODO: Get MediaSessionConnector (or the media3 equivalent) working or die trying
- *
  * @author OxygenCobalt
  */
 class PlaybackService :
@@ -248,7 +246,7 @@ class PlaybackService :
 
     override fun loadSong(song: Song?) {
         if (song == null) {
-            // Clear if there's nothing to play.
+            // Stop the foreground state if there's nothing to play.
             logD("Nothing playing, stopping playback")
             player.stop()
             stopAndSave()
@@ -281,6 +279,7 @@ class PlaybackService :
         }
 
         if (hasPlayed) {
+            logD("Updating notification")
             if (!foregroundManager.tryStartForeground(notification)) {
                 notification.post()
             }

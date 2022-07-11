@@ -51,7 +51,7 @@
         android:background="@drawable/ui_widget_bar"
         android:backgroundTint="?attr/colorSurface"
         android:orientation="horizontal"
-        android:padding="@dimen/spacing_mid_small">
+        android:padding="@dimen/spacing_mid_medium">
 
         <android.widget.ImageButton
             android:id="@+id/widget_repeat"

@@ -127,18 +127,18 @@
                 app:layout_constraintStart_toEndOf="@+id/playback_repeat"
                 app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/playback_play_pause"
-                style="@style/Widget.Auxio.FloatingActionButton.PlayPause"
+                style="@style/Widget.Auxio.Button.PlayPause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_play_pause"
-                android:src="@drawable/sel_playing_state_24"
+                app:icon="@drawable/sel_playing_state_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/ic_play_24" />
+                tools:icon="@drawable/ic_play_24" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/playback_skip_next"

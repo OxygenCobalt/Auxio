@@ -31,7 +31,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.Coil
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.TabCustomizeDialog
-import org.oxycblt.auxio.music.IndexerViewModel
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.dirs.MusicDirsDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.replaygain.PreAmpCustomizeDialog
@@ -51,21 +51,17 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * @author OxygenCobalt
  *
  * TODO: Add option to not restore state
- *
- * TODO: Disable playback state options when music is loading
- *
- * TODO: Indicate music loading in the "reload music" option???
  */
 @Suppress("UNUSED")
 class SettingsListFragment : PreferenceFragmentCompat() {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
-    private val indexerModel: IndexerViewModel by activityViewModels()
+    private val indexerModel: MusicViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         preferenceManager.onDisplayPreferenceDialogListener = this
-        preferenceScreen.children.forEach(::recursivelyHandlePreference)
+        preferenceScreen.children.forEach(::setupPreference)
 
         // Make the RecycleView edge-to-edge capable
         view.findViewById<RecyclerView>(androidx.preference.R.id.recycler_view).apply {
@@ -125,7 +121,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 playbackModel.savePlaybackState { context?.showToast(R.string.lbl_state_saved) }
             }
             getString(R.string.set_key_restore_state) ->
-                playbackModel.restorePlaybackState { restored ->
+                playbackModel.tryRestorePlaybackState { restored ->
                     if (restored) {
                         context?.showToast(R.string.lbl_state_restored)
                     } else {
@@ -141,15 +137,14 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         return true
     }
 
-    /** Recursively handle a preference, doing any specific actions on it. */
-    private fun recursivelyHandlePreference(preference: Preference) {
+    private fun setupPreference(preference: Preference) {
         val settings = Settings(requireContext())
 
         if (!preference.isVisible) return
 
         if (preference is PreferenceCategory) {
             for (child in preference.children) {
-                recursivelyHandlePreference(child)
+                setupPreference(child)
             }
         }
 

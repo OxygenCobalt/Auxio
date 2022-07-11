@@ -102,13 +102,7 @@ class PlaybackPanelFragment :
 
         binding.playbackRepeat.setOnClickListener { playbackModel.incrementRepeatMode() }
         binding.playbackSkipPrev.setOnClickListener { playbackModel.prev() }
-
-        binding.playbackPlayPause.apply {
-            // Abuse the play/pause FAB (see style definition for more info)
-            post { binding.playbackPlayPause.stateListAnimator = null }
-            setOnClickListener { playbackModel.invertPlaying() }
-        }
-
+        binding.playbackPlayPause.setOnClickListener { playbackModel.invertPlaying() }
         binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
         binding.playbackShuffle.setOnClickListener { playbackModel.invertShuffled() }
 

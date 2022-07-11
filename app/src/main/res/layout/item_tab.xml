@@ -35,7 +35,7 @@
         style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_mid_small"
+        android:layout_marginEnd="@dimen/spacing_mid_medium"
         android:contentDescription="@string/desc_tab_handle"
         app:icon="@drawable/ic_handle_24"
         app:layout_constraintBottom_toBottomOf="@+id/tab_icon"

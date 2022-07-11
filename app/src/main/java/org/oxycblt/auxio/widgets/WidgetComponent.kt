@@ -21,7 +21,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
 import coil.request.ImageRequest
-import coil.size.Size
 import coil.transform.RoundedCornersTransformation
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
@@ -112,10 +111,7 @@ class WidgetComponent(private val context: Context) :
                             // bitmap on very large screens.
                             .size(minOf(metrics.widthPixels, metrics.heightPixels, 1024))
                     } else {
-                        this@WidgetComponent.logD("Doing API 21 cover load")
-                        // Note: Explicitly use the "original" size as without it the scaling logic
-                        // in coil breaks down and results in an error.
-                        builder.size(Size.ORIGINAL)
+                        builder
                     }
                 }
 

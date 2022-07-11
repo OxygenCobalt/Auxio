@@ -25,22 +25,20 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.size.Size
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.GenerationGuard
+import org.oxycblt.auxio.util.TaskGuard
 
 /**
  * A utility to provide bitmaps in a manner less prone to race conditions.
  *
  * Pretty much each service component needs to load bitmaps of some kind, but doing a blind image
- * request with some target callbacks could result in overlapping requests causing unrelated
- * updates. This class (to an extent) resolves this by keeping track of the current request and
- * disposing of it every time a new request is created. This greatly reduces the surface for race
- * conditions.
+ * request with some target callbacks could result in overlapping requests causing incorrect
+ * updates. This class (to an extent) resolves this by adding several guards
  *
  * @author OxygenCobalt
  */
 class BitmapProvider(private val context: Context) {
     private var currentRequest: Request? = null
-    private var guard = GenerationGuard()
+    private var guard = TaskGuard()
 
     /** If this provider is currently attempting to load something. */
     val isBusy: Boolean
@@ -52,7 +50,7 @@ class BitmapProvider(private val context: Context) {
      */
     @Synchronized
     fun load(song: Song, target: Target) {
-        val generation = guard.newHandle()
+        val handle = guard.newHandle()
 
         currentRequest?.run { disposable.dispose() }
         currentRequest = null
@@ -64,12 +62,12 @@ class BitmapProvider(private val context: Context) {
                     .size(Size.ORIGINAL)
                     .target(
                         onSuccess = {
-                            if (guard.check(generation)) {
+                            if (guard.check(handle)) {
                                 target.onCompleted(it.toBitmap())
                             }
                         },
                         onError = {
-                            if (guard.check(generation)) {
+                            if (guard.check(handle)) {
                                 target.onCompleted(null)
                             }
                         })
