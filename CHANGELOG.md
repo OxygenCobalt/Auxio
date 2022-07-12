@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## 2.5.0
 
 #### What's New
 - Massively overhauled how music is loaded [#72]:
@@ -29,9 +29,11 @@ finished saving
 - Fixed shuffle button appearing below playback bar on Android 10 and lower
 - Fixed incorrect song being shown in the notification in some cases [#179]
 - Fixed issue where toolbar will be clipped on Lollipop devices
+- Fixed infinite loading if one had no music folders set [#182]
 
 #### What's Changed
 - Reworked typography and iconography to be more aligned with material design guidelines
+- Old excluded directories from 2.3.1 will no longer be migrated
 
 #### Dev/Meta
 - Migrated preferences from shared object to utility

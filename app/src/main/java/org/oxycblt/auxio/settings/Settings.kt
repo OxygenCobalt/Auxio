@@ -195,20 +195,9 @@ class Settings(private val context: Context, private val callback: Callback? = n
 
     /** Get the list of directories that music should be hidden/loaded from. */
     fun getMusicDirs(storageManager: StorageManager): MusicDirs {
-        val key = context.getString(R.string.set_key_music_dirs)
-
-        if (!inner.contains(key)) {
-            logD("Attempting to migrate excluded directories")
-            // We need to migrate this setting now while we have a context. Note that while
-            // this does do IO work, the old excluded directory database is so small as to make
-            // it negligible.
-            setMusicDirs(MusicDirs(handleExcludedCompat(context, storageManager), false))
-        }
-
         val dirs =
-            (inner.getStringSet(key, null) ?: emptySet()).mapNotNull {
-                Directory.fromDocumentUri(storageManager, it)
-            }
+            (inner.getStringSet(context.getString(R.string.set_key_music_dirs), null) ?: emptySet())
+                .mapNotNull { Directory.fromDocumentUri(storageManager, it) }
 
         return MusicDirs(
             dirs, inner.getBoolean(context.getString(R.string.set_key_music_dirs_include), false))

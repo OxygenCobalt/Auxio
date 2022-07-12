@@ -63,8 +63,9 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  * - Headset management
  * - Widgets
  *
- * This service relies on [PlaybackStateManager.Callback] and [Settings.Callback], so therefore
- * there's no need to bind to it to deliver commands.
+ * This service is headless and does not manage the playback state. Moreover, the player instance is
+ * not the source of truth for the state, but rather the means to control system-side playback. Both
+ * of those tasks are what [PlaybackStateManager] is for.
  *
  * TODO: Android Auto
  *

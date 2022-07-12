@@ -212,8 +212,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         }
 
         override fun onChange(selfChange: Boolean) {
-            // Batch rapid-fire updates to the library into a single call to run after an
-            // arbitrary amount of time.
+            // Batch rapid-fire updates to the library into a single call to run after 500ms
             handler.removeCallbacks(this)
             handler.postDelayed(this, REINDEX_DELAY)
         }

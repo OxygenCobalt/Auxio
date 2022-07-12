@@ -171,11 +171,12 @@ fun <T> Fragment.collect(stateFlow: StateFlow<T>, block: (T) -> Unit) {
 /**
  * Collect a [stateFlow] into [block] immediately.
  *
- * This method automatically calls [block] when initially starting to ensure UI state consistency.
- * This does nominally mean that there are two initializing collections, but this is considered
- * okay. [block] should be a function pointer in order to ensure lifecycle consistency.
+ * This method automatically calls [block] when initially starting to ensure UI state consistency at
+ * soon as the view is visible. This does nominally mean that there are two initializing
+ * collections, but this is considered okay. [block] should be a function pointer in order to ensure
+ * lifecycle consistency.
  *
- * This should be used for state the absolutely needs to be shown at draw-time.
+ * This should be used if the state absolutely needs to be shown at draw-time.
  */
 fun <T> Fragment.collectImmediately(stateFlow: StateFlow<T>, block: (T) -> Unit) {
     block(stateFlow.value)

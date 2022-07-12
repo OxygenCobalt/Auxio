@@ -42,7 +42,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  *
  * @author OxygenCobalt
  *
- * TODO: Convert a low-level audio processor capable of handling any kind of PCM data.
+ * TODO: Convert to a low-level audio processor capable of handling any kind of PCM data.
  */
 class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
     private data class Gain(val track: Float, val album: Float)

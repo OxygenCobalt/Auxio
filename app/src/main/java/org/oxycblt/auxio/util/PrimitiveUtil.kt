@@ -77,7 +77,7 @@ fun lazyReflectedMethod(clazz: KClass<*>, method: String) = lazy {
 /**
  * An abstraction that allows cheap cooperative multi-threading in shared object contexts. Every new
  * task should call [newHandle], while every running task should call [check] or [yield] depending
- * on the context.
+ * on the context to determine if it should continue.
  *
  * @author OxygenCobalt
  */
@@ -89,7 +89,7 @@ class TaskGuard {
      */
     @Synchronized fun newHandle() = ++currentHandle
 
-    /** Check if the given [handle] is still the one stored by this class. */
+    /** Check if the given [handle] is still valid. */
     @Synchronized fun check(handle: Long) = handle == currentHandle
 
     /**

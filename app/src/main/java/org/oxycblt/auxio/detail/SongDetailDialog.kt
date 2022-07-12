@@ -30,7 +30,6 @@ import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.formatDuration
-import org.oxycblt.auxio.util.logD
 
 class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
     private val detailModel: DetailViewModel by androidActivityViewModels()
@@ -57,8 +56,6 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
     private fun updateSong(song: DetailViewModel.DetailSong?) {
         val binding = requireBinding()
-
-        logD("$song")
 
         if (song != null) {
             if (song.info != null) {
