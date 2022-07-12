@@ -14,10 +14,10 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/queue_toolbar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        app:navigationIcon="@drawable/ic_down_24"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:elevation="0dp"
+            app:navigationIcon="@drawable/ic_down_24"
             app:title="@string/lbl_queue" />
 
     </org.oxycblt.auxio.ui.coordinator.EdgeAppBarLayout>

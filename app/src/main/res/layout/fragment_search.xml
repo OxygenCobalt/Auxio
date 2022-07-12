@@ -10,12 +10,12 @@
         app:liftOnScroll="true"
         app:liftOnScrollTargetViewId="@id/search_recycler">
 
-         <com.google.android.material.appbar.MaterialToolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/search_toolbar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        app:navigationIcon="@drawable/ic_back_24"
-            app:menu="@menu/menu_search">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:menu="@menu/menu_search"
+            app:navigationIcon="@drawable/ic_back_24">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

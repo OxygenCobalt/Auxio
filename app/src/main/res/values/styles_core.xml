@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Master parent theme -->
+    <!-- TODO: Make the app theme blue before dynamic colors -->
     <style name="Theme.Auxio" parent="Theme.Material3.DynamicColors.DayNight" />
     <!-- Template theme that handles edge-to-edge on other styles variants -->
     <style name="Theme.Auxio.V27" parent="Theme.Auxio">
@@ -32,7 +33,6 @@
         <item name="materialAlertDialogTheme">@style/Theme.Auxio.Dialog</item>
         <item name="sliderStyle">@style/Widget.Auxio.Slider</item>
         <item name="linearProgressIndicatorStyle">@style/Widget.Auxio.LinearProgressIndicator</item>
-        <item name="textInputStyle">@style/Widget.Material3.TextInputLayout.OutlinedBox</item>
         <item name="toolbarNavigationButtonStyle">@style/Widget.Auxio.Toolbar.Navigation</item>
         <item name="actionOverflowButtonStyle">@style/Widget.Auxio.Button.Overflow</item>
 

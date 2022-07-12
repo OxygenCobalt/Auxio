@@ -7,8 +7,8 @@
 
     <!--
     We don't want to show an album cover, but we still want the spacing of this song
-    to be alike to other songs. So, add a pastel-ish background to each track number
-    view. The way we do this is odd, but it's designed this way.
+    to be alike to other songs. So, the imageview retains it's default tonal color,
+    with us only overlaying the track number (and other elements) onto it.
     -->
 
     <org.oxycblt.auxio.image.ImageGroup

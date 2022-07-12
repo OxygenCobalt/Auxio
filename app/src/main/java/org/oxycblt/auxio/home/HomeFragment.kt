@@ -104,11 +104,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         binding.homeToolbar.setOnMenuItemClickListener(this@HomeFragment)
 
-        binding.homeIndexingContainer.setOnApplyWindowInsetsListener { v, insets ->
-            logD("do basics you retard")
-            insets
-        }
-
         updateTabConfiguration()
 
         // Load the track color in manually as it's unclear whether the track actually supports

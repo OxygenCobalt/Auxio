@@ -218,7 +218,9 @@
         <item name="android:paddingEnd">@dimen/spacing_mid_large</item>
         <item name="android:paddingTop">@dimen/spacing_mid_large</item>
         <item name="android:paddingBottom">@dimen/spacing_mid_large</item>
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Material3.FloatingActionButton</item>
+        <item name="shapeAppearanceOverlay">
+            @style/ShapeAppearanceOverlay.Material3.FloatingActionButton
+        </item>
     </style>
 
     <style name="Widget.Auxio.FloatingActionButton.Adaptive" parent="Widget.Material3.FloatingActionButton.Primary">

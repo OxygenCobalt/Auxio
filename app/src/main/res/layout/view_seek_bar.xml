@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -11,11 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_medium"
         android:valueFrom="0"
-        android:valueTo="1"
-        app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:valueTo="1" />
 
     <TextView
         android:id="@+id/seek_bar_position"
@@ -37,8 +32,6 @@
         android:layout_marginBottom="@dimen/spacing_tiny"
         android:textAppearance="@style/TextAppearance.Auxio.LabelMedium"
         android:textColor="?android:attr/textColorSecondary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
         tools:text="16:16" />
 
 </FrameLayout>

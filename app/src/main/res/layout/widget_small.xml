@@ -8,7 +8,7 @@
     android:theme="@style/Theme.Widget">
 
     <!--
-    For most widget forms to work, we need to scale the ImageView across a 1:1 aspect ratio.
+    For our widgets to work, we need to scale the ImageView across a 1:1 aspect ratio.
     However, since we are working with a RemoteViews instance, we can't just use ConstraintLayout
     to achieve this. We can use RelativeLayout, but there's no way to force an aspect ratio with
     that layout. However, if we create an invisible ImageView that contains a massive fixed-size
@@ -81,7 +81,7 @@
 
         <android.widget.ImageButton
             android:id="@+id/widget_play_pause"
-            style="@style/Widget.Auxio.FloatingActionButton.AppWidget"
+            style="@style/Widget.Auxio.MaterialButton.AppWidget.PlayPause"
             android:layout_width="@dimen/size_btn"
             android:layout_height="@dimen/size_btn"
             android:contentDescription="@string/desc_play_pause"

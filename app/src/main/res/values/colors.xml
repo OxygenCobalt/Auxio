@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Note: Not actually transparent, making it transparent would actually make it translucent -->
+    <!-- Note: Not actually transparent, making it transparent would actually make it translucent
+     TODO: Can actually disable the contrast check on some newer versions -->
     <color name="chrome_transparent">#01fafafa</color>
     <color name="chrome_translucent">#80000000</color>
     <color name="remote_translucent">#80ffffff</color>
 
     <color name="widget_surface">@color/material_dynamic_primary95</color>
-    <color name="widget_surface_inverse">@color/material_dynamic_neutral80</color>
+    <color name="widget_surface_inverse">@color/material_dynamic_neutral20</color>
     <color name="widget_on_surface_inverse">@color/material_dynamic_neutral95</color>
 
     <color name="red_primary">#BC1714</color>

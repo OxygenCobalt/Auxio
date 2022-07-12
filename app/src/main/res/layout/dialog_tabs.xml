@@ -6,7 +6,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    app:layout_constraintBottom_toTopOf="@+id/accent_cancel"
-    app:layout_constraintTop_toBottomOf="@+id/accent_header"
     tools:itemCount="5"
     tools:listitem="@layout/item_tab" />

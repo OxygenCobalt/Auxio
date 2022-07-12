@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- ANDROID COMPONENT-SPECIFIC STYLES.-->
 
     <style name="Theme.Auxio.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="android:checkedTextViewStyle">@style/Widget.Auxio.Dialog.CheckedTextView</item>
-        <item name="buttonBarPositiveButtonStyle">@style/Widget.Material3.Button.TextButton.Dialog
-        </item>
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.Material3.Button.TextButton.Dialog
-        </item>
-        <item name="buttonBarNeutralButtonStyle">@style/Widget.Auxio.Dialog.Button.Flush</item>
     </style>
 
     <!-- The style for the checked text view in the custom dialog -->
@@ -16,15 +11,13 @@
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
-    <!-- Custom button style that eliminates the weird margin that the neutral button has -->
-    <style name="Widget.Auxio.Dialog.Button.Flush" parent="Widget.Material3.Button.TextButton.Dialog">
-        <item name="android:layout_marginStart">0dp</item>
-    </style>
-
     <!-- Dialog style that properly implements dividers in a NestedScrollView -->
     <style name="Widget.Auxio.Dialog.NestedScrollView" parent="">
         <item name="android:overScrollMode">never</item>
         <item name="android:paddingTop">@dimen/spacing_medium</item>
+
+        <!-- API 23+ specific -->
+        <item name="android:scrollIndicators" tools:ignore="NewApi">top|bottom</item>
     </style>
 
     <!-- Widget TextView that mimics the main Auxio Primary/Secondary TextViews. -->
@@ -51,7 +44,7 @@
     </style>
 
     <!-- A variant of button that emulates a FAB-ish button that plays along with widget restrictions -->
-    <style name="Widget.Auxio.FloatingActionButton.AppWidget" parent="Widget.AppCompat.Button.Borderless">
+    <style name="Widget.Auxio.MaterialButton.AppWidget.PlayPause" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:minWidth">@dimen/size_btn</item>
         <item name="android:background">@drawable/ui_remote_fab_bg</item>
         <item name="android:tint">?attr/colorOnPrimary</item>

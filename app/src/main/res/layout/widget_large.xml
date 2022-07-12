@@ -4,8 +4,8 @@
     android:id="@android:id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="?attr/colorSurface"
     android:background="@drawable/ui_widget_bg"
+    android:backgroundTint="?attr/colorSurface"
     android:theme="@style/Theme.Widget">
 
     <!--
@@ -108,7 +108,7 @@
 
             <android.widget.ImageButton
                 android:id="@+id/widget_play_pause"
-                style="@style/Widget.Auxio.FloatingActionButton.AppWidget"
+                style="@style/Widget.Auxio.MaterialButton.AppWidget.PlayPause"
                 android:layout_width="@dimen/size_btn"
                 android:layout_height="@dimen/size_btn"
                 android:contentDescription="@string/desc_play_pause"

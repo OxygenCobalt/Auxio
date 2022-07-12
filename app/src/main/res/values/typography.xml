@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
-    Auxio leverages the Material3 Text Appearances in a strange way, mostly driven by
-    the author's perception of what looks "right." Guides for usage are placed next to
-    each set of styles.
+    Typography is derived from Inter and it's size-dependent spacing calculation. Auxio does not
+    completely adhere to the typography system, sometimes having two variants of a given style in
+    order to bypass the restrictive nature of the default typography.
     -->
 
     <!--
@@ -31,7 +31,7 @@
     </style>
 
     <!--
-    Headline styles are similar to title styles, but are used on tablets.
+    Headline styles are similar to title styles, but are not used as often.
     -->
     <style name="TextAppearance.Auxio.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
         <item name="fontFamily">@font/inter_semibold</item>
@@ -55,7 +55,7 @@
     </style>
 
     <!--
-    Title styles are often used for headers and dividing elements.
+    Title styles are often used for headers, dividing elements, and items.
     -->
     <style name="TextAppearance.Auxio.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
         <item name="fontFamily">@font/inter_semibold</item>
