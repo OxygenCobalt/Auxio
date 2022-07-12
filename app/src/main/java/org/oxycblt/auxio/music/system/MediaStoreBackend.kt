@@ -454,6 +454,7 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
 
         val rawTrack = cursor.getIntOrNull(trackIndex)
         if (rawTrack != null) {
+            logD(rawTrack)
             rawTrack.packedTrackNo?.let {
                 logD(it)
                 audio.track = it

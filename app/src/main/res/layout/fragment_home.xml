@@ -52,7 +52,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_medium"
-            android:visibility="invisible"
             android:layout_gravity="center">
 
             <com.google.android.material.card.MaterialCardView
@@ -106,6 +105,7 @@
             </com.google.android.material.card.MaterialCardView>
 
         </org.oxycblt.auxio.home.EdgeFrameLayout>
+
     </FrameLayout>
 
     <org.oxycblt.auxio.home.EdgeFrameLayout
