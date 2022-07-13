@@ -33,8 +33,18 @@ sealed class Music : Item() {
     /** The raw name of this item. Null if unknown. */
     abstract val rawName: String?
 
-    /** The name of this item used for sorting. Null if unknown. */
-    abstract val sortName: String?
+    /** The raw sorting name of this item. Null if not present. */
+    abstract val rawSortName: String?
+
+    /**
+     * The name of this item used for sorting. This will first use the sort tag for the item,
+     * followed by the name without a preceding article (The/A/An). In the case that the item has no
+     * name, this returns null.
+     *
+     * This should not be used outside of sorting and fast-scrolling.
+     */
+    val sortName: String?
+        get() = rawSortName ?: rawName?.withoutArticle
 
     /**
      * Resolve a name from it's raw form to a form suitable to be shown in a ui. Ex. "unknown" would
@@ -99,8 +109,8 @@ data class Song(
             return result
         }
 
-    override val sortName: String
-        get() = rawName.withoutArticle
+    override val rawSortName: String?
+        get() = null
 
     override fun resolveName(context: Context) = rawName
 
@@ -196,8 +206,8 @@ data class Album(
             return result
         }
 
-    override val sortName: String
-        get() = rawName.withoutArticle
+    override val rawSortName: String?
+        get() = null
 
     override fun resolveName(context: Context) = rawName
 
@@ -238,8 +248,8 @@ data class Artist(
     override val id: Long
         get() = (rawName ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
 
-    override val sortName: String?
-        get() = rawName?.withoutArticle
+    override val rawSortName: String?
+        get() = null
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
 
@@ -258,8 +268,8 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
     override val id: Long
         get() = (rawName ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
 
-    override val sortName: String?
-        get() = rawName
+    override val rawSortName: String?
+        get() = null
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
 }

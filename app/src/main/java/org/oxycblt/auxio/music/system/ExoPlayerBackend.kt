@@ -183,7 +183,8 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
                     }
                 }
                 is VorbisComment -> {
-                    val id = tag.key.sanitize()
+                    // Vorbis comment keys can be in any case, make them uppercase for simplicity.
+                    val id = tag.key.sanitize().uppercase()
                     val value = tag.value.sanitize()
                     if (value.isNotEmpty()) {
                         vorbisTags[id] = value
@@ -223,9 +224,10 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         // 3. ID3v2.4 Release Date, as it is the second most common date type
         // 4. ID3v2.3 Original Date, as it is like #1
         // 5. ID3v2.3 Release Year, as it is the most common date type
-        audio.year
-            ?: tags["TDOR"]?.iso8601year ?: tags["TDRC"]?.iso8601year ?: tags["TDRL"]?.iso8601year
-                ?: tags["TORY"]?.year ?: tags["TYER"]?.year
+        (tags["TDOR"]?.iso8601year
+                ?: tags["TDRC"]?.iso8601year ?: tags["TDRL"]?.iso8601year ?: tags["TORY"]?.year
+                    ?: tags["TYER"]?.year)
+            ?.let { audio.year = it }
 
         // Album
         tags["TALB"]?.let { audio.album = it }
@@ -256,8 +258,8 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         // 2. Date, as it is the most common date type
         // 3. Year, as old vorbis tags tended to use this (I know this because it's the only
         // tag that android supports, so it must be 15 years old or more!)
-        audio.year =
-            tags["ORIGINALDATE"]?.iso8601year ?: tags["DATE"]?.iso8601year ?: tags["YEAR"]?.year
+        (tags["ORIGINALDATE"]?.iso8601year ?: tags["DATE"]?.iso8601year ?: tags["YEAR"]?.year)
+            ?.let { audio.year = it }
 
         // Album
         tags["ALBUM"]?.let { audio.album = it }
@@ -268,7 +270,7 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         // Album artist. This actually comes into two flavors:
         // 1. ALBUMARTIST, which is the most common
         // 2. ALBUM ARTIST, which is present on older vorbis tags
-        audio.albumArtist = tags["ALBUMARTIST"] ?: tags["ALBUM ARTIST"]
+        (tags["ALBUMARTIST"] ?: tags["ALBUM ARTIST"])?.let { audio.albumArtist = it }
 
         // Genre, no ID3 rules here
         tags["GENRE"]?.let { audio.genre = it }
