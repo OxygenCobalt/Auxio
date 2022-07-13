@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.6.0
+
+#### What's New
+- Added option to ignore `MediaStore` tags, allowing more correct metadata
+at the cost of longer loading times
+- Added Last Added sorting
+
 ## 2.5.0
 
 #### What's New
