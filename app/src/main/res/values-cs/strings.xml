@@ -101,7 +101,7 @@
     <string name="set_save">Uložit stav přehrávání</string>
     <string name="set_save_desc">Uložit aktuální stav přehrávání</string>
     <string name="set_reindex">Znovu načíst hudbu</string>
-    <string name="set_reindex_desc">Aplikace bude restartována</string>
+    <string name="set_reindex_desc">Může vymazat stav přehrávání</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nenalezena žádná hudba</string>
     <string name="err_index_failed">Načítání hudby selhalo</string>
@@ -208,4 +208,15 @@
     <string name="lbl_bitrate">Přenosová rychlost</string>
     <string name="lbl_sample_rate">Vzorkovací frekvence</string>
     <string name="set_dirs">Hudební složky</string>
+    <string name="set_quality_tags">Ignorovat štítky MediaStore</string>
+    <string name="set_quality_tags_desc">Zvýší kvalitu štítků, ale vyžaduje delší načítací čas (experimentální)</string>
+    <string name="set_restore">Obnovit stav přehrávání</string>
+    <string name="lbl_state_restored">Stav obnoven</string>
+    <string name="set_restore_desc">Obnovit dříve uložený stav přehrávání (pokud existuje)</string>
+    <string name="err_did_not_restore">Nemohl být obnoven žádný stav</string>
+    <string name="lbl_observing">Monitorování hudební knihovny</string>
+    <string name="set_observing">Automatické znovunačítání</string>
+    <string name="lbl_observing_desc">Sledování změn v hudební knihovně…</string>
+    <string name="set_observing_desc">Znovu načíst vaší hudební knihovnu při změně (experimentální)</string>
+    <string name="lbl_indexing">Načítání hudby</string>
 </resources>
