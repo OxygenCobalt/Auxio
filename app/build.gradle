@@ -8,7 +8,7 @@ plugins {
 android {
     defaultConfig {
         applicationId "org.oxycblt.auxio"
-        versionName "2.4.0"
+        versionName "2.4z.0"
         versionCode 17
 
         minSdkVersion 21
