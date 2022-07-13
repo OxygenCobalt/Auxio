@@ -85,7 +85,7 @@
             android:layout_width="@dimen/size_btn"
             android:layout_height="@dimen/size_btn"
             android:contentDescription="@string/desc_play_pause"
-            android:src="@drawable/ic_pause_24" />
+            android:src="@drawable/ic_play_24" />
 
         <android.widget.ImageView
             android:layout_width="0dp"
