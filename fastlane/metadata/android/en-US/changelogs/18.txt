@@ -1,0 +1,1 @@
+Auxio 2.5.0 allows the app to respond to changes in your music library, alongside a variety of bug fixes and UI improvements. For more information, see https://github.com/OxygenCobalt/Auxio/releases/tag/v2.5.0.
