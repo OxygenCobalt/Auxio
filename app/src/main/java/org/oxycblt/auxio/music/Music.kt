@@ -67,6 +67,8 @@ data class Song(
     val mimeType: MimeType,
     /** The size of this song (in bytes) */
     val size: Long,
+    /** The datetime at which this media item was added, represented as a unix timestamp. */
+    val dateAdded: Long,
     /** The total duration of this song, in millis. */
     val durationMs: Long,
     /** The track number of this song, null if there isn't any. */

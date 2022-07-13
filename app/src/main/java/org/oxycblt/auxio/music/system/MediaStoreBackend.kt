@@ -116,6 +116,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
     private var displayNameIndex = -1
     private var mimeTypeIndex = -1
     private var sizeIndex = -1
+    private var dateAddedIndex = -1
     private var durationIndex = -1
     private var yearIndex = -1
     private var albumIndex = -1
@@ -235,7 +236,20 @@ abstract class MediaStoreBackend : Indexer.Backend {
      * implementation.
      */
     open val projection: Array<String>
-        get() = BASE_PROJECTION
+        get() =
+            arrayOf(
+                MediaStore.Audio.AudioColumns._ID,
+                MediaStore.Audio.AudioColumns.TITLE,
+                MediaStore.Audio.AudioColumns.DISPLAY_NAME,
+                MediaStore.Audio.AudioColumns.MIME_TYPE,
+                MediaStore.Audio.AudioColumns.SIZE,
+                MediaStore.Audio.AudioColumns.DATE_ADDED,
+                MediaStore.Audio.AudioColumns.DURATION,
+                MediaStore.Audio.AudioColumns.YEAR,
+                MediaStore.Audio.AudioColumns.ALBUM,
+                MediaStore.Audio.AudioColumns.ALBUM_ID,
+                MediaStore.Audio.AudioColumns.ARTIST,
+                AUDIO_COLUMN_ALBUM_ARTIST)
 
     abstract val dirSelector: String
     abstract fun addDirToSelectorArgs(dir: Directory, args: MutableList<String>): Boolean
@@ -254,6 +268,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
             mimeTypeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.MIME_TYPE)
             sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.SIZE)
+            dateAddedIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_ADDED)
             durationIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)
             yearIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.YEAR)
             albumIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM)
@@ -269,6 +284,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
 
         audio.extensionMimeType = cursor.getString(mimeTypeIndex)
         audio.size = cursor.getLong(sizeIndex)
+        audio.dateAdded = cursor.getLong(dateAddedIndex)
 
         // Try to use the DISPLAY_NAME field to obtain a (probably sane) file name
         // from the android system.
@@ -316,6 +332,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
         var extensionMimeType: String? = null,
         var formatMimeType: String? = null,
         var size: Long? = null,
+        var dateAdded: Long? = null,
         var duration: Long? = null,
         var track: Int? = null,
         var disc: Int? = null,
@@ -326,8 +343,8 @@ abstract class MediaStoreBackend : Indexer.Backend {
         var albumArtist: String? = null,
         var genre: String? = null
     ) {
-        fun toSong(): Song {
-            return Song(
+        fun toSong() =
+            Song(
                 // Assert that the fields that should always exist are present. I can't confirm that
                 // every device provides these fields, but it seems likely that they do.
                 rawName = requireNotNull(title) { "Malformed audio: No title" },
@@ -342,6 +359,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                             requireNotNull(extensionMimeType) { "Malformed audio: No mime type" },
                         fromFormat = formatMimeType),
                 size = requireNotNull(size) { "Malformed audio: No size" },
+                dateAdded = requireNotNull(dateAdded) { "Malformed audio: No date added" },
                 durationMs = requireNotNull(duration) { "Malformed audio: No duration" },
                 track = track,
                 disc = disc,
@@ -352,7 +370,6 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 _artistName = artist,
                 _albumArtistName = albumArtist,
                 _genreName = genre)
-        }
     }
 
     companion object {
@@ -370,24 +387,6 @@ abstract class MediaStoreBackend : Indexer.Backend {
          * This constant is safe to use.
          */
         @Suppress("InlinedApi") private const val VOLUME_EXTERNAL = MediaStore.VOLUME_EXTERNAL
-
-        /**
-         * The basic projection that works across all versions of android. Is incomplete, hence why
-         * sub-implementations should be used instead.
-         */
-        private val BASE_PROJECTION =
-            arrayOf(
-                MediaStore.Audio.AudioColumns._ID,
-                MediaStore.Audio.AudioColumns.TITLE,
-                MediaStore.Audio.AudioColumns.DISPLAY_NAME,
-                MediaStore.Audio.AudioColumns.MIME_TYPE,
-                MediaStore.Audio.AudioColumns.SIZE,
-                MediaStore.Audio.AudioColumns.DURATION,
-                MediaStore.Audio.AudioColumns.YEAR,
-                MediaStore.Audio.AudioColumns.ALBUM,
-                MediaStore.Audio.AudioColumns.ALBUM_ID,
-                MediaStore.Audio.AudioColumns.ARTIST,
-                AUDIO_COLUMN_ALBUM_ARTIST)
 
         /**
          * The base selector that works across all versions of android. Does not exclude
@@ -418,6 +417,7 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
         get() = "${MediaStore.Audio.Media.DATA} LIKE ?"
 
     override fun addDirToSelectorArgs(dir: Directory, args: MutableList<String>): Boolean {
+        // Generate an equivalent DATA value from the volume directory and the relative path.
         args.add("${dir.volume.directoryCompat ?: return false}/${dir.relativePath}%")
         return true
     }
@@ -434,8 +434,9 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
         val data = cursor.getString(dataIndex)
 
         // On some OEM devices below API 29, DISPLAY_NAME may not be present. I assume
-        // that this only applies to below API 29, as that would completely break the
-        // scoped storage system. Fill it in with DATA if it's not available.
+        // that this only applies to below API 29, as beyond API 29, this field not being
+        // present would completely break the scoped storage system. Fill it in with DATA
+        // if it's not available.
         if (audio.displayName == null) {
             audio.displayName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
         }
@@ -454,11 +455,7 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
 
         val rawTrack = cursor.getIntOrNull(trackIndex)
         if (rawTrack != null) {
-            logD(rawTrack)
-            rawTrack.packedTrackNo?.let {
-                logD(it)
-                audio.track = it
-            }
+            rawTrack.packedTrackNo?.let { audio.track = it }
             rawTrack.packedDiscNo?.let { audio.disc = it }
         }
 
@@ -541,7 +538,7 @@ open class Api29MediaStoreBackend : BaseApi29MediaStoreBackend() {
         }
 
         // This backend is volume-aware, but does not support the modern track fields.
-        // Use the packed utilities instead.
+        // Use the old field instead.
         val rawTrack = cursor.getIntOrNull(trackIndex)
         if (rawTrack != null) {
             rawTrack.packedTrackNo?.let { audio.track = it }

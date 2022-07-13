@@ -105,6 +105,8 @@ object IntegerTable {
     const val SORT_BY_DISC = 0xA116
     /** Sort.ByTrack */
     const val SORT_BY_TRACK = 0xA117
+    /** Sort.ByDateAdded */
+    const val SORT_BY_DATE_ADDED = 0xA118
 
     /** ReplayGainMode.Off */
     const val REPLAY_GAIN_MODE_OFF = 0xA110

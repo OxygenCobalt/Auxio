@@ -77,7 +77,8 @@ fun lazyReflectedMethod(clazz: KClass<*>, method: String) = lazy {
 /**
  * An abstraction that allows cheap cooperative multi-threading in shared object contexts. Every new
  * task should call [newHandle], while every running task should call [check] or [yield] depending
- * on the context to determine if it should continue.
+ * on the situation to determine if it should continue. Failure to follow the expectations of this
+ * class will result in bugs.
  *
  * @author OxygenCobalt
  */

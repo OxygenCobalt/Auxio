@@ -33,6 +33,9 @@
                 <item
                     android:id="@+id/option_sort_count"
                     android:title="@string/lbl_sort_count" />
+                <item
+                    android:id="@+id/option_sort_date_added"
+                    android:title="@string/lbl_sort_date_added" />
             </group>
             <group android:checkableBehavior="all">
                 <item

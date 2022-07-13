@@ -252,11 +252,25 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
 
             override val itemId: Int
                 get() = R.id.option_sort_disc
+
             override fun getSongComparator(ascending: Boolean): Comparator<Song> =
                 MultiComparator(
                     compareByDynamic(ascending, NULLABLE_INT_COMPARATOR) { it.disc },
                     compareBy(NULLABLE_INT_COMPARATOR) { it.track },
                     compareBy(BasicComparator.SONG))
+        }
+
+        /** Sort by the time the item was added. Only supported by [Song] */
+        object ByDateAdded : Mode() {
+            override val intCode: Int
+                get() = IntegerTable.SORT_BY_DATE_ADDED
+
+            override val itemId: Int
+                get() = R.id.option_sort_date_added
+
+            override fun getSongComparator(ascending: Boolean): Comparator<Song> =
+                MultiComparator(
+                    compareByDynamic(ascending) { it.dateAdded }, compareBy(BasicComparator.SONG))
         }
 
         /**
@@ -374,6 +388,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                     ByCount.itemId -> ByCount
                     ByDisc.itemId -> ByDisc
                     ByTrack.itemId -> ByTrack
+                    ByDateAdded.itemId -> ByDateAdded
                     else -> null
                 }
         }
@@ -398,6 +413,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                     Mode.ByCount.intCode -> Mode.ByCount
                     Mode.ByDisc.intCode -> Mode.ByDisc
                     Mode.ByTrack.intCode -> Mode.ByTrack
+                    Mode.ByDateAdded.intCode -> Mode.ByDateAdded
                     else -> return null
                 }
 

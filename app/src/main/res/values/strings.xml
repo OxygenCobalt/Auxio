@@ -30,9 +30,10 @@
     <string name="lbl_sort_album">Album</string>
     <string name="lbl_sort_year">Year</string>
     <string name="lbl_sort_duration">Duration</string>
-    <string name="lbl_sort_count">Song Count</string>
+    <string name="lbl_sort_count">Song count</string>
     <string name="lbl_sort_disc">Disc</string>
     <string name="lbl_sort_track">Track</string>
+    <string name="lbl_sort_date_added">Date added</string>
     <string name="lbl_sort_asc">Ascending</string>
 
     <string name="lbl_playback">Now Playing</string>
