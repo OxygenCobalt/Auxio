@@ -260,19 +260,6 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                     compareBy(BasicComparator.SONG))
         }
 
-        /** Sort by the time the item was added. Only supported by [Song] */
-        object ByDateAdded : Mode() {
-            override val intCode: Int
-                get() = IntegerTable.SORT_BY_DATE_ADDED
-
-            override val itemId: Int
-                get() = R.id.option_sort_date_added
-
-            override fun getSongComparator(ascending: Boolean): Comparator<Song> =
-                MultiComparator(
-                    compareByDynamic(ascending) { it.dateAdded }, compareBy(BasicComparator.SONG))
-        }
-
         /**
          * Sort by the disc, and then track number of an item. Only supported by [Song]. Do not use
          * this in a main sorting view, as it is not assigned to a particular item ID
@@ -289,6 +276,24 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                     compareBy(NULLABLE_INT_COMPARATOR) { it.disc },
                     compareByDynamic(ascending, NULLABLE_INT_COMPARATOR) { it.track },
                     compareBy(BasicComparator.SONG))
+        }
+
+        /** Sort by the time the item was added. Only supported by [Song] */
+        object ByDateAdded : Mode() {
+            override val intCode: Int
+                get() = IntegerTable.SORT_BY_DATE_ADDED
+
+            override val itemId: Int
+                get() = R.id.option_sort_date_added
+
+            override fun getSongComparator(ascending: Boolean): Comparator<Song> =
+                MultiComparator(
+                    compareByDynamic(ascending) { it.dateAdded }, compareBy(BasicComparator.SONG))
+
+            override fun getAlbumComparator(ascending: Boolean): Comparator<Album> =
+                MultiComparator(
+                    compareByDynamic(ascending) { album -> album.songs.minOf { it.dateAdded } },
+                    compareBy(BasicComparator.ALBUM))
         }
 
         protected inline fun <T : Music, K> compareByDynamic(
