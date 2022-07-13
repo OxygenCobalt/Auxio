@@ -29,13 +29,12 @@ enum class RepeatMode {
     TRACK;
 
     /** Increment the mode, e.g from [NONE] to [ALL] */
-    fun increment(): RepeatMode {
-        return when (this) {
+    fun increment() =
+        when (this) {
             NONE -> ALL
             ALL -> TRACK
             TRACK -> NONE
         }
-    }
 
     /** The integer code representing this particular mode. */
     val intCode: Int
@@ -48,13 +47,12 @@ enum class RepeatMode {
 
     companion object {
         /** Convert an int [code] into an instance, or null if it isn't valid. */
-        fun fromIntCode(code: Int): RepeatMode? {
-            return when (code) {
+        fun fromIntCode(code: Int) =
+            when (code) {
                 IntegerTable.REPEAT_MODE_NONE -> NONE
                 IntegerTable.REPEAT_MODE_ALL -> ALL
                 IntegerTable.REPEAT_MODE_TRACK -> TRACK
                 else -> null
             }
-        }
     }
 }

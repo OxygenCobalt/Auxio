@@ -58,7 +58,6 @@
         <item name="textAppearanceBodySmall">@style/TextAppearance.Auxio.BodySmall</item>
     </style>
 
-
     <!--
     Theming widgets is technically possible below Android 12, but I *really* don't care enough
     to bother with it.

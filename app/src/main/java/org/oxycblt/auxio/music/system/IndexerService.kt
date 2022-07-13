@@ -46,6 +46,8 @@ import org.oxycblt.auxio.util.logD
  * You could probably do the same using WorkManager and the GooberQueue library or whatever, but the
  * boilerplate you skip is not worth the insanity of androidx.
  *
+ * TODO: Add a wake-lock to the music loading process
+ *
  * @author OxygenCobalt
  */
 class IndexerService : Service(), Indexer.Controller, Settings.Callback {

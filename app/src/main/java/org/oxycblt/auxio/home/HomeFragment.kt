@@ -75,12 +75,12 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private val homeModel: HomeViewModel by androidActivityViewModels()
-    private val indexerModel: MusicViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
 
     // lifecycleObject builds this in the creation step, so doing this is okay.
     private val storagePermissionLauncher: ActivityResultLauncher<String> by lifecycleObject {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            indexerModel.reindex()
+            musicModel.reindex()
         }
     }
 
@@ -142,8 +142,8 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         collect(homeModel.recreateTabs, ::handleRecreateTabs)
         collectImmediately(homeModel.currentTab, ::updateCurrentTab)
-        collectImmediately(indexerModel.libraryExists, homeModel.isFastScrolling, ::updateFab)
-        collectImmediately(indexerModel.indexerState, ::handleIndexerState)
+        collectImmediately(musicModel.libraryExists, homeModel.isFastScrolling, ::updateFab)
+        collectImmediately(musicModel.indexerState, ::handleIndexerState)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
@@ -283,7 +283,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = getString(R.string.lbl_retry)
-                        setOnClickListener { indexerModel.reindex() }
+                        setOnClickListener { musicModel.reindex() }
                     }
                 }
                 is Indexer.Response.NoMusic -> {
@@ -292,7 +292,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = getString(R.string.lbl_retry)
-                        setOnClickListener { indexerModel.reindex() }
+                        setOnClickListener { musicModel.reindex() }
                     }
                 }
                 is Indexer.Response.NoPerms -> {

@@ -55,7 +55,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 @Suppress("UNUSED")
 class SettingsListFragment : PreferenceFragmentCompat() {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
-    private val indexerModel: MusicViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -129,7 +129,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                     }
                 }
             getString(R.string.set_key_reindex) -> {
-                indexerModel.reindex()
+                musicModel.reindex()
             }
             else -> return super.onPreferenceTreeClick(preference)
         }
