@@ -34,13 +34,13 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.albumCoverUri
 import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.directoryCompat
-import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.mediaStoreVolumeNameCompat
-import org.oxycblt.auxio.music.packedDiscNo
-import org.oxycblt.auxio.music.packedTrackNo
+import org.oxycblt.auxio.music.parseId3GenreName
+import org.oxycblt.auxio.music.parsePositionNum
 import org.oxycblt.auxio.music.queryCursor
 import org.oxycblt.auxio.music.storageVolumesCompat
-import org.oxycblt.auxio.music.trackDiscNo
+import org.oxycblt.auxio.music.unpackDiscNo
+import org.oxycblt.auxio.music.unpackTrackNo
 import org.oxycblt.auxio.music.useQuery
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.contentResolverSafe
@@ -203,7 +203,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 // format a genre was derived from, we have to treat them like they are ID3
                 // genres, even when they might not be.
                 val id = genreCursor.getLong(idIndex)
-                val name = (genreCursor.getStringOrNull(nameIndex) ?: continue).id3GenreName
+                val name = (genreCursor.getStringOrNull(nameIndex) ?: continue).parseId3GenreName()
 
                 context.contentResolverSafe.useQuery(
                     MediaStore.Audio.Genres.Members.getContentUri(VOLUME_EXTERNAL, id),
@@ -350,40 +350,36 @@ abstract class MediaStoreBackend : Indexer.Backend {
     ) {
         fun toSong() =
             Song(
-                    // Assert that the fields that should always exist are present. I can't confirm
-                    // that
-                    // every device provides these fields, but it seems likely that they do.
-                    rawName = requireNotNull(title) { "Malformed audio: No title" },
-                    rawSortName = sortTitle,
-                    path =
-                        Path(
-                            name =
-                                requireNotNull(displayName) { "Malformed audio: No display name" },
-                            parent =
-                                requireNotNull(dir) { "Malformed audio: No parent directory" }),
-                    uri = requireNotNull(id) { "Malformed audio: No id" }.audioUri,
-                    mimeType =
-                        MimeType(
-                            fromExtension =
-                                requireNotNull(extensionMimeType) {
-                                    "Malformed audio: No mime type"
-                                },
-                            fromFormat = formatMimeType),
-                    size = requireNotNull(size) { "Malformed audio: No size" },
-                    dateAdded = requireNotNull(dateAdded) { "Malformed audio: No date added" },
-                    durationMs = requireNotNull(duration) { "Malformed audio: No duration" },
-                    track = track,
-                    disc = disc,
-                    _year = year,
-                    _albumName = requireNotNull(album) { "Malformed audio: No album name" },
-                    _albumSortName = sortAlbum,
-                    _albumCoverUri =
-                        requireNotNull(albumId) { "Malformed audio: No album id" }.albumCoverUri,
-                    _artistName = artist,
-                    _artistSortName = sortArtist,
-                    _albumArtistName = albumArtist,
-                    _albumArtistSortName = sortAlbumArtist,
-                    _genreName = genre)
+                // Assert that the fields that should always exist are present. I can't confirm
+                // that
+                // every device provides these fields, but it seems likely that they do.
+                rawName = requireNotNull(title) { "Malformed audio: No title" },
+                rawSortName = sortTitle,
+                path =
+                    Path(
+                        name = requireNotNull(displayName) { "Malformed audio: No display name" },
+                        parent = requireNotNull(dir) { "Malformed audio: No parent directory" }),
+                uri = requireNotNull(id) { "Malformed audio: No id" }.audioUri,
+                mimeType =
+                    MimeType(
+                        fromExtension =
+                            requireNotNull(extensionMimeType) { "Malformed audio: No mime type" },
+                        fromFormat = formatMimeType),
+                size = requireNotNull(size) { "Malformed audio: No size" },
+                dateAdded = requireNotNull(dateAdded) { "Malformed audio: No date added" },
+                durationMs = requireNotNull(duration) { "Malformed audio: No duration" },
+                track = track,
+                disc = disc,
+                _year = year,
+                _albumName = requireNotNull(album) { "Malformed audio: No album name" },
+                _albumSortName = sortAlbum,
+                _albumCoverUri =
+                    requireNotNull(albumId) { "Malformed audio: No album id" }.albumCoverUri,
+                _artistName = artist,
+                _artistSortName = sortArtist,
+                _albumArtistName = albumArtist,
+                _albumArtistSortName = sortAlbumArtist,
+                _genreName = genre)
     }
 
     companion object {
@@ -469,8 +465,8 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
 
         val rawTrack = cursor.getIntOrNull(trackIndex)
         if (rawTrack != null) {
-            rawTrack.packedTrackNo?.let { audio.track = it }
-            rawTrack.packedDiscNo?.let { audio.disc = it }
+            rawTrack.unpackTrackNo()?.let { audio.track = it }
+            rawTrack.unpackDiscNo()?.let { audio.disc = it }
         }
 
         return audio
@@ -555,8 +551,8 @@ open class Api29MediaStoreBackend : BaseApi29MediaStoreBackend() {
         // Use the old field instead.
         val rawTrack = cursor.getIntOrNull(trackIndex)
         if (rawTrack != null) {
-            rawTrack.packedTrackNo?.let { audio.track = it }
-            rawTrack.packedDiscNo?.let { audio.disc = it }
+            rawTrack.unpackTrackNo()?.let { audio.track = it }
+            rawTrack.unpackDiscNo()?.let { audio.disc = it }
         }
 
         return audio
@@ -594,8 +590,8 @@ class Api30MediaStoreBackend : BaseApi29MediaStoreBackend() {
         // N is the number and T is the total. Parse the number while leaving out the
         // total, as we have no use for it.
 
-        cursor.getStringOrNull(trackIndex)?.trackDiscNo?.let { audio.track = it }
-        cursor.getStringOrNull(discIndex)?.trackDiscNo?.let { audio.disc = it }
+        cursor.getStringOrNull(trackIndex)?.parsePositionNum()?.let { audio.track = it }
+        cursor.getStringOrNull(discIndex)?.parsePositionNum()?.let { audio.disc = it }
 
         return audio
     }

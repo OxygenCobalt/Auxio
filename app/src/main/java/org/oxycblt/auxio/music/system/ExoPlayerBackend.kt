@@ -26,11 +26,10 @@ import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.audioUri
-import org.oxycblt.auxio.music.id3GenreName
-import org.oxycblt.auxio.music.iso8601year
-import org.oxycblt.auxio.music.plainTrackNo
-import org.oxycblt.auxio.music.trackDiscNo
-import org.oxycblt.auxio.music.year
+import org.oxycblt.auxio.music.parseId3GenreName
+import org.oxycblt.auxio.music.parseIso8601Year
+import org.oxycblt.auxio.music.parseNum
+import org.oxycblt.auxio.music.parsePositionNum
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -211,10 +210,10 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         tags["TSOT"]?.let { audio.sortTitle = it }
 
         // Track, as NN/TT
-        tags["TRCK"]?.trackDiscNo?.let { audio.track = it }
+        tags["TRCK"]?.parsePositionNum()?.let { audio.track = it }
 
         // Disc, as NN/TT
-        tags["TPOS"]?.trackDiscNo?.let { audio.disc = it }
+        tags["TPOS"]?.parsePositionNum()?.let { audio.disc = it }
 
         // Dates are somewhat complicated, as not only did their semantics change from a flat year
         // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
@@ -225,9 +224,9 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         // 3. ID3v2.4 Release Date, as it is the second most common date type
         // 4. ID3v2.3 Original Date, as it is like #1
         // 5. ID3v2.3 Release Year, as it is the most common date type
-        (tags["TDOR"]?.iso8601year
-                ?: tags["TDRC"]?.iso8601year ?: tags["TDRL"]?.iso8601year ?: tags["TORY"]?.year
-                    ?: tags["TYER"]?.year)
+        (tags["TDOR"]?.parseIso8601Year()
+                ?: tags["TDRC"]?.parseIso8601Year() ?: tags["TDRL"]?.parseIso8601Year()
+                    ?: tags["TORY"]?.parseNum() ?: tags["TYER"]?.parseNum())
             ?.let { audio.year = it }
 
         // (Sort) Album
@@ -243,7 +242,7 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         tags["TSO2"]?.let { audio.sortAlbumArtist = it }
 
         // Genre, with the weird ID3 rules.
-        tags["TCON"]?.let { audio.genre = it.id3GenreName }
+        tags["TCON"]?.let { audio.genre = it.parseId3GenreName() }
     }
 
     private fun populateVorbis(tags: Map<String, String>) {
@@ -252,10 +251,10 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         tags["TITLESORT"]?.let { audio.sortTitle = it }
 
         // Track. Probably not NN/TT, as TOTALTRACKS handles totals.
-        tags["TRACKNUMBER"]?.plainTrackNo?.let { audio.track = it }
+        tags["TRACKNUMBER"]?.parseNum()?.let { audio.track = it }
 
         // Disc. Probably not NN/TT, as TOTALDISCS handles totals.
-        tags["DISCNUMBER"]?.plainTrackNo?.let { audio.disc = it }
+        tags["DISCNUMBER"]?.parseNum()?.let { audio.disc = it }
 
         // Vorbis dates are less complicated, but there are still several types
         // Our hierarchy for dates is as such:
@@ -263,7 +262,8 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         // 2. Date, as it is the most common date type
         // 3. Year, as old vorbis tags tended to use this (I know this because it's the only
         // tag that android supports, so it must be 15 years old or more!)
-        (tags["ORIGINALDATE"]?.iso8601year ?: tags["DATE"]?.iso8601year ?: tags["YEAR"]?.year)
+        (tags["ORIGINALDATE"]?.parseIso8601Year()
+                ?: tags["DATE"]?.parseIso8601Year() ?: tags["YEAR"]?.parseNum())
             ?.let { audio.year = it }
 
         // (Sort) Album
@@ -274,7 +274,7 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         tags["ARTIST"]?.let { audio.artist = it }
         tags["ARTISTSORT"]?.let { audio.sortArtist = it }
 
-        // (Sort) Album artist.
+        // (Sort) Album artist
         tags["ALBUMARTIST"]?.let { audio.albumArtist = it }
         tags["ALBUMARTISTSORT"]?.let { audio.sortAlbumArtist = it }
 

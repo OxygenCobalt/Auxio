@@ -37,14 +37,11 @@ sealed class Music : Item() {
     abstract val rawSortName: String?
 
     /**
-     * The name of this item used for sorting. This will first use the sort tag for the item,
-     * followed by the name without a preceding article (The/A/An). In the case that the item has no
-     * name, this returns null.
-     *
-     * This should not be used outside of sorting and fast-scrolling.
+     * The name of this item used for sorting.This should not be used outside of sorting and
+     * fast-scrolling.
      */
     val sortName: String?
-        get() = rawSortName ?: rawName?.withoutArticle
+        get() = rawSortName ?: rawName?.parseSortName()
 
     /**
      * Resolve a name from it's raw form to a form suitable to be shown in a ui. Ex. "unknown" would
@@ -275,8 +272,9 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
         }
     }
 
+    // Sort tags don't make sense on genres
     override val rawSortName: String?
-        get() = null
+        get() = rawName
 
     override val id: Long
         get() = (rawName ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()

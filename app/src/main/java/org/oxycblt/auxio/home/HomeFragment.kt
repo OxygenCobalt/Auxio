@@ -132,7 +132,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
             // ViewPager2 will nominally consume window insets, which will then break the window
             // insets applied to the indexing view before API 30. Fix this by overriding the
-            // callback with a no-op listener.
+            // callback with a non-consuming listener.
             setOnApplyWindowInsetsListener { _, insets -> insets }
         }
 
@@ -343,8 +343,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     }
 
     private fun handleNavigation(item: Music?) {
-        // Note: You will want to add a post call to this if you want to re-introduce a collapsing
-        // toolbar.
         when (item) {
             is Song ->
                 findNavController().navigate(HomeFragmentDirections.actionShowAlbum(item.album.id))

@@ -56,41 +56,29 @@ val Long.albumCoverUri: Uri
     get() = ContentUris.withAppendedId(EXTERNAL_ALBUM_ART_URI, this)
 
 /**
- * Parse out the number field from a field assumed to be NN, where NN is a track number. This is
- * most commonly found on vorbis comments. Values of zero will be ignored under the assumption that
- * they are invalid.
- */
-val String.plainTrackNo: Int?
-    get() = toIntOrNull()?.nonZeroOrNull()
-
-/**
  * Parse out the track number field as if the given Int is formatted as DTTT, where D Is the disc
  * and T is the track number. Values of zero will be ignored under the assumption that they are
  * invalid.
  */
-val Int.packedTrackNo: Int?
-    get() = mod(1000).nonZeroOrNull()
+fun Int.unpackTrackNo() = mod(1000).nonZeroOrNull()
 
 /**
  * Parse out the disc number field as if the given Int is formatted as DTTT, where D Is the disc and
  * T is the track number. Values of zero will be ignored under the assumption that they are invalid.
  */
-val Int.packedDiscNo: Int?
-    get() = div(1000).nonZeroOrNull()
+fun Int.unpackDiscNo() = div(1000).nonZeroOrNull()
+
+/**
+ * Parse out a plain number from a string. Values of 0 will be ignored under the assumption that
+ * they are invalid.
+ */
+fun String.parseNum() = toIntOrNull()?.nonZeroOrNull()
 
 /**
  * Parse out the number field from an NN/TT string that is typically found in DISC_NUMBER and
  * CD_TRACK_NUMBER. Values of zero will be ignored under the assumption that they are invalid.
  */
-val String.trackDiscNo: Int?
-    get() = split('/', limit = 2)[0].toIntOrNull()?.nonZeroOrNull()
-
-/**
- * Parse out a plain year from a string. Values of 0 will be ignored under the assumption that they
- * are invalid.
- */
-val String.year: Int?
-    get() = toIntOrNull()?.nonZeroOrNull()
+fun String.parsePositionNum() = split('/', limit = 2)[0].toIntOrNull()?.nonZeroOrNull()
 
 /**
  * Parse out the year field from a (presumably) ISO-8601-like date. This differs across tag formats
@@ -98,8 +86,7 @@ val String.year: Int?
  * (...) and thus we can parse the year out by splitting at the first -. Values of 0 will be ignored
  * under the assumption that they are invalid.
  */
-val String.iso8601year: Int?
-    get() = split('-', limit = 2)[0].toIntOrNull()?.nonZeroOrNull()
+fun String.parseIso8601Year() = split('-', limit = 2)[0].toIntOrNull()?.nonZeroOrNull()
 
 private fun Int.nonZeroOrNull() = if (this > 0) this else null
 
@@ -108,29 +95,19 @@ private fun Int.nonZeroOrNull() = if (this > 0) this else null
  * anglo-centric, but it's also a bit of an expected feature in music players, so we implement it
  * anyway.
  */
-val String.withoutArticle: String
-    get() {
-        if (length > 5 && startsWith("the ", ignoreCase = true)) {
-            return slice(4..lastIndex)
-        }
-
-        if (length > 4 && startsWith("an ", ignoreCase = true)) {
-            return slice(3..lastIndex)
-        }
-
-        if (length > 3 && startsWith("a ", ignoreCase = true)) {
-            return slice(2..lastIndex)
-        }
-
-        return this
+fun String.parseSortName() =
+    when {
+        length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
+        length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
+        length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
+        else -> this
     }
 
 /**
  * Decodes the genre name from an ID3(v2) constant. See [GENRE_TABLE] for the genre constant map
  * that Auxio uses.
  */
-val String.id3GenreName: String
-    get() = parseId3v1Genre() ?: parseId3v2Genre() ?: this
+fun String.parseId3GenreName() = parseId3v1Genre() ?: parseId3v2Genre() ?: this
 
 private fun String.parseId3v1Genre(): String? =
     when {
@@ -158,7 +135,7 @@ private fun String.parseId3v2Genre(): String? {
     // ID3v1 tags.
     val genreIds = groups[1]
     if (genreIds != null && genreIds.value.isNotEmpty()) {
-        val ids = genreIds.value.substring(1 until genreIds.value.lastIndex).split(")(")
+        val ids = genreIds.value.substring(1).split(")(")
         for (id in ids) {
             id.parseId3v1Genre()?.let(genres::add)
         }
