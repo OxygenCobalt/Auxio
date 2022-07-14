@@ -209,7 +209,7 @@
     <string name="lbl_sample_rate">Vzorkovací frekvence</string>
     <string name="set_dirs">Hudební složky</string>
     <string name="set_quality_tags">Ignorovat štítky MediaStore</string>
-    <string name="set_quality_tags_desc">Zvýší kvalitu štítků, ale vyžaduje delší načítací čas (experimentální)</string>
+    <string name="set_quality_tags_desc">Zvýší kvalitu štítků, ale má za následek delší načítací čas (experimentální)</string>
     <string name="set_restore">Obnovit stav přehrávání</string>
     <string name="lbl_state_restored">Stav obnoven</string>
     <string name="set_restore_desc">Obnovit dříve uložený stav přehrávání (pokud existuje)</string>
@@ -219,4 +219,5 @@
     <string name="lbl_observing_desc">Sledování změn v hudební knihovně…</string>
     <string name="set_observing_desc">Znovu načíst vaší hudební knihovnu při změně (experimentální)</string>
     <string name="lbl_indexing">Načítání hudby</string>
+    <string name="lbl_sort_date_added">Datum přidání</string>
 </resources>
