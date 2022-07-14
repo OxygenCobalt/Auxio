@@ -238,6 +238,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
     open val projection: Array<String>
         get() =
             arrayOf(
+                // These columns are guaranteed to work on all versions of android
                 MediaStore.Audio.AudioColumns._ID,
                 MediaStore.Audio.AudioColumns.TITLE,
                 MediaStore.Audio.AudioColumns.DISPLAY_NAME,
@@ -327,6 +328,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
     data class Audio(
         var id: Long? = null,
         var title: String? = null,
+        var sortTitle: String? = null,
         var displayName: String? = null,
         var dir: Directory? = null,
         var extensionMimeType: String? = null,
@@ -338,38 +340,50 @@ abstract class MediaStoreBackend : Indexer.Backend {
         var disc: Int? = null,
         var year: Int? = null,
         var album: String? = null,
+        var sortAlbum: String? = null,
         var albumId: Long? = null,
         var artist: String? = null,
+        var sortArtist: String? = null,
         var albumArtist: String? = null,
+        var sortAlbumArtist: String? = null,
         var genre: String? = null
     ) {
         fun toSong() =
             Song(
-                // Assert that the fields that should always exist are present. I can't confirm that
-                // every device provides these fields, but it seems likely that they do.
-                rawName = requireNotNull(title) { "Malformed audio: No title" },
-                path =
-                    Path(
-                        name = requireNotNull(displayName) { "Malformed audio: No display name" },
-                        parent = requireNotNull(dir) { "Malformed audio: No parent directory" }),
-                uri = requireNotNull(id) { "Malformed audio: No id" }.audioUri,
-                mimeType =
-                    MimeType(
-                        fromExtension =
-                            requireNotNull(extensionMimeType) { "Malformed audio: No mime type" },
-                        fromFormat = formatMimeType),
-                size = requireNotNull(size) { "Malformed audio: No size" },
-                dateAdded = requireNotNull(dateAdded) { "Malformed audio: No date added" },
-                durationMs = requireNotNull(duration) { "Malformed audio: No duration" },
-                track = track,
-                disc = disc,
-                _year = year,
-                _albumName = requireNotNull(album) { "Malformed audio: No album name" },
-                _albumCoverUri =
-                    requireNotNull(albumId) { "Malformed audio: No album id" }.albumCoverUri,
-                _artistName = artist,
-                _albumArtistName = albumArtist,
-                _genreName = genre)
+                    // Assert that the fields that should always exist are present. I can't confirm
+                    // that
+                    // every device provides these fields, but it seems likely that they do.
+                    rawName = requireNotNull(title) { "Malformed audio: No title" },
+                    rawSortName = sortTitle,
+                    path =
+                        Path(
+                            name =
+                                requireNotNull(displayName) { "Malformed audio: No display name" },
+                            parent =
+                                requireNotNull(dir) { "Malformed audio: No parent directory" }),
+                    uri = requireNotNull(id) { "Malformed audio: No id" }.audioUri,
+                    mimeType =
+                        MimeType(
+                            fromExtension =
+                                requireNotNull(extensionMimeType) {
+                                    "Malformed audio: No mime type"
+                                },
+                            fromFormat = formatMimeType),
+                    size = requireNotNull(size) { "Malformed audio: No size" },
+                    dateAdded = requireNotNull(dateAdded) { "Malformed audio: No date added" },
+                    durationMs = requireNotNull(duration) { "Malformed audio: No duration" },
+                    track = track,
+                    disc = disc,
+                    _year = year,
+                    _albumName = requireNotNull(album) { "Malformed audio: No album name" },
+                    _albumSortName = sortAlbum,
+                    _albumCoverUri =
+                        requireNotNull(albumId) { "Malformed audio: No album id" }.albumCoverUri,
+                    _artistName = artist,
+                    _artistSortName = sortArtist,
+                    _albumArtistName = albumArtist,
+                    _albumArtistSortName = sortAlbumArtist,
+                    _genreName = genre)
     }
 
     companion object {

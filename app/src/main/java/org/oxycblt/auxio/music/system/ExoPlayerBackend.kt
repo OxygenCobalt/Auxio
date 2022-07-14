@@ -206,8 +206,9 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
     }
 
     private fun populateId3v2(tags: Map<String, String>) {
-        // Title
+        // (Sort) Title
         tags["TIT2"]?.let { audio.title = it }
+        tags["TSOT"]?.let { audio.sortTitle = it }
 
         // Track, as NN/TT
         tags["TRCK"]?.trackDiscNo?.let { audio.track = it }
@@ -229,22 +230,26 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
                     ?: tags["TYER"]?.year)
             ?.let { audio.year = it }
 
-        // Album
+        // (Sort) Album
         tags["TALB"]?.let { audio.album = it }
+        tags["TSOA"]?.let { audio.sortAlbum = it }
 
-        // Artist
+        // (Sort) Artist
         tags["TPE1"]?.let { audio.artist = it }
+        tags["TSOP"]?.let { audio.sortArtist = it }
 
-        // Album artist
+        // (Sort) Album artist
         tags["TPE2"]?.let { audio.albumArtist = it }
+        tags["TSO2"]?.let { audio.sortAlbumArtist = it }
 
         // Genre, with the weird ID3 rules.
         tags["TCON"]?.let { audio.genre = it.id3GenreName }
     }
 
     private fun populateVorbis(tags: Map<String, String>) {
-        // Title
+        // (Sort) Title
         tags["TITLE"]?.let { audio.title = it }
+        tags["TITLESORT"]?.let { audio.sortTitle = it }
 
         // Track. Probably not NN/TT, as TOTALTRACKS handles totals.
         tags["TRACKNUMBER"]?.plainTrackNo?.let { audio.track = it }
@@ -261,16 +266,17 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         (tags["ORIGINALDATE"]?.iso8601year ?: tags["DATE"]?.iso8601year ?: tags["YEAR"]?.year)
             ?.let { audio.year = it }
 
-        // Album
+        // (Sort) Album
         tags["ALBUM"]?.let { audio.album = it }
+        tags["ALBUMSORT"]?.let { audio.sortAlbum = it }
 
-        // Artist
+        // (Sort) Artist
         tags["ARTIST"]?.let { audio.artist = it }
+        tags["ARTISTSORT"]?.let { audio.sortArtist = it }
 
-        // Album artist. This actually comes into two flavors:
-        // 1. ALBUMARTIST, which is the most common
-        // 2. ALBUM ARTIST, which is present on older vorbis tags
-        (tags["ALBUMARTIST"] ?: tags["ALBUM ARTIST"])?.let { audio.albumArtist = it }
+        // (Sort) Album artist.
+        tags["ALBUMARTIST"]?.let { audio.albumArtist = it }
+        tags["ALBUMARTISTSORT"]?.let { audio.sortAlbumArtist = it }
 
         // Genre, no ID3 rules here
         tags["GENRE"]?.let { audio.genre = it }

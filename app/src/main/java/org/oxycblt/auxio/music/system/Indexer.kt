@@ -313,10 +313,12 @@ class Indexer {
             albums.add(
                 Album(
                     rawName = templateSong._albumName,
+                    rawSortName = templateSong._albumSortName,
                     year = templateSong._year,
                     albumCoverUri = templateSong._albumCoverUri,
                     songs = entry.value,
-                    _artistGroupingName = templateSong._artistGroupingName))
+                    _artistGroupingName = templateSong._artistGroupingName,
+                    _artistGroupingSortName = templateSong._artistGroupingSortName))
         }
 
         logD("Successfully built ${albums.size} albums")
@@ -335,10 +337,14 @@ class Indexer {
         for (entry in albumsByArtist) {
             // The first album will suffice for template metadata.
             val templateAlbum = entry.value[0]
-            artists.add(Artist(rawName = templateAlbum._artistGroupingName, albums = entry.value))
+            artists.add(
+                Artist(
+                    rawName = templateAlbum._artistGroupingName,
+                    rawSortName = templateAlbum._artistGroupingSortName,
+                    albums = entry.value))
         }
 
-        logD("Successfully built ${artists.size} artists")
+        `logD`("Successfully built ${artists.size} artists")
 
         return artists
     }

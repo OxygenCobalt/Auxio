@@ -69,6 +69,7 @@ sealed class MusicParent : Music() {
 /** The data object for a song. */
 data class Song(
     override val rawName: String,
+    override val rawSortName: String?,
     /** The path of this song. */
     val path: Path,
     /** The URI linking to this song's file. */
@@ -90,11 +91,17 @@ data class Song(
     /** Internal field. Do not use. */
     val _albumName: String,
     /** Internal field. Do not use. */
+    val _albumSortName: String?,
+    /** Internal field. Do not use. */
     val _albumCoverUri: Uri,
     /** Internal field. Do not use. */
     val _artistName: String?,
     /** Internal field. Do not use. */
+    val _artistSortName: String?,
+    /** Internal field. Do not use. */
     val _albumArtistName: String?,
+    /** Internal field. Do not use. */
+    val _albumArtistSortName: String?,
     /** Internal field. Do not use. */
     val _genreName: String?
 ) : Music() {
@@ -108,9 +115,6 @@ data class Song(
             result = 31 * result + durationMs.hashCode()
             return result
         }
-
-    override val rawSortName: String?
-        get() = null
 
     override fun resolveName(context: Context) = rawName
 
@@ -160,6 +164,14 @@ data class Song(
         get() = _albumArtistName ?: _artistName
 
     /** Internal field. Do not use. */
+    val _artistGroupingSortName: String?
+        get() =
+            // Only use the album artist sort name if we have one, otherwise ignore it.
+            _albumArtistName?.let { _albumArtistSortName } ?: _artistName?.let { _artistSortName }
+
+    /** Internal field. Do not use. */
+
+    /** Internal field. Do not use. */
     val _isMissingAlbum: Boolean
         get() = _album == null
     /** Internal field. Do not use. */
@@ -183,6 +195,7 @@ data class Song(
 /** The data object for an album. */
 data class Album(
     override val rawName: String,
+    override val rawSortName: String?,
     /** The latest year of the songs in this album. Null if none of the songs had metadata. */
     val year: Int?,
     /** The URI for the cover art corresponding to this album. */
@@ -191,6 +204,8 @@ data class Album(
     override val songs: List<Song>,
     /** Internal field. Do not use. */
     val _artistGroupingName: String?,
+    /** Internal field. Do not use. */
+    val _artistGroupingSortName: String?
 ) : MusicParent() {
     init {
         for (song in songs) {
@@ -205,9 +220,6 @@ data class Album(
             result = 31 * result + (year ?: 0)
             return result
         }
-
-    override val rawSortName: String?
-        get() = null
 
     override fun resolveName(context: Context) = rawName
 
@@ -236,6 +248,7 @@ data class Album(
  */
 data class Artist(
     override val rawName: String?,
+    override val rawSortName: String?,
     /** The albums of this artist. */
     val albums: List<Album>
 ) : MusicParent() {
@@ -247,9 +260,6 @@ data class Artist(
 
     override val id: Long
         get() = (rawName ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
-
-    override val rawSortName: String?
-        get() = null
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
 
@@ -265,11 +275,11 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
         }
     }
 
-    override val id: Long
-        get() = (rawName ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
-
     override val rawSortName: String?
         get() = null
+
+    override val id: Long
+        get() = (rawName ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
 }
