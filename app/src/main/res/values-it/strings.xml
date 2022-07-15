@@ -86,7 +86,7 @@
     <string name="set_save">Salva stato riproduzione</string>
     <string name="set_save_desc">Salva lo stato di riproduzione corrente</string>
     <string name="set_reindex">Ricarica musica</string>
-    <string name="set_reindex_desc">L\'applicazione sarà riavviata</string>
+    <string name="set_reindex_desc">Potrebbe cancellare lo stato di riproduzione</string>
     <string name="lbl_off">Spento</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Musica non trovata</string>
@@ -187,7 +187,7 @@
     <string name="info_indexer_channel_name">Caricamento musica</string>
     <string name="lbl_indexing_desc">Caricamento libreria musicale…</string>
     <string name="lbl_sort_duration">Durata</string>
-    <string name="lbl_sort_count">Conteggio canzoni</string>
+    <string name="lbl_sort_count">Numero canzoni</string>
     <string name="lbl_sort_disc">Disco</string>
     <string name="lbl_sort_track">Traccia</string>
     <string name="lbl_ok">OK</string>
@@ -202,4 +202,16 @@
     <string name="def_bitrate">Nessuna velocità di trasmissione</string>
     <string name="lbl_cancel">Cancella</string>
     <string name="set_pre_amp">Pre-amp ReplayGain</string>
+    <string name="lbl_observing_desc">Sto monitorando i cambiamenti nella tua libreria musicale…</string>
+    <string name="set_observing_desc">Ricarica la tua libreria musicale se subisce cambiamenti (sperimentale)</string>
+    <string name="lbl_indexing">Caricamento musica</string>
+    <string name="lbl_observing">Monitoraggio libreria musicale</string>
+    <string name="lbl_state_restored">Stato ripristinato</string>
+    <string name="lbl_sort_date_added">Data aggiunta</string>
+    <string name="set_observing">Ricaricamento automatico</string>
+    <string name="set_quality_tags">Ignora tags MediaStore</string>
+    <string name="set_quality_tags_desc">Migliora qualità dei tag, ma potrebbe richiedere tempi di carimento più lunghi (sperimentale)</string>
+    <string name="set_restore">Ripristina stato riproduzione</string>
+    <string name="set_restore_desc">Ripristina lo stato di riproduzione precedentemente salvato (se disponibile)</string>
+    <string name="err_did_not_restore">Impossibile ripristinare lo stato</string>
 </resources>
