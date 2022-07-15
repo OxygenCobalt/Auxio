@@ -112,10 +112,10 @@ data class Song(
         get() {
             var result = rawName.hashCode().toLong()
             result = 31 * result + album.rawName.hashCode()
-            result = 31 * result + album.artist.rawName.hashCode()
+            result = 31 * result + (album.artist.rawName ?: MediaStore.UNKNOWN_STRING).hashCode()
             result = 31 * result + (track ?: 0)
-            // TODO: Rework hashing to add discs and handle null values correctly
-            result = 31 * result + durationMs.hashCode()
+            result = 31 * result + (disc ?: 0)
+            result = 31 * result + durationMs
             return result
         }
 
@@ -160,7 +160,7 @@ data class Song(
 
     /** Internal field. Do not use. */
     val _genreGroupingId: Long
-        get() = (_genreName ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
+        get() = (_genreName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
 
     /** Internal field. Do not use. */
     val _artistGroupingName: String?
@@ -220,7 +220,7 @@ data class Album(
     override val id: Long
         get() {
             var result = rawName.hashCode().toLong()
-            result = 31 * result + artist.rawName.hashCode()
+            result = 31 * result + (artist.rawName ?: MediaStore.UNKNOWN_STRING).hashCode()
             result = 31 * result + (date?.year ?: 0)
             return result
         }
@@ -292,9 +292,9 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
 /**
  * An ISO-8601/RFC 3339 Date.
  *
- * Unlike a typical Date within the standard library, this class is simply a 1:1 mapping between the
- * tag date format of ID3v2 and (presumably) the Vorbis date format, implementing only format
- * validation and excluding advanced or locale-specific date functionality..
+ * Unlike a typical Date within the standard library, this class just represents the ID3v2/Vorbis
+ * date format, which is largely assumed to be a subset of ISO-8601. No validation outside of
+ * format validation is done.
  *
  * The reasoning behind Date is that Auxio cannot trust any kind of metadata date to actually make
  * sense in a calendar, due to bad tagging, locale-specific issues, or simply from the limited
@@ -305,7 +305,7 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
  * [fromYear] or [parseTimestamp]. The string representation of a Date is RFC 3339, with granular
  * position depending on the presence of particular tokens.
  *
- * Please, *Do not use this for anything important related to time.* I cannot stress this enough.
+ * Please, **Do not use this for anything important related to time.** I cannot stress this enough.
  * This class will blow up if you try to do that.
  *
  * @author OxygenCobalt
@@ -327,6 +327,9 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
     val year: Int
         get() = tokens[0]
 
+    /** Resolve the year field in a way suitable for the UI. */
+    fun resolveYear(context: Context) = context.getString(R.string.fmt_number, year)
+
     private val month: Int?
         get() = tokens.getOrNull(1)
 
@@ -342,7 +345,6 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
     private val second: Int?
         get() = tokens.getOrNull(5)
 
-    fun resolveYear(context: Context) = context.getString(R.string.fmt_number, year)
 
     override fun hashCode() = tokens.hashCode()
 

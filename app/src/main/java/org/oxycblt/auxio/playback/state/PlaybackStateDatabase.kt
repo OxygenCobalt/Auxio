@@ -307,7 +307,7 @@ class PlaybackStateDatabase private constructor(context: Context) :
         const val COLUMN_INDEX = "queue_index"
         const val COLUMN_PLAYBACK_MODE = "playback_mode"
         const val COLUMN_IS_SHUFFLED = "is_shuffling"
-        const val COLUMN_REPEAT_MODE = "loop_mode"
+        const val COLUMN_REPEAT_MODE = "repeat_mode"
     }
 
     private object QueueColumns {
@@ -318,7 +318,7 @@ class PlaybackStateDatabase private constructor(context: Context) :
 
     companion object {
         const val DB_NAME = "auxio_state_database.db"
-        const val DB_VERSION = 6
+        const val DB_VERSION = 7
 
         const val TABLE_NAME_STATE = "playback_state_table"
         const val TABLE_NAME_QUEUE = "queue_table"
