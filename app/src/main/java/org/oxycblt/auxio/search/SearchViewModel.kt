@@ -29,12 +29,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
+import org.oxycblt.auxio.util.TaskGuard
 import org.oxycblt.auxio.util.application
 import org.oxycblt.auxio.util.logD
 
@@ -56,11 +59,13 @@ class SearchViewModel(application: Application) :
         get() = settings.searchFilterMode
 
     private var lastQuery: String? = null
+    private var guard = TaskGuard()
 
     /**
      * Use [query] to perform a search of the music library. Will push results to [searchResults].
      */
     fun search(query: String?) {
+        val handle = guard.newHandle()
         lastQuery = query
 
         val library = musicStore.library
@@ -80,33 +85,34 @@ class SearchViewModel(application: Application) :
             // Note: a filter mode of null means to not filter at all.
 
             if (filterMode == null || filterMode == DisplayMode.SHOW_ARTISTS) {
-                library.artists.filterByOrNull(query)?.let { artists ->
+                library.artists.filterParentsBy(query)?.let { artists ->
                     results.add(Header(-1, R.string.lbl_artists))
                     results.addAll(sort.artists(artists))
                 }
             }
 
             if (filterMode == null || filterMode == DisplayMode.SHOW_ALBUMS) {
-                library.albums.filterByOrNull(query)?.let { albums ->
+                library.albums.filterParentsBy(query)?.let { albums ->
                     results.add(Header(-2, R.string.lbl_albums))
                     results.addAll(sort.albums(albums))
                 }
             }
 
             if (filterMode == null || filterMode == DisplayMode.SHOW_GENRES) {
-                library.genres.filterByOrNull(query)?.let { genres ->
+                library.genres.filterParentsBy(query)?.let { genres ->
                     results.add(Header(-3, R.string.lbl_genres))
                     results.addAll(sort.genres(genres))
                 }
             }
 
             if (filterMode == null || filterMode == DisplayMode.SHOW_SONGS) {
-                library.songs.filterByOrNull(query)?.let { songs ->
+                library.songs.filterSongsBy(query)?.let { songs ->
                     results.add(Header(-4, R.string.lbl_songs))
                     results.addAll(sort.songs(songs))
                 }
             }
 
+            guard.yield(handle)
             _searchResults.value = results
         }
     }
@@ -131,20 +137,24 @@ class SearchViewModel(application: Application) :
         search(lastQuery)
     }
 
-    /**
-     * Shortcut that will run a ignoreCase filter on a list and only return a value if the resulting
-     * list is empty.
-     */
-    private fun <T : Music> List<T>.filterByOrNull(value: String): List<T>? {
-        val filtered = filter {
-            // Compare normalized names, which are names with unicode characters that are
-            // normalized to their non-unicode forms. This is just for quality-of-life,
-            // and I hope it doesn't bork search functionality for other languages.
-            it.resolveNameNormalized(application).contains(value, ignoreCase = true) ||
-                it.resolveNameNormalized(application).contains(value, ignoreCase = true)
-        }
+    /** Searches the song list by the normalized name, then the sort name, and then the file name. */
+    private fun List<Song>.filterSongsBy(value: String) =
+        baseFilterBy(value) { it.path.name.contains(value) }.ifEmpty { null }
 
-        return filtered.ifEmpty { null }
+    /** Searches a list of parents by the normalized name, and then the sort name. */
+    private fun <T : MusicParent> List<T>.filterParentsBy(value: String) =
+        baseFilterBy(value) { false }.ifEmpty { null }
+
+    private inline fun <T : Music> List<T>.baseFilterBy(
+        value: String,
+        additional: (T) -> Boolean
+    ) = filter {
+        // The basic comparison is first by the *normalized* name, as that allows a non-unicode
+        // search to match with some unicode characters. If that fails, we if there is a sort name
+        // we can leverage, as those are often used to make non-unicode variants of unicode titles.
+        it.resolveNameNormalized(application).contains(value, ignoreCase = true) ||
+            it.rawSortName?.contains(value, ignoreCase = true) == true ||
+            additional(it)
     }
 
     private fun Music.resolveNameNormalized(context: Context): String {

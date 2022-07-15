@@ -292,18 +292,18 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
 /**
  * An ISO-8601/RFC 3339 Date.
  *
- * Unlike a typical Date within the standard library, this class is simply a 1:1 mapping between
- * the tag date format of ID3v2 and (presumably) the Vorbis date format, implementing only format
+ * Unlike a typical Date within the standard library, this class is simply a 1:1 mapping between the
+ * tag date format of ID3v2 and (presumably) the Vorbis date format, implementing only format
  * validation and excluding advanced or locale-specific date functionality..
  *
- * The reasoning behind Date is that Auxio cannot trust any kind of metadata date to actually
- * make sense in a calendar, due to bad tagging, locale-specific issues, or simply from the
- * limited nature of tag formats. Thus, it's better to use an analogous data structure that
- * will not mangle or reject valid-ish dates.
-  *
- * Date instances are immutable and their internal implementation is hidden. To instantiate one,
- * use [fromYear] or [parseTimestamp]. The string representation of a Date is RFC 3339, with
- * granular position depending on the presence of particular tokens.
+ * The reasoning behind Date is that Auxio cannot trust any kind of metadata date to actually make
+ * sense in a calendar, due to bad tagging, locale-specific issues, or simply from the limited
+ * nature of tag formats. Thus, it's better to use an analogous data structure that will not mangle
+ * or reject valid-ish dates.
+ *
+ * Date instances are immutable and their internal implementation is hidden. To instantiate one, use
+ * [fromYear] or [parseTimestamp]. The string representation of a Date is RFC 3339, with granular
+ * position depending on the presence of particular tokens.
  *
  * Please, *Do not use this for anything important related to time.* I cannot stress this enough.
  * This class will blow up if you try to do that.
