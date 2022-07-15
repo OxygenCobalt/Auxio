@@ -23,6 +23,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.resolveYear
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.AlbumViewHolder
@@ -64,7 +65,7 @@ class AlbumListFragment : HomeListFragment<Album>() {
             is Sort.Mode.ByArtist -> album.artist.sortName?.run { first().uppercase() }
 
             // Year -> Use Full Year
-            is Sort.Mode.ByYear -> album.year?.toString()
+            is Sort.Mode.ByYear -> album.date?.resolveYear(requireContext())
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> album.durationSecs.formatDuration(false)

@@ -126,7 +126,8 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
             text =
                 context.getString(
                     R.string.fmt_three,
-                    item.year?.toString() ?: context.getString(R.string.def_date),
+                    item.date?.let { context.getString(R.string.fmt_number, it.year) }
+                        ?: context.getString(R.string.def_date),
                     context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size),
                     item.durationSecs.formatDuration(false))
         }
@@ -150,7 +151,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
                 override fun areItemsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.artist.rawName == newItem.artist.rawName &&
-                        oldItem.year == newItem.year &&
+                        oldItem.date == newItem.date &&
                         oldItem.songs.size == newItem.songs.size &&
                         oldItem.durationSecs == newItem.durationSecs
             }

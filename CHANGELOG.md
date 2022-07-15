@@ -6,6 +6,7 @@
 - Added option to ignore `MediaStore` tags, allowing more correct metadata
 at the cost of longer loading times
 	- Added support for sort tags [#172, dependent on this feature]
+	- Added support for date tags, including more fine-grained dates [#159, dependent on this feature]
 - Added Last Added sorting
 
 ## 2.5.0

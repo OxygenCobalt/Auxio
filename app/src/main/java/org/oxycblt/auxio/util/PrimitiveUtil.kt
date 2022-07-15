@@ -43,6 +43,10 @@ fun <T> unlikelyToBeNull(value: T?) =
         value!!
     }
 
+fun Int.nonZeroOrNull() = if (this > 0) this else null
+
+fun Int.inRangeOrNull(range: IntRange) = if (range.contains(this)) this else null
+
 /**
  * Convert a [Long] of seconds into a string duration.
  * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--

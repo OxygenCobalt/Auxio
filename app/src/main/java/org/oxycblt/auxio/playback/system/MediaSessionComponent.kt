@@ -129,16 +129,16 @@ class MediaSessionComponent(
                     parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
 
-        if (song.track != null) {
-            builder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, song.track.toLong())
+        song.track?.let {
+            builder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, it.toLong())
         }
 
-        if (song.disc != null) {
-            builder.putLong(MediaMetadataCompat.METADATA_KEY_DISC_NUMBER, song.disc.toLong())
+        song.disc?.let {
+            builder.putLong(MediaMetadataCompat.METADATA_KEY_DISC_NUMBER, it.toLong())
         }
 
-        if (song.album.year != null) {
-            builder.putString(MediaMetadataCompat.METADATA_KEY_DATE, song.album.year.toString())
+        song.album.date?.let {
+            builder.putString(MediaMetadataCompat.METADATA_KEY_DATE, it.toString())
         }
 
         // Cover loading is a mess. Android expects you to provide a clean, easy URI for it to

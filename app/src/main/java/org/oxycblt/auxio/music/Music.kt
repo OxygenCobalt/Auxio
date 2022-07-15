@@ -22,8 +22,14 @@ package org.oxycblt.auxio.music
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import kotlin.math.max
+import kotlin.math.min
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Item
+import org.oxycblt.auxio.util.inRangeOrNull
+import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 // --- MUSIC MODELS ---
@@ -84,7 +90,7 @@ data class Song(
     /** The disc number of this song, null if there isn't any. */
     val disc: Int?,
     /** Internal field. Do not use. */
-    val _year: Int?,
+    val _date: Date?,
     /** Internal field. Do not use. */
     val _albumName: String,
     /** Internal field. Do not use. */
@@ -164,9 +170,11 @@ data class Song(
     val _artistGroupingSortName: String?
         get() =
             // Only use the album artist sort name if we have one, otherwise ignore it.
-            _albumArtistName?.let { _albumArtistSortName } ?: _artistName?.let { _artistSortName }
-
-    /** Internal field. Do not use. */
+            if (_albumArtistName != null) {
+                _albumArtistSortName
+            } else {
+                _artistSortName
+            }
 
     /** Internal field. Do not use. */
     val _isMissingAlbum: Boolean
@@ -193,8 +201,7 @@ data class Song(
 data class Album(
     override val rawName: String,
     override val rawSortName: String?,
-    /** The latest year of the songs in this album. Null if none of the songs had metadata. */
-    val year: Int?,
+    val date: Date?,
     /** The URI for the cover art corresponding to this album. */
     val albumCoverUri: Uri,
     /** The songs of this album. */
@@ -214,7 +221,7 @@ data class Album(
         get() {
             var result = rawName.hashCode().toLong()
             result = 31 * result + artist.rawName.hashCode()
-            result = 31 * result + (year ?: 0)
+            result = 31 * result + (date?.year ?: 0)
             return result
         }
 
@@ -280,4 +287,121 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
         get() = (rawName ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
+}
+
+/**
+ * An ISO-8601/RFC 3339 Date.
+ *
+ * Unlike a typical Date within the standard library, this class is simply a 1:1 mapping between
+ * the tag date format of ID3v2 and (presumably) the Vorbis date format, implementing only format
+ * validation and excluding advanced or locale-specific date functionality..
+ *
+ * The reasoning behind Date is that Auxio cannot trust any kind of metadata date to actually
+ * make sense in a calendar, due to bad tagging, locale-specific issues, or simply from the
+ * limited nature of tag formats. Thus, it's better to use an analogous data structure that
+ * will not mangle or reject valid-ish dates.
+  *
+ * Date instances are immutable and their internal implementation is hidden. To instantiate one,
+ * use [fromYear] or [parseTimestamp]. The string representation of a Date is RFC 3339, with
+ * granular position depending on the presence of particular tokens.
+ *
+ * Please, *Do not use this for anything important related to time.* I cannot stress this enough.
+ * This class will blow up if you try to do that.
+ *
+ * @author OxygenCobalt
+ */
+class Date private constructor(private val tokens: List<Int>) : Comparable<Date> {
+    init {
+        if (BuildConfig.DEBUG) {
+            // Last-ditch sanity check to catch format bugs that might slip through
+            check(tokens.size in 1..6) { "There must be 1-6 date tokens" }
+            check(tokens.slice(0..min(tokens.lastIndex, 2)).all { it > 0 }) {
+                "All date tokens must be non-zero "
+            }
+            check(tokens.slice(1..tokens.lastIndex).all { it < 100 }) {
+                "All non-year tokens must be two digits"
+            }
+        }
+    }
+
+    val year: Int
+        get() = tokens[0]
+
+    private val month: Int?
+        get() = tokens.getOrNull(1)
+
+    private val day: Int?
+        get() = tokens.getOrNull(2)
+
+    private val hour: Int?
+        get() = tokens.getOrNull(3)
+
+    private val minute: Int?
+        get() = tokens.getOrNull(4)
+
+    private val second: Int?
+        get() = tokens.getOrNull(5)
+
+    fun resolveYear(context: Context) = context.getString(R.string.fmt_number, year)
+
+    override fun hashCode() = tokens.hashCode()
+
+    override fun equals(other: Any?) = other is Date && tokens == other.tokens
+
+    override fun compareTo(other: Date): Int {
+        val comparator = Sort.Mode.NullableComparator.INT
+
+        for (i in 0..(max(tokens.lastIndex, other.tokens.lastIndex))) {
+            val result = comparator.compare(tokens.getOrNull(i), other.tokens.getOrNull(i))
+            if (result != 0) {
+                return result
+            }
+        }
+
+        return 0
+    }
+
+    override fun toString() = StringBuilder().appendDate().toString()
+
+    private fun StringBuilder.appendDate(): StringBuilder {
+        // I assume RFC 3339 allows partial precision, i.e YYYY-MM, but I'm not sure.
+        append(year.toFixedString(4))
+        append("-${(month ?: return this).toFixedString(2)}")
+        append("-${(day ?: return this).toFixedString(2)}")
+        append("T${(hour ?: return this).toFixedString(2)}")
+        append(":${(minute ?: return this).toFixedString(2)}")
+        append(":${(second ?: return this).toFixedString(2)}Z")
+        return this
+    }
+
+    private fun Int.toFixedString(len: Int) = toString().padStart(len, '0')
+
+    companion object {
+        private val ISO8601_REGEX =
+            Regex(
+                """^(\d{4,})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2}))?)?)?)?)?$""")
+
+        fun fromYear(year: Int) = year.nonZeroOrNull()?.let { Date(listOf(it)) }
+
+        fun parseTimestamp(timestamp: String): Date? {
+            val groups = (ISO8601_REGEX.matchEntire(timestamp) ?: return null).groupValues
+            val tokens = mutableListOf<Int>()
+            populateTokens(groups, tokens)
+
+            if (tokens.isEmpty()) {
+                return null
+            }
+
+            return Date(tokens)
+        }
+
+        private fun populateTokens(groups: List<String>, tokens: MutableList<Int>) {
+            tokens.add(groups.getOrNull(1)?.toIntOrNull()?.nonZeroOrNull() ?: return)
+            tokens.add(groups.getOrNull(3)?.toIntOrNull()?.inRangeOrNull(1..12) ?: return)
+            tokens.add(groups.getOrNull(5)?.toIntOrNull()?.inRangeOrNull(1..31) ?: return)
+            tokens.add(groups.getOrNull(7)?.toIntOrNull()?.inRangeOrNull(0..23) ?: return)
+            tokens.add(groups.getOrNull(9)?.toIntOrNull()?.inRangeOrNull(0..59) ?: return)
+            tokens.add(groups.getOrNull(11)?.toIntOrNull()?.inRangeOrNull(0..59) ?: return)
+        }
+    }
 }

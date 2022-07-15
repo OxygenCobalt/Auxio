@@ -27,6 +27,7 @@ import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolveYear
 import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
 import org.oxycblt.auxio.ui.recycler.BindingViewHolder
 import org.oxycblt.auxio.ui.recycler.Item
@@ -166,12 +167,7 @@ private constructor(
     override fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.textSafe = item.resolveName(binding.context)
-        binding.parentInfo.textSafe =
-            if (item.year != null) {
-                binding.context.getString(R.string.fmt_number, item.year)
-            } else {
-                binding.context.getString(R.string.def_date)
-            }
+        binding.parentInfo.textSafe = item.date.resolveYear(binding.context)
 
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
@@ -195,7 +191,7 @@ private constructor(
         val DIFFER =
             object : SimpleItemCallback<Album>() {
                 override fun areItemsTheSame(oldItem: Album, newItem: Album) =
-                    oldItem.rawName == newItem.rawName && oldItem.year == newItem.year
+                    oldItem.rawName == newItem.rawName && oldItem.date == newItem.date
             }
     }
 }

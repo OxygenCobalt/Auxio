@@ -308,13 +308,13 @@ class Indexer {
             // This allows us to replicate the LAST_YEAR field, which is useful as it means that
             // weird years like "0" wont show up if there are alternatives.
             val templateSong =
-                albumSongs.maxWith(compareBy(Sort.Mode.NULLABLE_INT_COMPARATOR) { it._year })
+                albumSongs.maxWith(compareBy(Sort.Mode.NullableComparator.DATE) { it._date })
 
             albums.add(
                 Album(
                     rawName = templateSong._albumName,
                     rawSortName = templateSong._albumSortName,
-                    year = templateSong._year,
+                    date = templateSong._date,
                     albumCoverUri = templateSong._albumCoverUri,
                     songs = entry.value,
                     _artistGroupingName = templateSong._artistGroupingName,
@@ -344,7 +344,7 @@ class Indexer {
                     albums = entry.value))
         }
 
-        `logD`("Successfully built ${artists.size} artists")
+        logD("Successfully built ${artists.size} artists")
 
         return artists
     }

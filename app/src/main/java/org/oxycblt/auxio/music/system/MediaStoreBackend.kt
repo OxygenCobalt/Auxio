@@ -27,6 +27,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import java.io.File
+import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.music.MimeType
 import org.oxycblt.auxio.music.Path
@@ -292,7 +293,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
         audio.displayName = cursor.getStringOrNull(displayNameIndex)
 
         audio.duration = cursor.getLong(durationIndex)
-        audio.year = cursor.getIntOrNull(yearIndex)
+        audio.date = cursor.getIntOrNull(yearIndex)?.let(Date::fromYear)
 
         // A non-existent album name should theoretically be the name of the folder it contained
         // in, but in practice it is more often "0" (as in /storage/emulated/0), even when it the
@@ -307,11 +308,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
         // it's easier to handle later.
         audio.artist =
             cursor.getString(artistIndex).run {
-                if (this != MediaStore.UNKNOWN_STRING) {
-                    this
-                } else {
-                    null
-                }
+                if (this != MediaStore.UNKNOWN_STRING) this else null
             }
 
         // The album artist field is nullable and never has placeholder values.
@@ -338,7 +335,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
         var duration: Long? = null,
         var track: Int? = null,
         var disc: Int? = null,
-        var year: Int? = null,
+        var date: Date? = null,
         var album: String? = null,
         var sortAlbum: String? = null,
         var albumId: Long? = null,
@@ -370,7 +367,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 durationMs = requireNotNull(duration) { "Malformed audio: No duration" },
                 track = track,
                 disc = disc,
-                _year = year,
+                _date = date,
                 _albumName = requireNotNull(album) { "Malformed audio: No album name" },
                 _albumSortName = sortAlbum,
                 _albumCoverUri =

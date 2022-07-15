@@ -71,7 +71,7 @@ class SongListFragment : HomeListFragment<Song>() {
             is Sort.Mode.ByAlbum -> song.album.sortName?.run { first().uppercase() }
 
             // Year -> Use Full Year
-            is Sort.Mode.ByYear -> song.album.year?.toString()
+            is Sort.Mode.ByYear -> song.album.date?.resolveYear(requireContext())
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> song.durationSecs.formatDuration(false)

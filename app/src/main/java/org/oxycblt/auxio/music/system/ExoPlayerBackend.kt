@@ -27,9 +27,9 @@ import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.parseId3GenreName
-import org.oxycblt.auxio.music.parseIso8601Year
-import org.oxycblt.auxio.music.parseNum
 import org.oxycblt.auxio.music.parsePositionNum
+import org.oxycblt.auxio.music.parseTimestamp
+import org.oxycblt.auxio.music.parseYear
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -224,10 +224,10 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         // 3. ID3v2.4 Release Date, as it is the second most common date type
         // 4. ID3v2.3 Original Date, as it is like #1
         // 5. ID3v2.3 Release Year, as it is the most common date type
-        (tags["TDOR"]?.parseIso8601Year()
-                ?: tags["TDRC"]?.parseIso8601Year() ?: tags["TDRL"]?.parseIso8601Year()
-                    ?: tags["TORY"]?.parseNum() ?: tags["TYER"]?.parseNum())
-            ?.let { audio.year = it }
+        (tags["TDOR"]?.parseTimestamp()
+                ?: tags["TDRC"]?.parseTimestamp() ?: tags["TDRL"]?.parseTimestamp()
+                    ?: tags["TORY"]?.parseYear() ?: tags["TYER"]?.parseYear())
+            ?.let { audio.date = it }
 
         // (Sort) Album
         tags["TALB"]?.let { audio.album = it }
@@ -250,11 +250,11 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         tags["TITLE"]?.let { audio.title = it }
         tags["TITLESORT"]?.let { audio.sortTitle = it }
 
-        // Track. Probably not NN/TT, as TOTALTRACKS handles totals.
-        tags["TRACKNUMBER"]?.parseNum()?.let { audio.track = it }
+        // Track
+        tags["TRACKNUMBER"]?.parsePositionNum()?.let { audio.track = it }
 
-        // Disc. Probably not NN/TT, as TOTALDISCS handles totals.
-        tags["DISCNUMBER"]?.parseNum()?.let { audio.disc = it }
+        // Disc
+        tags["DISCNUMBER"]?.parsePositionNum()?.let { audio.disc = it }
 
         // Vorbis dates are less complicated, but there are still several types
         // Our hierarchy for dates is as such:
@@ -262,9 +262,9 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         // 2. Date, as it is the most common date type
         // 3. Year, as old vorbis tags tended to use this (I know this because it's the only
         // tag that android supports, so it must be 15 years old or more!)
-        (tags["ORIGINALDATE"]?.parseIso8601Year()
-                ?: tags["DATE"]?.parseIso8601Year() ?: tags["YEAR"]?.parseNum())
-            ?.let { audio.year = it }
+        (tags["ORIGINALDATE"]?.parseTimestamp()
+                ?: tags["DATE"]?.parseTimestamp() ?: tags["YEAR"]?.parseYear())
+            ?.let { audio.date = it }
 
         // (Sort) Album
         tags["ALBUM"]?.let { audio.album = it }

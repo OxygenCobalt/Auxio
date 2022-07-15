@@ -19,10 +19,13 @@ package org.oxycblt.auxio.music
 
 import android.content.ContentResolver
 import android.content.ContentUris
+import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.core.text.isDigitsOnly
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.util.nonZeroOrNull
 
 /** Shortcut for making a [ContentResolver] query with less superfluous arguments. */
 fun ContentResolver.queryCursor(
@@ -69,26 +72,20 @@ fun Int.unpackTrackNo() = mod(1000).nonZeroOrNull()
 fun Int.unpackDiscNo() = div(1000).nonZeroOrNull()
 
 /**
- * Parse out a plain number from a string. Values of 0 will be ignored under the assumption that
- * they are invalid.
- */
-fun String.parseNum() = toIntOrNull()?.nonZeroOrNull()
-
-/**
  * Parse out the number field from an NN/TT string that is typically found in DISC_NUMBER and
  * CD_TRACK_NUMBER. Values of zero will be ignored under the assumption that they are invalid.
  */
 fun String.parsePositionNum() = split('/', limit = 2)[0].toIntOrNull()?.nonZeroOrNull()
 
-/**
- * Parse out the year field from a (presumably) ISO-8601-like date. This differs across tag formats
- * and has no real consistency, but it's assumed that most will format granular dates as YYYY-MM-DD
- * (...) and thus we can parse the year out by splitting at the first -. Values of 0 will be ignored
- * under the assumption that they are invalid.
- */
-fun String.parseIso8601Year() = split('-', limit = 2)[0].toIntOrNull()?.nonZeroOrNull()
+/** Parse a plain year from the field into a [Date]. */
+fun String.parseYear() = toIntOrNull()?.let(Date::fromYear)
 
-private fun Int.nonZeroOrNull() = if (this > 0) this else null
+/** Parse an ISO-8601 time-stamp from this field into a [Date]. */
+fun String.parseTimestamp() = Date.parseTimestamp(this)
+
+/** Shortcut to resolve a year from a nullable date. Will return "No Date" if it is null. */
+fun Date?.resolveYear(context: Context) =
+    this?.resolveYear(context) ?: context.getString(R.string.def_date)
 
 /**
  * Slice a string so that any preceding articles like The/A(n) are truncated. This is hilariously
@@ -124,7 +121,7 @@ private fun String.parseId3v1Genre(): String? =
     }
 
 private fun String.parseId3v2Genre(): String? {
-    val groups = (GENRE_RE.matchEntire(this) ?: return null).groups
+    val groups = (GENRE_RE.matchEntire(this) ?: return null).groupValues
     val genres = mutableSetOf<String>()
 
     // ID3v2 genres are far more complex and require string grokking to properly implement.
@@ -133,9 +130,9 @@ private fun String.parseId3v2Genre(): String? {
 
     // Case 1: Genre IDs in the format (INT|RX|CR). If these exist, parse them as
     // ID3v1 tags.
-    val genreIds = groups[1]
-    if (genreIds != null && genreIds.value.isNotEmpty()) {
-        val ids = genreIds.value.substring(1).split(")(")
+    val genreIds = groups.getOrNull(1)
+    if (genreIds != null && genreIds.isNotEmpty()) {
+        val ids = genreIds.substring(1, genreIds.lastIndex).split(")(")
         for (id in ids) {
             id.parseId3v1Genre()?.let(genres::add)
         }
@@ -143,12 +140,12 @@ private fun String.parseId3v2Genre(): String? {
 
     // Case 2: Genre names as a normal string. The only case we have to look out for are
     // escaped strings formatted as ((genre).
-    val genreName = groups[3]
-    if (genreName != null && genreName.value.isNotEmpty()) {
-        if (genreName.value.startsWith("((")) {
-            genres.add(genreName.value.substring(1))
+    val genreName = groups.getOrNull(3)
+    if (genreName != null && genreName.isNotEmpty()) {
+        if (genreName.startsWith("((")) {
+            genres.add(genreName.substring(1))
         } else {
-            genres.add(genreName.value)
+            genres.add(genreName)
         }
     }
 
