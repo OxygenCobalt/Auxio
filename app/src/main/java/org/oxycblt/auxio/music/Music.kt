@@ -293,8 +293,8 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
  * An ISO-8601/RFC 3339 Date.
  *
  * Unlike a typical Date within the standard library, this class just represents the ID3v2/Vorbis
- * date format, which is largely assumed to be a subset of ISO-8601. No validation outside of
- * format validation is done.
+ * date format, which is largely assumed to be a subset of ISO-8601. No validation outside of format
+ * validation is done.
  *
  * The reasoning behind Date is that Auxio cannot trust any kind of metadata date to actually make
  * sense in a calendar, due to bad tagging, locale-specific issues, or simply from the limited
@@ -344,7 +344,6 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
     private val second: Int?
         get() = tokens.getOrNull(5)
-
 
     override fun hashCode() = tokens.hashCode()
 

@@ -10,6 +10,12 @@ at the cost of longer loading times
 - Added Last Added sorting
 - Search now takes sort tags and file names in account [#184]
 
+#### What's Fixed
+- Fixed default material theme being used before app shows up
+
+#### What's Changed
+- Updated music hashing (Will wipe playback state)
+
 ## 2.5.0
 
 #### What's New

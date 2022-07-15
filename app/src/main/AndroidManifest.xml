@@ -14,12 +14,6 @@
 
     <queries />
 
-    <!--
-    Note: We have to simultaneously define the fullBackupContent and dataExtractionRules
-    fields, as there is no way to make version-specific manifests. This should be okay,
-    as devices before Android 12 should just use fullBackupContent and devices beyond it
-    should use dataExtractionRules.
-    -->
     <application
         android:name=".AuxioApp"
         android:allowBackup="true"

@@ -3,7 +3,7 @@
     <!--
     All the base themes/accents.
     -->
-    <style name="Theme.Auxio.Red" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.Red" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/red_primary</item>
         <item name="colorOnPrimary">@color/red_on_primary</item>
         <item name="colorPrimaryInverse">@color/red_primary_inverse</item>
@@ -33,7 +33,7 @@
         <item name="colorOnSurfaceVariant">@color/red_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.Pink" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.Pink" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/pink_primary</item>
         <item name="colorOnPrimary">@color/pink_on_primary</item>
         <item name="colorPrimaryInverse">@color/pink_primary_inverse</item>
@@ -63,7 +63,7 @@
         <item name="colorOnSurfaceVariant">@color/pink_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.Purple" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.Purple" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/purple_primary</item>
         <item name="colorOnPrimary">@color/purple_on_primary</item>
         <item name="colorPrimaryInverse">@color/purple_primary_inverse</item>
@@ -93,7 +93,7 @@
         <item name="colorOnSurfaceVariant">@color/purple_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.DeepPurple" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.DeepPurple" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/deep_purple_primary</item>
         <item name="colorOnPrimary">@color/deep_purple_on_primary</item>
         <item name="colorPrimaryInverse">@color/deep_purple_primary_inverse</item>
@@ -123,7 +123,7 @@
         <item name="colorOnSurfaceVariant">@color/deep_purple_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.Indigo" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.Indigo" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/indigo_primary</item>
         <item name="colorOnPrimary">@color/indigo_on_primary</item>
         <item name="colorPrimaryInverse">@color/indigo_primary_inverse</item>
@@ -153,7 +153,7 @@
         <item name="colorOnSurfaceVariant">@color/indigo_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.Blue" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.Blue" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/blue_primary</item>
         <item name="colorOnPrimary">@color/blue_on_primary</item>
         <item name="colorPrimaryInverse">@color/blue_primary_inverse</item>
@@ -183,7 +183,7 @@
         <item name="colorOnSurfaceVariant">@color/blue_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.DeepBlue" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.DeepBlue" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/deep_blue_primary</item>
         <item name="colorOnPrimary">@color/deep_blue_on_primary</item>
         <item name="colorPrimaryInverse">@color/deep_blue_primary_inverse</item>
@@ -213,7 +213,7 @@
         <item name="colorOnSurfaceVariant">@color/deep_blue_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.Cyan" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.Cyan" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/cyan_primary</item>
         <item name="colorOnPrimary">@color/cyan_on_primary</item>
         <item name="colorPrimaryInverse">@color/cyan_primary_inverse</item>
@@ -243,7 +243,7 @@
         <item name="colorOnSurfaceVariant">@color/cyan_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.Teal" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.Teal" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/teal_primary</item>
         <item name="colorOnPrimary">@color/teal_on_primary</item>
         <item name="colorPrimaryInverse">@color/teal_primary_inverse</item>
@@ -273,7 +273,7 @@
         <item name="colorOnSurfaceVariant">@color/teal_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.Green" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.Green" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/green_primary</item>
         <item name="colorOnPrimary">@color/green_on_primary</item>
         <item name="colorPrimaryInverse">@color/green_primary_inverse</item>
@@ -303,7 +303,7 @@
         <item name="colorOnSurfaceVariant">@color/green_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.DeepGreen" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.DeepGreen" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/deep_green_primary</item>
         <item name="colorOnPrimary">@color/deep_green_on_primary</item>
         <item name="colorPrimaryInverse">@color/deep_green_primary_inverse</item>
@@ -333,7 +333,7 @@
         <item name="colorOnSurfaceVariant">@color/deep_green_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.Lime" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.Lime" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/lime_primary</item>
         <item name="colorOnPrimary">@color/lime_on_primary</item>
         <item name="colorPrimaryInverse">@color/lime_primary_inverse</item>
@@ -363,7 +363,7 @@
         <item name="colorOnSurfaceVariant">@color/lime_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.Yellow" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.Yellow" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/yellow_primary</item>
         <item name="colorOnPrimary">@color/yellow_on_primary</item>
         <item name="colorPrimaryInverse">@color/yellow_primary_inverse</item>
@@ -393,7 +393,7 @@
         <item name="colorOnSurfaceVariant">@color/yellow_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.Orange" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.Orange" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/orange_primary</item>
         <item name="colorOnPrimary">@color/orange_on_primary</item>
         <item name="colorPrimaryInverse">@color/orange_primary_inverse</item>
@@ -423,7 +423,7 @@
         <item name="colorOnSurfaceVariant">@color/orange_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.Brown" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.Brown" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/brown_primary</item>
         <item name="colorOnPrimary">@color/brown_on_primary</item>
         <item name="colorPrimaryInverse">@color/brown_primary_inverse</item>
@@ -453,7 +453,7 @@
         <item name="colorOnSurfaceVariant">@color/brown_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.Grey" parent="Theme.Auxio.App">
+    <style name="Theme.Auxio.Grey" parent="Theme.Auxio.Base">
         <item name="colorPrimary">@color/grey_primary</item>
         <item name="colorOnPrimary">@color/grey_on_primary</item>
         <item name="colorPrimaryInverse">@color/grey_primary_inverse</item>

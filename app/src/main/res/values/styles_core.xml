@@ -10,7 +10,7 @@
     </style>
 
     <!-- Base theme -->
-    <style name="Theme.Auxio.App" parent="Theme.Auxio.V27">
+    <style name="Theme.Auxio.Base" parent="Theme.Auxio.V27">
         <!-- Values -->
         <item name="colorAccent">?attr/colorSecondary</item>
         <item name="colorOutline">@color/overlay_stroke</item>
@@ -58,9 +58,11 @@
         <item name="textAppearanceBodySmall">@style/TextAppearance.Auxio.BodySmall</item>
     </style>
 
+    <style name="Theme.Auxio.App" parent="@style/Theme.Auxio.Blue" />
+
     <!--
     Theming widgets is technically possible below Android 12, but I *really* don't care enough
     to bother with it.
     -->
-    <style name="Theme.Widget" parent="@style/Theme.Auxio.Blue" />
+    <style name="Theme.Auxio.Widget" parent="@style/Theme.Auxio.Blue" />
 </resources>

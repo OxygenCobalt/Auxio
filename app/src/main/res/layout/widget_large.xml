@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/ui_widget_bg"
     android:backgroundTint="?attr/colorSurface"
-    android:theme="@style/Theme.Widget">
+    android:theme="@style/Theme.Auxio.Widget">
 
     <!--
     See widget_small.xml for an explanation for the ImageView setup.

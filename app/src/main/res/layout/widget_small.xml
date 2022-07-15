@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
-    android:theme="@style/Theme.Widget">
+    android:theme="@style/Theme.Auxio.Widget">
 
     <!--
     For our widgets to work, we need to scale the ImageView across a 1:1 aspect ratio.

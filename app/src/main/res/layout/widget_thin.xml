@@ -8,7 +8,7 @@
     android:backgroundTint="?attr/colorSurface"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:theme="@style/Theme.Widget">
+    android:theme="@style/Theme.Auxio.Widget">
 
     <!--
     Wrapping the 1:1 ImageView hack in a LinearLayout allows the view to measure greedily

@@ -137,7 +137,9 @@ class SearchViewModel(application: Application) :
         search(lastQuery)
     }
 
-    /** Searches the song list by the normalized name, then the sort name, and then the file name. */
+    /**
+     * Searches the song list by the normalized name, then the sort name, and then the file name.
+     */
     private fun List<Song>.filterSongsBy(value: String) =
         baseFilterBy(value) { it.path.name.contains(value) }.ifEmpty { null }
 
@@ -145,17 +147,17 @@ class SearchViewModel(application: Application) :
     private fun <T : MusicParent> List<T>.filterParentsBy(value: String) =
         baseFilterBy(value) { false }.ifEmpty { null }
 
-    private inline fun <T : Music> List<T>.baseFilterBy(
-        value: String,
-        additional: (T) -> Boolean
-    ) = filter {
-        // The basic comparison is first by the *normalized* name, as that allows a non-unicode
-        // search to match with some unicode characters. If that fails, we if there is a sort name
-        // we can leverage, as those are often used to make non-unicode variants of unicode titles.
-        it.resolveNameNormalized(application).contains(value, ignoreCase = true) ||
-            it.rawSortName?.contains(value, ignoreCase = true) == true ||
-            additional(it)
-    }
+    private inline fun <T : Music> List<T>.baseFilterBy(value: String, additional: (T) -> Boolean) =
+        filter {
+            // The basic comparison is first by the *normalized* name, as that allows a non-unicode
+            // search to match with some unicode characters. If that fails, we if there is a sort
+            // name
+            // we can leverage, as those are often used to make non-unicode variants of unicode
+            // titles.
+            it.resolveNameNormalized(application).contains(value, ignoreCase = true) ||
+                it.rawSortName?.contains(value, ignoreCase = true) == true ||
+                additional(it)
+        }
 
     private fun Music.resolveNameNormalized(context: Context): String {
         // This method normalizes strings so that songs with accented characters will show

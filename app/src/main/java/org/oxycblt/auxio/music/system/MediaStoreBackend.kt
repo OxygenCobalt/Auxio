@@ -318,9 +318,9 @@ abstract class MediaStoreBackend : Indexer.Backend {
     }
 
     /**
-     * Represents a song as it is represented by MediaStore. This is progressively mutated over
-     * several steps of the music loading process until it is complete enough to be transformed into
-     * an immutable song.
+     * Represents a song as it is represented by MediaStore. This is progressively mutated in the
+     * chain of Backend instances until it is complete enough to be transformed into an immutable
+     * song.
      */
     data class Audio(
         var id: Long? = null,
@@ -348,8 +348,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
         fun toSong() =
             Song(
                 // Assert that the fields that should always exist are present. I can't confirm
-                // that
-                // every device provides these fields, but it seems likely that they do.
+                // that every device provides these fields, but it seems likely that they do.
                 rawName = requireNotNull(title) { "Malformed audio: No title" },
                 rawSortName = sortTitle,
                 path =
