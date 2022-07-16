@@ -56,6 +56,7 @@ class MusicDirsDialog :
         builder
             .setTitle(R.string.set_dirs)
             .setNeutralButton(R.string.lbl_add, null)
+            .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
                 val dirs = settings.getMusicDirs(storageManager)
                 val newDirs =
@@ -67,7 +68,6 @@ class MusicDirsDialog :
                     settings.setMusicDirs(newDirs)
                 }
             }
-            .setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onBindingCreated(binding: DialogMusicDirsBinding, savedInstanceState: Bundle?) {
