@@ -153,4 +153,7 @@
         <item quantity="other">%d альбомы</item>
     </plurals>
     <string name="info_indexer_channel_name">Музыка загружается</string>
+    <string name="lbl_indexing">Загрузка музыки</string>
+    <string name="lbl_indexing_desc">Загрузка музыкальной библиотеки…</string>
+    <string name="lbl_observing">Мониторинг музыкальной библиотеки</string>
 </resources>
