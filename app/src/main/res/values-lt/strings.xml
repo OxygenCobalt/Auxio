@@ -1,2 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="lbl_songs">Dainos</string>
+    <string name="lbl_all_songs">Visos dainos</string>
+    <string name="lbl_search">Ieškoti</string>
+    <string name="lbl_filter">Filtruoti</string>
+    <string name="lbl_filter_all">Visos</string>
+    <string name="lbl_sort">Rūšiuoti</string>
+    <string name="lbl_sort_name">Pavadinimas</string>
+    <string name="lbl_sort_artist">Atlikėjas</string>
+    <string name="lbl_sort_album">Albumas</string>
+    <string name="lbl_sort_year">Metai</string>
+    <string name="lbl_sort_duration">Trukmė</string>
+    <string name="lbl_sort_count">Dainų skaičius</string>
+    <string name="lbl_sort_disc">Diskas</string>
+    <string name="lbl_sort_date_added">Pridėta data</string>
+    <string name="lbl_sort_asc">Kylantis</string>
+    <string name="lbl_play_next">Groti kitą</string>
+    <string name="lbl_queue_add">Pridėti į eilę</string>
+    <string name="lbl_queue">Eilę</string>
+    <string name="lbl_go_artist">Eiti į atlikėją</string>
+    <string name="lbl_go_album">Eiti į albumą</string>
+    <string name="lbl_song_detail">Peržiūrėti ypatybes</string>
+    <string name="lbl_size">Dydis</string>
+    <string name="lbl_bitrate">Bitų srautas</string>
+    <string name="lbl_sample_rate">Elementų dažnis</string>
+    <string name="set_theme_auto">Automatinis</string>
+    <string name="set_theme_day">Šviesus</string>
+    <string name="set_theme_night">Tamsus</string>
+    <string name="set_accent">Spalvų schema</string>
+    <string name="set_black_mode">Juodoji tema</string>
+    <string name="lbl_artists">Atlikėjai</string>
+    <string name="lbl_albums">Albumai</string>
+    <string name="lbl_sort_track">Takelis</string>
+    <string name="lbl_playback">Dabar groja</string>
+    <string name="lbl_play">Groti</string>
+    <string name="lbl_licenses">Licencijos</string>
+    <string name="lbl_shuffle">Maišyti</string>
+    <string name="lbl_queue_added">Pridėta į eilę</string>
+    <string name="lbl_props">Dainų ypatybės</string>
+    <string name="lbl_file_name">Failo pavadinimas</string>
+    <string name="lbl_save">Išsaugoti</string>
+    <string name="lbl_about">Apie</string>
+    <string name="lbl_add">Pridėti</string>
+    <string name="lbl_off">Išjungta</string>
+    <string name="lbl_faq">DUK</string>
+    <string name="set_ui">Išvaizda</string>
+    <string name="lbl_format">Formatas</string>
+    <string name="lbl_version">Versija</string>
+    <string name="set_title">Nustatymai</string>
+    <string name="set_theme">Temos</string>
+    <string name="set_black_mode_desc">Naudokti grynai juodą tamsią temą</string>
+</resources>
