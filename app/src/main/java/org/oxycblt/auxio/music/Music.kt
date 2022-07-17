@@ -169,11 +169,10 @@ data class Song(
     /** Internal field. Do not use. */
     val _artistGroupingSortName: String?
         get() =
-            // Only use the album artist sort name if we have one, otherwise ignore it.
-            if (_albumArtistName != null) {
-                _albumArtistSortName
-            } else {
-                _artistSortName
+            when {
+                _albumArtistName != null -> _albumArtistSortName
+                _artistName != null -> _artistSortName
+                else -> null
             }
 
     /** Internal field. Do not use. */

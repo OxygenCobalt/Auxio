@@ -28,8 +28,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.Settings
@@ -85,21 +87,21 @@ class SearchViewModel(application: Application) :
             // Note: a filter mode of null means to not filter at all.
 
             if (filterMode == null || filterMode == DisplayMode.SHOW_ARTISTS) {
-                library.artists.filterParentsBy(query)?.let { artists ->
+                library.artists.filterArtistsBy(query)?.let { artists ->
                     results.add(Header(-1, R.string.lbl_artists))
                     results.addAll(sort.artists(artists))
                 }
             }
 
             if (filterMode == null || filterMode == DisplayMode.SHOW_ALBUMS) {
-                library.albums.filterParentsBy(query)?.let { albums ->
+                library.albums.filterAlbumsBy(query)?.let { albums ->
                     results.add(Header(-2, R.string.lbl_albums))
                     results.addAll(sort.albums(albums))
                 }
             }
 
             if (filterMode == null || filterMode == DisplayMode.SHOW_GENRES) {
-                library.genres.filterParentsBy(query)?.let { genres ->
+                library.genres.filterGenresBy(query)?.let { genres ->
                     results.add(Header(-3, R.string.lbl_genres))
                     results.addAll(sort.genres(genres))
                 }
@@ -137,27 +139,29 @@ class SearchViewModel(application: Application) :
         search(lastQuery)
     }
 
-    /**
-     * Searches the song list by the normalized name, then the sort name, and then the file name.
-     */
     private fun List<Song>.filterSongsBy(value: String) =
-        baseFilterBy(value) { it.path.name.contains(value) }.ifEmpty { null }
+        baseFilterBy(value) {
+            it.rawSortName?.contains(value) == true || it.path.name.contains(value)
+        }
 
-    /** Searches a list of parents by the normalized name, and then the sort name. */
-    private fun <T : MusicParent> List<T>.filterParentsBy(value: String) =
-        baseFilterBy(value) { false }.ifEmpty { null }
+    private fun List<Album>.filterAlbumsBy(value: String) =
+        baseFilterBy(value) { it.rawSortName?.contains(value) == true }
+
+    private fun List<Artist>.filterArtistsBy(value: String) =
+        baseFilterBy(value) { it.rawSortName?.contains(value) == true }
+
+    private fun List<Genre>.filterGenresBy(value: String) = baseFilterBy(value) { false }
 
     private inline fun <T : Music> List<T>.baseFilterBy(value: String, additional: (T) -> Boolean) =
         filter {
-            // The basic comparison is first by the *normalized* name, as that allows a non-unicode
-            // search to match with some unicode characters. If that fails, we if there is a sort
-            // name
-            // we can leverage, as those are often used to make non-unicode variants of unicode
-            // titles.
-            it.resolveNameNormalized(application).contains(value, ignoreCase = true) ||
-                it.rawSortName?.contains(value, ignoreCase = true) == true ||
-                additional(it)
-        }
+                // The basic comparison is first by the *normalized* name, as that allows a
+                // non-unicode
+                // search to match with some unicode characters. If that fails, filter impls have
+                // fallback values, primarily around sort tags or file names.
+                it.resolveNameNormalized(application).contains(value, ignoreCase = true) ||
+                    additional(it)
+            }
+            .ifEmpty { null }
 
     private fun Music.resolveNameNormalized(context: Context): String {
         // This method normalizes strings so that songs with accented characters will show
