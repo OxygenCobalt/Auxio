@@ -110,9 +110,9 @@ data class Song(
 ) : Music() {
     override val id: Long
         get() {
-            var result = rawName.hashCode().toLong()
-            result = 31 * result + album.rawName.hashCode()
-            result = 31 * result + (album.artist.rawName ?: MediaStore.UNKNOWN_STRING).hashCode()
+            var result = rawName.lowercase().hashCode().toLong()
+            result = 31 * result + album.rawName.lowercase().hashCode()
+            result = 31 * result + (album.artist.rawName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode()
             result = 31 * result + (track ?: 0)
             result = 31 * result + (disc ?: 0)
             result = 31 * result + durationMs
@@ -218,8 +218,8 @@ data class Album(
 
     override val id: Long
         get() {
-            var result = rawName.hashCode().toLong()
-            result = 31 * result + (artist.rawName ?: MediaStore.UNKNOWN_STRING).hashCode()
+            var result = rawName.lowercase().hashCode().toLong()
+            result = 31 * result + (artist.rawName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode()
             result = 31 * result + (date?.year ?: 0)
             return result
         }
@@ -262,7 +262,7 @@ data class Artist(
     }
 
     override val id: Long
-        get() = (rawName ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
+        get() = (rawName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
 
@@ -283,7 +283,7 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
         get() = rawName
 
     override val id: Long
-        get() = (rawName ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
+        get() = (rawName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
 }

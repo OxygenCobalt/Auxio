@@ -15,6 +15,7 @@ at the cost of longer loading times
 - Fixed shuffle shortcut and file opening not working on startup on some devices
 
 #### What's Changed
+- Play and skip icons are filled again
 - Updated music hashing (Will wipe playback state)
 
 ## 2.5.0
