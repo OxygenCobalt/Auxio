@@ -19,11 +19,13 @@ package org.oxycblt.auxio.music.system
 
 import android.content.Context
 import android.database.Cursor
+import androidx.core.text.isDigitsOnly
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
 import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
+import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.parseId3GenreName
@@ -226,7 +228,7 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         // 5. ID3v2.3 Release Year, as it is the most common date type
         (tags["TDOR"]?.parseTimestamp()
                 ?: tags["TDRC"]?.parseTimestamp() ?: tags["TDRL"]?.parseTimestamp()
-                    ?: tags["TORY"]?.parseYear() ?: tags["TYER"]?.parseYear())
+                    ?: parseId3v23Date(tags))
             ?.let { audio.date = it }
 
         // (Sort) Album
@@ -243,6 +245,27 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
 
         // Genre, with the weird ID3 rules.
         tags["TCON"]?.let { audio.genre = it.parseId3GenreName() }
+    }
+
+    private fun parseId3v23Date(tags: Map<String, String>): Date? {
+        val year = tags["TORY"]?.toIntOrNull() ?: tags["TYER"]?.toIntOrNull() ?: return null
+
+        val mmdd = tags["TDAT"]
+        return if (mmdd != null && mmdd.length == 4 && mmdd.isDigitsOnly()) {
+            val mm = mmdd.substring(0..1).toInt()
+            val dd = mmdd.substring(2..3).toInt()
+
+            val hhmi = tags["TIME"]
+            if (hhmi != null && hhmi.length == 4 && hhmi.isDigitsOnly()) {
+                val hh = hhmi.substring(0..1).toInt()
+                val mi = hhmi.substring(2..3).toInt()
+                Date.from(year, mm, dd, hh, mi)
+            } else {
+                Date.from(year, mm, dd)
+            }
+        } else {
+            return Date.from(year)
+        }
     }
 
     private fun populateVorbis(tags: Map<String, String>) {

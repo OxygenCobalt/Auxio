@@ -293,7 +293,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
         audio.displayName = cursor.getStringOrNull(displayNameIndex)
 
         audio.duration = cursor.getLong(durationIndex)
-        audio.date = cursor.getIntOrNull(yearIndex)?.let(Date::fromYear)
+        audio.date = cursor.getIntOrNull(yearIndex)?.let(Date::from)
 
         // A non-existent album name should theoretically be the name of the folder it contained
         // in, but in practice it is more often "0" (as in /storage/emulated/0), even when it the

@@ -109,6 +109,8 @@ class MediaSessionComponent(
             return
         }
 
+        // We would leave the artist field null if it didn't exist and let downstream consumers
+        // handle it, but that would break the notification display.
         val title = song.resolveName(context)
         val artist = song.resolveIndividualArtistName(context)
         val builder =
@@ -152,7 +154,6 @@ class MediaSessionComponent(
         //
         // Neither of these are good, but 1 is the only one that will work on all versions
         // without the notification being eaten by rate-limiting.
-
         provider.load(
             song,
             object : BitmapProvider.Target {

@@ -78,10 +78,10 @@ fun Int.unpackDiscNo() = div(1000).nonZeroOrNull()
 fun String.parsePositionNum() = split('/', limit = 2)[0].toIntOrNull()?.nonZeroOrNull()
 
 /** Parse a plain year from the field into a [Date]. */
-fun String.parseYear() = toIntOrNull()?.let(Date::fromYear)
+fun String.parseYear() = toIntOrNull()?.let(Date::from)
 
 /** Parse an ISO-8601 time-stamp from this field into a [Date]. */
-fun String.parseTimestamp() = Date.parseTimestamp(this)
+fun String.parseTimestamp() = Date.from(this)
 
 /** Shortcut to resolve a year from a nullable date. Will return "No Date" if it is null. */
 fun Date?.resolveYear(context: Context) =

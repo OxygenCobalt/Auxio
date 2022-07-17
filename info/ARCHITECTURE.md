@@ -129,7 +129,7 @@ Things to keep in mind while working with music data:
 unique, non-subjective fields of the music data.  Attempting to use it as a `MediaStore` ID will
 result in errors.
 - Any field or method beginning with `_` is off-limits. These fields are meant for use within
-`MusicLoader` and generally provide poor UX to the user. The only reason they are public is to
+the indexer and generally provide poor UX to the user. The only reason they are public is to
 simplify the loading process, as there is no reason to remove internal fields given that it won't
 free memory.
 - `rawName` is used when doing internal work, such as saving music data or diffing items

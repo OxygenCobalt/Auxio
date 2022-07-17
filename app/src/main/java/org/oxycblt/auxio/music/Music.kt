@@ -139,7 +139,7 @@ data class Song(
      * The raw artist name for this song in particular. First uses the artist tag, and then falls
      * back to the album artist tag (i.e parent artist name). Null if name is unknown.
      */
-    val individualRawArtistName: String?
+    val individualArtistRawName: String?
         get() = _artistName ?: album.artist.rawName
 
     /**
@@ -301,8 +301,8 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
  * or reject valid-ish dates.
  *
  * Date instances are immutable and their internal implementation is hidden. To instantiate one, use
- * [fromYear] or [parseTimestamp]. The string representation of a Date is RFC 3339, with granular
- * position depending on the presence of particular tokens.
+ * [from] or [from]. The string representation of a Date is RFC 3339, with granular position
+ * depending on the presence of particular tokens.
  *
  * Please, **Do not use this for anything important related to time.** I cannot stress this enough.
  * This class will blow up if you try to do that.
@@ -364,14 +364,14 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
     override fun toString() = StringBuilder().appendDate().toString()
 
     private fun StringBuilder.appendDate(): StringBuilder {
-        // I assume RFC 3339 allows partial precision, i.e YYYY-MM, but I'm not sure.
+        // RFC 3339 does not allow partial precision.
         append(year.toFixedString(4))
         append("-${(month ?: return this).toFixedString(2)}")
         append("-${(day ?: return this).toFixedString(2)}")
         append("T${(hour ?: return this).toFixedString(2)}")
-        append(":${(minute ?: return this).toFixedString(2)}")
-        append(":${(second ?: return this).toFixedString(2)}Z")
-        return this
+        append(":${(minute ?: return this.append('Z')).toFixedString(2)}")
+        append(":${(second ?: return this.append('Z')).toFixedString(2)}")
+        return this.append('Z')
     }
 
     private fun Int.toFixedString(len: Int) = toString().padStart(len, '0')
@@ -381,27 +381,40 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
             Regex(
                 """^(\d{4,})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2}))?)?)?)?)?$""")
 
-        fun fromYear(year: Int) = year.nonZeroOrNull()?.let { Date(listOf(it)) }
+        fun from(year: Int) = fromTokens(listOf(year))
 
-        fun parseTimestamp(timestamp: String): Date? {
-            val groups = (ISO8601_REGEX.matchEntire(timestamp) ?: return null).groupValues
-            val tokens = mutableListOf<Int>()
-            populateTokens(groups, tokens)
+        fun from(year: Int, month: Int, day: Int) = fromTokens(listOf(year, month, day))
 
-            if (tokens.isEmpty()) {
+        fun from(year: Int, month: Int, day: Int, hour: Int, minute: Int) =
+            fromTokens(listOf(year, month, day, hour, minute))
+
+        fun from(timestamp: String): Date? {
+            val groups =
+                (ISO8601_REGEX.matchEntire(timestamp) ?: return null)
+                    .groupValues.mapIndexedNotNull { index, s ->
+                        if (index % 2 != 0) s.toIntOrNull() else null
+                    }
+
+            return fromTokens(groups)
+        }
+
+        private fun fromTokens(tokens: List<Int>): Date? {
+            val out = mutableListOf<Int>()
+            validateTokens(tokens, out)
+            if (out.isEmpty()) {
                 return null
             }
 
-            return Date(tokens)
+            return Date(out)
         }
 
-        private fun populateTokens(groups: List<String>, tokens: MutableList<Int>) {
-            tokens.add(groups.getOrNull(1)?.toIntOrNull()?.nonZeroOrNull() ?: return)
-            tokens.add(groups.getOrNull(3)?.toIntOrNull()?.inRangeOrNull(1..12) ?: return)
-            tokens.add(groups.getOrNull(5)?.toIntOrNull()?.inRangeOrNull(1..31) ?: return)
-            tokens.add(groups.getOrNull(7)?.toIntOrNull()?.inRangeOrNull(0..23) ?: return)
-            tokens.add(groups.getOrNull(9)?.toIntOrNull()?.inRangeOrNull(0..59) ?: return)
-            tokens.add(groups.getOrNull(11)?.toIntOrNull()?.inRangeOrNull(0..59) ?: return)
+        private fun validateTokens(src: List<Int>, dst: MutableList<Int>) {
+            dst.add(src.getOrNull(0)?.nonZeroOrNull() ?: return)
+            dst.add(src.getOrNull(1)?.inRangeOrNull(1..12) ?: return)
+            dst.add(src.getOrNull(2)?.inRangeOrNull(1..31) ?: return)
+            dst.add(src.getOrNull(3)?.inRangeOrNull(0..23) ?: return)
+            dst.add(src.getOrNull(4)?.inRangeOrNull(0..59) ?: return)
+            dst.add(src.getOrNull(5)?.inRangeOrNull(0..59) ?: return)
         }
     }
 }
