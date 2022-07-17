@@ -67,19 +67,17 @@ class MainActivity : AppCompatActivity() {
         startService(Intent(this, IndexerService::class.java))
         startService(Intent(this, PlaybackService::class.java))
 
-        logD("YOU FUCKING RETARD DO BASCIS ${intent?.action}")
-
-        if (!intentToDelayedAction(intent)) {
+        if (!startIntentDelayedAction(intent)) {
             playbackModel.startDelayedAction(PlaybackViewModel.DelayedAction.RestoreState)
         }
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        intentToDelayedAction(intent)
+        startIntentDelayedAction(intent)
     }
 
-    private fun intentToDelayedAction(intent: Intent?): Boolean {
+    private fun startIntentDelayedAction(intent: Intent?): Boolean {
         if (intent == null) {
             return false
         }

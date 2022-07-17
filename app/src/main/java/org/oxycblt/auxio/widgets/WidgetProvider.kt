@@ -61,8 +61,8 @@ class WidgetProvider : AppWidgetProvider() {
                 SizeF(180f, 100f) to createThinWidget(context, state),
                 SizeF(180f, 152f) to createSmallWidget(context, state),
                 SizeF(272f, 152f) to createWideWidget(context, state),
-                SizeF(180f, 270f) to createMediumWidget(context, state),
-                SizeF(272f, 270f) to createLargeWidget(context, state))
+                SizeF(180f, 272f) to createMediumWidget(context, state),
+                SizeF(272f, 272f) to createLargeWidget(context, state))
 
         AppWidgetManager.getInstance(context).applyViewsCompat(context, views)
     }
@@ -134,19 +134,11 @@ class WidgetProvider : AppWidgetProvider() {
             // and do this for each.
             val ids = getAppWidgetIds(name)
 
-            // Most of the major launchers seem to provide widget sizes that don't include
-            // padding. Query for the padding here so we can get a sane result later on.
-            val padding = AppWidgetHostView.getDefaultPaddingForWidget(context, name, null)
-
-            val density = context.resources.displayMetrics.density
-            val padW = ((padding.left + padding.right) / density).toInt()
-            val padH = ((padding.top + padding.bottom) / density).toInt()
-
             for (id in ids) {
                 val options = getAppWidgetOptions(id)
 
-                var width: Int
-                var height: Int
+                val width: Int
+                val height: Int
 
                 // Landscape/Portrait modes use different dimen bounds
                 if (context.isLandscape) {
@@ -156,9 +148,6 @@ class WidgetProvider : AppWidgetProvider() {
                     width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
                     height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
                 }
-
-                height += padH
-                width += padW
 
                 logD("Assuming true widget dimens are ${width}x$height")
 

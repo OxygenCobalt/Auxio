@@ -12,6 +12,7 @@ at the cost of longer loading times
 
 #### What's Fixed
 - Fixed default material theme being used before app shows up
+- Fixed shuffle shortcut and file opening not working on startup on some devices
 
 #### What's Changed
 - Updated music hashing (Will wipe playback state)
