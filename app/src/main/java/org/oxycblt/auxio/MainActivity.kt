@@ -67,28 +67,42 @@ class MainActivity : AppCompatActivity() {
         startService(Intent(this, IndexerService::class.java))
         startService(Intent(this, PlaybackService::class.java))
 
-        // If we have a valid intent, use that. Otherwise, restore the playback state.
-        playbackModel.startDelayedAction(
-            intentToDelayedAction(intent) ?: PlaybackViewModel.DelayedAction.RestoreState)
+        logD("YOU FUCKING RETARD DO BASCIS ${intent?.action}")
+
+        if (!intentToDelayedAction(intent)) {
+            playbackModel.startDelayedAction(PlaybackViewModel.DelayedAction.RestoreState)
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        intentToDelayedAction(intent)?.let(playbackModel::startDelayedAction)
+        intentToDelayedAction(intent)
     }
 
-    private fun intentToDelayedAction(intent: Intent?): PlaybackViewModel.DelayedAction? {
-        if (intent == null || intent.getBooleanExtra(KEY_INTENT_USED, false)) {
-            return null
+    private fun intentToDelayedAction(intent: Intent?): Boolean {
+        if (intent == null) {
+            return false
+        }
+
+        if (intent.getBooleanExtra(KEY_INTENT_USED, false)) {
+            return true
         }
 
         intent.putExtra(KEY_INTENT_USED, true)
 
-        return when (intent.action) {
-            Intent.ACTION_VIEW -> intent.data?.let { PlaybackViewModel.DelayedAction.Open(it) }
-            AuxioApp.INTENT_KEY_SHORTCUT_SHUFFLE -> PlaybackViewModel.DelayedAction.ShuffleAll
-            else -> null
-        }
+        val action =
+            when (intent.action) {
+                Intent.ACTION_VIEW ->
+                    PlaybackViewModel.DelayedAction.Open(intent.data ?: return false)
+                AuxioApp.INTENT_KEY_SHORTCUT_SHUFFLE -> {
+                    PlaybackViewModel.DelayedAction.ShuffleAll
+                }
+                else -> return false
+            }
+
+        playbackModel.startDelayedAction(action)
+
+        return true
     }
 
     private fun setupTheme() {
