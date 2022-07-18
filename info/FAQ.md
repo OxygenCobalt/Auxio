@@ -20,45 +20,56 @@ MP4, MP3, MKA, OGG, WAV, MPEG, AAC on all versions of Android. Auxio also suppor
 of Android through the use of the ExoPlayer FLAC extension.
 
 #### Auxio doesn't load my music correctly!
-This is probably caused by one of two reasons:
-1. If other players like Phonograph, Retro Music, or Music Player GO load it correctly, then Auxio has a bug and it should be [reported](https://github.com/OxygenCobalt/Auxio/issues).
-2. If the aforementioned players don't work, but players like Vanilla Music and VLC do, then it's a problem with the Media APIs that Auxio relies on. There is nothing I can do about it.
-	- I hope to mitigate these issues in the future by extracting metadata myself or adding Subsonic/SoundPod support, however this is extremely far off.
+This depends on the context:
+1. If "Ignore MediaStore Tags" is enabled, please file an issue with your particular issue.
+2. If "Ignore MediaStore Tags" is not enabled, please check below to make sure your issue is not already
+awknowledged before reporting an issue.
 
-Some common issues are listed below.
+Moreso, if the issue encountered does not appear in other apps like Music Player GO, Phonograph,
+Vinyl, Retro Music, VLC, or Vanilla, then it should be reported.
 
-#### My FLAC/OGG/OPUS files don't have dates!
-Android does not read the `DATE` tag from vorbis files. It reads the `YEAR` tag. This is because android's metadata parser is
+***Known unfixable music loading issues***
+
+These are a list of unfixable music loading issues that can only be fixed by enabling "Ignore MediaStore Tags":
+
+**My FLAC/OGG/OPUS files don't have dates:** Android does not read the `DATE` tag from vorbis files. It reads the `YEAR` tag. This is because android's metadata parser is
 stuck in 2008.
 
-#### Some files with accented/symbolic characters have corrupted tags!
-When Android extracts metadata, at some point it tries to convert the bytes it extracted to a java string, which apparently involves detecting the encoding of the data dynamically and
-then converting it to Java's Unicode dialect. Of course, trying to detect codings on the fly like that is a [terrible idea](https://en.wikipedia.org/wiki/Bush_hid_the_facts), and more
-often than not it results in UTF-8 tags (Seen on FLAC/OGG/OPUS files most often) being corrupted. 
+**Some files with accented/symbolic characters have corrupted tags:** When Android extracts metadata, at some point it tries to convert the bytes it extracted to a
+java string, which apparently involves detecting the encoding of the data dynamically and then converting it to Java's Unicode dialect. Of course, trying to detect
+codings on the fly like that is a [terrible idea](https://en.wikipedia.org/wiki/Bush_hid_the_facts), and more often than not it results in UTF-8 tags (Seen on
+FLAC/OGG/OPUS files most often) being corrupted.
 
-#### I have a large library and Auxio takes really long to load it!
-This is expected since reading from the audio database takes awhile, especially with libraries containing 10k songs or more.
+**I have a large library and Auxio takes really long to load it:** This is expected since reading from the audio database takes awhile, especially with libraries
+containing 10k songs or more.
 
-#### Auxio does not detect new music!
-This is Auxio's default behavior due to limitations regarding android's filesystem APIs. To enable such behavior, turn on
+**Auxio does not detect disc numbers:** If your device runs Android 10, then Auxio cannot parse a disc from the media database due to
+a regression introduced by Google in that version. If this issue appears in another android version, please file an issue. 
+
+***Other music loading issues***
+
+**There should be one artist, but instead I get a bunch of "Artist & Collaborator" artists:** This likely means your tags are wrong. By default, Auxio will use the
+"album artist" tag for grouping if present, falling back to the "artist" tag otherwise. If your music does not have such a field, it will result in fragmented artists.
+The reason why Auxio does not simply parse for separators and then extract artists that way is that it risks mangling artists that don't actually have collaborators,
+such as "Black Country, New Road" becoming "Black Country".
+
+**Auxio does not detect new music:** This is Auxio's default behavior due to limitations regarding android's filesystem APIs. To enable such behavior, turn on
 "Automatic reloading" in settings. Note that this option does require a persistent notification and higher battery usage.
+
+#### Why are my songs/albums/artists out of order?
+Auxio takes sort tags (like `TSOT` or `TITLESORT`) into account when sorting, which could cause items to
+appear in unexpected places. If your items do not have sort tags, please file an issue.
+
+#### Why does search return songs that don't match my query?
+Auxio actually takes several types of metadata in account in searching:
+- The name, normalized so that any accented/symbolic characters are converted to normal characters. For example, Ü -> U.
+- The sort tag of a particular song/album/artist, as such often contain latinized/translated versions of a given title.
+- The file name, as some users don't have usable title metadata, and instead use the file name as the title.
 
 #### Why does playback pause whenever music is reloaded?
 Whenever the music library signifigantly changes, updating the player's data while it is still playing may result in
 unwanted bugs or unexpected music playing. To safeguard against this, Auxio will pause whenever it reloads a new
 music library. 
-
-#### There should be one artist, but instead I get a bunch of "Artist & Collaborator" artists!
-This likely means your tags are wrong. By default, Auxio will use the "album artist" tag for
-grouping if present, falling back to the "artist" tag otherwise. If your music does not have
-such a field, it will result in fragmented artists. The reason why Auxio does not simply parse
-for separators and then extract artists that way is that it risks mangling artists that don't
-actually have collaborators, such as "Black Country, New Road" becoming "Black Country".
-
-#### Why does Auxio not detect disc numbers on my device?
-If your device runs Android 10, then Auxio cannot parse a disc from the media database due to
-a regression introduced by Google in that version. If your device is running another version,
-please file an issue.
 
 #### ReplayGain isn't working on my music!
 This is for a couple reason:

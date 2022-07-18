@@ -44,6 +44,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Opinionated UX that prioritizes ease of use over edge cases
 - Customizable behavior
 - Advanced media indexer that prioritizes correct metadata
+- Precise Dates, Sort Tags, and Release Type support (If enabled)
 - SD Card-aware folder management
 - Reliable playback state persistence
 - Full ReplayGain support (On MP3, MP4, FLAC, OGG, and OPUS)
@@ -57,7 +58,6 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 ## To come in the future:
 
-- Even better metadata support
 - Playlists
 - Liked songs
 - Artist Images
