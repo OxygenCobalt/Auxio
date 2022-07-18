@@ -22,8 +22,8 @@ import android.os.Build
 import android.text.method.MovementMethod
 import android.util.AttributeSet
 import android.view.View
-import androidx.annotation.AttrRes
 import com.google.android.material.textfield.TextInputEditText
+import org.oxycblt.auxio.R
 
 /**
  * A [TextInputEditText] that deliberately restricts all input except for selection. Yes, this is a
@@ -32,16 +32,13 @@ import com.google.android.material.textfield.TextInputEditText
  *
  * @author OxygenCobalt
  */
-class ReadOnlyTextInput : TextInputEditText {
-    constructor(context: Context) : super(context)
-
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        @AttrRes defStyleAttr: Int
-    ) : super(context, attrs, defStyleAttr)
+class ReadOnlyTextInput
+@JvmOverloads
+constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = R.attr.editTextStyle
+) : TextInputEditText(context, attrs, defStyleAttr) {
 
     init {
         setTextIsSelectable(true)
