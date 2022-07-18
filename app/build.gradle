@@ -99,7 +99,7 @@ dependencies {
     implementation "io.coil-kt:coil:2.1.0"
 
     // Material
-    implementation "com.google.android.material:material:1.6.1"
+    implementation "com.google.android.material:material:1.7.0-alpha02"
 
     // LeakCanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.9.1"

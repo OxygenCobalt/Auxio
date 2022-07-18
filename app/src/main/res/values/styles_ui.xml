@@ -171,10 +171,9 @@
 
     <style name="Widget.Auxio.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton" />
 
-    <style name="Widget.Auxio.Button.Icon.Base" parent="Widget.Material3.Button.TextButton">
-        <item name="iconPadding">0dp</item>
+    <style name="Widget.Auxio.Button.Icon.Base" parent="Widget.Material3.Button.IconButton">
         <item name="iconTint">?attr/colorControlNormal</item>
-        <item name="rippleColor">?attr/colorControlHighlight</item>
+        <item name="rippleColor">@color/sel_icon_button_ripple</item>
     </style>
 
     <style name="Widget.Auxio.Button.Icon.Small" parent="Widget.Auxio.Button.Icon.Base">
@@ -205,11 +204,10 @@
         <item name="android:paddingBottom">@dimen/spacing_small</item>
     </style>
 
-    <style name="Widget.Auxio.Button.PlayPause" parent="Widget.Material3.Button.TonalButton">
+    <style name="Widget.Auxio.Button.PlayPause" parent="Widget.Material3.Button.IconButton.Filled.Tonal">
         <item name="android:minWidth">@dimen/size_play_pause_button</item>
         <item name="android:minHeight">@dimen/size_play_pause_button</item>
         <item name="iconSize">@dimen/size_icon_large</item>
-        <item name="iconPadding">0dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="android:insetLeft">0dp</item>

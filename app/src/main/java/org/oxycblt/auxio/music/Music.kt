@@ -112,7 +112,9 @@ data class Song(
         get() {
             var result = rawName.lowercase().hashCode().toLong()
             result = 31 * result + album.rawName.lowercase().hashCode()
-            result = 31 * result + (album.artist.rawName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode()
+            result =
+                31 * result +
+                    (album.artist.rawName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode()
             result = 31 * result + (track ?: 0)
             result = 31 * result + (disc ?: 0)
             result = 31 * result + durationMs
@@ -219,7 +221,8 @@ data class Album(
     override val id: Long
         get() {
             var result = rawName.lowercase().hashCode().toLong()
-            result = 31 * result + (artist.rawName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode()
+            result =
+                31 * result + (artist.rawName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode()
             result = 31 * result + (date?.year ?: 0)
             return result
         }

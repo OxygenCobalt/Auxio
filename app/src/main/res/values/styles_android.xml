@@ -39,6 +39,27 @@
         <item name="android:scrollIndicators" tools:ignore="NewApi">top|bottom</item>
     </style>
 
+    <style name="Preference.Auxio" parent="Preference.Material">
+        <item name="allowDividerBelow">false</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="Preference.Auxio.DialogPreference" parent="Preference.DialogPreference.Material">
+        <item name="allowDividerBelow">false</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="Preference.Auxio.PreferenceCategory" parent="Preference.Category.Material">
+        <item name="layout">@layout/item_header</item>
+        <item name="allowDividerBelow">false</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="Preference.Auxio.SwitchPreferenceCompat" parent="Preference.SwitchPreferenceCompat.Material">
+        <item name="widgetLayout">@layout/view_preference_switch</item>
+        <item name="allowDividerBelow">false</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
 
     <!-- Widget TextView that mimics the main Auxio Primary/Secondary TextViews. -->
     <style name="Widget.Auxio.TextView.AppWidget" parent="Widget.Auxio.TextView.Base">

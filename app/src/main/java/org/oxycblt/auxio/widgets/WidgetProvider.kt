@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.widgets
 
-import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
@@ -132,9 +131,7 @@ class WidgetProvider : AppWidgetProvider() {
 
             // Each widget has independent dimensions, so we iterate through them all
             // and do this for each.
-            val ids = getAppWidgetIds(name)
-
-            for (id in ids) {
+            for (id in getAppWidgetIds(name)) {
                 val options = getAppWidgetOptions(id)
 
                 val width: Int

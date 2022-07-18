@@ -7,6 +7,7 @@
         <item name="android:statusBarColor">@color/chrome_translucent</item>
         <item name="android:navigationBarColor">@color/chrome_translucent</item>
     </style>
+
     <style name="Theme.Auxio.V29" parent="Theme.Auxio.V27" />
 
     <!-- Base theme -->
@@ -17,8 +18,6 @@
         <item name="materialAlertDialogTheme">@style/Theme.Auxio.Dialog</item>
         <item name="sliderStyle">@style/Widget.Auxio.Slider</item>
         <item name="linearProgressIndicatorStyle">@style/Widget.Auxio.LinearProgressIndicator</item>
-        <item name="toolbarNavigationButtonStyle">@style/Widget.Auxio.Toolbar.Navigation</item>
-        <item name="actionOverflowButtonStyle">@style/Widget.Auxio.Button.Overflow</item>
 
         <item name="textAppearanceDisplayLarge">@style/TextAppearance.Auxio.DisplayLarge</item>
         <item name="textAppearanceDisplayMedium">@style/TextAppearance.Auxio.DisplayMedium</item>
@@ -47,10 +46,19 @@
         <item name="windowNoTitle">true</item>
         <item name="colorControlActivated">?attr/colorPrimary</item>
 
+        <item name="preferenceStyle">@style/Preference.Auxio</item>
+        <item name="preferenceCategoryStyle">@style/Preference.Auxio.PreferenceCategory</item>
+        <item name="dialogPreferenceStyle">@style/Preference.Auxio.DialogPreference</item>
+        <item name="switchPreferenceCompatStyle">@style/Preference.Auxio.SwitchPreferenceCompat
+        </item>
+        <item name="toolbarNavigationButtonStyle">@style/Widget.Auxio.Toolbar.Navigation</item>
+        <item name="actionOverflowButtonStyle">@style/Widget.Auxio.Button.Overflow</item>
+
         <!-- Work around hard-coded text highlight colors in the default Material3 theme -->
         <item name="android:textColorHighlight">@color/overlay_text_highlight</item>
         <item name="android:textColorHighlightInverse">@color/overlay_text_highlight_inverse</item>
     </style>
+
 
     <style name="Theme.Auxio.App" parent="@style/Theme.Auxio.Blue" />
 
