@@ -74,7 +74,7 @@ abstract class BaseFetcher : Fetcher {
                 fetchMediaStoreCovers(context, album)
             }
         } catch (e: Exception) {
-            logW("Unable to extract album art due to an error: $e")
+            logW("Unable to extract album cover due to an error: $e")
             null
         }
     }
@@ -203,7 +203,7 @@ abstract class BaseFetcher : Fetcher {
 
     @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun fetchMediaStoreCovers(context: Context, data: Album): InputStream? {
-        val uri = data.albumCoverUri
+        val uri = data.coverUri
 
         // Eliminate any chance that this blocking call might mess up the loading process
         return withContext(Dispatchers.IO) { context.contentResolver.openInputStream(uri) }

@@ -45,7 +45,7 @@ fun <R> ContentResolver.useQuery(
 ): R? = queryCursor(uri, projection, selector, args)?.use(block)
 
 /**
- * For some reason the album art URI namespace does not have a member in [MediaStore], but it still
+ * For some reason the album cover URI namespace does not have a member in [MediaStore], but it still
  * works since at least API 21.
  */
 private val EXTERNAL_ALBUM_ART_URI = Uri.parse("content://media/external/audio/albumart")
@@ -98,6 +98,17 @@ fun String.parseSortName() =
         length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
         length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
         else -> this
+    }
+
+fun String.parseReleaseType() =
+    parseReleaseTypeImpl() ?: split("+", limit = 2)[0].trim().parseReleaseTypeImpl()
+
+private fun String.parseReleaseTypeImpl() =
+    when (this) {
+        "album" -> Album.Type.Album
+        "ep" -> Album.Type.EP
+        "single" -> Album.Type.Single
+        else -> null
     }
 
 /**

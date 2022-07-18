@@ -96,6 +96,8 @@ data class Song(
     /** Internal field. Do not use. */
     val _albumSortName: String?,
     /** Internal field. Do not use. */
+    val _albumType: Album.Type,
+    /** Internal field. Do not use. */
     val _albumCoverUri: Uri,
     /** Internal field. Do not use. */
     val _artistName: String?,
@@ -202,9 +204,15 @@ data class Song(
 data class Album(
     override val rawName: String,
     override val rawSortName: String?,
+    /** The date this album was released. */
     val date: Date?,
-    /** The URI for the cover art corresponding to this album. */
-    val albumCoverUri: Uri,
+    /**
+     * The type of release this album represents. Null if release types were not applicable to this
+     * library.
+     */
+    val type: Type?,
+    /** The URI for the cover image corresponding to this album. */
+    val coverUri: Uri,
     /** The songs of this album. */
     override val songs: List<Song>,
     /** Internal field. Do not use. */
@@ -245,6 +253,12 @@ data class Album(
     /** Internal method. Do not use. */
     fun _link(artist: Artist) {
         _artist = artist
+    }
+
+    enum class Type {
+        Album,
+        EP,
+        Single
     }
 }
 

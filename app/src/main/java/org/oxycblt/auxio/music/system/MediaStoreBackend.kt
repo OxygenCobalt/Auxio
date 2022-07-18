@@ -27,6 +27,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import java.io.File
+import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.music.MimeType
@@ -336,9 +337,10 @@ abstract class MediaStoreBackend : Indexer.Backend {
         var track: Int? = null,
         var disc: Int? = null,
         var date: Date? = null,
+        var albumId: Long? = null,
         var album: String? = null,
         var sortAlbum: String? = null,
-        var albumId: Long? = null,
+        var albumType: Album.Type? = null,
         var artist: String? = null,
         var sortArtist: String? = null,
         var albumArtist: String? = null,
@@ -369,6 +371,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 _date = date,
                 _albumName = requireNotNull(album) { "Malformed audio: No album name" },
                 _albumSortName = sortAlbum,
+                _albumType = albumType ?: Album.Type.Album,
                 _albumCoverUri =
                     requireNotNull(albumId) { "Malformed audio: No album id" }.albumCoverUri,
                 _artistName = artist,

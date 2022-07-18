@@ -30,6 +30,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.parseId3GenreName
 import org.oxycblt.auxio.music.parsePositionNum
+import org.oxycblt.auxio.music.parseReleaseType
 import org.oxycblt.auxio.music.parseTimestamp
 import org.oxycblt.auxio.music.parseYear
 import org.oxycblt.auxio.util.logD
@@ -177,7 +178,7 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         for (i in 0 until metadata.length()) {
             when (val tag = metadata[i]) {
                 is TextInformationFrame -> {
-                    val id = tag.id.sanitize()
+                    val id = tag.description?.let { "TXXX:${it.sanitize()}" } ?: tag.id.sanitize()
                     val value = tag.value.sanitize()
                     if (value.isNotEmpty()) {
                         id3v2Tags[id] = value
@@ -245,6 +246,11 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
 
         // Genre, with the weird ID3 rules.
         tags["TCON"]?.let { audio.genre = it.parseId3GenreName() }
+
+        // Release type
+        (tags["TXXX:MusicBrainz Album Type"] ?: tags["GRP1"])?.parseReleaseType()?.let {
+            audio.albumType = it
+        }
     }
 
     private fun parseId3v23Date(tags: Map<String, String>): Date? {
@@ -303,6 +309,9 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
 
         // Genre, no ID3 rules here
         tags["GENRE"]?.let { audio.genre = it }
+
+        // Release type
+        tags["RELEASETYPE"]?.parseReleaseType()?.let { audio.albumType = it }
     }
 
     /**

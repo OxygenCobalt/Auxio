@@ -224,7 +224,6 @@ class Indexer {
 
         val albums = buildAlbums(songs)
         val artists = buildArtists(albums)
-
         val genres = buildGenres(songs)
 
         // Sanity check: Ensure that all songs are linked up to albums/artists/genres.
@@ -294,12 +293,19 @@ class Indexer {
      * that all songs are unified under a single album.
      *
      * This does come with some costs, it's far slower than using the album ID itself, and it may
-     * result in an unrelated album art being selected depending on the song chosen as the template,
-     * but it seems to work pretty well.
+     * result in an unrelated album cover being selected depending on the song chosen as the
+     * template, but it seems to work pretty well.
      */
     private fun buildAlbums(songs: List<Song>): List<Album> {
         val albums = mutableListOf<Album>()
         val songsByAlbum = songs.groupBy { it._albumGroupingId }
+
+        // If album types aren't used by the music library (Represented by all songs having
+        // an album type), there is no point in displaying them.
+        val enableAlbumTypes = songs.any { it._albumType != Album.Type.Album }
+        if (!enableAlbumTypes) {
+            logD("No distinct album types detected, ignoring them")
+        }
 
         for (entry in songsByAlbum) {
             val albumSongs = entry.value
@@ -315,7 +321,8 @@ class Indexer {
                     rawName = templateSong._albumName,
                     rawSortName = templateSong._albumSortName,
                     date = templateSong._date,
-                    albumCoverUri = templateSong._albumCoverUri,
+                    type = if (enableAlbumTypes) templateSong._albumType else null,
+                    coverUri = templateSong._albumCoverUri,
                     songs = entry.value,
                     _artistGroupingName = templateSong._artistGroupingName,
                     _artistGroupingSortName = templateSong._artistGroupingSortName))

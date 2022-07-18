@@ -19,7 +19,6 @@ package org.oxycblt.auxio.detail
 
 import android.content.Context
 import android.os.Build
-import android.text.method.MovementMethod
 import android.util.AttributeSet
 import android.view.View
 import com.google.android.material.textfield.TextInputEditText
@@ -27,8 +26,8 @@ import org.oxycblt.auxio.R
 
 /**
  * A [TextInputEditText] that deliberately restricts all input except for selection. Yes, this is a
- * blatant abuse of Material Design Guidelines, but I also don't want to figure out how to main
- * plain text selectable.
+ * blatant abuse of Material Design Guidelines, but I also don't want to figure out how to plain
+ * text selectable.
  *
  * @author OxygenCobalt
  */
@@ -47,9 +46,9 @@ constructor(
         }
     }
 
-    override fun getFreezesText(): Boolean = false
+    override fun getFreezesText() = false
 
-    override fun getDefaultEditable(): Boolean = false
+    override fun getDefaultEditable() = false
 
-    override fun getDefaultMovementMethod(): MovementMethod? = null
+    override fun getDefaultMovementMethod() = null
 }
