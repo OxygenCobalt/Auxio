@@ -207,4 +207,5 @@
     <string name="lbl_observing_desc">Müzik kitaplığı değişiklikler için denetleniyor…</string>
     <string name="set_observing">Otomatik yeniden yükleme</string>
     <string name="set_observing_desc">Müzik kitaplığınız her değiştiğinde yeniden yükler (Deneysel)</string>
+    <string name="lbl_sort_date_added">Eklendiği tarih</string>
 </resources>
