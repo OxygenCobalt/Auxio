@@ -50,4 +50,9 @@
     <string name="set_title">Nustatymai</string>
     <string name="set_theme">Temos</string>
     <string name="set_black_mode_desc">Naudokti grynai juodą tamsią temą</string>
+    <string name="info_app_desc">Paprastas, racionalus „Android“ muzikos grotuvas.</string>
+    <string name="info_playback_channel_name">Muzikos grojimas</string>
+    <string name="info_indexer_channel_name">Muzikos įkėlimas</string>
+    <string name="info_widget_desc">Peržiūrėti ir valdyti muzikos grojimą</string>
+    <string name="lbl_genres">Žanrai</string>
 </resources>
