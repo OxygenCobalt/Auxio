@@ -78,8 +78,8 @@
     <string name="info_indexer_channel_name">Müzik Yükleniyor</string>
     <string name="lbl_indexing_desc">Müzik kitaplığınız yükleniyor…</string>
     <string name="lbl_sort_name">İsim</string>
-    <string name="lbl_sort_artist">Sanatçı</string>
-    <string name="lbl_sort_album">Albüm</string>
+    <string name="lbl_artist">Sanatçı</string>
+    <string name="lbl_album">Albüm</string>
     <string name="lbl_sort_year">Yıl</string>
     <string name="lbl_sort_duration">Süre</string>
     <string name="lbl_off">Kapalı</string>

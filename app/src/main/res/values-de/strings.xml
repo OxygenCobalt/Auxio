@@ -129,8 +129,8 @@
     </plurals>
     <string name="info_app_desc">Ein einfacher, rationaler Musikplayer für Android.</string>
     <string name="info_widget_desc">Musikwiedergabe anzeigen und kontrollieren</string>
-    <string name="lbl_sort_artist">Künstler</string>
-    <string name="lbl_sort_album">Album</string>
+    <string name="lbl_artist">Künstler</string>
+    <string name="lbl_album">Album</string>
     <string name="lbl_sort_year">Jahr</string>
     <string name="set_black_mode">Schwarzes Farbschema</string>
     <string name="set_black_mode_desc">Ein rein schwarzes dunkles Farbschema verwenden</string>

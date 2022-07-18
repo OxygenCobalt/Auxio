@@ -20,10 +20,10 @@
                     android:title="@string/lbl_sort_name" />
                 <item
                     android:id="@+id/option_sort_artist"
-                    android:title="@string/lbl_sort_artist" />
+                    android:title="@string/lbl_artist" />
                 <item
                     android:id="@+id/option_sort_album"
-                    android:title="@string/lbl_sort_album" />
+                    android:title="@string/lbl_album" />
                 <item
                     android:id="@+id/option_sort_year"
                     android:title="@string/lbl_sort_year" />

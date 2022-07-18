@@ -14,11 +14,20 @@
     <string name="lbl_observing">Monitoring music library</string>
     <string name="lbl_observing_desc">Monitoring your music library for changes…</string>
 
-    <string name="lbl_genres">Genres</string>
-    <string name="lbl_artists">Artists</string>
-    <string name="lbl_albums">Albums</string>
     <string name="lbl_songs">Songs</string>
     <string name="lbl_all_songs">All Songs</string>
+
+    <string name="lbl_album">Album</string>
+    <string name="lbl_albums">Albums</string>
+    <string name="lbl_ep">EP</string>
+    <string name="lbl_eps">EPs</string>
+    <string name="lbl_single">Single</string>
+    <string name="lbl_singles">Singles</string>
+
+    <string name="lbl_artist">Artist</string>
+    <string name="lbl_artists">Artists</string>
+
+    <string name="lbl_genres">Genres</string>
 
     <string name="lbl_search">Search</string>
     <string name="lbl_filter">Filter</string>
@@ -26,8 +35,6 @@
 
     <string name="lbl_sort">Sort</string>
     <string name="lbl_sort_name">Name</string>
-    <string name="lbl_sort_artist">Artist</string>
-    <string name="lbl_sort_album">Album</string>
     <string name="lbl_sort_year">Year</string>
     <string name="lbl_sort_duration">Duration</string>
     <string name="lbl_sort_count">Song count</string>

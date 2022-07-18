@@ -258,7 +258,15 @@ data class Album(
     enum class Type {
         Album,
         EP,
-        Single
+        Single;
+
+        val string: Int
+            get() =
+                when (this) {
+                    Album -> R.string.lbl_album
+                    EP -> R.string.lbl_ep
+                    Single -> R.string.lbl_single
+                }
     }
 }
 

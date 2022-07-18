@@ -17,8 +17,8 @@
     <string name="lbl_filter_all">全部</string>
     <string name="lbl_sort">排序方式</string>
     <string name="lbl_sort_name">名称</string>
-    <string name="lbl_sort_artist">艺术家</string>
-    <string name="lbl_sort_album">专辑</string>
+    <string name="lbl_artist">艺术家</string>
+    <string name="lbl_album">专辑</string>
     <string name="lbl_sort_year">年份</string>
     <string name="lbl_sort_asc">首字符（正序）</string>
     <string name="lbl_playback">正在播放</string>

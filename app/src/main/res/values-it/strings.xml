@@ -17,8 +17,8 @@
     <string name="lbl_filter_all">Tutto</string>
     <string name="lbl_sort">Ordine</string>
     <string name="lbl_sort_name">Nome</string>
-    <string name="lbl_sort_artist">Artista</string>
-    <string name="lbl_sort_album">Disco</string>
+    <string name="lbl_artist">Artista</string>
+    <string name="lbl_album">Disco</string>
     <string name="lbl_sort_year">Anno</string>
     <string name="lbl_sort_asc">Ascendente</string>
     <string name="lbl_playback">Ora in riproduzione</string>

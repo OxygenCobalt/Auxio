@@ -241,8 +241,20 @@ class DetailViewModel(application: Application) :
     private fun refreshArtistData(artist: Artist) {
         logD("Refreshing artist data")
         val data = mutableListOf<Item>(artist)
-        data.add(Header(-2, R.string.lbl_albums))
-        data.addAll(Sort(Sort.Mode.ByYear, false).albums(artist.albums))
+        val albums = Sort(Sort.Mode.ByYear, false).albums(artist.albums)
+        val byType = albums.groupBy { it.type ?: Album.Type.Album }
+        byType.keys.sorted().forEachIndexed { index, type ->
+            val typeString =
+                when (type) {
+                    Album.Type.Album -> R.string.lbl_albums
+                    Album.Type.EP -> R.string.lbl_eps
+                    Album.Type.Single -> R.string.lbl_singles
+                }
+
+            data.add(Header(-2L - index, typeString))
+            data.addAll(unlikelyToBeNull(byType[type]))
+        }
+
         data.add(SortHeader(-3, R.string.lbl_songs))
         data.addAll(artistSort.songs(artist.songs))
         _artistData.value = data.toList()

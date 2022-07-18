@@ -108,8 +108,8 @@
     <string name="lbl_sort_count">Contagem de Músicas</string>
     <string name="lbl_sort_disc">Disco</string>
     <string name="lbl_sort_name">Nome</string>
-    <string name="lbl_sort_artist">Artista</string>
-    <string name="lbl_sort_album">Álbum</string>
+    <string name="lbl_artist">Artista</string>
+    <string name="lbl_album">Álbum</string>
     <string name="lbl_props">Propriedades da música</string>
     <string name="lbl_file_name">Nome do arquivo</string>
     <string name="lbl_format">Formato</string>

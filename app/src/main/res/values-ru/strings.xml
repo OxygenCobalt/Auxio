@@ -17,8 +17,8 @@
     <string name="lbl_filter_all">Все</string>
     <string name="lbl_sort">Сортировать</string>
     <string name="lbl_sort_name">Название</string>
-    <string name="lbl_sort_artist">Исполнитель</string>
-    <string name="lbl_sort_album">Альбом</string>
+    <string name="lbl_artist">Исполнитель</string>
+    <string name="lbl_album">Альбом</string>
     <string name="lbl_sort_year">Год</string>
     <string name="lbl_sort_asc">По возрастанию</string>
     <string name="lbl_playback">Сейчас играет</string>

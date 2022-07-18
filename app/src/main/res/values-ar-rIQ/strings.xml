@@ -22,8 +22,8 @@
 
     <string name="lbl_sort">فرز</string>
     <string name="lbl_sort_name">اسم</string>
-    <string name="lbl_sort_artist">فنان</string>
-    <string name="lbl_sort_album">البوم</string>
+    <string name="lbl_artist">فنان</string>
+    <string name="lbl_album">البوم</string>
     <string name="lbl_sort_year">سنة</string>
     <string name="lbl_sort_asc">تصاعدي</string>
 

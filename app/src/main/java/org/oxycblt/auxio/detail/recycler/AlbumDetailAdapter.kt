@@ -123,13 +123,25 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
         }
 
         binding.detailInfo.apply {
+            val date =
+                item.date?.let { context.getString(R.string.fmt_number, it.year) }
+                    ?: context.getString(R.string.def_date)
+
+            val songCount = context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size)
+
+            val duration = item.durationSecs.formatDuration(false)
+
             text =
-                context.getString(
-                    R.string.fmt_three,
-                    item.date?.let { context.getString(R.string.fmt_number, it.year) }
-                        ?: context.getString(R.string.def_date),
-                    context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size),
-                    item.durationSecs.formatDuration(false))
+                if (item.type != null) {
+                    context.getString(
+                        R.string.fmt_four,
+                        context.getString(item.type.string),
+                        date,
+                        songCount,
+                        duration)
+                } else {
+                    context.getString(R.string.fmt_three, date, songCount, duration)
+                }
         }
 
         binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }
@@ -153,7 +165,8 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
                         oldItem.artist.rawName == newItem.artist.rawName &&
                         oldItem.date == newItem.date &&
                         oldItem.songs.size == newItem.songs.size &&
-                        oldItem.durationSecs == newItem.durationSecs
+                        oldItem.durationSecs == newItem.durationSecs &&
+                        oldItem.type == newItem.type
             }
     }
 }

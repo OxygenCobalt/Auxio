@@ -103,8 +103,8 @@
     <string name="info_widget_desc">Afficher et contrôler la lecture de la musique</string>
     <string name="lbl_indexing_desc">Chargement de votre bibliothèque musicale…</string>
     <string name="lbl_sort_name">Nom</string>
-    <string name="lbl_sort_artist">Artiste</string>
-    <string name="lbl_sort_album">Album</string>
+    <string name="lbl_artist">Artiste</string>
+    <string name="lbl_album">Album</string>
     <string name="lbl_sort_year">Année</string>
     <string name="lbl_sort_duration">Durée</string>
     <string name="lbl_sort_count">Nombre de chansons</string>

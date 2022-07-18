@@ -82,7 +82,15 @@ private constructor(
     override fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.textSafe = item.resolveName(binding.context)
-        binding.parentInfo.textSafe = item.artist.resolveName(binding.context)
+
+        val artistName = item.artist.resolveName(binding.context)
+        binding.parentInfo.textSafe =
+            if (item.type != null) {
+                binding.context.getString(
+                    R.string.fmt_two, binding.context.getString(item.type.string), artistName)
+            } else {
+                artistName
+            }
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
             setOnLongClickListener { view ->
@@ -106,7 +114,8 @@ private constructor(
             object : SimpleItemCallback<Album>() {
                 override fun areItemsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
-                        oldItem.artist.rawName == newItem.artist.rawName
+                        oldItem.artist.rawName == newItem.artist.rawName &&
+                        oldItem.type == newItem.type
             }
     }
 }
