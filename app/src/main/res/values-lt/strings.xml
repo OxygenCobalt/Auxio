@@ -7,7 +7,6 @@
     <string name="lbl_filter_all">Visos</string>
     <string name="lbl_sort">Rūšiuoti</string>
     <string name="lbl_sort_name">Pavadinimas</string>
-    <string name="lbl_sort_artist">Atlikėjas</string>
     <string name="lbl_sort_album">Albumas</string>
     <string name="lbl_sort_year">Metai</string>
     <string name="lbl_sort_duration">Trukmė</string>
