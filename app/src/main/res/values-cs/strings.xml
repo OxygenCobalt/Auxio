@@ -224,4 +224,8 @@
     <string name="lbl_singles">Singly</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_eps">EP</string>
+    <string name="lbl_soundtracks">Soundtracky</string>
+    <string name="lbl_compilation">Kompilace</string>
+    <string name="lbl_compilations">Kompilace</string>
+    <string name="lbl_soundtrack">Soundtrack</string>
 </resources>
