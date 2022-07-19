@@ -28,9 +28,9 @@ import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.audioUri
+import org.oxycblt.auxio.music.parseAlbumType
 import org.oxycblt.auxio.music.parseId3GenreName
 import org.oxycblt.auxio.music.parsePositionNum
-import org.oxycblt.auxio.music.parseReleaseType
 import org.oxycblt.auxio.music.parseTimestamp
 import org.oxycblt.auxio.music.parseYear
 import org.oxycblt.auxio.util.logD
@@ -247,8 +247,8 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         // Genre, with the weird ID3 rules.
         tags["TCON"]?.let { audio.genre = it.parseId3GenreName() }
 
-        // Release type
-        (tags["TXXX:MusicBrainz Album Type"] ?: tags["GRP1"])?.parseReleaseType()?.let {
+        // Release type (GRP1 is sometimes used for this, so fall back to it)
+        (tags["TXXX:MusicBrainz Album Type"] ?: tags["GRP1"])?.parseAlbumType()?.let {
             audio.albumType = it
         }
     }
@@ -311,7 +311,7 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         tags["GENRE"]?.let { audio.genre = it }
 
         // Release type
-        tags["RELEASETYPE"]?.parseReleaseType()?.let { audio.albumType = it }
+        tags["RELEASETYPE"]?.parseAlbumType()?.let { audio.albumType = it }
     }
 
     /**

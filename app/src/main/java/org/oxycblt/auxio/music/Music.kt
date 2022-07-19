@@ -256,17 +256,57 @@ data class Album(
     }
 
     enum class Type {
-        Album,
+        ALBUM,
         EP,
-        Single;
+        SINGLE,
+        COMPILATION,
+        SOUNDTRACK;
 
-        val string: Int
+        // I only implemented the release types that I use. If there is sufficient demand,
+        // I'll extend them to these release types.
+        // REMIX, LIVE, MIXTAPE
+
+        val stringRes: Int
             get() =
                 when (this) {
-                    Album -> R.string.lbl_album
+                    ALBUM -> R.string.lbl_album
                     EP -> R.string.lbl_ep
-                    Single -> R.string.lbl_single
+                    SINGLE -> R.string.lbl_single
+                    COMPILATION -> R.string.lbl_compilation
+                    SOUNDTRACK -> R.string.lbl_soundtrack
                 }
+
+        val pluralStringRes: Int
+            get() =
+                when (this) {
+                    ALBUM -> R.string.lbl_albums
+                    EP -> R.string.lbl_eps
+                    SINGLE -> R.string.lbl_singles
+                    COMPILATION -> R.string.lbl_compilations
+                    SOUNDTRACK -> R.string.lbl_soundtracks
+                }
+
+        companion object {
+            fun parse(type: String): Type {
+                // Release types (at least to MusicBrainz) are formatted as <primary> + <secondary>
+                // where primary is something like "album", "ep", or "single", and secondary is
+                // "compilation", "soundtrack", etc. Use the secondary type as the album type before
+                // falling back to the primary type.
+                val primarySecondary = type.split('+').map { it.trim() }
+                return primarySecondary.getOrNull(1)?.parseReleaseType()
+                    ?: primarySecondary[0].parseReleaseType() ?: ALBUM
+            }
+
+            private fun String.parseReleaseType() =
+                when {
+                    equals("album", ignoreCase = true) -> ALBUM
+                    equals("ep", ignoreCase = true) -> EP
+                    equals("single", ignoreCase = true) -> SINGLE
+                    equals("compilation", ignoreCase = true) -> COMPILATION
+                    equals("soundtrack", ignoreCase = true) -> SOUNDTRACK
+                    else -> null
+                }
+        }
     }
 }
 

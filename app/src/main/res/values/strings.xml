@@ -23,6 +23,10 @@
     <string name="lbl_eps">EPs</string>
     <string name="lbl_single">Single</string>
     <string name="lbl_singles">Singles</string>
+    <string name="lbl_compilation">Compilation</string>
+    <string name="lbl_compilations">Compilations</string>
+    <string name="lbl_soundtrack">Soundtrack</string>
+    <string name="lbl_soundtracks">Soundtracks</string>
 
     <string name="lbl_artist">Artist</string>
     <string name="lbl_artists">Artists</string>

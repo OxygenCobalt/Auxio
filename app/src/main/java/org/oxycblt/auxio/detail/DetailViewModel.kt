@@ -51,6 +51,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * - The RecyclerView data for each fragment
  * - The sorts for each type of data
  * @author OxygenCobalt
+ *
+ * TODO: Unify how detail items are indicated
  */
 class DetailViewModel(application: Application) :
     AndroidViewModel(application), MusicStore.Callback {
@@ -242,16 +244,11 @@ class DetailViewModel(application: Application) :
         logD("Refreshing artist data")
         val data = mutableListOf<Item>(artist)
         val albums = Sort(Sort.Mode.ByYear, false).albums(artist.albums)
-        val byType = albums.groupBy { it.type ?: Album.Type.Album }
-        byType.keys.sorted().forEachIndexed { index, type ->
-            val typeString =
-                when (type) {
-                    Album.Type.Album -> R.string.lbl_albums
-                    Album.Type.EP -> R.string.lbl_eps
-                    Album.Type.Single -> R.string.lbl_singles
-                }
 
-            data.add(Header(-2L - index, typeString))
+        // Organize albums by their release type. We do not dor
+        val byType = albums.groupBy { it.type ?: Album.Type.ALBUM }
+        byType.keys.sorted().forEachIndexed { index, type ->
+            data.add(Header(-2L - index, type.pluralStringRes))
             data.addAll(unlikelyToBeNull(byType[type]))
         }
 
@@ -303,6 +300,7 @@ class DetailViewModel(application: Application) :
 
             val genre = currentGenre.value
             if (genre != null) {
+                logD("Genre changed, refreshing data")
                 val newGenre = library.sanitize(genre).also { _currentGenre.value = it }
                 if (newGenre != null) {
                     refreshGenreData(newGenre)

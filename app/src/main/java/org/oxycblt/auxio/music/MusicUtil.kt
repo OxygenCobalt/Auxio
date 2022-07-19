@@ -100,17 +100,8 @@ fun String.parseSortName() =
         else -> this
     }
 
-/** Parse a release type from this string into an [Album.Type]. Handles MusicBrainz separators. */
-fun String.parseReleaseType() =
-    parseReleaseTypeImpl() ?: split("+", limit = 2)[0].trim().parseReleaseTypeImpl()
-
-private fun String.parseReleaseTypeImpl() =
-    when (this) {
-        "album" -> Album.Type.Album
-        "ep" -> Album.Type.EP
-        "single" -> Album.Type.Single
-        else -> null
-    }
+/** Shortcut to parse an [Album.Type] from a string */
+fun String.parseAlbumType() = Album.Type.parse(this)
 
 /**
  * Decodes the genre name from an ID3(v2) constant. See [GENRE_TABLE] for the genre constant map

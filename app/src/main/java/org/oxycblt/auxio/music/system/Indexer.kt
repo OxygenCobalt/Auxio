@@ -302,7 +302,7 @@ class Indexer {
 
         // If album types aren't used by the music library (Represented by all songs having
         // an album type), there is no point in displaying them.
-        val enableAlbumTypes = songs.any { it._albumType != Album.Type.Album }
+        val enableAlbumTypes = songs.any { it._albumType != Album.Type.ALBUM }
         if (!enableAlbumTypes) {
             logD("No distinct album types detected, ignoring them")
         }

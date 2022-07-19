@@ -135,7 +135,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
                 if (item.type != null) {
                     context.getString(
                         R.string.fmt_four,
-                        context.getString(item.type.string),
+                        context.getString(item.type.stringRes),
                         date,
                         songCount,
                         duration)

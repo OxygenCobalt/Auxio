@@ -371,7 +371,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 _date = date,
                 _albumName = requireNotNull(album) { "Malformed audio: No album name" },
                 _albumSortName = sortAlbum,
-                _albumType = albumType ?: Album.Type.Album,
+                _albumType = albumType ?: Album.Type.ALBUM,
                 _albumCoverUri =
                     requireNotNull(albumId) { "Malformed audio: No album id" }.albumCoverUri,
                 _artistName = artist,
