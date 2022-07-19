@@ -113,7 +113,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
                 // No app installed to open the link
                 requireContext().showToast(R.string.err_no_app)
             }
-        } else {
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             // On older versions of android, opening links from an ACTION_VIEW intent might
             // not work in all cases, especially when no default app was set. If that is the
             // case, we will try to manually handle these cases before we try to launch the

@@ -326,8 +326,8 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
  * or reject valid-ish dates.
  *
  * Date instances are immutable and their internal implementation is hidden. To instantiate one, use
- * [from] or [from]. The string representation of a Date is RFC 3339, with granular position
- * depending on the presence of particular tokens.
+ * [from]. The string representation of a Date is RFC 3339, with granular position depending on the
+ * presence of particular tokens.
  *
  * Please, **Do not use this for anything important related to time.** I cannot stress this enough.
  * This class will blow up if you try to do that.
@@ -389,7 +389,6 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
     override fun toString() = StringBuilder().appendDate().toString()
 
     private fun StringBuilder.appendDate(): StringBuilder {
-        // RFC 3339 does not allow partial precision.
         append(year.toFixedString(4))
         append("-${(month ?: return this).toFixedString(2)}")
         append("-${(day ?: return this).toFixedString(2)}")

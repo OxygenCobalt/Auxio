@@ -138,12 +138,12 @@ private fun RemoteViews.applyPlayPauseControls(
     context: Context,
     state: WidgetComponent.WidgetState
 ): RemoteViews {
+    // Controls are timeline elements, override the layout direction to RTL
+    setInt(R.id.widget_controls, "setLayoutDirection", View.LAYOUT_DIRECTION_LTR)
+
     setOnClickPendingIntent(
         R.id.widget_play_pause,
         context.newBroadcastPendingIntent(PlaybackService.ACTION_PLAY_PAUSE))
-
-    // Controls are timeline elements, override the layout direction to RTL
-    setInt(R.id.widget_controls, "setLayoutDirection", View.LAYOUT_DIRECTION_LTR)
 
     setImageViewResource(
         R.id.widget_play_pause,

@@ -534,10 +534,7 @@ open class Api29MediaStoreBackend : BaseApi29MediaStoreBackend() {
     private var trackIndex = -1
 
     override val projection: Array<String>
-        get() =
-            super.projection +
-                arrayOf(
-                    MediaStore.Audio.AudioColumns.TRACK, MediaStore.Audio.AudioColumns.DATE_TAKEN)
+        get() = super.projection + arrayOf(MediaStore.Audio.AudioColumns.TRACK)
 
     override fun buildAudio(context: Context, cursor: Cursor): Audio {
         val audio = super.buildAudio(context, cursor)
@@ -588,7 +585,6 @@ class Api30MediaStoreBackend : BaseApi29MediaStoreBackend() {
         // the tag itself, which is to say that it is formatted as NN/TT tracks, where
         // N is the number and T is the total. Parse the number while leaving out the
         // total, as we have no use for it.
-
         cursor.getStringOrNull(trackIndex)?.parsePositionNum()?.let { audio.track = it }
         cursor.getStringOrNull(discIndex)?.parsePositionNum()?.let { audio.disc = it }
 

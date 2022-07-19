@@ -82,15 +82,7 @@ private constructor(
     override fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.textSafe = item.resolveName(binding.context)
-
-        val artistName = item.artist.resolveName(binding.context)
-        binding.parentInfo.textSafe =
-            if (item.type != null) {
-                binding.context.getString(
-                    R.string.fmt_two, binding.context.getString(item.type.string), artistName)
-            } else {
-                artistName
-            }
+        binding.parentInfo.textSafe = item.artist.resolveName(binding.context)
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
             setOnLongClickListener { view ->

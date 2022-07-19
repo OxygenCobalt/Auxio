@@ -145,19 +145,18 @@ class SearchViewModel(application: Application) :
         }
 
     private fun List<Album>.filterAlbumsBy(value: String) =
-        baseFilterBy(value) { it.rawSortName?.contains(value) == true }
+        baseFilterBy(value) { it.rawSortName?.contains(value, ignoreCase = true) == true }
 
     private fun List<Artist>.filterArtistsBy(value: String) =
-        baseFilterBy(value) { it.rawSortName?.contains(value) == true }
+        baseFilterBy(value) { it.rawSortName?.contains(value, ignoreCase = true) == true }
 
     private fun List<Genre>.filterGenresBy(value: String) = baseFilterBy(value) { false }
 
     private inline fun <T : Music> List<T>.baseFilterBy(value: String, additional: (T) -> Boolean) =
         filter {
                 // The basic comparison is first by the *normalized* name, as that allows a
-                // non-unicode
-                // search to match with some unicode characters. If that fails, filter impls have
-                // fallback values, primarily around sort tags or file names.
+                // non-unicode search to match with some unicode characters. If that fails,
+                // filter impls have fallback values, primarily around sort tags or file names.
                 it.resolveNameNormalized(application).contains(value, ignoreCase = true) ||
                     additional(it)
             }
