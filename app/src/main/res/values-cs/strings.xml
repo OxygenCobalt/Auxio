@@ -220,4 +220,8 @@
     <string name="set_observing_desc">Znovu načíst vaší hudební knihovnu při změně (experimentální)</string>
     <string name="lbl_indexing">Načítání hudby</string>
     <string name="lbl_sort_date_added">Datum přidání</string>
+    <string name="lbl_single">Singl</string>
+    <string name="lbl_singles">Singly</string>
+    <string name="lbl_ep">EP</string>
+    <string name="lbl_eps">EP</string>
 </resources>
