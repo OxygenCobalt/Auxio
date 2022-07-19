@@ -53,4 +53,25 @@
     <string name="info_indexer_channel_name">Muzikos įkėlimas</string>
     <string name="info_widget_desc">Peržiūrėti ir valdyti muzikos grojimą</string>
     <string name="lbl_genres">Žanrai</string>
+    <string name="lbl_retry">Bandykite dar kartą</string>
+    <string name="lbl_grant">Suteikti</string>
+    <string name="lbl_indexing">Kraunama muzika</string>
+    <string name="lbl_indexing_desc">Kraunama jūsų muzikos biblioteka…</string>
+    <string name="lbl_library_counts">Bibliotekos statistika</string>
+    <string name="clr_pink">Rožinis</string>
+    <string name="lbl_album">Albumas</string>
+    <string name="lbl_ep">EP</string>
+    <string name="lbl_single">Singlas</string>
+    <string name="lbl_artist">Atlikėjas</string>
+    <string name="def_genre">Nežinomas žanras</string>
+    <string name="def_date">Nėra datos</string>
+    <string name="clr_red">Raudona</string>
+    <string name="clr_purple">Violetinė</string>
+    <string name="clr_blue">Mėlyna</string>
+    <string name="clr_deep_blue">Tamsiai Mėlyna</string>
+    <string name="clr_cyan">Žydra</string>
+    <string name="lbl_eps">EPs</string>
+    <string name="def_artist">Nežinomas Atlikėjas</string>
+    <string name="desc_no_cover">Albumo viršelis</string>
+    <string name="clr_deep_purple">Tamsiai Violetinė</string>
 </resources>
