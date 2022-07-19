@@ -74,4 +74,27 @@
     <string name="def_artist">Nežinomas Atlikėjas</string>
     <string name="desc_no_cover">Albumo viršelis</string>
     <string name="clr_deep_purple">Tamsiai Violetinė</string>
+    <string name="lbl_observing">Stebėjimas muzikos biblioteką</string>
+    <string name="lbl_observing_desc">Stebima, ar jūsų muzikos bibliotekoje yra pakeitimų…</string>
+    <string name="lbl_shuffle_shortcut_short">Išmaišyti</string>
+    <string name="lbl_shuffle_shortcut_long">Išmaišyti viską</string>
+    <string name="lbl_state_restored">Atkurta grojimo būsena</string>
+    <string name="lbl_state_saved">Išsaugota grojamo būsena</string>
+    <string name="lbl_cancel">\@android:string/atšaukti</string>
+    <string name="lbl_code">Peržiūrėti per „Github“</string>
+    <string name="set_display">Rodyti</string>
+    <string name="set_replay_gain">„ReplayGain“</string>
+    <string name="lbl_singles">Singlaiai</string>
+    <string name="lbl_ok">\@android:string/gerai</string>
+    <string name="set_show_covers">Rodyti albumų viršelius</string>
+    <string name="set_show_covers_desc">Išjungti, kad sutaupytumėte atminties naudojimą</string>
+    <string name="set_quality_covers_desc">Pagerėja albumo viršelio kokybė, tačiau ilgėja įkrovimo laikas ir naudojama daugiau atminties</string>
+    <string name="set_round_mode_desc">Įgalinti papildomų vartotojo sąsajos elementų suapvalintus kampus (Reikia, kad albumo viršeliai būtų suapvalinti)</string>
+    <string name="set_alt_repeat">Pirmenybė teikiama pakartotinio režimo veiksmams</string>
+    <string name="lbl_soundtrack">Garso takelis</string>
+    <string name="lbl_soundtracks">Garso takeliai</string>
+    <string name="set_audio">Garso</string>
+    <string name="set_quality_covers">Ignoruoti „MediaStore“ viršelius</string>
+    <string name="set_round_mode">Apvalus režimas</string>
+    <string name="set_alt_action">Naudoti alternatyvų pranešimo veiksmą</string>
 </resources>
