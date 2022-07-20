@@ -3,4 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/switchWidget"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    android:thumb="@drawable/ui_m3_switch_thumb"
+    app:thumbTint="@color/sel_m3_switch_thumb"
+    app:track="@drawable/ui_m3_switch_track"
+    app:trackTint="@color/sel_m3_switch_track" />
