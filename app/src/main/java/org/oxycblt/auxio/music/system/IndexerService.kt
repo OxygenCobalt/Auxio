@@ -20,21 +20,21 @@ package org.oxycblt.auxio.music.system
 import android.app.Service
 import android.content.Intent
 import android.database.ContentObserver
-import android.os.Handler
-import android.os.IBinder
-import android.os.Looper
+import android.os.*
 import android.provider.MediaStore
 import coil.imageLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.system.ForegroundManager
 import org.oxycblt.auxio.util.contentResolverSafe
+import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -46,8 +46,6 @@ import org.oxycblt.auxio.util.logD
  * You could probably do the same using WorkManager and the GooberQueue library or whatever, but the
  * boilerplate you skip is not worth the insanity of androidx.
  *
- * TODO: Add a wake-lock to the music loading process
- *
  * @author OxygenCobalt
  */
 class IndexerService : Service(), Indexer.Controller, Settings.Callback {
@@ -56,14 +54,16 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
 
     private val serviceJob = Job()
     private val indexScope = CoroutineScope(serviceJob + Dispatchers.IO)
-    private lateinit var indexerContentObserver: SystemContentObserver
 
     private val playbackManager = PlaybackStateManager.getInstance()
-    private lateinit var settings: Settings
 
     private lateinit var foregroundManager: ForegroundManager
     private lateinit var indexingNotification: IndexingNotification
     private lateinit var observingNotification: ObservingNotification
+
+    private lateinit var settings: Settings
+    private lateinit var wakeLock: PowerManager.WakeLock
+    private lateinit var indexerContentObserver: SystemContentObserver
 
     override fun onCreate() {
         super.onCreate()
@@ -81,6 +81,11 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
             onStartIndexing()
         }
 
+        wakeLock =
+            getSystemServiceSafe(PowerManager::class)
+                .newWakeLock(
+                    PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ".IndexerService")
+
         logD("Service created.")
     }
 
@@ -92,6 +97,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         super.onDestroy()
 
         foregroundManager.release()
+        wakeLock.releaseSafe()
 
         // De-initialize the components first to prevent stray reloading events
         settings.release()
@@ -167,6 +173,9 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
             logD("Notification changed, re-posting notification")
             indexingNotification.post()
         }
+
+        // Make sure we can keep the CPU on while loading music
+        wakeLock.acquireSafe()
     }
 
     private fun updateIdleSession() {
@@ -182,6 +191,23 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
             }
         } else {
             foregroundManager.tryStopForeground()
+        }
+
+        // Release our wake lock (if we were using it)
+        wakeLock.releaseSafe()
+    }
+
+    private fun PowerManager.WakeLock.acquireSafe() {
+        if (!wakeLock.isHeld) {
+            logD("Acquiring wake lock")
+            acquire()
+        }
+    }
+
+    private fun PowerManager.WakeLock.releaseSafe() {
+        if (wakeLock.isHeld) {
+            logD("Releasing wake lock")
+            release()
         }
     }
 

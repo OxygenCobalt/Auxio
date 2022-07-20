@@ -7,7 +7,7 @@
 at the cost of longer loading times
 	- Added support for sort tags [#172, dependent on this feature]
 	- Added support for date tags, including more fine-grained dates [#159, dependent on this feature]
-	- Added support for release types signifying EPs/Singles [#158, dependent on this feature]
+	- Added support for release types signifying EPs, Singles, Compilations, and more [#158, dependent on this feature]
 - Added Last Added sorting
 - Search now takes sort tags and file names in account [#184]
 
