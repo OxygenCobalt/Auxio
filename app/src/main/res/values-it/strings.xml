@@ -214,4 +214,22 @@
     <string name="set_restore">Ripristina stato riproduzione</string>
     <string name="set_restore_desc">Ripristina lo stato di riproduzione precedentemente salvato (se disponibile)</string>
     <string name="err_did_not_restore">Impossibile ripristinare lo stato</string>
+    <string name="lbl_eps">EP</string>
+    <string name="lbl_ep">EP</string>
+    <string name="lbl_singles">Singoli</string>
+    <string name="lbl_single">Singolo</string>
+    <string name="lbl_ep_remix">EP remix</string>
+    <string name="lbl_mixtapes">Mixtape</string>
+    <string name="lbl_mixtape">Mixtape</string>
+    <string name="lbl_live_group">Live</string>
+    <string name="lbl_remix_group">Remix</string>
+    <string name="lbl_album_remix">Album remix</string>
+    <string name="lbl_single_live">Singolo live</string>
+    <string name="lbl_album_live">Album live</string>
+    <string name="lbl_ep_live">EP live</string>
+    <string name="lbl_compilation">Raccolta</string>
+    <string name="lbl_soundtracks">Colonne sonore</string>
+    <string name="lbl_single_remix">Singolo remix</string>
+    <string name="lbl_compilations">Raccolte</string>
+    <string name="lbl_soundtrack">Colonna sonora</string>
 </resources>
