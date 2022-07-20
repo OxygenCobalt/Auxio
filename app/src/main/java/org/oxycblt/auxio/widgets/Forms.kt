@@ -185,8 +185,6 @@ private fun RemoteViews.applyFullControls(
         R.id.widget_shuffle,
         context.newBroadcastPendingIntent(PlaybackService.ACTION_INVERT_SHUFFLE))
 
-    // Like notifications, use the remote variants of icons since we really don't want to hack
-    // indicators.
     val shuffleRes =
         when {
             state.isShuffled -> R.drawable.ic_shuffle_on_24

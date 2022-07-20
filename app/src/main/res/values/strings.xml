@@ -7,7 +7,9 @@
     <string name="info_widget_desc">View and control music playback</string>
 
     <!-- Label Namespace | Static Labels -->
+
     <string name="lbl_retry">Retry</string>
+    <!-- As in grant permission -->
     <string name="lbl_grant">Grant</string>
     <string name="lbl_indexing">Loading music</string>
     <string name="lbl_indexing_desc">Loading your music library…</string>
@@ -19,26 +21,39 @@
 
     <string name="lbl_albums">Albums</string>
     <string name="lbl_album">Album</string>
+    <!-- As in the the music release being played live -->
     <string name="lbl_album_live">Live album</string>
+    <!-- As in a remix of the music release -->
     <string name="lbl_album_remix">Remix album</string>
 
+    <!-- As in the type of music release -->
     <string name="lbl_eps">EPs</string>
+    <!-- As in the type of music release -->
     <string name="lbl_ep">EP</string>
+    <!-- As in the the music release being played live -->
     <string name="lbl_ep_live">Live EP</string>
+    <!-- As in a remix of the music release -->
     <string name="lbl_ep_remix">Remix EP</string>
 
+    <!-- As in the type of music release -->
     <string name="lbl_singles">Singles</string>
+    <!-- As in the type of music release -->
     <string name="lbl_single">Single</string>
+    <!-- As in the the music release being played live -->
     <string name="lbl_single_live">Live single</string>
+    <!-- As in a remix of the music release -->
     <string name="lbl_single_remix">Remix single</string>
 
+    <!-- As in a compilation of music -->
     <string name="lbl_compilations">Compilations</string>
+    <!-- As in a compilation of music -->
     <string name="lbl_compilation">Compilation</string>
     <string name="lbl_soundtracks">Soundtracks</string>
     <string name="lbl_soundtrack">Soundtrack</string>
     <string name="lbl_mixtapes">Mixtapes</string>
     <string name="lbl_mixtape">Mixtape</string>
 
+    <!-- As in music that was performed live -->
     <string name="lbl_live_group">Live</string>
     <string name="lbl_remix_group">Remixes</string>
 
@@ -77,7 +92,9 @@
     <string name="lbl_props">Song properties</string>
     <string name="lbl_file_name">File name</string>
     <string name="lbl_relative_path">Parent path</string>
+    <!-- As in audio format -->
     <string name="lbl_format">Format</string>
+    <!-- As in file size -->
     <string name="lbl_size">Size</string>
     <string name="lbl_bitrate">Bit rate</string>
     <string name="lbl_sample_rate">Sample rate</string>
@@ -109,6 +126,7 @@
     <string name="lbl_library_counts">Library statistics</string>
 
     <!-- Settings namespace | Settings-related labels -->
+
     <string name="set_title">Settings</string>
     <string name="set_ui">Appearance</string>
     <string name="set_theme">Theme</string>
@@ -169,9 +187,12 @@
     <string name="set_reindex_desc">May wipe playback state</string>
     <string name="set_dirs">Music folders</string>
     <string name="set_dirs_desc">Manage where music should be loaded from</string>
+    <!-- As in the mode to be used with the music folders setting -->
     <string name="set_dirs_mode">Mode</string>
+    <!-- Exclude folders from music loading -->
     <string name="set_dirs_mode_exclude">Exclude</string>
     <string name="set_dirs_mode_exclude_desc">Music will <b>not</b> be loaded from the folders you add.</string>
+    <!-- Restrict music loading to selected folders -->
     <string name="set_dirs_mode_include">Include</string>
     <string name="set_dirs_mode_include_desc">Music will <b>only</b> be loaded from the folders you add.</string>
     <string name="set_quality_tags">Ignore MediaStore tags</string>
@@ -184,6 +205,7 @@
     <string name="err_index_failed">Music loading failed</string>
     <string name="err_no_perms">Auxio needs permission to read your music library</string>
     <string name="err_no_app">No app can open this link</string>
+    <!-- No folders in the "Music Folders" setting -->
     <string name="err_no_dirs">No Folders</string>
     <string name="err_bad_dir">This folder is not supported</string>
     <string name="err_too_small">Auxio does not support this window size</string>
@@ -191,9 +213,12 @@
     <string name="err_did_not_restore">No state could be restored</string>
 
     <!-- Hint Namespace | EditText Hints -->
+
+    <!-- As in music library -->
     <string name="hint_search_library">Search your library…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
+
     <string name="desc_track_number">Track %d</string>
 
     <string name="desc_play_pause">Play or Pause</string>
@@ -207,15 +232,16 @@
     <string name="desc_queue_handle">Move this queue song</string>
     <string name="desc_tab_handle">Move this tab</string>
     <string name="desc_clear_search">Clear search query</string>
-    <string name="desc_music_dir_delete">Remove directory</string>
+    <string name="desc_music_dir_delete">Remove folder</string>
 
     <string name="desc_auxio_icon">Auxio icon</string>
     <string name="desc_no_cover">Album cover</string>
-    <string name="desc_album_cover">Album Cover for %s</string>
-    <string name="desc_artist_image">Artist Image for %s</string>
-    <string name="desc_genre_image">Genre Image for %s</string>
+    <string name="desc_album_cover">Album cover for %s</string>
+    <string name="desc_artist_image">Artist image for %s</string>
+    <string name="desc_genre_image">Genre image for %s</string>
 
     <!-- Default Namespace | Placeholder values -->
+
     <string name="def_artist">Unknown Artist</string>
     <string name="def_genre">Unknown Genre</string>
     <string name="def_date">No Date</string>
@@ -228,13 +254,14 @@
     <string name="def_widget_artist">Artist Name</string>
 
     <!-- Codec Namespace | Format names -->
-    <!-- "Audio" should be translated -->
+
+    <!-- "Audio" can optionally be translated -->
     <string name="cdc_mp3">MPEG-1 Audio</string>
-    <!-- "Audio" should be translated -->
+    <!-- "Audio" can optionally be translated -->
     <string name="cdc_mp4">MPEG-4 Audio</string>
-    <!-- "Audio" should be translated -->
+    <!-- "Audio" can optionally be translated -->
     <string name="cdc_ogg">Ogg Audio</string>
-    <!-- "Audio" should be translated -->
+    <!-- "Audio" can optionally be translated -->
     <string name="cdc_mka">Matroska Audio</string>
     <!-- "Advanced Audio Coding" can optionally be translated -->
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
@@ -242,6 +269,7 @@
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
 
     <!-- Color Label namespace | Accent names -->
+
     <string name="clr_red">Red</string>
     <string name="clr_pink">Pink</string>
     <string name="clr_purple">Purple</string>
@@ -262,13 +290,15 @@
     <string name="clr_dynamic">Dynamic</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
+
+    <!-- As in "Disc 1", "Disc 2", etc. in a set -->
     <string name="fmt_disc_no">Disc %d</string>
 
     <!-- Use your native country's abbreviation for decibel units. -->
     <string name="fmt_db_pos">+%.1f dB</string>
     <!-- Use your native country's abbreviation for decibel units. -->
     <string name="fmt_db_neg">-%.1f dB</string>
-    <!-- Use your native country's abbreviation for bitrate units. -->
+    <!-- Use your native country's abbreviation for bit rate units. -->
     <string name="fmt_bitrate">%d kbps</string>
     <!-- Use your native country's abbreviation for hertz units. -->
     <string name="fmt_sample_rate">%d Hz</string>

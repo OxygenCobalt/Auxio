@@ -21,24 +21,24 @@ of Android through the use of the ExoPlayer FLAC extension.
 
 #### Auxio doesn't load my music correctly!
 This depends on the context:
-1. If "Ignore MediaStore Tags" is enabled, please file an issue with your particular issue.
+1. If "Ignore MediaStore Tags" is enabled, please create a bug report.
 2. If "Ignore MediaStore Tags" is not enabled, please check below to make sure your issue is not already
-awknowledged before reporting an issue.
-
-Moreso, if the issue encountered does not appear in other apps like Music Player GO, Phonograph,
-Vinyl, Retro Music, VLC, or Vanilla, then it should be reported.
+awknowledged before reporting a bug.
+	- Moreso, if the issue encountered does not appear in other apps like Music Player GO, Phonograph,
+or Retro Music then it should definitely be reported, as it is a logic bug on Auxio's part.
 
 ***Known unfixable music loading issues***
 
 These are a list of unfixable music loading issues that can only be fixed by enabling "Ignore MediaStore Tags":
 
-**My FLAC/OGG/OPUS files don't have dates:** Android does not read the `DATE` tag from vorbis files. It reads the `YEAR` tag. This is because android's metadata parser is
-stuck in 2008.
+**My FLAC/OGG/OPUS/MP3 files don't have dates:** Android does not read the `DATE` tag from vorbis files. It reads the `YEAR` tag.
+Similarly, Android does not read ID3v2.4's `TDRC` and actually reads `TYER` regardless of the version. This is because android's
+metadata parser is stuck in 2008.
 
 **Some files with accented/symbolic characters have corrupted tags:** When Android extracts metadata, at some point it tries to convert the bytes it extracted to a
 java string, which apparently involves detecting the encoding of the data dynamically and then converting it to Java's Unicode dialect. Of course, trying to detect
 codings on the fly like that is a [terrible idea](https://en.wikipedia.org/wiki/Bush_hid_the_facts), and more often than not it results in UTF-8 tags (Seen on
-FLAC/OGG/OPUS files most often) being corrupted.
+FLAC/OGG/OPUS files most often) being corrupted. It also affects MP3 files with ID3v2.4.0 tags that use the UTF-8 encoding in text-based tags.
 
 **I have a large library and Auxio takes really long to load it:** This is expected since reading from the audio database takes awhile, especially with libraries
 containing 10k songs or more.
@@ -98,8 +98,8 @@ fully may take some time.
 #### Why is playback distorted when I play my FLAC/WAV files?
 ExoPlayer, while powerful, does add some overhead when playing exceptionally high-quality files (2000+ KB/s bitrate,
 90000+ Hz sample rate). This is worsened by the ReplayGain system, as it has to copy the audio buffer no matter what.
-This results in choppy, distorted playback in some cases as audio data cannot be delivered in time. Sadly, there is
-not much I can do about this right now.
+This results in choppy, distorted playback in some cases as audio data cannot be delivered in time. I can also mitigate
+this similarly to the above issue, but again, it may take some time.
 
 #### Why are accents lighter/less saturated in dark mode?
 As per the [Material Design Guidelines](https://material.io/design/color/dark-theme.html), accents should be less

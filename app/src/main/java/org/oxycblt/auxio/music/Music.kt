@@ -502,11 +502,7 @@ sealed class ReleaseType {
             // it isn't. There are technically two other types, but those are unrelated to music
             // and thus we don't support them.
             return when {
-                // Album (+ Other and Broadcast, which don't have meaning in Auxio) correspond to
-                // Album.
-                primary.equals("album", true) ||
-                    primary.equals("other", true) ||
-                    primary.equals("broadcast", true) -> types.parseSecondaryTypes(1) { Album(it) }
+                primary.equals("album", true) -> types.parseSecondaryTypes(1) { Album(it) }
                 primary.equals("ep", true) -> types.parseSecondaryTypes(1) { EP(it) }
                 primary.equals("single", true) -> types.parseSecondaryTypes(1) { Single(it) }
                 else -> types.parseSecondaryTypes(0) { Album(it) }

@@ -151,8 +151,8 @@ abstract class BaseFetcher : Fetcher {
             return null
         }
 
-        // The metadata extraction process of ExoPlayer is normalized into a superclass.
-        // That means we have to iterate through and find the cover art ourselves.
+        // The metadata extraction process of ExoPlayer results in a dump of all metadata
+        // it found, which must be iterated through.
         val metadata = tracks[0].getFormat(0).metadata
 
         if (metadata == null || metadata.length() == 0) {

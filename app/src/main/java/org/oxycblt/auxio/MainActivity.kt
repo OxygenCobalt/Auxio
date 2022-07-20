@@ -83,6 +83,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (intent.getBooleanExtra(KEY_INTENT_USED, false)) {
+            // Don't commit the action, but also return that the intent was applied.
+            // This is because onStart can run multiple times, and thus we really don't
+            // want to return false and override the original delayed action with a
+            // RestoreState action.
             return true
         }
 
@@ -110,8 +114,6 @@ class MainActivity : AppCompatActivity() {
         // the point where most phones should have an automatic option for light/dark theming.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             AppCompatDelegate.setDefaultNightMode(settings.theme)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
 
         // The black theme has a completely separate set of styles since style attributes cannot
