@@ -100,8 +100,8 @@ fun String.parseSortName() =
         else -> this
     }
 
-/** Shortcut to parse an [Album.Type] from a string */
-fun String.parseAlbumType() = Album.Type.parse(this)
+/** Shortcut to parse an [ReleaseType] from a string */
+fun String.parseReleaseType() = ReleaseType.parse(this)
 
 /**
  * Decodes the genre name from an ID3(v2) constant. See [GENRE_TABLE] for the genre constant map
@@ -361,4 +361,7 @@ private val GENRE_TABLE =
         "G-Funk",
         "Dubstep",
         "Garage Rock",
-        "Psybient")
+        "Psybient",
+
+        // Auxio's extensions (Future garage is also based and deserves a slot)
+        "Future Garage")

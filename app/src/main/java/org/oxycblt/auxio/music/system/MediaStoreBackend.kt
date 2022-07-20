@@ -27,23 +27,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import java.io.File
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Date
-import org.oxycblt.auxio.music.Directory
-import org.oxycblt.auxio.music.MimeType
-import org.oxycblt.auxio.music.Path
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.albumCoverUri
-import org.oxycblt.auxio.music.audioUri
-import org.oxycblt.auxio.music.directoryCompat
-import org.oxycblt.auxio.music.mediaStoreVolumeNameCompat
-import org.oxycblt.auxio.music.parseId3GenreName
-import org.oxycblt.auxio.music.parsePositionNum
-import org.oxycblt.auxio.music.queryCursor
-import org.oxycblt.auxio.music.storageVolumesCompat
-import org.oxycblt.auxio.music.unpackDiscNo
-import org.oxycblt.auxio.music.unpackTrackNo
-import org.oxycblt.auxio.music.useQuery
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.getSystemServiceSafe
@@ -340,7 +324,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
         var albumId: Long? = null,
         var album: String? = null,
         var sortAlbum: String? = null,
-        var albumType: Album.Type? = null,
+        var releaseType: ReleaseType? = null,
         var artist: String? = null,
         var sortArtist: String? = null,
         var albumArtist: String? = null,
@@ -371,7 +355,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 _date = date,
                 _albumName = requireNotNull(album) { "Malformed audio: No album name" },
                 _albumSortName = sortAlbum,
-                _albumType = albumType ?: Album.Type.ALBUM,
+                _albumReleaseType = releaseType,
                 _albumCoverUri =
                     requireNotNull(albumId) { "Malformed audio: No album id" }.albumCoverUri,
                 _artistName = artist,

@@ -17,16 +17,30 @@
     <string name="lbl_songs">Songs</string>
     <string name="lbl_all_songs">All Songs</string>
 
-    <string name="lbl_album">Album</string>
     <string name="lbl_albums">Albums</string>
-    <string name="lbl_ep">EP</string>
+    <string name="lbl_album">Album</string>
+    <string name="lbl_album_live">Live album</string>
+    <string name="lbl_album_remix">Remix album</string>
+
     <string name="lbl_eps">EPs</string>
-    <string name="lbl_single">Single</string>
+    <string name="lbl_ep">EP</string>
+    <string name="lbl_ep_live">Live EP</string>
+    <string name="lbl_ep_remix">Remix EP</string>
+
     <string name="lbl_singles">Singles</string>
-    <string name="lbl_compilation">Compilation</string>
+    <string name="lbl_single">Single</string>
+    <string name="lbl_single_live">Live single</string>
+    <string name="lbl_single_remix">Remix single</string>
+
     <string name="lbl_compilations">Compilations</string>
-    <string name="lbl_soundtrack">Soundtrack</string>
+    <string name="lbl_compilation">Compilation</string>
     <string name="lbl_soundtracks">Soundtracks</string>
+    <string name="lbl_soundtrack">Soundtrack</string>
+    <string name="lbl_mixtapes">Mixtapes</string>
+    <string name="lbl_mixtape">Mixtape</string>
+
+    <string name="lbl_live_group">Live</string>
+    <string name="lbl_remix_group">Remixes</string>
 
     <string name="lbl_artist">Artist</string>
     <string name="lbl_artists">Artists</string>

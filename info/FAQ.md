@@ -56,9 +56,21 @@ such as "Black Country, New Road" becoming "Black Country".
 **Auxio does not detect new music:** This is Auxio's default behavior due to limitations regarding android's filesystem APIs. To enable such behavior, turn on
 "Automatic reloading" in settings. Note that this option does require a persistent notification and higher battery usage.
 
-#### Why are my songs/albums/artists out of order?
-Auxio takes sort tags (like `TSOT` or `TITLESORT`) into account when sorting, which could cause items to
-appear in unexpected places. If your items do not have sort tags, please file an issue.
+#### What does "Ignore MediaStore Tags" even do?
+"Ignore MediaStore Tags" configures Auxio's music loader to extract metadata manually using ExoPlayer, which enables the following:
+- Fixes for most of the annoying, unfixable issues with `MediaStore` that were elaborated on above
+- Sort tag support
+	- For example, a title written in Japanese could have a phonetic version in their sort tags. This will be used in sorting and search.
+- Better date support
+	- If an artist released several albums in a single year, you can tag your music to have a particular date and time it was released on, and Auxio will
+	sort the albums accordingly. Examples include `YYYY-MM-DD` or even `YYYY-MM-DD HH:MM:SS`
+	- Auxio is also capable of supporting original dates. If a remastered album was released in 2020, but the original album was released in 2000,
+	you can tag your music with `TDOR`/`TORY` for MP3 and `ORIGINALDATE` for Vorbis with the year 2000, and Auxio will display 2000 in-app.
+- Release type support from `TXXX:MusicBrainz Release Type`/`GRP1` in MP3 files, and `RELEASETYPE` in OGG/OPUS/FLAC
+	- Auxio specifically expects something formatted like `<primary> + <secondary>`, `<primary>`, or `<secondary>`. This should be contained in a single tag.
+	- `<primary`> corresponds to `album`, `ep`, or `single`
+	- `<secondary>` corresponds to `compilation`, `soundtrack`, `mixtape`, `live`, or `remix`. The first three will override the primary type,
+		(ex. `album + compilation` -> "Compilation"), but the latter two will be used to augment the primary type (ex. `album + live` -> "Live Album").
 
 #### Why does search return songs that don't match my query?
 Auxio actually takes several types of metadata in account in searching:

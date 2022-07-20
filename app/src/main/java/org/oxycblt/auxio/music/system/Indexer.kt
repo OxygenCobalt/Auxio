@@ -26,11 +26,7 @@ import androidx.core.content.ContextCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.TaskGuard
@@ -301,8 +297,8 @@ class Indexer {
         val songsByAlbum = songs.groupBy { it._albumGroupingId }
 
         // If album types aren't used by the music library (Represented by all songs having
-        // an album type), there is no point in displaying them.
-        val enableAlbumTypes = songs.any { it._albumType != Album.Type.ALBUM }
+        // no album type), there is no point in displaying them.
+        val enableAlbumTypes = songs.any { it._albumReleaseType != null }
         if (!enableAlbumTypes) {
             logD("No distinct album types detected, ignoring them")
         }
@@ -321,7 +317,10 @@ class Indexer {
                     rawName = templateSong._albumName,
                     rawSortName = templateSong._albumSortName,
                     date = templateSong._date,
-                    type = if (enableAlbumTypes) templateSong._albumType else null,
+                    releaseType =
+                        if (enableAlbumTypes)
+                            (templateSong._albumReleaseType ?: ReleaseType.Album(null))
+                        else null,
                     coverUri = templateSong._albumCoverUri,
                     songs = entry.value,
                     _artistGroupingName = templateSong._artistGroupingName,

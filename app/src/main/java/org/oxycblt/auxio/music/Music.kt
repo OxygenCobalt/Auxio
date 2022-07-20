@@ -96,7 +96,7 @@ data class Song(
     /** Internal field. Do not use. */
     val _albumSortName: String?,
     /** Internal field. Do not use. */
-    val _albumType: Album.Type,
+    val _albumReleaseType: ReleaseType?,
     /** Internal field. Do not use. */
     val _albumCoverUri: Uri,
     /** Internal field. Do not use. */
@@ -210,7 +210,7 @@ data class Album(
      * The type of release this album represents. Null if release types were not applicable to this
      * library.
      */
-    val type: Type?,
+    val releaseType: ReleaseType?,
     /** The URI for the cover image corresponding to this album. */
     val coverUri: Uri,
     /** The songs of this album. */
@@ -253,60 +253,6 @@ data class Album(
     /** Internal method. Do not use. */
     fun _link(artist: Artist) {
         _artist = artist
-    }
-
-    enum class Type {
-        ALBUM,
-        EP,
-        SINGLE,
-        COMPILATION,
-        SOUNDTRACK;
-
-        // I only implemented the release types that I use. If there is sufficient demand,
-        // I'll extend them to these release types.
-        // REMIX, LIVE, MIXTAPE
-
-        val stringRes: Int
-            get() =
-                when (this) {
-                    ALBUM -> R.string.lbl_album
-                    EP -> R.string.lbl_ep
-                    SINGLE -> R.string.lbl_single
-                    COMPILATION -> R.string.lbl_compilation
-                    SOUNDTRACK -> R.string.lbl_soundtrack
-                }
-
-        val pluralStringRes: Int
-            get() =
-                when (this) {
-                    ALBUM -> R.string.lbl_albums
-                    EP -> R.string.lbl_eps
-                    SINGLE -> R.string.lbl_singles
-                    COMPILATION -> R.string.lbl_compilations
-                    SOUNDTRACK -> R.string.lbl_soundtracks
-                }
-
-        companion object {
-            fun parse(type: String): Type {
-                // Release types (at least to MusicBrainz) are formatted as <primary> + <secondary>
-                // where primary is something like "album", "ep", or "single", and secondary is
-                // "compilation", "soundtrack", etc. Use the secondary type as the album type before
-                // falling back to the primary type.
-                val primarySecondary = type.split('+').map { it.trim() }
-                return primarySecondary.getOrNull(1)?.parseReleaseType()
-                    ?: primarySecondary[0].parseReleaseType() ?: ALBUM
-            }
-
-            private fun String.parseReleaseType() =
-                when {
-                    equals("album", ignoreCase = true) -> ALBUM
-                    equals("ep", ignoreCase = true) -> EP
-                    equals("single", ignoreCase = true) -> SINGLE
-                    equals("compilation", ignoreCase = true) -> COMPILATION
-                    equals("soundtrack", ignoreCase = true) -> SOUNDTRACK
-                    else -> null
-                }
-        }
     }
 }
 
@@ -479,6 +425,112 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
             dst.add(src.getOrNull(3)?.inRangeOrNull(0..23) ?: return)
             dst.add(src.getOrNull(4)?.inRangeOrNull(0..59) ?: return)
             dst.add(src.getOrNull(5)?.inRangeOrNull(0..59) ?: return)
+        }
+    }
+}
+
+sealed class ReleaseType {
+    abstract val refinement: Refinement?
+    abstract val stringRes: Int
+
+    data class Album(override val refinement: Refinement?) : ReleaseType() {
+        override val stringRes: Int
+            get() =
+                when (refinement) {
+                    null -> R.string.lbl_album
+                    Refinement.LIVE -> R.string.lbl_album_live
+                    Refinement.REMIX -> R.string.lbl_album_remix
+                }
+    }
+
+    data class EP(override val refinement: Refinement?) : ReleaseType() {
+        override val stringRes: Int
+            get() =
+                when (refinement) {
+                    null -> R.string.lbl_ep
+                    Refinement.LIVE -> R.string.lbl_ep_live
+                    Refinement.REMIX -> R.string.lbl_ep_remix
+                }
+    }
+
+    data class Single(override val refinement: Refinement?) : ReleaseType() {
+        override val stringRes: Int
+            get() =
+                when (refinement) {
+                    null -> R.string.lbl_single
+                    Refinement.LIVE -> R.string.lbl_single_live
+                    Refinement.REMIX -> R.string.lbl_single_remix
+                }
+    }
+
+    object Compilation : ReleaseType() {
+        override val refinement: Refinement?
+            get() = null
+
+        override val stringRes: Int
+            get() = R.string.lbl_compilation
+    }
+
+    object Soundtrack : ReleaseType() {
+        override val refinement: Refinement?
+            get() = null
+
+        override val stringRes: Int
+            get() = R.string.lbl_soundtrack
+    }
+
+    object Mixtape : ReleaseType() {
+        override val refinement: Refinement?
+            get() = null
+
+        override val stringRes: Int
+            get() = R.string.lbl_mixtape
+    }
+
+    enum class Refinement {
+        LIVE,
+        REMIX
+    }
+
+    companion object {
+        fun parse(type: String): ReleaseType {
+            val types = type.split('+')
+            val primary = types[0].trim()
+
+            // Primary types should be the first one in sequence. The spec makes no mention of
+            // whether primary types are a pre-requisite for secondary types, so we assume that
+            // it isn't. There are technically two other types, but those are unrelated to music
+            // and thus we don't support them.
+            return when {
+                // Album (+ Other and Broadcast, which don't have meaning in Auxio) correspond to
+                // Album.
+                primary.equals("album", true) ||
+                    primary.equals("other", true) ||
+                    primary.equals("broadcast", true) -> types.parseSecondaryTypes(1) { Album(it) }
+                primary.equals("ep", true) -> types.parseSecondaryTypes(1) { EP(it) }
+                primary.equals("single", true) -> types.parseSecondaryTypes(1) { Single(it) }
+                else -> types.parseSecondaryTypes(0) { Album(it) }
+            }
+        }
+
+        private inline fun List<String>.parseSecondaryTypes(
+            secondaryIdx: Int,
+            target: (Refinement?) -> ReleaseType
+        ): ReleaseType {
+            val secondary = (getOrNull(secondaryIdx) ?: return target(null)).trim()
+
+            return when {
+                // Compilation is the only weird secondary release type, as it could
+                // theoretically have additional modifiers including soundtrack, remix,
+                // live, dj-mix, etc. However, since there is no real demand for me to
+                // respond to those, I don't implement them simply for internal simplicity.
+                secondary.equals("compilation", true) -> Compilation
+                secondary.equals("soundtrack", true) -> Soundtrack
+                secondary.equals("mixtape/street", true) -> Mixtape
+                secondary.equals("live", true) -> target(Refinement.REMIX)
+                secondary.equals("remix", true) -> target(Refinement.LIVE)
+                else -> target(null)
+            }
         }
     }
 }

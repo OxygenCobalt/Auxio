@@ -107,7 +107,7 @@ private constructor(
                 override fun areItemsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.artist.rawName == newItem.artist.rawName &&
-                        oldItem.type == newItem.type
+                        oldItem.releaseType == newItem.releaseType
             }
     }
 }

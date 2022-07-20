@@ -29,12 +29,7 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.recycler.DiscHeader
 import org.oxycblt.auxio.detail.recycler.SortHeader
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MimeType
-import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Header
@@ -223,7 +218,7 @@ class DetailViewModel(application: Application) :
 
         // To create a good user experience regarding disc numbers, we intersperse
         // items that show the disc number throughout the album's songs. In the case
-        // that the album does not have distinct disc numbers, we omit such a header
+        // that the album does not have distinct disc numbers, we omit such a header.
         val songs = albumSort.songs(album.songs)
         val byDisc = songs.groupBy { it.disc ?: 1 }
         if (byDisc.size > 1) {
@@ -245,14 +240,33 @@ class DetailViewModel(application: Application) :
         val data = mutableListOf<Item>(artist)
         val albums = Sort(Sort.Mode.ByYear, false).albums(artist.albums)
 
-        // Organize albums by their release type. We do not dor
-        val byType = albums.groupBy { it.type ?: Album.Type.ALBUM }
-        byType.keys.sorted().forEachIndexed { index, type ->
-            data.add(Header(-2L - index, type.pluralStringRes))
-            data.addAll(unlikelyToBeNull(byType[type]))
+        val byGroup =
+            albums.groupBy {
+                if (it.releaseType == null) {
+                    return@groupBy ArtistAlbumGrouping.ALBUMS
+                }
+
+                when (it.releaseType.refinement) {
+                    null ->
+                        when (it.releaseType) {
+                            is ReleaseType.Album -> ArtistAlbumGrouping.ALBUMS
+                            is ReleaseType.EP -> ArtistAlbumGrouping.EPS
+                            is ReleaseType.Single -> ArtistAlbumGrouping.SINGLES
+                            is ReleaseType.Compilation -> ArtistAlbumGrouping.COMPILATIONS
+                            is ReleaseType.Soundtrack -> ArtistAlbumGrouping.SOUNDTRACKS
+                            is ReleaseType.Mixtape -> ArtistAlbumGrouping.MIXTAPES
+                        }
+                    ReleaseType.Refinement.LIVE -> ArtistAlbumGrouping.LIVE
+                    ReleaseType.Refinement.REMIX -> ArtistAlbumGrouping.REMIXES
+                }
+            }
+
+        for (entry in byGroup.entries.sortedBy { it.key }.withIndex()) {
+            data.add(Header(-2L - entry.index, entry.value.key.stringRes))
+            data.addAll(entry.value.value)
         }
 
-        data.add(SortHeader(-3, R.string.lbl_songs))
+        data.add(SortHeader(-2L - byGroup.entries.size, R.string.lbl_songs))
         data.addAll(artistSort.songs(artist.songs))
         _artistData.value = data.toList()
     }
@@ -311,5 +325,29 @@ class DetailViewModel(application: Application) :
 
     override fun onCleared() {
         musicStore.removeCallback(this)
+    }
+
+    private enum class ArtistAlbumGrouping : Comparable<ArtistAlbumGrouping> {
+        ALBUMS,
+        EPS,
+        SINGLES,
+        COMPILATIONS,
+        SOUNDTRACKS,
+        MIXTAPES,
+        REMIXES,
+        LIVE;
+
+        val stringRes: Int
+            get() =
+                when (this) {
+                    ALBUMS -> R.string.lbl_albums
+                    EPS -> R.string.lbl_eps
+                    SINGLES -> R.string.lbl_singles
+                    COMPILATIONS -> R.string.lbl_compilations
+                    SOUNDTRACKS -> R.string.lbl_soundtracks
+                    MIXTAPES -> R.string.lbl_mixtapes
+                    REMIXES -> R.string.lbl_remix_group
+                    LIVE -> R.string.lbl_live_group
+                }
     }
 }

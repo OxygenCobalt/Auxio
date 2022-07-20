@@ -132,10 +132,10 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
             val duration = item.durationSecs.formatDuration(false)
 
             text =
-                if (item.type != null) {
+                if (item.releaseType != null) {
                     context.getString(
                         R.string.fmt_four,
-                        context.getString(item.type.stringRes),
+                        context.getString(item.releaseType.stringRes),
                         date,
                         songCount,
                         duration)
@@ -166,7 +166,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
                         oldItem.date == newItem.date &&
                         oldItem.songs.size == newItem.songs.size &&
                         oldItem.durationSecs == newItem.durationSecs &&
-                        oldItem.type == newItem.type
+                        oldItem.releaseType == newItem.releaseType
             }
     }
 }
