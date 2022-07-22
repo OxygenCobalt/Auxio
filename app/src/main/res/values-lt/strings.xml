@@ -50,7 +50,7 @@
     <string name="set_black_mode_desc">Naudokti grynai juodą tamsią temą</string>
     <string name="info_app_desc">Paprastas, racionalus „Android“ muzikos grotuvas.</string>
     <string name="info_playback_channel_name">Muzikos grojimas</string>
-    <string name="info_indexer_channel_name">Muzikos įkėlimas</string>
+    <string name="info_indexer_channel_name">Kraunama muziką</string>
     <string name="info_widget_desc">Peržiūrėti ir valdyti muzikos grojimą</string>
     <string name="lbl_genres">Žanrai</string>
     <string name="lbl_retry">Bandykite dar kartą</string>
@@ -97,4 +97,38 @@
     <string name="set_quality_covers">Ignoruoti „MediaStore“ viršelius</string>
     <string name="set_round_mode">Apvalus režimas</string>
     <string name="set_alt_action">Naudoti alternatyvų pranešimo veiksmą</string>
+    <string name="cdc_mp3">MPEG-1 Garsas</string>
+    <string name="def_widget_artist">Atlikėjo Vardas</string>
+    <string name="clr_green">Žalia</string>
+    <string name="clr_deep_green">Tamsiai Žalia</string>
+    <string name="clr_lime">Kalkės</string>
+    <plurals name="fmt_album_count">
+        <item quantity="one">%d Albumas</item>
+        <item quantity="few">%d Albumai</item>
+        <item quantity="other">%d Albumo</item>
+    </plurals>
+    <string name="lbl_remix_group">Remiksai</string>
+    <string name="clr_teal">Arbatžolė</string>
+    <string name="clr_yellow">Geltona</string>
+    <string name="def_widget_song">Dainos Pavadinimas</string>
+    <string name="cdc_aac">Išplėstinis Garso Kodavimas (AAC)</string>
+    <string name="cdc_flac">Nemokamas Be Nuostolių Garso Kodekas (FLAC)</string>
+    <plurals name="fmt_song_count">
+        <item quantity="one">%d Daina</item>
+        <item quantity="few">%d Dainos</item>
+        <item quantity="other">%d Dainą</item>
+    </plurals>
+    <string name="clr_dynamic">Dinaminis</string>
+    <string name="clr_grey">Pilka</string>
+    <string name="clr_orange">Oranžinė</string>
+    <string name="clr_brown">Ruda</string>
+    <string name="lbl_ep_live">Gyvai EP</string>
+    <string name="lbl_ep_remix">Remikso EP</string>
+    <string name="cdc_mp4">MPEG-4 Garsas</string>
+    <string name="cdc_mka">Matroska Garsas</string>
+    <string name="lbl_album_live">Gyvai albumas</string>
+    <string name="lbl_album_remix">Remikso albumas</string>
+    <string name="lbl_live_group">Gyvai</string>
+    <string name="set_headset_autoplay_desc">Visada pradėta groti, kai prijungtos ausinės (gali veikti ne visuose įrenginiuose)</string>
+    <string name="cdc_ogg">Ogg Garsas</string>
 </resources>
