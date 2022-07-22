@@ -109,7 +109,7 @@
     <string name="desc_queue_handle">Muove questa canzone della coda</string>
     <string name="desc_tab_handle">Muove questa scheda</string>
     <string name="desc_clear_search">Cancella la query di ricerca</string>
-    <string name="desc_music_dir_delete">Rimuove cartella esclusa</string>
+    <string name="desc_music_dir_delete">Rimuovi cartella</string>
     <string name="desc_auxio_icon">Icona Auxio</string>
     <string name="desc_no_cover">Copertina disco</string>
     <string name="desc_album_cover">Copertina disco per %s</string>
