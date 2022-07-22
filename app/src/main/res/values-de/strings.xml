@@ -138,7 +138,7 @@
     <string name="set_repeat_pause_desc">Pausieren, wenn ein Song wiederholt wird</string>
     <string name="desc_shuffle">Zufällig an- oder ausschalten</string>
     <string name="desc_queue_handle">Lied in der Warteschlange verschieben</string>
-    <string name="desc_music_dir_delete">Ausgeschlossenes Verzechnis entfernen</string>
+    <string name="desc_music_dir_delete">Verzechnis entfernen</string>
     <string name="desc_no_cover">Albumcover</string>
     <string name="def_playback">Keine Musik wird gespielt</string>
     <string name="def_widget_song">Liedname</string>
@@ -222,4 +222,14 @@
     <string name="lbl_soundtrack">Soundtrack</string>
     <string name="lbl_soundtracks">Soundtracks</string>
     <string name="set_restore">Wiedergabezustand wiederherstellen</string>
+    <string name="lbl_album_remix">Remix-Album</string>
+    <string name="lbl_mixtapes">Mixtapes</string>
+    <string name="lbl_mixtape">Mixtape</string>
+    <string name="lbl_remix_group">Remixes</string>
+    <string name="lbl_album_live">Live-Album</string>
+    <string name="lbl_ep_live">Live-EP</string>
+    <string name="lbl_ep_remix">Remix-EP</string>
+    <string name="lbl_single_live">Live-Single</string>
+    <string name="lbl_single_remix">Remix-Single</string>
+    <string name="lbl_live_group">Live</string>
 </resources>
