@@ -103,6 +103,9 @@ fun String.parseSortName() =
 /** Shortcut to parse an [ReleaseType] from a string */
 fun String.parseReleaseType() = ReleaseType.parse(this)
 
+/** Shortcut to parse a [ReleaseType] from a list of strings */
+fun List<String>.parseReleaseType() = ReleaseType.parse(this)
+
 /**
  * Decodes the genre name from an ID3(v2) constant. See [GENRE_TABLE] for the genre constant map
  * that Auxio uses.

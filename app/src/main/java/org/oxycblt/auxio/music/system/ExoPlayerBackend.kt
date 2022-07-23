@@ -170,7 +170,7 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
 
     private fun completeAudio(metadata: Metadata) {
         val id3v2Tags = mutableMapOf<String, String>()
-        val vorbisTags = mutableMapOf<String, String>()
+        val vorbisTags = mutableMapOf<String, MutableList<String>>()
 
         // ExoPlayer only exposes ID3v2 and Vorbis metadata, which constitutes the vast majority
         // of audio formats. Load both of these types of tags into separate maps, letting the
@@ -189,7 +189,11 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
                     val id = tag.key.sanitize().uppercase()
                     val value = tag.value.sanitize()
                     if (value.isNotEmpty()) {
-                        vorbisTags[id] = value
+                        if (vorbisTags.containsKey(id)) {
+                            vorbisTags[id]!!.add(value)
+                        } else {
+                            vorbisTags[id] = mutableListOf(value)
+                        }
                     }
                 }
             }
@@ -274,16 +278,16 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         }
     }
 
-    private fun populateVorbis(tags: Map<String, String>) {
+    private fun populateVorbis(tags: Map<String, List<String>>) {
         // (Sort) Title
-        tags["TITLE"]?.let { audio.title = it }
-        tags["TITLESORT"]?.let { audio.sortTitle = it }
+        tags["TITLE"]?.let { audio.title = it[0] }
+        tags["TITLESORT"]?.let { audio.sortTitle = it[0] }
 
         // Track
-        tags["TRACKNUMBER"]?.parsePositionNum()?.let { audio.track = it }
+        tags["TRACKNUMBER"]?.run { get(0).parsePositionNum() }?.let { audio.track = it }
 
         // Disc
-        tags["DISCNUMBER"]?.parsePositionNum()?.let { audio.disc = it }
+        tags["DISCNUMBER"]?.run { get(0).parsePositionNum() }?.let { audio.disc = it }
 
         // Vorbis dates are less complicated, but there are still several types
         // Our hierarchy for dates is as such:
@@ -291,24 +295,25 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         // 2. Date, as it is the most common date type
         // 3. Year, as old vorbis tags tended to use this (I know this because it's the only
         // tag that android supports, so it must be 15 years old or more!)
-        (tags["ORIGINALDATE"]?.parseTimestamp()
-                ?: tags["DATE"]?.parseTimestamp() ?: tags["YEAR"]?.parseYear())
+        (tags["ORIGINALDATE"]?.run { get(0).parseTimestamp() }
+                ?: tags["DATE"]?.run { get(0).parseTimestamp() }
+                    ?: tags["YEAR"]?.run { get(0).parseYear() })
             ?.let { audio.date = it }
 
         // (Sort) Album
-        tags["ALBUM"]?.let { audio.album = it }
-        tags["ALBUMSORT"]?.let { audio.sortAlbum = it }
+        tags["ALBUM"]?.let { audio.album = it.joinToString() }
+        tags["ALBUMSORT"]?.let { audio.sortAlbum = it.joinToString() }
 
         // (Sort) Artist
-        tags["ARTIST"]?.let { audio.artist = it }
-        tags["ARTISTSORT"]?.let { audio.sortArtist = it }
+        tags["ARTIST"]?.let { audio.artist = it.joinToString() }
+        tags["ARTISTSORT"]?.let { audio.sortArtist = it.joinToString() }
 
         // (Sort) Album artist
-        tags["ALBUMARTIST"]?.let { audio.albumArtist = it }
-        tags["ALBUMARTISTSORT"]?.let { audio.sortAlbumArtist = it }
+        tags["ALBUMARTIST"]?.let { audio.albumArtist = it.joinToString() }
+        tags["ALBUMARTISTSORT"]?.let { audio.sortAlbumArtist = it.joinToString() }
 
         // Genre, no ID3 rules here
-        tags["GENRE"]?.let { audio.genre = it }
+        tags["GENRE"]?.let { audio.genre = it.joinToString() }
 
         // Release type
         tags["RELEASETYPE"]?.parseReleaseType()?.let { audio.releaseType = it }

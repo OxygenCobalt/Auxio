@@ -493,8 +493,9 @@ sealed class ReleaseType {
     }
 
     companion object {
-        fun parse(type: String): ReleaseType {
-            val types = type.split('+')
+        fun parse(type: String) = parse(type.split('+'))
+
+        fun parse(types: List<String>): ReleaseType {
             val primary = types[0].trim()
 
             // Primary types should be the first one in sequence. The spec makes no mention of
@@ -523,8 +524,8 @@ sealed class ReleaseType {
                 secondary.equals("compilation", true) -> Compilation
                 secondary.equals("soundtrack", true) -> Soundtrack
                 secondary.equals("mixtape/street", true) -> Mixtape
-                secondary.equals("live", true) -> target(Refinement.REMIX)
-                secondary.equals("remix", true) -> target(Refinement.LIVE)
+                secondary.equals("live", true) -> target(Refinement.LIVE)
+                secondary.equals("remix", true) -> target(Refinement.REMIX)
                 else -> target(null)
             }
         }
