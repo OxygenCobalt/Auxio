@@ -2,7 +2,7 @@
 <resources>
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Un reproductor de música simple y racional para Android.</string>
-    <string name="info_playback_channel_name">Reproducción musical</string>
+    <string name="info_playback_channel_name">Reproducción de música</string>
     <string name="info_widget_desc">Ver y controlar la reproducción musical</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Reintentar</string>
@@ -127,7 +127,7 @@
     <string name="clr_indigo">Índigo</string>
     <string name="clr_blue">Azul</string>
     <string name="clr_deep_blue">Azul intenso</string>
-    <string name="clr_cyan">Cyan</string>
+    <string name="clr_cyan">Cian</string>
     <string name="clr_teal">Verde azulino</string>
     <string name="clr_green">Verde</string>
     <string name="clr_deep_green">Verde intenso</string>
@@ -230,4 +230,5 @@
     <string name="lbl_single_remix">Single remix</string>
     <string name="lbl_compilations">Compilaciones</string>
     <string name="lbl_ep_remix">EP remix</string>
+    <string name="lbl_relative_path">Directorio superior</string>
 </resources>
