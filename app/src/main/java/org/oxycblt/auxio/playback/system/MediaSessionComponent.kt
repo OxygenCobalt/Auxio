@@ -241,6 +241,15 @@ class MediaSessionComponent(
         reason: Int
     ) {
         invalidateSessionState()
+
+        if (!playbackManager.isPlaying) {
+            // Hack around issue where the position won't update after a seek (but only when it's
+            // paused). Apparently this can be fixed by re-posting the notification, but not always
+            // when we invalidate the state (that will cause us to be rate-limited), and also not
+            // always when we seek (that will also cause us to be rate-limited). Someone looked at
+            // this system and said it was well-designed.
+            callback.onPostNotification(notification, "position discontinuity")
+        }
     }
 
     // --- MEDIASESSION CALLBACKS ---

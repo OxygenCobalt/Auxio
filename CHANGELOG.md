@@ -13,9 +13,13 @@ at the cost of longer loading times
 - Search now takes sort tags and file names in account [#184]
 - Added option to clear playback state in settings
 
+#### What's Improved
+- App now exposes an (immutable) queue.
+
 #### What's Fixed
 - Fixed default material theme being used before app shows up
 - Fixed shuffle shortcut and file opening not working on startup on some devices
+- Fixed issue where the notification position would not match if one seeked when paused
 
 #### What's Changed
 - Play and skip icons are filled again
