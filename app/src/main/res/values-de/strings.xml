@@ -68,7 +68,7 @@
     <string name="set_replay_gain_track">Titel bevorzugen</string>
     <string name="set_replay_gain_album">Album bevorzugen</string>
     <string name="set_behavior">Verhalten</string>
-    <string name="set_library_song_playback_mode">Wenn ein Lied aus der SBibliothek abgespielt wird</string>
+    <string name="set_library_song_playback_mode">Wenn ein Lied aus der Bibliothek abgespielt wird</string>
     <string name="set_keep_shuffle">Zufällig-Einstellung merken</string>
     <string name="set_keep_shuffle_desc">Zufällig anlassen, wenn ein neues Lied abgespielt wird</string>
     <string name="set_rewind_prev" tools:ignore="Typos">Zurückspulen, bevor das Lied zurück geändert wird</string>
@@ -231,4 +231,7 @@
     <string name="lbl_single_live">Live-Single</string>
     <string name="lbl_single_remix">Remix-Single</string>
     <string name="lbl_live_group">Live</string>
+    <string name="set_wipe_desc">Den vorher gespeicherten Wiedergabezustand löschen (wenn vorhanden)</string>
+    <string name="lbl_state_wiped">Zustand gelöscht</string>
+    <string name="set_wipe">Wiedergabezustand löschen</string>
 </resources>
