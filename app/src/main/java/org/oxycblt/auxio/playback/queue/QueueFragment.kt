@@ -61,6 +61,10 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
         binding.queueRecycler.adapter = null
     }
 
+    override fun onClick(viewHolder: RecyclerView.ViewHolder) {
+        playbackModel.goto(viewHolder.bindingAdapterPosition)
+    }
+
     override fun onPickUp(viewHolder: RecyclerView.ViewHolder) {
         touchHelper.startDrag(viewHolder)
     }

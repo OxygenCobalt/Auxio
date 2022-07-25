@@ -200,9 +200,9 @@ class PlaybackStateManager private constructor() {
         // Increment the index, if it cannot be incremented any further, then
         // repeat and pause/resume playback depending on the setting
         if (index < _queue.lastIndex) {
-            goto(index + 1, true)
+            gotoImpl(index + 1, true)
         } else {
-            goto(0, repeatMode == RepeatMode.ALL)
+            gotoImpl(0, repeatMode == RepeatMode.ALL)
         }
     }
 
@@ -214,11 +214,16 @@ class PlaybackStateManager private constructor() {
             rewind()
             isPlaying = true
         } else {
-            goto(max(index - 1, 0), true)
+            gotoImpl(max(index - 1, 0), true)
         }
     }
 
-    private fun goto(idx: Int, play: Boolean) {
+    @Synchronized
+    fun goto(index: Int) {
+        gotoImpl(index, true)
+    }
+
+    private fun gotoImpl(idx: Int, play: Boolean) {
         index = idx
         seekTo(0)
         notifyIndexMoved()

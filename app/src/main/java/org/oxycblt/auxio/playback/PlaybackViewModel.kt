@@ -36,6 +36,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.application
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
 /**
@@ -193,6 +194,19 @@ class PlaybackViewModel(application: Application) :
     /** Skip to the previous song. */
     fun prev() {
         playbackManager.prev()
+    }
+
+    /**
+     * Go to an item in the queue using it's recyclerview adapter index. No-ops if out of bounds.
+     */
+    fun goto(adapterIndex: Int) {
+        val index = adapterIndex + (playbackManager.queue.size - _nextUp.value.size)
+        logD(adapterIndex)
+        logD(playbackManager.queue.size - _nextUp.value.size)
+
+        if (index in playbackManager.queue.indices) {
+            playbackManager.goto(index)
+        }
     }
 
     /** Remove a queue item using it's recyclerview adapter index. */

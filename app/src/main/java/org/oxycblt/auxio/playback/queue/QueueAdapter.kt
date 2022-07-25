@@ -19,32 +19,26 @@ package org.oxycblt.auxio.playback.queue
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.IntegerTable
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.recycler.BindingViewHolder
-import org.oxycblt.auxio.ui.recycler.MonoAdapter
-import org.oxycblt.auxio.ui.recycler.SongViewHolder
-import org.oxycblt.auxio.ui.recycler.SyncBackingData
-import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.disableDropShadowCompat
-import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.stateList
-import org.oxycblt.auxio.util.textSafe
+import org.oxycblt.auxio.ui.recycler.*
+import org.oxycblt.auxio.util.*
 
-class QueueAdapter(listener: QueueItemListener) :
+class QueueAdapter(private val listener: QueueItemListener) :
     MonoAdapter<Song, QueueItemListener, QueueSongViewHolder>(listener) {
     override val data = SyncBackingData(this, QueueSongViewHolder.DIFFER)
     override val creator = QueueSongViewHolder.CREATOR
 }
 
 interface QueueItemListener {
+    fun onClick(viewHolder: RecyclerView.ViewHolder)
     fun onPickUp(viewHolder: RecyclerView.ViewHolder)
 }
 
@@ -57,13 +51,13 @@ private constructor(
     val backgroundView: View
         get() = binding.background
 
-    init {
-        binding.body.background =
-            MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
-                fillColor = (binding.body.background as ColorDrawable).color.stateList
-            }
+    val backgroundDrawable =
+        MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
+            fillColor = binding.context.getAttrColorSafe(R.attr.colorSurface).stateList
+        }
 
-        binding.root.disableDropShadowCompat()
+    init {
+        binding.body.background = backgroundDrawable
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -77,6 +71,8 @@ private constructor(
         binding.songName.requestLayout()
         binding.songInfo.requestLayout()
 
+        binding.body.setOnClickListener { listener.onClick(this) }
+
         // Roll our own drag handlers as the default ones suck
         binding.songDragHandle.setOnTouchListener { _, motionEvent ->
             binding.songDragHandle.performClick()
@@ -84,11 +80,6 @@ private constructor(
                 listener.onPickUp(this)
                 true
             } else false
-        }
-
-        binding.body.setOnLongClickListener {
-            listener.onPickUp(this)
-            true
         }
     }
 

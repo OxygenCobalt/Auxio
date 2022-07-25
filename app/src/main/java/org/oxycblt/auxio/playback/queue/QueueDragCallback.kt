@@ -22,7 +22,6 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.shape.MaterialShapeDrawable
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -87,7 +86,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
             logD("Lifting queue item")
 
-            val bg = holder.bodyView.background as MaterialShapeDrawable
+            val bg = holder.backgroundDrawable
             val elevation = recyclerView.context.getDimenSafe(R.dimen.elevation_small)
             holder.itemView
                 .animate()
@@ -125,7 +124,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         if (holder.itemView.translationZ != 0f) {
             logD("Dropping queue item")
 
-            val bg = holder.bodyView.background as MaterialShapeDrawable
+            val bg = holder.backgroundDrawable
             holder.itemView
                 .animate()
                 .translationZ(0.0f)

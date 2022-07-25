@@ -12,6 +12,7 @@ at the cost of longer loading times
 - Added Last Added sorting
 - Search now takes sort tags and file names in account [#184]
 - Added option to clear playback state in settings
+- Added ability to play songs from queue
 
 #### What's Improved
 - App now exposes an (immutable) queue.

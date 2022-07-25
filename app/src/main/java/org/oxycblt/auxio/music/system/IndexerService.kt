@@ -72,6 +72,11 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         indexingNotification = IndexingNotification(this)
         observingNotification = ObservingNotification(this)
 
+        wakeLock =
+            getSystemServiceSafe(PowerManager::class)
+                .newWakeLock(
+                    PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ".IndexerService")
+
         settings = Settings(this, this)
         indexerContentObserver = SystemContentObserver()
 
@@ -80,11 +85,6 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
             logD("No library present and no previous response, indexing music now")
             onStartIndexing()
         }
-
-        wakeLock =
-            getSystemServiceSafe(PowerManager::class)
-                .newWakeLock(
-                    PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ".IndexerService")
 
         logD("Service created.")
     }
