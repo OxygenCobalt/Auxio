@@ -24,6 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Auxio.App"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:appCategory="audio"
         tools:ignore="UnusedAttribute">
 
         <activity

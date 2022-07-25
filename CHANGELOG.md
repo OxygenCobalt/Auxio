@@ -11,6 +11,7 @@ at the cost of longer loading times
 	- Added basic awareness of multi-value vorbis tags [#197, dependent on this feature]
 - Added Last Added sorting
 - Search now takes sort tags and file names in account [#184]
+- Added option to clear playback state in settings
 
 #### What's Fixed
 - Fixed default material theme being used before app shows up

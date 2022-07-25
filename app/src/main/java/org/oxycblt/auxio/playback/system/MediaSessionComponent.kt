@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.SystemClock
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -44,8 +45,6 @@ import org.oxycblt.auxio.util.logD
  *
  * @author OxygenCobalt
  *
- * TODO: Queue functionality
- *
  * TODO: Remove the player callback once smooth seeking is implemented
  */
 class MediaSessionComponent(
@@ -58,11 +57,14 @@ class MediaSessionComponent(
     PlaybackStateManager.Callback,
     Settings.Callback {
     interface Callback {
-        fun onPostNotification(notification: NotificationComponent?)
+        fun onPostNotification(notification: NotificationComponent?, reason: String)
     }
 
     private val mediaSession =
-        MediaSessionCompat(context, context.packageName).apply { isActive = true }
+        MediaSessionCompat(context, context.packageName).apply {
+            isActive = true
+            setQueueTitle(context.getString(R.string.lbl_queue))
+        }
 
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settings = Settings(context, this)
@@ -94,18 +96,25 @@ class MediaSessionComponent(
 
     // --- PLAYBACKSTATEMANAGER CALLBACKS ---
 
-    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        updateMediaMetadata(playbackManager.song, parent)
-    }
-
     override fun onIndexMoved(index: Int) {
         updateMediaMetadata(playbackManager.song, playbackManager.parent)
+        invalidateSessionState()
+    }
+
+    override fun onQueueChanged(index: Int, queue: List<Song>) {
+        updateQueue(queue)
+    }
+
+    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
+        updateMediaMetadata(playbackManager.song, parent)
+        updateQueue(queue)
+        invalidateSessionState()
     }
 
     private fun updateMediaMetadata(song: Song?, parent: MusicParent?) {
         if (song == null) {
             mediaSession.setMetadata(emptyMetadata)
-            callback.onPostNotification(null)
+            callback.onPostNotification(null, "song update")
             return
         }
 
@@ -163,9 +172,27 @@ class MediaSessionComponent(
                     val metadata = builder.build()
                     mediaSession.setMetadata(metadata)
                     notification.updateMetadata(metadata)
-                    callback.onPostNotification(notification)
+                    callback.onPostNotification(notification, "song update")
                 }
             })
+    }
+
+    private fun updateQueue(queue: List<Song>) {
+        val queueItems =
+            queue.mapIndexed { i, song ->
+                val description =
+                    MediaDescriptionCompat.Builder()
+                        .setMediaId(song.id.toString())
+                        .setTitle(song.resolveName(context))
+                        .setSubtitle(song.resolveIndividualArtistName(context))
+                        .setIconUri(song.album.coverUri) // Use lower-quality covers for speed
+                        .setMediaUri(song.uri)
+                        .build()
+
+                MediaSessionCompat.QueueItem(description, i.toLong())
+            }
+
+        mediaSession.setQueue(queueItems)
     }
 
     override fun onPlayingChanged(isPlaying: Boolean) {
@@ -274,12 +301,7 @@ class MediaSessionComponent(
     private fun invalidateSessionState() {
         logD("Updating media session playback state")
 
-        // There are two unfixable issues with this code:
-        // 1. If the position is changed while paused (from the app), the position just won't
-        // update unless I re-post the notification. However, I cannot do such without being
-        // rate-limited. I cannot believe android rate-limits media notifications when they
-        // have to be updated as often as they need to.
-        // 2. Due to metadata updates being delayed but playback remaining ongoing, the position
+        // Note: Due to metadata updates being delayed but playback remaining ongoing, the position
         // will be wonky until we can upload a duration. Again, this ties back to how I must
         // aggressively batch notification updates to prevent rate-limiting.
         // Android 13 seems to resolve these, but I'm still stuck with these issues below that
@@ -288,13 +310,8 @@ class MediaSessionComponent(
         val state =
             PlaybackStateCompat.Builder()
                 .setActions(ACTIONS)
-                .addCustomAction(
-                    PlaybackStateCompat.CustomAction.Builder(
-                            PlaybackService.ACTION_INC_REPEAT_MODE,
-                            context.getString(R.string.desc_change_repeat),
-                            R.drawable.ic_repeat_off_24)
-                        .build())
                 .setBufferedPosition(player.bufferedPosition)
+                .setActiveQueueItemId(playbackManager.index.toLong())
 
         val playerState =
             if (playbackManager.isPlaying) {
@@ -318,7 +335,7 @@ class MediaSessionComponent(
         }
 
         if (!provider.isBusy) {
-            callback.onPostNotification(notification)
+            callback.onPostNotification(notification, "new notification actions")
         }
     }
 

@@ -271,7 +271,7 @@ class PlaybackService :
         player.playWhenReady = isPlaying
     }
 
-    override fun onPostNotification(notification: NotificationComponent?) {
+    override fun onPostNotification(notification: NotificationComponent?, reason: String) {
         if (notification == null) {
             // This case is only here if I ever need to move foreground stopping from
             // the player code to the notification code.
@@ -280,7 +280,7 @@ class PlaybackService :
         }
 
         if (hasPlayed) {
-            logD("Updating notification")
+            logD("Updating notification [Reason: $reason]")
             if (!foregroundManager.tryStartForeground(notification)) {
                 notification.post()
             }

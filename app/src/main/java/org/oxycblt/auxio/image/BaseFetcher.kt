@@ -79,7 +79,7 @@ abstract class BaseFetcher : Fetcher {
         }
     }
 
-    private suspend fun fetchQualityCovers(context: Context, album: Album): InputStream? {
+    private suspend fun fetchQualityCovers(context: Context, album: Album) =
         // Loading quality covers basically means to parse the file metadata ourselves
         // and then extract the cover.
 
@@ -88,30 +88,10 @@ abstract class BaseFetcher : Fetcher {
         // for a manual parser.
         // However, Samsung seems to cripple this class as to force people to use their ad-infested
         // music app which relies on proprietary OneUI extensions instead of AOSP. That means
-        // we have to have another layer of redundancy to retain quality. Thanks Samsung. Prick.
-        val result = fetchAospMetadataCovers(context, album)
-        if (result != null) {
-            return result
-        }
-
-        // Our next fallback is to rely on ExoPlayer's largely half-baked and undocumented
-        // metadata system.
-        val exoResult = fetchExoplayerCover(context, album)
-        if (exoResult != null) {
-            return exoResult
-        }
-
-        // If the previous two failed, we resort to MediaStore's covers despite it literally
-        // going against the point of this setting. The previous two calls are just too unreliable
-        // and we can't do any filesystem traversing due to scoped storage.
-        val mediaStoreResult = fetchMediaStoreCovers(context, album)
-        if (mediaStoreResult != null) {
-            return mediaStoreResult
-        }
-
-        // There is no cover we could feasibly fetch. Give up.
-        return null
-    }
+        // we have to add even more layers of redundancy to make sure we can extract a cover.
+        // Thanks Samsung. Prick.
+        fetchAospMetadataCovers(context, album)
+            ?: fetchExoplayerCover(context, album) ?: fetchMediaStoreCovers(context, album)
 
     private fun fetchAospMetadataCovers(context: Context, album: Album): InputStream? {
         MediaMetadataRetriever().apply {
