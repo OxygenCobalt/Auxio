@@ -180,12 +180,14 @@ class MediaSessionComponent(
     private fun updateQueue(queue: List<Song>) {
         val queueItems =
             queue.mapIndexed { i, song ->
+                // Since we usually have to load many songs into the queue, use the Cover URI
+                // instead of loading a bitmap.
                 val description =
                     MediaDescriptionCompat.Builder()
                         .setMediaId(song.id.toString())
                         .setTitle(song.resolveName(context))
                         .setSubtitle(song.resolveIndividualArtistName(context))
-                        .setIconUri(song.album.coverUri) // Use lower-quality covers for speed
+                        .setIconUri(song.album.coverUri)
                         .setMediaUri(song.uri)
                         .build()
 
@@ -300,6 +302,12 @@ class MediaSessionComponent(
             settings)
     }
 
+    override fun onSkipToQueueItem(id: Long) {
+        if (id in playbackManager.queue.indices) {
+            playbackManager.goto(id.toInt())
+        }
+    }
+
     override fun onStop() {
         // Get the service to shut down with the ACTION_EXIT intent
         context.sendBroadcast(Intent(PlaybackService.ACTION_EXIT))
@@ -361,6 +369,7 @@ class MediaSessionComponent(
                 PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE or
                 PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
                 PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM or
                 PlaybackStateCompat.ACTION_SEEK_TO or
                 PlaybackStateCompat.ACTION_STOP
     }
