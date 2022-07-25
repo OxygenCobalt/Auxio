@@ -48,7 +48,6 @@
     <string name="lbl_song_detail">Tignan ang katangian</string>
     <string name="lbl_props">Katangian ng kanta</string>
     <string name="lbl_file_name">Pangalan ng file</string>
-    <string name="lbl_relative_path"></string>
     <string name="lbl_format">Pormat</string>
     <string name="lbl_size">Laki</string>
     <string name="lbl_bitrate">Tulin ng mga bit</string>
@@ -86,7 +85,6 @@
     <string name="set_audio">Tunog</string>
     <string name="set_headset_autoplay">Kusang pagtugtog ng headset</string>
     <string name="set_headset_autoplay_desc">Laging simulan ang pagtugtog tuwing pagkonekta ng headset (maaaring \'di gumana sa lahat ng device)</string>
-    <string name="set_replay_gain"></string>
     <string name="set_alt_action">Naisin ang alternatibong aksyong patalastas</string>
     <string name="set_alt_repeat">Naisin ang aksyong modang pang-ulit</string>
     <string name="set_replay_gain_dynamic">Naisin ang album kung may isang tumutugtog</string>
@@ -103,7 +101,6 @@
     <string name="lbl_search">Hanapin</string>
     <string name="lbl_singles">Mga Single</string>
     <string name="lbl_grant">Bigyan</string>
-    <string name="lbl_sort_track"></string>
     <string name="lbl_genres">Mga Genre</string>
     <string name="info_widget_desc">Tignan at ayusin ang pagtugtog ng kanta</string>
     <string name="set_theme">Tema</string>
