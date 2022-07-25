@@ -282,6 +282,14 @@ class PlaybackViewModel(application: Application) :
         }
     }
 
+    /** Wipe the saved playback state (if any). */
+    fun wipePlaybackState(onDone: () -> Unit) {
+        viewModelScope.launch {
+            playbackManager.wipeState(PlaybackStateDatabase.getInstance(application))
+            onDone()
+        }
+    }
+
     /**
      * Force restore the last [PlaybackStateManager] saved state, regardless of if a library exists
      * or not. [onDone] will be called with true if it was successfully done, or false if there was

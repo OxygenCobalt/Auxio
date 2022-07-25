@@ -31,6 +31,11 @@ import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.formatDuration
 
+/**
+ * A dialog displayed when "View properties" is selected on a song, showing more information about
+ * the properties of the audio file itself.
+ * @author OxygenCobalt
+ */
 class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
     private val detailModel: DetailViewModel by androidActivityViewModels()
     private val args: SongDetailDialogArgs by navArgs()

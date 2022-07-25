@@ -51,7 +51,8 @@ a regression introduced by Google in that version. If this issue appears in anot
 **There should be one artist, but instead I get a bunch of "Artist & Collaborator" artists:** This likely means your tags are wrong. By default, Auxio will use the
 "album artist" tag for grouping if present, falling back to the "artist" tag otherwise. If your music does not have such a field, it will result in fragmented artists.
 The reason why Auxio does not simply parse for separators and then extract artists that way is that it risks mangling artists that don't actually have collaborators,
-such as "Black Country, New Road" becoming "Black Country".
+such as "Black Country, New Road" becoming "Black Country". I understand that some users may leverage MusicBrainz tags that enable a song to be referenced by several
+artists, but such functionality in Auxio will likely take awhile to implement to to UI and technical constraints.
 
 **Auxio does not detect new music:** This is Auxio's default behavior due to limitations regarding android's filesystem APIs. To enable such behavior, turn on
 "Automatic reloading" in settings. Note that this option does require a persistent notification and higher battery usage.

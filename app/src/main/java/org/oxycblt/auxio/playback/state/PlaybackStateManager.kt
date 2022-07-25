@@ -388,10 +388,13 @@ class PlaybackStateManager private constructor() {
     /** Save the current state to the [database]. */
     suspend fun saveState(database: PlaybackStateDatabase) {
         logD("Saving state to DB")
-
         val state = synchronized(this) { makeStateImpl() }
-
         withContext(Dispatchers.IO) { database.write(state) }
+    }
+
+    suspend fun wipeState(database: PlaybackStateDatabase) {
+        logD("Wiping state")
+        withContext(Dispatchers.IO) { database.write(null) }
     }
 
     /** Sanitize the state with [newLibrary]. */

@@ -102,6 +102,8 @@
     <!-- Referring to playback state -->
     <string name="lbl_state_saved">State saved</string>
     <!-- Referring to playback state -->
+    <string name="lbl_state_wiped">State cleared</string>
+    <!-- Referring to playback state -->
     <string name="lbl_state_restored">State restored</string>
 
     <!-- Limit to 10 characters -->
@@ -181,6 +183,8 @@
     <string name="set_content">Content</string>
     <string name="set_save">Save playback state</string>
     <string name="set_save_desc">Save the current playback state now</string>
+    <string name="set_wipe">Clear playback state</string>
+    <string name="set_wipe_desc">Wipe the previously saved playback state (if any)</string>
     <string name="set_restore">Restore playback state</string>
     <string name="set_restore_desc">Restore the previously saved playback state (if any)</string>
     <string name="set_reindex">Reload music</string>

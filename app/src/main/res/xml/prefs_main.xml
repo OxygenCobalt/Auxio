@@ -129,6 +129,11 @@
             app:title="@string/set_save" />
 
         <Preference
+            app:key="@string/set_key_wipe_state"
+            app:title="@string/set_wipe"
+            app:summary="@string/set_wipe_desc" />
+
+        <Preference
             app:key="@string/set_key_restore_state"
             app:summary="@string/set_restore_desc"
             app:title="@string/set_restore" />

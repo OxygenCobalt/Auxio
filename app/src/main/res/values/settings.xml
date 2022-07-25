@@ -24,6 +24,7 @@
     <string name="set_key_repeat_pause" translatable="false">KEY_LOOP_PAUSE</string>
 
     <string name="set_key_save_state" translatable="false">auxio_save_state</string>
+    <string name="set_key_wipe_state" translatable="false">auxio_wipe_state</string>
     <string name="set_key_restore_state" translatable="false">auxio_restore_state</string>
     <string name="set_key_reindex" translatable="false">auxio_reindex</string>
     <string name="set_key_music_dirs" translatable="false">auxio_music_dirs</string>

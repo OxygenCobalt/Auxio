@@ -49,8 +49,6 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 /**
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
  * @author OxygenCobalt
- *
- * TODO: Add option to not restore state
  */
 @Suppress("UNUSED")
 class SettingsListFragment : PreferenceFragmentCompat() {
@@ -119,6 +117,9 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         when (preference.key) {
             getString(R.string.set_key_save_state) -> {
                 playbackModel.savePlaybackState { context?.showToast(R.string.lbl_state_saved) }
+            }
+            getString(R.string.set_key_wipe_state) -> {
+                playbackModel.wipePlaybackState { context?.showToast(R.string.lbl_state_wiped) }
             }
             getString(R.string.set_key_restore_state) ->
                 playbackModel.tryRestorePlaybackState { restored ->

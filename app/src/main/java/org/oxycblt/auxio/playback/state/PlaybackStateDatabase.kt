@@ -186,19 +186,17 @@ class PlaybackStateDatabase private constructor(context: Context) :
     }
 
     /** Clear the previously written [SavedState] and write a new one. */
-    fun write(state: SavedState) {
+    fun write(state: SavedState?) {
         requireBackgroundThread()
 
-        val song = state.queue.getOrNull(state.index)
-
-        if (song != null) {
+        if (state != null && state.index in state.queue.indices) {
             val rawState =
                 RawState(
                     index = state.index,
                     positionMs = state.positionMs,
                     repeatMode = state.repeatMode,
                     isShuffled = state.isShuffled,
-                    songId = song.id,
+                    songId = state.queue[state.index].id,
                     parentId = state.parent?.id,
                     playbackMode =
                         when (state.parent) {
