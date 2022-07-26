@@ -81,6 +81,8 @@
     <string name="lbl_shuffle">Shuffle</string>
 
     <string name="lbl_queue">Queue</string>
+    <string name="lbl_next_up">Next up</string>
+    <string name="lbl_later">Later</string>
     <string name="lbl_play_next">Play next</string>
     <string name="lbl_queue_add">Add to queue</string>
     <string name="lbl_queue_added">Added to queue</string>

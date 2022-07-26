@@ -20,6 +20,8 @@ package org.oxycblt.auxio.playback.system
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Bundle
 import android.os.SystemClock
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -101,8 +103,13 @@ class MediaSessionComponent(
         invalidateSessionState()
     }
 
-    override fun onQueueChanged(index: Int, queue: List<Song>) {
+    override fun onQueueChanged(queue: List<Song>) {
         updateQueue(queue)
+    }
+
+    override fun onQueueReworked(index: Int, queue: List<Song>) {
+        updateQueue(queue)
+        invalidateSessionState()
     }
 
     override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
@@ -118,8 +125,8 @@ class MediaSessionComponent(
             return
         }
 
-        // We would leave the artist field null if it didn't exist and let downstream consumers
-        // handle it, but that would break the notification display.
+        // Note: We would leave the artist field null if it didn't exist and let downstream
+        // consumers handle it, but that would break the notification display.
         val title = song.resolveName(context)
         val artist = song.resolveIndividualArtistName(context)
         val builder =
@@ -180,11 +187,11 @@ class MediaSessionComponent(
     private fun updateQueue(queue: List<Song>) {
         val queueItems =
             queue.mapIndexed { i, song ->
-                // Since we usually have to load many songs into the queue, use the Cover URI
+                // Since we usually have to load many songs into the queue, use the MediaStore URI
                 // instead of loading a bitmap.
                 val description =
                     MediaDescriptionCompat.Builder()
-                        .setMediaId(song.id.toString())
+                        .setMediaId("Song:${song.id}")
                         .setTitle(song.resolveName(context))
                         .setSubtitle(song.resolveIndividualArtistName(context))
                         .setIconUri(song.album.coverUri)
@@ -245,8 +252,8 @@ class MediaSessionComponent(
         invalidateSessionState()
 
         if (!playbackManager.isPlaying) {
-            // Hack around issue where the position won't update after a seek (but only when it's
-            // paused). Apparently this can be fixed by re-posting the notification, but not always
+            // Hack around issue where the position won't update after a seek when paused.
+            // Apparently this can be fixed by re-posting the notification, but not always
             // when we invalidate the state (that will cause us to be rate-limited), and also not
             // always when we seek (that will also cause us to be rate-limited). Someone looked at
             // this system and said it was well-designed.
@@ -255,6 +262,31 @@ class MediaSessionComponent(
     }
 
     // --- MEDIASESSION CALLBACKS ---
+
+    override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+        super.onPlayFromMediaId(mediaId, extras)
+        // STUB: Unimplemented
+    }
+
+    override fun onPlayFromUri(uri: Uri?, extras: Bundle?) {
+        super.onPlayFromUri(uri, extras)
+        // STUB: Unimplemented
+    }
+
+    override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+        super.onPlayFromSearch(query, extras)
+        // STUB: Unimplemented
+    }
+
+    override fun onAddQueueItem(description: MediaDescriptionCompat?) {
+        super.onAddQueueItem(description)
+        // STUB: Unimplemented
+    }
+
+    override fun onRemoveQueueItem(description: MediaDescriptionCompat?) {
+        super.onRemoveQueueItem(description)
+        // STUB: Unimplemented
+    }
 
     override fun onPlay() {
         playbackManager.isPlaying = true

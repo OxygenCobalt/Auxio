@@ -114,8 +114,6 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.repeatMode, ::updateRepeat)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.isShuffled, ::updateShuffled)
-        collectImmediately(playbackModel.nextUp, ::updateNextUp)
-
         logD("Fragment Created")
     }
 
@@ -194,9 +192,5 @@ class PlaybackPanelFragment :
 
     private fun updateShuffled(isShuffled: Boolean) {
         requireBinding().playbackShuffle.isActivated = isShuffled
-    }
-
-    private fun updateNextUp(nextUp: List<Song>) {
-        queueItem.isEnabled = nextUp.isNotEmpty()
     }
 }

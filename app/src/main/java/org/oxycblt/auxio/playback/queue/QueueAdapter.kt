@@ -31,7 +31,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.recycler.*
 import org.oxycblt.auxio.util.*
 
-class QueueAdapter(private val listener: QueueItemListener) :
+class QueueAdapter(listener: QueueItemListener) :
     MonoAdapter<Song, QueueItemListener, QueueSongViewHolder>(listener) {
     override val data = SyncBackingData(this, QueueSongViewHolder.DIFFER)
     override val creator = QueueSongViewHolder.CREATOR

@@ -36,7 +36,6 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.application
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
 /**
@@ -76,11 +75,6 @@ class PlaybackViewModel(application: Application) :
     private val _isShuffled = MutableStateFlow(false)
     val isShuffled: StateFlow<Boolean>
         get() = _isShuffled
-
-    private val _nextUp = MutableStateFlow(listOf<Song>())
-    /** The queue, without the previous items. */
-    val nextUp: StateFlow<List<Song>>
-        get() = _nextUp
 
     init {
         musicStore.addCallback(this)
@@ -196,39 +190,6 @@ class PlaybackViewModel(application: Application) :
         playbackManager.prev()
     }
 
-    /**
-     * Go to an item in the queue using it's recyclerview adapter index. No-ops if out of bounds.
-     */
-    fun goto(adapterIndex: Int) {
-        val index = adapterIndex + (playbackManager.queue.size - _nextUp.value.size)
-        logD(adapterIndex)
-        logD(playbackManager.queue.size - _nextUp.value.size)
-
-        if (index in playbackManager.queue.indices) {
-            playbackManager.goto(index)
-        }
-    }
-
-    /** Remove a queue item using it's recyclerview adapter index. */
-    fun removeQueueDataItem(adapterIndex: Int) {
-        val index = adapterIndex + (playbackManager.queue.size - _nextUp.value.size)
-        if (index in playbackManager.queue.indices) {
-            playbackManager.removeQueueItem(index)
-        }
-    }
-    /** Move queue items using their recyclerview adapter indices. */
-    fun moveQueueDataItems(adapterFrom: Int, adapterTo: Int): Boolean {
-        val delta = (playbackManager.queue.size - _nextUp.value.size)
-        val from = adapterFrom + delta
-        val to = adapterTo + delta
-        if (from in playbackManager.queue.indices && to in playbackManager.queue.indices) {
-            playbackManager.moveQueueItem(from, to)
-            return true
-        }
-
-        return false
-    }
-
     /** Add a [Song] to the top of the queue. */
     fun playNext(song: Song) {
         playbackManager.playNext(song)
@@ -334,17 +295,11 @@ class PlaybackViewModel(application: Application) :
 
     override fun onIndexMoved(index: Int) {
         _song.value = playbackManager.song
-        _nextUp.value = playbackManager.queue.slice(index + 1 until playbackManager.queue.size)
-    }
-
-    override fun onQueueChanged(index: Int, queue: List<Song>) {
-        _nextUp.value = queue.slice(index + 1 until queue.size)
     }
 
     override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
         _song.value = playbackManager.song
         _parent.value = playbackManager.parent
-        _nextUp.value = queue.slice(index + 1 until queue.size)
     }
 
     override fun onPositionChanged(positionMs: Long) {

@@ -27,10 +27,10 @@ import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
 import org.oxycblt.auxio.ui.recycler.AsyncBackingData
 import org.oxycblt.auxio.ui.recycler.GenreViewHolder
 import org.oxycblt.auxio.ui.recycler.Header
+import org.oxycblt.auxio.ui.recycler.HeaderViewHolder
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.MultiAdapter
-import org.oxycblt.auxio.ui.recycler.NewHeaderViewHolder
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
 
@@ -43,7 +43,7 @@ class SearchAdapter(listener: MenuItemListener) : MultiAdapter<MenuItemListener>
             is Album -> AlbumViewHolder.CREATOR
             is Artist -> ArtistViewHolder.CREATOR
             is Genre -> GenreViewHolder.CREATOR
-            is Header -> NewHeaderViewHolder.CREATOR
+            is Header -> HeaderViewHolder.CREATOR
             else -> null
         }
 
@@ -53,7 +53,7 @@ class SearchAdapter(listener: MenuItemListener) : MultiAdapter<MenuItemListener>
             AlbumViewHolder.CREATOR.viewType -> AlbumViewHolder.CREATOR
             ArtistViewHolder.CREATOR.viewType -> ArtistViewHolder.CREATOR
             GenreViewHolder.CREATOR.viewType -> GenreViewHolder.CREATOR
-            NewHeaderViewHolder.CREATOR.viewType -> NewHeaderViewHolder.CREATOR
+            HeaderViewHolder.CREATOR.viewType -> HeaderViewHolder.CREATOR
             else -> null
         }
 
@@ -68,7 +68,7 @@ class SearchAdapter(listener: MenuItemListener) : MultiAdapter<MenuItemListener>
             is Album -> (viewHolder as AlbumViewHolder).bind(item, listener)
             is Artist -> (viewHolder as ArtistViewHolder).bind(item, listener)
             is Genre -> (viewHolder as GenreViewHolder).bind(item, listener)
-            is Header -> (viewHolder as NewHeaderViewHolder).bind(item, Unit)
+            is Header -> (viewHolder as HeaderViewHolder).bind(item, Unit)
             else -> {}
         }
     }
@@ -87,7 +87,7 @@ class SearchAdapter(listener: MenuItemListener) : MultiAdapter<MenuItemListener>
                         oldItem is Genre && newItem is Genre ->
                             GenreViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
                         oldItem is Header && newItem is Header ->
-                            NewHeaderViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            HeaderViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
                         else -> false
                     }
             }

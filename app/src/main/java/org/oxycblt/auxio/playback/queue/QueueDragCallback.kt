@@ -27,7 +27,6 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sign
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.getDimenSafe
 import org.oxycblt.auxio.util.logD
 
@@ -37,7 +36,7 @@ import org.oxycblt.auxio.util.logD
  * hot garbage. This shouldn't have *too many* UI bugs. I hope.
  * @author OxygenCobalt
  */
-class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouchHelper.Callback() {
+class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHelper.Callback() {
     private var shouldLift = true
 
     override fun getMovementFlags(

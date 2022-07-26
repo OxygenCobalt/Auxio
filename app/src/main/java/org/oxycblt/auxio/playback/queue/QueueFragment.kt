@@ -20,14 +20,12 @@ package org.oxycblt.auxio.playback.queue
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 
 /**
@@ -35,10 +33,10 @@ import org.oxycblt.auxio.util.collectImmediately
  * @author OxygenCobalt
  */
 class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemListener {
-    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    private val queueModel: QueueViewModel by activityViewModels()
     private val queueAdapter = QueueAdapter(this)
     private val touchHelper: ItemTouchHelper by lifecycleObject {
-        ItemTouchHelper(QueueDragCallback(playbackModel))
+        ItemTouchHelper(QueueDragCallback(queueModel))
     }
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentQueueBinding.inflate(inflater)
@@ -53,7 +51,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
 
         // --- VIEWMODEL SETUP ----
 
-        collectImmediately(playbackModel.nextUp, ::updateQueue)
+        collectImmediately(queueModel.queue, ::updateQueue)
     }
 
     override fun onDestroyBinding(binding: FragmentQueueBinding) {
@@ -62,19 +60,20 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
     }
 
     override fun onClick(viewHolder: RecyclerView.ViewHolder) {
-        playbackModel.goto(viewHolder.bindingAdapterPosition)
+        queueModel.goto(viewHolder.bindingAdapterPosition)
     }
 
     override fun onPickUp(viewHolder: RecyclerView.ViewHolder) {
         touchHelper.startDrag(viewHolder)
     }
 
-    private fun updateQueue(queue: List<Song>) {
-        if (queue.isEmpty()) {
-            findNavController().navigateUp()
-            return
+    private fun updateQueue(queue: QueueViewModel.QueueData) {
+        if (queue.nonTrivial) {
+            // nonTrivial implies that using a synced submitList would be slow, replace the list
+            // instead.
+            queueAdapter.data.replaceList(queue.queue)
+        } else {
+            queueAdapter.data.submitList(queue.queue)
         }
-
-        queueAdapter.data.submitList(queue.toMutableList())
     }
 }

@@ -280,7 +280,7 @@ class PlaybackStateManager private constructor() {
         val library = musicStore.library ?: return
         val song = song ?: return
         applyNewQueue(library, settings, shuffled, song)
-        notifyQueueChanged()
+        notifyQueueReworked()
         notifyShuffledChanged()
     }
 
@@ -464,7 +464,13 @@ class PlaybackStateManager private constructor() {
 
     private fun notifyQueueChanged() {
         for (callback in callbacks) {
-            callback.onQueueChanged(index, queue)
+            callback.onQueueChanged(queue)
+        }
+    }
+
+    private fun notifyQueueReworked() {
+        for (callback in callbacks) {
+            callback.onQueueReworked(index, queue)
         }
     }
 
@@ -529,8 +535,11 @@ class PlaybackStateManager private constructor() {
         /** Called when the index is moved, but the queue does not change. This changes the song. */
         fun onIndexMoved(index: Int) {}
 
-        /** Called when the queue and/or index changed, but the song has not. */
-        fun onQueueChanged(index: Int, queue: List<Song>) {}
+        /** Called when the queue has changed in a way that does not change the index or song. */
+        fun onQueueChanged(queue: List<Song>) {}
+
+        /** Called when the queue and index has changed, but the song has not changed.. */
+        fun onQueueReworked(index: Int, queue: List<Song>) {}
 
         /** Called when playback is changed completely, with a new index, queue, and parent. */
         fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {}

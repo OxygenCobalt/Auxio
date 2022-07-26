@@ -28,10 +28,10 @@ import org.oxycblt.auxio.databinding.ItemSortHeaderBinding
 import org.oxycblt.auxio.ui.recycler.AsyncBackingData
 import org.oxycblt.auxio.ui.recycler.BindingViewHolder
 import org.oxycblt.auxio.ui.recycler.Header
+import org.oxycblt.auxio.ui.recycler.HeaderViewHolder
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.MultiAdapter
-import org.oxycblt.auxio.ui.recycler.NewHeaderViewHolder
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
@@ -70,14 +70,14 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
 
     override fun getCreatorFromItem(item: Item) =
         when (item) {
-            is Header -> NewHeaderViewHolder.CREATOR
+            is Header -> HeaderViewHolder.CREATOR
             is SortHeader -> SortHeaderViewHolder.CREATOR
             else -> null
         }
 
     override fun getCreatorFromViewType(viewType: Int) =
         when (viewType) {
-            NewHeaderViewHolder.CREATOR.viewType -> NewHeaderViewHolder.CREATOR
+            HeaderViewHolder.CREATOR.viewType -> HeaderViewHolder.CREATOR
             SortHeaderViewHolder.CREATOR.viewType -> SortHeaderViewHolder.CREATOR
             else -> null
         }
@@ -90,7 +90,7 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
     ) {
         if (payload.isEmpty()) {
             when (item) {
-                is Header -> (viewHolder as NewHeaderViewHolder).bind(item, Unit)
+                is Header -> (viewHolder as HeaderViewHolder).bind(item, Unit)
                 is SortHeader -> (viewHolder as SortHeaderViewHolder).bind(item, listener)
             }
         }
@@ -111,7 +111,7 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
                 override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Header && newItem is Header ->
-                            NewHeaderViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            HeaderViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
                         oldItem is SortHeader && newItem is SortHeader ->
                             SortHeaderViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
                         else -> false

@@ -201,7 +201,7 @@ private constructor(
  * The Shared ViewHolder for a [Header].
  * @author OxygenCobalt
  */
-class NewHeaderViewHolder private constructor(private val binding: ItemHeaderBinding) :
+class HeaderViewHolder private constructor(private val binding: ItemHeaderBinding) :
     BindingViewHolder<Header, Unit>(binding.root) {
 
     override fun bind(item: Header, listener: Unit) {
@@ -210,12 +210,12 @@ class NewHeaderViewHolder private constructor(private val binding: ItemHeaderBin
 
     companion object {
         val CREATOR =
-            object : Creator<NewHeaderViewHolder> {
+            object : Creator<HeaderViewHolder> {
                 override val viewType: Int
                     get() = IntegerTable.ITEM_TYPE_HEADER
 
                 override fun create(context: Context) =
-                    NewHeaderViewHolder(ItemHeaderBinding.inflate(context.inflater))
+                    HeaderViewHolder(ItemHeaderBinding.inflate(context.inflater))
             }
 
         val DIFFER =
