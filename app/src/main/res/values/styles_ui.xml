@@ -172,8 +172,12 @@
     <style name="Widget.Auxio.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton" />
 
     <style name="Widget.Auxio.Button.Icon.Base" parent="Widget.Material3.Button.IconButton">
-        <item name="iconTint">?attr/colorControlNormal</item>
-        <item name="rippleColor">@color/sel_icon_button_ripple</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Auxio.UncheckableIconButton</item>
+    </style>
+
+    <style name="ThemeOverlay.Auxio.UncheckableIconButton" parent="">
+        <item name="colorContainer">@android:color/transparent</item>
+        <item name="colorOnContainer">?attr/colorOnSurfaceVariant</item>
     </style>
 
     <style name="Widget.Auxio.Button.Icon.Small" parent="Widget.Auxio.Button.Icon.Base">

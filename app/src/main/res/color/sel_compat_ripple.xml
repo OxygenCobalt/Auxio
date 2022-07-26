@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:alpha="@dimen/m3_ripple_selectable_pressed_alpha"
+      android:color="?attr/colorOnSurfaceVariant"
+      android:state_pressed="true"/>
+  <item android:alpha="@dimen/m3_ripple_focused_alpha"
+      android:color="?attr/colorOnSurfaceVariant"
+      android:state_focused="true"/>
+  <item android:alpha="@dimen/m3_ripple_hovered_alpha"
+      android:color="?attr/colorOnSurfaceVariant"
+      android:state_hovered="true"/>
+  <item android:alpha="@dimen/m3_ripple_default_alpha"
+      android:color="?attr/colorOnSurfaceVariant"/>
+</selector>

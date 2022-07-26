@@ -2,8 +2,10 @@
 <resources>
     <!-- Master parent theme -->
     <style name="Theme.Auxio" parent="Theme.Material3.DynamicColors.DayNight" />
+    <!-- Theme that implements nicer selector attributes not supported on lollipop-->
+    <style name="Theme.Auxio.V23" parent="Theme.Auxio" />
     <!-- Template theme that handles edge-to-edge on other styles variants -->
-    <style name="Theme.Auxio.V27" parent="Theme.Auxio">
+    <style name="Theme.Auxio.V27" parent="Theme.Auxio.V23">
         <item name="android:statusBarColor">@color/chrome_translucent</item>
         <item name="android:navigationBarColor">@color/chrome_translucent</item>
     </style>
@@ -40,10 +42,16 @@
         <item name="textAppearanceBodyMedium">@style/TextAppearance.Auxio.BodyMedium</item>
         <item name="textAppearanceBodySmall">@style/TextAppearance.Auxio.BodySmall</item>
 
+        <!-- Work around hard-coded text highlight colors in the default Material3 theme -->
+        <item name="android:textColorHighlight">@color/overlay_text_highlight</item>
+        <item name="android:textColorHighlightInverse">@color/overlay_text_highlight_inverse</item>
+
         <!-- Fix dumb default android behavior -->
         <item name="android:scrollbars">none</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
+        <item name="colorControlNormal">?attr/colorOnSurfaceVariant</item>
         <item name="colorControlActivated">?attr/colorPrimary</item>
 
         <item name="preferenceStyle">@style/Preference.Auxio</item>
@@ -53,12 +61,7 @@
         </item>
         <item name="toolbarNavigationButtonStyle">@style/Widget.Auxio.Toolbar.Navigation</item>
         <item name="actionOverflowButtonStyle">@style/Widget.Auxio.Button.Overflow</item>
-
-        <!-- Work around hard-coded text highlight colors in the default Material3 theme -->
-        <item name="android:textColorHighlight">@color/overlay_text_highlight</item>
-        <item name="android:textColorHighlightInverse">@color/overlay_text_highlight_inverse</item>
     </style>
-
 
     <style name="Theme.Auxio.App" parent="@style/Theme.Auxio.Blue" />
 
