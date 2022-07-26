@@ -224,4 +224,7 @@
     <string name="desc_change_repeat">Promijeni način ponavljanja</string>
     <string name="clr_purple">Ljubičasto</string>
     <string name="cdc_mka">Matroska Zvuk</string>
+    <string name="set_wipe">Izbriši stanje reprodukcije</string>
+    <string name="lbl_state_wiped">Stanje izbrisano</string>
+    <string name="set_wipe_desc">Izbriši prethodno stanje reprodukcije (ako postoji)</string>
 </resources>
