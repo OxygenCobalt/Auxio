@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_queue"
-        android:icon="@drawable/ic_queue_24"
-        android:title="@string/lbl_queue"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/action_go_artist"
         android:title="@string/lbl_go_artist"
         app:showAsAction="never" />

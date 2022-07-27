@@ -55,10 +55,6 @@ class PlaybackPanelFragment :
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
 
-    private val queueItem: MenuItem by lifecycleObject { binding ->
-        binding.playbackToolbar.menu.findItem(R.id.action_queue)
-    }
-
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackPanelBinding.inflate(inflater)
 
@@ -125,10 +121,6 @@ class PlaybackPanelFragment :
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_queue -> {
-                navModel.mainNavigateTo(MainNavigationAction.Queue)
-                true
-            }
             R.id.action_go_artist -> {
                 playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album.artist) }
                 true

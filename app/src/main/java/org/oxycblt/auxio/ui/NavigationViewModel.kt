@@ -91,8 +91,6 @@ sealed class MainNavigationAction {
     object Settings : MainNavigationAction()
     /** Go to the about page. */
     object About : MainNavigationAction()
-    /** Go to the queue. */
-    object Queue : MainNavigationAction()
     /** Show song details. */
     data class SongDetails(val song: Song) : MainNavigationAction()
 }

@@ -102,8 +102,6 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
                 findNavController().navigate(MainFragmentDirections.actionShowSettings())
             is MainNavigationAction.About ->
                 findNavController().navigate(MainFragmentDirections.actionShowAbout())
-            is MainNavigationAction.Queue ->
-                findNavController().navigate(MainFragmentDirections.actionShowQueue())
             is MainNavigationAction.SongDetails ->
                 findNavController()
                     .navigate(MainFragmentDirections.actionShowDetails(action.song.id))
