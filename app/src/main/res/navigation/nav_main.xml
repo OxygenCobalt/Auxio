@@ -10,21 +10,13 @@
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_show_queue"
-            app:destination="@id/queue_fragment"
-            app:enterAnim="@anim/nav_slide_enter_anim"
-            app:exitAnim="@anim/nav_slide_exit_anim"
-            app:popEnterAnim="@anim/nav_slide_pop_enter_anim"
-            app:popExitAnim="@anim/nav_slide_pop_exit_anim" />
+            app:destination="@id/queue_fragment" />
         <action
             android:id="@+id/action_show_settings"
             app:destination="@id/settings_fragment" />
         <action
             android:id="@+id/action_show_about"
-            app:destination="@id/about_fragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:destination="@id/about_fragment" />
         <action
             android:id="@+id/action_show_details"
             app:destination="@id/song_detail_dialog" />

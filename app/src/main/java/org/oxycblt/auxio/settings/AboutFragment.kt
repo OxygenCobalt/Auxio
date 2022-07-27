@@ -27,6 +27,7 @@ import androidx.core.net.toUri
 import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.transition.MaterialFadeThrough
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
@@ -50,6 +51,12 @@ import org.oxycblt.auxio.util.textSafe
  */
 class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
     private val homeModel: HomeViewModel by androidActivityViewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+    }
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentAboutBinding.inflate(inflater)
 

@@ -21,6 +21,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.transition.MaterialFadeThrough
 import org.oxycblt.auxio.databinding.FragmentSettingsBinding
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 
@@ -29,6 +30,12 @@ import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
  * @author OxygenCobalt
  */
 class SettingsFragment : ViewBindingFragment<FragmentSettingsBinding>() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+    }
+
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentSettingsBinding.inflate(inflater)
 

@@ -25,6 +25,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.transition.MaterialFadeThrough
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
@@ -45,6 +46,12 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private var callback: DynamicBackPressedCallback? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+    }
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentMainBinding.inflate(inflater)
 
