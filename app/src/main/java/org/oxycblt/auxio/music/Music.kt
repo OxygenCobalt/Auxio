@@ -21,7 +21,6 @@ package org.oxycblt.auxio.music
 
 import android.content.Context
 import android.net.Uri
-import android.provider.MediaStore
 import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.BuildConfig
@@ -112,11 +111,9 @@ data class Song(
 ) : Music() {
     override val id: Long
         get() {
-            var result = rawName.lowercase().hashCode().toLong()
-            result = 31 * result + album.rawName.lowercase().hashCode()
-            result =
-                31 * result +
-                    (album.artist.rawName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode()
+            var result = rawName.toMusicId()
+            result = 31 * result + album.rawName.toMusicId()
+            result = 31 * result + album.artist.rawName.toMusicId()
             result = 31 * result + (track ?: 0)
             result = 31 * result + (disc ?: 0)
             result = 31 * result + durationMs
@@ -156,15 +153,14 @@ data class Song(
     /** Internal field. Do not use. */
     val _albumGroupingId: Long
         get() {
-            var result =
-                (_artistGroupingName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
-            result = 31 * result + _albumName.lowercase().hashCode()
+            var result = _artistGroupingName.toMusicId()
+            result = 31 * result + _albumName.toMusicId()
             return result
         }
 
     /** Internal field. Do not use. */
     val _genreGroupingId: Long
-        get() = (_genreName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
+        get() = _genreName.toMusicId()
 
     /** Internal field. Do not use. */
     val _artistGroupingName: String?
@@ -228,9 +224,8 @@ data class Album(
 
     override val id: Long
         get() {
-            var result = rawName.lowercase().hashCode().toLong()
-            result =
-                31 * result + (artist.rawName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode()
+            var result = rawName.toMusicId()
+            result = 31 * result + artist.rawName.toMusicId()
             result = 31 * result + (date?.year ?: 0)
             return result
         }
@@ -244,7 +239,7 @@ data class Album(
 
     /** Internal field. Do not use. */
     val _artistGroupingId: Long
-        get() = (_artistGroupingName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
+        get() = _artistGroupingName.toMusicId()
 
     /** Internal field. Do not use. */
     val _isMissingArtist: Boolean
@@ -273,7 +268,7 @@ data class Artist(
     }
 
     override val id: Long
-        get() = (rawName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
+        get() = rawName.toMusicId()
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
 
@@ -294,9 +289,22 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
         get() = rawName
 
     override val id: Long
-        get() = (rawName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
+        get() = rawName.toMusicId()
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
+}
+
+private fun String?.toMusicId(): Long {
+    if (this == null) {
+        // Pre-calculated hash of MediaStore.UNKNOWN_STRING
+        return 54493231833456
+    }
+
+    var result = 0L
+    for (ch in lowercase()) {
+        result = 31 * result + ch.code
+    }
+    return result
 }
 
 /**

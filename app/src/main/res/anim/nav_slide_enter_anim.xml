@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-This is part of a stopgap animation used by QueueFragment until it's fully integrated
-into PlaybackLayout.
--->
-<translate xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="500"
-    android:fromYDelta="100%"
-    android:interpolator="@android:interpolator/decelerate_quint"
-    android:toYDelta="0%" />

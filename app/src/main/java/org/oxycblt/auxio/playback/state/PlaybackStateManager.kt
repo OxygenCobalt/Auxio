@@ -538,7 +538,7 @@ class PlaybackStateManager private constructor() {
         /** Called when the queue has changed in a way that does not change the index or song. */
         fun onQueueChanged(queue: List<Song>) {}
 
-        /** Called when the queue and index has changed, but the song has not changed.. */
+        /** Called when the queue and index has changed, but the song has not changed. */
         fun onQueueReworked(index: Int, queue: List<Song>) {}
 
         /** Called when playback is changed completely, with a new index, queue, and parent. */
