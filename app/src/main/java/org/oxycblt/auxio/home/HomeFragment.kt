@@ -89,13 +89,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         binding.homeToolbar.menu.findItem(R.id.submenu_sorting)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, /* forward= */ true)
-        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, /* forward= */ false)
-    }
-
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentHomeBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
@@ -164,6 +157,8 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         when (item.itemId) {
             R.id.action_search -> {
                 logD("Navigating to search")
+                exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+                reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
                 findNavController().navigate(HomeFragmentDirections.actionShowSearch())
             }
             R.id.action_settings -> {
@@ -352,14 +347,26 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
     private fun handleNavigation(item: Music?) {
         when (item) {
-            is Song ->
+            is Song -> {
+                exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
+                reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
                 findNavController().navigate(HomeFragmentDirections.actionShowAlbum(item.album.id))
-            is Album ->
+            }
+            is Album -> {
+                exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
+                reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
                 findNavController().navigate(HomeFragmentDirections.actionShowAlbum(item.id))
-            is Artist ->
+            }
+            is Artist -> {
+                exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
+                reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
                 findNavController().navigate(HomeFragmentDirections.actionShowArtist(item.id))
-            is Genre ->
+            }
+            is Genre -> {
+                exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
+                reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
                 findNavController().navigate(HomeFragmentDirections.actionShowGenre(item.id))
+            }
             else -> {}
         }
     }
