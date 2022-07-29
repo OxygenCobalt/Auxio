@@ -19,7 +19,7 @@ package org.oxycblt.auxio
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
+import android.view.ViewTreeObserver
 import android.view.WindowInsets
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isInvisible
@@ -27,7 +27,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
 import com.google.android.material.transition.MaterialFadeThrough
 import java.util.*
 import kotlin.math.max
@@ -48,7 +47,8 @@ import org.oxycblt.auxio.util.*
  * high-level navigation features.
  * @author OxygenCobalt
  */
-class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
+class MainFragment :
+    ViewBindingFragment<FragmentMainBinding>(), ViewTreeObserver.OnPreDrawListener {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private var callback: DynamicBackPressedCallback? = null
@@ -75,26 +75,14 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
 
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+
         val queueSheetBehavior = binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior
 
-        queueSheetBehavior.addBottomSheetCallback(
-            object : NeoBottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    playbackSheetBehavior.isDraggable =
-                        !playbackSheetBehavior.isHideable &&
-                            newState == BottomSheetBehavior.STATE_COLLAPSED
-                }
-            })
-
-        // We would use the onSlide callback, but doing that would require us to initialize
-        // when the view first starts up, and that may not always work due to the insanity of
-        // the CoordinatorLayout lifecycle. Instead, do the less efficient alternative of updating
-        // the transition on every redraw.
-        binding.playbackSheet.viewTreeObserver.addOnPreDrawListener {
-            handleSheetTransitions()
-            true
+        binding.handleWrapper.setOnClickListener {
+            if (playbackSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED &&
+                queueSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
+                queueSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
         }
 
         // --- VIEWMODEL SETUP ---
@@ -102,6 +90,14 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
         collect(navModel.mainNavigationAction, ::handleMainNavigation)
         collect(navModel.exploreNavigationItem, ::handleExploreNavigation)
         collectImmediately(playbackModel.song, ::updateSong)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Callback could still reasonably fire even if we clear the binding, attach/detach
+        // our pre-draw listener our listener in onStart/onStop respectively.
+        requireBinding().playbackSheet.viewTreeObserver.addOnPreDrawListener(this)
     }
 
     override fun onResume() {
@@ -112,6 +108,18 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
     override fun onPause() {
         super.onPause()
         callback?.isEnabled = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireBinding().playbackSheet.viewTreeObserver.removeOnPreDrawListener(this)
+    }
+
+    override fun onPreDraw(): Boolean {
+        // CoordinatorLayout is insane and thus makes bottom sheet callbacks insane. Do our
+        // checks before every draw.
+        handleSheetTransitions()
+        return true
     }
 
     private fun handleSheetTransitions() {
@@ -150,11 +158,15 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
         }
 
         binding.queueFragment.alpha = queueRatio
+
+        playbackSheetBehavior.isDraggable =
+            !playbackSheetBehavior.isHideable &&
+                queueSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED
     }
 
     private fun handleMainNavigation(action: MainNavigationAction?) {
         if (action == null) return
-        
+
         when (action) {
             is MainNavigationAction.Expand -> tryExpandAll()
             is MainNavigationAction.Collapse -> tryCollapseAll()
@@ -173,41 +185,6 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
     private fun handleExploreNavigation(item: Music?) {
         if (item != null) {
             tryCollapseAll()
-        }
-    }
-
-    private fun updateSong(song: Song?) {
-        val binding = requireBinding()
-        val playbackSheetBehavior =
-            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
-        if (song != null) {
-            playbackSheetBehavior.unsideSafe()
-        } else {
-            playbackSheetBehavior.hideSafe()
-        }
-    }
-
-    /**
-     * A back press callback that handles how to respond to backwards navigation in the detail
-     * fragments and the playback panel.
-     *
-     * TODO: Migrate to new predictive API
-     */
-    inner class DynamicBackPressedCallback : OnBackPressedCallback(false) {
-        override fun handleOnBackPressed() {
-            val binding = requireBinding()
-            if (!tryCollapseAll()) {
-                val navController = binding.exploreNavHost.findNavController()
-
-                if (navController.currentDestination?.id ==
-                    navController.graph.startDestinationId) {
-                    isEnabled = false
-                    requireActivity().onBackPressed()
-                    isEnabled = true
-                } else {
-                    navController.navigateUp()
-                }
-            }
         }
     }
 
@@ -243,5 +220,55 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
         }
 
         return false
+    }
+
+    private fun updateSong(song: Song?) {
+        val binding = requireBinding()
+        val playbackSheetBehavior =
+            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+        if (song != null) {
+            playbackSheetBehavior.unsideSafe()
+        } else {
+            playbackSheetBehavior.hideSafe()
+        }
+    }
+
+    /**
+     * A back press callback that handles how to respond to backwards navigation in the detail
+     * fragments and the playback panel.
+     *
+     * TODO: Migrate to new predictive API
+     */
+    inner class DynamicBackPressedCallback : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            val binding = requireBinding()
+
+            val queueSheetBehavior =
+                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior
+
+            if (queueSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED) {
+                queueSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                return
+            }
+
+            val playbackSheetBehavior =
+                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+
+            if (playbackSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED &&
+                playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
+                playbackSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                return
+            }
+
+            val navController = binding.exploreNavHost.findNavController()
+
+            if (navController.currentDestination?.id == navController.graph.startDestinationId) {
+                isEnabled = false
+                requireActivity().onBackPressed()
+                isEnabled = true
+            } else {
+                navController.navigateUp()
+            }
+        }
     }
 }
