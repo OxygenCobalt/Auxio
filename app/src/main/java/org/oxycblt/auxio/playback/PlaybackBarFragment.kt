@@ -19,7 +19,6 @@ package org.oxycblt.auxio.playback
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import kotlin.math.max
 import org.oxycblt.auxio.R
@@ -31,8 +30,6 @@ import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getColorStateListSafe
-import org.oxycblt.auxio.util.systemBarInsetsCompat
-import org.oxycblt.auxio.util.systemGestureInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 
 /**
@@ -57,17 +54,6 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
             setOnLongClickListener {
                 playbackModel.song.value?.let(navModel::exploreNavigateTo)
                 true
-            }
-
-            setOnApplyWindowInsetsListener { view, insets ->
-                // Since we swipe up this view, we need to make sure it does not collide with
-                // any gesture events. So, apply the system gesture insets if present as long
-                // as they are *larger* than the bar insets. This is to resolve issues where
-                // the gesture insets are not sane on OEM devices.
-                val bars = insets.systemBarInsetsCompat
-                val gestures = insets.systemGestureInsetsCompat
-                view.updatePadding(bottom = max(bars.bottom, gestures.bottom))
-                insets
             }
         }
 

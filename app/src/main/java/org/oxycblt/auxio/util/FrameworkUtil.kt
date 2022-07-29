@@ -32,6 +32,7 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -152,6 +153,9 @@ fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
 /** Returns whether a recyclerview can scroll. */
 val RecyclerView.canScroll: Boolean
     get() = computeVerticalScrollRange() > height
+
+val View.coordinatorLayoutBehavior: CoordinatorLayout.Behavior<*>?
+    get() = (layoutParams as CoordinatorLayout.LayoutParams).behavior
 
 /** Converts this color to a single-color [ColorStateList]. */
 val @receiver:ColorRes Int.stateList

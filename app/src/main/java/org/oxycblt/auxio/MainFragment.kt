@@ -17,18 +17,23 @@
  
 package org.oxycblt.auxio
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowInsets
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isInvisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
 import com.google.android.material.transition.MaterialFadeThrough
+import kotlin.math.max
+import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaybackSheetBehavior
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
@@ -36,6 +41,7 @@ import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls the more
@@ -46,6 +52,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private var callback: DynamicBackPressedCallback? = null
+    private var lastInsets: WindowInsets? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,18 +68,24 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
             .onBackPressedDispatcher.addCallback(
                 viewLifecycleOwner, DynamicBackPressedCallback().also { callback = it })
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            // Auxio's layout completely breaks down when it's window is resized too small,
-            // but for some insane reason google decided to cripple the window APIs one could use
-            // to limit it's size. So, we just have our own special layout that is shown whenever
-            // the screen is too small because of course we have to.
-            if (requireActivity().isInMultiWindowMode) {
-                val config = resources.configuration
-                if (config.screenHeightDp < 250 || config.screenWidthDp < 250) {
-                    binding.layoutTooSmall.visibility = View.VISIBLE
-                }
-            }
+        binding.root.setOnApplyWindowInsetsListener { v, insets ->
+            lastInsets = insets
+            insets
         }
+
+        val playbackSheetBehavior =
+            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+
+        playbackSheetBehavior.addBottomSheetCallback(
+            object : NeoBottomSheetBehavior.BottomSheetCallback() {
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    handleSheetTransitions()
+                }
+
+                override fun onStateChanged(bottomSheet: View, newState: Int) {}
+            })
+
+        binding.root.post { handleSheetTransitions() }
 
         // --- VIEWMODEL SETUP ---
 
@@ -91,13 +104,51 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
         callback?.isEnabled = false
     }
 
+    private fun handleSheetTransitions() {
+        val binding = requireBinding()
+        val playbackSheetBehavior =
+            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+
+        val playbackRatio = max(playbackSheetBehavior.calculateSlideOffset(), 0f)
+        val queueRatio = 0f
+
+        val outRatio = 1 - playbackRatio
+        val halfOutRatio = min(playbackRatio * 2, 1f)
+        val halfInPlaybackRatio = max(playbackRatio - 0.5f, 0f) * 2
+        val halfOutQueueRatio = min(queueRatio * 2, 1f)
+        val halfInQueueRatio = max(queueRatio - 0.5f, 0f) * 2
+
+        playbackSheetBehavior.sheetBackgroundDrawable.alpha = (outRatio * 255).toInt()
+        binding.playbackSheet.translationZ = 3f * outRatio
+        binding.playbackPanelFragment.alpha = min(halfInPlaybackRatio, 1 - halfOutQueueRatio)
+        // binding.queueRecycler.alpha = max(queueOffset, 0f)
+
+        binding.exploreNavHost.apply {
+            alpha = outRatio
+            isInvisible = alpha == 0f
+        }
+
+        binding.playbackBarFragment.apply {
+            alpha = max(1 - halfOutRatio, halfInQueueRatio)
+            lastInsets?.let { translationY = it.systemWindowInsetTop * halfOutRatio }
+        }
+    }
+
     private fun handleMainNavigation(action: MainNavigationAction?) {
         if (action == null) return
 
         val binding = requireBinding()
         when (action) {
-            is MainNavigationAction.Expand -> binding.bottomSheetLayout.expand()
-            is MainNavigationAction.Collapse -> binding.bottomSheetLayout.collapse()
+            is MainNavigationAction.Expand -> {
+                val playbackSheetBehavior =
+                    binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+                playbackSheetBehavior.state = NeoBottomSheetBehavior.STATE_EXPANDED
+            }
+            is MainNavigationAction.Collapse -> {
+                val playbackSheetBehavior =
+                    binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+                playbackSheetBehavior.state = NeoBottomSheetBehavior.STATE_COLLAPSED
+            }
             is MainNavigationAction.Settings ->
                 findNavController().navigate(MainFragmentDirections.actionShowSettings())
             is MainNavigationAction.About ->
@@ -112,18 +163,24 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
 
     private fun handleExploreNavigation(item: Music?) {
         if (item != null) {
-            requireBinding().bottomSheetLayout.collapse()
+            val binding = requireBinding()
+            val playbackSheetBehavior =
+                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+
+            if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED) {
+                playbackSheetBehavior.state = NeoBottomSheetBehavior.STATE_COLLAPSED
+            }
         }
     }
 
     private fun updateSong(song: Song?) {
         val binding = requireBinding()
+        val playbackSheetBehavior =
+            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
         if (song != null) {
-            binding.bottomSheetLayout.isDraggable = true
-            binding.bottomSheetLayout.show()
+            playbackSheetBehavior.unsideSafe()
         } else {
-            binding.bottomSheetLayout.isDraggable = false
-            binding.bottomSheetLayout.hide()
+            playbackSheetBehavior.hideSafe()
         }
     }
 
@@ -136,7 +193,11 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
     inner class DynamicBackPressedCallback : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
             val binding = requireBinding()
-            if (!binding.bottomSheetLayout.collapse()) {
+            val playbackSheetBehavior =
+                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+            if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED) {
+                playbackSheetBehavior.state = NeoBottomSheetBehavior.STATE_COLLAPSED
+            } else {
                 val navController = binding.exploreNavHost.findNavController()
 
                 if (navController.currentDestination?.id ==

@@ -26,6 +26,7 @@ at the cost of longer loading times
 #### What's Changed
 - Play and skip icons are filled again
 - Updated music hashing (Will wipe playback state)
+- Migrated to BottomSheetBehavior
 
 ## 2.5.0
 

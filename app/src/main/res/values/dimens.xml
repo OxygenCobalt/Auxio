@@ -39,7 +39,7 @@
 
     <!-- Misc -->
     <dimen name="elevation_small">2dp</dimen>
-    <dimen name="elevation_normal">4dp</dimen>
+    <dimen name="elevation_normal">3dp</dimen>
 
     <dimen name="fast_scroll_popup_min_width">78dp</dimen>
     <dimen name="fast_scroll_popup_min_height">64dp</dimen>
