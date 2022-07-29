@@ -15,58 +15,54 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback
+package org.oxycblt.auxio.playback.queue
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import kotlin.math.max
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.AuxioSheetBehavior
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.systemBarInsetsCompat
-import org.oxycblt.auxio.util.systemGestureInsetsCompat
+import org.oxycblt.auxio.util.*
 
-class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
+class QueueSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     AuxioSheetBehavior<V>(context, attributeSet) {
-    private var lastInsets: WindowInsets? = null
+    private var barHeight = 0
+    private var barSpacing = context.getDimenSizeSafe(R.dimen.spacing_small)
 
-    // Hack around issue where the playback sheet will try to intercept nested scrolling events
-    // before the queue sheet.
-    override fun onInterceptTouchEvent(
+    init {
+        sheetBackgroundDrawable.setCornerSize(context.getDimenSafe(R.dimen.size_corners_medium))
+    }
+
+    override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View) =
+        dependency.id == R.id.playback_bar_fragment
+
+    override fun onDependentViewChanged(
         parent: CoordinatorLayout,
         child: V,
-        event: MotionEvent
-    ): Boolean = super.onInterceptTouchEvent(parent, child, event) && state != STATE_EXPANDED
+        dependency: View
+    ): Boolean {
+        val ok = super.onDependentViewChanged(parent, child, dependency)
+        barHeight = dependency.height
+        return ok
+    }
 
     override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
         val success = super.onLayoutChild(parent, child, layoutDirection)
 
-        (child as ViewGroup).apply {
-            setOnApplyWindowInsetsListener { v, insets ->
-                lastInsets = insets
-                val bars = insets.systemBarInsetsCompat
-                val gestures = insets.systemGestureInsetsCompat
-                peekHeight = getChildAt(0).measuredHeight + max(gestures.bottom, bars.bottom)
-                insets
-            }
+        child.setOnApplyWindowInsetsListener { _, insets ->
+            val bars = insets.systemBarInsetsCompat
+            val gestures = insets.systemGestureInsetsCompat
+
+            expandedOffset = bars.top + barHeight + barSpacing
+            peekHeight =
+                (child as ViewGroup).getChildAt(0).height + max(gestures.bottom, bars.bottom)
+            insets.replaceSystemBarInsetsCompat(
+                bars.left, bars.top, bars.right, expandedOffset + bars.bottom)
         }
 
         return success
-    }
-
-    fun hideSafe() {
-        isDraggable = false
-        isHideable = true
-        state = STATE_HIDDEN
-    }
-
-    fun unsideSafe() {
-        isHideable = false
-        isDraggable = true
-        logD(state)
     }
 }

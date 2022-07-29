@@ -19,6 +19,7 @@ package org.oxycblt.auxio.playback.queue
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.LayerDrawable
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.isInvisible
@@ -54,10 +55,20 @@ private constructor(
     val backgroundDrawable =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
             fillColor = binding.context.getAttrColorSafe(R.attr.colorSurface).stateList
+            elevation = binding.context.getDimenSafe(R.dimen.elevation_normal) * 5
         }
 
     init {
-        binding.body.background = backgroundDrawable
+        binding.body.background =
+            LayerDrawable(
+                arrayOf(
+                    MaterialShapeDrawable.createWithElevationOverlay(binding.context).apply {
+                        fillColor = binding.context.getAttrColorSafe(R.attr.colorSurface).stateList
+                        elevation = binding.context.getDimenSafe(R.dimen.elevation_normal)
+                    },
+                    backgroundDrawable))
+
+        backgroundDrawable.alpha = 0
     }
 
     @SuppressLint("ClickableViewAccessibility")

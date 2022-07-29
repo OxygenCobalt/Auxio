@@ -86,12 +86,15 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
             logD("Lifting queue item")
 
             val bg = holder.backgroundDrawable
-            val elevation = recyclerView.context.getDimenSafe(R.dimen.elevation_small)
+            val elevation = recyclerView.context.getDimenSafe(R.dimen.elevation_normal)
             holder.itemView
                 .animate()
                 .translationZ(elevation)
                 .setDuration(100)
-                .setUpdateListener { bg.elevation = holder.itemView.translationZ }
+                .setUpdateListener {
+                    bg.alpha = ((holder.itemView.translationZ / elevation) * 255).toInt()
+                    logD("in ${bg.alpha} ${holder.itemView.translationZ}")
+                }
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .start()
 
@@ -124,11 +127,15 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
             logD("Dropping queue item")
 
             val bg = holder.backgroundDrawable
+            val elevation = recyclerView.context.getDimenSafe(R.dimen.elevation_normal)
             holder.itemView
                 .animate()
-                .translationZ(0.0f)
+                .translationZ(0f)
                 .setDuration(100)
-                .setUpdateListener { bg.elevation = holder.itemView.translationZ }
+                .setUpdateListener {
+                    bg.alpha = ((holder.itemView.translationZ / elevation) * 255).toInt()
+                    logD("out ${bg.alpha} ${holder.itemView.translationZ} ${elevation}")
+                }
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .start()
         }

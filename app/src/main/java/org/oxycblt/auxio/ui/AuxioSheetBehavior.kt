@@ -35,7 +35,7 @@ abstract class AuxioSheetBehavior<V : View>(context: Context, attributeSet: Attr
     val sheetBackgroundDrawable =
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
             fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
-            elevation = context.pxOfDp(elevationNormal).toFloat()
+            elevation = elevationNormal
         }
 
     init {

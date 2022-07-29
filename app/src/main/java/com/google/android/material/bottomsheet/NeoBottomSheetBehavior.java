@@ -739,95 +739,83 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
     nestedScrolled = true;
   }
 
-
-@Override
-public void onStopNestedScroll(
-    @NonNull CoordinatorLayout coordinatorLayout,
-    @NonNull V child,
-    @NonNull View target,
-    int type) {
-  if (child.getTop() == getExpandedOffset()) {
-    setStateInternal(STATE_EXPANDED);
-    return;
-  }
-  if (isNestedScrollingCheckEnabled()
-      && (nestedScrollingChildRef == null
-          || target != nestedScrollingChildRef.get()
-          || !nestedScrolled)) {
-    return;
-  }
-  @StableState int targetState;
-  if (lastNestedScrollDy > 0) {
-    if (fitToContents) {
-      targetState = STATE_EXPANDED;
-    } else {
-      // MODIFICATION: Make nested scrolling respond to shouldSkipHalfExpandedStateWhenDragging
-      int currentTop = child.getTop();
-      if (currentTop < halfExpandedOffset) {
-        targetState = STATE_EXPANDED;
-      } else {
-        if (shouldSkipHalfExpandedStateWhenDragging()) {
-          targetState = STATE_COLLAPSED;
-        } else {
-          targetState = STATE_HALF_EXPANDED;
-        }
-      }
+  @Override
+  public void onStopNestedScroll(
+      @NonNull CoordinatorLayout coordinatorLayout,
+      @NonNull V child,
+      @NonNull View target,
+      int type) {
+    if (child.getTop() == getExpandedOffset()) {
+      setStateInternal(STATE_EXPANDED);
+      return;
     }
-  } else if (hideable && shouldHide(child, getYVelocity())) {
-    targetState = STATE_HIDDEN;
-  } else if (lastNestedScrollDy == 0) {
-    int currentTop = child.getTop();
-    if (fitToContents) {
-      if (Math.abs(currentTop - fitToContentsOffset) < Math.abs(currentTop - collapsedOffset)) {
+    if (isNestedScrollingCheckEnabled()
+        && (nestedScrollingChildRef == null
+            || target != nestedScrollingChildRef.get()
+            || !nestedScrolled)) {
+      return;
+    }
+    @StableState int targetState;
+    if (lastNestedScrollDy > 0) {
+      if (fitToContents) {
         targetState = STATE_EXPANDED;
       } else {
-        targetState = STATE_COLLAPSED;
-      }
-    } else {
-      if (currentTop < halfExpandedOffset) {
-        if (currentTop < Math.abs(currentTop - collapsedOffset)) {
+        int currentTop = child.getTop();
+        if (currentTop < halfExpandedOffset) {
           targetState = STATE_EXPANDED;
         } else {
           if (shouldSkipHalfExpandedStateWhenDragging()) {
-            targetState = STATE_COLLAPSED;
+            targetState = STATE_EXPANDED;
           } else {
             targetState = STATE_HALF_EXPANDED;
-          }
-        }
-      } else {
-        // MODIFICATION: Make nested scrolling respond to shouldSkipHalfExpandedStateWhenDragging
-        if (shouldSkipHalfExpandedStateWhenDragging()) {
-          targetState = STATE_COLLAPSED;
-        } else {
-          if (Math.abs(currentTop - halfExpandedOffset) < Math.abs(currentTop - collapsedOffset)) {
-            targetState = STATE_HALF_EXPANDED;
-          } else {
-            targetState = STATE_COLLAPSED;
           }
         }
       }
-    }
-  } else {
-    if (fitToContents) {
-      targetState = STATE_COLLAPSED;
-    } else {
-      // Settle to nearest height.
-      // MODIFICATION: Make nested scrolling respond to shouldSkipHalfExpandedStateWhenDragging
+    } else if (hideable && shouldHide(child, getYVelocity())) {
+      targetState = STATE_HIDDEN;
+    } else if (lastNestedScrollDy == 0) {
       int currentTop = child.getTop();
-      if (shouldSkipHalfExpandedStateWhenDragging()) {
+      if (fitToContents) {
+        if (Math.abs(currentTop - fitToContentsOffset) < Math.abs(currentTop - collapsedOffset)) {
+          targetState = STATE_EXPANDED;
+        } else {
+          targetState = STATE_COLLAPSED;
+        }
+      } else {
+        if (currentTop < halfExpandedOffset) {
+          if (currentTop < Math.abs(currentTop - collapsedOffset)) {
+            targetState = STATE_EXPANDED;
+          } else {
+            if (shouldSkipHalfExpandedStateWhenDragging()) {
+              targetState = STATE_COLLAPSED;
+            } else {
+              targetState = STATE_HALF_EXPANDED;
+            }
+          }
+        } else {
+          if (shouldSkipHalfExpandedStateWhenDragging() || Math.abs(currentTop - halfExpandedOffset) >= Math.abs(currentTop - collapsedOffset)) {
+            targetState = STATE_COLLAPSED;
+          } else {
+            targetState = STATE_HALF_EXPANDED;
+          }
+        }
+      }
+    } else {
+      if (fitToContents) {
         targetState = STATE_COLLAPSED;
       } else {
-        if (Math.abs(currentTop - halfExpandedOffset) < Math.abs(currentTop - collapsedOffset)) {
-          targetState = STATE_HALF_EXPANDED;
-        } else {
+        // Settle to nearest height.
+        int currentTop = child.getTop();
+        if (shouldSkipHalfExpandedStateWhenDragging() || Math.abs(currentTop - halfExpandedOffset) >= Math.abs(currentTop - collapsedOffset)) {
           targetState = STATE_COLLAPSED;
+        } else {
+          targetState = STATE_HALF_EXPANDED;
         }
       }
     }
+    startSettling(child, targetState, false);
+    nestedScrolled = false;
   }
-  startSettling(child, targetState, false);
-  nestedScrolled = false;
-}
 
   @Override
   public void onNestedScroll(

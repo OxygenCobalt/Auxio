@@ -15,6 +15,3 @@ captures/
 .externalNativeBuild
 *.iml
 .cxx
-
-# Patched material
-app/src/main/com/google/android/material

@@ -21,7 +21,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
@@ -42,8 +41,6 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentQueueBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentQueueBinding, savedInstanceState: Bundle?) {
-        binding.queueToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
-
         binding.queueRecycler.apply {
             adapter = queueAdapter
             touchHelper.attachToRecyclerView(this)
