@@ -75,23 +75,11 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
 
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
-
-        playbackSheetBehavior.addBottomSheetCallback(
-            object : NeoBottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    handleSheetTransitions()
-                }
-
-                override fun onStateChanged(bottomSheet: View, newState: Int) {}
-            })
-
         val queueSheetBehavior = binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior
 
         queueSheetBehavior.addBottomSheetCallback(
             object : NeoBottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    handleSheetTransitions()
-                }
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
 
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     playbackSheetBehavior.isDraggable =
@@ -100,11 +88,13 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
                 }
             })
 
-        binding.root.post {
+        // We would use the onSlide callback, but doing that would require us to initialize
+        // when the view first starts up, and that may not always work due to the insanity of
+        // the CoordinatorLayout lifecycle. Instead, do the less efficient alternative of updating
+        // the transition on every redraw.
+        binding.playbackSheet.viewTreeObserver.addOnPreDrawListener {
             handleSheetTransitions()
-            playbackSheetBehavior.isDraggable =
-                !playbackSheetBehavior.isHideable &&
-                    queueSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED
+            true
         }
 
         // --- VIEWMODEL SETUP ---
@@ -164,8 +154,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
 
     private fun handleMainNavigation(action: MainNavigationAction?) {
         if (action == null) return
-
-        val binding = requireBinding()
+        
         when (action) {
             is MainNavigationAction.Expand -> tryExpandAll()
             is MainNavigationAction.Collapse -> tryCollapseAll()

@@ -506,6 +506,8 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
     }
 
     if (viewRef == null) {
+
+    Log.d("NeoBottomSheetBehavior", "Lay out time");
       // First layout with this behavior.
       peekHeightMin =
           parent.getResources().getDimensionPixelSize(R.dimen.design_bottom_sheet_peek_height_min);
@@ -1076,6 +1078,7 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
    */
   public float calculateSlideOffset() {
     if (viewRef == null) {
+      Log.d("NeoBottomSheetBehavior", "No view ref");
       return Float.MIN_VALUE;
     }
 
@@ -1083,6 +1086,8 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
     if (bottomSheet != null) {
       return calculateSlideOffset(bottomSheet.getTop());
     }
+
+    Log.d("NeoBottomSheetBehavior", "No bottom sheet");
 
     return Float.MIN_VALUE;
   }
