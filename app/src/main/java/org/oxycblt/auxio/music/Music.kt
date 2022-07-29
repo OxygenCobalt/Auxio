@@ -324,7 +324,7 @@ private fun String?.toMusicId(): Long {
  * presence of particular tokens.
  *
  * Please, **Do not use this for anything important related to time.** I cannot stress this enough.
- * This class will blow up if you try to do that.
+ * This code will blow up if you try to do that.
  *
  * @author OxygenCobalt
  */

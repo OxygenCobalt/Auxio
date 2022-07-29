@@ -15,7 +15,7 @@ at the cost of longer loading times
 - Added ability to play songs from queue
 
 #### What's Improved
-- Added motion transitions throughout the entire app
+- Migrated to better-looking motion transitions
 - App now exposes an (immutable) queue.
 
 #### What's Fixed

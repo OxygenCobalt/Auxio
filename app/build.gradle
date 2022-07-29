@@ -6,27 +6,28 @@ plugins {
 }
 
 android {
+    compileSdk 32
+    namespace "org.oxycblt.auxio"
+
     defaultConfig {
-        applicationId "org.oxycblt.auxio"
+        applicationId namespace
         versionName "2.5.0"
         versionCode 18
 
-        minSdkVersion 21
-
         // API 33 is still busted, waiting until the XML element issue is fixed
         // noinspection OldTargetApi
-        targetSdkVersion 32
+        minSdk 21
+        targetSdk 32
 
         buildFeatures {
             viewBinding true
         }
     }
 
-    compileSdkVersion 32
-
     // ExoPlayer, AndroidX, and Material Components all need Java 8 to compile.
 
     compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
@@ -46,6 +47,11 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
+    }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
     }
 }
 

@@ -37,8 +37,8 @@ import org.oxycblt.auxio.util.textSafe
  * make sense (which happens incredibly often), it just crashes the entire app, which is insane but
  * also checks out for something more meant for configuration than seeking.
  *
- * Instead, we wrap it in a safe class that hopefully implements enough safety to not crash the app
- * or result in blatantly janky behavior. Mostly.
+ * Instead, we wrap it in a safe class that hopefully implements enough sanity checks to not crash
+ * the app or result in blatantly janky behavior. Mostly.
  *
  * TODO: Add smooth seeking
  *

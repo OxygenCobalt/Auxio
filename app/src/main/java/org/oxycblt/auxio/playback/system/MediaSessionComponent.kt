@@ -161,7 +161,7 @@ class MediaSessionComponent(
 
         // Cover loading is a mess. Android expects you to provide a clean, easy URI for it to
         // leverage, but Auxio cannot do that as quality-of-life features like scaling or
-        // 1:1 cropping could not be used
+        // 1:1 cropping could not be used.
         //
         // Thus, we have two options to handle album art:
         // 1. Load the bitmap, then post the notification
