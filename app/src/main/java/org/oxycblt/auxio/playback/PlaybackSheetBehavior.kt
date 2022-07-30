@@ -26,7 +26,6 @@ import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import kotlin.math.max
 import org.oxycblt.auxio.ui.AuxioSheetBehavior
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.systemGestureInsetsCompat
 
@@ -46,7 +45,7 @@ class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeS
         val success = super.onLayoutChild(parent, child, layoutDirection)
 
         (child as ViewGroup).apply {
-            setOnApplyWindowInsetsListener { v, insets ->
+            setOnApplyWindowInsetsListener { _, insets ->
                 lastInsets = insets
                 val bars = insets.systemBarInsetsCompat
                 val gestures = insets.systemGestureInsetsCompat
@@ -64,9 +63,8 @@ class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeS
         state = STATE_HIDDEN
     }
 
-    fun unsideSafe() {
+    fun unhideSafe() {
         isHideable = false
         isDraggable = true
-        logD(state)
     }
 }

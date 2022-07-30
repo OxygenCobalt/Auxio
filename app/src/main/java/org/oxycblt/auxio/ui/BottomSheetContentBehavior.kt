@@ -24,10 +24,11 @@ import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
 import kotlin.math.abs
+import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
-class BottomSheetContentViewBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
+class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     CoordinatorLayout.Behavior<V>(context, attributeSet) {
     private var lastInsets: WindowInsets? = null
     private var dep: View? = null
@@ -55,9 +56,7 @@ class BottomSheetContentViewBehavior<V : View>(context: Context, attributeSet: A
                 val dep = dep ?: return@setOnApplyWindowInsetsListener insets
 
                 val bars = insets.systemBarInsetsCompat
-                val behavior =
-                    (dep.layoutParams as CoordinatorLayout.LayoutParams).behavior
-                        as NeoBottomSheetBehavior
+                val behavior = dep.coordinatorLayoutBehavior as NeoBottomSheetBehavior
 
                 val offset = behavior.calculateSlideOffset()
                 if (behavior.peekHeight < 0 || offset == Float.MIN_VALUE) {
@@ -78,8 +77,7 @@ class BottomSheetContentViewBehavior<V : View>(context: Context, attributeSet: A
     }
 
     private fun measureContent(parent: View, child: View, dep: View): Boolean {
-        val behavior =
-            (dep.layoutParams as CoordinatorLayout.LayoutParams).behavior as NeoBottomSheetBehavior
+        val behavior = dep.coordinatorLayoutBehavior as NeoBottomSheetBehavior
 
         val offset = behavior.calculateSlideOffset()
         if (behavior.peekHeight < 0 || offset == Float.MIN_VALUE) {
@@ -107,8 +105,7 @@ class BottomSheetContentViewBehavior<V : View>(context: Context, attributeSet: A
     }
 
     override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View): Boolean {
-        if ((dependency.layoutParams as CoordinatorLayout.LayoutParams).behavior
-            is NeoBottomSheetBehavior) {
+        if (dependency.coordinatorLayoutBehavior is NeoBottomSheetBehavior) {
             dep = dependency
             return true
         }
@@ -121,6 +118,11 @@ class BottomSheetContentViewBehavior<V : View>(context: Context, attributeSet: A
         child: V,
         dependency: View
     ): Boolean {
+        val behavior = dependency.coordinatorLayoutBehavior as NeoBottomSheetBehavior
+        if (behavior.calculateSlideOffset() > 0) {
+            return false
+        }
+
         lastInsets?.let(child::dispatchApplyWindowInsets)
         return measureContent(parent, child, dependency) &&
             onLayoutChild(parent, child, parent.layoutDirection)

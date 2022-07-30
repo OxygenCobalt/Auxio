@@ -28,7 +28,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.transition.MaterialFadeThrough
-import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
@@ -160,7 +159,7 @@ class MainFragment :
         binding.queueFragment.alpha = queueRatio
 
         playbackSheetBehavior.isDraggable =
-            !playbackSheetBehavior.isHideable &&
+            playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN &&
                 queueSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED
     }
 
@@ -227,7 +226,7 @@ class MainFragment :
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
         if (song != null) {
-            playbackSheetBehavior.unsideSafe()
+            playbackSheetBehavior.unhideSafe()
         } else {
             playbackSheetBehavior.hideSafe()
         }

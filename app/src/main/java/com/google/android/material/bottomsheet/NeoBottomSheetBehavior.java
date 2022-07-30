@@ -506,8 +506,6 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
     }
 
     if (viewRef == null) {
-
-    Log.d("NeoBottomSheetBehavior", "Lay out time");
       // First layout with this behavior.
       peekHeightMin =
           parent.getResources().getDimensionPixelSize(R.dimen.design_bottom_sheet_peek_height_min);
@@ -762,6 +760,7 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
       if (fitToContents) {
         targetState = STATE_EXPANDED;
       } else {
+        // MODIFICATION: Fix nested scrolling with skipping half-expanded state
         int currentTop = child.getTop();
         if (currentTop < halfExpandedOffset) {
           targetState = STATE_EXPANDED;
@@ -795,6 +794,7 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
             }
           }
         } else {
+          // MODIFICATION: Fix nested scrolling with skipping half-expanded state
           if (shouldSkipHalfExpandedStateWhenDragging() || Math.abs(currentTop - halfExpandedOffset) >= Math.abs(currentTop - collapsedOffset)) {
             targetState = STATE_COLLAPSED;
           } else {
@@ -806,6 +806,7 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
       if (fitToContents) {
         targetState = STATE_COLLAPSED;
       } else {
+        // MODIFICATION: Fix nested scrolling with skipping half-expanded state
         // Settle to nearest height.
         int currentTop = child.getTop();
         if (shouldSkipHalfExpandedStateWhenDragging() || Math.abs(currentTop - halfExpandedOffset) >= Math.abs(currentTop - collapsedOffset)) {
@@ -1078,7 +1079,6 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
    */
   public float calculateSlideOffset() {
     if (viewRef == null) {
-      Log.d("NeoBottomSheetBehavior", "No view ref");
       return Float.MIN_VALUE;
     }
 
@@ -1086,8 +1086,6 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
     if (bottomSheet != null) {
       return calculateSlideOffset(bottomSheet.getTop());
     }
-
-    Log.d("NeoBottomSheetBehavior", "No bottom sheet");
 
     return Float.MIN_VALUE;
   }

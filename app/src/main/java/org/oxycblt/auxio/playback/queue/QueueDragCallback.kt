@@ -93,7 +93,6 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
                 .setDuration(100)
                 .setUpdateListener {
                     bg.alpha = ((holder.itemView.translationZ / elevation) * 255).toInt()
-                    logD("in ${bg.alpha} ${holder.itemView.translationZ}")
                 }
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .start()
@@ -134,7 +133,6 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
                 .setDuration(100)
                 .setUpdateListener {
                     bg.alpha = ((holder.itemView.translationZ / elevation) * 255).toInt()
-                    logD("out ${bg.alpha} ${holder.itemView.translationZ} ${elevation}")
                 }
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .start()
