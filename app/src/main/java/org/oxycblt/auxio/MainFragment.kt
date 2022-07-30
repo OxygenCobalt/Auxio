@@ -131,19 +131,19 @@ class MainFragment :
         val playbackRatio = max(playbackSheetBehavior.calculateSlideOffset(), 0f)
         val queueRatio = max(queueSheetBehavior.calculateSlideOffset(), 0f)
 
-        val outRatio = 1 - playbackRatio
+        val outPlaybackRatio = 1 - playbackRatio
         val halfOutRatio = min(playbackRatio * 2, 1f)
         val halfInPlaybackRatio = max(playbackRatio - 0.5f, 0f) * 2
         val halfOutQueueRatio = min(queueRatio * 2, 1f)
         val halfInQueueRatio = max(queueRatio - 0.5f, 0f) * 2
 
         binding.exploreNavHost.apply {
-            alpha = outRatio
+            alpha = outPlaybackRatio
             isInvisible = alpha == 0f
         }
 
-        binding.playbackSheet.translationZ = 3f * outRatio
-        playbackSheetBehavior.sheetBackgroundDrawable.alpha = (outRatio * 255).toInt()
+        binding.playbackSheet.translationZ = 3f * outPlaybackRatio
+        playbackSheetBehavior.sheetBackgroundDrawable.alpha = (outPlaybackRatio * 255).toInt()
 
         binding.playbackBarFragment.apply {
             alpha = max(1 - halfOutRatio, halfInQueueRatio)
@@ -156,7 +156,10 @@ class MainFragment :
             isInvisible = alpha == 0f
         }
 
-        binding.queueFragment.alpha = queueRatio
+        binding.queueFragment.apply {
+            alpha = queueRatio
+            isInvisible = alpha == 0f
+        }
 
         playbackSheetBehavior.isDraggable =
             playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN &&

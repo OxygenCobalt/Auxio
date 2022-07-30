@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.playback.queue
 
 import androidx.lifecycle.ViewModel
+import kotlin.math.min
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.MusicParent
@@ -80,7 +81,7 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     override fun onIndexMoved(index: Int) {
-        instructions = QueueInstructions(false, index + 1)
+        instructions = QueueInstructions(false, min(index + 1, playbackManager.queue.lastIndex))
         _queue.value = generateQueue(index, playbackManager.queue)
     }
 
@@ -90,12 +91,12 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     override fun onQueueReworked(index: Int, queue: List<Song>) {
-        instructions = QueueInstructions(true, index + 1)
+        instructions = QueueInstructions(true, min(index + 1, playbackManager.queue.lastIndex))
         _queue.value = generateQueue(index, queue)
     }
 
     override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        instructions = QueueInstructions(true, index + 1)
+        instructions = QueueInstructions(true, min(index + 1, playbackManager.queue.lastIndex))
         _queue.value = generateQueue(index, queue)
     }
 

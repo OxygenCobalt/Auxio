@@ -83,9 +83,11 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
                             .findLastCompletelyVisibleItemPosition()
 
                 if (instructions.scrollTo !in indices) {
-                    requireBinding().queueRecycler.scrollToPosition(instructions.scrollTo)
+                    binding.queueRecycler.scrollToPosition(instructions.scrollTo)
                 }
             }
+
+            queueModel.finishInstructions()
         } else {
             queueAdapter.data.submitList(queue)
         }

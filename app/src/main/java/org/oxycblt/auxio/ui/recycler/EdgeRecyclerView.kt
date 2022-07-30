@@ -36,11 +36,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     init {
         // Prevent children from being clipped by window insets
         clipToPadding = false
+        setHasFixedSize(true)
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        setHasFixedSize(true)
+    final override fun setHasFixedSize(hasFixedSize: Boolean) {
+        super.setHasFixedSize(hasFixedSize)
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {

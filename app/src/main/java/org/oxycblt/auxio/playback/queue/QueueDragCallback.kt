@@ -22,10 +22,6 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.sign
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getDimenSafe
 import org.oxycblt.auxio.util.logD
@@ -51,27 +47,6 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
         } else {
             0
         }
-    }
-
-    override fun interpolateOutOfBoundsScroll(
-        recyclerView: RecyclerView,
-        viewSize: Int,
-        viewSizeOutOfBounds: Int,
-        totalSize: Int,
-        msSinceStartScroll: Long
-    ): Int {
-        // Fix to make QueueFragment scroll slower when an item is scrolled out of bounds.
-        // Adapted from NewPipe: https://github.com/TeamNewPipe/NewPipe
-        val standardSpeed =
-            super.interpolateOutOfBoundsScroll(
-                recyclerView, viewSize, viewSizeOutOfBounds, totalSize, msSinceStartScroll)
-
-        val clampedAbsVelocity =
-            max(
-                MINIMUM_INITIAL_DRAG_VELOCITY,
-                min(abs(standardSpeed), MAXIMUM_INITIAL_DRAG_VELOCITY))
-
-        return clampedAbsVelocity * sign(viewSizeOutOfBounds.toDouble()).toInt()
     }
 
     override fun onChildDraw(
