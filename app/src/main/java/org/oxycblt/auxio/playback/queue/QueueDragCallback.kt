@@ -42,9 +42,16 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
-    ): Int =
-        makeFlag(ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN) or
-            makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)
+    ): Int {
+        val queueHolder = viewHolder as QueueSongViewHolder
+        return if (queueHolder.isEnabled) {
+            makeFlag(
+                ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN) or
+                makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)
+        } else {
+            0
+        }
+    }
 
     override fun interpolateOutOfBoundsScroll(
         recyclerView: RecyclerView,

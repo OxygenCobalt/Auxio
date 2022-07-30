@@ -22,7 +22,9 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.util.*
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
@@ -64,13 +66,28 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
         touchHelper.startDrag(viewHolder)
     }
 
-    private fun updateQueue(queue: QueueViewModel.QueueData) {
-        if (queue.nonTrivial) {
-            // nonTrivial implies that using a synced submitList would be slow, replace the list
-            // instead.
-            queueAdapter.data.replaceList(queue.queue)
+    private fun updateQueue(queue: List<QueueViewModel.QueueSong>) {
+        val instructions = queueModel.instructions
+        if (instructions != null) {
+            if (instructions.replace) {
+                queueAdapter.data.replaceList(queue)
+            } else {
+                queueAdapter.data.submitList(queue)
+            }
+
+            if (instructions.scrollTo != null) {
+                val binding = requireBinding()
+                val lmm = binding.queueRecycler.layoutManager as LinearLayoutManager
+                val indices =
+                    lmm.findFirstCompletelyVisibleItemPosition()..lmm
+                            .findLastCompletelyVisibleItemPosition()
+
+                if (instructions.scrollTo !in indices) {
+                    requireBinding().queueRecycler.scrollToPosition(instructions.scrollTo)
+                }
+            }
         } else {
-            queueAdapter.data.submitList(queue.queue)
+            queueAdapter.data.submitList(queue)
         }
     }
 }

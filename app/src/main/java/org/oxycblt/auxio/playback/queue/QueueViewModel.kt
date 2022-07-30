@@ -23,15 +23,21 @@ import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.ui.recycler.Item
 
 class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val playbackManager = PlaybackStateManager.getInstance()
 
-    data class QueueData(val queue: List<Song>, val nonTrivial: Boolean)
+    data class QueueSong(val song: Song, val previous: Boolean) : Item() {
+        override val id: Long
+            get() = song.id
+    }
 
-    private val _queue = MutableStateFlow(QueueData(listOf(), false))
-    val queue: StateFlow<QueueData> = _queue
+    private val _queue = MutableStateFlow(listOf<QueueSong>())
+    val queue: StateFlow<List<QueueSong>> = _queue
+
+    data class QueueInstructions(val replace: Boolean, val scrollTo: Int?)
+    var instructions: QueueInstructions? = null
 
     init {
         playbackManager.addCallback(this)
@@ -41,53 +47,64 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
      * Go to an item in the queue using it's recyclerview adapter index. No-ops if out of bounds.
      */
     fun goto(adapterIndex: Int) {
-        val index = adapterIndex + (playbackManager.queue.size - _queue.value.queue.size)
-        logD(adapterIndex)
-        logD(playbackManager.queue.size - _queue.value.queue.size)
-
-        if (index in playbackManager.queue.indices) {
-            playbackManager.goto(index)
+        if (adapterIndex !in playbackManager.queue.indices) {
+            return
         }
+
+        playbackManager.goto(adapterIndex)
     }
 
     /** Remove a queue item using it's recyclerview adapter index. */
     fun removeQueueDataItem(adapterIndex: Int) {
-        val index = adapterIndex + (playbackManager.queue.size - _queue.value.queue.size)
-        if (index in playbackManager.queue.indices) {
-            playbackManager.removeQueueItem(index)
+        if (adapterIndex <= playbackManager.index ||
+            adapterIndex !in playbackManager.queue.indices) {
+            return
         }
+
+        playbackManager.removeQueueItem(adapterIndex)
     }
+
     /** Move queue items using their recyclerview adapter indices. */
     fun moveQueueDataItems(adapterFrom: Int, adapterTo: Int): Boolean {
-        val delta = (playbackManager.queue.size - _queue.value.queue.size)
-        val from = adapterFrom + delta
-        val to = adapterTo + delta
-        if (from in playbackManager.queue.indices && to in playbackManager.queue.indices) {
-            playbackManager.moveQueueItem(from, to)
-            return true
+        if (adapterFrom <= playbackManager.index || adapterTo <= playbackManager.index) {
+            return false
         }
+
+        playbackManager.moveQueueItem(adapterFrom, adapterTo)
 
         return false
     }
 
+    fun finishInstructions() {
+        instructions = null
+    }
+
     override fun onIndexMoved(index: Int) {
-        _queue.value = QueueData(generateQueue(index, playbackManager.queue), false)
+        instructions = QueueInstructions(false, index + 1)
+        _queue.value = generateQueue(index, playbackManager.queue)
     }
 
     override fun onQueueChanged(queue: List<Song>) {
-        _queue.value = QueueData(generateQueue(playbackManager.index, queue), false)
+        instructions = QueueInstructions(false, null)
+        _queue.value = generateQueue(playbackManager.index, queue)
     }
 
     override fun onQueueReworked(index: Int, queue: List<Song>) {
-        _queue.value = QueueData(generateQueue(index, queue), true)
+        instructions = QueueInstructions(true, index + 1)
+        _queue.value = generateQueue(index, queue)
     }
 
     override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        _queue.value = QueueData(generateQueue(index, queue), true)
+        instructions = QueueInstructions(true, index + 1)
+        _queue.value = generateQueue(index, queue)
     }
 
-    private fun generateQueue(index: Int, queue: List<Song>) =
-        queue.slice(index + 1..playbackManager.queue.lastIndex)
+    private fun generateQueue(index: Int, queue: List<Song>): List<QueueSong> {
+        val before = queue.slice(0..index).map { QueueSong(it, true) }
+        val after =
+            queue.slice(index + 1..playbackManager.queue.lastIndex).map { QueueSong(it, false) }
+        return before + after
+    }
 
     override fun onCleared() {
         super.onCleared()

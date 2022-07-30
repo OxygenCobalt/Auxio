@@ -25,15 +25,15 @@ import android.view.View
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
+import java.util.*
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.recycler.*
 import org.oxycblt.auxio.util.*
 
 class QueueAdapter(listener: QueueItemListener) :
-    MonoAdapter<Song, QueueItemListener, QueueSongViewHolder>(listener) {
+    MonoAdapter<QueueViewModel.QueueSong, QueueItemListener, QueueSongViewHolder>(listener) {
     override val data = SyncBackingData(this, QueueSongViewHolder.DIFFER)
     override val creator = QueueSongViewHolder.CREATOR
 }
@@ -46,7 +46,7 @@ interface QueueItemListener {
 class QueueSongViewHolder
 private constructor(
     private val binding: ItemQueueSongBinding,
-) : BindingViewHolder<Song, QueueItemListener>(binding.root) {
+) : BindingViewHolder<QueueViewModel.QueueSong, QueueItemListener>(binding.root) {
     val bodyView: View
         get() = binding.body
     val backgroundView: View
@@ -57,6 +57,9 @@ private constructor(
             fillColor = binding.context.getAttrColorSafe(R.attr.colorSurface).stateList
             elevation = binding.context.getDimenSafe(R.dimen.elevation_normal) * 5
         }
+
+    val isEnabled: Boolean
+        get() = binding.songDragHandle.isEnabled
 
     init {
         binding.body.background =
@@ -72,10 +75,10 @@ private constructor(
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun bind(item: Song, listener: QueueItemListener) {
-        binding.songAlbumCover.bind(item)
-        binding.songName.textSafe = item.resolveName(binding.context)
-        binding.songInfo.textSafe = item.resolveIndividualArtistName(binding.context)
+    override fun bind(item: QueueViewModel.QueueSong, listener: QueueItemListener) {
+        binding.songAlbumCover.bind(item.song)
+        binding.songName.textSafe = item.song.resolveName(binding.context)
+        binding.songInfo.textSafe = item.song.resolveIndividualArtistName(binding.context)
 
         binding.background.isInvisible = true
 
@@ -83,6 +86,18 @@ private constructor(
         binding.songInfo.requestLayout()
 
         binding.body.setOnClickListener { listener.onClick(this) }
+
+        if (item.previous) {
+            binding.songName.alpha = 0.5f
+            binding.songInfo.alpha = 0.5f
+            binding.songAlbumCover.alpha = 0.5f
+            binding.songDragHandle.isEnabled = false
+        } else {
+            binding.songName.alpha = 1f
+            binding.songInfo.alpha = 1f
+            binding.songAlbumCover.alpha = 1f
+            binding.songDragHandle.isEnabled = true
+        }
 
         // Roll our own drag handlers as the default ones suck
         binding.songDragHandle.setOnTouchListener { _, motionEvent ->
@@ -104,6 +119,19 @@ private constructor(
                     QueueSongViewHolder(ItemQueueSongBinding.inflate(context.inflater))
             }
 
-        val DIFFER = SongViewHolder.DIFFER
+        val DIFFER =
+            object : SimpleItemCallback<QueueViewModel.QueueSong>() {
+                override fun areContentsTheSame(
+                    oldItem: QueueViewModel.QueueSong,
+                    newItem: QueueViewModel.QueueSong
+                ) =
+                    super.areContentsTheSame(oldItem, newItem) &&
+                        oldItem.previous == newItem.previous
+
+                override fun areItemsTheSame(
+                    oldItem: QueueViewModel.QueueSong,
+                    newItem: QueueViewModel.QueueSong
+                ) = oldItem.song == newItem.song && oldItem.previous == newItem.previous
+            }
     }
 }
