@@ -19,6 +19,7 @@ package org.oxycblt.auxio.playback.queue
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -31,6 +32,13 @@ import org.oxycblt.auxio.util.collectImmediately
 
 /**
  * A [Fragment] that shows the queue and enables editing as well.
+ *
+ * TODO: Improve index updates
+ *
+ * TODO: Test older versions
+ *
+ * TODO: Test restoration and song loss
+ *
  * @author OxygenCobalt
  */
 class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemListener {
@@ -46,6 +54,14 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
         binding.queueRecycler.apply {
             adapter = queueAdapter
             touchHelper.attachToRecyclerView(this)
+            addOnScrollListener(
+                object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        binding.queueDivider.isInvisible =
+                            (layoutManager as LinearLayoutManager)
+                                .findFirstCompletelyVisibleItemPosition() < 1
+                    }
+                })
         }
 
         // --- VIEWMODEL SETUP ----
@@ -78,11 +94,12 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
             if (instructions.scrollTo != null) {
                 val binding = requireBinding()
                 val lmm = binding.queueRecycler.layoutManager as LinearLayoutManager
-                val indices =
-                    lmm.findFirstCompletelyVisibleItemPosition()..lmm
-                            .findLastCompletelyVisibleItemPosition()
+                val start = lmm.findFirstCompletelyVisibleItemPosition()
+                val end = lmm.findLastCompletelyVisibleItemPosition()
 
-                if (instructions.scrollTo !in indices) {
+                if (start != RecyclerView.NO_POSITION &&
+                    end != RecyclerView.NO_POSITION &&
+                    instructions.scrollTo !in start..end) {
                     binding.queueRecycler.scrollToPosition(instructions.scrollTo)
                 }
             }

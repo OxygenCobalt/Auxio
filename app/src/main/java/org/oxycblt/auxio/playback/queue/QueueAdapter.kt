@@ -58,8 +58,8 @@ private constructor(
             elevation = binding.context.getDimenSafe(R.dimen.elevation_normal) * 5
         }
 
-    val isEnabled: Boolean
-        get() = binding.songDragHandle.isEnabled
+    val isPrevious: Boolean
+        get() = binding.songDragHandle.alpha == 0.5f
 
     init {
         binding.body.background =
@@ -87,17 +87,11 @@ private constructor(
 
         binding.body.setOnClickListener { listener.onClick(this) }
 
-        if (item.previous) {
-            binding.songName.alpha = 0.5f
-            binding.songInfo.alpha = 0.5f
-            binding.songAlbumCover.alpha = 0.5f
-            binding.songDragHandle.isEnabled = false
-        } else {
-            binding.songName.alpha = 1f
-            binding.songInfo.alpha = 1f
-            binding.songAlbumCover.alpha = 1f
-            binding.songDragHandle.isEnabled = true
-        }
+        val alpha = if (item.previous) 0.5f else 1f
+        binding.songAlbumCover.alpha = alpha
+        binding.songName.alpha = alpha
+        binding.songInfo.alpha = alpha
+        binding.songDragHandle.alpha = alpha
 
         // Roll our own drag handlers as the default ones suck
         binding.songDragHandle.setOnTouchListener { _, motionEvent ->

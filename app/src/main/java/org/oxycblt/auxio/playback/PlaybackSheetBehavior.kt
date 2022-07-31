@@ -29,9 +29,20 @@ import org.oxycblt.auxio.ui.AuxioSheetBehavior
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.systemGestureInsetsCompat
 
+/**
+ * The coordinator layout behavior used for the playback sheet, hacking in the many fixes required
+ * to make bottom sheets like this work.
+ * @author OxygenCobalt
+ *
+ * TODO: Implement hiding because I have to
+ */
 class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     AuxioSheetBehavior<V>(context, attributeSet) {
     private var lastInsets: WindowInsets? = null
+
+    init {
+        isHideable = true
+    }
 
     // Hack around issue where the playback sheet will try to intercept nested scrolling events
     // before the queue sheet.
@@ -58,13 +69,16 @@ class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeS
     }
 
     fun hideSafe() {
-        isDraggable = false
-        isHideable = true
-        state = STATE_HIDDEN
+        if (state != STATE_HIDDEN) {
+            isDraggable = false
+            state = STATE_HIDDEN
+        }
     }
 
     fun unhideSafe() {
-        isHideable = false
-        isDraggable = true
+        if (state == STATE_HIDDEN) {
+            state = STATE_COLLAPSED
+            isDraggable = true
+        }
     }
 }

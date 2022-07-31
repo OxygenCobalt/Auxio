@@ -25,7 +25,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
 import kotlin.math.abs
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -61,7 +60,6 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         layoutContent(child)
 
         if (!setup) {
-
             child.setOnApplyWindowInsetsListener { v, insets ->
                 lastInsets = insets
                 val dep = dep ?: return@setOnApplyWindowInsetsListener insets
@@ -94,8 +92,6 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
     }
 
     private fun layoutContent(child: View) {
-        logD("Measure")
-
         child.layout(0, 0, child.measuredWidth, child.measuredHeight)
     }
 
@@ -126,8 +122,6 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         child: V,
         dependency: View
     ): Boolean {
-        logD("Dependent view changed $child")
-
         val behavior = dependency.coordinatorLayoutBehavior as NeoBottomSheetBehavior
         val consumed = behavior.calculateConsumedByBar()
         if (consumed < Int.MIN_VALUE) {
@@ -135,8 +129,6 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         }
 
         if (consumed != lastConsumed) {
-            logD("Dependent view changed important $child")
-
             lastConsumed = consumed
 
             val insets = lastInsets

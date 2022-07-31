@@ -73,7 +73,7 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
 
         playbackManager.moveQueueItem(adapterFrom, adapterTo)
 
-        return false
+        return true
     }
 
     fun finishInstructions() {

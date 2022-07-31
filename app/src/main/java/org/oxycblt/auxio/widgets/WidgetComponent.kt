@@ -95,16 +95,14 @@ class WidgetComponent(private val context: Context) :
                         }
 
                     // Resize the image in a such a way that we don't hit the RemoteView size
-                    // limit. The limit is technically the byte-size of an RGB_8888 bitmap 1.5x
-                    // the screen size, but the size of a RemoteView can for some reason be 10x
-                    // the size of the binded bitmaps, which means we need to heavily reduce
-                    // our image size as to make sure we stay around an order of magnitude below
-                    // the memory limit. This fixed size is also needed to ensure consistent
-                    // outlines on rounded images.
+                    // limit, which is the size of an RGB_8888 bitmap 1.5x the screen size. Note
+                    // that we actually set the limit to be half the memory limit so that it's
+                    // less likely for us to hit it. it to really ensure we don't hit the limit.
+                    // This also creates the consistent sizes required for round bitmaps.
                     val metrics = context.resources.displayMetrics
                     val sw = metrics.widthPixels
                     val sh = metrics.heightPixels
-                    builder.size((sqrt((6f * sw * sh)) / 8f).toInt())
+                    builder.size((sqrt((6f * sw * sh) / 8f)).toInt())
 
                     return if (cornerRadius > 0) {
                         this@WidgetComponent.logD("Loading round covers: $cornerRadius")

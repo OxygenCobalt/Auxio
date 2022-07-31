@@ -40,7 +40,7 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
         viewHolder: RecyclerView.ViewHolder
     ): Int {
         val queueHolder = viewHolder as QueueSongViewHolder
-        return if (queueHolder.isEnabled) {
+        return if (!queueHolder.isPrevious) {
             makeFlag(
                 ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN) or
                 makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)

@@ -63,7 +63,7 @@ class WidgetProvider : AppWidgetProvider() {
                 SizeF(180f, 272f) to createMediumWidget(context, state),
                 SizeF(272f, 272f) to createLargeWidget(context, state))
 
-        AppWidgetManager.getInstance(context).applyViewsCompat(context, views)
+        AppWidgetManager.getInstance(context).updateAppWidgetCompat(context, views)
     }
 
     /*
@@ -114,7 +114,7 @@ class WidgetProvider : AppWidgetProvider() {
         context.sendBroadcast(intent)
     }
 
-    private fun AppWidgetManager.applyViewsCompat(
+    private fun AppWidgetManager.updateAppWidgetCompat(
         context: Context,
         views: Map<SizeF, RemoteViews>
     ) {

@@ -32,51 +32,51 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground">
 
-        <org.oxycblt.auxio.image.StyledImageView
-            android:id="@+id/song_album_cover"
-            style="@style/Widget.Auxio.Image.Small"
-            android:layout_margin="@dimen/spacing_medium"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:staticIcon="@drawable/ic_song_24" />
+            <org.oxycblt.auxio.image.StyledImageView
+                android:id="@+id/song_album_cover"
+                style="@style/Widget.Auxio.Image.Small"
+                android:layout_margin="@dimen/spacing_medium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:staticIcon="@drawable/ic_song_24" />
 
-        <TextView
-            android:id="@+id/song_name"
-            style="@style/Widget.Auxio.TextView.Item.Primary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_medium"
-            app:layout_constraintBottom_toTopOf="@+id/song_info"
-            app:layout_constraintEnd_toStartOf="@+id/song_drag_handle"
-            app:layout_constraintStart_toEndOf="@+id/song_album_cover"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="Song Name" />
+            <TextView
+                android:id="@+id/song_name"
+                style="@style/Widget.Auxio.TextView.Item.Primary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_medium"
+                app:layout_constraintBottom_toTopOf="@+id/song_info"
+                app:layout_constraintEnd_toStartOf="@+id/song_drag_handle"
+                app:layout_constraintStart_toEndOf="@+id/song_album_cover"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Song Name" />
 
-        <TextView
-            android:id="@+id/song_info"
-            style="@style/Widget.Auxio.TextView.Item.Secondary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_medium"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/song_drag_handle"
-            app:layout_constraintStart_toEndOf="@+id/song_album_cover"
-            app:layout_constraintTop_toBottomOf="@+id/song_name"
-            tools:text="Artist / Album" />
+            <TextView
+                android:id="@+id/song_info"
+                style="@style/Widget.Auxio.TextView.Item.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_medium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/song_drag_handle"
+                app:layout_constraintStart_toEndOf="@+id/song_album_cover"
+                app:layout_constraintTop_toBottomOf="@+id/song_name"
+                tools:text="Artist / Album" />
 
-        <Button
-            android:id="@+id/song_drag_handle"
-            style="@style/Widget.Auxio.Button.Icon.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_mid_medium"
-            android:contentDescription="@string/desc_queue_handle"
-            app:icon="@drawable/ic_handle_24"
-            app:layout_constraintBottom_toBottomOf="@+id/song_album_cover"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/song_album_cover" />
+            <Button
+                android:id="@+id/song_drag_handle"
+                style="@style/Widget.Auxio.Button.Icon.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_mid_medium"
+                android:contentDescription="@string/desc_queue_handle"
+                app:icon="@drawable/ic_handle_24"
+                app:layout_constraintBottom_toBottomOf="@+id/song_album_cover"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/song_album_cover" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

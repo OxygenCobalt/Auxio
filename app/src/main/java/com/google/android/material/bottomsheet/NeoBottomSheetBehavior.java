@@ -82,6 +82,8 @@ import java.util.Map;
  * <p>To send useful accessibility events, set a title on bottom sheets that are windows or are
  * window-like. For BottomSheetDialog use {@link BottomSheetDialog#setTitle(int)}, and for
  * BottomSheetDialogFragment use {@link ViewCompat#setAccessibilityPaneTitle(View, CharSequence)}.
+ *
+ * Modified at several points by OxygenCobalt to fix insane issues.
  */
 public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
 
