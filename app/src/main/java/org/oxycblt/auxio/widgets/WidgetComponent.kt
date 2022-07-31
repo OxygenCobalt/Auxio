@@ -22,6 +22,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
+import kotlin.math.sqrt
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.SquareFrameTransform
@@ -93,23 +94,27 @@ class WidgetComponent(private val context: Context) :
                             0
                         }
 
+                    // Resize the image in a such a way that we don't hit the RemoteView size
+                    // limit. The limit is technically the byte-size of an RGB_8888 bitmap 1.5x
+                    // the screen size, but the size of a RemoteView can for some reason be 10x
+                    // the size of the binded bitmaps, which means we need to heavily reduce
+                    // our image size as to make sure we stay around an order of magnitude below
+                    // the memory limit. This fixed size is also needed to ensure consistent
+                    // outlines on rounded images.
+                    val metrics = context.resources.displayMetrics
+                    val sw = metrics.widthPixels
+                    val sh = metrics.heightPixels
+                    builder.size((sqrt((6f * sw * sh)) / 8f).toInt())
+
                     return if (cornerRadius > 0) {
                         this@WidgetComponent.logD("Loading round covers: $cornerRadius")
-
-                        val metrics = context.resources.displayMetrics
 
                         // Use RoundedCornersTransformation. This is because our hack to get a 1:1
                         // aspect ratio on widget ImageViews doesn't actually result in a square
                         // ImageView, so clipToOutline won't work.
-                        builder
-                            .transformations(
-                                SquareFrameTransform.INSTANCE,
-                                RoundedCornersTransformation(cornerRadius.toFloat()))
-                            // The output of RoundedCornersTransformation is dimension-dependent,
-                            // so scale up the image to the screen size to ensure consistent radii.
-                            // Make sure we stop at 1024, so we don't accidentally make a massive
-                            // bitmap on very large screens.
-                            .size(minOf(metrics.widthPixels, metrics.heightPixels, 1024))
+                        builder.transformations(
+                            SquareFrameTransform.INSTANCE,
+                            RoundedCornersTransformation(cornerRadius.toFloat()))
                     } else {
                         builder
                     }
