@@ -33,8 +33,6 @@ import org.oxycblt.auxio.util.systemGestureInsetsCompat
  * The coordinator layout behavior used for the playback sheet, hacking in the many fixes required
  * to make bottom sheets like this work.
  * @author OxygenCobalt
- *
- * TODO: Implement hiding because I have to
  */
 class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     AuxioSheetBehavior<V>(context, attributeSet) {
@@ -69,7 +67,7 @@ class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeS
     }
 
     // Note: This is an extension to Auxio's vendored BottomSheetBehavior
-    override fun enableHidingGestures() = true
+    override fun enableHidingGestures() = false
 
     fun hideSafe() {
         if (state != STATE_HIDDEN) {

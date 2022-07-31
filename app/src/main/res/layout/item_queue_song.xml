@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground">
 
-            <org.oxycblt.auxio.image.StyledImageView
+            <org.oxycblt.auxio.image.ImageGroup
                 android:id="@+id/song_album_cover"
                 style="@style/Widget.Auxio.Image.Small"
                 android:layout_margin="@dimen/spacing_medium"
@@ -47,6 +47,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/spacing_medium"
+                android:textColor="@color/sel_toggleable_primary"
                 app:layout_constraintBottom_toTopOf="@+id/song_info"
                 app:layout_constraintEnd_toStartOf="@+id/song_drag_handle"
                 app:layout_constraintStart_toEndOf="@+id/song_album_cover"
@@ -60,6 +61,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/spacing_medium"
+                android:textColor="@color/sel_toggleable_secondary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/song_drag_handle"
                 app:layout_constraintStart_toEndOf="@+id/song_album_cover"

@@ -49,7 +49,8 @@ class QueueAdapter(listener: QueueItemListener) :
             super.onBindViewHolder(viewHolder, position, payload)
         }
 
-        viewHolder.isPrevious = position <= currentIndex
+        viewHolder.isEnabled = position > currentIndex
+        viewHolder.isActivated = position == currentIndex
     }
 
     fun updateIndex(index: Int) {
@@ -89,16 +90,24 @@ private constructor(
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
             fillColor = binding.context.getAttrColorSafe(R.attr.colorSurface).stateList
             elevation = binding.context.getDimenSafe(R.dimen.elevation_normal) * 5
+            alpha = 0
         }
 
-    var isPrevious: Boolean
-        get() = binding.songDragHandle.alpha == 0.5f
+    var isEnabled: Boolean
+        get() = binding.songAlbumCover.isEnabled
         set(value) {
-            val alpha = if (value) 0.5f else 1f
-            binding.songAlbumCover.alpha = alpha
-            binding.songName.alpha = alpha
-            binding.songInfo.alpha = alpha
-            binding.songDragHandle.alpha = alpha
+            // Don't want to disable clicking, just indicate the body and handle is disabled
+            binding.songAlbumCover.isEnabled = value
+            binding.songName.isEnabled = value
+            binding.songInfo.isEnabled = value
+            binding.songDragHandle.isEnabled = value
+        }
+
+    var isActivated: Boolean
+        get() = binding.interactBody.isActivated
+        set(value) {
+            // Activation does not affect clicking, make everything activated.
+            binding.interactBody.setActivated(value)
         }
 
     init {
@@ -110,8 +119,6 @@ private constructor(
                         elevation = binding.context.getDimenSafe(R.dimen.elevation_normal)
                     },
                     backgroundDrawable))
-
-        backgroundDrawable.alpha = 0
     }
 
     @SuppressLint("ClickableViewAccessibility")

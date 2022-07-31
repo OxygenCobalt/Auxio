@@ -101,12 +101,19 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         invalidateIndicator()
     }
 
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        invalidateIndicator()
+    }
+
     private fun invalidateIndicator() {
         if (isActivated) {
+            alpha = 1f
             indicator.alpha = 1f
             customView?.alpha = 0f
             inner.alpha = 0f
         } else {
+            alpha = if (isEnabled) 1f else 0.5f
             indicator.alpha = 0f
             customView?.alpha = 1f
             inner.alpha = 1f
