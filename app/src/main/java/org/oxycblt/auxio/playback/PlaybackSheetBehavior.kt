@@ -68,6 +68,9 @@ class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeS
         return success
     }
 
+    // Note: This is an extension to Auxio's vendored BottomSheetBehavior
+    override fun enableHidingGestures() = true
+
     fun hideSafe() {
         if (state != STATE_HIDDEN) {
             isDraggable = false

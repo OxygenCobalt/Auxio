@@ -38,8 +38,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/playback_cover"
         app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:trackColorInactive="@color/sel_track">
+        app:layout_constraintVertical_chainStyle="packed">
 
         <TextView
             android:id="@+id/playback_song"

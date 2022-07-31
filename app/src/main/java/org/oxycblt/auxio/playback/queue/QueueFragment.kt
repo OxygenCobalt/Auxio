@@ -25,10 +25,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.util.*
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [Fragment] that shows the queue and enables editing as well.
@@ -66,7 +67,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
 
         // --- VIEWMODEL SETUP ----
 
-        collectImmediately(queueModel.queue, ::updateQueue)
+        collectImmediately(queueModel.queue, queueModel.index, ::updateQueue)
     }
 
     override fun onDestroyBinding(binding: FragmentQueueBinding) {
@@ -82,31 +83,34 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
         touchHelper.startDrag(viewHolder)
     }
 
-    private fun updateQueue(queue: List<QueueViewModel.QueueSong>) {
-        val instructions = queueModel.instructions
-        if (instructions != null) {
-            if (instructions.replace) {
-                queueAdapter.data.replaceList(queue)
-            } else {
-                queueAdapter.data.submitList(queue)
-            }
-
-            if (instructions.scrollTo != null) {
-                val binding = requireBinding()
-                val lmm = binding.queueRecycler.layoutManager as LinearLayoutManager
-                val start = lmm.findFirstCompletelyVisibleItemPosition()
-                val end = lmm.findLastCompletelyVisibleItemPosition()
-
-                if (start != RecyclerView.NO_POSITION &&
-                    end != RecyclerView.NO_POSITION &&
-                    instructions.scrollTo !in start..end) {
-                    binding.queueRecycler.scrollToPosition(instructions.scrollTo)
-                }
-            }
-
-            queueModel.finishInstructions()
+    private fun updateQueue(queue: List<Song>, index: Int) {
+        val replaceQueue = queueModel.replaceQueue
+        if (replaceQueue == true) {
+            logD("Replacing queue")
+            queueAdapter.data.replaceList(queue)
         } else {
+            logD("Diffing queue")
             queueAdapter.data.submitList(queue)
         }
+
+        queueModel.finishReplace()
+
+        val scrollTo = queueModel.scrollTo
+        if (scrollTo != null) {
+            val binding = requireBinding()
+            val lmm = binding.queueRecycler.layoutManager as LinearLayoutManager
+            val start = lmm.findFirstCompletelyVisibleItemPosition()
+            val end = lmm.findLastCompletelyVisibleItemPosition()
+
+            if (start != RecyclerView.NO_POSITION &&
+                end != RecyclerView.NO_POSITION &&
+                scrollTo !in start..end) {
+                binding.queueRecycler.scrollToPosition(scrollTo)
+            }
+        }
+
+        queueModel.finishScrollTo()
+
+        queueAdapter.updateIndex(index)
     }
 }

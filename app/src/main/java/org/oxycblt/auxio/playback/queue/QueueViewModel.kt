@@ -24,21 +24,19 @@ import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.ui.recycler.Item
 
 class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val playbackManager = PlaybackStateManager.getInstance()
 
-    data class QueueSong(val song: Song, val previous: Boolean) : Item() {
-        override val id: Long
-            get() = song.id
-    }
+    private val _queue = MutableStateFlow(listOf<Song>())
+    val queue: StateFlow<List<Song>> = _queue
 
-    private val _queue = MutableStateFlow(listOf<QueueSong>())
-    val queue: StateFlow<List<QueueSong>> = _queue
+    private val _index = MutableStateFlow(playbackManager.index)
+    val index: StateFlow<Int>
+        get() = _index
 
-    data class QueueInstructions(val replace: Boolean, val scrollTo: Int?)
-    var instructions: QueueInstructions? = null
+    var replaceQueue: Boolean? = null
+    var scrollTo: Int? = null
 
     init {
         playbackManager.addCallback(this)
@@ -76,35 +74,38 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
         return true
     }
 
-    fun finishInstructions() {
-        instructions = null
+    fun finishReplace() {
+        replaceQueue = null
+    }
+
+    fun finishScrollTo() {
+        scrollTo = null
     }
 
     override fun onIndexMoved(index: Int) {
-        instructions = QueueInstructions(false, min(index + 1, playbackManager.queue.lastIndex))
-        _queue.value = generateQueue(index, playbackManager.queue)
+        replaceQueue = null
+        scrollTo = min(index + 1, playbackManager.queue.lastIndex)
+        _index.value = index
     }
 
     override fun onQueueChanged(queue: List<Song>) {
-        instructions = QueueInstructions(false, null)
-        _queue.value = generateQueue(playbackManager.index, queue)
+        replaceQueue = false
+        scrollTo = null
+        _queue.value = playbackManager.queue.toMutableList()
     }
 
     override fun onQueueReworked(index: Int, queue: List<Song>) {
-        instructions = QueueInstructions(true, min(index + 1, playbackManager.queue.lastIndex))
-        _queue.value = generateQueue(index, queue)
+        replaceQueue = true
+        scrollTo = min(index + 1, playbackManager.queue.lastIndex)
+        _queue.value = playbackManager.queue.toMutableList()
+        _index.value = index
     }
 
     override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        instructions = QueueInstructions(true, min(index + 1, playbackManager.queue.lastIndex))
-        _queue.value = generateQueue(index, queue)
-    }
-
-    private fun generateQueue(index: Int, queue: List<Song>): List<QueueSong> {
-        val before = queue.slice(0..index).map { QueueSong(it, true) }
-        val after =
-            queue.slice(index + 1..playbackManager.queue.lastIndex).map { QueueSong(it, false) }
-        return before + after
+        replaceQueue = true
+        scrollTo = min(index + 1, playbackManager.queue.lastIndex)
+        _queue.value = playbackManager.queue.toMutableList()
+        _index.value = index
     }
 
     override fun onCleared() {

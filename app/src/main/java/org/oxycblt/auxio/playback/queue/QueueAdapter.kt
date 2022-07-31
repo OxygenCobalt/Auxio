@@ -29,13 +29,46 @@ import java.util.*
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.recycler.*
 import org.oxycblt.auxio.util.*
 
 class QueueAdapter(listener: QueueItemListener) :
-    MonoAdapter<QueueViewModel.QueueSong, QueueItemListener, QueueSongViewHolder>(listener) {
+    MonoAdapter<Song, QueueItemListener, QueueSongViewHolder>(listener) {
+    private var currentIndex = 0
+
     override val data = SyncBackingData(this, QueueSongViewHolder.DIFFER)
     override val creator = QueueSongViewHolder.CREATOR
+
+    override fun onBindViewHolder(
+        viewHolder: QueueSongViewHolder,
+        position: Int,
+        payload: List<Any>
+    ) {
+        if (payload.isEmpty()) {
+            super.onBindViewHolder(viewHolder, position, payload)
+        }
+
+        viewHolder.isPrevious = position <= currentIndex
+    }
+
+    fun updateIndex(index: Int) {
+        when {
+            index < currentIndex -> {
+                val lastIndex = currentIndex
+                currentIndex = index
+                notifyItemRangeChanged(0, lastIndex + 1, PAYLOAD_UPDATE_INDEX)
+            }
+            index > currentIndex -> {
+                currentIndex = index
+                notifyItemRangeChanged(0, currentIndex + 1, PAYLOAD_UPDATE_INDEX)
+            }
+        }
+    }
+
+    companion object {
+        val PAYLOAD_UPDATE_INDEX = Any()
+    }
 }
 
 interface QueueItemListener {
@@ -46,7 +79,7 @@ interface QueueItemListener {
 class QueueSongViewHolder
 private constructor(
     private val binding: ItemQueueSongBinding,
-) : BindingViewHolder<QueueViewModel.QueueSong, QueueItemListener>(binding.root) {
+) : BindingViewHolder<Song, QueueItemListener>(binding.root) {
     val bodyView: View
         get() = binding.body
     val backgroundView: View
@@ -58,8 +91,15 @@ private constructor(
             elevation = binding.context.getDimenSafe(R.dimen.elevation_normal) * 5
         }
 
-    val isPrevious: Boolean
+    var isPrevious: Boolean
         get() = binding.songDragHandle.alpha == 0.5f
+        set(value) {
+            val alpha = if (value) 0.5f else 1f
+            binding.songAlbumCover.alpha = alpha
+            binding.songName.alpha = alpha
+            binding.songInfo.alpha = alpha
+            binding.songDragHandle.alpha = alpha
+        }
 
     init {
         binding.body.background =
@@ -75,10 +115,10 @@ private constructor(
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun bind(item: QueueViewModel.QueueSong, listener: QueueItemListener) {
-        binding.songAlbumCover.bind(item.song)
-        binding.songName.textSafe = item.song.resolveName(binding.context)
-        binding.songInfo.textSafe = item.song.resolveIndividualArtistName(binding.context)
+    override fun bind(item: Song, listener: QueueItemListener) {
+        binding.songAlbumCover.bind(item)
+        binding.songName.textSafe = item.resolveName(binding.context)
+        binding.songInfo.textSafe = item.resolveIndividualArtistName(binding.context)
 
         binding.background.isInvisible = true
 
@@ -86,12 +126,6 @@ private constructor(
         binding.songInfo.requestLayout()
 
         binding.body.setOnClickListener { listener.onClick(this) }
-
-        val alpha = if (item.previous) 0.5f else 1f
-        binding.songAlbumCover.alpha = alpha
-        binding.songName.alpha = alpha
-        binding.songInfo.alpha = alpha
-        binding.songDragHandle.alpha = alpha
 
         // Roll our own drag handlers as the default ones suck
         binding.songDragHandle.setOnTouchListener { _, motionEvent ->
@@ -113,19 +147,6 @@ private constructor(
                     QueueSongViewHolder(ItemQueueSongBinding.inflate(context.inflater))
             }
 
-        val DIFFER =
-            object : SimpleItemCallback<QueueViewModel.QueueSong>() {
-                override fun areContentsTheSame(
-                    oldItem: QueueViewModel.QueueSong,
-                    newItem: QueueViewModel.QueueSong
-                ) =
-                    super.areContentsTheSame(oldItem, newItem) &&
-                        oldItem.previous == newItem.previous
-
-                override fun areItemsTheSame(
-                    oldItem: QueueViewModel.QueueSong,
-                    newItem: QueueViewModel.QueueSong
-                ) = oldItem.song == newItem.song && oldItem.previous == newItem.previous
-            }
+        val DIFFER = SongViewHolder.DIFFER
     }
 }

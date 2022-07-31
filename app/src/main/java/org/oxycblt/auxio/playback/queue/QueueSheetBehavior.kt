@@ -33,6 +33,7 @@ class QueueSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?
     private var barSpacing = context.getDimenSizeSafe(R.dimen.spacing_small)
 
     init {
+        isHideable = false
         sheetBackgroundDrawable.setCornerSize(context.getDimenSafe(R.dimen.size_corners_medium))
     }
 

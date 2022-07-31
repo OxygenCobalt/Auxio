@@ -720,7 +720,8 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
       }
     } else if (dy < 0) { // Downward
       if (!target.canScrollVertically(-1)) {
-        if (newTop <= collapsedOffset || hideable) {
+        // MODIFICATION: Add enableHidingGestures method
+        if (newTop <= collapsedOffset || (hideable && enableHidingGestures())) {
           if (!draggable) {
             // Prevent dragging
             return;
@@ -774,7 +775,8 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
           }
         }
       }
-    } else if (hideable && shouldHide(child, getYVelocity())) {
+      // MODIFICATION: Add enableHidingGestures method
+    } else if (hideable && shouldHide(child, getYVelocity()) && enableHidingGestures()) {
       targetState = STATE_HIDDEN;
     } else if (lastNestedScrollDy == 0) {
       int currentTop = child.getTop();
@@ -1723,7 +1725,8 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
                 }
               }
             }
-          } else if (hideable && shouldHide(releasedChild, yvel)) {
+            // MODIFICATION: Add enableHidingGestures method
+          } else if (hideable && shouldHide(releasedChild, yvel) && enableHidingGestures()) {
             // Hide if the view was either released low or it was a significant vertical swipe
             // otherwise settle to closest expanded state.
             if ((Math.abs(xvel) < Math.abs(yvel) && yvel > SIGNIFICANT_VEL_THRESHOLD)
@@ -1795,8 +1798,9 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
 
         @Override
         public int clampViewPositionVertical(@NonNull View child, int top, int dy) {
+          // MODIFICATION: Add enableHidingGestures method
           return MathUtils.clamp(
-              top, getExpandedOffset(), hideable ? parentHeight : collapsedOffset);
+              top, getExpandedOffset(), (hideable && enableHidingGestures()) ? parentHeight : collapsedOffset);
         }
 
         @Override
@@ -1806,7 +1810,8 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
 
         @Override
         public int getViewVerticalDragRange(@NonNull View child) {
-          if (hideable) {
+          // MODIFICATION: Add enableHidingGestures method
+          if (hideable && enableHidingGestures()) {
             return parentHeight;
           } else {
             return collapsedOffset;
@@ -1873,6 +1878,15 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
    */
   @RestrictTo(LIBRARY_GROUP)
   public boolean shouldSkipSmoothAnimation() {
+    return true;
+  }
+
+  /**
+   * Checks whether hiding gestures should be enabled if {@code isHideable} is true.
+   * @hide
+   */
+  @RestrictTo(LIBRARY_GROUP)
+  public boolean enableHidingGestures() {
     return true;
   }
 
