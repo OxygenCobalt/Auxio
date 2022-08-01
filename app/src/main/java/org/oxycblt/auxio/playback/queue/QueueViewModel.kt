@@ -25,6 +25,10 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
+/**
+ * Class enabling more advanced queue list functionality and queue editing.
+ * @author OxygenCobalt
+ */
 class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val playbackManager = PlaybackStateManager.getInstance()
 

@@ -28,12 +28,54 @@ import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
+/**
+ * A behavior that automatically re-layouts and re-insets content to align with the parent layout's
+ * bottom sheet.
+ * @author OxygenCobalt
+ */
 class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     CoordinatorLayout.Behavior<V>(context, attributeSet) {
-    private var lastInsets: WindowInsets? = null
     private var dep: View? = null
-    private var setup: Boolean = false
+    private var lastInsets: WindowInsets? = null
     private var lastConsumed: Int? = null
+    private var setup: Boolean = false
+
+    override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View): Boolean {
+        if (dependency.coordinatorLayoutBehavior is NeoBottomSheetBehavior) {
+            dep = dependency
+            return true
+        }
+
+        return false
+    }
+
+    override fun onDependentViewChanged(
+        parent: CoordinatorLayout,
+        child: V,
+        dependency: View
+    ): Boolean {
+        val behavior = dependency.coordinatorLayoutBehavior as NeoBottomSheetBehavior
+        val consumed = behavior.calculateConsumedByBar()
+        if (consumed < Int.MIN_VALUE) {
+            return false
+        }
+
+        if (consumed != lastConsumed) {
+            lastConsumed = consumed
+
+            val insets = lastInsets
+            if (insets != null) {
+                child.dispatchApplyWindowInsets(insets)
+            }
+
+            lastInsets?.let(child::dispatchApplyWindowInsets)
+            measureContent(parent, child, consumed)
+            layoutContent(child)
+            return true
+        }
+
+        return false
+    }
 
     override fun onMeasureChild(
         parent: CoordinatorLayout,
@@ -106,42 +148,5 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         } else {
             (peekHeight * (1 - abs(offset))).toInt()
         }
-    }
-
-    override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View): Boolean {
-        if (dependency.coordinatorLayoutBehavior is NeoBottomSheetBehavior) {
-            dep = dependency
-            return true
-        }
-
-        return false
-    }
-
-    override fun onDependentViewChanged(
-        parent: CoordinatorLayout,
-        child: V,
-        dependency: View
-    ): Boolean {
-        val behavior = dependency.coordinatorLayoutBehavior as NeoBottomSheetBehavior
-        val consumed = behavior.calculateConsumedByBar()
-        if (consumed < Int.MIN_VALUE) {
-            return false
-        }
-
-        if (consumed != lastConsumed) {
-            lastConsumed = consumed
-
-            val insets = lastInsets
-            if (insets != null) {
-                child.dispatchApplyWindowInsets(insets)
-            }
-
-            lastInsets?.let(child::dispatchApplyWindowInsets)
-            measureContent(parent, child, consumed)
-            layoutContent(child)
-            return true
-        }
-
-        return false
     }
 }

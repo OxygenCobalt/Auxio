@@ -25,6 +25,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
+import org.oxycblt.auxio.detail.DiscHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.recycler.BindingViewHolder
@@ -129,7 +130,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
             val songCount = context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size)
 
-            val duration = item.durationSecs.formatDuration(false)
+            val duration = "<duration>"
 
             text =
                 if (item.releaseType != null) {
@@ -171,10 +172,9 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
     }
 }
 
-data class DiscHeader(override val id: Long, val disc: Int) : Item()
-
 class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
     BindingViewHolder<DiscHeader, Unit>(binding.root) {
+
     override fun bind(item: DiscHeader, listener: Unit) {
         binding.discNo.textSafe = binding.context.getString(R.string.fmt_disc_no, item.disc)
     }

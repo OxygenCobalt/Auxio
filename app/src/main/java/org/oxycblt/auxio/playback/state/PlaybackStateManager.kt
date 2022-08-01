@@ -19,6 +19,7 @@ package org.oxycblt.auxio.playback.state
 
 import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.Album
@@ -399,7 +400,14 @@ class PlaybackStateManager private constructor() {
 
     suspend fun wipeState(database: PlaybackStateDatabase) {
         logD("Wiping state")
-        withContext(Dispatchers.IO) { database.write(null) }
+        withContext(Dispatchers.IO) {
+            delay(5000)
+
+            withContext(Dispatchers.Main) {
+                index = -1
+                notifyNewPlayback()
+            }
+        }
     }
 
     /** Sanitize the state with [newLibrary]. */

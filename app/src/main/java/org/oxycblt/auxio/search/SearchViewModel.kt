@@ -88,28 +88,28 @@ class SearchViewModel(application: Application) :
 
             if (filterMode == null || filterMode == DisplayMode.SHOW_ARTISTS) {
                 library.artists.filterArtistsBy(query)?.let { artists ->
-                    results.add(Header(-1, R.string.lbl_artists))
+                    results.add(Header(R.string.lbl_artists))
                     results.addAll(sort.artists(artists))
                 }
             }
 
             if (filterMode == null || filterMode == DisplayMode.SHOW_ALBUMS) {
                 library.albums.filterAlbumsBy(query)?.let { albums ->
-                    results.add(Header(-2, R.string.lbl_albums))
+                    results.add(Header(R.string.lbl_albums))
                     results.addAll(sort.albums(albums))
                 }
             }
 
             if (filterMode == null || filterMode == DisplayMode.SHOW_GENRES) {
                 library.genres.filterGenresBy(query)?.let { genres ->
-                    results.add(Header(-3, R.string.lbl_genres))
+                    results.add(Header(R.string.lbl_genres))
                     results.addAll(sort.genres(genres))
                 }
             }
 
             if (filterMode == null || filterMode == DisplayMode.SHOW_SONGS) {
                 library.songs.filterSongsBy(query)?.let { songs ->
-                    results.add(Header(-4, R.string.lbl_songs))
+                    results.add(Header(R.string.lbl_songs))
                     results.addAll(sort.songs(songs))
                 }
             }

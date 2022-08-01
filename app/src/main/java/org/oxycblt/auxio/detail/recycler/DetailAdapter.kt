@@ -19,12 +19,12 @@ package org.oxycblt.auxio.detail.recycler
 
 import android.content.Context
 import android.view.View
-import androidx.annotation.StringRes
 import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemSortHeaderBinding
+import org.oxycblt.auxio.detail.SortHeader
 import org.oxycblt.auxio.ui.recycler.AsyncBackingData
 import org.oxycblt.auxio.ui.recycler.BindingViewHolder
 import org.oxycblt.auxio.ui.recycler.Header
@@ -126,8 +126,6 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
         fun onShowSortMenu(anchor: View)
     }
 }
-
-data class SortHeader(override val id: Long, @StringRes val string: Int) : Item()
 
 class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
     BindingViewHolder<SortHeader, DetailAdapter.Listener>(binding.root) {

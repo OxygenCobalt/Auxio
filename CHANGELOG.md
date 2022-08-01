@@ -21,7 +21,7 @@ at the cost of longer loading times
 
 #### What's Improved
 - Migrated to better-looking motion transitions
-- App now exposes an (immutable) queue.
+- App now exposes an (immutable) queue to the MediaSession
 
 #### What's Fixed
 - Fixed default material theme being used before app shows up

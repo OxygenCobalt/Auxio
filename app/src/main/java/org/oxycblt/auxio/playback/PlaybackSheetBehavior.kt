@@ -21,13 +21,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import kotlin.math.max
 import org.oxycblt.auxio.ui.AuxioSheetBehavior
-import org.oxycblt.auxio.util.systemBarInsetsCompat
-import org.oxycblt.auxio.util.systemGestureInsetsCompat
 
 /**
  * The coordinator layout behavior used for the playback sheet, hacking in the many fixes required
@@ -36,8 +31,6 @@ import org.oxycblt.auxio.util.systemGestureInsetsCompat
  */
 class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     AuxioSheetBehavior<V>(context, attributeSet) {
-    private var lastInsets: WindowInsets? = null
-
     init {
         isHideable = true
     }
@@ -50,25 +43,10 @@ class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeS
         event: MotionEvent
     ): Boolean = super.onInterceptTouchEvent(parent, child, event) && state != STATE_EXPANDED
 
-    override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
-        val success = super.onLayoutChild(parent, child, layoutDirection)
-
-        (child as ViewGroup).apply {
-            setOnApplyWindowInsetsListener { _, insets ->
-                lastInsets = insets
-                val bars = insets.systemBarInsetsCompat
-                val gestures = insets.systemGestureInsetsCompat
-                peekHeight = getChildAt(0).measuredHeight + max(gestures.bottom, bars.bottom)
-                insets
-            }
-        }
-
-        return success
-    }
-
     // Note: This is an extension to Auxio's vendored BottomSheetBehavior
     override fun enableHidingGestures() = false
 
+    /** Hide this sheet in a safe manner. */
     fun hideSafe() {
         if (state != STATE_HIDDEN) {
             isDraggable = false
@@ -76,6 +54,7 @@ class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeS
         }
     }
 
+    /** Unhide this sheet in a safe manner. */
     fun unhideSafe() {
         if (state == STATE_HIDDEN) {
             state = STATE_COLLAPSED

@@ -166,10 +166,12 @@ abstract class Item {
 
 /** A data object used solely for the "Header" UI element. */
 data class Header(
-    override val id: Long,
     /** The string resource used for the header. */
     @StringRes val string: Int
-) : Item()
+) : Item() {
+    override val id: Long
+        get() = string.toLong()
+}
 
 /**
  * Represents data that backs a [MonoAdapter] or [MultiAdapter]. This can be implemented by any

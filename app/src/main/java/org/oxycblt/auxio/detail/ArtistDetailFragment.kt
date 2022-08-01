@@ -30,7 +30,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
 import org.oxycblt.auxio.detail.recycler.DetailAdapter
-import org.oxycblt.auxio.detail.recycler.SortHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music

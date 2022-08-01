@@ -138,10 +138,5 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
         playbackModel.removeQueueDataItem(viewHolder.bindingAdapterPosition)
     }
 
-    override fun isLongPressDragEnabled(): Boolean = false
-
-    companion object {
-        const val MINIMUM_INITIAL_DRAG_VELOCITY = 10
-        const val MAXIMUM_INITIAL_DRAG_VELOCITY = 25
-    }
+    override fun isLongPressDragEnabled() = false
 }

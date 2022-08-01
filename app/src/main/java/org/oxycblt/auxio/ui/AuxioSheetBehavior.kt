@@ -23,42 +23,69 @@ import android.graphics.drawable.LayerDrawable
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.*
 
+/**
+ * Implements the fundamental bottom sheet attributes used across the entire app.
+ * @author OxygenCobalt
+ */
 abstract class AuxioSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     NeoBottomSheetBehavior<V>(context, attributeSet) {
-    private var elevationNormal = context.getDimenSafe(R.dimen.elevation_normal)
+    private var setup = false
     val sheetBackgroundDrawable =
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
             fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
-            elevation = elevationNormal
+            elevation = context.getDimenSafe(R.dimen.elevation_normal)
         }
 
     init {
+        // We need to disable isFitToContents for us to have our bottom sheet expand to the
+        // whole of the screen and not just whatever portion it takes up.
         isFitToContents = false
     }
 
+    /** Called when the child the bottom sheet applies to receives window insets. */
+    open fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {
+        // All sheet behaviors derive their peek height from the size of the "bar" (i.e the
+        // first child) plus the gesture insets.
+        val gestures = insets.systemGestureInsetsCompat
+        peekHeight = (child as ViewGroup).getChildAt(0).height + gestures.bottom
+        return insets
+    }
+
+    // Enable experimental settings to allow us to skip the half expanded state without
+    // dumb hacks.
     override fun shouldSkipHalfExpandedStateWhenDragging() = true
     override fun shouldExpandOnUpwardDrag(dragDurationMillis: Long, yPositionPercentage: Float) =
         true
 
     override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
-        val success = super.onLayoutChild(parent, child, layoutDirection)
+        val layout = super.onLayoutChild(parent, child, layoutDirection)
 
-        (child as ViewGroup).apply {
-            background =
-                LayerDrawable(
-                    arrayOf(
-                        ColorDrawable(context.getAttrColorSafe(R.attr.colorSurface)),
-                        sheetBackgroundDrawable))
+        if (!setup) {
+            child.apply {
+                // Sometimes the sheet background will fade out, so guard it with another
+                // colorSurface drawable to prevent content overlap.
+                background =
+                    LayerDrawable(
+                        arrayOf(
+                            ColorDrawable(context.getAttrColorSafe(R.attr.colorSurface)),
+                            sheetBackgroundDrawable))
 
-            disableDropShadowCompat()
+                // Try to disable drop shadows if possible.
+                disableDropShadowCompat()
+
+                setOnApplyWindowInsetsListener(::applyWindowInsets)
+            }
+
+            setup = true
         }
 
-        return success
+        return layout
     }
 }

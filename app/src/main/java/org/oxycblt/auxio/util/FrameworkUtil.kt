@@ -23,7 +23,6 @@ import android.content.res.ColorStateList
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Insets
-import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
@@ -241,48 +240,46 @@ val AndroidViewModel.application: Application
 fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
     query(tableName, null, null, null, null, null, null)?.use(block)
 
-// Note: WindowInsetsCompat and it's related methods are a non-functional mess that does not
-// work for Auxio's use-case. Use our own methods instead.
+// Note: WindowInsetsCompat and it's related methods are an over-engineered mess that does not
+// work for Auxio's use-case. Use our own compat methods instead.
 
 /**
  * Resolve system bar insets in a version-aware manner. This can be used to apply padding to a view
  * that properly follows all the frustrating changes that were made between Android 8-11.
  */
-val WindowInsets.systemBarInsetsCompat: Rect
+val WindowInsets.systemBarInsetsCompat: Insets
     get() =
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                getInsets(WindowInsets.Type.systemBars()).run { Rect(left, top, right, bottom) }
+                getInsets(WindowInsets.Type.systemBars())
             }
             else -> {
-                @Suppress("DEPRECATION")
-                Rect(
-                    systemWindowInsetLeft,
-                    systemWindowInsetTop,
-                    systemWindowInsetRight,
-                    systemWindowInsetBottom)
+                @Suppress("DEPRECATION") systemWindowInsets
             }
         }
 
 /**
  * Resolve gesture insets in a version-aware manner. This can be used to apply padding to a view
- * that properly follows all the frustrating changes that were made between Android 8-11.
+ * that properly follows all the frustrating changes that were made between Android 8-11. Note that
+ * if the gesture insets are not present (i.e zeroed), the bar insets will be used instead.
  */
-val WindowInsets.systemGestureInsetsCompat: Rect
+val WindowInsets.systemGestureInsetsCompat: Insets
     get() =
+        // The reasoning for why we take a larger inset is because gesture insets are seemingly
+        // not present on some android versions. To prevent the app from appearing below the
+        // system bars, we fall back to the bar insets. This is guaranteed not to fire in any
+        // context but the gesture insets being invalid, as gesture insets are intended to
+        // be larger than bar insets.
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                getInsets(WindowInsets.Type.systemGestures()).run { Rect(left, top, right, bottom) }
+                Insets.max(
+                    getInsets(WindowInsets.Type.systemGestures()),
+                    getInsets(WindowInsets.Type.systemBars()))
             }
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
-                @Suppress("DEPRECATION") val gestureInsets = systemGestureInsets
-                Rect(
-                    gestureInsets.left,
-                    gestureInsets.top,
-                    gestureInsets.right,
-                    gestureInsets.bottom)
+                @Suppress("DEPRECATION") Insets.max(systemGestureInsets, systemWindowInsets)
             }
-            else -> Rect(0, 0, 0, 0)
+            else -> Insets.of(0, 0, 0, 0)
         }
 
 /**

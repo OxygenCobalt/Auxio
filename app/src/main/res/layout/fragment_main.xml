@@ -46,12 +46,12 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/handle_wrapper"
                 android:layout_width="match_parent"
-                android:layout_height="64dp">
+                android:layout_height="@dimen/size_bottom_sheet_bar">
 
                 <ImageView
                     android:id="@+id/handle"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="@dimen/size_btn"
                     android:scaleType="center"
                     android:paddingBottom="@dimen/spacing_small"
                     android:src="@drawable/ic_down_24"

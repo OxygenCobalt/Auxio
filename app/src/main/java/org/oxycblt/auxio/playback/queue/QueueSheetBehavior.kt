@@ -20,13 +20,16 @@ package org.oxycblt.auxio.playback.queue
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
+import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.AuxioSheetBehavior
 import org.oxycblt.auxio.util.*
 
+/**
+ * The bottom sheet behavior designed for the queue in particular.
+ * @author OxygenCobalt
+ */
 class QueueSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     AuxioSheetBehavior<V>(context, attributeSet) {
     private var barHeight = 0
@@ -45,25 +48,18 @@ class QueueSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?
         child: V,
         dependency: View
     ): Boolean {
-        val ok = super.onDependentViewChanged(parent, child, dependency)
         barHeight = dependency.height
-        return ok
+        return false // No change, just grabbed the height
     }
 
-    override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
-        val success = super.onLayoutChild(parent, child, layoutDirection)
+    override fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {
+        super.applyWindowInsets(child, insets)
 
-        child.setOnApplyWindowInsetsListener { _, insets ->
-            val bars = insets.systemBarInsetsCompat
-            val gestures = insets.systemGestureInsetsCompat
-
-            expandedOffset = bars.top + barHeight + barSpacing
-            peekHeight =
-                (child as ViewGroup).getChildAt(0).height + max(gestures.bottom, bars.bottom)
-            insets.replaceSystemBarInsetsCompat(
-                bars.left, bars.top, bars.right, expandedOffset + bars.bottom)
-        }
-
-        return success
+        // Offset our expanded panel by the size of the playback bar, as that is shown when
+        // we slide up the panel.
+        val bars = insets.systemBarInsetsCompat
+        expandedOffset = bars.top + barHeight + barSpacing
+        return insets.replaceSystemBarInsetsCompat(
+            bars.left, bars.top, bars.right, expandedOffset + bars.bottom)
     }
 }

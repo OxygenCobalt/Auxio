@@ -142,7 +142,8 @@ class MainFragment :
             isInvisible = alpha == 0f
         }
 
-        binding.playbackSheet.translationZ = 3f * outPlaybackRatio
+        binding.playbackSheet.translationZ =
+            requireContext().getDimenSafe(R.dimen.elevation_normal) * outPlaybackRatio
         playbackSheetBehavior.sheetBackgroundDrawable.alpha = (outPlaybackRatio * 255).toInt()
 
         binding.playbackBarFragment.apply {

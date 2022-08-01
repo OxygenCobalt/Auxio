@@ -32,7 +32,6 @@ import com.google.android.material.transition.MaterialSharedAxis
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
-import org.oxycblt.auxio.detail.recycler.SortHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music

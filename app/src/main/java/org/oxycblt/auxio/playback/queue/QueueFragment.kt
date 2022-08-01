@@ -34,8 +34,6 @@ import org.oxycblt.auxio.util.logD
 /**
  * A [Fragment] that shows the queue and enables editing as well.
  *
- * TODO: Improve index updates
- *
  * TODO: Test older versions
  *
  * TODO: Test restoration and song loss
@@ -105,6 +103,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
             if (start != RecyclerView.NO_POSITION &&
                 end != RecyclerView.NO_POSITION &&
                 scrollTo !in start..end) {
+                logD("Scrolling to new position")
                 binding.queueRecycler.scrollToPosition(scrollTo)
             }
         }
