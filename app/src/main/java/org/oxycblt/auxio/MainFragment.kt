@@ -52,7 +52,6 @@ class MainFragment :
     private val navModel: NavigationViewModel by activityViewModels()
     private var callback: DynamicBackPressedCallback? = null
     private var lastInsets: WindowInsets? = null
-    private var keepPlaybackSheetHidden = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

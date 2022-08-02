@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 import java.lang.reflect.Field
 import kotlin.math.abs
@@ -44,12 +45,7 @@ import org.oxycblt.auxio.home.list.AlbumListFragment
 import org.oxycblt.auxio.home.list.ArtistListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
@@ -57,15 +53,7 @@ import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
-import org.oxycblt.auxio.util.collect
-import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.getColorStateListSafe
-import org.oxycblt.auxio.util.lazyReflectedField
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.logTraceOrThrow
-import org.oxycblt.auxio.util.textSafe
+import org.oxycblt.auxio.util.*
 
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail views for each
@@ -157,8 +145,11 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         when (item.itemId) {
             R.id.action_search -> {
                 logD("Navigating to search")
-                exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-                reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+                // Search has no contextual relation to home, use fade transitions
+                enterTransition = MaterialFadeThrough()
+                returnTransition = MaterialFadeThrough()
+                exitTransition = MaterialFadeThrough()
+                reenterTransition = MaterialFadeThrough()
                 findNavController().navigate(HomeFragmentDirections.actionShowSearch())
             }
             R.id.action_settings -> {
@@ -346,29 +337,21 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     }
 
     private fun handleNavigation(item: Music?) {
-        when (item) {
-            is Song -> {
-                exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
-                reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
-                findNavController().navigate(HomeFragmentDirections.actionShowAlbum(item.album.id))
+        val action =
+            when (item) {
+                is Song -> HomeFragmentDirections.actionShowAlbum(item.album.id)
+                is Album -> HomeFragmentDirections.actionShowAlbum(item.id)
+                is Artist -> HomeFragmentDirections.actionShowArtist(item.id)
+                is Genre -> HomeFragmentDirections.actionShowGenre(item.id)
+                else -> return
             }
-            is Album -> {
-                exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
-                reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
-                findNavController().navigate(HomeFragmentDirections.actionShowAlbum(item.id))
-            }
-            is Artist -> {
-                exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
-                reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
-                findNavController().navigate(HomeFragmentDirections.actionShowArtist(item.id))
-            }
-            is Genre -> {
-                exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
-                reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
-                findNavController().navigate(HomeFragmentDirections.actionShowGenre(item.id))
-            }
-            else -> {}
-        }
+
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+
+        findNavController().navigate(action)
     }
 
     /**

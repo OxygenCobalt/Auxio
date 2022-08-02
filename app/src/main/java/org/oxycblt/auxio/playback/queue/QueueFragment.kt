@@ -36,8 +36,6 @@ import org.oxycblt.auxio.util.logD
  *
  * TODO: Test older versions
  *
- * TODO: Test restoration and song loss
- *
  * @author OxygenCobalt
  */
 class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemListener {
