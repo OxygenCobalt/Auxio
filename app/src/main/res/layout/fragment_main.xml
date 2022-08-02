@@ -55,6 +55,7 @@
                     android:scaleType="center"
                     android:paddingBottom="@dimen/spacing_small"
                     android:src="@drawable/ic_down_24"
+                    android:contentDescription="@string/desc_queue_bar"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -62,6 +63,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/lbl_queue"
                     android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     app:layout_constraintBottom_toBottomOf="@+id/handle"
                     app:layout_constraintEnd_toEndOf="@+id/handle"
                     app:layout_constraintStart_toStartOf="parent" />

@@ -52,6 +52,7 @@ class MainFragment :
     private val navModel: NavigationViewModel by activityViewModels()
     private var callback: DynamicBackPressedCallback? = null
     private var lastInsets: WindowInsets? = null
+    private var keepPlaybackSheetHidden = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,11 +118,6 @@ class MainFragment :
     override fun onPreDraw(): Boolean {
         // CoordinatorLayout is insane and thus makes bottom sheet callbacks insane. Do our
         // checks before every draw.
-        handleSheetTransitions()
-        return true
-    }
-
-    private fun handleSheetTransitions() {
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
@@ -162,9 +158,25 @@ class MainFragment :
             isInvisible = alpha == 0f
         }
 
-        playbackSheetBehavior.isDraggable =
-            playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN &&
+        if (playbackModel.song.value != null) {
+            // Hack around the playback sheet intercepting swipe events on the queue bar
+            playbackSheetBehavior.isDraggable =
                 queueSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED
+        } else {
+            // Sometimes lingering drags can un-hide the playback sheet even when we intend to
+            // hide it, make sure we keep it hidden.
+            tryHideAll()
+        }
+
+        return true
+    }
+
+    private fun updateSong(song: Song?) {
+        if (song != null) {
+            tryUnhideAll()
+        } else {
+            tryHideAll()
+        }
     }
 
     private fun handleMainNavigation(action: MainNavigationAction?) {
@@ -212,11 +224,10 @@ class MainFragment :
 
         if (playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN &&
             playbackSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED) {
-            playbackSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior
 
+            playbackSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             queueSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
             return true
@@ -225,15 +236,45 @@ class MainFragment :
         return false
     }
 
-    private fun updateSong(song: Song?) {
+    private fun tryUnhideAll(): Boolean {
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
-        if (song != null) {
-            playbackSheetBehavior.unhideSafe()
-        } else {
-            playbackSheetBehavior.hideSafe()
+
+        if (playbackSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+            val queueSheetBehavior =
+                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior
+
+            playbackSheetBehavior.isDraggable = true
+            playbackSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+
+            queueSheetBehavior.isDraggable = true
+
+            return true
         }
+
+        return false
+    }
+
+    private fun tryHideAll(): Boolean {
+        val binding = requireBinding()
+        val playbackSheetBehavior =
+            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+
+        if (playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
+            val queueSheetBehavior =
+                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior
+
+            playbackSheetBehavior.isDraggable = false
+            queueSheetBehavior.isDraggable = false
+
+            playbackSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            queueSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+
+            return true
+        }
+
+        return false
     }
 
     /**

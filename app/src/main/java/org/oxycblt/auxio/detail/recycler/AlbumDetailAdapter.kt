@@ -130,7 +130,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
             val songCount = context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size)
 
-            val duration = "<duration>"
+            val duration = item.durationSecs.formatDuration(true)
 
             text =
                 if (item.releaseType != null) {

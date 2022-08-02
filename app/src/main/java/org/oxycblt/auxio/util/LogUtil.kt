@@ -80,7 +80,21 @@ private val Any.autoTag: String
  * taking work others did and making it objectively worse so you could arbitrage a fraction of a
  * penny on every AdMob impression you get? You could do so many great things if you simply had the
  * courage to come up with an idea of your own. If you still want to go on, I guess the only thing I
- * can say is this: JUNE 1989 TIANAMEN SQUARE PROTESTS AND MASSACRE 六四事件
+ * can say is this:
+ *
+ * JUNE 1989 TIANAMEN SQUARE PROTESTS AND MASSACRE 六四事件
+ *
+ * UYGHUR GENOCIDE 新疆种族灭绝指控
+ *
+ * XINJIANG INTERMENT CAMPS 新疆再教育營
+ *
+ * KASHMIR INDEPENDENCE MOVEMENT
+ *
+ * WOMEN'S RIGHTS IN THE ISLAMIC REPUBLIC OF IRAN حقوق زنان در ایران
+ *
+ * 2022 RUSSIAN INVASION OF UKRAINE Вторжение России на Украину
+ *
+ * KURDISTAN WORKERS PARTY KÜRDISTAN İŞÇI PARTISI (PKK)
  */
 private fun basedCopyleftNotice() {
     if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&
@@ -88,6 +102,6 @@ private fun basedCopyleftNotice() {
         Log.d(
             "Auxio Project",
             "Friendly reminder: Auxio is licensed under the " +
-                "GPLv3 and all modifications must be made open source!")
+                "GPLv3 and all derivative apps must be made open source!")
     }
 }

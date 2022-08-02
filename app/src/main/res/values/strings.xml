@@ -236,6 +236,7 @@
 
     <string name="desc_clear_queue_item">Remove this queue song</string>
     <string name="desc_queue_handle">Move this queue song</string>
+    <string name="desc_queue_bar">Open the queue</string>
     <string name="desc_tab_handle">Move this tab</string>
     <string name="desc_clear_search">Clear search query</string>
     <string name="desc_music_dir_delete">Remove folder</string>

@@ -42,8 +42,13 @@ import org.oxycblt.auxio.util.logD
 /**
  * The component managing the [MediaSessionCompat] instance.
  *
- * I really don't like how I have to do this, but until I can work with the ExoPlayer queue system
- * using something like MediaSessionConnector is more or less impossible.
+ * Media3 is a joke. It tries so hard to be "hElpfUl" and implement so many fundamental behaviors
+ * into a one-size-fits-all package that it only ends up causing unending bugs and frustration. The
+ * queue system is horribly designed, the notification code is outdated, and the overstretched
+ * abstractions result in terrible performance bottlenecks and insane state bugs..
+ *
+ * Show me a way to adapt my internal queue into the new system and I will change my mind, but
+ * otherwise, I will stick with my normal system that works correctly.
  *
  * @author OxygenCobalt
  *
@@ -265,12 +270,12 @@ class MediaSessionComponent(
 
     override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
         super.onPlayFromMediaId(mediaId, extras)
-        // STUB: Unimplemented
+        // STUB: Unimplemented, no media browser
     }
 
     override fun onPlayFromUri(uri: Uri?, extras: Bundle?) {
         super.onPlayFromUri(uri, extras)
-        // STUB: Unimplemented
+        // STUB: Unimplemented, no media browser
     }
 
     override fun onPlayFromSearch(query: String?, extras: Bundle?) {

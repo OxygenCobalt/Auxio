@@ -37,28 +37,9 @@ class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeS
 
     // Hack around issue where the playback sheet will try to intercept nested scrolling events
     // before the queue sheet.
-    override fun onInterceptTouchEvent(
-        parent: CoordinatorLayout,
-        child: V,
-        event: MotionEvent
-    ): Boolean = super.onInterceptTouchEvent(parent, child, event) && state != STATE_EXPANDED
+    override fun onInterceptTouchEvent(parent: CoordinatorLayout, child: V, event: MotionEvent) =
+        super.onInterceptTouchEvent(parent, child, event) && state != STATE_EXPANDED
 
     // Note: This is an extension to Auxio's vendored BottomSheetBehavior
     override fun enableHidingGestures() = false
-
-    /** Hide this sheet in a safe manner. */
-    fun hideSafe() {
-        if (state != STATE_HIDDEN) {
-            isDraggable = false
-            state = STATE_HIDDEN
-        }
-    }
-
-    /** Unhide this sheet in a safe manner. */
-    fun unhideSafe() {
-        if (state == STATE_HIDDEN) {
-            state = STATE_COLLAPSED
-            isDraggable = true
-        }
-    }
 }
