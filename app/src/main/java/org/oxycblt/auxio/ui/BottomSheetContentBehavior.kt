@@ -120,6 +120,8 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
             setup = true
         }
 
+        child.requestApplyInsets()
+
         return true
     }
 

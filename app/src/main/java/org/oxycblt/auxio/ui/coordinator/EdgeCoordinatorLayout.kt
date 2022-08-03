@@ -34,7 +34,19 @@ class EdgeCoordinatorLayout
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     CoordinatorLayout(context, attrs, defStyleAttr) {
+    override fun dispatchApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        super.dispatchApplyWindowInsets(insets)
+
+        for (child in children) {
+            child.dispatchApplyWindowInsets(insets)
+        }
+
+        return insets
+    }
+
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        super.onApplyWindowInsets(insets)
+
         for (child in children) {
             child.onApplyWindowInsets(insets)
         }
