@@ -34,6 +34,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
@@ -243,8 +244,19 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     }
 
     private fun updateTabConfiguration() {
+        val binding = requireBinding()
+        val toolbarParams = binding.homeToolbar.layoutParams as AppBarLayout.LayoutParams
         if (homeModel.tabs.size == 1) {
-            requireBinding().homeTabs.isVisible = false
+            // A single tag makes the tab layout redundant, hide it and disable the collapsing
+            // behavior.
+            binding.homeTabs.isVisible = false
+            binding.homeAppbar.setExpanded(true, false)
+            toolbarParams.scrollFlags = 0
+        } else {
+            binding.homeTabs.isVisible = true
+            toolbarParams.scrollFlags =
+                AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
         }
     }
 

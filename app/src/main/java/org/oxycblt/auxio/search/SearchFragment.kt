@@ -57,6 +57,7 @@ import org.oxycblt.auxio.util.logW
  */
 class SearchFragment :
     MenuFragment<FragmentSearchBinding>(), MenuItemListener, Toolbar.OnMenuItemClickListener {
+
     // SearchViewModel is only scoped to this Fragment
     private val searchModel: SearchViewModel by androidViewModels()
 

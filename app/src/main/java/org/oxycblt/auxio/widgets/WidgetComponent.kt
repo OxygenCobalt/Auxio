@@ -94,27 +94,28 @@ class WidgetComponent(private val context: Context) :
                             0
                         }
 
-                    // Resize the image in a such a way that we don't hit the RemoteView size
-                    // limit, which is the size of an RGB_8888 bitmap 1.5x the screen size. Note
-                    // that we actually set the limit to be half the memory limit so that it's
-                    // less likely for us to hit it. it to really ensure we don't hit the limit.
-                    // This also creates the consistent sizes required for round bitmaps.
+                    // We resize the image in a such a way that we don't hit the RemoteView size
+                    // limit, which is the size of an RGB_8888 bitmap 1.5x the screen size. When
+                    // enabling rounded corners, we further reduce it by a factor of 8 to get 16-dp
+                    // rounded corners, whereas we only downsize it by 2 when there is rounded
+                    // corners just to ensure that we do not hit the memory limit.
                     val metrics = context.resources.displayMetrics
                     val sw = metrics.widthPixels
                     val sh = metrics.heightPixels
-                    builder.size((sqrt((6f * sw * sh) / 8f)).toInt())
 
                     return if (cornerRadius > 0) {
                         this@WidgetComponent.logD("Loading round covers: $cornerRadius")
 
-                        // Use RoundedCornersTransformation. This is because our hack to get a 1:1
-                        // aspect ratio on widget ImageViews doesn't actually result in a square
-                        // ImageView, so clipToOutline won't work.
-                        builder.transformations(
-                            SquareFrameTransform.INSTANCE,
-                            RoundedCornersTransformation(cornerRadius.toFloat()))
-                    } else {
                         builder
+                            .size(sqrt((6f / 4f / 8f) * sw * sh).toInt())
+                            .transformations(
+                                SquareFrameTransform.INSTANCE,
+                                // RoundedCornersTransformation is used instead of clipToOutline
+                                // since our hack to get a 1:1 cover on the widget actually does
+                                // not result in a square view, making clipToOutline not work.
+                                RoundedCornersTransformation(cornerRadius.toFloat()))
+                    } else {
+                        builder.size(sqrt((6f / 4f / 2f) * sw * sh).toInt())
                     }
                 }
 

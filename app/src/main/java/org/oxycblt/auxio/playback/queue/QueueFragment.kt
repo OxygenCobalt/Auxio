@@ -34,8 +34,6 @@ import org.oxycblt.auxio.util.logD
 /**
  * A [Fragment] that shows the queue and enables editing as well.
  *
- * TODO: Test older versions
- *
  * @author OxygenCobalt
  */
 class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemListener {

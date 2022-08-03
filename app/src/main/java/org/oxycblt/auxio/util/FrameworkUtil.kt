@@ -253,9 +253,7 @@ val WindowInsets.systemBarInsetsCompat: Insets
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
                 getInsets(WindowInsets.Type.systemBars())
             }
-            else -> {
-                @Suppress("DEPRECATION") systemWindowInsets
-            }
+            else -> systemWindowInsetsCompat
         }
 
 /**
@@ -277,10 +275,19 @@ val WindowInsets.systemGestureInsetsCompat: Insets
                     getInsets(WindowInsets.Type.systemBars()))
             }
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
-                @Suppress("DEPRECATION") Insets.max(systemGestureInsets, systemWindowInsets)
+                @Suppress("DEPRECATION") Insets.max(systemGestureInsets, systemBarInsetsCompat)
             }
-            else -> Insets.of(0, 0, 0, 0)
+            else -> systemWindowInsetsCompat
         }
+
+@Suppress("DEPRECATION")
+val WindowInsets.systemWindowInsetsCompat: Insets
+    get() =
+        Insets.of(
+            systemWindowInsetLeft,
+            systemWindowInsetTop,
+            systemWindowInsetRight,
+            systemWindowInsetBottom)
 
 /**
  * Replaces the system bar insets in a version-aware manner. This can be used to modify the insets

@@ -67,7 +67,7 @@ class MainFragment :
             .onBackPressedDispatcher.addCallback(
                 viewLifecycleOwner, DynamicBackPressedCallback().also { callback = it })
 
-        binding.root.setOnApplyWindowInsetsListener { v, insets ->
+        binding.root.setOnApplyWindowInsetsListener { _, insets ->
             lastInsets = insets
             insets
         }
@@ -202,7 +202,7 @@ class MainFragment :
         }
     }
 
-    private fun tryExpandAll(): Boolean {
+    private fun tryExpandAll() {
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
@@ -210,13 +210,10 @@ class MainFragment :
         if (playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN &&
             playbackSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
             playbackSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-            return true
         }
-
-        return false
     }
 
-    private fun tryCollapseAll(): Boolean {
+    private fun tryCollapseAll() {
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
@@ -228,14 +225,10 @@ class MainFragment :
 
             playbackSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             queueSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-
-            return true
         }
-
-        return false
     }
 
-    private fun tryUnhideAll(): Boolean {
+    private fun tryUnhideAll() {
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
@@ -248,14 +241,10 @@ class MainFragment :
             playbackSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
             queueSheetBehavior.isDraggable = true
-
-            return true
         }
-
-        return false
     }
 
-    private fun tryHideAll(): Boolean {
+    private fun tryHideAll() {
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
@@ -269,11 +258,7 @@ class MainFragment :
 
             playbackSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             queueSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-
-            return true
         }
-
-        return false
     }
 
     /**
