@@ -363,7 +363,7 @@ class PlaybackStateManager private constructor() {
 
         synchronized(this) {
             val exists =
-                if (state != null) {
+                if (state != null && !isInitialized) {
                     // Continuing playback while also possibly doing drastic state updates is
                     // a bad idea, so pause.
                     isPlaying = false
