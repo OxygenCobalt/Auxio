@@ -154,7 +154,7 @@ val RecyclerView.canScroll: Boolean
     get() = computeVerticalScrollRange() > height
 
 val View.coordinatorLayoutBehavior: CoordinatorLayout.Behavior<*>?
-    get() = (layoutParams as CoordinatorLayout.LayoutParams).behavior
+    get() = (layoutParams as? CoordinatorLayout.LayoutParams)?.behavior
 
 /** Converts this color to a single-color [ColorStateList]. */
 val @receiver:ColorRes Int.stateList

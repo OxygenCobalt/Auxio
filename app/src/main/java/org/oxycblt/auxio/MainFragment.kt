@@ -23,10 +23,12 @@ import android.view.ViewTreeObserver
 import android.view.WindowInsets
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isInvisible
+import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.transition.MaterialFadeThrough
 import kotlin.math.max
 import kotlin.math.min
@@ -75,12 +77,27 @@ class MainFragment :
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
 
-        val queueSheetBehavior = binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior
+        val queueSheetBehavior = binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
 
-        binding.handleWrapper.setOnClickListener {
-            if (playbackSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED &&
-                queueSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
-                queueSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        if (queueSheetBehavior != null) {
+            unlikelyToBeNull(binding.handleWrapper).setOnClickListener {
+                if (playbackSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED &&
+                    queueSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
+                    queueSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                }
+            }
+        } else {
+            binding.queueSheet.apply {
+                background =
+                    MaterialShapeDrawable.createWithElevationOverlay(context).apply {
+                        fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
+                        elevation = context.getDimenSafe(R.dimen.elevation_normal)
+                    }
+
+                setOnApplyWindowInsetsListener { v, insets ->
+                    v.updatePadding(top = insets.systemBarInsetsCompat.top)
+                    insets
+                }
             }
         }
 
@@ -121,16 +138,11 @@ class MainFragment :
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
 
-        val queueSheetBehavior = binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior
-
         val playbackRatio = max(playbackSheetBehavior.calculateSlideOffset(), 0f)
-        val queueRatio = max(queueSheetBehavior.calculateSlideOffset(), 0f)
 
         val outPlaybackRatio = 1 - playbackRatio
         val halfOutRatio = min(playbackRatio * 2, 1f)
         val halfInPlaybackRatio = max(playbackRatio - 0.5f, 0f) * 2
-        val halfOutQueueRatio = min(queueRatio * 2, 1f)
-        val halfInQueueRatio = max(queueRatio - 0.5f, 0f) * 2
 
         binding.exploreNavHost.apply {
             alpha = outPlaybackRatio
@@ -141,30 +153,61 @@ class MainFragment :
             requireContext().getDimenSafe(R.dimen.elevation_normal) * outPlaybackRatio
         playbackSheetBehavior.sheetBackgroundDrawable.alpha = (outPlaybackRatio * 255).toInt()
 
-        binding.playbackBarFragment.apply {
-            alpha = max(1 - halfOutRatio, halfInQueueRatio)
-            isInvisible = alpha == 0f
-            lastInsets?.let { translationY = it.systemBarInsetsCompat.top * halfOutRatio }
-        }
+        val queueSheetBehavior = binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
 
-        binding.playbackPanelFragment.apply {
-            alpha = min(halfInPlaybackRatio, 1 - halfOutQueueRatio)
-            isInvisible = alpha == 0f
-        }
+        if (queueSheetBehavior != null) {
+            val queueRatio = max(queueSheetBehavior.calculateSlideOffset(), 0f)
+            val halfOutQueueRatio = min(queueRatio * 2, 1f)
+            val halfInQueueRatio = max(queueRatio - 0.5f, 0f) * 2
 
-        binding.queueFragment.apply {
-            alpha = queueRatio
-            isInvisible = alpha == 0f
-        }
+            binding.playbackBarFragment.apply {
+                alpha = max(1 - halfOutRatio, halfInQueueRatio)
+                isInvisible = alpha == 0f
+                lastInsets?.let { translationY = it.systemBarInsetsCompat.top * halfOutRatio }
+            }
 
-        if (playbackModel.song.value != null) {
-            // Hack around the playback sheet intercepting swipe events on the queue bar
-            playbackSheetBehavior.isDraggable =
-                queueSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED
+            binding.playbackPanelFragment.apply {
+                alpha = min(halfInPlaybackRatio, 1 - halfOutQueueRatio)
+                isInvisible = alpha == 0f
+            }
+
+            binding.queueFragment.apply {
+                alpha = queueRatio
+                isInvisible = alpha == 0f
+            }
+
+            if (playbackModel.song.value != null) {
+                // Hack around the playback sheet intercepting swipe events on the queue bar
+                playbackSheetBehavior.isDraggable =
+                    queueSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED
+            } else {
+                // Sometimes lingering drags can un-hide the playback sheet even when we intend to
+                // hide it, make sure we keep it hidden.
+                tryHideAll()
+            }
         } else {
-            // Sometimes lingering drags can un-hide the playback sheet even when we intend to
-            // hide it, make sure we keep it hidden.
-            tryHideAll()
+
+            binding.playbackBarFragment.apply {
+                alpha = 1 - halfOutRatio
+                isInvisible = alpha == 0f
+                lastInsets?.let { translationY = it.systemBarInsetsCompat.top * halfOutRatio }
+            }
+
+            binding.playbackPanelFragment.apply {
+                alpha = halfInPlaybackRatio
+                isInvisible = alpha == 0f
+            }
+
+            binding.queueSheet.apply {
+                alpha = halfInPlaybackRatio
+                isInvisible = alpha == 0f
+            }
+
+            if (playbackModel.song.value == null) {
+                // Sometimes lingering drags can un-hide the playback sheet even when we intend to
+                // hide it, make sure we keep it hidden.
+                tryHideAll()
+            }
         }
 
         return true
@@ -221,10 +264,10 @@ class MainFragment :
         if (playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN &&
             playbackSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED) {
             val queueSheetBehavior =
-                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior
+                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
 
             playbackSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            queueSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            queueSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
 
@@ -234,13 +277,13 @@ class MainFragment :
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
 
         if (playbackSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
-            val queueSheetBehavior =
-                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior
-
             playbackSheetBehavior.isDraggable = true
             playbackSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-            queueSheetBehavior.isDraggable = true
+            val queueSheetBehavior =
+                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
+
+            queueSheetBehavior?.isDraggable = true
         }
     }
 
@@ -251,13 +294,17 @@ class MainFragment :
 
         if (playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
             val queueSheetBehavior =
-                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior
+                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
 
-            playbackSheetBehavior.isDraggable = false
-            queueSheetBehavior.isDraggable = false
+            queueSheetBehavior?.apply {
+                isDraggable = false
+                state = BottomSheetBehavior.STATE_COLLAPSED
+            }
 
-            playbackSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            queueSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            playbackSheetBehavior.apply {
+                isDraggable = false
+                state = BottomSheetBehavior.STATE_HIDDEN
+            }
         }
     }
 
@@ -272,9 +319,10 @@ class MainFragment :
             val binding = requireBinding()
 
             val queueSheetBehavior =
-                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior
+                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
 
-            if (queueSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED) {
+            if (queueSheetBehavior != null &&
+                queueSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED) {
                 queueSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 return
             }

@@ -36,7 +36,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 import java.lang.reflect.Field
 import kotlin.math.abs
@@ -76,6 +75,14 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
     private val sortItem: MenuItem by lifecycleObject { binding ->
         binding.homeToolbar.menu.findItem(R.id.submenu_sorting)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
     }
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentHomeBinding.inflate(inflater)
@@ -146,11 +153,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         when (item.itemId) {
             R.id.action_search -> {
                 logD("Navigating to search")
-                // Search has no contextual relation to home, use fade transitions
-                enterTransition = MaterialFadeThrough()
-                returnTransition = MaterialFadeThrough()
-                exitTransition = MaterialFadeThrough()
-                reenterTransition = MaterialFadeThrough()
                 findNavController().navigate(HomeFragmentDirections.actionShowSearch())
             }
             R.id.action_settings -> {
@@ -357,11 +359,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 is Genre -> HomeFragmentDirections.actionShowGenre(item.id)
                 else -> return
             }
-
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
 
         findNavController().navigate(action)
     }

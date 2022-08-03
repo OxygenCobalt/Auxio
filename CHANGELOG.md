@@ -28,8 +28,9 @@ at the cost of longer loading times
 - Fixed default material theme being used before app shows up
 - Fixed shuffle shortcut and file opening not working on startup on some devices
 - Fixed issue where the notification position would not match if one seeked when paused
-- Fixed issue where widget covers would not load
 - Fixed issue where widget could not be sized to it's smallest form
+- Fixed issue where restored state would override a song if it was played early enough
+in startup 
 
 #### What's Changed
 - Play and skip icons are filled again

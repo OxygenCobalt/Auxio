@@ -73,7 +73,7 @@
                 style="@style/Widget.Auxio.Button.Icon.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/spacing_mid_medium"
+                android:layout_marginEnd="@dimen/spacing_small"
                 android:contentDescription="@string/desc_queue_handle"
                 app:icon="@drawable/ic_handle_24"
                 app:layout_constraintBottom_toBottomOf="@+id/song_album_cover"
