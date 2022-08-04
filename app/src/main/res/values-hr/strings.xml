@@ -227,5 +227,4 @@
     <string name="set_wipe">Izbriši stanje reprodukcije</string>
     <string name="lbl_state_wiped">Stanje izbrisano</string>
     <string name="set_wipe_desc">Izbriši prethodno stanje reprodukcije (ako postoji)</string>
-    <string name="lbl_later">Kasnije</string>
 </resources>
