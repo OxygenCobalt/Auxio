@@ -38,12 +38,12 @@
     <string name="lbl_queue">طابور</string>
     <string name="lbl_play_next">شغل تالياً</string>
     <string name="lbl_queue_add">أضف إلى الطابور</string>
-    <string name="lbl_queue_added">تمت الإضافة إلى الطابور</string>
+    <string name="lng_queue_added">تمت الإضافة إلى الطابور</string>
 
     <string name="lbl_go_artist">أذهب إلى الفنان</string>
     <string name="lbl_go_album">أذهب إلى الالبوم</string>
 
-    <string name="lbl_state_saved">تم حفظ الحالة</string>
+    <string name="lng_state_saved">تم حفظ الحالة</string>
 
     <string name="lbl_add">أضف</string>
     <string name="lbl_save">احفظ</string>
@@ -54,7 +54,7 @@
     <string name="lbl_code">عرض على جيتهاب</string>
     <string name="lbl_faq">اسئلة وأجوبة</string>
     <string name="lbl_licenses">التراخيص</string>
-    <string name="lbl_author">تمت برمجة التطبيق من قبل OxygenCobalt</string>
+    <string name="lng_author">تمت برمجة التطبيق من قبل OxygenCobalt</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">الإعدادات</string>
@@ -108,7 +108,7 @@
     <string name="err_bad_dir">هذا المجلد غير مدعوم</string>
 
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">البحث في مكتبتك…</string>
+    <string name="lng_search_library">البحث في مكتبتك…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">المقطع %d</string>
@@ -136,8 +136,6 @@
     <string name="def_genre">نوع غير معروف</string>
     <string name="def_date">لا تاريخ</string>
     <string name="def_playback">لا يعمل موسيقى</string>
-    <string name="def_widget_song">اسم الاغنية</string>
-    <string name="def_widget_artist">اسم الفنان</string>
 
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">احمر</string>

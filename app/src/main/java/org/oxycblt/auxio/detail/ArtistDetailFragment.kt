@@ -108,12 +108,12 @@ class ArtistDetailFragment :
         return when (item.itemId) {
             R.id.action_play_next -> {
                 playbackModel.playNext(unlikelyToBeNull(detailModel.currentArtist.value))
-                requireContext().showToast(R.string.lbl_queue_added)
+                requireContext().showToast(R.string.lng_queue_added)
                 true
             }
             R.id.action_queue_add -> {
                 playbackModel.addToQueue(unlikelyToBeNull(detailModel.currentArtist.value))
-                requireContext().showToast(R.string.lbl_queue_added)
+                requireContext().showToast(R.string.lng_queue_added)
                 true
             }
             else -> false

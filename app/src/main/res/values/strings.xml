@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Info namespace | App labels -->
+    <eat-comment />
+
     <string name="info_app_desc">A simple, rational music player for android.</string>
     <string name="info_playback_channel_name">Music playback</string>
     <string name="info_indexer_channel_name">Music loading</string>
     <string name="info_widget_desc">View and control music playback</string>
 
     <!-- Label Namespace | Static Labels -->
+    <eat-comment />
 
     <string name="lbl_retry">Retry</string>
     <!-- As in grant permission -->
     <string name="lbl_grant">Grant</string>
-    <string name="lbl_indexing">Loading music</string>
-    <string name="lbl_indexing_desc">Loading your music library…</string>
-    <string name="lbl_observing">Monitoring music library</string>
-    <string name="lbl_observing_desc">Monitoring your music library for changes…</string>
 
     <string name="lbl_songs">Songs</string>
-    <string name="lbl_all_songs">All Songs</string>
+    <string name="lbl_all_songs">All songs</string>
 
     <string name="lbl_albums">Albums</string>
     <string name="lbl_album">Album</string>
@@ -76,14 +75,13 @@
     <string name="lbl_sort_date_added">Date added</string>
     <string name="lbl_sort_asc">Ascending</string>
 
-    <string name="lbl_playback">Now Playing</string>
+    <string name="lbl_playback">Now playing</string>
     <string name="lbl_play">Play</string>
     <string name="lbl_shuffle">Shuffle</string>
 
     <string name="lbl_queue">Queue</string>
     <string name="lbl_play_next">Play next</string>
     <string name="lbl_queue_add">Add to queue</string>
-    <string name="lbl_queue_added">Added to queue</string>
 
     <string name="lbl_go_artist">Go to artist</string>
     <string name="lbl_go_album">Go to album</string>
@@ -99,17 +97,10 @@
     <string name="lbl_bitrate">Bit rate</string>
     <string name="lbl_sample_rate">Sample rate</string>
 
-    <!-- Referring to playback state -->
-    <string name="lbl_state_saved">State saved</string>
-    <!-- Referring to playback state -->
-    <string name="lbl_state_wiped">State cleared</string>
-    <!-- Referring to playback state -->
-    <string name="lbl_state_restored">State restored</string>
-
     <!-- Limit to 10 characters -->
     <string name="lbl_shuffle_shortcut_short">Shuffle</string>
     <!-- Limit to 25 characters -->
-    <string name="lbl_shuffle_shortcut_long">Shuffle All</string>
+    <string name="lbl_shuffle_shortcut_long">Shuffle all</string>
 
     <!-- Actual string: Ok -->
     <string name="lbl_ok">@android:string/ok</string>
@@ -121,13 +112,31 @@
 
     <string name="lbl_about">About</string>
     <string name="lbl_version">Version</string>
-    <string name="lbl_code">View on Github</string>
+    <string name="lbl_code">Source code</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licenses</string>
-    <string name="lbl_author">Developed by OxygenCobalt</string>
     <string name="lbl_library_counts">Library statistics</string>
 
+    <!-- Long Namespace | Longer Descriptions -->
+    <eat-comment />
+
+    <string name="lng_indexing">Loading music</string>
+    <string name="lng_indexing_desc">Loading your music library…</string>
+    <string name="lng_observing">Monitoring music library</string>
+    <string name="lng_observing_desc">Monitoring your music library for changes…</string>
+    <string name="lng_queue_added">Added to queue</string>
+    <string name="lng_author">Developed by OxygenCobalt</string>
+    <!-- As in music library -->
+    <string name="lng_search_library">Search your library…</string>
+    <!-- Referring to playback state -->
+    <string name="lng_state_saved">State saved</string>
+    <!-- Referring to playback state -->
+    <string name="lng_state_wiped">State cleared</string>
+    <!-- Referring to playback state -->
+    <string name="lng_state_restored">State restored</string>
+
     <!-- Settings namespace | Settings-related labels -->
+    <eat-comment />
 
     <string name="set_title">Settings</string>
     <string name="set_ui">Appearance</string>
@@ -210,21 +219,16 @@
     <string name="err_no_perms">Auxio needs permission to read your music library</string>
     <string name="err_no_app">No app can open this link</string>
     <!-- No folders in the "Music Folders" setting -->
-    <string name="err_no_dirs">No Folders</string>
+    <string name="err_no_dirs">No folders</string>
     <string name="err_bad_dir">This folder is not supported</string>
     <!-- Referring to playback state -->
     <string name="err_did_not_restore">No state could be restored</string>
-
-    <!-- Hint Namespace | EditText Hints -->
-
-    <!-- As in music library -->
-    <string name="hint_search_library">Search your library…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
 
     <string name="desc_track_number">Track %d</string>
 
-    <string name="desc_play_pause">Play or Pause</string>
+    <string name="desc_play_pause">Play or pause</string>
     <string name="desc_skip_next">Skip to next song</string>
     <string name="desc_skip_prev">Skip to last song</string>
     <string name="desc_change_repeat">Change repeat mode</string>
@@ -245,46 +249,47 @@
     <string name="desc_genre_image">Genre image for %s</string>
 
     <!-- Default Namespace | Placeholder values -->
+    <eat-comment />
 
-    <string name="def_artist">Unknown Artist</string>
-    <string name="def_genre">Unknown Genre</string>
-    <string name="def_date">No Date</string>
-    <string name="def_track">No Track Number</string>
+    <string name="def_artist">Unknown artist</string>
+    <string name="def_genre">Unknown genre</string>
+    <string name="def_date">No date</string>
+    <string name="def_track">No track number</string>
     <string name="def_playback">No music playing</string>
-    <string name="def_codec">Unknown Format</string>
-    <string name="def_bitrate">No Bitrate</string>
-    <string name="def_sample_rate">No Sample Rate</string>
-    <string name="def_widget_song">Song Name</string>
-    <string name="def_widget_artist">Artist Name</string>
+    <string name="def_codec">Unknown format</string>
+    <string name="def_bitrate">No bitrate</string>
+    <string name="def_sample_rate">No sample rate</string>
 
     <!-- Codec Namespace | Format names -->
+    <eat-comment />
 
     <!-- "Audio" can optionally be translated -->
-    <string name="cdc_mp3">MPEG-1 Audio</string>
+    <string name="cdc_mp3">MPEG-1 audio</string>
     <!-- "Audio" can optionally be translated -->
-    <string name="cdc_mp4">MPEG-4 Audio</string>
+    <string name="cdc_mp4">MPEG-4 audio</string>
     <!-- "Audio" can optionally be translated -->
-    <string name="cdc_ogg">Ogg Audio</string>
+    <string name="cdc_ogg">Ogg audio</string>
     <!-- "Audio" can optionally be translated -->
-    <string name="cdc_mka">Matroska Audio</string>
+    <string name="cdc_mka">Matroska audio</string>
     <!-- "Advanced Audio Coding" can optionally be translated -->
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <!-- "Free Lossless Audio Codec" can optionally be translated -->
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
 
     <!-- Color Label namespace | Accent names -->
+    <eat-comment />
 
     <string name="clr_red">Red</string>
     <string name="clr_pink">Pink</string>
     <string name="clr_purple">Purple</string>
-    <string name="clr_deep_purple">Deep Purple</string>
+    <string name="clr_deep_purple">Deep purple</string>
     <string name="clr_indigo">Indigo</string>
     <string name="clr_blue">Blue</string>
-    <string name="clr_deep_blue">Deep Blue</string>
+    <string name="clr_deep_blue">Deep blue</string>
     <string name="clr_cyan">Cyan</string>
     <string name="clr_teal">Teal</string>
     <string name="clr_green">Green</string>
-    <string name="clr_deep_green">Deep Green</string>
+    <string name="clr_deep_green">Deep green</string>
     <string name="clr_lime">Lime</string>
     <string name="clr_yellow">Yellow</string>
     <string name="clr_orange">Orange</string>
@@ -294,6 +299,7 @@
     <string name="clr_dynamic">Dynamic</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
+    <eat-comment />
 
     <!-- As in "Disc 1", "Disc 2", etc. in a set -->
     <string name="fmt_disc_no">Disc %d</string>
@@ -317,12 +323,12 @@
     <string name="fmt_lib_total_duration">Total duration: %s</string>
 
     <plurals name="fmt_song_count">
-        <item quantity="one">%d Song</item>
-        <item quantity="other">%d Songs</item>
+        <item quantity="one">%d song</item>
+        <item quantity="other">%d songs</item>
     </plurals>
 
     <plurals name="fmt_album_count">
-        <item quantity="one">%d Album</item>
-        <item quantity="other">%d Albums</item>
+        <item quantity="one">%d album</item>
+        <item quantity="other">%d albums</item>
     </plurals>
 </resources>

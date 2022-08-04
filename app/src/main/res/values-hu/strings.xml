@@ -24,7 +24,7 @@
     <string name="lbl_queue">Lejátszási sor</string>
     <string name="lbl_play_next">Lejátszás következőnek</string>
     <string name="lbl_queue_add">Lejátszás sorhoz adás</string>
-    <string name="lbl_queue_added">Sorbaállítva</string>
+    <string name="lng_queue_added">Sorbaállítva</string>
 
     <string name="lbl_go_artist">Ugrás az előadóhoz</string>
     <string name="lbl_go_album">Ugrás az albumhoz</string>
@@ -55,7 +55,7 @@
     <string name="err_no_music">Nem található zene</string>
 
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">Keresés a könyvtárban…</string>
+    <string name="lng_search_library">Keresés a könyvtárban…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Sáv %d</string>

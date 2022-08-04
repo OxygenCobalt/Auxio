@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="lbl_indexing">Učitavanje glazbe</string>
-    <string name="lbl_indexing_desc">Učitavam vašu zbirku glazbe…</string>
-    <string name="lbl_observing">Nadgledam zbirku glazbe</string>
-    <string name="lbl_observing_desc">Nadgledam vašu zbirku glazbe u slučaju promjena…</string>
+    <string name="lng_indexing">Učitavanje glazbe</string>
+    <string name="lng_indexing_desc">Učitavam vašu zbirku glazbe…</string>
+    <string name="lng_observing">Nadgledam zbirku glazbe</string>
+    <string name="lng_observing_desc">Nadgledam vašu zbirku glazbe u slučaju promjena…</string>
     <string name="lbl_songs">Pjesme</string>
     <string name="lbl_all_songs">Sve pjesme</string>
     <string name="lbl_albums">Albumi</string>
@@ -46,8 +46,8 @@
     <string name="lbl_size">Veličina</string>
     <string name="lbl_bitrate">Bit puls</string>
     <string name="lbl_sample_rate">Uzorak stope</string>
-    <string name="lbl_state_saved">Stanje spremljeno</string>
-    <string name="lbl_state_restored">Stanje vraćeno</string>
+    <string name="lng_state_saved">Stanje spremljeno</string>
+    <string name="lng_state_restored">Stanje vraćeno</string>
     <string name="lbl_shuffle_shortcut_short">Izmiješaj</string>
     <string name="lbl_shuffle_shortcut_long">Izmiješaj sve</string>
     <string name="lbl_ok">U redu</string>
@@ -60,7 +60,7 @@
     <string name="lbl_code">Vidi na GitHubu</string>
     <string name="lbl_faq">Često postavljana pitanja</string>
     <string name="lbl_licenses">Licencije</string>
-    <string name="lbl_author">Razvijeno sa strane OxygenCobalta</string>
+    <string name="lng_author">Razvijeno sa strane OxygenCobalta</string>
     <string name="lbl_library_counts">Statistika zbirke</string>
     <string name="set_ui">Izgled</string>
     <string name="set_theme_day">Svjetla</string>
@@ -115,7 +115,7 @@
     <string name="err_no_dirs">Nema mapa</string>
     <string name="err_bad_dir">Ova mapa nije podržana</string>
     <string name="err_did_not_restore">Nijedno stanje nije bilo moguće vratiti</string>
-    <string name="hint_search_library">Pretražite vašu zbirku…</string>
+    <string name="lng_search_library">Pretražite vašu zbirku…</string>
     <string name="desc_track_number">Zvučni zapis %d</string>
     <string name="desc_shuffle">Omogućite ili onemogućite miješanje</string>
     <string name="desc_shuffle_all">Izmiješaj sve pjesme</string>
@@ -137,8 +137,6 @@
     <string name="def_codec">Nepoznat Format</string>
     <string name="def_bitrate">Bez Bit Pulsa</string>
     <string name="def_sample_rate">Bez Stope Uzorka</string>
-    <string name="def_widget_song">Naziv Pjesme</string>
-    <string name="def_widget_artist">Ime Autora</string>
     <string name="cdc_mp3">MPEG-1 Zvuk</string>
     <string name="cdc_mp4">MPEG-4 Zvuk</string>
     <string name="cdc_ogg">Ogg Zvuk</string>
@@ -195,7 +193,7 @@
     <string name="lbl_search">Traži</string>
     <string name="lbl_filter_all">Sve</string>
     <string name="lbl_queue_add">Dodaj u red čekanja</string>
-    <string name="lbl_queue_added">Dodano u red čekanja</string>
+    <string name="lng_queue_added">Dodano u red čekanja</string>
     <string name="lbl_song_detail">Vidi svojstva</string>
     <string name="lbl_go_artist">Idi na autora</string>
     <string name="lbl_go_album">Idi na album</string>
@@ -225,6 +223,6 @@
     <string name="clr_purple">Ljubičasto</string>
     <string name="cdc_mka">Matroska Zvuk</string>
     <string name="set_wipe">Izbriši stanje reprodukcije</string>
-    <string name="lbl_state_wiped">Stanje izbrisano</string>
+    <string name="lng_state_wiped">Stanje izbrisano</string>
     <string name="set_wipe_desc">Izbriši prethodno stanje reprodukcije (ako postoji)</string>
 </resources>

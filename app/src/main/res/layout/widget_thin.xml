@@ -79,14 +79,14 @@
                 style="@style/Widget.Auxio.TextView.Primary.AppWidget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/def_widget_song" />
+                tools:text="Song name" />
 
             <android.widget.TextView
                 android:id="@+id/widget_artist"
                 style="@style/Widget.Auxio.TextView.Secondary.AppWidget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/def_widget_artist" />
+                tools:text="Artist name" />
 
         </android.widget.LinearLayout>
 

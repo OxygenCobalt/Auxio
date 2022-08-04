@@ -326,7 +326,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         when (indexing) {
             is Indexer.Indexing.Indeterminate -> {
-                binding.homeIndexingStatus.textSafe = getString(R.string.lbl_indexing_desc)
+                binding.homeIndexingStatus.textSafe = getString(R.string.lng_indexing_desc)
                 binding.homeIndexingProgress.isIndeterminate = true
             }
             is Indexer.Indexing.Songs -> {

@@ -24,7 +24,7 @@
     <string name="lbl_queue">Fila de așteptare</string>
     <string name="lbl_play_next">Redaţi următoarea</string>
     <string name="lbl_queue_add">Adăugați la lista de așteptare</string>
-    <string name="lbl_queue_added">A fost adăugat la liste de așteptare</string>
+    <string name="lng_queue_added">A fost adăugat la liste de așteptare</string>
 
     <string name="lbl_go_artist">Accesaţi artistul</string>
     <string name="lbl_go_album">Accesaţi albumul</string>
@@ -34,7 +34,7 @@
     <string name="lbl_code">Vedeți pe GitHub</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licențe</string>
-    <string name="lbl_author">Dezvoltat de OxygenCobalt</string>
+    <string name="lng_author">Dezvoltat de OxygenCobalt</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Setări</string>
@@ -56,7 +56,7 @@
     <string name="err_no_music">Nu s-a găsit nici o muzică</string>
 
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">Căutați în bibliotecă…</string>
+    <string name="lng_search_library">Căutați în bibliotecă…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Melodie %d</string>

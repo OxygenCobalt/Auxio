@@ -41,12 +41,12 @@
     <string name="lbl_queue">대기열</string>
     <string name="lbl_play_next">다음 곡 재생</string>
     <string name="lbl_queue_add">대기열에 추가</string>
-    <string name="lbl_queue_added">대기열에 추가되었습니다.</string>
+    <string name="lng_queue_added">대기열에 추가되었습니다.</string>
 
     <string name="lbl_go_artist">아티스트로 이동</string>
     <string name="lbl_go_album">앨범으로 이동</string>
 
-    <string name="lbl_state_saved">상태를 저장했습니다.</string>
+    <string name="lng_state_saved">상태를 저장했습니다.</string>
 
     <!-- Actual string: Ok -->
     <string name="lbl_ok">@android:string/ok</string>
@@ -61,7 +61,7 @@
     <string name="lbl_code">Github에서 보기</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">라이선스</string>
-    <string name="lbl_author">OxygenCobalt 개발</string>
+    <string name="lng_author">OxygenCobalt 개발</string>
     <string name="lbl_library_counts">라이브러리 통계</string>
 
     <!-- Settings namespace | Settings-related labels -->
@@ -125,7 +125,7 @@
     <string name="err_bad_dir">이 폴더는 지원하지 않는 폴더입니다.</string>
 
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">라이브러리에서 검색…</string>
+    <string name="lng_search_library">라이브러리에서 검색…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">트랙 %d</string>
@@ -155,8 +155,6 @@
     <string name="def_date">날짜 없음</string>
     <string name="def_track">트랙 번호 없음</string>
     <string name="def_playback">재생 중인 음악 없음</string>
-    <string name="def_widget_song">음악 제목</string>
-    <string name="def_widget_artist">아티스트 이름</string>
 
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">빨간색</string>

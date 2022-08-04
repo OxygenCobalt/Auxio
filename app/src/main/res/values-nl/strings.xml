@@ -26,10 +26,10 @@
     <string name="lbl_queue">Wachtrij</string>
     <string name="lbl_play_next">Afspelen als volgende</string>
     <string name="lbl_queue_add">Toevoegen aan wachtrij</string>
-    <string name="lbl_queue_added">Toegevoegd aan de wachtrij</string>
+    <string name="lng_queue_added">Toegevoegd aan de wachtrij</string>
     <string name="lbl_go_artist">Ga naar artiest</string>
     <string name="lbl_go_album">Ga naar album</string>
-    <string name="lbl_state_saved">Staat gered</string>
+    <string name="lng_state_saved">Staat gered</string>
     <string name="lbl_add">Toevoegen</string>
     <string name="lbl_save">Opslaan</string>
     <string name="err_no_dirs">Geen Mappen</string>
@@ -38,7 +38,7 @@
     <string name="lbl_code">Bekijken op GitHub</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licenties</string>
-    <string name="lbl_author">Ontwikkeld door OxygenCobalt</string>
+    <string name="lng_author">Ontwikkeld door OxygenCobalt</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Instellingen</string>
     <string name="set_ui">Uiterlijk</string>
@@ -72,7 +72,7 @@
     <string name="err_no_app">Geen app kan deze link openen</string>
     <string name="err_bad_dir">Deze map wordt niet ondersteund</string>
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">Zoek in uw bibliotheek…</string>
+    <string name="lng_search_library">Zoek in uw bibliotheek…</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Nummer %d</string>
     <string name="desc_play_pause">Afspelen/Pauzeren</string>
@@ -147,7 +147,6 @@
     <string name="lbl_off">Uit</string>
     <string name="set_headset_autoplay_desc">Altijd beginnen met spelen als een headset is aangesloten (werkt mogelijk niet op alle apparaten)</string>
     <string name="desc_shuffle">Schakel shuffle aan of uit</string>
-    <string name="def_widget_song">Naam van het lied</string>
     <string name="set_reindex_desc">Kan afspeelstatus wissen</string>
     <string name="fmt_indexing">Uw muziekbibliotheek wordt geladen… (%1$d/%2$d)</string>
     <string name="set_dirs_mode_exclude">Uitgezonderd</string>
@@ -164,8 +163,7 @@
     <string name="set_detail_song_playback_mode">Bij het afspelen van item details</string>
     <string name="set_round_mode">Ronde modus</string>
     <string name="set_round_mode_desc">Afgeronde hoeken op extra UI-elementen inschakelen (vereist dat albumhoezen afgerond zijn)</string>
-    <string name="def_widget_artist">Naam artiest</string>
-    <string name="lbl_state_restored">Staat gerestaureerd</string>
+    <string name="lng_state_restored">Staat gerestaureerd</string>
     <string name="lbl_library_counts">Bibliotheekstatistieken</string>
     <string name="set_lib_tabs_desc">Verander de zichtbaarheid en volgorde van bibliotheek-tabbladen</string>
     <string name="set_headset_autoplay">Headset automatisch afspelen</string>

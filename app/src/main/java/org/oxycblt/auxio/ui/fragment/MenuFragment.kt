@@ -58,11 +58,11 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
             when (id) {
                 R.id.action_play_next -> {
                     playbackModel.playNext(song)
-                    requireContext().showToast(R.string.lbl_queue_added)
+                    requireContext().showToast(R.string.lng_queue_added)
                 }
                 R.id.action_queue_add -> {
                     playbackModel.addToQueue(song)
-                    requireContext().showToast(R.string.lbl_queue_added)
+                    requireContext().showToast(R.string.lng_queue_added)
                 }
                 R.id.action_go_artist -> {
                     navModel.exploreNavigateTo(song.album.artist)
@@ -100,11 +100,11 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                 }
                 R.id.action_play_next -> {
                     playbackModel.playNext(album)
-                    requireContext().showToast(R.string.lbl_queue_added)
+                    requireContext().showToast(R.string.lng_queue_added)
                 }
                 R.id.action_queue_add -> {
                     playbackModel.addToQueue(album)
-                    requireContext().showToast(R.string.lbl_queue_added)
+                    requireContext().showToast(R.string.lng_queue_added)
                 }
                 R.id.action_go_artist -> {
                     navModel.exploreNavigateTo(album.artist)
@@ -136,11 +136,11 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                 }
                 R.id.action_play_next -> {
                     playbackModel.playNext(artist)
-                    requireContext().showToast(R.string.lbl_queue_added)
+                    requireContext().showToast(R.string.lng_queue_added)
                 }
                 R.id.action_queue_add -> {
                     playbackModel.addToQueue(artist)
-                    requireContext().showToast(R.string.lbl_queue_added)
+                    requireContext().showToast(R.string.lng_queue_added)
                 }
                 else -> {
                     logEOrThrow("Unexpected menu item selected")
@@ -169,11 +169,11 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                 }
                 R.id.action_play_next -> {
                     playbackModel.playNext(genre)
-                    requireContext().showToast(R.string.lbl_queue_added)
+                    requireContext().showToast(R.string.lng_queue_added)
                 }
                 R.id.action_queue_add -> {
                     playbackModel.addToQueue(genre)
-                    requireContext().showToast(R.string.lbl_queue_added)
+                    requireContext().showToast(R.string.lng_queue_added)
                 }
                 else -> {
                     logEOrThrow("Unexpected menu item selected")

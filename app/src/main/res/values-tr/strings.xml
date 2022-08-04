@@ -19,7 +19,7 @@
     <string name="lbl_queue">Kuyruk</string>
     <string name="lbl_play_next">Sonraki şarkı</string>
     <string name="lbl_queue_add">Kuyruğa ekle</string>
-    <string name="lbl_queue_added">Kuyruğa eklendi</string>
+    <string name="lng_queue_added">Kuyruğa eklendi</string>
     <string name="lbl_go_artist">Sanatçıya git</string>
     <string name="lbl_go_album">Albüme git</string>
     <string name="lbl_about">Hakkında</string>
@@ -41,7 +41,7 @@
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Müzik bulunamadı</string>
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">Kitaplığınız taranıyor…</string>
+    <string name="lng_search_library">Kitaplığınız taranıyor…</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Parça %d</string>
     <string name="desc_play_pause">Başlat/Durdur</string>
@@ -76,15 +76,15 @@
     <string name="info_widget_desc">Müzik çalmayı görüntüle ve kontrol et</string>
     <string name="info_app_desc">Android için basit, rasyonel bir müzik çalar.</string>
     <string name="info_indexer_channel_name">Müzik Yükleniyor</string>
-    <string name="lbl_indexing_desc">Müzik kitaplığınız yükleniyor…</string>
+    <string name="lng_indexing_desc">Müzik kitaplığınız yükleniyor…</string>
     <string name="lbl_sort_name">İsim</string>
     <string name="lbl_artist">Sanatçı</string>
     <string name="lbl_album">Albüm</string>
     <string name="lbl_sort_year">Yıl</string>
     <string name="lbl_sort_duration">Süre</string>
     <string name="lbl_off">Kapalı</string>
-    <string name="lbl_state_saved">Durum kaydedildi</string>
-    <string name="lbl_author">OxygenCobalt tarafından geliştirildi</string>
+    <string name="lng_state_saved">Durum kaydedildi</string>
+    <string name="lng_author">OxygenCobalt tarafından geliştirildi</string>
     <string name="set_black_mode">Siyah tema</string>
     <string name="lbl_library_counts">Kitaplık istatistikleri</string>
     <string name="set_black_mode_desc">Saf siyah koyu tema kullan</string>
@@ -133,8 +133,6 @@
     <string name="desc_genre_image">%s için Tür Resmi</string>
     <string name="def_genre">Bilinmeyen tür</string>
     <string name="def_artist">Bilinmeyen sanatçı</string>
-    <string name="def_widget_song">Şarkı Adı</string>
-    <string name="def_widget_artist">Sanatçı Adı</string>
     <string name="cdc_mp3">MPEG-1 Ses</string>
     <string name="cdc_mp4">MPEG-4 Ses</string>
     <string name="cdc_ogg">Ogg Ses</string>
@@ -193,7 +191,7 @@
     <string name="clr_cyan">Camgöbeği</string>
     <string name="clr_teal">Deniz mavisi</string>
     <string name="set_round_mode_desc">Ek arayüz öğelerinde yuvarlatılmış köşeleri etkinleştirir (Albüm kapaklarının yuvarlatılmış olmasını gerektirir)</string>
-    <string name="lbl_state_restored">Durum geri yüklendi</string>
+    <string name="lng_state_restored">Durum geri yüklendi</string>
     <string name="set_restore_desc">Önceden kaydedilmiş oynatma durumunu geri getirir (varsa)</string>
     <string name="set_round_mode">Yuvarlak mod</string>
     <string name="set_restore">Oynatma durumunu eski haline getir</string>
@@ -201,9 +199,9 @@
     <string name="set_quality_tags_desc">Etiket kalitesini artırır, ancak daha uzun yükleme süreleri gerektirir</string>
     <string name="err_did_not_restore">Hiçbir durum geri getirelemedi</string>
     <string name="set_repeat_pause">Tekrarda duraklat</string>
-    <string name="lbl_indexing">Müzik yükleniyor</string>
-    <string name="lbl_observing">Müzik kitaplığı denetleniyor</string>
-    <string name="lbl_observing_desc">Müzik kitaplığı değişiklikler için denetleniyor…</string>
+    <string name="lng_indexing">Müzik yükleniyor</string>
+    <string name="lng_observing">Müzik kitaplığı denetleniyor</string>
+    <string name="lng_observing_desc">Müzik kitaplığı değişiklikler için denetleniyor…</string>
     <string name="set_observing">Otomatik yeniden yükleme</string>
     <string name="set_observing_desc">Müzik kitaplığınız her değiştiğinde yeniden yükler (Deneysel)</string>
     <string name="lbl_sort_date_added">Eklendiği tarih</string>

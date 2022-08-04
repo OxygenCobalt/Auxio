@@ -25,10 +25,10 @@
     <string name="lbl_queue">Warteschlange</string>
     <string name="lbl_play_next">Spiele als Nächstes</string>
     <string name="lbl_queue_add">Zur Warteschlange hinzufügen</string>
-    <string name="lbl_queue_added">Der Warteschlange hinzugefügt</string>
+    <string name="lng_queue_added">Der Warteschlange hinzugefügt</string>
     <string name="lbl_go_artist">Zum Künstler gehen</string>
     <string name="lbl_go_album">Zum Album gehen</string>
-    <string name="lbl_state_saved">Wiedergabezustand gespeichert</string>
+    <string name="lng_state_saved">Wiedergabezustand gespeichert</string>
     <string name="lbl_add">Hinzufügen</string>
     <string name="lbl_save">Speichern</string>
     <string name="err_no_dirs">Keine Ordner</string>
@@ -37,7 +37,7 @@
     <string name="lbl_code">Auf GitHub ansehen</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Lizenzen</string>
-    <string name="lbl_author">Entwickelt von OxygenCobalt</string>
+    <string name="lng_author">Entwickelt von OxygenCobalt</string>
     <string name="lbl_off">Aus</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Einstellungen</string>
@@ -85,7 +85,7 @@
     <string name="err_no_app">Link konnte nicht geöffnet werden</string>
     <string name="err_bad_dir">Das Verzeichnis wird nicht unterstützt</string>
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">Musikbibliothek durchsuchen…</string>
+    <string name="lng_search_library">Musikbibliothek durchsuchen…</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Titel %d</string>
     <string name="desc_play_pause">Abspielen oder pausieren</string>
@@ -141,8 +141,6 @@
     <string name="desc_music_dir_delete">Verzechnis entfernen</string>
     <string name="desc_no_cover">Albumcover</string>
     <string name="def_playback">Keine Musik wird gespielt</string>
-    <string name="def_widget_song">Liedname</string>
-    <string name="def_widget_artist">Künstlername</string>
     <string name="set_lib_tabs">Bibliotheks-Registerkarten</string>
     <string name="set_lib_tabs_desc">Sichtbarkeit und Ordnung der Bibliotheksregisterkarten ändern</string>
     <string name="lbl_sort_name">Name</string>
@@ -192,7 +190,7 @@
     <string name="lbl_shuffle_shortcut_short">Mischen</string>
     <string name="lbl_shuffle_shortcut_long">Alle mischen</string>
     <string name="info_indexer_channel_name">Musikwiedergabe</string>
-    <string name="lbl_indexing_desc">Lade deine Musikbibliothek…</string>
+    <string name="lng_indexing_desc">Lade deine Musikbibliothek…</string>
     <string name="lbl_sample_rate">Abtastrate</string>
     <string name="lbl_song_detail">Zeige Eigenschaften an</string>
     <string name="lbl_props">Lied-Eigenschaften</string>
@@ -203,13 +201,13 @@
     <string name="lbl_bitrate">Bitrate</string>
     <string name="set_quality_tags">MediaStore-Tags ignorieren</string>
     <string name="set_quality_tags_desc">Erhöht Tag-Qualität, benötigt aber längere Ladezeiten (Experimentell)</string>
-    <string name="lbl_observing">Überwachen der Musikbibliothek</string>
-    <string name="lbl_indexing">Musik wird geladen</string>
-    <string name="lbl_observing_desc">Musikbibliothek wird auf Änderungen überwacht…</string>
+    <string name="lng_observing">Überwachen der Musikbibliothek</string>
+    <string name="lng_indexing">Musik wird geladen</string>
+    <string name="lng_observing_desc">Musikbibliothek wird auf Änderungen überwacht…</string>
     <string name="lbl_sort_date_added">Hinzugefügt am</string>
     <string name="set_observing_desc">Musikbibliothek neuladen, sobald es Änderungen gibt (Experimentell)</string>
     <string name="set_observing">Automatisch neuladen</string>
-    <string name="lbl_state_restored">Zustand wiederhergestellt</string>
+    <string name="lng_state_restored">Zustand wiederhergestellt</string>
     <string name="set_restore_desc">Den vorher gespeicherten Wiedergabezustand wiederherstellen (wenn verfügbar)</string>
     <string name="err_did_not_restore">Kein Zustand konnte wiederhergestellt werden</string>
     <string name="lbl_ep">EP</string>
@@ -232,6 +230,6 @@
     <string name="lbl_single_remix">Remix-Single</string>
     <string name="lbl_live_group">Live</string>
     <string name="set_wipe_desc">Den vorher gespeicherten Wiedergabezustand löschen (wenn vorhanden)</string>
-    <string name="lbl_state_wiped">Zustand gelöscht</string>
+    <string name="lng_state_wiped">Zustand gelöscht</string>
     <string name="set_wipe">Wiedergabezustand löschen</string>
 </resources>

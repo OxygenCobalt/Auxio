@@ -23,7 +23,7 @@
 
     <string name="lbl_queue">पंक्ति</string>
     <string name="lbl_queue_add">क़तार में जोड़ें</string>
-    <string name="lbl_queue_added">कतार में जोड़ा गया</string>
+    <string name="lng_queue_added">कतार में जोड़ा गया</string>
 
     <string name="lbl_about">इसके बारे में</string>
     <string name="lbl_code">GitHub में देखें</string>
@@ -50,7 +50,7 @@
     <string name="desc_play_pause">चलाएं/रोकें</string>
 
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">संग्रह में खोजें</string>
+    <string name="lng_search_library">संग्रह में खोजें</string>
 
     <!-- Color Label namespace | Accent names -->
 

@@ -24,7 +24,7 @@
     <string name="lbl_queue">Fila</string>
     <string name="lbl_play_next">Reproduzir a próxima</string>
     <string name="lbl_queue_add">Adicionar à fila</string>
-    <string name="lbl_queue_added">Adicionada à fila</string>
+    <string name="lng_queue_added">Adicionada à fila</string>
 
     <string name="lbl_go_artist">Ir para o artista</string>
     <string name="lbl_go_album">Ir para o álbum</string>
@@ -34,7 +34,7 @@
     <string name="lbl_code">Ver no GitHub</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licenças</string>
-    <string name="lbl_author">Desenvolvido por OxygenCobalt</string>
+    <string name="lng_author">Desenvolvido por OxygenCobalt</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Definições</string>
@@ -62,7 +62,7 @@
     <string name="desc_play_pause">Reproduzir/Pausar</string>
 
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">Procurar na biblioteca…</string>
+    <string name="lng_search_library">Procurar na biblioteca…</string>
 
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Vermelho</string>

@@ -23,7 +23,7 @@
     <string name="lbl_queue">Ουρά αναπαραγωγής</string>
     <string name="lbl_play_next">Επόμενο</string>
     <string name="lbl_queue_add">Προσθήκη στην ουρά αναπ/γής</string>
-    <string name="lbl_queue_added">Προστέθηκε ένας τίτλος στην ουρά αναπαραγωγής</string>
+    <string name="lng_queue_added">Προστέθηκε ένας τίτλος στην ουρά αναπαραγωγής</string>
 
     <string name="lbl_go_artist">Πήγαινε στον καλλιτέχνη</string>
     <string name="lbl_go_album">Πήγαινε στο άλμπουμ</string>
@@ -56,7 +56,7 @@
     <string name="desc_play_pause">Αναπαραγωγή/Παύση</string>
 
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">Αναζήτηση στη βιβλιοθήκη…</string>
+    <string name="lng_search_library">Αναζήτηση στη βιβλιοθήκη…</string>
 
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Κόκκινος</string>

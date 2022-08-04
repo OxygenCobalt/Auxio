@@ -19,7 +19,7 @@
     <string name="lbl_queue">File d\'attente</string>
     <string name="lbl_play_next">Jouer ensuite</string>
     <string name="lbl_queue_add">Ajouter à la file d\'attente</string>
-    <string name="lbl_queue_added">Ajouté à la file d\'attente</string>
+    <string name="lng_queue_added">Ajouté à la file d\'attente</string>
     <string name="lbl_go_album">Aller à l\'album</string>
     <string name="lbl_go_artist">Aller à l\'artiste</string>
     <string name="lbl_about">À propos</string>
@@ -27,7 +27,7 @@
     <string name="lbl_code">Voir sur GitHub</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licences</string>
-    <string name="lbl_author">Développé par OxygenCobalt</string>
+    <string name="lng_author">Développé par OxygenCobalt</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Paramètres</string>
     <string name="set_ui">Apparence</string>
@@ -45,7 +45,7 @@
     <string name="desc_track_number">Morceau %d</string>
     <string name="desc_play_pause">Lecture/Pause</string>
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">Recherche dans votre bibliothèque…</string>
+    <string name="lng_search_library">Recherche dans votre bibliothèque…</string>
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Rouge</string>
     <string name="clr_pink">Rose</string>
@@ -74,7 +74,7 @@
         <item quantity="other">%s Albums</item>
     </plurals>
     <string name="lbl_format">Format</string>
-    <string name="lbl_state_saved">État sauvegardé</string>
+    <string name="lng_state_saved">État sauvegardé</string>
     <string name="lbl_shuffle_shortcut_short">Mélanger</string>
     <string name="lbl_ok">OK</string>
     <string name="lbl_library_counts">Statistiques de la bibliothèque</string>
@@ -101,7 +101,7 @@
     <string name="info_playback_channel_name">Lecture de musique</string>
     <string name="info_indexer_channel_name">Chargement de musique</string>
     <string name="info_widget_desc">Afficher et contrôler la lecture de la musique</string>
-    <string name="lbl_indexing_desc">Chargement de votre bibliothèque musicale…</string>
+    <string name="lng_indexing_desc">Chargement de votre bibliothèque musicale…</string>
     <string name="lbl_sort_name">Nom</string>
     <string name="lbl_artist">Artiste</string>
     <string name="lbl_album">Album</string>

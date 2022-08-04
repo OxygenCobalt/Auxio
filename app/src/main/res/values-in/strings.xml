@@ -19,7 +19,7 @@
     <string name="lbl_queue">Antrean</string>
     <string name="lbl_play_next">Putar selanjutnya</string>
     <string name="lbl_queue_add">Tambahkan ke antrean</string>
-    <string name="lbl_queue_added">Ditambahkan ke antrean</string>
+    <string name="lng_queue_added">Ditambahkan ke antrean</string>
     <string name="lbl_go_artist">Pergi ke artis</string>
     <string name="lbl_go_album">Pergi ke album</string>
     <string name="lbl_about">Tentang</string>
@@ -42,7 +42,7 @@
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Musik tidak ditemukan</string>
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">Mencari pustaka Anda…</string>
+    <string name="lng_search_library">Mencari pustaka Anda…</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Trek %d</string>
     <string name="desc_play_pause">Putar/Jeda</string>
@@ -73,7 +73,7 @@
     <string name="lbl_size">Ukuran</string>
     <string name="lbl_sample_rate">Tingkat sampel</string>
     <string name="set_lib_tabs">Tab Pustaka</string>
-    <string name="lbl_indexing_desc">Memuat perpustakaan musik Anda…</string>
+    <string name="lng_indexing_desc">Memuat perpustakaan musik Anda…</string>
     <string name="lbl_sort_name">Nama</string>
     <string name="lbl_artist">Artis</string>
     <string name="lbl_album">Album</string>
@@ -86,7 +86,7 @@
     <string name="lbl_sort_disc">Disk</string>
     <string name="lbl_song_detail">Lihat properti</string>
     <string name="lbl_format">Format</string>
-    <string name="lbl_author">Dikembangkan oleh OxygenCobalt</string>
+    <string name="lng_author">Dikembangkan oleh OxygenCobalt</string>
     <string name="lbl_library_counts">Statistik perpustakaan</string>
     <string name="set_show_covers_desc">Matikan untuk menghemat penggunaan memori</string>
     <string name="set_quality_covers_desc">Meningkatkan kualitas sampul album, tetapi menghasilkan waktu pemuatan yang lebih lama dan penggunaan memori yang lebih tinggi</string>
@@ -95,7 +95,7 @@
     <string name="set_alt_shuffle">Lebih suka tindakan mengacak</string>
     <string name="lbl_shuffle_shortcut_short">Acak</string>
     <string name="lbl_shuffle_shortcut_long">Acak Semua</string>
-    <string name="lbl_state_saved">Status disimpan</string>
+    <string name="lng_state_saved">Status disimpan</string>
     <string name="set_replay_gain_track">Lebih suka trek</string>
     <string name="set_replay_gain_album">Lebih suka album</string>
     <string name="set_pre_amp">Pra-amp ReplayGain</string>
@@ -160,8 +160,6 @@
     <string name="desc_skip_prev">Loncat ke lagu terakhir</string>
     <string name="desc_shuffle_all">Acak semua lagu</string>
     <string name="def_date">Tidak Ada Tanggal</string>
-    <string name="def_widget_song">Nama Lagu</string>
-    <string name="def_widget_artist">Nama Artis</string>
     <string name="set_dirs_mode_include_desc">Musik <b>hanya</b> akan dimuat dari folder yang Anda tambahkan.</string>
     <string name="err_index_failed">Pemuatan musik gagal</string>
     <string name="desc_album_cover">Sampul Album untuk %s</string>

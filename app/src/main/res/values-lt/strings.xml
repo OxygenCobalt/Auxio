@@ -34,7 +34,7 @@
     <string name="lbl_play">Groti</string>
     <string name="lbl_licenses">Licencijos</string>
     <string name="lbl_shuffle">Maišyti</string>
-    <string name="lbl_queue_added">Pridėta į eilę</string>
+    <string name="lng_queue_added">Pridėta į eilę</string>
     <string name="lbl_props">Dainų ypatybės</string>
     <string name="lbl_file_name">Failo pavadinimas</string>
     <string name="lbl_save">Išsaugoti</string>
@@ -55,8 +55,8 @@
     <string name="lbl_genres">Žanrai</string>
     <string name="lbl_retry">Bandykite dar kartą</string>
     <string name="lbl_grant">Suteikti</string>
-    <string name="lbl_indexing">Kraunama muzika</string>
-    <string name="lbl_indexing_desc">Kraunama jūsų muzikos biblioteka…</string>
+    <string name="lng_indexing">Kraunama muzika</string>
+    <string name="lng_indexing_desc">Kraunama jūsų muzikos biblioteka…</string>
     <string name="lbl_library_counts">Bibliotekos statistika</string>
     <string name="clr_pink">Rožinis</string>
     <string name="lbl_album">Albumas</string>
@@ -74,12 +74,12 @@
     <string name="def_artist">Nežinomas Atlikėjas</string>
     <string name="desc_no_cover">Albumo viršelis</string>
     <string name="clr_deep_purple">Tamsiai Violetinė</string>
-    <string name="lbl_observing">Stebėjimas muzikos biblioteką</string>
-    <string name="lbl_observing_desc">Stebima, ar jūsų muzikos bibliotekoje yra pakeitimų…</string>
+    <string name="lng_observing">Stebėjimas muzikos biblioteką</string>
+    <string name="lng_observing_desc">Stebima, ar jūsų muzikos bibliotekoje yra pakeitimų…</string>
     <string name="lbl_shuffle_shortcut_short">Išmaišyti</string>
     <string name="lbl_shuffle_shortcut_long">Išmaišyti viską</string>
-    <string name="lbl_state_restored">Atkurta grojimo būsena</string>
-    <string name="lbl_state_saved">Išsaugota grojamo būsena</string>
+    <string name="lng_state_restored">Atkurta grojimo būsena</string>
+    <string name="lng_state_saved">Išsaugota grojamo būsena</string>
     <string name="lbl_cancel">\@android:string/atšaukti</string>
     <string name="lbl_code">Peržiūrėti per „Github“</string>
     <string name="set_display">Rodyti</string>
@@ -98,7 +98,6 @@
     <string name="set_round_mode">Apvalus režimas</string>
     <string name="set_alt_action">Naudoti alternatyvų pranešimo veiksmą</string>
     <string name="cdc_mp3">MPEG-1 Garsas</string>
-    <string name="def_widget_artist">Atlikėjo Vardas</string>
     <string name="clr_green">Žalia</string>
     <string name="clr_deep_green">Tamsiai Žalia</string>
     <string name="clr_lime">Kalkės</string>
@@ -111,7 +110,6 @@
     <string name="lbl_remix_group">Remiksai</string>
     <string name="clr_teal">Arbatžolė</string>
     <string name="clr_yellow">Geltona</string>
-    <string name="def_widget_song">Dainos Pavadinimas</string>
     <string name="cdc_aac">Išplėstinis Garso Kodavimas (AAC)</string>
     <string name="cdc_flac">Nemokamas Be Nuostolių Garso Kodekas (FLAC)</string>
     <plurals name="fmt_song_count">
@@ -133,7 +131,7 @@
     <string name="lbl_live_group">Gyvai</string>
     <string name="set_headset_autoplay_desc">Visada pradėta groti, kai prijungtos ausinės (gali veikti ne visuose įrenginiuose)</string>
     <string name="cdc_ogg">Ogg Garsas</string>
-    <string name="lbl_author">Sukūrė OxygenCobalt</string>
+    <string name="lng_author">Sukūrė OxygenCobalt</string>
     <string name="set_replay_gain_track">Pageidaujamas takelis</string>
     <string name="err_no_dirs">Jokių aplankų</string>
     <string name="err_bad_dir">Šis aplankas nepalaikomas</string>

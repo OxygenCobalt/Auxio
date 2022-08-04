@@ -155,7 +155,7 @@
                         style="@style/Widget.Auxio.TextView.Icon"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/lbl_author"
+                        android:text="@string/lng_author"
                         app:drawableStartCompat="@drawable/ic_author_24"
                         app:drawableTint="?attr/colorControlNormal"
                         app:layout_constraintEnd_toEndOf="parent"

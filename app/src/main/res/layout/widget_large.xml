@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_medium"
-            android:text="@string/def_widget_song" />
+            tools:text="Song name" />
 
         <android.widget.TextView
             android:id="@+id/widget_artist"
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_medium"
-            android:text="@string/def_widget_artist" />
+            tools:text="Artist name" />
 
         <!-- See widget_small.xml for an explanation of the view layout -->
 

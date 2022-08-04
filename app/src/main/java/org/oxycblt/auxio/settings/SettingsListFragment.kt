@@ -116,15 +116,15 @@ class SettingsListFragment : PreferenceFragmentCompat() {
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
             getString(R.string.set_key_save_state) -> {
-                playbackModel.savePlaybackState { context?.showToast(R.string.lbl_state_saved) }
+                playbackModel.savePlaybackState { context?.showToast(R.string.lng_state_saved) }
             }
             getString(R.string.set_key_wipe_state) -> {
-                playbackModel.wipePlaybackState { context?.showToast(R.string.lbl_state_wiped) }
+                playbackModel.wipePlaybackState { context?.showToast(R.string.lng_state_wiped) }
             }
             getString(R.string.set_key_restore_state) ->
                 playbackModel.tryRestorePlaybackState { restored ->
                     if (restored) {
-                        context?.showToast(R.string.lbl_state_restored)
+                        context?.showToast(R.string.lng_state_restored)
                     } else {
                         context?.showToast(R.string.err_did_not_restore)
                     }

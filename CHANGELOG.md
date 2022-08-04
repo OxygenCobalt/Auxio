@@ -36,6 +36,9 @@ in startup
 #### What's Changed
 - Play and skip icons are filled again
 - Updated music hashing (Will wipe playback state)
+- Removed unnecessary capitalization
+
+#### Dev/Meta
 - Migrated to BottomSheetBehavior
 
 ## 2.5.0

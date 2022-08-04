@@ -37,8 +37,8 @@ class IndexingNotification(private val context: Context) :
         setSilent(true)
         setContentIntent(context.newMainPendingIntent())
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-        setContentTitle(context.getString(R.string.lbl_indexing))
-        setContentText(context.getString(R.string.lbl_indexing_desc))
+        setContentTitle(context.getString(R.string.lng_indexing))
+        setContentText(context.getString(R.string.lng_indexing_desc))
         setProgress(0, 0, true)
     }
 
@@ -49,7 +49,7 @@ class IndexingNotification(private val context: Context) :
         when (indexing) {
             is Indexer.Indexing.Indeterminate -> {
                 logD("Updating state to $indexing")
-                setContentText(context.getString(R.string.lbl_indexing_desc))
+                setContentText(context.getString(R.string.lng_indexing_desc))
                 setProgress(0, 0, true)
                 return true
             }
@@ -78,8 +78,8 @@ class ObservingNotification(context: Context) : ServiceNotification(context, IND
         setSilent(true)
         setContentIntent(context.newMainPendingIntent())
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-        setContentTitle(context.getString(R.string.lbl_observing))
-        setContentText(context.getString(R.string.lbl_observing_desc))
+        setContentTitle(context.getString(R.string.lng_observing))
+        setContentText(context.getString(R.string.lng_observing_desc))
     }
 
     override val code: Int

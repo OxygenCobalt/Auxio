@@ -2,19 +2,19 @@
 <resources>
     <string name="set_replay_gain_album">Naisin ang album</string>
     <string name="lbl_retry">Subukan muli</string>
-    <string name="lbl_indexing_desc">Nilo-load ang iyong music library…</string>
-    <string name="lbl_observing_desc">Tinitignan ang iyong music library para sa mga pagbabago…</string>
+    <string name="lng_indexing_desc">Nilo-load ang iyong music library…</string>
+    <string name="lng_observing_desc">Tinitignan ang iyong music library para sa mga pagbabago…</string>
     <string name="lbl_all_songs">Lahat ng Kanta</string>
     <string name="lbl_albums">Mga Album</string>
     <string name="lbl_album">Album</string>
     <string name="lbl_album_live">Live na album</string>
     <string name="lbl_album_remix">Remix album</string>
     <string name="lbl_ep">EP</string>
-    <string name="lbl_indexing">Nilo-load ang music</string>
+    <string name="lng_indexing">Nilo-load ang music</string>
     <string name="info_playback_channel_name">Pagtugtog ng kanta</string>
     <string name="info_indexer_channel_name">Pagload ng kanta</string>
     <string name="lbl_eps">Mga EP</string>
-    <string name="lbl_observing">Tinitignan ang music library</string>
+    <string name="lng_observing">Tinitignan ang music library</string>
     <string name="lbl_single">Single</string>
     <string name="lbl_single_live">Live na single</string>
     <string name="lbl_single_remix">Remix single</string>
@@ -42,7 +42,7 @@
     <string name="lbl_queue">Ipa-pilahin</string>
     <string name="lbl_play_next">Tugtugin pagkatapos</string>
     <string name="lbl_queue_add">Idagdag sa pila</string>
-    <string name="lbl_queue_added">Idiinagdag sa pila</string>
+    <string name="lng_queue_added">Idiinagdag sa pila</string>
     <string name="lbl_go_artist">Puntahan ang artista</string>
     <string name="lbl_go_album">Puntahan ang album</string>
     <string name="lbl_song_detail">Tignan ang katangian</string>
@@ -52,8 +52,8 @@
     <string name="lbl_size">Laki</string>
     <string name="lbl_bitrate">Tulin ng mga bit</string>
     <string name="lbl_sample_rate">Tulin ng sample</string>
-    <string name="lbl_state_restored">Naibalik ang kalagayan</string>
-    <string name="lbl_state_saved">Na-save ang kalagayan</string>
+    <string name="lng_state_restored">Naibalik ang kalagayan</string>
+    <string name="lng_state_saved">Na-save ang kalagayan</string>
     <string name="lbl_shuffle_shortcut_short">Haluin</string>
     <string name="lbl_add">Idagdag</string>
     <string name="lbl_save">I-save</string>
@@ -63,7 +63,7 @@
     <string name="lbl_code">Tignan sa GitHub</string>
     <string name="lbl_faq">Mga Madalas Itanong (FAQ)</string>
     <string name="lbl_licenses">Mga Lisensya</string>
-    <string name="lbl_author">Binuo ni OxygenCobalt</string>
+    <string name="lng_author">Binuo ni OxygenCobalt</string>
     <string name="lbl_library_counts">Istatistika ng library</string>
     <string name="set_title">Mga Setting</string>
     <string name="set_ui">Hitsura</string>

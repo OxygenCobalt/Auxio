@@ -23,7 +23,7 @@
     <string name="lbl_queue">Черга</string>
     <string name="lbl_play_next">Відтворити наступною</string>
     <string name="lbl_queue_add">Додати в чергу</string>
-    <string name="lbl_queue_added">Додана в чергу</string>
+    <string name="lng_queue_added">Додана в чергу</string>
 
     <string name="lbl_go_artist">Перейти до виконавця</string>
     <string name="lbl_go_album">Перейти до альбому</string>
@@ -52,7 +52,7 @@
     <string name="err_no_music">Музику не знайдено</string>
 
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">Пошук бібліотеки…</string>
+    <string name="lng_search_library">Пошук бібліотеки…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Доріжка %d</string>
