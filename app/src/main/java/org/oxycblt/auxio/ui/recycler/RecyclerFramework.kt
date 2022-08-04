@@ -26,7 +26,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
-// TODO: Differentiate between replace and diffing w/item updates
+// TODO: Reunify music updates and sorts under replace
+
 /**
  * An adapter for one viewholder tied to one type of data. All functionality is derived from the
  * overridden values.
@@ -200,7 +201,7 @@ class SyncBackingData<T>(adapter: RecyclerView.Adapter<*>, diffCallback: DiffUti
     override fun getItem(position: Int): T = differ.currentList[position]
     override fun getItemCount(): Int = differ.currentList.size
 
-    /** Submit a list normally, doing a diff synchronously. */
+    /** Submit a list normally, doing a diff synchronously. Only use this for trivial changes. */
     fun submitList(newList: List<T>) {
         differ.currentList = newList
     }
