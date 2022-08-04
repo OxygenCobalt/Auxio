@@ -123,7 +123,6 @@
     <string name="err_no_app">이 링크를 열 수 있는 앱 없음</string>
     <string name="err_no_dirs">폴더 없음</string>
     <string name="err_bad_dir">이 폴더는 지원하지 않는 폴더입니다.</string>
-    <string name="err_too_small">앱이 이 크기의 창을 지원하지 않습니다.</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">라이브러리에서 검색…</string>

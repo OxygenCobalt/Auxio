@@ -23,8 +23,8 @@ of Android through the use of the ExoPlayer FLAC extension.
 This depends on the context:
 1. If "Ignore MediaStore Tags" is enabled, please create a bug report.
 2. If "Ignore MediaStore Tags" is not enabled, please check below to make sure your issue is not already
-awknowledged before reporting a bug.
-	- Moreso, if the issue encountered does not appear in other apps like Music Player GO, Phonograph,
+acknowledged before reporting a bug.
+	- Moreover, if the issue encountered does not appear in other apps like Music Player GO, Phonograph,
 or Retro Music then it should definitely be reported, as it is a logic bug on Auxio's part.
 
 ***Known unfixable music loading issues***
@@ -80,7 +80,7 @@ Auxio actually takes several types of metadata in account in searching:
 - The file name, as some users don't have usable title metadata, and instead use the file name as the title.
 
 #### Why does playback pause whenever music is reloaded?
-Whenever the music library signifigantly changes, updating the player's data while it is still playing may result in
+Whenever the music library significantly changes, updating the player's data while it is still playing may result in
 unwanted bugs or unexpected music playing. To safeguard against this, Auxio will pause whenever it reloads a new
 music library. 
 

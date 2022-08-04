@@ -201,7 +201,6 @@
     <string name="lbl_format">Format</string>
     <string name="lbl_size">Größe</string>
     <string name="lbl_bitrate">Bitrate</string>
-    <string name="err_too_small">Auxio unterstützt diese Fenstergröße nicht</string>
     <string name="set_quality_tags">MediaStore-Tags ignorieren</string>
     <string name="set_quality_tags_desc">Erhöht Tag-Qualität, benötigt aber längere Ladezeiten (Experimentell)</string>
     <string name="lbl_observing">Überwachen der Musikbibliothek</string>

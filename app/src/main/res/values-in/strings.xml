@@ -138,7 +138,7 @@
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="fmt_sample_rate">%d Hz</string>
-    <string name="fmt_indexing">Memuat perpustakaan musik Anda... (%1$d/%2$d)</string>
+    <string name="fmt_indexing">Memuat perpustakaan musik Anda… (%1$d/%2$d)</string>
     <string name="fmt_lib_song_count">Lagu yang dimuat: %d</string>
     <string name="fmt_lib_album_count">Album yang dimuat: %d</string>
     <string name="fmt_lib_artist_count">Artis yang dimuat: %d</string>
@@ -164,7 +164,6 @@
     <string name="def_widget_artist">Nama Artis</string>
     <string name="set_dirs_mode_include_desc">Musik <b>hanya</b> akan dimuat dari folder yang Anda tambahkan.</string>
     <string name="err_index_failed">Pemuatan musik gagal</string>
-    <string name="err_too_small">Auxio tidak mendukung ukuran jendela ini</string>
     <string name="desc_album_cover">Sampul Album untuk %s</string>
     <string name="def_artist">Artis Tidak Dikenal</string>
     <string name="err_no_dirs">Tidak ada Folder</string>

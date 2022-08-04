@@ -160,20 +160,11 @@ abstract class BaseFetcher : Fetcher {
                 else -> continue
             }
 
-            // Ensure the picture type here is a front cover image so that we don't extract
-            // an incorrect cover image.
-            // Yes, this does add some latency, but its quality covers so we can prioritize
-            // correctness over speed.
             if (type == MediaMetadata.PICTURE_TYPE_FRONT_COVER) {
-                logD("Front cover successfully found")
-
-                // We have a front cover image. Great.
+                logD("Front cover found")
                 stream = ByteArrayInputStream(pic)
                 break
-            } else if (stream != null) {
-                // In the case a front cover is not found, use the first image in the tag instead.
-                // This can be corrected later on if a front cover frame is found.
-                logW("No front cover image, using image of type $type instead")
+            } else if (stream == null) {
                 stream = ByteArrayInputStream(pic)
             }
         }

@@ -17,9 +17,9 @@
  
 package org.oxycblt.auxio.music.system
 
-import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -90,4 +90,4 @@ private val INDEXER_CHANNEL =
     ServiceNotification.ChannelInfo(
         id = BuildConfig.APPLICATION_ID + ".channel.INDEXER",
         R.string.info_indexer_channel_name,
-        NotificationManager.IMPORTANCE_LOW)
+        NotificationManagerCompat.IMPORTANCE_LOW)

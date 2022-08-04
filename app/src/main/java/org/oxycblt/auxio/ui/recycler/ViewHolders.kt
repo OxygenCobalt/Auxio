@@ -151,7 +151,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
                 override fun areItemsTheSame(oldItem: Artist, newItem: Artist) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.albums.size == newItem.albums.size &&
-                        newItem.songs.size == newItem.songs.size
+                        oldItem.songs.size == newItem.songs.size
             }
     }
 }

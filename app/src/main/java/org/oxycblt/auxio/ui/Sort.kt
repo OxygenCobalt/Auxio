@@ -358,8 +358,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                         aSortName.compareTo(bSortName, ignoreCase = true)
                     aSortName == null && bSortName != null -> -1 // a < b
                     aSortName == null && bSortName == null -> 0 // a = b
-                    aSortName != null && bSortName == null -> 1 // a < b
-                    else -> error("Unreachable")
+                    else -> 1 // a < b
                 }
             }
 
@@ -377,8 +376,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                     a != null && b != null -> a.compareTo(b)
                     a == null && b != null -> -1 // a < b
                     a == null && b == null -> 0 // a = b
-                    a != null && b == null -> 1 // a < b
-                    else -> error("Unreachable")
+                    else -> 1 // a < b
                 }
 
             companion object {

@@ -90,7 +90,6 @@
     <string name="err_no_app">Nenhum aplicativo pode abrir este link</string>
     <string name="err_no_dirs">Sem Pastas</string>
     <string name="err_bad_dir">Esta pasta não é compatível</string>
-    <string name="err_too_small">O Auxio não suporta este tamanho de janela</string>
     <string name="set_show_covers">Mostrar capas de álbuns</string>
     <string name="set_reindex_desc">Pode limpar o estado de reprodução</string>
     <string name="set_rewind_prev">Retroceder antes de pular para trás</string>

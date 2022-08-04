@@ -114,7 +114,6 @@
     <string name="err_no_app">Nijedna aplikacija ne može otvoriti ovaj link</string>
     <string name="err_no_dirs">Nema mapa</string>
     <string name="err_bad_dir">Ova mapa nije podržana</string>
-    <string name="err_too_small">Auxio ne podržava ovu veličinu prozora</string>
     <string name="err_did_not_restore">Nijedno stanje nije bilo moguće vratiti</string>
     <string name="hint_search_library">Pretražite vašu zbirku…</string>
     <string name="desc_track_number">Zvučni zapis %d</string>

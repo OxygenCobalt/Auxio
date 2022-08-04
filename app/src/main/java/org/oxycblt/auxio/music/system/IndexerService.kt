@@ -75,7 +75,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         wakeLock =
             getSystemServiceSafe(PowerManager::class)
                 .newWakeLock(
-                    PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ".IndexerService")
+                    PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ":IndexerService")
 
         settings = Settings(this, this)
         indexerContentObserver = SystemContentObserver()
@@ -200,7 +200,9 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     private fun PowerManager.WakeLock.acquireSafe() {
         if (!wakeLock.isHeld) {
             logD("Acquiring wake lock")
-            acquire()
+
+            // We always drop the wakelock eventually. Timeout is not needed.
+            @Suppress("WakelockTimeout") acquire()
         }
     }
 

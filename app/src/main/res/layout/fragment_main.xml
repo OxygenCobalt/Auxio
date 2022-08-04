@@ -51,12 +51,12 @@
                     android:id="@+id/handle"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/size_btn"
-                    android:scaleType="center"
-                    android:paddingBottom="@dimen/spacing_mid_large"
-                    android:src="@drawable/ui_queue_drag_handle"
-                    app:tint="?attr/colorOnSurfaceVariant"
                     android:contentDescription="@string/desc_queue_bar"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:paddingBottom="@dimen/spacing_mid_large"
+                    android:scaleType="center"
+                    android:src="@drawable/ui_queue_drag_handle"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="?attr/colorOnSurfaceVariant" />
 
                 <TextView
                     android:id="@+id/queue_title"
@@ -73,10 +73,10 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/queue_fragment"
+                android:name="org.oxycblt.auxio.playback.queue.QueueFragment"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:name="org.oxycblt.auxio.playback.queue.QueueFragment" />
+                android:layout_weight="1" />
 
         </LinearLayout>
 

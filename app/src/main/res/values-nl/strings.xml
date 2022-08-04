@@ -149,7 +149,7 @@
     <string name="desc_shuffle">Schakel shuffle aan of uit</string>
     <string name="def_widget_song">Naam van het lied</string>
     <string name="set_reindex_desc">Kan afspeelstatus wissen</string>
-    <string name="fmt_indexing">Uw muziekbibliotheek wordt geladen... (%1$d/%2$d)</string>
+    <string name="fmt_indexing">Uw muziekbibliotheek wordt geladen… (%1$d/%2$d)</string>
     <string name="set_dirs_mode_exclude">Uitgezonderd</string>
     <string name="desc_shuffle_all">Alle liedjes shuffelen</string>
     <string name="def_codec">Onbekend Formaat</string>
@@ -158,7 +158,6 @@
     <string name="set_dirs_mode_exclude_desc">Muziek zal <b>niet</b> worden geladen vanuit de mappen die u toevoegt.</string>
     <string name="set_reindex">Muziek herladen</string>
     <string name="set_dirs_mode_include_desc">Muziek zal <b>alleen</b> worden geladen uit de mappen die u toevoegt.</string>
-    <string name="err_too_small">Auxio ondersteunt deze venstergrootte niet</string>
     <string name="set_pre_amp_with">Aanpassing met tags</string>
     <string name="set_pre_amp_without">Aanpassing zonder tags</string>
     <string name="def_playback">Er speelt geen muziek</string>

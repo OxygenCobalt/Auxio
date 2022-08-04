@@ -73,7 +73,7 @@ data class Directory(val volume: StorageVolume, val relativePath: String) {
 
             val volume =
                 when (split[0]) {
-                    DOCUMENT_URI_PRIMARY_NAME -> storageManager.primaryStorageVolume
+                    DOCUMENT_URI_PRIMARY_NAME -> storageManager.primaryStorageVolumeCompat
                     else -> storageManager.storageVolumesCompat.find { it.uuidCompat == split[0] }
                 }
 
@@ -84,9 +84,16 @@ data class Directory(val volume: StorageVolume, val relativePath: String) {
     }
 }
 
+@Suppress("NewApi")
 private val SM_API21_GET_VOLUME_LIST_METHOD: Method by
     lazyReflectedMethod(StorageManager::class, "getVolumeList")
+
+@Suppress("NewApi")
 private val SV_API21_GET_PATH_METHOD: Method by lazyReflectedMethod(StorageVolume::class, "getPath")
+
+/** The "primary" storage volume containing the OS. May be an SD Card. */
+val StorageManager.primaryStorageVolumeCompat: StorageVolume
+    @Suppress("NewApi") get() = primaryStorageVolume
 
 /**
  * A list of recognized volumes, retrieved in a compatible manner. Note that these volumes may be
@@ -158,6 +165,7 @@ val StorageVolume.mediaStoreVolumeNameCompat: String?
         } else {
             // Replicate API: primary_external if primary storage, lowercase uuid otherwise
             if (isPrimaryCompat) {
+                @Suppress("NewApi") // Inlined constant
                 MediaStore.VOLUME_EXTERNAL_PRIMARY
             } else {
                 uuidCompat?.lowercase()

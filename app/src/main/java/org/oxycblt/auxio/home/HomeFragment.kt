@@ -284,7 +284,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             logD("Received non-ok response $response")
 
             when (response) {
-                is Indexer.Response.Ok -> error("Unreachable")
                 is Indexer.Response.Err -> {
                     binding.homeIndexingProgress.visibility = View.INVISIBLE
                     binding.homeIndexingStatus.textSafe = getString(R.string.err_index_failed)
@@ -315,6 +314,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                         }
                     }
                 }
+                else -> {}
             }
         }
     }

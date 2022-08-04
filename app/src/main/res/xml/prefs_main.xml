@@ -130,8 +130,8 @@
 
         <Preference
             app:key="@string/set_key_wipe_state"
-            app:title="@string/set_wipe"
-            app:summary="@string/set_wipe_desc" />
+            app:summary="@string/set_wipe_desc"
+            app:title="@string/set_wipe" />
 
         <Preference
             app:key="@string/set_key_restore_state"

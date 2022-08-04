@@ -81,8 +81,6 @@
     <string name="lbl_shuffle">Shuffle</string>
 
     <string name="lbl_queue">Queue</string>
-    <string name="lbl_next_up">Next up</string>
-    <string name="lbl_later">Later</string>
     <string name="lbl_play_next">Play next</string>
     <string name="lbl_queue_add">Add to queue</string>
     <string name="lbl_queue_added">Added to queue</string>
@@ -214,7 +212,6 @@
     <!-- No folders in the "Music Folders" setting -->
     <string name="err_no_dirs">No Folders</string>
     <string name="err_bad_dir">This folder is not supported</string>
-    <string name="err_too_small">Auxio does not support this window size</string>
     <!-- Referring to playback state -->
     <string name="err_did_not_restore">No state could be restored</string>
 

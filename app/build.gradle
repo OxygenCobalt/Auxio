@@ -17,7 +17,7 @@ android {
         // API 33 is still busted, waiting until the XML element issue is fixed
         // noinspection OldTargetApi
         minSdk 21
-        targetSdk 33
+        targetSdk 32
 
         buildFeatures {
             viewBinding true

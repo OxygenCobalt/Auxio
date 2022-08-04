@@ -106,7 +106,6 @@
     <string name="err_no_perms">اوكسيو يحتاج إلى صلاحيات لقراءة للاطلاع على مكتبتك للموسيقى</string>
     <string name="err_no_app">لا يوجد تطبيق لفتح هذا الرابط</string>
     <string name="err_bad_dir">هذا المجلد غير مدعوم</string>
-    <string name="err_too_small">اوكسيو لا يدعم حجم النافذة هذه</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">البحث في مكتبتك…</string>

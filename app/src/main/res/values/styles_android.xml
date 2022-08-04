@@ -90,12 +90,4 @@
         <item name="android:background">@drawable/ui_remote_fab_bg</item>
         <item name="android:tint">?attr/colorOnPrimary</item>
     </style>
-
-    <!-- Widget panel -->
-    <style name="Widget.Auxio.AppWidget.Panel" parent="">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:padding">@dimen/spacing_medium</item>
-        <item name="android:orientation">vertical</item>
-    </style>
 </resources>

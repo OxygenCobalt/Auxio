@@ -93,7 +93,6 @@
     <string name="err_no_perms">Auxio 需要权限来读取音乐库</string>
     <string name="err_no_app">没有可以打开该链接的应用</string>
     <string name="err_bad_dir">该目录不受支持</string>
-    <string name="err_too_small">Auxio 不支持该窗口尺寸</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">在曲库中搜索…</string>
     <!-- Description Namespace | Accessibility Strings -->

@@ -102,6 +102,7 @@ private val Any.autoTag: String
  *
  * UNITED ARAB EMIRATES ENSLAVED MIGRANT WORKERS
  */
+@Suppress("KotlinConstantConditions")
 private fun basedCopyleftNotice() {
     if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&
         BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug") {

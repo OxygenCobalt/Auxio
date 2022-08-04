@@ -109,7 +109,6 @@
     <string name="err_no_app">Žádná aplikace nedokáže otevřít tento odkaz</string>
     <string name="err_no_dirs">Žádné složky</string>
     <string name="err_bad_dir">Tato složka není podporována</string>
-    <string name="err_too_small">Auxio nepodporuje velikost tohoto okna</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Prohledat vaší knihovnu…</string>
     <!-- Description Namespace | Accessibility Strings -->

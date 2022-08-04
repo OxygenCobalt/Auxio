@@ -93,7 +93,6 @@
     <string name="err_no_perms">Auxio требуется разрешение на чтение музыкальной библиотеки</string>
     <string name="err_no_app">Нет приложений для открытия данной ссылки</string>
     <string name="err_bad_dir">Эта папка не поддерживается</string>
-    <string name="err_too_small">Auxio не поддерживает данное разрешние экрана</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Найти в библиотеке…</string>
     <!-- Description Namespace | Accessibility Strings -->

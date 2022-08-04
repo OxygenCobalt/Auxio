@@ -9,11 +9,6 @@
     <dimen name="spacing_large">24dp</dimen>
     <dimen name="spacing_huge">32dp</dimen>
 
-    <dimen name="spacing_tiny_inv">-4dp</dimen>
-    <dimen name="spacing_small_inv">-8dp</dimen>
-
-    <dimen name="spacing_medium_icon">6dp</dimen>
-
     <!-- Size Namespace | Width & Heights for UI elements -->
     <dimen name="size_cover_compact">48dp</dimen>
     <dimen name="size_cover_normal">56dp</dimen>
@@ -48,7 +43,6 @@
     <dimen name="fast_scroll_thumb_touch_target_size">16dp</dimen>
 
     <dimen name="slider_thumb_radius">6dp</dimen>
-    <dimen name="slider_halo_radius">16dp</dimen>
 
     <dimen name="recycler_fab_space_normal">88dp</dimen>
     <dimen name="recycler_fab_space_large">128dp</dimen>

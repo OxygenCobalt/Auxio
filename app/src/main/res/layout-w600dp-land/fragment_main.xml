@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
@@ -37,21 +37,23 @@
                 android:id="@+id/playback_panel_fragment"
                 android:name="org.oxycblt.auxio.playback.PlaybackPanelFragment"
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                app:layout_constraintEnd_toStartOf="@+id/queue_sheet"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <LinearLayout
                 android:id="@+id/queue_sheet"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/playback_panel_fragment">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
-                    android:text="@string/lbl_queue"
                     android:gravity="center"
+                    android:text="@string/lbl_queue"
                     android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     app:layout_constraintBottom_toBottomOf="@+id/handle"
@@ -60,14 +62,14 @@
 
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/queue_fragment"
+                    android:name="org.oxycblt.auxio.playback.queue.QueueFragment"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:name="org.oxycblt.auxio.playback.queue.QueueFragment" />
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

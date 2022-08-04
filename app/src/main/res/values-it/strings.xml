@@ -94,7 +94,6 @@
     <string name="err_no_perms">Auxio ha bisogno del permesso per leggere la tua libreria musicale</string>
     <string name="err_no_app">Nessuna app può aprire il link</string>
     <string name="err_bad_dir">Questa cartella non è supportata</string>
-    <string name="err_too_small">Auxio non supporta questa dimensione di finestra</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Cerca nella tua libreria…</string>
     <!-- Description Namespace | Accessibility Strings -->

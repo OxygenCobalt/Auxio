@@ -18,13 +18,13 @@
 package org.oxycblt.auxio.playback.system
 
 import android.annotation.SuppressLint
-import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
@@ -154,6 +154,6 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
             ChannelInfo(
                 id = BuildConfig.APPLICATION_ID + ".channel.PLAYBACK",
                 nameRes = R.string.info_playback_channel_name,
-                importance = NotificationManager.IMPORTANCE_LOW)
+                importance = NotificationManagerCompat.IMPORTANCE_LOW)
     }
 }

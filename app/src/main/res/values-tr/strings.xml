@@ -170,7 +170,6 @@
     <string name="set_reindex_desc">Uygulamayı yeniden başlatacaktır</string>
     <string name="err_no_dirs">Klasör yok</string>
     <string name="err_bad_dir">Bu klasör desteklenmiyor</string>
-    <string name="err_too_small">Auxio bu pencere boyutunu desteklemiyor</string>
     <string name="desc_skip_next">Sonraki şarkıya geç</string>
     <string name="desc_skip_prev">Son şarkıya geç</string>
     <string name="desc_change_repeat">Tekrarlama modunu değiştir</string>

@@ -105,6 +105,7 @@
     <plurals name="fmt_album_count">
         <item quantity="one">%d Albumas</item>
         <item quantity="few">%d Albumai</item>
+        <item quantity="many">%d Albumo</item>
         <item quantity="other">%d Albumo</item>
     </plurals>
     <string name="lbl_remix_group">Remiksai</string>
@@ -116,6 +117,7 @@
     <plurals name="fmt_song_count">
         <item quantity="one">%d Daina</item>
         <item quantity="few">%d Dainos</item>
+        <item quantity="many">%d Albumo</item>
         <item quantity="other">%d Dainą</item>
     </plurals>
     <string name="clr_dynamic">Dinaminis</string>
@@ -135,7 +137,6 @@
     <string name="set_replay_gain_track">Pageidaujamas takelis</string>
     <string name="err_no_dirs">Jokių aplankų</string>
     <string name="err_bad_dir">Šis aplankas nepalaikomas</string>
-    <string name="err_too_small">„Auxio“ nepalaiko šio lango dydžio</string>
     <string name="desc_play_pause">Groti arba pristabdyti</string>
     <string name="desc_skip_next">Pereiti į kitą dainą</string>
     <string name="desc_skip_prev">Pereiti į paskutinę dainą</string>

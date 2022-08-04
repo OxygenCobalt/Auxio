@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Theme.Auxio.App" parent="Theme.Auxio.Base" />
 
     <style name="Theme.Auxio.Widget" parent="@android:style/Theme.DeviceDefault.DayNight">
