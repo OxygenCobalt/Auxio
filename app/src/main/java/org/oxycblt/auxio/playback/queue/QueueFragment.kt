@@ -96,9 +96,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
             val start = lmm.findFirstCompletelyVisibleItemPosition()
             val end = lmm.findLastCompletelyVisibleItemPosition()
 
-            if (start != RecyclerView.NO_POSITION &&
-                end != RecyclerView.NO_POSITION &&
-                scrollTo !in start..end) {
+            if (scrollTo !in start..end) {
                 logD("Scrolling to new position")
                 binding.queueRecycler.scrollToPosition(scrollTo)
             }
