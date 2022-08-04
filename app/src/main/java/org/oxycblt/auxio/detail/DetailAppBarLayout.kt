@@ -32,13 +32,13 @@ import com.google.android.material.appbar.AppBarLayout
 import java.lang.Exception
 import java.lang.reflect.Field
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.coordinator.EdgeAppBarLayout
+import org.oxycblt.auxio.ui.AuxioAppBarLayout
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
 
 /**
- * An [EdgeAppBarLayout] variant that also shows the name of the toolbar whenever the detail
+ * An [AuxioAppBarLayout] variant that also shows the name of the toolbar whenever the detail
  * recyclerview is scrolled beyond it's first item (a.k.a the header). This is used instead of
  * CollapsingToolbarLayout since that thing is a mess with crippling bugs and state issues. This
  * just works.
@@ -47,7 +47,7 @@ import org.oxycblt.auxio.util.logTraceOrThrow
 class DetailAppBarLayout
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
-    EdgeAppBarLayout(context, attrs, defStyleAttr) {
+    AuxioAppBarLayout(context, attrs, defStyleAttr) {
     private var titleView: AppCompatTextView? = null
     private var recycler: RecyclerView? = null
 

@@ -81,7 +81,7 @@ class ArtistDetailFragment :
             setOnMenuItemClickListener(this@ArtistDetailFragment)
         }
 
-        requireBinding().detailRecycler.apply {
+        binding.detailRecycler.apply {
             adapter = detailAdapter
             applySpans { pos ->
                 // If the item is an ActionHeader we need to also make the item full-width

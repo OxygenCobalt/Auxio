@@ -15,20 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.ui.coordinator
+package org.oxycblt.auxio.ui
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.view.WindowInsets
 import androidx.annotation.AttrRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.updatePadding
 import com.google.android.material.appbar.AppBarLayout
-import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * An [AppBarLayout] that fixes a bug with the default implementation where the lifted state will
@@ -37,7 +34,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * **Note:** This layout relies on [AppBarLayout.liftOnScrollTargetViewId] to figure out what
  * scrolling view to use. Failure to specify this will result in the layout not working.
  */
-open class EdgeAppBarLayout
+open class AuxioAppBarLayout
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AppBarLayout(context, attrs, defStyleAttr) {
@@ -58,13 +55,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
     init {
+        fitsSystemWindows = true
         viewTreeObserver.addOnPreDrawListener(onPreDraw)
-    }
-
-    override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
-        super.onApplyWindowInsets(insets)
-        updatePadding(top = insets.systemBarInsetsCompat.top)
-        return insets
     }
 
     override fun onDetachedFromWindow() {

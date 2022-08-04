@@ -14,9 +14,9 @@ android {
         versionName "2.5.0"
         versionCode 19
 
+        minSdk 21
         // API 33 is still busted, waiting until the XML element issue is fixed
         // noinspection OldTargetApi
-        minSdk 21
         targetSdk 32
 
         buildFeatures {

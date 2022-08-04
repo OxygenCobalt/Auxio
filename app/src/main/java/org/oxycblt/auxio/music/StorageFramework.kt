@@ -147,9 +147,7 @@ val StorageVolume.isInternalCompat: Boolean
 val StorageVolume.uuidCompat: String?
     @SuppressLint("NewApi") get() = uuid
 
-/*
- * Returns the state of the volume in a compatible manner.
- */
+/** Returns the state of the volume in a compatible manner. */
 val StorageVolume.stateCompat: String
     @SuppressLint("NewApi") get() = state
 

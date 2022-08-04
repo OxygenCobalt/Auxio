@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.oxycblt.auxio.ui.coordinator.EdgeCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
 
-    <org.oxycblt.auxio.ui.coordinator.EdgeAppBarLayout
+    <org.oxycblt.auxio.ui.AuxioAppBarLayout
         style="@style/Widget.Auxio.AppBarLayout"
         app:liftOnScroll="true"
         app:liftOnScrollTargetViewId="@id/search_recycler">
@@ -43,7 +43,7 @@
 
         </com.google.android.material.appbar.MaterialToolbar>
 
-    </org.oxycblt.auxio.ui.coordinator.EdgeAppBarLayout>
+    </org.oxycblt.auxio.ui.AuxioAppBarLayout>
 
     <org.oxycblt.auxio.ui.recycler.EdgeRecyclerView
         android:id="@+id/search_recycler"
@@ -53,4 +53,4 @@
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         tools:listitem="@layout/item_song" />
 
-</org.oxycblt.auxio.ui.coordinator.EdgeCoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

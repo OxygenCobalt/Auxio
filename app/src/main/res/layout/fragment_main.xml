@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.oxycblt.auxio.ui.coordinator.EdgeCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
@@ -16,7 +16,7 @@
         app:navGraph="@navigation/nav_explore"
         tools:layout="@layout/fragment_home" />
 
-    <org.oxycblt.auxio.ui.coordinator.EdgeCoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/playback_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -80,6 +80,6 @@
 
         </LinearLayout>
 
-    </org.oxycblt.auxio.ui.coordinator.EdgeCoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</org.oxycblt.auxio.ui.coordinator.EdgeCoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -86,7 +86,7 @@ class AlbumDetailFragment :
             setOnMenuItemClickListener(this@AlbumDetailFragment)
         }
 
-        requireBinding().detailRecycler.apply {
+        binding.detailRecycler.apply {
             adapter = detailAdapter
             applySpans { pos ->
                 val item = detailAdapter.data.currentList[pos]

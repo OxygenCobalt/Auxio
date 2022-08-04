@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<org.oxycblt.auxio.ui.coordinator.EdgeCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSurface"
     android:orientation="vertical">
 
-    <org.oxycblt.auxio.ui.coordinator.EdgeAppBarLayout
+    <org.oxycblt.auxio.ui.AuxioAppBarLayout
         android:id="@+id/settings_appbar"
         style="@style/Widget.Auxio.AppBarLayout"
         android:clickable="true"
@@ -21,7 +20,7 @@
             app:navigationIcon="@drawable/ic_back_24"
             app:title="@string/set_title" />
 
-    </org.oxycblt.auxio.ui.coordinator.EdgeAppBarLayout>
+    </org.oxycblt.auxio.ui.AuxioAppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/settings_list_fragment"
@@ -30,4 +29,4 @@
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
-</org.oxycblt.auxio.ui.coordinator.EdgeCoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
