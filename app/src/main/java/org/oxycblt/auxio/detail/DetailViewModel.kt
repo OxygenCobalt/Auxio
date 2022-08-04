@@ -246,6 +246,8 @@ class DetailViewModel(application: Application) :
                 }
 
                 when (it.releaseType.refinement) {
+                    ReleaseType.Refinement.LIVE -> R.string.lbl_live_group
+                    ReleaseType.Refinement.REMIX -> R.string.lbl_remix_group
                     null ->
                         when (it.releaseType) {
                             is ReleaseType.Album -> R.string.lbl_albums
@@ -255,8 +257,6 @@ class DetailViewModel(application: Application) :
                             is ReleaseType.Soundtrack -> R.string.lbl_soundtracks
                             is ReleaseType.Mixtape -> R.string.lbl_mixtapes
                         }
-                    ReleaseType.Refinement.LIVE -> R.string.lbl_live_group
-                    ReleaseType.Refinement.REMIX -> R.string.lbl_remix_group
                 }
             }
 

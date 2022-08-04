@@ -83,7 +83,7 @@ import java.util.Map;
  * window-like. For BottomSheetDialog use {@link BottomSheetDialog#setTitle(int)}, and for
  * BottomSheetDialogFragment use {@link ViewCompat#setAccessibilityPaneTitle(View, CharSequence)}.
  *
- * Modified at several points by OxygenCobalt to fix insane issues.
+ * Modified at several points by OxygenCobalt to work around miscellaneous insanity.
  */
 public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
 
@@ -720,8 +720,8 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
       }
     } else if (dy < 0) { // Downward
       if (!target.canScrollVertically(-1)) {
-        // MODIFICATION: Add enableHidingGestures method
-        if (newTop <= collapsedOffset || (hideable && enableHidingGestures())) {
+        // MODIFICATION: Add isHideableWhenDragging method
+        if (newTop <= collapsedOffset || (hideable && isHideableWhenDragging())) {
           if (!draggable) {
             // Prevent dragging
             return;
@@ -775,8 +775,8 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
           }
         }
       }
-      // MODIFICATION: Add enableHidingGestures method
-    } else if (hideable && shouldHide(child, getYVelocity()) && enableHidingGestures()) {
+      // MODIFICATION: Add isHideableWhenDragging method
+    } else if (hideable && shouldHide(child, getYVelocity()) && isHideableWhenDragging()) {
       targetState = STATE_HIDDEN;
     } else if (lastNestedScrollDy == 0) {
       int currentTop = child.getTop();
@@ -1725,8 +1725,8 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
                 }
               }
             }
-            // MODIFICATION: Add enableHidingGestures method
-          } else if (hideable && shouldHide(releasedChild, yvel) && enableHidingGestures()) {
+            // MODIFICATION: Add isHideableWhenDragging method
+          } else if (hideable && shouldHide(releasedChild, yvel) && isHideableWhenDragging()) {
             // Hide if the view was either released low or it was a significant vertical swipe
             // otherwise settle to closest expanded state.
             if ((Math.abs(xvel) < Math.abs(yvel) && yvel > SIGNIFICANT_VEL_THRESHOLD)
@@ -1798,9 +1798,9 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
 
         @Override
         public int clampViewPositionVertical(@NonNull View child, int top, int dy) {
-          // MODIFICATION: Add enableHidingGestures method
+          // MODIFICATION: Add isHideableWhenDragging method
           return MathUtils.clamp(
-              top, getExpandedOffset(), (hideable && enableHidingGestures()) ? parentHeight : collapsedOffset);
+              top, getExpandedOffset(), (hideable && isHideableWhenDragging()) ? parentHeight : collapsedOffset);
         }
 
         @Override
@@ -1810,8 +1810,8 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
 
         @Override
         public int getViewVerticalDragRange(@NonNull View child) {
-          // MODIFICATION: Add enableHidingGestures method
-          if (hideable && enableHidingGestures()) {
+          // MODIFICATION: Add isHideableWhenDragging method
+          if (hideable && isHideableWhenDragging()) {
             return parentHeight;
           } else {
             return collapsedOffset;
@@ -1886,7 +1886,7 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
    * @hide
    */
   @RestrictTo(LIBRARY_GROUP)
-  public boolean enableHidingGestures() {
+  public boolean isHideableWhenDragging() {
     return true;
   }
 

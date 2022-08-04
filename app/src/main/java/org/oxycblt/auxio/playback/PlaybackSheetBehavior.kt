@@ -41,5 +41,5 @@ class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeS
         super.onInterceptTouchEvent(parent, child, event) && state != STATE_EXPANDED
 
     // Note: This is an extension to Auxio's vendored BottomSheetBehavior
-    override fun enableHidingGestures() = false
+    override fun isHideableWhenDragging() = false
 }

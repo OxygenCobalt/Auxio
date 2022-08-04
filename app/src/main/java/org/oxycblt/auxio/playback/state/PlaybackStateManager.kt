@@ -357,36 +357,37 @@ class PlaybackStateManager private constructor() {
     // --- PERSISTENCE FUNCTIONS ---
 
     /** Restore the state from the [database]. Returns if a state was restored. */
-    suspend fun restoreState(database: PlaybackStateDatabase): Boolean {
+    suspend fun restoreState(database: PlaybackStateDatabase, force: Boolean): Boolean {
+        if (isInitialized && !force) {
+            return false
+        }
+
         val library = musicStore.library ?: return false
         val state = withContext(Dispatchers.IO) { database.read(library) }
 
         synchronized(this) {
-            val exists =
-                if (state != null && !isInitialized) {
-                    // Continuing playback while also possibly doing drastic state updates is
-                    // a bad idea, so pause.
-                    isPlaying = false
+            if (state != null && (!isInitialized || force)) {
+                // Continuing playback while also possibly doing drastic state updates is
+                // a bad idea, so pause.
+                isPlaying = false
 
-                    index = state.index
-                    parent = state.parent
-                    _queue = state.queue.toMutableList()
-                    repeatMode = state.repeatMode
-                    isShuffled = state.isShuffled
+                index = state.index
+                parent = state.parent
+                _queue = state.queue.toMutableList()
+                repeatMode = state.repeatMode
+                isShuffled = state.isShuffled
 
-                    notifyNewPlayback()
-                    seekTo(state.positionMs)
-                    notifyRepeatModeChanged()
-                    notifyShuffledChanged()
+                notifyNewPlayback()
+                seekTo(state.positionMs)
+                notifyRepeatModeChanged()
+                notifyShuffledChanged()
 
-                    true
-                } else {
-                    false
-                }
+                isInitialized = true
 
-            isInitialized = true
-
-            return exists
+                return true
+            } else {
+                return false
+            }
         }
     }
 

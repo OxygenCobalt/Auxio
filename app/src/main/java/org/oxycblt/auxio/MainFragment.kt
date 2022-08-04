@@ -76,9 +76,7 @@ class MainFragment :
 
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
-
         val queueSheetBehavior = binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
-
         if (queueSheetBehavior != null) {
             unlikelyToBeNull(binding.handleWrapper).setOnClickListener {
                 if (playbackSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED &&
@@ -87,6 +85,8 @@ class MainFragment :
                 }
             }
         } else {
+            // Dual-pane mode, color/pad the queue sheet manually. Note that we do not round
+            // corners, as the queue sheet cannot be dragged.
             binding.queueSheet.apply {
                 background =
                     MaterialShapeDrawable.createWithElevationOverlay(context).apply {
@@ -133,8 +133,10 @@ class MainFragment :
 
     override fun onPreDraw(): Boolean {
         // CoordinatorLayout is insane and thus makes bottom sheet callbacks insane. Do our
-        // checks before every draw.
+        // checks before every draw, which is not ideal in the slightest but also has minimal
+        // performance impact since we are only mutating attributes used during drawing.
         val binding = requireBinding()
+
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
 
@@ -143,6 +145,30 @@ class MainFragment :
         val outPlaybackRatio = 1 - playbackRatio
         val halfOutRatio = min(playbackRatio * 2, 1f)
         val halfInPlaybackRatio = max(playbackRatio - 0.5f, 0f) * 2
+
+        val queueSheetBehavior = binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
+
+        if (queueSheetBehavior != null) {
+            // Queue sheet, take queue into account so the playback bar is shown and the playback
+            // panel is hidden when the queue sheet is expanded.
+            val queueRatio = max(queueSheetBehavior.calculateSlideOffset(), 0f)
+            val halfOutQueueRatio = min(queueRatio * 2, 1f)
+            val halfInQueueRatio = max(queueRatio - 0.5f, 0f) * 2
+            binding.playbackBarFragment.alpha = max(1 - halfOutRatio, halfInQueueRatio)
+            binding.playbackPanelFragment.alpha = min(halfInPlaybackRatio, 1 - halfOutQueueRatio)
+            binding.queueFragment.alpha = queueRatio
+
+            if (playbackModel.song.value != null) {
+                // Hack around the playback sheet intercepting swipe events on the queue bar
+                playbackSheetBehavior.isDraggable =
+                    queueSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED
+            }
+        } else {
+            // No queue sheet, fade normally based on the playback sheet
+            binding.playbackBarFragment.alpha = 1 - halfOutRatio
+            binding.playbackPanelFragment.alpha = halfInPlaybackRatio
+            binding.queueSheet.alpha = halfInPlaybackRatio
+        }
 
         binding.exploreNavHost.apply {
             alpha = outPlaybackRatio
@@ -153,61 +179,18 @@ class MainFragment :
             requireContext().getDimenSafe(R.dimen.elevation_normal) * outPlaybackRatio
         playbackSheetBehavior.sheetBackgroundDrawable.alpha = (outPlaybackRatio * 255).toInt()
 
-        val queueSheetBehavior = binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
+        binding.playbackBarFragment.apply {
+            isInvisible = alpha == 0f
+            lastInsets?.let { translationY = it.systemBarInsetsCompat.top * halfOutRatio }
+        }
 
-        if (queueSheetBehavior != null) {
-            val queueRatio = max(queueSheetBehavior.calculateSlideOffset(), 0f)
-            val halfOutQueueRatio = min(queueRatio * 2, 1f)
-            val halfInQueueRatio = max(queueRatio - 0.5f, 0f) * 2
+        binding.playbackPanelFragment.isInvisible = binding.playbackPanelFragment.alpha == 0f
+        binding.queueFragment.isInvisible = binding.queueFragment.alpha == 0f
 
-            binding.playbackBarFragment.apply {
-                alpha = max(1 - halfOutRatio, halfInQueueRatio)
-                isInvisible = alpha == 0f
-                lastInsets?.let { translationY = it.systemBarInsetsCompat.top * halfOutRatio }
-            }
-
-            binding.playbackPanelFragment.apply {
-                alpha = min(halfInPlaybackRatio, 1 - halfOutQueueRatio)
-                isInvisible = alpha == 0f
-            }
-
-            binding.queueFragment.apply {
-                alpha = queueRatio
-                isInvisible = alpha == 0f
-            }
-
-            if (playbackModel.song.value != null) {
-                // Hack around the playback sheet intercepting swipe events on the queue bar
-                playbackSheetBehavior.isDraggable =
-                    queueSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED
-            } else {
-                // Sometimes lingering drags can un-hide the playback sheet even when we intend to
-                // hide it, make sure we keep it hidden.
-                tryHideAll()
-            }
-        } else {
-
-            binding.playbackBarFragment.apply {
-                alpha = 1 - halfOutRatio
-                isInvisible = alpha == 0f
-                lastInsets?.let { translationY = it.systemBarInsetsCompat.top * halfOutRatio }
-            }
-
-            binding.playbackPanelFragment.apply {
-                alpha = halfInPlaybackRatio
-                isInvisible = alpha == 0f
-            }
-
-            binding.queueSheet.apply {
-                alpha = halfInPlaybackRatio
-                isInvisible = alpha == 0f
-            }
-
-            if (playbackModel.song.value == null) {
-                // Sometimes lingering drags can un-hide the playback sheet even when we intend to
-                // hide it, make sure we keep it hidden.
-                tryHideAll()
-            }
+        if (playbackModel.song.value == null) {
+            // Sometimes lingering drags can un-hide the playback sheet even when we intend to
+            // hide it, make sure we keep it hidden.
+            tryHideAll()
         }
 
         return true
@@ -250,8 +233,8 @@ class MainFragment :
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
 
-        if (playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN &&
-            playbackSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+        if (playbackSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
+            // State is collapsed and non-hidden, expand
             playbackSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
@@ -261,8 +244,8 @@ class MainFragment :
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
 
-        if (playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN &&
-            playbackSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED) {
+        if (playbackSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+            // Make sure the queue is also collapsed here.
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
 
@@ -277,13 +260,17 @@ class MainFragment :
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
 
         if (playbackSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
-            playbackSheetBehavior.isDraggable = true
-            playbackSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
 
+            // Queue sheet behavior is either collapsed or expanded, no hiding needed
             queueSheetBehavior?.isDraggable = true
+
+            playbackSheetBehavior.apply {
+                // Make sure the view is draggable, at least until the draw checks kick in.
+                isDraggable = true
+                state = BottomSheetBehavior.STATE_COLLAPSED
+            }
         }
     }
 
@@ -295,6 +282,8 @@ class MainFragment :
         if (playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
+
+            // Make these views non-draggable so the user can't halt the hiding event.
 
             queueSheetBehavior?.apply {
                 isDraggable = false
@@ -314,30 +303,33 @@ class MainFragment :
      *
      * TODO: Migrate to new predictive API
      */
-    inner class DynamicBackPressedCallback : OnBackPressedCallback(false) {
+    private inner class DynamicBackPressedCallback : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
             val binding = requireBinding()
+
+            val playbackSheetBehavior =
+                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
 
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
 
             if (queueSheetBehavior != null &&
-                queueSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED) {
+                queueSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED &&
+                playbackSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+                // Collapse the queue first if it is expanded.
                 queueSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 return
             }
 
-            val playbackSheetBehavior =
-                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
-
             if (playbackSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED &&
                 playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
+                // Then collapse the playback sheet.
                 playbackSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 return
             }
 
+            // First navigate upwards in the explore graph, then navigate back in the activity.
             val navController = binding.exploreNavHost.findNavController()
-
             if (navController.currentDestination?.id == navController.graph.startDestinationId) {
                 isEnabled = false
                 requireActivity().onBackPressed()

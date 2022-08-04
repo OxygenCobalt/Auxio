@@ -156,10 +156,9 @@ class PlaybackViewModel(application: Application) :
     private fun performActionImpl(action: DelayedAction, library: MusicStore.Library) {
         when (action) {
             is DelayedAction.RestoreState -> {
-                if (!playbackManager.isInitialized) {
-                    viewModelScope.launch {
-                        playbackManager.restoreState(PlaybackStateDatabase.getInstance(application))
-                    }
+                viewModelScope.launch {
+                    playbackManager.restoreState(
+                        PlaybackStateDatabase.getInstance(application), false)
                 }
             }
             is DelayedAction.ShuffleAll -> shuffleAll()
@@ -273,7 +272,7 @@ class PlaybackViewModel(application: Application) :
     fun tryRestorePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
             val restored =
-                playbackManager.restoreState(PlaybackStateDatabase.getInstance(application))
+                playbackManager.restoreState(PlaybackStateDatabase.getInstance(application), true)
             onDone(restored)
         }
     }

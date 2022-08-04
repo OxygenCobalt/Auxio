@@ -31,7 +31,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.*
 
 /**
- * Implements the fundamental bottom sheet attributes used across the entire app.
+ * Implements a reasonable enough skeleton around BottomSheetBehavior (Excluding auxio extensions in
+ * the vendored code because I course I have to) for normal use without absurd bugs.
  * @author OxygenCobalt
  */
 abstract class AuxioSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
@@ -85,6 +86,10 @@ abstract class AuxioSheetBehavior<V : View>(context: Context, attributeSet: Attr
 
             setup = true
         }
+
+        // Sometimes CoordinatorLayout tries to be "hElpfUl" and just does not dispatch window
+        // insets sometimes. Ensure that we get them.
+        child.requestApplyInsets()
 
         return layout
     }

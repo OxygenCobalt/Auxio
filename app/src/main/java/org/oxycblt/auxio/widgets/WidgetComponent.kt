@@ -98,7 +98,7 @@ class WidgetComponent(private val context: Context) :
                     // limit, which is the size of an RGB_8888 bitmap 1.5x the screen size. When
                     // enabling rounded corners, we further reduce it by a factor of 8 to get 16-dp
                     // rounded corners, whereas we only downsize it by 2 when there is rounded
-                    // corners just to ensure that we do not hit the memory limit.
+                    // corners just to ensure that we *really* do not hit the memory limit.
                     val metrics = context.resources.displayMetrics
                     val sw = metrics.widthPixels
                     val sh = metrics.heightPixels
