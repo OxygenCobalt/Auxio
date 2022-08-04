@@ -36,7 +36,6 @@ import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.textSafe
 
 /**
  * An adapter for displaying [Artist] information and it's children. Unlike the other adapters, this
@@ -124,11 +123,11 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 
     override fun bind(item: Artist, listener: DetailAdapter.Listener) {
         binding.detailCover.bind(item)
-        binding.detailName.textSafe = item.resolveName(binding.context)
+        binding.detailName.text = item.resolveName(binding.context)
 
         // Get the genre that corresponds to the most songs in this artist, which would be
         // the most "Prominent" genre.
-        binding.detailSubhead.textSafe =
+        binding.detailSubhead.text =
             item.songs
                 .groupBy { it.genre.resolveName(binding.context) }
                 .entries
@@ -136,7 +135,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
                 ?.key
                 ?: binding.context.getString(R.string.def_genre)
 
-        binding.detailInfo.textSafe =
+        binding.detailInfo.text =
             binding.context.getString(
                 R.string.fmt_two,
                 binding.context.getPluralSafe(R.plurals.fmt_album_count, item.albums.size),
@@ -166,8 +165,8 @@ private constructor(
 ) : BindingViewHolder<Album, MenuItemListener>(binding.root) {
     override fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
-        binding.parentName.textSafe = item.resolveName(binding.context)
-        binding.parentInfo.textSafe = item.date.resolveYear(binding.context)
+        binding.parentName.text = item.resolveName(binding.context)
+        binding.parentInfo.text = item.date.resolveYear(binding.context)
 
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
@@ -202,8 +201,8 @@ private constructor(
 ) : BindingViewHolder<Song, MenuItemListener>(binding.root) {
     override fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bind(item)
-        binding.songName.textSafe = item.resolveName(binding.context)
-        binding.songInfo.textSafe = item.album.resolveName(binding.context)
+        binding.songName.text = item.resolveName(binding.context)
+        binding.songInfo.text = item.album.resolveName(binding.context)
 
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }

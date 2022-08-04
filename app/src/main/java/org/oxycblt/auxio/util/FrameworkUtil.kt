@@ -26,7 +26,6 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
 import android.view.WindowInsets
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
@@ -113,17 +112,6 @@ val Drawable.isRtl: Boolean
 /** Shortcut to get a context from a ViewBinding */
 val ViewBinding.context: Context
     get() = root.context
-
-/**
- * A variation of [TextView.setText] that automatically relayouts the view when updated. Helps with
- * getting ellipsize functionality to work.
- */
-var TextView.textSafe: CharSequence
-    get() = text
-    set(value) {
-        text = value
-        requestLayout()
-    }
 
 /**
  * Apply the recommended spans for a [RecyclerView].

@@ -123,8 +123,8 @@ private constructor(
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(item: Song, listener: QueueItemListener) {
         binding.songAlbumCover.bind(item)
-        binding.songName.textSafe = item.resolveName(binding.context)
-        binding.songInfo.textSafe = item.resolveIndividualArtistName(binding.context)
+        binding.songName.text = item.resolveName(binding.context)
+        binding.songInfo.text = item.resolveIndividualArtistName(binding.context)
 
         binding.background.isInvisible = true
 

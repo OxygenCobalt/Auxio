@@ -25,7 +25,6 @@ import org.oxycblt.auxio.ui.recycler.BindingViewHolder
 import org.oxycblt.auxio.ui.recycler.MonoAdapter
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.textSafe
 
 /**
  * Adapter that shows the excluded directories and their "Clear" button.
@@ -74,7 +73,7 @@ class MusicDirAdapter(listener: Listener) :
 class MusicDirViewHolder private constructor(private val binding: ItemMusicDirBinding) :
     BindingViewHolder<Directory, MusicDirAdapter.Listener>(binding.root) {
     override fun bind(item: Directory, listener: MusicDirAdapter.Listener) {
-        binding.dirPath.textSafe = item.resolveName(binding.context)
+        binding.dirPath.text = item.resolveName(binding.context)
         binding.dirDelete.setOnClickListener { listener.onRemoveDirectory(item) }
     }
 

@@ -37,7 +37,6 @@ import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getDrawableSafe
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
-import org.oxycblt.auxio.util.textSafe
 
 /**
  * A [Fragment] that displays more information about the song, along with more media controls.
@@ -142,9 +141,9 @@ class PlaybackPanelFragment :
         val binding = requireBinding()
         val context = requireContext()
         binding.playbackCover.bind(song)
-        binding.playbackSong.textSafe = song.resolveName(context)
-        binding.playbackArtist.textSafe = song.resolveIndividualArtistName(context)
-        binding.playbackAlbum.textSafe = song.album.resolveName(context)
+        binding.playbackSong.text = song.resolveName(context)
+        binding.playbackArtist.text = song.resolveIndividualArtistName(context)
+        binding.playbackAlbum.text = song.album.resolveName(context)
         binding.playbackSeekBar.durationSecs = song.durationSecs
     }
 

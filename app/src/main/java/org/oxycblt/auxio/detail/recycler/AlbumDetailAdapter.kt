@@ -36,7 +36,6 @@ import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.textSafe
 
 /**
  * An adapter for displaying [Album] information and it's children.
@@ -116,10 +115,10 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
     override fun bind(item: Album, listener: AlbumDetailAdapter.Listener) {
         binding.detailCover.bind(item)
-        binding.detailName.textSafe = item.resolveName(binding.context)
+        binding.detailName.text = item.resolveName(binding.context)
 
         binding.detailSubhead.apply {
-            textSafe = item.artist.resolveName(context)
+            text = item.artist.resolveName(context)
             setOnClickListener { listener.onNavigateToArtist() }
         }
 
@@ -176,7 +175,7 @@ class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
     BindingViewHolder<DiscHeader, Unit>(binding.root) {
 
     override fun bind(item: DiscHeader, listener: Unit) {
-        binding.discNo.textSafe = binding.context.getString(R.string.fmt_disc_no, item.disc)
+        binding.discNo.text = binding.context.getString(R.string.fmt_disc_no, item.disc)
     }
 
     companion object {
@@ -203,20 +202,20 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
         // Hide the track number view if the song does not have a track.
         if (item.track != null) {
             binding.songTrack.apply {
-                textSafe = context.getString(R.string.fmt_number, item.track)
+                text = context.getString(R.string.fmt_number, item.track)
                 isInvisible = false
                 contentDescription = context.getString(R.string.desc_track_number, item.track)
             }
         } else {
             binding.songTrack.apply {
-                textSafe = ""
+                text = ""
                 isInvisible = true
                 contentDescription = context.getString(R.string.def_track)
             }
         }
 
-        binding.songName.textSafe = item.resolveName(binding.context)
-        binding.songDuration.textSafe = item.durationSecs.formatDuration(false)
+        binding.songName.text = item.resolveName(binding.context)
+        binding.songDuration.text = item.durationSecs.formatDuration(false)
 
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }

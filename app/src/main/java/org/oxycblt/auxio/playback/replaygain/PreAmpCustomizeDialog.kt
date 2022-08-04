@@ -28,7 +28,6 @@ import org.oxycblt.auxio.databinding.DialogPreAmpBinding
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.textSafe
 
 /**
  * The dialog for customizing the ReplayGain pre-amp values.
@@ -77,7 +76,7 @@ class PreAmpCustomizeDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
         // It is more clear to prepend a +/- before the pre-amp value to make it easier to
         // gauge how much it may be increasing the volume, however android does not add +
         // to positive float values when formatting them in a string. Instead, add it ourselves.
-        ticker.textSafe =
+        ticker.text =
             if (valueDb >= 0) {
                 getString(R.string.fmt_db_pos, valueDb)
             } else {

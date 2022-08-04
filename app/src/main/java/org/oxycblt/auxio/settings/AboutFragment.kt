@@ -43,7 +43,6 @@ import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
-import org.oxycblt.auxio.util.textSafe
 
 /**
  * A [BottomSheetDialogFragment] that shows Auxio's about screen.
@@ -68,7 +67,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
 
         binding.aboutToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
 
-        binding.aboutVersion.textSafe = BuildConfig.VERSION_NAME
+        binding.aboutVersion.text = BuildConfig.VERSION_NAME
         binding.aboutCode.setOnClickListener { openLinkInBrowser(LINK_CODEBASE) }
         binding.aboutFaq.setOnClickListener { openLinkInBrowser(LINK_FAQ) }
         binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }
@@ -81,26 +80,24 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
 
     private fun updateSongCount(songs: List<Song>) {
         val binding = requireBinding()
-        binding.aboutSongCount.textSafe = getString(R.string.fmt_lib_song_count, songs.size)
-        binding.aboutTotalDuration.textSafe =
+        binding.aboutSongCount.text = getString(R.string.fmt_lib_song_count, songs.size)
+        binding.aboutTotalDuration.text =
             getString(
                 R.string.fmt_lib_total_duration,
                 songs.sumOf { it.durationSecs }.formatDuration(false))
     }
 
     private fun updateAlbumCount(albums: List<Album>) {
-        requireBinding().aboutAlbumCount.textSafe =
-            getString(R.string.fmt_lib_album_count, albums.size)
+        requireBinding().aboutAlbumCount.text = getString(R.string.fmt_lib_album_count, albums.size)
     }
 
     private fun updateArtistCount(artists: List<Artist>) {
-        requireBinding().aboutArtistCount.textSafe =
+        requireBinding().aboutArtistCount.text =
             getString(R.string.fmt_lib_artist_count, artists.size)
     }
 
     private fun updateGenreCount(genres: List<Genre>) {
-        requireBinding().aboutGenreCount.textSafe =
-            getString(R.string.fmt_lib_genre_count, genres.size)
+        requireBinding().aboutGenreCount.text = getString(R.string.fmt_lib_genre_count, genres.size)
     }
 
     /** Go through the process of opening a [link] in a browser. */

@@ -286,7 +286,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             when (response) {
                 is Indexer.Response.Err -> {
                     binding.homeIndexingProgress.visibility = View.INVISIBLE
-                    binding.homeIndexingStatus.textSafe = getString(R.string.err_index_failed)
+                    binding.homeIndexingStatus.text = getString(R.string.err_index_failed)
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = getString(R.string.lbl_retry)
@@ -295,7 +295,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 }
                 is Indexer.Response.NoMusic -> {
                     binding.homeIndexingProgress.visibility = View.INVISIBLE
-                    binding.homeIndexingStatus.textSafe = getString(R.string.err_no_music)
+                    binding.homeIndexingStatus.text = getString(R.string.err_no_music)
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = getString(R.string.lbl_retry)
@@ -304,7 +304,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 }
                 is Indexer.Response.NoPerms -> {
                     binding.homeIndexingProgress.visibility = View.INVISIBLE
-                    binding.homeIndexingStatus.textSafe = getString(R.string.err_no_perms)
+                    binding.homeIndexingStatus.text = getString(R.string.err_no_perms)
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = getString(R.string.lbl_grant)
@@ -326,11 +326,11 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         when (indexing) {
             is Indexer.Indexing.Indeterminate -> {
-                binding.homeIndexingStatus.textSafe = getString(R.string.lng_indexing_desc)
+                binding.homeIndexingStatus.text = getString(R.string.lng_indexing_desc)
                 binding.homeIndexingProgress.isIndeterminate = true
             }
             is Indexer.Indexing.Songs -> {
-                binding.homeIndexingStatus.textSafe =
+                binding.homeIndexingStatus.text =
                     getString(R.string.fmt_indexing, indexing.current, indexing.total)
                 binding.homeIndexingProgress.apply {
                     isIndeterminate = false

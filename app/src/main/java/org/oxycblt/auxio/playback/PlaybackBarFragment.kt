@@ -29,7 +29,6 @@ import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getColorStateListSafe
-import org.oxycblt.auxio.util.textSafe
 
 /**
  * A fragment showing the current playback state in a compact manner. Used as the bar for the
@@ -77,8 +76,8 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
             val context = requireContext()
             val binding = requireBinding()
             binding.playbackCover.bind(song)
-            binding.playbackSong.textSafe = song.resolveName(context)
-            binding.playbackInfo.textSafe = song.resolveIndividualArtistName(context)
+            binding.playbackSong.text = song.resolveName(context)
+            binding.playbackInfo.text = song.resolveIndividualArtistName(context)
             binding.playbackProgressBar.max = song.durationSecs.toInt()
         }
     }

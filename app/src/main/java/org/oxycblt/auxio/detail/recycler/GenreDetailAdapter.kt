@@ -34,7 +34,6 @@ import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.textSafe
 
 /**
  * An adapter for displaying genre information and it's children.
@@ -105,10 +104,10 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
     BindingViewHolder<Genre, DetailAdapter.Listener>(binding.root) {
     override fun bind(item: Genre, listener: DetailAdapter.Listener) {
         binding.detailCover.bind(item)
-        binding.detailName.textSafe = item.resolveName(binding.context)
-        binding.detailSubhead.textSafe =
+        binding.detailName.text = item.resolveName(binding.context)
+        binding.detailSubhead.text =
             binding.context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size)
-        binding.detailInfo.textSafe = item.durationSecs.formatDuration(false)
+        binding.detailInfo.text = item.durationSecs.formatDuration(false)
         binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }
         binding.detailShuffleButton.setOnClickListener { listener.onShuffleParent() }
     }
@@ -137,8 +136,8 @@ class GenreSongViewHolder private constructor(private val binding: ItemSongBindi
     BindingViewHolder<Song, MenuItemListener>(binding.root) {
     override fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bind(item)
-        binding.songName.textSafe = item.resolveName(binding.context)
-        binding.songInfo.textSafe = item.resolveIndividualArtistName(binding.context)
+        binding.songName.text = item.resolveName(binding.context)
+        binding.songInfo.text = item.resolveIndividualArtistName(binding.context)
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
             setOnLongClickListener { view ->

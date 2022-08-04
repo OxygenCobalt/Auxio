@@ -25,7 +25,6 @@ import org.oxycblt.auxio.databinding.ViewSeekBarBinding
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.textSafe
 
 /**
  * A wrapper around [Slider] that shows not only position and duration values, but also basically
@@ -78,7 +77,7 @@ constructor(
 
                 // We would want to keep this in the callback, but the callback only fires when
                 // a value changes completely, and sometimes that does not happen with this view.
-                binding.seekBarPosition.textSafe = value.formatDuration(true)
+                binding.seekBarPosition.text = value.formatDuration(true)
             }
         }
 
@@ -102,7 +101,7 @@ constructor(
             }
 
             binding.seekBarSlider.valueTo = to.toFloat()
-            binding.seekBarDuration.textSafe = value.formatDuration(false)
+            binding.seekBarDuration.text = value.formatDuration(false)
         }
 
     override fun onStartTrackingTouch(slider: Slider) {
@@ -120,7 +119,7 @@ constructor(
     }
 
     override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
-        binding.seekBarPosition.textSafe = value.toLong().formatDuration(true)
+        binding.seekBarPosition.text = value.toLong().formatDuration(true)
     }
 
     interface Callback {

@@ -36,7 +36,6 @@ import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logW
-import org.oxycblt.auxio.util.textSafe
 
 abstract class DetailAdapter<L : DetailAdapter.Listener>(
     listener: L,
@@ -130,7 +129,7 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
 class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
     BindingViewHolder<SortHeader, DetailAdapter.Listener>(binding.root) {
     override fun bind(item: SortHeader, listener: DetailAdapter.Listener) {
-        binding.headerTitle.textSafe = binding.context.getString(item.string)
+        binding.headerTitle.text = binding.context.getString(item.string)
         binding.headerButton.apply {
             TooltipCompat.setTooltipText(this, contentDescription)
             setOnClickListener(listener::onShowSortMenu)
