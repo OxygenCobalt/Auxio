@@ -22,12 +22,13 @@ import android.view.LayoutInflater
 import android.view.ViewTreeObserver
 import android.view.WindowInsets
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.transition.MaterialFadeThrough
 import kotlin.math.max
@@ -74,14 +75,20 @@ class MainFragment :
             insets
         }
 
-        val playbackSheetBehavior =
-            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+        // Send meaningful accessibility events for bottom sheets
+        ViewCompat.setAccessibilityPaneTitle(
+            binding.playbackSheet, getString(R.string.lbl_playback))
+        ViewCompat.setAccessibilityPaneTitle(binding.queueSheet, getString(R.string.lbl_queue))
+
         val queueSheetBehavior = binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
         if (queueSheetBehavior != null) {
+            val playbackSheetBehavior =
+                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+
             unlikelyToBeNull(binding.handleWrapper).setOnClickListener {
-                if (playbackSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED &&
-                    queueSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
-                    queueSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED &&
+                    queueSheetBehavior.state == NeoBottomSheetBehavior.STATE_COLLAPSED) {
+                    queueSheetBehavior.state = NeoBottomSheetBehavior.STATE_EXPANDED
                 }
             }
         } else {
@@ -161,7 +168,7 @@ class MainFragment :
             if (playbackModel.song.value != null) {
                 // Hack around the playback sheet intercepting swipe events on the queue bar
                 playbackSheetBehavior.isDraggable =
-                    queueSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED
+                    queueSheetBehavior.state == NeoBottomSheetBehavior.STATE_COLLAPSED
             }
         } else {
             // No queue sheet, fade normally based on the playback sheet
@@ -233,9 +240,9 @@ class MainFragment :
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
 
-        if (playbackSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
+        if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_COLLAPSED) {
             // State is collapsed and non-hidden, expand
-            playbackSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            playbackSheetBehavior.state = NeoBottomSheetBehavior.STATE_EXPANDED
         }
     }
 
@@ -244,13 +251,13 @@ class MainFragment :
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
 
-        if (playbackSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+        if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED) {
             // Make sure the queue is also collapsed here.
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
 
-            playbackSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            queueSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+            playbackSheetBehavior.state = NeoBottomSheetBehavior.STATE_COLLAPSED
+            queueSheetBehavior?.state = NeoBottomSheetBehavior.STATE_COLLAPSED
         }
     }
 
@@ -259,7 +266,7 @@ class MainFragment :
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
 
-        if (playbackSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+        if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_HIDDEN) {
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
 
@@ -269,7 +276,7 @@ class MainFragment :
             playbackSheetBehavior.apply {
                 // Make sure the view is draggable, at least until the draw checks kick in.
                 isDraggable = true
-                state = BottomSheetBehavior.STATE_COLLAPSED
+                state = NeoBottomSheetBehavior.STATE_COLLAPSED
             }
         }
     }
@@ -279,7 +286,7 @@ class MainFragment :
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
 
-        if (playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
+        if (playbackSheetBehavior.state != NeoBottomSheetBehavior.STATE_HIDDEN) {
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
 
@@ -287,12 +294,12 @@ class MainFragment :
 
             queueSheetBehavior?.apply {
                 isDraggable = false
-                state = BottomSheetBehavior.STATE_COLLAPSED
+                state = NeoBottomSheetBehavior.STATE_COLLAPSED
             }
 
             playbackSheetBehavior.apply {
                 isDraggable = false
-                state = BottomSheetBehavior.STATE_HIDDEN
+                state = NeoBottomSheetBehavior.STATE_HIDDEN
             }
         }
     }
@@ -314,17 +321,17 @@ class MainFragment :
                 binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
 
             if (queueSheetBehavior != null &&
-                queueSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED &&
-                playbackSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+                queueSheetBehavior.state != NeoBottomSheetBehavior.STATE_COLLAPSED &&
+                playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED) {
                 // Collapse the queue first if it is expanded.
-                queueSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                queueSheetBehavior.state = NeoBottomSheetBehavior.STATE_COLLAPSED
                 return
             }
 
-            if (playbackSheetBehavior.state != BottomSheetBehavior.STATE_COLLAPSED &&
-                playbackSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
+            if (playbackSheetBehavior.state != NeoBottomSheetBehavior.STATE_COLLAPSED &&
+                playbackSheetBehavior.state != NeoBottomSheetBehavior.STATE_HIDDEN) {
                 // Then collapse the playback sheet.
-                playbackSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                playbackSheetBehavior.state = NeoBottomSheetBehavior.STATE_COLLAPSED
                 return
             }
 

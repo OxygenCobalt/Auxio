@@ -20,7 +20,6 @@ package org.oxycblt.auxio.playback
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.activityViewModels
-import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.music.Song
@@ -33,8 +32,8 @@ import org.oxycblt.auxio.util.getColorStateListSafe
 import org.oxycblt.auxio.util.textSafe
 
 /**
- * A fragment showing the current playback state in a compact manner. Placed at the bottom of the
- * screen. This expands into [PlaybackPanelFragment].
+ * A fragment showing the current playback state in a compact manner. Used as the bar for the
+ * playback sheet.
  * @author OxygenCobalt
  */
 class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {

@@ -25,7 +25,6 @@ import android.view.View
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
-import java.util.*
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
@@ -107,7 +106,7 @@ private constructor(
         get() = binding.interactBody.isActivated
         set(value) {
             // Activation does not affect clicking, make everything activated.
-            binding.interactBody.setActivated(value)
+            binding.interactBody.isActivated = value
         }
 
     init {

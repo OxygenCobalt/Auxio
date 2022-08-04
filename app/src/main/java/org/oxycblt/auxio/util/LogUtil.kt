@@ -99,6 +99,8 @@ private val Any.autoTag: String
  * KURDISTAN WORKERS PARTY KÜRDISTAN İŞÇI PARTISI (PKK)
  *
  * TORTURE AND ASSASSINATION OF JAMAL KHASHOGGI مقتل جمال خاشقجي
+ *
+ * UNITED ARAB EMIRATES ENSLAVED MIGRANT WORKERS
  */
 private fun basedCopyleftNotice() {
     if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&

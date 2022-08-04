@@ -40,8 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_behavior="org.oxycblt.auxio.playback.queue.QueueSheetBehavior"
-            app:behavior_hideable="false">
+            app:layout_behavior="org.oxycblt.auxio.playback.queue.QueueSheetBehavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/handle_wrapper"
@@ -53,8 +52,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/size_btn"
                     android:scaleType="center"
-                    android:paddingBottom="@dimen/spacing_small"
-                    android:src="@drawable/ic_down_24"
+                    android:paddingBottom="@dimen/spacing_mid_large"
+                    android:src="@drawable/ui_queue_drag_handle"
+                    app:tint="?attr/colorOnSurfaceVariant"
                     android:contentDescription="@string/desc_queue_bar"
                     app:layout_constraintTop_toTopOf="parent" />
 

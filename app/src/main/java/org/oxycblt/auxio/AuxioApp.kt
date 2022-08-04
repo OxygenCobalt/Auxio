@@ -46,9 +46,8 @@ class AuxioApp : Application(), ImageLoaderFactory {
                     .setLongLabel(getString(R.string.lbl_shuffle_shortcut_long))
                     .setIcon(IconCompat.createWithResource(this, R.drawable.ic_shortcut_shuffle_24))
                     .setIntent(
-                        Intent(this, MainActivity::class.java).apply {
-                            action = INTENT_KEY_SHORTCUT_SHUFFLE
-                        })
+                        Intent(this, MainActivity::class.java)
+                            .setAction(INTENT_KEY_SHORTCUT_SHUFFLE))
                     .build()))
     }
 

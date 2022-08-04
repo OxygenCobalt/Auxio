@@ -22,7 +22,6 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.graphics.Insets
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
@@ -30,8 +29,10 @@ import android.view.WindowInsets
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.ColorRes
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -251,9 +252,9 @@ val WindowInsets.systemBarInsetsCompat: Insets
     get() =
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                getInsets(WindowInsets.Type.systemBars())
+                getCompatInsets(WindowInsets.Type.systemBars())
             }
-            else -> systemWindowInsetsCompat
+            else -> getSystemWindowCompatInsets()
         }
 
 /**
@@ -271,23 +272,30 @@ val WindowInsets.systemGestureInsetsCompat: Insets
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
                 Insets.max(
-                    getInsets(WindowInsets.Type.systemGestures()),
-                    getInsets(WindowInsets.Type.systemBars()))
+                    getCompatInsets(WindowInsets.Type.systemGestures()),
+                    getCompatInsets(WindowInsets.Type.systemBars()))
             }
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
-                @Suppress("DEPRECATION") Insets.max(systemGestureInsets, systemBarInsetsCompat)
+                @Suppress("DEPRECATION")
+                Insets.max(getSystemGestureCompatInsets(), getSystemWindowCompatInsets())
             }
-            else -> systemWindowInsetsCompat
+            else -> getSystemWindowCompatInsets()
         }
 
 @Suppress("DEPRECATION")
-val WindowInsets.systemWindowInsetsCompat: Insets
-    get() =
-        Insets.of(
-            systemWindowInsetLeft,
-            systemWindowInsetTop,
-            systemWindowInsetRight,
-            systemWindowInsetBottom)
+fun WindowInsets.getSystemWindowCompatInsets() =
+    Insets.of(
+        systemWindowInsetLeft,
+        systemWindowInsetTop,
+        systemWindowInsetRight,
+        systemWindowInsetBottom)
+
+@Suppress("DEPRECATION")
+@RequiresApi(Build.VERSION_CODES.Q)
+fun WindowInsets.getSystemGestureCompatInsets() = Insets.toCompatInsets(systemGestureInsets)
+
+@RequiresApi(Build.VERSION_CODES.R)
+fun WindowInsets.getCompatInsets(typeMask: Int) = Insets.toCompatInsets(getInsets(typeMask))
 
 /**
  * Replaces the system bar insets in a version-aware manner. This can be used to modify the insets
@@ -302,7 +310,9 @@ fun WindowInsets.replaceSystemBarInsetsCompat(
     return when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
             WindowInsets.Builder(this)
-                .setInsets(WindowInsets.Type.systemBars(), Insets.of(left, top, right, bottom))
+                .setInsets(
+                    WindowInsets.Type.systemBars(),
+                    Insets.of(left, top, right, bottom).toPlatformInsets())
                 .build()
         }
         else -> {
