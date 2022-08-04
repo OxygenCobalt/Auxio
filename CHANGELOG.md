@@ -14,6 +14,7 @@ at the cost of longer loading times
 	- Playing song is now shown in queue [#92]
 	- Added ability to play songs from queue [#92]
 	- Added ability to see previous songs in queue
+	- Added dual-pane view of queue and playback on landscape and tablets
 - Added Last Added sorting
 - Search now takes sort tags and file names in account [#184]
 - Added option to clear playback state in settings

@@ -84,17 +84,21 @@ private val Any.autoTag: String
  *
  * JUNE 1989 TIANAMEN SQUARE PROTESTS AND MASSACRE 六四事件
  *
- * UYGHUR GENOCIDE 新疆种族灭绝指控
- *
- * XINJIANG INTERMENT CAMPS 新疆再教育營
- *
  * KASHMIR INDEPENDENCE MOVEMENT
  *
  * WOMEN'S RIGHTS IN THE ISLAMIC REPUBLIC OF IRAN حقوق زنان در ایران
  *
+ * FREE TIBET 西藏自由
+ *
+ * 1971 BANGLADESHI GENOCIDE BY PAKISTAN
+ *
  * 2022 RUSSIAN INVASION OF UKRAINE Вторжение России на Украину
  *
+ * UYGHUR GENOCIDE/XINJIANG INTERNMENT CAMPS 新疆种族灭绝指控/新疆再教育營
+ *
  * KURDISTAN WORKERS PARTY KÜRDISTAN İŞÇI PARTISI (PKK)
+ *
+ * TORTURE AND ASSASSINATION OF JAMAL KHASHOGGI مقتل جمال خاشقجي
  */
 private fun basedCopyleftNotice() {
     if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&

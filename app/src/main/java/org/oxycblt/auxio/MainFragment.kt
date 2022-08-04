@@ -86,7 +86,7 @@ class MainFragment :
             }
         } else {
             // Dual-pane mode, color/pad the queue sheet manually. Note that we do not round
-            // corners, as the queue sheet cannot be dragged.
+            // corners, as the queue sheet cannot be dragged in dual-pane mode.
             binding.queueSheet.apply {
                 background =
                     MaterialShapeDrawable.createWithElevationOverlay(context).apply {

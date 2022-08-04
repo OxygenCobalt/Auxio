@@ -44,8 +44,6 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Add multi-select
  *
- * TODO: Separate playback views by height
- *
  * TODO: Find better way to handler recycler divider visibility
  *
  * @author OxygenCobalt
