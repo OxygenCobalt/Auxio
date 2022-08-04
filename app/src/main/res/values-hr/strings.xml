@@ -38,7 +38,7 @@
     <string name="lbl_play">Reproduciraj</string>
     <string name="lbl_shuffle">Izmiješaj</string>
     <string name="lbl_queue">Red čekanja</string>
-    <string name="lbl_play_next">Reproduciraj sljedeće</string>
+    <string name="lbl_play_next">Reproduciraj sljedeću</string>
     <string name="lbl_props">Svojstva pjesme</string>
     <string name="lbl_file_name">Naziv datoteke</string>
     <string name="lbl_relative_path">Glavni direktorij</string>
@@ -183,9 +183,9 @@
     </plurals>
     <string name="info_playback_channel_name">Reprodukcija glazbe</string>
     <string name="info_app_desc">Jednostavan i racionalan izvođač glazbe za Android.</string>
-    <string name="lbl_retry">Pokušaj ponovno</string>
+    <string name="lbl_retry">Pokušaj ponovo</string>
     <string name="info_indexer_channel_name">Učitavanje glazbe</string>
-    <string name="info_widget_desc">Pregledajte i upravljajte reprodukcijom glazbe</string>
+    <string name="info_widget_desc">Pregledaj i upravljaj reprodukcijom glazbe</string>
     <string name="lbl_grant">Dozvoli</string>
     <string name="lbl_single_live">Singl uživo</string>
     <string name="lbl_single_remix">Singl remiks</string>
@@ -224,4 +224,7 @@
     <string name="desc_change_repeat">Promijeni način ponavljanja</string>
     <string name="clr_purple">Ljubičasto</string>
     <string name="cdc_mka">Matroska Zvuk</string>
+    <string name="set_wipe">Izbriši stanje reprodukcije</string>
+    <string name="lbl_state_wiped">Stanje izbrisano</string>
+    <string name="set_wipe_desc">Izbriši prethodno stanje reprodukcije (ako postoji)</string>
 </resources>

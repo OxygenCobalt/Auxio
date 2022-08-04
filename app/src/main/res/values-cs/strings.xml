@@ -237,4 +237,8 @@
     <string name="lbl_album_remix">Remixové album</string>
     <string name="lbl_ep_live">Živé EP</string>
     <string name="lbl_ep_remix">Remixové EP</string>
+    <string name="set_wipe">Vymazat stav přehrávání</string>
+    <string name="set_wipe_desc">Vymazat dříve uložený stav přehrávání (pokud existuje)</string>
+    <string name="lbl_state_wiped">Stav vymazán</string>
+    <string name="desc_queue_bar">Otevřít frontu</string>
 </resources>

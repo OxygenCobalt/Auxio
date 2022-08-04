@@ -160,4 +160,11 @@
     <string name="lbl_single_remix">Remikso singlas</string>
     <string name="lbl_compilations">Kompiliacijos</string>
     <string name="lbl_compilation">Kompiliacija</string>
+    <string name="set_keep_shuffle">Prisiminti maišymą</string>
+    <string name="set_keep_shuffle_desc">Palikti maišyma, kai groja naują dainą</string>
+    <string name="set_rewind_prev">Persukti atgal prieš peršokant atgal</string>
+    <string name="set_rewind_prev_desc">Persukti atgal prieš peršokant į ankstesnę dainą</string>
+    <string name="set_repeat_pause">Kartojimo pauzė</string>
+    <string name="set_library_song_playback_mode">Kai grojant iš bibliotekos</string>
+    <string name="set_detail_song_playback_mode">Kai grojant iš elemento detalių</string>
 </resources>
