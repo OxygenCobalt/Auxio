@@ -34,7 +34,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.system.ForegroundManager
 import org.oxycblt.auxio.util.contentResolverSafe
-import org.oxycblt.auxio.util.getSystemServiceSafe
+import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -73,7 +73,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         observingNotification = ObservingNotification(this)
 
         wakeLock =
-            getSystemServiceSafe(PowerManager::class)
+            getSystemServiceCompat(PowerManager::class)
                 .newWakeLock(
                     PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ":IndexerService")
 

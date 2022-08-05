@@ -64,14 +64,12 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
         if (song != null) {
             if (song.info != null) {
+                val context = requireContext()
                 binding.detailContainer.isGone = false
                 binding.detailFileName.setText(song.song.path.name)
-                binding.detailRelativeDir.setText(
-                    song.song.path.parent.resolveName(requireContext()))
-                binding.detailFormat.setText(
-                    song.info.resolvedMimeType.resolveName(requireContext()))
-                binding.detailSize.setText(
-                    Formatter.formatFileSize(requireContext(), song.song.size))
+                binding.detailRelativeDir.setText(song.song.path.parent.resolveName(context))
+                binding.detailFormat.setText(song.info.resolvedMimeType.resolveName(context))
+                binding.detailSize.setText(Formatter.formatFileSize(context, song.song.size))
                 binding.detailDuration.setText(song.song.durationSecs.formatDuration(true))
 
                 if (song.info.bitrateKbps != null) {

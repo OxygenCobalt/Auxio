@@ -19,7 +19,6 @@ package org.oxycblt.auxio.util
 
 import android.app.Application
 import android.content.Context
-import android.content.res.ColorStateList
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.drawable.Drawable
@@ -27,7 +26,6 @@ import android.os.Build
 import android.view.View
 import android.view.WindowInsets
 import androidx.activity.viewModels
-import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -41,7 +39,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -56,7 +53,7 @@ import org.oxycblt.auxio.R
  */
 fun View.disableDropShadowCompat() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        val transparent = context.getColorSafe(android.R.color.transparent)
+        val transparent = context.getColorCompat(android.R.color.transparent).defaultColor
         outlineAmbientShadowColor = transparent
         outlineSpotShadowColor = transparent
     }
@@ -113,41 +110,15 @@ val Drawable.isRtl: Boolean
 val ViewBinding.context: Context
     get() = root.context
 
-/**
- * Apply the recommended spans for a [RecyclerView].
- *
- * @param shouldBeFullWidth Optional callback for determining whether an item should be full-width,
- * regardless of spans
- */
-fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
-    val spans = resources.getInteger(R.integer.recycler_spans)
-
-    if (spans > 1) {
-        val mgr = GridLayoutManager(context, spans)
-
-        if (shouldBeFullWidth != null) {
-            mgr.spanSizeLookup =
-                object : GridLayoutManager.SpanSizeLookup() {
-                    override fun getSpanSize(position: Int): Int {
-                        return if (shouldBeFullWidth(position)) spans else 1
-                    }
-                }
-        }
-
-        layoutManager = mgr
-    }
-}
-
 /** Returns whether a recyclerview can scroll. */
-val RecyclerView.canScroll: Boolean
-    get() = computeVerticalScrollRange() > height
+fun RecyclerView.canScroll() = computeVerticalScrollRange() > height
 
-val View.coordinatorLayoutBehavior: CoordinatorLayout.Behavior<*>?
+/**
+ * Shortcut to obtain the CoordinatorLayout behavior of a view. Null if not from a coordinator
+ * layout or if no behavior is present.
+ */
+val View.coordinatorLayoutBehavior: CoordinatorLayout.Behavior<View>?
     get() = (layoutParams as? CoordinatorLayout.LayoutParams)?.behavior
-
-/** Converts this color to a single-color [ColorStateList]. */
-val @receiver:ColorRes Int.stateList
-    get() = ColorStateList.valueOf(this)
 
 /**
  * Collect a [stateFlow] into [block] eventually.

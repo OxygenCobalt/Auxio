@@ -32,7 +32,7 @@ import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.getSystemServiceSafe
+import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 
@@ -45,7 +45,7 @@ class MusicDirsDialog :
     private val dirAdapter = MusicDirAdapter(this)
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
     private val storageManager: StorageManager by lifecycleObject { binding ->
-        binding.context.getSystemServiceSafe(StorageManager::class)
+        binding.context.getSystemServiceCompat(StorageManager::class)
     }
 
     override fun onCreateBinding(inflater: LayoutInflater) =

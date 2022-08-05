@@ -28,7 +28,7 @@ import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.getColorStateListSafe
+import org.oxycblt.auxio.util.getColorCompat
 
 /**
  * A fragment showing the current playback state in a compact manner. Used as the bar for the
@@ -58,7 +58,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         // Load the track color in manually as it's unclear whether the track actually supports
         // using a ColorStateList in the resources
         binding.playbackProgressBar.trackColor =
-            requireContext().getColorStateListSafe(R.color.sel_track).defaultColor
+            requireContext().getColorCompat(R.color.sel_track).defaultColor
 
         binding.playbackPlayPause.setOnClickListener { playbackModel.invertPlaying() }
 

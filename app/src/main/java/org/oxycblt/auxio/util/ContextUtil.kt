@@ -23,14 +23,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.annotation.AttrRes
-import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.Dimension
@@ -51,7 +49,7 @@ val Context.inflater: LayoutInflater
  * Returns whether the current UI is in night mode or not. This will work if the theme is automatic
  * as well.
  */
-val Context.isNight: Boolean
+val Context.isNight
     get() =
         resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
             Configuration.UI_MODE_NIGHT_YES
@@ -73,48 +71,25 @@ val Context.contentResolverSafe: ContentResolver
  * @param value Int value for the plural.
  * @return The formatted string requested
  */
-fun Context.getPluralSafe(@PluralsRes pluralsRes: Int, value: Int): String {
-    return try {
-        resources.getQuantityString(pluralsRes, value, value)
-    } catch (e: Exception) {
-        handleResourceFailure(e, "plural", "<plural error>")
-    }
-}
-
-/**
- * Convenience method for getting a color safely.
- * @param color The color resource
- * @return The color integer requested, or black if an error occurred.
- */
-@ColorInt
-fun Context.getColorSafe(@ColorRes color: Int): Int {
-    return try {
-        ContextCompat.getColor(this, color)
-    } catch (e: Exception) {
-        handleResourceFailure(e, "color", getColorSafe(android.R.color.black))
-    }
-}
+fun Context.getPlural(@PluralsRes pluralsRes: Int, value: Int) =
+    resources.getQuantityString(pluralsRes, value, value)
 
 /**
  * Convenience method for getting a [ColorStateList] resource safely.
  * @param color The color resource
- * @return The [ColorStateList] requested, or black if an error occurred.
+ * @return The [ColorStateList] requested
  */
-fun Context.getColorStateListSafe(@ColorRes color: Int): ColorStateList {
-    return try {
-        unlikelyToBeNull(ContextCompat.getColorStateList(this, color))
-    } catch (e: Exception) {
-        handleResourceFailure(e, "color state list", getColorSafe(android.R.color.black).stateList)
+fun Context.getColorCompat(@ColorRes color: Int) =
+    requireNotNull(ContextCompat.getColorStateList(this, color)) {
+        "Invalid resource: State list was null"
     }
-}
 
 /**
  * Convenience method for getting a color attribute safely.
  * @param attr The color attribute
- * @return The attribute requested, or black if an error occurred.
+ * @return The attribute requested
  */
-@ColorInt
-fun Context.getAttrColorSafe(@AttrRes attr: Int): Int {
+fun Context.getAttrColorCompat(@AttrRes attr: Int): ColorStateList {
     // First resolve the attribute into its ID
     val resolvedAttr = TypedValue()
     theme.resolveAttribute(attr, resolvedAttr, true)
@@ -127,80 +102,32 @@ fun Context.getAttrColorSafe(@AttrRes attr: Int): Int {
             resolvedAttr.data
         }
 
-    return getColorSafe(color)
+    return getColorCompat(color)
 }
 
 /**
  * Convenience method for getting a [Drawable] safely.
  * @param drawable The drawable resource
- * @return The drawable requested, or black if an error occurred.
+ * @return The drawable requested
  */
-fun Context.getDrawableSafe(@DrawableRes drawable: Int): Drawable {
-    return try {
-        requireNotNull(ContextCompat.getDrawable(this, drawable))
-    } catch (e: Exception) {
-        handleResourceFailure(e, "drawable", ColorDrawable(getColorSafe(android.R.color.black)))
+fun Context.getDrawableCompat(@DrawableRes drawable: Int) =
+    requireNotNull(ContextCompat.getDrawable(this, drawable)) {
+        "Invalid resource: Drawable was null"
     }
-}
 
 /**
  * Convenience method for getting a dimension safely.
  * @param dimen The dimension resource
- * @return The dimension requested, or 0 if an error occurred.
+ * @return The dimension requested
  */
-@Dimension
-fun Context.getDimenSafe(@DimenRes dimen: Int): Float {
-    return try {
-        resources.getDimension(dimen)
-    } catch (e: Exception) {
-        handleResourceFailure(e, "dimen", 0f)
-    }
-}
+@Dimension fun Context.getDimen(@DimenRes dimen: Int) = resources.getDimension(dimen)
 
 /**
  * Convenience method for getting a dimension pixel size safely.
  * @param dimen The dimension resource
- * @return The dimension requested, in pixels, or 0 if an error occurred.
+ * @return The dimension requested, in pixels
  */
-@Px
-fun Context.getDimenSizeSafe(@DimenRes dimen: Int): Int {
-    return try {
-        resources.getDimensionPixelSize(dimen)
-    } catch (e: Exception) {
-        handleResourceFailure(e, "dimen", 0)
-    }
-}
-
-/**
- * Convenience method for getting a dimension pixel offset safely.
- * @param dimen The dimension resource
- * @return The dimension requested, in pixels, or 0 if an error occurred.
- */
-@Px
-fun Context.getDimenOffsetSafe(@DimenRes dimen: Int): Int {
-    return try {
-        resources.getDimensionPixelOffset(dimen)
-    } catch (e: Exception) {
-        handleResourceFailure(e, "dimen", 0)
-    }
-}
-
-/**
- * Calculates the pixels of the given dimension [dp].
- * @param dp the dimension value
- * @return The equivalent amount of pixels for [dp].
- */
-@Px
-fun Context.pxOfDp(@Dimension dp: Float): Int {
-    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
-        .toInt()
-}
-
-private fun <T> Context.handleResourceFailure(e: Exception, what: String, default: T): T {
-    logE("$what load failed")
-    e.logTraceOrThrow()
-    return default
-}
+@Px fun Context.getDimenSize(@DimenRes dimen: Int) = resources.getDimensionPixelSize(dimen)
 
 /**
  * Convenience method for getting a system service without nullability issues.
@@ -209,11 +136,10 @@ private fun <T> Context.handleResourceFailure(e: Exception, what: String, defaul
  * @return The system service
  * @throws IllegalArgumentException If the system service cannot be retrieved.
  */
-fun <T : Any> Context.getSystemServiceSafe(serviceClass: KClass<T>): T {
-    return requireNotNull(ContextCompat.getSystemService(this, serviceClass.java)) {
+fun <T : Any> Context.getSystemServiceCompat(serviceClass: KClass<T>) =
+    requireNotNull(ContextCompat.getSystemService(this, serviceClass.java)) {
         "System service ${serviceClass.simpleName} could not be instantiated"
     }
-}
 
 /** Create a toast using the provided string resource. */
 fun Context.showToast(@StringRes str: Int) {

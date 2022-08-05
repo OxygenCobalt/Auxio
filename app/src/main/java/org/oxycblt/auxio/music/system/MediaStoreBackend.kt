@@ -30,7 +30,7 @@ import java.io.File
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.contentResolverSafe
-import org.oxycblt.auxio.util.getSystemServiceSafe
+import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 
 /*
@@ -114,7 +114,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
 
     override fun query(context: Context): Cursor {
         val settings = Settings(context)
-        val storageManager = context.getSystemServiceSafe(StorageManager::class)
+        val storageManager = context.getSystemServiceCompat(StorageManager::class)
         volumes.addAll(storageManager.storageVolumesCompat)
         val dirs = settings.getMusicDirs(storageManager)
 

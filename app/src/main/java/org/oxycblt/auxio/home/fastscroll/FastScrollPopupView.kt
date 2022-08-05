@@ -34,9 +34,8 @@ import android.view.Gravity
 import androidx.core.widget.TextViewCompat
 import com.google.android.material.textview.MaterialTextView
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.getAttrColorSafe
-import org.oxycblt.auxio.util.getDimenOffsetSafe
-import org.oxycblt.auxio.util.getDimenSizeSafe
+import org.oxycblt.auxio.util.getAttrColorCompat
+import org.oxycblt.auxio.util.getDimenSize
 import org.oxycblt.auxio.util.isRtl
 
 class FastScrollPopupView
@@ -44,17 +43,17 @@ class FastScrollPopupView
 constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0) :
     MaterialTextView(context, attrs, defStyleRes) {
     init {
-        minimumWidth = context.getDimenSizeSafe(R.dimen.fast_scroll_popup_min_width)
-        minimumHeight = context.getDimenSizeSafe(R.dimen.fast_scroll_popup_min_height)
+        minimumWidth = context.getDimenSize(R.dimen.fast_scroll_popup_min_width)
+        minimumHeight = context.getDimenSize(R.dimen.fast_scroll_popup_min_height)
 
         TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_HeadlineLarge)
-        setTextColor(context.getAttrColorSafe(R.attr.colorOnSecondary))
+        setTextColor(context.getAttrColorCompat(R.attr.colorOnSecondary))
         ellipsize = TextUtils.TruncateAt.MIDDLE
         gravity = Gravity.CENTER
         includeFontPadding = false
 
         alpha = 0f
-        elevation = context.getDimenSizeSafe(R.dimen.elevation_normal).toFloat()
+        elevation = context.getDimenSize(R.dimen.elevation_normal).toFloat()
         background = FastScrollPopupDrawable(context)
     }
 
@@ -62,16 +61,15 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0)
         private val paint: Paint =
             Paint().apply {
                 isAntiAlias = true
-                color = context.getAttrColorSafe(R.attr.colorSecondary)
+                color = context.getAttrColorCompat(R.attr.colorSecondary).defaultColor
                 style = Paint.Style.FILL
             }
 
         private val path = Path()
         private val matrix = Matrix()
 
-        private val paddingStart =
-            context.getDimenOffsetSafe(R.dimen.fast_scroll_popup_padding_start)
-        private val paddingEnd = context.getDimenOffsetSafe(R.dimen.fast_scroll_popup_padding_end)
+        private val paddingStart = context.getDimenSize(R.dimen.fast_scroll_popup_padding_start)
+        private val paddingEnd = context.getDimenSize(R.dimen.fast_scroll_popup_padding_end)
 
         override fun draw(canvas: Canvas) {
             canvas.drawPath(path, paint)

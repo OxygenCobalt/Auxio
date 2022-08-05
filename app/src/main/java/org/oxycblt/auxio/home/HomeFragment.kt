@@ -106,7 +106,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         // Load the track color in manually as it's unclear whether the track actually supports
         // using a ColorStateList in the resources
         binding.homeIndexingProgress.trackColor =
-            requireContext().getColorStateListSafe(R.color.sel_track).defaultColor
+            requireContext().getColorCompat(R.color.sel_track).defaultColor
 
         binding.homePager.apply {
             adapter = HomePagerAdapter()
@@ -279,6 +279,8 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             binding.homeFab.show()
             binding.homeIndexingContainer.visibility = View.INVISIBLE
         } else {
+            val context = requireContext()
+
             binding.homeIndexingContainer.visibility = View.VISIBLE
 
             logD("Received non-ok response $response")
@@ -286,28 +288,28 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             when (response) {
                 is Indexer.Response.Err -> {
                     binding.homeIndexingProgress.visibility = View.INVISIBLE
-                    binding.homeIndexingStatus.text = getString(R.string.err_index_failed)
+                    binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
-                        text = getString(R.string.lbl_retry)
+                        text = context.getString(R.string.lbl_retry)
                         setOnClickListener { musicModel.reindex() }
                     }
                 }
                 is Indexer.Response.NoMusic -> {
                     binding.homeIndexingProgress.visibility = View.INVISIBLE
-                    binding.homeIndexingStatus.text = getString(R.string.err_no_music)
+                    binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
-                        text = getString(R.string.lbl_retry)
+                        text = context.getString(R.string.lbl_retry)
                         setOnClickListener { musicModel.reindex() }
                     }
                 }
                 is Indexer.Response.NoPerms -> {
                     binding.homeIndexingProgress.visibility = View.INVISIBLE
-                    binding.homeIndexingStatus.text = getString(R.string.err_no_perms)
+                    binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
-                        text = getString(R.string.lbl_grant)
+                        text = context.getString(R.string.lbl_grant)
                         setOnClickListener {
                             storagePermissionLauncher.launch(
                                 Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -324,14 +326,16 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         binding.homeIndexingProgress.visibility = View.VISIBLE
         binding.homeIndexingAction.visibility = View.INVISIBLE
 
+        val context = requireContext()
+
         when (indexing) {
             is Indexer.Indexing.Indeterminate -> {
-                binding.homeIndexingStatus.text = getString(R.string.lng_indexing_desc)
+                binding.homeIndexingStatus.text = context.getString(R.string.lng_indexing_desc)
                 binding.homeIndexingProgress.isIndeterminate = true
             }
             is Indexer.Indexing.Songs -> {
                 binding.homeIndexingStatus.text =
-                    getString(R.string.fmt_indexing, indexing.current, indexing.total)
+                    context.getString(R.string.fmt_indexing, indexing.current, indexing.total)
                 binding.homeIndexingProgress.apply {
                     isIndeterminate = false
                     max = indexing.total
@@ -370,14 +374,9 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
      * https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
      */
     private fun ViewPager2.reduceSensitivity(by: Int) {
-        try {
-            val recycler = VIEW_PAGER_RECYCLER_FIELD.get(this@reduceSensitivity)
-            val slop = VIEW_PAGER_TOUCH_SLOP_FIELD.get(recycler) as Int
-            VIEW_PAGER_TOUCH_SLOP_FIELD.set(recycler, slop * by)
-        } catch (e: Exception) {
-            logE("Unable to reduce ViewPager sensitivity (likely an internal code change)")
-            e.logTraceOrThrow()
-        }
+        val recycler = VIEW_PAGER_RECYCLER_FIELD.get(this@reduceSensitivity)
+        val slop = VIEW_PAGER_TOUCH_SLOP_FIELD.get(recycler) as Int
+        VIEW_PAGER_TOUCH_SLOP_FIELD.set(recycler, slop * by)
     }
 
     /** Forces the view to recreate all fragments contained within it. */

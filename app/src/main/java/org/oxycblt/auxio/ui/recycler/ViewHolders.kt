@@ -28,7 +28,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.getPluralSafe
+import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
 /**
@@ -124,8 +124,8 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
         binding.parentInfo.text =
             binding.context.getString(
                 R.string.fmt_two,
-                binding.context.getPluralSafe(R.plurals.fmt_album_count, item.albums.size),
-                binding.context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size))
+                binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size),
+                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
             setOnLongClickListener { view ->
@@ -168,7 +168,7 @@ private constructor(
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text =
-            binding.context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size)
+            binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
             setOnLongClickListener { view ->

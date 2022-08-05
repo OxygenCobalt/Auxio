@@ -55,6 +55,7 @@ class MainFragment :
     private val navModel: NavigationViewModel by activityViewModels()
     private var callback: DynamicBackPressedCallback? = null
     private var lastInsets: WindowInsets? = null
+    private var elevationNormal = -1f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,9 +67,12 @@ class MainFragment :
 
     override fun onBindingCreated(binding: FragmentMainBinding, savedInstanceState: Bundle?) {
         // --- UI SETUP ---
-        requireActivity()
-            .onBackPressedDispatcher.addCallback(
-                viewLifecycleOwner, DynamicBackPressedCallback().also { callback = it })
+        val context = requireActivity()
+
+        context.onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner, DynamicBackPressedCallback().also { callback = it })
+
+        elevationNormal = requireContext().getDimen(R.dimen.elevation_normal)
 
         binding.root.setOnApplyWindowInsetsListener { _, insets ->
             lastInsets = insets
@@ -77,8 +81,9 @@ class MainFragment :
 
         // Send meaningful accessibility events for bottom sheets
         ViewCompat.setAccessibilityPaneTitle(
-            binding.playbackSheet, getString(R.string.lbl_playback))
-        ViewCompat.setAccessibilityPaneTitle(binding.queueSheet, getString(R.string.lbl_queue))
+            binding.playbackSheet, context.getString(R.string.lbl_playback))
+        ViewCompat.setAccessibilityPaneTitle(
+            binding.queueSheet, context.getString(R.string.lbl_queue))
 
         val queueSheetBehavior = binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
         if (queueSheetBehavior != null) {
@@ -97,8 +102,8 @@ class MainFragment :
             binding.queueSheet.apply {
                 background =
                     MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-                        fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
-                        elevation = context.getDimenSafe(R.dimen.elevation_normal)
+                        fillColor = context.getAttrColorCompat(R.attr.colorSurface)
+                        elevation = context.getDimen(R.dimen.elevation_normal)
                     }
 
                 setOnApplyWindowInsetsListener { v, insets ->
@@ -182,8 +187,7 @@ class MainFragment :
             isInvisible = alpha == 0f
         }
 
-        binding.playbackSheet.translationZ =
-            requireContext().getDimenSafe(R.dimen.elevation_normal) * outPlaybackRatio
+        binding.playbackSheet.translationZ = elevationNormal * outPlaybackRatio
         playbackSheetBehavior.sheetBackgroundDrawable.alpha = (outPlaybackRatio * 255).toInt()
 
         binding.playbackBarFragment.apply {

@@ -33,11 +33,11 @@ import org.oxycblt.auxio.util.*
 class QueueSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     AuxioSheetBehavior<V>(context, attributeSet) {
     private var barHeight = 0
-    private var barSpacing = context.getDimenSizeSafe(R.dimen.spacing_small)
+    private var barSpacing = context.getDimenSize(R.dimen.spacing_small)
 
     init {
         isHideable = false
-        sheetBackgroundDrawable.setCornerSize(context.getDimenSafe(R.dimen.size_corners_medium))
+        sheetBackgroundDrawable.setCornerSize(context.getDimen(R.dimen.size_corners_medium))
     }
 
     override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View) =

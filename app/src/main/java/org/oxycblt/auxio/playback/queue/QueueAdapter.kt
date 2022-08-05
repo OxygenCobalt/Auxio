@@ -87,8 +87,8 @@ private constructor(
 
     val backgroundDrawable =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
-            fillColor = binding.context.getAttrColorSafe(R.attr.colorSurface).stateList
-            elevation = binding.context.getDimenSafe(R.dimen.elevation_normal) * 5
+            fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
+            elevation = binding.context.getDimen(R.dimen.elevation_normal) * 5
             alpha = 0
         }
 
@@ -114,8 +114,8 @@ private constructor(
             LayerDrawable(
                 arrayOf(
                     MaterialShapeDrawable.createWithElevationOverlay(binding.context).apply {
-                        fillColor = binding.context.getAttrColorSafe(R.attr.colorSurface).stateList
-                        elevation = binding.context.getDimenSafe(R.dimen.elevation_normal)
+                        fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
+                        elevation = binding.context.getDimen(R.dimen.elevation_normal)
                     },
                     backgroundDrawable))
     }

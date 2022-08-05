@@ -42,7 +42,6 @@ import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.fragment.MenuFragment
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
@@ -84,9 +83,9 @@ class GenreDetailFragment :
 
         binding.detailRecycler.apply {
             adapter = detailAdapter
-            applySpans { pos ->
-                val item = detailAdapter.data.currentList[pos]
-                item is Header || item is SortHeader || item is Genre
+            setSpanSizeLookup { pos ->
+                val item = detailAdapter.data.getItem(pos)
+                item is Genre || item is Header || item is SortHeader
             }
         }
 

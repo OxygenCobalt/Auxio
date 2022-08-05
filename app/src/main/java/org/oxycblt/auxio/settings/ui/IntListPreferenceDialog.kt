@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.settings.ui
 
-import android.app.Dialog
 import android.os.Bundle
 import androidx.preference.PreferenceDialogFragmentCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -29,22 +28,20 @@ class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
         get() = (preference as IntListPreference)
     private var pendingValueIndex = -1
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    override fun onCreateDialog(savedInstanceState: Bundle?) =
         // PreferenceDialogFragmentCompat does not allow us to customize the actual creation
         // of the alert dialog, so we have to manually override onCreateDialog and customize it
         // ourselves.
-        val builder = MaterialAlertDialogBuilder(requireContext(), theme)
-        builder.setTitle(listPreference.title)
-        builder.setPositiveButton(null, null)
-        builder.setNegativeButton(R.string.lbl_cancel, null)
-        builder.setSingleChoiceItems(listPreference.entries, listPreference.getValueIndex()) {
-            _,
-            index ->
-            pendingValueIndex = index
-            dismiss()
-        }
-        return builder.create()
-    }
+        MaterialAlertDialogBuilder(requireContext(), theme)
+            .setTitle(listPreference.title)
+            .setPositiveButton(null, null)
+            .setNegativeButton(R.string.lbl_cancel, null)
+            .setSingleChoiceItems(listPreference.entries, listPreference.getValueIndex()) { _, index
+                ->
+                pendingValueIndex = index
+                dismiss()
+            }
+            .create()
 
     override fun onDialogClosed(positiveResult: Boolean) {
         if (pendingValueIndex > -1) {

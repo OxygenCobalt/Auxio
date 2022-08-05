@@ -27,21 +27,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.MaterialDivider
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.getDimenSizeSafe
+import org.oxycblt.auxio.util.getDimenSize
 
 /**
  * A RecyclerView that enables something resembling the android:scrollIndicators attribute. Only
  * used in dialogs.
  * @author OxygenCobalt
  */
-class ScrollIndicatorRecyclerView
+class DialogRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     RecyclerView(context, attrs, defStyleAttr) {
     private val topDivider = MaterialDivider(context)
     private val bottomDivider = MaterialDivider(context)
 
-    private val spacingMedium = context.getDimenSizeSafe(R.dimen.spacing_medium)
+    private val spacingMedium = context.getDimenSize(R.dimen.spacing_medium)
 
     init {
         updatePadding(top = spacingMedium)

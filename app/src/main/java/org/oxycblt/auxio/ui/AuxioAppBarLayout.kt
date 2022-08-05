@@ -26,6 +26,7 @@ import androidx.annotation.AttrRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.appbar.AppBarLayout
+import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 
 /**
  * An [AppBarLayout] that fixes a bug with the default implementation where the lifted state will
@@ -47,8 +48,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
             if (child != null) {
                 val coordinator = parent as CoordinatorLayout
-                (layoutParams as CoordinatorLayout.LayoutParams)
-                    .behavior?.onNestedPreScroll(coordinator, this, coordinator, 0, 0, tConsumed, 0)
+                coordinatorLayoutBehavior?.onNestedPreScroll(
+                    coordinator, this, coordinator, 0, 0, tConsumed, 0)
             }
 
             true

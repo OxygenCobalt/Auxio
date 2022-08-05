@@ -37,8 +37,8 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
     CoordinatorLayout.Behavior<V>(context, attributeSet) {
     private var dep: View? = null
     private var lastInsets: WindowInsets? = null
-    private var lastConsumed: Int? = null
-    private var setup: Boolean = false
+    private var lastConsumed = -1
+    private var setup = false
 
     override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View): Boolean {
         if (dependency.coordinatorLayoutBehavior is NeoBottomSheetBehavior) {
@@ -56,7 +56,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
     ): Boolean {
         val behavior = dependency.coordinatorLayoutBehavior as NeoBottomSheetBehavior
         val consumed = behavior.calculateConsumedByBar()
-        if (consumed < Int.MIN_VALUE) {
+        if (consumed == Int.MIN_VALUE) {
             return false
         }
 

@@ -29,8 +29,8 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.getColorStateListSafe
-import org.oxycblt.auxio.util.getDrawableSafe
+import org.oxycblt.auxio.util.getColorCompat
+import org.oxycblt.auxio.util.getDrawableCompat
 
 /**
  * Effectively a super-charged [StyledImageView].
@@ -66,7 +66,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         indicator =
             StyledImageView(context).apply {
                 cornerRadius = this@ImageGroup.cornerRadius
-                staticIcon = context.getDrawableSafe(R.drawable.ic_currently_playing_24)
+                staticIcon = context.getDrawableCompat(R.drawable.ic_currently_playing_24)
             }
 
         addView(inner)
@@ -83,7 +83,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             getChildAt(1)?.apply {
                 background =
                     MaterialShapeDrawable().apply {
-                        fillColor = context.getColorStateListSafe(R.color.sel_cover_bg)
+                        fillColor = context.getColorCompat(R.color.sel_cover_bg)
                         setCornerSize(cornerRadius)
                     }
             }

@@ -34,7 +34,7 @@ import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.getDrawableSafe
+import org.oxycblt.auxio.util.getDrawableCompat
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -148,8 +148,11 @@ class PlaybackPanelFragment :
     }
 
     private fun updateParent(parent: MusicParent?) {
-        requireBinding().playbackToolbar.subtitle =
-            parent?.resolveName(requireContext()) ?: getString(R.string.lbl_all_songs)
+        val binding = requireBinding()
+        val context = requireContext()
+
+        binding.playbackToolbar.subtitle =
+            parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs)
     }
 
     private fun updatePosition(positionSecs: Long) {
@@ -157,16 +160,16 @@ class PlaybackPanelFragment :
     }
 
     private fun updateRepeat(repeatMode: RepeatMode) {
-        requireBinding().playbackRepeat.apply {
-            isActivated = repeatMode != RepeatMode.NONE
-            val iconRes =
-                when (repeatMode) {
-                    RepeatMode.NONE -> R.drawable.ic_repeat_off_24
-                    RepeatMode.ALL -> R.drawable.ic_repeat_on_24
-                    RepeatMode.TRACK -> R.drawable.ic_repeat_one_24
-                }
+        val iconRes =
+            when (repeatMode) {
+                RepeatMode.NONE -> R.drawable.ic_repeat_off_24
+                RepeatMode.ALL -> R.drawable.ic_repeat_on_24
+                RepeatMode.TRACK -> R.drawable.ic_repeat_one_24
+            }
 
-            icon = requireContext().getDrawableSafe(iconRes)
+        requireBinding().playbackRepeat.apply {
+            icon = requireContext().getDrawableCompat(iconRes)
+            isActivated = repeatMode != RepeatMode.NONE
         }
     }
 

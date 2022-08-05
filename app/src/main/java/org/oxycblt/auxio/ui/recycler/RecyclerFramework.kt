@@ -26,7 +26,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
-// TODO: Reunify music updates and sorts under replace
+// TODO: Unify music updates and sorts under replace
 
 /**
  * An adapter for one viewholder tied to one type of data. All functionality is derived from the

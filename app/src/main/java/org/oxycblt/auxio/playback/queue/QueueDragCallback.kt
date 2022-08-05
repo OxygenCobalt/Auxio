@@ -23,7 +23,7 @@ import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.getDimenSafe
+import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -68,7 +68,7 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
             logD("Lifting queue item")
 
             val bg = holder.backgroundDrawable
-            val elevation = recyclerView.context.getDimenSafe(R.dimen.elevation_normal)
+            val elevation = recyclerView.context.getDimen(R.dimen.elevation_normal)
             holder.itemView
                 .animate()
                 .translationZ(elevation)
@@ -108,7 +108,7 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
             logD("Dropping queue item")
 
             val bg = holder.backgroundDrawable
-            val elevation = recyclerView.context.getDimenSafe(R.dimen.elevation_normal)
+            val elevation = recyclerView.context.getDimen(R.dimen.elevation_normal)
             holder.itemView
                 .animate()
                 .translationZ(0f)

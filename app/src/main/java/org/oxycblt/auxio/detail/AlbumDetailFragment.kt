@@ -43,7 +43,6 @@ import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.fragment.MenuFragment
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.canScroll
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -88,9 +87,9 @@ class AlbumDetailFragment :
 
         binding.detailRecycler.apply {
             adapter = detailAdapter
-            applySpans { pos ->
-                val item = detailAdapter.data.currentList[pos]
-                item is Header || item is SortHeader || item is Album
+            setSpanSizeLookup { pos ->
+                val item = detailAdapter.data.getItem(pos)
+                item is Album || item is Header || item is SortHeader
             }
         }
 
@@ -240,7 +239,7 @@ class AlbumDetailFragment :
                 // If the recyclerview can scroll, its certain that it will have to scroll to
                 // correctly center the playing item, so make sure that the Toolbar is lifted in
                 // that case.
-                binding.detailAppbar.isLifted = binding.detailRecycler.canScroll
+                binding.detailAppbar.isLifted = binding.detailRecycler.canScroll()
             }
         }
     }

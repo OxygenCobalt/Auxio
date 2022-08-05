@@ -45,11 +45,12 @@
 
     </org.oxycblt.auxio.ui.AuxioAppBarLayout>
 
-    <org.oxycblt.auxio.ui.recycler.EdgeRecyclerView
+    <org.oxycblt.auxio.ui.recycler.AuxioRecyclerView
         android:id="@+id/search_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="@integer/recycler_spans"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         tools:listitem="@layout/item_song" />
 

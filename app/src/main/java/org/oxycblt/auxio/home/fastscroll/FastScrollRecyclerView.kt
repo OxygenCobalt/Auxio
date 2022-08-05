@@ -34,11 +34,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.recycler.EdgeRecyclerView
-import org.oxycblt.auxio.util.canScroll
-import org.oxycblt.auxio.util.getDimenOffsetSafe
-import org.oxycblt.auxio.util.getDimenSizeSafe
-import org.oxycblt.auxio.util.getDrawableSafe
+import org.oxycblt.auxio.ui.recycler.AuxioRecyclerView
+import org.oxycblt.auxio.util.getDimenSize
+import org.oxycblt.auxio.util.getDrawableCompat
 import org.oxycblt.auxio.util.isRtl
 import org.oxycblt.auxio.util.isUnder
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -71,12 +69,12 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 class FastScrollRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
-    EdgeRecyclerView(context, attrs, defStyleAttr) {
+    AuxioRecyclerView(context, attrs, defStyleAttr) {
     // Thumb
     private val thumbView =
         View(context).apply {
             alpha = 0f
-            background = context.getDrawableSafe(R.drawable.ui_scroll_thumb)
+            background = context.getDrawableCompat(R.drawable.ui_scroll_thumb)
         }
 
     private val thumbWidth = thumbView.background.intrinsicWidth
@@ -99,7 +97,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                     .apply {
                         gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
-                        marginEnd = context.getDimenOffsetSafe(R.dimen.spacing_small)
+                        marginEnd = context.getDimenSize(R.dimen.spacing_small)
                     }
         }
 
@@ -107,7 +105,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     // Touch
     private val minTouchTargetSize =
-        context.getDimenSizeSafe(R.dimen.fast_scroll_thumb_touch_target_size)
+        context.getDimenSize(R.dimen.fast_scroll_thumb_touch_target_size)
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
 
     private var downX = 0f
@@ -289,7 +287,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun updateScrollbarState() {
-        if (!canScroll || childCount == 0) {
+        if (computeVerticalScrollRange() <= height || childCount == 0) {
             return
         }
 

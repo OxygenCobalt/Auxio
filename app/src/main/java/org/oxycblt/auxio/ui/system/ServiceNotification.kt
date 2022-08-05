@@ -23,7 +23,7 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
-import org.oxycblt.auxio.util.getSystemServiceSafe
+import org.oxycblt.auxio.util.getSystemServiceCompat
 
 /**
  * Wrapper around [NotificationCompat.Builder] that automates parts of the notification setup, under
@@ -32,7 +32,7 @@ import org.oxycblt.auxio.util.getSystemServiceSafe
  */
 abstract class ServiceNotification(context: Context, info: ChannelInfo) :
     NotificationCompat.Builder(context, info.id) {
-    private val notificationManager = context.getSystemServiceSafe(NotificationManager::class)
+    private val notificationManager = context.getSystemServiceCompat(NotificationManager::class)
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

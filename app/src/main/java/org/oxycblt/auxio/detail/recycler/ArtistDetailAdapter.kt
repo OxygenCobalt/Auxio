@@ -34,7 +34,7 @@ import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.getPluralSafe
+import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
 /**
@@ -138,8 +138,8 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
         binding.detailInfo.text =
             binding.context.getString(
                 R.string.fmt_two,
-                binding.context.getPluralSafe(R.plurals.fmt_album_count, item.albums.size),
-                binding.context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size))
+                binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size),
+                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
 
         binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }
         binding.detailShuffleButton.setOnClickListener { listener.onShuffleParent() }

@@ -95,41 +95,49 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 dialog.setTargetFragment(this, 0)
                 dialog.show(parentFragmentManager, IntListPreferenceDialog.TAG)
             }
-            is WrappedDialogPreference ->
+            is WrappedDialogPreference -> {
+                val context = requireContext()
                 when (preference.key) {
-                    getString(R.string.set_key_accent) ->
+                    context.getString(R.string.set_key_accent) ->
                         AccentCustomizeDialog()
                             .show(childFragmentManager, AccentCustomizeDialog.TAG)
-                    getString(R.string.set_key_lib_tabs) ->
+                    context.getString(R.string.set_key_lib_tabs) ->
                         TabCustomizeDialog().show(childFragmentManager, TabCustomizeDialog.TAG)
-                    getString(R.string.set_key_pre_amp) ->
+                    context.getString(R.string.set_key_pre_amp) ->
                         PreAmpCustomizeDialog()
                             .show(childFragmentManager, PreAmpCustomizeDialog.TAG)
-                    getString(R.string.set_key_music_dirs) ->
+                    context.getString(R.string.set_key_music_dirs) ->
                         MusicDirsDialog().show(childFragmentManager, MusicDirsDialog.TAG)
                     else -> logEOrThrow("Unexpected dialog key ${preference.key}")
                 }
+            }
             else -> super.onDisplayPreferenceDialog(preference)
         }
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
+        val context = requireContext()
+
         when (preference.key) {
-            getString(R.string.set_key_save_state) -> {
-                playbackModel.savePlaybackState { context?.showToast(R.string.lng_state_saved) }
+            context.getString(R.string.set_key_save_state) -> {
+                playbackModel.savePlaybackState {
+                    this.context?.showToast(R.string.lng_state_saved)
+                }
             }
-            getString(R.string.set_key_wipe_state) -> {
-                playbackModel.wipePlaybackState { context?.showToast(R.string.lng_state_wiped) }
+            context.getString(R.string.set_key_wipe_state) -> {
+                playbackModel.wipePlaybackState {
+                    this.context?.showToast(R.string.lng_state_wiped)
+                }
             }
-            getString(R.string.set_key_restore_state) ->
+            context.getString(R.string.set_key_restore_state) ->
                 playbackModel.tryRestorePlaybackState { restored ->
                     if (restored) {
-                        context?.showToast(R.string.lng_state_restored)
+                        this.context?.showToast(R.string.lng_state_restored)
                     } else {
-                        context?.showToast(R.string.err_did_not_restore)
+                        this.context?.showToast(R.string.err_did_not_restore)
                     }
                 }
-            getString(R.string.set_key_reindex) -> {
+            context.getString(R.string.set_key_reindex) -> {
                 musicModel.reindex()
             }
             else -> return super.onPreferenceTreeClick(preference)
@@ -139,7 +147,8 @@ class SettingsListFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupPreference(preference: Preference) {
-        val settings = Settings(requireContext())
+        val context = requireActivity()
+        val settings = Settings(context)
 
         if (!preference.isVisible) return
 
@@ -151,31 +160,31 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
         preference.apply {
             when (key) {
-                getString(R.string.set_key_theme) -> {
+                context.getString(R.string.set_key_theme) -> {
                     onPreferenceChangeListener =
                         Preference.OnPreferenceChangeListener { _, value ->
                             AppCompatDelegate.setDefaultNightMode(value as Int)
                             true
                         }
                 }
-                getString(R.string.set_key_accent) -> {
+                context.getString(R.string.set_key_accent) -> {
                     summary = context.getString(settings.accent.name)
                 }
-                getString(R.string.set_key_black_theme) -> {
+                context.getString(R.string.set_key_black_theme) -> {
                     onPreferenceChangeListener =
                         Preference.OnPreferenceChangeListener { _, _ ->
-                            if (requireContext().isNight) {
-                                requireActivity().recreate()
+                            if (context.isNight) {
+                                context.recreate()
                             }
 
                             true
                         }
                 }
-                getString(R.string.set_key_show_covers),
-                getString(R.string.set_key_quality_covers) -> {
+                context.getString(R.string.set_key_show_covers),
+                context.getString(R.string.set_key_quality_covers) -> {
                     onPreferenceChangeListener =
                         Preference.OnPreferenceChangeListener { _, _ ->
-                            Coil.imageLoader(requireContext()).apply { this.memoryCache?.clear() }
+                            Coil.imageLoader(context).apply { this.memoryCache?.clear() }
                             true
                         }
                 }

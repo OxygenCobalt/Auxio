@@ -104,6 +104,8 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
     private fun openLinkInBrowser(link: String) {
         logD("Opening $link")
 
+        val context = requireContext()
+
         val browserIntent =
             Intent(Intent.ACTION_VIEW, link.toUri()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
@@ -112,10 +114,10 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
             // [along with adding a new permission that breaks the old manual code], so
             // we just do a typical activity launch.
             try {
-                requireContext().startActivity(browserIntent)
+                context.startActivity(browserIntent)
             } catch (e: ActivityNotFoundException) {
                 // No app installed to open the link
-                requireContext().showToast(R.string.err_no_app)
+                context.showToast(R.string.err_no_app)
             }
         } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             // On older versions of android, opening links from an ACTION_VIEW intent might
@@ -123,8 +125,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
             // case, we will try to manually handle these cases before we try to launch the
             // browser.
             val pkgName =
-                requireContext()
-                    .packageManager
+                context.packageManager
                     .resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY)
                     ?.run { activityInfo.packageName }
 
@@ -144,7 +145,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
                 }
             } else {
                 // No app installed to open the link
-                requireContext().showToast(R.string.err_no_app)
+                context.showToast(R.string.err_no_app)
             }
         }
     }

@@ -29,13 +29,10 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
-import java.lang.Exception
 import java.lang.reflect.Field
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.AuxioAppBarLayout
 import org.oxycblt.auxio.util.lazyReflectedField
-import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.logTraceOrThrow
 
 /**
  * An [AuxioAppBarLayout] variant that also shows the name of the toolbar whenever the detail
@@ -68,14 +65,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val toolbar = findViewById<Toolbar>(R.id.detail_toolbar)
 
         // Reflect to get the actual title view to do transformations on
-        val newTitleView =
-            try {
-                TOOLBAR_TITLE_TEXT_FIELD.get(toolbar) as AppCompatTextView
-            } catch (e: Exception) {
-                logE("Could not get toolbar title view (likely an internal code change)")
-                e.logTraceOrThrow()
-                return null
-            }
+        val newTitleView = TOOLBAR_TITLE_TEXT_FIELD.get(toolbar) as AppCompatTextView
 
         newTitleView.alpha = 0f
         this.titleView = newTitleView

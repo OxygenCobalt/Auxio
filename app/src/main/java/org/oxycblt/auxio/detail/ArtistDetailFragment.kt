@@ -41,7 +41,6 @@ import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.fragment.MenuFragment
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
@@ -83,10 +82,9 @@ class ArtistDetailFragment :
 
         binding.detailRecycler.apply {
             adapter = detailAdapter
-            applySpans { pos ->
-                // If the item is an ActionHeader we need to also make the item full-width
-                val item = detailAdapter.data.currentList[pos]
-                item is Header || item is SortHeader || item is Artist
+            setSpanSizeLookup { pos ->
+                val item = detailAdapter.data.getItem(pos)
+                item is Artist || item is Header || item is SortHeader
             }
         }
 

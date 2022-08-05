@@ -34,7 +34,7 @@ import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.formatDuration
-import org.oxycblt.auxio.util.getPluralSafe
+import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
 /**
@@ -127,7 +127,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
                 item.date?.let { context.getString(R.string.fmt_number, it.year) }
                     ?: context.getString(R.string.def_date)
 
-            val songCount = context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size)
+            val songCount = context.getPlural(R.plurals.fmt_song_count, item.songs.size)
 
             val duration = item.durationSecs.formatDuration(true)
 

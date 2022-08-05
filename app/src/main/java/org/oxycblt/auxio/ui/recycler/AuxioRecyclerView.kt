@@ -23,11 +23,12 @@ import android.util.AttributeSet
 import android.view.WindowInsets
 import androidx.annotation.AttrRes
 import androidx.core.view.updatePadding
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /** A [RecyclerView] that automatically applies insets to itself. */
-open class EdgeRecyclerView
+open class AuxioRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     RecyclerView(context, attrs, defStyleAttr) {
@@ -51,5 +52,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             initialPadding.bottom + insets.systemBarInsetsCompat.bottom)
 
         return insets
+    }
+
+    fun setSpanSizeLookup(lookup: (Int) -> Boolean) {
+        val glm = layoutManager as GridLayoutManager
+        val spanCount = glm.spanCount
+        glm.spanSizeLookup =
+            object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int) = if (lookup(position)) spanCount else 1
+            }
     }
 }

@@ -44,11 +44,10 @@ import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.util.androidViewModels
-import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.getSystemServiceSafe
+import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logW
 
 /**
@@ -64,7 +63,7 @@ class SearchFragment :
     private val searchAdapter = SearchAdapter(this)
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
     private val imm: InputMethodManager by lifecycleObject { binding ->
-        binding.context.getSystemServiceSafe(InputMethodManager::class)
+        binding.context.getSystemServiceCompat(InputMethodManager::class)
     }
 
     private var launchedKeyboard = false
@@ -108,7 +107,7 @@ class SearchFragment :
 
         binding.searchRecycler.apply {
             adapter = searchAdapter
-            applySpans { pos -> searchAdapter.data.currentList[pos] is Header }
+            setSpanSizeLookup { pos -> searchAdapter.data.getItem(pos) is Header }
         }
 
         // --- VIEWMODEL SETUP ---

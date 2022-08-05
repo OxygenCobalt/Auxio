@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <org.oxycblt.auxio.ui.recycler.EdgeRecyclerView
+    <org.oxycblt.auxio.ui.recycler.AuxioRecyclerView
         android:id="@+id/queue_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

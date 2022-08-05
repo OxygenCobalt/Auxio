@@ -39,8 +39,8 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.getColorStateListSafe
-import org.oxycblt.auxio.util.getDrawableSafe
+import org.oxycblt.auxio.util.getColorCompat
+import org.oxycblt.auxio.util.getDrawableCompat
 
 /**
  * An [AppCompatImageView] that applies many of the stylistic choices that Auxio uses regarding
@@ -87,7 +87,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         clipToOutline = true
         background =
             MaterialShapeDrawable().apply {
-                fillColor = context.getColorStateListSafe(R.color.sel_cover_bg)
+                fillColor = context.getColorCompat(R.color.sel_cover_bg)
                 setCornerSize(cornerRadius)
             }
 
@@ -96,7 +96,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             styledAttrs.getResourceId(
                 R.styleable.StyledImageView_staticIcon, ResourcesCompat.ID_NULL)
         if (staticIcon != ResourcesCompat.ID_NULL) {
-            this.staticIcon = context.getDrawableSafe(staticIcon)
+            this.staticIcon = context.getDrawableCompat(staticIcon)
         }
 
         useLargeIcon = styledAttrs.getBoolean(R.styleable.StyledImageView_useLargeIcon, false)
@@ -126,14 +126,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         dispose()
         load(music) {
-            error(StyledDrawable(context, context.getDrawableSafe(error)))
+            error(StyledDrawable(context, context.getDrawableCompat(error)))
             transformations(SquareFrameTransform.INSTANCE)
         }
     }
 
     private class StyledDrawable(context: Context, private val src: Drawable) : Drawable() {
         init {
-            DrawableCompat.setTintList(src, context.getColorStateListSafe(R.color.sel_on_cover_bg))
+            DrawableCompat.setTintList(src, context.getColorCompat(R.color.sel_on_cover_bg))
         }
 
         override fun draw(canvas: Canvas) {

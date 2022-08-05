@@ -24,10 +24,9 @@ import org.oxycblt.auxio.databinding.ItemAccentBinding
 import org.oxycblt.auxio.ui.recycler.BackingData
 import org.oxycblt.auxio.ui.recycler.BindingViewHolder
 import org.oxycblt.auxio.ui.recycler.MonoAdapter
-import org.oxycblt.auxio.util.getAttrColorSafe
-import org.oxycblt.auxio.util.getColorSafe
+import org.oxycblt.auxio.util.getAttrColorCompat
+import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.stateList
 
 /**
  * An adapter that displays the accent palette.
@@ -82,7 +81,7 @@ class AccentViewHolder private constructor(private val binding: ItemAccentBindin
         setSelected(false)
 
         binding.accent.apply {
-            backgroundTintList = context.getColorSafe(item.primary).stateList
+            backgroundTintList = context.getColorCompat(item.primary)
             contentDescription = context.getString(item.name)
             TooltipCompat.setTooltipText(this, contentDescription)
             setOnClickListener { listener.onAccentSelected(item) }
@@ -94,9 +93,9 @@ class AccentViewHolder private constructor(private val binding: ItemAccentBindin
             isEnabled = !isSelected
             iconTint =
                 if (isSelected) {
-                    context.getAttrColorSafe(R.attr.colorSurface).stateList
+                    context.getAttrColorCompat(R.attr.colorSurface)
                 } else {
-                    context.getColorSafe(android.R.color.transparent).stateList
+                    context.getColorCompat(android.R.color.transparent)
                 }
         }
     }

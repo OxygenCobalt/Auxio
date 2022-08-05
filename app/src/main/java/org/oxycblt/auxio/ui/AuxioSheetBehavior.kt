@@ -40,8 +40,8 @@ abstract class AuxioSheetBehavior<V : View>(context: Context, attributeSet: Attr
     private var setup = false
     val sheetBackgroundDrawable =
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-            fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
-            elevation = context.getDimenSafe(R.dimen.elevation_normal)
+            fillColor = context.getAttrColorCompat(R.attr.colorSurface)
+            elevation = context.getDimen(R.dimen.elevation_normal)
         }
 
     init {
@@ -75,7 +75,8 @@ abstract class AuxioSheetBehavior<V : View>(context: Context, attributeSet: Attr
                 background =
                     LayerDrawable(
                         arrayOf(
-                            ColorDrawable(context.getAttrColorSafe(R.attr.colorSurface)),
+                            ColorDrawable(
+                                context.getAttrColorCompat(R.attr.colorSurface).defaultColor),
                             sheetBackgroundDrawable))
 
                 // Try to disable drop shadows if possible.
