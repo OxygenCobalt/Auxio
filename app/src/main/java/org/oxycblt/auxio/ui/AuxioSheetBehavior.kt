@@ -81,6 +81,7 @@ abstract class AuxioSheetBehavior<V : View>(context: Context, attributeSet: Attr
                             sheetBackgroundDrawable))
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    // Shadows aren't disabled by default, do that.
                     val transparent =
                         context.getColorCompat(android.R.color.transparent).defaultColor
                     outlineAmbientShadowColor = transparent

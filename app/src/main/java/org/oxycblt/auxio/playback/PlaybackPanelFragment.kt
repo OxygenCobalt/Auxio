@@ -35,7 +35,6 @@ import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getDrawableCompat
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
@@ -102,7 +101,6 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.repeatMode, ::updateRepeat)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.isShuffled, ::updateShuffled)
-        logD("Fragment Created")
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {

@@ -7,6 +7,7 @@ Auxio is a local music player with a fast, reliable UI/UX without the many usele
 - Opinionated UX that prioritizes ease of use over edge cases
 - Customizable behavior
 - Advanced media indexer that prioritizes correct metadata
+- Precise/Original Dates, Sort Tags, and Release Type support (Experimental)
 - SD Card-aware folder management
 - Reliable playback state persistence
 - Full ReplayGain support (On MP3, MP4, FLAC, OGG, and OPUS)

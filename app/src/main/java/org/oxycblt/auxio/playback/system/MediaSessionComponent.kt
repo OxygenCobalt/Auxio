@@ -394,9 +394,9 @@ class MediaSessionComponent(
     }
 
     companion object {
-        private val emptyMetadata = MediaMetadataCompat.Builder().build()
-
         const val METADATA_KEY_PARENT = BuildConfig.APPLICATION_ID + ".metadata.PARENT"
+
+        private val emptyMetadata = MediaMetadataCompat.Builder().build()
 
         private const val ACTIONS =
             PlaybackStateCompat.ACTION_PLAY or

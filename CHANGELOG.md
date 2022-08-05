@@ -9,10 +9,10 @@ at the cost of longer loading times
 	- Added support for date tags, including more fine-grained dates [#159, dependent on this feature]
 	- Added support for release types signifying EPs, Singles, Compilations, and more [#158, dependent on this feature]
 	- Added basic awareness of multi-value vorbis tags [#197, dependent on this feature]
-- Completely reworked the main playback UI
-	- Queue can now be swiped up [#92]
-	- Playing song is now shown in queue [#92]
-	- Added ability to play songs from queue [#92]
+- Completely reworked the main playback UI [#92]
+	- Queue can now be swiped up
+	- Playing song is now shown in queue
+	- Added ability to play songs from queue
 	- Added ability to see previous songs in queue
 	- Added dual-pane view of queue and playback on landscape and tablets
 - Added Last Added sorting
