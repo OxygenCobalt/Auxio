@@ -55,11 +55,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     override fun onScrolled(dx: Int, dy: Int) {
         super.onScrolled(dx, dy)
-
-        val manager = layoutManager as LinearLayoutManager
-        topDivider.isInvisible = manager.findFirstCompletelyVisibleItemPosition() < 1
-        bottomDivider.isInvisible =
-            manager.findLastCompletelyVisibleItemPosition() == (manager.itemCount - 1)
+        invalidateDividers()
     }
 
     override fun onMeasure(widthSpec: Int, heightSpec: Int) {
@@ -88,5 +84,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         super.onLayout(changed, l, t, r, b)
         topDivider.layout(l, spacingMedium, r, spacingMedium + topDivider.measuredHeight)
         bottomDivider.layout(l, measuredHeight - bottomDivider.measuredHeight, r, b)
+        invalidateDividers()
+    }
+
+    private fun invalidateDividers() {
+        val manager = layoutManager as LinearLayoutManager
+        topDivider.isInvisible = manager.findFirstCompletelyVisibleItemPosition() < 1
+        bottomDivider.isInvisible =
+            manager.findLastCompletelyVisibleItemPosition() == (manager.itemCount - 1)
     }
 }

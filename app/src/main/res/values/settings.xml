@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <bool name="enable_theme_settings">true</bool>
+
     <!-- Note: The old way of naming keys was to prefix them with KEY_. Now it's to prefix them with auxio_. -->
     <string name="set_key_theme" translatable="false">KEY_THEME2</string>
     <string name="set_key_black_theme" translatable="false">KEY_BLACK_THEME</string>

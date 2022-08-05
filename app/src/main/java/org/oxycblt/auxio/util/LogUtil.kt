@@ -34,8 +34,7 @@ fun Any.logD(obj: Any?) = logD("$obj")
  * objects
  */
 fun Any.logD(msg: String) {
-    if (BuildConfig.DEBUG) {
-        basedCopyleftNotice()
+    if (BuildConfig.DEBUG && !basedCopyleftNotice()) {
         Log.d(autoTag, msg)
     }
 }
@@ -58,18 +57,6 @@ fun Any.logEOrThrow(msg: String) {
     }
 }
 
-/**
- * Logs an error in production while still throwing it in debug mode. This is useful for
- * non-showstopper bugs that I would still prefer to be caught in debug mode.
- */
-fun Throwable.logTraceOrThrow() {
-    if (BuildConfig.DEBUG) {
-        throw this
-    } else {
-        logE(stackTraceToString())
-    }
-}
-
 /** Automatically creates a tag that identifies the object currently logging. */
 private val Any.autoTag: String
     get() = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"
@@ -84,31 +71,33 @@ private val Any.autoTag: String
  *
  * JUNE 1989 TIANAMEN SQUARE PROTESTS AND MASSACRE 六四事件
  *
- * KASHMIR INDEPENDENCE MOVEMENT
+ * 2022 RUSSIAN INVASION OF UKRAINE Вторжение России на Украину
  *
  * WOMEN'S RIGHTS IN THE ISLAMIC REPUBLIC OF IRAN حقوق زنان در ایران
  *
- * FREE TIBET 西藏自由
- *
- * 1971 BANGLADESHI GENOCIDE BY PAKISTAN
- *
- * 2022 RUSSIAN INVASION OF UKRAINE Вторжение России на Украину
- *
  * UYGHUR GENOCIDE/XINJIANG INTERNMENT CAMPS 新疆种族灭绝指控/新疆再教育營
  *
- * KURDISTAN WORKERS PARTY KÜRDISTAN İŞÇI PARTISI (PKK)
+ * KASHMIR INDEPENDENCE MOVEMENT
  *
- * TORTURE AND ASSASSINATION OF JAMAL KHASHOGGI مقتل جمال خاشقجي
+ * FREE TIBET 西藏自由
+ *
+ * 1915-1916 ARMENIAN GENOCIDE Ermeni Kırımı
+ *
+ * 2018 TORTURE AND ASSASSINATION OF JAMAL KHASHOGGI مقتل جمال خاشقجي
  *
  * UNITED ARAB EMIRATES ENSLAVED MIGRANT WORKERS
  */
 @Suppress("KotlinConstantConditions")
-private fun basedCopyleftNotice() {
+private fun basedCopyleftNotice(): Boolean {
     if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&
         BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug") {
         Log.d(
             "Auxio Project",
             "Friendly reminder: Auxio is licensed under the " +
                 "GPLv3 and all derivative apps must be made open source!")
+
+        return true
     }
+
+    return false
 }

@@ -49,12 +49,14 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
         binding.queueRecycler.apply {
             adapter = queueAdapter
             touchHelper.attachToRecyclerView(this)
+
+            // Sometimes the scroll can change without the listener being updated, so we also
+            // check for relayout events.
+            addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> invalidateDivider() }
             addOnScrollListener(
                 object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        binding.queueDivider.isInvisible =
-                            (layoutManager as LinearLayoutManager)
-                                .findFirstCompletelyVisibleItemPosition() < 1
+                        invalidateDivider()
                     }
                 })
         }
@@ -78,6 +80,8 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
     }
 
     private fun updateQueue(queue: List<Song>, index: Int) {
+        val binding = requireBinding()
+
         val replaceQueue = queueModel.replaceQueue
         if (replaceQueue == true) {
             logD("Replacing queue")
@@ -87,11 +91,14 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
             queueAdapter.data.submitList(queue)
         }
 
+        binding.queueDivider.isInvisible =
+            (binding.queueRecycler.layoutManager as LinearLayoutManager)
+                .findFirstCompletelyVisibleItemPosition() < 1
+
         queueModel.finishReplace()
 
         val scrollTo = queueModel.scrollTo
         if (scrollTo != null) {
-            val binding = requireBinding()
             val lmm = binding.queueRecycler.layoutManager as LinearLayoutManager
             val start = lmm.findFirstCompletelyVisibleItemPosition()
             val end = lmm.findLastCompletelyVisibleItemPosition()
@@ -105,5 +112,12 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
         queueModel.finishScrollTo()
 
         queueAdapter.updateIndex(index)
+    }
+
+    private fun invalidateDivider() {
+        val binding = requireBinding()
+        binding.queueDivider.isInvisible =
+            (binding.queueRecycler.layoutManager as LinearLayoutManager)
+                .findFirstCompletelyVisibleItemPosition() < 1
     }
 }

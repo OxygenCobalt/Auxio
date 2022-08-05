@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.settings
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.DrawableRes
@@ -154,45 +153,38 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         if (!preference.isVisible) return
 
         if (preference is PreferenceCategory) {
-            for (child in preference.children) {
-                setupPreference(child)
-            }
+            preference.children.forEach(::setupPreference)
+            return
         }
 
-        preference.apply {
-            when (key) {
-                context.getString(R.string.set_key_theme) -> {
-                    // Android 12 is the first version I deem to have universal dark and light
-                    // mode toggles. No need for our setting.
-                    isVisible = Build.VERSION.SDK_INT < Build.VERSION_CODES.S
+        when (preference.key) {
+            context.getString(R.string.set_key_theme) -> {
+                preference.onPreferenceChangeListener =
+                    Preference.OnPreferenceChangeListener { _, value ->
+                        AppCompatDelegate.setDefaultNightMode(value as Int)
+                        true
+                    }
+            }
+            context.getString(R.string.set_key_accent) -> {
+                preference.summary = context.getString(settings.accent.name)
+            }
+            context.getString(R.string.set_key_black_theme) -> {
+                preference.onPreferenceChangeListener =
+                    Preference.OnPreferenceChangeListener { _, _ ->
+                        if (context.isNight) {
+                            context.recreate()
+                        }
 
-                    onPreferenceChangeListener =
-                        Preference.OnPreferenceChangeListener { _, value ->
-                            AppCompatDelegate.setDefaultNightMode(value as Int)
-                            true
-                        }
-                }
-                context.getString(R.string.set_key_accent) -> {
-                    summary = context.getString(settings.accent.name)
-                }
-                context.getString(R.string.set_key_black_theme) -> {
-                    onPreferenceChangeListener =
-                        Preference.OnPreferenceChangeListener { _, _ ->
-                            if (context.isNight) {
-                                context.recreate()
-                            }
-
-                            true
-                        }
-                }
-                context.getString(R.string.set_key_show_covers),
-                context.getString(R.string.set_key_quality_covers) -> {
-                    onPreferenceChangeListener =
-                        Preference.OnPreferenceChangeListener { _, _ ->
-                            Coil.imageLoader(context).apply { this.memoryCache?.clear() }
-                            true
-                        }
-                }
+                        true
+                    }
+            }
+            context.getString(R.string.set_key_show_covers),
+            context.getString(R.string.set_key_quality_covers) -> {
+                preference.onPreferenceChangeListener =
+                    Preference.OnPreferenceChangeListener { _, _ ->
+                        Coil.imageLoader(context).memoryCache?.clear()
+                        true
+                    }
             }
         }
     }

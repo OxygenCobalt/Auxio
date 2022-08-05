@@ -48,18 +48,6 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 
 /**
- * Disables drop shadows on a view programmatically in a version-compatible manner. This only works
- * on Android 9 and above. Below that version, shadows will remain visible.
- */
-fun View.disableDropShadowCompat() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        val transparent = context.getColorCompat(android.R.color.transparent).defaultColor
-        outlineAmbientShadowColor = transparent
-        outlineSpotShadowColor = transparent
-    }
-}
-
-/**
  * Determines if the point given by [x] and [y] falls within this view.
  * @param minTouchTargetSize The minimum touch size, independent of the view's size (Optional)
  */

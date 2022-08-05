@@ -44,9 +44,6 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Add multi-select
  *
- * LEFT-OFF: Add RecyclerView styles, queue issue is caused by tiny scroll and then replace op, not
- * enough to change scroll apparently
- *
  * @author OxygenCobalt
  */
 class MainActivity : AppCompatActivity() {

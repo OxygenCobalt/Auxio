@@ -8,6 +8,7 @@
             app:entryIcons="@array/icons_theme"
             app:entryValues="@array/values_theme"
             app:icon="@drawable/ic_light_24"
+            app:isPreferenceVisible="@bool/enable_theme_settings"
             app:key="@string/set_key_theme"
             app:title="@string/set_theme" />
 

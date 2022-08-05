@@ -20,6 +20,7 @@ package org.oxycblt.auxio.ui
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.LayerDrawable
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -79,8 +80,12 @@ abstract class AuxioSheetBehavior<V : View>(context: Context, attributeSet: Attr
                                 context.getAttrColorCompat(R.attr.colorSurface).defaultColor),
                             sheetBackgroundDrawable))
 
-                // Try to disable drop shadows if possible.
-                disableDropShadowCompat()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    val transparent =
+                        context.getColorCompat(android.R.color.transparent).defaultColor
+                    outlineAmbientShadowColor = transparent
+                    outlineSpotShadowColor = transparent
+                }
 
                 setOnApplyWindowInsetsListener(::applyWindowInsets)
             }

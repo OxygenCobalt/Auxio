@@ -128,9 +128,6 @@ private constructor(
 
         binding.background.isInvisible = true
 
-        binding.songName.requestLayout()
-        binding.songInfo.requestLayout()
-
         binding.body.setOnClickListener { listener.onClick(this) }
 
         // Roll our own drag handlers as the default ones suck
