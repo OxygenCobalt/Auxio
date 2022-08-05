@@ -42,10 +42,6 @@
         <item name="textAppearanceBodyMedium">@style/TextAppearance.Auxio.BodyMedium</item>
         <item name="textAppearanceBodySmall">@style/TextAppearance.Auxio.BodySmall</item>
 
-        <!-- Work around hard-coded text highlight colors in the default Material3 theme -->
-        <item name="android:textColorHighlight">@color/overlay_text_highlight</item>
-        <item name="android:textColorHighlightInverse">@color/overlay_text_highlight_inverse</item>
-
         <!-- Fix dumb default android behavior -->
         <item name="android:scrollbars">none</item>
         <item name="windowActionBar">false</item>
@@ -63,6 +59,7 @@
         <item name="actionOverflowButtonStyle">@style/Widget.Auxio.Button.Overflow</item>
     </style>
 
+    <!-- Make sure blue is the default style instead of material purple -->
     <style name="Theme.Auxio.App" parent="@style/Theme.Auxio.Blue" />
 
     <!--

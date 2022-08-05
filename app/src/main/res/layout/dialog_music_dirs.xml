@@ -14,13 +14,12 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dirs_recycler"
+            style="@style/Widget.Auxio.RecyclerView.Linear"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:overScrollMode="never"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:itemCount="1"
             tools:listitem="@layout/item_music_dir" />
 
         <TextView
@@ -34,7 +33,8 @@
             android:text="@string/err_no_dirs"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.Auxio.LabelLarge"
-            android:textColor="?android:attr/textColorSecondary" />
+            android:textColor="?android:attr/textColorSecondary"
+            tools:visibility="gone" />
 
         <TextView
             style="@style/Widget.Auxio.TextView.Header"

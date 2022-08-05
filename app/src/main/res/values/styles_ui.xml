@@ -79,7 +79,17 @@
         <item name="android:focusable">true</item>
     </style>
 
-    <style name="Widget.Auxio.RecyclerView.WithAdaptiveFab" parent="">
+    <style name="Widget.Auxio.RecyclerView.Linear" parent="">
+        <item name="layoutManager">androidx.recyclerview.widget.LinearLayoutManager</item>
+    </style>
+
+    <style name="Widget.Auxio.RecyclerView.Grid.Base" parent="">
+        <item name="layoutManager">androidx.recyclerview.widget.GridLayoutManager</item>
+    </style>
+
+    <style name="Widget.Auxio.RecyclerView.Grid" parent="Widget.Auxio.RecyclerView.Grid.Base" />
+
+    <style name="Widget.Auxio.RecyclerView.Grid.WithAdaptiveFab" parent="Widget.Auxio.RecyclerView.Grid">
         <item name="android:paddingBottom">@dimen/recycler_fab_space_normal</item>
     </style>
 

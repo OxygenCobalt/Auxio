@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <bool name="enable_theme_settings">true</bool>
-    <integer name="recycler_spans">1</integer>
-    <integer name="detail_app_bar_title_anim_duration">150</integer>
-</resources>

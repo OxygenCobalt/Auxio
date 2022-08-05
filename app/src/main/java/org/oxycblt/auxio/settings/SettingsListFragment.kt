@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.settings
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.DrawableRes
@@ -161,6 +162,10 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         preference.apply {
             when (key) {
                 context.getString(R.string.set_key_theme) -> {
+                    // Android 12 is the first version I deem to have universal dark and light
+                    // mode toggles. No need for our setting.
+                    isVisible = Build.VERSION.SDK_INT < Build.VERSION_CODES.S
+
                     onPreferenceChangeListener =
                         Preference.OnPreferenceChangeListener { _, value ->
                             AppCompatDelegate.setDefaultNightMode(value as Int)

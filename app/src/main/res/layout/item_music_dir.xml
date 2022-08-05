@@ -20,7 +20,7 @@
         android:paddingTop="@dimen/spacing_small"
         android:paddingBottom="@dimen/spacing_small"
         android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-        tools:text="/storage/emulated/0/directory" />
+        tools:text="primary:path/to/music" />
 
     <Button
         android:id="@+id/dir_delete"

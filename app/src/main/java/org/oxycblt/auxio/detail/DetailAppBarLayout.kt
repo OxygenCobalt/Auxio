@@ -111,8 +111,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         this.titleAnimator =
             ValueAnimator.ofFloat(from, to).apply {
                 addUpdateListener { titleView?.alpha = it.animatedValue as Float }
-                duration =
-                    resources.getInteger(R.integer.detail_app_bar_title_anim_duration).toLong()
+                duration = TOOLBAR_FADE_DURATION
                 start()
             }
     }
@@ -143,6 +142,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     companion object {
+        private const val TOOLBAR_FADE_DURATION = 150L
+
         private val TOOLBAR_TITLE_TEXT_FIELD: Field by
             lazyReflectedField(Toolbar::class, "mTitleTextView")
     }

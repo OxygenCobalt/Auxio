@@ -5,5 +5,9 @@
 
         <!-- Fix dumb default android behavior -->
         <item name="colorControlHighlight">@color/sel_compat_ripple</item>
+
+        <!-- Work around hard-coded text highlight colors in the default Material3 theme -->
+        <item name="android:textColorHighlight">@color/overlay_text_highlight</item>
+        <item name="android:textColorHighlightInverse">@color/overlay_text_highlight_inverse</item>
     </style>
 </resources>
