@@ -37,10 +37,10 @@
     <string name="lng_state_saved">已保存播放进度</string>
     <string name="lbl_add">添加</string>
     <string name="lbl_save">保存</string>
-    <string name="err_no_dirs">没有任何文件夹</string>
+    <string name="err_no_dirs">没有文件夹</string>
     <string name="lbl_about">关于</string>
     <string name="lbl_version">版本</string>
-    <string name="lbl_code">在 Github 上查看</string>
+    <string name="lbl_code">源代码</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">许可证</string>
     <string name="lng_author">由 OxygenCobalt 开发</string>
@@ -85,7 +85,7 @@
     <string name="set_save">保存播放状态</string>
     <string name="set_save_desc">立即保存当前播放状态</string>
     <string name="set_reindex">重新加载音乐</string>
-    <string name="set_reindex_desc">将会重启应用</string>
+    <string name="set_reindex_desc">可能会抹除播放状态</string>
     <string name="lbl_off">关闭</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">没有找到音乐</string>
@@ -107,7 +107,7 @@
     <string name="desc_queue_handle">移动队列曲目</string>
     <string name="desc_tab_handle">移动该标签</string>
     <string name="desc_clear_search">清除搜索队列</string>
-    <string name="desc_music_dir_delete">移除排除路径</string>
+    <string name="desc_music_dir_delete">移除文件夹</string>
     <string name="desc_auxio_icon">Auxio 图标</string>
     <string name="desc_no_cover">专辑封面</string>
     <string name="desc_album_cover">%s 的专辑封面</string>
@@ -139,10 +139,10 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_lib_song_count">已加载 %d 首曲目</string>
     <plurals name="fmt_song_count">
-        <item quantity="other">"%d 首歌曲"</item>
+        <item quantity="other">%d 首歌曲</item>
     </plurals>
     <plurals name="fmt_album_count">
-        <item quantity="other">"%d 张专辑"</item>
+        <item quantity="other">%d 张专辑</item>
     </plurals>
     <string name="lbl_shuffle_shortcut_short">随机</string>
     <string name="lbl_shuffle_shortcut_long">随机所有</string>
@@ -197,4 +197,38 @@
     <string name="lbl_sample_rate">采样率</string>
     <string name="lbl_ok">好的</string>
     <string name="lbl_cancel">取消</string>
+    <string name="set_wipe">清除播放状态</string>
+    <string name="set_wipe_desc">清除此前保存的播放状态（如果有）</string>
+    <string name="err_did_not_restore">没有可以恢复的状态</string>
+    <string name="set_restore">恢复播放状态</string>
+    <string name="set_restore_desc">恢复此前保存的播放状态（如果有）</string>
+    <string name="set_quality_tags_desc">提高标签质量，但会导致加载时间变长（实验性）</string>
+    <string name="set_observing">自动重载中</string>
+    <string name="set_observing_desc">发生更改时自动重新加载您的曲库（实验性）</string>
+    <string name="desc_queue_bar">打开队列</string>
+    <string name="lng_indexing">正在加载音乐</string>
+    <string name="lng_observing">正在监测曲库</string>
+    <string name="lng_observing_desc">正在监测您的曲库以查找更改…</string>
+    <string name="lng_state_wiped">已清除状态</string>
+    <string name="lng_state_restored">已恢复状态</string>
+    <string name="set_quality_tags">忽略 MediaStore 标签</string>
+    <string name="lbl_eps">EP 专辑</string>
+    <string name="lbl_ep">EP 专辑</string>
+    <string name="lbl_singles">单曲</string>
+    <string name="lbl_single">单曲</string>
+    <string name="lbl_compilations">合辑</string>
+    <string name="lbl_soundtracks">原声带</string>
+    <string name="lbl_soundtrack">原声带</string>
+    <string name="lbl_mixtapes">混音带</string>
+    <string name="lbl_mixtape">混音带</string>
+    <string name="lbl_remix_group">混音</string>
+    <string name="lbl_sort_date_added">添加日期</string>
+    <string name="lbl_album_remix">混音专辑</string>
+    <string name="lbl_ep_live">现场 EP</string>
+    <string name="lbl_album_live">现场专辑</string>
+    <string name="lbl_ep_remix">混音 EP</string>
+    <string name="lbl_single_live">现场单曲</string>
+    <string name="lbl_single_remix">混音单曲</string>
+    <string name="lbl_compilation">合辑</string>
+    <string name="lbl_live_group">现场</string>
 </resources>
