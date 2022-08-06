@@ -18,7 +18,7 @@
 package org.oxycblt.auxio.ui
 
 import android.content.Context
-import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
@@ -26,7 +26,6 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
-import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.*
 
@@ -38,17 +37,15 @@ import org.oxycblt.auxio.util.*
 abstract class AuxioSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     NeoBottomSheetBehavior<V>(context, attributeSet) {
     private var setup = false
-    val sheetBackgroundDrawable =
-        MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-            fillColor = context.getAttrColorCompat(R.attr.colorSurface)
-            elevation = context.getDimen(R.dimen.elevation_normal)
-        }
 
     init {
         // We need to disable isFitToContents for us to have our bottom sheet expand to the
         // whole of the screen and not just whatever portion it takes up.
         isFitToContents = false
     }
+
+    /** Called when the sheet background is being created */
+    abstract fun createBackground(context: Context): Drawable
 
     /** Called when the child the bottom sheet applies to receives window insets. */
     open fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {
@@ -70,14 +67,7 @@ abstract class AuxioSheetBehavior<V : View>(context: Context, attributeSet: Attr
 
         if (!setup) {
             child.apply {
-                // Sometimes the sheet background will fade out, so guard it with another
-                // colorSurface drawable to prevent content overlap.
-                val guardDrawable =
-                    MaterialShapeDrawable(sheetBackgroundDrawable.shapeAppearanceModel).apply {
-                        fillColor = context.getAttrColorCompat(R.attr.colorSurface)
-                    }
-
-                background = LayerDrawable(arrayOf(guardDrawable, sheetBackgroundDrawable))
+                background = createBackground(context)
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     // Shadows aren't disabled by default, do that.

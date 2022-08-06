@@ -30,8 +30,7 @@ import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
- * A behavior that automatically re-layouts and re-insets content to align with the parent layout's
- * bottom sheet.
+ * A behavior that automatically re-insets content to align with the parent layout's bottom sheet.
  * @author OxygenCobalt
  */
 class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
@@ -61,12 +60,10 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
             return false
         }
 
-        if (consumed != lastConsumed) {
-            lastConsumed = consumed
-            lastInsets?.let(child::dispatchApplyWindowInsets)
-            return true
-        }
+        lastConsumed = consumed
+        lastInsets?.let(child::dispatchApplyWindowInsets)
 
+        // Re-insetting views does not lead to the child view changing size or position.
         return false
     }
 

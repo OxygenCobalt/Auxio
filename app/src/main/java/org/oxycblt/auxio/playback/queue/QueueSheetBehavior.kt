@@ -22,6 +22,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.AuxioSheetBehavior
 import org.oxycblt.auxio.util.*
@@ -37,7 +39,6 @@ class QueueSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?
 
     init {
         isHideable = false
-        sheetBackgroundDrawable.setCornerSize(context.getDimen(R.dimen.size_corners_medium))
     }
 
     override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View) =
@@ -51,6 +52,19 @@ class QueueSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?
         barHeight = dependency.height
         return false // No change, just grabbed the height
     }
+
+    override fun createBackground(context: Context) =
+        MaterialShapeDrawable.createWithElevationOverlay(context).apply {
+            fillColor = context.getAttrColorCompat(R.attr.colorSurface)
+            elevation = context.getDimen(R.dimen.elevation_normal)
+
+            val cornersMedium = context.getDimen(R.dimen.size_corners_medium)
+            shapeAppearanceModel =
+                ShapeAppearanceModel.Builder()
+                    .setTopLeftCornerSize(cornersMedium)
+                    .setTopRightCornerSize(cornersMedium)
+                    .build()
+        }
 
     override fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {
         super.applyWindowInsets(child, insets)

@@ -18,13 +18,17 @@
 package org.oxycblt.auxio.playback
 
 import android.content.Context
+import android.graphics.drawable.LayerDrawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.AuxioSheetBehavior
+import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 
 /**
@@ -34,6 +38,21 @@ import org.oxycblt.auxio.util.getDimen
  */
 class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     AuxioSheetBehavior<V>(context, attributeSet) {
+    val sheetBackgroundDrawable =
+        MaterialShapeDrawable.createWithElevationOverlay(context).apply {
+            fillColor = context.getAttrColorCompat(R.attr.colorSurface)
+            elevation = context.getDimen(R.dimen.elevation_normal)
+
+            if (Settings(context).roundMode) {
+                val cornersMedium = context.getDimen(R.dimen.size_corners_medium)
+                shapeAppearanceModel =
+                    ShapeAppearanceModel.Builder()
+                        .setTopLeftCornerSize(cornersMedium)
+                        .setTopRightCornerSize(cornersMedium)
+                        .build()
+            }
+        }
+
     init {
         isHideable = true
         if (Settings(context).roundMode) {
@@ -48,4 +67,12 @@ class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeS
 
     // Note: This is an extension to Auxio's vendored BottomSheetBehavior
     override fun isHideableWhenDragging() = false
+
+    override fun createBackground(context: Context) =
+        LayerDrawable(
+            arrayOf(
+                MaterialShapeDrawable(sheetBackgroundDrawable.shapeAppearanceModel).apply {
+                    fillColor = sheetBackgroundDrawable.fillColor
+                },
+                sheetBackgroundDrawable))
 }
