@@ -27,7 +27,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
-/** A [RecyclerView] that automatically applies insets to itself. */
+/**
+ * A [RecyclerView] that automatically applies insets to itself.
+ *
+ * TODO: Correctly handle edge-to-edge regarding scroll effects and saved scroll positions.
+ */
 open class AuxioRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :

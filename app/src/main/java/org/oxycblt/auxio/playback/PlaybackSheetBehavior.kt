@@ -22,7 +22,10 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.AuxioSheetBehavior
+import org.oxycblt.auxio.util.getDimen
 
 /**
  * The coordinator layout behavior used for the playback sheet, hacking in the many fixes required
@@ -33,6 +36,9 @@ class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeS
     AuxioSheetBehavior<V>(context, attributeSet) {
     init {
         isHideable = true
+        if (Settings(context).roundMode) {
+            sheetBackgroundDrawable.setCornerSize(context.getDimen(R.dimen.size_corners_medium))
+        }
     }
 
     // Hack around issue where the playback sheet will try to intercept nested scrolling events

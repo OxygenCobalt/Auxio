@@ -2,6 +2,12 @@
 
 ## dev
 
+#### What's Improved
+- Improved bottom sheet code to prevent clipping issues
+
+#### What's Fixed
+- Fixed incorrect font being used in the queue title
+
 ## 2.6.0
 
 #### What's New

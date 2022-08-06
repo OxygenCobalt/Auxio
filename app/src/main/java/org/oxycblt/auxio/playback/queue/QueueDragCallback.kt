@@ -130,7 +130,7 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
-    ): Boolean =
+    ) =
         playbackModel.moveQueueDataItems(
             viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
 

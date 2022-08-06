@@ -22,7 +22,6 @@ import android.util.AttributeSet
 import android.view.WindowInsets
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
-import androidx.core.view.updatePadding
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
@@ -37,12 +36,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         clipToPadding = false
     }
 
-    override fun dispatchApplyWindowInsets(insets: WindowInsets): WindowInsets {
-        return onApplyWindowInsets(insets)
-    }
-
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
-        updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
+        // Save a layout by simply moving the view bounds upwards
+        translationY = -insets.systemBarInsetsCompat.bottom.toFloat()
         return insets
     }
 }

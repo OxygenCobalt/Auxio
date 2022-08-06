@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.ui
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.util.AttributeSet
@@ -73,12 +72,12 @@ abstract class AuxioSheetBehavior<V : View>(context: Context, attributeSet: Attr
             child.apply {
                 // Sometimes the sheet background will fade out, so guard it with another
                 // colorSurface drawable to prevent content overlap.
-                background =
-                    LayerDrawable(
-                        arrayOf(
-                            ColorDrawable(
-                                context.getAttrColorCompat(R.attr.colorSurface).defaultColor),
-                            sheetBackgroundDrawable))
+                val guardDrawable =
+                    MaterialShapeDrawable(sheetBackgroundDrawable.shapeAppearanceModel).apply {
+                        fillColor = context.getAttrColorCompat(R.attr.colorSurface)
+                    }
+
+                background = LayerDrawable(arrayOf(guardDrawable, sheetBackgroundDrawable))
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     // Shadows aren't disabled by default, do that.
