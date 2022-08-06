@@ -123,6 +123,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 
     override fun bind(item: Artist, listener: DetailAdapter.Listener) {
         binding.detailCover.bind(item)
+        binding.detailType?.text = binding.context.getString(R.string.lbl_artist)
         binding.detailName.text = item.resolveName(binding.context)
 
         // Get the genre that corresponds to the most songs in this artist, which would be

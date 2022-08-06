@@ -104,6 +104,7 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
     BindingViewHolder<Genre, DetailAdapter.Listener>(binding.root) {
     override fun bind(item: Genre, listener: DetailAdapter.Listener) {
         binding.detailCover.bind(item)
+        binding.detailType?.text = binding.context.getString(R.string.lbl_genre)
         binding.detailName.text = item.resolveName(binding.context)
         binding.detailSubhead.text =
             binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)

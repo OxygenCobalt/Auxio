@@ -14,7 +14,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription"
-        tools:staticIcon="@drawable/ic_song_48" />
+        tools:staticIcon="@drawable/ic_song_24" />
+
+    <TextView
+        android:id="@+id/detail_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_medium"
+        android:textAppearance="@style/TextAppearance.Auxio.LabelMedium"
+        android:textColor="?attr/colorSecondary"
+        app:layout_constraintBottom_toTopOf="@+id/detail_name"
+        app:layout_constraintStart_toEndOf="@+id/detail_cover"
+        app:layout_constraintTop_toTopOf="@+id/detail_cover"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Type" />
 
     <TextView
         android:id="@+id/detail_name"
@@ -28,7 +41,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/detail_cover"
-        app:layout_constraintTop_toTopOf="@+id/detail_cover"
+        app:layout_constraintTop_toBottomOf="@+id/detail_type"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Name" />
 

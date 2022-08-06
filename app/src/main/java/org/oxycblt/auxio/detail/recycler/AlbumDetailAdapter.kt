@@ -115,6 +115,9 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
     override fun bind(item: Album, listener: AlbumDetailAdapter.Listener) {
         binding.detailCover.bind(item)
+        binding.detailType?.text =
+            binding.context.getString(item.releaseType?.stringRes ?: R.string.lbl_album)
+
         binding.detailName.text = item.resolveName(binding.context)
 
         binding.detailSubhead.apply {
@@ -131,17 +134,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
             val duration = item.durationSecs.formatDuration(true)
 
-            text =
-                if (item.releaseType != null) {
-                    context.getString(
-                        R.string.fmt_four,
-                        context.getString(item.releaseType.stringRes),
-                        date,
-                        songCount,
-                        duration)
-                } else {
-                    context.getString(R.string.fmt_three, date, songCount, duration)
-                }
+            text = context.getString(R.string.fmt_three, date, songCount, duration)
         }
 
         binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }

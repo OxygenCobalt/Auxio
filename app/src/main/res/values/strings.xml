@@ -59,6 +59,7 @@
     <string name="lbl_artist">Artist</string>
     <string name="lbl_artists">Artists</string>
 
+    <string name="lbl_genre">Genre</string>
     <string name="lbl_genres">Genres</string>
 
     <string name="lbl_search">Search</string>

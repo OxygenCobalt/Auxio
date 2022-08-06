@@ -101,17 +101,17 @@
     </style>
 
     <style name="TextAppearance.Auxio.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
-        <item name="fontFamily">@font/inter_regular</item>
-        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:letterSpacing">0.00</item>
+        <item name="android:letterSpacing">0.003</item>
     </style>
 
     <style name="TextAppearance.Auxio.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
-        <item name="fontFamily">@font/inter_regular</item>
-        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:letterSpacing">0.0045454545</item>
+        <item name="android:letterSpacing">0.0075454545</item>
     </style>
 
     <!--

@@ -19,7 +19,7 @@
         android:layout_gravity="bottom|start"
         android:layout_marginStart="@dimen/spacing_medium"
         android:layout_marginBottom="@dimen/spacing_tiny"
-        android:textAppearance="@style/TextAppearance.Auxio.LabelMedium"
+        android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
         android:textColor="@color/sel_accented_secondary"
         tools:text="11:38" />
 
@@ -30,7 +30,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/spacing_medium"
         android:layout_marginBottom="@dimen/spacing_tiny"
-        android:textAppearance="@style/TextAppearance.Auxio.LabelMedium"
+        android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
         android:textColor="?android:attr/textColorSecondary"
         tools:text="16:16" />
 
