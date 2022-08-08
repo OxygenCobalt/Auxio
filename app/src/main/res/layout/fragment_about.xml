@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:background="?attr/colorSurface"
     android:orientation="vertical"
+    android:transitionGroup="true"
     tools:context=".settings.AboutFragment">
 
     <org.oxycblt.auxio.ui.AuxioAppBarLayout

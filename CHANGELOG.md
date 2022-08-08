@@ -2,8 +2,8 @@
 
 ## dev
 
-#### What's Improved
-- Improved bottom sheet code to prevent clipping issues
+#### What's Changed
+- Use X-axis transitions instead of Z-axis (Avoids visual clipping)
 
 #### What's Fixed
 - Fixed incorrect font being used in the queue title

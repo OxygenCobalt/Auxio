@@ -40,7 +40,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     RecyclerView(context, attrs, defStyleAttr) {
     private val topDivider = MaterialDivider(context)
     private val bottomDivider = MaterialDivider(context)
-
     private val spacingMedium = context.getDimenSize(R.dimen.spacing_medium)
 
     init {

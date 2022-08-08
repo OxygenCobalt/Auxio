@@ -39,6 +39,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialSharedAxis
 import java.lang.reflect.Field
 import kotlin.math.abs
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
 import org.oxycblt.auxio.home.list.AlbumListFragment
@@ -79,10 +80,17 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+
+        if (savedInstanceState != null) {
+            // Orientation change will wipe whatever transition we were using prior, which will
+            // result in no transition when the user navigates back. Make sure we re-initialize
+            // our transitions.
+            if (savedInstanceState.getBoolean(KEY_INIT_WITH_SEARCH_TRANSITIONS)) {
+                initSearchTransitions()
+            } else {
+                initDetailTransitions()
+            }
+        }
     }
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentHomeBinding.inflate(inflater)
@@ -144,6 +152,11 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(KEY_INIT_WITH_SEARCH_TRANSITIONS, enterTransition is MaterialSharedAxis)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroyBinding(binding: FragmentHomeBinding) {
         super.onDestroyBinding(binding)
         binding.homeToolbar.setOnMenuItemClickListener(null)
@@ -153,6 +166,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         when (item.itemId) {
             R.id.action_search -> {
                 logD("Navigating to search")
+                initSearchTransitions()
                 findNavController().navigate(HomeFragmentDirections.actionShowSearch())
             }
             R.id.action_settings -> {
@@ -364,7 +378,23 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 else -> return
             }
 
+        initDetailTransitions()
+
         findNavController().navigate(action)
+    }
+
+    private fun initSearchTransitions() {
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+    }
+
+    private fun initDetailTransitions() {
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
     }
 
     /**
@@ -405,5 +435,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             lazyReflectedField(ViewPager2::class, "mRecyclerView")
         private val VIEW_PAGER_TOUCH_SLOP_FIELD: Field by
             lazyReflectedField(RecyclerView::class, "mTouchSlop")
+        private const val KEY_INIT_WITH_SEARCH_TRANSITIONS =
+            BuildConfig.APPLICATION_ID + ".key.INIT_WITH_SEARCH_TRANSITIONS"
     }
 }

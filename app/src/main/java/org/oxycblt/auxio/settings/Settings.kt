@@ -63,11 +63,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
         unlikelyToBeNull(callback).onSettingChanged(key)
     }
 
-    /**
-     * An interface for receiving some preference updates. Use/Extend this instead of
-     * [SharedPreferences.OnSharedPreferenceChangeListener] if possible, as it doesn't require a
-     * context.
-     */
+    /** An interface for receiving some preference updates. */
     interface Callback {
         fun onSettingChanged(key: String)
     }

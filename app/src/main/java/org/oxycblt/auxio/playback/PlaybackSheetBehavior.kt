@@ -55,9 +55,6 @@ class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeS
 
     init {
         isHideable = true
-        if (Settings(context).roundMode) {
-            sheetBackgroundDrawable.setCornerSize(context.getDimen(R.dimen.size_corners_medium))
-        }
     }
 
     // Hack around issue where the playback sheet will try to intercept nested scrolling events

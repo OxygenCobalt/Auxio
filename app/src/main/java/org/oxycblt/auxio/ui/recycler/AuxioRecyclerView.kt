@@ -27,11 +27,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
-/**
- * A [RecyclerView] that automatically applies insets to itself.
- *
- * TODO: Correctly handle edge-to-edge regarding scroll effects and saved scroll positions.
- */
+/** A [RecyclerView] that enables some extra functionality for Auxio's use-case. */
 open class AuxioRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
@@ -58,12 +54,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         return insets
     }
 
-    fun setSpanSizeLookup(lookup: (Int) -> Boolean) {
+    inline fun setSpanSizeLookup(crossinline fullWidth: (Int) -> Boolean) {
         val glm = layoutManager as GridLayoutManager
         val spanCount = glm.spanCount
         glm.spanSizeLookup =
             object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int) = if (lookup(position)) spanCount else 1
+                override fun getSpanSize(position: Int) = if (fullWidth(position)) spanCount else 1
             }
     }
 }
