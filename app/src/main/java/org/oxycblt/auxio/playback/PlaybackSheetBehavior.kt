@@ -24,9 +24,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.shape.MaterialShapeDrawable
-import com.google.android.material.shape.ShapeAppearanceModel
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.AuxioSheetBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
@@ -42,15 +40,6 @@ class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeS
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
             fillColor = context.getAttrColorCompat(R.attr.colorSurface)
             elevation = context.getDimen(R.dimen.elevation_normal)
-
-            if (Settings(context).roundMode) {
-                val cornersMedium = context.getDimen(R.dimen.size_corners_medium)
-                shapeAppearanceModel =
-                    ShapeAppearanceModel.Builder()
-                        .setTopLeftCornerSize(cornersMedium)
-                        .setTopRightCornerSize(cornersMedium)
-                        .build()
-            }
         }
 
     init {

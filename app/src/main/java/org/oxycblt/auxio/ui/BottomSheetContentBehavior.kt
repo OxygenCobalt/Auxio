@@ -24,13 +24,13 @@ import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
 import kotlin.math.abs
-import kotlin.math.max
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
- * A behavior that automatically re-insets content to align with the parent layout's bottom sheet.
+ * A behavior that automatically re-layouts and re-insets content to align with the parent layout's
+ * bottom sheet.
  * @author OxygenCobalt
  */
 class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
@@ -60,10 +60,20 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
             return false
         }
 
-        lastConsumed = consumed
-        lastInsets?.let(child::dispatchApplyWindowInsets)
+        if (consumed != lastConsumed) {
+            lastConsumed = consumed
 
-        // Re-insetting views does not lead to the child view changing size or position.
+            val insets = lastInsets
+            if (insets != null) {
+                child.dispatchApplyWindowInsets(insets)
+            }
+
+            lastInsets?.let(child::dispatchApplyWindowInsets)
+            measureContent(parent, child, consumed)
+            layoutContent(child)
+            return true
+        }
+
         return false
     }
 
@@ -75,19 +85,21 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         parentHeightMeasureSpec: Int,
         heightUsed: Int
     ): Boolean {
-        val contentWidthSpec =
-            View.MeasureSpec.makeMeasureSpec(parent.measuredWidth, View.MeasureSpec.EXACTLY)
-        val contentHeightSpec =
-            View.MeasureSpec.makeMeasureSpec(parent.measuredHeight, View.MeasureSpec.EXACTLY)
+        val dep = dep ?: return false
+        val behavior = dep.coordinatorLayoutBehavior as NeoBottomSheetBehavior
+        val consumed = behavior.calculateConsumedByBar()
+        if (consumed == Int.MIN_VALUE) {
+            return false
+        }
 
-        child.measure(contentWidthSpec, contentHeightSpec)
+        measureContent(parent, child, consumed)
 
         return true
     }
 
     override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
         super.onLayoutChild(parent, child, layoutDirection)
-        child.layout(0, 0, child.measuredWidth, child.measuredHeight)
+        layoutContent(child)
 
         if (!setup) {
             child.setOnApplyWindowInsetsListener { v, insets ->
@@ -100,15 +112,29 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
                 }
 
                 val bars = insets.systemBarInsetsCompat
-                val newBottom = max(bars.bottom, consumed)
 
-                insets.replaceSystemBarInsetsCompat(bars.left, bars.top, bars.right, newBottom)
+                insets.replaceSystemBarInsetsCompat(
+                    bars.left, bars.top, bars.right, (bars.bottom - consumed).coerceAtLeast(0))
             }
 
             setup = true
         }
 
         return true
+    }
+
+    private fun measureContent(parent: View, child: View, consumed: Int) {
+        val contentWidthSpec =
+            View.MeasureSpec.makeMeasureSpec(parent.measuredWidth, View.MeasureSpec.EXACTLY)
+        val contentHeightSpec =
+            View.MeasureSpec.makeMeasureSpec(
+                parent.measuredHeight - consumed, View.MeasureSpec.EXACTLY)
+
+        child.measure(contentWidthSpec, contentHeightSpec)
+    }
+
+    private fun layoutContent(child: View) {
+        child.layout(0, 0, child.measuredWidth, child.measuredHeight)
     }
 
     private fun NeoBottomSheetBehavior<*>.calculateConsumedByBar(): Int {
