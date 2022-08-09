@@ -239,4 +239,5 @@
     <string name="set_wipe_desc">Vymazat dříve uložený stav přehrávání (pokud existuje)</string>
     <string name="lng_state_wiped">Stav vymazán</string>
     <string name="desc_queue_bar">Otevřít frontu</string>
+    <string name="lbl_genre">Žánr</string>
 </resources>
