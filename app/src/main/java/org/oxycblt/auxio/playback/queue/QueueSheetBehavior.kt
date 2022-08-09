@@ -23,7 +23,6 @@ import android.view.View
 import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.shape.MaterialShapeDrawable
-import com.google.android.material.shape.ShapeAppearanceModel
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.AuxioSheetBehavior
 import org.oxycblt.auxio.util.*
@@ -57,13 +56,6 @@ class QueueSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
             fillColor = context.getAttrColorCompat(R.attr.colorSurface)
             elevation = context.getDimen(R.dimen.elevation_normal)
-
-            val cornersMedium = context.getDimen(R.dimen.size_corners_medium)
-            shapeAppearanceModel =
-                ShapeAppearanceModel.Builder()
-                    .setTopLeftCornerSize(cornersMedium)
-                    .setTopRightCornerSize(cornersMedium)
-                    .build()
         }
 
     override fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {

@@ -31,6 +31,19 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 /**
  * A behavior that automatically re-layouts and re-insets content to align with the parent layout's
  * bottom sheet.
+ *
+ * Ideally, we would one day want to switch to only re-insetting content, however this comes with
+ * several issues::
+ * 1. Scroll position. I need to find a good way to save padding in order to prevent desync, as
+ * window insets tend to be applied after restoration.
+ * 2. Over scrolling. Glow scrolls will not cut it, as the bottom glow will be caught under the bar,
+ * and moving it above the insets will result in an incorrect glow position when the bar is not
+ * shown. I have to emulate stretch scrolling below Android 12 instead. However, this is also
+ * similarly distorted by the insets, and thus I must go further and modify the edge effect to be
+ * at least somewhat clamped to the insets themselves.
+ * 3. Touch events. Bottom sheets must always intercept touches in their bounds, or they will
+ * click the now overlapping content view that is only inset by it and not unhidden by it.
+ *
  * @author OxygenCobalt
  */
 class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
