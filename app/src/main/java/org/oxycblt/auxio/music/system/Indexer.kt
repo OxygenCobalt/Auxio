@@ -296,13 +296,6 @@ class Indexer {
         val albums = mutableListOf<Album>()
         val songsByAlbum = songs.groupBy { it._albumGroupingId }
 
-        // If album types aren't used by the music library (Represented by all songs having
-        // no album type), there is no point in displaying them.
-        val enableAlbumTypes = songs.any { it._albumReleaseType != null }
-        if (!enableAlbumTypes) {
-            logD("No distinct album types detected, ignoring them")
-        }
-
         for (entry in songsByAlbum) {
             val albumSongs = entry.value
 
@@ -317,10 +310,7 @@ class Indexer {
                     rawName = templateSong._albumName,
                     rawSortName = templateSong._albumSortName,
                     date = templateSong._date,
-                    releaseType =
-                        if (enableAlbumTypes)
-                            (templateSong._albumReleaseType ?: ReleaseType.Album(null))
-                        else null,
+                    releaseType = templateSong._albumReleaseType ?: ReleaseType.Album(null),
                     coverUri = templateSong._albumCoverUri,
                     songs = entry.value,
                     _artistGroupingName = templateSong._artistGroupingName,

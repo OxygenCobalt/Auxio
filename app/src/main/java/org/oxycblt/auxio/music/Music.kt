@@ -123,8 +123,7 @@ data class Song(
     override fun resolveName(context: Context) = rawName
 
     /** The duration of this song, in seconds (rounded down) */
-    val durationSecs: Long
-        get() = durationMs / 1000
+    val durationSecs = durationMs / 1000
 
     private var _album: Album? = null
     /** The album of this song. */
@@ -202,11 +201,8 @@ data class Album(
     override val rawSortName: String?,
     /** The date this album was released. */
     val date: Date?,
-    /**
-     * The type of release this album represents. Null if release types were not applicable to this
-     * library.
-     */
-    val releaseType: ReleaseType?,
+    /** The type of release this album has. */
+    val releaseType: ReleaseType,
     /** The URI for the cover image corresponding to this album. */
     val coverUri: Uri,
     /** The songs of this album. */
@@ -236,6 +232,9 @@ data class Album(
     /** The parent artist of this album. */
     val artist: Artist
         get() = unlikelyToBeNull(_artist)
+
+    /** The earliest date a song in this album was added. */
+    val dateAdded = songs.minOf { it.dateAdded }
 
     /** Internal field. Do not use. */
     val _artistGroupingId: Long
@@ -437,6 +436,15 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
     }
 }
 
+/**
+ * Represents the type of release a particular album is.
+ *
+ * This can be used to differentiate between album sub-types like Singles, EPs, Compilations, and
+ * others. Internally, it operates on a reduced version of the MusicBrainz release type
+ * specification. It can be extended if there is demand.
+ *
+ * @author OxygenCobalt
+ */
 sealed class ReleaseType {
     abstract val refinement: Refinement?
     abstract val stringRes: Int
@@ -495,6 +503,11 @@ sealed class ReleaseType {
             get() = R.string.lbl_mixtape
     }
 
+    /**
+     * Roughly analogous to the MusicBrainz "live" and "remix" secondary types. Unlike the main
+     * types, these only modify an existing, primary type. They are not implemented for secondary
+     * types, however they may be expanded to compilations in the future.
+     */
     enum class Refinement {
         LIVE,
         REMIX

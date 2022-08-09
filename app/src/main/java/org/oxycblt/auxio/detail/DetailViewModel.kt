@@ -241,10 +241,6 @@ class DetailViewModel(application: Application) :
 
         val byReleaseGroup =
             albums.groupBy {
-                if (it.releaseType == null) {
-                    return@groupBy R.string.lbl_albums
-                }
-
                 when (it.releaseType.refinement) {
                     ReleaseType.Refinement.LIVE -> R.string.lbl_live_group
                     ReleaseType.Refinement.REMIX -> R.string.lbl_remix_group
