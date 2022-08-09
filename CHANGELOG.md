@@ -2,11 +2,13 @@
 
 ## dev
 
-#### What's Changed
-- Use X-axis transitions instead of Z-axis (Avoids visual clipping)
-
 #### What's Fixed
 - Fixed incorrect font being used in the queue title
+- Fixed missing fast scroll indicator with date added scrolling
+
+#### What's Changed
+- Use X-axis transitions instead of Z-axis (Avoids visual clipping)
+- Queue no longer has rounded corners for consistency
 
 ## 2.6.0
 

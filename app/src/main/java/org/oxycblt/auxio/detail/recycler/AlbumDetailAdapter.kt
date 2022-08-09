@@ -115,7 +115,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
     override fun bind(item: Album, listener: AlbumDetailAdapter.Listener) {
         binding.detailCover.bind(item)
-        binding.detailType?.text =
+        binding.detailType.text =
             binding.context.getString(item.releaseType?.stringRes ?: R.string.lbl_album)
 
         binding.detailName.text = item.resolveName(binding.context)

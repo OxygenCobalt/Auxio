@@ -39,10 +39,10 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * 2. Over scrolling. Glow scrolls will not cut it, as the bottom glow will be caught under the bar,
  * and moving it above the insets will result in an incorrect glow position when the bar is not
  * shown. I have to emulate stretch scrolling below Android 12 instead. However, this is also
- * similarly distorted by the insets, and thus I must go further and modify the edge effect to be
- * at least somewhat clamped to the insets themselves.
- * 3. Touch events. Bottom sheets must always intercept touches in their bounds, or they will
- * click the now overlapping content view that is only inset by it and not unhidden by it.
+ * similarly distorted by the insets, and thus I must go further and modify the edge effect to be at
+ * least somewhat clamped to the insets themselves.
+ * 3. Touch events. Bottom sheets must always intercept touches in their bounds, or they will click
+ * the now overlapping content view that is only inset by it and not unhidden by it.
  *
  * @author OxygenCobalt
  */
@@ -115,7 +115,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         layoutContent(child)
 
         if (!setup) {
-            child.setOnApplyWindowInsetsListener { v, insets ->
+            child.setOnApplyWindowInsetsListener { _, insets ->
                 lastInsets = insets
                 val dep = dep ?: return@setOnApplyWindowInsetsListener insets
                 val behavior = dep.coordinatorLayoutBehavior as NeoBottomSheetBehavior

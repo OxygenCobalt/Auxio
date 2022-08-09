@@ -18,7 +18,9 @@
 package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.view.View
+import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Song
@@ -42,6 +44,8 @@ import org.oxycblt.auxio.util.logEOrThrow
 class SongListFragment : HomeListFragment<Song>() {
     private val homeAdapter = SongsAdapter(this)
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
+    private val formatterSb = StringBuilder(50)
+    private val formatter = Formatter(formatterSb)
 
     override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
@@ -75,6 +79,19 @@ class SongListFragment : HomeListFragment<Song>() {
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> song.durationSecs.formatDuration(false)
+
+            // Last added -> Format as date
+            is Sort.Mode.ByDateAdded -> {
+                val dateAddedMillis = song.dateAdded * 1000
+                formatterSb.setLength(0)
+                DateUtils.formatDateRange(
+                        context,
+                        formatter,
+                        dateAddedMillis,
+                        dateAddedMillis,
+                        DateUtils.FORMAT_ABBREV_ALL)
+                    .toString()
+            }
 
             // Unsupported sort, error gracefully
             else -> null
