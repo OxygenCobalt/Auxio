@@ -2,6 +2,9 @@
 
 ## dev
 
+#### What's New
+- Detail UI now displays the type of item shown (ex. the release type)
+
 #### What's Fixed
 - Fixed incorrect font being used in the queue title
 - Fixed missing fast scroll indicator with date added scrolling

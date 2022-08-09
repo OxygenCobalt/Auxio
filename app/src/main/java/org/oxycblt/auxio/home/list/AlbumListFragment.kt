@@ -77,14 +77,17 @@ class AlbumListFragment : HomeListFragment<Album>() {
             is Sort.Mode.ByCount -> album.songs.size.toString()
 
             // Last added -> Format as date
-            is Sort.Mode.ByDateAdded ->
-                (album.songs.minOf { it.dateAdded } * 1000).let {
-                    // Emulate formatDateTime with our own formatter instance to save memory.
-                    formatterSb.setLength(0)
-                    DateUtils.formatDateRange(
-                            context, formatter, it, it, DateUtils.FORMAT_ABBREV_ALL)
-                        .toString()
-                }
+            is Sort.Mode.ByDateAdded -> {
+                val dateAddedMillis = album.dateAdded * 1000
+                formatterSb.setLength(0)
+                DateUtils.formatDateRange(
+                        context,
+                        formatter,
+                        dateAddedMillis,
+                        dateAddedMillis,
+                        DateUtils.FORMAT_ABBREV_ALL)
+                    .toString()
+            }
 
             // Unsupported sort, error gracefully
             else -> null

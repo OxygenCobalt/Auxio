@@ -93,6 +93,12 @@
         <item name="android:paddingBottom">@dimen/recycler_fab_space_normal</item>
     </style>
 
+    <style name="Widget.Auxio.DisableDropShadows" parent="">
+        <!-- API 28+ Only -->
+        <item name="android:outlineAmbientShadowColor" tools:ignore="NewApi">@android:color/transparent</item>
+        <item name="android:outlineSpotShadowColor" tools:ignore="NewApi">@android:color/transparent</item>
+    </style>
+
     <style name="ThemeOverlay.Accent" parent="">
         <item name="colorOnPrimary">?attr/colorSurface</item>
     </style>

@@ -19,7 +19,6 @@ package org.oxycblt.auxio.ui
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -67,16 +66,8 @@ abstract class AuxioSheetBehavior<V : View>(context: Context, attributeSet: Attr
 
         if (!setup) {
             child.apply {
+                translationZ = context.getDimen(R.dimen.elevation_normal)
                 background = createBackground(context)
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    // Shadows aren't disabled by default, do that.
-                    val transparent =
-                        context.getColorCompat(android.R.color.transparent).defaultColor
-                    outlineAmbientShadowColor = transparent
-                    outlineSpotShadowColor = transparent
-                }
-
                 setOnApplyWindowInsetsListener(::applyWindowInsets)
             }
 
