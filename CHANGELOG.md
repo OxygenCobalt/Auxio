@@ -3,6 +3,7 @@
 ## dev
 
 #### What's New
+- Added basic equalizer support in external apps like Wavelet
 - Detail UI now displays the type of item shown (ex. the release type)
 
 #### What's Fixed

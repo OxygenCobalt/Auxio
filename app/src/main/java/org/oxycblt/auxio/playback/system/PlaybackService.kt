@@ -23,6 +23,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import android.media.audiofx.AudioEffect
 import android.os.IBinder
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
@@ -93,6 +94,7 @@ class PlaybackService :
     // State
     private lateinit var foregroundManager: ForegroundManager
     private var hasPlayed = false
+    private var openAudioEffectSession = false
 
     // Coroutines
     private val serviceJob = Job()
@@ -175,7 +177,13 @@ class PlaybackService :
 
         widgetComponent.release()
         mediaSessionComponent.release()
+
         player.release()
+        if (openAudioEffectSession) {
+            // Make sure to close the audio session when we release the player.
+            broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
+            openAudioEffectSession = false
+        }
 
         logD("Service destroyed")
     }
@@ -197,6 +205,7 @@ class PlaybackService :
     override fun onPlaybackStateChanged(state: Int) {
         when (state) {
             Player.STATE_ENDED -> {
+                logD("State ended")
                 if (playbackManager.repeatMode == RepeatMode.TRACK) {
                     playbackManager.rewind()
                     if (settings.pauseOnRepeat) {
@@ -250,6 +259,12 @@ class PlaybackService :
             // Stop the foreground state if there's nothing to play.
             logD("Nothing playing, stopping playback")
             player.stop()
+            if (openAudioEffectSession) {
+                // Make sure to close the audio session when we stop playback.
+                broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
+                openAudioEffectSession = false
+            }
+
             stopAndSave()
             return
         }
@@ -257,6 +272,14 @@ class PlaybackService :
         logD("Loading ${song.rawName}")
         player.setMediaItem(MediaItem.fromUri(song.uri))
         player.prepare()
+
+        if (!openAudioEffectSession) {
+            // Wavelet does not like it if you start an audio effect session without having
+            // something within your player buffer. Make sure we only start one when we load
+            // a song.
+            broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
+            openAudioEffectSession = true
+        }
     }
 
     override fun seekTo(positionMs: Long) {
@@ -328,6 +351,14 @@ class PlaybackService :
                     .build(),
                 true)
             .build()
+    }
+
+    private fun broadcastAudioEffectAction(event: String) {
+        sendBroadcast(
+            Intent(event)
+                .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
+                .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, player.audioSessionId)
+                .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC))
     }
 
     /** Stop the foreground state and hide the notification */
