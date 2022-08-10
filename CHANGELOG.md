@@ -2,6 +2,8 @@
 
 ## dev
 
+## 2.6.1
+
 #### What's New
 - Added basic equalizer support in external apps like Wavelet [#211]
 - Added option to control the type of action shown on the playback bar
