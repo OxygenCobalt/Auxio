@@ -101,7 +101,6 @@
     <string name="set_dirs_mode">Modo</string>
     <string name="err_no_perms">O Auxio precisa de permissão para ler sua biblioteca de músicas</string>
     <string name="info_app_desc">Um leitor de música simples e racional para android.</string>
-    <string name="lng_indexing_desc">Carregando sua biblioteca de músicas…</string>
     <string name="lbl_sort_year">Ano</string>
     <string name="lbl_sort_duration">Duração</string>
     <string name="lbl_sort_count">Contagem de Músicas</string>

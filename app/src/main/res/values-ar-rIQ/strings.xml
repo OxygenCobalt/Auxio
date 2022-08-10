@@ -1,32 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">مشغل موسيقى بسيط ومعقول لنظام الاندرويد.</string>
-    <string name="info_playback_channel_name">تشغيل الموسيقى</string>
     <string name="lng_playback">عرض وتحكم بشتغيل الموسيقى</string>
-
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">إعادة المحاولة</string>
     <string name="lbl_grant">منح</string>
-
     <string name="lbl_genres">انواع</string>
     <string name="lbl_artists">فنانين</string>
     <string name="lbl_albums">البومات</string>
     <string name="lbl_songs">اغاني</string>
     <string name="lbl_all_songs">جميع الاغاني</string>
-
     <string name="lbl_search">بحث</string>
     <string name="lbl_filter">تصفية</string>
     <string name="lbl_filter_all">الكل</string>
-
     <string name="lbl_sort">فرز</string>
     <string name="lbl_sort_name">اسم</string>
     <string name="lbl_artist">فنان</string>
     <string name="lbl_album">البوم</string>
     <string name="lbl_sort_year">سنة</string>
     <string name="lbl_sort_asc">تصاعدي</string>
-
     <string name="lbl_playback">يعمل الآن</string>
     <string name="lbl_play">تشغيل</string>
     <string name="lbl_shuffle">خلط</string>
@@ -34,28 +27,22 @@
     <string name="set_playback_mode_album">تشغيل من البوم</string>
     <string name="set_playback_mode_artist">تشغيل من فنان</string>
     <string name="set_playback_mode_genre">تشغيل من نوع</string>
-
     <string name="lbl_queue">طابور</string>
     <string name="lbl_play_next">شغل تالياً</string>
     <string name="lbl_queue_add">أضف إلى الطابور</string>
     <string name="lng_queue_added">تمت الإضافة إلى الطابور</string>
-
     <string name="lbl_go_artist">أذهب إلى الفنان</string>
     <string name="lbl_go_album">أذهب إلى الالبوم</string>
-
     <string name="lbl_state_saved">تم حفظ الحالة</string>
-
     <string name="lbl_add">أضف</string>
     <string name="lbl_save">احفظ</string>
     <string name="err_no_dirs">لا مجلد</string>
-
     <string name="lbl_about">حول</string>
     <string name="lbl_version">الإصدار</string>
     <string name="lbl_code">عرض على جيتهاب</string>
     <string name="lbl_faq">اسئلة وأجوبة</string>
     <string name="lbl_licenses">التراخيص</string>
     <string name="lng_author">تمت برمجة التطبيق من قبل OxygenCobalt</string>
-
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">الإعدادات</string>
     <string name="set_ui">المظهر</string>
@@ -66,7 +53,6 @@
     <string name="set_accent">نظام الألوان</string>
     <string name="set_black_mode">السمة السوداء</string>
     <string name="set_black_mode_desc">استخدام اللون الاسود القاتم في الوضع المظلم</string>
-
     <string name="set_display">عرض</string>
     <string name="set_lib_tabs">تبويتات المكتبة</string>
     <string name="set_lib_tabs_desc">تغيير ظهور وترتيب تبويتات المكتبة</string>
@@ -79,14 +65,12 @@
     <string name="set_alt_action">استخدام نشاط بديل للإشعار</string>
     <string name="set_alt_repeat">تفضيل نشاط وضع التكرار</string>
     <string name="set_alt_shuffle">تفضيل نشاط الخلط</string>
-
     <string name="set_audio">صوتيات</string>
     <string name="set_replay_gain">صخب الصوت</string>
     <string name="set_replay_gain_off">اطفاء</string>
     <string name="set_replay_gain_track">تفضيل المقطع</string>
     <string name="set_replay_gain_album">تفضيل الالبوم</string>
     <string name="set_replay_gain_dynamic">ديناميكي</string>
-
     <string name="set_behavior">سلوك</string>
     <string name="set_library_song_playback_mode">عند اختيار اغنية</string>
     <string name="set_keep_shuffle">تذكر الخلط</string>
@@ -95,21 +79,17 @@
     <string name="set_rewind_prev_desc">ترجيع قبل التخطي إلى الاغنية السابقة</string>
     <string name="set_repeat_pause">ايقاف مؤقت عند التكرار</string>
     <string name="set_repeat_pause_desc">ايقاف مؤقت عند تكرار تشغيل اغنية</string>
-
     <string name="set_content">محتوى</string>
     <string name="set_save_state">حفظ حالة التشغيل</string>
     <string name="set_save_desc">حفظ حالة التشغيل الحالية الآن</string>
-
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">لم يتم ايجاد موسيقى</string>
     <string name="err_index_failed">فشل تحميل الموسيقى</string>
     <string name="err_no_perms">اوكسيو يحتاج إلى صلاحيات لقراءة للاطلاع على مكتبتك للموسيقى</string>
     <string name="err_no_app">لا يوجد تطبيق لفتح هذا الرابط</string>
     <string name="err_bad_dir">هذا المجلد غير مدعوم</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">البحث في مكتبتك…</string>
-
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">المقطع %d</string>
     <string name="desc_play_pause">تشغيل او ايقاف مؤقت</string>
@@ -118,25 +98,21 @@
     <string name="desc_change_repeat">تغيير وضع التكرار</string>
     <string name="desc_shuffle">تشغيل او اطفاء الخلط</string>
     <string name="desc_shuffle_all">خلط جميع الاغاني</string>
-
     <string name="desc_clear_queue_item">إزالة اغنية من الطابور</string>
     <string name="desc_queue_handle">نقل اغنية من الطابور</string>
     <string name="desc_tab_handle">تحريك التبويت</string>
     <string name="desc_clear_search">إزالة كلمة البحث</string>
     <string name="desc_music_dir_delete">إزالة المجلد المستبعد</string>
-
     <string name="desc_auxio_icon">ايقونة اوكسيو</string>
     <string name="desc_no_cover">غلاف الالبوم</string>
     <string name="desc_album_cover">غلاف الالبوم لـ %s</string>
     <string name="desc_artist_image">صورة الفنان لـ %s</string>
     <string name="desc_genre_image">صورة النوع لـ %s</string>
-
     <!-- Default Namespace | Placeholder values -->
     <string name="def_artist">فنان غير معروف</string>
     <string name="def_genre">نوع غير معروف</string>
     <string name="def_date">لا تاريخ</string>
     <string name="def_playback">لا يعمل موسيقى</string>
-
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">احمر</string>
     <string name="clr_pink">وردي</string>
@@ -154,10 +130,8 @@
     <string name="clr_orange">برتقالي</string>
     <string name="clr_brown">بني</string>
     <string name="clr_grey">رمادي</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_lib_song_count">الاغنية المُحملة: %d</string>
-
     <plurals name="fmt_song_count">
         <item quantity="zero">%d اغاني</item>
         <item quantity="one">%d اغنية</item>
@@ -166,7 +140,6 @@
         <item quantity="many">%d اغاني</item>
         <item quantity="other">%d اغاني</item>
     </plurals>
-
     <plurals name="fmt_album_count">
         <item quantity="zero">%d ألبومات</item>
         <item quantity="one">%d البوم</item>

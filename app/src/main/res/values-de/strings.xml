@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Info namespace | App labels -->
-    <string name="info_playback_channel_name">Musikwiedergabe</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Erneut versuchen</string>
     <string name="lbl_grant">Gewähren</string>
@@ -190,7 +189,6 @@
     <string name="lbl_shuffle_shortcut_short">Mischen</string>
     <string name="lbl_shuffle_shortcut_long">Alle mischen</string>
     <string name="lbl_indexer">Musikwiedergabe</string>
-    <string name="lng_indexing_desc">Lade deine Musikbibliothek…</string>
     <string name="lbl_sample_rate">Abtastrate</string>
     <string name="lbl_song_detail">Zeige Eigenschaften an</string>
     <string name="lbl_props">Lied-Eigenschaften</string>

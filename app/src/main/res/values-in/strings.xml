@@ -73,12 +73,10 @@
     <string name="lbl_size">Ukuran</string>
     <string name="lbl_sample_rate">Tingkat sampel</string>
     <string name="set_lib_tabs">Tab Pustaka</string>
-    <string name="lng_indexing_desc">Memuat perpustakaan musik Anda…</string>
     <string name="lbl_sort_name">Nama</string>
     <string name="lbl_artist">Artis</string>
     <string name="lbl_album">Album</string>
     <string name="info_app_desc">Pemutar musik yang simpel dan rasional untuk android.</string>
-    <string name="info_playback_channel_name">Pemutaran Musik</string>
     <string name="lbl_indexer">Pemuatan Musik</string>
     <string name="lng_playback">Lihat dan kontrol pemutaran musik</string>
     <string name="lbl_sort_year">Tahun</string>

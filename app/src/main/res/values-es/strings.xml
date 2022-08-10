@@ -2,7 +2,6 @@
 <resources>
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Un reproductor de música simple y racional para Android.</string>
-    <string name="info_playback_channel_name">Reproducción de música</string>
     <string name="lng_playback">Ver y controlar la reproducción musical</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Reintentar</string>
@@ -176,7 +175,6 @@
     <string name="set_observing">Recarga automática</string>
     <string name="set_observing_desc">Recarga tu biblioteca de música cuando cambia (Experimental)</string>
     <string name="err_did_not_restore">No se puedo restaurar ningún estado</string>
-    <string name="lng_indexing_desc">Cargando tu librería de música…</string>
     <string name="lbl_indexing">Cargando música</string>
     <string name="lbl_observing">Monitorizando la librería de música</string>
     <string name="lng_observing">Monitorizando cambios en tu librería de música…</string>
@@ -233,5 +231,4 @@
     <string name="desc_queue_bar">Abrir la cola</string>
     <string name="lbl_genre">Género</string>
     <string name="lbl_state_wiped">Estado limpiado</string>
-    <string name="set_wipe">Limpiar el estado de reproducción</string>
 </resources>

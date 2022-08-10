@@ -2,7 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Простой и рациональный музыкальный проигрыватель.</string>
-    <string name="info_playback_channel_name">Воспроизведение</string>
     <string name="lng_playback">Настройки воспроизведения</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Повторить попытку</string>
@@ -151,7 +150,6 @@
     </plurals>
     <string name="lbl_indexer">Музыка загружается</string>
     <string name="lbl_indexing">Загрузка музыки</string>
-    <string name="lng_indexing_desc">Загрузка музыкальной библиотеки…</string>
     <string name="lbl_observing">Мониторинг музыкальной библиотеки</string>
     <string name="lbl_shuffle_shortcut_short">Перемешать</string>
     <string name="lbl_shuffle_shortcut_long">Перемешать всё</string>
@@ -186,7 +184,6 @@
     <string name="def_bitrate">Нет битрейта</string>
     <string name="def_sample_rate">Нет частоты дискретизации</string>
     <string name="cdc_aac">AAC</string>
-    <string name="set_wipe">Очистить состояние воспроизведения</string>
     <string name="set_dirs_mode_exclude_desc">Музыка <b>не</b> будет загружена из указанных папок.</string>
     <string name="set_dirs_desc">Укажите, откуда загружать музыку</string>
     <string name="fmt_bitrate">%d кбит/с</string>

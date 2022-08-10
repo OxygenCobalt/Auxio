@@ -2,7 +2,6 @@
 <resources>
     <string name="set_replay_gain_album">Naisin ang album</string>
     <string name="lbl_retry">Subukan muli</string>
-    <string name="lng_indexing_desc">Nilo-load ang iyong music library…</string>
     <string name="lng_observing">Tinitignan ang iyong music library para sa mga pagbabago…</string>
     <string name="lbl_all_songs">Lahat ng Kanta</string>
     <string name="lbl_albums">Mga Album</string>
@@ -11,7 +10,6 @@
     <string name="lbl_album_remix">Remix album</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_indexing">Nilo-load ang music</string>
-    <string name="info_playback_channel_name">Pagtugtog ng kanta</string>
     <string name="lbl_indexer">Pagload ng kanta</string>
     <string name="lbl_eps">Mga EP</string>
     <string name="lbl_observing">Tinitignan ang music library</string>
