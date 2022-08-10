@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Info namespace | App labels -->
-    <string name="info_app_desc">Простой и рациональный музыкальный проигрыватель</string>
+    <string name="info_app_desc">Простой и рациональный музыкальный проигрыватель.</string>
     <string name="info_playback_channel_name">Воспроизведение</string>
     <string name="info_widget_desc">Настройки воспроизведения</string>
     <!-- Label Namespace | Static Labels -->
@@ -37,10 +37,10 @@
     <string name="lng_state_saved">Позиция сохранена</string>
     <string name="lbl_add">Добавить</string>
     <string name="lbl_save">Сохранить</string>
-    <string name="err_no_dirs">Папок нет</string>
+    <string name="err_no_dirs">Нет папок</string>
     <string name="lbl_about">О программе</string>
     <string name="lbl_version">Версия</string>
-    <string name="lbl_code">Страница на GitHub</string>
+    <string name="lbl_code">Исходный код</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Лицензии</string>
     <string name="lng_author">Разработчик: OxygenCobalt</string>
@@ -69,7 +69,7 @@
     <string name="set_audio">Звук</string>
     <string name="set_headset_autoplay">Воспроизводить при подключении</string>
     <string name="set_headset_autoplay_desc">Всегда начинать воспроизведение при подключении наушников (может работать не на всех устройствах)</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">Выравнивание громкости</string>
     <string name="lbl_off">Выкл.</string>
     <string name="set_replay_gain_track">По треку</string>
     <string name="set_replay_gain_album">По альбому</string>
@@ -86,7 +86,7 @@
     <string name="set_save_state">Запоминать позицию</string>
     <string name="set_save_desc">Запоминать позицию в треке</string>
     <string name="set_reindex">Перезагрузить музыку</string>
-    <string name="set_reindex_desc">Это перезапустит приложение</string>
+    <string name="set_reindex_desc">Может стереть состояние воспроизведения</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Треков нет</string>
     <string name="err_index_failed">Ошибка чтения библиотеки</string>
@@ -107,7 +107,7 @@
     <string name="desc_queue_handle">Переместить трек в очереди</string>
     <string name="desc_tab_handle">Переместить вкладку</string>
     <string name="desc_clear_search">Очистить поисковый запрос</string>
-    <string name="desc_music_dir_delete">Удалить исключенную папку</string>
+    <string name="desc_music_dir_delete">Удалить папку</string>
     <string name="desc_auxio_icon">Иконка Auxio</string>
     <string name="desc_no_cover">Обложка альбома</string>
     <string name="desc_album_cover">Обложка альбома %s</string>
@@ -122,7 +122,7 @@
     <string name="clr_red">Красный</string>
     <string name="clr_pink">Розовый</string>
     <string name="clr_purple">Пурпурный</string>
-    <string name="clr_deep_purple">Фиолетовый</string>
+    <string name="clr_deep_purple">Темно-фиолетовый</string>
     <string name="clr_indigo">Индиго</string>
     <string name="clr_blue">Синий</string>
     <string name="clr_deep_blue">Тёмно-синий</string>
@@ -154,7 +154,7 @@
     <string name="lng_indexing_desc">Загрузка музыкальной библиотеки…</string>
     <string name="lng_observing">Мониторинг музыкальной библиотеки</string>
     <string name="lbl_shuffle_shortcut_short">Перемешать</string>
-    <string name="lbl_shuffle_shortcut_long">Перемешать все</string>
+    <string name="lbl_shuffle_shortcut_long">Перемешать всё</string>
     <string name="lbl_ok">\@android:string/ok</string>
     <string name="set_detail_song_playback_mode">При воспроизведении из сведений</string>
     <string name="set_playback_mode_none">Воспроизведение с показанного элемента</string>
@@ -164,7 +164,7 @@
     <string name="lbl_sort_track">Трек</string>
     <string name="lng_state_restored">Состояние восстановлено</string>
     <string name="lbl_cancel">\@android:string/cancel</string>
-    <string name="set_pre_amp_warning">Внимание: Изменение предусилителя на большое положительное значение может привести к появлению пиков на некоторых звуковых дорожках.</string>
+    <string name="set_pre_amp_warning">Внимание: Изменение предусилителя на большое положительное значение может привести к появлению искажений на некоторых звуковых дорожках.</string>
     <string name="lbl_song_detail">Свойства</string>
     <string name="lbl_props">Свойства песни</string>
     <string name="lbl_relative_path">Путь</string>
@@ -182,4 +182,58 @@
     <string name="lbl_sort_date_added">Дата добавления</string>
     <string name="lbl_singles">Синглы</string>
     <string name="set_pre_amp">Предусилитель ReplayGain</string>
+    <string name="set_dirs_mode_exclude">Исключить</string>
+    <string name="def_bitrate">Нет битрейта</string>
+    <string name="def_sample_rate">Нет частоты дискретизации</string>
+    <string name="cdc_aac">AAC</string>
+    <string name="set_wipe">Очистить состояние воспроизведения</string>
+    <string name="set_dirs_mode_exclude_desc">Музыка <b>не</b> будет загружена из указанных папок.</string>
+    <string name="set_dirs_desc">Укажите, откуда загружать музыку</string>
+    <string name="fmt_bitrate">%d кбит/с</string>
+    <string name="set_observing">Автоматическая перезагрузка</string>
+    <string name="cdc_mp3">MPEG-1</string>
+    <string name="cdc_flac">FLAC</string>
+    <string name="fmt_lib_total_duration">Общая продолжительность: %s</string>
+    <string name="cdc_mka">Matroska</string>
+    <string name="fmt_disc_no">Диск %d</string>
+    <string name="fmt_db_pos">+%.1f дБ</string>
+    <string name="desc_queue_bar">Открыть очередь</string>
+    <string name="cdc_mp4">MPEG-4</string>
+    <string name="cdc_ogg">Ogg</string>
+    <string name="lbl_album_live">Концертный альбом</string>
+    <string name="lbl_live_group">Концерт</string>
+    <string name="lng_observing_desc">Мониторинг изменений в музыкальной библиотеке…</string>
+    <string name="lng_state_wiped">Состояние очищено</string>
+    <string name="set_dirs">Папки с музыкой</string>
+    <string name="set_dirs_mode_include">Включить</string>
+    <string name="lbl_album_remix">Альбом ремиксов</string>
+    <string name="lbl_ep_live">Концертный мини-альбом</string>
+    <string name="lbl_ep_remix">Мини-альбом ремиксов</string>
+    <string name="lbl_compilation">Сборник</string>
+    <string name="lbl_single_live">Концертный сингл</string>
+    <string name="lbl_single_remix">Ремикс сингл</string>
+    <string name="lbl_compilations">Сборники</string>
+    <string name="set_wipe_desc">Очистить ранее сохраненное состояние воспроизведения (если есть)</string>
+    <string name="set_observing_desc">Перезагружать библиотеку при каждом изменении (экспериментально)</string>
+    <string name="fmt_db_neg">-%.1f дБ</string>
+    <string name="fmt_lib_genre_count">Жанров загружено: %d</string>
+    <string name="set_quality_tags">Игнорировать теги MediaStore</string>
+    <string name="set_restore_desc">Восстановить предыдущее состояние воспроизведения (если есть)</string>
+    <string name="set_dirs_mode">Режим</string>
+    <string name="set_quality_tags_desc">Улучшает качество тегов, но приводит к долгому времени загрузки (экспериментально)</string>
+    <string name="set_dirs_mode_include_desc">Музыка будет загружена <b>только</b> из указанных папок.</string>
+    <string name="err_did_not_restore">Невозможно восстановить состояние воспроизведения</string>
+    <string name="def_track">Нет номера трека</string>
+    <string name="fmt_sample_rate">%d Гц</string>
+    <string name="fmt_lib_artist_count">Исполнителей загружено: %d</string>
+    <string name="clr_dynamic">Динамические</string>
+    <string name="def_codec">Неизвестный формат</string>
+    <string name="lbl_soundtracks">Саундтреки</string>
+    <string name="lbl_soundtrack">Саундтрек</string>
+    <string name="lbl_mixtapes">Микстейпы</string>
+    <string name="lbl_mixtape">Микстейп</string>
+    <string name="lbl_remix_group">Ремиксы</string>
+    <string name="fmt_lib_album_count">Альбомов загружено: %d</string>
+    <string name="fmt_indexing">Загрузка музыкальной библиотеки… (%1$d/%2$d)</string>
+    <string name="lbl_genre">Жанр</string>
 </resources>

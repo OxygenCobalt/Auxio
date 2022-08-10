@@ -7,6 +7,7 @@ Auxio je lokální hudební přehrávač s rychlým a spolehlivým UI/UX bez spo
 - Příjemné UX, které upřednostňuje snadné používání před okrajovými případy
 - Přizpůsobitelné chování
 - Pokročilé indexování médií, které upřednostňuje správná metadata
+- Podpora přesných/původních dat, třídicích značek a typů vydání (experimentální)
 - Správa složek podporující SD karty
 - Spolehlivé uchovávání stavu přehrávání
 - Plná podpora ReplayGain (na MP3, MP4, FLAC, OGG, a OPUS)

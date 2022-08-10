@@ -40,7 +40,7 @@
     <string name="err_no_dirs">Sin carpetas</string>
     <string name="lbl_about">Acerca de</string>
     <string name="lbl_version">Versión</string>
-    <string name="lbl_code">Ver en GitHub</string>
+    <string name="lbl_code">Código fuente</string>
     <string name="lbl_faq">Preguntas frecuentes</string>
     <string name="lbl_licenses">Licencias</string>
     <string name="lng_author">Desarrollado por OxygenCobalt</string>
@@ -137,12 +137,12 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_lib_song_count">Canciones cargadas: %d</string>
     <plurals name="fmt_song_count">
-        <item quantity="one">%d Canción</item>
-        <item quantity="other">%d Canciones</item>
+        <item quantity="one">%d canción</item>
+        <item quantity="other">%d canciones</item>
     </plurals>
     <plurals name="fmt_album_count">
-        <item quantity="one">%d Álbum</item>
-        <item quantity="other">%d Álbumes</item>
+        <item quantity="one">%d álbum</item>
+        <item quantity="other">%d álbumes</item>
     </plurals>
     <string name="lbl_size">Tamaño</string>
     <string name="lbl_format">Formato</string>
@@ -162,9 +162,9 @@
     <string name="set_dirs_mode_exclude">Excluir</string>
     <string name="set_dirs_mode_exclude_desc">La música<b>no</b> se cargará de las carpetas que añadas.</string>
     <string name="set_dirs_mode_include">Incluir</string>
-    <string name="def_sample_rate">Sin Frecuencia de Muestreo</string>
-    <string name="def_bitrate">Sin Bitrate</string>
-    <string name="cdc_mka">Audio Matroska</string>
+    <string name="def_sample_rate">Sin frecuencia de muestreo</string>
+    <string name="def_bitrate">Sin bitrate</string>
+    <string name="cdc_mka">Audio matroska</string>
     <string name="cdc_flac">Free Losless Audio Codec (FLAC)</string>
     <string name="cdc_aac">Advances Audio Coding (AAC)</string>
     <string name="fmt_indexing">Cargando tu biblioteca de música… (%1$d/%2$d)</string>
@@ -180,7 +180,7 @@
     <string name="lng_indexing">Cargando música</string>
     <string name="lng_observing">Monitorizando la librería de música</string>
     <string name="lng_observing_desc">Monitorizando cambios en tu librería de música…</string>
-    <string name="cdc_ogg">Audio Ogg</string>
+    <string name="cdc_ogg">Audio ogg</string>
     <string name="set_detail_song_playback_mode">Cuando se reproduce desde los detalles</string>
     <string name="lbl_sort_date_added">Fecha de añadido</string>
     <string name="lbl_props">Propiedades de la canción</string>
@@ -194,7 +194,7 @@
     <string name="set_dirs_desc">Gestionar de dónde se cargará la música</string>
     <string name="set_dirs_mode_include_desc">La música<b>solo</b> se cargará de las carpetas que añadas.</string>
     <string name="set_quality_tags_desc">Incrementa la calidad de las etiquetas, pero resulra en tiempos de carga mayores (Experimental)</string>
-    <string name="def_codec">Formato Desconocido</string>
+    <string name="def_codec">Formato desconocido</string>
     <string name="clr_dynamic">Dinámico</string>
     <string name="fmt_disc_no">Disco %d</string>
     <string name="lbl_eps">EPs</string>
@@ -229,4 +229,9 @@
     <string name="lbl_compilations">Compilaciones</string>
     <string name="lbl_ep_remix">EP remix</string>
     <string name="lbl_relative_path">Directorio superior</string>
+    <string name="set_wipe_desc">Eliminar el estado de reproducción guardado previamente (si existe)</string>
+    <string name="desc_queue_bar">Abrir la cola</string>
+    <string name="lbl_genre">Género</string>
+    <string name="lng_state_wiped">Estado limpiado</string>
+    <string name="set_wipe">Limpiar el estado de reproducción</string>
 </resources>

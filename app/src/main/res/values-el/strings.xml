@@ -3,86 +3,137 @@
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Προσπάθεια εκ νέου</string>
     <string name="lbl_grant">Χορήγησε</string>
-
     <string name="lbl_genres">Είδη</string>
     <string name="lbl_artists">Καλλιτέχνες</string>
     <string name="lbl_albums">Άλμπουμ</string>
     <string name="lbl_songs">Τραγούδια</string>
-    <string name="lbl_all_songs">Όλοι Τραγούδια</string>
-
+    <string name="lbl_all_songs">Όλα τα τραγούδια</string>
     <string name="lbl_search">Αναζήτηση</string>
     <string name="lbl_filter">Φίλτρο</string>
     <string name="lbl_filter_all">Όλα</string>
-
     <string name="lbl_sort">Σειρά Διάταξης</string>
-
     <string name="lbl_play">Αναπαραγωγή</string>
-    <string name="lbl_shuffle">Τυχαία</string>
-    <string name="lbl_playback">Παίζει τώρα</string>
-
+    <string name="lbl_shuffle">Tυχαία αναπαραγωγή</string>
+    <string name="lbl_playback">Τώρα Παίζεται</string>
     <string name="lbl_queue">Ουρά αναπαραγωγής</string>
     <string name="lbl_play_next">Επόμενο</string>
     <string name="lbl_queue_add">Προσθήκη στην ουρά αναπ/γής</string>
     <string name="lng_queue_added">Προστέθηκε ένας τίτλος στην ουρά αναπαραγωγής</string>
-
     <string name="lbl_go_artist">Πήγαινε στον καλλιτέχνη</string>
     <string name="lbl_go_album">Πήγαινε στο άλμπουμ</string>
-
     <string name="lbl_about">Σχετικά με</string>
     <string name="lbl_version">Έκδοση</string>
-    <string name="lbl_code">Δείτε το στο GitHub</string>
+    <string name="lbl_code">Πηγαίος κώδικας</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Άδειες</string>
-
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Ρυθμίσεις</string>
-
     <string name="set_ui">Εμφάνιση</string>
     <string name="set_theme">Θέμα</string>
     <string name="set_theme_auto">Αυτόματο</string>
     <string name="set_theme_day">Φωτεινό</string>
     <string name="set_theme_night">Σκοτεινό</string>
-    <string name="set_accent">Χρώμα χαρακτήρων</string>
-
+    <string name="set_accent">Χρώματα</string>
     <string name="set_quality_covers">Παράληψη των Media Store εξωφύλλων</string>
-
     <string name="set_audio">Ήχος</string>
-
     <string name="set_behavior">Συμπεριφορά</string>
-
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Κομμάτι %d</string>
-
-    <string name="desc_play_pause">Αναπαραγωγή/Παύση</string>
-
+    <string name="desc_play_pause">Αναπαραγωγή/παύση</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Αναζήτηση στη βιβλιοθήκη…</string>
-
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Κόκκινος</string>
     <string name="clr_pink">Ροζ</string>
     <string name="clr_purple">Ερυθροκυανός</string>
     <string name="clr_blue">Γαλάζιος</string>
-    <string name="clr_deep_blue">Ανοιχτός Γαλάζιος</string>
+    <string name="clr_deep_blue">Ανοιχτό Γαλάζιο</string>
     <string name="clr_teal">Γαλάζιος Πράσινος</string>
     <string name="clr_green">Πράσινος</string>
-    <string name="clr_deep_green">Ανοιχτός Πράσινος</string>
+    <string name="clr_deep_green">Ανοιχτό Πράσινο</string>
     <string name="clr_lime">Πράσινος Κίτρινος</string>
     <string name="clr_yellow">Κίτρινος</string>
     <string name="clr_orange">Πορτοκαλής</string>
     <string name="clr_brown">Καφέ</string>
     <string name="clr_grey">Γκρί</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_lib_song_count">Τραγούδια φορτώθηκε: %d</string>
-
+    <string name="fmt_lib_song_count">Τραγούδια που φορτώθηκαν: %d</string>
     <plurals name="fmt_song_count">
-        <item quantity="one">%d Τραγούδι</item>
-        <item quantity="other">%d Τραγούδια</item>
+        <item quantity="one">%d τραγούδι</item>
+        <item quantity="other">%d τραγούδια</item>
     </plurals>
-
     <plurals name="fmt_album_count">
-        <item quantity="one">%d Άλμπουμ</item>
-        <item quantity="other">%d Άλμπουμ</item>
+        <item quantity="one">%d άλμπουμ</item>
+        <item quantity="other">%d άλμπουμ</item>
     </plurals>
+    <string name="lbl_size">Μέγεθος</string>
+    <string name="fmt_db_pos">+%.1f dB</string>
+    <string name="fmt_indexing">Φόρτωση της συλλογής μουσικής σας… (%1$d/%2$d)</string>
+    <string name="fmt_lib_genre_count">Είδη που φορτώθηκαν: %d</string>
+    <string name="lbl_sort_count">Αριθμός τραγουδιών</string>
+    <string name="err_bad_dir">Αυτός ο φάκελος δεν υποστηρίζεται</string>
+    <string name="fmt_disc_no">Δίσκος %d</string>
+    <string name="fmt_lib_album_count">Album που φορτώθηκαν: %d</string>
+    <string name="fmt_lib_artist_count">Καλλιτέχνες που φορτώθηκαν: %d</string>
+    <string name="lbl_sort_year">Έτος</string>
+    <string name="lbl_sort_disc">Δίσκος</string>
+    <string name="err_no_music">Δεν βρέθηκε καθόλου μουσική</string>
+    <string name="err_index_failed">Η φόρτωση μουσικής απέτυχε</string>
+    <string name="fmt_bitrate">%d kbps</string>
+    <string name="lbl_add">Πρόσθεση</string>
+    <string name="lbl_props">Ιδιότητες τραγουδιού</string>
+    <string name="lbl_file_name">Όνομα αρχείου</string>
+    <string name="lbl_song_detail">Προβολή Ιδιωτήτων</string>
+    <string name="lbl_library_counts">Στατιστικά συλλογής</string>
+    <string name="lbl_album_live">Ζωντανό Album</string>
+    <string name="lbl_album_remix">Ρεμίξ album</string>
+    <string name="lbl_ep_live">Ζωντανό EP</string>
+    <string name="lbl_ep_remix">Ρεμίξ EP</string>
+    <string name="lbl_compilations">Συλλογές</string>
+    <string name="lbl_compilation">Συλλογή</string>
+    <string name="lng_indexing">Φόρτωση μουσικής</string>
+    <string name="lbl_genre">Είδος</string>
+    <string name="fmt_db_neg">-%.1f dB</string>
+    <string name="fmt_sample_rate">%d Hz</string>
+    <string name="lbl_sort_name">Όνομα</string>
+    <string name="lbl_sort_duration">Διάρκεια</string>
+    <string name="fmt_lib_total_duration">Συνολική διάρκεια: %s</string>
+    <string name="err_no_dirs">Καθόλου φάκελοι</string>
+    <string name="info_app_desc">Μιά απλή, λογική εφαρμογή αναπαραγωγής μουσικής για Android.</string>
+    <string name="info_playback_channel_name">Αναπαραγωγή Μουσικής</string>
+    <string name="info_indexer_channel_name">Φόρτωση μουσικής</string>
+    <string name="info_widget_desc">Προβολή και έλεγχος αναπαραγωγής μουσικής</string>
+    <string name="lbl_album">Album</string>
+    <string name="lbl_eps">EP</string>
+    <string name="lbl_ep">EP</string>
+    <string name="lbl_artist">Καλλιτέχνης</string>
+    <string name="lbl_sort_date_added">Ημερομηνία πρόσθεσης</string>
+    <string name="lbl_format">Μορφή</string>
+    <string name="set_content">Περιεχομένο</string>
+    <string name="lbl_shuffle_shortcut_long">Tυχαία αναπαραγωγή όλων</string>
+    <string name="lbl_shuffle_shortcut_short">Tυχαία αναπαραγωγή</string>
+    <string name="lbl_ok">Οκ</string>
+    <string name="set_show_covers">Έμφανιση εξώφυλλου άλμπουμ</string>
+    <string name="set_display">Προβολή</string>
+    <string name="lbl_save">Αποθήκευση</string>
+    <string name="lbl_bitrate">Pυθμός μεταβίβασης δεδομένων</string>
+    <string name="set_alt_shuffle">Προτίμηση τυχαίας αναπαραγωγής</string>
+    <string name="set_black_mode">Μάυρο θέμα</string>
+    <string name="set_black_mode_desc">Χρησιμοποίηση ενός καθαρά μαύρο σκοτεινό θέμα</string>
+    <string name="lbl_cancel">Ακύρωση</string>
+    <string name="lbl_sample_rate">Pυθμός δειγματοληψίας</string>
+    <string name="lng_indexing_desc">Φόρτωση της μουσικής συλλογής σας…</string>
+    <string name="lng_observing">Παρακολούθηση της μουσικής συλλογής σας</string>
+    <string name="lng_state_saved">Η κατάσταση αναπαραγωγής αποθηκεύτηκε</string>
+    <string name="set_wipe">Εκκαθάριση κατάστασης αναπαραγωγής</string>
+    <string name="set_wipe_desc">Εκκαθάριση της προηγούμενης αποθηκευμένης κατάστασης αναπαραγωγής (αν υπάρχει)</string>
+    <string name="lng_state_wiped">Η κατάσταση αναπαραγωγής εκκαθαρίστηκε</string>
+    <string name="lng_state_restored">Η κατάσταση αναπαραγωγής επαναφέρθηκε</string>
+    <string name="set_save">Αποθήκευση κατάστασης αναπαραγωγής</string>
+    <string name="set_save_desc">Αποθήκευση της τωρινής κατάστασης αναπαραγωγής τώρα</string>
+    <string name="set_restore">Αποκατάσταση κατάσταση αναπαραγωγής</string>
+    <string name="set_reindex">Επαναφόρτωση μουσικής</string>
+    <string name="lbl_soundtrack">Σάουντρακ</string>
+    <string name="lbl_live_group">Ζωντανά</string>
+    <string name="set_dirs">Φάκελοι μουσικής</string>
 </resources>

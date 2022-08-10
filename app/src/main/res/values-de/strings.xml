@@ -34,7 +34,7 @@
     <string name="err_no_dirs">Keine Ordner</string>
     <string name="lbl_about">Über</string>
     <string name="lbl_version">Version</string>
-    <string name="lbl_code">Auf GitHub ansehen</string>
+    <string name="lbl_code">Quellcode</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Lizenzen</string>
     <string name="lng_author">Entwickelt von OxygenCobalt</string>
@@ -178,10 +178,10 @@
     <string name="def_codec">Unbekanntes Format</string>
     <string name="def_bitrate">Keine Bitrate</string>
     <string name="def_sample_rate">Keine Abtastrate</string>
-    <string name="cdc_ogg">Ogg Ton</string>
-    <string name="cdc_mp4">MPEG-4 Ton</string>
-    <string name="cdc_mp3">MPEG-1 Ton</string>
-    <string name="cdc_mka">Matroska Ton</string>
+    <string name="cdc_ogg">Ogg-Audio</string>
+    <string name="cdc_mp4">MPEG-4-Audio</string>
+    <string name="cdc_mp3">MPEG-1-Audio</string>
+    <string name="cdc_mka">Matroska-Audio</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="fmt_bitrate">%d kbps</string>
@@ -231,5 +231,6 @@
     <string name="lbl_live_group">Live</string>
     <string name="set_wipe_desc">Den vorher gespeicherten Wiedergabezustand löschen (wenn vorhanden)</string>
     <string name="lng_state_wiped">Zustand gelöscht</string>
+    <string name="desc_queue_bar">Warteschlange öffnen</string>
     <string name="set_wipe_state">Wiedergabezustand löschen</string>
 </resources>

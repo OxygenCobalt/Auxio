@@ -50,7 +50,7 @@
     <string name="lbl_off">Vyp</string>
     <string name="lbl_about">O aplikaci</string>
     <string name="lbl_version">Verze</string>
-    <string name="lbl_code">Zobrazit na GitHubu</string>
+    <string name="lbl_code">Zdrojový kód</string>
     <string name="lbl_faq">Často kladené otázky</string>
     <string name="lbl_licenses">Licence</string>
     <string name="lng_author">Vytvořil OxygenCobalt</string>
@@ -239,4 +239,5 @@
     <string name="set_wipe_desc">Vymazat dříve uložený stav přehrávání (pokud existuje)</string>
     <string name="lng_state_wiped">Stav vymazán</string>
     <string name="desc_queue_bar">Otevřít frontu</string>
+    <string name="lbl_genre">Žánr</string>
 </resources>
