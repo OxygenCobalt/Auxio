@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.playback.state
 
 import org.oxycblt.auxio.IntegerTable
+import org.oxycblt.auxio.R
 
 /**
  * Enum that determines the playback repeat mode.
@@ -35,6 +36,15 @@ enum class RepeatMode {
             ALL -> TRACK
             TRACK -> NONE
         }
+
+    /** The icon representing this particular mode. */
+    val icon: Int
+        get() =
+            when (this) {
+                NONE -> R.drawable.ic_repeat_off_24
+                ALL -> R.drawable.ic_repeat_on_24
+                TRACK -> R.drawable.ic_repeat_one_24
+            }
 
     /** The integer code representing this particular mode. */
     val intCode: Int

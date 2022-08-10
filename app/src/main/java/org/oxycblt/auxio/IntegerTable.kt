@@ -116,4 +116,11 @@ object IntegerTable {
     const val REPLAY_GAIN_MODE_ALBUM = 0xA112
     /** ReplayGainMode.Dynamic */
     const val REPLAY_GAIN_MODE_DYNAMIC = 0xA113
+
+    /** BarAction.Next */
+    const val BAR_ACTION_NEXT = 0xA119
+    /** BarAction.Repeat */
+    const val BAR_ACTION_REPEAT = 0xA11A
+    /** BarAction.Shuffle */
+    const val BAR_ACTION_SHUFFLE = 0xA11B
 }

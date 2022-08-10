@@ -111,7 +111,7 @@
     <string name="set_repeat_pause_desc">곡이 반복 재생될 때 일시 중지</string>
 
     <string name="set_content">내용</string>
-    <string name="set_save">재생 상태 저장</string>
+    <string name="set_save_state">재생 상태 저장</string>
     <string name="set_save_desc">현재 재생 상태를 지금 저장</string>
     <string name="set_reindex">음악 다시 불러오기</string>
     <string name="set_reindex_desc">앱이 다시 시작됩니다.</string>

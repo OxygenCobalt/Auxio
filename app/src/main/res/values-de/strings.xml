@@ -74,7 +74,7 @@
     <string name="set_rewind_prev" tools:ignore="Typos">Zurückspulen, bevor das Lied zurück geändert wird</string>
     <string name="set_rewind_prev_desc">Zurückspulen, bevor zum vorheriger Lied gewechselt wird</string>
     <string name="set_content">Inhalt</string>
-    <string name="set_save">Wiedergabezustand speichern</string>
+    <string name="set_save_state">Wiedergabezustand speichern</string>
     <string name="set_save_desc">Den aktuellen Wiedergabezustand speichern</string>
     <string name="set_reindex">Musik neu laden</string>
     <string name="set_reindex_desc">Könnte den Wiedergabezustand löschen</string>
@@ -218,7 +218,7 @@
     <string name="lbl_compilation">Kompilation</string>
     <string name="lbl_soundtrack">Soundtrack</string>
     <string name="lbl_soundtracks">Soundtracks</string>
-    <string name="set_restore">Wiedergabezustand wiederherstellen</string>
+    <string name="set_restore_state">Wiedergabezustand wiederherstellen</string>
     <string name="lbl_album_remix">Remix-Album</string>
     <string name="lbl_mixtapes">Mixtapes</string>
     <string name="lbl_mixtape">Mixtape</string>
@@ -231,6 +231,6 @@
     <string name="lbl_live_group">Live</string>
     <string name="set_wipe_desc">Den vorher gespeicherten Wiedergabezustand löschen (wenn vorhanden)</string>
     <string name="lng_state_wiped">Zustand gelöscht</string>
-    <string name="set_wipe">Wiedergabezustand löschen</string>
     <string name="desc_queue_bar">Warteschlange öffnen</string>
+    <string name="set_wipe_state">Wiedergabezustand löschen</string>
 </resources>

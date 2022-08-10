@@ -3,8 +3,11 @@
 ## dev
 
 #### What's New
-- Added basic equalizer support in external apps like Wavelet
+- Added basic equalizer support in external apps like Wavelet [#211]
 - Detail UI now displays the type of item shown (ex. the release type)
+
+#### What's Improved
+- Queue now scrolls to currently playing song instead of the song after it
 
 #### What's Fixed
 - Fixed incorrect font being used in the queue title

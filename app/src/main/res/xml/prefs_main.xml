@@ -51,6 +51,13 @@
             app:summary="@string/set_round_mode_desc"
             app:title="@string/set_round_mode" />
 
+        <org.oxycblt.auxio.settings.ui.IntListPreference
+            app:entries="@array/entries_bar_action"
+            app:entryValues="@array/values_bar_action"
+            app:defaultValue="@integer/bar_action_next"
+            app:key="@string/set_key_bar_action"
+            app:title="@string/set_bar_action" />
+
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:key="@string/set_key_alt_notif_action"
@@ -126,17 +133,17 @@
         <Preference
             app:key="@string/set_key_save_state"
             app:summary="@string/set_save_desc"
-            app:title="@string/set_save" />
+            app:title="@string/set_save_state" />
 
         <Preference
             app:key="@string/set_key_wipe_state"
             app:summary="@string/set_wipe_desc"
-            app:title="@string/set_wipe" />
+            app:title="@string/set_wipe_state" />
 
         <Preference
             app:key="@string/set_key_restore_state"
             app:summary="@string/set_restore_desc"
-            app:title="@string/set_restore" />
+            app:title="@string/set_restore_state" />
 
         <Preference
             app:key="@string/set_key_reindex"

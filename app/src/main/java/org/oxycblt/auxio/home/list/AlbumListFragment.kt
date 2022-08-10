@@ -42,7 +42,7 @@ import org.oxycblt.auxio.util.logEOrThrow
  */
 class AlbumListFragment : HomeListFragment<Album>() {
     private val homeAdapter = AlbumAdapter(this)
-    private val formatterSb = StringBuilder(50)
+    private val formatterSb = StringBuilder(32)
     private val formatter = Formatter(formatterSb)
 
     override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {

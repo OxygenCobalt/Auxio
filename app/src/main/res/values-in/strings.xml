@@ -111,7 +111,7 @@
     <string name="set_rewind_prev_desc">Putar mundur sebelum melompat ke lagu sebelumnya</string>
     <string name="set_repeat_pause_desc">Jeda saat lagu diulang</string>
     <string name="set_content">Konten</string>
-    <string name="set_save">Simpan status pemutaran</string>
+    <string name="set_save_state">Simpan status pemutaran</string>
     <string name="set_save_desc">Simpan status pemutaran saat ini sekarang</string>
     <string name="set_reindex">Muat ulang musik</string>
     <string name="set_reindex_desc">Akan memulai ulang aplikasi</string>

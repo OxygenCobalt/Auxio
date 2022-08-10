@@ -203,19 +203,15 @@ class PlaybackService :
     }
 
     override fun onPlaybackStateChanged(state: Int) {
-        when (state) {
-            Player.STATE_ENDED -> {
-                logD("State ended")
-                if (playbackManager.repeatMode == RepeatMode.TRACK) {
-                    playbackManager.rewind()
-                    if (settings.pauseOnRepeat) {
-                        playbackManager.isPlaying = false
-                    }
-                } else {
-                    playbackManager.next()
+        if (state == Player.STATE_ENDED) {
+            if (playbackManager.repeatMode == RepeatMode.TRACK) {
+                playbackManager.rewind()
+                if (settings.pauseOnRepeat) {
+                    playbackManager.isPlaying = false
                 }
+            } else {
+                playbackManager.next()
             }
-            else -> {}
         }
     }
 
@@ -274,7 +270,7 @@ class PlaybackService :
         player.prepare()
 
         if (!openAudioEffectSession) {
-            // Wavelet does not like it if you start an audio effect session without having
+            // Android does not like it if you start an audio effect session without having
             // something within your player buffer. Make sure we only start one when we load
             // a song.
             broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
