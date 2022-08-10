@@ -2,7 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">사용하기 쉽고 실용적인 Android 음악 플레이어입니다.</string>
-    <string name="info_playback_channel_name">음악 재생</string>
     <string name="lng_playback">음악 재생 제어 및 상태 확인</string>
 
     <!-- Label Namespace | Static Labels -->

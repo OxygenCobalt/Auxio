@@ -139,7 +139,6 @@
     <!-- Long Namespace | Longer Descriptions -->
     <eat-comment />
 
-    <string name="lng_indexer">Load and check for new music</string>
     <string name="lng_playback">View and control music playback</string>
     <string name="lng_indexing">Loading your music library…</string>
     <string name="lng_observing">Monitoring your music library for changes…</string>
@@ -170,7 +169,8 @@
     <string name="set_quality_covers_desc">Increases album cover quality, but results in longer loading times and higher memory usage</string>
     <string name="set_round_mode">Round mode</string>
     <string name="set_round_mode_desc">Enable rounded corners on additional UI elements (Requires album covers to be rounded)</string>
-    <string name="set_bar_action">Playback bar secondary action</string>
+    <string name="set_bar_action">Custom playback bar action</string>
+    <!-- Skip to next (song) -->
     <string name="set_bar_action_next">Skip to next</string>
     <string name="set_bar_action_repeat">Repeat mode</string>
     <string name="set_bar_action_shuffle">@string/lbl_shuffle</string>

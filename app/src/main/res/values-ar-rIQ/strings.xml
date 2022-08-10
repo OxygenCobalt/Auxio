@@ -3,7 +3,6 @@
 
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">مشغل موسيقى بسيط ومعقول لنظام الاندرويد.</string>
-    <string name="info_playback_channel_name">تشغيل الموسيقى</string>
     <string name="lng_playback">عرض وتحكم بشتغيل الموسيقى</string>
 
     <!-- Label Namespace | Static Labels -->

@@ -2,7 +2,6 @@
 <resources>
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Un semplice, razionale lettore musicale per android.</string>
-    <string name="info_playback_channel_name">Riproduzione musicale</string>
     <string name="lng_playback">Vedi e gestisci la riproduzione musicale</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Riprova</string>
@@ -182,7 +181,7 @@
     <string name="def_sample_rate">Nessuna frequenza di campionamento</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="lbl_indexer">Caricamento musica</string>
-    <string name="lng_indexing_desc">Caricamento libreria musicale…</string>
+    <string name="lng_indexing">Caricamento libreria musicale…</string>
     <string name="lbl_sort_duration">Durata</string>
     <string name="lbl_sort_count">Numero canzoni</string>
     <string name="lbl_sort_disc">Disco</string>

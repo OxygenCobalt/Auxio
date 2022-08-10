@@ -49,14 +49,13 @@
     <string name="set_theme">Temos</string>
     <string name="set_black_mode_desc">Naudokti grynai juodą tamsią temą</string>
     <string name="info_app_desc">Paprastas, racionalus „Android“ muzikos grotuvas.</string>
-    <string name="info_playback_channel_name">Muzikos grojimas</string>
     <string name="lbl_indexer">Kraunama muziką</string>
     <string name="lng_playback">Peržiūrėti ir valdyti muzikos grojimą</string>
     <string name="lbl_genres">Žanrai</string>
     <string name="lbl_retry">Bandykite dar kartą</string>
     <string name="lbl_grant">Suteikti</string>
     <string name="lbl_indexing">Kraunama muzika</string>
-    <string name="lng_indexing_desc">Kraunama jūsų muzikos biblioteka…</string>
+    <string name="lng_indexing">Kraunama jūsų muzikos biblioteka…</string>
     <string name="lbl_library_counts">Bibliotekos statistika</string>
     <string name="clr_pink">Rožinis</string>
     <string name="lbl_album">Albumas</string>

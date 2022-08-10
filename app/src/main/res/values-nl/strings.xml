@@ -2,7 +2,6 @@
 <resources>
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Een eenvoudige, rationele muziekspeler voor Android.</string>
-    <string name="info_playback_channel_name">Muziek Afspelen</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Opnieuw proberen</string>
     <string name="lbl_grant">Toestaan</string>
