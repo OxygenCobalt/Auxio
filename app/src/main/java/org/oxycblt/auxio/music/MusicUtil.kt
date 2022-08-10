@@ -36,13 +36,13 @@ fun ContentResolver.queryCursor(
 ) = query(uri, projection, selector, args, null)
 
 /** Shortcut for making a [ContentResolver] query and using the particular cursor with [use]. */
-fun <R> ContentResolver.useQuery(
+inline fun <reified R> ContentResolver.useQuery(
     uri: Uri,
     projection: Array<out String>,
     selector: String? = null,
     args: Array<String>? = null,
     block: (Cursor) -> R
-): R? = queryCursor(uri, projection, selector, args)?.use(block)
+) = queryCursor(uri, projection, selector, args)?.use(block)
 
 /**
  * For some reason the album cover URI namespace does not have a member in [MediaStore], but it

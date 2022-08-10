@@ -19,7 +19,6 @@ package org.oxycblt.auxio.music.system
 
 import android.content.Context
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -37,8 +36,8 @@ class IndexingNotification(private val context: Context) :
         setSilent(true)
         setContentIntent(context.newMainPendingIntent())
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-        setContentTitle(context.getString(R.string.lng_indexing))
-        setContentText(context.getString(R.string.lng_indexing_desc))
+        setContentTitle(context.getString(R.string.lbl_indexing))
+        setContentText(context.getString(R.string.lng_indexing))
         setProgress(0, 0, true)
     }
 
@@ -49,7 +48,7 @@ class IndexingNotification(private val context: Context) :
         when (indexing) {
             is Indexer.Indexing.Indeterminate -> {
                 logD("Updating state to $indexing")
-                setContentText(context.getString(R.string.lng_indexing_desc))
+                setContentText(context.getString(R.string.lng_indexing))
                 setProgress(0, 0, true)
                 return true
             }
@@ -78,8 +77,8 @@ class ObservingNotification(context: Context) : ServiceNotification(context, IND
         setSilent(true)
         setContentIntent(context.newMainPendingIntent())
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-        setContentTitle(context.getString(R.string.lng_observing))
-        setContentText(context.getString(R.string.lng_observing_desc))
+        setContentTitle(context.getString(R.string.lbl_observing))
+        setContentText(context.getString(R.string.lng_observing))
     }
 
     override val code: Int
@@ -88,6 +87,4 @@ class ObservingNotification(context: Context) : ServiceNotification(context, IND
 
 private val INDEXER_CHANNEL =
     ServiceNotification.ChannelInfo(
-        id = BuildConfig.APPLICATION_ID + ".channel.INDEXER",
-        R.string.info_indexer_channel_name,
-        NotificationManagerCompat.IMPORTANCE_LOW)
+        id = BuildConfig.APPLICATION_ID + ".channel.INDEXER", nameRes = R.string.lbl_indexer)

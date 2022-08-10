@@ -24,7 +24,6 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
@@ -146,7 +145,6 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
         val CHANNEL_INFO =
             ChannelInfo(
                 id = BuildConfig.APPLICATION_ID + ".channel.PLAYBACK",
-                nameRes = R.string.info_playback_channel_name,
-                importance = NotificationManagerCompat.IMPORTANCE_LOW)
+                nameRes = R.string.lbl_playback)
     }
 }

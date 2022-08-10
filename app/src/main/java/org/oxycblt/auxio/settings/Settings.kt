@@ -120,7 +120,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     /** Which action to display on the playback bar. */
     val barAction: BarAction
         get() =
-            BarAction.fromIntCode(inner.getInt(context.getString(R.string.set_key_bar_action), -1))
+            BarAction.fromIntCode(
+                inner.getInt(context.getString(R.string.set_key_bar_action), Int.MIN_VALUE))
                 ?: BarAction.NEXT
 
     /**
@@ -138,7 +139,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
     val replayGainMode: ReplayGainMode
         get() =
             ReplayGainMode.fromIntCode(
-                inner.getInt(context.getString(R.string.set_key_replay_gain), -1))
+                inner.getInt(context.getString(R.string.set_key_replay_gain), Int.MIN_VALUE))
                 ?: ReplayGainMode.OFF
 
     /** The current ReplayGain pre-amp configuration */
@@ -159,7 +160,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     val libPlaybackMode: PlaybackMode
         get() =
             PlaybackMode.fromInt(
-                inner.getInt(context.getString(R.string.set_key_library_song_playback_mode), -1))
+                inner.getInt(
+                    context.getString(R.string.set_key_library_song_playback_mode), Int.MIN_VALUE))
                 ?: PlaybackMode.ALL_SONGS
 
     /**
@@ -169,7 +171,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     val detailPlaybackMode: PlaybackMode?
         get() =
             PlaybackMode.fromInt(
-                inner.getInt(context.getString(R.string.set_key_detail_song_playback_mode), -1))
+                inner.getInt(
+                    context.getString(R.string.set_key_detail_song_playback_mode), Int.MIN_VALUE))
 
     /** Whether shuffle should stay on when a new song is selected. */
     val keepShuffle: Boolean
@@ -219,11 +222,14 @@ class Settings(private val context: Context, private val callback: Callback? = n
     /** The current filter mode of the search tab */
     var searchFilterMode: DisplayMode?
         get() =
-            DisplayMode.fromInt(inner.getInt(context.getString(R.string.set_key_search_filter), -1))
+            DisplayMode.fromInt(
+                inner.getInt(context.getString(R.string.set_key_search_filter), Int.MIN_VALUE))
         set(value) {
             logD(value)
             inner.edit {
-                putInt(context.getString(R.string.set_key_search_filter), value?.intCode ?: -1)
+                putInt(
+                    context.getString(R.string.set_key_search_filter),
+                    value?.intCode ?: Int.MIN_VALUE)
                 apply()
             }
         }
@@ -231,7 +237,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     /** The song sort mode on HomeFragment */
     var libSongSort: Sort
         get() =
-            Sort.fromIntCode(inner.getInt(context.getString(R.string.set_key_lib_songs_sort), -1))
+            Sort.fromIntCode(
+                inner.getInt(context.getString(R.string.set_key_lib_songs_sort), Int.MIN_VALUE))
                 ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {
@@ -243,7 +250,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     /** The album sort mode on HomeFragment */
     var libAlbumSort: Sort
         get() =
-            Sort.fromIntCode(inner.getInt(context.getString(R.string.set_key_lib_albums_sort), -1))
+            Sort.fromIntCode(
+                inner.getInt(context.getString(R.string.set_key_lib_albums_sort), Int.MIN_VALUE))
                 ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {
@@ -255,7 +263,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     /** The artist sort mode on HomeFragment */
     var libArtistSort: Sort
         get() =
-            Sort.fromIntCode(inner.getInt(context.getString(R.string.set_key_lib_artists_sort), -1))
+            Sort.fromIntCode(
+                inner.getInt(context.getString(R.string.set_key_lib_artists_sort), Int.MIN_VALUE))
                 ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {
@@ -267,7 +276,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     /** The genre sort mode on HomeFragment */
     var libGenreSort: Sort
         get() =
-            Sort.fromIntCode(inner.getInt(context.getString(R.string.set_key_lib_genres_sort), -1))
+            Sort.fromIntCode(
+                inner.getInt(context.getString(R.string.set_key_lib_genres_sort), Int.MIN_VALUE))
                 ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {
@@ -281,7 +291,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
         get() {
             var sort =
                 Sort.fromIntCode(
-                    inner.getInt(context.getString(R.string.set_key_detail_album_sort), -1))
+                    inner.getInt(
+                        context.getString(R.string.set_key_detail_album_sort), Int.MIN_VALUE))
                     ?: Sort(Sort.Mode.ByDisc, true)
 
             // Correct legacy album sort modes to Disc
@@ -302,7 +313,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
     var detailArtistSort: Sort
         get() =
             Sort.fromIntCode(
-                inner.getInt(context.getString(R.string.set_key_detail_artist_sort), -1))
+                inner.getInt(context.getString(R.string.set_key_detail_artist_sort), Int.MIN_VALUE))
                 ?: Sort(Sort.Mode.ByYear, false)
         set(value) {
             inner.edit {
@@ -315,7 +326,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
     var detailGenreSort: Sort
         get() =
             Sort.fromIntCode(
-                inner.getInt(context.getString(R.string.set_key_detail_genre_sort), -1))
+                inner.getInt(context.getString(R.string.set_key_detail_genre_sort), Int.MIN_VALUE))
                 ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {

@@ -17,13 +17,11 @@
  
 package org.oxycblt.auxio.ui.system
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import androidx.annotation.StringRes
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
-import org.oxycblt.auxio.util.getSystemServiceCompat
+import androidx.core.app.NotificationManagerCompat
 
 /**
  * Wrapper around [NotificationCompat.Builder] that automates parts of the notification setup, under
@@ -32,15 +30,18 @@ import org.oxycblt.auxio.util.getSystemServiceCompat
  */
 abstract class ServiceNotification(context: Context, info: ChannelInfo) :
     NotificationCompat.Builder(context, info.id) {
-    private val notificationManager = context.getSystemServiceCompat(NotificationManager::class)
+    private val notificationManager = NotificationManagerCompat.from(context)
 
     init {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel =
-                NotificationChannel(info.id, context.getString(info.nameRes), info.importance)
+        val channel =
+            NotificationChannelCompat.Builder(info.id, NotificationManagerCompat.IMPORTANCE_LOW)
+                .setName(context.getString(info.nameRes))
+                .setLightsEnabled(false)
+                .setVibrationEnabled(false)
+                .setShowBadge(false)
+                .build()
 
-            notificationManager.createNotificationChannel(channel)
-        }
+        notificationManager.createNotificationChannel(channel)
     }
 
     abstract val code: Int
@@ -49,5 +50,5 @@ abstract class ServiceNotification(context: Context, info: ChannelInfo) :
         notificationManager.notify(code, build())
     }
 
-    data class ChannelInfo(val id: String, @StringRes val nameRes: Int, val importance: Int)
+    data class ChannelInfo(val id: String, @StringRes val nameRes: Int)
 }

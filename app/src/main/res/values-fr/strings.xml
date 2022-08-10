@@ -74,7 +74,7 @@
         <item quantity="other">%s Albums</item>
     </plurals>
     <string name="lbl_format">Format</string>
-    <string name="lng_state_saved">État sauvegardé</string>
+    <string name="lbl_state_saved">État sauvegardé</string>
     <string name="lbl_shuffle_shortcut_short">Mélanger</string>
     <string name="lbl_ok">OK</string>
     <string name="lbl_library_counts">Statistiques de la bibliothèque</string>
@@ -91,7 +91,7 @@
     <string name="lbl_save">Enregistrer</string>
     <string name="lbl_size">Taille</string>
     <string name="lbl_add">Ajouter</string>
-    <string name="lbl_off">Désactivé</string>
+    <string name="set_replay_gain_off">Désactivé</string>
     <string name="set_display">Affichage</string>
     <string name="set_show_covers">Afficher les pochettes d\'album</string>
     <string name="set_lib_tabs">Onglets de la bibliothèque</string>
@@ -99,8 +99,8 @@
     <string name="set_alt_repeat">Préférer l\'action en mode répétition</string>
     <string name="info_app_desc">Un lecteur de musique simple et rationnel pour Android.</string>
     <string name="info_playback_channel_name">Lecture de musique</string>
-    <string name="info_indexer_channel_name">Chargement de musique</string>
-    <string name="info_widget_desc">Afficher et contrôler la lecture de la musique</string>
+    <string name="lbl_indexer">Chargement de musique</string>
+    <string name="lng_playback">Afficher et contrôler la lecture de la musique</string>
     <string name="lng_indexing_desc">Chargement de votre bibliothèque musicale…</string>
     <string name="lbl_sort_name">Nom</string>
     <string name="lbl_artist">Artiste</string>

@@ -3,8 +3,8 @@
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Jednoduchý, rozumný hudební přehrávač pro Android.</string>
     <string name="info_playback_channel_name">Přehrávání hudby</string>
-    <string name="info_indexer_channel_name">Načítání hudby</string>
-    <string name="info_widget_desc">Zobrazení a ovládání přehrávání hudby</string>
+    <string name="lbl_indexer">Načítání hudby</string>
+    <string name="lng_playback">Zobrazení a ovládání přehrávání hudby</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lng_indexing_desc">Načítání vaší hudební knihovny…</string>
     <string name="lbl_retry">Zkusit znovu</string>
@@ -40,14 +40,14 @@
     <string name="lng_queue_added">Přidáno do fronty</string>
     <string name="lbl_go_artist">Přejít na umělce</string>
     <string name="lbl_go_album">Přejít na album</string>
-    <string name="lng_state_saved">Stav uložen</string>
+    <string name="lbl_state_saved">Stav uložen</string>
     <!-- Actual string: Ok -->
     <string name="lbl_ok">@android:string/ok</string>
     <!-- Actual string: Cancel -->
     <string name="lbl_cancel">@android:string/cancel</string>
     <string name="lbl_add">Přidat</string>
     <string name="lbl_save">Uložit</string>
-    <string name="lbl_off">Vyp</string>
+    <string name="set_replay_gain_off">Vyp</string>
     <string name="lbl_about">O aplikaci</string>
     <string name="lbl_version">Verze</string>
     <string name="lbl_code">Zdrojový kód</string>
@@ -208,14 +208,14 @@
     <string name="set_quality_tags">Ignorovat štítky MediaStore</string>
     <string name="set_quality_tags_desc">Zvýší kvalitu štítků, ale má za následek delší načítací čas (experimentální)</string>
     <string name="set_restore_state">Obnovit stav přehrávání</string>
-    <string name="lng_state_restored">Stav obnoven</string>
+    <string name="lbl_state_restored">Stav obnoven</string>
     <string name="set_restore_desc">Obnovit dříve uložený stav přehrávání (pokud existuje)</string>
     <string name="err_did_not_restore">Nemohl být obnoven žádný stav</string>
-    <string name="lng_observing">Monitorování hudební knihovny</string>
+    <string name="lbl_observing">Monitorování hudební knihovny</string>
     <string name="set_observing">Automatické znovunačítání</string>
-    <string name="lng_observing_desc">Sledování změn v hudební knihovně…</string>
+    <string name="lng_observing">Sledování změn v hudební knihovně…</string>
     <string name="set_observing_desc">Znovu načíst vaší hudební knihovnu při změně (experimentální)</string>
-    <string name="lng_indexing">Načítání hudby</string>
+    <string name="lbl_indexing">Načítání hudby</string>
     <string name="lbl_sort_date_added">Datum přidání</string>
     <string name="lbl_single">Singl</string>
     <string name="lbl_singles">Singly</string>
@@ -237,7 +237,7 @@
     <string name="lbl_ep_remix">Remixové EP</string>
     <string name="set_wipe_state">Vymazat stav přehrávání</string>
     <string name="set_wipe_desc">Vymazat dříve uložený stav přehrávání (pokud existuje)</string>
-    <string name="lng_state_wiped">Stav vymazán</string>
+    <string name="lbl_state_wiped">Stav vymazán</string>
     <string name="desc_queue_bar">Otevřít frontu</string>
     <string name="lbl_genre">Žánr</string>
 </resources>

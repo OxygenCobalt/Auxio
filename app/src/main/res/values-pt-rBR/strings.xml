@@ -115,7 +115,7 @@
     <string name="lbl_size">Tamanho</string>
     <string name="lbl_bitrate">Taxa de bits</string>
     <string name="lbl_sample_rate">Taxa de amostragem</string>
-    <string name="lng_state_saved">Estado salvo</string>
+    <string name="lbl_state_saved">Estado salvo</string>
     <string name="set_lib_tabs_desc">Altere a visibilidade e a ordem das guias da biblioteca</string>
     <string name="set_black_mode">Tema preto</string>
     <string name="set_black_mode_desc">Use um tema escuro puro preto</string>

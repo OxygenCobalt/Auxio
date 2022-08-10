@@ -3,7 +3,7 @@
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Un semplice, razionale lettore musicale per android.</string>
     <string name="info_playback_channel_name">Riproduzione musicale</string>
-    <string name="info_widget_desc">Vedi e gestisci la riproduzione musicale</string>
+    <string name="lng_playback">Vedi e gestisci la riproduzione musicale</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Riprova</string>
     <string name="lbl_grant">Permetti</string>
@@ -34,7 +34,7 @@
     <string name="lng_queue_added">Accodato</string>
     <string name="lbl_go_artist">Vai all\'artista</string>
     <string name="lbl_go_album">Vai al disco</string>
-    <string name="lng_state_saved">Stato salvato</string>
+    <string name="lbl_state_saved">Stato salvato</string>
     <string name="lbl_add">Aggiungi</string>
     <string name="lbl_save">Salva</string>
     <string name="err_no_dirs">Nessuna cartella</string>
@@ -87,7 +87,7 @@
     <string name="set_save_desc">Salva lo stato di riproduzione corrente</string>
     <string name="set_reindex">Ricarica musica</string>
     <string name="set_reindex_desc">Potrebbe cancellare lo stato di riproduzione</string>
-    <string name="lbl_off">Spento</string>
+    <string name="set_replay_gain_off">Spento</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Musica non trovata</string>
     <string name="err_index_failed">Caricamento musica fallito</string>
@@ -181,7 +181,7 @@
     <string name="fmt_bitrate">%d kbps</string>
     <string name="def_sample_rate">Nessuna frequenza di campionamento</string>
     <string name="fmt_db_neg">-%.1f dB</string>
-    <string name="info_indexer_channel_name">Caricamento musica</string>
+    <string name="lbl_indexer">Caricamento musica</string>
     <string name="lng_indexing_desc">Caricamento libreria musicale…</string>
     <string name="lbl_sort_duration">Durata</string>
     <string name="lbl_sort_count">Numero canzoni</string>
@@ -199,11 +199,11 @@
     <string name="def_bitrate">Nessuna velocità di trasmissione</string>
     <string name="lbl_cancel">Cancella</string>
     <string name="set_pre_amp">Pre-amp ReplayGain</string>
-    <string name="lng_observing_desc">Sto monitorando i cambiamenti nella tua libreria musicale…</string>
+    <string name="lng_observing">Sto monitorando i cambiamenti nella tua libreria musicale…</string>
     <string name="set_observing_desc">Ricarica la tua libreria musicale se subisce cambiamenti (sperimentale)</string>
-    <string name="lng_indexing">Caricamento musica</string>
-    <string name="lng_observing">Monitoraggio libreria musicale</string>
-    <string name="lng_state_restored">Stato ripristinato</string>
+    <string name="lbl_indexing">Caricamento musica</string>
+    <string name="lbl_observing">Monitoraggio libreria musicale</string>
+    <string name="lbl_state_restored">Stato ripristinato</string>
     <string name="lbl_sort_date_added">Data aggiunta</string>
     <string name="set_observing">Ricaricamento automatico</string>
     <string name="set_quality_tags">Ignora tags MediaStore</string>

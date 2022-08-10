@@ -29,7 +29,7 @@
     <string name="lng_queue_added">Toegevoegd aan de wachtrij</string>
     <string name="lbl_go_artist">Ga naar artiest</string>
     <string name="lbl_go_album">Ga naar album</string>
-    <string name="lng_state_saved">Staat gered</string>
+    <string name="lbl_state_saved">Staat gered</string>
     <string name="lbl_add">Toevoegen</string>
     <string name="lbl_save">Opslaan</string>
     <string name="err_no_dirs">Geen Mappen</string>
@@ -122,7 +122,7 @@
     <string name="fmt_disc_no">Schijf %d</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="fmt_db_pos">+%.1f dB</string>
-    <string name="info_widget_desc">Muziekweergave bekijken en regelen</string>
+    <string name="lng_playback">Muziekweergave bekijken en regelen</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="lbl_song_detail">Bekijk eigenschappen</string>
     <string name="lbl_sort_name">Naam</string>
@@ -144,7 +144,7 @@
     <string name="fmt_lib_total_duration">Totale duur: %s</string>
     <string name="lbl_shuffle_shortcut_long">Shuffle Alles</string>
     <string name="lbl_ok">\@android:string/ok</string>
-    <string name="lbl_off">Uit</string>
+    <string name="set_replay_gain_off">Uit</string>
     <string name="set_headset_autoplay_desc">Altijd beginnen met spelen als een headset is aangesloten (werkt mogelijk niet op alle apparaten)</string>
     <string name="desc_shuffle">Schakel shuffle aan of uit</string>
     <string name="set_reindex_desc">Kan afspeelstatus wissen</string>
@@ -163,7 +163,7 @@
     <string name="set_detail_song_playback_mode">Bij het afspelen van item details</string>
     <string name="set_round_mode">Ronde modus</string>
     <string name="set_round_mode_desc">Afgeronde hoeken op extra UI-elementen inschakelen (vereist dat albumhoezen afgerond zijn)</string>
-    <string name="lng_state_restored">Staat gerestaureerd</string>
+    <string name="lbl_state_restored">Staat gerestaureerd</string>
     <string name="lbl_library_counts">Bibliotheekstatistieken</string>
     <string name="set_lib_tabs_desc">Verander de zichtbaarheid en volgorde van bibliotheek-tabbladen</string>
     <string name="set_headset_autoplay">Headset automatisch afspelen</string>
@@ -191,7 +191,7 @@
     <string name="fmt_lib_album_count">Albums geladen: %d</string>
     <string name="fmt_lib_artist_count">Artiesten geladen: %d</string>
     <string name="fmt_lib_genre_count">Genres geladen: %d</string>
-    <string name="info_indexer_channel_name">Muziek aan het laden</string>
+    <string name="lbl_indexer">Muziek aan het laden</string>
     <string name="lbl_album">Album</string>
     <string name="lbl_sort_duration">Looptijd</string>
     <string name="lbl_sort_count">Aantal Liedjes</string>

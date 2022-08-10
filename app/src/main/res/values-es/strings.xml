@@ -3,7 +3,7 @@
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Un reproductor de música simple y racional para Android.</string>
     <string name="info_playback_channel_name">Reproducción de música</string>
-    <string name="info_widget_desc">Ver y controlar la reproducción musical</string>
+    <string name="lng_playback">Ver y controlar la reproducción musical</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Reintentar</string>
     <string name="lbl_grant">Permitir</string>
@@ -34,7 +34,7 @@
     <string name="lng_queue_added">Agregado a la cola</string>
     <string name="lbl_go_artist">Ir al artista</string>
     <string name="lbl_go_album">Ir al álbum</string>
-    <string name="lng_state_saved">Estado guardado</string>
+    <string name="lbl_state_saved">Estado guardado</string>
     <string name="lbl_add">Agregar</string>
     <string name="lbl_save">Guardar</string>
     <string name="err_no_dirs">Sin carpetas</string>
@@ -68,7 +68,7 @@
     <string name="set_alt_shuffle">Preferir acción de mezcla</string>
     <string name="set_audio">Sonido</string>
     <string name="set_replay_gain">ReplayGain</string>
-    <string name="lbl_off">Desactivado</string>
+    <string name="set_replay_gain_off">Desactivado</string>
     <string name="set_replay_gain_track">Por pista</string>
     <string name="set_replay_gain_album">Por álbum</string>
     <string name="set_replay_gain_dynamic">Preferir el álbum si se está en reproducción</string>
@@ -170,16 +170,16 @@
     <string name="fmt_indexing">Cargando tu biblioteca de música… (%1$d/%2$d)</string>
     <string name="fmt_lib_artist_count">Artistas cargados: %d</string>
     <string name="fmt_lib_genre_count">Géneros cargados: %d</string>
-    <string name="info_indexer_channel_name">Carga de música</string>
+    <string name="lbl_indexer">Carga de música</string>
     <string name="lbl_sort_count">Número de canciones</string>
-    <string name="lng_state_restored">Estado restaurado</string>
+    <string name="lbl_state_restored">Estado restaurado</string>
     <string name="set_observing">Recarga automática</string>
     <string name="set_observing_desc">Recarga tu biblioteca de música cuando cambia (Experimental)</string>
     <string name="err_did_not_restore">No se puedo restaurar ningún estado</string>
     <string name="lng_indexing_desc">Cargando tu librería de música…</string>
-    <string name="lng_indexing">Cargando música</string>
-    <string name="lng_observing">Monitorizando la librería de música</string>
-    <string name="lng_observing_desc">Monitorizando cambios en tu librería de música…</string>
+    <string name="lbl_indexing">Cargando música</string>
+    <string name="lbl_observing">Monitorizando la librería de música</string>
+    <string name="lng_observing">Monitorizando cambios en tu librería de música…</string>
     <string name="cdc_ogg">Audio ogg</string>
     <string name="set_detail_song_playback_mode">Cuando se reproduce desde los detalles</string>
     <string name="lbl_sort_date_added">Fecha de añadido</string>
@@ -232,6 +232,6 @@
     <string name="set_wipe_desc">Eliminar el estado de reproducción guardado previamente (si existe)</string>
     <string name="desc_queue_bar">Abrir la cola</string>
     <string name="lbl_genre">Género</string>
-    <string name="lng_state_wiped">Estado limpiado</string>
+    <string name="lbl_state_wiped">Estado limpiado</string>
     <string name="set_wipe">Limpiar el estado de reproducción</string>
 </resources>

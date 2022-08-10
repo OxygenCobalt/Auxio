@@ -3,7 +3,7 @@
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">一款简洁、克制的 Android 音乐播放器。</string>
     <string name="info_playback_channel_name">音乐播放</string>
-    <string name="info_widget_desc">查看并控制音乐播放</string>
+    <string name="lng_playback">查看并控制音乐播放</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">重试</string>
     <string name="lbl_grant">授予</string>
@@ -34,7 +34,7 @@
     <string name="lng_queue_added">已加入播放队列</string>
     <string name="lbl_go_artist">查看艺术家</string>
     <string name="lbl_go_album">查看专辑</string>
-    <string name="lng_state_saved">已保存播放进度</string>
+    <string name="lbl_state_saved">已保存播放进度</string>
     <string name="lbl_add">添加</string>
     <string name="lbl_save">保存</string>
     <string name="err_no_dirs">没有文件夹</string>
@@ -86,7 +86,7 @@
     <string name="set_save_desc">立即保存当前播放状态</string>
     <string name="set_reindex">重新加载音乐</string>
     <string name="set_reindex_desc">可能会抹除播放状态</string>
-    <string name="lbl_off">关闭</string>
+    <string name="set_replay_gain_off">关闭</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">没有找到音乐</string>
     <string name="err_index_failed">加载音乐失败</string>
@@ -181,7 +181,7 @@
     <string name="cdc_aac">高级音乐编码 (AAC)</string>
     <string name="fmt_lib_album_count">已加载专辑数量：%d</string>
     <string name="def_sample_rate">没有采样率信息</string>
-    <string name="info_indexer_channel_name">音乐加载中</string>
+    <string name="lbl_indexer">音乐加载中</string>
     <string name="lng_indexing_desc">正在加载您的音乐库……</string>
     <string name="lbl_sort_disc">碟片</string>
     <string name="lbl_sort_duration">时长</string>
@@ -206,11 +206,11 @@
     <string name="set_observing">自动重载中</string>
     <string name="set_observing_desc">发生更改时自动重新加载您的曲库（实验性）</string>
     <string name="desc_queue_bar">打开队列</string>
-    <string name="lng_indexing">正在加载音乐</string>
-    <string name="lng_observing">正在监测曲库</string>
-    <string name="lng_observing_desc">正在监测您的曲库以查找更改…</string>
-    <string name="lng_state_wiped">已清除状态</string>
-    <string name="lng_state_restored">已恢复状态</string>
+    <string name="lbl_indexing">正在加载音乐</string>
+    <string name="lbl_observing">正在监测曲库</string>
+    <string name="lng_observing">正在监测您的曲库以查找更改…</string>
+    <string name="lbl_state_wiped">已清除状态</string>
+    <string name="lbl_state_restored">已恢复状态</string>
     <string name="set_quality_tags">忽略 MediaStore 标签</string>
     <string name="lbl_eps">EP 专辑</string>
     <string name="lbl_ep">EP 专辑</string>

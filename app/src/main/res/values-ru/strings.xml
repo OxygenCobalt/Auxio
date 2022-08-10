@@ -3,7 +3,7 @@
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Простой и рациональный музыкальный проигрыватель.</string>
     <string name="info_playback_channel_name">Воспроизведение</string>
-    <string name="info_widget_desc">Настройки воспроизведения</string>
+    <string name="lng_playback">Настройки воспроизведения</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Повторить попытку</string>
     <string name="lbl_grant">Разрешить</string>
@@ -34,7 +34,7 @@
     <string name="lng_queue_added">Добавлено в очередь</string>
     <string name="lbl_go_artist">Перейти к исполнителю</string>
     <string name="lbl_go_album">Перейти к альбому</string>
-    <string name="lng_state_saved">Позиция сохранена</string>
+    <string name="lbl_state_saved">Позиция сохранена</string>
     <string name="lbl_add">Добавить</string>
     <string name="lbl_save">Сохранить</string>
     <string name="err_no_dirs">Нет папок</string>
@@ -70,7 +70,7 @@
     <string name="set_headset_autoplay">Воспроизводить при подключении</string>
     <string name="set_headset_autoplay_desc">Всегда начинать воспроизведение при подключении наушников (может работать не на всех устройствах)</string>
     <string name="set_replay_gain">Выравнивание громкости</string>
-    <string name="lbl_off">Выкл.</string>
+    <string name="set_replay_gain_off">Выкл.</string>
     <string name="set_replay_gain_track">По треку</string>
     <string name="set_replay_gain_album">По альбому</string>
     <string name="set_replay_gain_dynamic">Предпочитать альбом, если он воспроизводится</string>
@@ -149,10 +149,10 @@
         <item quantity="many">%d альбомов</item>
         <item quantity="other">%d альбомы</item>
     </plurals>
-    <string name="info_indexer_channel_name">Музыка загружается</string>
-    <string name="lng_indexing">Загрузка музыки</string>
+    <string name="lbl_indexer">Музыка загружается</string>
+    <string name="lbl_indexing">Загрузка музыки</string>
     <string name="lng_indexing_desc">Загрузка музыкальной библиотеки…</string>
-    <string name="lng_observing">Мониторинг музыкальной библиотеки</string>
+    <string name="lbl_observing">Мониторинг музыкальной библиотеки</string>
     <string name="lbl_shuffle_shortcut_short">Перемешать</string>
     <string name="lbl_shuffle_shortcut_long">Перемешать всё</string>
     <string name="lbl_ok">\@android:string/ok</string>
@@ -162,7 +162,7 @@
     <string name="lbl_bitrate">Битрейт</string>
     <string name="lbl_sort_disc">Диск</string>
     <string name="lbl_sort_track">Трек</string>
-    <string name="lng_state_restored">Состояние восстановлено</string>
+    <string name="lbl_state_restored">Состояние восстановлено</string>
     <string name="lbl_cancel">\@android:string/cancel</string>
     <string name="set_pre_amp_warning">Внимание: Изменение предусилителя на большое положительное значение может привести к появлению искажений на некоторых звуковых дорожках.</string>
     <string name="lbl_song_detail">Свойства</string>
@@ -202,8 +202,8 @@
     <string name="cdc_ogg">Ogg</string>
     <string name="lbl_album_live">Концертный альбом</string>
     <string name="lbl_live_group">Концерт</string>
-    <string name="lng_observing_desc">Мониторинг изменений в музыкальной библиотеке…</string>
-    <string name="lng_state_wiped">Состояние очищено</string>
+    <string name="lng_observing">Мониторинг изменений в музыкальной библиотеке…</string>
+    <string name="lbl_state_wiped">Состояние очищено</string>
     <string name="set_dirs">Папки с музыкой</string>
     <string name="set_dirs_mode_include">Включить</string>
     <string name="lbl_album_remix">Альбом ремиксов</string>

@@ -4,7 +4,7 @@
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">مشغل موسيقى بسيط ومعقول لنظام الاندرويد.</string>
     <string name="info_playback_channel_name">تشغيل الموسيقى</string>
-    <string name="info_widget_desc">عرض وتحكم بشتغيل الموسيقى</string>
+    <string name="lng_playback">عرض وتحكم بشتغيل الموسيقى</string>
 
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">إعادة المحاولة</string>
@@ -43,7 +43,7 @@
     <string name="lbl_go_artist">أذهب إلى الفنان</string>
     <string name="lbl_go_album">أذهب إلى الالبوم</string>
 
-    <string name="lng_state_saved">تم حفظ الحالة</string>
+    <string name="lbl_state_saved">تم حفظ الحالة</string>
 
     <string name="lbl_add">أضف</string>
     <string name="lbl_save">احفظ</string>
@@ -82,7 +82,7 @@
 
     <string name="set_audio">صوتيات</string>
     <string name="set_replay_gain">صخب الصوت</string>
-    <string name="lbl_off">اطفاء</string>
+    <string name="set_replay_gain_off">اطفاء</string>
     <string name="set_replay_gain_track">تفضيل المقطع</string>
     <string name="set_replay_gain_album">تفضيل الالبوم</string>
     <string name="set_replay_gain_dynamic">ديناميكي</string>

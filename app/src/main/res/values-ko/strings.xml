@@ -3,7 +3,7 @@
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">사용하기 쉽고 실용적인 Android 음악 플레이어입니다.</string>
     <string name="info_playback_channel_name">음악 재생</string>
-    <string name="info_widget_desc">음악 재생 제어 및 상태 확인</string>
+    <string name="lng_playback">음악 재생 제어 및 상태 확인</string>
 
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">다시 시도</string>
@@ -46,7 +46,7 @@
     <string name="lbl_go_artist">아티스트로 이동</string>
     <string name="lbl_go_album">앨범으로 이동</string>
 
-    <string name="lng_state_saved">상태를 저장했습니다.</string>
+    <string name="lbl_state_saved">상태를 저장했습니다.</string>
 
     <!-- Actual string: Ok -->
     <string name="lbl_ok">@android:string/ok</string>
@@ -54,7 +54,7 @@
     <string name="lbl_cancel">@android:string/cancel</string>
     <string name="lbl_add">추가</string>
     <string name="lbl_save">저장</string>
-    <string name="lbl_off">끔</string>
+    <string name="set_replay_gain_off">끔</string>
 
     <string name="lbl_about">정보</string>
     <string name="lbl_version">버전</string>

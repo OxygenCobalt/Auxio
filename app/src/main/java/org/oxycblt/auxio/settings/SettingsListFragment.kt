@@ -121,18 +121,18 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         when (preference.key) {
             context.getString(R.string.set_key_save_state) -> {
                 playbackModel.savePlaybackState {
-                    this.context?.showToast(R.string.lng_state_saved)
+                    this.context?.showToast(R.string.lbl_state_saved)
                 }
             }
             context.getString(R.string.set_key_wipe_state) -> {
                 playbackModel.wipePlaybackState {
-                    this.context?.showToast(R.string.lng_state_wiped)
+                    this.context?.showToast(R.string.lbl_state_wiped)
                 }
             }
             context.getString(R.string.set_key_restore_state) ->
                 playbackModel.tryRestorePlaybackState { restored ->
                     if (restored) {
-                        this.context?.showToast(R.string.lng_state_restored)
+                        this.context?.showToast(R.string.lbl_state_restored)
                     } else {
                         this.context?.showToast(R.string.err_did_not_restore)
                     }

@@ -19,6 +19,16 @@ As per the [Supported ExoPlayer Formats](https://exoplayer.dev/supported-formats
 MP4, MP3, MKA, OGG, WAV, MPEG, AAC on all versions of Android. Auxio also supports FLAC on all versions
 of Android through the use of the ExoPlayer FLAC extension.
 
+#### Why doesn't Auxio have a built-in equalizer or tag editor?
+
+Auxio tends to abide by a unix-esque philosophy where programs should try to stay in one
+category of tasks and do those tasks well. 
+
+- For equalization, Android already supports external equalizers like Wavelet, which tend to
+work on most modern devices that don't have broken OEM software. This is generally preferred
+compared to implementing my own equalizer.
+- For tag editing, external programs like kid3, picard, or ex falso fill this role.
+
 #### Auxio doesn't load my music correctly!
 This depends on the context:
 1. If "Ignore MediaStore Tags" is enabled, please create a bug report.

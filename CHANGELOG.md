@@ -4,6 +4,7 @@
 
 #### What's New
 - Added basic equalizer support in external apps like Wavelet [#211]
+- Added option to control the type of action shown on the playback bar
 - Detail UI now displays the type of item shown (ex. the release type)
 
 #### What's Improved

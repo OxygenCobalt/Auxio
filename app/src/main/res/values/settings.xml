@@ -107,7 +107,7 @@
     </integer-array>
 
     <string-array name="entries_replay_gain">
-        <item>@string/lbl_off</item>
+        <item>@string/set_replay_gain_off</item>
         <item>@string/set_replay_gain_track</item>
         <item>@string/set_replay_gain_album</item>
         <item>@string/set_replay_gain_dynamic</item>
@@ -128,7 +128,7 @@
     <integer name="bar_action_repeat">0xA11A</integer>
     <integer name="bar_action_shuffle">0xA11B</integer>
 
-    <integer name="play_mode_none">-1</integer>
+    <integer name="play_mode_none">-2147483648</integer>
     <integer name="play_mode_genre">0xA103</integer>
     <integer name="play_mode_artist">0xA104</integer>
     <integer name="play_mode_album">0xA105</integer>

@@ -68,7 +68,7 @@
     <string name="set_headset_autoplay">Putar otomatis headset</string>
     <string name="set_headset_autoplay_desc">Selalu mulai bermain ketika headset tersambung (mungkin tidak berfungsi pada semua perangkat)</string>
     <string name="set_replay_gain">ReplayGain</string>
-    <string name="lbl_off">Off</string>
+    <string name="set_replay_gain_off">Off</string>
     <string name="lbl_relative_path">Jalur induk</string>
     <string name="lbl_size">Ukuran</string>
     <string name="lbl_sample_rate">Tingkat sampel</string>
@@ -79,8 +79,8 @@
     <string name="lbl_album">Album</string>
     <string name="info_app_desc">Pemutar musik yang simpel dan rasional untuk android.</string>
     <string name="info_playback_channel_name">Pemutaran Musik</string>
-    <string name="info_indexer_channel_name">Pemuatan Musik</string>
-    <string name="info_widget_desc">Lihat dan kontrol pemutaran musik</string>
+    <string name="lbl_indexer">Pemuatan Musik</string>
+    <string name="lng_playback">Lihat dan kontrol pemutaran musik</string>
     <string name="lbl_sort_year">Tahun</string>
     <string name="lbl_sort_duration">Durasi</string>
     <string name="lbl_sort_disc">Disk</string>
@@ -95,7 +95,7 @@
     <string name="set_alt_shuffle">Lebih suka tindakan mengacak</string>
     <string name="lbl_shuffle_shortcut_short">Acak</string>
     <string name="lbl_shuffle_shortcut_long">Acak Semua</string>
-    <string name="lng_state_saved">Status disimpan</string>
+    <string name="lbl_state_saved">Status disimpan</string>
     <string name="set_replay_gain_track">Lebih suka trek</string>
     <string name="set_replay_gain_album">Lebih suka album</string>
     <string name="set_pre_amp">Pra-amp ReplayGain</string>

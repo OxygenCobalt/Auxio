@@ -44,7 +44,6 @@ org.oxycblt.auxio  # Main UIs
 │  └──.ui          # Preference extensions
 ├──.ui             # Custom android components
 │  ├──.accent      # Color Scheme UI + Systems
-│  ├──.coordinator # CoordinatorLayout components
 │  ├──.fragment    # Fragment extensions
 │  ├──.recycler    # RecyclerView extensions
 │  └──.system      # System-side components
@@ -314,10 +313,12 @@ integer data that Auxio uses.
 Shared views and view configuration models. This contains:
 
 - Important `Fragment` superclasses like `ViewBindingFragment` and `MenuFragment`
-- Customized views such as `EdgeAppBarLayout`, and others, which fix shortcomings with the
+- Customized views such as `AuxioAppBarLayout`, and others, which fix shortcomings with the
 default implementations.
 - Configuration models like `DisplayMode` and `Sort`, which are used in many places but aren't tied
 to a specific feature.
+- `ForegroundManager` and `ServiceNotification`, which remove boilerplate regarding service
+foreground instantiation.
 - The `RecyclerView` adapter framework described previously.
 - `BottomSheetLayout`, which implements a bottom sheet in a way that is not completely broken and
 insane.

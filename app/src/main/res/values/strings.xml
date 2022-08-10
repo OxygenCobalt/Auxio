@@ -4,13 +4,17 @@
     <eat-comment />
 
     <string name="info_app_desc">A simple, rational music player for android.</string>
-    <string name="info_playback_channel_name">Music playback</string>
-    <string name="info_indexer_channel_name">Music loading</string>
-    <string name="info_widget_desc">View and control music playback</string>
 
     <!-- Label Namespace | Static Labels -->
     <eat-comment />
 
+    <!-- Not an active task -->
+    <string name="lbl_indexer">Music loading</string>
+    <!-- Is an active task -->
+    <string name="lbl_indexing">Loading music</string>
+    <!-- Monitoring music library for changes -->
+    <string name="lbl_observing">Monitoring music library</string>
+    <!-- As in to retry loading music -->
     <string name="lbl_retry">Retry</string>
     <!-- As in grant permission -->
     <string name="lbl_grant">Grant</string>
@@ -49,11 +53,14 @@
     <string name="lbl_compilation">Compilation</string>
     <string name="lbl_soundtracks">Soundtracks</string>
     <string name="lbl_soundtrack">Soundtrack</string>
+    <!-- As in the collection of music -->
     <string name="lbl_mixtapes">Mixtapes</string>
+    <!-- As in the collection of music -->
     <string name="lbl_mixtape">Mixtape</string>
 
     <!-- As in music that was performed live -->
     <string name="lbl_live_group">Live</string>
+    <!-- As in remixed music -->
     <string name="lbl_remix_group">Remixes</string>
 
     <string name="lbl_artist">Artist</string>
@@ -62,8 +69,11 @@
     <string name="lbl_genre">Genre</string>
     <string name="lbl_genres">Genres</string>
 
+    <!-- Search for music -->
     <string name="lbl_search">Search</string>
+    <!-- As in filtering to particular types of music in the search view -->
     <string name="lbl_filter">Filter</string>
+    <!-- As in to not filter -->
     <string name="lbl_filter_all">All</string>
 
     <string name="lbl_sort">Sort</string>
@@ -107,9 +117,17 @@
     <string name="lbl_ok">@android:string/ok</string>
     <!-- Actual string: Cancel -->
     <string name="lbl_cancel">@android:string/cancel</string>
+    <!-- As in to add a new folder in the "Music folders" setting -->
     <string name="lbl_add">Add</string>
+    <!-- As in to save the "Music folders" setting -->
     <string name="lbl_save">Save</string>
-    <string name="lbl_off">Off</string>
+
+    <!-- Referring to playback state -->
+    <string name="lbl_state_saved">State saved</string>
+    <!-- Referring to playback state -->
+    <string name="lbl_state_wiped">State cleared</string>
+    <!-- Referring to playback state -->
+    <string name="lbl_state_restored">State restored</string>
 
     <string name="lbl_about">About</string>
     <string name="lbl_version">Version</string>
@@ -121,20 +139,14 @@
     <!-- Long Namespace | Longer Descriptions -->
     <eat-comment />
 
-    <string name="lng_indexing">Loading music</string>
-    <string name="lng_indexing_desc">Loading your music library…</string>
-    <string name="lng_observing">Monitoring music library</string>
-    <string name="lng_observing_desc">Monitoring your music library for changes…</string>
+    <string name="lng_indexer">Load and check for new music</string>
+    <string name="lng_playback">View and control music playback</string>
+    <string name="lng_indexing">Loading your music library…</string>
+    <string name="lng_observing">Monitoring your music library for changes…</string>
     <string name="lng_queue_added">Added to queue</string>
     <string name="lng_author">Developed by OxygenCobalt</string>
     <!-- As in music library -->
     <string name="lng_search_library">Search your library…</string>
-    <!-- Referring to playback state -->
-    <string name="lng_state_saved">State saved</string>
-    <!-- Referring to playback state -->
-    <string name="lng_state_wiped">State cleared</string>
-    <!-- Referring to playback state -->
-    <string name="lng_state_restored">State restored</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <eat-comment />
@@ -158,7 +170,7 @@
     <string name="set_quality_covers_desc">Increases album cover quality, but results in longer loading times and higher memory usage</string>
     <string name="set_round_mode">Round mode</string>
     <string name="set_round_mode_desc">Enable rounded corners on additional UI elements (Requires album covers to be rounded)</string>
-    <string name="set_bar_action">Playback bar action</string>
+    <string name="set_bar_action">Playback bar secondary action</string>
     <string name="set_bar_action_next">Skip to next</string>
     <string name="set_bar_action_repeat">Repeat mode</string>
     <string name="set_bar_action_shuffle">@string/lbl_shuffle</string>
@@ -170,6 +182,7 @@
     <string name="set_headset_autoplay">Headset autoplay</string>
     <string name="set_headset_autoplay_desc">Always start playing when a headset is connected (may not work on all devices)</string>
     <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain_off">Off</string>
     <string name="set_replay_gain_track">Prefer track</string>
     <string name="set_replay_gain_album">Prefer album</string>
     <string name="set_replay_gain_dynamic">Prefer album if one is playing</string>
