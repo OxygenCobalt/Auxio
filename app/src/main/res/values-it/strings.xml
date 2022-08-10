@@ -83,7 +83,7 @@
     <string name="set_repeat_pause">Pausa alla ripetizione</string>
     <string name="set_repeat_pause_desc">Pausa quando una canzone si ripete</string>
     <string name="set_content">Contenuti</string>
-    <string name="set_save">Salva stato riproduzione</string>
+    <string name="set_save_state">Salva stato riproduzione</string>
     <string name="set_save_desc">Salva lo stato di riproduzione corrente</string>
     <string name="set_reindex">Ricarica musica</string>
     <string name="set_reindex_desc">Potrebbe cancellare lo stato di riproduzione</string>
@@ -208,7 +208,7 @@
     <string name="set_observing">Ricaricamento automatico</string>
     <string name="set_quality_tags">Ignora tags MediaStore</string>
     <string name="set_quality_tags_desc">Migliora qualità dei tag, ma potrebbe richiedere tempi di carimento più lunghi (sperimentale)</string>
-    <string name="set_restore">Ripristina stato riproduzione</string>
+    <string name="set_restore_state">Ripristina stato riproduzione</string>
     <string name="set_restore_desc">Ripristina lo stato di riproduzione precedentemente salvato (se disponibile)</string>
     <string name="err_did_not_restore">Impossibile ripristinare lo stato</string>
     <string name="lbl_eps">EP</string>

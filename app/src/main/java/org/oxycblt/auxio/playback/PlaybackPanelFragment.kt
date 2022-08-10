@@ -34,7 +34,6 @@ import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.getDrawableCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
@@ -158,15 +157,8 @@ class PlaybackPanelFragment :
     }
 
     private fun updateRepeat(repeatMode: RepeatMode) {
-        val iconRes =
-            when (repeatMode) {
-                RepeatMode.NONE -> R.drawable.ic_repeat_off_24
-                RepeatMode.ALL -> R.drawable.ic_repeat_on_24
-                RepeatMode.TRACK -> R.drawable.ic_repeat_one_24
-            }
-
         requireBinding().playbackRepeat.apply {
-            icon = requireContext().getDrawableCompat(iconRes)
+            setIconResource(repeatMode.icon)
             isActivated = repeatMode != RepeatMode.NONE
         }
     }

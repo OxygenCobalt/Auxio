@@ -160,7 +160,7 @@
     <string name="set_rewind_prev_desc">Önceki şarkıya atlamadan önce geri sar</string>
     <string name="set_repeat_pause_desc">Bir şarkı tekrarlandığında duraklat</string>
     <string name="set_content">İçerik</string>
-    <string name="set_save">Çalma durumunu kaydet</string>
+    <string name="set_save_state">Çalma durumunu kaydet</string>
     <string name="set_save_desc">Mevcut çalma durumunu şimdi kaydet</string>
     <string name="set_keep_shuffle">Karıştırmayı hatırla</string>
     <string name="set_keep_shuffle_desc">Yeni bir şarkı çalarken karışık çalmayı açık tut</string>
@@ -194,7 +194,7 @@
     <string name="lng_state_restored">Durum geri yüklendi</string>
     <string name="set_restore_desc">Önceden kaydedilmiş oynatma durumunu geri getirir (varsa)</string>
     <string name="set_round_mode">Yuvarlak mod</string>
-    <string name="set_restore">Oynatma durumunu eski haline getir</string>
+    <string name="set_restore_state">Oynatma durumunu eski haline getir</string>
     <string name="set_quality_tags">MediaStore etiketlerini yoksay</string>
     <string name="set_quality_tags_desc">Etiket kalitesini artırır, ancak daha uzun yükleme süreleri gerektirir</string>
     <string name="err_did_not_restore">Hiçbir durum geri getirelemedi</string>

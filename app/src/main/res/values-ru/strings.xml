@@ -83,7 +83,7 @@
     <string name="set_repeat_pause">Пауза при повторе</string>
     <string name="set_repeat_pause_desc">Ставить на паузу при повторе трека</string>
     <string name="set_content">Библиотека</string>
-    <string name="set_save">Запоминать позицию</string>
+    <string name="set_save_state">Запоминать позицию</string>
     <string name="set_save_desc">Запоминать позицию в треке</string>
     <string name="set_reindex">Перезагрузить музыку</string>
     <string name="set_reindex_desc">Это перезапустит приложение</string>
@@ -173,7 +173,7 @@
     <string name="lbl_sample_rate">Частота дискретизации</string>
     <string name="set_pre_amp_desc">Предусилитель применяется к существующей настройке во время воспроизведения</string>
     <string name="lbl_library_counts">Статистика библиотеки</string>
-    <string name="set_restore">Восстановить состояние воспроизведения</string>
+    <string name="set_restore_state">Восстановить состояние воспроизведения</string>
     <string name="lbl_sort_duration">Продолжительность</string>
     <string name="lbl_file_name">Имя файла</string>
     <string name="lbl_ep">Мини-альбом</string>

@@ -97,7 +97,7 @@
     <string name="set_repeat_pause_desc">ايقاف مؤقت عند تكرار تشغيل اغنية</string>
 
     <string name="set_content">محتوى</string>
-    <string name="set_save">حفظ حالة التشغيل</string>
+    <string name="set_save_state">حفظ حالة التشغيل</string>
     <string name="set_save_desc">حفظ حالة التشغيل الحالية الآن</string>
 
     <!-- Error Namespace | Error Labels -->

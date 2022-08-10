@@ -11,6 +11,7 @@
     <string name="set_key_show_covers" translatable="false">KEY_SHOW_COVERS</string>
     <string name="set_key_quality_covers" translatable="false">KEY_QUALITY_COVERS</string>
     <string name="set_key_round_mode" translatable="false">auxio_round_covers</string>
+    <string name="set_key_bar_action" translatable="false">auxio_bar_action</string>
     <string name="set_key_alt_notif_action" translatable="false">KEY_ALT_NOTIF_ACTION</string>
 
     <string name="set_key_headset_autoplay" translatable="false">auxio_headset_autoplay</string>
@@ -63,55 +64,71 @@
         <item>@integer/theme_dark</item>
     </integer-array>
 
-    <array name="entries_library_song_playback_mode">
+    <string-array name="entries_bar_action">
+        <item>@string/set_bar_action_next</item>
+        <item>@string/set_bar_action_repeat</item>
+        <item>@string/set_bar_action_shuffle</item>
+    </string-array>
+
+    <integer-array name="values_bar_action">
+        <item>@integer/bar_action_next</item>
+        <item>@integer/bar_action_repeat</item>
+        <item>@integer/bar_action_shuffle</item>
+    </integer-array>
+
+    <string-array name="entries_library_song_playback_mode">
         <item>@string/set_playback_mode_all</item>
         <item>@string/set_playback_mode_artist</item>
         <item>@string/set_playback_mode_album</item>
         <item>@string/set_playback_mode_genre</item>
-    </array>
+    </string-array>
 
-    <string-array name="values_library_song_playback_mode">
+    <integer-array name="values_library_song_playback_mode">
         <item>@integer/play_mode_songs</item>
         <item>@integer/play_mode_artist</item>
         <item>@integer/play_mode_album</item>
         <item>@integer/play_mode_genre</item>
-    </string-array>
+    </integer-array>
 
-    <array name="entries_detail_song_playback_mode">
+    <string-array name="entries_detail_song_playback_mode">
         <item>@string/set_playback_mode_none</item>
         <item>@string/set_playback_mode_all</item>
         <item>@string/set_playback_mode_artist</item>
         <item>@string/set_playback_mode_album</item>
         <item>@string/set_playback_mode_genre</item>
-    </array>
+    </string-array>
 
-    <string-array name="values_detail_song_playback_mode">
+    <integer-array name="values_detail_song_playback_mode">
         <item>@integer/play_mode_none</item>
         <item>@integer/play_mode_songs</item>
         <item>@integer/play_mode_artist</item>
         <item>@integer/play_mode_album</item>
         <item>@integer/play_mode_genre</item>
-    </string-array>
+    </integer-array>
 
-    <array name="entries_replay_gain">
+    <string-array name="entries_replay_gain">
         <item>@string/lbl_off</item>
         <item>@string/set_replay_gain_track</item>
         <item>@string/set_replay_gain_album</item>
         <item>@string/set_replay_gain_dynamic</item>
-    </array>
+    </string-array>
 
-    <string-array name="values_replay_gain">
+    <integer-array name="values_replay_gain">
         <item>@integer/replay_gain_off</item>
         <item>@integer/replay_gain_track</item>
         <item>@integer/replay_gain_album</item>
         <item>@integer/replay_gain_dynamic</item>
-    </string-array>
+    </integer-array>
 
     <integer name="theme_auto">-1</integer>
     <integer name="theme_light">1</integer>
     <integer name="theme_dark">2</integer>
 
-    <integer name="play_mode_none">-2147483648</integer>
+    <integer name="bar_action_next">0xA119</integer>
+    <integer name="bar_action_repeat">0xA11A</integer>
+    <integer name="bar_action_shuffle">0xA11B</integer>
+
+    <integer name="play_mode_none">-1</integer>
     <integer name="play_mode_genre">0xA103</integer>
     <integer name="play_mode_artist">0xA104</integer>
     <integer name="play_mode_album">0xA105</integer>

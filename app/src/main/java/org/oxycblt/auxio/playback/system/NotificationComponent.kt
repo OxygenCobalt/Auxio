@@ -117,14 +117,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
         context: Context,
         repeatMode: RepeatMode
     ): NotificationCompat.Action {
-        val drawableRes =
-            when (repeatMode) {
-                RepeatMode.NONE -> R.drawable.ic_repeat_off_24
-                RepeatMode.ALL -> R.drawable.ic_repeat_on_24
-                RepeatMode.TRACK -> R.drawable.ic_repeat_one_24
-            }
-
-        return buildAction(context, PlaybackService.ACTION_INC_REPEAT_MODE, drawableRes)
+        return buildAction(context, PlaybackService.ACTION_INC_REPEAT_MODE, repeatMode.icon)
     }
 
     private fun buildShuffleAction(

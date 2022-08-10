@@ -158,6 +158,10 @@
     <string name="set_quality_covers_desc">Increases album cover quality, but results in longer loading times and higher memory usage</string>
     <string name="set_round_mode">Round mode</string>
     <string name="set_round_mode_desc">Enable rounded corners on additional UI elements (Requires album covers to be rounded)</string>
+    <string name="set_bar_action">Playback bar action</string>
+    <string name="set_bar_action_next">Skip to next</string>
+    <string name="set_bar_action_repeat">Repeat mode</string>
+    <string name="set_bar_action_shuffle">@string/lbl_shuffle</string>
     <string name="set_alt_action">Use alternate notification action</string>
     <string name="set_alt_repeat">Prefer repeat mode action</string>
     <string name="set_alt_shuffle">Prefer shuffle action</string>
@@ -191,11 +195,11 @@
     <string name="set_repeat_pause_desc">Pause when a song repeats</string>
 
     <string name="set_content">Content</string>
-    <string name="set_save">Save playback state</string>
+    <string name="set_save_state">Save playback state</string>
     <string name="set_save_desc">Save the current playback state now</string>
-    <string name="set_wipe">Clear playback state</string>
+    <string name="set_wipe_state">Clear playback state</string>
     <string name="set_wipe_desc">Clear the previously saved playback state (if any)</string>
-    <string name="set_restore">Restore playback state</string>
+    <string name="set_restore_state">Restore playback state</string>
     <string name="set_restore_desc">Restore the previously saved playback state (if any)</string>
     <string name="set_reindex">Reload music</string>
     <string name="set_reindex_desc">May wipe playback state</string>

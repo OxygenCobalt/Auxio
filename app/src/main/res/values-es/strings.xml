@@ -81,7 +81,7 @@
     <string name="set_repeat_pause">Pausa en repetición</string>
     <string name="set_repeat_pause_desc">Pausa cuando se repite una canción</string>
     <string name="set_content">Contenido</string>
-    <string name="set_save">Guardar estado de reproducción</string>
+    <string name="set_save_state">Guardar estado de reproducción</string>
     <string name="set_save_desc">Guardar el estado de reproduccion ahora</string>
     <string name="set_reindex">Recargar música</string>
     <string name="set_reindex_desc">Puede borrar el estado de reproducción</string>
@@ -187,7 +187,7 @@
     <string name="lbl_sample_rate">Frecuencia de muestreo</string>
     <string name="lbl_cancel">\@android:string/cancel</string>
     <string name="set_headset_autoplay">Reproducción automática con auriculares</string>
-    <string name="set_restore">Reestablecer el estado de reproducción</string>
+    <string name="set_restore_state">Reestablecer el estado de reproducción</string>
     <string name="set_restore_desc">Reestablecer el estado de reproducción guardado previamente (si existe)</string>
     <string name="set_dirs">Carpetas de música</string>
     <string name="set_quality_tags">Ignorar etiquetas MediaStore</string>

@@ -82,7 +82,7 @@
     <string name="set_repeat_pause">重复播放前暂停</string>
     <string name="set_repeat_pause_desc">曲目重复播放前暂停</string>
     <string name="set_content">内容</string>
-    <string name="set_save">保存播放状态</string>
+    <string name="set_save_state">保存播放状态</string>
     <string name="set_save_desc">立即保存当前播放状态</string>
     <string name="set_reindex">重新加载音乐</string>
     <string name="set_reindex_desc">将会重启应用</string>

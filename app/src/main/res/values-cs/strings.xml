@@ -98,7 +98,7 @@
     <string name="set_repeat_pause">Pozastavit při opakování</string>
     <string name="set_repeat_pause_desc">Pozastavit při opakování skladby</string>
     <string name="set_content">Obsah</string>
-    <string name="set_save">Uložit stav přehrávání</string>
+    <string name="set_save_state">Uložit stav přehrávání</string>
     <string name="set_save_desc">Uložit aktuální stav přehrávání</string>
     <string name="set_reindex">Znovu načíst hudbu</string>
     <string name="set_reindex_desc">Může vymazat stav přehrávání</string>
@@ -207,7 +207,7 @@
     <string name="set_dirs">Hudební složky</string>
     <string name="set_quality_tags">Ignorovat štítky MediaStore</string>
     <string name="set_quality_tags_desc">Zvýší kvalitu štítků, ale má za následek delší načítací čas (experimentální)</string>
-    <string name="set_restore">Obnovit stav přehrávání</string>
+    <string name="set_restore_state">Obnovit stav přehrávání</string>
     <string name="lng_state_restored">Stav obnoven</string>
     <string name="set_restore_desc">Obnovit dříve uložený stav přehrávání (pokud existuje)</string>
     <string name="err_did_not_restore">Nemohl být obnoven žádný stav</string>
@@ -235,7 +235,7 @@
     <string name="lbl_album_remix">Remixové album</string>
     <string name="lbl_ep_live">Živé EP</string>
     <string name="lbl_ep_remix">Remixové EP</string>
-    <string name="set_wipe">Vymazat stav přehrávání</string>
+    <string name="set_wipe_state">Vymazat stav přehrávání</string>
     <string name="set_wipe_desc">Vymazat dříve uložený stav přehrávání (pokud existuje)</string>
     <string name="lng_state_wiped">Stav vymazán</string>
     <string name="desc_queue_bar">Otevřít frontu</string>
