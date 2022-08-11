@@ -67,6 +67,8 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
         val songs = mutableListOf<Song>()
         val total = cursor.count
 
+        // LEFTOFF: Make logic more consistent?
+
         while (cursor.moveToNext()) {
             // Note: This call to buildAudio does not populate the genre field. This is
             // because indexing genres is quite slow with MediaStore, and so keeping the

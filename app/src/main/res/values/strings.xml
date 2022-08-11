@@ -181,7 +181,7 @@
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Headset autoplay</string>
     <string name="set_headset_autoplay_desc">Always start playing when a headset is connected (may not work on all devices)</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">ReplayGain strategy</string>
     <string name="set_replay_gain_off">Off</string>
     <string name="set_replay_gain_track">Prefer track</string>
     <string name="set_replay_gain_album">Prefer album</string>

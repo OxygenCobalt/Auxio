@@ -2,6 +2,10 @@
 
 ## dev
 
+#### What's Changed
+- ReplayGain can now no longer be disabled. Remove ReplayGain tags from
+files if such functionality is not desired. 
+
 ## 2.6.1
 
 #### What's New

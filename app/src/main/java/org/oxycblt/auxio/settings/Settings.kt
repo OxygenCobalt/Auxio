@@ -140,7 +140,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
         get() =
             ReplayGainMode.fromIntCode(
                 inner.getInt(context.getString(R.string.set_key_replay_gain), Int.MIN_VALUE))
-                ?: ReplayGainMode.OFF
+                ?: ReplayGainMode.DYNAMIC
 
     /** The current ReplayGain pre-amp configuration */
     var replayGainPreAmp: ReplayGainPreAmp

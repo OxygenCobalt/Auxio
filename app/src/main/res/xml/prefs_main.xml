@@ -75,15 +75,13 @@
             app:title="@string/set_headset_autoplay" />
 
         <org.oxycblt.auxio.settings.ui.IntListPreference
-            app:defaultValue="@integer/replay_gain_off"
+            app:defaultValue="@integer/replay_gain_dynamic"
             app:entries="@array/entries_replay_gain"
             app:entryValues="@array/values_replay_gain"
             app:key="@string/set_key_replay_gain"
-            app:offValue="@integer/replay_gain_off"
             app:title="@string/set_replay_gain" />
 
         <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
-            app:dependency="@string/set_key_replay_gain"
             app:key="@string/set_key_pre_amp"
             app:summary="@string/set_pre_amp_desc"
             app:title="@string/set_pre_amp" />

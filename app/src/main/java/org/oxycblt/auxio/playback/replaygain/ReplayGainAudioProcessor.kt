@@ -65,12 +65,6 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
      * based off Vanilla Music's implementation, but has diverged to a significant extent.
      */
     fun applyReplayGain(metadata: Metadata?) {
-        if (settings.replayGainMode == ReplayGainMode.OFF) {
-            logD("ReplayGain not enabled")
-            volume = 1f
-            return
-        }
-
         val gain = metadata?.let(::parseReplayGain)
         val preAmp = settings.replayGainPreAmp
 
@@ -79,8 +73,6 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
                 // ReplayGain is configurable, so determine what to do based off of the mode.
                 val useAlbumGain =
                     when (settings.replayGainMode) {
-                        ReplayGainMode.OFF -> throw IllegalStateException()
-
                         // User wants track gain to be preferred. Default to album gain only if
                         // there is no track gain.
                         ReplayGainMode.TRACK -> gain.track == 0f
@@ -109,7 +101,7 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
             } else {
                 // No ReplayGain tags existed, or no tags were parsable, or there was no metadata
                 // in the first place. Return the gain to use when there is no ReplayGain value.
-                logD("No ReplayGain tags present ")
+                logD("No ReplayGain tags present")
                 preAmp.without
             }
 

@@ -21,8 +21,6 @@ import org.oxycblt.auxio.IntegerTable
 
 /** Represents the current setting for ReplayGain. */
 enum class ReplayGainMode {
-    /** Do not apply ReplayGain. */
-    OFF,
     /** Apply the track gain, falling back to the album gain if the track gain is not found. */
     TRACK,
     /** Apply the album gain, falling back to the track gain if the album gain is not found. */
@@ -34,7 +32,6 @@ enum class ReplayGainMode {
         /** Convert an int [code] into an instance, or null if it isn't valid. */
         fun fromIntCode(code: Int): ReplayGainMode? {
             return when (code) {
-                IntegerTable.REPLAY_GAIN_MODE_OFF -> OFF
                 IntegerTable.REPLAY_GAIN_MODE_TRACK -> TRACK
                 IntegerTable.REPLAY_GAIN_MODE_ALBUM -> ALBUM
                 IntegerTable.REPLAY_GAIN_MODE_DYNAMIC -> DYNAMIC

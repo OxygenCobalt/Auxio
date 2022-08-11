@@ -265,6 +265,8 @@ class PlaybackService :
             return
         }
 
+        C.ENCODING_PCM_32BIT
+
         logD("Loading ${song.rawName}")
         player.setMediaItem(MediaItem.fromUri(song.uri))
         player.prepare()
