@@ -17,9 +17,13 @@
  
 package org.oxycblt.auxio.playback
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.media.audiofx.AudioEffect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
@@ -34,6 +38,7 @@ import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
@@ -49,6 +54,14 @@ class PlaybackPanelFragment :
     Toolbar.OnMenuItemClickListener {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
+
+    // AudioEffect expects you to use startActivityForResult with the panel intent. Use
+    // the contract analogue for this since there is no built-in contract for AudioEffect.
+    private val activityLauncher by lifecycleObject {
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // Nothing to do
+        }
+    }
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackPanelBinding.inflate(inflater)
@@ -110,18 +123,19 @@ class PlaybackPanelFragment :
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_go_artist -> {
-                playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album.artist) }
-                true
-            }
-            R.id.action_go_album -> {
-                playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album) }
-                true
-            }
-            R.id.action_song_detail -> {
-                playbackModel.song.value?.let {
-                    navModel.mainNavigateTo(MainNavigationAction.SongDetails(it))
+            R.id.action_open_equalizer -> {
+                val equalizerIntent =
+                    Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+                        .putExtra(
+                            AudioEffect.EXTRA_AUDIO_SESSION, playbackModel.currentAudioSessionId)
+                        .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+
+                try {
+                    activityLauncher.launch(equalizerIntent)
+                } catch (e: ActivityNotFoundException) {
+                    requireContext().showToast(R.string.err_no_app)
                 }
+
                 true
             }
             else -> false

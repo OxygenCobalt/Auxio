@@ -89,6 +89,10 @@ class PlaybackStateManager private constructor() {
     var isInitialized = false
         private set
 
+    /** The current audio session ID of the controller. Null if no controller present. */
+    val currentAudioSessionId: Int?
+        get() = controller?.audioSessionId
+
     // --- CALLBACKS ---
 
     private val callbacks = mutableListOf<Callback>()
@@ -509,6 +513,8 @@ class PlaybackStateManager private constructor() {
 
     /** Represents a class capable of managing the internal player. */
     interface Controller {
+        val audioSessionId: Int
+
         /** Called when a new song should be loaded into the player. */
         fun loadSong(song: Song?)
 

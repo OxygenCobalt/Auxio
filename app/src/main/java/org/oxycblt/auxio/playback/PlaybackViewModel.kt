@@ -76,6 +76,9 @@ class PlaybackViewModel(application: Application) :
     val isShuffled: StateFlow<Boolean>
         get() = _isShuffled
 
+    val currentAudioSessionId: Int?
+        get() = playbackManager.currentAudioSessionId
+
     init {
         musicStore.addCallback(this)
         playbackManager.addCallback(this)
@@ -170,7 +173,7 @@ class PlaybackViewModel(application: Application) :
         }
     }
 
-    // --- POSITION FUNCTIONS ---
+    // --- PLAYER FUNCTIONS ---
 
     /** Update the position and push it to [PlaybackStateManager] */
     fun seekTo(positionSecs: Long) {

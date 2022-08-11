@@ -2,6 +2,9 @@
 
 ## dev
 
+#### What's Improved
+- Added a way to access the system equalizer from the playback menu.
+
 #### What's Changed
 - ReplayGain can now no longer be disabled. Remove ReplayGain tags from
 files if such functionality is not desired. 

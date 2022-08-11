@@ -250,6 +250,9 @@ class PlaybackService :
 
     // --- CONTROLLER OVERRIDES ---
 
+    override val audioSessionId: Int
+        get() = player.audioSessionId
+
     override fun loadSong(song: Song?) {
         if (song == null) {
             // Stop the foreground state if there's nothing to play.
@@ -264,8 +267,6 @@ class PlaybackService :
             stopAndSave()
             return
         }
-
-        C.ENCODING_PCM_32BIT
 
         logD("Loading ${song.rawName}")
         player.setMediaItem(MediaItem.fromUri(song.uri))
@@ -355,7 +356,7 @@ class PlaybackService :
         sendBroadcast(
             Intent(event)
                 .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
-                .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, player.audioSessionId)
+                .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
                 .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC))
     }
 

@@ -87,6 +87,7 @@
     <string name="lbl_sort_asc">Ascending</string>
 
     <string name="lbl_playback">Now playing</string>
+    <string name="lbl_equalizer">Equalizer</string>
     <string name="lbl_play">Play</string>
     <string name="lbl_shuffle">Shuffle</string>
 
@@ -235,7 +236,7 @@
     <string name="err_no_music">No music found</string>
     <string name="err_index_failed">Music loading failed</string>
     <string name="err_no_perms">Auxio needs permission to read your music library</string>
-    <string name="err_no_app">No app can open this link</string>
+    <string name="err_no_app">No app found that can handle this task</string>
     <!-- No folders in the "Music Folders" setting -->
     <string name="err_no_dirs">No folders</string>
     <string name="err_bad_dir">This folder is not supported</string>

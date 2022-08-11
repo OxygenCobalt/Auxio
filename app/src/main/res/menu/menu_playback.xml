@@ -2,15 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_go_artist"
-        android:title="@string/lbl_go_artist"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_go_album"
-        android:title="@string/lbl_go_album"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_song_detail"
-        android:title="@string/lbl_song_detail"
-        app:showAsAction="never" />
+        android:id="@+id/action_open_equalizer"
+        android:title="@string/lbl_equalizer"
+        android:icon="@drawable/ic_equalizer"
+        app:showAsAction="always" />
 </menu>
