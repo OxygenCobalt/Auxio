@@ -61,6 +61,8 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
             }
         }
 
+        binding.playbackSong.isSelected = true
+
         // Load the track color in manually as it's unclear whether the track actually supports
         // using a ColorStateList in the resources
         binding.playbackProgressBar.trackColor =
@@ -103,6 +105,11 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.isPlaying, ::updateIsPlaying)
         collectImmediately(playbackModel.positionSecs, ::updatePosition)
+    }
+
+    override fun onDestroyBinding(binding: FragmentPlaybackBarBinding) {
+        super.onDestroyBinding(binding)
+        binding.playbackSong.isSelected = false
     }
 
     private fun updateSong(song: Song?) {

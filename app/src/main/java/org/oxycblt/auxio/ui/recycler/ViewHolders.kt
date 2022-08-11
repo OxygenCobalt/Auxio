@@ -41,13 +41,8 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)
         binding.songInfo.text = item.resolveIndividualArtistName(binding.context)
-        binding.root.apply {
-            setOnClickListener { listener.onItemClick(item) }
-            setOnLongClickListener { view ->
-                listener.onOpenMenu(item, view)
-                true
-            }
-        }
+        binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
+        binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
     companion object {
@@ -82,13 +77,8 @@ private constructor(
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text = item.artist.resolveName(binding.context)
-        binding.root.apply {
-            setOnClickListener { listener.onItemClick(item) }
-            setOnLongClickListener { view ->
-                listener.onOpenMenu(item, view)
-                true
-            }
-        }
+        binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
+        binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
     companion object {
@@ -126,13 +116,8 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
                 R.string.fmt_two,
                 binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size),
                 binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
-        binding.root.apply {
-            setOnClickListener { listener.onItemClick(item) }
-            setOnLongClickListener { view ->
-                listener.onOpenMenu(item, view)
-                true
-            }
-        }
+        binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
+        binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
     companion object {
@@ -169,13 +154,8 @@ private constructor(
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text =
             binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
-        binding.root.apply {
-            setOnClickListener { listener.onItemClick(item) }
-            setOnLongClickListener { view ->
-                listener.onOpenMenu(item, view)
-                true
-            }
-        }
+        binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
+        binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
     companion object {

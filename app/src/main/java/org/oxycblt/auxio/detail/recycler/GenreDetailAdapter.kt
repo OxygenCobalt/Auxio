@@ -139,13 +139,8 @@ class GenreSongViewHolder private constructor(private val binding: ItemSongBindi
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)
         binding.songInfo.text = item.resolveIndividualArtistName(binding.context)
-        binding.root.apply {
-            setOnClickListener { listener.onItemClick(item) }
-            setOnLongClickListener { view ->
-                listener.onOpenMenu(item, view)
-                true
-            }
-        }
+        binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
+        binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
     companion object {

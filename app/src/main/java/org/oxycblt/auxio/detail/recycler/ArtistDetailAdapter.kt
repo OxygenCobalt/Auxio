@@ -168,14 +168,8 @@ private constructor(
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text = item.date.resolveYear(binding.context)
-
-        binding.root.apply {
-            setOnClickListener { listener.onItemClick(item) }
-            setOnLongClickListener { view ->
-                listener.onOpenMenu(item, view)
-                true
-            }
-        }
+        binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
+        binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
     companion object {
@@ -204,14 +198,8 @@ private constructor(
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)
         binding.songInfo.text = item.album.resolveName(binding.context)
-
-        binding.root.apply {
-            setOnClickListener { listener.onItemClick(item) }
-            setOnLongClickListener { view ->
-                listener.onOpenMenu(item, view)
-                true
-            }
-        }
+        binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
+        binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
     companion object {

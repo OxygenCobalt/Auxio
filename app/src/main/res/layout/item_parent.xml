@@ -2,7 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Widget.Auxio.ItemLayout">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:paddingTop="@dimen/spacing_medium"
+    android:paddingBottom="@dimen/spacing_medium"
+    android:paddingEnd="@dimen/spacing_small"
+    android:paddingStart="@dimen/spacing_medium">
 
     <org.oxycblt.auxio.image.ImageGroup
         android:id="@+id/parent_image"
@@ -10,7 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:staticIcon="@drawable/ic_artist" />
+        tools:staticIcon="@drawable/ic_artist_24" />
 
     <TextView
         android:id="@+id/parent_name"
@@ -18,8 +24,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/sel_accented_primary"
+        android:layout_marginEnd="@dimen/spacing_small"
         app:layout_constraintBottom_toTopOf="@+id/parent_info"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/parent_menu"
         app:layout_constraintStart_toEndOf="@+id/parent_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
@@ -30,9 +37,21 @@
         style="@style/Widget.Auxio.TextView.Item.Secondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_small"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/parent_menu"
         app:layout_constraintStart_toEndOf="@+id/parent_image"
         app:layout_constraintTop_toBottomOf="@+id/parent_name"
         tools:text="Info" />
+
+    <Button
+        android:id="@+id/parent_menu"
+        style="@style/Widget.Auxio.Button.Icon.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_more_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

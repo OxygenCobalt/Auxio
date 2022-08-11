@@ -92,7 +92,7 @@ class PlaybackPanelFragment :
             playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album) }
         }
 
-        binding.playbackSongMenu?.setOnClickListener { view ->
+        binding.playbackSongMenu.setOnClickListener { view ->
             playbackModel.song.value?.let { song ->
                 musicMenu(view, R.menu.menu_playback_song_actions, song)
             }

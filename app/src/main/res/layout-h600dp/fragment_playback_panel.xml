@@ -68,12 +68,11 @@
         style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:icon="@drawable/ic_more_24"
         android:layout_marginEnd="@dimen/spacing_mid_medium"
+        app:icon="@drawable/ic_more_24"
         app:layout_constraintBottom_toBottomOf="@+id/playback_album"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/playback_song" />
-
 
     <org.oxycblt.auxio.playback.StyledSeekBar
         android:id="@+id/playback_seek_bar"

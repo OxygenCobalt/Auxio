@@ -3,9 +3,11 @@
 ## dev
 
 #### What's Improved
+- Playback bar now has a marquee effect
 - Added a way to access the system equalizer from the playback menu.
 
 #### What's Changed
+- Menus are now opened using a new button to the side of all items
 - ReplayGain can now no longer be disabled. Remove ReplayGain tags from
 files if such functionality is not desired. 
 

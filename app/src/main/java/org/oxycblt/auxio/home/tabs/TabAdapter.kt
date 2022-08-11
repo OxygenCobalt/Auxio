@@ -89,11 +89,6 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
                 true
             } else false
         }
-
-        binding.root.setOnLongClickListener {
-            listener.onPickUpTab(this)
-            true
-        }
     }
 
     companion object {
