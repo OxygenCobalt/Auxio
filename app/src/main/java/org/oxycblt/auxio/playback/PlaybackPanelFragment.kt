@@ -27,16 +27,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.MainNavigationAction
-import org.oxycblt.auxio.ui.NavigationViewModel
-import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
+import org.oxycblt.auxio.ui.fragment.MenuFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -49,13 +46,11 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * TODO: Make seek thumb grow when selected
  */
 class PlaybackPanelFragment :
-    ViewBindingFragment<FragmentPlaybackPanelBinding>(),
+    MenuFragment<FragmentPlaybackPanelBinding>(),
     StyledSeekBar.Callback,
     Toolbar.OnMenuItemClickListener {
-    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
-    private val navModel: NavigationViewModel by activityViewModels()
 
-    // AudioEffect expects you to use startActivityForResult with the panel intent. Use
+    // AudioEffect expects you to use startActivityFoResult with the panel intent. Use
     // the contract analogue for this since there is no built-in contract for AudioEffect.
     private val activityLauncher by lifecycleObject {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -95,6 +90,12 @@ class PlaybackPanelFragment :
 
         binding.playbackAlbum.setOnClickListener {
             playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album) }
+        }
+
+        binding.playbackSongMenu?.setOnClickListener { view ->
+            playbackModel.song.value?.let { song ->
+                musicMenu(view, R.menu.menu_playback_song_actions, song)
+            }
         }
 
         binding.playbackSeekBar.callback = this

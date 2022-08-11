@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:transitionGroup="true"
     android:background="?attr/colorSurface"
     android:orientation="vertical">
@@ -28,6 +29,7 @@
         android:name="org.oxycblt.auxio.settings.SettingsListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        tools:layout="@android:layout/preference_category" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
