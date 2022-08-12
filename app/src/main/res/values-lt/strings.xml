@@ -79,12 +79,12 @@
     <string name="lbl_shuffle_shortcut_long">Išmaišyti viską</string>
     <string name="lbl_state_restored">Atkurta grojimo būsena</string>
     <string name="lbl_state_saved">Išsaugota grojamo būsena</string>
-    <string name="lbl_cancel">\@android:string/atšaukti</string>
+    <string name="lbl_cancel">Atšaukti</string>
     <string name="lbl_code">Peržiūrėti per „Github“</string>
     <string name="set_display">Rodyti</string>
     <string name="set_replay_gain">„ReplayGain“</string>
     <string name="lbl_singles">Singlaiai</string>
-    <string name="lbl_ok">\@android:string/gerai</string>
+    <string name="lbl_ok">Gerai</string>
     <string name="set_show_covers">Rodyti albumų viršelius</string>
     <string name="set_show_covers_desc">Išjungti, kad sutaupytumėte atminties naudojimą</string>
     <string name="set_quality_covers_desc">Pagerėja albumo viršelio kokybė, tačiau ilgėja įkrovimo laikas ir naudojama daugiau atminties</string>

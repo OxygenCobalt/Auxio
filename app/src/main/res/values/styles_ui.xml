@@ -213,16 +213,16 @@
 
     <style name="Widget.Auxio.Button.Icon.Large" parent="Widget.Auxio.Button.Icon.Base">
         <item name="iconSize">@dimen/size_icon_large</item>
-        <item name="android:minWidth">56dp</item>
-        <item name="android:minHeight">56dp</item>
+        <item name="android:minWidth">@dimen/size_btn</item>
+        <item name="android:minHeight">@dimen/size_btn</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="android:insetLeft">0dp</item>
         <item name="android:insetRight">0dp</item>
-        <item name="android:paddingStart">@dimen/spacing_mid_medium</item>
-        <item name="android:paddingEnd">@dimen/spacing_mid_medium</item>
-        <item name="android:paddingTop">@dimen/spacing_mid_medium</item>
-        <item name="android:paddingBottom">@dimen/spacing_mid_medium</item>
+        <item name="android:paddingStart">@dimen/spacing_small</item>
+        <item name="android:paddingEnd">@dimen/spacing_small</item>
+        <item name="android:paddingTop">@dimen/spacing_small</item>
+        <item name="android:paddingBottom">@dimen/spacing_small</item>
     </style>
 
     <style name="Widget.Auxio.Button.PlayPause" parent="Widget.Material3.Button.IconButton.Filled.Tonal">

@@ -7,7 +7,7 @@
     android:background="?attr/selectableItemBackground"
     android:paddingTop="@dimen/spacing_medium"
     android:paddingBottom="@dimen/spacing_medium"
-    android:paddingEnd="@dimen/spacing_small"
+    android:paddingEnd="@dimen/spacing_mid_medium"
     android:paddingStart="@dimen/spacing_medium">
 
     <org.oxycblt.auxio.image.ImageGroup
@@ -24,7 +24,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/sel_accented_primary"
-        android:layout_marginEnd="@dimen/spacing_small"
+        android:layout_marginEnd="@dimen/spacing_mid_medium"
         app:layout_constraintBottom_toTopOf="@+id/parent_info"
         app:layout_constraintEnd_toStartOf="@+id/parent_menu"
         app:layout_constraintStart_toEndOf="@+id/parent_image"
@@ -37,7 +37,7 @@
         style="@style/Widget.Auxio.TextView.Item.Secondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_small"
+        android:layout_marginEnd="@dimen/spacing_mid_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/parent_menu"
         app:layout_constraintStart_toEndOf="@+id/parent_image"

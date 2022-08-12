@@ -61,8 +61,8 @@
     <string name="lbl_format">Biçim</string>
     <string name="lbl_shuffle_shortcut_short">Karıştır</string>
     <string name="lbl_shuffle_shortcut_long">Tümünü karıştır</string>
-    <string name="lbl_ok">\@android:string/tamam</string>
-    <string name="lbl_cancel">\@android:string/iptal</string>
+    <string name="lbl_ok">Tamam</string>
+    <string name="lbl_cancel">Iptal</string>
     <string name="lbl_add">Ekle</string>
     <string name="lbl_save">Kaydet</string>
     <string name="fmt_lib_total_duration">Toplam süre: %s</string>

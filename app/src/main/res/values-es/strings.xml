@@ -152,7 +152,7 @@
     <string name="lbl_song_detail">Ver propiedades</string>
     <string name="lbl_shuffle_shortcut_short">Mezclar</string>
     <string name="lbl_shuffle_shortcut_long">Mezclar todo</string>
-    <string name="lbl_ok">\@android:string/ok</string>
+    <string name="lbl_ok">@android:string/ok</string>
     <string name="lbl_library_counts">Estadísticas de la biblioteca</string>
     <string name="set_pre_amp_without">Ajuste sin etiquetas</string>
     <string name="set_pre_amp_warning">Advertencia: Cambiar el pre-amp a un valor alto puede resultar en picos en algunas pistas de audio.</string>
@@ -184,7 +184,7 @@
     <string name="lbl_sort_date_added">Fecha de añadido</string>
     <string name="lbl_props">Propiedades de la canción</string>
     <string name="lbl_sample_rate">Frecuencia de muestreo</string>
-    <string name="lbl_cancel">\@android:string/cancel</string>
+    <string name="lbl_cancel">@android:string/cancel</string>
     <string name="set_headset_autoplay">Reproducción automática con auriculares</string>
     <string name="set_restore_state">Reestablecer el estado de reproducción</string>
     <string name="set_restore_desc">Reestablecer el estado de reproducción guardado previamente (si existe)</string>

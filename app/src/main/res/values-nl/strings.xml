@@ -126,7 +126,7 @@
     <string name="lbl_song_detail">Bekijk eigenschappen</string>
     <string name="lbl_sort_name">Naam</string>
     <string name="lbl_artist">Artiest</string>
-    <string name="lbl_cancel">\@android:string/cancel</string>
+    <string name="lbl_cancel">@android:string/cancel</string>
     <string name="set_lib_tabs">Bibliotheek tabbladen</string>
     <string name="lbl_sort_year">Jaar</string>
     <string name="lbl_relative_path">Ouderpad</string>
@@ -142,7 +142,7 @@
     <string name="set_dirs_desc">Bepaal waar muziek vandaan moet worden geladen</string>
     <string name="fmt_lib_total_duration">Totale duur: %s</string>
     <string name="lbl_shuffle_shortcut_long">Shuffle Alles</string>
-    <string name="lbl_ok">\@android:string/ok</string>
+    <string name="lbl_ok">@android:string/ok</string>
     <string name="set_replay_gain_off">Uit</string>
     <string name="set_headset_autoplay_desc">Altijd beginnen met spelen als een headset is aangesloten (werkt mogelijk niet op alle apparaten)</string>
     <string name="desc_shuffle">Schakel shuffle aan of uit</string>

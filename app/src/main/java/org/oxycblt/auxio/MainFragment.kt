@@ -179,7 +179,6 @@ class MainFragment :
             // No queue sheet, fade normally based on the playback sheet
             binding.playbackBarFragment.alpha = 1 - halfOutRatio
             binding.playbackPanelFragment.alpha = halfInPlaybackRatio
-            binding.queueSheet.alpha = halfInPlaybackRatio
         }
 
         binding.exploreNavHost.apply {
@@ -196,6 +195,12 @@ class MainFragment :
         }
 
         binding.playbackPanelFragment.isInvisible = binding.playbackPanelFragment.alpha == 0f
+
+        binding.queueSheet.apply {
+            alpha = halfInPlaybackRatio
+            binding.queueSheet.isInvisible = alpha == 0f
+        }
+
         binding.queueFragment.isInvisible = binding.queueFragment.alpha == 0f
 
         if (playbackModel.song.value == null) {

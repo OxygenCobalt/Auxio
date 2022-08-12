@@ -114,10 +114,8 @@
     <!-- Limit to 25 characters -->
     <string name="lbl_shuffle_shortcut_long">Shuffle all</string>
 
-    <!-- Actual string: Ok -->
-    <string name="lbl_ok">@android:string/ok</string>
-    <!-- Actual string: Cancel -->
-    <string name="lbl_cancel">@android:string/cancel</string>
+    <string name="lbl_ok">OK</string>
+    <string name="lbl_cancel">Cancel</string>
     <!-- As in to add a new folder in the "Music folders" setting -->
     <string name="lbl_add">Add</string>
     <!-- As in to save the "Music folders" setting -->

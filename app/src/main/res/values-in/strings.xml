@@ -56,8 +56,8 @@
     <string name="lbl_props">Properti lagu</string>
     <string name="lbl_file_name">Nama file</string>
     <string name="lbl_bitrate">Laju bit</string>
-    <string name="lbl_ok">\@android:string/ok</string>
-    <string name="lbl_cancel">\@android:string/cancel</string>
+    <string name="lbl_ok">@android:string/ok</string>
+    <string name="lbl_cancel">@android:string/cancel</string>
     <string name="lbl_add">Tambah</string>
     <string name="lbl_save">Simpan</string>
     <string name="set_black_mode">Tema hitam</string>
