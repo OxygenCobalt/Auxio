@@ -231,4 +231,8 @@
     <string name="lbl_compilation">合辑</string>
     <string name="lbl_live_group">现场</string>
     <string name="lbl_genre">流派</string>
+    <string name="set_bar_action">自定义播放栏动作</string>
+    <string name="set_bar_action_repeat">重复模式</string>
+    <string name="set_bar_action_next">跳到下一首</string>
+    <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
 </resources>
