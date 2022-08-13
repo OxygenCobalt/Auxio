@@ -41,9 +41,9 @@
     <string name="lbl_go_album">Přejít na album</string>
     <string name="lbl_state_saved">Stav uložen</string>
     <!-- Actual string: Ok -->
-    <string name="lbl_ok">@android:string/ok</string>
+    <string name="lbl_ok">OK</string>
     <!-- Actual string: Cancel -->
-    <string name="lbl_cancel">@android:string/cancel</string>
+    <string name="lbl_cancel">Zrušit</string>
     <string name="lbl_add">Přidat</string>
     <string name="lbl_save">Uložit</string>
     <string name="lbl_about">O aplikaci</string>
