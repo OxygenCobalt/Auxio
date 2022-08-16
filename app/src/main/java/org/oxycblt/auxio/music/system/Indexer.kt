@@ -23,6 +23,7 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.os.Build
 import androidx.core.content.ContextCompat
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.BuildConfig
@@ -153,8 +154,12 @@ class Indexer {
                     logE("No music found")
                     Response.NoMusic
                 }
+            } catch (e: CancellationException) {
+                // Got cancelled, propagate upwards
+                logD("Loading routine was cancelled")
+                throw e
             } catch (e: Exception) {
-                logE("Music indexing failed.")
+                logE("Music indexing failed")
                 logE(e.stackTraceToString())
                 Response.Err(e)
             }

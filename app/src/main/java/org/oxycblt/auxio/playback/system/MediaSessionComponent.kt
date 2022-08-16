@@ -64,8 +64,7 @@ import org.oxycblt.auxio.util.logD
  * TODO: Remove the player callback once smooth seeking is implemented
  *
  * TODO: Rework what is considered to "start foreground" and what is not from the context of this
- *  object. This could help reduce the amount of post calls I send on Android 13 onwards,
- *  hopefully.
+ * object. This could help reduce the amount of post calls I send on Android 13 onwards, hopefully.
  */
 class MediaSessionComponent(
     private val context: Context,
