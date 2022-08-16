@@ -132,4 +132,6 @@
     <string name="lbl_sort_date_added">Date d\'ajout</string>
     <string name="lbl_album_live">Album live</string>
     <string name="lbl_album_remix">Album de remixes</string>
+    <string name="lbl_genre">Genre</string>
+    <string name="lbl_equalizer">Égaliseur</string>
 </resources>
