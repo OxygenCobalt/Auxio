@@ -235,4 +235,5 @@
     <string name="set_bar_action_next">跳到下一首</string>
     <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
     <string name="lbl_equalizer">均衡器</string>
+    <string name="desc_exit">停止播放</string>
 </resources>
