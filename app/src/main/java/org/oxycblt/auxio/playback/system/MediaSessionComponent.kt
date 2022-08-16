@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.support.v4.media.MediaDescriptionCompat
@@ -40,15 +41,20 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 
 /**
- * The component managing the [MediaSessionCompat] instance.
+ * The component managing the [MediaSessionCompat] instance, alongside the [NotificationComponent]
  *
- * Media3 is a joke. It tries so hard to be "hElpfUl" and implement so many fundamental behaviors
- * into a one-size-fits-all package that it only ends up causing unending bugs and frustration. The
- * queue system is horribly designed, the notification code is outdated, and the overstretched
- * abstractions result in terrible performance bottlenecks and insane state bugs..
+ * MediaSession is easily one of the most poorly thought out APIs in Android. It tries to hard to be
+ * hElpfUl and implement so many fundamental behaviors into a one-size-fits-all package that it only
+ * ends up causing unending bugs and frustrating. The queue system is horribly designed, the
+ * playback state system has unending coherency bugs, and the overstretched abstractions result in
+ * god-awful performance bottlenecks and insane state bugs.
  *
- * Show me a way to adapt my internal queue into the new system and I will change my mind, but
- * otherwise, I will stick with my normal system that works correctly.
+ * The sheer absurdity of the hoops we have jump through to get this working in an okay manner is
+ * the reason why Auxio only mirrors a saner playback state to the media session instead of relying
+ * on it. I thought that Android 13 would at least try to make the state more coherent, but NOPE.
+ * You still have to do a delicate dance of posting notifications and updating the session state
+ * while also keeping in mind the absurd rate limiting system in place just to have a sort-of
+ * coherent state. And even then it will break if you skip too much.
  *
  * @author OxygenCobalt
  *
@@ -64,7 +70,13 @@ class MediaSessionComponent(
     PlaybackStateManager.Callback,
     Settings.Callback {
     interface Callback {
-        fun onPostNotification(notification: NotificationComponent?, reason: String)
+        fun onPostNotification(notification: NotificationComponent?, reason: PostingReason)
+    }
+
+    enum class PostingReason {
+        METADATA,
+        ACTIONS,
+        POSITION
     }
 
     private val mediaSession =
@@ -126,7 +138,7 @@ class MediaSessionComponent(
     private fun updateMediaMetadata(song: Song?, parent: MusicParent?) {
         if (song == null) {
             mediaSession.setMetadata(emptyMetadata)
-            callback.onPostNotification(null, "song update")
+            callback.onPostNotification(null, PostingReason.METADATA)
             return
         }
 
@@ -184,7 +196,7 @@ class MediaSessionComponent(
                     val metadata = builder.build()
                     mediaSession.setMetadata(metadata)
                     notification.updateMetadata(metadata)
-                    callback.onPostNotification(notification, "song update")
+                    callback.onPostNotification(notification, PostingReason.METADATA)
                 }
             })
     }
@@ -211,7 +223,7 @@ class MediaSessionComponent(
 
     override fun onPlayingChanged(isPlaying: Boolean) {
         invalidateSessionState()
-        invalidateNotificationActions()
+        invalidateActions()
     }
 
     override fun onRepeatChanged(repeatMode: RepeatMode) {
@@ -222,7 +234,7 @@ class MediaSessionComponent(
                 RepeatMode.ALL -> PlaybackStateCompat.REPEAT_MODE_ALL
             })
 
-        invalidateNotificationActions()
+        invalidateActions()
     }
 
     override fun onShuffledChanged(isShuffled: Boolean) {
@@ -233,7 +245,7 @@ class MediaSessionComponent(
                 PlaybackStateCompat.SHUFFLE_MODE_NONE
             })
 
-        invalidateNotificationActions()
+        invalidateActions()
     }
 
     // --- SETTINGSMANAGER CALLBACKS ---
@@ -243,7 +255,7 @@ class MediaSessionComponent(
             context.getString(R.string.set_key_show_covers),
             context.getString(R.string.set_key_quality_covers) ->
                 updateMediaMetadata(playbackManager.song, playbackManager.parent)
-            context.getString(R.string.set_key_alt_notif_action) -> invalidateNotificationActions()
+            context.getString(R.string.set_key_alt_notif_action) -> invalidateActions()
         }
     }
 
@@ -262,7 +274,7 @@ class MediaSessionComponent(
             // when we invalidate the state (that will cause us to be rate-limited), and also not
             // always when we seek (that will also cause us to be rate-limited). Someone looked at
             // this system and said it was well-designed.
-            callback.onPostNotification(notification, "position discontinuity")
+            callback.onPostNotification(notification, PostingReason.POSITION)
         }
     }
 
@@ -280,7 +292,7 @@ class MediaSessionComponent(
 
     override fun onPlayFromSearch(query: String?, extras: Bundle?) {
         super.onPlayFromSearch(query, extras)
-        // STUB: Unimplemented
+        // STUB: Unimplemented, no media browser
     }
 
     override fun onAddQueueItem(description: MediaDescriptionCompat?) {
@@ -345,6 +357,14 @@ class MediaSessionComponent(
         }
     }
 
+    override fun onCustomAction(action: String?, extras: Bundle?) {
+        super.onCustomAction(action, extras)
+
+        // Service already handles intents from the old notification actions, easier to
+        // plug into that system.
+        context.sendBroadcast(Intent(action))
+    }
+
     override fun onStop() {
         // Get the service to shut down with the ACTION_EXIT intent
         context.sendBroadcast(Intent(PlaybackService.ACTION_EXIT))
@@ -360,7 +380,6 @@ class MediaSessionComponent(
         // aggressively batch notification updates to prevent rate-limiting.
         // Android 13 seems to resolve these, but I'm still stuck with these issues below that
         // version.
-        // TODO: Add the custom actions for Android 13
         val state =
             PlaybackStateCompat.Builder()
                 .setActions(ACTIONS)
@@ -376,20 +395,56 @@ class MediaSessionComponent(
 
         state.setState(playerState, player.currentPosition, 1.0f, SystemClock.elapsedRealtime())
 
+        // Android 13+ leverages custom actions.
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val extraAction =
+                if (settings.useAltNotifAction) {
+                    PlaybackStateCompat.CustomAction.Builder(
+                        PlaybackService.ACTION_INVERT_SHUFFLE,
+                        context.getString(R.string.desc_change_repeat),
+                        if (playbackManager.isShuffled) {
+                            R.drawable.ic_shuffle_on_24
+                        } else {
+                            R.drawable.ic_shuffle_off_24
+                        })
+                } else {
+                    PlaybackStateCompat.CustomAction.Builder(
+                        PlaybackService.ACTION_INC_REPEAT_MODE,
+                        context.getString(R.string.desc_change_repeat),
+                        playbackManager.repeatMode.icon)
+                }
+
+            val exitAction =
+                PlaybackStateCompat.CustomAction.Builder(
+                        PlaybackService.ACTION_EXIT,
+                        context.getString(R.string.desc_exit),
+                        R.drawable.ic_close_24)
+                    .build()
+
+            state.addCustomAction(extraAction.build())
+            state.addCustomAction(exitAction)
+        }
+
         mediaSession.setPlaybackState(state.build())
     }
 
-    private fun invalidateNotificationActions() {
-        notification.updatePlaying(playbackManager.isPlaying)
+    private fun invalidateActions() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            notification.updatePlaying(playbackManager.isPlaying)
 
-        if (settings.useAltNotifAction) {
-            notification.updateShuffled(playbackManager.isShuffled)
+            if (settings.useAltNotifAction) {
+                notification.updateShuffled(playbackManager.isShuffled)
+            } else {
+                notification.updateRepeatMode(playbackManager.repeatMode)
+            }
         } else {
-            notification.updateRepeatMode(playbackManager.repeatMode)
+            // Update custom actions instead of the notification
+            invalidateSessionState()
         }
 
         if (!provider.isBusy) {
-            callback.onPostNotification(notification, "new notification actions")
+            callback.onPostNotification(notification, PostingReason.ACTIONS)
         }
     }
 

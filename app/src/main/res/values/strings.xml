@@ -250,6 +250,7 @@
     <string name="desc_change_repeat">Change repeat mode</string>
     <string name="desc_shuffle">Turn shuffle on or off</string>
     <string name="desc_shuffle_all">Shuffle all songs</string>
+    <string name="desc_exit">Stop playback</string>
 
     <string name="desc_clear_queue_item">Remove this queue song</string>
     <string name="desc_queue_handle">Move this queue song</string>

@@ -111,7 +111,6 @@ class WidgetComponent(private val context: Context) :
                                 RoundedCornersTransformation(cornerRadius.toFloat()))
                     } else {
                         // Divide by two to really make sure we aren't hitting the memory limit.
-
                         builder.size(computeSize(sw, sh, 2f))
                     }
                 }

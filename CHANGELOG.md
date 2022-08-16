@@ -2,6 +2,12 @@
 
 ## dev
 
+#### What's New
+- Added Android 13 support [#129]
+    - Switch to new storage permissions
+    - Add monochrome icon
+    - Fix issue where widget covers would not load
+
 #### What's Improved
 - Playback bar now has a marquee effect
 - Added a way to access the system equalizer from the playback menu.

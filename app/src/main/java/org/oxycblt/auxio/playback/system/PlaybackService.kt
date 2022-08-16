@@ -106,15 +106,40 @@ class PlaybackService :
     override fun onCreate() {
         super.onCreate()
 
-        foregroundManager = ForegroundManager(this)
-
-        // --- PLAYER SETUP ---
-
         replayGainProcessor = ReplayGainAudioProcessor(this)
 
-        player = newPlayer()
+        // Since Auxio is a music player, only specify an audio renderer to save
+        // battery/apk size/cache size
+        val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
+            arrayOf(
+                MediaCodecAudioRenderer(
+                    this,
+                    MediaCodecSelector.DEFAULT,
+                    handler,
+                    audioListener,
+                    AudioCapabilities.DEFAULT_AUDIO_CAPABILITIES,
+                    replayGainProcessor),
+                LibflacAudioRenderer(handler, audioListener, replayGainProcessor))
+        }
+
+        // Enable constant bitrate seeking so that certain MP3s/AACs are seekable
+        val extractorsFactory = DefaultExtractorsFactory().setConstantBitrateSeekingEnabled(true)
+
+        player =
+            ExoPlayer.Builder(this, audioRenderer)
+                .setMediaSourceFactory(DefaultMediaSourceFactory(this, extractorsFactory))
+                .setWakeMode(C.WAKE_MODE_LOCAL)
+                .setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(C.USAGE_MEDIA)
+                        .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                        .build(),
+                    true)
+                .build()
+
         player.addListener(this)
 
+        playbackManager.registerController(this)
         positionScope.launch {
             while (true) {
                 playbackManager.synchronizePosition(this@PlaybackService, player.currentPosition)
@@ -122,7 +147,8 @@ class PlaybackService :
             }
         }
 
-        // --- SYSTEM SETUP ---
+        settings = Settings(this, this)
+        foregroundManager = ForegroundManager(this)
 
         widgetComponent = WidgetComponent(this)
         mediaSessionComponent = MediaSessionComponent(this, player, this)
@@ -143,9 +169,6 @@ class PlaybackService :
         }
 
         // --- PLAYBACKSTATEMANAGER SETUP ---
-
-        settings = Settings(this, this)
-        playbackManager.registerController(this)
 
         logD("Service created")
     }
@@ -281,6 +304,26 @@ class PlaybackService :
         }
     }
 
+    private fun broadcastAudioEffectAction(event: String) {
+        sendBroadcast(
+            Intent(event)
+                .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
+                .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
+                .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC))
+    }
+
+    /** Stop the foreground state and hide the notification */
+    private fun stopAndSave() {
+        hasPlayed = false
+
+        if (foregroundManager.tryStopForeground()) {
+            logD("Saving playback state")
+            saveScope.launch {
+                playbackManager.saveState(PlaybackStateDatabase.getInstance(this@PlaybackService))
+            }
+        }
+    }
+
     override fun seekTo(positionMs: Long) {
         logD("Seeking to ${positionMs}ms")
         player.seekTo(positionMs)
@@ -293,7 +336,10 @@ class PlaybackService :
         player.playWhenReady = isPlaying
     }
 
-    override fun onPostNotification(notification: NotificationComponent?, reason: String) {
+    override fun onPostNotification(
+        notification: NotificationComponent?,
+        reason: MediaSessionComponent.PostingReason
+    ) {
         if (notification == null) {
             // This case is only here if I ever need to move foreground stopping from
             // the player code to the notification code.
@@ -320,55 +366,6 @@ class PlaybackService :
     }
 
     // --- OTHER FUNCTIONS ---
-
-    /** Create the [ExoPlayer] instance. */
-    private fun newPlayer(): ExoPlayer {
-        // Since Auxio is a music player, only specify an audio renderer to save
-        // battery/apk size/cache size
-        val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
-            arrayOf(
-                MediaCodecAudioRenderer(
-                    this,
-                    MediaCodecSelector.DEFAULT,
-                    handler,
-                    audioListener,
-                    AudioCapabilities.DEFAULT_AUDIO_CAPABILITIES,
-                    replayGainProcessor),
-                LibflacAudioRenderer(handler, audioListener, replayGainProcessor))
-        }
-
-        // Enable constant bitrate seeking so that certain MP3s/AACs are seekable
-        val extractorsFactory = DefaultExtractorsFactory().setConstantBitrateSeekingEnabled(true)
-
-        return ExoPlayer.Builder(this, audioRenderer)
-            .setMediaSourceFactory(DefaultMediaSourceFactory(this, extractorsFactory))
-            .setWakeMode(C.WAKE_MODE_LOCAL)
-            .setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(C.USAGE_MEDIA)
-                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
-                    .build(),
-                true)
-            .build()
-    }
-
-    private fun broadcastAudioEffectAction(event: String) {
-        sendBroadcast(
-            Intent(event)
-                .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
-                .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
-                .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC))
-    }
-
-    /** Stop the foreground state and hide the notification */
-    private fun stopAndSave() {
-        if (foregroundManager.tryStopForeground()) {
-            logD("Saving playback state")
-            saveScope.launch {
-                playbackManager.saveState(PlaybackStateDatabase.getInstance(this@PlaybackService))
-            }
-        }
-    }
 
     /** A [BroadcastReceiver] for receiving general playback events from the system. */
     private inner class PlaybackReceiver : BroadcastReceiver() {
