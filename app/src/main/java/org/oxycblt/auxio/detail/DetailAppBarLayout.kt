@@ -56,7 +56,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         (layoutParams as CoordinatorLayout.LayoutParams).behavior = Behavior(context)
     }
 
-    private fun findTitleView(): AppCompatTextView? {
+    private fun findTitleView(): AppCompatTextView {
         val titleView = titleView
         if (titleView != null) {
             return titleView
@@ -106,11 +106,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             to = 0f
         }
 
-        if (titleView?.alpha == to) return
+        if (titleView.alpha == to) return
 
         this.titleAnimator =
             ValueAnimator.ofFloat(from, to).apply {
-                addUpdateListener { titleView?.alpha = it.animatedValue as Float }
+                addUpdateListener { titleView.alpha = it.animatedValue as Float }
                 duration = TOOLBAR_FADE_DURATION
                 start()
             }

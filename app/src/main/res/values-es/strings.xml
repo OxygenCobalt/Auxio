@@ -67,7 +67,6 @@
     <string name="set_alt_shuffle">Preferir acción de mezcla</string>
     <string name="set_audio">Sonido</string>
     <string name="set_replay_gain">ReplayGain</string>
-    <string name="set_replay_gain_off">Desactivado</string>
     <string name="set_replay_gain_track">Por pista</string>
     <string name="set_replay_gain_album">Por álbum</string>
     <string name="set_replay_gain_dynamic">Preferir el álbum si se está en reproducción</string>

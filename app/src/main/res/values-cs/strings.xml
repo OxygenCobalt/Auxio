@@ -46,7 +46,6 @@
     <string name="lbl_cancel">@android:string/cancel</string>
     <string name="lbl_add">Přidat</string>
     <string name="lbl_save">Uložit</string>
-    <string name="set_replay_gain_off">Vyp</string>
     <string name="lbl_about">O aplikaci</string>
     <string name="lbl_version">Verze</string>
     <string name="lbl_code">Zdrojový kód</string>

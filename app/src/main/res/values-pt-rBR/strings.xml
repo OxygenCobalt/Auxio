@@ -205,7 +205,6 @@
     <string name="set_round_mode">Modo redondo</string>
     <string name="set_bar_action_next">Pular para o próximo</string>
     <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
-    <string name="set_replay_gain_off">Desativar</string>
     <string name="set_playback_mode_album">Reproduzir do álbum</string>
     <string name="set_save_state">Salvar estado de reprodução</string>
     <string name="set_wipe_state">Limpar estado de reprodução</string>

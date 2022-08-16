@@ -45,7 +45,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import org.oxycblt.auxio.R
 
 /**
  * Determines if the point given by [x] and [y] falls within this view.

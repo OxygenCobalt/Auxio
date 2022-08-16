@@ -143,7 +143,6 @@
     <string name="fmt_lib_total_duration">Totale duur: %s</string>
     <string name="lbl_shuffle_shortcut_long">Shuffle Alles</string>
     <string name="lbl_ok">@android:string/ok</string>
-    <string name="set_replay_gain_off">Uit</string>
     <string name="set_headset_autoplay_desc">Altijd beginnen met spelen als een headset is aangesloten (werkt mogelijk niet op alle apparaten)</string>
     <string name="desc_shuffle">Schakel shuffle aan of uit</string>
     <string name="set_reindex_desc">Kan afspeelstatus wissen</string>

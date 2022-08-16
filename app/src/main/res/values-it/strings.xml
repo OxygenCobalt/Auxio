@@ -86,7 +86,6 @@
     <string name="set_save_desc">Salva lo stato di riproduzione corrente</string>
     <string name="set_reindex">Ricarica musica</string>
     <string name="set_reindex_desc">Potrebbe cancellare lo stato di riproduzione</string>
-    <string name="set_replay_gain_off">Spento</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Musica non trovata</string>
     <string name="err_index_failed">Caricamento musica fallito</string>

@@ -91,7 +91,6 @@
     <string name="lbl_save">Enregistrer</string>
     <string name="lbl_size">Taille</string>
     <string name="lbl_add">Ajouter</string>
-    <string name="set_replay_gain_off">Désactivé</string>
     <string name="set_display">Affichage</string>
     <string name="set_show_covers">Afficher les pochettes d\'album</string>
     <string name="set_lib_tabs">Onglets de la bibliothèque</string>

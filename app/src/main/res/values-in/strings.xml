@@ -68,7 +68,6 @@
     <string name="set_headset_autoplay">Putar otomatis headset</string>
     <string name="set_headset_autoplay_desc">Selalu mulai bermain ketika headset tersambung (mungkin tidak berfungsi pada semua perangkat)</string>
     <string name="set_replay_gain">ReplayGain</string>
-    <string name="set_replay_gain_off">Off</string>
     <string name="lbl_relative_path">Jalur induk</string>
     <string name="lbl_size">Ukuran</string>
     <string name="lbl_sample_rate">Tingkat sampel</string>

@@ -85,7 +85,6 @@
     <string name="set_save_desc">立即保存当前播放状态</string>
     <string name="set_reindex">重新加载音乐</string>
     <string name="set_reindex_desc">可能会抹除播放状态</string>
-    <string name="set_replay_gain_off">关闭</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">没有找到音乐</string>
     <string name="err_index_failed">加载音乐失败</string>

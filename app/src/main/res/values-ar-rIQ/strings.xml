@@ -81,7 +81,6 @@
 
     <string name="set_audio">صوتيات</string>
     <string name="set_replay_gain">صخب الصوت</string>
-    <string name="set_replay_gain_off">اطفاء</string>
     <string name="set_replay_gain_track">تفضيل المقطع</string>
     <string name="set_replay_gain_album">تفضيل الالبوم</string>
     <string name="set_replay_gain_dynamic">ديناميكي</string>
