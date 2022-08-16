@@ -7,6 +7,7 @@
     - Switch to new storage permissions
     - Add monochrome icon
     - Fix issue where widget covers would not load
+    - Use new media notification panel style
 
 #### What's Improved
 - Playback bar now has a marquee effect

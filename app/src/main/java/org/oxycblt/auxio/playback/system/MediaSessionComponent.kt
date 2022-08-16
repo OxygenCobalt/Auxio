@@ -45,9 +45,9 @@ import org.oxycblt.auxio.util.logD
  *
  * MediaSession is easily one of the most poorly thought out APIs in Android. It tries to hard to be
  * hElpfUl and implement so many fundamental behaviors into a one-size-fits-all package that it only
- * ends up causing unending bugs and frustrating. The queue system is horribly designed, the
- * playback state system has unending coherency bugs, and the overstretched abstractions result in
- * god-awful performance bottlenecks and insane state bugs.
+ * ends up causing bugs and frustration. The queue system is horribly designed, the playback state
+ * system has unending coherency issues, and the overstretched abstractions result in god-awful
+ * performance bottlenecks and insane state bugs.
  *
  * The sheer absurdity of the hoops we have jump through to get this working in an okay manner is
  * the reason why Auxio only mirrors a saner playback state to the media session instead of relying
@@ -56,9 +56,16 @@ import org.oxycblt.auxio.util.logD
  * while also keeping in mind the absurd rate limiting system in place just to have a sort-of
  * coherent state. And even then it will break if you skip too much.
  *
+ * Google, please replace this API. No, don't paper it over with even more broken abstractions.
+ * Replace it. Please.
+ *
  * @author OxygenCobalt
  *
  * TODO: Remove the player callback once smooth seeking is implemented
+ *
+ * TODO: Rework what is considered to "start foreground" and what is not from the context of this
+ *  object. This could help reduce the amount of post calls I send on Android 13 onwards,
+ *  hopefully.
  */
 class MediaSessionComponent(
     private val context: Context,
@@ -223,7 +230,17 @@ class MediaSessionComponent(
 
     override fun onPlayingChanged(isPlaying: Boolean) {
         invalidateSessionState()
-        invalidateActions()
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            // Android 13 automatically handles the playing state.
+            notification.updatePlaying(playbackManager.isPlaying)
+        }
+
+        if (!provider.isBusy) {
+            // Still probably want to start the notification though regardless of the version,
+            // as playback is starting.
+            callback.onPostNotification(notification, PostingReason.ACTIONS)
+        }
     }
 
     override fun onRepeatChanged(repeatMode: RepeatMode) {
@@ -234,7 +251,7 @@ class MediaSessionComponent(
                 RepeatMode.ALL -> PlaybackStateCompat.REPEAT_MODE_ALL
             })
 
-        invalidateActions()
+        invalidateSecondaryAction()
     }
 
     override fun onShuffledChanged(isShuffled: Boolean) {
@@ -245,7 +262,7 @@ class MediaSessionComponent(
                 PlaybackStateCompat.SHUFFLE_MODE_NONE
             })
 
-        invalidateActions()
+        invalidateSecondaryAction()
     }
 
     // --- SETTINGSMANAGER CALLBACKS ---
@@ -255,7 +272,7 @@ class MediaSessionComponent(
             context.getString(R.string.set_key_show_covers),
             context.getString(R.string.set_key_quality_covers) ->
                 updateMediaMetadata(playbackManager.song, playbackManager.parent)
-            context.getString(R.string.set_key_alt_notif_action) -> invalidateActions()
+            context.getString(R.string.set_key_alt_notif_action) -> invalidateSecondaryAction()
         }
     }
 
@@ -378,8 +395,6 @@ class MediaSessionComponent(
         // Note: Due to metadata updates being delayed but playback remaining ongoing, the position
         // will be wonky until we can upload a duration. Again, this ties back to how I must
         // aggressively batch notification updates to prevent rate-limiting.
-        // Android 13 seems to resolve these, but I'm still stuck with these issues below that
-        // version.
         val state =
             PlaybackStateCompat.Builder()
                 .setActions(ACTIONS)
@@ -429,18 +444,15 @@ class MediaSessionComponent(
         mediaSession.setPlaybackState(state.build())
     }
 
-    private fun invalidateActions() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            notification.updatePlaying(playbackManager.isPlaying)
-
+    private fun invalidateSecondaryAction() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            invalidateSessionState()
+        } else {
             if (settings.useAltNotifAction) {
                 notification.updateShuffled(playbackManager.isShuffled)
             } else {
                 notification.updateRepeatMode(playbackManager.repeatMode)
             }
-        } else {
-            // Update custom actions instead of the notification
-            invalidateSessionState()
         }
 
         if (!provider.isBusy) {
