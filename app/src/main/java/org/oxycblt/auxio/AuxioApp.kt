@@ -51,8 +51,8 @@ class AuxioApp : Application(), ImageLoaderFactory {
                     .build()))
     }
 
-    override fun newImageLoader(): ImageLoader {
-        return ImageLoader.Builder(applicationContext)
+    override fun newImageLoader() =
+        ImageLoader.Builder(applicationContext)
             .components {
                 add(AlbumCoverFetcher.SongFactory())
                 add(AlbumCoverFetcher.AlbumFactory())
@@ -63,7 +63,6 @@ class AuxioApp : Application(), ImageLoaderFactory {
             .transitionFactory(CrossfadeTransitionFactory())
             .diskCachePolicy(CachePolicy.DISABLED) // Not downloading anything, so no disk-caching
             .build()
-    }
 
     companion object {
         const val SHORTCUT_SHUFFLE_ID = "shortcut_shuffle"
