@@ -95,27 +95,24 @@ class WidgetComponent(private val context: Context) :
                         }
 
                     // We resize the image in a such a way that we don't hit the RemoteView size
-                    // limit, which is the size of an RGB_8888 bitmap 1.5x the screen size. When
-                    // enabling rounded corners, we further reduce it by a factor of 8 to get 16-dp
-                    // rounded corners, whereas we only downsize it by 2 when there is rounded
-                    // corners just to ensure that we *really* do not hit the memory limit.
+                    // limit, which is the size of an RGB_8888 bitmap 1.5x the screen size.
                     val metrics = context.resources.displayMetrics
                     val sw = metrics.widthPixels
                     val sh = metrics.heightPixels
 
                     return if (cornerRadius > 0) {
-                        this@WidgetComponent.logD("Loading round covers: $cornerRadius")
-
+                        // Reduce the size by 10x, not only to make 16dp-ish corners, but also
+                        // to work around a bug in Android 13 where the bitmaps aren't pooled
+                        // properly, massively reducing the memory size we can work with.
                         builder
-                            .size(sqrt((6f / 4f / 8f) * sw * sh).toInt())
+                            .size(computeSize(sw, sh, 10f))
                             .transformations(
                                 SquareFrameTransform.INSTANCE,
-                                // RoundedCornersTransformation is used instead of clipToOutline
-                                // since our hack to get a 1:1 cover on the widget actually does
-                                // not result in a square view, making clipToOutline not work.
                                 RoundedCornersTransformation(cornerRadius.toFloat()))
                     } else {
-                        builder.size(sqrt((6f / 4f / 2f) * sw * sh).toInt())
+                        // Divide by two to really make sure we aren't hitting the memory limit.
+
+                        builder.size(computeSize(sw, sh, 2f))
                     }
                 }
 
@@ -125,6 +122,9 @@ class WidgetComponent(private val context: Context) :
                 }
             })
     }
+
+    private fun computeSize(sw: Int, sh: Int, modifier: Float) =
+        sqrt((6f / 4f / modifier) * sw * sh).toInt()
 
     /*
      * Release this instance, removing the callbacks and resetting all widgets

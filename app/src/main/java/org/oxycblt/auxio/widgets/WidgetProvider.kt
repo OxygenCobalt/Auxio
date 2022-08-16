@@ -63,7 +63,15 @@ class WidgetProvider : AppWidgetProvider() {
                 SizeF(180f, 272f) to createMediumWidget(context, state),
                 SizeF(272f, 272f) to createLargeWidget(context, state))
 
-        AppWidgetManager.getInstance(context).updateAppWidgetCompat(context, views)
+        val awm = AppWidgetManager.getInstance(context)
+
+        try {
+            awm.updateAppWidgetCompat(context, views)
+        } catch (e: Exception) {
+            logW("Unable to update widget: $e")
+            awm.updateAppWidget(
+                ComponentName(context, this::class.java), createDefaultWidget(context))
+        }
     }
 
     /*
@@ -158,21 +166,12 @@ class WidgetProvider : AppWidgetProvider() {
                     }
                 }
 
-                val layout = candidates.maxByOrNull { it.height * it.width }
+                val layout =
+                    candidates.maxByOrNull { it.height * it.width }
+                        ?: unlikelyToBeNull(views.minOfOrNull { it.key.width * it.key.height })
 
-                if (layout != null) {
-                    logD("Using widget layout $layout")
-                    updateAppWidget(id, views[layout])
-                    continue
-                } else {
-                    // Default to the smallest view if no layout fits
-                    logW("No good widget layout found")
-
-                    val minimum =
-                        unlikelyToBeNull(views.minByOrNull { it.key.width * it.key.height }).value
-
-                    updateAppWidget(id, minimum)
-                }
+                logD("Using widget layout $layout")
+                updateAppWidget(id, views[layout])
             }
         }
     }
