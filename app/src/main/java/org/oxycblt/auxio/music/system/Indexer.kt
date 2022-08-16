@@ -132,7 +132,7 @@ class Indexer {
         val handle = guard.newHandle()
 
         val notGranted =
-            ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) ==
+            ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
                 PackageManager.PERMISSION_DENIED
 
         if (notGranted) {
@@ -461,6 +461,14 @@ class Indexer {
 
     companion object {
         @Volatile private var INSTANCE: Indexer? = null
+
+        val PERMISSION_READ_AUDIO =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // READ_EXTERNAL_STORAGE was superseded by READ_MEDIA_AUDIO in Android 13
+                Manifest.permission.READ_MEDIA_AUDIO
+            } else {
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            }
 
         /** Get the process-level instance of [Indexer]. */
         fun getInstance(): Indexer {

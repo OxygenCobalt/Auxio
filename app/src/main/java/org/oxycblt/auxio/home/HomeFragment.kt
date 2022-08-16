@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.home
 
-import android.Manifest
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -325,8 +324,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                         visibility = View.VISIBLE
                         text = context.getString(R.string.lbl_grant)
                         setOnClickListener {
-                            storagePermissionLauncher.launch(
-                                Manifest.permission.READ_EXTERNAL_STORAGE)
+                            storagePermissionLauncher.launch(Indexer.PERMISSION_READ_AUDIO)
                         }
                     }
                 }
