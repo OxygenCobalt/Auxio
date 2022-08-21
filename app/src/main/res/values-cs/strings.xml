@@ -41,9 +41,9 @@
     <string name="lbl_go_album">Přejít na album</string>
     <string name="lbl_state_saved">Stav uložen</string>
     <!-- Actual string: Ok -->
-    <string name="lbl_ok">@android:string/ok</string>
+    <string name="lbl_ok">OK</string>
     <!-- Actual string: Cancel -->
-    <string name="lbl_cancel">@android:string/cancel</string>
+    <string name="lbl_cancel">Zrušit</string>
     <string name="lbl_add">Přidat</string>
     <string name="lbl_save">Uložit</string>
     <string name="lbl_about">O aplikaci</string>
@@ -78,7 +78,7 @@
     <string name="set_audio">Zvuk</string>
     <string name="set_headset_autoplay">Automatické přehrávání se sluchátky</string>
     <string name="set_headset_autoplay_desc">Při připojení sluchátek vždy spustit přehrávání (nemusí fungovat na všech zařízeních)</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">Strategie ReplayGain</string>
     <string name="set_replay_gain_track">Preferovat stopu</string>
     <string name="set_replay_gain_album">Preferovat album</string>
     <string name="set_replay_gain_dynamic">Preferovat album, pokud se právě přehrává</string>
@@ -104,7 +104,7 @@
     <string name="err_no_music">Nenalezena žádná hudba</string>
     <string name="err_index_failed">Načítání hudby selhalo</string>
     <string name="err_no_perms">Auxio potřebuje oprávnění ke čtení vaší hudební knihovny</string>
-    <string name="err_no_app">Žádná aplikace nedokáže otevřít tento odkaz</string>
+    <string name="err_no_app">Nebyla nalezena žádná aplikace, která by dokázala vykonat tuto akci</string>
     <string name="err_no_dirs">Žádné složky</string>
     <string name="err_bad_dir">Tato složka není podporována</string>
     <!-- Hint Namespace | EditText Hints -->
@@ -242,4 +242,6 @@
     <string name="set_bar_action_next">Přeskočit na další</string>
     <string name="set_bar_action_repeat">Režim opakování</string>
     <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
+    <string name="lbl_equalizer">Ekvalizér</string>
+    <string name="desc_exit">Zastavit přehrávání</string>
 </resources>

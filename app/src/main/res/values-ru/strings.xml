@@ -153,7 +153,7 @@
     <string name="lbl_observing">Мониторинг музыкальной библиотеки</string>
     <string name="lbl_shuffle_shortcut_short">Перемешать</string>
     <string name="lbl_shuffle_shortcut_long">Перемешать всё</string>
-    <string name="lbl_ok">@android:string/ok</string>
+    <string name="lbl_ok">ОК</string>
     <string name="set_detail_song_playback_mode">При воспроизведении из сведений</string>
     <string name="set_playback_mode_none">Воспроизведение с показанного элемента</string>
     <string name="lbl_sort_count">Номер песни</string>
@@ -161,7 +161,7 @@
     <string name="lbl_sort_disc">Диск</string>
     <string name="lbl_sort_track">Трек</string>
     <string name="lbl_state_restored">Состояние восстановлено</string>
-    <string name="lbl_cancel">@android:string/cancel</string>
+    <string name="lbl_cancel">Отмена</string>
     <string name="set_pre_amp_warning">Внимание: Изменение предусилителя на большое положительное значение может привести к появлению искажений на некоторых звуковых дорожках.</string>
     <string name="lbl_song_detail">Свойства</string>
     <string name="lbl_props">Свойства песни</string>
@@ -237,4 +237,5 @@
     <string name="set_bar_action_next">Перейти к следующей</string>
     <string name="set_bar_action_repeat">Режим повтора</string>
     <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
+    <string name="lbl_equalizer">Эквалайзер</string>
 </resources>

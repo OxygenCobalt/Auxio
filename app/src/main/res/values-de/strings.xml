@@ -57,7 +57,7 @@
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Kopfhörer: automatische Wiedergabe</string>
     <string name="set_headset_autoplay_desc">Beginne die Wiedergabe immer, wenn Kopfhörer verbunden sind (funktioniert nicht auf allen Geräten)</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">ReplayGain-Strategie</string>
     <string name="set_pre_amp">ReplayGain-Prälautverstärkung</string>
     <string name="set_pre_amp_desc">Während der Musikwiedergabe, trifft die Prälautverstärkung dem aktuellem Abgleich zu</string>
     <string name="set_pre_amp_with">Abgleich mit Metadaten</string>
@@ -79,7 +79,7 @@
     <string name="err_no_music">Keine Musik gefunden</string>
     <string name="err_index_failed">Laden der Musik fehlgeschlagen</string>
     <string name="err_no_perms">Auxio benötigt die Berechtigung, um deine Musikbibliothek zu lesen</string>
-    <string name="err_no_app">Link konnte nicht geöffnet werden</string>
+    <string name="err_no_app">Es konnte keine App gefunden werden, die diese Aufgabe übernehmen kann</string>
     <string name="err_bad_dir">Das Verzeichnis wird nicht unterstützt</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Musikbibliothek durchsuchen…</string>
@@ -230,4 +230,10 @@
     <string name="lbl_state_wiped">Zustand gelöscht</string>
     <string name="desc_queue_bar">Warteschlange öffnen</string>
     <string name="set_wipe_state">Wiedergabezustand löschen</string>
+    <string name="lbl_genre">Genre</string>
+    <string name="lbl_equalizer">Equalizer</string>
+    <string name="set_bar_action">Angepasste Wiedergabeaktionstaste</string>
+    <string name="set_bar_action_next">Zum nächsten Song gehen</string>
+    <string name="set_bar_action_repeat">Wiederholungsmodus</string>
+    <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
 </resources>
