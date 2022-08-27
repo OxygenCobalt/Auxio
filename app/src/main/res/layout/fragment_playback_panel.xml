@@ -138,7 +138,7 @@
                 app:layout_constraintStart_toEndOf="@+id/playback_repeat"
                 app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
-            <com.google.android.material.button.MaterialButton
+            <org.oxycblt.auxio.playback.AnimatedMaterialButton
                 android:id="@+id/playback_play_pause"
                 style="@style/Widget.Auxio.Button.PlayPause"
                 android:layout_width="wrap_content"

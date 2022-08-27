@@ -145,13 +145,22 @@ private fun RemoteViews.applyPlayPauseControls(
         R.id.widget_play_pause,
         context.newBroadcastPendingIntent(PlaybackService.ACTION_PLAY_PAUSE))
 
-    setImageViewResource(
-        R.id.widget_play_pause,
-        if (state.isPlaying) {
-            R.drawable.ic_pause_24
-        } else {
-            R.drawable.ic_play_24
-        })
+    // Like the Android 13 media controls, use a circular fab when paused, and a squircle fab
+    // when playing.
+
+    val icon: Int
+    val container: Int
+
+    if (state.isPlaying) {
+        icon = R.drawable.ic_pause_24
+        container = R.drawable.ui_remote_fab_container_playing
+    } else {
+        icon = R.drawable.ic_play_24
+        container = R.drawable.ui_remote_fab_container_paused
+    }
+
+    setImageViewResource(R.id.widget_play_pause, icon)
+    setInt(R.id.widget_play_pause, "setBackgroundResource", container)
 
     return this
 }

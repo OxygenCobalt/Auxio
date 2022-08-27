@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.playback
 
+import android.animation.ValueAnimator
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.media.audiofx.AudioEffect
@@ -49,8 +50,10 @@ class PlaybackPanelFragment :
     MenuFragment<FragmentPlaybackPanelBinding>(),
     StyledSeekBar.Callback,
     Toolbar.OnMenuItemClickListener {
+    private var animator: ValueAnimator? = null
+    private var radius = 0.3f
 
-    // AudioEffect expects you to use startActivityFoResult with the panel intent. Use
+    // AudioEffect expects you to use startActivityForResult with the panel intent. Use
     // the contract analogue for this since there is no built-in contract for AudioEffect.
     private val activityLauncher by lifecycleObject {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -179,7 +182,7 @@ class PlaybackPanelFragment :
     }
 
     private fun updatePlaying(isPlaying: Boolean) {
-        requireBinding().playbackPlayPause.apply { isActivated = isPlaying }
+        requireBinding().playbackPlayPause.isActivated = isPlaying
     }
 
     private fun updateShuffled(isShuffled: Boolean) {

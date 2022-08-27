@@ -87,7 +87,7 @@
     <!-- A variant of button that emulates a FAB-ish button that plays along with widget restrictions -->
     <style name="Widget.Auxio.MaterialButton.AppWidget.PlayPause" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:minWidth">@dimen/size_btn</item>
-        <item name="android:background">@drawable/ui_remote_fab_bg</item>
+        <item name="android:background">@drawable/ui_remote_fab_container_paused</item>
         <item name="android:tint">?attr/colorOnPrimary</item>
     </style>
 </resources>
