@@ -9,6 +9,7 @@
     - Fix issue where widget covers would not load
     - Use new media notification panel style
     - Add predictive back navigation
+- Auxio has a new, more refined icon style
 
 #### What's Improved
 - Playback bar now has a marquee effect
@@ -19,6 +20,8 @@
 - Fixed "@android:string/<ok/cancel>" strings from appearing in dialog
 buttons
 - Fixed issue where LG phones would not show metadata in the notification 
+- Fixed issue where the transition would be wrong when navigating out of the
+detail views after a rotation
 
 #### What's Changed
 - Menus are now opened using a new button to the side of all items
