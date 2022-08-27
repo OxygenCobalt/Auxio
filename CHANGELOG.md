@@ -24,7 +24,6 @@ buttons
 detail views after a rotation
 
 #### What's Changed
-- Menus are now opened using a new button to the side of all items
 - ReplayGain can now no longer be disabled. Remove ReplayGain tags from
 files if such functionality is not desired. 
 

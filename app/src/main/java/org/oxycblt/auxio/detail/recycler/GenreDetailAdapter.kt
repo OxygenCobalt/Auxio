@@ -22,12 +22,10 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemDetailBinding
-import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.recycler.BindingViewHolder
 import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
 import org.oxycblt.auxio.util.context
@@ -47,7 +45,7 @@ class GenreDetailAdapter(listener: Listener) :
         super.getCreatorFromItem(item)
             ?: when (item) {
                 is Genre -> GenreDetailViewHolder.CREATOR
-                is Song -> GenreSongViewHolder.CREATOR
+                is Song -> SongViewHolder.CREATOR
                 else -> null
             }
 
@@ -55,7 +53,7 @@ class GenreDetailAdapter(listener: Listener) :
         super.getCreatorFromViewType(viewType)
             ?: when (viewType) {
                 GenreDetailViewHolder.CREATOR.viewType -> GenreDetailViewHolder.CREATOR
-                GenreSongViewHolder.CREATOR.viewType -> GenreSongViewHolder.CREATOR
+                SongViewHolder.CREATOR.viewType -> SongViewHolder.CREATOR
                 else -> null
             }
 
@@ -69,7 +67,7 @@ class GenreDetailAdapter(listener: Listener) :
         if (payload.isEmpty()) {
             when (item) {
                 is Genre -> (viewHolder as GenreDetailViewHolder).bind(item, listener)
-                is Song -> (viewHolder as GenreSongViewHolder).bind(item, listener)
+                is Song -> (viewHolder as SongViewHolder).bind(item, listener)
                 else -> {}
             }
         }
@@ -92,7 +90,7 @@ class GenreDetailAdapter(listener: Listener) :
                         oldItem is Genre && newItem is Genre ->
                             GenreDetailViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
                         oldItem is Song && newItem is Song ->
-                            GenreSongViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            SongViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
                         else -> DetailAdapter.DIFFER.areContentsTheSame(oldItem, newItem)
                     }
                 }
@@ -130,29 +128,5 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
                         oldItem.songs.size == newItem.songs.size &&
                         oldItem.durationSecs == newItem.durationSecs
             }
-    }
-}
-
-class GenreSongViewHolder private constructor(private val binding: ItemSongBinding) :
-    BindingViewHolder<Song, MenuItemListener>(binding.root) {
-    override fun bind(item: Song, listener: MenuItemListener) {
-        binding.songAlbumCover.bind(item)
-        binding.songName.text = item.resolveName(binding.context)
-        binding.songInfo.text = item.resolveIndividualArtistName(binding.context)
-        binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.setOnClickListener { listener.onItemClick(item) }
-    }
-
-    companion object {
-        val CREATOR =
-            object : Creator<GenreSongViewHolder> {
-                override val viewType: Int
-                    get() = IntegerTable.ITEM_TYPE_GENRE_SONG
-
-                override fun create(context: Context) =
-                    GenreSongViewHolder(ItemSongBinding.inflate(context.inflater))
-            }
-
-        val DIFFER = SongViewHolder.DIFFER
     }
 }
