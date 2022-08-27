@@ -84,10 +84,9 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             // Orientation change will wipe whatever transition we were using prior, which will
             // result in no transition when the user navigates back. Make sure we re-initialize
             // our transitions.
-            if (savedInstanceState.getBoolean(KEY_INIT_WITH_SEARCH_TRANSITIONS)) {
-                initSearchTransitions()
-            } else {
-                initDetailTransitions()
+            val axis = savedInstanceState.getInt(KEY_LAST_TRANSITION_AXIS, -1)
+            if (axis > -1) {
+                initAxisTransitions(axis)
             }
         }
     }
@@ -152,7 +151,11 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putBoolean(KEY_INIT_WITH_SEARCH_TRANSITIONS, enterTransition is MaterialSharedAxis)
+        val enter = enterTransition
+        if (enter is MaterialSharedAxis) {
+            outState.putInt(KEY_LAST_TRANSITION_AXIS, enter.axis)
+        }
+
         super.onSaveInstanceState(outState)
     }
 
@@ -165,7 +168,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         when (item.itemId) {
             R.id.action_search -> {
                 logD("Navigating to search")
-                initSearchTransitions()
+                initAxisTransitions(MaterialSharedAxis.Z)
                 findNavController().navigate(HomeFragmentDirections.actionShowSearch())
             }
             R.id.action_settings -> {
@@ -376,23 +379,22 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 else -> return
             }
 
-        initDetailTransitions()
+        initAxisTransitions(MaterialSharedAxis.X)
 
         findNavController().navigate(action)
     }
 
-    private fun initSearchTransitions() {
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-    }
+    private fun initAxisTransitions(axis: Int) {
+        // Sanity check
+        if (axis != MaterialSharedAxis.X && axis != MaterialSharedAxis.Z) {
+            logW("Invalid axis provided")
+            return
+        }
 
-    private fun initDetailTransitions() {
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
-        returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
-        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
+        enterTransition = MaterialSharedAxis(axis, true)
+        returnTransition = MaterialSharedAxis(axis, false)
+        exitTransition = MaterialSharedAxis(axis, true)
+        reenterTransition = MaterialSharedAxis(axis, false)
     }
 
     /**
@@ -433,7 +435,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             lazyReflectedField(ViewPager2::class, "mRecyclerView")
         private val VIEW_PAGER_TOUCH_SLOP_FIELD: Field by
             lazyReflectedField(RecyclerView::class, "mTouchSlop")
-        private const val KEY_INIT_WITH_SEARCH_TRANSITIONS =
-            BuildConfig.APPLICATION_ID + ".key.INIT_WITH_SEARCH_TRANSITIONS"
+        private const val KEY_LAST_TRANSITION_AXIS =
+            BuildConfig.APPLICATION_ID + ".key.LAST_TRANSITION_AXIS"
     }
 }

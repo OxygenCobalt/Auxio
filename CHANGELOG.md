@@ -5,9 +5,10 @@
 #### What's New
 - Added Android 13 support [#129]
     - Switch to new storage permissions
-    - Add monochrome icon
+    - Add themed icon
     - Fix issue where widget covers would not load
     - Use new media notification panel style
+    - Add predictive back navigation
 
 #### What's Improved
 - Playback bar now has a marquee effect

@@ -53,9 +53,12 @@ class MainFragment :
     ViewBindingFragment<FragmentMainBinding>(), ViewTreeObserver.OnPreDrawListener {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
-    private var callback: DynamicBackPressedCallback? = null
+    private val callback = DynamicBackPressedCallback()
     private var lastInsets: WindowInsets? = null
-    private var elevationNormal = -1f
+
+    private val elevationNormal: Float by lifecycleObject { binding ->
+        binding.context.getDimen(R.dimen.elevation_normal)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,10 +72,7 @@ class MainFragment :
         // --- UI SETUP ---
         val context = requireActivity()
 
-        context.onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner, DynamicBackPressedCallback().also { callback = it })
-
-        elevationNormal = requireContext().getDimen(R.dimen.elevation_normal)
+        context.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
         binding.root.setOnApplyWindowInsetsListener { _, insets ->
             lastInsets = insets
@@ -126,16 +126,6 @@ class MainFragment :
         // Callback could still reasonably fire even if we clear the binding, attach/detach
         // our pre-draw listener our listener in onStart/onStop respectively.
         requireBinding().playbackSheet.viewTreeObserver.addOnPreDrawListener(this)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        callback?.isEnabled = true
-    }
-
-    override fun onPause() {
-        super.onPause()
-        callback?.isEnabled = false
     }
 
     override fun onStop() {
@@ -208,6 +198,10 @@ class MainFragment :
             // hide it, make sure we keep it hidden.
             tryHideAll()
         }
+
+        // Since the callback is also reliant on the bottom sheets, we must also update it
+        // every frame.
+        callback.updateEnabledState()
 
         return true
     }
@@ -322,10 +316,8 @@ class MainFragment :
     private inner class DynamicBackPressedCallback : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
             val binding = requireBinding()
-
             val playbackSheetBehavior =
                 binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
-
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
 
@@ -344,15 +336,29 @@ class MainFragment :
                 return
             }
 
-            // First navigate upwards in the explore graph, then navigate back in the activity.
-            val navController = binding.exploreNavHost.findNavController()
-            if (navController.currentDestination?.id == navController.graph.startDestinationId) {
-                isEnabled = false
-                requireActivity().onBackPressed()
-                isEnabled = true
-            } else {
-                navController.navigateUp()
-            }
+            binding.exploreNavHost.findNavController().navigateUp()
+        }
+
+        fun updateEnabledState() {
+            val binding = requireBinding()
+            val playbackSheetBehavior =
+                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+            val queueSheetBehavior =
+                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
+
+            val exploreNavController = binding.exploreNavHost.findNavController()
+
+            logD(
+                playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
+                    queueSheetBehavior?.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
+                    exploreNavController.currentDestination?.id !=
+                        exploreNavController.graph.startDestinationId)
+
+            isEnabled =
+                playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
+                    queueSheetBehavior?.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
+                    exploreNavController.currentDestination?.id !=
+                        exploreNavController.graph.startDestinationId
         }
     }
 }

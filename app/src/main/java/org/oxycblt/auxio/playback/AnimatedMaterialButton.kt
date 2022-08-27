@@ -23,8 +23,8 @@ import android.util.AttributeSet
 import com.google.android.material.button.MaterialButton
 
 /**
- * A [MaterialButton] that automatically morphs from a circle to a squircle shape appearance when
- * it is activated.
+ * A [MaterialButton] that automatically morphs from a circle to a squircle shape appearance when it
+ * is activated.
  */
 class AnimatedMaterialButton
 @JvmOverloads

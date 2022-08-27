@@ -26,6 +26,7 @@
         android:theme="@style/Theme.Auxio.App"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:appCategory="audio"
+        android:enableOnBackInvokedCallback="true"
         tools:ignore="UnusedAttribute">
 
         <activity
