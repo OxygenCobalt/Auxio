@@ -89,7 +89,7 @@
     <string name="err_no_music">没有找到音乐</string>
     <string name="err_index_failed">加载音乐失败</string>
     <string name="err_no_perms">Auxio 需要权限来读取音乐库</string>
-    <string name="err_no_app">没有可以打开该链接的应用</string>
+    <string name="err_no_app">未找到可以处理此任务的应用</string>
     <string name="err_bad_dir">该目录不受支持</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">在曲库中搜索…</string>
@@ -234,4 +234,6 @@
     <string name="set_bar_action_repeat">重复模式</string>
     <string name="set_bar_action_next">跳到下一首</string>
     <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
+    <string name="lbl_equalizer">均衡器</string>
+    <string name="desc_exit">停止播放</string>
 </resources>

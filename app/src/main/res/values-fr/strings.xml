@@ -7,7 +7,7 @@
     <string name="lbl_artists">Artistes</string>
     <string name="lbl_albums">Albums</string>
     <string name="lbl_songs">Titres</string>
-    <string name="lbl_all_songs">Titres Tous</string>
+    <string name="lbl_all_songs">Tous les titres</string>
     <string name="lbl_search">Rechercher</string>
     <string name="lbl_filter">Filtre</string>
     <string name="lbl_filter_all">Tout</string>
@@ -111,4 +111,27 @@
     <string name="lbl_song_detail">Voir les propriétés</string>
     <string name="lbl_props">Propriétés de la chanson</string>
     <string name="set_show_covers_desc">Désactiver pour économiser la mémoire</string>
+    <string name="lbl_ep_live">EP live</string>
+    <string name="lbl_ep_remix">EP de remixes</string>
+    <string name="lbl_single_live">Single live</string>
+    <string name="lbl_single_remix">Single remixé</string>
+    <string name="lbl_compilations">Compilations</string>
+    <string name="lbl_compilation">Compilation</string>
+    <string name="lbl_live_group">Live</string>
+    <string name="lbl_indexing">Chargement de la musique</string>
+    <string name="lbl_observing">Suivre la librairie musicale</string>
+    <string name="lbl_eps">EPs</string>
+    <string name="lbl_ep">EP</string>
+    <string name="lbl_singles">Singles</string>
+    <string name="lbl_single">Single</string>
+    <string name="lbl_soundtracks">Bandes sonores</string>
+    <string name="lbl_soundtrack">Bande sonore</string>
+    <string name="lbl_mixtapes">Mixtapes</string>
+    <string name="lbl_mixtape">Mixtape</string>
+    <string name="lbl_remix_group">Remix</string>
+    <string name="lbl_sort_date_added">Date d\'ajout</string>
+    <string name="lbl_album_live">Album live</string>
+    <string name="lbl_album_remix">Album de remixes</string>
+    <string name="lbl_genre">Genre</string>
+    <string name="lbl_equalizer">Égaliseur</string>
 </resources>

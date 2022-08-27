@@ -87,7 +87,7 @@
     <string name="set_dirs_desc">Gerencie de onde a música deve ser carregada</string>
     <string name="set_dirs_mode_include">Incluir</string>
     <string name="err_index_failed">Falha no carregamento da música</string>
-    <string name="err_no_app">Nenhum aplicativo pode abrir este link</string>
+    <string name="err_no_app">Nenhum aplicativo encontrado que possa lidar com esta tarefa</string>
     <string name="err_no_dirs">Sem pastas</string>
     <string name="err_bad_dir">Esta pasta não é compatível</string>
     <string name="set_show_covers">Mostrar capas de álbuns</string>
@@ -168,10 +168,10 @@
     <string name="set_headset_autoplay">Reprodução automática do fone de ouvido</string>
     <string name="set_pre_amp">Pré-amplificador ReplayGain</string>
     <string name="lbl_relative_path">Caminho pai</string>
-    <string name="lbl_ok">\@android:string/ok</string>
+    <string name="lbl_ok">OK</string>
     <string name="set_display">Exibição</string>
     <string name="set_round_mode_desc">Ativar cantos arredondados em elementos adicionais da interface do usuário (requer que as capas dos álbuns sejam arredondadas)</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">Estratégia ReplayGain</string>
     <string name="set_playback_mode_none">Reproduzir a partir do item mostrado</string>
     <string name="set_playback_mode_all">Reproduzir de todas as músicas</string>
     <string name="set_replay_gain_album">Preferir álbum</string>
@@ -179,7 +179,7 @@
     <string name="set_observing">Recarregamento automático</string>
     <string name="set_observing_desc">Recarregue sua biblioteca de música sempre que ela mudar (Experimental)</string>
     <string name="lbl_sort_date_added">Data adicionada</string>
-    <string name="lbl_cancel">\@android:string/cancelar</string>
+    <string name="lbl_cancel">Cancelar</string>
     <string name="set_replay_gain_track">Preferir faixa</string>
     <string name="desc_queue_bar">Abra a fila</string>
     <string name="lbl_album_live">Álbum ao vivo</string>
@@ -222,4 +222,12 @@
     <string name="lbl_compilation">Compilação</string>
     <string name="lbl_single_remix">Single remix</string>
     <string name="set_content">Conteúdo</string>
+    <string name="lbl_sort_track">Track</string>
+    <string name="set_library_song_playback_mode">Ao jogar da biblioteca</string>
+    <string name="set_detail_song_playback_mode">Ao jogar a partir dos detalhes do item</string>
+    <string name="lbl_mixtapes">Mixtapes</string>
+    <string name="lbl_mixtape">Mixtape</string>
+    <string name="lbl_remix_group">Remixes</string>
+    <string name="lbl_equalizer">Equalizador</string>
+    <string name="lbl_live_group">Ao vivo</string>
 </resources>
