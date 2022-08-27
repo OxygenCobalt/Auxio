@@ -21,7 +21,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.support.v4.media.MediaDescriptionCompat
@@ -62,9 +61,6 @@ import org.oxycblt.auxio.util.logD
  * @author OxygenCobalt
  *
  * TODO: Remove the player callback once smooth seeking is implemented
- *
- * TODO: Rework what is considered to "start foreground" and what is not from the context of this
- * object. This could help reduce the amount of post calls I send on Android 13 onwards, hopefully.
  */
 class MediaSessionComponent(
     private val context: Context,
@@ -229,11 +225,7 @@ class MediaSessionComponent(
 
     override fun onPlayingChanged(isPlaying: Boolean) {
         invalidateSessionState()
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            // Android 13 automatically handles the playing state.
-            notification.updatePlaying(playbackManager.isPlaying)
-        }
+        notification.updatePlaying(playbackManager.isPlaying)
 
         if (!provider.isBusy) {
             // Still probably want to start the notification though regardless of the version,
@@ -409,49 +401,45 @@ class MediaSessionComponent(
 
         state.setState(playerState, player.currentPosition, 1.0f, SystemClock.elapsedRealtime())
 
-        // Android 13+ leverages custom actions.
+        // Android 13+ leverages custom actions in the notification.
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val extraAction =
-                if (settings.useAltNotifAction) {
-                    PlaybackStateCompat.CustomAction.Builder(
-                        PlaybackService.ACTION_INVERT_SHUFFLE,
-                        context.getString(R.string.desc_change_repeat),
-                        if (playbackManager.isShuffled) {
-                            R.drawable.ic_shuffle_on_24
-                        } else {
-                            R.drawable.ic_shuffle_off_24
-                        })
-                } else {
-                    PlaybackStateCompat.CustomAction.Builder(
-                        PlaybackService.ACTION_INC_REPEAT_MODE,
-                        context.getString(R.string.desc_change_repeat),
-                        playbackManager.repeatMode.icon)
-                }
-
-            val exitAction =
+        val extraAction =
+            if (settings.useAltNotifAction) {
                 PlaybackStateCompat.CustomAction.Builder(
-                        PlaybackService.ACTION_EXIT,
-                        context.getString(R.string.desc_exit),
-                        R.drawable.ic_close_24)
-                    .build()
+                    PlaybackService.ACTION_INVERT_SHUFFLE,
+                    context.getString(R.string.desc_change_repeat),
+                    if (playbackManager.isShuffled) {
+                        R.drawable.ic_shuffle_on_24
+                    } else {
+                        R.drawable.ic_shuffle_off_24
+                    })
+            } else {
+                PlaybackStateCompat.CustomAction.Builder(
+                    PlaybackService.ACTION_INC_REPEAT_MODE,
+                    context.getString(R.string.desc_change_repeat),
+                    playbackManager.repeatMode.icon)
+            }
 
-            state.addCustomAction(extraAction.build())
-            state.addCustomAction(exitAction)
-        }
+        val exitAction =
+            PlaybackStateCompat.CustomAction.Builder(
+                    PlaybackService.ACTION_EXIT,
+                    context.getString(R.string.desc_exit),
+                    R.drawable.ic_close_24)
+                .build()
+
+        state.addCustomAction(extraAction.build())
+        state.addCustomAction(exitAction)
 
         mediaSession.setPlaybackState(state.build())
     }
 
     private fun invalidateSecondaryAction() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            invalidateSessionState()
+        invalidateSessionState()
+
+        if (settings.useAltNotifAction) {
+            notification.updateShuffled(playbackManager.isShuffled)
         } else {
-            if (settings.useAltNotifAction) {
-                notification.updateShuffled(playbackManager.isShuffled)
-            } else {
-                notification.updateRepeatMode(playbackManager.repeatMode)
-            }
+            notification.updateRepeatMode(playbackManager.repeatMode)
         }
 
         if (!provider.isBusy) {

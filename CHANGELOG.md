@@ -14,8 +14,9 @@
 - Added a way to access the system equalizer from the playback menu.
 
 #### What's Fixed
--  Fixed "@android:string/<ok/cancel>" strings from appearing in dialog
+- Fixed "@android:string/<ok/cancel>" strings from appearing in dialog
 buttons
+- Fixed issue where LG phones would not show metadata in the notification 
 
 #### What's Changed
 - Menus are now opened using a new button to the side of all items

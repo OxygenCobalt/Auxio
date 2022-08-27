@@ -67,11 +67,6 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
     // --- STATE FUNCTIONS ---
 
     fun updateMetadata(metadata: MediaMetadataCompat) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // Notification is automatically filled in by media session, ignore
-            return
-        }
-
         setContentTitle(metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
         setContentText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ARTIST))
 
