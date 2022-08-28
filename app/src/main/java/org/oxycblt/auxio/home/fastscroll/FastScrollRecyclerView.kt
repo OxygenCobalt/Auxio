@@ -29,6 +29,7 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
+import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -207,15 +208,17 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         thumbView.layout(thumbLeft, thumbTop, thumbLeft + thumbWidth, thumbTop + thumbHeight)
 
-        // Get the popup text. If there is none, we default to "?".
         val firstPos = firstAdapterPos
-        val popupText =
-            if (firstPos != NO_POSITION) {
-                popupProvider?.getPopup(firstPos)?.ifEmpty { null }
-            } else {
-                null
-            }
-                ?: "?"
+        val popupText: String
+        val provider = popupProvider
+        if (firstPos != NO_POSITION && provider != null) {
+            // Get the popup text. If there is none, we default to "?".
+            popupText = provider.getPopup(firstPos) ?: "?"
+        } else {
+            // No valid position or provider, do not show the popup.
+            popupView.isInvisible = true
+            popupText = ""
+        }
 
         val popupLayoutParams = popupView.layoutParams as FrameLayout.LayoutParams
 
