@@ -10,11 +10,11 @@
     - Use new media notification panel style
     - Add predictive back navigation
 - Auxio has a new, more refined icon style
+- Added a way to access the system equalizer from the playback menu.
 
 #### What's Improved
 - Playback bar now has a marquee effect
 - Play/pause button now changes from square to circle depending on the state
-- Added a way to access the system equalizer from the playback menu.
 
 #### What's Fixed
 - Fixed "@android:string/<ok/cancel>" strings from appearing in dialog

@@ -51,6 +51,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - SD Card-aware folder management
 - Reliable playback state persistence
 - Full ReplayGain support (On MP3, MP4, FLAC, OGG, and OPUS)
+- Equalizer support (In external apps lime Wavelet)
 - Edge-to-edge
 - Embedded covers support
 - Search Functionality
