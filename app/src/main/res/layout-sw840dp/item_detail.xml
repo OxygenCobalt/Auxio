@@ -42,6 +42,7 @@
         app:layout_constraintTop_toBottomOf="@+id/detail_type"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Name" />
+
     <TextView
         android:id="@+id/detail_subhead"
         style="@style/Widget.Auxio.TextView.Secondary"
