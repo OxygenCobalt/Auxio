@@ -348,12 +348,6 @@ class MainFragment :
 
             val exploreNavController = binding.exploreNavHost.findNavController()
 
-            logD(
-                playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
-                    queueSheetBehavior?.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
-                    exploreNavController.currentDestination?.id !=
-                        exploreNavController.graph.startDestinationId)
-
             isEnabled =
                 playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
                     queueSheetBehavior?.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
