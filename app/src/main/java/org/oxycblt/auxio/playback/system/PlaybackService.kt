@@ -249,9 +249,7 @@ class PlaybackService :
         newPosition: Player.PositionInfo,
         reason: Int
     ) {
-        if (reason == Player.DISCONTINUITY_REASON_SEEK) {
-            playbackManager.synchronizePosition(this, player.currentPosition)
-        }
+        playbackManager.synchronizePosition(this, player.currentPosition)
     }
 
     override fun onTracksChanged(tracks: Tracks) {

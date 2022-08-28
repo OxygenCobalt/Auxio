@@ -188,14 +188,13 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
         }
     }
 
-    private fun parseReplayGainFloat(raw: String): Float {
+    private fun parseReplayGainFloat(raw: String) =
         // Grok a float from a ReplayGain tag by removing everything that is not 0-9, , or -.
-        return try {
-            raw.replace(Regex("[^0-9.-]"), "").toFloat()
+        try {
+            raw.replace(Regex("[^\\d.-]"), "").toFloat()
         } catch (e: Exception) {
             0f
         }
-    }
 
     // --- AUDIO PROCESSOR IMPLEMENTATION ---
 
@@ -244,9 +243,8 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
     // little-endian value.
 
     /** Always get a little-endian short value from a [ByteBuffer] */
-    private fun ByteBuffer.getLeShort(at: Int): Short {
-        return get(at + 1).toInt().shl(8).or(get(at).toInt().and(0xFF)).toShort()
-    }
+    private fun ByteBuffer.getLeShort(at: Int) =
+        get(at + 1).toInt().shl(8).or(get(at).toInt().and(0xFF)).toShort()
 
     /** Always place a little-endian short value into a [ByteBuffer]. */
     private fun ByteBuffer.putLeShort(short: Short) {

@@ -163,7 +163,6 @@ class PlaybackStateManager private constructor() {
             }
 
         applyNewQueue(library, settings, settings.keepShuffle && isShuffled, song)
-        seekTo(0)
         notifyNewPlayback()
         notifyShuffledChanged()
         isPlaying = true
@@ -176,7 +175,6 @@ class PlaybackStateManager private constructor() {
         val library = musicStore.library ?: return
         this.parent = parent
         applyNewQueue(library, settings, shuffled, null)
-        seekTo(0)
         notifyNewPlayback()
         notifyShuffledChanged()
         isPlaying = true
@@ -189,7 +187,6 @@ class PlaybackStateManager private constructor() {
         val library = musicStore.library ?: return
         parent = null
         applyNewQueue(library, settings, true, null)
-        seekTo(0)
         notifyNewPlayback()
         notifyShuffledChanged()
         isPlaying = true
@@ -229,7 +226,6 @@ class PlaybackStateManager private constructor() {
 
     private fun gotoImpl(idx: Int, play: Boolean) {
         index = idx
-        seekTo(0)
         notifyIndexMoved()
         isPlaying = play
     }
