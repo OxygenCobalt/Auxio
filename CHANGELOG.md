@@ -2,6 +2,8 @@
 
 ## dev
 
+## 2.6.2
+
 #### What's New
 - Added Android 13 support [#129]
     - Switch to new storage permissions
@@ -10,7 +12,7 @@
     - Use new media notification panel style
     - Add predictive back navigation
 - Auxio has a new, more refined icon style
-- Added a way to access the system equalizer from the playback menu.
+- Added a way to access the system equalizer from the playback menu
 
 #### What's Improved
 - Playback bar now has a marquee effect
@@ -27,7 +29,7 @@ detail views after a rotation
 
 #### What's Changed
 - ReplayGain can now no longer be disabled. Remove ReplayGain tags from
-files if such functionality is not desired. 
+files if such functionality is not desired
 
 ## 2.6.1
 

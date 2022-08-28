@@ -11,8 +11,8 @@ android {
 
     defaultConfig {
         applicationId namespace
-        versionName "2.6.1"
-        versionCode 20
+        versionName "2.6.2"
+        versionCode 21
 
         minSdk 21
         // API 33 is still busted, waiting until the XML element issue is fixed
