@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.playback
 
-import android.animation.ValueAnimator
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.media.audiofx.AudioEffect

@@ -44,13 +44,11 @@ object IntegerTable {
     const val ITEM_TYPE_ARTIST_SONG = 0xA00A
     /** GenreDetailViewHolder */
     const val ITEM_TYPE_GENRE_DETAIL = 0xA00B
-    /** GenreSongViewHolder */
-    const val ITEM_TYPE_GENRE_SONG = 0xA00C
     /** DiscHeaderViewHolder */
-    const val ITEM_TYPE_DISC_HEADER = 0xA00D
+    const val ITEM_TYPE_DISC_HEADER = 0xA00C
 
     /** QueueSongViewHolder */
-    const val ITEM_TYPE_QUEUE_SONG = 0xA00E
+    const val ITEM_TYPE_QUEUE_SONG = 0xA00D
 
     /** "Music playback" notification code */
     const val PLAYBACK_NOTIFICATION_CODE = 0xA0A0
