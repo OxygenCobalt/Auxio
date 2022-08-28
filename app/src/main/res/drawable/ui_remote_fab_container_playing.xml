@@ -1,20 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape android:shape="rectangle">
-            <corners android:radius="@dimen/size_corners_medium" />
-            <solid android:color="?attr/colorPrimary" />
-        </shape>
-    </item>
-
-    <item>
-        <ripple android:color="@color/sel_remote_fab_ripple">
-            <item android:id="@android:id/mask">
-                <shape android:shape="rectangle">
-                    <solid android:color="@android:color/white" />
-                    <corners android:radius="@dimen/size_corners_medium" />
-                </shape>
-            </item>
-        </ripple>
-    </item>
-</layer-list>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:radius="@dimen/size_corners_medium" />
+    <solid android:color="?attr/colorPrimary" />
+</shape>

@@ -116,9 +116,7 @@ class WidgetProvider : AppWidgetProvider() {
 
     private fun requestUpdate(context: Context) {
         logD("Sending update intent to PlaybackService")
-
         val intent = Intent(ACTION_WIDGET_UPDATE).addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
-
         context.sendBroadcast(intent)
     }
 
@@ -157,7 +155,8 @@ class WidgetProvider : AppWidgetProvider() {
                 logD("Assuming true widget dimens are ${width}x$height")
 
                 // Find the layout with the greatest area that fits entirely within
-                // the widget. This is what we will use.
+                // the widget. This is what we will use. Fall back to the smallest layout
+                // otherwise.
                 val candidates = mutableListOf<SizeF>()
 
                 for (size in views.keys) {

@@ -20,7 +20,8 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--dontobfuscate
-
 -keep class org.oxycblt.auxio.AuxioApp
 -keep class org.oxycblt.auxio.settings.SettingsListFragment
+
+# Free software does not obsfucate. Also it's easier to debug stack traces.
+-dontobfuscate

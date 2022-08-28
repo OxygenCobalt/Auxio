@@ -50,9 +50,6 @@ class PlaybackPanelFragment :
     MenuFragment<FragmentPlaybackPanelBinding>(),
     StyledSeekBar.Callback,
     Toolbar.OnMenuItemClickListener {
-    private var animator: ValueAnimator? = null
-    private var radius = 0.3f
-
     // AudioEffect expects you to use startActivityForResult with the panel intent. Use
     // the contract analogue for this since there is no built-in contract for AudioEffect.
     private val activityLauncher by lifecycleObject {

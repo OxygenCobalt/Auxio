@@ -23,6 +23,7 @@ buttons
 - Fixed issue where the transition would be wrong when navigating out of the
 detail views after a rotation
 - Fixed issue where widget resizing would be far different than intended
+- Fixed broken playback layout on small portrait screens
 
 #### What's Changed
 - ReplayGain can now no longer be disabled. Remove ReplayGain tags from

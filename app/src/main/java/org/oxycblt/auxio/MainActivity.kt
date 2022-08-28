@@ -38,7 +38,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 /**
  * The single [AppCompatActivity] for Auxio.
  *
- * TODO: Add error screens.
+ * TODO: Add error screens
  *
  * TODO: Custom language support
  *
@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         val settings = Settings(this)
 
         // Disable theme customization above Android 12, as it's far enough in as a version to
-        // the point where most phones should have an automatic option for light/dark theming.
+        // the point where most phones should have an option for light/dark theming.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             AppCompatDelegate.setDefaultNightMode(settings.theme)
         }

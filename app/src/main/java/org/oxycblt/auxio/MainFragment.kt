@@ -97,8 +97,7 @@ class MainFragment :
                 }
             }
         } else {
-            // Dual-pane mode, color/pad the queue sheet manually. Note that we do not round
-            // corners, as the queue sheet cannot be dragged in dual-pane mode.
+            // Dual-pane mode, color/pad the queue sheet manually.
             binding.queueSheet.apply {
                 background =
                     MaterialShapeDrawable.createWithElevationOverlay(context).apply {
@@ -310,8 +309,6 @@ class MainFragment :
     /**
      * A back press callback that handles how to respond to backwards navigation in the detail
      * fragments and the playback panel.
-     *
-     * TODO: Migrate to new predictive API
      */
     private inner class DynamicBackPressedCallback : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
