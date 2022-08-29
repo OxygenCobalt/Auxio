@@ -49,6 +49,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
+import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
@@ -76,7 +77,7 @@ import org.oxycblt.auxio.widgets.WidgetProvider
 class PlaybackService :
     Service(),
     Player.Listener,
-    PlaybackStateManager.Controller,
+    InternalPlayer,
     MediaSessionComponent.Callback,
     Settings.Callback,
     MusicStore.Callback {
@@ -146,7 +147,7 @@ class PlaybackService :
         settings = Settings(this, this)
         foregroundManager = ForegroundManager(this)
 
-        playbackManager.registerController(this)
+        playbackManager.registerInternalPlayer(this)
         musicStore.addCallback(this)
         positionScope.launch {
             while (true) {
@@ -198,7 +199,7 @@ class PlaybackService :
         // Pause just in case this destruction was unexpected.
         playbackManager.isPlaying = false
 
-        playbackManager.unregisterController(this)
+        playbackManager.unregisterInternalPlayer(this)
         settings.release()
         unregisterReceiver(systemReceiver)
         serviceJob.cancel()
@@ -279,6 +280,9 @@ class PlaybackService :
     override val audioSessionId: Int
         get() = player.audioSessionId
 
+    override val shouldRewindWithPrev: Boolean
+        get() = settings.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
+
     override fun loadSong(song: Song?) {
         if (song == null) {
             // Stop the foreground state if there's nothing to play.
@@ -332,29 +336,26 @@ class PlaybackService :
         player.seekTo(positionMs)
     }
 
-    override fun shouldPrevRewind() =
-        settings.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
-
     override fun onPlayingChanged(isPlaying: Boolean) {
         player.playWhenReady = isPlaying
     }
 
-    override fun onAction(action: PlaybackStateManager.ControllerAction): Boolean {
+    override fun onAction(action: InternalPlayer.Action): Boolean {
         val library = musicStore.library
         if (library != null) {
             logD("Performing action: $action")
 
             when (action) {
-                is PlaybackStateManager.ControllerAction.RestoreState -> {
+                is InternalPlayer.Action.RestoreState -> {
                     restoreScope.launch {
                         playbackManager.restoreState(
                             PlaybackStateDatabase.getInstance(this@PlaybackService), false)
                     }
                 }
-                is PlaybackStateManager.ControllerAction.ShuffleAll -> {
+                is InternalPlayer.Action.ShuffleAll -> {
                     playbackManager.shuffleAll(settings)
                 }
-                is PlaybackStateManager.ControllerAction.Open -> {
+                is InternalPlayer.Action.Open -> {
                     library.findSongForUri(application, action.uri)?.let { song ->
                         playbackManager.play(song, settings.libPlaybackMode, settings)
                     }
@@ -389,6 +390,7 @@ class PlaybackService :
     }
 
     // --- MUSICSTORE OVERRIDES ---
+
     override fun onLibraryChanged(library: MusicStore.Library?) {
         if (library != null) {
             playbackManager.requestAction(this)
@@ -477,7 +479,7 @@ class PlaybackService :
     }
 
     companion object {
-        private const val POS_POLL_INTERVAL = 1000L
+        private const val POS_POLL_INTERVAL = 100L
         private const val REWIND_THRESHOLD = 3000L
 
         const val ACTION_INC_REPEAT_MODE = BuildConfig.APPLICATION_ID + ".action.LOOP"

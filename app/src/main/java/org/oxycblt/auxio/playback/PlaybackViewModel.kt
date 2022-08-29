@@ -28,6 +28,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -63,6 +64,7 @@ class PlaybackViewModel(application: Application) :
     /** The current playback position, in seconds */
     val positionSecs: StateFlow<Long>
         get() = _positionSecs
+
     private val _repeatMode = MutableStateFlow(RepeatMode.NONE)
     /** The current repeat mode, see [RepeatMode] for more information */
     val repeatMode: StateFlow<RepeatMode>
@@ -130,15 +132,15 @@ class PlaybackViewModel(application: Application) :
     }
 
     /**
-     * Perform the given [PlaybackStateManager.ControllerAction].
+     * Perform the given [InternalPlayer.Action].
      *
-     * A "controller action" is a class of playback actions that must have music present to
-     * function, usually alongside a context too. Examples include:
+     * These are a class of playback actions that must have music present to function, usually
+     * alongside a context too. Examples include:
      * - Opening files
      * - Restoring the playback state
      * - App shortcuts
      */
-    fun startAction(action: PlaybackStateManager.ControllerAction) {
+    fun startAction(action: InternalPlayer.Action) {
         playbackManager.startAction(action)
     }
 

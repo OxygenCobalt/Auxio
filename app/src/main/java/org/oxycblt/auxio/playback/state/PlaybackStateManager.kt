@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.playback.state
 
-import android.net.Uri
 import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -46,7 +45,7 @@ import org.oxycblt.auxio.util.logW
  * [org.oxycblt.auxio.playback.system.PlaybackService].
  *
  * Internal consumers should usually use [Callback], however the component that manages the player
- * itself should instead operate as a [Controller].
+ * itself should instead operate as a [InternalPlayer].
  *
  * All access should be done with [PlaybackStateManager.getInstance].
  * @author OxygenCobalt
@@ -90,17 +89,17 @@ class PlaybackStateManager private constructor() {
     var isInitialized = false
         private set
 
-    /** The current audio session ID of the controller. Null if no controller present. */
+    /** The current audio session ID of the internal player. Null if no internal player present. */
     val currentAudioSessionId: Int?
-        get() = controller?.audioSessionId
+        get() = internalPlayer?.audioSessionId
 
-    /** An action that is awaiting the controller instance to consume it. */
-    var pendingAction: ControllerAction? = null
+    /** An action that is awaiting the internal player instance to consume it. */
+    var pendingAction: InternalPlayer.Action? = null
 
     // --- CALLBACKS ---
 
     private val callbacks = mutableListOf<Callback>()
-    private var controller: Controller? = null
+    private var internalPlayer: InternalPlayer? = null
 
     /** Add a callback to this instance. Make sure to remove it when done. */
     @Synchronized
@@ -122,33 +121,33 @@ class PlaybackStateManager private constructor() {
         callbacks.remove(callback)
     }
 
-    /** Register a [Controller] with this instance. */
+    /** Register a [InternalPlayer] with this instance. */
     @Synchronized
-    fun registerController(controller: Controller) {
-        if (BuildConfig.DEBUG && this.controller != null) {
-            logW("Controller is already registered")
+    fun registerInternalPlayer(internalPlayer: InternalPlayer) {
+        if (BuildConfig.DEBUG && this.internalPlayer != null) {
+            logW("Internal player is already registered")
             return
         }
 
         if (isInitialized) {
-            controller.loadSong(song)
-            controller.seekTo(positionMs)
-            controller.onPlayingChanged(isPlaying)
-            requestAction(controller)
+            internalPlayer.loadSong(song)
+            internalPlayer.seekTo(positionMs)
+            internalPlayer.onPlayingChanged(isPlaying)
+            requestAction(internalPlayer)
         }
 
-        this.controller = controller
+        this.internalPlayer = internalPlayer
     }
 
-    /** Unregister a [Controller] with this instance. */
+    /** Unregister a [InternalPlayer] with this instance. */
     @Synchronized
-    fun unregisterController(controller: Controller) {
-        if (BuildConfig.DEBUG && this.controller !== controller) {
-            logW("Given controller did not match current controller")
+    fun unregisterInternalPlayer(internalPlayer: InternalPlayer) {
+        if (BuildConfig.DEBUG && this.internalPlayer !== internalPlayer) {
+            logW("Given internal player did not match current internal player")
             return
         }
 
-        this.controller = null
+        this.internalPlayer = null
     }
 
     // --- PLAYING FUNCTIONS ---
@@ -215,7 +214,7 @@ class PlaybackStateManager private constructor() {
     @Synchronized
     fun prev() {
         // If enabled, rewind before skipping back if the position is past 3 seconds [3000ms]
-        if (controller?.shouldPrevRewind() == true) {
+        if (internalPlayer?.shouldRewindWithPrev == true) {
             rewind()
             isPlaying = true
         } else {
@@ -326,13 +325,13 @@ class PlaybackStateManager private constructor() {
         isShuffled = shuffled
     }
 
-    // --- CONTROLLER FUNCTIONS ---
+    // --- INTERNAL PLAYER FUNCTIONS ---
 
-    /** Update the current [positionMs]. Only meant for use by [Controller] */
+    /** Update the current [positionMs]. Only meant for use by [InternalPlayer] */
     @Synchronized
-    fun synchronizePosition(controller: Controller, positionMs: Long) {
-        if (BuildConfig.DEBUG && this.controller !== controller) {
-            logW("Given controller did not match current controller")
+    fun synchronizePosition(internalPlayer: InternalPlayer, positionMs: Long) {
+        if (BuildConfig.DEBUG && this.internalPlayer !== internalPlayer) {
+            logW("Given internal player did not match current internal player")
             return
         }
 
@@ -345,23 +344,23 @@ class PlaybackStateManager private constructor() {
     }
 
     @Synchronized
-    fun startAction(action: ControllerAction) {
-        val controller = controller
-        if (controller == null || !controller.onAction(action)) {
-            logD("Controller not present or did not consume action, ignoring.")
+    fun startAction(action: InternalPlayer.Action) {
+        val internalPlayer = internalPlayer
+        if (internalPlayer == null || !internalPlayer.onAction(action)) {
+            logD("Internal player not present or did not consume action, ignoring")
             pendingAction = action
         }
     }
 
-    /** Request the stored [Controller.Action] */
+    /** Request the stored [InternalPlayer.Action] */
     @Synchronized
-    fun requestAction(controller: Controller) {
-        if (BuildConfig.DEBUG && this.controller !== controller) {
-            logW("Given controller did not match current controller")
+    fun requestAction(internalPlayer: InternalPlayer) {
+        if (BuildConfig.DEBUG && this.internalPlayer !== internalPlayer) {
+            logW("Given internal player did not match current internal player")
             return
         }
 
-        if (pendingAction?.let(controller::onAction) == true) {
+        if (pendingAction?.let(internalPlayer::onAction) == true) {
             logD("Pending action consumed")
             pendingAction = null
         }
@@ -374,7 +373,7 @@ class PlaybackStateManager private constructor() {
     @Synchronized
     fun seekTo(positionMs: Long) {
         this.positionMs = positionMs
-        controller?.seekTo(positionMs)
+        internalPlayer?.seekTo(positionMs)
         notifyPositionChanged()
     }
 
@@ -467,7 +466,7 @@ class PlaybackStateManager private constructor() {
         notifyNewPlayback()
 
         if (index > -1) {
-            // Controller may have reloaded the media item, re-seek to the previous position
+            // Internal player may have reloaded the media item, re-seek to the previous position
             seekTo(oldPosition)
         }
     }
@@ -484,7 +483,7 @@ class PlaybackStateManager private constructor() {
     // --- CALLBACKS ---
 
     private fun notifyIndexMoved() {
-        controller?.loadSong(song)
+        internalPlayer?.loadSong(song)
         for (callback in callbacks) {
             callback.onIndexMoved(index)
         }
@@ -503,14 +502,14 @@ class PlaybackStateManager private constructor() {
     }
 
     private fun notifyNewPlayback() {
-        controller?.loadSong(song)
+        internalPlayer?.loadSong(song)
         for (callback in callbacks) {
             callback.onNewPlayback(index, queue, parent)
         }
     }
 
     private fun notifyPlayingChanged() {
-        controller?.onPlayingChanged(isPlaying)
+        internalPlayer?.onPlayingChanged(isPlaying)
         for (callback in callbacks) {
             callback.onPlayingChanged(isPlaying)
         }
@@ -534,35 +533,6 @@ class PlaybackStateManager private constructor() {
         }
     }
 
-    /** Represents a class capable of managing the internal player. */
-    interface Controller {
-        val audioSessionId: Int
-
-        /** Called when a new song should be loaded into the player. */
-        fun loadSong(song: Song?)
-
-        /** Seek to [positionMs] in the player. */
-        fun seekTo(positionMs: Long)
-
-        /** Called when the class wants to determine whether it should rewind or skip back. */
-        fun shouldPrevRewind(): Boolean
-
-        /** Called when the playing state is changed. */
-        fun onPlayingChanged(isPlaying: Boolean)
-
-        /**
-         * Called when [PlaybackStateManager] desires some [ControllerAction] to be completed.
-         * Returns true if the action was consumed, false otherwise.
-         */
-        fun onAction(action: ControllerAction): Boolean
-    }
-
-    sealed class ControllerAction {
-        object RestoreState : ControllerAction()
-        object ShuffleAll : ControllerAction()
-        data class Open(val uri: Uri) : ControllerAction()
-    }
-
     /**
      * The interface for receiving updates from [PlaybackStateManager]. Add the callback to
      * [PlaybackStateManager] using [addCallback], remove them on destruction with [removeCallback].
@@ -583,7 +553,7 @@ class PlaybackStateManager private constructor() {
         /** Called when the playing state is changed. */
         fun onPlayingChanged(isPlaying: Boolean) {}
 
-        /** Called when the position is re-synchronized by the controller. */
+        /** Called when the position is re-synchronized by the internal player. */
         fun onPositionChanged(positionMs: Long) {}
 
         /** Called when the repeat mode is changed. */

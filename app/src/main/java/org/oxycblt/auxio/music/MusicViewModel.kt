@@ -47,7 +47,6 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
 
     override fun onIndexerStateChanged(state: Indexer.State?) {
         _indexerState.value = state
-
         if (state is Indexer.State.Complete && state.response is Indexer.Response.Ok) {
             _libraryExists.value = true
         }

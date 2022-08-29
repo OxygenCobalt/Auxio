@@ -104,11 +104,7 @@ class MusicStore private constructor() {
         /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(genre: Genre) = findGenreById(genre.id)
 
-        /**
-         * Find a song for a [uri], this is similar to [findSong], but with some kind of content
-         * uri.
-         * @return The corresponding [Song] for this [uri], null if there isn't one.
-         */
+        /** Find a song for a [uri]. */
         fun findSongForUri(context: Context, uri: Uri) =
             context.contentResolverSafe.useQuery(uri, arrayOf(OpenableColumns.DISPLAY_NAME)) {
                 cursor ->
