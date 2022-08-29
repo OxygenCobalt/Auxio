@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.playback.state
 
+import android.net.Uri
 import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -93,6 +94,9 @@ class PlaybackStateManager private constructor() {
     val currentAudioSessionId: Int?
         get() = controller?.audioSessionId
 
+    /** An action that is awaiting the controller instance to consume it. */
+    var pendingAction: ControllerAction? = null
+
     // --- CALLBACKS ---
 
     private val callbacks = mutableListOf<Callback>()
@@ -130,7 +134,7 @@ class PlaybackStateManager private constructor() {
             controller.loadSong(song)
             controller.seekTo(positionMs)
             controller.onPlayingChanged(isPlaying)
-            controller.onPlayingChanged(isPlaying)
+            requestAction(controller)
         }
 
         this.controller = controller
@@ -322,7 +326,7 @@ class PlaybackStateManager private constructor() {
         isShuffled = shuffled
     }
 
-    // --- STATE FUNCTIONS ---
+    // --- CONTROLLER FUNCTIONS ---
 
     /** Update the current [positionMs]. Only meant for use by [Controller] */
     @Synchronized
@@ -337,6 +341,29 @@ class PlaybackStateManager private constructor() {
         if (positionMs <= maxDuration) {
             this.positionMs = positionMs
             notifyPositionChanged()
+        }
+    }
+
+    @Synchronized
+    fun startAction(action: ControllerAction) {
+        val controller = controller
+        if (controller == null || !controller.onAction(action)) {
+            logD("Controller not present or did not consume action, ignoring.")
+            pendingAction = action
+        }
+    }
+
+    /** Request the stored [Controller.Action] */
+    @Synchronized
+    fun requestAction(controller: Controller) {
+        if (BuildConfig.DEBUG && this.controller !== controller) {
+            logW("Given controller did not match current controller")
+            return
+        }
+
+        if (pendingAction?.let(controller::onAction) == true) {
+            logD("Pending action consumed")
+            pendingAction = null
         }
     }
 
@@ -523,11 +550,17 @@ class PlaybackStateManager private constructor() {
         /** Called when the playing state is changed. */
         fun onPlayingChanged(isPlaying: Boolean)
 
-        //        /** Called when the repeat mode is changed. */
-        //        fun onRepeatChanged(repeatMode: RepeatMode)
-        //
-        //        /** Called when the shuffled state is changed. */
-        //        fun onShuffledChanged(isShuffled: Boolean)
+        /**
+         * Called when [PlaybackStateManager] desires some [ControllerAction] to be completed.
+         * Returns true if the action was consumed, false otherwise.
+         */
+        fun onAction(action: ControllerAction): Boolean
+    }
+
+    sealed class ControllerAction {
+        object RestoreState : ControllerAction()
+        object ShuffleAll : ControllerAction()
+        data class Open(val uri: Uri) : ControllerAction()
     }
 
     /**

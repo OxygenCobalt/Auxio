@@ -28,6 +28,7 @@ import androidx.core.view.updatePadding
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.music.system.IndexerService
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.androidViewModels
@@ -70,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         startService(Intent(this, PlaybackService::class.java))
 
         if (!startIntentDelayedAction(intent)) {
-            playbackModel.startDelayedAction(PlaybackViewModel.DelayedAction.RestoreState)
+            playbackModel.startAction(PlaybackStateManager.ControllerAction.RestoreState)
         }
     }
 
@@ -97,14 +98,14 @@ class MainActivity : AppCompatActivity() {
         val action =
             when (intent.action) {
                 Intent.ACTION_VIEW ->
-                    PlaybackViewModel.DelayedAction.Open(intent.data ?: return false)
+                    PlaybackStateManager.ControllerAction.Open(intent.data ?: return false)
                 AuxioApp.INTENT_KEY_SHORTCUT_SHUFFLE -> {
-                    PlaybackViewModel.DelayedAction.ShuffleAll
+                    PlaybackStateManager.ControllerAction.ShuffleAll
                 }
                 else -> return false
             }
 
-        playbackModel.startDelayedAction(action)
+        playbackModel.startAction(action)
 
         return true
     }

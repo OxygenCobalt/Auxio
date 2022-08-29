@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.playback
 
 import android.app.Application
-import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +27,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
@@ -47,12 +45,9 @@ import org.oxycblt.auxio.util.logE
  * @author OxygenCobalt
  */
 class PlaybackViewModel(application: Application) :
-    AndroidViewModel(application), PlaybackStateManager.Callback, MusicStore.Callback {
-    private val musicStore = MusicStore.getInstance()
+    AndroidViewModel(application), PlaybackStateManager.Callback {
     private val settings = Settings(application)
     private val playbackManager = PlaybackStateManager.getInstance()
-
-    private var pendingDelayedAction: DelayedAction? = null
 
     private val _song = MutableStateFlow<Song?>(null)
     /** The current song. */
@@ -80,7 +75,6 @@ class PlaybackViewModel(application: Application) :
         get() = playbackManager.currentAudioSessionId
 
     init {
-        musicStore.addCallback(this)
         playbackManager.addCallback(this)
     }
 
@@ -136,41 +130,16 @@ class PlaybackViewModel(application: Application) :
     }
 
     /**
-     * Perform the given [DelayedAction].
+     * Perform the given [PlaybackStateManager.ControllerAction].
      *
-     * A "delayed action" is a class of playback actions that must have music present to function,
-     * usually alongside a context too. Examples include:
+     * A "controller action" is a class of playback actions that must have music present to
+     * function, usually alongside a context too. Examples include:
      * - Opening files
      * - Restoring the playback state
      * - App shortcuts
-     *
-     * We would normally want to put this kind of functionality into PlaybackService, but it's
-     * lifecycle makes that more or less impossible.
      */
-    fun startDelayedAction(action: DelayedAction) {
-        val library = musicStore.library
-        if (library != null) {
-            performActionImpl(action, library)
-        } else {
-            pendingDelayedAction = action
-        }
-    }
-
-    private fun performActionImpl(action: DelayedAction, library: MusicStore.Library) {
-        when (action) {
-            is DelayedAction.RestoreState -> {
-                viewModelScope.launch {
-                    playbackManager.restoreState(
-                        PlaybackStateDatabase.getInstance(application), false)
-                }
-            }
-            is DelayedAction.ShuffleAll -> shuffleAll()
-            is DelayedAction.Open -> {
-                library.findSongForUri(application, action.uri)?.let { song ->
-                    play(song, settings.libPlaybackMode)
-                }
-            }
-        }
+    fun startAction(action: PlaybackStateManager.ControllerAction) {
+        playbackManager.startAction(action)
     }
 
     // --- PLAYER FUNCTIONS ---
@@ -280,19 +249,10 @@ class PlaybackViewModel(application: Application) :
         }
     }
 
-    /** An action delayed until the complete load of the music library. */
-    sealed class DelayedAction {
-        object RestoreState : DelayedAction()
-        object ShuffleAll : DelayedAction()
-        data class Open(val uri: Uri) : DelayedAction()
-    }
-
     // --- OVERRIDES ---
 
     override fun onCleared() {
-        musicStore.removeCallback(this)
         playbackManager.removeCallback(this)
-        pendingDelayedAction = null
     }
 
     override fun onIndexMoved(index: Int) {
@@ -318,15 +278,5 @@ class PlaybackViewModel(application: Application) :
 
     override fun onRepeatChanged(repeatMode: RepeatMode) {
         _repeatMode.value = repeatMode
-    }
-
-    override fun onLibraryChanged(library: MusicStore.Library?) {
-        if (library != null) {
-            val action = pendingDelayedAction
-            if (action != null) {
-                performActionImpl(action, library)
-                pendingDelayedAction = null
-            }
-        }
     }
 }

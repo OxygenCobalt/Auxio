@@ -46,6 +46,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
 import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
@@ -77,7 +78,8 @@ class PlaybackService :
     Player.Listener,
     PlaybackStateManager.Controller,
     MediaSessionComponent.Callback,
-    Settings.Callback {
+    Settings.Callback,
+    MusicStore.Callback {
     // Player components
     private lateinit var player: ExoPlayer
     private lateinit var replayGainProcessor: ReplayGainAudioProcessor
@@ -89,6 +91,7 @@ class PlaybackService :
 
     // Managers
     private val playbackManager = PlaybackStateManager.getInstance()
+    private val musicStore = MusicStore.getInstance()
     private lateinit var settings: Settings
 
     // State
@@ -99,6 +102,7 @@ class PlaybackService :
     // Coroutines
     private val serviceJob = Job()
     private val positionScope = CoroutineScope(serviceJob + Dispatchers.Main)
+    private val restoreScope = CoroutineScope(serviceJob + Dispatchers.Main)
     private val saveScope = CoroutineScope(serviceJob + Dispatchers.Main)
 
     // --- SERVICE OVERRIDES ---
@@ -139,16 +143,17 @@ class PlaybackService :
 
         player.addListener(this)
 
+        settings = Settings(this, this)
+        foregroundManager = ForegroundManager(this)
+
         playbackManager.registerController(this)
+        musicStore.addCallback(this)
         positionScope.launch {
             while (true) {
                 playbackManager.synchronizePosition(this@PlaybackService, player.currentPosition)
                 delay(POS_POLL_INTERVAL)
             }
         }
-
-        settings = Settings(this, this)
-        foregroundManager = ForegroundManager(this)
 
         widgetComponent = WidgetComponent(this)
         mediaSessionComponent = MediaSessionComponent(this, player, this)
@@ -334,6 +339,36 @@ class PlaybackService :
         player.playWhenReady = isPlaying
     }
 
+    override fun onAction(action: PlaybackStateManager.ControllerAction): Boolean {
+        val library = musicStore.library
+        if (library != null) {
+            logD("Performing action: $action")
+
+            when (action) {
+                is PlaybackStateManager.ControllerAction.RestoreState -> {
+                    restoreScope.launch {
+                        playbackManager.restoreState(
+                            PlaybackStateDatabase.getInstance(this@PlaybackService), false)
+                    }
+                }
+                is PlaybackStateManager.ControllerAction.ShuffleAll -> {
+                    playbackManager.shuffleAll(settings)
+                }
+                is PlaybackStateManager.ControllerAction.Open -> {
+                    library.findSongForUri(application, action.uri)?.let { song ->
+                        playbackManager.play(song, settings.libPlaybackMode, settings)
+                    }
+                }
+            }
+
+            return true
+        }
+
+        return false
+    }
+
+    // --- MEDIASESSIONCOMPONENT OVERRIDES ---
+
     override fun onPostNotification(
         notification: NotificationComponent?,
         reason: MediaSessionComponent.PostingReason
@@ -350,6 +385,13 @@ class PlaybackService :
             if (!foregroundManager.tryStartForeground(notification)) {
                 notification.post()
             }
+        }
+    }
+
+    // --- MUSICSTORE OVERRIDES ---
+    override fun onLibraryChanged(library: MusicStore.Library?) {
+        if (library != null) {
+            playbackManager.requestAction(this)
         }
     }
 
