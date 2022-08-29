@@ -75,12 +75,37 @@ class MusicStore private constructor() {
         val albums: List<Album>,
         val songs: List<Song>
     ) {
-        /** Find a song in a faster manner by using the album ID as well.. */
-        fun findSongFast(songId: Long, albumId: Long) =
-            albums.find { it.id == albumId }.run { songs.find { it.id == songId } }
+        private val genreIdMap = HashMap<Long, Genre>().apply { genres.forEach { put(it.id, it) } }
+        private val artistIdMap =
+            HashMap<Long, Artist>().apply { artists.forEach { put(it.id, it) } }
+        private val albumIdMap = HashMap<Long, Album>().apply { albums.forEach { put(it.id, it) } }
+        private val songIdMap = HashMap<Long, Song>().apply { songs.forEach { put(it.id, it) } }
+
+        /** Find a [Song] by it's ID. Null if no song exists with that ID. */
+        fun findSongById(songId: Long) = songIdMap[songId]
+
+        /** Find a [Album] by it's ID. Null if no album exists with that ID. */
+        fun findAlbumById(albumId: Long) = albumIdMap[albumId]
+
+        /** Find a [Artist] by it's ID. Null if no artist exists with that ID. */
+        fun findArtistById(artistId: Long) = artistIdMap[artistId]
+
+        /** Find a [Genre] by it's ID. Null if no genre exists with that ID. */
+        fun findGenreById(genreId: Long) = genreIdMap[genreId]
+
+        /** Sanitize an old item to find the corresponding item in a new library. */
+        fun sanitize(song: Song) = findSongById(song.id)
+        /** Sanitize an old item to find the corresponding item in a new library. */
+        fun sanitize(songs: List<Song>) = songs.mapNotNull { sanitize(it) }
+        /** Sanitize an old item to find the corresponding item in a new library. */
+        fun sanitize(album: Album) = findAlbumById(album.id)
+        /** Sanitize an old item to find the corresponding item in a new library. */
+        fun sanitize(artist: Artist) = findArtistById(artist.id)
+        /** Sanitize an old item to find the corresponding item in a new library. */
+        fun sanitize(genre: Genre) = findGenreById(genre.id)
 
         /**
-         * Find a song for a [uri], this is similar to [findSongFast], but with some kind of content
+         * Find a song for a [uri], this is similar to [findSong], but with some kind of content
          * uri.
          * @return The corresponding [Song] for this [uri], null if there isn't one.
          */
@@ -94,17 +119,6 @@ class MusicStore private constructor() {
 
                 songs.find { it.path.name == displayName }
             }
-
-        /** Sanitize an old item to find the corresponding item in a new library. */
-        fun sanitize(song: Song) = songs.find { it.id == song.id }
-        /** Sanitize an old item to find the corresponding item in a new library. */
-        fun sanitize(songs: List<Song>) = songs.mapNotNull { sanitize(it) }
-        /** Sanitize an old item to find the corresponding item in a new library. */
-        fun sanitize(album: Album) = albums.find { it.id == album.id }
-        /** Sanitize an old item to find the corresponding item in a new library. */
-        fun sanitize(artist: Artist) = artists.find { it.id == artist.id }
-        /** Sanitize an old item to find the corresponding item in a new library. */
-        fun sanitize(genre: Genre) = genres.find { it.id == genre.id }
     }
 
     /** A callback for awaiting the loading of music. */

@@ -116,9 +116,9 @@ class PlaybackStateDatabase private constructor(context: Context) :
         val parent =
             when (rawState.playbackMode) {
                 PlaybackMode.ALL_SONGS -> null
-                PlaybackMode.IN_ALBUM -> library.albums.find { it.id == rawState.parentId }
-                PlaybackMode.IN_ARTIST -> library.artists.find { it.id == rawState.parentId }
-                PlaybackMode.IN_GENRE -> library.genres.find { it.id == rawState.parentId }
+                PlaybackMode.IN_ALBUM -> rawState.parentId?.let(library::findAlbumById)
+                PlaybackMode.IN_ARTIST -> rawState.parentId?.let(library::findArtistById)
+                PlaybackMode.IN_GENRE -> rawState.parentId?.let(library::findGenreById)
             }
 
         return SavedState(
@@ -168,15 +168,9 @@ class PlaybackStateDatabase private constructor(context: Context) :
 
         readableDatabase.queryAll(TABLE_NAME_QUEUE) { cursor ->
             if (cursor.count == 0) return@queryAll
-
             val songIndex = cursor.getColumnIndexOrThrow(QueueColumns.SONG_ID)
-            val albumIndex = cursor.getColumnIndexOrThrow(QueueColumns.ALBUM_ID)
-
             while (cursor.moveToNext()) {
-                library.findSongFast(cursor.getLong(songIndex), cursor.getLong(albumIndex))?.let {
-                    song ->
-                    queue.add(song)
-                }
+                library.findSongById(cursor.getLong(songIndex))?.let(queue::add)
             }
         }
 

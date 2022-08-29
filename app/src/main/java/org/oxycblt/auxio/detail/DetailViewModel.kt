@@ -114,7 +114,7 @@ class DetailViewModel(application: Application) :
     fun setSongId(id: Long) {
         if (_currentSong.value?.run { song.id } == id) return
         val library = unlikelyToBeNull(musicStore.library)
-        val song = requireNotNull(library.songs.find { it.id == id }) { "Invalid song id provided" }
+        val song = requireNotNull(library.findSongById(id)) { "Invalid song id provided" }
         generateDetailSong(song)
     }
 
@@ -126,8 +126,7 @@ class DetailViewModel(application: Application) :
     fun setAlbumId(id: Long) {
         if (_currentAlbum.value?.id == id) return
         val library = unlikelyToBeNull(musicStore.library)
-        val album =
-            requireNotNull(library.albums.find { it.id == id }) { "Invalid album id provided " }
+        val album = requireNotNull(library.findAlbumById(id)) { "Invalid album id provided " }
 
         _currentAlbum.value = album
         refreshAlbumData(album)
@@ -136,8 +135,7 @@ class DetailViewModel(application: Application) :
     fun setArtistId(id: Long) {
         if (_currentArtist.value?.id == id) return
         val library = unlikelyToBeNull(musicStore.library)
-        val artist =
-            requireNotNull(library.artists.find { it.id == id }) { "Invalid artist id provided" }
+        val artist = requireNotNull(library.findArtistById(id)) { "Invalid artist id provided" }
         _currentArtist.value = artist
         refreshArtistData(artist)
     }
@@ -145,8 +143,7 @@ class DetailViewModel(application: Application) :
     fun setGenreId(id: Long) {
         if (_currentGenre.value?.id == id) return
         val library = unlikelyToBeNull(musicStore.library)
-        val genre =
-            requireNotNull(library.genres.find { it.id == id }) { "Invalid genre id provided" }
+        val genre = requireNotNull(library.findGenreById(id)) { "Invalid genre id provided" }
         _currentGenre.value = genre
         refreshGenreData(genre)
     }
