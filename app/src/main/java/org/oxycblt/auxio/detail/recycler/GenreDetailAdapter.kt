@@ -29,7 +29,7 @@ import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
 import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.formatDuration
+import org.oxycblt.auxio.util.formatDurationMs
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
@@ -106,7 +106,7 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
         binding.detailName.text = item.resolveName(binding.context)
         binding.detailSubhead.text =
             binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
-        binding.detailInfo.text = item.durationSecs.formatDuration(false)
+        binding.detailInfo.text = item.durationMs.formatDurationMs(false)
         binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }
         binding.detailShuffleButton.setOnClickListener { listener.onShuffleParent() }
     }
@@ -126,7 +126,7 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
                 override fun areItemsTheSame(oldItem: Genre, newItem: Genre) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.songs.size == newItem.songs.size &&
-                        oldItem.durationSecs == newItem.durationSecs
+                        oldItem.durationMs == newItem.durationMs
             }
     }
 }

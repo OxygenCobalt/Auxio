@@ -33,8 +33,9 @@ import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.MonoAdapter
 import org.oxycblt.auxio.ui.recycler.SyncBackingData
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.formatDuration
+import org.oxycblt.auxio.util.formatDurationMs
 import org.oxycblt.auxio.util.logEOrThrow
+import org.oxycblt.auxio.util.secsToMs
 
 /**
  * A [HomeListFragment] for showing a list of [Album]s.
@@ -71,14 +72,14 @@ class AlbumListFragment : HomeListFragment<Album>() {
             is Sort.Mode.ByYear -> album.date?.resolveYear(requireContext())
 
             // Duration -> Use formatted duration
-            is Sort.Mode.ByDuration -> album.durationSecs.formatDuration(false)
+            is Sort.Mode.ByDuration -> album.durationMs.formatDurationMs(false)
 
             // Count -> Use song count
             is Sort.Mode.ByCount -> album.songs.size.toString()
 
             // Last added -> Format as date
             is Sort.Mode.ByDateAdded -> {
-                val dateAddedMillis = album.dateAdded * 1000
+                val dateAddedMillis = album.dateAdded.secsToMs()
                 formatterSb.setLength(0)
                 DateUtils.formatDateRange(
                         context,

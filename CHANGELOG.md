@@ -2,6 +2,12 @@
 
 ## dev
 
+#### What's New
+- Made the SeekBar much smoother and better to use
+
+#### What's Fixed
+- Fixed issue where fast scroller popup would not appear
+
 ## 2.6.2
 
 #### What's New

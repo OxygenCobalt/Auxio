@@ -35,7 +35,9 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.application
+import org.oxycblt.auxio.util.dsToMs
 import org.oxycblt.auxio.util.logE
+import org.oxycblt.auxio.util.msToDs
 
 /**
  * The ViewModel that provides a UI frontend for [PlaybackStateManager].
@@ -60,10 +62,10 @@ class PlaybackViewModel(application: Application) :
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean>
         get() = _isPlaying
-    private val _positionSecs = MutableStateFlow(0L)
-    /** The current playback position, in seconds */
-    val positionSecs: StateFlow<Long>
-        get() = _positionSecs
+    private val _positionDs = MutableStateFlow(0L)
+    /** The current playback position, in *deci-seconds* */
+    val positionDs: StateFlow<Long>
+        get() = _positionDs
 
     private val _repeatMode = MutableStateFlow(RepeatMode.NONE)
     /** The current repeat mode, see [RepeatMode] for more information */
@@ -147,8 +149,8 @@ class PlaybackViewModel(application: Application) :
     // --- PLAYER FUNCTIONS ---
 
     /** Update the position and push it to [PlaybackStateManager] */
-    fun seekTo(positionSecs: Long) {
-        playbackManager.seekTo(positionSecs * 1000)
+    fun seekTo(positionDs: Long) {
+        playbackManager.seekTo(positionDs.dsToMs())
     }
 
     // --- QUEUE FUNCTIONS ---
@@ -267,7 +269,7 @@ class PlaybackViewModel(application: Application) :
     }
 
     override fun onPositionChanged(positionMs: Long) {
-        _positionSecs.value = positionMs / 1000
+        _positionDs.value = positionMs.msToDs()
     }
 
     override fun onPlayingChanged(isPlaying: Boolean) {

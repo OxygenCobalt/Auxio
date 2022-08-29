@@ -39,7 +39,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.formatDuration
+import org.oxycblt.auxio.util.formatDurationMs
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -84,7 +84,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         binding.aboutTotalDuration.text =
             getString(
                 R.string.fmt_lib_total_duration,
-                songs.sumOf { it.durationSecs }.formatDuration(false))
+                songs.sumOf { it.durationMs }.formatDurationMs(false))
     }
 
     private fun updateAlbumCount(albums: List<Album>) {

@@ -33,7 +33,7 @@ import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.formatDuration
+import org.oxycblt.auxio.util.formatDurationMs
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
@@ -131,7 +131,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
             val songCount = context.getPlural(R.plurals.fmt_song_count, item.songs.size)
 
-            val duration = item.durationSecs.formatDuration(true)
+            val duration = item.durationMs.formatDurationMs(true)
 
             text = context.getString(R.string.fmt_three, date, songCount, duration)
         }
@@ -157,7 +157,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
                         oldItem.artist.rawName == newItem.artist.rawName &&
                         oldItem.date == newItem.date &&
                         oldItem.songs.size == newItem.songs.size &&
-                        oldItem.durationSecs == newItem.durationSecs &&
+                        oldItem.durationMs == newItem.durationMs &&
                         oldItem.releaseType == newItem.releaseType
             }
     }
@@ -207,7 +207,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
         }
 
         binding.songName.text = item.resolveName(binding.context)
-        binding.songDuration.text = item.durationSecs.formatDuration(false)
+        binding.songDuration.text = item.durationMs.formatDurationMs(false)
 
         // binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnLongClickListener {

@@ -47,12 +47,36 @@ fun Int.nonZeroOrNull() = if (this > 0) this else null
 
 fun Int.inRangeOrNull(range: IntRange) = if (range.contains(this)) this else null
 
+fun Long.msToDs() = floorDiv(100)
+
+fun Long.msToSecs() = floorDiv(1000)
+
+fun Long.dsToMs() = times(100)
+
+fun Long.dsToSecs() = floorDiv(10)
+
+fun Long.secsToMs() = times(1000)
+
+/**
+ * Convert a [Long] of milliseconds into a string duration.
+ * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
+ * will be returned if the second value is 0.
+ */
+fun Long.formatDurationMs(isElapsed: Boolean) = msToSecs().formatDurationSecs(isElapsed)
+
+/**
+ * Convert a [Long] of deci-seconds into a string duration.
+ * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
+ * will be returned if the second value is 0.
+ */
+fun Long.formatDurationDs(isElapsed: Boolean) = dsToSecs().formatDurationSecs(isElapsed)
+
 /**
  * Convert a [Long] of seconds into a string duration.
  * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
  * will be returned if the second value is 0.
  */
-fun Long.formatDuration(isElapsed: Boolean): String {
+fun Long.formatDurationSecs(isElapsed: Boolean): String {
     if (!isElapsed && this == 0L) {
         logD("Non-elapsed duration is zero, using --:--")
         return "--:--"

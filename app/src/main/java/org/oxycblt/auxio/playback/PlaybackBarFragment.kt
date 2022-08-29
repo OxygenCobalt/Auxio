@@ -20,6 +20,7 @@ package org.oxycblt.auxio.playback
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.activityViewModels
+import kotlin.math.max
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
@@ -33,6 +34,7 @@ import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
+import org.oxycblt.auxio.util.msToDs
 
 /**
  * A fragment showing the current playback state in a compact manner. Used as the bar for the
@@ -104,7 +106,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.isPlaying, ::updateIsPlaying)
-        collectImmediately(playbackModel.positionSecs, ::updatePosition)
+        collectImmediately(playbackModel.positionDs, ::updatePosition)
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackBarBinding) {
@@ -119,7 +121,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
             binding.playbackCover.bind(song)
             binding.playbackSong.text = song.resolveName(context)
             binding.playbackInfo.text = song.resolveIndividualArtistName(context)
-            binding.playbackProgressBar.max = song.durationSecs.toInt()
+            binding.playbackProgressBar.max = song.durationMs.msToDs().toInt()
         }
     }
 
@@ -138,8 +140,8 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         requireBinding().playbackSecondaryAction.isActivated = isShuffled
     }
 
-    private fun updatePosition(position: Long) {
-        requireBinding().playbackProgressBar.progress = position.toInt()
+    private fun updatePosition(positionDs: Long) {
+        requireBinding().playbackProgressBar.progress = positionDs.toInt()
     }
 }
 

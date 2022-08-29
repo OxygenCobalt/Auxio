@@ -62,10 +62,6 @@ sealed class Music : Item() {
 sealed class MusicParent : Music() {
     /** The songs that this parent owns. */
     abstract val songs: List<Song>
-
-    /** The formatted total duration of this genre */
-    val durationSecs: Long
-        get() = songs.sumOf { it.durationSecs }
 }
 
 /** The data object for a song. */
@@ -121,9 +117,6 @@ data class Song(
         }
 
     override fun resolveName(context: Context) = rawName
-
-    /** The duration of this song, in seconds (rounded down) */
-    val durationSecs = durationMs / 1000
 
     private var _album: Album? = null
     /** The album of this song. */
@@ -236,6 +229,9 @@ data class Album(
     /** The earliest date a song in this album was added. */
     val dateAdded = songs.minOf { it.dateAdded }
 
+    val durationMs: Long
+        get() = songs.sumOf { it.durationMs }
+
     /** Internal field. Do not use. */
     val _artistGroupingId: Long
         get() = _artistGroupingName.toMusicId()
@@ -273,6 +269,9 @@ data class Artist(
 
     /** The songs of this artist. */
     override val songs = albums.flatMap { it.songs }
+
+    val durationMs: Long
+        get() = songs.sumOf { it.durationMs }
 }
 
 /** The data object for a genre. */
@@ -291,6 +290,9 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
         get() = rawName.toMusicId()
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
+
+    val durationMs: Long
+        get() = songs.sumOf { it.durationMs }
 }
 
 private fun String?.toMusicId(): Long {

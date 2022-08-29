@@ -31,7 +31,7 @@ import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.MonoAdapter
 import org.oxycblt.auxio.ui.recycler.SyncBackingData
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.formatDuration
+import org.oxycblt.auxio.util.formatDurationMs
 import org.oxycblt.auxio.util.logEOrThrow
 
 /**
@@ -61,7 +61,7 @@ class ArtistListFragment : HomeListFragment<Artist>() {
             is Sort.Mode.ByName -> artist.sortName?.run { first().uppercase() }
 
             // Duration -> Use formatted duration
-            is Sort.Mode.ByDuration -> artist.durationSecs.formatDuration(false)
+            is Sort.Mode.ByDuration -> artist.durationMs.formatDurationMs(false)
 
             // Count -> Use song count
             is Sort.Mode.ByCount -> artist.songs.size.toString()

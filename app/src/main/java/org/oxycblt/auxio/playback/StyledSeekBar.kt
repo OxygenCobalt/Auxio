@@ -22,7 +22,7 @@ import android.util.AttributeSet
 import com.google.android.material.slider.Slider
 import kotlin.math.max
 import org.oxycblt.auxio.databinding.ViewSeekBarBinding
-import org.oxycblt.auxio.util.formatDuration
+import org.oxycblt.auxio.util.formatDurationDs
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logD
 
@@ -66,18 +66,18 @@ constructor(
      * The current position, in seconds. This is the current value of the SeekBar and is indicated
      * by the start TextView in the layout.
      */
-    var positionSecs: Long
+    var positionDs: Long
         get() = binding.seekBarSlider.value.toLong()
         set(value) {
             // Sanity check: Ensure that this value is within the duration and will not crash
             // the app, and that the user is not currently seeking (which would cause the SeekBar
             // to jump around).
-            if (value <= durationSecs && !isActivated) {
+            if (value <= durationDs && !isActivated) {
                 binding.seekBarSlider.value = value.toFloat()
 
                 // We would want to keep this in the callback, but the callback only fires when
                 // a value changes completely, and sometimes that does not happen with this view.
-                binding.seekBarPosition.text = value.formatDuration(true)
+                binding.seekBarPosition.text = value.formatDurationDs(true)
             }
         }
 
@@ -85,7 +85,7 @@ constructor(
      * The current duration, in seconds. This is the end value of the SeekBar and is indicated by
      * the end TextView in the layout.
      */
-    var durationSecs: Long
+    var durationDs: Long
         get() = binding.seekBarSlider.valueTo.toLong()
         set(value) {
             // Sanity check 1: If this is a value so low that it effectively rounds down to
@@ -95,13 +95,13 @@ constructor(
 
             // Sanity check 2: If the current value exceeds the new duration value, clamp it
             // down so that we don't crash and instead have an annoying visual flicker.
-            if (positionSecs > to) {
-                logD("Clamping invalid position [current: $positionSecs new max: $to]")
+            if (positionDs > to) {
+                logD("Clamping invalid position [current: $positionDs new max: $to]")
                 binding.seekBarSlider.value = to.toFloat()
             }
 
             binding.seekBarSlider.valueTo = to.toFloat()
-            binding.seekBarDuration.text = value.formatDuration(false)
+            binding.seekBarDuration.text = value.formatDurationDs(false)
         }
 
     override fun onStartTrackingTouch(slider: Slider) {
@@ -119,13 +119,13 @@ constructor(
     }
 
     override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
-        binding.seekBarPosition.text = value.toLong().formatDuration(true)
+        binding.seekBarPosition.text = value.toLong().formatDurationDs(true)
     }
 
     interface Callback {
         /**
          * Called when a seek event was completed and the new position must be seeked to by the app.
          */
-        fun seekTo(positionSecs: Long)
+        fun seekTo(positionDs: Long)
     }
 }

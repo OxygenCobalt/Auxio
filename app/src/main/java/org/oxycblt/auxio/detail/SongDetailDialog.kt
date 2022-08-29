@@ -29,7 +29,7 @@ import org.oxycblt.auxio.databinding.DialogSongDetailBinding
 import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.formatDuration
+import org.oxycblt.auxio.util.formatDurationMs
 
 /**
  * A dialog displayed when "View properties" is selected on a song, showing more information about
@@ -70,7 +70,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
                 binding.detailRelativeDir.setText(song.song.path.parent.resolveName(context))
                 binding.detailFormat.setText(song.info.resolvedMimeType.resolveName(context))
                 binding.detailSize.setText(Formatter.formatFileSize(context, song.song.size))
-                binding.detailDuration.setText(song.song.durationSecs.formatDuration(true))
+                binding.detailDuration.setText(song.song.durationMs.formatDurationMs(true))
 
                 if (song.info.bitrateKbps != null) {
                     binding.detailBitrate.setText(

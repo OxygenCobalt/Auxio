@@ -35,6 +35,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.fragment.MenuFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.msToDs
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -109,7 +110,7 @@ class PlaybackPanelFragment :
 
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.parent, ::updateParent)
-        collectImmediately(playbackModel.positionSecs, ::updatePosition)
+        collectImmediately(playbackModel.positionDs, ::updatePosition)
         collectImmediately(playbackModel.repeatMode, ::updateRepeat)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.isShuffled, ::updateShuffled)
@@ -142,8 +143,8 @@ class PlaybackPanelFragment :
         }
     }
 
-    override fun seekTo(positionSecs: Long) {
-        playbackModel.seekTo(positionSecs)
+    override fun seekTo(positionDs: Long) {
+        playbackModel.seekTo(positionDs)
     }
 
     private fun updateSong(song: Song?) {
@@ -155,7 +156,7 @@ class PlaybackPanelFragment :
         binding.playbackSong.text = song.resolveName(context)
         binding.playbackArtist.text = song.resolveIndividualArtistName(context)
         binding.playbackAlbum.text = song.album.resolveName(context)
-        binding.playbackSeekBar.durationSecs = song.durationSecs
+        binding.playbackSeekBar.durationDs = song.durationMs.msToDs()
     }
 
     private fun updateParent(parent: MusicParent?) {
@@ -166,8 +167,8 @@ class PlaybackPanelFragment :
             parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs)
     }
 
-    private fun updatePosition(positionSecs: Long) {
-        requireBinding().playbackSeekBar.positionSecs = positionSecs
+    private fun updatePosition(positionDs: Long) {
+        requireBinding().playbackSeekBar.positionDs = positionDs
     }
 
     private fun updateRepeat(repeatMode: RepeatMode) {

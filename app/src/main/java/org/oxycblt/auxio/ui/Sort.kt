@@ -205,23 +205,20 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
 
             override fun getSongComparator(ascending: Boolean): Comparator<Song> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.durationSecs },
-                    compareBy(BasicComparator.SONG))
+                    compareByDynamic(ascending) { it.durationMs }, compareBy(BasicComparator.SONG))
 
             override fun getAlbumComparator(ascending: Boolean): Comparator<Album> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.durationSecs },
-                    compareBy(BasicComparator.ALBUM))
+                    compareByDynamic(ascending) { it.durationMs }, compareBy(BasicComparator.ALBUM))
 
             override fun getArtistComparator(ascending: Boolean): Comparator<Artist> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.durationSecs },
+                    compareByDynamic(ascending) { it.durationMs },
                     compareBy(BasicComparator.ARTIST))
 
             override fun getGenreComparator(ascending: Boolean): Comparator<Genre> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.durationSecs },
-                    compareBy(BasicComparator.GENRE))
+                    compareByDynamic(ascending) { it.durationMs }, compareBy(BasicComparator.GENRE))
         }
 
         /** Sort by the amount of songs. Only applicable to music parents. */
