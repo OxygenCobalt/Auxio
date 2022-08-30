@@ -47,14 +47,19 @@ fun Int.nonZeroOrNull() = if (this > 0) this else null
 
 fun Int.inRangeOrNull(range: IntRange) = if (range.contains(this)) this else null
 
+/** Converts a long in milliseconds to a long in deci-seconds */
 fun Long.msToDs() = floorDiv(100)
 
+/** Converts a long in milliseconds to a long in seconds */
 fun Long.msToSecs() = floorDiv(1000)
 
+/** Converts a long in deciseconds to a long in milliseconds. */
 fun Long.dsToMs() = times(100)
 
+/** Converts a long in deciseconds to a long in seconds. */
 fun Long.dsToSecs() = floorDiv(10)
 
+/** Converts a long in seconds to a long in milliseconds. */
 fun Long.secsToMs() = times(1000)
 
 /**

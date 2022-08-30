@@ -3,7 +3,8 @@
 ## dev
 
 #### What's New
-- Made the SeekBar much smoother and better to use
+- Added smooth seeking
+- Queue now has a fast scroller
 
 #### What's Fixed
 - Fixed issue where fast scroller popup would not appear

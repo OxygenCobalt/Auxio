@@ -92,12 +92,6 @@ class PlaybackPanelFragment :
             playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album) }
         }
 
-        binding.playbackSongMenu.setOnClickListener { view ->
-            playbackModel.song.value?.let { song ->
-                musicMenu(view, R.menu.menu_playback_song_actions, song)
-            }
-        }
-
         binding.playbackSeekBar.callback = this
 
         binding.playbackRepeat.setOnClickListener { playbackModel.incrementRepeatMode() }
@@ -135,6 +129,21 @@ class PlaybackPanelFragment :
                     activityLauncher.launch(equalizerIntent)
                 } catch (e: ActivityNotFoundException) {
                     requireContext().showToast(R.string.err_no_app)
+                }
+
+                true
+            }
+            R.id.action_go_artist -> {
+                playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album.artist) }
+                true
+            }
+            R.id.action_go_album -> {
+                playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album) }
+                true
+            }
+            R.id.action_song_detail -> {
+                playbackModel.song.value?.let {
+                    navModel.mainNavigateTo(MainNavigationAction.SongDetails(it))
                 }
 
                 true
