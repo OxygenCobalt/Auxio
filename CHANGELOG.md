@@ -3,6 +3,9 @@
 ## dev
 
 #### What's New
+- Improved playing indicators [#218]
+    - Search and library now show playing indicators
+    - Playing indicators are now animated when playback is ongoing
 - Added smooth seeking
 - Queue now has a fast scroller
 

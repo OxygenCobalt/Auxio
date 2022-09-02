@@ -35,6 +35,7 @@ class QueueAdapter(private val listener: QueueItemListener) :
     RecyclerView.Adapter<QueueSongViewHolder>() {
     private var differ = SyncListDiffer(this, QueueSongViewHolder.DIFFER)
     private var currentIndex = 0
+    private var isPlaying = false
 
     override fun getItemCount() = differ.currentList.size
 
@@ -54,7 +55,7 @@ class QueueAdapter(private val listener: QueueItemListener) :
         }
 
         viewHolder.isEnabled = position > currentIndex
-        viewHolder.isActivated = position == currentIndex
+        viewHolder.updateIndicator(position == currentIndex, isPlaying)
     }
 
     fun submitList(newList: List<Song>) {
@@ -65,16 +66,30 @@ class QueueAdapter(private val listener: QueueItemListener) :
         differ.replaceList(newList)
     }
 
-    fun updateIndex(index: Int) {
-        when {
-            index < currentIndex -> {
-                val lastIndex = currentIndex
-                currentIndex = index
-                notifyItemRangeChanged(0, lastIndex + 1, PAYLOAD_UPDATE_INDEX)
+    fun updateIndicator(index: Int, isPlaying: Boolean) {
+        var updatedIndex = false
+
+        if (index != currentIndex) {
+            when {
+                index < currentIndex -> {
+                    val lastIndex = currentIndex
+                    currentIndex = index
+                    notifyItemRangeChanged(0, lastIndex + 1, PAYLOAD_UPDATE_INDEX)
+                }
+                else -> {
+                    currentIndex = index
+                    notifyItemRangeChanged(0, currentIndex + 1, PAYLOAD_UPDATE_INDEX)
+                }
             }
-            index > currentIndex -> {
-                currentIndex = index
-                notifyItemRangeChanged(0, currentIndex + 1, PAYLOAD_UPDATE_INDEX)
+
+            updatedIndex = true
+        }
+
+        if (this.isPlaying != isPlaying) {
+            this.isPlaying = isPlaying
+
+            if (!updatedIndex) {
+                notifyItemChanged(index, PAYLOAD_UPDATE_INDEX)
             }
         }
     }
@@ -92,7 +107,7 @@ interface QueueItemListener {
 class QueueSongViewHolder
 private constructor(
     private val binding: ItemQueueSongBinding,
-) : RecyclerView.ViewHolder(binding.root) {
+) : IndicatorViewHolder(binding.root) {
     val bodyView: View
         get() = binding.body
     val backgroundView: View
@@ -146,12 +161,10 @@ private constructor(
             binding.songDragHandle.isEnabled = value
         }
 
-    var isActivated: Boolean
-        get() = binding.interactBody.isActivated
-        set(value) {
-            // Activation does not affect clicking, make everything activated.
-            binding.interactBody.isActivated = value
-        }
+    override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
+        binding.interactBody.isActivated = isActive
+        binding.songAlbumCover.isPlaying = isPlaying
+    }
 
     companion object {
         fun new(parent: View) =

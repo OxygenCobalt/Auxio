@@ -144,6 +144,18 @@ fun <T1, T2> Fragment.collectImmediately(
     launch { combine.collect { block(it.first, it.second) } }
 }
 
+/** Like [collectImmediately], but with three [StateFlow] values. */
+fun <T1, T2, T3> Fragment.collectImmediately(
+    a: StateFlow<T1>,
+    b: StateFlow<T2>,
+    c: StateFlow<T3>,
+    block: (T1, T2, T3) -> Unit
+) {
+    block(a.value, b.value, c.value)
+    val combine = combine(a, b, c) { a1, b2, c3 -> Triple(a1, b2, c3) }
+    launch { combine.collect { block(it.first, it.second, it.third) } }
+}
+
 /**
  * Launches [block] in a lifecycle-aware coroutine once [state] is reached. This is primarily a
  * shortcut intended to correctly launch a co-routine on a fragment in a way that won't cause

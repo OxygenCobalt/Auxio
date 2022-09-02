@@ -27,8 +27,8 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
-import org.oxycblt.auxio.ui.recycler.ActivationAdapter
 import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
+import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SyncListDiffer
@@ -51,7 +51,7 @@ class ArtistListFragment : HomeListFragment<Artist>() {
         }
 
         collectImmediately(homeModel.artists, homeAdapter::replaceList)
-        collectImmediately(playbackModel.parent, ::handleParent)
+        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::handleParent)
     }
 
     override fun getPopup(pos: Int): String? {
@@ -85,19 +85,21 @@ class ArtistListFragment : HomeListFragment<Artist>() {
         }
     }
 
-    private fun handleParent(parent: MusicParent?) {
+    private fun handleParent(parent: MusicParent?, isPlaying: Boolean) {
         if (parent is Artist) {
-            homeAdapter.activateArtist(parent)
+            homeAdapter.updateIndicator(parent, isPlaying)
         } else {
             // Ignore playback not from artists
-            homeAdapter.activateArtist(null)
+            homeAdapter.updateIndicator(null, isPlaying)
         }
     }
 
     private class ArtistAdapter(private val listener: MenuItemListener) :
-        ActivationAdapter<ArtistViewHolder>() {
+        IndicatorAdapter<ArtistViewHolder>() {
         private val differ = SyncListDiffer(this, ArtistViewHolder.DIFFER)
-        private var currentArtist: Artist? = null
+
+        override val currentList: List<Item>
+            get() = differ.currentList
 
         override fun getItemCount() = differ.currentList.size
 
@@ -116,20 +118,8 @@ class ArtistListFragment : HomeListFragment<Artist>() {
             }
         }
 
-        override fun shouldActivateViewHolder(position: Int): Boolean {
-            val item = differ.currentList[position]
-            return item.id == currentArtist?.id
-        }
-
         fun replaceList(newList: List<Artist>) {
             differ.replaceList(newList)
-        }
-
-        /** Update the [artist] that this adapter should indicate playback */
-        fun activateArtist(artist: Artist?) {
-            if (artist == currentArtist) return
-            activateImpl(differ.currentList, currentArtist, artist)
-            currentArtist = artist
         }
     }
 }

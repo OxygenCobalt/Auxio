@@ -27,7 +27,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
+import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 
@@ -38,6 +40,7 @@ import org.oxycblt.auxio.util.logD
  */
 class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemListener {
     private val queueModel: QueueViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val queueAdapter = QueueAdapter(this)
     private val touchHelper: ItemTouchHelper by lifecycleObject {
         ItemTouchHelper(QueueDragCallback(queueModel))
@@ -63,7 +66,8 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
 
         // --- VIEWMODEL SETUP ----
 
-        collectImmediately(queueModel.queue, queueModel.index, ::updateQueue)
+        collectImmediately(
+            queueModel.queue, queueModel.index, playbackModel.isPlaying, ::updateQueue)
     }
 
     override fun onDestroyBinding(binding: FragmentQueueBinding) {
@@ -79,7 +83,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
         touchHelper.startDrag(viewHolder)
     }
 
-    private fun updateQueue(queue: List<Song>, index: Int) {
+    private fun updateQueue(queue: List<Song>, index: Int, isPlaying: Boolean) {
         val binding = requireBinding()
 
         val replaceQueue = queueModel.replaceQueue
@@ -111,7 +115,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
 
         queueModel.finishScrollTo()
 
-        queueAdapter.updateIndex(index)
+        queueAdapter.updateIndicator(index, isPlaying)
     }
 
     private fun invalidateDivider() {

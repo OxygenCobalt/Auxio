@@ -29,6 +29,7 @@ import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
 import org.oxycblt.auxio.detail.DiscHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.ui.recycler.IndicatorViewHolder
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
@@ -43,7 +44,6 @@ import org.oxycblt.auxio.util.inflater
  */
 class AlbumDetailAdapter(private val listener: Listener) :
     DetailAdapter<AlbumDetailAdapter.Listener>(listener, DIFFER) {
-    private var currentSong: Song? = null
 
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
@@ -75,18 +75,6 @@ class AlbumDetailAdapter(private val listener: Listener) :
                 is Song -> (holder as AlbumSongViewHolder).bind(item, listener)
             }
         }
-    }
-
-    override fun shouldActivateViewHolder(position: Int): Boolean {
-        val item = differ.currentList[position]
-        return item is Song && item.id == currentSong?.id
-    }
-
-    /** Update the [song] that this adapter should indicate playback */
-    fun activateSong(song: Song?) {
-        if (song == currentSong) return
-        activateImpl(differ.currentList, currentSong, song)
-        currentSong = song
     }
 
     companion object {
@@ -182,7 +170,7 @@ class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
 }
 
 private class AlbumSongViewHolder private constructor(private val binding: ItemAlbumSongBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+    IndicatorViewHolder(binding.root) {
     fun bind(item: Song, listener: MenuItemListener) {
         // Hide the track number view if the song does not have a track.
         if (item.track != null) {
@@ -208,6 +196,11 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
             true
         }
         binding.root.setOnClickListener { listener.onItemClick(item) }
+    }
+
+    override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
+        binding.root.isActivated = isActive
+        binding.songTrackBg.isPlaying = isPlaying
     }
 
     companion object {

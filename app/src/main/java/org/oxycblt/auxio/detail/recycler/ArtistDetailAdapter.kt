@@ -30,6 +30,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveYear
 import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
+import org.oxycblt.auxio.ui.recycler.IndicatorViewHolder
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
@@ -44,8 +45,6 @@ import org.oxycblt.auxio.util.inflater
  */
 class ArtistDetailAdapter(private val listener: Listener) :
     DetailAdapter<DetailAdapter.Listener>(listener, DIFFER) {
-    private var currentAlbum: Album? = null
-    private var currentSong: Song? = null
 
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
@@ -77,26 +76,6 @@ class ArtistDetailAdapter(private val listener: Listener) :
                 is Song -> (holder as ArtistSongViewHolder).bind(item, listener)
             }
         }
-    }
-
-    override fun shouldActivateViewHolder(position: Int): Boolean {
-        val item = differ.currentList[position]
-        return (item is Album && item.id == currentAlbum?.id) ||
-            (item is Song && item.id == currentSong?.id)
-    }
-
-    /** Update the [album] that this adapter should indicate playback */
-    fun activateAlbum(album: Album?) {
-        if (album == currentAlbum) return
-        activateImpl(differ.currentList, currentAlbum, album)
-        currentAlbum = album
-    }
-
-    /** Update the [song] that this adapter should indicate playback */
-    fun activateSong(song: Song?) {
-        if (song == currentSong) return
-        activateImpl(differ.currentList, currentSong, song)
-        currentSong = song
     }
 
     companion object {
@@ -158,7 +137,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 private class ArtistAlbumViewHolder
 private constructor(
     private val binding: ItemParentBinding,
-) : RecyclerView.ViewHolder(binding.root) {
+) : IndicatorViewHolder(binding.root) {
     fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
@@ -169,6 +148,11 @@ private constructor(
             true
         }
         binding.root.setOnClickListener { listener.onItemClick(item) }
+    }
+
+    override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
+        binding.root.isActivated = isActive
+        binding.parentImage.isPlaying = isPlaying
     }
 
     companion object {
@@ -188,7 +172,7 @@ private constructor(
 private class ArtistSongViewHolder
 private constructor(
     private val binding: ItemSongBinding,
-) : RecyclerView.ViewHolder(binding.root) {
+) : IndicatorViewHolder(binding.root) {
     fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)
@@ -199,6 +183,11 @@ private constructor(
             true
         }
         binding.root.setOnClickListener { listener.onItemClick(item) }
+    }
+
+    override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
+        binding.root.isActivated = isActive
+        binding.songAlbumCover.isPlaying = isPlaying
     }
 
     companion object {

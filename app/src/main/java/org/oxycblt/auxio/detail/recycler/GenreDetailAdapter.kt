@@ -40,6 +40,7 @@ import org.oxycblt.auxio.util.inflater
 class GenreDetailAdapter(private val listener: Listener) :
     DetailAdapter<DetailAdapter.Listener>(listener, DIFFER) {
     private var currentSong: Song? = null
+    private var isPlaying = false
 
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
@@ -68,18 +69,6 @@ class GenreDetailAdapter(private val listener: Listener) :
                 is Song -> (holder as SongViewHolder).bind(item, listener)
             }
         }
-    }
-
-    override fun shouldActivateViewHolder(position: Int): Boolean {
-        val item = differ.currentList[position]
-        return item is Song && item.id == currentSong?.id
-    }
-
-    /** Update the [song] that this adapter should indicate playback */
-    fun activateSong(song: Song?) {
-        if (song == currentSong) return
-        activateImpl(differ.currentList, currentSong, song)
-        currentSong = song
     }
 
     companion object {

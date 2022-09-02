@@ -27,8 +27,8 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
-import org.oxycblt.auxio.ui.recycler.ActivationAdapter
 import org.oxycblt.auxio.ui.recycler.GenreViewHolder
+import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SyncListDiffer
@@ -51,7 +51,7 @@ class GenreListFragment : HomeListFragment<Genre>() {
         }
 
         collectImmediately(homeModel.genres, homeAdapter::replaceList)
-        collectImmediately(playbackModel.parent, ::handlePlayback)
+        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::handlePlayback)
     }
 
     override fun getPopup(pos: Int): String? {
@@ -85,19 +85,21 @@ class GenreListFragment : HomeListFragment<Genre>() {
         }
     }
 
-    private fun handlePlayback(parent: MusicParent?) {
+    private fun handlePlayback(parent: MusicParent?, isPlaying: Boolean) {
         if (parent is Genre) {
-            homeAdapter.activateGenre(parent)
+            homeAdapter.updateIndicator(parent, isPlaying)
         } else {
             // Ignore playback not from genres
-            homeAdapter.activateGenre(null)
+            homeAdapter.updateIndicator(null, isPlaying)
         }
     }
 
     private class GenreAdapter(private val listener: MenuItemListener) :
-        ActivationAdapter<GenreViewHolder>() {
+        IndicatorAdapter<GenreViewHolder>() {
         private val differ = SyncListDiffer(this, GenreViewHolder.DIFFER)
-        private var currentGenre: Genre? = null
+
+        override val currentList: List<Item>
+            get() = differ.currentList
 
         override fun getItemCount() = differ.currentList.size
 
@@ -112,20 +114,8 @@ class GenreListFragment : HomeListFragment<Genre>() {
             }
         }
 
-        override fun shouldActivateViewHolder(position: Int): Boolean {
-            val item = differ.currentList[position]
-            return item.id == currentGenre?.id
-        }
-
         fun replaceList(newList: List<Genre>) {
             differ.replaceList(newList)
-        }
-
-        /** Update the [genre] that this adapter should indicate playback */
-        fun activateGenre(genre: Genre?) {
-            if (genre == currentGenre) return
-            activateImpl(differ.currentList, currentGenre, genre)
-            currentGenre = genre
         }
     }
 }

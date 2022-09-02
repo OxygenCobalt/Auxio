@@ -24,24 +24,20 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.recycler.ActivationAdapter
 import org.oxycblt.auxio.ui.recycler.AlbumViewHolder
 import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
 import org.oxycblt.auxio.ui.recycler.GenreViewHolder
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.HeaderViewHolder
+import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
 
 class SearchAdapter(private val listener: MenuItemListener) :
-    ActivationAdapter<RecyclerView.ViewHolder>() {
+    IndicatorAdapter<RecyclerView.ViewHolder>() {
     private val differ = AsyncListDiffer(this, DIFFER)
-    private var currentSong: Song? = null
-    private var currentAlbum: Album? = null
-    private var currentArtist: Artist? = null
-    private var currentGenre: Genre? = null
 
     override fun getItemCount() = differ.currentList.size
 
@@ -83,43 +79,10 @@ class SearchAdapter(private val listener: MenuItemListener) :
         }
     }
 
-    override fun shouldActivateViewHolder(position: Int): Boolean {
-        val item = differ.currentList[position]
-
-        return (item is Song && item.id == currentSong?.id) ||
-            (item is Album && item.id == currentAlbum?.id) ||
-            (item is Artist && item.id == currentArtist?.id) ||
-            (item is Genre && item.id == currentGenre?.id)
-    }
-
-    val currentList: List<Item>
+    override val currentList: List<Item>
         get() = differ.currentList
 
     fun submitList(list: List<Item>, callback: () -> Unit) = differ.submitList(list, callback)
-
-    fun activateSong(song: Song?) {
-        if (song == currentSong) return
-        activateImpl(differ.currentList, currentSong, song)
-        currentSong = song
-    }
-
-    fun activateAlbum(album: Album?) {
-        if (album == currentAlbum) return
-        activateImpl(differ.currentList, currentAlbum, album)
-        currentAlbum = album
-    }
-
-    fun activateArtist(artist: Artist?) {
-        if (artist == currentArtist) return
-        activateImpl(differ.currentList, currentArtist, artist)
-        currentArtist = artist
-    }
-
-    fun activateGenre(genre: Genre?) {
-        if (genre == currentGenre) return
-        activateImpl(differ.currentList, currentGenre, genre)
-        currentGenre = genre
-    }
 
     companion object {
         private val DIFFER =

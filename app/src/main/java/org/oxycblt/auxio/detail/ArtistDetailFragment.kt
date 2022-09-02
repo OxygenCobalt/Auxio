@@ -91,7 +91,8 @@ class ArtistDetailFragment :
 
         collectImmediately(detailModel.currentArtist, ::handleItemChange)
         collectImmediately(detailModel.artistData, detailAdapter::submitList)
-        collectImmediately(playbackModel.song, playbackModel.parent, ::updatePlayback)
+        collectImmediately(
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
@@ -200,20 +201,17 @@ class ArtistDetailFragment :
         }
     }
 
-    private fun updatePlayback(song: Song?, parent: MusicParent?) {
-        if (parent is Artist && parent.id == unlikelyToBeNull(detailModel.currentArtist.value).id) {
-            detailAdapter.activateSong(song)
-        } else {
-            // Ignore song playback not from the artist
-            detailAdapter.activateSong(null)
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        var item: Item? = null
+
+        if (parent is Album) {
+            item = parent
         }
 
-        if (parent is Album &&
-            parent.artist.id == unlikelyToBeNull(detailModel.currentArtist.value).id) {
-            detailAdapter.activateAlbum(parent)
-        } else {
-            // Ignore album playback not from the artist
-            detailAdapter.activateAlbum(null)
+        if (parent is Artist && parent.id == unlikelyToBeNull(detailModel.currentArtist.value).id) {
+            item = song
         }
+
+        detailAdapter.updateIndicator(item, isPlaying)
     }
 }

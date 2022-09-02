@@ -30,7 +30,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.getColorCompat
-import org.oxycblt.auxio.util.getDrawableCompat
 
 /**
  * Effectively a super-charged [StyledImageView].
@@ -52,7 +51,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private val cornerRadius: Float
     private val inner: StyledImageView
     private var customView: View? = null
-    private val indicator: StyledImageView
+    private val indicator: IndicatorView
 
     init {
         // Android wants you to make separate attributes for each view type, but will
@@ -63,11 +62,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         styledAttrs.recycle()
 
         inner = StyledImageView(context, attrs)
-        indicator =
-            StyledImageView(context).apply {
-                cornerRadius = this@ImageGroup.cornerRadius
-                staticIcon = context.getDrawableCompat(R.drawable.ic_currently_playing_24)
-            }
+        indicator = IndicatorView(context).apply { cornerRadius = this@ImageGroup.cornerRadius }
 
         addView(inner)
     }
@@ -101,6 +96,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         invalidateIndicator()
     }
 
+    fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {}
+
+    var isPlaying: Boolean
+        get() = indicator.isPlaying
+        set(value) {
+            indicator.isPlaying = value
+        }
+
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
         invalidateIndicator()
@@ -109,14 +112,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private fun invalidateIndicator() {
         if (isActivated) {
             alpha = 1f
-            indicator.alpha = 1f
             customView?.alpha = 0f
             inner.alpha = 0f
+            indicator.alpha = 1f
         } else {
             alpha = if (isEnabled) 1f else 0.5f
-            indicator.alpha = 0f
             customView?.alpha = 1f
             inner.alpha = 1f
+            indicator.alpha = 0f
         }
     }
 

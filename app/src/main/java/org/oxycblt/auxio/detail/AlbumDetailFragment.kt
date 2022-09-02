@@ -96,7 +96,8 @@ class AlbumDetailFragment :
 
         collectImmediately(detailModel.currentAlbum, ::handleItemChange)
         collectImmediately(detailModel.albumData, detailAdapter::submitList)
-        collectImmediately(playbackModel.song, playbackModel.parent, ::updatePlayback)
+        collectImmediately(
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
@@ -135,6 +136,7 @@ class AlbumDetailFragment :
     override fun onOpenMenu(item: Item, anchor: View) {
         if (item is Song) {
             musicMenu(anchor, R.menu.menu_album_song_actions, item)
+            return
         }
 
         error("Unexpected datatype when opening menu: ${item::class.java}")
@@ -244,7 +246,7 @@ class AlbumDetailFragment :
         }
     }
 
-    private fun updatePlayback(song: Song?, parent: MusicParent?) {
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         val binding = requireBinding()
 
         for (item in binding.detailToolbar.menu.children) {
@@ -257,10 +259,10 @@ class AlbumDetailFragment :
         }
 
         if (parent is Album && parent.id == unlikelyToBeNull(detailModel.currentAlbum.value).id) {
-            detailAdapter.activateSong(song)
+            detailAdapter.updateIndicator(song, isPlaying)
         } else {
             // Clear the ViewHolders if the mode isn't ALL_SONGS
-            detailAdapter.activateSong(null)
+            detailAdapter.updateIndicator(null, isPlaying)
         }
     }
 

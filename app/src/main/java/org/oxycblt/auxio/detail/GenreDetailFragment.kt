@@ -92,7 +92,8 @@ class GenreDetailFragment :
 
         collectImmediately(detailModel.currentGenre, ::handleItemChange)
         collectImmediately(detailModel.genreData, detailAdapter::submitList)
-        collectImmediately(playbackModel.song, playbackModel.parent, ::updatePlayback)
+        collectImmediately(
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
@@ -129,10 +130,11 @@ class GenreDetailFragment :
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {
-        when (item) {
-            is Song -> musicMenu(anchor, R.menu.menu_song_actions, item)
-            else -> error("Unexpected datatype when opening menu: ${item::class.java}")
+        if (item is Song) {
+            musicMenu(anchor, R.menu.menu_song_actions, item)
         }
+
+        error("Unexpected datatype when opening menu: ${item::class.java}")
     }
 
     override fun onPlayParent() {
@@ -193,12 +195,12 @@ class GenreDetailFragment :
         }
     }
 
-    private fun updatePlayback(song: Song?, parent: MusicParent?) {
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         if (parent is Genre && parent.id == unlikelyToBeNull(detailModel.currentGenre.value).id) {
-            detailAdapter.activateSong(song)
+            detailAdapter.updateIndicator(song, isPlaying)
         } else {
             // Ignore song playback not from the genre
-            detailAdapter.activateSong(null)
+            detailAdapter.updateIndicator(null, isPlaying)
         }
     }
 }

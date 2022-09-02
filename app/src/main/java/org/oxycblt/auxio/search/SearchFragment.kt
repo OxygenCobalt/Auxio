@@ -112,7 +112,8 @@ class SearchFragment :
         // --- VIEWMODEL SETUP ---
 
         collectImmediately(searchModel.searchResults, ::handleResults)
-        collectImmediately(playbackModel.song, playbackModel.parent, ::handlePlayback)
+        collectImmediately(
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::handlePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
@@ -165,34 +166,8 @@ class SearchFragment :
         binding.searchRecycler.isInvisible = results.isEmpty()
     }
 
-    private fun handlePlayback(song: Song?, parent: MusicParent?) {
-        if (parent == null) {
-            searchAdapter.activateSong(song)
-        } else {
-            // Ignore playback not from all songs
-            searchAdapter.activateSong(null)
-        }
-
-        if (parent is Album) {
-            searchAdapter.activateAlbum(parent)
-        } else {
-            // Ignore playback not from albums
-            searchAdapter.activateAlbum(null)
-        }
-
-        if (parent is Artist) {
-            searchAdapter.activateArtist(parent)
-        } else {
-            // Ignore playback not from artists
-            searchAdapter.activateArtist(null)
-        }
-
-        if (parent is Genre) {
-            searchAdapter.activateGenre(parent)
-        } else {
-            // Ignore playback not from artists
-            searchAdapter.activateGenre(null)
-        }
+    private fun handlePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        searchAdapter.updateIndicator(parent ?: song, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {
