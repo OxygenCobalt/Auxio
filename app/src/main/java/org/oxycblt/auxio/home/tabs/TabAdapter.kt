@@ -18,51 +18,48 @@
 package org.oxycblt.auxio.home.tabs
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemTabBinding
 import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.recycler.BackingData
-import org.oxycblt.auxio.ui.recycler.BindingViewHolder
-import org.oxycblt.auxio.ui.recycler.MonoAdapter
 import org.oxycblt.auxio.util.inflater
 
-class TabAdapter(listener: Listener) :
-    MonoAdapter<Tab, TabAdapter.Listener, TabViewHolder>(listener) {
-    override val data = TabData(this)
-    override val creator = TabViewHolder.CREATOR
+class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewHolder>() {
+    var tabs = arrayOf<Tab>()
+        private set
+
+    override fun getItemCount() = tabs.size
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TabViewHolder.new(parent)
+
+    override fun onBindViewHolder(holder: TabViewHolder, position: Int) {
+        holder.bind(tabs[position], listener)
+    }
+
+    @Suppress("NotifyDatasetChanged")
+    fun submitTabs(newTabs: Array<Tab>) {
+        tabs = newTabs
+        notifyDataSetChanged()
+    }
+
+    fun setTab(at: Int, tab: Tab) {
+        tabs[at] = tab
+        notifyItemChanged(at, PAYLOAD_TAB_CHANGED)
+    }
+
+    fun moveItems(from: Int, to: Int) {
+        val t = tabs[to]
+        val f = tabs[from]
+        tabs[from] = t
+        tabs[to] = f
+        notifyItemMoved(from, to)
+    }
 
     interface Listener {
         fun onVisibilityToggled(displayMode: DisplayMode)
         fun onPickUpTab(viewHolder: RecyclerView.ViewHolder)
-    }
-
-    class TabData(private val adapter: RecyclerView.Adapter<*>) : BackingData<Tab>() {
-        var tabs = arrayOf<Tab>()
-            private set
-
-        override fun getItem(position: Int) = tabs[position]
-        override fun getItemCount() = tabs.size
-
-        @Suppress("NotifyDatasetChanged")
-        fun submitTabs(newTabs: Array<Tab>) {
-            tabs = newTabs
-            adapter.notifyDataSetChanged()
-        }
-
-        fun setTab(at: Int, tab: Tab) {
-            tabs[at] = tab
-            adapter.notifyItemChanged(at, PAYLOAD_TAB_CHANGED)
-        }
-
-        fun moveItems(from: Int, to: Int) {
-            val t = tabs[to]
-            val f = tabs[from]
-            tabs[from] = t
-            tabs[to] = f
-            adapter.notifyItemMoved(from, to)
-        }
     }
 
     companion object {
@@ -71,10 +68,15 @@ class TabAdapter(listener: Listener) :
 }
 
 class TabViewHolder private constructor(private val binding: ItemTabBinding) :
-    BindingViewHolder<Tab, TabAdapter.Listener>(binding.root) {
+    RecyclerView.ViewHolder(binding.root) {
     @SuppressLint("ClickableViewAccessibility")
-    override fun bind(item: Tab, listener: TabAdapter.Listener) {
-        binding.root.apply { setOnClickListener { listener.onVisibilityToggled(item.mode) } }
+    fun bind(item: Tab, listener: TabAdapter.Listener) {
+        // Actually make the item full-width, which it won't be in dialogs
+        binding.root.layoutParams =
+            RecyclerView.LayoutParams(
+                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+
+        binding.root.setOnClickListener { listener.onVisibilityToggled(item.mode) }
 
         binding.tabIcon.apply {
             setText(item.mode.string)
@@ -92,13 +94,6 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
     }
 
     companion object {
-        val CREATOR =
-            object : Creator<TabViewHolder> {
-                override val viewType: Int
-                    get() = throw UnsupportedOperationException()
-
-                override fun create(context: Context) =
-                    TabViewHolder(ItemTabBinding.inflate(context.inflater))
-            }
+        fun new(parent: View) = TabViewHolder(ItemTabBinding.inflate(parent.context.inflater))
     }
 }

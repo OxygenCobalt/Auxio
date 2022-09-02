@@ -19,6 +19,8 @@ package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Genre
@@ -28,8 +30,7 @@ import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.GenreViewHolder
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
-import org.oxycblt.auxio.ui.recycler.MonoAdapter
-import org.oxycblt.auxio.ui.recycler.SyncBackingData
+import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.formatDurationMs
 import org.oxycblt.auxio.util.logEOrThrow
@@ -49,7 +50,7 @@ class GenreListFragment : HomeListFragment<Genre>() {
             adapter = homeAdapter
         }
 
-        collectImmediately(homeModel.genres, homeAdapter.data::replaceList)
+        collectImmediately(homeModel.genres, homeAdapter::replaceList)
     }
 
     override fun getPopup(pos: Int): String? {
@@ -83,9 +84,21 @@ class GenreListFragment : HomeListFragment<Genre>() {
         }
     }
 
-    class GenreAdapter(listener: MenuItemListener) :
-        MonoAdapter<Genre, MenuItemListener, GenreViewHolder>(listener) {
-        override val data = SyncBackingData(this, GenreViewHolder.DIFFER)
-        override val creator = GenreViewHolder.CREATOR
+    private class GenreAdapter(private val listener: MenuItemListener) :
+        RecyclerView.Adapter<GenreViewHolder>() {
+        private val differ = SyncListDiffer(this, GenreViewHolder.DIFFER)
+
+        override fun getItemCount() = differ.currentList.size
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+            GenreViewHolder.new(parent)
+
+        override fun onBindViewHolder(holder: GenreViewHolder, position: Int) {
+            holder.bind(differ.currentList[position], listener)
+        }
+
+        fun replaceList(newList: List<Genre>) {
+            differ.replaceList(newList)
+        }
     }
 }

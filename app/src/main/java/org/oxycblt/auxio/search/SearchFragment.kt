@@ -106,7 +106,7 @@ class SearchFragment :
 
         binding.searchRecycler.apply {
             adapter = searchAdapter
-            setSpanSizeLookup { pos -> searchAdapter.data.getItem(pos) is Header }
+            setSpanSizeLookup { pos -> searchModel.searchResults.value[pos] is Header }
         }
 
         // --- VIEWMODEL SETUP ---
@@ -154,7 +154,7 @@ class SearchFragment :
     private fun updateResults(results: List<Item>) {
         val binding = requireBinding()
 
-        searchAdapter.data.submitList(results.toMutableList()) {
+        searchAdapter.submitList(results.toMutableList()) {
             // I would make it so that the position is only scrolled back to the top when
             // the query actually changes instead of once every re-creation event, but sadly
             // that doesn't seem possible.

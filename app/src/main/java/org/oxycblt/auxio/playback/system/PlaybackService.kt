@@ -200,6 +200,7 @@ class PlaybackService :
         playbackManager.isPlaying = false
 
         playbackManager.unregisterInternalPlayer(this)
+        musicStore.addCallback(this)
         settings.release()
         unregisterReceiver(systemReceiver)
         serviceJob.cancel()

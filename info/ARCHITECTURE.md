@@ -78,10 +78,9 @@ own function, with the binding being obtained by calling `requireBinding`.
 At times it may be more appropriate to use a `View` instead of a fragment. This is okay as long as
 view-binding is still used.
 
-Auxio uses `RecyclerView` for all list information. Due to the complexities of Auxio, the way one
-defines an  adapter differs quite heavily from the normal library. Generally, start with
-`MonoAdapter` for a list with one type of data and `MultiAdapter` for lists with many types of data,
-then follow the documentation to see how  to fully implement the class.
+Auxio uses `RecyclerView` for all list information. To manage some complexity, there are a few
+conventions that are used when creating adapters. These can be seen in the `RecyclerFramework`
+file and in adapter implementations.
 
 #### Object communication
 Auxio's codebase is mostly centered around 4 different types of code that communicates with

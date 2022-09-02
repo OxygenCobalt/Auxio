@@ -17,6 +17,8 @@
  
 package org.oxycblt.auxio.search
 
+import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -24,54 +26,51 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.recycler.AlbumViewHolder
 import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
-import org.oxycblt.auxio.ui.recycler.AsyncBackingData
 import org.oxycblt.auxio.ui.recycler.GenreViewHolder
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.HeaderViewHolder
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
-import org.oxycblt.auxio.ui.recycler.MultiAdapter
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
 
-class SearchAdapter(listener: MenuItemListener) : MultiAdapter<MenuItemListener>(listener) {
-    override val data = AsyncBackingData(this, DIFFER)
+class SearchAdapter(private val listener: MenuItemListener) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val differ = AsyncListDiffer(this, DIFFER)
 
-    override fun getCreatorFromItem(item: Item) =
-        when (item) {
-            is Song -> SongViewHolder.CREATOR
-            is Album -> AlbumViewHolder.CREATOR
-            is Artist -> ArtistViewHolder.CREATOR
-            is Genre -> GenreViewHolder.CREATOR
-            is Header -> HeaderViewHolder.CREATOR
-            else -> null
+    override fun getItemCount() = differ.currentList.size
+
+    override fun getItemViewType(position: Int) =
+        when (differ.currentList[position]) {
+            is Song -> SongViewHolder.VIEW_TYPE
+            is Album -> AlbumViewHolder.VIEW_TYPE
+            is Artist -> ArtistViewHolder.VIEW_TYPE
+            is Genre -> HeaderViewHolder.VIEW_TYPE
+            is Header -> HeaderViewHolder.VIEW_TYPE
+            else -> super.getItemViewType(position)
         }
 
-    override fun getCreatorFromViewType(viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
-            SongViewHolder.CREATOR.viewType -> SongViewHolder.CREATOR
-            AlbumViewHolder.CREATOR.viewType -> AlbumViewHolder.CREATOR
-            ArtistViewHolder.CREATOR.viewType -> ArtistViewHolder.CREATOR
-            GenreViewHolder.CREATOR.viewType -> GenreViewHolder.CREATOR
-            HeaderViewHolder.CREATOR.viewType -> HeaderViewHolder.CREATOR
-            else -> null
+            SongViewHolder.VIEW_TYPE -> SongViewHolder.new(parent)
+            AlbumViewHolder.VIEW_TYPE -> AlbumViewHolder.new(parent)
+            ArtistViewHolder.VIEW_TYPE -> ArtistViewHolder.new(parent)
+            GenreViewHolder.VIEW_TYPE -> GenreViewHolder.new(parent)
+            HeaderViewHolder.VIEW_TYPE -> HeaderViewHolder.new(parent)
+            else -> error("Invalid item type $viewType")
         }
 
-    override fun onBind(
-        viewHolder: RecyclerView.ViewHolder,
-        item: Item,
-        listener: MenuItemListener,
-        payload: List<Any>
-    ) {
-        when (item) {
-            is Song -> (viewHolder as SongViewHolder).bind(item, listener)
-            is Album -> (viewHolder as AlbumViewHolder).bind(item, listener)
-            is Artist -> (viewHolder as ArtistViewHolder).bind(item, listener)
-            is Genre -> (viewHolder as GenreViewHolder).bind(item, listener)
-            is Header -> (viewHolder as HeaderViewHolder).bind(item, Unit)
-            else -> {}
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (val item = differ.currentList[position]) {
+            is Song -> (holder as SongViewHolder).bind(item, listener)
+            is Album -> (holder as AlbumViewHolder).bind(item, listener)
+            is Artist -> (holder as ArtistViewHolder).bind(item, listener)
+            is Genre -> (holder as GenreViewHolder).bind(item, listener)
+            is Header -> (holder as HeaderViewHolder).bind(item)
         }
     }
+
+    fun submitList(list: List<Item>, callback: () -> Unit) = differ.submitList(list, callback)
 
     companion object {
         private val DIFFER =

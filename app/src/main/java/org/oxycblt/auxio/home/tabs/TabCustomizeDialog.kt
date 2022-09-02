@@ -49,7 +49,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
             .setTitle(R.string.set_lib_tabs)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
                 logD("Committing tab changes")
-                settings.libTabs = tabAdapter.data.tabs
+                settings.libTabs = tabAdapter.tabs
             }
             .setNegativeButton(R.string.lbl_cancel, null)
     }
@@ -58,9 +58,9 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
         val savedTabs = findSavedTabState(savedInstanceState)
         if (savedTabs != null) {
             logD("Found saved tab state")
-            tabAdapter.data.submitTabs(savedTabs)
+            tabAdapter.submitTabs(savedTabs)
         } else {
-            tabAdapter.data.submitTabs(settings.libTabs)
+            tabAdapter.submitTabs(settings.libTabs)
         }
 
         binding.tabRecycler.apply {
@@ -71,7 +71,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(KEY_TABS, Tab.toSequence(tabAdapter.data.tabs))
+        outState.putInt(KEY_TABS, Tab.toSequence(tabAdapter.tabs))
     }
 
     override fun onDestroyBinding(binding: DialogTabsBinding) {
@@ -83,10 +83,10 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
         // Tab viewholders bind with the initial tab state, which will drift from the actual
         // state of the tabs over editing. So, this callback simply provides the displayMode
         // for us to locate within the data and then update.
-        val index = tabAdapter.data.tabs.indexOfFirst { it.mode == displayMode }
+        val index = tabAdapter.tabs.indexOfFirst { it.mode == displayMode }
         if (index > -1) {
-            val tab = tabAdapter.data.tabs[index]
-            tabAdapter.data.setTab(
+            val tab = tabAdapter.tabs[index]
+            tabAdapter.setTab(
                 index,
                 when (tab) {
                     is Tab.Visible -> Tab.Invisible(tab.mode)
@@ -95,7 +95,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
         }
 
         (requireDialog() as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-            tabAdapter.data.tabs.filterIsInstance<Tab.Visible>().isNotEmpty()
+            tabAdapter.tabs.filterIsInstance<Tab.Visible>().isNotEmpty()
     }
 
     override fun onPickUpTab(viewHolder: RecyclerView.ViewHolder) {

@@ -88,7 +88,7 @@ class AlbumDetailFragment :
         binding.detailRecycler.apply {
             adapter = detailAdapter
             setSpanSizeLookup { pos ->
-                val item = detailAdapter.data.getItem(pos)
+                val item = detailModel.albumData.value[pos]
                 item is Album || item is Header || item is SortHeader
             }
         }
@@ -96,7 +96,7 @@ class AlbumDetailFragment :
         // -- VIEWMODEL SETUP ---
 
         collectImmediately(detailModel.currentAlbum, ::handleItemChange)
-        collectImmediately(detailModel.albumData, detailAdapter.data::submitList)
+        collectImmediately(detailModel.albumData, detailAdapter::submitList)
         collectImmediately(playbackModel.song, playbackModel.parent, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
@@ -227,7 +227,7 @@ class AlbumDetailFragment :
     /** Scroll to an song using its [id]. */
     private fun scrollToItem(id: Long) {
         // Calculate where the item for the currently played song is
-        val pos = detailAdapter.data.currentList.indexOfFirst { it.id == id && it is Song }
+        val pos = detailModel.albumData.value.indexOfFirst { it.id == id && it is Song }
 
         if (pos != -1) {
             val binding = requireBinding()

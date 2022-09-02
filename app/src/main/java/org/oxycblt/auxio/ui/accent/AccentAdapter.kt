@@ -17,13 +17,12 @@
  
 package org.oxycblt.auxio.ui.accent
 
-import android.content.Context
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.TooltipCompat
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
-import org.oxycblt.auxio.ui.recycler.BackingData
-import org.oxycblt.auxio.ui.recycler.BindingViewHolder
-import org.oxycblt.auxio.ui.recycler.MonoAdapter
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.inflater
@@ -32,25 +31,29 @@ import org.oxycblt.auxio.util.inflater
  * An adapter that displays the accent palette.
  * @author OxygenCobalt
  */
-class AccentAdapter(listener: Listener) :
-    MonoAdapter<Accent, AccentAdapter.Listener, AccentViewHolder>(listener) {
+class AccentAdapter(private val listener: Listener) : RecyclerView.Adapter<AccentViewHolder>() {
     var selectedAccent: Accent? = null
         private set
 
-    override val data = AccentData()
-    override val creator = AccentViewHolder.CREATOR
+    override fun getItemCount() = Accent.MAX
 
-    override fun onBind(
-        viewHolder: AccentViewHolder,
-        item: Accent,
-        listener: Listener,
-        payload: List<Any>
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = AccentViewHolder.new(parent)
+
+    override fun onBindViewHolder(holder: AccentViewHolder, position: Int) =
+        throw IllegalStateException()
+
+    override fun onBindViewHolder(
+        holder: AccentViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
     ) {
-        if (payload.isEmpty()) {
-            super.onBind(viewHolder, item, listener, payload)
+        val item = Accent.from(position)
+
+        if (payloads.isEmpty()) {
+            holder.bind(item, listener)
         }
 
-        viewHolder.setSelected(item == selectedAccent)
+        holder.setSelected(item == selectedAccent)
     }
 
     fun setSelectedAccent(accent: Accent) {
@@ -64,20 +67,15 @@ class AccentAdapter(listener: Listener) :
         fun onAccentSelected(accent: Accent)
     }
 
-    class AccentData : BackingData<Accent>() {
-        override fun getItem(position: Int) = Accent.from(position)
-        override fun getItemCount() = Accent.MAX
-    }
-
     companion object {
         val PAYLOAD_SELECTION_CHANGED = Any()
     }
 }
 
 class AccentViewHolder private constructor(private val binding: ItemAccentBinding) :
-    BindingViewHolder<Accent, AccentAdapter.Listener>(binding.root) {
+    RecyclerView.ViewHolder(binding.root) {
 
-    override fun bind(item: Accent, listener: AccentAdapter.Listener) {
+    fun bind(item: Accent, listener: AccentAdapter.Listener) {
         setSelected(false)
 
         binding.accent.apply {
@@ -101,13 +99,6 @@ class AccentViewHolder private constructor(private val binding: ItemAccentBindin
     }
 
     companion object {
-        val CREATOR =
-            object : Creator<AccentViewHolder> {
-                override val viewType: Int
-                    get() = throw UnsupportedOperationException()
-
-                override fun create(context: Context) =
-                    AccentViewHolder(ItemAccentBinding.inflate(context.inflater))
-            }
+        fun new(parent: View) = AccentViewHolder(ItemAccentBinding.inflate(parent.context.inflater))
     }
 }

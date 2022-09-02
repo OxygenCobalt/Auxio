@@ -20,6 +20,8 @@ package org.oxycblt.auxio.home.list
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
@@ -29,9 +31,8 @@ import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
-import org.oxycblt.auxio.ui.recycler.MonoAdapter
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
-import org.oxycblt.auxio.ui.recycler.SyncBackingData
+import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.formatDurationMs
@@ -43,7 +44,7 @@ import org.oxycblt.auxio.util.secsToMs
  * @author
  */
 class SongListFragment : HomeListFragment<Song>() {
-    private val homeAdapter = SongsAdapter(this)
+    private val homeAdapter = SongAdapter(this)
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
     private val formatterSb = StringBuilder(50)
     private val formatter = Formatter(formatterSb)
@@ -56,7 +57,7 @@ class SongListFragment : HomeListFragment<Song>() {
             adapter = homeAdapter
         }
 
-        collectImmediately(homeModel.songs, homeAdapter.data::replaceList)
+        collectImmediately(homeModel.songs, homeAdapter::replaceList)
     }
 
     override fun getPopup(pos: Int): String? {
@@ -111,9 +112,21 @@ class SongListFragment : HomeListFragment<Song>() {
         }
     }
 
-    inner class SongsAdapter(listener: MenuItemListener) :
-        MonoAdapter<Song, MenuItemListener, SongViewHolder>(listener) {
-        override val data = SyncBackingData(this, SongViewHolder.DIFFER)
-        override val creator = SongViewHolder.CREATOR
+    private class SongAdapter(private val listener: MenuItemListener) :
+        RecyclerView.Adapter<SongViewHolder>() {
+        private val differ = SyncListDiffer(this, SongViewHolder.DIFFER)
+
+        override fun getItemCount() = differ.currentList.size
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+            SongViewHolder.new(parent)
+
+        override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
+            holder.bind(differ.currentList[position], listener)
+        }
+
+        fun replaceList(newList: List<Song>) {
+            differ.replaceList(newList)
+        }
     }
 }

@@ -17,14 +17,14 @@
  
 package org.oxycblt.auxio.detail.recycler
 
-import android.content.Context
+import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.recycler.BindingViewHolder
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
@@ -37,40 +37,37 @@ import org.oxycblt.auxio.util.inflater
  * An adapter for displaying genre information and it's children.
  * @author OxygenCobalt
  */
-class GenreDetailAdapter(listener: Listener) :
+class GenreDetailAdapter(private val listener: Listener) :
     DetailAdapter<DetailAdapter.Listener>(listener, DIFFER) {
     private var currentSong: Song? = null
 
-    override fun getCreatorFromItem(item: Item) =
-        super.getCreatorFromItem(item)
-            ?: when (item) {
-                is Genre -> GenreDetailViewHolder.CREATOR
-                is Song -> SongViewHolder.CREATOR
-                else -> null
-            }
+    override fun getItemViewType(position: Int) =
+        when (differ.currentList[position]) {
+            is Genre -> GenreDetailViewHolder.VIEW_TYPE
+            is Song -> SongViewHolder.VIEW_TYPE
+            else -> super.getItemViewType(position)
+        }
 
-    override fun getCreatorFromViewType(viewType: Int) =
-        super.getCreatorFromViewType(viewType)
-            ?: when (viewType) {
-                GenreDetailViewHolder.CREATOR.viewType -> GenreDetailViewHolder.CREATOR
-                SongViewHolder.CREATOR.viewType -> SongViewHolder.CREATOR
-                else -> null
-            }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        when (viewType) {
+            GenreDetailViewHolder.VIEW_TYPE -> GenreDetailViewHolder.new(parent)
+            SongViewHolder.VIEW_TYPE -> SongViewHolder.new(parent)
+            else -> super.onCreateViewHolder(parent, viewType)
+        }
 
-    override fun onBind(
-        viewHolder: RecyclerView.ViewHolder,
-        item: Item,
-        listener: Listener,
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
         payload: List<Any>
     ) {
-        super.onBind(viewHolder, item, listener, payload)
         if (payload.isEmpty()) {
-            when (item) {
-                is Genre -> (viewHolder as GenreDetailViewHolder).bind(item, listener)
-                is Song -> (viewHolder as SongViewHolder).bind(item, listener)
-                else -> {}
+            when (val item = differ.currentList[position]) {
+                is Genre -> (holder as GenreDetailViewHolder).bind(item, listener)
+                is Song -> (holder as SongViewHolder).bind(item, listener)
             }
         }
+
+        super.onBindViewHolder(holder, position, payload)
     }
 
     override fun shouldHighlightViewHolder(item: Item) = item is Song && item.id == currentSong?.id
@@ -99,8 +96,8 @@ class GenreDetailAdapter(listener: Listener) :
 }
 
 private class GenreDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
-    BindingViewHolder<Genre, DetailAdapter.Listener>(binding.root) {
-    override fun bind(item: Genre, listener: DetailAdapter.Listener) {
+    RecyclerView.ViewHolder(binding.root) {
+    fun bind(item: Genre, listener: DetailAdapter.Listener) {
         binding.detailCover.bind(item)
         binding.detailType.text = binding.context.getString(R.string.lbl_genre)
         binding.detailName.text = item.resolveName(binding.context)
@@ -112,14 +109,10 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
     }
 
     companion object {
-        val CREATOR =
-            object : Creator<GenreDetailViewHolder> {
-                override val viewType: Int
-                    get() = IntegerTable.ITEM_TYPE_GENRE_DETAIL
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_GENRE_DETAIL
 
-                override fun create(context: Context) =
-                    GenreDetailViewHolder(ItemDetailBinding.inflate(context.inflater))
-            }
+        fun new(parent: View) =
+            GenreDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
 
         val DIFFER =
             object : SimpleItemCallback<Genre>() {

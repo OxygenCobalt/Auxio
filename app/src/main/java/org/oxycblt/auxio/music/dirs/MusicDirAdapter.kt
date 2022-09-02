@@ -17,74 +17,71 @@
  
 package org.oxycblt.auxio.music.dirs
 
-import android.content.Context
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemMusicDirBinding
 import org.oxycblt.auxio.music.Directory
-import org.oxycblt.auxio.ui.recycler.BackingData
-import org.oxycblt.auxio.ui.recycler.BindingViewHolder
-import org.oxycblt.auxio.ui.recycler.MonoAdapter
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
 /**
- * Adapter that shows the excluded directories and their "Clear" button.
+ * Adapter that shows the list of music folder and their "Clear" button.
  * @author OxygenCobalt
  */
-class MusicDirAdapter(listener: Listener) :
-    MonoAdapter<Directory, MusicDirAdapter.Listener, MusicDirViewHolder>(listener) {
-    override val data = ExcludedBackingData(this)
-    override val creator = MusicDirViewHolder.CREATOR
+class MusicDirAdapter(private val listener: Listener) : RecyclerView.Adapter<MusicDirViewHolder>() {
+    private val _dirs = mutableListOf<Directory>()
+    val dirs: List<Directory> = _dirs
+
+    override fun getItemCount() = dirs.size
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        MusicDirViewHolder.new(parent)
+
+    override fun onBindViewHolder(holder: MusicDirViewHolder, position: Int) =
+        holder.bind(dirs[position], listener)
+
+    fun add(dir: Directory) {
+        if (_dirs.contains(dir)) {
+            return
+        }
+
+        _dirs.add(dir)
+        notifyItemInserted(_dirs.lastIndex)
+    }
+
+    fun addAll(dirs: List<Directory>) {
+        val oldLastIndex = dirs.lastIndex
+        _dirs.addAll(dirs)
+        notifyItemRangeInserted(oldLastIndex, dirs.size)
+    }
+
+    fun remove(dir: Directory) {
+        val idx = _dirs.indexOf(dir)
+        _dirs.removeAt(idx)
+        notifyItemRemoved(idx)
+    }
 
     interface Listener {
         fun onRemoveDirectory(dir: Directory)
-    }
-
-    class ExcludedBackingData(private val adapter: MusicDirAdapter) : BackingData<Directory>() {
-        private val _currentList = mutableListOf<Directory>()
-        val currentList: List<Directory> = _currentList
-
-        override fun getItemCount(): Int = _currentList.size
-        override fun getItem(position: Int): Directory = _currentList[position]
-
-        fun add(dir: Directory) {
-            if (_currentList.contains(dir)) {
-                return
-            }
-
-            _currentList.add(dir)
-            adapter.notifyItemInserted(_currentList.lastIndex)
-        }
-
-        fun addAll(dirs: List<Directory>) {
-            val oldLastIndex = dirs.lastIndex
-            _currentList.addAll(dirs)
-            adapter.notifyItemRangeInserted(oldLastIndex, dirs.size)
-        }
-
-        fun remove(dir: Directory) {
-            val idx = _currentList.indexOf(dir)
-            _currentList.removeAt(idx)
-            adapter.notifyItemRemoved(idx)
-        }
     }
 }
 
 /** The viewholder for [MusicDirAdapter]. Not intended for use in other adapters. */
 class MusicDirViewHolder private constructor(private val binding: ItemMusicDirBinding) :
-    BindingViewHolder<Directory, MusicDirAdapter.Listener>(binding.root) {
-    override fun bind(item: Directory, listener: MusicDirAdapter.Listener) {
+    RecyclerView.ViewHolder(binding.root) {
+    fun bind(item: Directory, listener: MusicDirAdapter.Listener) {
+        // Actually make the item full-width, which it won't be in dialogs
+        binding.root.layoutParams =
+            RecyclerView.LayoutParams(
+                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+
         binding.dirPath.text = item.resolveName(binding.context)
         binding.dirDelete.setOnClickListener { listener.onRemoveDirectory(item) }
     }
 
     companion object {
-        val CREATOR =
-            object : Creator<MusicDirViewHolder> {
-                override val viewType: Int
-                    get() = throw UnsupportedOperationException()
-
-                override fun create(context: Context) =
-                    MusicDirViewHolder(ItemMusicDirBinding.inflate(context.inflater))
-            }
+        fun new(parent: View) =
+            MusicDirViewHolder(ItemMusicDirBinding.inflate(parent.context.inflater))
     }
 }

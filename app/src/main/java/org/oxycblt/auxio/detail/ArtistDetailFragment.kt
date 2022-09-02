@@ -83,7 +83,7 @@ class ArtistDetailFragment :
         binding.detailRecycler.apply {
             adapter = detailAdapter
             setSpanSizeLookup { pos ->
-                val item = detailAdapter.data.getItem(pos)
+                val item = detailModel.artistData.value[pos]
                 item is Artist || item is Header || item is SortHeader
             }
         }
@@ -91,7 +91,7 @@ class ArtistDetailFragment :
         // --- VIEWMODEL SETUP ---
 
         collectImmediately(detailModel.currentArtist, ::handleItemChange)
-        collectImmediately(detailModel.artistData, detailAdapter.data::submitList)
+        collectImmediately(detailModel.artistData, detailAdapter::submitList)
         collectImmediately(playbackModel.song, playbackModel.parent, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }

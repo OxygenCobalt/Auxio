@@ -84,7 +84,7 @@ class GenreDetailFragment :
         binding.detailRecycler.apply {
             adapter = detailAdapter
             setSpanSizeLookup { pos ->
-                val item = detailAdapter.data.getItem(pos)
+                val item = detailModel.albumData.value[pos]
                 item is Genre || item is Header || item is SortHeader
             }
         }
@@ -92,7 +92,7 @@ class GenreDetailFragment :
         // --- VIEWMODEL SETUP ---
 
         collectImmediately(detailModel.currentGenre, ::handleItemChange)
-        collectImmediately(detailModel.genreData, detailAdapter.data::submitList)
+        collectImmediately(detailModel.genreData, detailAdapter::submitList)
         collectImmediately(playbackModel.song, playbackModel.parent, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }

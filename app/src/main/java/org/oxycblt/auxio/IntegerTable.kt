@@ -20,35 +20,31 @@ package org.oxycblt.auxio
 /** A table containing all unique integer codes that Auxio uses. */
 object IntegerTable {
     /** SongViewHolder */
-    const val ITEM_TYPE_SONG = 0xA000
+    const val VIEW_TYPE_SONG = 0xA000
     /** AlbumViewHolder */
-    const val ITEM_TYPE_ALBUM = 0xA001
+    const val VIEW_TYPE_ALBUM = 0xA001
     /** ArtistViewHolder */
-    const val ITEM_TYPE_ARTIST = 0xA002
+    const val VIEW_TYPE_ARTIST = 0xA002
     /** GenreViewHolder */
-    const val ITEM_TYPE_GENRE = 0xA003
+    const val VIEW_TYPE_GENRE = 0xA003
     /** HeaderViewHolder */
-    const val ITEM_TYPE_HEADER = 0xA004
+    const val VIEW_TYPE_HEADER = 0xA004
     /** SortHeaderViewHolder */
-    const val ITEM_TYPE_SORT_HEADER = 0xA005
-
+    const val VIEW_TYPE_SORT_HEADER = 0xA005
     /** AlbumDetailViewHolder */
-    const val ITEM_TYPE_ALBUM_DETAIL = 0xA006
+    const val VIEW_TYPE_ALBUM_DETAIL = 0xA006
     /** AlbumSongViewHolder */
-    const val ITEM_TYPE_ALBUM_SONG = 0xA007
+    const val VIEW_TYPE_ALBUM_SONG = 0xA007
     /** ArtistDetailViewHolder */
-    const val ITEM_TYPE_ARTIST_DETAIL = 0xA008
+    const val VIEW_TYPE_ARTIST_DETAIL = 0xA008
     /** ArtistAlbumViewHolder */
-    const val ITEM_TYPE_ARTIST_ALBUM = 0xA009
+    const val VIEW_TYPE_ARTIST_ALBUM = 0xA009
     /** ArtistSongViewHolder */
-    const val ITEM_TYPE_ARTIST_SONG = 0xA00A
+    const val VIEW_TYPE_ARTIST_SONG = 0xA00A
     /** GenreDetailViewHolder */
-    const val ITEM_TYPE_GENRE_DETAIL = 0xA00B
+    const val VIEW_TYPE_GENRE_DETAIL = 0xA00B
     /** DiscHeaderViewHolder */
-    const val ITEM_TYPE_DISC_HEADER = 0xA00C
-
-    /** QueueSongViewHolder */
-    const val ITEM_TYPE_QUEUE_SONG = 0xA00D
+    const val VIEW_TYPE_DISC_HEADER = 0xA00C
 
     /** "Music playback" notification code */
     const val PLAYBACK_NOTIFICATION_CODE = 0xA0A0

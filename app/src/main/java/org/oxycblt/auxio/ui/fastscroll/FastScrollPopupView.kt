@@ -38,6 +38,10 @@ import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimenSize
 import org.oxycblt.auxio.util.isRtl
 
+/**
+ * Internal view responsible for the fast scroller popup.
+ * @author OxygenCobalt, Hai Zhang
+ */
 class FastScrollPopupView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0) :

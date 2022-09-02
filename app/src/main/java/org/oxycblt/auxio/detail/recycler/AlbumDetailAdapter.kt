@@ -17,7 +17,8 @@
  
 package org.oxycblt.auxio.detail.recycler
 
-import android.content.Context
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
@@ -28,7 +29,6 @@ import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
 import org.oxycblt.auxio.detail.DiscHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.recycler.BindingViewHolder
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
@@ -41,42 +41,40 @@ import org.oxycblt.auxio.util.inflater
  * An adapter for displaying [Album] information and it's children.
  * @author OxygenCobalt
  */
-class AlbumDetailAdapter(listener: Listener) :
+class AlbumDetailAdapter(private val listener: Listener) :
     DetailAdapter<AlbumDetailAdapter.Listener>(listener, DIFFER) {
     private var currentSong: Song? = null
 
-    override fun getCreatorFromItem(item: Item) =
-        super.getCreatorFromItem(item)
-            ?: when (item) {
-                is Album -> AlbumDetailViewHolder.CREATOR
-                is DiscHeader -> DiscHeaderViewHolder.CREATOR
-                is Song -> AlbumSongViewHolder.CREATOR
-                else -> null
-            }
+    override fun getItemViewType(position: Int) =
+        when (differ.currentList[position]) {
+            is Album -> AlbumDetailViewHolder.VIEW_TYPE
+            is DiscHeader -> DiscHeaderViewHolder.VIEW_TYPE
+            is Song -> AlbumSongViewHolder.VIEW_TYPE
+            else -> super.getItemViewType(position)
+        }
 
-    override fun getCreatorFromViewType(viewType: Int) =
-        super.getCreatorFromViewType(viewType)
-            ?: when (viewType) {
-                AlbumDetailViewHolder.CREATOR.viewType -> AlbumDetailViewHolder.CREATOR
-                DiscHeaderViewHolder.CREATOR.viewType -> DiscHeaderViewHolder.CREATOR
-                AlbumSongViewHolder.CREATOR.viewType -> AlbumSongViewHolder.CREATOR
-                else -> null
-            }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        when (viewType) {
+            AlbumDetailViewHolder.VIEW_TYPE -> AlbumDetailViewHolder.new(parent)
+            DiscHeaderViewHolder.VIEW_TYPE -> DiscHeaderViewHolder.new(parent)
+            AlbumSongViewHolder.VIEW_TYPE -> AlbumSongViewHolder.new(parent)
+            else -> super.onCreateViewHolder(parent, viewType)
+        }
 
-    override fun onBind(
-        viewHolder: RecyclerView.ViewHolder,
-        item: Item,
-        listener: Listener,
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
         payload: List<Any>
     ) {
-        super.onBind(viewHolder, item, listener, payload)
         if (payload.isEmpty()) {
-            when (item) {
-                is Album -> (viewHolder as AlbumDetailViewHolder).bind(item, listener)
-                is DiscHeader -> (viewHolder as DiscHeaderViewHolder).bind(item, Unit)
-                is Song -> (viewHolder as AlbumSongViewHolder).bind(item, listener)
+            when (val item = differ.currentList[position]) {
+                is Album -> (holder as AlbumDetailViewHolder).bind(item, listener)
+                is DiscHeader -> (holder as DiscHeaderViewHolder).bind(item)
+                is Song -> (holder as AlbumSongViewHolder).bind(item, listener)
             }
         }
+
+        super.onBindViewHolder(holder, position, payload)
     }
 
     override fun shouldHighlightViewHolder(item: Item) = item is Song && item.id == currentSong?.id
@@ -111,9 +109,9 @@ class AlbumDetailAdapter(listener: Listener) :
 }
 
 private class AlbumDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
-    BindingViewHolder<Album, AlbumDetailAdapter.Listener>(binding.root) {
+    RecyclerView.ViewHolder(binding.root) {
 
-    override fun bind(item: Album, listener: AlbumDetailAdapter.Listener) {
+    fun bind(item: Album, listener: AlbumDetailAdapter.Listener) {
         binding.detailCover.bind(item)
         binding.detailType.text = binding.context.getString(item.releaseType.stringRes)
 
@@ -141,14 +139,10 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
     }
 
     companion object {
-        val CREATOR =
-            object : Creator<AlbumDetailViewHolder> {
-                override val viewType: Int
-                    get() = IntegerTable.ITEM_TYPE_ALBUM_DETAIL
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_ALBUM_DETAIL
 
-                override fun create(context: Context) =
-                    AlbumDetailViewHolder(ItemDetailBinding.inflate(context.inflater))
-            }
+        fun new(parent: View) =
+            AlbumDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
 
         val DIFFER =
             object : SimpleItemCallback<Album>() {
@@ -164,21 +158,17 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 }
 
 class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
-    BindingViewHolder<DiscHeader, Unit>(binding.root) {
+    RecyclerView.ViewHolder(binding.root) {
 
-    override fun bind(item: DiscHeader, listener: Unit) {
+    fun bind(item: DiscHeader) {
         binding.discNo.text = binding.context.getString(R.string.fmt_disc_no, item.disc)
     }
 
     companion object {
-        val CREATOR =
-            object : Creator<DiscHeaderViewHolder> {
-                override val viewType: Int
-                    get() = IntegerTable.ITEM_TYPE_DISC_HEADER
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_DISC_HEADER
 
-                override fun create(context: Context) =
-                    DiscHeaderViewHolder(ItemDiscHeaderBinding.inflate(context.inflater))
-            }
+        fun new(parent: View) =
+            DiscHeaderViewHolder(ItemDiscHeaderBinding.inflate(parent.context.inflater))
 
         val DIFFER =
             object : SimpleItemCallback<DiscHeader>() {
@@ -189,8 +179,8 @@ class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
 }
 
 private class AlbumSongViewHolder private constructor(private val binding: ItemAlbumSongBinding) :
-    BindingViewHolder<Song, MenuItemListener>(binding.root) {
-    override fun bind(item: Song, listener: MenuItemListener) {
+    RecyclerView.ViewHolder(binding.root) {
+    fun bind(item: Song, listener: MenuItemListener) {
         // Hide the track number view if the song does not have a track.
         if (item.track != null) {
             binding.songTrack.apply {
@@ -218,14 +208,10 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
     }
 
     companion object {
-        val CREATOR =
-            object : Creator<AlbumSongViewHolder> {
-                override val viewType: Int
-                    get() = IntegerTable.ITEM_TYPE_ALBUM_SONG
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_ALBUM_SONG
 
-                override fun create(context: Context) =
-                    AlbumSongViewHolder(ItemAlbumSongBinding.inflate(context.inflater))
-            }
+        fun new(parent: View) =
+            AlbumSongViewHolder(ItemAlbumSongBinding.inflate(parent.context.inflater))
 
         val DIFFER =
             object : SimpleItemCallback<Song>() {

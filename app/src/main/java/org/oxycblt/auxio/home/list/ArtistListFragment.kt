@@ -19,6 +19,8 @@ package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Artist
@@ -28,8 +30,7 @@ import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
-import org.oxycblt.auxio.ui.recycler.MonoAdapter
-import org.oxycblt.auxio.ui.recycler.SyncBackingData
+import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.formatDurationMs
 import org.oxycblt.auxio.util.logEOrThrow
@@ -49,7 +50,7 @@ class ArtistListFragment : HomeListFragment<Artist>() {
             adapter = homeAdapter
         }
 
-        collectImmediately(homeModel.artists, homeAdapter.data::replaceList)
+        collectImmediately(homeModel.artists, homeAdapter::replaceList)
     }
 
     override fun getPopup(pos: Int): String? {
@@ -83,9 +84,21 @@ class ArtistListFragment : HomeListFragment<Artist>() {
         }
     }
 
-    class ArtistAdapter(listener: MenuItemListener) :
-        MonoAdapter<Artist, MenuItemListener, ArtistViewHolder>(listener) {
-        override val data = SyncBackingData(this, ArtistViewHolder.DIFFER)
-        override val creator = ArtistViewHolder.CREATOR
+    private class ArtistAdapter(private val listener: MenuItemListener) :
+        RecyclerView.Adapter<ArtistViewHolder>() {
+        private val differ = SyncListDiffer(this, ArtistViewHolder.DIFFER)
+
+        override fun getItemCount() = differ.currentList.size
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+            ArtistViewHolder.new(parent)
+
+        override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
+            holder.bind(differ.currentList[position], listener)
+        }
+
+        fun replaceList(newList: List<Artist>) {
+            differ.replaceList(newList)
+        }
     }
 }

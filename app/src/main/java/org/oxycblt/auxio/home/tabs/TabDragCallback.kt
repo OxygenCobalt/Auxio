@@ -56,7 +56,7 @@ class TabDragCallback(private val adapter: TabAdapter) : ItemTouchHelper.Callbac
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        adapter.data.moveItems(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
+        adapter.moveItems(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
         return true
     }
 

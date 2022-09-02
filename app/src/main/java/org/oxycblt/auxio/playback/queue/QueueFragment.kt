@@ -85,10 +85,10 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
         val replaceQueue = queueModel.replaceQueue
         if (replaceQueue == true) {
             logD("Replacing queue")
-            queueAdapter.data.replaceList(queue)
+            queueAdapter.replaceList(queue)
         } else {
             logD("Diffing queue")
-            queueAdapter.data.submitList(queue)
+            queueAdapter.submitList(queue)
         }
 
         binding.queueDivider.isInvisible =

@@ -17,7 +17,8 @@
  
 package org.oxycblt.auxio.ui.recycler
 
-import android.content.Context
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemHeaderBinding
@@ -36,8 +37,8 @@ import org.oxycblt.auxio.util.inflater
  * @author OxygenCobalt
  */
 class SongViewHolder private constructor(private val binding: ItemSongBinding) :
-    BindingViewHolder<Song, MenuItemListener>(binding.root) {
-    override fun bind(item: Song, listener: MenuItemListener) {
+    RecyclerView.ViewHolder(binding.root) {
+    fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)
         binding.songInfo.text = item.resolveIndividualArtistName(binding.context)
@@ -50,14 +51,9 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
     }
 
     companion object {
-        val CREATOR =
-            object : Creator<SongViewHolder> {
-                override val viewType: Int
-                    get() = IntegerTable.ITEM_TYPE_SONG
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_SONG
 
-                override fun create(context: Context) =
-                    SongViewHolder(ItemSongBinding.inflate(context.inflater))
-            }
+        fun new(parent: View) = SongViewHolder(ItemSongBinding.inflate(parent.context.inflater))
 
         val DIFFER =
             object : SimpleItemCallback<Song>() {
@@ -75,9 +71,9 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
 class AlbumViewHolder
 private constructor(
     private val binding: ItemParentBinding,
-) : BindingViewHolder<Album, MenuItemListener>(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
 
-    override fun bind(item: Album, listener: MenuItemListener) {
+    fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text = item.artist.resolveName(binding.context)
@@ -90,14 +86,9 @@ private constructor(
     }
 
     companion object {
-        val CREATOR =
-            object : Creator<AlbumViewHolder> {
-                override val viewType: Int
-                    get() = IntegerTable.ITEM_TYPE_ALBUM
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_ALBUM
 
-                override fun create(context: Context) =
-                    AlbumViewHolder(ItemParentBinding.inflate(context.inflater))
-            }
+        fun new(parent: View) = AlbumViewHolder(ItemParentBinding.inflate(parent.context.inflater))
 
         val DIFFER =
             object : SimpleItemCallback<Album>() {
@@ -114,9 +105,9 @@ private constructor(
  * @author OxygenCobalt
  */
 class ArtistViewHolder private constructor(private val binding: ItemParentBinding) :
-    BindingViewHolder<Artist, MenuItemListener>(binding.root) {
+    RecyclerView.ViewHolder(binding.root) {
 
-    override fun bind(item: Artist, listener: MenuItemListener) {
+    fun bind(item: Artist, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text =
@@ -133,14 +124,9 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
     }
 
     companion object {
-        val CREATOR =
-            object : Creator<ArtistViewHolder> {
-                override val viewType: Int
-                    get() = IntegerTable.ITEM_TYPE_ARTIST
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_ARTIST
 
-                override fun create(context: Context) =
-                    ArtistViewHolder(ItemParentBinding.inflate(context.inflater))
-            }
+        fun new(parent: View) = ArtistViewHolder(ItemParentBinding.inflate(parent.context.inflater))
 
         val DIFFER =
             object : SimpleItemCallback<Artist>() {
@@ -159,9 +145,9 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
 class GenreViewHolder
 private constructor(
     private val binding: ItemParentBinding,
-) : BindingViewHolder<Genre, MenuItemListener>(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
 
-    override fun bind(item: Genre, listener: MenuItemListener) {
+    fun bind(item: Genre, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text =
@@ -175,14 +161,9 @@ private constructor(
     }
 
     companion object {
-        val CREATOR =
-            object : Creator<GenreViewHolder> {
-                override val viewType: Int
-                    get() = IntegerTable.ITEM_TYPE_GENRE
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_GENRE
 
-                override fun create(context: Context) =
-                    GenreViewHolder(ItemParentBinding.inflate(context.inflater))
-            }
+        fun new(parent: View) = GenreViewHolder(ItemParentBinding.inflate(parent.context.inflater))
 
         val DIFFER =
             object : SimpleItemCallback<Genre>() {
@@ -197,21 +178,16 @@ private constructor(
  * @author OxygenCobalt
  */
 class HeaderViewHolder private constructor(private val binding: ItemHeaderBinding) :
-    BindingViewHolder<Header, Unit>(binding.root) {
+    RecyclerView.ViewHolder(binding.root) {
 
-    override fun bind(item: Header, listener: Unit) {
+    fun bind(item: Header) {
         binding.title.text = binding.context.getString(item.string)
     }
 
     companion object {
-        val CREATOR =
-            object : Creator<HeaderViewHolder> {
-                override val viewType: Int
-                    get() = IntegerTable.ITEM_TYPE_HEADER
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_HEADER
 
-                override fun create(context: Context) =
-                    HeaderViewHolder(ItemHeaderBinding.inflate(context.inflater))
-            }
+        fun new(parent: View) = HeaderViewHolder(ItemHeaderBinding.inflate(parent.context.inflater))
 
         val DIFFER =
             object : SimpleItemCallback<Header>() {

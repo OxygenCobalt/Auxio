@@ -60,9 +60,7 @@ class MusicDirsDialog :
             .setPositiveButton(R.string.lbl_save) { _, _ ->
                 val dirs = settings.getMusicDirs(storageManager)
                 val newDirs =
-                    MusicDirs(
-                        dirs = dirAdapter.data.currentList,
-                        shouldInclude = isInclude(requireBinding()))
+                    MusicDirs(dirs = dirAdapter.dirs, shouldInclude = isInclude(requireBinding()))
                 if (dirs != newDirs) {
                     logD("Committing changes")
                     settings.setMusicDirs(newDirs)
@@ -105,7 +103,7 @@ class MusicDirsDialog :
             }
         }
 
-        dirAdapter.data.addAll(dirs.dirs)
+        dirAdapter.addAll(dirs.dirs)
         requireBinding().dirsEmpty.isVisible = dirs.dirs.isEmpty()
 
         binding.folderModeGroup.apply {
@@ -124,7 +122,7 @@ class MusicDirsDialog :
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putStringArrayList(
-            KEY_PENDING_DIRS, ArrayList(dirAdapter.data.currentList.map { it.toString() }))
+            KEY_PENDING_DIRS, ArrayList(dirAdapter.dirs.map { it.toString() }))
         outState.putBoolean(KEY_PENDING_MODE, isInclude(requireBinding()))
     }
 
@@ -134,8 +132,8 @@ class MusicDirsDialog :
     }
 
     override fun onRemoveDirectory(dir: Directory) {
-        dirAdapter.data.remove(dir)
-        requireBinding().dirsEmpty.isVisible = dirAdapter.data.currentList.isEmpty()
+        dirAdapter.remove(dir)
+        requireBinding().dirsEmpty.isVisible = dirAdapter.dirs.isEmpty()
     }
 
     private fun addDocTreePath(uri: Uri?) {
@@ -147,7 +145,7 @@ class MusicDirsDialog :
 
         val dir = parseExcludedUri(uri)
         if (dir != null) {
-            dirAdapter.data.add(dir)
+            dirAdapter.add(dir)
             requireBinding().dirsEmpty.isVisible = false
         } else {
             requireContext().showToast(R.string.err_bad_dir)

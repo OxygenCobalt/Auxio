@@ -17,35 +17,71 @@
  
 package org.oxycblt.auxio.detail.recycler
 
-import android.content.Context
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.TooltipCompat
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemSortHeaderBinding
 import org.oxycblt.auxio.detail.SortHeader
-import org.oxycblt.auxio.ui.recycler.AsyncBackingData
-import org.oxycblt.auxio.ui.recycler.BindingViewHolder
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.HeaderViewHolder
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
-import org.oxycblt.auxio.ui.recycler.MultiAdapter
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logW
 
 abstract class DetailAdapter<L : DetailAdapter.Listener>(
-    listener: L,
+    private val listener: L,
     diffCallback: DiffUtil.ItemCallback<Item>
-) : MultiAdapter<L>(listener) {
-    abstract fun shouldHighlightViewHolder(item: Item): Boolean
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    @Suppress("LeakingThis") override fun getItemCount() = differ.currentList.size
+
+    override fun getItemViewType(position: Int) =
+        when (differ.currentList[position]) {
+            is Header -> HeaderViewHolder.VIEW_TYPE
+            is SortHeader -> SortHeaderViewHolder.VIEW_TYPE
+            else -> super.getItemViewType(position)
+        }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        when (viewType) {
+            HeaderViewHolder.VIEW_TYPE -> HeaderViewHolder.new(parent)
+            SortHeaderViewHolder.VIEW_TYPE -> SortHeaderViewHolder.new(parent)
+            else -> error("Invalid item type $viewType")
+        }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
+        throw IllegalStateException()
+
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payload: List<Any>
+    ) {
+        val item = differ.currentList[position]
+
+        if (payload.isEmpty()) {
+            when (item) {
+                is Header -> (holder as HeaderViewHolder).bind(item)
+                is SortHeader -> (holder as SortHeaderViewHolder).bind(item, listener)
+            }
+        }
+
+        holder.itemView.isActivated = shouldHighlightViewHolder(item)
+    }
+
+    protected val differ = AsyncListDiffer(this, diffCallback)
+
+    protected abstract fun shouldHighlightViewHolder(item: Item): Boolean
 
     protected inline fun <reified T : Item> highlightImpl(oldItem: T?, newItem: T?) {
         if (oldItem != null) {
-            val pos = data.currentList.indexOfFirst { item -> item.id == oldItem.id && item is T }
+            val pos = differ.currentList.indexOfFirst { item -> item.id == oldItem.id && item is T }
 
             if (pos > -1) {
                 notifyItemChanged(pos, PAYLOAD_HIGHLIGHT_CHANGED)
@@ -55,7 +91,7 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
         }
 
         if (newItem != null) {
-            val pos = data.currentList.indexOfFirst { item -> item is T && item.id == newItem.id }
+            val pos = differ.currentList.indexOfFirst { item -> item is T && item.id == newItem.id }
 
             if (pos > -1) {
                 notifyItemChanged(pos, PAYLOAD_HIGHLIGHT_CHANGED)
@@ -65,36 +101,8 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
         }
     }
 
-    @Suppress("LeakingThis") override val data = AsyncBackingData(this, diffCallback)
-
-    override fun getCreatorFromItem(item: Item) =
-        when (item) {
-            is Header -> HeaderViewHolder.CREATOR
-            is SortHeader -> SortHeaderViewHolder.CREATOR
-            else -> null
-        }
-
-    override fun getCreatorFromViewType(viewType: Int) =
-        when (viewType) {
-            HeaderViewHolder.CREATOR.viewType -> HeaderViewHolder.CREATOR
-            SortHeaderViewHolder.CREATOR.viewType -> SortHeaderViewHolder.CREATOR
-            else -> null
-        }
-
-    override fun onBind(
-        viewHolder: RecyclerView.ViewHolder,
-        item: Item,
-        listener: L,
-        payload: List<Any>
-    ) {
-        if (payload.isEmpty()) {
-            when (item) {
-                is Header -> (viewHolder as HeaderViewHolder).bind(item, Unit)
-                is SortHeader -> (viewHolder as SortHeaderViewHolder).bind(item, listener)
-            }
-        }
-
-        viewHolder.itemView.isActivated = shouldHighlightViewHolder(item)
+    fun submitList(list: List<Item>) {
+        differ.submitList(list)
     }
 
     companion object {
@@ -127,8 +135,8 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
 }
 
 class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
-    BindingViewHolder<SortHeader, DetailAdapter.Listener>(binding.root) {
-    override fun bind(item: SortHeader, listener: DetailAdapter.Listener) {
+    RecyclerView.ViewHolder(binding.root) {
+    fun bind(item: SortHeader, listener: DetailAdapter.Listener) {
         binding.headerTitle.text = binding.context.getString(item.string)
         binding.headerButton.apply {
             TooltipCompat.setTooltipText(this, contentDescription)
@@ -137,14 +145,10 @@ class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
     }
 
     companion object {
-        val CREATOR =
-            object : Creator<SortHeaderViewHolder> {
-                override val viewType: Int
-                    get() = IntegerTable.ITEM_TYPE_SORT_HEADER
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_SORT_HEADER
 
-                override fun create(context: Context) =
-                    SortHeaderViewHolder(ItemSortHeaderBinding.inflate(context.inflater))
-            }
+        fun new(parent: View) =
+            SortHeaderViewHolder(ItemSortHeaderBinding.inflate(parent.context.inflater))
 
         val DIFFER =
             object : SimpleItemCallback<SortHeader>() {
