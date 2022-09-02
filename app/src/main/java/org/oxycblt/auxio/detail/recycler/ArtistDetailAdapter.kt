@@ -78,6 +78,11 @@ class ArtistDetailAdapter(private val listener: Listener) :
         }
     }
 
+    override fun isItemFullWidth(position: Int): Boolean {
+        val item = differ.currentList[position]
+        return super.isItemFullWidth(position) || item is Artist
+    }
+
     companion object {
         private val DIFFER =
             object : SimpleItemCallback<Item>() {

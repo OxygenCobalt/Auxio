@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemSortHeaderBinding
 import org.oxycblt.auxio.detail.SortHeader
+import org.oxycblt.auxio.ui.recycler.AuxioRecyclerView
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.HeaderViewHolder
 import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
@@ -38,7 +39,7 @@ import org.oxycblt.auxio.util.inflater
 abstract class DetailAdapter<L : DetailAdapter.Listener>(
     private val listener: L,
     diffCallback: DiffUtil.ItemCallback<Item>
-) : IndicatorAdapter<RecyclerView.ViewHolder>() {
+) : IndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
     private var isPlaying = false
 
     @Suppress("LeakingThis") override fun getItemCount() = differ.currentList.size
@@ -75,6 +76,11 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
         }
 
         super.onBindViewHolder(holder, position, payloads)
+    }
+
+    override fun isItemFullWidth(position: Int): Boolean {
+        val item = differ.currentList[position]
+        return item is Header || item is SortHeader
     }
 
     protected val differ = AsyncListDiffer(this, diffCallback)

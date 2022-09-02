@@ -71,6 +71,11 @@ class GenreDetailAdapter(private val listener: Listener) :
         }
     }
 
+    override fun isItemFullWidth(position: Int): Boolean {
+        val item = differ.currentList[position]
+        return super.isItemFullWidth(position) || item is Genre
+    }
+
     companion object {
         val DIFFER =
             object : SimpleItemCallback<Item>() {

@@ -26,6 +26,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.recycler.AlbumViewHolder
 import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
+import org.oxycblt.auxio.ui.recycler.AuxioRecyclerView
 import org.oxycblt.auxio.ui.recycler.GenreViewHolder
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.HeaderViewHolder
@@ -36,7 +37,7 @@ import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
 
 class SearchAdapter(private val listener: MenuItemListener) :
-    IndicatorAdapter<RecyclerView.ViewHolder>() {
+    IndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
     private val differ = AsyncListDiffer(this, DIFFER)
 
     override fun getItemCount() = differ.currentList.size
@@ -78,6 +79,8 @@ class SearchAdapter(private val listener: MenuItemListener) :
             }
         }
     }
+
+    override fun isItemFullWidth(position: Int) = differ.currentList[position] is Header
 
     override val currentList: List<Item>
         get() = differ.currentList

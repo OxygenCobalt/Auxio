@@ -39,7 +39,6 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.fragment.MenuFragment
-import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -79,13 +78,7 @@ class ArtistDetailFragment :
             setOnMenuItemClickListener(this@ArtistDetailFragment)
         }
 
-        binding.detailRecycler.apply {
-            adapter = detailAdapter
-            setSpanSizeLookup { pos ->
-                val item = detailAdapter.currentList[pos]
-                item is Artist || item is Header || item is SortHeader
-            }
-        }
+        binding.detailRecycler.adapter = detailAdapter
 
         // --- VIEWMODEL SETUP ---
 

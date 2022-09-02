@@ -77,6 +77,11 @@ class AlbumDetailAdapter(private val listener: Listener) :
         }
     }
 
+    override fun isItemFullWidth(position: Int): Boolean {
+        val item = differ.currentList[position]
+        return super.isItemFullWidth(position) || item is Album || item is DiscHeader
+    }
+
     companion object {
         private val DIFFER =
             object : SimpleItemCallback<Item>() {

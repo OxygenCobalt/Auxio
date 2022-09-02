@@ -39,7 +39,6 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.fragment.MenuFragment
-import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.util.androidViewModels
@@ -104,10 +103,7 @@ class SearchFragment :
             }
         }
 
-        binding.searchRecycler.apply {
-            adapter = searchAdapter
-            setSpanSizeLookup { pos -> searchAdapter.currentList[pos] is Header }
-        }
+        binding.searchRecycler.adapter = searchAdapter
 
         // --- VIEWMODEL SETUP ---
 
