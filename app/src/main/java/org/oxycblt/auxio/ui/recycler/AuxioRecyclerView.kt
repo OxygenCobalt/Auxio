@@ -54,6 +54,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         return insets
     }
 
+    // TODO: Move abstraction to adapters since using external data will not work well
     inline fun setSpanSizeLookup(crossinline fullWidth: (Int) -> Boolean) {
         val glm = layoutManager as GridLayoutManager
         val spanCount = glm.spanCount

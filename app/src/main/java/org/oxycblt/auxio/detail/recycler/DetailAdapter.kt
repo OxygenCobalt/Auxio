@@ -77,6 +77,9 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
 
     protected val differ = AsyncListDiffer(this, diffCallback)
 
+    val currentList: List<Item>
+        get() = differ.currentList
+
     fun submitList(list: List<Item>) {
         differ.submitList(list)
     }

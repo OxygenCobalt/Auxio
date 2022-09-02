@@ -82,7 +82,7 @@ class ArtistDetailFragment :
         binding.detailRecycler.apply {
             adapter = detailAdapter
             setSpanSizeLookup { pos ->
-                val item = detailModel.artistData.value[pos]
+                val item = detailAdapter.currentList[pos]
                 item is Artist || item is Header || item is SortHeader
             }
         }

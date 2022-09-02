@@ -87,7 +87,7 @@ class AlbumDetailFragment :
         binding.detailRecycler.apply {
             adapter = detailAdapter
             setSpanSizeLookup { pos ->
-                val item = detailModel.albumData.value[pos]
+                val item = detailAdapter.currentList[pos]
                 item is Album || item is Header || item is SortHeader
             }
         }

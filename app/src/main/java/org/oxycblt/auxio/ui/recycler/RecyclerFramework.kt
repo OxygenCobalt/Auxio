@@ -207,7 +207,7 @@ abstract class ActivationAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ad
             }
         }
     }
-    
+
     companion object {
         val PAYLOAD_ACTIVATION_CHANGED = Any()
     }

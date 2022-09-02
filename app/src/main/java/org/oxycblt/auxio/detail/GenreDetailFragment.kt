@@ -83,7 +83,7 @@ class GenreDetailFragment :
         binding.detailRecycler.apply {
             adapter = detailAdapter
             setSpanSizeLookup { pos ->
-                val item = detailModel.genreData.value[pos]
+                val item = detailAdapter.currentList[pos]
                 item is Genre || item is Header || item is SortHeader
             }
         }

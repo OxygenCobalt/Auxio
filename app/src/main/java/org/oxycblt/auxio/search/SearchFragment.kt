@@ -106,12 +106,13 @@ class SearchFragment :
 
         binding.searchRecycler.apply {
             adapter = searchAdapter
-            setSpanSizeLookup { pos -> searchModel.searchResults.value[pos] is Header }
+            setSpanSizeLookup { pos -> searchAdapter.currentList[pos] is Header }
         }
 
         // --- VIEWMODEL SETUP ---
 
-        collectImmediately(searchModel.searchResults, ::updateResults)
+        collectImmediately(searchModel.searchResults, ::handleResults)
+        collectImmediately(playbackModel.song, playbackModel.parent, ::handlePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
@@ -151,7 +152,7 @@ class SearchFragment :
         }
     }
 
-    private fun updateResults(results: List<Item>) {
+    private fun handleResults(results: List<Item>) {
         val binding = requireBinding()
 
         searchAdapter.submitList(results.toMutableList()) {
@@ -162,6 +163,36 @@ class SearchFragment :
         }
 
         binding.searchRecycler.isInvisible = results.isEmpty()
+    }
+
+    private fun handlePlayback(song: Song?, parent: MusicParent?) {
+        if (parent == null) {
+            searchAdapter.activateSong(song)
+        } else {
+            // Ignore playback not from all songs
+            searchAdapter.activateSong(null)
+        }
+
+        if (parent is Album) {
+            searchAdapter.activateAlbum(parent)
+        } else {
+            // Ignore playback not from albums
+            searchAdapter.activateAlbum(null)
+        }
+
+        if (parent is Artist) {
+            searchAdapter.activateArtist(parent)
+        } else {
+            // Ignore playback not from artists
+            searchAdapter.activateArtist(null)
+        }
+
+        if (parent is Genre) {
+            searchAdapter.activateGenre(parent)
+        } else {
+            // Ignore playback not from artists
+            searchAdapter.activateGenre(null)
+        }
     }
 
     private fun handleNavigation(item: Music?) {
