@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemSortHeaderBinding
 import org.oxycblt.auxio.detail.SortHeader
+import org.oxycblt.auxio.ui.recycler.ActivationAdapter
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.HeaderViewHolder
 import org.oxycblt.auxio.ui.recycler.Item
@@ -33,12 +34,11 @@ import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logW
 
 abstract class DetailAdapter<L : DetailAdapter.Listener>(
     private val listener: L,
     diffCallback: DiffUtil.ItemCallback<Item>
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : ActivationAdapter<RecyclerView.ViewHolder>() {
     @Suppress("LeakingThis") override fun getItemCount() = differ.currentList.size
 
     override fun getItemViewType(position: Int) =
@@ -61,58 +61,27 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
         position: Int,
-        payload: List<Any>
+        payloads: List<Any>
     ) {
         val item = differ.currentList[position]
 
-        if (payload.isEmpty()) {
+        if (payloads.isEmpty()) {
             when (item) {
                 is Header -> (holder as HeaderViewHolder).bind(item)
                 is SortHeader -> (holder as SortHeaderViewHolder).bind(item, listener)
             }
         }
 
-        holder.itemView.isActivated = shouldHighlightViewHolder(item)
+        super.onBindViewHolder(holder, position, payloads)
     }
 
     protected val differ = AsyncListDiffer(this, diffCallback)
-
-    protected abstract fun shouldHighlightViewHolder(item: Item): Boolean
-
-    protected inline fun <reified T : Item> highlightImpl(oldItem: T?, newItem: T?) {
-        if (oldItem != null) {
-            val pos = differ.currentList.indexOfFirst { item -> item.id == oldItem.id && item is T }
-
-            if (pos > -1) {
-                notifyItemChanged(pos, PAYLOAD_HIGHLIGHT_CHANGED)
-            } else {
-                logW("oldItem was not in adapter data")
-            }
-        }
-
-        if (newItem != null) {
-            val pos = differ.currentList.indexOfFirst { item -> item is T && item.id == newItem.id }
-
-            if (pos > -1) {
-                notifyItemChanged(pos, PAYLOAD_HIGHLIGHT_CHANGED)
-            } else {
-                logW("newItem was not in adapter data")
-            }
-        }
-    }
 
     fun submitList(list: List<Item>) {
         differ.submitList(list)
     }
 
     companion object {
-        // This payload value serves two purposes:
-        // 1. It disables animations from notifyItemChanged, which looks bad when highlighting
-        // ViewHolders.
-        // 2. It instructs adapters to avoid re-binding information, and instead simply
-        // change the highlight state.
-        val PAYLOAD_HIGHLIGHT_CHANGED = Any()
-
         val DIFFER =
             object : SimpleItemCallback<Item>() {
                 override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {

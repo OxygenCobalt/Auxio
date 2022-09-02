@@ -202,18 +202,18 @@ class ArtistDetailFragment :
 
     private fun updatePlayback(song: Song?, parent: MusicParent?) {
         if (parent is Artist && parent.id == unlikelyToBeNull(detailModel.currentArtist.value).id) {
-            detailAdapter.highlightSong(song)
+            detailAdapter.activateSong(song)
         } else {
-            // Clear the ViewHolders if the given song is not part of this artist.
-            detailAdapter.highlightSong(null)
+            // Ignore song playback not from the artist
+            detailAdapter.activateSong(null)
         }
 
         if (parent is Album &&
             parent.artist.id == unlikelyToBeNull(detailModel.currentArtist.value).id) {
-            detailAdapter.highlightAlbum(parent)
+            detailAdapter.activateAlbum(parent)
         } else {
-            // Clear out the album viewholder if the parent is not an album.
-            detailAdapter.highlightAlbum(null)
+            // Ignore album playback not from the artist
+            detailAdapter.activateAlbum(null)
         }
     }
 }

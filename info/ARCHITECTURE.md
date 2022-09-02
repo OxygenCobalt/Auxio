@@ -213,8 +213,7 @@ list similar to this:
 `Item being displayed | Header Item | Child Item | Child Item | Child Item...`
 
 Note that the actual dataset used is more complex once sorting and disc numbers is taken into
-account. Item highlighting and certain shared ViewHolders are already managed by the `DetailAdapter`
-super-class, which should be implemented by all adapters in the detail UI.
+account.
 
 #### `.home`
 This package contains the components for the "home" UI in Auxio, or the UI that the user first sees

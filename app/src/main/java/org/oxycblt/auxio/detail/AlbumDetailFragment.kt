@@ -257,10 +257,10 @@ class AlbumDetailFragment :
         }
 
         if (parent is Album && parent.id == unlikelyToBeNull(detailModel.currentAlbum.value).id) {
-            detailAdapter.highlightSong(song)
+            detailAdapter.activateSong(song)
         } else {
             // Clear the ViewHolders if the mode isn't ALL_SONGS
-            detailAdapter.highlightSong(null)
+            detailAdapter.activateSong(null)
         }
     }
 

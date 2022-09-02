@@ -66,34 +66,36 @@ class ArtistDetailAdapter(private val listener: Listener) :
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
         position: Int,
-        payload: List<Any>
+        payloads: List<Any>
     ) {
-        if (payload.isEmpty()) {
+        super.onBindViewHolder(holder, position, payloads)
+
+        if (payloads.isEmpty()) {
             when (val item = differ.currentList[position]) {
                 is Artist -> (holder as ArtistDetailViewHolder).bind(item, listener)
                 is Album -> (holder as ArtistAlbumViewHolder).bind(item, listener)
                 is Song -> (holder as ArtistSongViewHolder).bind(item, listener)
             }
         }
-
-        super.onBindViewHolder(holder, position, payload)
     }
 
-    override fun shouldHighlightViewHolder(item: Item) =
-        (item is Album && item.id == currentAlbum?.id) ||
+    override fun shouldActivateViewHolder(position: Int): Boolean {
+        val item = differ.currentList[position]
+        return (item is Album && item.id == currentAlbum?.id) ||
             (item is Song && item.id == currentSong?.id)
+    }
 
-    /** Update the current [album] that this adapter should highlight */
-    fun highlightAlbum(album: Album?) {
+    /** Update the [album] that this adapter should indicate playback */
+    fun activateAlbum(album: Album?) {
         if (album == currentAlbum) return
-        highlightImpl(currentAlbum, album)
+        activateImpl(differ.currentList, currentAlbum, album)
         currentAlbum = album
     }
 
-    /** Update the [song] that this adapter should highlight */
-    fun highlightSong(song: Song?) {
+    /** Update the [song] that this adapter should indicate playback */
+    fun activateSong(song: Song?) {
         if (song == currentSong) return
-        highlightImpl(currentSong, song)
+        activateImpl(differ.currentList, currentSong, song)
         currentSong = song
     }
 

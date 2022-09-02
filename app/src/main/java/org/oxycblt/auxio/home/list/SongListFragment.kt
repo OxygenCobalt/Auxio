@@ -21,14 +21,15 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
+import org.oxycblt.auxio.ui.recycler.ActivationAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
@@ -57,6 +58,7 @@ class SongListFragment : HomeListFragment<Song>() {
         }
 
         collectImmediately(homeModel.songs, homeAdapter::replaceList)
+        collectImmediately(playbackModel.song, playbackModel.parent, ::handlePlayback)
     }
 
     override fun getPopup(pos: Int): String? {
@@ -111,21 +113,47 @@ class SongListFragment : HomeListFragment<Song>() {
         }
     }
 
+    private fun handlePlayback(song: Song?, parent: MusicParent?) {
+        if (parent == null) {
+            homeAdapter.activateSong(song)
+        } else {
+            // Ignore playback that is not from all songs
+            homeAdapter.activateSong(null)
+        }
+    }
+
     private class SongAdapter(private val listener: MenuItemListener) :
-        RecyclerView.Adapter<SongViewHolder>() {
+        ActivationAdapter<SongViewHolder>() {
         private val differ = SyncListDiffer(this, SongViewHolder.DIFFER)
+        private var currentSong: Song? = null
 
         override fun getItemCount() = differ.currentList.size
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             SongViewHolder.new(parent)
 
-        override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
-            holder.bind(differ.currentList[position], listener)
+        override fun onBindViewHolder(holder: SongViewHolder, position: Int, payloads: List<Any>) {
+            super.onBindViewHolder(holder, position, payloads)
+
+            if (payloads.isEmpty()) {
+                holder.bind(differ.currentList[position], listener)
+            }
+        }
+
+        override fun shouldActivateViewHolder(position: Int): Boolean {
+            val item = differ.currentList[position]
+            return item.id == currentSong?.id
         }
 
         fun replaceList(newList: List<Song>) {
             differ.replaceList(newList)
+        }
+
+        /** Update the [song] that this adapter should indicate playback */
+        fun activateSong(song: Song?) {
+            if (song == currentSong) return
+            activateImpl(differ.currentList, currentSong, song)
+            currentSong = song
         }
     }
 }

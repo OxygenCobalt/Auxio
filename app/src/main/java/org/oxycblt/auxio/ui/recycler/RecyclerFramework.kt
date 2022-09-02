@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.AdapterListUpdateCallback
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.util.logW
 
 /**
  * The base for all items in Auxio. Any datatype can derive this type and gain some behavior not
@@ -169,5 +170,45 @@ abstract class SimpleItemCallback<T : Item> : DiffUtil.ItemCallback<T>() {
     override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
         if (oldItem.javaClass != newItem.javaClass) return false
         return oldItem.id == newItem.id
+    }
+}
+
+abstract class ActivationAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
+    override fun onBindViewHolder(holder: VH, position: Int) = throw UnsupportedOperationException()
+
+    override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
+        holder.itemView.isActivated = shouldActivateViewHolder(position)
+    }
+
+    protected abstract fun shouldActivateViewHolder(position: Int): Boolean
+
+    protected inline fun <reified T : Item> activateImpl(
+        currentList: List<Item>,
+        oldItem: T?,
+        newItem: T?
+    ) {
+        if (oldItem != null) {
+            val pos = currentList.indexOfFirst { item -> item.id == oldItem.id && item is T }
+
+            if (pos > -1) {
+                notifyItemChanged(pos, PAYLOAD_ACTIVATION_CHANGED)
+            } else {
+                logW("oldItem was not in adapter data")
+            }
+        }
+
+        if (newItem != null) {
+            val pos = currentList.indexOfFirst { item -> item is T && item.id == newItem.id }
+
+            if (pos > -1) {
+                notifyItemChanged(pos, PAYLOAD_ACTIVATION_CHANGED)
+            } else {
+                logW("newItem was not in adapter data")
+            }
+        }
+    }
+    
+    companion object {
+        val PAYLOAD_ACTIVATION_CHANGED = Any()
     }
 }

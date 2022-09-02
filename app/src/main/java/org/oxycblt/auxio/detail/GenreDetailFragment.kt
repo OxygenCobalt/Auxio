@@ -83,7 +83,7 @@ class GenreDetailFragment :
         binding.detailRecycler.apply {
             adapter = detailAdapter
             setSpanSizeLookup { pos ->
-                val item = detailModel.albumData.value[pos]
+                val item = detailModel.genreData.value[pos]
                 item is Genre || item is Header || item is SortHeader
             }
         }
@@ -195,9 +195,10 @@ class GenreDetailFragment :
 
     private fun updatePlayback(song: Song?, parent: MusicParent?) {
         if (parent is Genre && parent.id == unlikelyToBeNull(detailModel.currentGenre.value).id) {
-            detailAdapter.highlightSong(song)
+            detailAdapter.activateSong(song)
         } else {
-            detailAdapter.highlightSong(null)
+            // Ignore song playback not from the genre
+            detailAdapter.activateSong(null)
         }
     }
 }
