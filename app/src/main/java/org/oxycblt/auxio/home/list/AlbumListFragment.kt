@@ -35,7 +35,6 @@ import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.formatDurationMs
-import org.oxycblt.auxio.util.logEOrThrow
 import org.oxycblt.auxio.util.secsToMs
 
 /**
@@ -104,7 +103,7 @@ class AlbumListFragment : HomeListFragment<Album>() {
     override fun onOpenMenu(item: Item, anchor: View) {
         when (item) {
             is Album -> musicMenu(anchor, R.menu.menu_album_actions, item)
-            else -> logEOrThrow("Unexpected datatype when opening menu: ${item::class.java}")
+            else -> error("Unexpected datatype when opening menu: ${item::class.java}")
         }
     }
 

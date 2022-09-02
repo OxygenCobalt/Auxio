@@ -33,7 +33,6 @@ import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logEOrThrow
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -74,7 +73,7 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                     navModel.mainNavigateTo(MainNavigationAction.SongDetails(song))
                 }
                 else -> {
-                    logEOrThrow("Unexpected menu item selected")
+                    error("Unexpected menu item selected")
                     return@musicMenuImpl false
                 }
             }
@@ -110,8 +109,7 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                     navModel.exploreNavigateTo(album.artist)
                 }
                 else -> {
-                    logEOrThrow("Unexpected menu item selected")
-                    return@musicMenuImpl false
+                    error("Unexpected menu item selected")
                 }
             }
 
@@ -143,7 +141,7 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                     requireContext().showToast(R.string.lng_queue_added)
                 }
                 else -> {
-                    logEOrThrow("Unexpected menu item selected")
+                    error("Unexpected menu item selected")
                     return@musicMenuImpl false
                 }
             }
@@ -176,8 +174,7 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                     requireContext().showToast(R.string.lng_queue_added)
                 }
                 else -> {
-                    logEOrThrow("Unexpected menu item selected")
-                    return@musicMenuImpl false
+                    error("Unexpected menu item selected")
                 }
             }
 

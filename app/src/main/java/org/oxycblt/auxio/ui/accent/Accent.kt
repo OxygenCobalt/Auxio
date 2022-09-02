@@ -19,7 +19,7 @@ package org.oxycblt.auxio.ui.accent
 
 import android.os.Build
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.logEOrThrow
+import org.oxycblt.auxio.util.logW
 
 private val ACCENT_NAMES =
     intArrayOf(
@@ -131,7 +131,7 @@ class Accent private constructor(val index: Int) {
     companion object {
         fun from(index: Int): Accent {
             if (index > (MAX - 1)) {
-                logEOrThrow("Account outside of bounds [idx: $index, max: $MAX]")
+                logW("Account outside of bounds [idx: $index, max: $MAX]")
                 return Accent(5)
             }
 

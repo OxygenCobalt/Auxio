@@ -48,7 +48,6 @@ import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logEOrThrow
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -134,10 +133,11 @@ class AlbumDetailFragment :
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {
-        when (item) {
-            is Song -> musicMenu(anchor, R.menu.menu_album_song_actions, item)
-            else -> logEOrThrow("Unexpected datatype when opening menu: ${item::class.java}")
+        if (item is Song) {
+            musicMenu(anchor, R.menu.menu_album_song_actions, item)
         }
+
+        error("Unexpected datatype when opening menu: ${item::class.java}")
     }
 
     override fun onPlayParent() {
@@ -220,7 +220,7 @@ class AlbumDetailFragment :
                     .navigate(AlbumDetailFragmentDirections.actionShowArtist(item.id))
             }
             null -> {}
-            else -> logEOrThrow("Unexpected navigation item ${item::class.java}")
+            else -> error("Unexpected navigation item ${item::class.java}")
         }
     }
 

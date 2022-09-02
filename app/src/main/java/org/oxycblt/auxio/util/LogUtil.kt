@@ -45,18 +45,6 @@ fun Any.logW(msg: String) = Log.w(autoTag, msg)
 /** Shortcut method for logging [msg] as an error to the console. Handles anonymous objects */
 fun Any.logE(msg: String) = Log.e(autoTag, msg)
 
-/**
- * Logs an error on release, but throws an exception in debug. This is useful for non-showstopper
- * bugs that I would still prefer to be caught in debug mode.
- */
-fun Any.logEOrThrow(msg: String) {
-    if (BuildConfig.DEBUG) {
-        error(msg)
-    } else {
-        logE(msg)
-    }
-}
-
 /** Automatically creates a tag that identifies the object currently logging. */
 private val Any.autoTag: String
     get() = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"

@@ -441,7 +441,7 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
             val volumePath = volume.directoryCompat ?: continue
             val strippedPath = rawPath.removePrefix(volumePath)
             if (strippedPath != rawPath) {
-                audio.dir = Directory(volume, strippedPath.removePrefix(File.separator))
+                audio.dir = Directory.from(volume, strippedPath)
                 break
             }
         }
@@ -501,7 +501,7 @@ open class BaseApi29MediaStoreBackend : MediaStoreBackend() {
         // This is what we use for the Directory's volume.
         val volume = volumes.find { it.mediaStoreVolumeNameCompat == volumeName }
         if (volume != null) {
-            audio.dir = Directory(volume, relativePath.removeSuffix(File.separator))
+            audio.dir = Directory.from(volume, relativePath)
         }
 
         return audio

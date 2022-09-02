@@ -42,7 +42,6 @@ import org.oxycblt.auxio.ui.accent.AccentCustomizeDialog
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logEOrThrow
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -108,7 +107,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                             .show(childFragmentManager, PreAmpCustomizeDialog.TAG)
                     context.getString(R.string.set_key_music_dirs) ->
                         MusicDirsDialog().show(childFragmentManager, MusicDirsDialog.TAG)
-                    else -> logEOrThrow("Unexpected dialog key ${preference.key}")
+                    else -> error("Unexpected dialog key ${preference.key}")
                 }
             }
             else -> super.onDisplayPreferenceDialog(preference)

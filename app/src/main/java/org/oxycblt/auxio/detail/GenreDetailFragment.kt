@@ -46,7 +46,6 @@ import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logEOrThrow
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -132,7 +131,7 @@ class GenreDetailFragment :
     override fun onOpenMenu(item: Item, anchor: View) {
         when (item) {
             is Song -> musicMenu(anchor, R.menu.menu_song_actions, item)
-            else -> logEOrThrow("Unexpected datatype when opening menu: ${item::class.java}")
+            else -> error("Unexpected datatype when opening menu: ${item::class.java}")
         }
     }
 

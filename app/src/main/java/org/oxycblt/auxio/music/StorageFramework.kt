@@ -30,7 +30,6 @@ import java.io.File
 import java.lang.reflect.Method
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.lazyReflectedMethod
-import org.oxycblt.auxio.util.logEOrThrow
 
 /** A path to a file. [name] is the stripped file name, [parent] is the parent path. */
 data class Path(val name: String, val parent: Directory)
@@ -39,14 +38,7 @@ data class Path(val name: String, val parent: Directory)
  * A path to a directory. [volume] is the volume the directory resides in, and [relativePath] is the
  * path from the volume's root to the directory itself.
  */
-data class Directory(val volume: StorageVolume, val relativePath: String) {
-    init {
-        if (relativePath.startsWith(File.separatorChar) ||
-            relativePath.endsWith(File.separatorChar)) {
-            logEOrThrow("Path was formatted with trailing separators")
-        }
-    }
-
+class Directory private constructor(val volume: StorageVolume, val relativePath: String) {
     fun resolveName(context: Context) =
         context.getString(R.string.fmt_path, volume.getDescriptionCompat(context), relativePath)
 
@@ -60,8 +52,21 @@ data class Directory(val volume: StorageVolume, val relativePath: String) {
             volume.uuidCompat?.let { uuid -> "${uuid}:${relativePath}" }
         }
 
+    override fun hashCode(): Int {
+        var result = volume.hashCode()
+        result = 31 * result + relativePath.hashCode()
+        return result
+    }
+
+    override fun equals(other: Any?) =
+        other is Directory && other.volume == volume && other.relativePath == relativePath
+
     companion object {
         private const val DOCUMENT_URI_PRIMARY_NAME = "primary"
+
+        fun from(volume: StorageVolume, relativePath: String) =
+            Directory(
+                volume, relativePath.removePrefix(File.separator).removeSuffix(File.separator))
 
         /**
          * Converts an opaque document uri in the form of VOLUME:PATH into a [Directory]. This is a
@@ -79,7 +84,7 @@ data class Directory(val volume: StorageVolume, val relativePath: String) {
 
             val relativePath = split.getOrNull(1)
 
-            return Directory(volume ?: return null, relativePath ?: return null)
+            return from(volume ?: return null, relativePath ?: return null)
         }
     }
 }
