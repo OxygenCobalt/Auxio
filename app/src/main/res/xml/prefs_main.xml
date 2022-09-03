@@ -52,9 +52,9 @@
             app:title="@string/set_round_mode" />
 
         <org.oxycblt.auxio.settings.ui.IntListPreference
+            app:defaultValue="@integer/bar_action_next"
             app:entries="@array/entries_bar_action"
             app:entryValues="@array/values_bar_action"
-            app:defaultValue="@integer/bar_action_next"
             app:key="@string/set_key_bar_action"
             app:title="@string/set_bar_action" />
 

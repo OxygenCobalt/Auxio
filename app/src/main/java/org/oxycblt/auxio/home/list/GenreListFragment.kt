@@ -37,7 +37,7 @@ import org.oxycblt.auxio.util.formatDurationMs
 
 /**
  * A [HomeListFragment] for showing a list of [Genre]s.
- * @author
+ * @author OxygenCobalt
  */
 class GenreListFragment : HomeListFragment<Genre>() {
     private val homeAdapter = GenreAdapter(this)

@@ -5,8 +5,8 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:transitionGroup="true"
-    android:background="?attr/colorSurface">
+    android:background="?attr/colorSurface"
+    android:transitionGroup="true">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/explore_nav_host"
@@ -19,9 +19,9 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/playback_sheet"
+        style="@style/Widget.Auxio.DisableDropShadows"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/Widget.Auxio.DisableDropShadows"
         app:layout_behavior="org.oxycblt.auxio.playback.PlaybackSheetBehavior">
 
         <androidx.fragment.app.FragmentContainerView
@@ -39,10 +39,10 @@
 
         <LinearLayout
             android:id="@+id/queue_sheet"
+            style="@style/Widget.Auxio.DisableDropShadows"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            style="@style/Widget.Auxio.DisableDropShadows"
             app:layout_behavior="org.oxycblt.auxio.playback.queue.QueueSheetBehavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout

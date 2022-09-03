@@ -94,14 +94,13 @@ class HomeViewModel(application: Application) :
     }
 
     /** Get the specific sort for the given [DisplayMode]. */
-    fun getSortForDisplay(displayMode: DisplayMode): Sort {
-        return when (displayMode) {
+    fun getSortForDisplay(displayMode: DisplayMode) =
+        when (displayMode) {
             DisplayMode.SHOW_SONGS -> settings.libSongSort
             DisplayMode.SHOW_ALBUMS -> settings.libAlbumSort
             DisplayMode.SHOW_ARTISTS -> settings.libArtistSort
             DisplayMode.SHOW_GENRES -> settings.libGenreSort
         }
-    }
 
     /** Update the currently displayed item's [Sort]. */
     fun updateCurrentSort(sort: Sort) {

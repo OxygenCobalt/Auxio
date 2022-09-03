@@ -20,13 +20,13 @@
         android:id="@+id/detail_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Type"
+        android:layout_marginTop="@dimen/spacing_medium"
         android:textAppearance="@style/TextAppearance.Auxio.LabelMedium"
         android:textColor="?attr/colorSecondary"
-        android:layout_marginTop="@dimen/spacing_medium"
         app:layout_constraintBottom_toTopOf="@+id/detail_name"
         app:layout_constraintTop_toBottomOf="@+id/detail_cover"
-        tools:layout_editor_absoluteX="16dp" />
+        tools:layout_editor_absoluteX="16dp"
+        tools:text="Type" />
 
     <TextView
         android:id="@+id/detail_name"

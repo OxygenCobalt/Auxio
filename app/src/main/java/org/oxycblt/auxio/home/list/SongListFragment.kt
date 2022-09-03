@@ -41,7 +41,7 @@ import org.oxycblt.auxio.util.secsToMs
 
 /**
  * A [HomeListFragment] for showing a list of [Song]s.
- * @author
+ * @author OxygenCobalt
  */
 class SongListFragment : HomeListFragment<Song>() {
     private val homeAdapter = SongAdapter(this)

@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/ui_item_ripple"
+    android:paddingStart="@dimen/spacing_medium"
     android:paddingTop="@dimen/spacing_medium"
-    android:paddingBottom="@dimen/spacing_medium"
     android:paddingEnd="@dimen/spacing_mid_medium"
-    android:paddingStart="@dimen/spacing_medium">
+    android:paddingBottom="@dimen/spacing_medium">
 
     <org.oxycblt.auxio.image.ImageGroup
         android:id="@+id/song_album_cover"
@@ -23,8 +23,8 @@
         style="@style/Widget.Auxio.TextView.Item.Primary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/sel_accented_primary"
         android:layout_marginEnd="@dimen/spacing_mid_medium"
+        android:textColor="@color/sel_accented_primary"
         app:layout_constraintBottom_toTopOf="@+id/song_info"
         app:layout_constraintEnd_toStartOf="@+id/song_menu"
         app:layout_constraintStart_toEndOf="@+id/song_album_cover"
@@ -49,8 +49,8 @@
         style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:icon="@drawable/ic_more_24"
         android:visibility="gone"
+        app:icon="@drawable/ic_more_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

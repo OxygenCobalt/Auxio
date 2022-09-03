@@ -4,7 +4,7 @@
 
     <!--
     Yes, this whole file is all 30 frames of Spotify's equalizer animation
-    merged with the material equalizer icon, with each vector inlrined using
+    merged with the material equalizer icon, with each vector inlined using
     aapt:attr so that it does not clutter the drawable folder.
     -->
 

@@ -7,6 +7,7 @@
     - Search and library now show playing indicators
     - Playing indicators are now animated when playback is ongoing
 - Added smooth seeking
+- Moved the "more" button in the playback view back to the top
 
 #### What's Fixed
 - Fixed issue where fast scroller popup would not appear
