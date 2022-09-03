@@ -2,11 +2,15 @@
 
 ## dev
 
+## 2.6.3
+
 #### What's New
 - Improved playing indicators [#218]
     - Search and library now show playing indicators
     - Playing indicators are now animated when playback is ongoing
-- Added smooth seeking
+- Added smooth seeking [#130]
+
+#### What's Improved
 - Moved the "more" button in the playback view back to the top
 
 #### What's Fixed
