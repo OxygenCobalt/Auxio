@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
+    android:background="@drawable/ui_item_ripple"
     android:paddingTop="@dimen/spacing_medium"
     android:paddingBottom="@dimen/spacing_medium"
     android:paddingEnd="@dimen/spacing_mid_medium"

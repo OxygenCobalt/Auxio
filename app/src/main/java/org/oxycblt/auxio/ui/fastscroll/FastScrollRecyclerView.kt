@@ -291,7 +291,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun updateScrollbarState() {
-        if (computeVerticalScrollRange() <= height || childCount == 0) {
+        if (scrollRange <= height || childCount == 0) {
             return
         }
 
