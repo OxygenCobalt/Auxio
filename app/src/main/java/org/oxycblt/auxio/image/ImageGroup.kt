@@ -96,18 +96,16 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         invalidateIndicator()
     }
 
-    fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {}
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        invalidateIndicator()
+    }
 
     var isPlaying: Boolean
         get() = indicator.isPlaying
         set(value) {
             indicator.isPlaying = value
         }
-
-    override fun setEnabled(enabled: Boolean) {
-        super.setEnabled(enabled)
-        invalidateIndicator()
-    }
 
     private fun invalidateIndicator() {
         if (isActivated) {
