@@ -24,6 +24,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemTabBinding
 import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.ui.recycler.DialogViewHolder
 import org.oxycblt.auxio.util.inflater
 
 class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewHolder>() {
@@ -68,14 +69,9 @@ class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewH
 }
 
 class TabViewHolder private constructor(private val binding: ItemTabBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+    DialogViewHolder(binding.root) {
     @SuppressLint("ClickableViewAccessibility")
     fun bind(item: Tab, listener: TabAdapter.Listener) {
-        // Actually make the item full-width, which it won't be in dialogs
-        binding.root.layoutParams =
-            RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-
         binding.root.setOnClickListener { listener.onVisibilityToggled(item.mode) }
 
         binding.tabIcon.apply {

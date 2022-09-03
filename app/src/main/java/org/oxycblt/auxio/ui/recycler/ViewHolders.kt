@@ -37,7 +37,7 @@ import org.oxycblt.auxio.util.inflater
  * @author OxygenCobalt
  */
 class SongViewHolder private constructor(private val binding: ItemSongBinding) :
-    IndicatorViewHolder(binding.root) {
+    IndicatorAdapter.ViewHolder(binding.root) {
     fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)
@@ -76,7 +76,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
 class AlbumViewHolder
 private constructor(
     private val binding: ItemParentBinding,
-) : IndicatorViewHolder(binding.root) {
+) : IndicatorAdapter.ViewHolder(binding.root) {
 
     fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
@@ -115,7 +115,7 @@ private constructor(
  * @author OxygenCobalt
  */
 class ArtistViewHolder private constructor(private val binding: ItemParentBinding) :
-    IndicatorViewHolder(binding.root) {
+    IndicatorAdapter.ViewHolder(binding.root) {
 
     fun bind(item: Artist, listener: MenuItemListener) {
         binding.parentImage.bind(item)
@@ -160,7 +160,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
 class GenreViewHolder
 private constructor(
     private val binding: ItemParentBinding,
-) : IndicatorViewHolder(binding.root) {
+) : IndicatorAdapter.ViewHolder(binding.root) {
 
     fun bind(item: Genre, listener: MenuItemListener) {
         binding.parentImage.bind(item)

@@ -107,7 +107,7 @@ interface QueueItemListener {
 class QueueSongViewHolder
 private constructor(
     private val binding: ItemQueueSongBinding,
-) : IndicatorViewHolder(binding.root) {
+) : IndicatorAdapter.ViewHolder(binding.root) {
     val bodyView: View
         get() = binding.body
     val backgroundView: View

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Auxio Project
+ * Copyright (c) 2022 Auxio Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,10 +20,8 @@ package org.oxycblt.auxio.ui.recycler
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.AdapterListUpdateCallback
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.util.logW
 
 /**
  * The base for all items in Auxio. Any datatype can derive this type and gain some behavior not
@@ -171,86 +169,4 @@ abstract class SimpleItemCallback<T : Item> : DiffUtil.ItemCallback<T>() {
         if (oldItem.javaClass != newItem.javaClass) return false
         return oldItem.id == newItem.id
     }
-}
-
-// TODO: Base adapter that automates current list stuff for span size lookup
-// TODO: Dialog view holder that automates the dumb sizing hack I have to do
-
-abstract class IndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
-    private var isPlaying = false
-    private var currentItem: Item? = null
-
-    override fun onBindViewHolder(holder: VH, position: Int) = throw UnsupportedOperationException()
-
-    override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
-        if (holder is IndicatorViewHolder) {
-            val item = currentList[position]
-            val currentItem = currentItem
-            holder.updateIndicator(
-                currentItem != null &&
-                    item.javaClass == currentItem.javaClass &&
-                    item.id == currentItem.id,
-                isPlaying)
-        }
-    }
-
-    abstract val currentList: List<Item>
-
-    fun updateIndicator(item: Item?, isPlaying: Boolean) {
-        var updatedItem = false
-
-        if (currentItem != item) {
-            val oldItem = currentItem
-            currentItem = item
-
-            if (oldItem != null) {
-                val pos =
-                    currentList.indexOfFirst {
-                        it.javaClass == oldItem.javaClass && it.id == oldItem.id
-                    }
-
-                if (pos > -1) {
-                    notifyItemChanged(pos, PAYLOAD_INDICATOR_CHANGED)
-                } else {
-                    logW("oldItem was not in adapter data")
-                }
-            }
-
-            if (item != null) {
-                val pos =
-                    currentList.indexOfFirst { it.javaClass == item.javaClass && it.id == item.id }
-
-                if (pos > -1) {
-                    notifyItemChanged(pos, PAYLOAD_INDICATOR_CHANGED)
-                } else {
-                    logW("newItem was not in adapter data")
-                }
-            }
-
-            updatedItem = true
-        }
-
-        if (this.isPlaying != isPlaying) {
-            this.isPlaying = isPlaying
-
-            if (!updatedItem && item != null) {
-                val pos =
-                    currentList.indexOfFirst { it.javaClass == item.javaClass && it.id == item.id }
-
-                if (pos > -1) {
-                    notifyItemChanged(pos, PAYLOAD_INDICATOR_CHANGED)
-                } else {
-                    logW("newItem was not in adapter data")
-                }
-            }
-        }
-    }
-
-    companion object {
-        val PAYLOAD_INDICATOR_CHANGED = Any()
-    }
-}
-
-abstract class IndicatorViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-    abstract fun updateIndicator(isActive: Boolean, isPlaying: Boolean)
 }

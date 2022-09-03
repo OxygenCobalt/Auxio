@@ -30,7 +30,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveYear
 import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
-import org.oxycblt.auxio.ui.recycler.IndicatorViewHolder
+import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
@@ -142,7 +142,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 private class ArtistAlbumViewHolder
 private constructor(
     private val binding: ItemParentBinding,
-) : IndicatorViewHolder(binding.root) {
+) : IndicatorAdapter.ViewHolder(binding.root) {
     fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
@@ -177,7 +177,7 @@ private constructor(
 private class ArtistSongViewHolder
 private constructor(
     private val binding: ItemSongBinding,
-) : IndicatorViewHolder(binding.root) {
+) : IndicatorAdapter.ViewHolder(binding.root) {
     fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)

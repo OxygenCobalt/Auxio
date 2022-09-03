@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemMusicDirBinding
 import org.oxycblt.auxio.music.Directory
+import org.oxycblt.auxio.ui.recycler.DialogViewHolder
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
@@ -69,13 +70,8 @@ class MusicDirAdapter(private val listener: Listener) : RecyclerView.Adapter<Mus
 
 /** The viewholder for [MusicDirAdapter]. Not intended for use in other adapters. */
 class MusicDirViewHolder private constructor(private val binding: ItemMusicDirBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+    DialogViewHolder(binding.root) {
     fun bind(item: Directory, listener: MusicDirAdapter.Listener) {
-        // Actually make the item full-width, which it won't be in dialogs
-        binding.root.layoutParams =
-            RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-
         binding.dirPath.text = item.resolveName(binding.context)
         binding.dirDelete.setOnClickListener { listener.onRemoveDirectory(item) }
     }
