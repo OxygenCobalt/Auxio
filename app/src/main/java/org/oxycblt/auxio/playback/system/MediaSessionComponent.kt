@@ -160,7 +160,9 @@ class MediaSessionComponent(
                 .putText(MediaMetadataCompat.METADATA_KEY_AUTHOR, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_COMPOSER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_WRITER, artist)
-                .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.genre.resolveName(context))
+                .putText(
+                    MediaMetadataCompat.METADATA_KEY_GENRE,
+                    song.genres.joinToString { it.resolveName(context) })
                 .putText(
                     METADATA_KEY_PARENT,
                     parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))

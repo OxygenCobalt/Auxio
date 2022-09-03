@@ -27,6 +27,7 @@ import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveYear
 import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
@@ -111,12 +112,15 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 
         // Get the genre that corresponds to the most songs in this artist, which would be
         // the most "Prominent" genre.
+        var genresByAmount = mutableMapOf<Genre, Int>()
+        for (song in item.songs) {
+            for (genre in song.genres) {
+                genresByAmount[genre] = genresByAmount[genre]?.inc() ?: 1
+            }
+        }
+
         binding.detailSubhead.text =
-            item.songs
-                .groupBy { it.genre.resolveName(binding.context) }
-                .entries
-                .maxByOrNull { it.value.size }
-                ?.key
+            genresByAmount.maxByOrNull { it.value }?.key?.resolveName(binding.context)
                 ?: binding.context.getString(R.string.def_genre)
 
         binding.detailInfo.text =

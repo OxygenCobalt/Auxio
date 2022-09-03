@@ -123,10 +123,10 @@ data class Song(private val raw: Raw) : Music() {
     val album: Album
         get() = unlikelyToBeNull(_album)
 
-    private var _genre: Genre? = null
+    private var _genres: MutableList<Genre> = mutableListOf()
     /** The genre of this song. Will be an "unknown genre" if the song does not have any. */
-    val genre: Genre
-        get() = unlikelyToBeNull(_genre)
+    val genres: List<Genre>
+        get() = _genres
 
     /**
      * The raw artist name for this song in particular. First uses the artist tag, and then falls
@@ -149,14 +149,14 @@ data class Song(private val raw: Raw) : Music() {
             raw.albumName to
             raw.artistName to
             raw.albumArtistName to
-            raw.genreName to
+            raw.genreNames to
             track to
             disc to
             durationMs
 
     val _rawAlbum: Album.Raw
 
-    val _rawGenre = Genre.Raw(raw.genreName)
+    val _rawGenres = raw.genreNames?.map { Genre.Raw(it) } ?: listOf(Genre.Raw(null))
 
     val _isMissingAlbum: Boolean
         get() = _album == null
@@ -165,14 +165,14 @@ data class Song(private val raw: Raw) : Music() {
         get() = _album?._isMissingArtist ?: true
 
     val _isMissingGenre: Boolean
-        get() = _genre == null
+        get() = _genres.isEmpty()
 
     fun _link(album: Album) {
         _album = album
     }
 
     fun _link(genre: Genre) {
-        _genre = genre
+        _genres.add(genre)
     }
 
     init {
@@ -220,7 +220,7 @@ data class Song(private val raw: Raw) : Music() {
         var artistSortName: String? = null,
         var albumArtistName: String? = null,
         var albumArtistSortName: String? = null,
-        var genreName: String? = null
+        var genreNames: List<String>? = null
     )
 }
 
@@ -358,7 +358,16 @@ data class Genre(private val raw: Raw, override val songs: List<Song>) : MusicPa
     val durationMs = songs.sumOf { it.durationMs }
 
     data class Raw(val name: String?) {
-        val groupingId: Long = name.toMusicId()
+        override fun equals(other: Any?): Boolean {
+            if (other !is Raw) return false
+            return when {
+                name != null && other.name != null -> name.equals(other.name, true)
+                name == null && other.name == null -> true
+                else -> false
+            }
+        }
+
+        override fun hashCode() = name?.lowercase().hashCode()
     }
 }
 
@@ -370,7 +379,7 @@ private fun String?.toMusicId(): Long {
 
     var result = 0L
     for (ch in lowercase()) {
-        result = 31 * result + ch.code
+        result = 31 * result + ch.lowercaseChar().code
     }
     return result
 }

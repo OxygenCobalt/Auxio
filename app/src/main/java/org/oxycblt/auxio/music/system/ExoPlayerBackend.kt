@@ -50,7 +50,7 @@ import org.oxycblt.auxio.util.logW
  * @author OxygenCobalt
  */
 class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
-    private val runningTasks: Array<Task?> = arrayOfNulls(TASK_CAPACITY)
+    private val taskPool: Array<Task?> = arrayOfNulls(TASK_CAPACITY)
 
     // No need to implement our own query logic, as this backend is still reliant on
     // MediaStore.
@@ -78,19 +78,19 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
             // executor and thus will crash the app if an error occurs instead of bubbling
             // back up to Indexer.
             spin@ while (true) {
-                for (i in runningTasks.indices) {
-                    val task = runningTasks[i]
+                for (i in taskPool.indices) {
+                    val task = taskPool[i]
 
                     if (task != null) {
                         val song = task.get()
                         if (song != null) {
                             songs.add(song)
                             emitIndexing(Indexer.Indexing.Songs(songs.size, total))
-                            runningTasks[i] = Task(context, raw)
+                            taskPool[i] = Task(context, raw)
                             break@spin
                         }
                     } else {
-                        runningTasks[i] = Task(context, raw)
+                        taskPool[i] = Task(context, raw)
                         break@spin
                     }
                 }
@@ -99,14 +99,14 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
 
         spin@ while (true) {
             // Spin until all of the remaining tasks are complete.
-            for (i in runningTasks.indices) {
-                val task = runningTasks[i]
+            for (i in taskPool.indices) {
+                val task = taskPool[i]
 
                 if (task != null) {
                     val song = task.get() ?: continue@spin
                     songs.add(song)
                     emitIndexing(Indexer.Indexing.Songs(songs.size, total))
-                    runningTasks[i] = null
+                    taskPool[i] = null
                 }
             }
 
@@ -249,7 +249,7 @@ class Task(context: Context, private val raw: Song.Raw) {
         tags["TSO2"]?.let { raw.albumArtistSortName = it }
 
         // Genre, with the weird ID3 rules.
-        tags["TCON"]?.let { raw.genreName = it.parseId3GenreName() }
+        tags["TCON"]?.let { raw.genreNames = it.parseId3GenreName() }
 
         // Release type (GRP1 is sometimes used for this, so fall back to it)
         (tags["TXXX:MusicBrainz Album Type"] ?: tags["GRP1"])?.parseReleaseType()?.let {
@@ -313,7 +313,7 @@ class Task(context: Context, private val raw: Song.Raw) {
         tags["ALBUMARTISTSORT"]?.let { raw.albumArtistSortName = it.joinToString() }
 
         // Genre, no ID3 rules here
-        tags["GENRE"]?.let { raw.genreName = it.joinToString() }
+        tags["GENRE"]?.let { raw.genreNames = it }
 
         // Release type
         tags["RELEASETYPE"]?.parseReleaseType()?.let { raw.albumReleaseType = it }

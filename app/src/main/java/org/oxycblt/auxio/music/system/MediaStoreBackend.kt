@@ -201,7 +201,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                         val songId = cursor.getLong(songIdIndex)
                         rawSongs
                             .find { it.mediaStoreId == songId }
-                            ?.let { song -> song.genreName = name }
+                            ?.let { song -> song.genreNames = name }
 
                         if (cursor.position % 50 == 0) {
                             // Only check for a cancellation every 50 songs or so (~20ms).

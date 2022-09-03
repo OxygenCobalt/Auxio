@@ -162,7 +162,8 @@ class PlaybackStateManager private constructor() {
                 PlaybackMode.ALL_SONGS -> null
                 PlaybackMode.IN_ALBUM -> song.album
                 PlaybackMode.IN_ARTIST -> song.album.artist
-                PlaybackMode.IN_GENRE -> song.genre
+                PlaybackMode.IN_GENRE ->
+                    song.genres.maxBy { it.songs.size } // TODO: Stopgap measure until I can rework this and add selection
             }
 
         applyNewQueue(library, settings, settings.keepShuffle && isShuffled, song)

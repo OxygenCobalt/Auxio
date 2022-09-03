@@ -332,12 +332,15 @@ class Indexer {
      */
     private fun buildGenres(songs: List<Song>): List<Genre> {
         val genres = mutableListOf<Genre>()
-        val songsByGenre = songs.groupBy { it._rawGenre.groupingId }
+        val songsByGenre = mutableMapOf<Genre.Raw, MutableList<Song>>()
+        for (song in songs) {
+            for (rawGenre in song._rawGenres) {
+                songsByGenre.getOrPut(rawGenre) { mutableListOf() }.add(song)
+            }
+        }
 
         for (entry in songsByGenre) {
-            // The first song fill suffice for template metadata.
-            val templateSong = entry.value[0]
-            genres.add(Genre(templateSong._rawGenre, songs = entry.value))
+            genres.add(Genre(entry.key, songs = entry.value))
         }
 
         logD("Successfully built ${genres.size} genres")

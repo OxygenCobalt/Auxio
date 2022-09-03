@@ -110,7 +110,8 @@ fun List<String>.parseReleaseType() = ReleaseType.parse(this)
  * Decodes the genre name from an ID3(v2) constant. See [GENRE_TABLE] for the genre constant map
  * that Auxio uses.
  */
-fun String.parseId3GenreName() = parseId3v1Genre() ?: parseId3v2Genre() ?: this
+fun String.parseId3GenreName() =
+    parseId3v1Genre()?.let { listOf(it) } ?: parseId3v2Genre() ?: listOf(this)
 
 private fun String.parseId3v1Genre(): String? =
     when {
@@ -126,7 +127,7 @@ private fun String.parseId3v1Genre(): String? =
         else -> null
     }
 
-private fun String.parseId3v2Genre(): String? {
+private fun String.parseId3v2Genre(): List<String>? {
     val groups = (GENRE_RE.matchEntire(this) ?: return null).groupValues
     val genres = mutableSetOf<String>()
 
@@ -155,7 +156,7 @@ private fun String.parseId3v2Genre(): String? {
         }
     }
 
-    return genres.joinToString(separator = ", ").ifEmpty { null }
+    return genres.toList()
 }
 
 /** Regex that implements matching for ID3v2's genre format. */
