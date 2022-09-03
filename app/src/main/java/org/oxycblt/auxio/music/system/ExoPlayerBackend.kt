@@ -67,13 +67,11 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
         val songs = mutableListOf<Song>()
         val total = cursor.count
 
-        // LEFTOFF: Make logic more consistent?
-
         while (cursor.moveToNext()) {
             // Note: This call to buildAudio does not populate the genre field. This is
             // because indexing genres is quite slow with MediaStore, and so keeping the
             // field blank on unsupported ExoPlayer formats ends up being preferable.
-            val audio = inner.buildAudio(context, cursor)
+            val raw = inner.buildRawSong(context, cursor)
 
             // Spin until there is an open slot we can insert a task in. Note that we do
             // not add callbacks to our new tasks, as Future callbacks run on a different
@@ -88,11 +86,11 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
                         if (song != null) {
                             songs.add(song)
                             emitIndexing(Indexer.Indexing.Songs(songs.size, total))
-                            runningTasks[i] = Task(context, audio)
+                            runningTasks[i] = Task(context, raw)
                             break@spin
                         }
                     } else {
-                        runningTasks[i] = Task(context, audio)
+                        runningTasks[i] = Task(context, raw)
                         break@spin
                     }
                 }
@@ -128,11 +126,11 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
  * Wraps an ExoPlayer metadata retrieval task in a safe abstraction. Access is done with [get].
  * @author OxygenCobalt
  */
-class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
+class Task(context: Context, private val raw: Song.Raw) {
     private val future =
         MetadataRetriever.retrieveMetadata(
             context,
-            MediaItem.fromUri(requireNotNull(audio.id) { "Malformed audio: No id" }.audioUri))
+            MediaItem.fromUri(requireNotNull(raw.mediaStoreId) { "Invalid raw: No id" }.audioUri))
 
     /**
      * Get the song that this task is trying to complete. If the task is still busy, this will
@@ -147,27 +145,27 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
             try {
                 future.get()[0].getFormat(0)
             } catch (e: Exception) {
-                logW("Unable to extract metadata for ${audio.title}")
+                logW("Unable to extract metadata for ${raw.name}")
                 logW(e.stackTraceToString())
                 null
             }
 
         if (format == null) {
-            logD("Nothing could be extracted for ${audio.title}")
-            return audio.toSong()
+            logD("Nothing could be extracted for ${raw.name}")
+            return Song(raw)
         }
 
         // Populate the format mime type if we have one.
-        format.sampleMimeType?.let { audio.formatMimeType = it }
+        format.sampleMimeType?.let { raw.formatMimeType = it }
 
         val metadata = format.metadata
         if (metadata != null) {
             completeAudio(metadata)
         } else {
-            logD("No metadata could be extracted for ${audio.title}")
+            logD("No metadata could be extracted for ${raw.name}")
         }
 
-        return audio.toSong()
+        return Song(raw)
     }
 
     private fun completeAudio(metadata: Metadata) {
@@ -215,14 +213,14 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
 
     private fun populateId3v2(tags: Map<String, String>) {
         // (Sort) Title
-        tags["TIT2"]?.let { audio.title = it }
-        tags["TSOT"]?.let { audio.sortTitle = it }
+        tags["TIT2"]?.let { raw.name = it }
+        tags["TSOT"]?.let { raw.sortName = it }
 
         // Track, as NN/TT
-        tags["TRCK"]?.parsePositionNum()?.let { audio.track = it }
+        tags["TRCK"]?.parsePositionNum()?.let { raw.track = it }
 
         // Disc, as NN/TT
-        tags["TPOS"]?.parsePositionNum()?.let { audio.disc = it }
+        tags["TPOS"]?.parsePositionNum()?.let { raw.disc = it }
 
         // Dates are somewhat complicated, as not only did their semantics change from a flat year
         // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
@@ -236,26 +234,26 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         (tags["TDOR"]?.parseTimestamp()
                 ?: tags["TDRC"]?.parseTimestamp() ?: tags["TDRL"]?.parseTimestamp()
                     ?: parseId3v23Date(tags))
-            ?.let { audio.date = it }
+            ?.let { raw.date = it }
 
         // (Sort) Album
-        tags["TALB"]?.let { audio.album = it }
-        tags["TSOA"]?.let { audio.sortAlbum = it }
+        tags["TALB"]?.let { raw.albumName = it }
+        tags["TSOA"]?.let { raw.albumSortName = it }
 
         // (Sort) Artist
-        tags["TPE1"]?.let { audio.artist = it }
-        tags["TSOP"]?.let { audio.sortArtist = it }
+        tags["TPE1"]?.let { raw.artistName = it }
+        tags["TSOP"]?.let { raw.artistSortName = it }
 
         // (Sort) Album artist
-        tags["TPE2"]?.let { audio.albumArtist = it }
-        tags["TSO2"]?.let { audio.sortAlbumArtist = it }
+        tags["TPE2"]?.let { raw.albumArtistName = it }
+        tags["TSO2"]?.let { raw.albumArtistSortName = it }
 
         // Genre, with the weird ID3 rules.
-        tags["TCON"]?.let { audio.genre = it.parseId3GenreName() }
+        tags["TCON"]?.let { raw.genreName = it.parseId3GenreName() }
 
         // Release type (GRP1 is sometimes used for this, so fall back to it)
         (tags["TXXX:MusicBrainz Album Type"] ?: tags["GRP1"])?.parseReleaseType()?.let {
-            audio.releaseType = it
+            raw.albumReleaseType = it
         }
     }
 
@@ -282,14 +280,14 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
 
     private fun populateVorbis(tags: Map<String, List<String>>) {
         // (Sort) Title
-        tags["TITLE"]?.let { audio.title = it[0] }
-        tags["TITLESORT"]?.let { audio.sortTitle = it[0] }
+        tags["TITLE"]?.let { raw.name = it[0] }
+        tags["TITLESORT"]?.let { raw.sortName = it[0] }
 
         // Track
-        tags["TRACKNUMBER"]?.run { get(0).parsePositionNum() }?.let { audio.track = it }
+        tags["TRACKNUMBER"]?.run { get(0).parsePositionNum() }?.let { raw.track = it }
 
         // Disc
-        tags["DISCNUMBER"]?.run { get(0).parsePositionNum() }?.let { audio.disc = it }
+        tags["DISCNUMBER"]?.run { get(0).parsePositionNum() }?.let { raw.disc = it }
 
         // Vorbis dates are less complicated, but there are still several types
         // Our hierarchy for dates is as such:
@@ -300,25 +298,25 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         (tags["ORIGINALDATE"]?.run { get(0).parseTimestamp() }
                 ?: tags["DATE"]?.run { get(0).parseTimestamp() }
                     ?: tags["YEAR"]?.run { get(0).parseYear() })
-            ?.let { audio.date = it }
+            ?.let { raw.date = it }
 
         // (Sort) Album
-        tags["ALBUM"]?.let { audio.album = it.joinToString() }
-        tags["ALBUMSORT"]?.let { audio.sortAlbum = it.joinToString() }
+        tags["ALBUM"]?.let { raw.albumName = it.joinToString() }
+        tags["ALBUMSORT"]?.let { raw.albumSortName = it.joinToString() }
 
         // (Sort) Artist
-        tags["ARTIST"]?.let { audio.artist = it.joinToString() }
-        tags["ARTISTSORT"]?.let { audio.sortArtist = it.joinToString() }
+        tags["ARTIST"]?.let { raw.artistName = it.joinToString() }
+        tags["ARTISTSORT"]?.let { raw.artistSortName = it.joinToString() }
 
         // (Sort) Album artist
-        tags["ALBUMARTIST"]?.let { audio.albumArtist = it.joinToString() }
-        tags["ALBUMARTISTSORT"]?.let { audio.sortAlbumArtist = it.joinToString() }
+        tags["ALBUMARTIST"]?.let { raw.albumArtistName = it.joinToString() }
+        tags["ALBUMARTISTSORT"]?.let { raw.albumArtistSortName = it.joinToString() }
 
         // Genre, no ID3 rules here
-        tags["GENRE"]?.let { audio.genre = it.joinToString() }
+        tags["GENRE"]?.let { raw.genreName = it.joinToString() }
 
         // Release type
-        tags["RELEASETYPE"]?.parseReleaseType()?.let { audio.releaseType = it }
+        tags["RELEASETYPE"]?.parseReleaseType()?.let { raw.albumReleaseType = it }
     }
 
     /**

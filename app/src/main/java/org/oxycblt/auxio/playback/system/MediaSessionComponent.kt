@@ -407,7 +407,7 @@ class MediaSessionComponent(
             if (settings.useAltNotifAction) {
                 PlaybackStateCompat.CustomAction.Builder(
                     PlaybackService.ACTION_INVERT_SHUFFLE,
-                    context.getString(R.string.desc_change_repeat),
+                    context.getString(R.string.desc_shuffle),
                     if (playbackManager.isShuffled) {
                         R.drawable.ic_shuffle_on_24
                     } else {

@@ -262,19 +262,7 @@ class Indexer {
             }
 
         // Deduplicate songs to prevent (most) deformed music clones
-        songs =
-            songs
-                .distinctBy {
-                    it.rawName to
-                        it._albumName to
-                        it._artistName to
-                        it._albumArtistName to
-                        it._genreName to
-                        it.track to
-                        it.disc to
-                        it.durationMs
-                }
-                .toMutableList()
+        songs = songs.distinctBy { it._distinct }.toMutableList()
 
         // Ensure that sorting order is consistent so that grouping is also consistent.
         Sort(Sort.Mode.ByName, true).songsInPlace(songs)
@@ -299,7 +287,7 @@ class Indexer {
      */
     private fun buildAlbums(songs: List<Song>): List<Album> {
         val albums = mutableListOf<Album>()
-        val songsByAlbum = songs.groupBy { it._albumGroupingId }
+        val songsByAlbum = songs.groupBy { it._rawAlbum.groupingId }
 
         for (entry in songsByAlbum) {
             val albumSongs = entry.value
@@ -308,18 +296,10 @@ class Indexer {
             // This allows us to replicate the LAST_YEAR field, which is useful as it means that
             // weird years like "0" wont show up if there are alternatives.
             val templateSong =
-                albumSongs.maxWith(compareBy(Sort.Mode.NullableComparator.DATE) { it._date })
+                albumSongs.maxWith(
+                    compareBy(Sort.Mode.NullableComparator.DATE) { it._rawAlbum.date })
 
-            albums.add(
-                Album(
-                    rawName = templateSong._albumName,
-                    rawSortName = templateSong._albumSortName,
-                    date = templateSong._date,
-                    releaseType = templateSong._albumReleaseType ?: ReleaseType.Album(null),
-                    coverUri = templateSong._albumCoverUri,
-                    songs = entry.value,
-                    _artistGroupingName = templateSong._artistGroupingName,
-                    _artistGroupingSortName = templateSong._artistGroupingSortName))
+            albums.add(Album(templateSong._rawAlbum, albumSongs))
         }
 
         logD("Successfully built ${albums.size} albums")
@@ -333,16 +313,12 @@ class Indexer {
      */
     private fun buildArtists(albums: List<Album>): List<Artist> {
         val artists = mutableListOf<Artist>()
-        val albumsByArtist = albums.groupBy { it._artistGroupingId }
+        val albumsByArtist = albums.groupBy { it._rawArtist.groupingId }
 
         for (entry in albumsByArtist) {
             // The first album will suffice for template metadata.
             val templateAlbum = entry.value[0]
-            artists.add(
-                Artist(
-                    rawName = templateAlbum._artistGroupingName,
-                    rawSortName = templateAlbum._artistGroupingSortName,
-                    albums = entry.value))
+            artists.add(Artist(templateAlbum._rawArtist, albums = entry.value))
         }
 
         logD("Successfully built ${artists.size} artists")
@@ -356,12 +332,12 @@ class Indexer {
      */
     private fun buildGenres(songs: List<Song>): List<Genre> {
         val genres = mutableListOf<Genre>()
-        val songsByGenre = songs.groupBy { it._genreGroupingId }
+        val songsByGenre = songs.groupBy { it._rawGenre.groupingId }
 
         for (entry in songsByGenre) {
             // The first song fill suffice for template metadata.
             val templateSong = entry.value[0]
-            genres.add(Genre(rawName = templateSong._genreName, songs = entry.value))
+            genres.add(Genre(templateSong._rawGenre, songs = entry.value))
         }
 
         logD("Successfully built ${genres.size} genres")

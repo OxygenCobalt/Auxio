@@ -163,9 +163,9 @@ abstract class MediaStoreBackend : Indexer.Backend {
         cursor: Cursor,
         emitIndexing: (Indexer.Indexing) -> Unit
     ): List<Song> {
-        val audios = mutableListOf<Audio>()
+        val rawSongs = mutableListOf<Song.Raw>()
         while (cursor.moveToNext()) {
-            audios.add(buildAudio(context, cursor))
+            rawSongs.add(buildRawSong(context, cursor))
             if (cursor.position % 50 == 0) {
                 // Only check for a cancellation every 50 songs or so (~20ms).
                 // While this seems redundant, each call to emitIndexing checks for a
@@ -174,9 +174,9 @@ abstract class MediaStoreBackend : Indexer.Backend {
             }
         }
 
-        // The audio is not actually complete at this point, as we cannot obtain a genre
+        // The raw song is not actually complete at this point, as we cannot obtain a genre
         // through a song query. Instead, we have to do the hack where we iterate through
-        // every genre and assign it's name to audios that match it's child ID.
+        // every genre and assign it's name to raw songs that match it's child IDs.
         context.contentResolverSafe.useQuery(
             MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
             arrayOf(MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME)) { genreCursor ->
@@ -199,7 +199,9 @@ abstract class MediaStoreBackend : Indexer.Backend {
 
                     while (cursor.moveToNext()) {
                         val songId = cursor.getLong(songIdIndex)
-                        audios.find { it.id == songId }?.let { song -> song.genre = name }
+                        rawSongs
+                            .find { it.mediaStoreId == songId }
+                            ?.let { song -> song.genreName = name }
 
                         if (cursor.position % 50 == 0) {
                             // Only check for a cancellation every 50 songs or so (~20ms).
@@ -214,7 +216,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
             emitIndexing(Indexer.Indexing.Indeterminate)
         }
 
-        return audios.map { it.toSong() }
+        return rawSongs.map { Song(it) }
     }
 
     /**
@@ -242,11 +244,11 @@ abstract class MediaStoreBackend : Indexer.Backend {
     abstract fun addDirToSelectorArgs(dir: Directory, args: MutableList<String>): Boolean
 
     /**
-     * Build an [Audio] based on the current cursor values. Each implementation should try to obtain
-     * an upstream [Audio] first, and then populate it with version-specific fields outlined in
-     * [projection].
+     * Build an [Song.Raw] based on the current cursor values. Each implementation should try to
+     * obtain an upstream [Song.Raw] first, and then populate it with version-specific fields
+     * outlined in [projection].
      */
-    open fun buildAudio(context: Context, cursor: Cursor): Audio {
+    open fun buildRawSong(context: Context, cursor: Cursor): Song.Raw {
         // Initialize our cursor indices if we haven't already.
         if (idIndex == -1) {
             idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
@@ -264,105 +266,42 @@ abstract class MediaStoreBackend : Indexer.Backend {
             albumArtistIndex = cursor.getColumnIndexOrThrow(AUDIO_COLUMN_ALBUM_ARTIST)
         }
 
-        val audio = Audio()
+        val raw = Song.Raw()
 
-        audio.id = cursor.getLong(idIndex)
-        audio.title = cursor.getString(titleIndex)
+        raw.mediaStoreId = cursor.getLong(idIndex)
+        raw.name = cursor.getString(titleIndex)
 
-        audio.extensionMimeType = cursor.getString(mimeTypeIndex)
-        audio.size = cursor.getLong(sizeIndex)
-        audio.dateAdded = cursor.getLong(dateAddedIndex)
+        raw.extensionMimeType = cursor.getString(mimeTypeIndex)
+        raw.size = cursor.getLong(sizeIndex)
+        raw.dateAdded = cursor.getLong(dateAddedIndex)
 
         // Try to use the DISPLAY_NAME field to obtain a (probably sane) file name
         // from the android system.
-        audio.displayName = cursor.getStringOrNull(displayNameIndex)
+        raw.displayName = cursor.getStringOrNull(displayNameIndex)
 
-        audio.duration = cursor.getLong(durationIndex)
-        audio.date = cursor.getIntOrNull(yearIndex)?.let(Date::from)
+        raw.durationMs = cursor.getLong(durationIndex)
+        raw.date = cursor.getIntOrNull(yearIndex)?.let(Date::from)
 
         // A non-existent album name should theoretically be the name of the folder it contained
         // in, but in practice it is more often "0" (as in /storage/emulated/0), even when it the
         // file is not actually in the root internal storage directory. We can't do anything to
         // fix this, really.
-        audio.album = cursor.getString(albumIndex)
-        audio.albumId = cursor.getLong(albumIdIndex)
+        raw.albumName = cursor.getString(albumIndex)
+        raw.albumMediaStoreId = cursor.getLong(albumIdIndex)
 
         // Android does not make a non-existent artist tag null, it instead fills it in
         // as <unknown>, which makes absolutely no sense given how other fields default
         // to null if they are not present. If this field is <unknown>, null it so that
         // it's easier to handle later.
-        audio.artist =
+        raw.artistName =
             cursor.getString(artistIndex).run {
                 if (this != MediaStore.UNKNOWN_STRING) this else null
             }
 
         // The album artist field is nullable and never has placeholder values.
-        audio.albumArtist = cursor.getStringOrNull(albumArtistIndex)
+        raw.albumArtistName = cursor.getStringOrNull(albumArtistIndex)
 
-        return audio
-    }
-
-    /**
-     * Represents a song as it is represented by MediaStore. This is progressively mutated in the
-     * chain of Backend instances until it is complete enough to be transformed into an immutable
-     * song.
-     */
-    data class Audio(
-        var id: Long? = null,
-        var title: String? = null,
-        var sortTitle: String? = null,
-        var displayName: String? = null,
-        var dir: Directory? = null,
-        var extensionMimeType: String? = null,
-        var formatMimeType: String? = null,
-        var size: Long? = null,
-        var dateAdded: Long? = null,
-        var duration: Long? = null,
-        var track: Int? = null,
-        var disc: Int? = null,
-        var date: Date? = null,
-        var albumId: Long? = null,
-        var album: String? = null,
-        var sortAlbum: String? = null,
-        var releaseType: ReleaseType? = null,
-        var artist: String? = null,
-        var sortArtist: String? = null,
-        var albumArtist: String? = null,
-        var sortAlbumArtist: String? = null,
-        var genre: String? = null
-    ) {
-        fun toSong() =
-            Song(
-                // Assert that the fields that should always exist are present. I can't confirm
-                // that every device provides these fields, but it seems likely that they do.
-                rawName = requireNotNull(title) { "Malformed audio: No title" },
-                rawSortName = sortTitle,
-                path =
-                    Path(
-                        name = requireNotNull(displayName) { "Malformed audio: No display name" },
-                        parent = requireNotNull(dir) { "Malformed audio: No parent directory" }),
-                uri = requireNotNull(id) { "Malformed audio: No id" }.audioUri,
-                mimeType =
-                    MimeType(
-                        fromExtension =
-                            requireNotNull(extensionMimeType) { "Malformed audio: No mime type" },
-                        fromFormat = formatMimeType),
-                size = requireNotNull(size) { "Malformed audio: No size" },
-                dateAdded = requireNotNull(dateAdded) { "Malformed audio: No date added" },
-                durationMs = requireNotNull(duration) { "Malformed audio: No duration" },
-                track = track,
-                disc = disc,
-                _date = date,
-                _albumName = requireNotNull(album) { "Malformed audio: No album name" },
-                _albumSortName = sortAlbum,
-                _albumReleaseType = releaseType,
-                _albumCoverUri =
-                    requireNotNull(albumId) { "Malformed audio: No album id" }.albumCoverUri,
-                _artistName = artist,
-                _artistSortName = sortArtist,
-                _albumArtistName = albumArtist,
-                _albumArtistSortName = sortAlbumArtist,
-                _genreName = genre)
+        return raw
     }
 
     companion object {
@@ -415,8 +354,8 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
         return true
     }
 
-    override fun buildAudio(context: Context, cursor: Cursor): Audio {
-        val audio = super.buildAudio(context, cursor)
+    override fun buildRawSong(context: Context, cursor: Cursor): Song.Raw {
+        val raw = super.buildRawSong(context, cursor)
 
         // Initialize our indices if we have not already.
         if (trackIndex == -1) {
@@ -430,8 +369,8 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
         // that this only applies to below API 29, as beyond API 29, this field not being
         // present would completely break the scoped storage system. Fill it in with DATA
         // if it's not available.
-        if (audio.displayName == null) {
-            audio.displayName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
+        if (raw.displayName == null) {
+            raw.displayName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
         }
 
         // Find the volume that transforms the DATA field into a relative path. This is
@@ -441,18 +380,18 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
             val volumePath = volume.directoryCompat ?: continue
             val strippedPath = rawPath.removePrefix(volumePath)
             if (strippedPath != rawPath) {
-                audio.dir = Directory.from(volume, strippedPath)
+                raw.directory = Directory.from(volume, strippedPath)
                 break
             }
         }
 
         val rawTrack = cursor.getIntOrNull(trackIndex)
         if (rawTrack != null) {
-            rawTrack.unpackTrackNo()?.let { audio.track = it }
-            rawTrack.unpackDiscNo()?.let { audio.disc = it }
+            rawTrack.unpackTrackNo()?.let { raw.track = it }
+            rawTrack.unpackDiscNo()?.let { raw.disc = it }
         }
 
-        return audio
+        return raw
     }
 }
 
@@ -485,8 +424,8 @@ open class BaseApi29MediaStoreBackend : MediaStoreBackend() {
         return true
     }
 
-    override fun buildAudio(context: Context, cursor: Cursor): Audio {
-        val audio = super.buildAudio(context, cursor)
+    override fun buildRawSong(context: Context, cursor: Cursor): Song.Raw {
+        val raw = super.buildRawSong(context, cursor)
 
         if (volumeIndex == -1) {
             volumeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
@@ -501,10 +440,10 @@ open class BaseApi29MediaStoreBackend : MediaStoreBackend() {
         // This is what we use for the Directory's volume.
         val volume = volumes.find { it.mediaStoreVolumeNameCompat == volumeName }
         if (volume != null) {
-            audio.dir = Directory.from(volume, relativePath)
+            raw.directory = Directory.from(volume, relativePath)
         }
 
-        return audio
+        return raw
     }
 }
 
@@ -520,8 +459,8 @@ open class Api29MediaStoreBackend : BaseApi29MediaStoreBackend() {
     override val projection: Array<String>
         get() = super.projection + arrayOf(MediaStore.Audio.AudioColumns.TRACK)
 
-    override fun buildAudio(context: Context, cursor: Cursor): Audio {
-        val audio = super.buildAudio(context, cursor)
+    override fun buildRawSong(context: Context, cursor: Cursor): Song.Raw {
+        val raw = super.buildRawSong(context, cursor)
 
         if (trackIndex == -1) {
             trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
@@ -531,11 +470,11 @@ open class Api29MediaStoreBackend : BaseApi29MediaStoreBackend() {
         // Use the old field instead.
         val rawTrack = cursor.getIntOrNull(trackIndex)
         if (rawTrack != null) {
-            rawTrack.unpackTrackNo()?.let { audio.track = it }
-            rawTrack.unpackDiscNo()?.let { audio.disc = it }
+            rawTrack.unpackTrackNo()?.let { raw.track = it }
+            rawTrack.unpackDiscNo()?.let { raw.disc = it }
         }
 
-        return audio
+        return raw
     }
 }
 
@@ -556,8 +495,8 @@ class Api30MediaStoreBackend : BaseApi29MediaStoreBackend() {
                     MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER,
                     MediaStore.Audio.AudioColumns.DISC_NUMBER)
 
-    override fun buildAudio(context: Context, cursor: Cursor): Audio {
-        val audio = super.buildAudio(context, cursor)
+    override fun buildRawSong(context: Context, cursor: Cursor): Song.Raw {
+        val raw = super.buildRawSong(context, cursor)
 
         // Populate our indices if we have not already.
         if (trackIndex == -1) {
@@ -569,9 +508,9 @@ class Api30MediaStoreBackend : BaseApi29MediaStoreBackend() {
         // the tag itself, which is to say that it is formatted as NN/TT tracks, where
         // N is the number and T is the total. Parse the number while leaving out the
         // total, as we have no use for it.
-        cursor.getStringOrNull(trackIndex)?.parsePositionNum()?.let { audio.track = it }
-        cursor.getStringOrNull(discIndex)?.parsePositionNum()?.let { audio.disc = it }
+        cursor.getStringOrNull(trackIndex)?.parsePositionNum()?.let { raw.track = it }
+        cursor.getStringOrNull(discIndex)?.parsePositionNum()?.let { raw.disc = it }
 
-        return audio
+        return raw
     }
 }

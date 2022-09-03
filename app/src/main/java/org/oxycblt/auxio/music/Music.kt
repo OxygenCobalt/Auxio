@@ -20,7 +20,6 @@
 package org.oxycblt.auxio.music
 
 import android.content.Context
-import android.net.Uri
 import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.BuildConfig
@@ -64,47 +63,11 @@ sealed class MusicParent : Music() {
     abstract val songs: List<Song>
 }
 
-/** The data object for a song. */
-data class Song(
-    override val rawName: String,
-    override val rawSortName: String?,
-    /** The path of this song. */
-    val path: Path,
-    /** The URI linking to this song's file. */
-    val uri: Uri,
-    /** The mime type of this song. */
-    val mimeType: MimeType,
-    /** The size of this song (in bytes) */
-    val size: Long,
-    /** The datetime at which this media item was added, represented as a unix timestamp. */
-    val dateAdded: Long,
-    /** The total duration of this song, in millis. */
-    val durationMs: Long,
-    /** The track number of this song, null if there isn't any. */
-    val track: Int?,
-    /** The disc number of this song, null if there isn't any. */
-    val disc: Int?,
-    /** Internal field. Do not use. */
-    val _date: Date?,
-    /** Internal field. Do not use. */
-    val _albumName: String,
-    /** Internal field. Do not use. */
-    val _albumSortName: String?,
-    /** Internal field. Do not use. */
-    val _albumReleaseType: ReleaseType?,
-    /** Internal field. Do not use. */
-    val _albumCoverUri: Uri,
-    /** Internal field. Do not use. */
-    val _artistName: String?,
-    /** Internal field. Do not use. */
-    val _artistSortName: String?,
-    /** Internal field. Do not use. */
-    val _albumArtistName: String?,
-    /** Internal field. Do not use. */
-    val _albumArtistSortName: String?,
-    /** Internal field. Do not use. */
-    val _genreName: String?
-) : Music() {
+/**
+ * A song.
+ * @author OxygenCobalt
+ */
+data class Song(private val raw: Raw) : Music() {
     override val id: Long
         get() {
             var result = rawName.toMusicId()
@@ -116,7 +79,44 @@ data class Song(
             return result
         }
 
+    override val rawName = requireNotNull(raw.name) { "Invalid raw: No title" }
+
+    override val rawSortName = raw.sortName
+
     override fun resolveName(context: Context) = rawName
+
+    /** The URI pointing towards this audio file. */
+    val uri = requireNotNull(raw.mediaStoreId) { "Invalid raw: No id" }.audioUri
+
+    /**
+     * The path component of the audio file for this music. Only intended for display. Use [uri] to
+     * open the audio file.
+     */
+    val path =
+        Path(
+            name = requireNotNull(raw.displayName) { "Invalid raw: No display name" },
+            parent = requireNotNull(raw.directory) { "Invalid raw: No parent directory" })
+
+    /** The mime type of the audio file. Only intended for display. */
+    val mimeType =
+        MimeType(
+            fromExtension = requireNotNull(raw.extensionMimeType) { "Invalid raw: No mime type" },
+            fromFormat = raw.formatMimeType)
+
+    /** The size of this audio file. */
+    val size = requireNotNull(raw.size) { "Invalid raw: No size" }
+
+    /** The duration of this audio file, in millis. */
+    val durationMs = requireNotNull(raw.durationMs) { "Invalid raw: No duration" }
+
+    /** The date this audio file was added, as a unix epoch timestamp. */
+    val dateAdded = requireNotNull(raw.dateAdded) { "Invalid raw: No date added" }
+
+    /** The track number of this song in it's album.. */
+    val track = raw.track
+
+    /** The disc number of this song in it's album. */
+    val disc = raw.disc
 
     private var _album: Album? = null
     /** The album of this song. */
@@ -133,78 +133,99 @@ data class Song(
      * back to the album artist tag (i.e parent artist name). Null if name is unknown.
      */
     val individualArtistRawName: String?
-        get() = _artistName ?: album.artist.rawName
+        get() = raw.artistName ?: album.artist.rawName
 
     /**
      * Resolve the artist name for this song in particular. First uses the artist tag, and then
      * falls back to the album artist tag (i.e parent artist name)
      */
     fun resolveIndividualArtistName(context: Context) =
-        _artistName ?: album.artist.resolveName(context)
+        raw.artistName ?: album.artist.resolveName(context)
 
-    /** Internal field. Do not use. */
-    val _albumGroupingId: Long
-        get() {
-            var result = _artistGroupingName.toMusicId()
-            result = 31 * result + _albumName.toMusicId()
-            return result
-        }
+    // --- INTERNAL FIELDS ---
 
-    /** Internal field. Do not use. */
-    val _genreGroupingId: Long
-        get() = _genreName.toMusicId()
+    val _distinct =
+        rawName to
+            raw.albumName to
+            raw.artistName to
+            raw.albumArtistName to
+            raw.genreName to
+            track to
+            disc to
+            durationMs
 
-    /** Internal field. Do not use. */
-    val _artistGroupingName: String?
-        get() = _albumArtistName ?: _artistName
+    val _rawAlbum: Album.Raw
 
-    /** Internal field. Do not use. */
-    val _artistGroupingSortName: String?
-        get() =
-            when {
-                _albumArtistName != null -> _albumArtistSortName
-                _artistName != null -> _artistSortName
-                else -> null
-            }
+    val _rawGenre = Genre.Raw(raw.genreName)
 
-    /** Internal field. Do not use. */
     val _isMissingAlbum: Boolean
         get() = _album == null
-    /** Internal field. Do not use. */
+
     val _isMissingArtist: Boolean
         get() = _album?._isMissingArtist ?: true
-    /** Internal field. Do not use. */
+
     val _isMissingGenre: Boolean
         get() = _genre == null
 
-    /** Internal method. Do not use. */
     fun _link(album: Album) {
         _album = album
     }
 
-    /** Internal method. Do not use. */
     fun _link(genre: Genre) {
         _genre = genre
     }
+
+    init {
+        val artistName: String?
+        val artistSortName: String?
+
+        if (raw.albumArtistName != null) {
+            artistName = raw.albumArtistName
+            artistSortName = raw.albumArtistSortName
+        } else {
+            artistName = raw.artistName
+            artistSortName = raw.artistSortName
+        }
+
+        _rawAlbum =
+            Album.Raw(
+                mediaStoreId = raw.albumMediaStoreId,
+                name = raw.albumName,
+                sortName = raw.albumSortName,
+                date = raw.date,
+                releaseType = raw.albumReleaseType,
+                artistName,
+                artistSortName)
+    }
+
+    data class Raw(
+        var mediaStoreId: Long? = null,
+        var name: String? = null,
+        var sortName: String? = null,
+        var displayName: String? = null,
+        var directory: Directory? = null,
+        var extensionMimeType: String? = null,
+        var formatMimeType: String? = null,
+        var size: Long? = null,
+        var dateAdded: Long? = null,
+        var durationMs: Long? = null,
+        var track: Int? = null,
+        var disc: Int? = null,
+        var date: Date? = null,
+        var albumMediaStoreId: Long? = null,
+        var albumName: String? = null,
+        var albumSortName: String? = null,
+        var albumReleaseType: ReleaseType? = null,
+        var artistName: String? = null,
+        var artistSortName: String? = null,
+        var albumArtistName: String? = null,
+        var albumArtistSortName: String? = null,
+        var genreName: String? = null
+    )
 }
 
 /** The data object for an album. */
-data class Album(
-    override val rawName: String,
-    override val rawSortName: String?,
-    /** The date this album was released. */
-    val date: Date?,
-    /** The type of release this album has. */
-    val releaseType: ReleaseType,
-    /** The URI for the cover image corresponding to this album. */
-    val coverUri: Uri,
-    /** The songs of this album. */
-    override val songs: List<Song>,
-    /** Internal field. Do not use. */
-    val _artistGroupingName: String?,
-    /** Internal field. Do not use. */
-    val _artistGroupingSortName: String?
-) : MusicParent() {
+data class Album(private val raw: Raw, override val songs: List<Song>) : MusicParent() {
     init {
         for (song in songs) {
             song._link(this)
@@ -219,7 +240,23 @@ data class Album(
             return result
         }
 
+    override val rawName = requireNotNull(raw.name) { "Invalid raw: No name" }
+
+    override val rawSortName = raw.sortName
+
     override fun resolveName(context: Context) = rawName
+
+    /**
+     * The album cover URI for this album. Usually low quality, so using Coil is recommended
+     * instead.
+     */
+    val coverUri = requireNotNull(raw.mediaStoreId) { "Invalid raw: No id" }.albumCoverUri
+
+    /** The latest date this album was released. */
+    val date = raw.date
+
+    /** The release type of this album, such as "EP". Defaults to "Album". */
+    val releaseType = raw.releaseType ?: ReleaseType.Album(null)
 
     private var _artist: Artist? = null
     /** The parent artist of this album. */
@@ -229,20 +266,37 @@ data class Album(
     /** The earliest date a song in this album was added. */
     val dateAdded = songs.minOf { it.dateAdded }
 
-    val durationMs: Long
-        get() = songs.sumOf { it.durationMs }
+    /** The total duration of songs in this album, in millis. */
+    val durationMs = songs.sumOf { it.durationMs }
 
-    /** Internal field. Do not use. */
-    val _artistGroupingId: Long
-        get() = _artistGroupingName.toMusicId()
+    // --- INTERNAL FIELDS ---
 
-    /** Internal field. Do not use. */
+    val _rawArtist: Artist.Raw
+        get() = Artist.Raw(name = raw.artistName, sortName = raw.artistSortName)
+
     val _isMissingArtist: Boolean
         get() = _artist == null
 
-    /** Internal method. Do not use. */
     fun _link(artist: Artist) {
         _artist = artist
+    }
+
+    data class Raw(
+        val mediaStoreId: Long?,
+        val name: String?,
+        val sortName: String?,
+        val date: Date?,
+        val releaseType: ReleaseType?,
+        val artistName: String?,
+        val artistSortName: String?,
+    ) {
+        val groupingId: Long
+
+        init {
+            var groupingIdResult = artistName.toMusicId()
+            groupingIdResult = 31 * groupingIdResult + name.toMusicId()
+            groupingId = groupingIdResult
+        }
     }
 }
 
@@ -251,8 +305,7 @@ data class Album(
  * artist or artist field, not the individual performers of an artist.
  */
 data class Artist(
-    override val rawName: String?,
-    override val rawSortName: String?,
+    private val raw: Raw,
     /** The albums of this artist. */
     val albums: List<Album>
 ) : MusicParent() {
@@ -265,22 +318,32 @@ data class Artist(
     override val id: Long
         get() = rawName.toMusicId()
 
+    override val rawName = raw.name
+
+    override val rawSortName = raw.sortName
+
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
 
-    /** The songs of this artist. */
     override val songs = albums.flatMap { it.songs }
 
-    val durationMs: Long
-        get() = songs.sumOf { it.durationMs }
+    /** The total duration of songs in this artist, in millis. */
+    val durationMs = songs.sumOf { it.durationMs }
+
+    data class Raw(val name: String?, val sortName: String?) {
+        val groupingId = name.toMusicId()
+    }
 }
 
 /** The data object for a genre. */
-data class Genre(override val rawName: String?, override val songs: List<Song>) : MusicParent() {
+data class Genre(private val raw: Raw, override val songs: List<Song>) : MusicParent() {
     init {
         for (song in songs) {
             song._link(this)
         }
     }
+
+    override val rawName: String?
+        get() = raw.name
 
     // Sort tags don't make sense on genres
     override val rawSortName: String?
@@ -291,8 +354,12 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
 
-    val durationMs: Long
-        get() = songs.sumOf { it.durationMs }
+    /** The total duration of the songs in this genre, in millis. */
+    val durationMs = songs.sumOf { it.durationMs }
+
+    data class Raw(val name: String?) {
+        val groupingId: Long = name.toMusicId()
+    }
 }
 
 private fun String?.toMusicId(): Long {
