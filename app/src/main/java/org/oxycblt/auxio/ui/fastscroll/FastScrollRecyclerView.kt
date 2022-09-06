@@ -208,13 +208,20 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         thumbView.layout(thumbLeft, thumbTop, thumbLeft + thumbWidth, thumbTop + thumbHeight)
 
-        val firstPos = firstAdapterPos
+        val child = getChildAt(0)
+        val firstAdapterPos =
+            if (child != null) {
+                layoutManager?.getPosition(child) ?: NO_POSITION
+            } else {
+                NO_POSITION
+            }
+
         val popupText: String
         val provider = popupProvider
-        if (firstPos != NO_POSITION && provider != null) {
+        if (firstAdapterPos != NO_POSITION && provider != null) {
             popupView.isInvisible = false
             // Get the popup text. If there is none, we default to "?".
-            popupText = provider.getPopup(firstPos) ?: "?"
+            popupText = provider.getPopup(firstAdapterPos) ?: "?"
         } else {
             // No valid position or provider, do not show the popup.
             popupView.isInvisible = true
@@ -298,6 +305,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // Combine the previous item dimensions with the current item top to find our scroll
         // position
         getDecoratedBoundsWithMargins(getChildAt(0), tRect)
+        val child = getChildAt(0)
+        val firstAdapterPos =
+            when (val mgr = layoutManager) {
+                is GridLayoutManager -> mgr.getPosition(child) / mgr.spanCount
+                is LinearLayoutManager -> mgr.getPosition(child)
+                else -> 0
+            }
+
         val scrollOffset = paddingTop + (firstAdapterPos * itemHeight) - tRect.top
 
         // Then calculate the thumb position, which is just:
@@ -473,21 +488,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     private val scrollOffsetRange: Int
         get() = scrollRange - height
-
-    private val firstAdapterPos: Int
-        get() {
-            if (childCount == 0) {
-                return NO_POSITION
-            }
-
-            val child = getChildAt(0)
-
-            return when (val mgr = layoutManager) {
-                is GridLayoutManager -> mgr.getPosition(child) / mgr.spanCount
-                is LinearLayoutManager -> mgr.getPosition(child)
-                else -> 0
-            }
-        }
 
     private val itemHeight: Int
         get() {

@@ -2,6 +2,9 @@
 
 ## dev
 
+#### What's Fixed
+- Fixed issue wher the scroll popup would not display correctly in landscape mode [#230]
+
 ## 2.6.3
 
 #### What's New
