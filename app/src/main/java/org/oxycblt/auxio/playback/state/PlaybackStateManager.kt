@@ -52,6 +52,8 @@ import org.oxycblt.auxio.util.logW
  */
 class PlaybackStateManager private constructor() {
     private val musicStore = MusicStore.getInstance()
+    private val callbacks = mutableListOf<Callback>()
+    private var internalPlayer: InternalPlayer? = null
 
     /** The currently playing song. Null if there isn't one */
     val song
@@ -67,14 +69,10 @@ class PlaybackStateManager private constructor() {
     var index = -1
         private set
 
-    /** Whether playback is playing or not */
-    var isPlaying = false
-        set(value) {
-            field = value
-            notifyPlayingChanged()
-        }
-    /** The current playback progress */
-    private var positionMs = 0L
+    /** The current state of the internal player. */
+    var playerState = InternalPlayer.State.new(isPlaying = false, isAdvancing = false, 0)
+        private set
+
     /** The current [RepeatMode] */
     var repeatMode = RepeatMode.NONE
         set(value) {
@@ -94,22 +92,16 @@ class PlaybackStateManager private constructor() {
         get() = internalPlayer?.audioSessionId
 
     /** An action that is awaiting the internal player instance to consume it. */
-    var pendingAction: InternalPlayer.Action? = null
-
-    // --- CALLBACKS ---
-
-    private val callbacks = mutableListOf<Callback>()
-    private var internalPlayer: InternalPlayer? = null
+    private var pendingAction: InternalPlayer.Action? = null
 
     /** Add a callback to this instance. Make sure to remove it when done. */
     @Synchronized
     fun addCallback(callback: Callback) {
         if (isInitialized) {
             callback.onNewPlayback(index, queue, parent)
-            callback.onPositionChanged(positionMs)
-            callback.onPlayingChanged(isPlaying)
             callback.onRepeatChanged(repeatMode)
             callback.onShuffledChanged(isShuffled)
+            callback.onStateChanged(playerState)
         }
 
         callbacks.add(callback)
@@ -130,10 +122,10 @@ class PlaybackStateManager private constructor() {
         }
 
         if (isInitialized) {
-            internalPlayer.loadSong(song)
-            internalPlayer.seekTo(positionMs)
-            internalPlayer.onPlayingChanged(isPlaying)
+            internalPlayer.loadSong(song, playerState.isPlaying)
+            internalPlayer.seekTo(playerState.calculateElapsedPosition())
             requestAction(internalPlayer)
+            synchronizeState(internalPlayer)
         }
 
         this.internalPlayer = internalPlayer
@@ -155,6 +147,7 @@ class PlaybackStateManager private constructor() {
     /** Play a [song]. */
     @Synchronized
     fun play(song: Song, playbackMode: PlaybackMode, settings: Settings) {
+        val internalPlayer = internalPlayer ?: return
         val library = musicStore.library ?: return
 
         parent =
@@ -169,33 +162,44 @@ class PlaybackStateManager private constructor() {
             }
 
         applyNewQueue(library, settings, settings.keepShuffle && isShuffled, song)
+
         notifyNewPlayback()
         notifyShuffledChanged()
-        isPlaying = true
+
+        internalPlayer.loadSong(song, true)
+
         isInitialized = true
     }
 
     /** Play a [parent], such as an artist or album. */
     @Synchronized
     fun play(parent: MusicParent, shuffled: Boolean, settings: Settings) {
+        val internalPlayer = internalPlayer ?: return
         val library = musicStore.library ?: return
+
         this.parent = parent
         applyNewQueue(library, settings, shuffled, null)
+
         notifyNewPlayback()
         notifyShuffledChanged()
-        isPlaying = true
+
+        internalPlayer.loadSong(song, true)
         isInitialized = true
     }
 
     /** Shuffle all songs. */
     @Synchronized
     fun shuffleAll(settings: Settings) {
+        val internalPlayer = internalPlayer ?: return
         val library = musicStore.library ?: return
+
         parent = null
         applyNewQueue(library, settings, true, null)
+
         notifyNewPlayback()
         notifyShuffledChanged()
-        isPlaying = true
+
+        internalPlayer.loadSong(song, true)
         isInitialized = true
     }
 
@@ -204,36 +208,41 @@ class PlaybackStateManager private constructor() {
     /** Go to the next song, along with doing all the checks that entails. */
     @Synchronized
     fun next() {
+        val internalPlayer = internalPlayer ?: return
+
         // Increment the index, if it cannot be incremented any further, then
         // repeat and pause/resume playback depending on the setting
         if (index < _queue.lastIndex) {
-            gotoImpl(index + 1, true)
+            gotoImpl(internalPlayer, index + 1, true)
         } else {
-            gotoImpl(0, repeatMode == RepeatMode.ALL)
+            gotoImpl(internalPlayer, 0, repeatMode == RepeatMode.ALL)
         }
     }
 
     /** Go to the previous song, doing any checks that are needed. */
     @Synchronized
     fun prev() {
+        val internalPlayer = internalPlayer ?: return
+
         // If enabled, rewind before skipping back if the position is past 3 seconds [3000ms]
-        if (internalPlayer?.shouldRewindWithPrev == true) {
+        if (internalPlayer.shouldRewindWithPrev) {
             rewind()
-            isPlaying = true
+            changePlaying(true)
         } else {
-            gotoImpl(max(index - 1, 0), true)
+            gotoImpl(internalPlayer, max(index - 1, 0), true)
         }
     }
 
     @Synchronized
     fun goto(index: Int) {
-        gotoImpl(index, true)
+        val internalPlayer = internalPlayer ?: return
+        gotoImpl(internalPlayer, index, true)
     }
 
-    private fun gotoImpl(idx: Int, play: Boolean) {
+    private fun gotoImpl(internalPlayer: InternalPlayer, idx: Int, play: Boolean) {
         index = idx
         notifyIndexMoved()
-        isPlaying = play
+        internalPlayer.loadSong(song, play)
     }
 
     /** Add a [song] to the top of the queue. */
@@ -330,19 +339,17 @@ class PlaybackStateManager private constructor() {
 
     // --- INTERNAL PLAYER FUNCTIONS ---
 
-    /** Update the current [positionMs]. Only meant for use by [InternalPlayer] */
     @Synchronized
-    fun synchronizePosition(internalPlayer: InternalPlayer, positionMs: Long) {
+    fun synchronizeState(internalPlayer: InternalPlayer) {
         if (BuildConfig.DEBUG && this.internalPlayer !== internalPlayer) {
             logW("Given internal player did not match current internal player")
             return
         }
 
-        // Don't accept any bugged positions that are over the duration of the song.
-        val maxDuration = song?.durationMs ?: -1
-        if (positionMs <= maxDuration) {
-            this.positionMs = positionMs
-            notifyPositionChanged()
+        val newState = internalPlayer.currentState
+        if (newState != playerState) {
+            playerState = newState
+            notifyStateChanged()
         }
     }
 
@@ -350,7 +357,7 @@ class PlaybackStateManager private constructor() {
     fun startAction(action: InternalPlayer.Action) {
         val internalPlayer = internalPlayer
         if (internalPlayer == null || !internalPlayer.onAction(action)) {
-            logD("Internal player not present or did not consume action, ignoring")
+            logD("Internal player not present or did not consume action, waiting")
             pendingAction = action
         }
     }
@@ -369,15 +376,18 @@ class PlaybackStateManager private constructor() {
         }
     }
 
+    /** Change the current playing state. */
+    fun changePlaying(isPlaying: Boolean) {
+        internalPlayer?.changePlaying(isPlaying)
+    }
+
     /**
      * **Seek** to a [positionMs].
      * @param positionMs The position to seek to in millis.
      */
     @Synchronized
     fun seekTo(positionMs: Long) {
-        this.positionMs = positionMs
         internalPlayer?.seekTo(positionMs)
-        notifyPositionChanged()
     }
 
     /** Rewind to the beginning of a song. */
@@ -392,14 +402,13 @@ class PlaybackStateManager private constructor() {
         }
 
         val library = musicStore.library ?: return false
+        val internalPlayer = internalPlayer ?: return false
         val state = withContext(Dispatchers.IO) { database.read(library) }
 
         synchronized(this) {
             if (state != null && (!isInitialized || force)) {
                 // Continuing playback while also possibly doing drastic state updates is
                 // a bad idea, so pause.
-                isPlaying = false
-
                 index = state.index
                 parent = state.parent
                 _queue = state.queue.toMutableList()
@@ -407,9 +416,11 @@ class PlaybackStateManager private constructor() {
                 isShuffled = state.isShuffled
 
                 notifyNewPlayback()
-                seekTo(state.positionMs)
                 notifyRepeatModeChanged()
                 notifyShuffledChanged()
+
+                internalPlayer.loadSong(song, false)
+                internalPlayer.seekTo(state.positionMs)
 
                 isInitialized = true
 
@@ -440,13 +451,15 @@ class PlaybackStateManager private constructor() {
             return
         }
 
+        val internalPlayer = internalPlayer ?: return
+
         logD("Sanitizing state")
 
         // While we could just save and reload the state, we instead sanitize the state
-        // at runtime for better efficiency (and to sidestep a co-routine on behalf of the caller).
+        // at runtime for better performance (and to sidestep a co-routine on behalf of the caller).
 
         val oldSongId = song?.id
-        val oldPosition = positionMs
+        val oldPosition = playerState.calculateElapsedPosition()
 
         parent =
             parent?.let {
@@ -463,10 +476,11 @@ class PlaybackStateManager private constructor() {
             index--
         }
 
+        notifyNewPlayback()
+
         // Continuing playback while also possibly doing drastic state updates is
         // a bad idea, so pause.
-        isPlaying = false
-        notifyNewPlayback()
+        internalPlayer.loadSong(song, false)
 
         if (index > -1) {
             // Internal player may have reloaded the media item, re-seek to the previous position
@@ -479,14 +493,13 @@ class PlaybackStateManager private constructor() {
             index = index,
             parent = parent,
             queue = _queue,
-            positionMs = positionMs,
+            positionMs = playerState.calculateElapsedPosition(),
             isShuffled = isShuffled,
             repeatMode = repeatMode)
 
     // --- CALLBACKS ---
 
     private fun notifyIndexMoved() {
-        internalPlayer?.loadSong(song)
         for (callback in callbacks) {
             callback.onIndexMoved(index)
         }
@@ -505,22 +518,14 @@ class PlaybackStateManager private constructor() {
     }
 
     private fun notifyNewPlayback() {
-        internalPlayer?.loadSong(song)
         for (callback in callbacks) {
             callback.onNewPlayback(index, queue, parent)
         }
     }
 
-    private fun notifyPlayingChanged() {
-        internalPlayer?.onPlayingChanged(isPlaying)
+    private fun notifyStateChanged() {
         for (callback in callbacks) {
-            callback.onPlayingChanged(isPlaying)
-        }
-    }
-
-    private fun notifyPositionChanged() {
-        for (callback in callbacks) {
-            callback.onPositionChanged(positionMs)
+            callback.onStateChanged(playerState)
         }
     }
 
@@ -553,11 +558,8 @@ class PlaybackStateManager private constructor() {
         /** Called when playback is changed completely, with a new index, queue, and parent. */
         fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {}
 
-        /** Called when the playing state is changed. */
-        fun onPlayingChanged(isPlaying: Boolean) {}
-
-        /** Called when the position is re-synchronized by the internal player. */
-        fun onPositionChanged(positionMs: Long) {}
+        /** Called when the state of the internal player changes. */
+        fun onStateChanged(state: InternalPlayer.State) {}
 
         /** Called when the repeat mode is changed. */
         fun onRepeatChanged(repeatMode: RepeatMode) {}

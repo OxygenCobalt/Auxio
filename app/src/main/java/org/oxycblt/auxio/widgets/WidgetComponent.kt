@@ -28,6 +28,7 @@ import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.SquareFrameTransform
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
@@ -74,7 +75,7 @@ class WidgetComponent(private val context: Context) :
         }
 
         // Note: Store these values here so they remain consistent once the bitmap is loaded.
-        val isPlaying = playbackManager.isPlaying
+        val isPlaying = playbackManager.playerState.isPlaying
         val repeatMode = playbackManager.repeatMode
         val isShuffled = playbackManager.isShuffled
 
@@ -139,7 +140,7 @@ class WidgetComponent(private val context: Context) :
 
     override fun onIndexMoved(index: Int) = update()
     override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) = update()
-    override fun onPlayingChanged(isPlaying: Boolean) = update()
+    override fun onStateChanged(state: InternalPlayer.State) = update()
     override fun onShuffledChanged(isShuffled: Boolean) = update()
     override fun onRepeatChanged(repeatMode: RepeatMode) = update()
     override fun onSettingChanged(key: String) {

@@ -189,11 +189,7 @@ class Task(context: Context, private val raw: Song.Raw) {
                     val id = tag.key.sanitize().uppercase()
                     val value = tag.value.sanitize()
                     if (value.isNotEmpty()) {
-                        if (vorbisTags.containsKey(id)) {
-                            vorbisTags[id]!!.add(value)
-                        } else {
-                            vorbisTags[id] = mutableListOf(value)
-                        }
+                        vorbisTags.getOrPut(id) { mutableListOf() }.add(value)
                     }
                 }
             }

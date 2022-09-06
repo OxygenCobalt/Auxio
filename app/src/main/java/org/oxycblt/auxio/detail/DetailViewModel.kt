@@ -45,8 +45,6 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * - The RecyclerView data for each fragment
  * - The sorts for each type of data
  * @author OxygenCobalt
- *
- * TODO: Unify how detail items are indicated [When playlists are implemented]
  */
 class DetailViewModel(application: Application) :
     AndroidViewModel(application), MusicStore.Callback {

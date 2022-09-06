@@ -39,10 +39,10 @@ import com.google.android.exoplayer2.ext.flac.LibflacAudioRenderer
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.mediacodec.MediaCodecSelector
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import kotlin.math.max
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
@@ -102,7 +102,6 @@ class PlaybackService :
 
     // Coroutines
     private val serviceJob = Job()
-    private val positionScope = CoroutineScope(serviceJob + Dispatchers.Main)
     private val restoreScope = CoroutineScope(serviceJob + Dispatchers.Main)
     private val saveScope = CoroutineScope(serviceJob + Dispatchers.Main)
 
@@ -149,15 +148,9 @@ class PlaybackService :
 
         playbackManager.registerInternalPlayer(this)
         musicStore.addCallback(this)
-        positionScope.launch {
-            while (true) {
-                playbackManager.synchronizePosition(this@PlaybackService, player.currentPosition)
-                delay(POS_POLL_INTERVAL)
-            }
-        }
 
         widgetComponent = WidgetComponent(this)
-        mediaSessionComponent = MediaSessionComponent(this, player, this)
+        mediaSessionComponent = MediaSessionComponent(this, this)
 
         IntentFilter().apply {
             addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
@@ -197,10 +190,10 @@ class PlaybackService :
         foregroundManager.release()
 
         // Pause just in case this destruction was unexpected.
-        playbackManager.isPlaying = false
+        playbackManager.changePlaying(false)
 
         playbackManager.unregisterInternalPlayer(this)
-        musicStore.addCallback(this)
+        musicStore.removeCallback(this)
         settings.release()
         unregisterReceiver(systemReceiver)
         serviceJob.cancel()
@@ -220,15 +213,21 @@ class PlaybackService :
 
     // --- PLAYER OVERRIDES ---
 
-    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-        super.onPlayWhenReadyChanged(playWhenReady, reason)
+    override fun onEvents(player: Player, events: Player.Events) {
+        super.onEvents(player, events)
 
-        if (playWhenReady) {
-            hasPlayed = true
+        var needToSynchronize =
+            events.containsAny(Player.EVENT_IS_PLAYING_CHANGED, Player.EVENT_POSITION_DISCONTINUITY)
+
+        if (events.contains(Player.EVENT_PLAY_WHEN_READY_CHANGED)) {
+            needToSynchronize = true
+            if (player.playWhenReady) {
+                hasPlayed = true
+            }
         }
 
-        if (playbackManager.isPlaying != playWhenReady) {
-            playbackManager.isPlaying = playWhenReady
+        if (needToSynchronize) {
+            playbackManager.synchronizeState(this)
         }
     }
 
@@ -237,7 +236,7 @@ class PlaybackService :
             if (playbackManager.repeatMode == RepeatMode.TRACK) {
                 playbackManager.rewind()
                 if (settings.pauseOnRepeat) {
-                    playbackManager.isPlaying = false
+                    playbackManager.changePlaying(false)
                 }
             } else {
                 playbackManager.next()
@@ -249,14 +248,6 @@ class PlaybackService :
         // TODO: Replace with no skipping and a notification instead
         // If there's any issue, just go to the next song.
         playbackManager.next()
-    }
-
-    override fun onPositionDiscontinuity(
-        oldPosition: Player.PositionInfo,
-        newPosition: Player.PositionInfo,
-        reason: Int
-    ) {
-        playbackManager.synchronizePosition(this, player.currentPosition)
     }
 
     override fun onTracksChanged(tracks: Tracks) {
@@ -284,7 +275,12 @@ class PlaybackService :
     override val shouldRewindWithPrev: Boolean
         get() = settings.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
 
-    override fun loadSong(song: Song?) {
+    override val currentState: InternalPlayer.State
+        get() =
+            InternalPlayer.State.new(
+                player.playWhenReady, player.isPlaying, max(player.currentPosition, 0))
+
+    override fun loadSong(song: Song?, play: Boolean) {
         if (song == null) {
             // Stop the foreground state if there's nothing to play.
             logD("Nothing playing, stopping playback")
@@ -310,6 +306,8 @@ class PlaybackService :
             broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
             openAudioEffectSession = true
         }
+
+        player.playWhenReady = play
     }
 
     private fun broadcastAudioEffectAction(event: String) {
@@ -337,7 +335,7 @@ class PlaybackService :
         player.seekTo(positionMs)
     }
 
-    override fun onPlayingChanged(isPlaying: Boolean) {
+    override fun changePlaying(isPlaying: Boolean) {
         player.playWhenReady = isPlaying
     }
 
@@ -437,7 +435,8 @@ class PlaybackService :
                 AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
 
                 // --- AUXIO EVENTS ---
-                ACTION_PLAY_PAUSE -> playbackManager.isPlaying = !playbackManager.isPlaying
+                ACTION_PLAY_PAUSE ->
+                    playbackManager.changePlaying(!playbackManager.playerState.isPlaying)
                 ACTION_INC_REPEAT_MODE ->
                     playbackManager.repeatMode = playbackManager.repeatMode.increment()
                 ACTION_INVERT_SHUFFLE ->
@@ -445,7 +444,7 @@ class PlaybackService :
                 ACTION_SKIP_PREV -> playbackManager.prev()
                 ACTION_SKIP_NEXT -> playbackManager.next()
                 ACTION_EXIT -> {
-                    playbackManager.isPlaying = false
+                    playbackManager.changePlaying(false)
                     stopAndSave()
                 }
                 WidgetProvider.ACTION_WIDGET_UPDATE -> widgetComponent.update()
@@ -466,7 +465,7 @@ class PlaybackService :
                 settings.headsetAutoplay &&
                 initialHeadsetPlugEventHandled) {
                 logD("Device connected, resuming")
-                playbackManager.isPlaying = true
+                playbackManager.changePlaying(true)
             }
         }
 
@@ -474,7 +473,7 @@ class PlaybackService :
         private fun pauseFromPlug() {
             if (playbackManager.song != null) {
                 logD("Device disconnected, pausing")
-                playbackManager.isPlaying = false
+                playbackManager.changePlaying(false)
             }
         }
     }

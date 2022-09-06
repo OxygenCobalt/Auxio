@@ -22,18 +22,17 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.os.SystemClock
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
-import com.google.android.exoplayer2.Player
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
@@ -59,26 +58,16 @@ import org.oxycblt.auxio.util.logD
  * Replace it. Please.
  *
  * @author OxygenCobalt
- *
- * TODO: Remove the player callback once smooth seeking is implemented
  */
-class MediaSessionComponent(
-    private val context: Context,
-    private val player: Player,
-    private val callback: Callback
-) :
-    Player.Listener,
-    MediaSessionCompat.Callback(),
-    PlaybackStateManager.Callback,
-    Settings.Callback {
+class MediaSessionComponent(private val context: Context, private val callback: Callback) :
+    MediaSessionCompat.Callback(), PlaybackStateManager.Callback, Settings.Callback {
     interface Callback {
         fun onPostNotification(notification: NotificationComponent?, reason: PostingReason)
     }
 
     enum class PostingReason {
         METADATA,
-        ACTIONS,
-        POSITION
+        ACTIONS
     }
 
     private val mediaSession =
@@ -94,7 +83,6 @@ class MediaSessionComponent(
     private val provider = BitmapProvider(context)
 
     init {
-        player.addListener(this)
         playbackManager.addCallback(this)
         mediaSession.setCallback(this)
     }
@@ -106,7 +94,6 @@ class MediaSessionComponent(
     fun release() {
         provider.release()
         settings.release()
-        player.removeListener(this)
         playbackManager.removeCallback(this)
 
         mediaSession.apply {
@@ -225,13 +212,10 @@ class MediaSessionComponent(
         mediaSession.setQueue(queueItems)
     }
 
-    override fun onPlayingChanged(isPlaying: Boolean) {
+    override fun onStateChanged(state: InternalPlayer.State) {
         invalidateSessionState()
-        notification.updatePlaying(playbackManager.isPlaying)
-
+        notification.updatePlaying(playbackManager.playerState.isPlaying)
         if (!provider.isBusy) {
-            // Still probably want to start the notification though regardless of the version,
-            // as playback is starting.
             callback.onPostNotification(notification, PostingReason.ACTIONS)
         }
     }
@@ -269,25 +253,6 @@ class MediaSessionComponent(
         }
     }
 
-    // --- EXOPLAYER CALLBACKS ---
-
-    override fun onPositionDiscontinuity(
-        oldPosition: Player.PositionInfo,
-        newPosition: Player.PositionInfo,
-        reason: Int
-    ) {
-        invalidateSessionState()
-
-        if (!playbackManager.isPlaying) {
-            // Hack around issue where the position won't update after a seek when paused.
-            // Apparently this can be fixed by re-posting the notification, but not always
-            // when we invalidate the state (that will cause us to be rate-limited), and also not
-            // always when we seek (that will also cause us to be rate-limited). Someone looked at
-            // this system and said it was well-designed.
-            callback.onPostNotification(notification, PostingReason.POSITION)
-        }
-    }
-
     // --- MEDIASESSION CALLBACKS ---
 
     override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
@@ -316,11 +281,11 @@ class MediaSessionComponent(
     }
 
     override fun onPlay() {
-        playbackManager.isPlaying = true
+        playbackManager.changePlaying(true)
     }
 
     override fun onPause() {
-        playbackManager.isPlaying = false
+        playbackManager.changePlaying(false)
     }
 
     override fun onSkipToNext() {
@@ -341,7 +306,7 @@ class MediaSessionComponent(
 
     override fun onRewind() {
         playbackManager.rewind()
-        playbackManager.isPlaying = true
+        playbackManager.changePlaying(true)
     }
 
     override fun onSetRepeatMode(repeatMode: Int) {
@@ -391,17 +356,9 @@ class MediaSessionComponent(
         val state =
             PlaybackStateCompat.Builder()
                 .setActions(ACTIONS)
-                .setBufferedPosition(player.bufferedPosition)
                 .setActiveQueueItemId(playbackManager.index.toLong())
 
-        val playerState =
-            if (playbackManager.isPlaying) {
-                PlaybackStateCompat.STATE_PLAYING
-            } else {
-                PlaybackStateCompat.STATE_PAUSED
-            }
-
-        state.setState(playerState, player.currentPosition, 1.0f, SystemClock.elapsedRealtime())
+        playbackManager.playerState.intoPlaybackState(state)
 
         // Android 13+ leverages custom actions in the notification.
 

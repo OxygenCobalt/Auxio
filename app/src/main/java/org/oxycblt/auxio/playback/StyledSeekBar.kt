@@ -39,8 +39,6 @@ import org.oxycblt.auxio.util.logD
  * Instead, we wrap it in a safe class that hopefully implements enough sanity checks to not crash
  * the app or result in blatantly janky behavior. Mostly.
  *
- * TODO: Add smooth seeking
- *
  * @author OxygenCobalt
  */
 class StyledSeekBar
@@ -69,15 +67,19 @@ constructor(
     var positionDs: Long
         get() = binding.seekBarSlider.value.toLong()
         set(value) {
+            // Sanity check 1: Ensure that no negative values are sneaking their way into
+            // this component.
+            val from = max(value, 0)
+
             // Sanity check: Ensure that this value is within the duration and will not crash
             // the app, and that the user is not currently seeking (which would cause the SeekBar
             // to jump around).
-            if (value <= durationDs && !isActivated) {
-                binding.seekBarSlider.value = value.toFloat()
+            if (from <= durationDs && !isActivated) {
+                binding.seekBarSlider.value = from.toFloat()
 
                 // We would want to keep this in the callback, but the callback only fires when
                 // a value changes completely, and sometimes that does not happen with this view.
-                binding.seekBarPosition.text = value.formatDurationDs(true)
+                binding.seekBarPosition.text = from.formatDurationDs(true)
             }
         }
 

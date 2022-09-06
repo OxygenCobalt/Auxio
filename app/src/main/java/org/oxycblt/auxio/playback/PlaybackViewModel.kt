@@ -20,6 +20,8 @@ package org.oxycblt.auxio.playback
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -77,6 +79,8 @@ class PlaybackViewModel(application: Application) :
 
     val currentAudioSessionId: Int?
         get() = playbackManager.currentAudioSessionId
+
+    private var lastPositionJob: Job? = null
 
     init {
         playbackManager.addCallback(this)
@@ -209,7 +213,7 @@ class PlaybackViewModel(application: Application) :
 
     /** Flip the playing status, e.g from playing to paused */
     fun invertPlaying() {
-        playbackManager.isPlaying = !playbackManager.isPlaying
+        playbackManager.changePlaying(!playbackManager.playerState.isPlaying)
     }
 
     /** Flip the shuffle status, e.g from on to off. Will keep song by default. */
@@ -268,12 +272,18 @@ class PlaybackViewModel(application: Application) :
         _parent.value = playbackManager.parent
     }
 
-    override fun onPositionChanged(positionMs: Long) {
-        _positionDs.value = positionMs.msToDs()
-    }
+    override fun onStateChanged(state: InternalPlayer.State) {
+        _isPlaying.value = state.isPlaying
 
-    override fun onPlayingChanged(isPlaying: Boolean) {
-        _isPlaying.value = isPlaying
+        // Start watching the position again
+        lastPositionJob?.cancel()
+        lastPositionJob =
+            viewModelScope.launch {
+                while (true) {
+                    _positionDs.value = state.calculateElapsedPosition().msToDs()
+                    delay(100)
+                }
+            }
     }
 
     override fun onShuffledChanged(isShuffled: Boolean) {
