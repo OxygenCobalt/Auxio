@@ -90,7 +90,37 @@ class PlaybackViewModel(application: Application) :
 
     /** Play a [song] with the [mode] specified, */
     fun play(song: Song, mode: PlaybackMode) {
-        playbackManager.play(song, mode, settings)
+        // TODO: Remove this function when selection is implemented
+
+        val parent =
+            when (mode) {
+                PlaybackMode.IN_ALBUM -> song.album
+                PlaybackMode.IN_ARTIST -> song.album.artist
+                PlaybackMode.IN_GENRE -> song.genres.maxBy { it.songs.size }
+                PlaybackMode.ALL_SONGS -> null
+            }
+
+        playbackManager.play(song, parent, settings)
+    }
+
+    /** Play a song from it's album. */
+    fun playFromAlbum(song: Song) {
+        playbackManager.play(song, song.album, settings)
+    }
+
+    /** Play a song from it's artist. */
+    fun playFromArtist(song: Song) {
+        playbackManager.play(song, song.album.artist, settings)
+    }
+
+    /** Play a song from the specific genre that contains the song. */
+    fun playFromGenre(song: Song, genre: Genre) {
+        if (!genre.songs.contains(song)) {
+            logE("Genre does not contain song, not playing")
+            return
+        }
+
+        playbackManager.play(song, genre, settings)
     }
 
     /**

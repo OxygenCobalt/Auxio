@@ -54,9 +54,6 @@ import org.oxycblt.auxio.util.logD
  * while also keeping in mind the absurd rate limiting system in place just to have a sort-of
  * coherent state. And even then it will break if you skip too much.
  *
- * Google, please replace this API. No, don't paper it over with even more broken abstractions.
- * Replace it. Please.
- *
  * @author OxygenCobalt
  */
 class MediaSessionComponent(private val context: Context, private val callback: Callback) :

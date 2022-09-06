@@ -53,10 +53,10 @@ fun Long.msToDs() = floorDiv(100)
 /** Converts a long in milliseconds to a long in seconds */
 fun Long.msToSecs() = floorDiv(1000)
 
-/** Converts a long in deciseconds to a long in milliseconds. */
+/** Converts a long in deci-seconds to a long in milliseconds. */
 fun Long.dsToMs() = times(100)
 
-/** Converts a long in deciseconds to a long in seconds. */
+/** Converts a long in deci-seconds to a long in seconds. */
 fun Long.dsToSecs() = floorDiv(10)
 
 /** Converts a long in seconds to a long in milliseconds. */

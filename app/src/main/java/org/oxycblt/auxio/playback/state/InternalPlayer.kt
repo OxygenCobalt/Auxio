@@ -78,6 +78,8 @@ interface InternalPlayer {
         /** Load this state into the analogous [PlaybackStateCompat.Builder]. */
         fun intoPlaybackState(builder: PlaybackStateCompat.Builder): PlaybackStateCompat.Builder =
             builder.setState(
+                // State represents the user's preference, not the actual player state.
+                // Doing this produces a better experience in the media control UI.
                 if (isPlaying) {
                     PlaybackStateCompat.STATE_PLAYING
                 } else {
@@ -91,6 +93,9 @@ interface InternalPlayer {
                     0f
                 },
                 creationTime)
+
+        // Equality ignores the creation time to prevent functionally
+        // identical states from being equal.
 
         override fun equals(other: Any?) =
             other is State &&
@@ -109,9 +114,9 @@ interface InternalPlayer {
             /** Create a new instance of this state. */
             fun new(isPlaying: Boolean, isAdvancing: Boolean, positionMs: Long) =
                 State(
+                    isPlaying,
                     // Minor sanity check: Make sure that advancing can't occur if the
                     // main playing value is paused.
-                    isPlaying,
                     isPlaying && isAdvancing,
                     positionMs,
                     SystemClock.elapsedRealtime())

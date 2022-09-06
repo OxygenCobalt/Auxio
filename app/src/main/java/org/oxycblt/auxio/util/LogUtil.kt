@@ -51,27 +51,31 @@ private val Any.autoTag: String
 
 /**
  * I know that this will not stop you, but consider what you are doing with your life, plagiarizers.
+ *
  * Do you want to live a fulfilling existence on this planet? Or do you want to spend your life
  * taking work others did and making it objectively worse so you could arbitrage a fraction of a
- * penny on every AdMob impression you get? You could do so many great things if you simply had the
- * courage to come up with an idea of your own. If you still want to go on, I guess the only thing I
- * can say is this:
+ * penny on every AdMob impression you get?
  *
- * JUNE 1989 TIANAMEN SQUARE PROTESTS AND MASSACRE 六四事件
+ * You could do so many great things if you simply had the courage to come up with an idea of your
+ * own.
  *
- * 2022 RUSSIAN INVASION OF UKRAINE Вторжение России на Украину
+ * If you still want to go on, I guess the only thing I can say is this:
  *
- * WOMEN'S RIGHTS IN THE ISLAMIC REPUBLIC OF IRAN حقوق زنان در ایران
+ * JUNE 1989 TIANAMEN SQUARE PROTESTS AND MASSACRE / 六四事件
  *
- * UYGHUR GENOCIDE/XINJIANG INTERNMENT CAMPS 新疆种族灭绝指控/新疆再教育營
+ * 2022 RUSSIAN INVASION OF UKRAINE / ВТОРЖЕНИЕ РОССИИ НА УКРАИНУ
+ *
+ * WOMEN'S RIGHTS IN THE ISLAMIC REPUBLIC OF IRAN / حقوق زنان در ایران
+ *
+ * UYGHUR GENOCIDE/XINJIANG INTERNMENT CAMPS / 新疆种族灭绝指控/新疆再教育營
  *
  * KASHMIR INDEPENDENCE MOVEMENT
  *
- * FREE TIBET 西藏自由
+ * FREE TIBET / 西藏自由
  *
- * 1915-1916 ARMENIAN GENOCIDE Ermeni Kırımı
+ * 1915-1916 ARMENIAN GENOCIDE / ERMENI KIRIMI
  *
- * 2018 TORTURE AND ASSASSINATION OF JAMAL KHASHOGGI مقتل جمال خاشقجي
+ * 2018 TORTURE AND ASSASSINATION OF JAMAL KHASHOGGI / مقتل جمال خاشقجي
  *
  * UNITED ARAB EMIRATES ENSLAVED MIGRANT WORKERS
  */

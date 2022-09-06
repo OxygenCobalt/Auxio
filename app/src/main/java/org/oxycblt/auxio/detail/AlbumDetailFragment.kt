@@ -37,7 +37,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.fragment.MenuFragment
@@ -122,7 +121,12 @@ class AlbumDetailFragment :
 
     override fun onItemClick(item: Item) {
         if (item is Song) {
-            playbackModel.play(item, settings.detailPlaybackMode ?: PlaybackMode.IN_ALBUM)
+            val playbackMode = settings.detailPlaybackMode
+            if (playbackMode != null) {
+                playbackModel.play(item, playbackMode)
+            } else {
+                playbackModel.playFromAlbum(item)
+            }
         }
     }
 

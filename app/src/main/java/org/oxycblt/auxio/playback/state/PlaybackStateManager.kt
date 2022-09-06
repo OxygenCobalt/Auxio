@@ -144,22 +144,13 @@ class PlaybackStateManager private constructor() {
 
     // --- PLAYING FUNCTIONS ---
 
-    /** Play a [song]. */
+    /** Play a song from a parent that contains the song. */
     @Synchronized
-    fun play(song: Song, playbackMode: PlaybackMode, settings: Settings) {
+    fun play(song: Song, parent: MusicParent?, settings: Settings) {
         val internalPlayer = internalPlayer ?: return
         val library = musicStore.library ?: return
 
-        parent =
-            when (playbackMode) {
-                PlaybackMode.ALL_SONGS -> null
-                PlaybackMode.IN_ALBUM -> song.album
-                PlaybackMode.IN_ARTIST -> song.album.artist
-                PlaybackMode.IN_GENRE ->
-                    song.genres.maxBy {
-                        it.songs.size
-                    } // TODO: Stopgap measure until I can rework this and add selection
-            }
+        this.parent = parent
 
         applyNewQueue(library, settings, settings.keepShuffle && isShuffled, song)
 

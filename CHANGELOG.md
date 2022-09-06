@@ -3,7 +3,12 @@
 ## dev
 
 #### What's Fixed
-- Fixed issue wher the scroll popup would not display correctly in landscape mode [#230]
+- Fixed issue where the scroll popup would not display correctly in landscape mode [#230]
+- Fixed issue where the playback progress would continue in the notification even if
+audio focus was lost
+
+#### Dev/Meta
+- Completed migration to reactive playback system
 
 ## 2.6.3
 

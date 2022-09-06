@@ -36,7 +36,6 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.fragment.MenuFragment
@@ -113,12 +112,13 @@ class GenreDetailFragment :
     }
 
     override fun onItemClick(item: Item) {
-        when (item) {
-            is Song ->
-                playbackModel.play(item, settings.detailPlaybackMode ?: PlaybackMode.IN_GENRE)
-            is Album ->
-                findNavController()
-                    .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.id))
+        check(item is Song)
+
+        val playbackMode = settings.detailPlaybackMode
+        if (playbackMode != null) {
+            playbackModel.play(item, playbackMode)
+        } else {
+            playbackModel.playFromGenre(item, unlikelyToBeNull(detailModel.currentGenre.value))
         }
     }
 

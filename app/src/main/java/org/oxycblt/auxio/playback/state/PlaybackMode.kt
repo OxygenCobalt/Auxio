@@ -51,14 +51,13 @@ enum class PlaybackMode {
          * Get a [PlaybackMode] for an int [constant]
          * @return The mode, null if there isn't one for this.
          */
-        fun fromInt(constant: Int): PlaybackMode? {
-            return when (constant) {
+        fun fromInt(constant: Int) =
+            when (constant) {
                 IntegerTable.PLAYBACK_MODE_ALL_SONGS -> ALL_SONGS
                 IntegerTable.PLAYBACK_MODE_IN_ALBUM -> IN_ALBUM
                 IntegerTable.PLAYBACK_MODE_IN_ARTIST -> IN_ARTIST
                 IntegerTable.PLAYBACK_MODE_IN_GENRE -> IN_GENRE
                 else -> null
             }
-        }
     }
 }
