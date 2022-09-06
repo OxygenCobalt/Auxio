@@ -48,7 +48,7 @@
     <string name="set_theme">Temos</string>
     <string name="set_black_mode_desc">Naudokti grynai juodą tamsią temą</string>
     <string name="info_app_desc">Paprastas, racionalus „Android“ muzikos grotuvas.</string>
-    <string name="lbl_indexer">Kraunama muziką</string>
+    <string name="lbl_indexer">Muzika kraunama</string>
     <string name="lng_playback">Peržiūrėti ir valdyti muzikos grojimą</string>
     <string name="lbl_genres">Žanrai</string>
     <string name="lbl_retry">Bandykite dar kartą</string>
@@ -190,4 +190,8 @@
     <string name="set_dirs_mode_include_desc">Muzika <b>bus</b> įkelta tik iš pridėtų aplankų.</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="set_observing_desc">Perkraukti muzikos biblioteką, kai tik ji pasikeičia (Eksperimentinis)</string>
+    <string name="fmt_lib_song_count">Įkrautos dainos: %d</string>
+    <string name="fmt_lib_genre_count">Įkrauti žanrai: %d</string>
+    <string name="fmt_lib_album_count">Įkrauti albumai: %d</string>
+    <string name="fmt_lib_artist_count">Įkelti atlikėjai: %d</string>
 </resources>
