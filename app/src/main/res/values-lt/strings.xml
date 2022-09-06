@@ -158,7 +158,7 @@
     <string name="set_keep_shuffle_desc">Palikti maišyma, kai groja naują dainą</string>
     <string name="set_rewind_prev">Persukti atgal prieš peršokant atgal</string>
     <string name="set_rewind_prev_desc">Persukti atgal prieš peršokant į ankstesnę dainą</string>
-    <string name="set_repeat_pause">Kartojimo pauzė</string>
+    <string name="set_repeat_pause">Pauzė ant kartojamo</string>
     <string name="set_library_song_playback_mode">Kai grojant iš bibliotekos</string>
     <string name="set_detail_song_playback_mode">Kai grojant iš elemento detalių</string>
     <string name="desc_music_dir_delete">Pašalinti aplanką</string>
@@ -194,4 +194,24 @@
     <string name="fmt_lib_genre_count">Įkrauti žanrai: %d</string>
     <string name="fmt_lib_album_count">Įkrauti albumai: %d</string>
     <string name="fmt_lib_artist_count">Įkelti atlikėjai: %d</string>
+    <string name="fmt_indexing">Kraunama jūsų muzikos biblioteka... (%1$d/%2$d)</string>
+    <string name="desc_shuffle_all">Maišyti visas dainas</string>
+    <string name="set_behavior">Elgesys</string>
+    <string name="set_pre_amp_warning">Įspėjimas: Keičiant išankstinį stiprintuvą į didelę teigiamą vertę, kai kuriuose garso takeliuose gali atsirasti pikų.</string>
+    <string name="desc_album_cover">Albumo viršelis, skirtas %s</string>
+    <string name="desc_artist_image">Atlikėjo atvaizdas, skirtas %s</string>
+    <string name="def_playback">Nėra grojamos muzikos</string>
+    <string name="set_repeat_pause_desc">Pauzė, kai daina kartojasi</string>
+    <string name="set_content">Turinys</string>
+    <string name="set_dirs">Muzikos aplankai</string>
+    <string name="set_reindex">Perkrauti muziką</string>
+    <string name="set_reindex_desc">Gali nuvalyti grojimo būseną</string>
+    <string name="set_bar_action">Pasirinktinis grojimo juostos veiksmas</string>
+    <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
+    <string name="set_alt_shuffle">Pirmenybė teikiama išmaišymo veiksmui</string>
+    <string name="err_did_not_restore">Jokios grojimo būsenos nepavyko atkurti</string>
+    <string name="set_pre_amp">„ReplayGain“ išankstinis stiprintuvas</string>
+    <string name="set_save_state">Išsaugoti grojimo būseną</string>
+    <string name="set_dirs_desc">Tvarkykite, iš kur turėtų būti įkeliama muzika</string>
+    <string name="desc_genre_image">Žanro vaizdas, skirtas %s</string>
 </resources>
