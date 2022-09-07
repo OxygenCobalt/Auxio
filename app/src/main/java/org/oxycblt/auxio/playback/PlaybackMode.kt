@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.state
+package org.oxycblt.auxio.playback
 
 import org.oxycblt.auxio.IntegerTable
 
@@ -32,19 +32,6 @@ enum class PlaybackMode {
     IN_ARTIST,
     /** Construct the queue from all songs */
     IN_GENRE;
-
-    /**
-     * Convert the mode into an int constant, to be saved in PlaybackStateDatabase
-     * @return The constant for this mode,
-     */
-    val intCode: Int
-        get() =
-            when (this) {
-                ALL_SONGS -> IntegerTable.PLAYBACK_MODE_ALL_SONGS
-                IN_ALBUM -> IntegerTable.PLAYBACK_MODE_IN_ALBUM
-                IN_ARTIST -> IntegerTable.PLAYBACK_MODE_IN_ARTIST
-                IN_GENRE -> IntegerTable.PLAYBACK_MODE_IN_GENRE
-            }
 
     companion object {
         /**

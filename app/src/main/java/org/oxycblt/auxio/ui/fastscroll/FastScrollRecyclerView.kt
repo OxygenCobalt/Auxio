@@ -65,6 +65,8 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * - Added drag listener
  * - Added documentation
  *
+ * TODO: Add vibration when popup changes
+ *
  * @author Hai Zhang, OxygenCobalt
  */
 class FastScrollRecyclerView

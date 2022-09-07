@@ -386,11 +386,9 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
     private fun initAxisTransitions(axis: Int) {
         // Sanity check
-        if (axis != MaterialSharedAxis.X && axis != MaterialSharedAxis.Z) {
-            logW("Invalid axis provided")
-            return
+        check(axis == MaterialSharedAxis.X || axis == MaterialSharedAxis.Z) {
+            "Not expecting Y axis transition"
         }
-
         enterTransition = MaterialSharedAxis(axis, true)
         returnTransition = MaterialSharedAxis(axis, false)
         exitTransition = MaterialSharedAxis(axis, true)

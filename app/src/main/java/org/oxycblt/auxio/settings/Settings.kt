@@ -28,9 +28,9 @@ import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.music.dirs.MusicDirs
 import org.oxycblt.auxio.playback.BarAction
+import org.oxycblt.auxio.playback.PlaybackMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
-import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.accent.Accent

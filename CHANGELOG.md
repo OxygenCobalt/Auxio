@@ -9,7 +9,7 @@
 - Fixed issue where the scroll popup would not display correctly in landscape mode [#230]
 - Fixed issue where the playback progress would continue in the notification even if
 audio focus was lost
-- Fixed issue where the app would crash if a song in the genre menu was opened
+- Fixed issue where the app would crash if a song menu in the genre UI was opened
 
 #### Dev/Meta
 - Completed migration to reactive playback system

@@ -104,8 +104,7 @@ class PlaybackStateDatabase private constructor(context: Context) :
 
         // Correct the index to match up with a possibly shortened queue (file removals/changes)
         var actualIndex = rawState.index
-        while (queue.getOrNull(actualIndex)?.uid?.also { logD(it) } != rawState.songUid &&
-            actualIndex > -1) {
+        while (queue.getOrNull(actualIndex)?.uid != rawState.songUid && actualIndex > -1) {
             actualIndex--
         }
 
@@ -158,7 +157,6 @@ class PlaybackStateDatabase private constructor(context: Context) :
             if (cursor.count == 0) return@queryAll
             val songIndex = cursor.getColumnIndexOrThrow(QueueColumns.SONG_UID)
             while (cursor.moveToNext()) {
-                logD(cursor.getString(songIndex))
                 val uid = Music.UID.fromString(cursor.getString(songIndex)) ?: continue
                 val song = library.find<Song>(uid) ?: continue
                 queue.add(song)

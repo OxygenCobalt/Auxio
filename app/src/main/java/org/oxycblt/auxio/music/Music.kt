@@ -23,6 +23,7 @@ import android.content.Context
 import android.os.Parcelable
 import java.security.MessageDigest
 import java.util.UUID
+import kotlin.experimental.and
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.reflect.KClass
@@ -77,16 +78,20 @@ sealed class Music : Item {
      * UID enables a much cheaper and more reliable form of differentiating music, derived from
      * either a hash of meaningful metadata or the MusicBrainz UUID spec. It is the default datatype
      * used when comparing music, and it is also the datatype used when serializing music to
-     * external sources.
+     * external sources, as it can persist across app restarts and does not need to encode useless
+     * information about the relationships between items.
      *
-     * TODO: Verify hash mechanism works
+     * TODO: MusizBrainz tags
      *
      * @author OxygenCobalt
      */
     @Parcelize
     class UID
-    private constructor(val datatype: String, val isMusicBrainz: Boolean, val uuid: UUID) :
+    private constructor(private val datatype: String, private val isMusicBrainz: Boolean, private val uuid: UUID) :
         Parcelable {
+        // TODO: Formalize datatype and isMusicBrainz more
+
+        // Cache the hashCode for speed
         @IgnoredOnParcel private val hashCode: Int
 
         init {
@@ -104,9 +109,14 @@ sealed class Music : Item {
                 isMusicBrainz == other.isMusicBrainz &&
                 uuid == other.uuid
 
-        override fun toString() = "$datatype/${if (isMusicBrainz) "musicbrainz" else "auxio"}:$uuid"
+        override fun toString() =
+            "$datatype/${if (isMusicBrainz) FORMAT_MUSICBRAINZ else FORMAT_AUXIO}:$uuid"
 
         companion object {
+            const val FORMAT_AUXIO = "auxio"
+            const val FORMAT_MUSICBRAINZ = "musicbrainz"
+
+            /** Parse a [UID] from the string [uid]. Returns null if not valid. */
             fun fromString(uid: String): UID? {
                 val split = uid.split(':', limit = 2)
                 if (split.size != 2) {
@@ -122,10 +132,10 @@ sealed class Music : Item {
                 val datatype = namespace[0]
                 val isMusicBrainz =
                     when (namespace[1]) {
-                        "auxio" -> false
-                        "musicbrainz" -> true
+                        FORMAT_AUXIO -> false
+                        FORMAT_MUSICBRAINZ -> true
                         else -> {
-                            logE("Invalid mid: Malformed uuid type")
+                            logE("Invalid uid: Malformed uuid format")
                             return null
                         }
                     }
@@ -133,43 +143,25 @@ sealed class Music : Item {
                 val uuid =
                     try {
                         UUID.fromString(split[1])
-                    } catch (e: Exception) {
-                        logE("Invalid uid: Malformed UUID")
+                    } catch (e: IllegalArgumentException) {
+                        logE("Invalid uid: Malformed uuid")
                         return null
                     }
 
                 return UID(datatype, isMusicBrainz, uuid)
             }
 
+            /**
+             * Make a UUID derived from the MD5 hash of the data digested in [updates].
+             *
+             * This is considered the "auxio" uuid format.
+             */
             fun hashed(clazz: KClass<*>, updates: MessageDigest.() -> Unit): UID {
+                // Auxio hashes consist of the MD5 hash of the non-subjective, consistent
+                // tags in a music item. For easier use with MusicBrainz IDs, we
                 val digest = MessageDigest.getInstance("MD5")
                 updates(digest)
-
-                // Make the MD5 hash and then bitshift it into a UUID.
-                val hash = digest.digest()
-                val uuid =
-                    UUID(
-                        hash[0]
-                            .toLong()
-                            .shl(56)
-                            .or(hash[1].toLong().and(0xFF).shl(48))
-                            .or(hash[2].toLong().and(0xFF).shl(40))
-                            .or(hash[3].toLong().and(0xFF).shl(32))
-                            .or(hash[4].toLong().and(0xFF).shl(24))
-                            .or(hash[5].toLong().and(0xFF).shl(16))
-                            .or(hash[6].toLong().and(0xFF).shl(8))
-                            .or(hash[7].toLong().and(0xFF)),
-                        hash[8]
-                            .toLong()
-                            .shl(56)
-                            .or(hash[9].toLong().and(0xFF).shl(48))
-                            .or(hash[10].toLong().and(0xFF).shl(40))
-                            .or(hash[11].toLong().and(0xFF).shl(32))
-                            .or(hash[12].toLong().and(0xFF).shl(24))
-                            .or(hash[13].toLong().and(0xFF).shl(16))
-                            .or(hash[14].toLong().and(0xFF).shl(8))
-                            .or(hash[15].toLong().and(0xFF)))
-
+                val uuid = digest.digest().toUuid()
                 return UID(unlikelyToBeNull(clazz.simpleName).lowercase(), false, uuid)
             }
         }
@@ -189,7 +181,7 @@ sealed class MusicParent : Music() {
  * A song.
  * @author OxygenCobalt
  */
-class Song(private val raw: Raw) : Music() {
+class Song constructor(private val raw: Raw) : Music() {
     override val uid: UID
 
     override val rawName = requireNotNull(raw.name) { "Invalid raw: No title" }
@@ -226,10 +218,10 @@ class Song(private val raw: Raw) : Music() {
     val dateAdded = requireNotNull(raw.dateAdded) { "Invalid raw: No date added" }
 
     /** The track number of this song in it's album.. */
-    val track: Int? = raw.track
+    val track = raw.track
 
     /** The disc number of this song in it's album. */
-    val disc: Int? = raw.disc
+    val disc = raw.disc
 
     private var _album: Album? = null
     /** The album of this song. */
@@ -254,7 +246,10 @@ class Song(private val raw: Raw) : Music() {
         raw.artistName ?: album.artist.resolveName(context)
 
     private val _genres: MutableList<Genre> = mutableListOf()
-    /** The genre of this song. Will be an "unknown genre" if the song does not have any. */
+    /**
+     * The genres of this song. Most often one, but there could be multiple. There will always be at
+     * least one genre, even if it is an "unknown genre" instance.
+     */
     val genres: List<Genre>
         get() = _genres
 
@@ -304,11 +299,13 @@ class Song(private val raw: Raw) : Music() {
                 update(track)
                 update(disc)
 
+                // Hashing by seconds makes the song more resilient to trimming
                 update(durationMs.msToSecs())
             }
     }
 
-    data class Raw(
+    class Raw
+    constructor(
         var mediaStoreId: Long? = null,
         var name: String? = null,
         var sortName: String? = null,
@@ -334,8 +331,11 @@ class Song(private val raw: Raw) : Music() {
     )
 }
 
-/** The data object for an album. */
-class Album(raw: Raw, override val songs: List<Song>) : MusicParent() {
+/**
+ * An album.
+ * @author OxygenCobalt
+ */
+class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent() {
     override val uid: UID
 
     override val rawName = raw.name
@@ -410,10 +410,11 @@ class Album(raw: Raw, override val songs: List<Song>) : MusicParent() {
 }
 
 /**
- * The [MusicParent] for an *album* artist. This reflects a group of songs with the same(ish) album
- * artist or artist field, not the individual performers of an artist.
+ * An artist. This is derived from the album artist first, and then the normal artist second.
+ * @author OxygenCobalt
  */
-class Artist(
+class Artist
+constructor(
     raw: Raw,
     /** The albums of this artist. */
     val albums: List<Album>
@@ -454,8 +455,11 @@ class Artist(
     }
 }
 
-/** The data object for a genre. */
-class Genre(raw: Raw, override val songs: List<Song>) : MusicParent() {
+/**
+ * A genre.
+ * @author OxygenCobalt
+ */
+class Genre constructor(raw: Raw, override val songs: List<Song>) : MusicParent() {
     override val uid: UID
 
     override val rawName = raw.name
@@ -491,21 +495,35 @@ class Genre(raw: Raw, override val songs: List<Song>) : MusicParent() {
     }
 }
 
+// Hashing extensions
+
+/** Update the digest using the lowercase variant of a string, or don't update if null. */
 fun MessageDigest.update(string: String?) {
     if (string == null) return
     update(string.lowercase().toByteArray())
 }
 
+/** Update the digest using a date. */
 fun MessageDigest.update(date: Date?) {
     if (date == null) return
     update(date.toString().toByteArray())
 }
 
+// Note: All methods regarding integer bytemucking must be little-endian
+
+/**
+ * Update the digest using the little-endian byte representation of a byte, or do not update if
+ * null.
+ */
 fun MessageDigest.update(n: Int?) {
     if (n == null) return
     update(byteArrayOf(n.toByte(), n.shr(8).toByte(), n.shr(16).toByte(), n.shr(24).toByte()))
 }
 
+/**
+ * Update the digest using the little-endian byte representation of a long, or do not update if
+ * null.
+ */
 fun MessageDigest.update(n: Long?) {
     if (n == null) return
     update(
@@ -516,8 +534,38 @@ fun MessageDigest.update(n: Long?) {
             n.shr(24).toByte(),
             n.shr(32).toByte(),
             n.shr(40).toByte(),
-            n.shr(56).toByte(),
-            n.shr(64).toByte()))
+            n.shl(48).toByte(),
+            n.shr(56).toByte()))
+}
+
+/**
+ * Convert an array of 16 bytes to a UUID. Java is a bit strange in that it represents their UUIDs
+ * as two longs, however we will not assume that the given bytes represent two little endian longs.
+ * We will treat them as a raw sequence of bytes and serialize them as such.
+ */
+fun ByteArray.toUuid(): UUID {
+    check(size == 16)
+    return UUID(
+        get(0)
+            .toLong()
+            .shl(56)
+            .or(get(1).toLong().and(0xFF).shl(48))
+            .or(get(2).toLong().and(0xFF).shl(40))
+            .or(get(3).toLong().and(0xFF).shl(32))
+            .or(get(4).toLong().and(0xFF).shl(24))
+            .or(get(5).toLong().and(0xFF).shl(16))
+            .or(get(6).toLong().and(0xFF).shl(8))
+            .or(get(7).toLong().and(0xFF)),
+        get(8)
+            .toLong()
+            .shl(56)
+            .or(get(9).toLong().and(0xFF).shl(48))
+            .or(get(10).toLong().and(0xFF).shl(40))
+            .or(get(11).toLong().and(0xFF).shl(32))
+            .or(get(12).toLong().and(0xFF).shl(24))
+            .or(get(13).toLong().and(0xFF).shl(16))
+            .or(get(14).toLong().and(0xFF).shl(8))
+            .or(get(15).toLong().and(0xFF)))
 }
 
 /**
@@ -532,7 +580,7 @@ fun MessageDigest.update(n: Long?) {
  * nature of tag formats. Thus, it's better to use an analogous data structure that will not mangle
  * or reject valid-ish dates.
  *
- * Date instances are immutable and their internal implementation is hidden. To instantiate one, use
+ * Date instances are immutable and their implementation is hidden. To instantiate one, use
  * [from]. The string representation of a Date is RFC 3339, with granular position depending on the
  * presence of particular tokens.
  *
@@ -755,7 +803,7 @@ sealed class ReleaseType {
                 // Compilation is the only weird secondary release type, as it could
                 // theoretically have additional modifiers including soundtrack, remix,
                 // live, dj-mix, etc. However, since there is no real demand for me to
-                // respond to those, I don't implement them simply for internal simplicity.
+                // respond to those, I don't implement them simply for simplicity.
                 secondary.equals("compilation", true) -> Compilation
                 secondary.equals("soundtrack", true) -> Soundtrack
                 secondary.equals("mixtape/street", true) -> Mixtape
