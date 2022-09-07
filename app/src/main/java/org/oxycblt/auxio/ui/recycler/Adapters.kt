@@ -37,11 +37,7 @@ abstract class IndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ada
         if (holder is ViewHolder) {
             val item = currentList[position]
             val currentItem = currentItem
-            holder.updateIndicator(
-                currentItem != null &&
-                    item.javaClass == currentItem.javaClass &&
-                    item == currentItem,
-                isPlaying)
+            holder.updateIndicator(item == currentItem, isPlaying)
         }
     }
 
@@ -55,10 +51,7 @@ abstract class IndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ada
             currentItem = item
 
             if (oldItem != null) {
-                val pos =
-                    currentList.indexOfFirst {
-                        it.javaClass == oldItem.javaClass && item == currentItem
-                    }
+                val pos = currentList.indexOfFirst { it == oldItem }
 
                 if (pos > -1) {
                     notifyItemChanged(pos, PAYLOAD_INDICATOR_CHANGED)
@@ -68,7 +61,7 @@ abstract class IndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ada
             }
 
             if (item != null) {
-                val pos = currentList.indexOfFirst { it.javaClass == item.javaClass && it == item }
+                val pos = currentList.indexOfFirst { it == item }
 
                 if (pos > -1) {
                     notifyItemChanged(pos, PAYLOAD_INDICATOR_CHANGED)
@@ -84,7 +77,7 @@ abstract class IndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ada
             this.isPlaying = isPlaying
 
             if (!updatedItem && item != null) {
-                val pos = currentList.indexOfFirst { it.javaClass == item.javaClass && it == item }
+                val pos = currentList.indexOfFirst { it == item }
 
                 if (pos > -1) {
                     notifyItemChanged(pos, PAYLOAD_INDICATOR_CHANGED)

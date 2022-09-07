@@ -111,7 +111,6 @@ class ArtistDetailFragment :
     }
 
     override fun onItemClick(item: Item) {
-
         when (item) {
             is Song -> {
                 val playbackMode = settings.detailPlaybackMode
@@ -122,6 +121,7 @@ class ArtistDetailFragment :
                 }
             }
             is Album -> navModel.exploreNavigateTo(item)
+            else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
 
@@ -129,7 +129,7 @@ class ArtistDetailFragment :
         when (item) {
             is Song -> musicMenu(anchor, R.menu.menu_artist_song_actions, item)
             is Album -> musicMenu(anchor, R.menu.menu_artist_album_actions, item)
-            else -> error("Unexpected datatype when opening menu: ${item::class.java}")
+            else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
 
@@ -196,7 +196,7 @@ class ArtistDetailFragment :
                 }
             }
             null -> {}
-            else -> error("Unexpected navigation item ${item::class.java}")
+            else -> error("Unexpected datatype: ${item::class.java}")
         }
     }
 

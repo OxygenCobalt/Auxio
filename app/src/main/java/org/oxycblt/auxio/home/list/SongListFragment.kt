@@ -103,15 +103,13 @@ class SongListFragment : HomeListFragment<Song>() {
     }
 
     override fun onItemClick(item: Item) {
-        check(item is Song)
+        check(item is Song) { "Unexpected datatype: ${item::class.java}" }
         playbackModel.play(item, settings.libPlaybackMode)
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {
-        when (item) {
-            is Song -> musicMenu(anchor, R.menu.menu_song_actions, item)
-            else -> error("Unexpected datatype when opening menu: ${item::class.java}")
-        }
+        check(item is Song) { "Unexpected datatype: ${item::class.java}" }
+        musicMenu(anchor, R.menu.menu_song_actions, item)
     }
 
     private fun handlePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {

@@ -112,8 +112,7 @@ class GenreDetailFragment :
     }
 
     override fun onItemClick(item: Item) {
-        check(item is Song)
-
+        check(item is Song) { "Unexpected datatype: ${item::class.simpleName}" }
         val playbackMode = settings.detailPlaybackMode
         if (playbackMode != null) {
             playbackModel.play(item, playbackMode)
@@ -123,12 +122,8 @@ class GenreDetailFragment :
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {
-        if (item is Song) {
-            musicMenu(anchor, R.menu.menu_song_actions, item)
-            return
-        }
-
-        error("Unexpected datatype when opening menu: ${item::class.java}")
+        check(item is Song) { "Unexpected datatype: ${item::class.simpleName}" }
+        musicMenu(anchor, R.menu.menu_song_actions, item)
     }
 
     override fun onPlayParent() {

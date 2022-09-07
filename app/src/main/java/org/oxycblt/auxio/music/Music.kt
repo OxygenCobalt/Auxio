@@ -71,7 +71,18 @@ sealed class Music : Item {
     override fun equals(other: Any?) =
         other is Music && javaClass == other.javaClass && uid == other.uid
 
-    /** A unique identifier for a piece of music. */
+    /**
+     * A unique identifier for a piece of music.
+     *
+     * UID enables a much cheaper and more reliable form of differentiating music, derived from
+     * either a hash of meaningful metadata or the MusicBrainz UUID spec. It is the default datatype
+     * used when comparing music, and it is also the datatype used when serializing music to
+     * external sources.
+     *
+     * TODO: Verify hash mechanism works
+     *
+     * @author OxygenCobalt
+     */
     @Parcelize
     class UID
     private constructor(val datatype: String, val isMusicBrainz: Boolean, val uuid: UUID) :
@@ -134,6 +145,7 @@ sealed class Music : Item {
                 val digest = MessageDigest.getInstance("MD5")
                 updates(digest)
 
+                // Make the MD5 hash and then bitshift it into a UUID.
                 val hash = digest.digest()
                 val uuid =
                     UUID(

@@ -25,7 +25,6 @@ import java.util.*
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
@@ -98,15 +97,13 @@ class AlbumListFragment : HomeListFragment<Album>() {
     }
 
     override fun onItemClick(item: Item) {
-        check(item is Music)
+        check(item is Album) { "Unexpected datatype: ${item::class.java}" }
         navModel.exploreNavigateTo(item)
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {
-        when (item) {
-            is Album -> musicMenu(anchor, R.menu.menu_album_actions, item)
-            else -> error("Unexpected datatype when opening menu: ${item::class.java}")
-        }
+        check(item is Album) { "Unexpected datatype: ${item::class.java}" }
+        musicMenu(anchor, R.menu.menu_album_actions, item)
     }
 
     private fun handleParent(parent: MusicParent?, isPlaying: Boolean) {
