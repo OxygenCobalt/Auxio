@@ -40,7 +40,7 @@
         android:label="song_detail_dialog"
         tools:layout="@layout/dialog_song_detail">
         <argument
-            android:name="songId"
-            app:argType="long" />
+            android:name="songUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
 </navigation>

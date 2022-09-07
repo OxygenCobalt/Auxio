@@ -50,7 +50,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
     override fun onBindingCreated(binding: DialogSongDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
-        detailModel.setSongId(args.songId)
+        detailModel.setSongUid(args.songUid)
         collectImmediately(detailModel.currentSong, ::updateSong)
     }
 

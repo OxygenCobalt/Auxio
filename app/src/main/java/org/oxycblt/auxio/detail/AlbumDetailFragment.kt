@@ -74,7 +74,7 @@ class AlbumDetailFragment :
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
-        detailModel.setAlbumId(args.albumId)
+        detailModel.setAlbumUid(args.albumUid)
 
         binding.detailToolbar.apply {
             inflateMenu(R.menu.menu_album_detail)
@@ -169,7 +169,7 @@ class AlbumDetailFragment :
         findNavController()
             .navigate(
                 AlbumDetailFragmentDirections.actionShowArtist(
-                    unlikelyToBeNull(detailModel.currentAlbum.value).artist.id))
+                    unlikelyToBeNull(detailModel.currentAlbum.value).artist.uid))
     }
 
     private fun handleItemChange(album: Album?) {
@@ -187,28 +187,28 @@ class AlbumDetailFragment :
             // Songs should be scrolled to if the album matches, or a new detail
             // fragment should be launched otherwise.
             is Song -> {
-                if (unlikelyToBeNull(detailModel.currentAlbum.value).id == item.album.id) {
+                if (unlikelyToBeNull(detailModel.currentAlbum.value) == item.album) {
                     logD("Navigating to a song in this album")
-                    scrollToItem(item.id)
+                    scrollToItem(item)
                     navModel.finishExploreNavigation()
                 } else {
                     logD("Navigating to another album")
                     findNavController()
-                        .navigate(AlbumDetailFragmentDirections.actionShowAlbum(item.album.id))
+                        .navigate(AlbumDetailFragmentDirections.actionShowAlbum(item.album.uid))
                 }
             }
 
             // If the album matches, no need to do anything. Otherwise launch a new
             // detail fragment.
             is Album -> {
-                if (unlikelyToBeNull(detailModel.currentAlbum.value).id == item.id) {
+                if (unlikelyToBeNull(detailModel.currentAlbum.value) == item) {
                     logD("Navigating to the top of this album")
                     binding.detailRecycler.scrollToPosition(0)
                     navModel.finishExploreNavigation()
                 } else {
                     logD("Navigating to another album")
                     findNavController()
-                        .navigate(AlbumDetailFragmentDirections.actionShowAlbum(item.id))
+                        .navigate(AlbumDetailFragmentDirections.actionShowAlbum(item.uid))
                 }
             }
 
@@ -216,17 +216,17 @@ class AlbumDetailFragment :
             is Artist -> {
                 logD("Navigating to another artist")
                 findNavController()
-                    .navigate(AlbumDetailFragmentDirections.actionShowArtist(item.id))
+                    .navigate(AlbumDetailFragmentDirections.actionShowArtist(item.uid))
             }
             null -> {}
             else -> error("Unexpected navigation item ${item::class.java}")
         }
     }
 
-    /** Scroll to an song using its [id]. */
-    private fun scrollToItem(id: Long) {
+    /** Scroll to an [song]. */
+    private fun scrollToItem(song: Song) {
         // Calculate where the item for the currently played song is
-        val pos = detailModel.albumData.value.indexOfFirst { it.id == id && it is Song }
+        val pos = detailModel.albumData.value.indexOf(song)
 
         if (pos != -1) {
             val binding = requireBinding()
@@ -255,7 +255,7 @@ class AlbumDetailFragment :
             }
         }
 
-        if (parent is Album && parent.id == unlikelyToBeNull(detailModel.currentAlbum.value).id) {
+        if (parent is Album && parent == unlikelyToBeNull(detailModel.currentAlbum.value)) {
             detailAdapter.updateIndicator(song, isPlaying)
         } else {
             // Clear the ViewHolders if the mode isn't ALL_SONGS
@@ -279,8 +279,6 @@ class AlbumDetailFragment :
             boxStart: Int,
             boxEnd: Int,
             snapPreference: Int
-        ): Int {
-            return (boxStart + (boxEnd - boxStart) / 2) - (viewStart + (viewEnd - viewStart) / 2)
-        }
+        ): Int = (boxStart + (boxEnd - boxStart) / 2) - (viewStart + (viewEnd - viewStart) / 2)
     }
 }

@@ -62,7 +62,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
 
         val DIFFER =
             object : SimpleItemCallback<Song>() {
-                override fun areItemsTheSame(oldItem: Song, newItem: Song) =
+                override fun areContentsTheSame(oldItem: Song, newItem: Song) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.individualArtistRawName == oldItem.individualArtistRawName
             }
@@ -102,7 +102,7 @@ private constructor(
 
         val DIFFER =
             object : SimpleItemCallback<Album>() {
-                override fun areItemsTheSame(oldItem: Album, newItem: Album) =
+                override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.artist.rawName == newItem.artist.rawName &&
                         oldItem.releaseType == newItem.releaseType
@@ -145,7 +145,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
 
         val DIFFER =
             object : SimpleItemCallback<Artist>() {
-                override fun areItemsTheSame(oldItem: Artist, newItem: Artist) =
+                override fun areContentsTheSame(oldItem: Artist, newItem: Artist) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.albums.size == newItem.albums.size &&
                         oldItem.songs.size == newItem.songs.size
@@ -187,7 +187,7 @@ private constructor(
 
         val DIFFER =
             object : SimpleItemCallback<Genre>() {
-                override fun areItemsTheSame(oldItem: Genre, newItem: Genre): Boolean =
+                override fun areContentsTheSame(oldItem: Genre, newItem: Genre): Boolean =
                     oldItem.rawName == newItem.rawName && oldItem.songs.size == newItem.songs.size
             }
     }
@@ -211,7 +211,7 @@ class HeaderViewHolder private constructor(private val binding: ItemHeaderBindin
 
         val DIFFER =
             object : SimpleItemCallback<Header>() {
-                override fun areItemsTheSame(oldItem: Header, newItem: Header): Boolean =
+                override fun areContentsTheSame(oldItem: Header, newItem: Header): Boolean =
                     oldItem.string == newItem.string
             }
     }

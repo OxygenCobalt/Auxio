@@ -79,12 +79,12 @@ class GenreDetailAdapter(private val listener: Listener) :
     companion object {
         val DIFFER =
             object : SimpleItemCallback<Item>() {
-                override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
+                override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Genre && newItem is Genre ->
-                            GenreDetailViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            GenreDetailViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         oldItem is Song && newItem is Song ->
-                            SongViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            SongViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         else -> DetailAdapter.DIFFER.areContentsTheSame(oldItem, newItem)
                     }
                 }
@@ -113,7 +113,7 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
 
         val DIFFER =
             object : SimpleItemCallback<Genre>() {
-                override fun areItemsTheSame(oldItem: Genre, newItem: Genre) =
+                override fun areContentsTheSame(oldItem: Genre, newItem: Genre) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.songs.size == newItem.songs.size &&
                         oldItem.durationMs == newItem.durationMs

@@ -87,15 +87,15 @@ class ArtistDetailAdapter(private val listener: Listener) :
     companion object {
         private val DIFFER =
             object : SimpleItemCallback<Item>() {
-                override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
+                override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Artist && newItem is Artist ->
-                            ArtistDetailViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            ArtistDetailViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         oldItem is Album && newItem is Album ->
-                            ArtistAlbumViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            ArtistAlbumViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         oldItem is Song && newItem is Song ->
-                            ArtistSongViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
-                        else -> DetailAdapter.DIFFER.areItemsTheSame(oldItem, newItem)
+                            ArtistSongViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
+                        else -> DetailAdapter.DIFFER.areContentsTheSame(oldItem, newItem)
                     }
                 }
             }
@@ -112,7 +112,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 
         // Get the genre that corresponds to the most songs in this artist, which would be
         // the most "Prominent" genre.
-        var genresByAmount = mutableMapOf<Genre, Int>()
+        val genresByAmount = mutableMapOf<Genre, Int>()
         for (song in item.songs) {
             for (genre in song.genres) {
                 genresByAmount[genre] = genresByAmount[genre]?.inc() ?: 1
@@ -172,7 +172,7 @@ private constructor(
 
         val DIFFER =
             object : SimpleItemCallback<Album>() {
-                override fun areItemsTheSame(oldItem: Album, newItem: Album) =
+                override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName && oldItem.date == newItem.date
             }
     }
@@ -207,7 +207,7 @@ private constructor(
 
         val DIFFER =
             object : SimpleItemCallback<Song>() {
-                override fun areItemsTheSame(oldItem: Song, newItem: Song) =
+                override fun areContentsTheSame(oldItem: Song, newItem: Song) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.album.rawName == newItem.album.rawName
             }

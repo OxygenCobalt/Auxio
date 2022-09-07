@@ -20,20 +20,30 @@
 package org.oxycblt.auxio.music
 
 import android.content.Context
+import android.os.Parcelable
+import java.security.MessageDigest
+import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.reflect.KClass
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.inRangeOrNull
+import org.oxycblt.auxio.util.logE
+import org.oxycblt.auxio.util.msToSecs
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 // --- MUSIC MODELS ---
 
 /** [Item] variant that represents a music item. */
-sealed class Music : Item() {
+sealed class Music : Item {
+    abstract val uid: UID
+
     /** The raw name of this item. Null if unknown. */
     abstract val rawName: String?
 
@@ -52,6 +62,106 @@ sealed class Music : Item() {
      * become Unknown Artist, (124) would become its proper genre name, etc.
      */
     abstract fun resolveName(context: Context): String
+
+    // Equality is based on UIDs, as some items (Especially artists) can have identical
+    // properties (Name) yet non-identical UIDs due to MusicBrainz tags
+
+    override fun hashCode() = uid.hashCode()
+
+    override fun equals(other: Any?) =
+        other is Music && javaClass == other.javaClass && uid == other.uid
+
+    /** A unique identifier for a piece of music. */
+    @Parcelize
+    class UID
+    private constructor(val datatype: String, val isMusicBrainz: Boolean, val uuid: UUID) :
+        Parcelable {
+        @IgnoredOnParcel private val hashCode: Int
+
+        init {
+            var result = datatype.hashCode()
+            result = 31 * result + isMusicBrainz.hashCode()
+            result = 31 * result + uuid.hashCode()
+            hashCode = result
+        }
+
+        override fun hashCode() = hashCode
+
+        override fun equals(other: Any?) =
+            other is UID &&
+                datatype == other.datatype &&
+                isMusicBrainz == other.isMusicBrainz &&
+                uuid == other.uuid
+
+        override fun toString() = "$datatype/${if (isMusicBrainz) "musicbrainz" else "auxio"}:$uuid"
+
+        companion object {
+            fun fromString(uid: String): UID? {
+                val split = uid.split(':', limit = 2)
+                if (split.size != 2) {
+                    logE("Invalid uid: Malformed structure")
+                }
+
+                val namespace = split[0].split('/', limit = 2)
+                if (namespace.size != 2) {
+                    logE("Invalid uid: Malformed namespace")
+                    return null
+                }
+
+                val datatype = namespace[0]
+                val isMusicBrainz =
+                    when (namespace[1]) {
+                        "auxio" -> false
+                        "musicbrainz" -> true
+                        else -> {
+                            logE("Invalid mid: Malformed uuid type")
+                            return null
+                        }
+                    }
+
+                val uuid =
+                    try {
+                        UUID.fromString(split[1])
+                    } catch (e: Exception) {
+                        logE("Invalid uid: Malformed UUID")
+                        return null
+                    }
+
+                return UID(datatype, isMusicBrainz, uuid)
+            }
+
+            fun hashed(clazz: KClass<*>, updates: MessageDigest.() -> Unit): UID {
+                val digest = MessageDigest.getInstance("MD5")
+                updates(digest)
+
+                val hash = digest.digest()
+                val uuid =
+                    UUID(
+                        hash[0]
+                            .toLong()
+                            .shl(56)
+                            .or(hash[1].toLong().and(0xFF).shl(48))
+                            .or(hash[2].toLong().and(0xFF).shl(40))
+                            .or(hash[3].toLong().and(0xFF).shl(32))
+                            .or(hash[4].toLong().and(0xFF).shl(24))
+                            .or(hash[5].toLong().and(0xFF).shl(16))
+                            .or(hash[6].toLong().and(0xFF).shl(8))
+                            .or(hash[7].toLong().and(0xFF)),
+                        hash[8]
+                            .toLong()
+                            .shl(56)
+                            .or(hash[9].toLong().and(0xFF).shl(48))
+                            .or(hash[10].toLong().and(0xFF).shl(40))
+                            .or(hash[11].toLong().and(0xFF).shl(32))
+                            .or(hash[12].toLong().and(0xFF).shl(24))
+                            .or(hash[13].toLong().and(0xFF).shl(16))
+                            .or(hash[14].toLong().and(0xFF).shl(8))
+                            .or(hash[15].toLong().and(0xFF)))
+
+                return UID(unlikelyToBeNull(clazz.simpleName).lowercase(), false, uuid)
+            }
+        }
+    }
 }
 
 /**
@@ -67,17 +177,8 @@ sealed class MusicParent : Music() {
  * A song.
  * @author OxygenCobalt
  */
-data class Song(private val raw: Raw) : Music() {
-    override val id: Long
-        get() {
-            var result = rawName.toMusicId()
-            result = 31 * result + album.rawName.toMusicId()
-            result = 31 * result + album.artist.rawName.toMusicId()
-            result = 31 * result + (track ?: 0)
-            result = 31 * result + (disc ?: 0)
-            result = 31 * result + durationMs
-            return result
-        }
+class Song(private val raw: Raw) : Music() {
+    override val uid: UID
 
     override val rawName = requireNotNull(raw.name) { "Invalid raw: No title" }
 
@@ -113,20 +214,18 @@ data class Song(private val raw: Raw) : Music() {
     val dateAdded = requireNotNull(raw.dateAdded) { "Invalid raw: No date added" }
 
     /** The track number of this song in it's album.. */
-    val track = raw.track
+    val track: Int? = raw.track
 
     /** The disc number of this song in it's album. */
-    val disc = raw.disc
+    val disc: Int? = raw.disc
 
     private var _album: Album? = null
     /** The album of this song. */
     val album: Album
         get() = unlikelyToBeNull(_album)
 
-    private var _genres: MutableList<Genre> = mutableListOf()
-    /** The genre of this song. Will be an "unknown genre" if the song does not have any. */
-    val genres: List<Genre>
-        get() = _genres
+    // TODO: Multi-artist support
+    // private val _artists: MutableList<Artist> = mutableListOf()
 
     /**
      * The raw artist name for this song in particular. First uses the artist tag, and then falls
@@ -142,30 +241,28 @@ data class Song(private val raw: Raw) : Music() {
     fun resolveIndividualArtistName(context: Context) =
         raw.artistName ?: album.artist.resolveName(context)
 
+    private val _genres: MutableList<Genre> = mutableListOf()
+    /** The genre of this song. Will be an "unknown genre" if the song does not have any. */
+    val genres: List<Genre>
+        get() = _genres
+
     // --- INTERNAL FIELDS ---
 
-    val _distinct =
-        rawName to
-            raw.albumName to
-            raw.artistName to
-            raw.albumArtistName to
-            raw.genreNames to
-            track to
-            disc to
-            durationMs
-
-    val _rawAlbum: Album.Raw
+    val _rawAlbum =
+        Album.Raw(
+            mediaStoreId = requireNotNull(raw.albumMediaStoreId) { "Invalid raw: No album id" },
+            name = requireNotNull(raw.albumName) { "Invalid raw: No album name" },
+            sortName = raw.albumSortName,
+            date = raw.date,
+            releaseType = raw.albumReleaseType,
+            rawArtist =
+                if (raw.albumArtistName != null) {
+                    Artist.Raw(raw.albumArtistName, raw.albumArtistSortName)
+                } else {
+                    Artist.Raw(raw.artistName, raw.artistSortName)
+                })
 
     val _rawGenres = raw.genreNames?.map { Genre.Raw(it) } ?: listOf(Genre.Raw(null))
-
-    val _isMissingAlbum: Boolean
-        get() = _album == null
-
-    val _isMissingArtist: Boolean
-        get() = _album?._isMissingArtist ?: true
-
-    val _isMissingGenre: Boolean
-        get() = _genres.isEmpty()
 
     fun _link(album: Album) {
         _album = album
@@ -175,27 +272,28 @@ data class Song(private val raw: Raw) : Music() {
         _genres.add(genre)
     }
 
+    fun _validate() {
+        (checkNotNull(_album) { "Malformed song: album is null" })._validate()
+        check(_genres.isNotEmpty()) { "Malformed song: genres are empty" }
+    }
+
     init {
-        val artistName: String?
-        val artistSortName: String?
+        // Generally, we calculate UIDs at the end since everything will definitely be initialized
+        // by now.
+        uid =
+            UID.hashed(this::class) {
+                update(rawName.lowercase())
+                update(_rawAlbum.name.lowercase())
+                update(_rawAlbum.date)
 
-        if (raw.albumArtistName != null) {
-            artistName = raw.albumArtistName
-            artistSortName = raw.albumArtistSortName
-        } else {
-            artistName = raw.artistName
-            artistSortName = raw.artistSortName
-        }
+                update(raw.artistName)
+                update(raw.albumArtistName)
 
-        _rawAlbum =
-            Album.Raw(
-                mediaStoreId = raw.albumMediaStoreId,
-                name = raw.albumName,
-                sortName = raw.albumSortName,
-                date = raw.date,
-                releaseType = raw.albumReleaseType,
-                artistName,
-                artistSortName)
+                update(track)
+                update(disc)
+
+                update(durationMs.msToSecs())
+            }
     }
 
     data class Raw(
@@ -225,32 +323,14 @@ data class Song(private val raw: Raw) : Music() {
 }
 
 /** The data object for an album. */
-data class Album(private val raw: Raw, override val songs: List<Song>) : MusicParent() {
-    init {
-        for (song in songs) {
-            song._link(this)
-        }
-    }
+class Album(raw: Raw, override val songs: List<Song>) : MusicParent() {
+    override val uid: UID
 
-    override val id: Long
-        get() {
-            var result = rawName.toMusicId()
-            result = 31 * result + artist.rawName.toMusicId()
-            result = 31 * result + (date?.year ?: 0)
-            return result
-        }
-
-    override val rawName = requireNotNull(raw.name) { "Invalid raw: No name" }
+    override val rawName = raw.name
 
     override val rawSortName = raw.sortName
 
     override fun resolveName(context: Context) = rawName
-
-    /**
-     * The album cover URI for this album. Usually low quality, so using Coil is recommended
-     * instead.
-     */
-    val coverUri = requireNotNull(raw.mediaStoreId) { "Invalid raw: No id" }.albumCoverUri
 
     /** The latest date this album was released. */
     val date = raw.date
@@ -258,10 +338,11 @@ data class Album(private val raw: Raw, override val songs: List<Song>) : MusicPa
     /** The release type of this album, such as "EP". Defaults to "Album". */
     val releaseType = raw.releaseType ?: ReleaseType.Album(null)
 
-    private var _artist: Artist? = null
-    /** The parent artist of this album. */
-    val artist: Artist
-        get() = unlikelyToBeNull(_artist)
+    /**
+     * The album cover URI for this album. Usually low quality, so using Coil is recommended
+     * instead.
+     */
+    val coverUri = raw.mediaStoreId.albumCoverUri
 
     /** The earliest date a song in this album was added. */
     val dateAdded = songs.minOf { it.dateAdded }
@@ -269,34 +350,50 @@ data class Album(private val raw: Raw, override val songs: List<Song>) : MusicPa
     /** The total duration of songs in this album, in millis. */
     val durationMs = songs.sumOf { it.durationMs }
 
+    private var _artist: Artist? = null
+    /** The parent artist of this album. */
+    val artist: Artist
+        get() = unlikelyToBeNull(_artist)
+
     // --- INTERNAL FIELDS ---
 
-    val _rawArtist: Artist.Raw
-        get() = Artist.Raw(name = raw.artistName, sortName = raw.artistSortName)
-
-    val _isMissingArtist: Boolean
-        get() = _artist == null
+    val _rawArtist = raw.rawArtist
 
     fun _link(artist: Artist) {
         _artist = artist
     }
 
-    data class Raw(
-        val mediaStoreId: Long?,
-        val name: String?,
+    fun _validate() {
+        checkNotNull(_artist) { "Invalid album: Artist is null " }
+    }
+
+    init {
+        uid =
+            UID.hashed(this::class) {
+                update(rawName)
+                update(_rawArtist.name)
+                update(date)
+            }
+
+        for (song in songs) {
+            song._link(this)
+        }
+    }
+
+    class Raw(
+        val mediaStoreId: Long,
+        val name: String,
         val sortName: String?,
         val date: Date?,
         val releaseType: ReleaseType?,
-        val artistName: String?,
-        val artistSortName: String?,
+        val rawArtist: Artist.Raw
     ) {
-        val groupingId: Long
+        private val hashCode = 31 * name.lowercase().hashCode() + rawArtist.hashCode()
 
-        init {
-            var groupingIdResult = artistName.toMusicId()
-            groupingIdResult = 31 * groupingIdResult + name.toMusicId()
-            groupingId = groupingIdResult
-        }
+        override fun hashCode() = hashCode
+
+        override fun equals(other: Any?) =
+            other is Raw && name.equals(other.name, true) && rawArtist == other.rawArtist
     }
 }
 
@@ -304,19 +401,12 @@ data class Album(private val raw: Raw, override val songs: List<Song>) : MusicPa
  * The [MusicParent] for an *album* artist. This reflects a group of songs with the same(ish) album
  * artist or artist field, not the individual performers of an artist.
  */
-data class Artist(
-    private val raw: Raw,
+class Artist(
+    raw: Raw,
     /** The albums of this artist. */
     val albums: List<Album>
 ) : MusicParent() {
-    init {
-        for (album in albums) {
-            album._link(this)
-        }
-    }
-
-    override val id: Long
-        get() = rawName.toMusicId()
+    override val uid: UID
 
     override val rawName = raw.name
 
@@ -329,59 +419,93 @@ data class Artist(
     /** The total duration of songs in this artist, in millis. */
     val durationMs = songs.sumOf { it.durationMs }
 
-    data class Raw(val name: String?, val sortName: String?) {
-        val groupingId = name.toMusicId()
+    init {
+        uid = UID.hashed(this::class) { update(rawName) }
+
+        for (album in albums) {
+            album._link(this)
+        }
+    }
+
+    class Raw(val name: String?, val sortName: String?) {
+        private val hashCode = name?.lowercase().hashCode()
+
+        override fun hashCode() = hashCode
+
+        override fun equals(other: Any?) =
+            other is Raw &&
+                when {
+                    name != null && other.name != null -> name.equals(other.name, true)
+                    name == null && other.name == null -> true
+                    else -> false
+                }
     }
 }
 
 /** The data object for a genre. */
-data class Genre(private val raw: Raw, override val songs: List<Song>) : MusicParent() {
-    init {
-        for (song in songs) {
-            song._link(this)
-        }
-    }
+class Genre(raw: Raw, override val songs: List<Song>) : MusicParent() {
+    override val uid: UID
 
-    override val rawName: String?
-        get() = raw.name
+    override val rawName = raw.name
 
     // Sort tags don't make sense on genres
-    override val rawSortName: String?
-        get() = rawName
-
-    override val id: Long
-        get() = rawName.toMusicId()
+    override val rawSortName = rawName
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
 
     /** The total duration of the songs in this genre, in millis. */
     val durationMs = songs.sumOf { it.durationMs }
 
-    data class Raw(val name: String?) {
-        override fun equals(other: Any?): Boolean {
-            if (other !is Raw) return false
-            return when {
-                name != null && other.name != null -> name.equals(other.name, true)
-                name == null && other.name == null -> true
-                else -> false
-            }
-        }
+    init {
+        uid = UID.hashed(this::class) { update(rawName) }
 
-        override fun hashCode() = name?.lowercase().hashCode()
+        for (song in songs) {
+            song._link(this)
+        }
+    }
+
+    class Raw(val name: String?) {
+        private val hashCode = name?.lowercase().hashCode()
+
+        override fun hashCode() = hashCode
+
+        override fun equals(other: Any?) =
+            other is Raw &&
+                when {
+                    name != null && other.name != null -> name.equals(other.name, true)
+                    name == null && other.name == null -> true
+                    else -> false
+                }
     }
 }
 
-private fun String?.toMusicId(): Long {
-    if (this == null) {
-        // Pre-calculated hash of MediaStore.UNKNOWN_STRING
-        return 54493231833456
-    }
+fun MessageDigest.update(string: String?) {
+    if (string == null) return
+    update(string.lowercase().toByteArray())
+}
 
-    var result = 0L
-    for (ch in lowercase()) {
-        result = 31 * result + ch.lowercaseChar().code
-    }
-    return result
+fun MessageDigest.update(date: Date?) {
+    if (date == null) return
+    update(date.toString().toByteArray())
+}
+
+fun MessageDigest.update(n: Int?) {
+    if (n == null) return
+    update(byteArrayOf(n.toByte(), n.shr(8).toByte(), n.shr(16).toByte(), n.shr(24).toByte()))
+}
+
+fun MessageDigest.update(n: Long?) {
+    if (n == null) return
+    update(
+        byteArrayOf(
+            n.toByte(),
+            n.shr(8).toByte(),
+            n.shr(16).toByte(),
+            n.shr(24).toByte(),
+            n.shr(32).toByte(),
+            n.shr(40).toByte(),
+            n.shr(56).toByte(),
+            n.shr(64).toByte()))
 }
 
 /**

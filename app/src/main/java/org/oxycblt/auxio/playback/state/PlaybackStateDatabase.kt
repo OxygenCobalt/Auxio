@@ -21,11 +21,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import androidx.core.database.getLongOrNull
 import androidx.core.database.sqlite.transaction
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
@@ -78,11 +75,10 @@ class PlaybackStateDatabase private constructor(context: Context) :
     private fun constructStateTable(command: StringBuilder): StringBuilder {
         command
             .append("${StateColumns.COLUMN_ID} LONG PRIMARY KEY,")
-            .append("${StateColumns.COLUMN_SONG_ID} LONG,")
+            .append("${StateColumns.COLUMN_SONG_UID} STRING,")
             .append("${StateColumns.COLUMN_POSITION} LONG NOT NULL,")
-            .append("${StateColumns.COLUMN_PARENT_ID} LONG,")
+            .append("${StateColumns.COLUMN_PARENT_UID} STRING,")
             .append("${StateColumns.COLUMN_INDEX} INTEGER NOT NULL,")
-            .append("${StateColumns.COLUMN_PLAYBACK_MODE} INTEGER NOT NULL,")
             .append("${StateColumns.COLUMN_IS_SHUFFLED} BOOLEAN NOT NULL,")
             .append("${StateColumns.COLUMN_REPEAT_MODE} INTEGER NOT NULL)")
 
@@ -93,8 +89,7 @@ class PlaybackStateDatabase private constructor(context: Context) :
     private fun constructQueueTable(command: StringBuilder): StringBuilder {
         command
             .append("${QueueColumns.ID} LONG PRIMARY KEY,")
-            .append("${QueueColumns.SONG_ID} INTEGER NOT NULL,")
-            .append("${QueueColumns.ALBUM_ID} INTEGER NOT NULL)")
+            .append("${QueueColumns.SONG_UID} STRING NOT NULL)")
 
         return command
     }
@@ -109,17 +104,12 @@ class PlaybackStateDatabase private constructor(context: Context) :
 
         // Correct the index to match up with a possibly shortened queue (file removals/changes)
         var actualIndex = rawState.index
-        while (queue.getOrNull(actualIndex)?.id != rawState.songId && actualIndex > -1) {
+        while (queue.getOrNull(actualIndex)?.uid?.also { logD(it) } != rawState.songUid &&
+            actualIndex > -1) {
             actualIndex--
         }
 
-        val parent =
-            when (rawState.playbackMode) {
-                PlaybackMode.ALL_SONGS -> null
-                PlaybackMode.IN_ALBUM -> rawState.parentId?.let(library::findAlbumById)
-                PlaybackMode.IN_ARTIST -> rawState.parentId?.let(library::findArtistById)
-                PlaybackMode.IN_GENRE -> rawState.parentId?.let(library::findGenreById)
-            }
+        val parent = rawState.parentUid?.let { library.find<MusicParent>(it) }
 
         return SavedState(
             index = actualIndex,
@@ -140,11 +130,10 @@ class PlaybackStateDatabase private constructor(context: Context) :
             val indexIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_INDEX)
 
             val posIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_POSITION)
-            val playbackModeIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_PLAYBACK_MODE)
             val repeatModeIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_REPEAT_MODE)
             val shuffleIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_IS_SHUFFLED)
-            val songIdIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_SONG_ID)
-            val parentIdIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_PARENT_ID)
+            val songUidIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_SONG_UID)
+            val parentUidIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_PARENT_UID)
 
             cursor.moveToFirst()
 
@@ -154,10 +143,9 @@ class PlaybackStateDatabase private constructor(context: Context) :
                 repeatMode = RepeatMode.fromIntCode(cursor.getInt(repeatModeIndex))
                         ?: RepeatMode.NONE,
                 isShuffled = cursor.getInt(shuffleIndex) == 1,
-                songId = cursor.getLong(songIdIndex),
-                parentId = cursor.getLongOrNull(parentIdIndex),
-                playbackMode = PlaybackMode.fromInt(cursor.getInt(playbackModeIndex))
-                        ?: PlaybackMode.ALL_SONGS)
+                songUid = Music.UID.fromString(cursor.getString(songUidIndex))
+                        ?: return@queryAll null,
+                parentUid = cursor.getString(parentUidIndex)?.let(Music.UID::fromString))
         }
     }
 
@@ -168,9 +156,12 @@ class PlaybackStateDatabase private constructor(context: Context) :
 
         readableDatabase.queryAll(TABLE_NAME_QUEUE) { cursor ->
             if (cursor.count == 0) return@queryAll
-            val songIndex = cursor.getColumnIndexOrThrow(QueueColumns.SONG_ID)
+            val songIndex = cursor.getColumnIndexOrThrow(QueueColumns.SONG_UID)
             while (cursor.moveToNext()) {
-                library.findSongById(cursor.getLong(songIndex))?.let(queue::add)
+                logD(cursor.getString(songIndex))
+                val uid = Music.UID.fromString(cursor.getString(songIndex)) ?: continue
+                val song = library.find<Song>(uid) ?: continue
+                queue.add(song)
             }
         }
 
@@ -190,15 +181,8 @@ class PlaybackStateDatabase private constructor(context: Context) :
                     positionMs = state.positionMs,
                     repeatMode = state.repeatMode,
                     isShuffled = state.isShuffled,
-                    songId = state.queue[state.index].id,
-                    parentId = state.parent?.id,
-                    playbackMode =
-                        when (state.parent) {
-                            null -> PlaybackMode.ALL_SONGS
-                            is Album -> PlaybackMode.IN_ALBUM
-                            is Artist -> PlaybackMode.IN_ARTIST
-                            is Genre -> PlaybackMode.IN_GENRE
-                        })
+                    songUid = state.queue[state.index].uid,
+                    parentUid = state.parent?.uid)
 
             writeRawState(rawState)
             writeQueue(state.queue)
@@ -218,11 +202,10 @@ class PlaybackStateDatabase private constructor(context: Context) :
                 val stateData =
                     ContentValues(10).apply {
                         put(StateColumns.COLUMN_ID, 0)
-                        put(StateColumns.COLUMN_SONG_ID, rawState.songId)
+                        put(StateColumns.COLUMN_SONG_UID, rawState.songUid.toString())
                         put(StateColumns.COLUMN_POSITION, rawState.positionMs)
-                        put(StateColumns.COLUMN_PARENT_ID, rawState.parentId)
+                        put(StateColumns.COLUMN_PARENT_UID, rawState.parentUid?.toString())
                         put(StateColumns.COLUMN_INDEX, rawState.index)
-                        put(StateColumns.COLUMN_PLAYBACK_MODE, rawState.playbackMode.intCode)
                         put(StateColumns.COLUMN_IS_SHUFFLED, rawState.isShuffled)
                         put(StateColumns.COLUMN_REPEAT_MODE, rawState.repeatMode.intCode)
                     }
@@ -255,8 +238,7 @@ class PlaybackStateDatabase private constructor(context: Context) :
                         val itemData =
                             ContentValues(4).apply {
                                 put(QueueColumns.ID, idStart + i)
-                                put(QueueColumns.SONG_ID, song.id)
-                                put(QueueColumns.ALBUM_ID, song.album.id)
+                                put(QueueColumns.SONG_UID, song.uid.toString())
                             }
 
                         insert(TABLE_NAME_QUEUE, null, itemData)
@@ -286,31 +268,28 @@ class PlaybackStateDatabase private constructor(context: Context) :
         val positionMs: Long,
         val repeatMode: RepeatMode,
         val isShuffled: Boolean,
-        val songId: Long,
-        val parentId: Long?,
-        val playbackMode: PlaybackMode
+        val songUid: Music.UID,
+        val parentUid: Music.UID?
     )
 
     private object StateColumns {
         const val COLUMN_ID = "id"
-        const val COLUMN_SONG_ID = "song"
+        const val COLUMN_SONG_UID = "song_uid"
         const val COLUMN_POSITION = "position"
-        const val COLUMN_PARENT_ID = "parent"
+        const val COLUMN_PARENT_UID = "parent"
         const val COLUMN_INDEX = "queue_index"
-        const val COLUMN_PLAYBACK_MODE = "playback_mode"
         const val COLUMN_IS_SHUFFLED = "is_shuffling"
         const val COLUMN_REPEAT_MODE = "repeat_mode"
     }
 
     private object QueueColumns {
         const val ID = "id"
-        const val SONG_ID = "song"
-        const val ALBUM_ID = "album"
+        const val SONG_UID = "song_uid"
     }
 
     companion object {
         const val DB_NAME = "auxio_state_database.db"
-        const val DB_VERSION = 7
+        const val DB_VERSION = 8
 
         const val TABLE_NAME_STATE = "playback_state_table"
         const val TABLE_NAME_QUEUE = "queue_table"

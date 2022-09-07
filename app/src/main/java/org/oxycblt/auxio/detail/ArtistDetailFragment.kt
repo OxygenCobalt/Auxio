@@ -69,7 +69,7 @@ class ArtistDetailFragment :
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
-        detailModel.setArtistId(args.artistId)
+        detailModel.setArtistUid(args.artistUid)
 
         binding.detailToolbar.apply {
             inflateMenu(R.menu.menu_genre_artist_detail)
@@ -177,22 +177,22 @@ class ArtistDetailFragment :
             is Song -> {
                 logD("Navigating to another album")
                 findNavController()
-                    .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.album.id))
+                    .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.album.uid))
             }
             is Album -> {
                 logD("Navigating to another album")
                 findNavController()
-                    .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.id))
+                    .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.uid))
             }
             is Artist -> {
-                if (item.id == detailModel.currentArtist.value?.id) {
+                if (item.uid == detailModel.currentArtist.value?.uid) {
                     logD("Navigating to the top of this artist")
                     binding.detailRecycler.scrollToPosition(0)
                     navModel.finishExploreNavigation()
                 } else {
                     logD("Navigating to another artist")
                     findNavController()
-                        .navigate(ArtistDetailFragmentDirections.actionShowArtist(item.id))
+                        .navigate(ArtistDetailFragmentDirections.actionShowArtist(item.uid))
                 }
             }
             null -> {}
@@ -207,7 +207,7 @@ class ArtistDetailFragment :
             item = parent
         }
 
-        if (parent is Artist && parent.id == unlikelyToBeNull(detailModel.currentArtist.value).id) {
+        if (parent is Artist && parent == unlikelyToBeNull(detailModel.currentArtist.value)) {
             item = song
         }
 

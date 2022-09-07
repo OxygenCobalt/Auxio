@@ -109,10 +109,10 @@ class DetailViewModel(application: Application) :
 
     private val songGuard = TaskGuard()
 
-    fun setSongId(id: Long) {
-        if (_currentSong.value?.run { song.id } == id) return
+    fun setSongUid(uid: Music.UID) {
+        if (_currentSong.value?.run { song.uid } == uid) return
         val library = unlikelyToBeNull(musicStore.library)
-        val song = requireNotNull(library.findSongById(id)) { "Invalid song id provided" }
+        val song = requireNotNull(library.find<Song>(uid)) { "Invalid song id provided" }
         generateDetailSong(song)
     }
 
@@ -121,27 +121,28 @@ class DetailViewModel(application: Application) :
         _currentSong.value = null
     }
 
-    fun setAlbumId(id: Long) {
-        if (_currentAlbum.value?.id == id) return
+    fun setAlbumUid(uid: Music.UID) {
+        if (_currentAlbum.value?.uid == uid) return
         val library = unlikelyToBeNull(musicStore.library)
-        val album = requireNotNull(library.findAlbumById(id)) { "Invalid album id provided " }
+        val album = requireNotNull(library.find<Album>(uid)) { "Invalid album id provided " }
 
         _currentAlbum.value = album
         refreshAlbumData(album)
     }
 
-    fun setArtistId(id: Long) {
-        if (_currentArtist.value?.id == id) return
+    fun setArtistUid(uid: Music.UID) {
+        logD(uid)
+        if (_currentArtist.value?.uid == uid) return
         val library = unlikelyToBeNull(musicStore.library)
-        val artist = requireNotNull(library.findArtistById(id)) { "Invalid artist id provided" }
+        val artist = requireNotNull(library.find<Artist>(uid)) { "Invalid artist id provided" }
         _currentArtist.value = artist
         refreshArtistData(artist)
     }
 
-    fun setGenreId(id: Long) {
-        if (_currentGenre.value?.id == id) return
+    fun setGenreUid(uid: Music.UID) {
+        if (_currentGenre.value?.uid == uid) return
         val library = unlikelyToBeNull(musicStore.library)
-        val genre = requireNotNull(library.findGenreById(id)) { "Invalid genre id provided" }
+        val genre = requireNotNull(library.find<Genre>(uid)) { "Invalid genre id provided" }
         _currentGenre.value = genre
         refreshGenreData(genre)
     }
@@ -318,12 +319,6 @@ class DetailViewModel(application: Application) :
     }
 }
 
-data class SortHeader(@StringRes val string: Int) : Item() {
-    override val id: Long
-        get() = string.toLong()
-}
+data class SortHeader(@StringRes val string: Int) : Item
 
-data class DiscHeader(val disc: Int) : Item() {
-    override val id: Long
-        get() = disc.toLong()
-}
+data class DiscHeader(val disc: Int) : Item

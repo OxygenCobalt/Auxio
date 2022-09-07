@@ -39,14 +39,13 @@ import org.oxycblt.auxio.ui.Sort
 
 /** A basic keyer for music data. */
 class MusicKeyer : Keyer<Music> {
-    override fun key(data: Music, options: Options): String {
-        return if (data is Song) {
+    override fun key(data: Music, options: Options) =
+        if (data is Song) {
             // Group up song covers with album covers for better caching
-            key(data.album, options)
+            data.album.uid.toString()
         } else {
-            "${data::class.simpleName}: ${data.id}"
+            data.uid.toString()
         }
-    }
 }
 
 /**
@@ -65,9 +64,8 @@ private constructor(private val context: Context, private val album: Album) : Ba
         }
 
     class SongFactory : Fetcher.Factory<Song> {
-        override fun create(data: Song, options: Options, imageLoader: ImageLoader): Fetcher {
-            return AlbumCoverFetcher(options.context, data.album)
-        }
+        override fun create(data: Song, options: Options, imageLoader: ImageLoader) =
+            AlbumCoverFetcher(options.context, data.album)
     }
 
     class AlbumFactory : Fetcher.Factory<Album> {
@@ -114,7 +112,7 @@ private constructor(
         // whenever possible. So, if there are more than four distinct artists in a genre, make
         // it so that one artist only adds one album cover to the mosaic. Otherwise, use order
         // albums normally.
-        val artists = genre.songs.groupBy { it.album.artist.id }.keys
+        val artists = genre.songs.groupBy { it.album.artist }.keys
         val albums =
             Sort(Sort.Mode.ByName, true).albums(genre.songs.groupBy { it.album }.keys).run {
                 if (artists.size > 4) {

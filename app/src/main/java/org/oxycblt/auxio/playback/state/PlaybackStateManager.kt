@@ -449,7 +449,7 @@ class PlaybackStateManager private constructor() {
         // While we could just save and reload the state, we instead sanitize the state
         // at runtime for better performance (and to sidestep a co-routine on behalf of the caller).
 
-        val oldSongId = song?.id
+        val oldSongUid = song?.uid
         val oldPosition = playerState.calculateElapsedPosition()
 
         parent =
@@ -463,7 +463,7 @@ class PlaybackStateManager private constructor() {
 
         _queue = newLibrary.sanitize(_queue).toMutableList()
 
-        while (song?.id != oldSongId && index > -1) {
+        while (song?.uid != oldSongUid && index > -1) {
             index--
         }
 

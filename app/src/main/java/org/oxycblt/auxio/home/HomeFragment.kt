@@ -372,10 +372,10 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     private fun handleNavigation(item: Music?) {
         val action =
             when (item) {
-                is Song -> HomeFragmentDirections.actionShowAlbum(item.album.id)
-                is Album -> HomeFragmentDirections.actionShowAlbum(item.id)
-                is Artist -> HomeFragmentDirections.actionShowArtist(item.id)
-                is Genre -> HomeFragmentDirections.actionShowGenre(item.id)
+                is Song -> HomeFragmentDirections.actionShowAlbum(item.album.uid)
+                is Album -> HomeFragmentDirections.actionShowAlbum(item.uid)
+                is Artist -> HomeFragmentDirections.actionShowArtist(item.uid.also { logD(it) })
+                is Genre -> HomeFragmentDirections.actionShowGenre(item.uid)
                 else -> return
             }
 

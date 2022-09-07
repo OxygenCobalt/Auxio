@@ -75,34 +75,38 @@ class MusicStore private constructor() {
         val albums: List<Album>,
         val songs: List<Song>
     ) {
-        private val genreIdMap = HashMap<Long, Genre>().apply { genres.forEach { put(it.id, it) } }
-        private val artistIdMap =
-            HashMap<Long, Artist>().apply { artists.forEach { put(it.id, it) } }
-        private val albumIdMap = HashMap<Long, Album>().apply { albums.forEach { put(it.id, it) } }
-        private val songIdMap = HashMap<Long, Song>().apply { songs.forEach { put(it.id, it) } }
+        private val uidMap = HashMap<Music.UID, Music>()
 
-        /** Find a [Song] by it's ID. Null if no song exists with that ID. */
-        fun findSongById(songId: Long) = songIdMap[songId]
+        init {
+            for (song in songs) {
+                uidMap[song.uid] = song
+            }
 
-        /** Find a [Album] by it's ID. Null if no album exists with that ID. */
-        fun findAlbumById(albumId: Long) = albumIdMap[albumId]
+            for (album in albums) {
+                uidMap[album.uid] = album
+            }
 
-        /** Find a [Artist] by it's ID. Null if no artist exists with that ID. */
-        fun findArtistById(artistId: Long) = artistIdMap[artistId]
+            for (artist in artists) {
+                uidMap[artist.uid] = artist
+            }
 
-        /** Find a [Genre] by it's ID. Null if no genre exists with that ID. */
-        fun findGenreById(genreId: Long) = genreIdMap[genreId]
+            for (genre in genres) {
+                uidMap[genre.uid] = genre
+            }
+        }
+
+        @Suppress("UNCHECKED_CAST") fun <T : Music> find(uid: Music.UID): T? = uidMap[uid] as? T
 
         /** Sanitize an old item to find the corresponding item in a new library. */
-        fun sanitize(song: Song) = findSongById(song.id)
+        fun sanitize(song: Song) = find<Song>(song.uid)
         /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(songs: List<Song>) = songs.mapNotNull { sanitize(it) }
         /** Sanitize an old item to find the corresponding item in a new library. */
-        fun sanitize(album: Album) = findAlbumById(album.id)
+        fun sanitize(album: Album) = find<Album>(album.uid)
         /** Sanitize an old item to find the corresponding item in a new library. */
-        fun sanitize(artist: Artist) = findArtistById(artist.id)
+        fun sanitize(artist: Artist) = find<Artist>(artist.uid)
         /** Sanitize an old item to find the corresponding item in a new library. */
-        fun sanitize(genre: Genre) = findGenreById(genre.id)
+        fun sanitize(genre: Genre) = find<Genre>(genre.uid)
 
         /** Find a song for a [uri]. */
         fun findSongForUri(context: Context, uri: Uri) =

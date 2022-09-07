@@ -196,7 +196,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
                 // instead of loading a bitmap.
                 val description =
                     MediaDescriptionCompat.Builder()
-                        .setMediaId("Song:${song.id}")
+                        .setMediaId(song.uid.toString())
                         .setTitle(song.resolveName(context))
                         .setSubtitle(song.resolveIndividualArtistName(context))
                         .setIconUri(song.album.coverUri)

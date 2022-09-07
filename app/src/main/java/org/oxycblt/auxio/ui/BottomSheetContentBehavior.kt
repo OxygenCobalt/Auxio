@@ -42,7 +42,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * similarly distorted by the insets, and thus I must go further and modify the edge effect to be at
  * least somewhat clamped to the insets themselves.
  * 3. Touch events. Bottom sheets must always intercept touches in their bounds, or they will click
- * the now overlapping content view that is only inset by it and not unhidden by it.
+ * the now overlapping content view that is only inset and not moved out of the way..
  *
  * @author OxygenCobalt
  */

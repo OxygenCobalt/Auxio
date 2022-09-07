@@ -225,7 +225,7 @@ class MainFragment :
                 findNavController().navigate(MainFragmentDirections.actionShowAbout())
             is MainNavigationAction.SongDetails ->
                 findNavController()
-                    .navigate(MainFragmentDirections.actionShowDetails(action.song.id))
+                    .navigate(MainFragmentDirections.actionShowDetails(action.song.uid))
         }
 
         navModel.finishMainNavigation()

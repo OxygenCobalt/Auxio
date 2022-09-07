@@ -85,15 +85,15 @@ class AlbumDetailAdapter(private val listener: Listener) :
     companion object {
         private val DIFFER =
             object : SimpleItemCallback<Item>() {
-                override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
+                override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Album && newItem is Album ->
-                            AlbumDetailViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            AlbumDetailViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         oldItem is DiscHeader && newItem is DiscHeader ->
-                            DiscHeaderViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            DiscHeaderViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         oldItem is Song && newItem is Song ->
-                            AlbumSongViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
-                        else -> DetailAdapter.DIFFER.areItemsTheSame(oldItem, newItem)
+                            AlbumSongViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
+                        else -> DetailAdapter.DIFFER.areContentsTheSame(oldItem, newItem)
                     }
                 }
             }
@@ -142,7 +142,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
         val DIFFER =
             object : SimpleItemCallback<Album>() {
-                override fun areItemsTheSame(oldItem: Album, newItem: Album) =
+                override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.artist.rawName == newItem.artist.rawName &&
                         oldItem.date == newItem.date &&
@@ -168,7 +168,7 @@ class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
 
         val DIFFER =
             object : SimpleItemCallback<DiscHeader>() {
-                override fun areItemsTheSame(oldItem: DiscHeader, newItem: DiscHeader) =
+                override fun areContentsTheSame(oldItem: DiscHeader, newItem: DiscHeader) =
                     oldItem.disc == newItem.disc
             }
     }
@@ -216,7 +216,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
 
         val DIFFER =
             object : SimpleItemCallback<Song>() {
-                override fun areItemsTheSame(oldItem: Song, newItem: Song) =
+                override fun areContentsTheSame(oldItem: Song, newItem: Song) =
                     oldItem.rawName == newItem.rawName && oldItem.durationMs == newItem.durationMs
             }
     }

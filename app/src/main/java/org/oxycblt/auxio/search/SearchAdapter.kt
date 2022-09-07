@@ -90,18 +90,18 @@ class SearchAdapter(private val listener: MenuItemListener) :
     companion object {
         private val DIFFER =
             object : SimpleItemCallback<Item>() {
-                override fun areItemsTheSame(oldItem: Item, newItem: Item) =
+                override fun areContentsTheSame(oldItem: Item, newItem: Item) =
                     when {
                         oldItem is Song && newItem is Song ->
-                            SongViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            SongViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         oldItem is Album && newItem is Album ->
-                            AlbumViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            AlbumViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         oldItem is Artist && newItem is Artist ->
-                            ArtistViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            ArtistViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         oldItem is Genre && newItem is Genre ->
-                            GenreViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            GenreViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         oldItem is Header && newItem is Header ->
-                            HeaderViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            HeaderViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         else -> false
                     }
             }

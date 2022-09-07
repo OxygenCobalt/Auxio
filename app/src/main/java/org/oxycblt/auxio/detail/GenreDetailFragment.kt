@@ -70,7 +70,7 @@ class GenreDetailFragment :
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
-        detailModel.setGenreId(args.genreId)
+        detailModel.setGenreUid(args.genreUid)
 
         binding.detailToolbar.apply {
             inflateMenu(R.menu.menu_genre_artist_detail)
@@ -125,6 +125,7 @@ class GenreDetailFragment :
     override fun onOpenMenu(item: Item, anchor: View) {
         if (item is Song) {
             musicMenu(anchor, R.menu.menu_song_actions, item)
+            return
         }
 
         error("Unexpected datatype when opening menu: ${item::class.java}")
@@ -170,16 +171,17 @@ class GenreDetailFragment :
             is Song -> {
                 logD("Navigating to another song")
                 findNavController()
-                    .navigate(GenreDetailFragmentDirections.actionShowAlbum(item.album.id))
+                    .navigate(GenreDetailFragmentDirections.actionShowAlbum(item.album.uid))
             }
             is Album -> {
                 logD("Navigating to another album")
-                findNavController().navigate(GenreDetailFragmentDirections.actionShowAlbum(item.id))
+                findNavController()
+                    .navigate(GenreDetailFragmentDirections.actionShowAlbum(item.uid))
             }
             is Artist -> {
                 logD("Navigating to another artist")
                 findNavController()
-                    .navigate(GenreDetailFragmentDirections.actionShowArtist(item.id))
+                    .navigate(GenreDetailFragmentDirections.actionShowArtist(item.uid))
             }
             is Genre -> {
                 navModel.finishExploreNavigation()
@@ -189,7 +191,7 @@ class GenreDetailFragment :
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        if (parent is Genre && parent.id == unlikelyToBeNull(detailModel.currentGenre.value).id) {
+        if (parent is Genre && parent == unlikelyToBeNull(detailModel.currentGenre.value)) {
             detailAdapter.updateIndicator(song, isPlaying)
         } else {
             // Ignore song playback not from the genre

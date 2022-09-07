@@ -95,12 +95,12 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
     companion object {
         val DIFFER =
             object : SimpleItemCallback<Item>() {
-                override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
+                override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Header && newItem is Header ->
-                            HeaderViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            HeaderViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         oldItem is SortHeader && newItem is SortHeader ->
-                            SortHeaderViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            SortHeaderViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         else -> false
                     }
                 }
@@ -132,7 +132,7 @@ class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
 
         val DIFFER =
             object : SimpleItemCallback<SortHeader>() {
-                override fun areItemsTheSame(oldItem: SortHeader, newItem: SortHeader) =
+                override fun areContentsTheSame(oldItem: SortHeader, newItem: SortHeader) =
                     oldItem.string == newItem.string
             }
     }

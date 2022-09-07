@@ -23,23 +23,14 @@ import androidx.recyclerview.widget.AdapterListUpdateCallback
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
-/**
- * The base for all items in Auxio. Any datatype can derive this type and gain some behavior not
- * provided for free by the normal adapter implementations, such as certain types of diffing.
- */
-abstract class Item {
-    /** A unique ID for this item. ***THIS IS NOT A MEDIASTORE ID!** */
-    abstract val id: Long
-}
+/** A marker for something that is a RecyclerView item. Has no functionality on it's own. */
+interface Item
 
 /** A data object used solely for the "Header" UI element. */
 data class Header(
     /** The string resource used for the header. */
     @StringRes val string: Int
-) : Item() {
-    override val id: Long
-        get() = string.toLong()
-}
+) : Item
 
 /** An interface for detecting if an item has been clicked once. */
 interface ItemClickListener {
@@ -165,8 +156,5 @@ class SyncListDiffer<T>(
  * [areContentsTheSame] any object that is derived from [Item].
  */
 abstract class SimpleItemCallback<T : Item> : DiffUtil.ItemCallback<T>() {
-    override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
-        if (oldItem.javaClass != newItem.javaClass) return false
-        return oldItem.id == newItem.id
-    }
+    final override fun areItemsTheSame(oldItem: T, newItem: T) = oldItem == newItem
 }

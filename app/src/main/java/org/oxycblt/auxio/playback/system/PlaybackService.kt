@@ -356,7 +356,7 @@ class PlaybackService :
                 }
                 is InternalPlayer.Action.Open -> {
                     library.findSongForUri(application, action.uri)?.let { song ->
-                        playbackManager.play(song, settings.libPlaybackMode, settings)
+                        playbackManager.play(song, null, settings)
                     }
                 }
             }

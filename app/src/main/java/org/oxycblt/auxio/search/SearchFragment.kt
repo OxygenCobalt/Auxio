@@ -170,10 +170,10 @@ class SearchFragment :
         findNavController()
             .navigate(
                 when (item) {
-                    is Song -> SearchFragmentDirections.actionShowAlbum(item.album.id)
-                    is Album -> SearchFragmentDirections.actionShowAlbum(item.id)
-                    is Artist -> SearchFragmentDirections.actionShowArtist(item.id)
-                    is Genre -> SearchFragmentDirections.actionShowGenre(item.id)
+                    is Song -> SearchFragmentDirections.actionShowAlbum(item.album.uid)
+                    is Album -> SearchFragmentDirections.actionShowAlbum(item.uid)
+                    is Artist -> SearchFragmentDirections.actionShowArtist(item.uid)
+                    is Genre -> SearchFragmentDirections.actionShowGenre(item.uid)
                     else -> return
                 })
 
