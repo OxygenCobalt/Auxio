@@ -189,7 +189,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 // format a genre was derived from, we have to treat them like they are ID3
                 // genres, even when they might not be.
                 val id = genreCursor.getLong(idIndex)
-                val name = (genreCursor.getStringOrNull(nameIndex) ?: continue).parseId3GenreName()
+                val name = (genreCursor.getStringOrNull(nameIndex) ?: continue).parseId3GenreNames()
 
                 context.contentResolverSafe.useQuery(
                     MediaStore.Audio.Genres.Members.getContentUri(VOLUME_EXTERNAL, id),
@@ -293,13 +293,13 @@ abstract class MediaStoreBackend : Indexer.Backend {
         // as <unknown>, which makes absolutely no sense given how other fields default
         // to null if they are not present. If this field is <unknown>, null it so that
         // it's easier to handle later.
-        raw.artistName =
+        raw.artistNames =
             cursor.getString(artistIndex).run {
-                if (this != MediaStore.UNKNOWN_STRING) this else null
+                if (this != MediaStore.UNKNOWN_STRING) listOf(this) else null
             }
 
         // The album artist field is nullable and never has placeholder values.
-        raw.albumArtistName = cursor.getStringOrNull(albumArtistIndex)
+        raw.albumArtistNames = cursor.getStringOrNull(albumArtistIndex)?.let { listOf(it) }
 
         return raw
     }

@@ -74,7 +74,6 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                 }
                 else -> {
                     error("Unexpected menu item selected")
-                    return@musicMenuImpl false
                 }
             }
 
@@ -142,7 +141,6 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                 }
                 else -> {
                     error("Unexpected menu item selected")
-                    return@musicMenuImpl false
                 }
             }
 

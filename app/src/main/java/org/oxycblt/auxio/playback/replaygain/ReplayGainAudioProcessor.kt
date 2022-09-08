@@ -130,7 +130,7 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
                 // capitalization is consistent before continuing.
                 is TextInformationFrame -> {
                     key = entry.description?.uppercase()
-                    value = entry.value
+                    value = entry.values[0]
                 }
                 // Vorbis comment. These are nearly always uppercase, so a check for such is
                 // skipped.

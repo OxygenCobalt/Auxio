@@ -24,6 +24,7 @@ import java.lang.reflect.Method
 import java.util.concurrent.CancellationException
 import kotlin.reflect.KClass
 import org.oxycblt.auxio.BuildConfig
+import java.util.*
 
 /** Assert that we are on a background thread. */
 fun requireBackgroundThread() {
@@ -43,8 +44,10 @@ fun <T> unlikelyToBeNull(value: T?) =
         value!!
     }
 
+/** Returns null if this value is 0. */
 fun Int.nonZeroOrNull() = if (this > 0) this else null
 
+/** Returns  null if this value is not in [range]. */
 fun Int.inRangeOrNull(range: IntRange) = if (range.contains(this)) this else null
 
 /** Converts a long in milliseconds to a long in deci-seconds */

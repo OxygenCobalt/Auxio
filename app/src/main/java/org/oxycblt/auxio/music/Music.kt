@@ -54,7 +54,14 @@ sealed class Music : Item {
      * fast-scrolling.
      */
     val sortName: String?
-        get() = rawSortName ?: rawName?.parseSortName()
+        get() = rawSortName ?: rawName?.run {
+            when {
+                length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
+                length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
+                length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
+                else -> this
+            }
+        }
 
     /**
      * Resolve a name from it's raw form to a form suitable to be shown in a ui. Ex. "unknown" would
@@ -79,7 +86,7 @@ sealed class Music : Item {
      * external sources, as it can persist across app restarts and does not need to encode useless
      * information about the relationships between items.
      *
-     * TODO: MusizBrainz tags
+     * TODO: MusicBrainz tags
      *
      * @author OxygenCobalt
      */
@@ -186,19 +193,24 @@ class Song constructor(private val raw: Raw) : Music() {
     // TODO: Multi-artist support
     // private val _artists: MutableList<Artist> = mutableListOf()
 
+    private val artistName = raw.artistNames?.joinToString()
+    private val albumArtistName = raw.albumArtistNames?.joinToString()
+    private val artistSortName = raw.artistSortNames?.joinToString()
+    private val albumArtistSortName = raw.albumArtistSortNames?.joinToString()
+
     /**
      * The raw artist name for this song in particular. First uses the artist tag, and then falls
      * back to the album artist tag (i.e parent artist name). Null if name is unknown.
      */
     val individualArtistRawName: String?
-        get() = raw.artistName ?: album.artist.rawName
+        get() = artistName ?: album.artist.rawName
 
     /**
      * Resolve the artist name for this song in particular. First uses the artist tag, and then
      * falls back to the album artist tag (i.e parent artist name)
      */
     fun resolveIndividualArtistName(context: Context) =
-        raw.artistName ?: album.artist.resolveName(context)
+        artistName ?: album.artist.resolveName(context)
 
     private val _genres: MutableList<Genre> = mutableListOf()
     /**
@@ -218,10 +230,10 @@ class Song constructor(private val raw: Raw) : Music() {
             date = raw.date,
             releaseType = raw.albumReleaseType,
             rawArtist =
-                if (raw.albumArtistName != null) {
-                    Artist.Raw(raw.albumArtistName, raw.albumArtistSortName)
+                if (albumArtistName != null) {
+                    Artist.Raw(albumArtistName, albumArtistSortName)
                 } else {
-                    Artist.Raw(raw.artistName, raw.artistSortName)
+                    Artist.Raw(artistName, artistSortName)
                 })
 
     val _rawGenres = raw.genreNames?.map { Genre.Raw(it) } ?: listOf(Genre.Raw(null))
@@ -248,8 +260,8 @@ class Song constructor(private val raw: Raw) : Music() {
                 update(_rawAlbum.name.lowercase())
                 update(_rawAlbum.date)
 
-                update(raw.artistName)
-                update(raw.albumArtistName)
+                update(artistName)
+                update(albumArtistName)
 
                 update(track)
                 update(disc)
@@ -275,10 +287,10 @@ class Song constructor(private val raw: Raw) : Music() {
         var albumName: String? = null,
         var albumSortName: String? = null,
         var albumReleaseType: ReleaseType? = null,
-        var artistName: String? = null,
-        var artistSortName: String? = null,
-        var albumArtistName: String? = null,
-        var albumArtistSortName: String? = null,
+        var artistNames: List<String>? = null,
+        var artistSortNames: List<String>? = null,
+        var albumArtistNames: List<String>? = null,
+        var albumArtistSortNames: List<String>? = null,
         var genreNames: List<String>? = null
     )
 }
@@ -729,7 +741,7 @@ sealed class ReleaseType {
 
     companion object {
         fun parse(types: List<String>): ReleaseType {
-            val primary = types[0].trim()
+            val primary = types[0]
 
             // Primary types should be the first one in sequence. The spec makes no mention of
             // whether primary types are a pre-requisite for secondary types, so we assume that
@@ -747,7 +759,7 @@ sealed class ReleaseType {
             secondaryIdx: Int,
             target: (Refinement?) -> ReleaseType
         ): ReleaseType {
-            val secondary = (getOrNull(secondaryIdx) ?: return target(null)).trim()
+            val secondary = (getOrNull(secondaryIdx) ?: return target(null))
 
             return when {
                 // Compilation is the only weird secondary release type, as it could

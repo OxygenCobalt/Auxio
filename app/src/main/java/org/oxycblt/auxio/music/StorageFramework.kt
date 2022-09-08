@@ -18,7 +18,11 @@
 package org.oxycblt.auxio.music
 
 import android.annotation.SuppressLint
+import android.content.ContentResolver
+import android.content.ContentUris
 import android.content.Context
+import android.database.Cursor
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
@@ -30,6 +34,7 @@ import java.io.File
 import java.lang.reflect.Method
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.lazyReflectedMethod
+
 
 /** A path to a file. [name] is the stripped file name, [parent] is the parent path. */
 data class Path(val name: String, val parent: Directory)
