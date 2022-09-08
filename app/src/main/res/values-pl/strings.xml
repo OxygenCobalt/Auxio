@@ -3,65 +3,48 @@
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Ponów</string>
     <string name="lbl_grant">Przyznaj</string>
-
     <string name="lbl_genres">Gatunki</string>
     <string name="lbl_artists">Wykonawcy</string>
     <string name="lbl_albums">Albumy</string>
     <string name="lbl_songs">Utwory</string>
     <string name="lbl_all_songs">Wszystkie Utwory</string>
-
     <string name="lbl_search">Szukaj</string>
     <string name="lbl_filter">Filtry</string>
     <string name="lbl_filter_all">Wszystkie</string>
-
     <string name="lbl_sort">Sortowanie</string>
     <string name="lbl_sort_asc">Rosnąco</string>
-
     <string name="lbl_play">Graj</string>
     <string name="lbl_shuffle">Losowo</string>
     <string name="lbl_playback">Obecnie Grane</string>
-
     <string name="lbl_queue">Kolejka</string>
     <string name="lbl_play_next">Odtwarzaj następny</string>
     <string name="lbl_queue_add">Dodaj do kolejki</string>
     <string name="lng_queue_added">Dodany do kolejki</string>
-
     <string name="lbl_go_artist">Przejdź do wykonawcy</string>
     <string name="lbl_go_album">Przejdź do albumu</string>
-
     <string name="lbl_about">O aplikacji</string>
     <string name="lbl_version">Wersja</string>
     <string name="lbl_code">Zobacz na GitHubie</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licencje</string>
-
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Ustawienia</string>
-
     <string name="set_ui">Wygląd</string>
     <string name="set_theme">Motyw</string>
     <string name="set_theme_auto">Automatyczny</string>
     <string name="set_theme_day">Jasny</string>
     <string name="set_theme_night">Ciemny</string>
     <string name="set_accent">Odcień koloru</string>
-
     <string name="set_quality_covers">Ignoruj okładki z Media Store</string>
-
     <string name="set_audio">Dźwięk</string>
-
     <string name="set_behavior">Zachowanie</string>
-
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nie znaleziono muzyki</string>
-
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Ścieżka %d</string>
-
     <string name="desc_play_pause">Odtwarzanie/Pauza</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Szukaj w bibliotece…</string>
-
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Czerwony</string>
     <string name="clr_pink">Różowy</string>
@@ -76,19 +59,21 @@
     <string name="clr_orange">Pomarańczowy</string>
     <string name="clr_brown">Brązowy</string>
     <string name="clr_grey">Szary</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_lib_song_count">Utwory uruchamia się: %d</string>
-
     <plurals name="fmt_song_count">
         <item quantity="one">%d Utwór</item>
         <item quantity="few">%d Utwory</item>
         <item quantity="many">%d Piosenek</item>
     </plurals>
-
     <plurals name="fmt_album_count">
         <item quantity="one">%d Album</item>
         <item quantity="few">%d Albumy</item>
         <item quantity="many">%d Albumów</item>
     </plurals>
+    <string name="lbl_album_live">Album koncertowy</string>
+    <string name="lbl_album_remix">Remix album</string>
+    <string name="lbl_album">Album</string>
+    <string name="lbl_eps">Minialbumy</string>
+    <string name="lbl_ep">Minialbum</string>
 </resources>
