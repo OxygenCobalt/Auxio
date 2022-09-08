@@ -26,6 +26,7 @@ import android.provider.MediaStore
 import androidx.core.text.isDigitsOnly
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.nonZeroOrNull
+import java.util.UUID
 
 /** Shortcut for making a [ContentResolver] query with less superfluous arguments. */
 fun ContentResolver.queryCursor(
@@ -57,6 +58,8 @@ val Long.audioUri: Uri
 /** Converts a [Long] Album ID into a URI pointing to MediaStore-cached album art. */
 val Long.albumCoverUri: Uri
     get() = ContentUris.withAppendedId(EXTERNAL_ALBUM_ART_URI, this)
+
+fun String.toUuid() = try { UUID.fromString(this) } catch (e: IllegalArgumentException) { null }
 
 /**
  * Parse out the track number field as if the given Int is formatted as DTTT, where D Is the disc
@@ -100,9 +103,6 @@ fun String.parseSortName() =
         else -> this
     }
 
-/** Shortcut to parse an [ReleaseType] from a string */
-fun String.parseReleaseType() = ReleaseType.parse(this)
-
 /** Shortcut to parse a [ReleaseType] from a list of strings */
 fun List<String>.parseReleaseType() = ReleaseType.parse(this)
 
@@ -110,8 +110,14 @@ fun List<String>.parseReleaseType() = ReleaseType.parse(this)
  * Decodes the genre name from an ID3(v2) constant. See [GENRE_TABLE] for the genre constant map
  * that Auxio uses.
  */
-fun String.parseId3GenreName() =
-    parseId3v1Genre()?.let { listOf(it) } ?: parseId3v2Genre() ?: listOf(this)
+fun String.parseId3GenreName() = parseId3v1Genre()?.let { listOf(it) } ?: parseId3v2Genre() ?: listOf(this)
+
+/**
+ * Decodes the genre names from an ID3(v2) constant. See [GENRE_TABLE] for the genre constant map
+ * that Auxio uses.
+ */
+fun List<String>.parseId3GenreName() = flatMap { it.parseId3GenreName() }
+
 
 private fun String.parseId3v1Genre(): String? =
     when {

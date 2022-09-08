@@ -169,7 +169,7 @@ class Task(context: Context, private val raw: Song.Raw) {
     }
 
     private fun completeAudio(metadata: Metadata) {
-        val id3v2Tags = mutableMapOf<String, String>()
+        val id3v2Tags = mutableMapOf<String, List<String>>()
         val vorbisTags = mutableMapOf<String, MutableList<String>>()
 
         // ExoPlayer only exposes ID3v2 and Vorbis metadata, which constitutes the vast majority
@@ -179,9 +179,9 @@ class Task(context: Context, private val raw: Song.Raw) {
             when (val tag = metadata[i]) {
                 is TextInformationFrame -> {
                     val id = tag.description?.let { "TXXX:${it.sanitize()}" } ?: tag.id.sanitize()
-                    val value = tag.value.sanitize()
-                    if (value.isNotEmpty()) {
-                        id3v2Tags[id] = value
+                    val values = tag.values.map { it.sanitize() }
+                    if (values.isNotEmpty() && values.all { it.isNotEmpty() }) {
+                        id3v2Tags[id] = values
                     }
                 }
                 is VorbisComment -> {
@@ -207,16 +207,16 @@ class Task(context: Context, private val raw: Song.Raw) {
         }
     }
 
-    private fun populateId3v2(tags: Map<String, String>) {
+    private fun populateId3v2(tags: Map<String, List<String>>) {
         // (Sort) Title
-        tags["TIT2"]?.let { raw.name = it }
-        tags["TSOT"]?.let { raw.sortName = it }
+        tags["TIT2"]?.let { raw.name = it[0] }
+        tags["TSOT"]?.let { raw.sortName = it[0] }
 
         // Track, as NN/TT
-        tags["TRCK"]?.parsePositionNum()?.let { raw.track = it }
+        tags["TRCK"]?.run { get(0).parsePositionNum() }?.let { raw.track = it }
 
         // Disc, as NN/TT
-        tags["TPOS"]?.parsePositionNum()?.let { raw.disc = it }
+        tags["TPOS"]?.run { get(0).parsePositionNum() } ?.let { raw.disc = it }
 
         // Dates are somewhat complicated, as not only did their semantics change from a flat year
         // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
@@ -227,22 +227,23 @@ class Task(context: Context, private val raw: Song.Raw) {
         // 3. ID3v2.4 Release Date, as it is the second most common date type
         // 4. ID3v2.3 Original Date, as it is like #1
         // 5. ID3v2.3 Release Year, as it is the most common date type
-        (tags["TDOR"]?.parseTimestamp()
-                ?: tags["TDRC"]?.parseTimestamp() ?: tags["TDRL"]?.parseTimestamp()
+        (tags["TDOR"]?.run { get(0).parseTimestamp() }
+                ?: tags["TDRC"]?.run  { get(0).parseTimestamp() }
+                ?: tags["TDRL"]?.run  { get(0).parseTimestamp() }
                     ?: parseId3v23Date(tags))
             ?.let { raw.date = it }
 
         // (Sort) Album
-        tags["TALB"]?.let { raw.albumName = it }
-        tags["TSOA"]?.let { raw.albumSortName = it }
+        tags["TALB"]?.let { raw.albumName = it[0] }
+        tags["TSOA"]?.let { raw.albumSortName = it[0] }
 
         // (Sort) Artist
-        tags["TPE1"]?.let { raw.artistName = it }
-        tags["TSOP"]?.let { raw.artistSortName = it }
+        tags["TPE1"]?.let { raw.artistName = it.joinToString() }
+        tags["TSOP"]?.let { raw.artistSortName = it.joinToString() }
 
         // (Sort) Album artist
-        tags["TPE2"]?.let { raw.albumArtistName = it }
-        tags["TSO2"]?.let { raw.albumArtistSortName = it }
+        tags["TPE2"]?.let { raw.albumArtistName = it.joinToString() }
+        tags["TSO2"]?.let { raw.albumArtistSortName = it.joinToString() }
 
         // Genre, with the weird ID3 rules.
         tags["TCON"]?.let { raw.genreNames = it.parseId3GenreName() }
@@ -253,18 +254,18 @@ class Task(context: Context, private val raw: Song.Raw) {
         }
     }
 
-    private fun parseId3v23Date(tags: Map<String, String>): Date? {
-        val year = tags["TORY"]?.toIntOrNull() ?: tags["TYER"]?.toIntOrNull() ?: return null
+    private fun parseId3v23Date(tags: Map<String, List<String>>): Date? {
+        val year = tags["TORY"]?.run { get(0).toIntOrNull() } ?: tags["TYER"]?.run { get(0).toIntOrNull() } ?: return null
 
-        val mmdd = tags["TDAT"]
-        return if (mmdd != null && mmdd.length == 4 && mmdd.isDigitsOnly()) {
-            val mm = mmdd.substring(0..1).toInt()
-            val dd = mmdd.substring(2..3).toInt()
+        val tdat = tags["TDAT"]
+        return if (tdat != null && tdat[0].length == 4 && tdat[0].isDigitsOnly()) {
+            val mm = tdat[0].substring(0..1).toInt()
+            val dd = tdat[0].substring(2..3).toInt()
 
-            val hhmi = tags["TIME"]
-            if (hhmi != null && hhmi.length == 4 && hhmi.isDigitsOnly()) {
-                val hh = hhmi.substring(0..1).toInt()
-                val mi = hhmi.substring(2..3).toInt()
+            val time = tags["TIME"]
+            if (time != null && time[0].length == 4 && time[0].isDigitsOnly()) {
+                val hh = time[0].substring(0..1).toInt()
+                val mi = time[0].substring(2..3).toInt()
                 Date.from(year, mm, dd, hh, mi)
             } else {
                 Date.from(year, mm, dd)
@@ -297,8 +298,8 @@ class Task(context: Context, private val raw: Song.Raw) {
             ?.let { raw.date = it }
 
         // (Sort) Album
-        tags["ALBUM"]?.let { raw.albumName = it.joinToString() }
-        tags["ALBUMSORT"]?.let { raw.albumSortName = it.joinToString() }
+        tags["ALBUM"]?.let { raw.albumName = it[0] }
+        tags["ALBUMSORT"]?.let { raw.albumSortName = it[0]  }
 
         // (Sort) Artist
         tags["ARTIST"]?.let { raw.artistName = it.joinToString() }

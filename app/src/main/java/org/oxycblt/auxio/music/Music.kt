@@ -34,8 +34,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.inRangeOrNull
-import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.msToSecs
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -86,75 +84,31 @@ sealed class Music : Item {
      * @author OxygenCobalt
      */
     @Parcelize
-    class UID
-    private constructor(private val datatype: String, private val isMusicBrainz: Boolean, private val uuid: UUID) :
-        Parcelable {
-        // TODO: Formalize datatype and isMusicBrainz more
-
+    class UID private constructor(private val tag: String, private val uuid: UUID) : Parcelable {
         // Cache the hashCode for speed
-        @IgnoredOnParcel private val hashCode: Int
-
-        init {
-            var result = datatype.hashCode()
-            result = 31 * result + isMusicBrainz.hashCode()
-            result = 31 * result + uuid.hashCode()
-            hashCode = result
-        }
+        @IgnoredOnParcel private val hashCode = 31 * tag.hashCode() + uuid.hashCode()
 
         override fun hashCode() = hashCode
 
-        override fun equals(other: Any?) =
-            other is UID &&
-                datatype == other.datatype &&
-                isMusicBrainz == other.isMusicBrainz &&
-                uuid == other.uuid
+        override fun equals(other: Any?) = other is UID && tag == other.tag && uuid == other.uuid
 
-        override fun toString() =
-            "$datatype/${if (isMusicBrainz) FORMAT_MUSICBRAINZ else FORMAT_AUXIO}:$uuid"
+        override fun toString() = "$tag:$uuid"
 
         companion object {
-            const val FORMAT_AUXIO = "auxio"
-            const val FORMAT_MUSICBRAINZ = "musicbrainz"
-
             /** Parse a [UID] from the string [uid]. Returns null if not valid. */
             fun fromString(uid: String): UID? {
                 val split = uid.split(':', limit = 2)
                 if (split.size != 2) {
-                    logE("Invalid uid: Malformed structure")
-                }
-
-                val namespace = split[0].split('/', limit = 2)
-                if (namespace.size != 2) {
-                    logE("Invalid uid: Malformed namespace")
                     return null
                 }
 
-                val datatype = namespace[0]
-                val isMusicBrainz =
-                    when (namespace[1]) {
-                        FORMAT_AUXIO -> false
-                        FORMAT_MUSICBRAINZ -> true
-                        else -> {
-                            logE("Invalid uid: Malformed uuid format")
-                            return null
-                        }
-                    }
-
-                val uuid =
-                    try {
-                        UUID.fromString(split[1])
-                    } catch (e: IllegalArgumentException) {
-                        logE("Invalid uid: Malformed uuid")
-                        return null
-                    }
-
-                return UID(datatype, isMusicBrainz, uuid)
+                return UID(tag = split[0], split[1].toUuid() ?: return null)
             }
 
             /**
              * Make a UUID derived from the MD5 hash of the data digested in [updates].
              *
-             * This is considered the "auxio" uuid format.
+             * This is Auxio's UID format.
              */
             fun hashed(clazz: KClass<*>, updates: MessageDigest.() -> Unit): UID {
                 // Auxio hashes consist of the MD5 hash of the non-subjective, consistent
@@ -162,7 +116,8 @@ sealed class Music : Item {
                 val digest = MessageDigest.getInstance("MD5")
                 updates(digest)
                 val uuid = digest.digest().toUuid()
-                return UID(unlikelyToBeNull(clazz.simpleName).lowercase(), false, uuid)
+                val tag = "auxio.${unlikelyToBeNull(clazz.simpleName).lowercase()}"
+                return UID(tag, uuid)
             }
         }
     }
@@ -298,9 +253,6 @@ class Song constructor(private val raw: Raw) : Music() {
 
                 update(track)
                 update(disc)
-
-                // Hashing by seconds makes the song more resilient to trimming
-                update(durationMs.msToSecs())
             }
     }
 
@@ -580,9 +532,9 @@ fun ByteArray.toUuid(): UUID {
  * nature of tag formats. Thus, it's better to use an analogous data structure that will not mangle
  * or reject valid-ish dates.
  *
- * Date instances are immutable and their implementation is hidden. To instantiate one, use
- * [from]. The string representation of a Date is RFC 3339, with granular position depending on the
- * presence of particular tokens.
+ * Date instances are immutable and their implementation is hidden. To instantiate one, use [from].
+ * The string representation of a Date is RFC 3339, with granular position depending on the presence
+ * of particular tokens.
  *
  * Please, **Do not use this for anything important related to time.** I cannot stress this enough.
  * This code will blow up if you try to do that.
@@ -776,8 +728,6 @@ sealed class ReleaseType {
     }
 
     companion object {
-        fun parse(type: String) = parse(type.split('+'))
-
         fun parse(types: List<String>): ReleaseType {
             val primary = types[0].trim()
 

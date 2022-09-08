@@ -56,9 +56,6 @@ android {
     }
 }
 
-afterEvaluate {
-    preDebugBuild.dependsOn spotlessApply
-}
 
 dependencies {
     // Kotlin
@@ -103,8 +100,11 @@ dependencies {
     // Exoplayer
     // WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE PRE-BUILD SCRIPT.
     // IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
-    implementation "com.google.android.exoplayer:exoplayer-core:2.18.1"
+    implementation("com.google.android.exoplayer:exoplayer-core:2.18.1") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
+    }
 
+    implementation fileTree(dir: "libs", include: ["library-*.aar"])
     implementation fileTree(dir: "libs", include: ["extension-*.aar"])
 
     // Image loading
