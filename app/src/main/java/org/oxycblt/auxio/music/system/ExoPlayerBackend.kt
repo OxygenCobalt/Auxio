@@ -63,7 +63,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
         val total = cursor.count
 
         while (cursor.moveToNext()) {
-            // Note: This call to buildAudio does not populate the genre field. This is
+            // Note: This call to buildRawSong does not populate the genre field. This is
             // because indexing genres is quite slow with MediaStore, and so keeping the
             // field blank on unsupported ExoPlayer formats ends up being preferable.
             val raw = inner.buildRawSong(context, cursor)
@@ -155,7 +155,7 @@ class Task(context: Context, private val raw: Song.Raw) {
 
         val metadata = format.metadata
         if (metadata != null) {
-            completeAudio(metadata)
+            completeRawSong(metadata)
         } else {
             logD("No metadata could be extracted for ${raw.name}")
         }
@@ -163,7 +163,7 @@ class Task(context: Context, private val raw: Song.Raw) {
         return Song(raw)
     }
 
-    private fun completeAudio(metadata: Metadata) {
+    private fun completeRawSong(metadata: Metadata) {
         val id3v2Tags = mutableMapOf<String, List<String>>()
         val vorbisTags = mutableMapOf<String, MutableList<String>>()
 

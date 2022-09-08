@@ -33,6 +33,14 @@ fun String.parseTimestamp() = Date.from(this)
 private val SEPARATOR_REGEX = Regex("[^\\\\][\\[,;/+&]")
 private val ESCAPED_REGEX = Regex("\\\\[\\[,;/+&]")
 
+/**
+ * Fully parse a multi-value tag.
+ *
+ * If there is only one string in the tag, and if enabled, it will be parsed for any multi-value
+ * separators desired. Escaped separators will be ignored and replaced with their correct character.
+ *
+ * Alternatively, if there are several tags already, it will be returned without modification.
+ */
 fun List<String>.parseMultiValue() =
     if (size == 1) {
         get(0).parseSeparatorsImpl()
@@ -40,6 +48,9 @@ fun List<String>.parseMultiValue() =
         this
     }
 
+/**
+ * Parse a tag into multiple values using a series of generic separators. Will trim whitespace.
+ */
 private fun String.parseSeparatorsImpl() =
     // First split by non-escaped separators (No preceding \), and then split by escaped
     // separators.
@@ -47,13 +58,16 @@ private fun String.parseSeparatorsImpl() =
         ESCAPED_REGEX.replace(it) { match -> match.value.substring(1) }.trim()
     }
 
-fun List<String>.parseReleaseType() =
-    if (size == 1) {
-        ReleaseType.parse(get(0).parseSeparatorsImpl())
-    } else {
-        ReleaseType.parse(this)
-    }
+/**
+ * Parse a multi-value tag into a [ReleaseType], handling separators in the process.
+ */
+fun List<String>.parseReleaseType() = ReleaseType.parse(parseMultiValue())
 
+/**
+ * Parse a multi-value genre name using ID3v2 rules. If there is one value, the ID3v2.3
+ * rules will be used, followed by separator parsing. Otherwise, each value will be iterated
+ * through, and numeric values transformed into string values.
+ */
 fun List<String>.parseId3GenreNames() =
     if (size == 1) {
         get(0).parseId3GenreNames()
@@ -61,6 +75,9 @@ fun List<String>.parseId3GenreNames() =
         map { it.parseId3v1Genre() ?: it }
     }
 
+/**
+ * Parse a single genre name using ID3v2.3 rules.
+ */
 fun String.parseId3GenreNames() =
         parseId3v1Genre()?.let { listOf(it) } ?:
            parseId3v2Genre() ?:
@@ -84,7 +101,7 @@ private fun String.parseId3v2Genre(): List<String>? {
     val groups = (GENRE_RE.matchEntire(this) ?: return null).groupValues
     val genres = mutableSetOf<String>()
 
-    // ID3v2 genres are far more complex and require string grokking to properly implement.
+    // ID3v2.3 genres are far more complex and require string grokking to properly implement.
     // You can read the spec for it here: https://id3.org/id3v2.3.0#TCON
     // This implementation in particular is based off Mutagen's genre parser.
 
