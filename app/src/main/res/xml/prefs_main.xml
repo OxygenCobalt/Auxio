@@ -74,6 +74,11 @@
             app:summary="@string/set_headset_autoplay_desc"
             app:title="@string/set_headset_autoplay" />
 
+        <SwitchPreferenceCompat
+            app:key="@string/set_key_bluetooth_autoplay"
+            app:summary="@string/set_bluetooth_autoplay_desc"
+            app:title="@string/set_bluetooth_autoplay" />
+
         <org.oxycblt.auxio.settings.ui.IntListPreference
             app:defaultValue="@integer/replay_gain_dynamic"
             app:entries="@array/entries_replay_gain"

@@ -135,6 +135,10 @@ class Settings(private val context: Context, private val callback: Callback? = n
     val headsetAutoplay: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_headset_autoplay), false)
 
+    /** Whether a connected bluetooth device should cause Auxio to spawn and start playback */
+    val bluetoothAutoplay: Boolean
+        get() = inner.getBoolean(context.getString(R.string.set_key_bluetooth_autoplay), false)
+
     /** The current ReplayGain configuration */
     val replayGainMode: ReplayGainMode
         get() =
