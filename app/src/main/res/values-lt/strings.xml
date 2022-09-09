@@ -21,7 +21,7 @@
     <string name="lbl_song_detail">Peržiūrėti ypatybes</string>
     <string name="lbl_size">Dydis</string>
     <string name="lbl_bitrate">Bitų srautas</string>
-    <string name="lbl_sample_rate">Elementų dažnis</string>
+    <string name="lbl_sample_rate">Mėginių ėmimo dažnis</string>
     <string name="set_theme_auto">Automatinis</string>
     <string name="set_theme_day">Šviesus</string>
     <string name="set_theme_night">Tamsus</string>
@@ -74,8 +74,8 @@
     <string name="clr_deep_purple">Giliai violetinė</string>
     <string name="lbl_observing">Stebėjimas muzikos biblioteką</string>
     <string name="lng_observing">Stebima, ar jūsų muzikos bibliotekoje yra pakeitimų…</string>
-    <string name="lbl_shuffle_shortcut_short">Išmaišyti</string>
-    <string name="lbl_shuffle_shortcut_long">Išmaišyti viską</string>
+    <string name="lbl_shuffle_shortcut_short">Maišyti</string>
+    <string name="lbl_shuffle_shortcut_long">Maišyti viską</string>
     <string name="lbl_state_restored">Atkurta grojimo būsena</string>
     <string name="lbl_state_saved">Išsaugota būsena</string>
     <string name="lbl_cancel">Atšaukti</string>
@@ -214,4 +214,7 @@
     <string name="set_save_state">Išsaugoti grojimo būseną</string>
     <string name="set_dirs_desc">Tvarkykite, iš kur turėtų būti įkeliama muzika</string>
     <string name="desc_genre_image">Žanro vaizdas, skirtas %s</string>
+    <string name="desc_shuffle">Įjungti arba išjungti maišimą</string>
+    <string name="desc_track_number">Takelis %d</string>
+    <string name="desc_change_repeat">Keisti kartojimo režimą</string>
 </resources>
