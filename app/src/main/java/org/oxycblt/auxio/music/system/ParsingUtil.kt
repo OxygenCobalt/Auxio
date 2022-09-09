@@ -3,6 +3,7 @@ package org.oxycblt.auxio.music.system
 import androidx.core.text.isDigitsOnly
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.ReleaseType
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
@@ -30,8 +31,8 @@ fun String.parseYear() = toIntOrNull()?.let(Date::from)
 /** Parse an ISO-8601 time-stamp from this field into a [Date]. */
 fun String.parseTimestamp() = Date.from(this)
 
-private val SEPARATOR_REGEX = Regex("[^\\\\][\\[,;/+&]")
-private val ESCAPED_REGEX = Regex("\\\\[\\[,;/+&]")
+private val SEPARATOR_REGEX_CACHE = mutableMapOf<String, Regex>()
+private val ESCAPE_REGEX_CACHE = mutableMapOf<String, Regex>()
 
 /**
  * Fully parse a multi-value tag.
@@ -41,36 +42,49 @@ private val ESCAPED_REGEX = Regex("\\\\[\\[,;/+&]")
  *
  * Alternatively, if there are several tags already, it will be returned without modification.
  */
-fun List<String>.parseMultiValue() =
+fun List<String>.parseMultiValue(settings: Settings) =
     if (size == 1) {
-        get(0).parseSeparatorsImpl()
+        get(0).maybeParseSeparators(settings)
     } else {
         this
     }
 
 /**
- * Parse a tag into multiple values using a series of generic separators. Will trim whitespace.
+ * Maybe a single tag into multi values with the user-preferred separators. If not enabled,
+ * the plain string will be returned.
  */
-private fun String.parseSeparatorsImpl() =
-    // First split by non-escaped separators (No preceding \), and then split by escaped
-    // separators.
-    SEPARATOR_REGEX.split(this).map {
-        ESCAPED_REGEX.replace(it) { match -> match.value.substring(1) }.trim()
+fun String.maybeParseSeparators(settings: Settings): List<String> {
+    // Get the separators the user desires. If null, we don't parse any.
+    val separators = settings.separators ?: return listOf(this)
+
+    // Try to cache compiled regexes for particular separator combinations.
+    val regex = synchronized(SEPARATOR_REGEX_CACHE) {
+        SEPARATOR_REGEX_CACHE.getOrPut(separators) { Regex("[^\\\\][$separators]") }
     }
+
+    val escape = synchronized(ESCAPE_REGEX_CACHE) {
+        ESCAPE_REGEX_CACHE.getOrPut(separators) { Regex("\\\\[$separators]")}
+    }
+
+    return regex.split(this).map { value ->
+        // Convert escaped separators to their correct value
+        escape.replace(value) { match -> match.value.substring(1) }.trim()
+    }
+}
 
 /**
  * Parse a multi-value tag into a [ReleaseType], handling separators in the process.
  */
-fun List<String>.parseReleaseType() = ReleaseType.parse(parseMultiValue())
+fun List<String>.parseReleaseType(settings: Settings) = ReleaseType.parse(parseMultiValue(settings))
 
 /**
  * Parse a multi-value genre name using ID3v2 rules. If there is one value, the ID3v2.3
  * rules will be used, followed by separator parsing. Otherwise, each value will be iterated
  * through, and numeric values transformed into string values.
  */
-fun List<String>.parseId3GenreNames() =
+fun List<String>.parseId3GenreNames(settings: Settings) =
     if (size == 1) {
-        get(0).parseId3GenreNames()
+        get(0).parseId3GenreNames(settings)
     } else {
         map { it.parseId3v1Genre() ?: it }
     }
@@ -78,10 +92,10 @@ fun List<String>.parseId3GenreNames() =
 /**
  * Parse a single genre name using ID3v2.3 rules.
  */
-fun String.parseId3GenreNames() =
+fun String.parseId3GenreNames(settings: Settings) =
         parseId3v1Genre()?.let { listOf(it) } ?:
            parseId3v2Genre() ?:
-                parseSeparatorsImpl()
+                maybeParseSeparators(settings)
 
 private fun String.parseId3v1Genre(): String? =
     when {

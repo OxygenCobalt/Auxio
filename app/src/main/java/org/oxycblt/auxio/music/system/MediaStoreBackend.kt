@@ -91,6 +91,9 @@ import org.oxycblt.auxio.util.logD
  * I wish I was born in the neolithic.
  */
 
+// TODO: Make context a member var to cache Settings
+// TODO: Move duration util to MusicUtil
+
 /**
  * Represents a [Indexer.Backend] that loads music from the media database ([MediaStore]). This is
  * not a fully-featured class by itself, and it's API-specific derivatives should be used instead.
@@ -163,6 +166,8 @@ abstract class MediaStoreBackend : Indexer.Backend {
         cursor: Cursor,
         emitIndexing: (Indexer.Indexing) -> Unit
     ): List<Song> {
+        val settings = Settings(context)
+
         val rawSongs = mutableListOf<Song.Raw>()
         while (cursor.moveToNext()) {
             rawSongs.add(buildRawSong(context, cursor))
@@ -189,7 +194,8 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 // format a genre was derived from, we have to treat them like they are ID3
                 // genres, even when they might not be.
                 val id = genreCursor.getLong(idIndex)
-                val name = (genreCursor.getStringOrNull(nameIndex) ?: continue).parseId3GenreNames()
+                val name = (genreCursor.getStringOrNull(nameIndex) ?: continue)
+                    .parseId3GenreNames(settings)
 
                 context.contentResolverSafe.useQuery(
                     MediaStore.Audio.Genres.Members.getContentUri(VOLUME_EXTERNAL, id),
@@ -249,6 +255,8 @@ abstract class MediaStoreBackend : Indexer.Backend {
      * outlined in [projection].
      */
     open fun buildRawSong(context: Context, cursor: Cursor): Song.Raw {
+        val settings = Settings(context)
+
         // Initialize our cursor indices if we haven't already.
         if (idIndex == -1) {
             idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
@@ -292,14 +300,19 @@ abstract class MediaStoreBackend : Indexer.Backend {
         // Android does not make a non-existent artist tag null, it instead fills it in
         // as <unknown>, which makes absolutely no sense given how other fields default
         // to null if they are not present. If this field is <unknown>, null it so that
-        // it's easier to handle later.
+        // it's easier to handle later. While we can't natively parse multi-value tags,
+        // from MediaStore itself, we can still parse by user-defined separators.
         raw.artistNames =
             cursor.getString(artistIndex).run {
-                if (this != MediaStore.UNKNOWN_STRING) listOf(this) else null
+                if (this != MediaStore.UNKNOWN_STRING) {
+                    maybeParseSeparators(settings)
+                } else {
+                    null
+                }
             }
 
         // The album artist field is nullable and never has placeholder values.
-        raw.albumArtistNames = cursor.getStringOrNull(albumArtistIndex)?.let { listOf(it) }
+        raw.albumArtistNames = cursor.getStringOrNull(albumArtistIndex)?.maybeParseSeparators(settings)
 
         return raw
     }

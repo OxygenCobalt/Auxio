@@ -25,13 +25,14 @@
     <string name="set_key_keep_shuffle" translatable="false">KEY_KEEP_SHUFFLE</string>
     <string name="set_key_rewind_prev" translatable="false">KEY_PREV_REWIND</string>
     <string name="set_key_repeat_pause" translatable="false">KEY_LOOP_PAUSE</string>
-
     <string name="set_key_save_state" translatable="false">auxio_save_state</string>
     <string name="set_key_wipe_state" translatable="false">auxio_wipe_state</string>
     <string name="set_key_restore_state" translatable="false">auxio_restore_state</string>
+
     <string name="set_key_reindex" translatable="false">auxio_reindex</string>
     <string name="set_key_music_dirs" translatable="false">auxio_music_dirs</string>
     <string name="set_key_music_dirs_include" translatable="false">auxio_include_dirs</string>
+    <string name="set_key_separators" translatable="false">auxio_separators</string>
     <string name="set_key_observing" translatable="false">auxio_observing</string>
     <string name="set_key_quality_tags" translatable="false">auxio_quality_tags</string>
 

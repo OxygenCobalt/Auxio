@@ -219,13 +219,26 @@ class Settings(private val context: Context, private val callback: Callback? = n
         }
     }
 
+    /**
+     * The list of separators the user wants to parse by.
+     */
+    var separators: String?
+        // Differ from convention and store a string of separator characters instead of an int
+        // code. This makes it easier to use in Regexes and makes it more extendable.
+        get() = inner.getString(context.getString(R.string.set_key_separators), null)?.ifEmpty { null }
+        set(value) {
+            inner.edit {
+                putString(context.getString(R.string.set_key_separators), value)
+                apply()
+            }
+        }
+
     /** The current filter mode of the search tab */
     var searchFilterMode: DisplayMode?
         get() =
             DisplayMode.fromInt(
                 inner.getInt(context.getString(R.string.set_key_search_filter), Int.MIN_VALUE))
         set(value) {
-            logD(value)
             inner.edit {
                 putInt(
                     context.getString(R.string.set_key_search_filter),

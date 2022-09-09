@@ -28,6 +28,7 @@ import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.audioUri
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -122,6 +123,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
  * @author OxygenCobalt
  */
 class Task(context: Context, private val raw: Song.Raw) {
+    private val settings = Settings(context)
     private val future =
         MetadataRetriever.retrieveMetadata(
             context,
@@ -233,18 +235,18 @@ class Task(context: Context, private val raw: Song.Raw) {
         tags["TSOA"]?.let { raw.albumSortName = it[0] }
 
         // (Sort) Artist
-        tags["TPE1"]?.let { raw.artistNames = it.parseMultiValue() }
-        tags["TSOP"]?.let { raw.artistSortNames = it.parseMultiValue() }
+        tags["TPE1"]?.let { raw.artistNames = it.parseMultiValue(settings) }
+        tags["TSOP"]?.let { raw.artistSortNames = it.parseMultiValue(settings) }
 
         // (Sort) Album artist
-        tags["TPE2"]?.let { raw.albumArtistNames = it.parseMultiValue() }
-        tags["TSO2"]?.let { raw.albumArtistSortNames = it.parseMultiValue() }
+        tags["TPE2"]?.let { raw.albumArtistNames = it.parseMultiValue(settings) }
+        tags["TSO2"]?.let { raw.albumArtistSortNames = it.parseMultiValue(settings) }
 
         // Genre, with the weird ID3 rules.
-        tags["TCON"]?.let { raw.genreNames = it.parseId3GenreNames() }
+        tags["TCON"]?.let { raw.genreNames = it.parseId3GenreNames(settings) }
 
         // Release type (GRP1 is sometimes used for this, so fall back to it)
-        (tags["TXXX:MusicBrainz Album Type"] ?: tags["GRP1"])?.parseReleaseType()?.let {
+        (tags["TXXX:MusicBrainz Album Type"] ?: tags["GRP1"])?.parseReleaseType(settings)?.let {
             raw.albumReleaseType = it
         }
     }
@@ -297,18 +299,18 @@ class Task(context: Context, private val raw: Song.Raw) {
         tags["ALBUMSORT"]?.let { raw.albumSortName = it[0]  }
 
         // (Sort) Artist
-        tags["ARTIST"]?.let { raw.artistNames = it.parseMultiValue() }
-        tags["ARTISTSORT"]?.let { raw.artistSortNames = it.parseMultiValue() }
+        tags["ARTIST"]?.let { raw.artistNames = it.parseMultiValue(settings) }
+        tags["ARTISTSORT"]?.let { raw.artistSortNames = it.parseMultiValue(settings) }
 
         // (Sort) Album artist
-        tags["ALBUMARTIST"]?.let { raw.albumArtistNames = it.parseMultiValue() }
-        tags["ALBUMARTISTSORT"]?.let { raw.albumArtistSortNames = it.parseMultiValue() }
+        tags["ALBUMARTIST"]?.let { raw.albumArtistNames = it.parseMultiValue(settings) }
+        tags["ALBUMARTISTSORT"]?.let { raw.albumArtistSortNames = it.parseMultiValue(settings) }
 
         // Genre, no ID3 rules here
-        tags["GENRE"]?.let { raw.genreNames = it.parseMultiValue() }
+        tags["GENRE"]?.let { raw.genreNames = it.parseMultiValue(settings) }
 
         // Release type
-        tags["RELEASETYPE"]?.parseReleaseType()?.let { raw.albumReleaseType = it }
+        tags["RELEASETYPE"]?.parseReleaseType(settings)?.let { raw.albumReleaseType = it }
     }
 
     /**
