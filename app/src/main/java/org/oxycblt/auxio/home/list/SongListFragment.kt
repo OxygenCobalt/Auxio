@@ -36,8 +36,8 @@ import org.oxycblt.auxio.ui.recycler.SongViewHolder
 import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.formatDurationMs
-import org.oxycblt.auxio.util.secsToMs
+import org.oxycblt.auxio.music.formatDurationMs
+import org.oxycblt.auxio.music.secsToMs
 
 /**
  * A [HomeListFragment] for showing a list of [Song]s.

@@ -50,55 +50,6 @@ fun Int.nonZeroOrNull() = if (this > 0) this else null
 /** Returns  null if this value is not in [range]. */
 fun Int.inRangeOrNull(range: IntRange) = if (range.contains(this)) this else null
 
-/** Converts a long in milliseconds to a long in deci-seconds */
-fun Long.msToDs() = floorDiv(100)
-
-/** Converts a long in milliseconds to a long in seconds */
-fun Long.msToSecs() = floorDiv(1000)
-
-/** Converts a long in deci-seconds to a long in milliseconds. */
-fun Long.dsToMs() = times(100)
-
-/** Converts a long in deci-seconds to a long in seconds. */
-fun Long.dsToSecs() = floorDiv(10)
-
-/** Converts a long in seconds to a long in milliseconds. */
-fun Long.secsToMs() = times(1000)
-
-/**
- * Convert a [Long] of milliseconds into a string duration.
- * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
- * will be returned if the second value is 0.
- */
-fun Long.formatDurationMs(isElapsed: Boolean) = msToSecs().formatDurationSecs(isElapsed)
-
-/**
- * Convert a [Long] of deci-seconds into a string duration.
- * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
- * will be returned if the second value is 0.
- */
-fun Long.formatDurationDs(isElapsed: Boolean) = dsToSecs().formatDurationSecs(isElapsed)
-
-/**
- * Convert a [Long] of seconds into a string duration.
- * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
- * will be returned if the second value is 0.
- */
-fun Long.formatDurationSecs(isElapsed: Boolean): String {
-    if (!isElapsed && this == 0L) {
-        logD("Non-elapsed duration is zero, using --:--")
-        return "--:--"
-    }
-
-    var durationString = DateUtils.formatElapsedTime(this)
-
-    // If the duration begins with a excess zero [e.g 01:42], then cut it off.
-    if (durationString[0] == '0') {
-        durationString = durationString.slice(1 until durationString.length)
-    }
-
-    return durationString
-}
 
 /** Lazily reflect to retrieve a [Field]. */
 fun lazyReflectedField(clazz: KClass<*>, field: String) = lazy {

@@ -128,8 +128,6 @@ class Indexer {
      * complete, a new completion state will be pushed to each callback.
      */
     suspend fun index(context: Context) {
-        requireBackgroundThread()
-
         val handle = guard.newHandle()
 
         val notGranted =
@@ -203,20 +201,20 @@ class Indexer {
 
         val mediaStoreBackend =
             when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30MediaStoreBackend()
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Api29MediaStoreBackend()
-                else -> Api21MediaStoreBackend()
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30MediaStoreBackend(context)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Api29MediaStoreBackend(context)
+                else -> Api21MediaStoreBackend(context)
             }
 
         val settings = Settings(context)
         val backend =
             if (settings.useQualityTags) {
-                ExoPlayerBackend(mediaStoreBackend)
+                ExoPlayerBackend(context, mediaStoreBackend)
             } else {
                 mediaStoreBackend
             }
 
-        val songs = buildSongs(context, backend, handle)
+        val songs = buildSongs(backend, handle)
         if (songs.isEmpty()) {
             return null
         }
@@ -243,16 +241,16 @@ class Indexer {
      * [buildGenres] functions must be called with the returned list so that all songs are properly
      * linked up.
      */
-    private fun buildSongs(context: Context, backend: Backend, handle: Long): List<Song> {
+    private fun buildSongs(backend: Backend, handle: Long): List<Song> {
         val start = System.currentTimeMillis()
 
         var songs =
-            backend.query(context).use { cursor ->
+            backend.query().use { cursor ->
                 logD(
                     "Successfully queried media database " +
                         "in ${System.currentTimeMillis() - start}ms")
 
-                backend.buildSongs(context, cursor) { emitIndexing(it, handle) }
+                backend.buildSongs(cursor) { emitIndexing(it, handle) }
             }
 
         // Deduplicate songs to prevent (most) deformed music clones
@@ -425,11 +423,10 @@ class Indexer {
     /** Represents a backend that metadata can be extracted from. */
     interface Backend {
         /** Query the media database for a basic cursor. */
-        fun query(context: Context): Cursor
+        fun query(): Cursor
 
         /** Create a list of songs from the [Cursor] queried in [query]. */
         fun buildSongs(
-            context: Context,
             cursor: Cursor,
             emitIndexing: (Indexing) -> Unit
         ): List<Song>

@@ -45,15 +45,15 @@ import org.oxycblt.auxio.util.logW
  *
  * @author OxygenCobalt
  */
-class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
+class ExoPlayerBackend(private val context: Context, private val inner: MediaStoreBackend) : Indexer.Backend {
+    private val settings = Settings(context)
     private val taskPool: Array<Task?> = arrayOfNulls(TASK_CAPACITY)
 
     // No need to implement our own query logic, as this backend is still reliant on
     // MediaStore.
-    override fun query(context: Context) = inner.query(context)
+    override fun query() = inner.query()
 
     override fun buildSongs(
-        context: Context,
         cursor: Cursor,
         emitIndexing: (Indexer.Indexing) -> Unit
     ): List<Song> {
@@ -82,11 +82,11 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
                         if (song != null) {
                             songs.add(song)
                             emitIndexing(Indexer.Indexing.Songs(songs.size, total))
-                            taskPool[i] = Task(context, raw)
+                            taskPool[i] = Task(context, settings, raw)
                             break@spin
                         }
                     } else {
-                        taskPool[i] = Task(context, raw)
+                        taskPool[i] = Task(context, settings, raw)
                         break@spin
                     }
                 }
@@ -122,8 +122,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
  * Wraps an ExoPlayer metadata retrieval task in a safe abstraction. Access is done with [get].
  * @author OxygenCobalt
  */
-class Task(context: Context, private val raw: Song.Raw) {
-    private val settings = Settings(context)
+class Task(context: Context, private val settings: Settings, private val raw: Song.Raw) {
     private val future =
         MetadataRetriever.retrieveMetadata(
             context,

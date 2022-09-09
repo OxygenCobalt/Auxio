@@ -91,7 +91,6 @@ import org.oxycblt.auxio.util.logD
  * I wish I was born in the neolithic.
  */
 
-// TODO: Make context a member var to cache Settings
 // TODO: Move duration util to MusicUtil
 
 /**
@@ -99,7 +98,7 @@ import org.oxycblt.auxio.util.logD
  * not a fully-featured class by itself, and it's API-specific derivatives should be used instead.
  * @author OxygenCobalt
  */
-abstract class MediaStoreBackend : Indexer.Backend {
+abstract class MediaStoreBackend(private val context: Context) : Indexer.Backend {
     private var idIndex = -1
     private var titleIndex = -1
     private var displayNameIndex = -1
@@ -113,10 +112,10 @@ abstract class MediaStoreBackend : Indexer.Backend {
     private var artistIndex = -1
     private var albumArtistIndex = -1
 
+    private val settings = Settings(context)
     protected val volumes = mutableListOf<StorageVolume>()
 
-    override fun query(context: Context): Cursor {
-        val settings = Settings(context)
+    override fun query(): Cursor {
         val storageManager = context.getSystemServiceCompat(StorageManager::class)
         volumes.addAll(storageManager.storageVolumesCompat)
         val dirs = settings.getMusicDirs(storageManager)
@@ -162,12 +161,9 @@ abstract class MediaStoreBackend : Indexer.Backend {
     }
 
     override fun buildSongs(
-        context: Context,
         cursor: Cursor,
         emitIndexing: (Indexer.Indexing) -> Unit
     ): List<Song> {
-        val settings = Settings(context)
-
         val rawSongs = mutableListOf<Song.Raw>()
         while (cursor.moveToNext()) {
             rawSongs.add(buildRawSong(context, cursor))
@@ -255,8 +251,6 @@ abstract class MediaStoreBackend : Indexer.Backend {
      * outlined in [projection].
      */
     open fun buildRawSong(context: Context, cursor: Cursor): Song.Raw {
-        val settings = Settings(context)
-
         // Initialize our cursor indices if we haven't already.
         if (idIndex == -1) {
             idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
@@ -349,7 +343,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
  * A [MediaStoreBackend] that completes the music loading process in a way compatible from
  * @author OxygenCobalt
  */
-class Api21MediaStoreBackend : MediaStoreBackend() {
+class Api21MediaStoreBackend(context: Context)  : MediaStoreBackend(context) {
     private var trackIndex = -1
     private var dataIndex = -1
 
@@ -414,7 +408,7 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class BaseApi29MediaStoreBackend : MediaStoreBackend() {
+open class BaseApi29MediaStoreBackend(context: Context) : MediaStoreBackend(context) {
     private var volumeIndex = -1
     private var relativePathIndex = -1
 
@@ -466,7 +460,7 @@ open class BaseApi29MediaStoreBackend : MediaStoreBackend() {
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class Api29MediaStoreBackend : BaseApi29MediaStoreBackend() {
+open class Api29MediaStoreBackend(context: Context) : BaseApi29MediaStoreBackend(context) {
     private var trackIndex = -1
 
     override val projection: Array<String>
@@ -497,7 +491,7 @@ open class Api29MediaStoreBackend : BaseApi29MediaStoreBackend() {
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.R)
-class Api30MediaStoreBackend : BaseApi29MediaStoreBackend() {
+class Api30MediaStoreBackend(context: Context) : BaseApi29MediaStoreBackend(context) {
     private var trackIndex: Int = -1
     private var discIndex: Int = -1
 

@@ -22,7 +22,7 @@ import android.util.AttributeSet
 import com.google.android.material.slider.Slider
 import kotlin.math.max
 import org.oxycblt.auxio.databinding.ViewSeekBarBinding
-import org.oxycblt.auxio.util.formatDurationDs
+import org.oxycblt.auxio.music.formatDurationDs
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logD
 

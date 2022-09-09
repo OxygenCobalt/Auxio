@@ -29,7 +29,7 @@ import org.oxycblt.auxio.databinding.DialogSongDetailBinding
 import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.formatDurationMs
+import org.oxycblt.auxio.music.formatDurationMs
 
 /**
  * A dialog displayed when "View properties" is selected on a song, showing more information about

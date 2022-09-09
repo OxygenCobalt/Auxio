@@ -32,7 +32,7 @@ import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.formatDurationMs
+import org.oxycblt.auxio.music.formatDurationMs
 
 /**
  * A [HomeListFragment] for showing a list of [Artist]s.

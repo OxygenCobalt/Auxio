@@ -34,7 +34,7 @@ import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
-import org.oxycblt.auxio.util.msToDs
+import org.oxycblt.auxio.music.msToDs
 
 /**
  * A fragment showing the current playback state in a compact manner. Used as the bar for the

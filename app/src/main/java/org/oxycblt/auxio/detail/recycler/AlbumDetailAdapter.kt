@@ -34,7 +34,7 @@ import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.formatDurationMs
+import org.oxycblt.auxio.music.formatDurationMs
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 

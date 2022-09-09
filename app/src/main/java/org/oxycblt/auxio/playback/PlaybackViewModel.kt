@@ -36,9 +36,9 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.application
-import org.oxycblt.auxio.util.dsToMs
+import org.oxycblt.auxio.music.dsToMs
 import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.msToDs
+import org.oxycblt.auxio.music.msToDs
 
 /**
  * The ViewModel that provides a UI frontend for [PlaybackStateManager].

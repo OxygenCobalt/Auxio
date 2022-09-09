@@ -23,17 +23,11 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
+import android.text.format.DateUtils
 import androidx.core.text.isDigitsOnly
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.nonZeroOrNull
+import org.oxycblt.auxio.util.logD
 import java.util.UUID
-
-/** Shortcut to resolve a year from a nullable date. Will return "No Date" if it is null. */
-fun Date?.resolveYear(context: Context) =
-    this?.resolveYear(context) ?: context.getString(R.string.def_date)
-
-/** Converts this string to a UUID, or returns null if it is not valid. */
-fun String.toUuid() = try { UUID.fromString(this) } catch (e: IllegalArgumentException) { null }
 
 /** Shortcut for making a [ContentResolver] query with less superfluous arguments. */
 fun ContentResolver.queryCursor(
@@ -65,3 +59,61 @@ val Long.audioUri: Uri
 /** Converts a [Long] Album ID into a URI pointing to MediaStore-cached album art. */
 val Long.albumCoverUri: Uri
     get() = ContentUris.withAppendedId(EXTERNAL_ALBUM_ART_URI, this)
+
+
+/** Shortcut to resolve a year from a nullable date. Will return "No Date" if it is null. */
+fun Date?.resolveYear(context: Context) =
+    this?.resolveYear(context) ?: context.getString(R.string.def_date)
+
+/** Converts this string to a UUID, or returns null if it is not valid. */
+fun String.toUuid() = try { UUID.fromString(this) } catch (e: IllegalArgumentException) { null }
+
+/** Converts a long in milliseconds to a long in deci-seconds */
+fun Long.msToDs() = floorDiv(100)
+
+/** Converts a long in milliseconds to a long in seconds */
+fun Long.msToSecs() = floorDiv(1000)
+
+/** Converts a long in deci-seconds to a long in milliseconds. */
+fun Long.dsToMs() = times(100)
+
+/** Converts a long in deci-seconds to a long in seconds. */
+fun Long.dsToSecs() = floorDiv(10)
+
+/** Converts a long in seconds to a long in milliseconds. */
+fun Long.secsToMs() = times(1000)
+
+/**
+ * Convert a [Long] of milliseconds into a string duration.
+ * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
+ * will be returned if the second value is 0.
+ */
+fun Long.formatDurationMs(isElapsed: Boolean) = msToSecs().formatDurationSecs(isElapsed)
+
+/**
+ * Convert a [Long] of deci-seconds into a string duration.
+ * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
+ * will be returned if the second value is 0.
+ */
+fun Long.formatDurationDs(isElapsed: Boolean) = dsToSecs().formatDurationSecs(isElapsed)
+
+/**
+ * Convert a [Long] of seconds into a string duration.
+ * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
+ * will be returned if the second value is 0.
+ */
+fun Long.formatDurationSecs(isElapsed: Boolean): String {
+    if (!isElapsed && this == 0L) {
+        logD("Non-elapsed duration is zero, using --:--")
+        return "--:--"
+    }
+
+    var durationString = DateUtils.formatElapsedTime(this)
+
+    // If the duration begins with a excess zero [e.g 01:42], then cut it off.
+    if (durationString[0] == '0') {
+        durationString = durationString.slice(1 until durationString.length)
+    }
+
+    return durationString
+}
