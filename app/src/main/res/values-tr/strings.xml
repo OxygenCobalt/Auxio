@@ -201,4 +201,6 @@
     <string name="set_observing">Otomatik yeniden yükleme</string>
     <string name="set_observing_desc">Müzik kitaplığınız her değiştiğinde yeniden yükler (Deneysel)</string>
     <string name="lbl_sort_date_added">Eklendiği tarih</string>
+    <string name="lbl_album_remix">Remix albüm</string>
+    <string name="lbl_album_live">Canlı albüm</string>
 </resources>
