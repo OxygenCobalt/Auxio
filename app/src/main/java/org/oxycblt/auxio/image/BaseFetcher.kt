@@ -22,7 +22,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.media.MediaMetadataRetriever
-import android.util.Size as AndroidSize
 import androidx.core.graphics.drawable.toDrawable
 import coil.decode.DataSource
 import coil.decode.ImageSource
@@ -38,8 +37,6 @@ import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.MetadataRetriever
 import com.google.android.exoplayer2.metadata.flac.PictureFrame
 import com.google.android.exoplayer2.metadata.id3.ApicFrame
-import java.io.ByteArrayInputStream
-import java.io.InputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.buffer
@@ -48,6 +45,9 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
+import java.io.ByteArrayInputStream
+import java.io.InputStream
+import android.util.Size as AndroidSize
 
 /**
  * The base implementation for all image fetchers in Auxio.
@@ -194,7 +194,8 @@ abstract class BaseFetcher : Fetcher {
                 return SourceResult(
                     source = ImageSource(stream.source().buffer(), context),
                     mimeType = null,
-                    dataSource = DataSource.DISK)
+                    dataSource = DataSource.DISK
+                )
             }
         }
 
@@ -223,7 +224,9 @@ abstract class BaseFetcher : Fetcher {
             // resolution.
             val bitmap =
                 SquareFrameTransform.INSTANCE.transform(
-                    BitmapFactory.decodeStream(stream), mosaicFrameSize)
+                    BitmapFactory.decodeStream(stream),
+                    mosaicFrameSize
+                )
 
             canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
 
@@ -241,7 +244,8 @@ abstract class BaseFetcher : Fetcher {
         return DrawableResult(
             drawable = mosaicBitmap.toDrawable(context.resources),
             isSampled = true,
-            dataSource = DataSource.DISK)
+            dataSource = DataSource.DISK
+        )
     }
 
     private fun Dimension.mosaicSize(): Int {

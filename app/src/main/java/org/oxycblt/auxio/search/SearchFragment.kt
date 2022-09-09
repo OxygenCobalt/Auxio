@@ -109,7 +109,11 @@ class SearchFragment :
 
         collectImmediately(searchModel.searchResults, ::handleResults)
         collectImmediately(
-            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::handlePlayback)
+            playbackModel.song,
+            playbackModel.parent,
+            playbackModel.isPlaying,
+            ::handlePlayback
+        )
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
@@ -175,7 +179,8 @@ class SearchFragment :
                     is Artist -> SearchFragmentDirections.actionShowArtist(item.uid)
                     is Genre -> SearchFragmentDirections.actionShowGenre(item.uid)
                     else -> return
-                })
+                }
+            )
 
         imm.hide()
     }

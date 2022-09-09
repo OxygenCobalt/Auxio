@@ -122,7 +122,9 @@ class PlaybackPanelFragment :
                 val equalizerIntent =
                     Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
                         .putExtra(
-                            AudioEffect.EXTRA_AUDIO_SESSION, playbackModel.currentAudioSessionId)
+                            AudioEffect.EXTRA_AUDIO_SESSION,
+                            playbackModel.currentAudioSessionId
+                        )
                         .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
 
                 try {

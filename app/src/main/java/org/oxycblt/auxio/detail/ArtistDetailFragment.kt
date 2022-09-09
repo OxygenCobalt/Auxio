@@ -84,7 +84,11 @@ class ArtistDetailFragment :
         collectImmediately(detailModel.currentArtist, ::handleItemChange)
         collectImmediately(detailModel.artistData, detailAdapter::submitList)
         collectImmediately(
-            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+            playbackModel.song,
+            playbackModel.parent,
+            playbackModel.isPlaying,
+            ::updatePlayback
+        )
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 

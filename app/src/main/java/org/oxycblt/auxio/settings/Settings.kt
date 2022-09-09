@@ -77,7 +77,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
         get() =
             inner.getInt(
                 context.getString(R.string.set_key_theme),
-                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            )
 
     /** Whether the dark theme should be black or not */
     val useBlackTheme: Boolean
@@ -97,7 +98,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     var libTabs: Array<Tab>
         get() =
             Tab.fromSequence(
-                inner.getInt(context.getString(R.string.set_key_lib_tabs), Tab.SEQUENCE_DEFAULT))
+                inner.getInt(context.getString(R.string.set_key_lib_tabs), Tab.SEQUENCE_DEFAULT)
+            )
                 ?: unlikelyToBeNull(Tab.fromSequence(Tab.SEQUENCE_DEFAULT))
         set(value) {
             inner.edit {
@@ -122,7 +124,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     val barAction: BarAction
         get() =
             BarAction.fromIntCode(
-                inner.getInt(context.getString(R.string.set_key_bar_action), Int.MIN_VALUE))
+                inner.getInt(context.getString(R.string.set_key_bar_action), Int.MIN_VALUE)
+            )
                 ?: BarAction.NEXT
 
     /**
@@ -140,7 +143,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     val replayGainMode: ReplayGainMode
         get() =
             ReplayGainMode.fromIntCode(
-                inner.getInt(context.getString(R.string.set_key_replay_gain), Int.MIN_VALUE))
+                inner.getInt(context.getString(R.string.set_key_replay_gain), Int.MIN_VALUE)
+            )
                 ?: ReplayGainMode.DYNAMIC
 
     /** The current ReplayGain pre-amp configuration */
@@ -148,7 +152,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
         get() =
             ReplayGainPreAmp(
                 inner.getFloat(context.getString(R.string.set_key_pre_amp_with), 0f),
-                inner.getFloat(context.getString(R.string.set_key_pre_amp_without), 0f))
+                inner.getFloat(context.getString(R.string.set_key_pre_amp_without), 0f)
+            )
         set(value) {
             inner.edit {
                 putFloat(context.getString(R.string.set_key_pre_amp_with), value.with)
@@ -162,7 +167,10 @@ class Settings(private val context: Context, private val callback: Callback? = n
         get() =
             PlaybackMode.fromInt(
                 inner.getInt(
-                    context.getString(R.string.set_key_library_song_playback_mode), Int.MIN_VALUE))
+                    context.getString(R.string.set_key_library_song_playback_mode),
+                    Int.MIN_VALUE
+                )
+            )
                 ?: PlaybackMode.ALL_SONGS
 
     /**
@@ -173,7 +181,10 @@ class Settings(private val context: Context, private val callback: Callback? = n
         get() =
             PlaybackMode.fromInt(
                 inner.getInt(
-                    context.getString(R.string.set_key_detail_song_playback_mode), Int.MIN_VALUE))
+                    context.getString(R.string.set_key_detail_song_playback_mode),
+                    Int.MIN_VALUE
+                )
+            )
 
     /** Whether shuffle should stay on when a new song is selected. */
     val keepShuffle: Boolean
@@ -201,7 +212,9 @@ class Settings(private val context: Context, private val callback: Callback? = n
                 .mapNotNull { Directory.fromDocumentUri(storageManager, it) }
 
         return MusicDirs(
-            dirs, inner.getBoolean(context.getString(R.string.set_key_music_dirs_include), false))
+            dirs,
+            inner.getBoolean(context.getString(R.string.set_key_music_dirs_include), false)
+        )
     }
 
     /** Set the list of directories that music should be hidden/loaded from. */
@@ -209,9 +222,12 @@ class Settings(private val context: Context, private val callback: Callback? = n
         inner.edit {
             putStringSet(
                 context.getString(R.string.set_key_music_dirs),
-                musicDirs.dirs.map(Directory::toDocumentUri).toSet())
+                musicDirs.dirs.map(Directory::toDocumentUri).toSet()
+            )
             putBoolean(
-                context.getString(R.string.set_key_music_dirs_include), musicDirs.shouldInclude)
+                context.getString(R.string.set_key_music_dirs_include),
+                musicDirs.shouldInclude
+            )
             apply()
         }
     }
@@ -233,12 +249,14 @@ class Settings(private val context: Context, private val callback: Callback? = n
     var searchFilterMode: DisplayMode?
         get() =
             DisplayMode.fromInt(
-                inner.getInt(context.getString(R.string.set_key_search_filter), Int.MIN_VALUE))
+                inner.getInt(context.getString(R.string.set_key_search_filter), Int.MIN_VALUE)
+            )
         set(value) {
             inner.edit {
                 putInt(
                     context.getString(R.string.set_key_search_filter),
-                    value?.intCode ?: Int.MIN_VALUE)
+                    value?.intCode ?: Int.MIN_VALUE
+                )
                 apply()
             }
         }
@@ -247,7 +265,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     var libSongSort: Sort
         get() =
             Sort.fromIntCode(
-                inner.getInt(context.getString(R.string.set_key_lib_songs_sort), Int.MIN_VALUE))
+                inner.getInt(context.getString(R.string.set_key_lib_songs_sort), Int.MIN_VALUE)
+            )
                 ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {
@@ -260,7 +279,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     var libAlbumSort: Sort
         get() =
             Sort.fromIntCode(
-                inner.getInt(context.getString(R.string.set_key_lib_albums_sort), Int.MIN_VALUE))
+                inner.getInt(context.getString(R.string.set_key_lib_albums_sort), Int.MIN_VALUE)
+            )
                 ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {
@@ -273,7 +293,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     var libArtistSort: Sort
         get() =
             Sort.fromIntCode(
-                inner.getInt(context.getString(R.string.set_key_lib_artists_sort), Int.MIN_VALUE))
+                inner.getInt(context.getString(R.string.set_key_lib_artists_sort), Int.MIN_VALUE)
+            )
                 ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {
@@ -286,7 +307,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     var libGenreSort: Sort
         get() =
             Sort.fromIntCode(
-                inner.getInt(context.getString(R.string.set_key_lib_genres_sort), Int.MIN_VALUE))
+                inner.getInt(context.getString(R.string.set_key_lib_genres_sort), Int.MIN_VALUE)
+            )
                 ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {
@@ -301,7 +323,10 @@ class Settings(private val context: Context, private val callback: Callback? = n
             var sort =
                 Sort.fromIntCode(
                     inner.getInt(
-                        context.getString(R.string.set_key_detail_album_sort), Int.MIN_VALUE))
+                        context.getString(R.string.set_key_detail_album_sort),
+                        Int.MIN_VALUE
+                    )
+                )
                     ?: Sort(Sort.Mode.ByDisc, true)
 
             // Correct legacy album sort modes to Disc
@@ -322,7 +347,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     var detailArtistSort: Sort
         get() =
             Sort.fromIntCode(
-                inner.getInt(context.getString(R.string.set_key_detail_artist_sort), Int.MIN_VALUE))
+                inner.getInt(context.getString(R.string.set_key_detail_artist_sort), Int.MIN_VALUE)
+            )
                 ?: Sort(Sort.Mode.ByYear, false)
         set(value) {
             inner.edit {
@@ -335,7 +361,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     var detailGenreSort: Sort
         get() =
             Sort.fromIntCode(
-                inner.getInt(context.getString(R.string.set_key_detail_genre_sort), Int.MIN_VALUE))
+                inner.getInt(context.getString(R.string.set_key_detail_genre_sort), Int.MIN_VALUE)
+            )
                 ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {

@@ -152,7 +152,8 @@ class Indexer {
                 if (library != null) {
                     logD(
                         "Music indexing completed successfully in " +
-                            "${System.currentTimeMillis() - start}ms")
+                            "${System.currentTimeMillis() - start}ms"
+                    )
                     Response.Ok(library)
                 } else {
                     logE("No music found")

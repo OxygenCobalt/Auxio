@@ -70,8 +70,10 @@ class BitmapProvider(private val context: Context) {
                             if (guard.check(handle)) {
                                 target.onCompleted(null)
                             }
-                        })
-                    .transformations(SquareFrameTransform.INSTANCE))
+                        }
+                    )
+                    .transformations(SquareFrameTransform.INSTANCE)
+            )
 
         currentRequest = Request(context.imageLoader.enqueue(request.build()), target)
     }

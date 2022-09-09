@@ -127,7 +127,8 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
             binding.context.getString(
                 R.string.fmt_two,
                 binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size),
-                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
+                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
+            )
 
         binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }
         binding.detailShuffleButton.setOnClickListener { listener.onShuffleParent() }

@@ -23,7 +23,6 @@ import androidx.annotation.IdRes
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import java.text.Normalizer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -42,6 +41,7 @@ import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.TaskGuard
 import org.oxycblt.auxio.util.application
 import org.oxycblt.auxio.util.logD
+import java.text.Normalizer
 
 /**
  * The [ViewModel] for search functionality.
@@ -157,12 +157,12 @@ class SearchViewModel(application: Application) :
 
     private inline fun <T : Music> List<T>.baseFilterBy(value: String, additional: (T) -> Boolean) =
         filter {
-                // The basic comparison is first by the *normalized* name, as that allows a
-                // non-unicode search to match with some unicode characters. If that fails,
-                // filter impls have fallback values, primarily around sort tags or file names.
-                it.resolveNameNormalized(application).contains(value, ignoreCase = true) ||
-                    additional(it)
-            }
+            // The basic comparison is first by the *normalized* name, as that allows a
+            // non-unicode search to match with some unicode characters. If that fails,
+            // filter impls have fallback values, primarily around sort tags or file names.
+            it.resolveNameNormalized(application).contains(value, ignoreCase = true) ||
+                additional(it)
+        }
             .ifEmpty { null }
 
     private fun Music.resolveNameNormalized(context: Context): String {

@@ -122,7 +122,8 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
             binding.context.getString(
                 R.string.fmt_two,
                 binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size),
-                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
+                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
+            )
         // binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnLongClickListener {
             listener.onOpenMenu(item, it)

@@ -68,13 +68,15 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             ViewGroup.getChildMeasureSpec(
                 MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                 0,
-                divider.layoutParams.width)
+                divider.layoutParams.width
+            )
 
         val heightMeasureSpec =
             ViewGroup.getChildMeasureSpec(
                 MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
                 0,
-                divider.layoutParams.height)
+                divider.layoutParams.height
+            )
 
         divider.measure(widthMeasureSpec, heightMeasureSpec)
     }

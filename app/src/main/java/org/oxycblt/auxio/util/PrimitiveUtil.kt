@@ -18,11 +18,11 @@
 package org.oxycblt.auxio.util
 
 import android.os.Looper
+import org.oxycblt.auxio.BuildConfig
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.util.concurrent.CancellationException
 import kotlin.reflect.KClass
-import org.oxycblt.auxio.BuildConfig
 
 /** Assert that we are on a background thread. */
 fun requireBackgroundThread() {

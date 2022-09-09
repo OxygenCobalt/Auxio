@@ -89,7 +89,11 @@ class AlbumDetailFragment :
         collectImmediately(detailModel.currentAlbum, ::handleItemChange)
         collectImmediately(detailModel.albumData, detailAdapter::submitList)
         collectImmediately(
-            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+            playbackModel.song,
+            playbackModel.parent,
+            playbackModel.isPlaying,
+            ::updatePlayback
+        )
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
@@ -164,7 +168,9 @@ class AlbumDetailFragment :
         findNavController()
             .navigate(
                 AlbumDetailFragmentDirections.actionShowArtist(
-                    unlikelyToBeNull(detailModel.currentAlbum.value).artist.uid))
+                    unlikelyToBeNull(detailModel.currentAlbum.value).artist.uid
+                )
+            )
     }
 
     private fun handleItemChange(album: Album?) {
@@ -228,7 +234,8 @@ class AlbumDetailFragment :
             binding.detailRecycler.post {
                 // Make sure to increment the position to make up for the detail header
                 binding.detailRecycler.layoutManager?.startSmoothScroll(
-                    CenterSmoothScroller(requireContext(), pos))
+                    CenterSmoothScroller(requireContext(), pos)
+                )
 
                 // If the recyclerview can scroll, its certain that it will have to scroll to
                 // correctly center the playing item, so make sure that the Toolbar is lifted in

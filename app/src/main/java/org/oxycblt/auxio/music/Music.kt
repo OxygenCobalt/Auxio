@@ -21,11 +21,6 @@ package org.oxycblt.auxio.music
 
 import android.content.Context
 import android.os.Parcelable
-import java.security.MessageDigest
-import java.util.UUID
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.reflect.KClass
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.BuildConfig
@@ -36,6 +31,11 @@ import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.inRangeOrNull
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import java.security.MessageDigest
+import java.util.UUID
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.reflect.KClass
 
 // --- MUSIC MODELS ---
 
@@ -164,13 +164,15 @@ class Song constructor(raw: Raw) : Music() {
     val path =
         Path(
             name = requireNotNull(raw.displayName) { "Invalid raw: No display name" },
-            parent = requireNotNull(raw.directory) { "Invalid raw: No parent directory" })
+            parent = requireNotNull(raw.directory) { "Invalid raw: No parent directory" }
+        )
 
     /** The mime type of the audio file. Only intended for display. */
     val mimeType =
         MimeType(
             fromExtension = requireNotNull(raw.extensionMimeType) { "Invalid raw: No mime type" },
-            fromFormat = raw.formatMimeType)
+            fromFormat = raw.formatMimeType
+        )
 
     /** The size of this audio file. */
     val size = requireNotNull(raw.size) { "Invalid raw: No size" }
@@ -234,11 +236,12 @@ class Song constructor(raw: Raw) : Music() {
             date = raw.date,
             releaseType = raw.albumReleaseType,
             rawArtist =
-                if (albumArtistName != null) {
-                    Artist.Raw(albumArtistName, albumArtistSortName)
-                } else {
-                    Artist.Raw(artistName, artistSortName)
-                })
+            if (albumArtistName != null) {
+                Artist.Raw(albumArtistName, albumArtistSortName)
+            } else {
+                Artist.Raw(artistName, artistSortName)
+            }
+        )
 
     val _rawGenres = raw.genreNames?.map { Genre.Raw(it) } ?: listOf(Genre.Raw(null))
 
@@ -505,7 +508,9 @@ fun MessageDigest.update(n: Long?) {
             n.shr(32).toByte(),
             n.shr(40).toByte(),
             n.shl(48).toByte(),
-            n.shr(56).toByte()))
+            n.shr(56).toByte()
+        )
+    )
 }
 
 /**
@@ -535,7 +540,8 @@ fun ByteArray.toUuid(): UUID {
             .or(get(12).toLong().and(0xFF).shl(24))
             .or(get(13).toLong().and(0xFF).shl(16))
             .or(get(14).toLong().and(0xFF).shl(8))
-            .or(get(15).toLong().and(0xFF)))
+            .or(get(15).toLong().and(0xFF))
+    )
 }
 
 /**
@@ -628,7 +634,8 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
     companion object {
         private val ISO8601_REGEX =
             Regex(
-                """^(\d{4,})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2}))?)?)?)?)?$""")
+                """^(\d{4,})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2}))?)?)?)?)?$"""
+            )
 
         fun from(year: Int) = fromTokens(listOf(year))
 

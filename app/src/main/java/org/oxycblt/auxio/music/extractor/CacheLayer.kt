@@ -31,3 +31,5 @@ class CacheLayer {
 
     fun maybePopulateCachedRaw(raw: Song.Raw) = false
 }
+
+// TODO: Make raw naming consistent (always rawSong(s), not raw)

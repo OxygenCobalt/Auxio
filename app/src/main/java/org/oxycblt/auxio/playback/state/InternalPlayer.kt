@@ -92,7 +92,8 @@ interface InternalPlayer {
                     // Not advancing, so don't move the position.
                     0f
                 },
-                creationTime)
+                creationTime
+            )
 
         // Equality ignores the creation time to prevent functionally
         // identical states from being equal.
@@ -119,7 +120,8 @@ interface InternalPlayer {
                     // main playing value is paused.
                     isPlaying && isAdvancing,
                     positionMs,
-                    SystemClock.elapsedRealtime())
+                    SystemClock.elapsedRealtime()
+                )
         }
     }
 

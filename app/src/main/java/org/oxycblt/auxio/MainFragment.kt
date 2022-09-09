@@ -31,8 +31,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.transition.MaterialFadeThrough
-import kotlin.math.max
-import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
@@ -51,6 +49,8 @@ import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls the more
@@ -89,9 +89,13 @@ class MainFragment :
 
         // Send meaningful accessibility events for bottom sheets
         ViewCompat.setAccessibilityPaneTitle(
-            binding.playbackSheet, context.getString(R.string.lbl_playback))
+            binding.playbackSheet,
+            context.getString(R.string.lbl_playback)
+        )
         ViewCompat.setAccessibilityPaneTitle(
-            binding.queueSheet, context.getString(R.string.lbl_queue))
+            binding.queueSheet,
+            context.getString(R.string.lbl_queue)
+        )
 
         val queueSheetBehavior = binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
         if (queueSheetBehavior != null) {
@@ -100,7 +104,8 @@ class MainFragment :
 
             unlikelyToBeNull(binding.handleWrapper).setOnClickListener {
                 if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED &&
-                    queueSheetBehavior.state == NeoBottomSheetBehavior.STATE_COLLAPSED) {
+                    queueSheetBehavior.state == NeoBottomSheetBehavior.STATE_COLLAPSED
+                ) {
                     queueSheetBehavior.state = NeoBottomSheetBehavior.STATE_EXPANDED
                 }
             }
@@ -328,14 +333,16 @@ class MainFragment :
 
             if (queueSheetBehavior != null &&
                 queueSheetBehavior.state != NeoBottomSheetBehavior.STATE_COLLAPSED &&
-                playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED) {
+                playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED
+            ) {
                 // Collapse the queue first if it is expanded.
                 queueSheetBehavior.state = NeoBottomSheetBehavior.STATE_COLLAPSED
                 return
             }
 
             if (playbackSheetBehavior.state != NeoBottomSheetBehavior.STATE_COLLAPSED &&
-                playbackSheetBehavior.state != NeoBottomSheetBehavior.STATE_HIDDEN) {
+                playbackSheetBehavior.state != NeoBottomSheetBehavior.STATE_HIDDEN
+            ) {
                 // Then collapse the playback sheet.
                 playbackSheetBehavior.state = NeoBottomSheetBehavior.STATE_COLLAPSED
                 return
@@ -355,9 +362,9 @@ class MainFragment :
 
             isEnabled =
                 playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
-                    queueSheetBehavior?.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
-                    exploreNavController.currentDestination?.id !=
-                        exploreNavController.graph.startDestinationId
+                queueSheetBehavior?.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
+                exploreNavController.currentDestination?.id !=
+                exploreNavController.graph.startDestinationId
         }
     }
 }

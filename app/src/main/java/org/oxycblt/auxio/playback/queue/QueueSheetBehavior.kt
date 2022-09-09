@@ -70,6 +70,10 @@ class QueueSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?
         val bars = insets.systemBarInsetsCompat
         expandedOffset = bars.top + barHeight + barSpacing
         return insets.replaceSystemBarInsetsCompat(
-            bars.left, bars.top, bars.right, expandedOffset + bars.bottom)
+            bars.left,
+            bars.top,
+            bars.right,
+            expandedOffset + bars.bottom
+        )
     }
 }

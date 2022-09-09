@@ -94,7 +94,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.StyledImageView)
         val staticIcon =
             styledAttrs.getResourceId(
-                R.styleable.StyledImageView_staticIcon, ResourcesCompat.ID_NULL)
+                R.styleable.StyledImageView_staticIcon,
+                ResourcesCompat.ID_NULL
+            )
         if (staticIcon != ResourcesCompat.ID_NULL) {
             this.staticIcon = context.getDrawableCompat(staticIcon)
         }
@@ -143,7 +145,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 adjustWidth,
                 adjustHeight,
                 bounds.width() - adjustWidth,
-                bounds.height() - adjustHeight)
+                bounds.height() - adjustHeight
+            )
             src.draw(canvas)
         }
 

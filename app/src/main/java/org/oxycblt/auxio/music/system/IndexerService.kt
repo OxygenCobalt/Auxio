@@ -78,7 +78,9 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         wakeLock =
             getSystemServiceCompat(PowerManager::class)
                 .newWakeLock(
-                    PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ":IndexerService")
+                    PowerManager.PARTIAL_WAKE_LOCK,
+                    BuildConfig.APPLICATION_ID + ":IndexerService"
+                )
 
         settings = Settings(this, this)
         indexerContentObserver = SystemContentObserver()
@@ -126,7 +128,8 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         when (state) {
             is Indexer.State.Complete -> {
                 if (state.response is Indexer.Response.Ok &&
-                    state.response.library != musicStore.library) {
+                    state.response.library != musicStore.library
+                ) {
                     logD("Applying new library")
 
                     val newLibrary = state.response.library
@@ -236,7 +239,10 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     ) : ContentObserver(handler), Runnable {
         init {
             contentResolverSafe.registerContentObserver(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, this)
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                true,
+                this
+            )
         }
 
         fun release() {

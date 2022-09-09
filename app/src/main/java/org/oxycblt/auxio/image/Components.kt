@@ -27,7 +27,6 @@ import coil.fetch.SourceResult
 import coil.key.Keyer
 import coil.request.Options
 import coil.size.Size
-import kotlin.math.min
 import okio.buffer
 import okio.source
 import org.oxycblt.auxio.music.Album
@@ -36,6 +35,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.Sort
+import kotlin.math.min
 
 /** A basic keyer for music data. */
 class MusicKeyer : Keyer<Music> {
@@ -60,7 +60,8 @@ private constructor(private val context: Context, private val album: Album) : Ba
             SourceResult(
                 source = ImageSource(stream.source().buffer(), context),
                 mimeType = null,
-                dataSource = DataSource.DISK)
+                dataSource = DataSource.DISK
+            )
         }
 
     class SongFactory : Fetcher.Factory<Song> {

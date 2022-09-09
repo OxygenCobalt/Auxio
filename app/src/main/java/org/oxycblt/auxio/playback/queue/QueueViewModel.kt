@@ -59,7 +59,8 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
     /** Remove a queue item using it's recyclerview adapter index. */
     fun removeQueueDataItem(adapterIndex: Int) {
         if (adapterIndex <= playbackManager.index ||
-            adapterIndex !in playbackManager.queue.indices) {
+            adapterIndex !in playbackManager.queue.indices
+        ) {
             return
         }
 

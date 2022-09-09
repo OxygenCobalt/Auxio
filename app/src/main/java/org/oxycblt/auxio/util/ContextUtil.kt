@@ -37,9 +37,9 @@ import androidx.annotation.PluralsRes
 import androidx.annotation.Px
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import kotlin.reflect.KClass
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.MainActivity
+import kotlin.reflect.KClass
 
 /** Shortcut to get a [LayoutInflater] from a [Context] */
 val Context.inflater: LayoutInflater
@@ -152,7 +152,8 @@ fun Context.newMainPendingIntent(): PendingIntent =
         this,
         IntegerTable.REQUEST_CODE,
         Intent(this, MainActivity::class.java),
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+    )
 
 /** Create a broadcast [PendingIntent] */
 fun Context.newBroadcastPendingIntent(what: String): PendingIntent =
@@ -160,4 +161,5 @@ fun Context.newBroadcastPendingIntent(what: String): PendingIntent =
         this,
         IntegerTable.REQUEST_CODE,
         Intent(what).setFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY),
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+    )

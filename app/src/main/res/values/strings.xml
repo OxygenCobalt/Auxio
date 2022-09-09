@@ -204,14 +204,14 @@
     <string name="set_rewind_prev_desc">Rewind before skipping to the previous song</string>
     <string name="set_repeat_pause">Pause on repeat</string>
     <string name="set_repeat_pause_desc">Pause when a song repeats</string>
-
-    <string name="set_content">Content</string>
     <string name="set_save_state">Save playback state</string>
     <string name="set_save_desc">Save the current playback state now</string>
     <string name="set_wipe_state">Clear playback state</string>
     <string name="set_wipe_desc">Clear the previously saved playback state (if any)</string>
     <string name="set_restore_state">Restore playback state</string>
     <string name="set_restore_desc">Restore the previously saved playback state (if any)</string>
+
+    <string name="set_content">Content</string>
     <string name="set_reindex">Reload music</string>
     <string name="set_reindex_desc">May wipe playback state</string>
     <string name="set_dirs">Music folders</string>

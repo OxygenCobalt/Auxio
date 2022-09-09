@@ -42,7 +42,8 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
 ) : IndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
     private var isPlaying = false
 
-    @Suppress("LeakingThis") override fun getItemCount() = differ.currentList.size
+    @Suppress("LeakingThis")
+    override fun getItemCount() = differ.currentList.size
 
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
@@ -83,7 +84,8 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
         return item is Header || item is SortHeader
     }
 
-    @Suppress("LeakingThis") protected val differ = AsyncListDiffer(this, diffCallback)
+    @Suppress("LeakingThis")
+    protected val differ = AsyncListDiffer(this, diffCallback)
 
     override val currentList: List<Item>
         get() = differ.currentList

@@ -370,4 +370,5 @@ private val GENRE_TABLE =
         "Psybient",
 
         // Auxio's extensions (Future garage is also based and deserves a slot)
-        "Future Garage")
+        "Future Garage"
+    )

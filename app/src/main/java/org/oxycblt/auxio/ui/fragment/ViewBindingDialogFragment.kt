@@ -26,10 +26,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
 /**
  * A dialog fragment enabling ViewBinding inflation and usage across the dialog fragment lifecycle.

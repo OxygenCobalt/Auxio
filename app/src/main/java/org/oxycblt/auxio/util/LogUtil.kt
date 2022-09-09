@@ -82,11 +82,13 @@ private val Any.autoTag: String
 @Suppress("KotlinConstantConditions")
 private fun basedCopyleftNotice(): Boolean {
     if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&
-        BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug") {
+        BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug"
+    ) {
         Log.d(
             "Auxio Project",
             "Friendly reminder: Auxio is licensed under the " +
-                "GPLv3 and all derivative apps must be made open source!")
+                "GPLv3 and all derivative apps must be made open source!"
+        )
 
         return true
     }

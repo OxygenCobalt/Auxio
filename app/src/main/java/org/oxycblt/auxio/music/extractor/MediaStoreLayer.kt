@@ -26,7 +26,6 @@ import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
-import java.io.File
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.music.Song
@@ -38,6 +37,7 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
+import java.io.File
 
 /*
  * This file acts as the base for most the black magic required to get a remotely sensible music
@@ -167,11 +167,13 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
 
         val cursor =
             requireNotNull(
-                    context.contentResolverSafe.queryCursor(
-                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                        projection,
-                        selector,
-                        args.toTypedArray())) { "Content resolver failure: No Cursor returned" }
+                context.contentResolverSafe.queryCursor(
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    projection,
+                    selector,
+                    args.toTypedArray()
+                )
+            ) { "Content resolver failure: No Cursor returned" }
                 .also { cursor = it }
 
         idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
@@ -250,7 +252,8 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
                 MediaStore.Audio.AudioColumns.ALBUM,
                 MediaStore.Audio.AudioColumns.ALBUM_ID,
                 MediaStore.Audio.AudioColumns.ARTIST,
-                AUDIO_COLUMN_ALBUM_ARTIST)
+                AUDIO_COLUMN_ALBUM_ARTIST
+            )
 
     abstract val dirSelector: String
     abstract fun addDirToSelectorArgs(dir: Directory, args: MutableList<String>): Boolean
@@ -287,8 +290,8 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
         raw.artistNames =
             cursor.getString(artistIndex).run {
                 if (this != MediaStore.UNKNOWN_STRING) {
-                    // While we can't natively parse multi-value tags,
-                    // from MediaStore itself, we can still parse by user-defined separators.
+                    // While we can't natively parse multi-value tags from MediaStore itself, we
+                    // can still parse by user-defined separators.
                     maybeParseSeparators(settings)
                 } else {
                     null
@@ -412,7 +415,8 @@ open class BaseApi29MediaStoreLayer(context: Context, cacheLayer: CacheLayer) :
             super.projection +
                 arrayOf(
                     MediaStore.Audio.AudioColumns.VOLUME_NAME,
-                    MediaStore.Audio.AudioColumns.RELATIVE_PATH)
+                    MediaStore.Audio.AudioColumns.RELATIVE_PATH
+                )
 
     override val dirSelector: String
         get() =
@@ -496,7 +500,8 @@ class Api30MediaStoreLayer(context: Context, cacheLayer: CacheLayer) :
             super.projection +
                 arrayOf(
                     MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER,
-                    MediaStore.Audio.AudioColumns.DISC_NUMBER)
+                    MediaStore.Audio.AudioColumns.DISC_NUMBER
+                )
 
     override fun buildRaw(cursor: Cursor, raw: Song.Raw) {
         super.buildRaw(cursor, raw)

@@ -97,7 +97,8 @@ class MusicStore private constructor() {
             }
         }
 
-        @Suppress("UNCHECKED_CAST") fun <T : Music> find(uid: Music.UID): T? = uidMap[uid] as? T
+        @Suppress("UNCHECKED_CAST")
+        fun <T : Music> find(uid: Music.UID): T? = uidMap[uid] as? T
 
         /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(song: Song) = find<Song>(song.uid)
@@ -117,7 +118,7 @@ class MusicStore private constructor() {
         /** Find a song for a [uri]. */
         fun findSongForUri(context: Context, uri: Uri) =
             context.contentResolverSafe.useQuery(uri, arrayOf(OpenableColumns.DISPLAY_NAME)) {
-                cursor ->
+                    cursor ->
                 cursor.moveToFirst()
 
                 val displayName =

@@ -106,6 +106,8 @@ abstract class DialogViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         // Actually make the item full-width, which it won't be in dialogs
         root.layoutParams =
             RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+                RecyclerView.LayoutParams.MATCH_PARENT,
+                RecyclerView.LayoutParams.WRAP_CONTENT
+            )
     }
 }

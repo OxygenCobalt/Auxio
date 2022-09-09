@@ -85,7 +85,11 @@ class GenreDetailFragment :
         collectImmediately(detailModel.currentGenre, ::handleItemChange)
         collectImmediately(detailModel.genreData, detailAdapter::submitList)
         collectImmediately(
-            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+            playbackModel.song,
+            playbackModel.parent,
+            playbackModel.isPlaying,
+            ::updatePlayback
+        )
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 

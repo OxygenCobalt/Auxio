@@ -39,7 +39,8 @@ private val ACCENT_NAMES =
         R.string.clr_orange,
         R.string.clr_brown,
         R.string.clr_grey,
-        R.string.clr_dynamic)
+        R.string.clr_dynamic
+    )
 
 private val ACCENT_THEMES =
     intArrayOf(
@@ -60,7 +61,7 @@ private val ACCENT_THEMES =
         R.style.Theme_Auxio_Brown,
         R.style.Theme_Auxio_Grey,
         R.style.Theme_Auxio_App // Dynamic colors are on the base theme
-        )
+    )
 
 private val ACCENT_BLACK_THEMES =
     intArrayOf(
@@ -81,7 +82,7 @@ private val ACCENT_BLACK_THEMES =
         R.style.Theme_Auxio_Black_Brown,
         R.style.Theme_Auxio_Black_Grey,
         R.style.Theme_Auxio_Black // Dynamic colors are on the base theme
-        )
+    )
 
 private val ACCENT_PRIMARY_COLORS =
     intArrayOf(
@@ -101,7 +102,8 @@ private val ACCENT_PRIMARY_COLORS =
         R.color.orange_primary,
         R.color.brown_primary,
         R.color.grey_primary,
-        R.color.dynamic_primary)
+        R.color.dynamic_primary
+    )
 
 /**
  * The data object for an accent. In the UI this is known as a "Color Scheme." This can be nominally

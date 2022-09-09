@@ -58,7 +58,8 @@ class IndexingNotification(private val context: Context) :
                 if (indexing.current % 50 == 0) {
                     logD("Updating state to $indexing")
                     setContentText(
-                        context.getString(R.string.fmt_indexing, indexing.current, indexing.total))
+                        context.getString(R.string.fmt_indexing, indexing.current, indexing.total)
+                    )
                     setProgress(indexing.total, indexing.current, false)
                     return true
                 }
@@ -88,4 +89,6 @@ class ObservingNotification(context: Context) : ServiceNotification(context, IND
 
 private val INDEXER_CHANNEL =
     ServiceNotification.ChannelInfo(
-        id = BuildConfig.APPLICATION_ID + ".channel.INDEXER", nameRes = R.string.lbl_indexer)
+        id = BuildConfig.APPLICATION_ID + ".channel.INDEXER",
+        nameRes = R.string.lbl_indexer
+    )

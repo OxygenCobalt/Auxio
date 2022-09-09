@@ -23,10 +23,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
 /**
  * A fragment enabling ViewBinding inflation and usage across the fragment lifecycle.

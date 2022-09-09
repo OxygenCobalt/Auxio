@@ -47,8 +47,11 @@ class AuxioApp : Application(), ImageLoaderFactory {
                     .setIcon(IconCompat.createWithResource(this, R.drawable.ic_shortcut_shuffle_24))
                     .setIntent(
                         Intent(this, MainActivity::class.java)
-                            .setAction(INTENT_KEY_SHORTCUT_SHUFFLE))
-                    .build()))
+                            .setAction(INTENT_KEY_SHORTCUT_SHUFFLE)
+                    )
+                    .build()
+            )
+        )
     }
 
     override fun newImageLoader() =

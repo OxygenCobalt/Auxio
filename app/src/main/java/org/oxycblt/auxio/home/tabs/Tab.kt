@@ -66,7 +66,8 @@ sealed class Tab(open val mode: DisplayMode) {
                 DisplayMode.SHOW_SONGS,
                 DisplayMode.SHOW_ALBUMS,
                 DisplayMode.SHOW_ARTISTS,
-                DisplayMode.SHOW_GENRES)
+                DisplayMode.SHOW_GENRES
+            )
 
         /** Convert an array [tabs] into a sequence of tabs. */
         fun toSequence(tabs: Array<Tab>): Int {

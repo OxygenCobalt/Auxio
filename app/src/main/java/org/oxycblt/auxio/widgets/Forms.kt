@@ -126,7 +126,8 @@ private fun RemoteViews.applyCover(
         setImageViewBitmap(R.id.widget_cover, state.cover)
         setContentDescription(
             R.id.widget_cover,
-            context.getString(R.string.desc_album_cover, state.song.album.resolveName(context)))
+            context.getString(R.string.desc_album_cover, state.song.album.resolveName(context))
+        )
     } else {
         setImageViewResource(R.id.widget_cover, R.drawable.ic_remote_default_cover_24)
         setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
@@ -144,7 +145,8 @@ private fun RemoteViews.applyPlayPauseControls(
 
     setOnClickPendingIntent(
         R.id.widget_play_pause,
-        context.newBroadcastPendingIntent(PlaybackService.ACTION_PLAY_PAUSE))
+        context.newBroadcastPendingIntent(PlaybackService.ACTION_PLAY_PAUSE)
+    )
 
     // Like the Android 13 media controls, use a circular fab when paused, and a squircle fab
     // when playing.
@@ -173,10 +175,14 @@ private fun RemoteViews.applyBasicControls(
     applyPlayPauseControls(context, state)
 
     setOnClickPendingIntent(
-        R.id.widget_skip_prev, context.newBroadcastPendingIntent(PlaybackService.ACTION_SKIP_PREV))
+        R.id.widget_skip_prev,
+        context.newBroadcastPendingIntent(PlaybackService.ACTION_SKIP_PREV)
+    )
 
     setOnClickPendingIntent(
-        R.id.widget_skip_next, context.newBroadcastPendingIntent(PlaybackService.ACTION_SKIP_NEXT))
+        R.id.widget_skip_next,
+        context.newBroadcastPendingIntent(PlaybackService.ACTION_SKIP_NEXT)
+    )
 
     return this
 }
@@ -189,11 +195,13 @@ private fun RemoteViews.applyFullControls(
 
     setOnClickPendingIntent(
         R.id.widget_repeat,
-        context.newBroadcastPendingIntent(PlaybackService.ACTION_INC_REPEAT_MODE))
+        context.newBroadcastPendingIntent(PlaybackService.ACTION_INC_REPEAT_MODE)
+    )
 
     setOnClickPendingIntent(
         R.id.widget_shuffle,
-        context.newBroadcastPendingIntent(PlaybackService.ACTION_INVERT_SHUFFLE))
+        context.newBroadcastPendingIntent(PlaybackService.ACTION_INVERT_SHUFFLE)
+    )
 
     val shuffleRes =
         when {

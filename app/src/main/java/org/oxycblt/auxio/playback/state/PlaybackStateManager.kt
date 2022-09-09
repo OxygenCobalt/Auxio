@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.playback.state
 
-import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.BuildConfig
@@ -31,6 +30,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager.Callback
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
+import kotlin.math.max
 
 /**
  * Master class (and possible god object) for the playback state.
@@ -491,7 +491,8 @@ class PlaybackStateManager private constructor() {
             queue = _queue,
             positionMs = playerState.calculateElapsedPosition(),
             isShuffled = isShuffled,
-            repeatMode = repeatMode)
+            repeatMode = repeatMode
+        )
 
     // --- CALLBACKS ---
 

@@ -36,8 +36,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialSharedAxis
-import java.lang.reflect.Field
-import kotlin.math.abs
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
@@ -64,6 +62,8 @@ import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
+import java.lang.reflect.Field
+import kotlin.math.abs
 
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail views for each
@@ -111,7 +111,8 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 binding.homeToolbar.alpha = 1f - (abs(offset.toFloat()) / (range.toFloat() / 2))
 
                 binding.homeContent.updatePadding(
-                    bottom = binding.homeAppbar.totalScrollRange + offset)
+                    bottom = binding.homeAppbar.totalScrollRange + offset
+                )
             }
         }
 
@@ -138,7 +139,8 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 object : ViewPager2.OnPageChangeCallback() {
                     override fun onPageSelected(position: Int) =
                         homeModel.updateCurrentTab(position)
-                })
+                }
+            )
 
             TabLayoutMediator(binding.homeTabs, this, AdaptiveTabStrategy(context, homeModel))
                 .attach()
@@ -197,7 +199,8 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 homeModel.updateCurrentSort(
                     homeModel
                         .getSortForDisplay(homeModel.currentTab.value)
-                        .withAscending(item.isChecked))
+                        .withAscending(item.isChecked)
+                )
             }
             else -> {
                 // Sorting option was selected, mark it as selected and update the mode
@@ -205,7 +208,8 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 homeModel.updateCurrentSort(
                     homeModel
                         .getSortForDisplay(homeModel.currentTab.value)
-                        .withMode(requireNotNull(Sort.Mode.fromItemId(item.itemId))))
+                        .withMode(requireNotNull(Sort.Mode.fromItemId(item.itemId)))
+                )
             }
         }
 
@@ -284,7 +288,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             binding.homeTabs.isVisible = true
             toolbarParams.scrollFlags =
                 AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
-                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+                AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
         }
     }
 
@@ -440,9 +444,9 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
     companion object {
         private val VIEW_PAGER_RECYCLER_FIELD: Field by
-            lazyReflectedField(ViewPager2::class, "mRecyclerView")
+        lazyReflectedField(ViewPager2::class, "mRecyclerView")
         private val VIEW_PAGER_TOUCH_SLOP_FIELD: Field by
-            lazyReflectedField(RecyclerView::class, "mTouchSlop")
+        lazyReflectedField(RecyclerView::class, "mTouchSlop")
         private const val KEY_LAST_TRANSITION_AXIS =
             BuildConfig.APPLICATION_ID + ".key.LAST_TRANSITION_AXIS"
     }
