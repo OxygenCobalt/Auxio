@@ -116,8 +116,7 @@ class PlaybackStateDatabase private constructor(context: Context) :
             queue = queue,
             positionMs = rawState.positionMs,
             repeatMode = rawState.repeatMode,
-            isShuffled = rawState.isShuffled,
-        )
+            isShuffled = rawState.isShuffled)
     }
 
     private fun readRawState(): RawState? {
@@ -258,7 +257,7 @@ class PlaybackStateDatabase private constructor(context: Context) :
         val parent: MusicParent?,
         val positionMs: Long,
         val repeatMode: RepeatMode,
-        val isShuffled: Boolean,
+        val isShuffled: Boolean
     )
 
     private data class RawState(

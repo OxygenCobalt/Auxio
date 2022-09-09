@@ -44,6 +44,7 @@ fun createThinWidget(context: Context, state: WidgetComponent.WidgetState) =
         .applyRoundingToBackground(context)
         .applyMeta(context, state)
         .applyBasicControls(context, state)
+
 /**
  * The small widget is for 2x2 widgets and just shows the cover art and playback controls. This is
  * generally because a Medium widget is too large for this widget size and a text-only widget is too

@@ -30,6 +30,7 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.Date.Companion.from
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.inRangeOrNull
@@ -53,14 +54,16 @@ sealed class Music : Item {
      * fast-scrolling.
      */
     val sortName: String?
-        get() = rawSortName ?: rawName?.run {
-            when {
-                length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
-                length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
-                length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
-                else -> this
-            }
-        }
+        get() =
+            rawSortName
+                ?: rawName?.run {
+                    when {
+                        length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
+                        length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
+                        length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
+                        else -> this
+                    }
+                }
 
     /**
      * Resolve a name from it's raw form to a form suitable to be shown in a ui. Ex. "unknown" would
@@ -185,6 +188,7 @@ class Song constructor(raw: Raw) : Music() {
     val disc = raw.disc
 
     private var _album: Album? = null
+
     /** The album of this song. */
     val album: Album
         get() = unlikelyToBeNull(_album)
@@ -212,6 +216,7 @@ class Song constructor(raw: Raw) : Music() {
         artistName ?: album.artist.resolveName(context)
 
     private val _genres: MutableList<Genre> = mutableListOf()
+
     /**
      * The genres of this song. Most often one, but there could be multiple. There will always be at
      * least one genre, even if it is an "unknown genre" instance.
@@ -327,6 +332,7 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     val durationMs = songs.sumOf { it.durationMs }
 
     private var _artist: Artist? = null
+
     /** The parent artist of this album. */
     val artist: Artist
         get() = unlikelyToBeNull(_artist)
@@ -634,9 +640,8 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
         fun from(timestamp: String): Date? {
             val groups =
                 (ISO8601_REGEX.matchEntire(timestamp) ?: return null)
-                    .groupValues.mapIndexedNotNull { index, s ->
-                        if (index % 2 != 0) s.toIntOrNull() else null
-                    }
+                    .groupValues
+                    .mapIndexedNotNull { index, s -> if (index % 2 != 0) s.toIntOrNull() else null }
 
             return fromTokens(groups)
         }

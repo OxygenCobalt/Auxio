@@ -17,6 +17,10 @@
  
 package org.oxycblt.auxio.home.tabs
 
+import org.oxycblt.auxio.home.tabs.Tab.Companion.fromSequence
+import org.oxycblt.auxio.home.tabs.Tab.Companion.toSequence
+import org.oxycblt.auxio.home.tabs.Tab.Invisible
+import org.oxycblt.auxio.home.tabs.Tab.Visible
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.util.logE
 
@@ -50,6 +54,7 @@ sealed class Tab(open val mode: DisplayMode) {
     companion object {
         /** The length a well-formed tab sequence should be */
         private const val SEQUENCE_LEN = 4
+
         /** The default tab sequence, represented in integer form */
         const val SEQUENCE_DEFAULT = 0b1000_1001_1010_1011_0100
 

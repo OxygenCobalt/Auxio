@@ -20,7 +20,10 @@ package org.oxycblt.auxio.music.system
 import android.app.Service
 import android.content.Intent
 import android.database.ContentObserver
-import android.os.*
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
+import android.os.PowerManager
 import android.provider.MediaStore
 import coil.imageLoader
 import kotlinx.coroutines.CoroutineScope
@@ -218,7 +221,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     override fun onSettingChanged(key: String) {
         when (key) {
             getString(R.string.set_key_music_dirs),
-            getString(R.string.set_key_music_dirs_include)-> onStartIndexing()
+            getString(R.string.set_key_music_dirs_include) -> onStartIndexing()
             getString(R.string.set_key_observing) -> {
                 if (!indexer.isIndexing) {
                     updateIdleSession()

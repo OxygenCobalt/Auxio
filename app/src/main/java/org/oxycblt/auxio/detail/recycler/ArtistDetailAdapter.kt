@@ -143,10 +143,8 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
     }
 }
 
-private class ArtistAlbumViewHolder
-private constructor(
-    private val binding: ItemParentBinding,
-) : IndicatorAdapter.ViewHolder(binding.root) {
+private class ArtistAlbumViewHolder private constructor(private val binding: ItemParentBinding) :
+    IndicatorAdapter.ViewHolder(binding.root) {
     fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
@@ -178,10 +176,8 @@ private constructor(
     }
 }
 
-private class ArtistSongViewHolder
-private constructor(
-    private val binding: ItemSongBinding,
-) : IndicatorAdapter.ViewHolder(binding.root) {
+private class ArtistSongViewHolder private constructor(private val binding: ItemSongBinding) :
+    IndicatorAdapter.ViewHolder(binding.root) {
     fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)

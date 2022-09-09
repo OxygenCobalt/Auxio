@@ -26,7 +26,8 @@ import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.systemGestureInsetsCompat
 
 /**
  * Implements a reasonable enough skeleton around BottomSheetBehavior (Excluding auxio extensions in

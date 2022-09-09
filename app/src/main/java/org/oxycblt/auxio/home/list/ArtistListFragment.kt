@@ -24,6 +24,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.formatDurationMs
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
@@ -32,7 +33,6 @@ import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.music.formatDurationMs
 
 /**
  * A [HomeListFragment] for showing a list of [Artist]s.

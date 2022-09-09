@@ -30,15 +30,15 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.dsToMs
+import org.oxycblt.auxio.music.msToDs
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.application
-import org.oxycblt.auxio.music.dsToMs
 import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.music.msToDs
 
 /**
  * The ViewModel that provides a UI frontend for [PlaybackStateManager].
@@ -54,21 +54,25 @@ class PlaybackViewModel(application: Application) :
     private val playbackManager = PlaybackStateManager.getInstance()
 
     private val _song = MutableStateFlow<Song?>(null)
+
     /** The current song. */
     val song: StateFlow<Song?>
         get() = _song
     private val _parent = MutableStateFlow<MusicParent?>(null)
+
     /** The current model that is being played from, such as an [Album] or [Artist] */
     val parent: StateFlow<MusicParent?> = _parent
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean>
         get() = _isPlaying
     private val _positionDs = MutableStateFlow(0L)
+
     /** The current playback position, in *deci-seconds* */
     val positionDs: StateFlow<Long>
         get() = _positionDs
 
     private val _repeatMode = MutableStateFlow(RepeatMode.NONE)
+
     /** The current repeat mode, see [RepeatMode] for more information */
     val repeatMode: StateFlow<RepeatMode>
         get() = _repeatMode

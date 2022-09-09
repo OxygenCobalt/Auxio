@@ -25,7 +25,11 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.AuxioSheetBehavior
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.getAttrColorCompat
+import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.getDimenSize
+import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * The bottom sheet behavior designed for the queue in particular.

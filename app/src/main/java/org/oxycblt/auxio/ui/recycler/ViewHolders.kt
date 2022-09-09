@@ -73,10 +73,8 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
  * The Shared ViewHolder for a [Album].
  * @author OxygenCobalt
  */
-class AlbumViewHolder
-private constructor(
-    private val binding: ItemParentBinding,
-) : IndicatorAdapter.ViewHolder(binding.root) {
+class AlbumViewHolder private constructor(private val binding: ItemParentBinding) :
+    IndicatorAdapter.ViewHolder(binding.root) {
 
     fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
@@ -157,10 +155,8 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
  * The Shared ViewHolder for a [Genre].
  * @author OxygenCobalt
  */
-class GenreViewHolder
-private constructor(
-    private val binding: ItemParentBinding,
-) : IndicatorAdapter.ViewHolder(binding.root) {
+class GenreViewHolder private constructor(private val binding: ItemParentBinding) :
+    IndicatorAdapter.ViewHolder(binding.root) {
 
     fun bind(item: Genre, listener: MenuItemListener) {
         binding.parentImage.bind(item)

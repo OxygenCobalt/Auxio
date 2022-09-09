@@ -82,7 +82,7 @@ class ArtistImageFetcher
 private constructor(
     private val context: Context,
     private val size: Size,
-    private val artist: Artist,
+    private val artist: Artist
 ) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
         val albums = Sort(Sort.Mode.ByName, true).albums(artist.albums)
@@ -104,7 +104,7 @@ class GenreImageFetcher
 private constructor(
     private val context: Context,
     private val size: Size,
-    private val genre: Genre,
+    private val genre: Genre
 ) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
         // Genre logic is the most complicated, as we want to ensure album cover variation (i.e

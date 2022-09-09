@@ -21,11 +21,13 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
 import android.view.ViewGroup
-import java.util.*
+import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.formatDurationMs
+import org.oxycblt.auxio.music.secsToMs
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.AlbumViewHolder
@@ -34,8 +36,6 @@ import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.music.formatDurationMs
-import org.oxycblt.auxio.music.secsToMs
 
 /**
  * A [HomeListFragment] for showing a list of [Album]s.

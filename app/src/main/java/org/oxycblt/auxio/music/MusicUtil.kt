@@ -24,9 +24,9 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.format.DateUtils
+import java.util.UUID
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.logD
-import java.util.UUID
 
 /** Shortcut for making a [ContentResolver] query with less superfluous arguments. */
 fun ContentResolver.queryCursor(
@@ -59,13 +59,17 @@ val Long.audioUri: Uri
 val Long.albumCoverUri: Uri
     get() = ContentUris.withAppendedId(EXTERNAL_ALBUM_ART_URI, this)
 
-
 /** Shortcut to resolve a year from a nullable date. Will return "No Date" if it is null. */
 fun Date?.resolveYear(context: Context) =
     this?.resolveYear(context) ?: context.getString(R.string.def_date)
 
 /** Converts this string to a UUID, or returns null if it is not valid. */
-fun String.toUuid() = try { UUID.fromString(this) } catch (e: IllegalArgumentException) { null }
+fun String.toUuid() =
+    try {
+        UUID.fromString(this)
+    } catch (e: IllegalArgumentException) {
+        null
+    }
 
 /** Converts a long in milliseconds to a long in deci-seconds */
 fun Long.msToDs() = floorDiv(100)

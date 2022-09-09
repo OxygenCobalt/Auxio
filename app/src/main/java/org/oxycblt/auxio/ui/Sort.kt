@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.ui
 
 import androidx.annotation.IdRes
-import kotlin.UnsupportedOperationException
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
@@ -27,6 +26,7 @@ import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.ui.Sort.Mode
 
 /**
  * Represents the sort modes used in Auxio.

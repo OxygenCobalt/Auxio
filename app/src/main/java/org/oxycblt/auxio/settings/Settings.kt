@@ -19,7 +19,9 @@ package org.oxycblt.auxio.settings
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.storage.StorageManager
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
@@ -34,7 +36,6 @@ import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.accent.Accent
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -215,13 +216,12 @@ class Settings(private val context: Context, private val callback: Callback? = n
         }
     }
 
-    /**
-     * The list of separators the user wants to parse by.
-     */
+    /** The list of separators the user wants to parse by. */
     var separators: String?
         // Differ from convention and store a string of separator characters instead of an int
         // code. This makes it easier to use in Regexes and makes it more extendable.
-        get() = inner.getString(context.getString(R.string.set_key_separators), null)?.ifEmpty { null }
+        get() =
+            inner.getString(context.getString(R.string.set_key_separators), null)?.ifEmpty { null }
         set(value) {
             inner.edit {
                 putString(context.getString(R.string.set_key_separators), value)
@@ -343,4 +343,35 @@ class Settings(private val context: Context, private val callback: Callback? = n
                 apply()
             }
         }
+}
+
+// --- COMPAT ---
+
+fun handleAccentCompat(context: Context, prefs: SharedPreferences): Accent {
+    val currentKey = context.getString(R.string.set_key_accent)
+
+    if (prefs.contains(OldKeys.KEY_ACCENT3)) {
+        Log.d("Auxio.SettingsCompat", "Migrating ${OldKeys.KEY_ACCENT3}")
+
+        var accent = prefs.getInt(OldKeys.KEY_ACCENT3, 5)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // Accents were previously frozen as soon as the OS was updated to android twelve,
+            // as dynamic colors were enabled by default. This is no longer the case, so we need
+            // to re-update the setting to dynamic colors here.
+            accent = 16
+        }
+
+        prefs.edit {
+            putInt(currentKey, accent)
+            remove(OldKeys.KEY_ACCENT3)
+            apply()
+        }
+    }
+
+    return Accent.from(prefs.getInt(currentKey, Accent.DEFAULT))
+}
+
+/** Cache of the old keys used in Auxio. */
+private object OldKeys {
+    const val KEY_ACCENT3 = "auxio_accent"
 }

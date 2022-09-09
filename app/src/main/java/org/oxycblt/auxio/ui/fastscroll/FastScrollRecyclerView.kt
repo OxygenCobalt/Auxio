@@ -349,7 +349,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 if (!dragging &&
                     thumbView.isUnder(downX, thumbView.top.toFloat(), minTouchTargetSize) &&
                     abs(eventY - downY) > touchSlop) {
-
                     if (thumbView.isUnder(downX, downY, minTouchTargetSize)) {
                         dragStartY = lastY
                         dragStartThumbOffset = thumbOffset

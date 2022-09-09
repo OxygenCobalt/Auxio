@@ -28,8 +28,13 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.recycler.*
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
+import org.oxycblt.auxio.ui.recycler.SongViewHolder
+import org.oxycblt.auxio.ui.recycler.SyncListDiffer
+import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.getAttrColorCompat
+import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.inflater
 
 class QueueAdapter(private val listener: QueueItemListener) :
     RecyclerView.Adapter<QueueSongViewHolder>() {
@@ -104,10 +109,8 @@ interface QueueItemListener {
     fun onPickUp(viewHolder: RecyclerView.ViewHolder)
 }
 
-class QueueSongViewHolder
-private constructor(
-    private val binding: ItemQueueSongBinding,
-) : IndicatorAdapter.ViewHolder(binding.root) {
+class QueueSongViewHolder private constructor(private val binding: ItemQueueSongBinding) :
+    IndicatorAdapter.ViewHolder(binding.root) {
     val bodyView: View
         get() = binding.body
     val backgroundView: View

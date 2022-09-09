@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2022 Auxio Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.music.extractor
 
 import android.content.Context
@@ -9,6 +26,7 @@ import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
+import java.io.File
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.music.Song
@@ -20,7 +38,6 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
-import java.io.File
 
 /*
  * This file acts as the base for most the black magic required to get a remotely sensible music
@@ -81,13 +98,13 @@ import java.io.File
  */
 
 /**
- * The layer that loads music from the MediaStore database. This is an intermediate step in
- * the music loading process.
+ * The layer that loads music from the MediaStore database. This is an intermediate step in the
+ * music loading process.
  * @author OxygenCobalt
  */
 abstract class MediaStoreLayer(private val context: Context, private val cacheLayer: CacheLayer) {
     private var cursor: Cursor? = null
-    
+
     private var idIndex = -1
     private var titleIndex = -1
     private var displayNameIndex = -1
@@ -101,18 +118,17 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
     private var albumIdIndex = -1
     private var artistIndex = -1
     private var albumArtistIndex = -1
-    
+
     private val settings = Settings(context)
 
     private val _volumes = mutableListOf<StorageVolume>()
-    protected val volumes: List<StorageVolume> get() = _volumes
+    protected val volumes: List<StorageVolume>
+        get() = _volumes
 
-    /**
-     * Initialize this instance by making a query over the media database.
-     */
+    /** Initialize this instance by making a query over the media database. */
     open fun init(): Cursor {
         cacheLayer.init()
-        
+
         val storageManager = context.getSystemServiceCompat(StorageManager::class)
         _volumes.addAll(storageManager.storageVolumesCompat)
         val dirs = settings.getMusicDirs(storageManager)
@@ -149,39 +165,38 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
 
         logD("Starting query [proj: ${projection.toList()}, selector: $selector, args: $args]")
 
-        val cursor = requireNotNull(
-            context.contentResolverSafe.queryCursor(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                selector,
-                args.toTypedArray())) { "Content resolver failure: No Cursor returned" }
-            .also { cursor = it }
+        val cursor =
+            requireNotNull(
+                    context.contentResolverSafe.queryCursor(
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        projection,
+                        selector,
+                        args.toTypedArray())) { "Content resolver failure: No Cursor returned" }
+                .also { cursor = it }
 
         idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
         titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE)
-        displayNameIndex =
-            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
+        displayNameIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
         mimeTypeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.MIME_TYPE)
         sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.SIZE)
         dateAddedIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_ADDED)
-        dateModifiedIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_MODIFIED)
+        dateModifiedIndex =
+            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_MODIFIED)
         durationIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)
         yearIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.YEAR)
         albumIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM)
         albumIdIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID)
         artistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)
         albumArtistIndex = cursor.getColumnIndexOrThrow(AUDIO_COLUMN_ALBUM_ARTIST)
-        
+
         return cursor
     }
 
-    /**
-     * Finalize this instance by closing the cursor and finalizing the cache.
-     */
+    /** Finalize this instance by closing the cursor and finalizing the cache. */
     fun finalize(rawSongs: List<Song.Raw>) {
         cursor?.close()
         cursor = null
-        
+
         cacheLayer.finalize(rawSongs)
     }
 
@@ -281,7 +296,8 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
             }
 
         // The album artist field is nullable and never has placeholder values.
-        raw.albumArtistNames = cursor.getStringOrNull(albumArtistIndex)?.maybeParseSeparators(settings)
+        raw.albumArtistNames =
+            cursor.getStringOrNull(albumArtistIndex)?.maybeParseSeparators(settings)
     }
 
     companion object {
@@ -303,7 +319,6 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
     }
 }
 
-
 // Note: The separation between version-specific backends may not be the cleanest. To preserve
 // speed, we only want to add redundancy on known issues, not with possible issues.
 
@@ -311,7 +326,7 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
  * A [MediaStoreLayer] that completes the music loading process in a way compatible from
  * @author OxygenCobalt
  */
-class Api21MediaStoreLayer(context: Context, cacheLayer: CacheLayer)  : 
+class Api21MediaStoreLayer(context: Context, cacheLayer: CacheLayer) :
     MediaStoreLayer(context, cacheLayer) {
     private var trackIndex = -1
     private var dataIndex = -1
@@ -339,7 +354,7 @@ class Api21MediaStoreLayer(context: Context, cacheLayer: CacheLayer)  :
 
     override fun buildRaw(cursor: Cursor, raw: Song.Raw) {
         super.buildRaw(cursor, raw)
-        
+
         // DATA is equivalent to the absolute path of the file.
         val data = cursor.getString(dataIndex)
 
@@ -377,17 +392,18 @@ class Api21MediaStoreLayer(context: Context, cacheLayer: CacheLayer)  :
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class BaseApi29MediaStoreLayer(context: Context, cacheLayer: CacheLayer) : MediaStoreLayer(context, cacheLayer) {
+open class BaseApi29MediaStoreLayer(context: Context, cacheLayer: CacheLayer) :
+    MediaStoreLayer(context, cacheLayer) {
     private var volumeIndex = -1
     private var relativePathIndex = -1
 
     override fun init(): Cursor {
         val cursor = super.init()
-        
+
         volumeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
         relativePathIndex =
             cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
-        
+
         return cursor
     }
 
@@ -431,7 +447,8 @@ open class BaseApi29MediaStoreLayer(context: Context, cacheLayer: CacheLayer) : 
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class Api29MediaStoreLayer(context: Context, cacheLayer: CacheLayer) : BaseApi29MediaStoreLayer(context, cacheLayer) {
+open class Api29MediaStoreLayer(context: Context, cacheLayer: CacheLayer) :
+    BaseApi29MediaStoreLayer(context, cacheLayer) {
     private var trackIndex = -1
 
     override fun init(): Cursor {
@@ -445,7 +462,7 @@ open class Api29MediaStoreLayer(context: Context, cacheLayer: CacheLayer) : Base
 
     override fun buildRaw(cursor: Cursor, raw: Song.Raw) {
         super.buildRaw(cursor, raw)
-        
+
         // This backend is volume-aware, but does not support the modern track fields.
         // Use the old field instead.
         val rawTrack = cursor.getIntOrNull(trackIndex)
@@ -462,7 +479,8 @@ open class Api29MediaStoreLayer(context: Context, cacheLayer: CacheLayer) : Base
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.R)
-class Api30MediaStoreLayer(context: Context, cacheLayer: CacheLayer) : BaseApi29MediaStoreLayer(context, cacheLayer) {
+class Api30MediaStoreLayer(context: Context, cacheLayer: CacheLayer) :
+    BaseApi29MediaStoreLayer(context, cacheLayer) {
     private var trackIndex: Int = -1
     private var discIndex: Int = -1
 

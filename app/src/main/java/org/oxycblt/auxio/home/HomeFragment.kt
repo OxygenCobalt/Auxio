@@ -45,7 +45,12 @@ import org.oxycblt.auxio.home.list.AlbumListFragment
 import org.oxycblt.auxio.home.list.ArtistListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
@@ -53,7 +58,12 @@ import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.androidActivityViewModels
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.getColorCompat
+import org.oxycblt.auxio.util.lazyReflectedField
+import org.oxycblt.auxio.util.logD
 
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail views for each

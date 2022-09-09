@@ -26,7 +26,11 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.extractor.Api21MediaStoreLayer
 import org.oxycblt.auxio.music.extractor.Api29MediaStoreLayer
 import org.oxycblt.auxio.music.extractor.Api30MediaStoreLayer
@@ -50,8 +54,8 @@ import org.oxycblt.auxio.util.logW
  * 3. Using the songs to build the library, which primarily involves linking up all data objects
  * with their corresponding parents/children.
  *
- * This class in particular handles 3 primarily. For the code that handles 1 and 2, see the
- * layer implementations.
+ * This class in particular handles 3 primarily. For the code that handles 1 and 2, see the layer
+ * implementations.
  *
  * This class also fulfills the role of maintaining the current music loading state, which seems
  * like a job for [MusicStore] but in practice is only really leveraged by the components that
@@ -205,8 +209,10 @@ class Indexer {
 
         val mediaStoreLayer =
             when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30MediaStoreLayer(context, cacheLayer)
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Api29MediaStoreLayer(context, cacheLayer)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
+                    Api30MediaStoreLayer(context, cacheLayer)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+                    Api29MediaStoreLayer(context, cacheLayer)
                 else -> Api21MediaStoreLayer(context, cacheLayer)
             }
 
@@ -234,8 +240,8 @@ class Indexer {
     }
 
     /**
-     * Does the initial query over the song database using [metadataLayer]. The songs returned by this
-     * function are **not** well-formed. The companion [buildAlbums], [buildArtists], and
+     * Does the initial query over the song database using [metadataLayer]. The songs returned by
+     * this function are **not** well-formed. The companion [buildAlbums], [buildArtists], and
      * [buildGenres] functions must be called with the returned list so that all songs are properly
      * linked up.
      */

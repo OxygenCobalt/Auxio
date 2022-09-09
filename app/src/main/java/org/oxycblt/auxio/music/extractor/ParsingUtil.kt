@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2022 Auxio Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.music.extractor
 
 import androidx.core.text.isDigitsOnly
@@ -50,21 +67,23 @@ fun List<String>.parseMultiValue(settings: Settings) =
     }
 
 /**
- * Maybe a single tag into multi values with the user-preferred separators. If not enabled,
- * the plain string will be returned.
+ * Maybe a single tag into multi values with the user-preferred separators. If not enabled, the
+ * plain string will be returned.
  */
 fun String.maybeParseSeparators(settings: Settings): List<String> {
     // Get the separators the user desires. If null, we don't parse any.
     val separators = settings.separators ?: return listOf(this)
 
     // Try to cache compiled regexes for particular separator combinations.
-    val regex = synchronized(SEPARATOR_REGEX_CACHE) {
-        SEPARATOR_REGEX_CACHE.getOrPut(separators) { Regex("[^\\\\][$separators]") }
-    }
+    val regex =
+        synchronized(SEPARATOR_REGEX_CACHE) {
+            SEPARATOR_REGEX_CACHE.getOrPut(separators) { Regex("[^\\\\][$separators]") }
+        }
 
-    val escape = synchronized(ESCAPE_REGEX_CACHE) {
-        ESCAPE_REGEX_CACHE.getOrPut(separators) { Regex("\\\\[$separators]")}
-    }
+    val escape =
+        synchronized(ESCAPE_REGEX_CACHE) {
+            ESCAPE_REGEX_CACHE.getOrPut(separators) { Regex("\\\\[$separators]") }
+        }
 
     return regex.split(this).map { value ->
         // Convert escaped separators to their correct value
@@ -72,15 +91,13 @@ fun String.maybeParseSeparators(settings: Settings): List<String> {
     }
 }
 
-/**
- * Parse a multi-value tag into a [ReleaseType], handling separators in the process.
- */
+/** Parse a multi-value tag into a [ReleaseType], handling separators in the process. */
 fun List<String>.parseReleaseType(settings: Settings) = ReleaseType.parse(parseMultiValue(settings))
 
 /**
- * Parse a multi-value genre name using ID3v2 rules. If there is one value, the ID3v2.3
- * rules will be used, followed by separator parsing. Otherwise, each value will be iterated
- * through, and numeric values transformed into string values.
+ * Parse a multi-value genre name using ID3v2 rules. If there is one value, the ID3v2.3 rules will
+ * be used, followed by separator parsing. Otherwise, each value will be iterated through, and
+ * numeric values transformed into string values.
  */
 fun List<String>.parseId3GenreNames(settings: Settings) =
     if (size == 1) {
@@ -89,13 +106,9 @@ fun List<String>.parseId3GenreNames(settings: Settings) =
         map { it.parseId3v1Genre() ?: it }
     }
 
-/**
- * Parse a single genre name using ID3v2.3 rules.
- */
+/** Parse a single genre name using ID3v2.3 rules. */
 fun String.parseId3GenreNames(settings: Settings) =
-        parseId3v1Genre()?.let { listOf(it) } ?:
-           parseId3v2Genre() ?:
-                maybeParseSeparators(settings)
+    parseId3v1Genre()?.let { listOf(it) } ?: parseId3v2Genre() ?: maybeParseSeparators(settings)
 
 private fun String.parseId3v1Genre(): String? =
     when {

@@ -30,11 +30,13 @@ import org.oxycblt.auxio.util.logD
  */
 class NavigationViewModel : ViewModel() {
     private val _mainNavigationAction = MutableStateFlow<MainNavigationAction?>(null)
+
     /** Flag for main fragment navigation. Intended for MainFragment use only. */
     val mainNavigationAction: StateFlow<MainNavigationAction?>
         get() = _mainNavigationAction
 
     private val _exploreNavigationItem = MutableStateFlow<Music?>(null)
+
     /**
      * Flag for navigation within the explore fragments. Observe this to coordinate navigation to an
      * item's UI.
@@ -85,12 +87,16 @@ class NavigationViewModel : ViewModel() {
 sealed class MainNavigationAction {
     /** Expand the playback panel. */
     object Expand : MainNavigationAction()
+
     /** Collapse the playback panel. */
     object Collapse : MainNavigationAction()
+
     /** Go to settings. */
     object Settings : MainNavigationAction()
+
     /** Go to the about page. */
     object About : MainNavigationAction()
+
     /** Show song details. */
     data class SongDetails(val song: Song) : MainNavigationAction()
 }

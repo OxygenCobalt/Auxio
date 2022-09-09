@@ -26,10 +26,13 @@ import org.oxycblt.auxio.IntegerTable
 enum class PlaybackMode {
     /** Construct the queue from the genre's songs */
     ALL_SONGS,
+
     /** Construct the queue from the artist's songs */
     IN_ALBUM,
+
     /** Construct the queue from the album's songs */
     IN_ARTIST,
+
     /** Construct the queue from all songs */
     IN_GENRE;
 

@@ -160,6 +160,6 @@ class WidgetComponent(private val context: Context) :
         val cover: Bitmap?,
         val isPlaying: Boolean,
         val repeatMode: RepeatMode,
-        val isShuffled: Boolean,
+        val isShuffled: Boolean
     )
 }

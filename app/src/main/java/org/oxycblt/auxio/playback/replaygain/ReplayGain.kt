@@ -23,8 +23,10 @@ import org.oxycblt.auxio.IntegerTable
 enum class ReplayGainMode {
     /** Apply the track gain, falling back to the album gain if the track gain is not found. */
     TRACK,
+
     /** Apply the album gain, falling back to the track gain if the album gain is not found. */
     ALBUM,
+
     /** Apply the album gain only when playing from an album, defaulting to track gain otherwise. */
     DYNAMIC;
 
@@ -46,5 +48,5 @@ data class ReplayGainPreAmp(
     /** The value to use when ReplayGain tags are present. */
     val with: Float,
     /** The value to use when ReplayGain tags are not present. */
-    val without: Float,
+    val without: Float
 )

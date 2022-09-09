@@ -31,7 +31,6 @@ import java.lang.reflect.Method
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.lazyReflectedMethod
 
-
 /** A path to a file. [name] is the stripped file name, [parent] is the parent path. */
 data class Path(val name: String, val parent: Directory)
 
@@ -48,9 +47,9 @@ class Directory private constructor(val volume: StorageVolume, val relativePath:
         // "primary" actually corresponds to the internal storage, not the primary volume.
         // Removable storage is represented with the UUID.
         if (volume.isInternalCompat) {
-            "${DOCUMENT_URI_PRIMARY_NAME}:${relativePath}"
+            "$DOCUMENT_URI_PRIMARY_NAME:$relativePath"
         } else {
-            volume.uuidCompat?.let { uuid -> "${uuid}:${relativePath}" }
+            volume.uuidCompat?.let { uuid -> "$uuid:$relativePath" }
         }
 
     override fun hashCode(): Int {

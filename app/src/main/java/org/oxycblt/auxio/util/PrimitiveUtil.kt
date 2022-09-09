@@ -45,9 +45,8 @@ fun <T> unlikelyToBeNull(value: T?) =
 /** Returns null if this value is 0. */
 fun Int.nonZeroOrNull() = if (this > 0) this else null
 
-/** Returns  null if this value is not in [range]. */
+/** Returns null if this value is not in [range]. */
 fun Int.inRangeOrNull(range: IntRange) = if (range.contains(this)) this else null
-
 
 /** Lazily reflect to retrieve a [Field]. */
 fun lazyReflectedField(clazz: KClass<*>, field: String) = lazy {

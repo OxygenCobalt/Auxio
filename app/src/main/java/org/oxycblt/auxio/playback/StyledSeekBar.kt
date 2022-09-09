@@ -43,11 +43,7 @@ import org.oxycblt.auxio.util.logD
  */
 class StyledSeekBar
 @JvmOverloads
-constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
-) :
+constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     ForcedLTRFrameLayout(context, attrs, defStyleAttr),
     Slider.OnSliderTouchListener,
     Slider.OnChangeListener {

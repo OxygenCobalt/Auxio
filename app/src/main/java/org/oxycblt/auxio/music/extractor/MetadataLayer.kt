@@ -1,19 +1,35 @@
+/*
+ * Copyright (c) 2022 Auxio Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.music.extractor
 
 import android.content.Context
 import androidx.core.text.isDigitsOnly
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
+import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
+import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
-import com.google.android.exoplayer2.metadata.Metadata
-import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.util.logW
-
 
 /**
  * The layer that leverages ExoPlayer's metadata retrieval system to index metadata.
@@ -32,14 +48,10 @@ class MetadataLayer(private val context: Context, private val mediaStoreLayer: M
     private val settings = Settings(context)
     private val taskPool: Array<Task?> = arrayOfNulls(TASK_CAPACITY)
 
-    /**
-     * Initialize the sub-layers that this layer relies on.
-     */
+    /** Initialize the sub-layers that this layer relies on. */
     fun init() = mediaStoreLayer.init().count
 
-    /**
-     * Finalize the sub-layers that this layer relies on.
-     */
+    /** Finalize the sub-layers that this layer relies on. */
     fun finalize(rawSongs: List<Song.Raw>) = mediaStoreLayer.finalize(rawSongs)
 
     fun parse(emit: (Song.Raw) -> Unit) {
@@ -89,7 +101,6 @@ class MetadataLayer(private val context: Context, private val mediaStoreLayer: M
             break
         }
     }
-
 
     companion object {
         /** The amount of tasks this backend can run efficiently at once. */
@@ -191,7 +202,7 @@ class Task(context: Context, private val settings: Settings, private val raw: So
         tags["TRCK"]?.run { get(0).parsePositionNum() }?.let { raw.track = it }
 
         // Disc, as NN/TT
-        tags["TPOS"]?.run { get(0).parsePositionNum() } ?.let { raw.disc = it }
+        tags["TPOS"]?.run { get(0).parsePositionNum() }?.let { raw.disc = it }
 
         // Dates are somewhat complicated, as not only did their semantics change from a flat year
         // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
@@ -203,9 +214,8 @@ class Task(context: Context, private val settings: Settings, private val raw: So
         // 4. ID3v2.3 Original Date, as it is like #1
         // 5. ID3v2.3 Release Year, as it is the most common date type
         (tags["TDOR"]?.run { get(0).parseTimestamp() }
-                ?: tags["TDRC"]?.run  { get(0).parseTimestamp() }
-                ?: tags["TDRL"]?.run  { get(0).parseTimestamp() }
-                    ?: parseId3v23Date(tags))
+                ?: tags["TDRC"]?.run { get(0).parseTimestamp() }
+                    ?: tags["TDRL"]?.run { get(0).parseTimestamp() } ?: parseId3v23Date(tags))
             ?.let { raw.date = it }
 
         // (Sort) Album
@@ -230,7 +240,9 @@ class Task(context: Context, private val settings: Settings, private val raw: So
     }
 
     private fun parseId3v23Date(tags: Map<String, List<String>>): Date? {
-        val year = tags["TORY"]?.run { get(0).toIntOrNull() } ?: tags["TYER"]?.run { get(0).toIntOrNull() } ?: return null
+        val year =
+            tags["TORY"]?.run { get(0).toIntOrNull() }
+                ?: tags["TYER"]?.run { get(0).toIntOrNull() } ?: return null
 
         val tdat = tags["TDAT"]
         return if (tdat != null && tdat[0].length == 4 && tdat[0].isDigitsOnly()) {
@@ -274,7 +286,7 @@ class Task(context: Context, private val settings: Settings, private val raw: So
 
         // (Sort) Album
         tags["ALBUM"]?.let { raw.albumName = it[0] }
-        tags["ALBUMSORT"]?.let { raw.albumSortName = it[0]  }
+        tags["ALBUMSORT"]?.let { raw.albumSortName = it[0] }
 
         // (Sort) Artist
         tags["ARTIST"]?.let { raw.artistNames = it.parseMultiValue(settings) }

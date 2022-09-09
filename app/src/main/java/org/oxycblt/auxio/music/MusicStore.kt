@@ -20,6 +20,8 @@ package org.oxycblt.auxio.music
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import org.oxycblt.auxio.music.MusicStore.Callback
+import org.oxycblt.auxio.music.MusicStore.Library
 import org.oxycblt.auxio.util.contentResolverSafe
 
 /**
@@ -99,12 +101,16 @@ class MusicStore private constructor() {
 
         /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(song: Song) = find<Song>(song.uid)
+
         /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(songs: List<Song>) = songs.mapNotNull { sanitize(it) }
+
         /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(album: Album) = find<Album>(album.uid)
+
         /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(artist: Artist) = find<Artist>(artist.uid)
+
         /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(genre: Genre) = find<Genre>(genre.uid)
 

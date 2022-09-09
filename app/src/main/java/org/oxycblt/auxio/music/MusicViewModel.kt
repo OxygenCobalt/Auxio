@@ -30,10 +30,12 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
     private val indexer = Indexer.getInstance()
 
     private val _indexerState = MutableStateFlow<Indexer.State?>(null)
+
     /** The current music indexing state. */
     val indexerState: StateFlow<Indexer.State?> = _indexerState
 
     private val _libraryExists = MutableStateFlow(false)
+
     /** Whether a music library has successfully been loaded. */
     val libraryExists: StateFlow<Boolean> = _libraryExists
 

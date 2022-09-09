@@ -53,6 +53,7 @@ class SearchViewModel(application: Application) :
     private val settings = Settings(application)
 
     private val _searchResults = MutableStateFlow(listOf<Item>())
+
     /** Current search results from the last [search] call. */
     val searchResults: StateFlow<List<Item>>
         get() = _searchResults

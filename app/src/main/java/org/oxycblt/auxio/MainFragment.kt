@@ -42,7 +42,15 @@ import org.oxycblt.auxio.playback.queue.QueueSheetBehavior
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.androidActivityViewModels
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.coordinatorLayoutBehavior
+import org.oxycblt.auxio.util.getAttrColorCompat
+import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.systemBarInsetsCompat
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls the more

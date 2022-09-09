@@ -27,6 +27,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.state.PlaybackStateManager.Callback
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
@@ -58,13 +59,16 @@ class PlaybackStateManager private constructor() {
     /** The currently playing song. Null if there isn't one */
     val song
         get() = queue.getOrNull(index)
+
     /** The parent the queue is based on, null if all songs */
     var parent: MusicParent? = null
         private set
     private var _queue = mutableListOf<Song>()
+
     /** The current queue determined by [parent] */
     val queue
         get() = _queue
+
     /** The current position in the queue */
     var index = -1
         private set
@@ -79,6 +83,7 @@ class PlaybackStateManager private constructor() {
             field = value
             notifyRepeatModeChanged()
         }
+
     /** Whether the queue is shuffled */
     var isShuffled = false
         private set

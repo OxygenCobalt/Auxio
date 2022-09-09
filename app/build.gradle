@@ -120,7 +120,14 @@ dependencies {
 spotless {
     kotlin {
         target "src/**/*.kt"
-        ktfmt("0.37").dropboxStyle()
+
+        // ktlint does checking, while ktfmt actually does formatting
+        ktlint()
+        ktfmt().dropboxStyle()
         licenseHeaderFile("NOTICE")
     }
+}
+
+afterEvaluate {
+    preDebugBuild.dependsOn spotlessApply
 }
