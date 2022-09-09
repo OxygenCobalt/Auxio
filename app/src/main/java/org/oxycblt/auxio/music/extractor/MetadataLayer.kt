@@ -1,39 +1,22 @@
-/*
- * Copyright (c) 2022 Auxio Project
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
- 
-package org.oxycblt.auxio.music.system
+package org.oxycblt.auxio.music.extractor
 
 import android.content.Context
-import android.database.Cursor
 import androidx.core.text.isDigitsOnly
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
-import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
-import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
+import com.google.android.exoplayer2.metadata.Metadata
+import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.util.logW
 
+
 /**
- * A [Indexer.Backend] that leverages ExoPlayer's metadata retrieval system to index metadata.
+ * The layer that leverages ExoPlayer's metadata retrieval system to index metadata.
  *
  * Normally, leveraging ExoPlayer's metadata system would be a terrible idea, as it is horrifically
  * slow. However, if we parallelize it, we can get similar throughput to other metadata extractors,
@@ -45,29 +28,28 @@ import org.oxycblt.auxio.util.logW
  *
  * @author OxygenCobalt
  */
-class ExoPlayerBackend(private val context: Context, private val inner: MediaStoreBackend) : Indexer.Backend {
+class MetadataLayer(private val context: Context, private val mediaStoreLayer: MediaStoreLayer) {
     private val settings = Settings(context)
     private val taskPool: Array<Task?> = arrayOfNulls(TASK_CAPACITY)
 
-    // No need to implement our own query logic, as this backend is still reliant on
-    // MediaStore.
-    override fun query() = inner.query()
+    /**
+     * Initialize the sub-layers that this layer relies on.
+     */
+    fun init() = mediaStoreLayer.init().count
 
-    override fun buildSongs(
-        cursor: Cursor,
-        emitIndexing: (Indexer.Indexing) -> Unit
-    ): List<Song> {
-        // Metadata retrieval with ExoPlayer is asynchronous, so a callback may at any point
-        // add a completed song to the list. To prevent a crash in that case, we use the
-        // concurrent counterpart to a typical mutable list.
-        val songs = mutableListOf<Song>()
-        val total = cursor.count
+    /**
+     * Finalize the sub-layers that this layer relies on.
+     */
+    fun finalize(rawSongs: List<Song.Raw>) = mediaStoreLayer.finalize(rawSongs)
 
-        while (cursor.moveToNext()) {
-            // Note: This call to buildRawSong does not populate the genre field. This is
-            // because indexing genres is quite slow with MediaStore, and so keeping the
-            // field blank on unsupported ExoPlayer formats ends up being preferable.
-            val raw = inner.buildRawSong(context, cursor)
+    fun parse(emit: (Song.Raw) -> Unit) {
+        while (true) {
+            val raw = Song.Raw()
+            if (mediaStoreLayer.populateRaw(raw) ?: break) {
+                // No need to extract metadata that was successfully restored from the cache
+                emit(raw)
+                continue
+            }
 
             // Spin until there is an open slot we can insert a task in. Note that we do
             // not add callbacks to our new tasks, as Future callbacks run on a different
@@ -78,10 +60,9 @@ class ExoPlayerBackend(private val context: Context, private val inner: MediaSto
                     val task = taskPool[i]
 
                     if (task != null) {
-                        val song = task.get()
-                        if (song != null) {
-                            songs.add(song)
-                            emitIndexing(Indexer.Indexing.Songs(songs.size, total))
+                        val finishedRaw = task.get()
+                        if (finishedRaw != null) {
+                            emit(finishedRaw)
                             taskPool[i] = Task(context, settings, raw)
                             break@spin
                         }
@@ -99,18 +80,16 @@ class ExoPlayerBackend(private val context: Context, private val inner: MediaSto
                 val task = taskPool[i]
 
                 if (task != null) {
-                    val song = task.get() ?: continue@spin
-                    songs.add(song)
-                    emitIndexing(Indexer.Indexing.Songs(songs.size, total))
+                    val finishedRaw = task.get() ?: continue@spin
+                    emit(finishedRaw)
                     taskPool[i] = null
                 }
             }
 
             break
         }
-
-        return songs
     }
+
 
     companion object {
         /** The amount of tasks this backend can run efficiently at once. */
@@ -132,7 +111,7 @@ class Task(context: Context, private val settings: Settings, private val raw: So
      * Get the song that this task is trying to complete. If the task is still busy, this will
      * return null. Otherwise, it will return a song.
      */
-    fun get(): Song? {
+    fun get(): Song.Raw? {
         if (!future.isDone) {
             return null
         }
@@ -148,7 +127,7 @@ class Task(context: Context, private val settings: Settings, private val raw: So
 
         if (format == null) {
             logD("Nothing could be extracted for ${raw.name}")
-            return Song(raw)
+            return raw
         }
 
         // Populate the format mime type if we have one.
@@ -161,7 +140,7 @@ class Task(context: Context, private val settings: Settings, private val raw: So
             logD("No metadata could be extracted for ${raw.name}")
         }
 
-        return Song(raw)
+        return raw
     }
 
     private fun completeRawSong(metadata: Metadata) {

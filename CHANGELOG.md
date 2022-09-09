@@ -11,8 +11,12 @@
 audio focus was lost
 - Fixed issue where the app would crash if a song menu in the genre UI was opened
 
+#### What's Changed
+- Ignore MediaStore tags is now on by default
+
 #### Dev/Meta
 - Completed migration to reactive playback system
+- Refactor music backends into a unified chain of extractors
 
 ## 2.6.3
 

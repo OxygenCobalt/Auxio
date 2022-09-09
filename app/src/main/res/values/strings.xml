@@ -224,8 +224,6 @@
     <!-- Restrict music loading to selected folders -->
     <string name="set_dirs_mode_include">Include</string>
     <string name="set_dirs_mode_include_desc">Music will <b>only</b> be loaded from the folders you add.</string>
-    <string name="set_quality_tags">Ignore MediaStore tags</string>
-    <string name="set_quality_tags_desc">Increases tag quality, but results in longer loading times (Experimental)</string>
     <string name="set_observing">Automatic reloading</string>
     <string name="set_observing_desc">Reload your music library whenever it changes (Experimental)</string>
 

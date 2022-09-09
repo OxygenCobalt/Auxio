@@ -168,8 +168,6 @@
     <string name="lng_search_library">Ieškokite savo bibliotekoje…</string>
     <string name="lbl_equalizer">Ekvalaizeris</string>
     <string name="set_dirs_mode">Režimas</string>
-    <string name="set_quality_tags">Ignoruoti „MediaStore“ žymas</string>
-    <string name="set_quality_tags_desc">Padidėja žymų kokybė, tačiau dėl to pailgėja krovimo laikas (Eksperimentinis)</string>
     <string name="set_observing">Automatinis krovimas</string>
     <string name="err_no_music">Muzikos nerasta</string>
 </resources>

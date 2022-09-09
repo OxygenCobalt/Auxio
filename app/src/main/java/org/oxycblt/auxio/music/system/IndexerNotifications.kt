@@ -54,6 +54,7 @@ class IndexingNotification(private val context: Context) :
             }
             is Indexer.Indexing.Songs -> {
                 // Only update the notification every 50 songs to prevent excessive updates.
+                // TODO: Use a timeout instead to handle rapid-fire updates w/o rate limiting
                 if (indexing.current % 50 == 0) {
                     logD("Updating state to $indexing")
                     setContentText(

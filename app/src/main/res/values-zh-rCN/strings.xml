@@ -200,7 +200,6 @@
     <string name="err_did_not_restore">没有可以恢复的状态</string>
     <string name="set_restore_state">恢复播放状态</string>
     <string name="set_restore_desc">恢复此前保存的播放状态（如果有）</string>
-    <string name="set_quality_tags_desc">提高标签质量，但会导致加载时间变长（实验性）</string>
     <string name="set_observing">自动重载中</string>
     <string name="set_observing_desc">发生更改时自动重新加载您的曲库（实验性）</string>
     <string name="desc_queue_bar">打开队列</string>
@@ -209,7 +208,6 @@
     <string name="lng_observing">正在监测您的曲库以查找更改…</string>
     <string name="lbl_state_wiped">已清除状态</string>
     <string name="lbl_state_restored">已恢复状态</string>
-    <string name="set_quality_tags">忽略 MediaStore 标签</string>
     <string name="lbl_eps">EP 专辑</string>
     <string name="lbl_ep">EP 专辑</string>
     <string name="lbl_singles">单曲</string>

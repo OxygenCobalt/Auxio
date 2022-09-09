@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.music.system
+package org.oxycblt.auxio.music.extractor
 
 import androidx.core.text.isDigitsOnly
 import org.oxycblt.auxio.music.Date

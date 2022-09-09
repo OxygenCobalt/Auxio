@@ -189,10 +189,6 @@ class Settings(private val context: Context, private val callback: Callback? = n
     val pauseOnRepeat: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_repeat_pause), false)
 
-    /** Whether to parse metadata directly with ExoPlayer. */
-    val useQualityTags: Boolean
-        get() = inner.getBoolean(context.getString(R.string.set_key_quality_tags), false)
-
     /** Whether to be actively watching for changes in the music library. */
     val shouldBeObserving: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_observing), false)

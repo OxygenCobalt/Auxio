@@ -1,21 +1,4 @@
-/*
- * Copyright (c) 2022 Auxio Project
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
- 
-package org.oxycblt.auxio.music.system
+package org.oxycblt.auxio.music.extractor
 
 import android.content.Context
 import android.database.Cursor
@@ -26,12 +9,18 @@ import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
-import java.io.File
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Date
+import org.oxycblt.auxio.music.Directory
+import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.directoryCompat
+import org.oxycblt.auxio.music.mediaStoreVolumeNameCompat
+import org.oxycblt.auxio.music.queryCursor
+import org.oxycblt.auxio.music.storageVolumesCompat
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
+import java.io.File
 
 /*
  * This file acts as the base for most the black magic required to get a remotely sensible music
@@ -91,33 +80,41 @@ import org.oxycblt.auxio.util.logD
  * I wish I was born in the neolithic.
  */
 
-// TODO: Move duration util to MusicUtil
-
 /**
- * Represents a [Indexer.Backend] that loads music from the media database ([MediaStore]). This is
- * not a fully-featured class by itself, and it's API-specific derivatives should be used instead.
+ * The layer that loads music from the MediaStore database. This is an intermediate step in
+ * the music loading process.
  * @author OxygenCobalt
  */
-abstract class MediaStoreBackend(private val context: Context) : Indexer.Backend {
+abstract class MediaStoreLayer(private val context: Context, private val cacheLayer: CacheLayer) {
+    private var cursor: Cursor? = null
+    
     private var idIndex = -1
     private var titleIndex = -1
     private var displayNameIndex = -1
     private var mimeTypeIndex = -1
     private var sizeIndex = -1
     private var dateAddedIndex = -1
+    private var dateModifiedIndex = -1
     private var durationIndex = -1
     private var yearIndex = -1
     private var albumIndex = -1
     private var albumIdIndex = -1
     private var artistIndex = -1
     private var albumArtistIndex = -1
-
+    
     private val settings = Settings(context)
-    protected val volumes = mutableListOf<StorageVolume>()
 
-    override fun query(): Cursor {
+    private val _volumes = mutableListOf<StorageVolume>()
+    protected val volumes: List<StorageVolume> get() = _volumes
+
+    /**
+     * Initialize this instance by making a query over the media database.
+     */
+    open fun init(): Cursor {
+        cacheLayer.init()
+        
         val storageManager = context.getSystemServiceCompat(StorageManager::class)
-        volumes.addAll(storageManager.storageVolumesCompat)
+        _volumes.addAll(storageManager.storageVolumesCompat)
         val dirs = settings.getMusicDirs(storageManager)
 
         val args = mutableListOf<String>()
@@ -152,73 +149,70 @@ abstract class MediaStoreBackend(private val context: Context) : Indexer.Backend
 
         logD("Starting query [proj: ${projection.toList()}, selector: $selector, args: $args]")
 
-        return requireNotNull(
+        val cursor = requireNotNull(
             context.contentResolverSafe.queryCursor(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 selector,
                 args.toTypedArray())) { "Content resolver failure: No Cursor returned" }
+            .also { cursor = it }
+
+        idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
+        titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE)
+        displayNameIndex =
+            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
+        mimeTypeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.MIME_TYPE)
+        sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.SIZE)
+        dateAddedIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_ADDED)
+        dateModifiedIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_MODIFIED)
+        durationIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)
+        yearIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.YEAR)
+        albumIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM)
+        albumIdIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID)
+        artistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)
+        albumArtistIndex = cursor.getColumnIndexOrThrow(AUDIO_COLUMN_ALBUM_ARTIST)
+        
+        return cursor
     }
 
-    override fun buildSongs(
-        cursor: Cursor,
-        emitIndexing: (Indexer.Indexing) -> Unit
-    ): List<Song> {
-        val rawSongs = mutableListOf<Song.Raw>()
-        while (cursor.moveToNext()) {
-            rawSongs.add(buildRawSong(context, cursor))
-            if (cursor.position % 50 == 0) {
-                // Only check for a cancellation every 50 songs or so (~20ms).
-                // While this seems redundant, each call to emitIndexing checks for a
-                // cancellation of the co-routine this loading task is running on.
-                emitIndexing(Indexer.Indexing.Indeterminate)
-            }
+    /**
+     * Finalize this instance by closing the cursor and finalizing the cache.
+     */
+    fun finalize(rawSongs: List<Song.Raw>) {
+        cursor?.close()
+        cursor = null
+        
+        cacheLayer.finalize(rawSongs)
+    }
+
+    /**
+     * Populate a [raw] with whatever the next value in the cursor is.
+     *
+     * This returns true if the song could be restored from cache, false if metadata had to be
+     * re-extracted, and null if the cursor is exhausted.
+     */
+    fun populateRaw(raw: Song.Raw): Boolean? {
+        val cursor = requireNotNull(cursor) { "MediaStoreLayer is not properly initialized" }
+        if (!cursor.moveToNext()) {
+            logD("Cursor is exhausted")
+            return null
         }
 
-        // The raw song is not actually complete at this point, as we cannot obtain a genre
-        // through a song query. Instead, we have to do the hack where we iterate through
-        // every genre and assign it's name to raw songs that match it's child IDs.
-        context.contentResolverSafe.useQuery(
-            MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
-            arrayOf(MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME)) { genreCursor ->
-            val idIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres._ID)
-            val nameIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)
+        // Populate the minimum required fields to maybe obtain a cache entry.
+        raw.mediaStoreId = cursor.getLong(idIndex)
+        raw.dateAdded = cursor.getLong(dateAddedIndex)
+        raw.dateModified = cursor.getLong(dateAddedIndex)
 
-            while (genreCursor.moveToNext()) {
-                // Genre names could theoretically be anything, including null for some reason.
-                // Null values are junk and should be ignored, but since we cannot assume the
-                // format a genre was derived from, we have to treat them like they are ID3
-                // genres, even when they might not be.
-                val id = genreCursor.getLong(idIndex)
-                val name = (genreCursor.getStringOrNull(nameIndex) ?: continue)
-                    .parseId3GenreNames(settings)
-
-                context.contentResolverSafe.useQuery(
-                    MediaStore.Audio.Genres.Members.getContentUri(VOLUME_EXTERNAL, id),
-                    arrayOf(MediaStore.Audio.Genres.Members._ID)) { cursor ->
-                    val songIdIndex =
-                        cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.Members._ID)
-
-                    while (cursor.moveToNext()) {
-                        val songId = cursor.getLong(songIdIndex)
-                        rawSongs
-                            .find { it.mediaStoreId == songId }
-                            ?.let { song -> song.genreNames = name }
-
-                        if (cursor.position % 50 == 0) {
-                            // Only check for a cancellation every 50 songs or so (~20ms).
-                            emitIndexing(Indexer.Indexing.Indeterminate)
-                        }
-                    }
-                }
-            }
-
-            // Check for a cancellation every time we finish a genre too, in the case that
-            // the genre has <50 songs.
-            emitIndexing(Indexer.Indexing.Indeterminate)
+        if (cacheLayer.maybePopulateCachedRaw(raw)) {
+            // We found a valid cache entry, no need to build it.
+            logD("Found cached raw: ${raw.name}")
+            return true
         }
 
-        return rawSongs.map { Song(it) }
+        buildRaw(cursor, raw)
+
+        // We had to freshly make this raw, return false
+        return false
     }
 
     /**
@@ -235,6 +229,7 @@ abstract class MediaStoreBackend(private val context: Context) : Indexer.Backend
                 MediaStore.Audio.AudioColumns.MIME_TYPE,
                 MediaStore.Audio.AudioColumns.SIZE,
                 MediaStore.Audio.AudioColumns.DATE_ADDED,
+                MediaStore.Audio.AudioColumns.DATE_MODIFIED,
                 MediaStore.Audio.AudioColumns.DURATION,
                 MediaStore.Audio.AudioColumns.YEAR,
                 MediaStore.Audio.AudioColumns.ALBUM,
@@ -250,32 +245,11 @@ abstract class MediaStoreBackend(private val context: Context) : Indexer.Backend
      * obtain an upstream [Song.Raw] first, and then populate it with version-specific fields
      * outlined in [projection].
      */
-    open fun buildRawSong(context: Context, cursor: Cursor): Song.Raw {
-        // Initialize our cursor indices if we haven't already.
-        if (idIndex == -1) {
-            idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
-            titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE)
-            displayNameIndex =
-                cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
-            mimeTypeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.MIME_TYPE)
-            sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.SIZE)
-            dateAddedIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_ADDED)
-            durationIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)
-            yearIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.YEAR)
-            albumIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM)
-            albumIdIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID)
-            artistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)
-            albumArtistIndex = cursor.getColumnIndexOrThrow(AUDIO_COLUMN_ALBUM_ARTIST)
-        }
-
-        val raw = Song.Raw()
-
-        raw.mediaStoreId = cursor.getLong(idIndex)
+    protected open fun buildRaw(cursor: Cursor, raw: Song.Raw) {
         raw.name = cursor.getString(titleIndex)
 
         raw.extensionMimeType = cursor.getString(mimeTypeIndex)
         raw.size = cursor.getLong(sizeIndex)
-        raw.dateAdded = cursor.getLong(dateAddedIndex)
 
         // Try to use the DISPLAY_NAME field to obtain a (probably sane) file name
         // from the android system.
@@ -294,11 +268,12 @@ abstract class MediaStoreBackend(private val context: Context) : Indexer.Backend
         // Android does not make a non-existent artist tag null, it instead fills it in
         // as <unknown>, which makes absolutely no sense given how other fields default
         // to null if they are not present. If this field is <unknown>, null it so that
-        // it's easier to handle later. While we can't natively parse multi-value tags,
-        // from MediaStore itself, we can still parse by user-defined separators.
+        // it's easier to handle later.
         raw.artistNames =
             cursor.getString(artistIndex).run {
                 if (this != MediaStore.UNKNOWN_STRING) {
+                    // While we can't natively parse multi-value tags,
+                    // from MediaStore itself, we can still parse by user-defined separators.
                     maybeParseSeparators(settings)
                 } else {
                     null
@@ -307,8 +282,6 @@ abstract class MediaStoreBackend(private val context: Context) : Indexer.Backend
 
         // The album artist field is nullable and never has placeholder values.
         raw.albumArtistNames = cursor.getStringOrNull(albumArtistIndex)?.maybeParseSeparators(settings)
-
-        return raw
     }
 
     companion object {
@@ -322,12 +295,6 @@ abstract class MediaStoreBackend(private val context: Context) : Indexer.Backend
         private const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
 
         /**
-         * External has existed since at least API 21, but no constant existed for it until API 29.
-         * This constant is safe to use.
-         */
-        @Suppress("InlinedApi") private const val VOLUME_EXTERNAL = MediaStore.VOLUME_EXTERNAL
-
-        /**
          * The base selector that works across all versions of android. Does not exclude
          * directories.
          */
@@ -336,16 +303,25 @@ abstract class MediaStoreBackend(private val context: Context) : Indexer.Backend
     }
 }
 
+
 // Note: The separation between version-specific backends may not be the cleanest. To preserve
 // speed, we only want to add redundancy on known issues, not with possible issues.
 
 /**
- * A [MediaStoreBackend] that completes the music loading process in a way compatible from
+ * A [MediaStoreLayer] that completes the music loading process in a way compatible from
  * @author OxygenCobalt
  */
-class Api21MediaStoreBackend(context: Context)  : MediaStoreBackend(context) {
+class Api21MediaStoreLayer(context: Context, cacheLayer: CacheLayer)  : 
+    MediaStoreLayer(context, cacheLayer) {
     private var trackIndex = -1
     private var dataIndex = -1
+
+    override fun init(): Cursor {
+        val cursor = super.init()
+        trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
+        dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
+        return cursor
+    }
 
     override val projection: Array<String>
         get() =
@@ -361,15 +337,10 @@ class Api21MediaStoreBackend(context: Context)  : MediaStoreBackend(context) {
         return true
     }
 
-    override fun buildRawSong(context: Context, cursor: Cursor): Song.Raw {
-        val raw = super.buildRawSong(context, cursor)
-
-        // Initialize our indices if we have not already.
-        if (trackIndex == -1) {
-            trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
-            dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
-        }
-
+    override fun buildRaw(cursor: Cursor, raw: Song.Raw) {
+        super.buildRaw(cursor, raw)
+        
+        // DATA is equivalent to the absolute path of the file.
         val data = cursor.getString(dataIndex)
 
         // On some OEM devices below API 29, DISPLAY_NAME may not be present. I assume
@@ -397,20 +368,28 @@ class Api21MediaStoreBackend(context: Context)  : MediaStoreBackend(context) {
             rawTrack.unpackTrackNo()?.let { raw.track = it }
             rawTrack.unpackDiscNo()?.let { raw.disc = it }
         }
-
-        return raw
     }
 }
 
 /**
- * A [MediaStoreBackend] that selects directories and builds paths using the modern volume fields
+ * A [MediaStoreLayer] that selects directories and builds paths using the modern volume fields
  * available from API 29 onwards.
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class BaseApi29MediaStoreBackend(context: Context) : MediaStoreBackend(context) {
+open class BaseApi29MediaStoreLayer(context: Context, cacheLayer: CacheLayer) : MediaStoreLayer(context, cacheLayer) {
     private var volumeIndex = -1
     private var relativePathIndex = -1
+
+    override fun init(): Cursor {
+        val cursor = super.init()
+        
+        volumeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
+        relativePathIndex =
+            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
+        
+        return cursor
+    }
 
     override val projection: Array<String>
         get() =
@@ -431,14 +410,8 @@ open class BaseApi29MediaStoreBackend(context: Context) : MediaStoreBackend(cont
         return true
     }
 
-    override fun buildRawSong(context: Context, cursor: Cursor): Song.Raw {
-        val raw = super.buildRawSong(context, cursor)
-
-        if (volumeIndex == -1) {
-            volumeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
-            relativePathIndex =
-                cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
-        }
+    override fun buildRaw(cursor: Cursor, raw: Song.Raw) {
+        super.buildRaw(cursor, raw)
 
         val volumeName = cursor.getString(volumeIndex)
         val relativePath = cursor.getString(relativePathIndex)
@@ -449,30 +422,30 @@ open class BaseApi29MediaStoreBackend(context: Context) : MediaStoreBackend(cont
         if (volume != null) {
             raw.directory = Directory.from(volume, relativePath)
         }
-
-        return raw
     }
 }
 
 /**
- * A [MediaStoreBackend] that completes the music loading process in a way compatible with at least
+ * A [MediaStoreLayer] that completes the music loading process in a way compatible with at least
  * API 29.
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class Api29MediaStoreBackend(context: Context) : BaseApi29MediaStoreBackend(context) {
+open class Api29MediaStoreLayer(context: Context, cacheLayer: CacheLayer) : BaseApi29MediaStoreLayer(context, cacheLayer) {
     private var trackIndex = -1
+
+    override fun init(): Cursor {
+        val cursor = super.init()
+        trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
+        return cursor
+    }
 
     override val projection: Array<String>
         get() = super.projection + arrayOf(MediaStore.Audio.AudioColumns.TRACK)
 
-    override fun buildRawSong(context: Context, cursor: Cursor): Song.Raw {
-        val raw = super.buildRawSong(context, cursor)
-
-        if (trackIndex == -1) {
-            trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
-        }
-
+    override fun buildRaw(cursor: Cursor, raw: Song.Raw) {
+        super.buildRaw(cursor, raw)
+        
         // This backend is volume-aware, but does not support the modern track fields.
         // Use the old field instead.
         val rawTrack = cursor.getIntOrNull(trackIndex)
@@ -480,20 +453,25 @@ open class Api29MediaStoreBackend(context: Context) : BaseApi29MediaStoreBackend
             rawTrack.unpackTrackNo()?.let { raw.track = it }
             rawTrack.unpackDiscNo()?.let { raw.disc = it }
         }
-
-        return raw
     }
 }
 
 /**
- * A [MediaStoreBackend] that completes the music loading process in a way compatible with at least
+ * A [MediaStoreLayer] that completes the music loading process in a way compatible with at least
  * API 30.
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.R)
-class Api30MediaStoreBackend(context: Context) : BaseApi29MediaStoreBackend(context) {
+class Api30MediaStoreLayer(context: Context, cacheLayer: CacheLayer) : BaseApi29MediaStoreLayer(context, cacheLayer) {
     private var trackIndex: Int = -1
     private var discIndex: Int = -1
+
+    override fun init(): Cursor {
+        val cursor = super.init()
+        trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
+        discIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISC_NUMBER)
+        return cursor
+    }
 
     override val projection: Array<String>
         get() =
@@ -502,14 +480,8 @@ class Api30MediaStoreBackend(context: Context) : BaseApi29MediaStoreBackend(cont
                     MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER,
                     MediaStore.Audio.AudioColumns.DISC_NUMBER)
 
-    override fun buildRawSong(context: Context, cursor: Cursor): Song.Raw {
-        val raw = super.buildRawSong(context, cursor)
-
-        // Populate our indices if we have not already.
-        if (trackIndex == -1) {
-            trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
-            discIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISC_NUMBER)
-        }
+    override fun buildRaw(cursor: Cursor, raw: Song.Raw) {
+        super.buildRaw(cursor, raw)
 
         // Both CD_TRACK_NUMBER and DISC_NUMBER tend to be formatted as they are in
         // the tag itself, which is to say that it is formatted as NN/TT tracks, where
@@ -517,7 +489,5 @@ class Api30MediaStoreBackend(context: Context) : BaseApi29MediaStoreBackend(cont
         // total, as we have no use for it.
         cursor.getStringOrNull(trackIndex)?.parsePositionNum()?.let { raw.track = it }
         cursor.getStringOrNull(discIndex)?.parsePositionNum()?.let { raw.disc = it }
-
-        return raw
     }
 }

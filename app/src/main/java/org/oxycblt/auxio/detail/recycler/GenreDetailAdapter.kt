@@ -39,9 +39,6 @@ import org.oxycblt.auxio.util.inflater
  */
 class GenreDetailAdapter(private val listener: Listener) :
     DetailAdapter<DetailAdapter.Listener>(listener, DIFFER) {
-    private var currentSong: Song? = null
-    private var isPlaying = false
-
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
             is Genre -> GenreDetailViewHolder.VIEW_TYPE

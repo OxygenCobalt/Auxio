@@ -193,9 +193,7 @@
     <string name="set_lib_tabs">Abas da biblioteca</string>
     <string name="lbl_genre">Gênero</string>
     <string name="set_playback_mode_artist">Reproduzir do artista</string>
-    <string name="set_quality_tags_desc">Aumenta a qualidade da tag, mas resulta em tempos de carregamento mais longos (Experimental)</string>
     <string name="set_restore_desc">Restaurar o estado de reprodução salvo anteriormente (se houver)</string>
-    <string name="set_quality_tags">Ignorar tags do MediaStore</string>
     <string name="set_pre_amp_with">Ajuste com tags</string>
     <string name="lbl_state_wiped">Estado liberado</string>
     <string name="lbl_state_restored">Estado restaurado</string>

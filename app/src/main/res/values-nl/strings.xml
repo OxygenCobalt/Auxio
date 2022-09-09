@@ -170,8 +170,6 @@
     <string name="set_playback_mode_none">Afspelen vanaf getoond item</string>
     <string name="set_restore_state">Afspeelstatus herstellen</string>
     <string name="set_restore_desc">Herstel de eerder opgeslagen afspeelstatus (indien aanwezig)</string>
-    <string name="set_quality_tags">MediaStore tags negeren</string>
-    <string name="set_quality_tags_desc">Verhoogt tag-kwaliteit, maar vereist langere laadtijden</string>
     <string name="err_did_not_restore">Geen staat kan hersteld worden</string>
     <string name="desc_clear_queue_item">Verwijder dit wachtrij liedje</string>
     <string name="desc_queue_handle">Verplaats dit wachtrij liedje</string>

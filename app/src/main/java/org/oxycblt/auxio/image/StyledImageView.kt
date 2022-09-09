@@ -57,7 +57,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     AppCompatImageView(context, attrs, defStyleAttr) {
     private val settings = Settings(context)
 
-    var cornerRadius = 0f
+    private var cornerRadius = 0f
         set(value) {
             field = value
             (background as? MaterialShapeDrawable)?.let { bg ->

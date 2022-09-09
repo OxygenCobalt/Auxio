@@ -83,6 +83,7 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
         return item is Header || item is SortHeader
     }
 
+    @Suppress("LeakingThis")
     protected val differ = AsyncListDiffer(this, diffCallback)
 
     override val currentList: List<Item>

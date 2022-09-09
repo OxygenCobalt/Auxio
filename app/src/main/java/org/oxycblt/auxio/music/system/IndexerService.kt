@@ -218,8 +218,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     override fun onSettingChanged(key: String) {
         when (key) {
             getString(R.string.set_key_music_dirs),
-            getString(R.string.set_key_music_dirs_include),
-            getString(R.string.set_key_quality_tags) -> onStartIndexing()
+            getString(R.string.set_key_music_dirs_include)-> onStartIndexing()
             getString(R.string.set_key_observing) -> {
                 if (!indexer.isIndexing) {
                     updateIdleSession()

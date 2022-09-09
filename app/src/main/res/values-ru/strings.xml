@@ -215,10 +215,8 @@
     <string name="set_observing_desc">Перезагружать библиотеку при каждом изменении (экспериментально)</string>
     <string name="fmt_db_neg">-%.1f дБ</string>
     <string name="fmt_lib_genre_count">Жанров загружено: %d</string>
-    <string name="set_quality_tags">Игнорировать теги MediaStore</string>
     <string name="set_restore_desc">Восстановить предыдущее состояние воспроизведения (если есть)</string>
     <string name="set_dirs_mode">Режим</string>
-    <string name="set_quality_tags_desc">Улучшает качество тегов, но приводит к долгому времени загрузки (экспериментально)</string>
     <string name="set_dirs_mode_include_desc">Музыка будет загружена <b>только</b> из указанных папок.</string>
     <string name="err_did_not_restore">Невозможно восстановить состояние воспроизведения</string>
     <string name="def_track">Нет номера трека</string>

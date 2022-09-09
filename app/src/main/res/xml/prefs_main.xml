@@ -124,10 +124,6 @@
             app:summary="@string/set_repeat_pause_desc"
             app:title="@string/set_repeat_pause" />
 
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/set_content">
-
         <Preference
             app:key="@string/set_key_save_state"
             app:summary="@string/set_save_desc"
@@ -143,6 +139,10 @@
             app:summary="@string/set_restore_desc"
             app:title="@string/set_restore_state" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/set_content">
+
         <Preference
             app:key="@string/set_key_reindex"
             app:summary="@string/set_reindex_desc"
@@ -152,12 +152,6 @@
             app:key="@string/set_key_music_dirs"
             app:summary="@string/set_dirs_desc"
             app:title="@string/set_dirs" />
-
-        <SwitchPreferenceCompat
-            app:defaultValue="false"
-            app:key="@string/set_key_quality_tags"
-            app:summary="@string/set_quality_tags_desc"
-            app:title="@string/set_quality_tags" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"

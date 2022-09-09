@@ -45,7 +45,7 @@ interface MenuItemListener : ItemClickListener {
 }
 
 /**
- * Like [AsyncListDiffer], but synchronous. This may seem like it would be inefficient, but in
+ * Like AsyncListDiffer, but synchronous. This may seem like it would be inefficient, but in
  * practice Auxio's lists tend to be small enough to the point where this does not matter, and
  * situations that would be inefficient are ruled out with [replaceList].
  */

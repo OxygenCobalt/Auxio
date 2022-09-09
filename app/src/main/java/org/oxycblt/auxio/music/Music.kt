@@ -23,7 +23,6 @@ import android.content.Context
 import android.os.Parcelable
 import java.security.MessageDigest
 import java.util.UUID
-import kotlin.experimental.and
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.reflect.KClass
@@ -143,7 +142,7 @@ sealed class MusicParent : Music() {
  * A song.
  * @author OxygenCobalt
  */
-class Song constructor(private val raw: Raw) : Music() {
+class Song constructor(raw: Raw) : Music() {
     override val uid: UID
 
     override val rawName = requireNotNull(raw.name) { "Invalid raw: No title" }
@@ -279,6 +278,7 @@ class Song constructor(private val raw: Raw) : Music() {
         var formatMimeType: String? = null,
         var size: Long? = null,
         var dateAdded: Long? = null,
+        var dateModified: Long? = null,
         var durationMs: Long? = null,
         var track: Int? = null,
         var disc: Int? = null,
@@ -473,7 +473,7 @@ fun MessageDigest.update(date: Date?) {
     update(date.toString().toByteArray())
 }
 
-// Note: All methods regarding integer bytemucking must be little-endian
+// Note: All methods regarding integer byte-mucking must be little-endian
 
 /**
  * Update the digest using the little-endian byte representation of a byte, or do not update if

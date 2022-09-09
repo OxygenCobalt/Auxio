@@ -204,8 +204,6 @@
     <string name="lbl_state_restored">Stato ripristinato</string>
     <string name="lbl_sort_date_added">Data aggiunta</string>
     <string name="set_observing">Ricaricamento automatico</string>
-    <string name="set_quality_tags">Ignora tags MediaStore</string>
-    <string name="set_quality_tags_desc">Migliora qualità dei tag, ma potrebbe richiedere tempi di carimento più lunghi (sperimentale)</string>
     <string name="set_restore_state">Ripristina stato riproduzione</string>
     <string name="set_restore_desc">Ripristina lo stato di riproduzione precedentemente salvato (se disponibile)</string>
     <string name="err_did_not_restore">Impossibile ripristinare lo stato</string>

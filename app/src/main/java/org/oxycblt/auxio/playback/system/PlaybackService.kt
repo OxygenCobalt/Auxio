@@ -479,7 +479,6 @@ class PlaybackService :
     }
 
     companion object {
-        private const val POS_POLL_INTERVAL = 100L
         private const val REWIND_THRESHOLD = 3000L
 
         const val ACTION_INC_REPEAT_MODE = BuildConfig.APPLICATION_ID + ".action.LOOP"

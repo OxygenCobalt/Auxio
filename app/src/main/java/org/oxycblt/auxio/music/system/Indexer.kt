@@ -20,7 +20,6 @@ package org.oxycblt.auxio.music.system
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.os.Build
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CancellationException
@@ -28,13 +27,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.music.extractor.Api21MediaStoreLayer
+import org.oxycblt.auxio.music.extractor.Api29MediaStoreLayer
+import org.oxycblt.auxio.music.extractor.Api30MediaStoreLayer
+import org.oxycblt.auxio.music.extractor.CacheLayer
+import org.oxycblt.auxio.music.extractor.MetadataLayer
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.TaskGuard
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
-import org.oxycblt.auxio.util.requireBackgroundThread
 
 /**
  * Auxio's media indexer.
@@ -43,13 +45,13 @@ import org.oxycblt.auxio.util.requireBackgroundThread
  * (and hacky garbage) in order to produce the best possible experience. It is split into three
  * distinct steps:
  *
- * 1. Finding a [Backend] to use and then querying the media database with it.
- * 2. Using the [Backend] and the media data to create songs
+ * 1. Creating the chain of layers to extract metadata with
+ * 2. Running the chain process
  * 3. Using the songs to build the library, which primarily involves linking up all data objects
  * with their corresponding parents/children.
  *
  * This class in particular handles 3 primarily. For the code that handles 1 and 2, see the
- * [Backend] implementations.
+ * layer implementations.
  *
  * This class also fulfills the role of maintaining the current music loading state, which seems
  * like a job for [MusicStore] but in practice is only really leveraged by the components that
@@ -194,27 +196,23 @@ class Indexer {
     private fun indexImpl(context: Context, handle: Long): MusicStore.Library? {
         emitIndexing(Indexing.Indeterminate, handle)
 
-        // Since we have different needs for each version, we determine a "Backend" to use
-        // when loading music and then leverage that to create the initial song list.
-        // This is technically dependency injection. Except it doesn't increase your compile
-        // times by 3x. Isn't that nice.
+        // Create the chain of layers. Each layer builds on the previous layer and
+        // enables version-specific features in order to create the best possible music
+        // experience. This is technically dependency injection. Except it doesn't increase
+        // your compile times by 3x. Isn't that nice.
 
-        val mediaStoreBackend =
+        val cacheLayer = CacheLayer()
+
+        val mediaStoreLayer =
             when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30MediaStoreBackend(context)
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Api29MediaStoreBackend(context)
-                else -> Api21MediaStoreBackend(context)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30MediaStoreLayer(context, cacheLayer)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Api29MediaStoreLayer(context, cacheLayer)
+                else -> Api21MediaStoreLayer(context, cacheLayer)
             }
 
-        val settings = Settings(context)
-        val backend =
-            if (settings.useQualityTags) {
-                ExoPlayerBackend(context, mediaStoreBackend)
-            } else {
-                mediaStoreBackend
-            }
+        val metadataLayer = MetadataLayer(context, mediaStoreLayer)
 
-        val songs = buildSongs(backend, handle)
+        val songs = buildSongs(metadataLayer, handle)
         if (songs.isEmpty()) {
             return null
         }
@@ -236,32 +234,37 @@ class Indexer {
     }
 
     /**
-     * Does the initial query over the song database using [backend]. The songs returned by this
+     * Does the initial query over the song database using [metadataLayer]. The songs returned by this
      * function are **not** well-formed. The companion [buildAlbums], [buildArtists], and
      * [buildGenres] functions must be called with the returned list so that all songs are properly
      * linked up.
      */
-    private fun buildSongs(backend: Backend, handle: Long): List<Song> {
+    private fun buildSongs(metadataLayer: MetadataLayer, handle: Long): List<Song> {
         val start = System.currentTimeMillis()
 
-        var songs =
-            backend.query().use { cursor ->
-                logD(
-                    "Successfully queried media database " +
-                        "in ${System.currentTimeMillis() - start}ms")
+        // Initialize the extractor chain. This also nets us the projected total
+        // that we can show when loading.
+        val total = metadataLayer.init()
 
-                backend.buildSongs(cursor) { emitIndexing(it, handle) }
-            }
+        // Note: We use a set here so we can eliminate effective duplicates of
+        // songs (by UID).
+        val songs = mutableSetOf<Song>()
+        val rawSongs = mutableListOf<Song.Raw>()
 
-        // Deduplicate songs to prevent (most) deformed music clones
-        songs = songs.distinctBy { it.uid }.toMutableList()
+        metadataLayer.parse { raw ->
+            songs.add(Song(raw))
+            rawSongs.add(raw)
+            emitIndexing(Indexing.Songs(songs.size, total), handle)
+        }
 
-        // Ensure that sorting order is consistent so that grouping is also consistent.
-        Sort(Sort.Mode.ByName, true).songsInPlace(songs)
+        metadataLayer.finalize(rawSongs)
+
+        val sorted = Sort(Sort.Mode.ByName, true).songs(songs)
 
         logD("Successfully built ${songs.size} songs in ${System.currentTimeMillis() - start}ms")
 
-        return songs
+        // Ensure that sorting order is consistent so that grouping is also consistent.
+        return sorted
     }
 
     /**
@@ -418,18 +421,6 @@ class Indexer {
 
     interface Controller : Callback {
         fun onStartIndexing()
-    }
-
-    /** Represents a backend that metadata can be extracted from. */
-    interface Backend {
-        /** Query the media database for a basic cursor. */
-        fun query(): Cursor
-
-        /** Create a list of songs from the [Cursor] queried in [query]. */
-        fun buildSongs(
-            cursor: Cursor,
-            emitIndexing: (Indexing) -> Unit
-        ): List<Song>
     }
 
     companion object {

@@ -188,10 +188,8 @@
     <string name="set_restore_state">Reestablecer el estado de reproducción</string>
     <string name="set_restore_desc">Reestablecer el estado de reproducción guardado previamente (si existe)</string>
     <string name="set_dirs">Carpetas de música</string>
-    <string name="set_quality_tags">Ignorar etiquetas MediaStore</string>
     <string name="set_dirs_desc">Gestionar de dónde se cargará la música</string>
     <string name="set_dirs_mode_include_desc">La música<b>solo</b> se cargará de las carpetas que añadas.</string>
-    <string name="set_quality_tags_desc">Incrementa la calidad de las etiquetas, pero resulra en tiempos de carga mayores (Experimental)</string>
     <string name="def_codec">Formato desconocido</string>
     <string name="clr_dynamic">Dinámico</string>
     <string name="fmt_disc_no">Disco %d</string>

@@ -20,7 +20,6 @@ package org.oxycblt.auxio.playback
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.activityViewModels
-import kotlin.math.max
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
