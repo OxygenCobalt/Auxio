@@ -33,6 +33,7 @@ import org.oxycblt.auxio.music.directoryCompat
 import org.oxycblt.auxio.music.mediaStoreVolumeNameCompat
 import org.oxycblt.auxio.music.queryCursor
 import org.oxycblt.auxio.music.storageVolumesCompat
+import org.oxycblt.auxio.music.useQuery
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.getSystemServiceCompat
@@ -120,6 +121,7 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
     private var albumArtistIndex = -1
 
     private val settings = Settings(context)
+    private val genreNamesMap = mutableMapOf<Long, List<String>>()
 
     private val _volumes = mutableListOf<StorageVolume>()
     protected val volumes: List<StorageVolume>
@@ -127,6 +129,9 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
 
     /** Initialize this instance by making a query over the media database. */
     open fun init(): Cursor {
+        logD("Initializing")
+        val start = System.currentTimeMillis()
+
         cacheLayer.init()
 
         val storageManager = context.getSystemServiceCompat(StorageManager::class)
@@ -163,7 +168,7 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
             selector += ')'
         }
 
-        logD("Starting query [proj: ${projection.toList()}, selector: $selector, args: $args]")
+        logD("Starting song query [proj: ${projection.toList()}, selector: $selector, args: $args]")
 
         val cursor =
             requireNotNull(
@@ -190,6 +195,46 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
         albumIdIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID)
         artistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)
         albumArtistIndex = cursor.getColumnIndexOrThrow(AUDIO_COLUMN_ALBUM_ARTIST)
+
+        logD("Song query succeeded [Projected total: ${cursor.count}]")
+
+        logD("Assembling genre map")
+
+        // Since we can't obtain the genre tag from a song query, we must construct
+        // our own equivalent from genre database queries. Theoretically, this isn't
+        // needed since MetadataLayer will fill this in for us, but there are some
+        // obscure formats where genre support is only really covered by this.
+        context.contentResolverSafe.useQuery(
+            MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
+            arrayOf(MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME)
+        ) { genreCursor ->
+            val idIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres._ID)
+            val nameIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)
+
+            while (genreCursor.moveToNext()) {
+                // We can't assume what format these genres are derived from, so we just have
+                // to assume ID3v2 rules.
+                val id = genreCursor.getLong(idIndex)
+                val names = (genreCursor.getStringOrNull(nameIndex) ?: continue)
+                    .parseId3GenreNames(settings)
+
+                context.contentResolverSafe.useQuery(
+                    MediaStore.Audio.Genres.Members.getContentUri(VOLUME_EXTERNAL, id),
+                    arrayOf(MediaStore.Audio.Genres.Members._ID)
+                ) { cursor ->
+                    val songIdIndex =
+                        cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.Members._ID)
+
+                    while (cursor.moveToNext()) {
+                        // Assume that a song can't inhabit multiple genre entries, as I doubt
+                        // Android is smart enough to separate genres into separators.
+                        genreNamesMap[cursor.getLong(songIdIndex)] = names
+                    }
+                }
+            }
+        }
+
+        logD("Finished initialization in ${System.currentTimeMillis() - start}ms")
 
         return cursor
     }
@@ -221,7 +266,7 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
         raw.dateModified = cursor.getLong(dateAddedIndex)
 
         if (cacheLayer.maybePopulateCachedRaw(raw)) {
-            // We found a valid cache entry, no need to build it.
+            // We found a valid cache entry, no need to extract metadata.
             logD("Found cached raw: ${raw.name}")
             return true
         }
@@ -301,6 +346,8 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
         // The album artist field is nullable and never has placeholder values.
         raw.albumArtistNames =
             cursor.getStringOrNull(albumArtistIndex)?.maybeParseSeparators(settings)
+
+        raw.genreNames = genreNamesMap[raw.mediaStoreId]
     }
 
     companion object {
@@ -312,6 +359,13 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
          */
         @Suppress("InlinedApi")
         private const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
+
+        /**
+         * External has existed since at least API 21, but no constant existed for it until API 29.
+         * This constant is safe to use.
+         */
+        @Suppress("InlinedApi")
+        private const val VOLUME_EXTERNAL = MediaStore.VOLUME_EXTERNAL
 
         /**
          * The base selector that works across all versions of android. Does not exclude

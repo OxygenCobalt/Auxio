@@ -62,6 +62,8 @@ import org.oxycblt.auxio.util.logW
  * directly work with music loading, making such redundant.
  *
  * @author OxygenCobalt
+ *
+ * TODO: Try to replace TaskGuard with yield when possible
  */
 class Indexer {
     private var lastResponse: Response? = null
