@@ -3,92 +3,138 @@
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Ponów</string>
     <string name="lbl_grant">Przyznaj</string>
-
     <string name="lbl_genres">Gatunki</string>
     <string name="lbl_artists">Wykonawcy</string>
     <string name="lbl_albums">Albumy</string>
     <string name="lbl_songs">Utwory</string>
     <string name="lbl_all_songs">Wszystkie Utwory</string>
-
     <string name="lbl_search">Szukaj</string>
     <string name="lbl_filter">Filtry</string>
     <string name="lbl_filter_all">Wszystkie</string>
-
     <string name="lbl_sort">Sortowanie</string>
     <string name="lbl_sort_asc">Rosnąco</string>
-
-    <string name="lbl_play">Graj</string>
+    <string name="lbl_play">Odtwórz</string>
     <string name="lbl_shuffle">Losowo</string>
-    <string name="lbl_playback">Obecnie Grane</string>
-
+    <string name="lbl_playback">Obecnie odtwarzane</string>
     <string name="lbl_queue">Kolejka</string>
     <string name="lbl_play_next">Odtwarzaj następny</string>
     <string name="lbl_queue_add">Dodaj do kolejki</string>
     <string name="lng_queue_added">Dodany do kolejki</string>
-
     <string name="lbl_go_artist">Przejdź do wykonawcy</string>
     <string name="lbl_go_album">Przejdź do albumu</string>
-
     <string name="lbl_about">O aplikacji</string>
     <string name="lbl_version">Wersja</string>
-    <string name="lbl_code">Zobacz na GitHubie</string>
+    <string name="lbl_code">Kod źródłowy</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licencje</string>
-
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Ustawienia</string>
-
     <string name="set_ui">Wygląd</string>
     <string name="set_theme">Motyw</string>
     <string name="set_theme_auto">Automatyczny</string>
     <string name="set_theme_day">Jasny</string>
     <string name="set_theme_night">Ciemny</string>
     <string name="set_accent">Odcień koloru</string>
-
     <string name="set_quality_covers">Ignoruj okładki z Media Store</string>
-
     <string name="set_audio">Dźwięk</string>
-
     <string name="set_behavior">Zachowanie</string>
-
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nie znaleziono muzyki</string>
-
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Ścieżka %d</string>
-
     <string name="desc_play_pause">Odtwarzanie/Pauza</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Szukaj w bibliotece…</string>
-
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Czerwony</string>
     <string name="clr_pink">Różowy</string>
-    <string name="clr_purple">Purpura</string>
-    <string name="clr_indigo">Błękit Indygowy</string>
+    <string name="clr_purple">Fiolet</string>
+    <string name="clr_indigo">Indygo</string>
     <string name="clr_blue">Błękit</string>
-    <string name="clr_deep_blue">Jasnobłękit</string>
+    <string name="clr_deep_blue">Ciemny błękit</string>
     <string name="clr_green">Zielony</string>
-    <string name="clr_deep_green">Jasnozielony</string>
-    <string name="clr_lime">Żółtyzielony</string>
+    <string name="clr_deep_green">Ciemnozielony</string>
+    <string name="clr_lime">Żółtozielony</string>
     <string name="clr_yellow">Żółty</string>
     <string name="clr_orange">Pomarańczowy</string>
     <string name="clr_brown">Brązowy</string>
     <string name="clr_grey">Szary</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_lib_song_count">Utwory uruchamia się: %d</string>
-
     <plurals name="fmt_song_count">
         <item quantity="one">%d Utwór</item>
         <item quantity="few">%d Utwory</item>
-        <item quantity="many">%d Piosenek</item>
+        <item quantity="many">%d Utworów</item>
+        <item quantity="other">%d Utworów</item>
     </plurals>
-
     <plurals name="fmt_album_count">
         <item quantity="one">%d Album</item>
         <item quantity="few">%d Albumy</item>
         <item quantity="many">%d Albumów</item>
     </plurals>
+    <string name="lbl_album_live">Album koncertowy</string>
+    <string name="lbl_album_remix">Remix album</string>
+    <string name="lbl_album">Album</string>
+    <string name="lbl_eps">Minialbumy</string>
+    <string name="lbl_ep">Minialbum</string>
+    <string name="lbl_ok">Ok</string>
+    <string name="lbl_cancel">Anuluj</string>
+    <string name="set_content">Zawartość</string>
+    <string name="desc_no_cover">Okładka albumu</string>
+    <string name="def_genre">Nieznany gatunek</string>
+    <string name="def_date">Nieznana data</string>
+    <string name="def_sample_rate">Nieznana częstotliwość próbkowania</string>
+    <string name="cdc_mp3">MPEG-1 audio</string>
+    <string name="lbl_sort_track">Utwór</string>
+    <string name="lbl_song_detail">Wyświetl szczegóły</string>
+    <string name="lbl_props">Szczegóły utworu</string>
+    <string name="lbl_sample_rate">Częstotliwość próbkowania</string>
+    <string name="lbl_shuffle_shortcut_short">Losowo</string>
+    <string name="set_headset_autoplay">Autoodtwarzanie w słuchawkach</string>
+    <string name="def_codec">Nieznany format</string>
+    <string name="def_bitrate">Nieznany bitrate</string>
+    <string name="clr_teal">Morski</string>
+    <string name="fmt_db_pos">+%.1f dB</string>
+    <string name="lbl_file_name">Nazwa pliku</string>
+    <string name="lbl_relative_path">Ścieżka katalogu</string>
+    <string name="lbl_format">Format</string>
+    <string name="clr_cyan">Niebieskozielony</string>
+    <string name="fmt_disc_no">Płyta %d</string>
+    <string name="lbl_sort_date_added">Data dodania</string>
+    <string name="desc_album_cover">Okładka albumu %s</string>
+    <string name="desc_auxio_icon">Ikona Auxio</string>
+    <string name="desc_shuffle">Włącz lub wyłącz odtwarzanie losowe</string>
+    <string name="lbl_ep_live">Minialbum koncertowy</string>
+    <string name="lbl_ep_remix">Minialbum z remiksami</string>
+    <string name="lbl_single_live">Koncertowy singiel</string>
+    <string name="lbl_single_remix">Remix</string>
+    <string name="lbl_compilations">Kompilacje</string>
+    <string name="lbl_compilation">Kompilacja</string>
+    <string name="lbl_soundtracks">Ścieżki dźwiękowe</string>
+    <string name="lbl_soundtrack">Ścieżka dźwiękowa</string>
+    <string name="lbl_genre">Gatunek</string>
+    <string name="lbl_shuffle_shortcut_long">Wszystkie losowo</string>
+    <string name="fmt_sample_rate">%d Hz</string>
+    <string name="lbl_add">Dodaj</string>
+    <string name="set_black_mode">Czarny motyw</string>
+    <string name="set_show_covers">Pokaż okładki</string>
+    <string name="clr_deep_purple">Ciemny fiolet</string>
+    <string name="fmt_db_neg">-%.1f dB</string>
+    <string name="lbl_sort_name">Nazwa</string>
+    <string name="lbl_sort_year">Rok</string>
+    <string name="lbl_single">Singiel</string>
+    <string name="lbl_singles">Single</string>
+    <string name="lbl_sort_duration">Czas trwania</string>
+    <string name="lbl_mixtape">Składanka</string>
+    <string name="lbl_sort_count">Liczba utworów</string>
+    <string name="lbl_sort_disc">Płyta</string>
+    <string name="lbl_artist">Wykonawca</string>
+    <string name="lbl_save">Zapisz</string>
+    <string name="lbl_mixtapes">Składanki</string>
+    <string name="lbl_remix_group">Remixy</string>
+    <string name="def_artist">Nieznany wykonawca</string>
+    <string name="lbl_bitrate">Bitrate</string>
+    <string name="def_track">Nieznany numer</string>
+    <string name="lbl_equalizer">Equalizer</string>
+    <string name="lbl_size">Rozmiar</string>
+    <string name="err_no_dirs">Brak folderów</string>
 </resources>

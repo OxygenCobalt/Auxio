@@ -234,4 +234,5 @@
     <string name="set_bar_action_next">Zum nächsten Song gehen</string>
     <string name="set_bar_action_repeat">Wiederholungsmodus</string>
     <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
+    <string name="desc_exit">Wiedergabe anhalten</string>
 </resources>
