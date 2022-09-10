@@ -59,7 +59,7 @@ class ArtistListFragment : HomeListFragment<Artist>() {
         // Change how we display the popup depending on the mode.
         return when (homeModel.getSortForDisplay(DisplayMode.SHOW_ARTISTS).mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> artist.sortName?.run { first().uppercase() }
+            is Sort.Mode.ByName -> artist.collationKey?.run { sourceString.first().uppercase() }
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> artist.durationMs.formatDurationMs(false)

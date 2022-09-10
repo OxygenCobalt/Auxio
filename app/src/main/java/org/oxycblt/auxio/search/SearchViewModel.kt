@@ -157,44 +157,21 @@ class SearchViewModel(application: Application) :
 
     private fun List<Genre>.filterGenresBy(value: String) = baseFilterBy(value) { false }
 
-    private inline fun <T : Music> List<T>.baseFilterBy(value: String, additional: (T) -> Boolean) =
+    private inline fun <T : Music> List<T>.baseFilterBy(value: String, fallback: (T) -> Boolean) =
         filter {
             // The basic comparison is first by the *normalized* name, as that allows a
-            // non-unicode search to match with some unicode characters. If that fails,
-            // filter impls have fallback values, primarily around sort tags or file names.
+            // non-unicode search to match with some unicode characters. In an ideal world, we
+            // would just want to leverage CollationKey, but that is not designed for a contains
+            // algorithm. If that fails, filter impls have fallback values, primarily around
+            // sort tags or file names.
             it.resolveNameNormalized(application).contains(value, ignoreCase = true) ||
-                additional(it)
+                fallback(it)
         }
             .ifEmpty { null }
 
     private fun Music.resolveNameNormalized(context: Context): String {
-        // This method normalizes strings so that songs with accented characters will show
-        // up in search even if the actual character was not inputted.
-        // https://stackoverflow.com/a/32030586/14143986
-
-        // Normalize with NFKD [Meaning that symbols with identical meanings will be turned into
-        // their letter variants].
         val norm = Normalizer.normalize(resolveName(context), Normalizer.Form.NFKD)
-
-        // Normalizer doesn't exactly finish the job though. We have to rebuild all the codepoints
-        // in the string and remove the hidden characters that were added by Normalizer.
-        var idx = 0
-        val sb = StringBuilder()
-
-        while (idx < norm.length) {
-            val cp = norm.codePointAt(idx)
-            idx += Character.charCount(cp)
-
-            when (Character.getType(cp)) {
-                // Character.NON_SPACING_MARK and Character.COMBINING_SPACING_MARK were added
-                // by normalizer
-                6,
-                8 -> continue
-                else -> sb.appendCodePoint(cp)
-            }
-        }
-
-        return sb.toString()
+        return NORMALIZATION_SANITIZE_REGEX.replace(norm, "")
     }
 
     override fun onLibraryChanged(library: MusicStore.Library?) {
@@ -207,5 +184,9 @@ class SearchViewModel(application: Application) :
     override fun onCleared() {
         super.onCleared()
         musicStore.removeCallback(this)
+    }
+
+    companion object {
+        private val NORMALIZATION_SANITIZE_REGEX = Regex("\\p{InCombiningDiacriticalMarks}+")
     }
 }

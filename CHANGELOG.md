@@ -5,6 +5,9 @@
 #### What's New
 - Reworked music hashing to be even more reliable (Will wipe playback state)
 
+#### What's Improved
+- Sorting now takes accented characters into account
+
 #### What's Fixed
 - Fixed issue where the scroll popup would not display correctly in landscape mode [#230]
 - Fixed issue where the playback progress would continue in the notification even if

@@ -369,16 +369,13 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
         }
 
         private class BasicComparator<T : Music> private constructor() : Comparator<T> {
-            // TODO: Perhaps I should leverage collator?
-
             override fun compare(a: T, b: T): Int {
-                val aSortName = a.sortName
-                val bSortName = b.sortName
+                val aKey = a.collationKey
+                val bKey = b.collationKey
                 return when {
-                    aSortName != null && bSortName != null ->
-                        aSortName.compareTo(bSortName, ignoreCase = true)
-                    aSortName == null && bSortName != null -> -1 // a < b
-                    aSortName == null && bSortName == null -> 0 // a = b
+                    aKey != null && bKey != null -> aKey.compareTo(bKey)
+                    aKey == null && bKey != null -> -1 // a < b
+                    aKey == null && bKey == null -> 0 // a = b
                     else -> 1 // a < b
                 }
             }

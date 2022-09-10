@@ -74,13 +74,13 @@ class SongListFragment : HomeListFragment<Song>() {
         // based off the names of the parent objects and not the child objects.
         return when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS).mode) {
             // Name -> Use name
-            is Sort.Mode.ByName -> song.sortName?.run { first().uppercase() }
+            is Sort.Mode.ByName -> song.collationKey?.run { sourceString.first().uppercase() }
 
             // Artist -> Use Artist Name
-            is Sort.Mode.ByArtist -> song.album.artist.sortName?.run { first().uppercase() }
+            is Sort.Mode.ByArtist -> song.album.artist.collationKey?.run { sourceString.first().uppercase() }
 
             // Album -> Use Album Name
-            is Sort.Mode.ByAlbum -> song.album.sortName?.run { first().uppercase() }
+            is Sort.Mode.ByAlbum -> song.album.collationKey?.run { sourceString.first().uppercase() }
 
             // Year -> Use Full Year
             is Sort.Mode.ByYear -> song.album.date?.resolveYear(requireContext())

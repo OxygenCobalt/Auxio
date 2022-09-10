@@ -32,6 +32,8 @@ import org.oxycblt.auxio.util.inRangeOrNull
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import java.security.MessageDigest
+import java.text.CollationKey
+import java.text.Collator
 import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
@@ -50,26 +52,28 @@ sealed class Music : Item {
     abstract val rawSortName: String?
 
     /**
-     * The name of this item used for sorting.This should not be used outside of sorting and
-     * fast-scrolling.
-     */
-    val sortName: String?
-        get() =
-            rawSortName
-                ?: rawName?.run {
-                    when {
-                        length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
-                        length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
-                        length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
-                        else -> this
-                    }
-                }
-
-    /**
-     * Resolve a name from it's raw form to a form suitable to be shown in a ui. Ex. "unknown" would
-     * become Unknown Artist, (124) would become its proper genre name, etc.
+     * Resolve a name from it's raw form to a form suitable to be shown in a UI.
+     * Null values will be resolved into their string form with this function.
      */
     abstract fun resolveName(context: Context): String
+
+    /**
+     * A key used by the sorting system that takes into account the sort tags of this item,
+     * any (english) articles that prefix the names, and collation rules. Lazily generated
+     * since generating a collation key is non-trivial.
+     */
+    val collationKey: CollationKey? by lazy {
+        val sortName = (rawSortName ?: rawName)?.run {
+            when {
+                length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
+                length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
+                length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
+                else -> this
+            }
+        }
+
+        COLLATOR.getCollationKey(sortName)
+    }
 
     // Equality is based on UIDs, as some items (Especially artists) can have identical
     // properties (Name) yet non-identical UIDs due to MusicBrainz tags
@@ -128,6 +132,12 @@ sealed class Music : Item {
                 val tag = "auxio.${unlikelyToBeNull(clazz.simpleName).lowercase()}"
                 return UID(tag, uuid)
             }
+        }
+    }
+
+    companion object {
+        private val COLLATOR = Collator.getInstance().apply {
+            strength = Collator.PRIMARY
         }
     }
 }
@@ -208,6 +218,8 @@ class Song constructor(raw: Raw) : Music() {
      * back to the album artist tag (i.e parent artist name). Null if name is unknown.
      */
     val individualArtistRawName: String?
+        // Note: This is a getter since it relies on a parent value that will not be initialized
+        // yet on creation.
         get() = artistName ?: album.artist.rawName
 
     /**
@@ -263,8 +275,8 @@ class Song constructor(raw: Raw) : Music() {
         // by now.
         uid =
             UID.hashed(this::class) {
-                update(rawName.lowercase())
-                update(_rawAlbum.name.lowercase())
+                update(rawName)
+                update(_rawAlbum.name)
                 update(_rawAlbum.date)
 
                 update(artistName)
@@ -579,26 +591,20 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
         }
     }
 
-    val year: Int
-        get() = tokens[0]
+    val year = tokens[0]
 
     /** Resolve the year field in a way suitable for the UI. */
     fun resolveYear(context: Context) = context.getString(R.string.fmt_number, year)
 
-    private val month: Int?
-        get() = tokens.getOrNull(1)
+    private val month = tokens.getOrNull(1)
 
-    private val day: Int?
-        get() = tokens.getOrNull(2)
+    private val day = tokens.getOrNull(2)
 
-    private val hour: Int?
-        get() = tokens.getOrNull(3)
+    private val hour = tokens.getOrNull(3)
 
-    private val minute: Int?
-        get() = tokens.getOrNull(4)
+    private val minute = tokens.getOrNull(4)
 
-    private val second: Int?
-        get() = tokens.getOrNull(5)
+    private val second = tokens.getOrNull(5)
 
     override fun hashCode() = tokens.hashCode()
 

@@ -30,7 +30,7 @@ import org.oxycblt.auxio.util.newMainPendingIntent
 /** The notification responsible for showing the indexer state. */
 class IndexingNotification(private val context: Context) :
     ServiceNotification(context, INDEXER_CHANNEL) {
-    private var lastUpdateTime: Int = -1
+    private var lastUpdateTime = -1L
 
     init {
         setSmallIcon(R.drawable.ic_indexer_24)
@@ -51,15 +51,18 @@ class IndexingNotification(private val context: Context) :
         when (indexing) {
             is Indexer.Indexing.Indeterminate -> {
                 logD("Updating state to $indexing")
+                lastUpdateTime = -1
                 setContentText(context.getString(R.string.lng_indexing))
                 setProgress(0, 0, true)
                 return true
             }
             is Indexer.Indexing.Songs -> {
                 val now = SystemClock.elapsedRealtime()
-                if (lastUpdateTime != -1 && (now - lastUpdateTime) < 1500) {
+                if (lastUpdateTime > -1 && (now - lastUpdateTime) < 1500) {
                     return false
                 }
+
+                lastUpdateTime = SystemClock.elapsedRealtime()
 
                 // Only update the notification every two seconds to prevent rate-limiting.
                 logD("Updating state to $indexing")

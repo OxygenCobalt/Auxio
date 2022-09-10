@@ -256,9 +256,9 @@ class Indexer {
         val songs = mutableSetOf<Song>()
         val rawSongs = mutableListOf<Song.Raw>()
 
-        metadataLayer.parse { raw ->
-            songs.add(Song(raw))
-            rawSongs.add(raw)
+        metadataLayer.parse { rawSong ->
+            songs.add(Song(rawSong))
+            rawSongs.add(rawSong)
 
             // Check if we got cancelled after every song addition.
             yield()

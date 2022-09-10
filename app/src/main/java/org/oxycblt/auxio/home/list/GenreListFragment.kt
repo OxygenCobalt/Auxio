@@ -59,7 +59,7 @@ class GenreListFragment : HomeListFragment<Genre>() {
         // Change how we display the popup depending on the mode.
         return when (homeModel.getSortForDisplay(DisplayMode.SHOW_GENRES).mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> genre.sortName?.run { first().uppercase() }
+            is Sort.Mode.ByName -> genre.collationKey?.run { sourceString.first().uppercase() }
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> genre.durationMs.formatDurationMs(false)
