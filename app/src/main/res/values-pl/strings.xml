@@ -60,7 +60,6 @@
     <string name="clr_brown">Brązowy</string>
     <string name="clr_grey">Szary</string>
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_lib_song_count"></string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d Utwór</item>
         <item quantity="few">%d Utwory</item>
