@@ -57,6 +57,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
 
     private val serviceJob = Job()
     private val indexScope = CoroutineScope(serviceJob + Dispatchers.IO)
+    private var currentIndexJob: Job? = null
 
     private val playbackManager = PlaybackStateManager.getInstance()
 
@@ -118,10 +119,11 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
 
     override fun onStartIndexing() {
         if (indexer.isIndexing) {
+            currentIndexJob?.cancel()
             indexer.cancelLast()
         }
 
-        indexScope.launch { indexer.index(this@IndexerService) }
+        currentIndexJob = indexScope.launch { indexer.index(this@IndexerService) }
     }
 
     override fun onIndexerStateChanged(state: Indexer.State?) {

@@ -21,7 +21,6 @@ import android.os.Looper
 import org.oxycblt.auxio.BuildConfig
 import java.lang.reflect.Field
 import java.lang.reflect.Method
-import java.util.concurrent.CancellationException
 import kotlin.reflect.KClass
 
 /** Assert that we are on a background thread. */
@@ -56,35 +55,4 @@ fun lazyReflectedField(clazz: KClass<*>, field: String) = lazy {
 /** Lazily reflect to retrieve a [Method]. */
 fun lazyReflectedMethod(clazz: KClass<*>, method: String) = lazy {
     clazz.java.getDeclaredMethod(method).also { it.isAccessible = true }
-}
-
-/**
- * An abstraction that allows cheap cooperative multi-threading in shared object contexts. Every new
- * task should call [newHandle], while every running task should call [check] or [yield] depending
- * on the situation to determine if it should continue. Failure to follow the expectations of this
- * class will result in bugs.
- *
- * @author OxygenCobalt
- */
-class TaskGuard {
-    private var currentHandle = 0L
-
-    /**
-     * Returns a new handle to the calling task while invalidating the handle of the previous task.
-     */
-    @Synchronized fun newHandle() = ++currentHandle
-
-    /** Check if the given [handle] is still valid. */
-    @Synchronized fun check(handle: Long) = handle == currentHandle
-
-    /**
-     * Alternative to [kotlinx.coroutines.yield], that achieves the same behavior but in a much
-     * cheaper manner.
-     */
-    @Synchronized
-    fun yield(handle: Long) {
-        if (!check(handle)) {
-            throw CancellationException()
-        }
-    }
 }

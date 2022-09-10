@@ -23,9 +23,11 @@ import androidx.annotation.IdRes
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -38,7 +40,6 @@ import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.util.TaskGuard
 import org.oxycblt.auxio.util.application
 import org.oxycblt.auxio.util.logD
 import java.text.Normalizer
@@ -62,14 +63,15 @@ class SearchViewModel(application: Application) :
         get() = settings.searchFilterMode
 
     private var lastQuery: String? = null
-    private var guard = TaskGuard()
+    private var currentSearchJob: Job? = null
 
     /**
      * Use [query] to perform a search of the music library. Will push results to [searchResults].
      */
     fun search(query: String?) {
-        val handle = guard.newHandle()
         lastQuery = query
+
+        currentSearchJob?.cancel()
 
         val library = musicStore.library
         if (query.isNullOrEmpty() || library == null) {
@@ -81,7 +83,7 @@ class SearchViewModel(application: Application) :
         logD("Performing search for $query")
 
         // Searching can be quite expensive, so get on a co-routine
-        viewModelScope.launch {
+        currentSearchJob = viewModelScope.launch {
             val sort = Sort(Sort.Mode.ByName, true)
             val results = mutableListOf<Item>()
 
@@ -115,7 +117,7 @@ class SearchViewModel(application: Application) :
                 }
             }
 
-            guard.yield(handle)
+            yield()
             _searchResults.value = results
         }
     }

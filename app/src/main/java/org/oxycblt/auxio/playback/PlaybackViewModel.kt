@@ -307,6 +307,7 @@ class PlaybackViewModel(application: Application) :
 
     override fun onStateChanged(state: InternalPlayer.State) {
         _isPlaying.value = state.isPlaying
+        _positionDs.value = state.calculateElapsedPosition().msToDs()
 
         // Start watching the position again
         lastPositionJob?.cancel()

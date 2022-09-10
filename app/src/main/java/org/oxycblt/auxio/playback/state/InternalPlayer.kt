@@ -30,7 +30,7 @@ interface InternalPlayer {
     /** Whether the player should rewind instead of going to the previous song. */
     val shouldRewindWithPrev: Boolean
 
-    val currentState: State
+    fun makeState(durationMs: Long): State
 
     /** Called when a new song should be loaded into the player. */
     fun loadSong(song: Song?, play: Boolean)

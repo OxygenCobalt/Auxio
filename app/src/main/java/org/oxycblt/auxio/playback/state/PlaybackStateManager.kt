@@ -342,7 +342,7 @@ class PlaybackStateManager private constructor() {
             return
         }
 
-        val newState = internalPlayer.currentState
+        val newState = internalPlayer.makeState(song?.durationMs ?: 0)
         if (newState != playerState) {
             playerState = newState
             notifyStateChanged()

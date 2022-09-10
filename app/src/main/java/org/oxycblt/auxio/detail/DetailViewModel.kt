@@ -24,9 +24,11 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -40,7 +42,6 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.util.TaskGuard
 import org.oxycblt.auxio.util.application
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
@@ -69,6 +70,8 @@ class DetailViewModel(application: Application) :
     private val _currentSong = MutableStateFlow<DetailSong?>(null)
     val currentSong: StateFlow<DetailSong?>
         get() = _currentSong
+
+    private var currentSongJob: Job? = null
 
     private val _currentAlbum = MutableStateFlow<Album?>(null)
     val currentAlbum: StateFlow<Album?>
@@ -114,8 +117,6 @@ class DetailViewModel(application: Application) :
             currentGenre.value?.let(::refreshGenreData)
         }
 
-    private val songGuard = TaskGuard()
-
     fun setSongUid(uid: Music.UID) {
         if (_currentSong.value?.run { song.uid } == uid) return
         val library = unlikelyToBeNull(musicStore.library)
@@ -124,7 +125,6 @@ class DetailViewModel(application: Application) :
     }
 
     fun clearSong() {
-        songGuard.newHandle()
         _currentSong.value = null
     }
 
@@ -159,11 +159,11 @@ class DetailViewModel(application: Application) :
     }
 
     private fun generateDetailSong(song: Song) {
+        currentSongJob?.cancel()
         _currentSong.value = DetailSong(song, null)
-        viewModelScope.launch(Dispatchers.IO) {
-            val handle = songGuard.newHandle()
+        currentSongJob = viewModelScope.launch(Dispatchers.IO) {
             val info = generateDetailSongInfo(song)
-            songGuard.yield(handle)
+            yield()
             _currentSong.value = DetailSong(song, info)
         }
     }

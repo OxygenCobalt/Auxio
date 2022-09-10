@@ -54,7 +54,7 @@ class MetadataLayer(private val context: Context, private val mediaStoreLayer: M
     /** Finalize the sub-layers that this layer relies on. */
     fun finalize(rawSongs: List<Song.Raw>) = mediaStoreLayer.finalize(rawSongs)
 
-    fun parse(emit: (Song.Raw) -> Unit) {
+    suspend fun parse(emit: suspend (Song.Raw) -> Unit) {
         while (true) {
             val raw = Song.Raw()
             if (mediaStoreLayer.populateRaw(raw) ?: break) {

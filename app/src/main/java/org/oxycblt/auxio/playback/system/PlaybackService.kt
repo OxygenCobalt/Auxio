@@ -58,6 +58,7 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
 import kotlin.math.max
+import kotlin.math.min
 
 /**
  * A service that manages the system-side aspects of playback, such as:
@@ -214,6 +215,60 @@ class PlaybackService :
         logD("Service destroyed")
     }
 
+    // --- CONTROLLER OVERRIDES ---
+
+    override val audioSessionId: Int
+        get() = player.audioSessionId
+
+    override val shouldRewindWithPrev: Boolean
+        get() = settings.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
+
+    override fun makeState(durationMs: Long) =
+        InternalPlayer.State.new(
+            player.playWhenReady,
+            player.isPlaying,
+            max(min(player.currentPosition, durationMs), 0)
+        )
+
+    override fun loadSong(song: Song?, play: Boolean) {
+        if (song == null) {
+            // Stop the foreground state if there's nothing to play.
+            logD("Nothing playing, stopping playback")
+            player.stop()
+            if (openAudioEffectSession) {
+                // Make sure to close the audio session when we stop playback.
+                broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
+                openAudioEffectSession = false
+            }
+
+            stopAndSave()
+            return
+        }
+
+        logD("Loading ${song.rawName}")
+        player.setMediaItem(MediaItem.fromUri(song.uri))
+        player.prepare()
+
+        if (!openAudioEffectSession) {
+            // Android does not like it if you start an audio effect session without having
+            // something within your player buffer. Make sure we only start one when we load
+            // a song.
+            broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
+            openAudioEffectSession = true
+        }
+
+        player.playWhenReady = play
+    }
+
+    override fun seekTo(positionMs: Long) {
+        logD("Seeking to ${positionMs}ms")
+        player.seekTo(positionMs)
+    }
+
+    override fun changePlaying(isPlaying: Boolean) {
+        player.playWhenReady = isPlaying
+    }
+
     // --- PLAYER OVERRIDES ---
 
     override fun onEvents(player: Player, events: Player.Events) {
@@ -270,51 +325,26 @@ class PlaybackService :
         }
     }
 
-    // --- CONTROLLER OVERRIDES ---
+    // --- MUSICSTORE OVERRIDES ---
 
-    override val audioSessionId: Int
-        get() = player.audioSessionId
-
-    override val shouldRewindWithPrev: Boolean
-        get() = settings.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
-
-    override val currentState: InternalPlayer.State
-        get() =
-            InternalPlayer.State.new(
-                player.playWhenReady,
-                player.isPlaying,
-                max(player.currentPosition, 0)
-            )
-
-    override fun loadSong(song: Song?, play: Boolean) {
-        if (song == null) {
-            // Stop the foreground state if there's nothing to play.
-            logD("Nothing playing, stopping playback")
-            player.stop()
-            if (openAudioEffectSession) {
-                // Make sure to close the audio session when we stop playback.
-                broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
-                openAudioEffectSession = false
-            }
-
-            stopAndSave()
-            return
+    override fun onLibraryChanged(library: MusicStore.Library?) {
+        if (library != null) {
+            playbackManager.requestAction(this)
         }
-
-        logD("Loading ${song.rawName}")
-        player.setMediaItem(MediaItem.fromUri(song.uri))
-        player.prepare()
-
-        if (!openAudioEffectSession) {
-            // Android does not like it if you start an audio effect session without having
-            // something within your player buffer. Make sure we only start one when we load
-            // a song.
-            broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
-            openAudioEffectSession = true
-        }
-
-        player.playWhenReady = play
     }
+
+    // --- SETTINGSMANAGER OVERRIDES ---
+
+    override fun onSettingChanged(key: String) {
+        if (key == getString(R.string.set_key_replay_gain) ||
+            key == getString(R.string.set_key_pre_amp_with) ||
+            key == getString(R.string.set_key_pre_amp_without)
+        ) {
+            onTracksChanged(player.currentTracks)
+        }
+    }
+
+    // --- OTHER FUNCTIONS ---
 
     private fun broadcastAudioEffectAction(event: String) {
         sendBroadcast(
@@ -335,15 +365,6 @@ class PlaybackService :
                 playbackManager.saveState(PlaybackStateDatabase.getInstance(this@PlaybackService))
             }
         }
-    }
-
-    override fun seekTo(positionMs: Long) {
-        logD("Seeking to ${positionMs}ms")
-        player.seekTo(positionMs)
-    }
-
-    override fun changePlaying(isPlaying: Boolean) {
-        player.playWhenReady = isPlaying
     }
 
     override fun onAction(action: InternalPlayer.Action): Boolean {
@@ -396,27 +417,6 @@ class PlaybackService :
             }
         }
     }
-
-    // --- MUSICSTORE OVERRIDES ---
-
-    override fun onLibraryChanged(library: MusicStore.Library?) {
-        if (library != null) {
-            playbackManager.requestAction(this)
-        }
-    }
-
-    // --- SETTINGSMANAGER OVERRIDES ---
-
-    override fun onSettingChanged(key: String) {
-        if (key == getString(R.string.set_key_replay_gain) ||
-            key == getString(R.string.set_key_pre_amp_with) ||
-            key == getString(R.string.set_key_pre_amp_without)
-        ) {
-            onTracksChanged(player.currentTracks)
-        }
-    }
-
-    // --- OTHER FUNCTIONS ---
 
     /** A [BroadcastReceiver] for receiving general playback events from the system. */
     private inner class PlaybackReceiver : BroadcastReceiver() {

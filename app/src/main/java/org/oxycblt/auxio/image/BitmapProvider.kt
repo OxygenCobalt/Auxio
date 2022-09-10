@@ -25,7 +25,6 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.size.Size
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.TaskGuard
 
 /**
  * A utility to provide bitmaps in a manner less prone to race conditions.
@@ -38,7 +37,8 @@ import org.oxycblt.auxio.util.TaskGuard
  */
 class BitmapProvider(private val context: Context) {
     private var currentRequest: Request? = null
-    private var guard = TaskGuard()
+    private var currentHandle = 0L
+    private var handleLock = Any()
 
     /** If this provider is currently attempting to load something. */
     val isBusy: Boolean
@@ -50,7 +50,9 @@ class BitmapProvider(private val context: Context) {
      */
     @Synchronized
     fun load(song: Song, target: Target) {
-        val handle = guard.newHandle()
+        val handle = synchronized(handleLock) {
+            ++currentHandle
+        }
 
         currentRequest?.run { disposable.dispose() }
         currentRequest = null
@@ -62,13 +64,17 @@ class BitmapProvider(private val context: Context) {
                     .size(Size.ORIGINAL)
                     .target(
                         onSuccess = {
-                            if (guard.check(handle)) {
-                                target.onCompleted(it.toBitmap())
+                            synchronized(handleLock) {
+                                if (currentHandle == handle) {
+                                    target.onCompleted(it.toBitmap())
+                                }
                             }
                         },
                         onError = {
-                            if (guard.check(handle)) {
-                                target.onCompleted(null)
+                            synchronized(handleLock) {
+                                if (currentHandle == handle) {
+                                    target.onCompleted(null)
+                                }
                             }
                         }
                     )

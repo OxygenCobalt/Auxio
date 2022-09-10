@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -37,7 +38,6 @@ import org.oxycblt.auxio.music.extractor.Api30MediaStoreLayer
 import org.oxycblt.auxio.music.extractor.CacheLayer
 import org.oxycblt.auxio.music.extractor.MetadataLayer
 import org.oxycblt.auxio.ui.Sort
-import org.oxycblt.auxio.util.TaskGuard
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
@@ -62,14 +62,11 @@ import org.oxycblt.auxio.util.logW
  * directly work with music loading, making such redundant.
  *
  * @author OxygenCobalt
- *
- * TODO: Try to replace TaskGuard with yield when possible
  */
 class Indexer {
     private var lastResponse: Response? = null
     private var indexingState: Indexing? = null
 
-    private var guard = TaskGuard()
     private var controller: Controller? = null
     private var callback: Callback? = null
 
@@ -136,21 +133,19 @@ class Indexer {
      * complete, a new completion state will be pushed to each callback.
      */
     suspend fun index(context: Context) {
-        val handle = guard.newHandle()
-
         val notGranted =
             ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
                 PackageManager.PERMISSION_DENIED
 
         if (notGranted) {
-            emitCompletion(Response.NoPerms, handle)
+            emitCompletion(Response.NoPerms)
             return
         }
 
         val response =
             try {
                 val start = System.currentTimeMillis()
-                val library = indexImpl(context, handle)
+                val library = indexImpl(context)
                 if (library != null) {
                     logD(
                         "Music indexing completed successfully in " +
@@ -171,7 +166,7 @@ class Indexer {
                 Response.Err(e)
             }
 
-        emitCompletion(response, handle)
+        emitCompletion(response)
     }
 
     /**
@@ -192,16 +187,14 @@ class Indexer {
     @Synchronized
     fun cancelLast() {
         logD("Cancelling last job")
-        val handle = guard.newHandle()
-        emitIndexing(null, handle)
+        emitIndexing(null)
     }
 
     /**
-     * Run the proper music loading process. [handle] must be a truthful handle of the task calling
-     * this function.
+     * Run the proper music loading process.
      */
-    private fun indexImpl(context: Context, handle: Long): MusicStore.Library? {
-        emitIndexing(Indexing.Indeterminate, handle)
+    private suspend fun indexImpl(context: Context): MusicStore.Library? {
+        emitIndexing(Indexing.Indeterminate)
 
         // Create the chain of layers. Each layer builds on the previous layer and
         // enables version-specific features in order to create the best possible music
@@ -221,7 +214,7 @@ class Indexer {
 
         val metadataLayer = MetadataLayer(context, mediaStoreLayer)
 
-        val songs = buildSongs(metadataLayer, handle)
+        val songs = buildSongs(metadataLayer)
         if (songs.isEmpty()) {
             return null
         }
@@ -248,12 +241,15 @@ class Indexer {
      * [buildGenres] functions must be called with the returned list so that all songs are properly
      * linked up.
      */
-    private fun buildSongs(metadataLayer: MetadataLayer, handle: Long): List<Song> {
+    private suspend fun buildSongs(metadataLayer: MetadataLayer): List<Song> {
+        logD("Starting indexing process")
+
         val start = System.currentTimeMillis()
 
         // Initialize the extractor chain. This also nets us the projected total
         // that we can show when loading.
         val total = metadataLayer.init()
+        yield()
 
         // Note: We use a set here so we can eliminate effective duplicates of
         // songs (by UID).
@@ -263,7 +259,10 @@ class Indexer {
         metadataLayer.parse { raw ->
             songs.add(Song(raw))
             rawSongs.add(raw)
-            emitIndexing(Indexing.Songs(songs.size, total), handle)
+
+            // Check if we got cancelled after every song addition.
+            yield()
+            emitIndexing(Indexing.Songs(songs.size, total))
         }
 
         metadataLayer.finalize(rawSongs)
@@ -351,15 +350,7 @@ class Indexer {
     }
 
     @Synchronized
-    private fun emitIndexing(indexing: Indexing?, handle: Long) {
-        guard.yield(handle)
-
-        if (indexing == indexingState) {
-            // Ignore redundant states used when the backends just want to check for
-            // a cancellation
-            return
-        }
-
+    private fun emitIndexing(indexing: Indexing?) {
         indexingState = indexing
 
         // If we have canceled the loading process, we want to revert to a previous completion
@@ -371,8 +362,8 @@ class Indexer {
         callback?.onIndexerStateChanged(state)
     }
 
-    private suspend fun emitCompletion(response: Response, handle: Long) {
-        guard.yield(handle)
+    private suspend fun emitCompletion(response: Response) {
+        yield()
 
         // Swap to the Main thread so that downstream callbacks don't crash from being on
         // a background thread. Does not occur in emitIndexing due to efficiency reasons.
