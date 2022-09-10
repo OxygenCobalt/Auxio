@@ -97,6 +97,10 @@ class MusicStore private constructor() {
             }
         }
 
+        /**
+         * Find a music [T] by its [uid]. If the music does not exist, or if the music is
+         * not [T], null will be returned.
+         */
         @Suppress("UNCHECKED_CAST")
         fun <T : Music> find(uid: Music.UID): T? = uidMap[uid] as? T
 
@@ -117,14 +121,21 @@ class MusicStore private constructor() {
 
         /** Find a song for a [uri]. */
         fun findSongForUri(context: Context, uri: Uri) =
-            context.contentResolverSafe.useQuery(uri, arrayOf(OpenableColumns.DISPLAY_NAME)) {
+            context.contentResolverSafe.useQuery(uri, arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE)) {
                     cursor ->
                 cursor.moveToFirst()
+
+                // We are weirdly limited to DISPLAY_NAME and SIZE when trying to locate a
+                // song. Do what we can to hopefully find the song the user wanted to open.
 
                 val displayName =
                     cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
 
-                songs.find { it.path.name == displayName }
+                val size = cursor.getLong(
+                    cursor.getColumnIndexOrThrow(OpenableColumns.SIZE)
+                )
+
+                songs.find { it.path.name == displayName && it.size == size }
             }
     }
 

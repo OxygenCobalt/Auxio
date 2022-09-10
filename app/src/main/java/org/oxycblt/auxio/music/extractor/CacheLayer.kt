@@ -25,9 +25,16 @@ class CacheLayer {
         // STUB: Add cache database
     }
 
+    /**
+     * Write a list of newly-indexed raw songs to the database.
+     */
     fun finalize(rawSongs: List<Song.Raw>) {
         // STUB: Add cache database
     }
 
+    /**
+     * Maybe copy a cached raw song into this instance, assuming that it has not changed
+     * since it was last saved.
+     */
     fun maybePopulateCachedRaw(raw: Song.Raw) = false
 }
