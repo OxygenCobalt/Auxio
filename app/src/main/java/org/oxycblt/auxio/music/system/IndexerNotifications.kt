@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.music.system
 
 import android.content.Context
+import android.os.SystemClock
 import androidx.core.app.NotificationCompat
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
@@ -29,6 +30,8 @@ import org.oxycblt.auxio.util.newMainPendingIntent
 /** The notification responsible for showing the indexer state. */
 class IndexingNotification(private val context: Context) :
     ServiceNotification(context, INDEXER_CHANNEL) {
+    private var lastUpdateTime: Int = -1
+
     init {
         setSmallIcon(R.drawable.ic_indexer_24)
         setCategory(NotificationCompat.CATEGORY_PROGRESS)
@@ -53,20 +56,20 @@ class IndexingNotification(private val context: Context) :
                 return true
             }
             is Indexer.Indexing.Songs -> {
-                // Only update the notification every 50 songs to prevent excessive updates.
-                // TODO: Use a timeout instead to handle rapid-fire updates w/o rate limiting
-                if (indexing.current % 50 == 0) {
-                    logD("Updating state to $indexing")
-                    setContentText(
-                        context.getString(R.string.fmt_indexing, indexing.current, indexing.total)
-                    )
-                    setProgress(indexing.total, indexing.current, false)
-                    return true
+                val now = SystemClock.elapsedRealtime()
+                if (lastUpdateTime != -1 && (now - lastUpdateTime) < 1500) {
+                    return false
                 }
+
+                // Only update the notification every two seconds to prevent rate-limiting.
+                logD("Updating state to $indexing")
+                setContentText(
+                    context.getString(R.string.fmt_indexing, indexing.current, indexing.total)
+                )
+                setProgress(indexing.total, indexing.current, false)
+                return true
             }
         }
-
-        return false
     }
 }
 
