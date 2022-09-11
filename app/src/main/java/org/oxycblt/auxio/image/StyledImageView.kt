@@ -33,6 +33,7 @@ import coil.dispose
 import coil.load
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.image.extractor.SquareFrameTransform
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre

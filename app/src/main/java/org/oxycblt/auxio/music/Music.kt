@@ -26,7 +26,6 @@ import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Date.Companion.from
-import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.inRangeOrNull
 import org.oxycblt.auxio.util.nonZeroOrNull
@@ -59,10 +58,12 @@ sealed class Music : Item {
 
     /**
      * A key used by the sorting system that takes into account the sort tags of this item,
-     * any (english) articles that prefix the names, and collation rules. Lazily generated
-     * since generating a collation key is non-trivial.
+     * any (english) articles that prefix the names, and collation rules.
      */
     val collationKey: CollationKey? by lazy {
+        // Ideally, we would generate this on creation, but this is an abstract class, which
+        // requires us to generate it lazily instead.
+
         val sortName = (rawSortName ?: rawName)?.run {
             when {
                 length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
@@ -125,7 +126,8 @@ sealed class Music : Item {
              */
             fun hashed(clazz: KClass<*>, updates: MessageDigest.() -> Unit): UID {
                 // Auxio hashes consist of the MD5 hash of the non-subjective, consistent
-                // tags in a music item. For easier use with MusicBrainz IDs, we
+                // tags in a music item. For easier use with MusicBrainz IDs, we transform
+                // this into a UUID too.
                 val digest = MessageDigest.getInstance("MD5")
                 updates(digest)
                 val uuid = digest.digest().toUuid()

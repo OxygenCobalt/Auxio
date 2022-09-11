@@ -66,6 +66,18 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             }
         }
 
+    var isPlaying: Boolean
+        get() = drawable == playingIndicatorDrawable
+        set(value) {
+            if (value) {
+                playingIndicatorDrawable.start()
+                setImageDrawable(playingIndicatorDrawable)
+            } else {
+                playingIndicatorDrawable.stop()
+                setImageDrawable(pausedIndicatorDrawable)
+            }
+        }
+
     init {
         // Use clipToOutline and a background drawable to crop images. While Coil's transformation
         // could theoretically be used to round corners, the corner radius is dependent on the
@@ -87,15 +99,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
+        // Emulate StyledDrawable scaling with matrix scaling.
         val iconSize = max(measuredWidth, measuredHeight) / 2
 
         imageMatrix =
             indicatorMatrix.apply {
                 reset()
                 drawable?.let { drawable ->
-                    // Android is too good to allow us to set a fixed image size, so we instead need
-                    // to define a matrix to scale an image directly.
-
                     // First scale the icon up to the desired size.
                     indicatorMatrixSrc.set(
                         0f,
@@ -119,16 +129,4 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 }
             }
     }
-
-    var isPlaying: Boolean
-        get() = drawable == playingIndicatorDrawable
-        set(value) {
-            if (value) {
-                playingIndicatorDrawable.start()
-                setImageDrawable(playingIndicatorDrawable)
-            } else {
-                playingIndicatorDrawable.stop()
-                setImageDrawable(pausedIndicatorDrawable)
-            }
-        }
 }

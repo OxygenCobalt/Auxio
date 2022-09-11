@@ -25,15 +25,18 @@ import androidx.core.graphics.drawable.IconCompat
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.request.CachePolicy
-import org.oxycblt.auxio.image.AlbumCoverFetcher
-import org.oxycblt.auxio.image.ArtistImageFetcher
-import org.oxycblt.auxio.image.CrossfadeTransitionFactory
-import org.oxycblt.auxio.image.GenreImageFetcher
-import org.oxycblt.auxio.image.MusicKeyer
+import org.oxycblt.auxio.image.extractor.AlbumCoverFetcher
+import org.oxycblt.auxio.image.extractor.ArtistImageFetcher
+import org.oxycblt.auxio.image.extractor.CrossfadeTransitionFactory
+import org.oxycblt.auxio.image.extractor.GenreImageFetcher
+import org.oxycblt.auxio.image.extractor.MusicKeyer
+import org.oxycblt.auxio.settings.Settings
 
 class AuxioApp : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
+
+        Settings(this).migrate()
 
         // Adding static shortcuts in a dynamic manner is better than declaring them
         // manually, as it will properly handle the difference between debug and release

@@ -22,14 +22,12 @@ import org.oxycblt.auxio.music.Song
 /** TODO: Stub class, not implemented yet */
 class CacheLayer {
     fun init() {
-        // STUB: Add cache database
     }
 
     /**
      * Write a list of newly-indexed raw songs to the database.
      */
     fun finalize(rawSongs: List<Song.Raw>) {
-        // STUB: Add cache database
     }
 
     /**

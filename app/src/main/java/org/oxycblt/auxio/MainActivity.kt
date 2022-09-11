@@ -45,8 +45,6 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Add multi-select
  *
- * TODO: Remove asterisk imports
- *
  * @author OxygenCobalt
  */
 class MainActivity : AppCompatActivity() {

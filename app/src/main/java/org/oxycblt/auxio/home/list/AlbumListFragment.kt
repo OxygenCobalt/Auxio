@@ -24,11 +24,11 @@ import android.view.ViewGroup
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.formatDurationMs
 import org.oxycblt.auxio.music.secsToMs
-import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.AlbumViewHolder
 import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
@@ -62,7 +62,7 @@ class AlbumListFragment : HomeListFragment<Album>() {
         val album = homeModel.albums.value[pos]
 
         // Change how we display the popup depending on the mode.
-        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_ALBUMS).mode) {
+        return when (homeModel.getSortForTab(MusicMode.ALBUMS).mode) {
             // By Name -> Use Name
             is Sort.Mode.ByName -> album.collationKey?.run { sourceString.first().uppercase() }
 

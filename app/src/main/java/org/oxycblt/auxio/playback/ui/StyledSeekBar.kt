@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback
+package org.oxycblt.auxio.playback.ui
 
 import android.content.Context
 import android.util.AttributeSet
@@ -67,7 +67,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             // this component.
             val from = max(value, 0)
 
-            // Sanity check: Ensure that this value is within the duration and will not crash
+            // Sanity check 2: Ensure that this value is within the duration and will not crash
             // the app, and that the user is not currently seeking (which would cause the SeekBar
             // to jump around).
             if (from <= durationDs && !isActivated) {

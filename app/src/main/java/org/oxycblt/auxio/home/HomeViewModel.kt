@@ -26,11 +26,11 @@ import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.application
 import org.oxycblt.auxio.util.logD
 
@@ -59,15 +59,15 @@ class HomeViewModel(application: Application) :
     val genres: StateFlow<List<Genre>>
         get() = _genres
 
-    var tabs: List<DisplayMode> = visibleTabs
+    var tabs: List<MusicMode> = visibleTabs
         private set
 
     /** Internal getter for getting the visible library tabs */
-    private val visibleTabs: List<DisplayMode>
+    private val visibleTabs: List<MusicMode>
         get() = settings.libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
 
     private val _currentTab = MutableStateFlow(tabs[0])
-    val currentTab: StateFlow<DisplayMode> = _currentTab
+    val currentTab: StateFlow<MusicMode> = _currentTab
 
     /**
      * Marker to recreate all library tabs, usually initiated by a settings change. When this flag
@@ -93,32 +93,32 @@ class HomeViewModel(application: Application) :
         _shouldRecreateTabs.value = false
     }
 
-    /** Get the specific sort for the given [DisplayMode]. */
-    fun getSortForDisplay(displayMode: DisplayMode) =
-        when (displayMode) {
-            DisplayMode.SHOW_SONGS -> settings.libSongSort
-            DisplayMode.SHOW_ALBUMS -> settings.libAlbumSort
-            DisplayMode.SHOW_ARTISTS -> settings.libArtistSort
-            DisplayMode.SHOW_GENRES -> settings.libGenreSort
+    /** Get the specific sort for the given [MusicMode]. */
+    fun getSortForTab(tabMode: MusicMode): Sort =
+        when (tabMode) {
+            MusicMode.SONGS -> settings.libSongSort
+            MusicMode.ALBUMS -> settings.libAlbumSort
+            MusicMode.ARTISTS -> settings.libArtistSort
+            MusicMode.GENRES -> settings.libGenreSort
         }
 
     /** Update the currently displayed item's [Sort]. */
     fun updateCurrentSort(sort: Sort) {
         logD("Updating ${_currentTab.value} sort to $sort")
         when (_currentTab.value) {
-            DisplayMode.SHOW_SONGS -> {
+            MusicMode.SONGS -> {
                 settings.libSongSort = sort
                 _songs.value = sort.songs(_songs.value)
             }
-            DisplayMode.SHOW_ALBUMS -> {
+            MusicMode.ALBUMS -> {
                 settings.libAlbumSort = sort
                 _albums.value = sort.albums(_albums.value)
             }
-            DisplayMode.SHOW_ARTISTS -> {
+            MusicMode.ARTISTS -> {
                 settings.libArtistSort = sort
                 _artists.value = sort.artists(_artists.value)
             }
-            DisplayMode.SHOW_GENRES -> {
+            MusicMode.GENRES -> {
                 settings.libGenreSort = sort
                 _genres.value = sort.genres(_genres.value)
             }

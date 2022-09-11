@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.dsToMs
@@ -92,15 +93,15 @@ class PlaybackViewModel(application: Application) :
     // --- PLAYING FUNCTIONS ---
 
     /** Play a [song] with the [mode] specified, */
-    fun play(song: Song, mode: PlaybackMode) {
+    fun play(song: Song, mode: MusicMode) {
         // TODO: Remove this function when selection is implemented
 
         val parent =
             when (mode) {
-                PlaybackMode.IN_ALBUM -> song.album
-                PlaybackMode.IN_ARTIST -> song.album.artist
-                PlaybackMode.IN_GENRE -> song.genres.maxBy { it.songs.size }
-                PlaybackMode.ALL_SONGS -> null
+                MusicMode.GENRES -> song.album
+                MusicMode.ARTISTS -> song.album.artist
+                MusicMode.ALBUMS -> song.genres.maxBy { it.songs.size }
+                MusicMode.SONGS -> null
             }
 
         playbackManager.play(song, parent, settings)

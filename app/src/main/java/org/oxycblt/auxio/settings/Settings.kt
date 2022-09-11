@@ -21,21 +21,21 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.storage.StorageManager
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.Directory
+import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.dirs.MusicDirs
 import org.oxycblt.auxio.playback.BarAction
-import org.oxycblt.auxio.playback.PlaybackMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
-import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.accent.Accent
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -54,6 +54,67 @@ class Settings(private val context: Context, private val callback: Callback? = n
     init {
         if (callback != null) {
             inner.registerOnSharedPreferenceChangeListener(this)
+        }
+    }
+
+    /**
+     * Try to migrate shared preference keys to their new versions. Only intended for use by
+     * AuxioApp. Compat code will persist for 6 months before being removed.
+     */
+    fun migrate() {
+        if (inner.contains(OldKeys.KEY_ACCENT3)) {
+            logD("Migrating ${OldKeys.KEY_ACCENT3}")
+
+            var accent = inner.getInt(OldKeys.KEY_ACCENT3, 5)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                // Accents were previously frozen as soon as the OS was updated to android twelve,
+                // as dynamic colors were enabled by default. This is no longer the case, so we need
+                // to re-update the setting to dynamic colors here.
+                accent = 16
+            }
+
+            inner.edit {
+                putInt(context.getString(R.string.set_accent), accent)
+                remove(OldKeys.KEY_ACCENT3)
+                apply()
+            }
+        }
+
+        fun Int.migratePlaybackMode() =
+            when (this) {
+                IntegerTable.PLAYBACK_MODE_ALL_SONGS -> MusicMode.SONGS
+                IntegerTable.PLAYBACK_MODE_IN_GENRE -> MusicMode.GENRES
+                IntegerTable.PLAYBACK_MODE_IN_ARTIST -> MusicMode.ARTISTS
+                IntegerTable.PLAYBACK_MODE_IN_ALBUM -> MusicMode.ALBUMS
+                else -> null
+            }
+
+        if (inner.contains(OldKeys.KEY_LIB_PLAYBACK_MODE)) {
+            logD("Migrating ${OldKeys.KEY_LIB_PLAYBACK_MODE}")
+
+            val mode = inner.getInt(
+                OldKeys.KEY_LIB_PLAYBACK_MODE,
+                IntegerTable.PLAYBACK_MODE_ALL_SONGS
+            ).migratePlaybackMode() ?: MusicMode.SONGS
+
+            inner.edit {
+                putInt(context.getString(R.string.set_key_library_song_playback_mode), mode.intCode)
+                remove(OldKeys.KEY_LIB_PLAYBACK_MODE)
+            }
+        }
+
+        if (inner.contains(OldKeys.KEY_DETAIL_PLAYBACK_MODE)) {
+            logD("Migrating ${OldKeys.KEY_DETAIL_PLAYBACK_MODE}")
+
+            val mode = inner.getInt(OldKeys.KEY_DETAIL_PLAYBACK_MODE, Int.MIN_VALUE).migratePlaybackMode()
+
+            inner.edit {
+                putInt(
+                    context.getString(R.string.set_key_detail_song_playback_mode),
+                    mode?.intCode ?: Int.MIN_VALUE
+                )
+                remove(OldKeys.KEY_DETAIL_PLAYBACK_MODE)
+            }
         }
     }
 
@@ -86,7 +147,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
 
     /** The current accent. */
     var accent: Accent
-        get() = handleAccentCompat(context, inner)
+        get() = Accent.from(inner.getInt(context.getString(R.string.set_accent), Accent.DEFAULT))
         set(value) {
             inner.edit {
                 putInt(context.getString(R.string.set_key_accent), value.index)
@@ -163,23 +224,23 @@ class Settings(private val context: Context, private val callback: Callback? = n
         }
 
     /** What queue to create when a song is selected from the library or search */
-    val libPlaybackMode: PlaybackMode
+    val libPlaybackMode: MusicMode
         get() =
-            PlaybackMode.fromInt(
+            MusicMode.fromInt(
                 inner.getInt(
                     context.getString(R.string.set_key_library_song_playback_mode),
                     Int.MIN_VALUE
                 )
             )
-                ?: PlaybackMode.ALL_SONGS
+                ?: MusicMode.SONGS
 
     /**
      * What queue t create when a song is selected from an album/artist/genre. Null means to default
      * to the currently shown item.
      */
-    val detailPlaybackMode: PlaybackMode?
+    val detailPlaybackMode: MusicMode?
         get() =
-            PlaybackMode.fromInt(
+            MusicMode.fromInt(
                 inner.getInt(
                     context.getString(R.string.set_key_detail_song_playback_mode),
                     Int.MIN_VALUE
@@ -246,9 +307,9 @@ class Settings(private val context: Context, private val callback: Callback? = n
         }
 
     /** The current filter mode of the search tab */
-    var searchFilterMode: DisplayMode?
+    var searchFilterMode: MusicMode?
         get() =
-            DisplayMode.fromInt(
+            MusicMode.fromInt(
                 inner.getInt(context.getString(R.string.set_key_search_filter), Int.MIN_VALUE)
             )
         set(value) {
@@ -370,35 +431,11 @@ class Settings(private val context: Context, private val callback: Callback? = n
                 apply()
             }
         }
-}
 
-// --- COMPAT ---
-
-fun handleAccentCompat(context: Context, prefs: SharedPreferences): Accent {
-    val currentKey = context.getString(R.string.set_key_accent)
-
-    if (prefs.contains(OldKeys.KEY_ACCENT3)) {
-        Log.d("Auxio.SettingsCompat", "Migrating ${OldKeys.KEY_ACCENT3}")
-
-        var accent = prefs.getInt(OldKeys.KEY_ACCENT3, 5)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            // Accents were previously frozen as soon as the OS was updated to android twelve,
-            // as dynamic colors were enabled by default. This is no longer the case, so we need
-            // to re-update the setting to dynamic colors here.
-            accent = 16
-        }
-
-        prefs.edit {
-            putInt(currentKey, accent)
-            remove(OldKeys.KEY_ACCENT3)
-            apply()
-        }
+    /** Cache of the old keys used in Auxio. */
+    private object OldKeys {
+        const val KEY_ACCENT3 = "auxio_accent"
+        const val KEY_LIB_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE2"
+        const val KEY_DETAIL_PLAYBACK_MODE = "auxio_detail_song_play_mode"
     }
-
-    return Accent.from(prefs.getInt(currentKey, Accent.DEFAULT))
-}
-
-/** Cache of the old keys used in Auxio. */
-private object OldKeys {
-    const val KEY_ACCENT3 = "auxio_accent"
 }

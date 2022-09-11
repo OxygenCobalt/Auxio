@@ -247,6 +247,9 @@ class Task(context: Context, private val settings: Settings, private val raw: So
             tags["TORY"]?.run { get(0).toIntOrNull() }
                 ?: tags["TYER"]?.run { get(0).toIntOrNull() } ?: return null
 
+        // Assume that TDAT/TIME can refer to TYER or TORY depending on if TORY
+        // is present.
+
         val tdat = tags["TDAT"]
         return if (tdat != null && tdat[0].length == 4 && tdat[0].isDigitsOnly()) {
             val mm = tdat[0].substring(0..1).toInt()

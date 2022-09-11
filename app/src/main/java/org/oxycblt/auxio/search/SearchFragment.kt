@@ -35,6 +35,7 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.Settings
@@ -78,7 +79,15 @@ class SearchFragment :
 
     override fun onBindingCreated(binding: FragmentSearchBinding, savedInstanceState: Bundle?) {
         binding.searchToolbar.apply {
-            menu.findItem(searchModel.filterMode?.itemId ?: R.id.option_filter_all).isChecked = true
+            val itemIdToSelect = when (searchModel.filterMode) {
+                MusicMode.SONGS -> R.id.option_filter_songs
+                MusicMode.ALBUMS -> R.id.option_filter_albums
+                MusicMode.ARTISTS -> R.id.option_filter_artists
+                MusicMode.GENRES -> R.id.option_filter_genres
+                null -> R.id.option_filter_all
+            }
+
+            menu.findItem(itemIdToSelect).isChecked = true
 
             setNavigationOnClickListener {
                 imm.hide()

@@ -47,14 +47,14 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
-import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collect
@@ -198,7 +198,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 item.isChecked = !item.isChecked
                 homeModel.updateCurrentSort(
                     homeModel
-                        .getSortForDisplay(homeModel.currentTab.value)
+                        .getSortForTab(homeModel.currentTab.value)
                         .withAscending(item.isChecked)
                 )
             }
@@ -207,7 +207,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 item.isChecked = true
                 homeModel.updateCurrentSort(
                     homeModel
-                        .getSortForDisplay(homeModel.currentTab.value)
+                        .getSortForTab(homeModel.currentTab.value)
                         .withMode(requireNotNull(Sort.Mode.fromItemId(item.itemId)))
                 )
             }
@@ -216,20 +216,20 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         return true
     }
 
-    private fun updateCurrentTab(tab: DisplayMode) {
+    private fun updateCurrentTab(tab: MusicMode) {
         // Make sure that we update the scrolling view and allowed menu items whenever
         // the tab changes.
         val binding = requireBinding()
         when (tab) {
-            DisplayMode.SHOW_SONGS -> {
+            MusicMode.SONGS -> {
                 updateSortMenu(tab) { id -> id != R.id.option_sort_count }
                 binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_song_list
             }
-            DisplayMode.SHOW_ALBUMS -> {
+            MusicMode.ALBUMS -> {
                 updateSortMenu(tab) { id -> id != R.id.option_sort_album }
                 binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_album_list
             }
-            DisplayMode.SHOW_ARTISTS -> {
+            MusicMode.ARTISTS -> {
                 updateSortMenu(tab) { id ->
                     id == R.id.option_sort_asc ||
                         id == R.id.option_sort_name ||
@@ -238,7 +238,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 }
                 binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_artist_list
             }
-            DisplayMode.SHOW_GENRES -> {
+            MusicMode.GENRES -> {
                 updateSortMenu(tab) { id ->
                     id == R.id.option_sort_asc ||
                         id == R.id.option_sort_name ||
@@ -250,9 +250,9 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun updateSortMenu(displayMode: DisplayMode, isVisible: (Int) -> Boolean) {
+    private fun updateSortMenu(mode: MusicMode, isVisible: (Int) -> Boolean) {
         val sortMenu = requireNotNull(sortItem.subMenu)
-        val toHighlight = homeModel.getSortForDisplay(displayMode)
+        val toHighlight = homeModel.getSortForTab(mode)
 
         for (option in sortMenu) {
             if (option.itemId == toHighlight.mode.itemId) {
@@ -434,10 +434,10 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         override fun createFragment(position: Int): Fragment {
             return when (homeModel.tabs[position]) {
-                DisplayMode.SHOW_SONGS -> SongListFragment()
-                DisplayMode.SHOW_ALBUMS -> AlbumListFragment()
-                DisplayMode.SHOW_ARTISTS -> ArtistListFragment()
-                DisplayMode.SHOW_GENRES -> GenreListFragment()
+                MusicMode.SONGS -> SongListFragment()
+                MusicMode.ALBUMS -> AlbumListFragment()
+                MusicMode.ARTISTS -> ArtistListFragment()
+                MusicMode.GENRES -> GenreListFragment()
             }
         }
     }

@@ -23,13 +23,13 @@ import android.view.View
 import android.view.ViewGroup
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.formatDurationMs
 import org.oxycblt.auxio.music.secsToMs
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
@@ -72,7 +72,7 @@ class SongListFragment : HomeListFragment<Song>() {
         // Change how we display the popup depending on the mode.
         // Note: We don't use the more correct individual artist name here, as sorts are largely
         // based off the names of the parent objects and not the child objects.
-        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS).mode) {
+        return when (homeModel.getSortForTab(MusicMode.SONGS).mode) {
             // Name -> Use name
             is Sort.Mode.ByName -> song.collationKey?.run { sourceString.first().uppercase() }
 

@@ -23,7 +23,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemTabBinding
-import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.ui.recycler.DialogViewHolder
 import org.oxycblt.auxio.util.inflater
 
@@ -59,7 +59,7 @@ class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewH
     }
 
     interface Listener {
-        fun onVisibilityToggled(displayMode: DisplayMode)
+        fun onVisibilityToggled(mode: MusicMode)
         fun onPickUpTab(viewHolder: RecyclerView.ViewHolder)
     }
 

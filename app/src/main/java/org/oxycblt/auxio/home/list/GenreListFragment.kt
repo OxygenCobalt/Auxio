@@ -23,10 +23,10 @@ import android.view.ViewGroup
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.formatDurationMs
-import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.GenreViewHolder
 import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
@@ -57,7 +57,7 @@ class GenreListFragment : HomeListFragment<Genre>() {
         val genre = homeModel.genres.value[pos]
 
         // Change how we display the popup depending on the mode.
-        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_GENRES).mode) {
+        return when (homeModel.getSortForTab(MusicMode.GENRES).mode) {
             // By Name -> Use Name
             is Sort.Mode.ByName -> genre.collationKey?.run { sourceString.first().uppercase() }
 

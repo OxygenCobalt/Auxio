@@ -90,17 +90,17 @@ object IntegerTable {
 
     /** DisplayMode.NONE (No Longer used but still reserved) */
     // const val DISPLAY_MODE_NONE = 0xA107
-    /** DisplayMode.SHOW_GENRES */
-    const val DISPLAY_MODE_SHOW_GENRES = 0xA108
+    /** MusicMode._GENRES */
+    const val MUSIC_MODE_GENRES = 0xA108
 
-    /** DisplayMode.SHOW_ARTISTS */
-    const val DISPLAY_MODE_SHOW_ARTISTS = 0xA109
+    /** MusicMode._ARTISTS */
+    const val MUSIC_MODE_ARTISTS = 0xA109
 
-    /** DisplayMode.SHOW_ALBUMS */
-    const val DISPLAY_MODE_SHOW_ALBUMS = 0xA10A
+    /** MusicMode._ALBUMS */
+    const val MUSIC_MODE_ALBUMS = 0xA10A
 
-    /** DisplayMode.SHOW_SONGS */
-    const val DISPLAY_MODE_SHOW_SONGS = 0xA10B
+    /** MusicMode._SONGS */
+    const val MUSIC_MODE_SONGS = 0xA10B
 
     // Note: Sort integer codes are non-contiguous due to significant amounts of time
     // passing between the additions of new sort modes.

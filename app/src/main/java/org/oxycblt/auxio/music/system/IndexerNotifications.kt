@@ -64,7 +64,7 @@ class IndexingNotification(private val context: Context) :
 
                 lastUpdateTime = SystemClock.elapsedRealtime()
 
-                // Only update the notification every two seconds to prevent rate-limiting.
+                // Only update the notification every 1.5s to prevent rate-limiting.
                 logD("Updating state to $indexing")
                 setContentText(
                     context.getString(R.string.fmt_indexing, indexing.current, indexing.total)

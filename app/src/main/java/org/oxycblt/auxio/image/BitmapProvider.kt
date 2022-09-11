@@ -24,6 +24,7 @@ import coil.imageLoader
 import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.size.Size
+import org.oxycblt.auxio.image.extractor.SquareFrameTransform
 import org.oxycblt.auxio.music.Song
 
 /**

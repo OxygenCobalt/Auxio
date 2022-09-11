@@ -24,7 +24,7 @@ import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
-import org.oxycblt.auxio.image.SquareFrameTransform
+import org.oxycblt.auxio.image.extractor.SquareFrameTransform
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.InternalPlayer

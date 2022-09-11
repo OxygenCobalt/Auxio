@@ -20,8 +20,8 @@
     <string name="set_key_pre_amp_with" translatable="false">auxio_pre_amp_with</string>
     <string name="set_key_pre_amp_without" translatable="false">auxio_pre_amp_without</string>
 
-    <string name="set_key_library_song_playback_mode" translatable="false">KEY_SONG_PLAY_MODE2</string>
-    <string name="set_key_detail_song_playback_mode" translatable="false">auxio_detail_song_play_mode</string>
+    <string name="set_key_library_song_playback_mode" translatable="false">auxio_library_playback_mode</string>
+    <string name="set_key_detail_song_playback_mode" translatable="false">auxio_detail_playback_mode</string>
     <string name="set_key_keep_shuffle" translatable="false">KEY_KEEP_SHUFFLE</string>
     <string name="set_key_rewind_prev" translatable="false">KEY_PREV_REWIND</string>
     <string name="set_key_repeat_pause" translatable="false">KEY_LOOP_PAUSE</string>
@@ -127,10 +127,10 @@
     <integer name="bar_action_shuffle">0xA11B</integer>
 
     <integer name="play_mode_none">-2147483648</integer>
-    <integer name="play_mode_genre">0xA103</integer>
-    <integer name="play_mode_artist">0xA104</integer>
-    <integer name="play_mode_album">0xA105</integer>
-    <integer name="play_mode_songs">0xA106</integer>
+    <integer name="play_mode_genre">0xA108</integer>
+    <integer name="play_mode_artist">0xA109</integer>
+    <integer name="play_mode_album">0xA10A</integer>
+    <integer name="play_mode_songs">0xA10B</integer>
 
     <integer name="replay_gain_track">0xA111</integer>
     <integer name="replay_gain_album">0xA112</integer>

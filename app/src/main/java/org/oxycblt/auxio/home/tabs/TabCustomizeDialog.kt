@@ -25,8 +25,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogTabsBinding
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
@@ -79,11 +79,8 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
         binding.tabRecycler.adapter = null
     }
 
-    override fun onVisibilityToggled(displayMode: DisplayMode) {
-        // Tab viewholders bind with the initial tab state, which will drift from the actual
-        // state of the tabs over editing. So, this callback simply provides the displayMode
-        // for us to locate within the data and then update.
-        val index = tabAdapter.tabs.indexOfFirst { it.mode == displayMode }
+    override fun onVisibilityToggled(mode: MusicMode) {
+        val index = tabAdapter.tabs.indexOfFirst { it.mode == mode }
         if (index > -1) {
             val tab = tabAdapter.tabs[index]
             tabAdapter.setTab(

@@ -21,7 +21,7 @@ import org.oxycblt.auxio.home.tabs.Tab.Companion.fromSequence
 import org.oxycblt.auxio.home.tabs.Tab.Companion.toSequence
 import org.oxycblt.auxio.home.tabs.Tab.Invisible
 import org.oxycblt.auxio.home.tabs.Tab.Visible
-import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.util.logE
 
 /**
@@ -40,16 +40,16 @@ import org.oxycblt.auxio.util.logE
  * VTTT
  *
  * Where V is a bit representing the visibility and T is a 3-bit integer representing the
- * [DisplayMode] ordinal for this tab.
+ * [MusicMode] ordinal for this tab.
  *
  * To serialize and deserialize a tab sequence, [toSequence] and [fromSequence] can be used
  * respectively.
  *
  * By default, the tab order will be SONGS, ALBUMS, ARTISTS, GENRES, PLAYLISTS
  */
-sealed class Tab(open val mode: DisplayMode) {
-    data class Visible(override val mode: DisplayMode) : Tab(mode)
-    data class Invisible(override val mode: DisplayMode) : Tab(mode)
+sealed class Tab(open val mode: MusicMode) {
+    data class Visible(override val mode: MusicMode) : Tab(mode)
+    data class Invisible(override val mode: MusicMode) : Tab(mode)
 
     companion object {
         /** The length a well-formed tab sequence should be */
@@ -59,14 +59,14 @@ sealed class Tab(open val mode: DisplayMode) {
         const val SEQUENCE_DEFAULT = 0b1000_1001_1010_1011_0100
 
         /**
-         * Maps between the integer code in the tab sequence and the actual [DisplayMode] instance.
+         * Maps between the integer code in the tab sequence and the actual [MusicMode] instance.
          */
         private val MODE_TABLE =
             arrayOf(
-                DisplayMode.SHOW_SONGS,
-                DisplayMode.SHOW_ALBUMS,
-                DisplayMode.SHOW_ARTISTS,
-                DisplayMode.SHOW_GENRES
+                MusicMode.SONGS,
+                MusicMode.ALBUMS,
+                MusicMode.ARTISTS,
+                MusicMode.GENRES
             )
 
         /** Convert an array [tabs] into a sequence of tabs. */

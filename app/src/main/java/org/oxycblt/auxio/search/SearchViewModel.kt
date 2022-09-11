@@ -33,11 +33,11 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.application
@@ -59,7 +59,7 @@ class SearchViewModel(application: Application) :
     val searchResults: StateFlow<List<Item>>
         get() = _searchResults
 
-    val filterMode: DisplayMode?
+    val filterMode: MusicMode?
         get() = settings.searchFilterMode
 
     private var lastQuery: String? = null
@@ -89,28 +89,28 @@ class SearchViewModel(application: Application) :
 
             // Note: a filter mode of null means to not filter at all.
 
-            if (filterMode == null || filterMode == DisplayMode.SHOW_ARTISTS) {
+            if (filterMode == null || filterMode == MusicMode.ARTISTS) {
                 library.artists.filterArtistsBy(query)?.let { artists ->
                     results.add(Header(R.string.lbl_artists))
                     results.addAll(sort.artists(artists))
                 }
             }
 
-            if (filterMode == null || filterMode == DisplayMode.SHOW_ALBUMS) {
+            if (filterMode == null || filterMode == MusicMode.ALBUMS) {
                 library.albums.filterAlbumsBy(query)?.let { albums ->
                     results.add(Header(R.string.lbl_albums))
                     results.addAll(sort.albums(albums))
                 }
             }
 
-            if (filterMode == null || filterMode == DisplayMode.SHOW_GENRES) {
+            if (filterMode == null || filterMode == MusicMode.GENRES) {
                 library.genres.filterGenresBy(query)?.let { genres ->
                     results.add(Header(R.string.lbl_genres))
                     results.addAll(sort.genres(genres))
                 }
             }
 
-            if (filterMode == null || filterMode == DisplayMode.SHOW_SONGS) {
+            if (filterMode == null || filterMode == MusicMode.SONGS) {
                 library.songs.filterSongsBy(query)?.let { songs ->
                     results.add(Header(R.string.lbl_songs))
                     results.addAll(sort.songs(songs))
@@ -128,10 +128,10 @@ class SearchViewModel(application: Application) :
     fun updateFilterModeWithId(@IdRes id: Int) {
         val newFilterMode =
             when (id) {
-                R.id.option_filter_songs -> DisplayMode.SHOW_SONGS
-                R.id.option_filter_albums -> DisplayMode.SHOW_ALBUMS
-                R.id.option_filter_artists -> DisplayMode.SHOW_ARTISTS
-                R.id.option_filter_genres -> DisplayMode.SHOW_GENRES
+                R.id.option_filter_songs -> MusicMode.SONGS
+                R.id.option_filter_albums -> MusicMode.ALBUMS
+                R.id.option_filter_artists -> MusicMode.ARTISTS
+                R.id.option_filter_genres -> MusicMode.GENRES
                 else -> null
             }
 

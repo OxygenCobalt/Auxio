@@ -55,7 +55,7 @@ import java.io.File
  * straightforward for this contract that was dropped on it's head as a baby. So instead, you have
  * to query for each genre, query all the songs in each genre, and then iterate through those songs
  * to link every song with their genre. This is not documented anywhere, and the O(mom im scared)
- * algorithm you have to run to get it working single-handedly DOUBLES Auxio's loading times. At no
+ * algorithm you have to run to get it working single-handedly DOUBLES Auxio's query times. At no
  * point have the devs considered that this system is absolutely insane, and instead focused on
  * adding infuriat- I mean nice proprietary extensions to MediaStore for their own Google Play
  * Music, and of course every Google Play Music user knew how great that turned out!
@@ -347,6 +347,7 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
         raw.albumArtistNames =
             cursor.getStringOrNull(albumArtistIndex)?.maybeParseSeparators(settings)
 
+        // Get the genre value we had to query for in initialization
         raw.genreNames = genreNamesMap[raw.mediaStoreId]
     }
 
@@ -381,6 +382,7 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
 
 /**
  * A [MediaStoreLayer] that completes the music loading process in a way compatible from
+ * API 21 onwards to API 29.
  * @author OxygenCobalt
  */
 class Api21MediaStoreLayer(context: Context, cacheLayer: CacheLayer) :

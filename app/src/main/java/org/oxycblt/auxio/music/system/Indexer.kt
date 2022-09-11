@@ -32,12 +32,12 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.extractor.Api21MediaStoreLayer
 import org.oxycblt.auxio.music.extractor.Api29MediaStoreLayer
 import org.oxycblt.auxio.music.extractor.Api30MediaStoreLayer
 import org.oxycblt.auxio.music.extractor.CacheLayer
 import org.oxycblt.auxio.music.extractor.MetadataLayer
-import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW

@@ -120,7 +120,7 @@ also the `detail`-specific `DiscHeader` and `SortHeader`, however these are larg
 
 Other data types represent a specific UI configuration or state:
 - Data structures like `Sort` contain an ascending state that can be modified immutably.
-- Enums like `DisplayMode` and `RepeatMode` only contain static data, such as a string resource.
+- Enums like `MusicMode` and `RepeatMode` only contain static data, such as a string resource.
 
 Things to keep in mind while working with music data:
 - `id` is not derived from the `MediaStore` ID of the music data. It is actually a hash of the
@@ -253,17 +253,15 @@ The major classes are:
 library should use this.
 - `Indexer`, which manages how music is loaded. This is only used by code that must manage or
 mirror the music loading state.
+- The extractor system, which is Auxio's music parser. It's structured as several "Layer" classes
+that build on eachother to implement version-specific functionality.
 
 Internally, there are several other major systems:
 - `IndexerService`, which does the indexer work in the background.
-- `Indexer.Backend` implementations, which actually talk to the media database and load music.
-As it stands, there are two classes of backend:
-    - Version-specific `MediaStoreBackend` implementations, which transform the (often insane)
-    music data from Android into a usable `Song`.
-    - `ExoPlayerBackend`, which mutates audio with extracted ID3v2 and Vorbis tags. This enables
-    some extra features and side-steps unfixable issues with `MediaStore`
 - `StorageFramework`, which is a group of utilities that allows Auxio to be volume-aware and to
 work with both extension-based and format-based mime types.
+- Configuration models like `MusicMode` and `Sort`, which are tangentally related to operations
+done on music
 
 The music loading process is roughly as follows:
 1. Something triggers `IndexerService` to start indexing, either by the UI or by the service itself 
@@ -313,8 +311,6 @@ Shared views and view configuration models. This contains:
 - Important `Fragment` superclasses like `ViewBindingFragment` and `MenuFragment`
 - Customized views such as `AuxioAppBarLayout`, and others, which fix shortcomings with the
 default implementations.
-- Configuration models like `DisplayMode` and `Sort`, which are used in many places but aren't tied
-to a specific feature.
 - `ForegroundManager` and `ServiceNotification`, which remove boilerplate regarding service
 foreground instantiation.
 - The `RecyclerView` adapter framework described previously.
