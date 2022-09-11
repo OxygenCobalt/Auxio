@@ -15,34 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.ui
 
 import org.oxycblt.auxio.IntegerTable
-import org.oxycblt.auxio.R
 
 enum class MusicMode {
     SONGS,
     ALBUMS,
     ARTISTS,
     GENRES;
-
-    val string: Int
-        get() =
-            when (this) {
-                SONGS -> R.string.lbl_songs
-                ALBUMS -> R.string.lbl_albums
-                ARTISTS -> R.string.lbl_artists
-                GENRES -> R.string.lbl_genres
-            }
-
-    val icon: Int
-        get() =
-            when (this) {
-                SONGS -> R.drawable.ic_song_24
-                ALBUMS -> R.drawable.ic_album_24
-                ARTISTS -> R.drawable.ic_artist_24
-                GENRES -> R.drawable.ic_genre_24
-            }
 
     val intCode: Int
         get() =

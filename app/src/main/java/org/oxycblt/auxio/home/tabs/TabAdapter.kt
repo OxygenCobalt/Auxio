@@ -22,8 +22,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemTabBinding
-import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.ui.MusicMode
 import org.oxycblt.auxio.ui.recycler.DialogViewHolder
 import org.oxycblt.auxio.util.inflater
 
@@ -75,7 +76,14 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
         binding.root.setOnClickListener { listener.onVisibilityToggled(item.mode) }
 
         binding.tabIcon.apply {
-            setText(item.mode.string)
+            setText(
+                when (item.mode) {
+                    MusicMode.SONGS -> R.string.lbl_songs
+                    MusicMode.ALBUMS -> R.string.lbl_albums
+                    MusicMode.ARTISTS -> R.string.lbl_artists
+                    MusicMode.GENRES -> R.string.lbl_genres
+                }
+            )
             isChecked = item is Tab.Visible
         }
 

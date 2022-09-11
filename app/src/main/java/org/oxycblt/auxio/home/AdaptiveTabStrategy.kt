@@ -20,6 +20,8 @@ package org.oxycblt.auxio.home
 import android.content.Context
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.ui.MusicMode
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -36,18 +38,40 @@ class AdaptiveTabStrategy(context: Context, private val homeModel: HomeViewModel
     override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
         val tabMode = homeModel.tabs[position]
 
+        val icon: Int
+        val string: Int
+
+        when (tabMode) {
+            MusicMode.SONGS -> {
+                icon = R.drawable.ic_song_24
+                string = R.string.lbl_songs
+            }
+            MusicMode.ALBUMS -> {
+                icon = R.drawable.ic_album_24
+                string = R.string.lbl_albums
+            }
+            MusicMode.ARTISTS -> {
+                icon = R.drawable.ic_artist_24
+                string = R.string.lbl_artists
+            }
+            MusicMode.GENRES -> {
+                icon = R.drawable.ic_genre_24
+                string = R.string.lbl_genres
+            }
+        }
+
         when {
             width < 370 -> {
                 logD("Using icon-only configuration")
-                tab.setIcon(tabMode.icon).setContentDescription(tabMode.string)
+                tab.setIcon(icon).setContentDescription(string)
             }
             width < 600 -> {
                 logD("Using text-only configuration")
-                tab.setText(tabMode.string)
+                tab.setText(string)
             }
             else -> {
                 logD("Using icon-and-text configuration")
-                tab.setIcon(tabMode.icon).setText(tabMode.string)
+                tab.setIcon(icon).setText(string)
             }
         }
     }

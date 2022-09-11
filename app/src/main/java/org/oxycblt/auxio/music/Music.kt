@@ -26,8 +26,11 @@ import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Date.Companion.from
+import org.oxycblt.auxio.music.ui.MusicMode
+import org.oxycblt.auxio.music.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.inRangeOrNull
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import java.security.MessageDigest
@@ -36,7 +39,6 @@ import java.text.Collator
 import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.reflect.KClass
 
 // --- MUSIC MODELS ---
 
@@ -98,17 +100,46 @@ sealed class Music : Item {
      * @author OxygenCobalt
      */
     @Parcelize
-    class UID private constructor(private val tag: String, private val uuid: UUID) : Parcelable {
+    class UID private constructor(
+        private val isMusicBrainz: Boolean,
+        private val mode: MusicMode,
+        private val uuid: UUID
+    ) : Parcelable {
         // Cache the hashCode for speed
-        @IgnoredOnParcel private val hashCode = 31 * tag.hashCode() + uuid.hashCode()
+        @IgnoredOnParcel private val hashCode: Int
+
+        init {
+            var result = isMusicBrainz.hashCode()
+            result = 31 * result + mode.hashCode()
+            result = 31 * result + uuid.hashCode()
+            hashCode = result
+
+            logD(this)
+        }
 
         override fun hashCode() = hashCode
 
-        override fun equals(other: Any?) = other is UID && tag == other.tag && uuid == other.uuid
+        override fun equals(other: Any?) = other is UID &&
+            isMusicBrainz == other.isMusicBrainz &&
+            mode == other.mode && uuid == other.uuid
 
-        override fun toString() = "$tag:$uuid"
+        override fun toString(): String {
+            // Format comes first, delimited by a ":".
+            val format = if (isMusicBrainz) {
+                FORMAT_MUSICBRAINZ
+            } else {
+                FORMAT_AUXIO
+            }
+
+            // Instead of making new string values for the mode, just append it's intCode
+            // in front of the UUID. So I guess it's technically not a true UUID, but whatever.
+            return "$format:${mode.intCode.toString(16)}-$uuid"
+        }
 
         companion object {
+            private const val FORMAT_AUXIO = "org.oxycblt.auxio"
+            private const val FORMAT_MUSICBRAINZ = "org.musicbrainz"
+
             /** Parse a [UID] from the string [uid]. Returns null if not valid. */
             fun fromString(uid: String): UID? {
                 val split = uid.split(':', limit = 2)
@@ -116,7 +147,21 @@ sealed class Music : Item {
                     return null
                 }
 
-                return UID(tag = split[0], split[1].toUuid() ?: return null)
+                val isMusicBrainz = when (split[0]) {
+                    FORMAT_MUSICBRAINZ -> true
+                    FORMAT_AUXIO -> false
+                    else -> return null
+                }
+
+                val ids = split[1].split('-', limit = 2)
+                if (ids.size != 2) {
+                    return null
+                }
+
+                val mode = MusicMode.fromInt(ids[0].toIntOrNull(16) ?: return null) ?: return null
+                val uuid = UUID.fromString(ids[1])
+
+                return UID(isMusicBrainz, mode, uuid)
             }
 
             /**
@@ -124,15 +169,14 @@ sealed class Music : Item {
              *
              * This is Auxio's UID format.
              */
-            fun hashed(clazz: KClass<*>, updates: MessageDigest.() -> Unit): UID {
+            fun hashed(mode: MusicMode, updates: MessageDigest.() -> Unit): UID {
                 // Auxio hashes consist of the MD5 hash of the non-subjective, consistent
                 // tags in a music item. For easier use with MusicBrainz IDs, we transform
                 // this into a UUID too.
                 val digest = MessageDigest.getInstance("MD5")
                 updates(digest)
                 val uuid = digest.digest().toUuid()
-                val tag = "auxio.${unlikelyToBeNull(clazz.simpleName).lowercase()}"
-                return UID(tag, uuid)
+                return UID(false, mode, uuid)
             }
         }
     }
@@ -276,7 +320,7 @@ class Song constructor(raw: Raw) : Music() {
         // Generally, we calculate UIDs at the end since everything will definitely be initialized
         // by now.
         uid =
-            UID.hashed(this::class) {
+            UID.hashed(MusicMode.SONGS) {
                 update(rawName)
                 update(_rawAlbum.name)
                 update(_rawAlbum.date)
@@ -368,7 +412,7 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
 
     init {
         uid =
-            UID.hashed(this::class) {
+            UID.hashed(MusicMode.ALBUMS) {
                 update(rawName)
                 update(_rawArtist.name)
                 update(date)
@@ -420,7 +464,7 @@ constructor(
     val durationMs = songs.sumOf { it.durationMs }
 
     init {
-        uid = UID.hashed(this::class) { update(rawName) }
+        uid = UID.hashed(MusicMode.ARTISTS) { update(rawName) }
 
         for (album in albums) {
             album._link(this)
@@ -460,7 +504,7 @@ class Genre constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     val durationMs = songs.sumOf { it.durationMs }
 
     init {
-        uid = UID.hashed(this::class) { update(rawName) }
+        uid = UID.hashed(MusicMode.GENRES) { update(rawName) }
 
         for (song in songs) {
             song._link(this)
