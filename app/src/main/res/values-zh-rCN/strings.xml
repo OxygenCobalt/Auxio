@@ -234,4 +234,11 @@
     <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
     <string name="lbl_equalizer">均衡器</string>
     <string name="desc_exit">停止播放</string>
+    <string name="set_separators_and">与号(&amp;)</string>
+    <string name="set_separators_slash">斜线 (/)</string>
+    <string name="set_separators">多值分隔符</string>
+    <string name="set_separators_desc">配置表示标签中多个值的字符</string>
+    <string name="set_separators_plus">加号 (+)</string>
+    <string name="set_separators_comma">逗号 (,)</string>
+    <string name="set_separators_semicolon">分号 (;)</string>
 </resources>
