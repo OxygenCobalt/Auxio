@@ -28,7 +28,7 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.Directory
-import org.oxycblt.auxio.music.dirs.MusicDirs
+import org.oxycblt.auxio.music.settings.MusicDirs
 import org.oxycblt.auxio.music.ui.MusicMode
 import org.oxycblt.auxio.music.ui.Sort
 import org.oxycblt.auxio.playback.BarAction
@@ -301,7 +301,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             inner.getString(context.getString(R.string.set_key_separators), null)?.ifEmpty { null }
         set(value) {
             inner.edit {
-                putString(context.getString(R.string.set_key_separators), value)
+                putString(context.getString(R.string.set_key_separators), value?.ifEmpty { null })
                 apply()
             }
         }

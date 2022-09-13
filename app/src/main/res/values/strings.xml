@@ -214,6 +214,8 @@
     <string name="set_content">Content</string>
     <string name="set_reindex">Reload music</string>
     <string name="set_reindex_desc">May wipe playback state</string>
+    <string name="set_observing">Automatic reloading</string>
+    <string name="set_observing_desc">Reload your music library whenever it changes (Experimental)</string>
     <string name="set_dirs">Music folders</string>
     <string name="set_dirs_desc">Manage where music should be loaded from</string>
     <!-- As in the mode to be used with the music folders setting -->
@@ -224,8 +226,13 @@
     <!-- Restrict music loading to selected folders -->
     <string name="set_dirs_mode_include">Include</string>
     <string name="set_dirs_mode_include_desc">Music will <b>only</b> be loaded from the folders you add.</string>
-    <string name="set_observing">Automatic reloading</string>
-    <string name="set_observing_desc">Reload your music library whenever it changes (Experimental)</string>
+    <string name="set_separators">Multi-value separators</string>
+    <string name="set_separators_desc">Configure the characters that denote multiple values in tags</string>
+    <string name="set_separators_comma">Comma (,)</string>
+    <string name="set_separators_semicolon">Semicolon (;)</string>
+    <string name="set_separators_slash">Slash (/)</string>
+    <string name="set_separators_plus">Plus (+)</string>
+    <string name="set_separators_and">Ampersand (&amp;)</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">No music found</string>

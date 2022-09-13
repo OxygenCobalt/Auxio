@@ -32,7 +32,8 @@ import coil.Coil
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.TabCustomizeDialog
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.dirs.MusicDirsDialog
+import org.oxycblt.auxio.music.settings.MusicDirsDialog
+import org.oxycblt.auxio.music.settings.SeparatorsDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.replaygain.PreAmpCustomizeDialog
 import org.oxycblt.auxio.settings.ui.IntListPreference
@@ -107,6 +108,8 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                             .show(childFragmentManager, PreAmpCustomizeDialog.TAG)
                     context.getString(R.string.set_key_music_dirs) ->
                         MusicDirsDialog().show(childFragmentManager, MusicDirsDialog.TAG)
+                    getString(R.string.set_key_separators) ->
+                        SeparatorsDialog().show(childFragmentManager, SeparatorsDialog.TAG)
                     else -> error("Unexpected dialog key ${preference.key}")
                 }
             }

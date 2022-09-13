@@ -24,6 +24,9 @@ class CacheLayer {
     fun init() {
     }
 
+    // FIXME: Make the raw datatype use raw values, with most parsing being done in the song
+    // constructor to ensure cache coherency
+
     /**
      * Write a list of newly-indexed raw songs to the database.
      */

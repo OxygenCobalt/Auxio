@@ -148,16 +148,21 @@
             app:summary="@string/set_reindex_desc"
             app:title="@string/set_reindex" />
 
-        <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
-            app:key="@string/set_key_music_dirs"
-            app:summary="@string/set_dirs_desc"
-            app:title="@string/set_dirs" />
-
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:key="@string/set_key_observing"
             app:summary="@string/set_observing_desc"
             app:title="@string/set_observing" />
+
+        <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+            app:key="@string/set_key_music_dirs"
+            app:summary="@string/set_dirs_desc"
+            app:title="@string/set_dirs" />
+
+        <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+            app:key="@string/set_key_separators"
+            app:summary="@string/set_separators_desc"
+            app:title="@string/set_separators" />
 
     </PreferenceCategory>
 </PreferenceScreen>

@@ -30,7 +30,6 @@ import org.oxycblt.auxio.music.ui.MusicMode
 import org.oxycblt.auxio.music.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.inRangeOrNull
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import java.security.MessageDigest
@@ -95,6 +94,11 @@ sealed class Music : Item {
      * external sources, as it can persist across app restarts and does not need to encode useless
      * information about the relationships between items.
      *
+     * Note: While the core of a UID is a UUID. The whole is not technically a UUID, with
+     * string representation in particular having multiple extensions to increase uniqueness.
+     * Please don't try to do anything interesting with this and just assume it's a black box
+     * that can only be compared, serialized, and deserialized.
+     *
      * TODO: MusicBrainz tags
      *
      * @author OxygenCobalt
@@ -113,8 +117,6 @@ sealed class Music : Item {
             result = 31 * result + mode.hashCode()
             result = 31 * result + uuid.hashCode()
             hashCode = result
-
-            logD(this)
         }
 
         override fun hashCode() = hashCode
@@ -131,8 +133,8 @@ sealed class Music : Item {
                 FORMAT_AUXIO
             }
 
-            // Instead of making new string values for the mode, just append it's intCode
-            // in front of the UUID. So I guess it's technically not a true UUID, but whatever.
+            // Instead of making new string values for the mode, be lazy and just append it's
+            // intCode in front of the UUID.
             return "$format:${mode.intCode.toString(16)}-$uuid"
         }
 
