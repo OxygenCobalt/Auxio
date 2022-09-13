@@ -242,4 +242,11 @@
     <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
     <string name="lbl_equalizer">Ekvalizér</string>
     <string name="desc_exit">Zastavit přehrávání</string>
+    <string name="set_separators_and">Ampersand (&amp;)</string>
+    <string name="set_separators">Vícehodnotové oddělovače</string>
+    <string name="set_separators_desc">Konfigurace znaků označujících více hodnot ve značkách</string>
+    <string name="set_separators_plus">Plus (+)</string>
+    <string name="set_separators_comma">Čárka (,)</string>
+    <string name="set_separators_semicolon">Středník (;)</string>
+    <string name="set_separators_slash">Lomítko (/)</string>
 </resources>
