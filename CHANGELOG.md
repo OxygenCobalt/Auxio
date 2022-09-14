@@ -7,6 +7,7 @@
 
 #### What's Improved
 - Sorting now takes accented characters into account
+- Added support for compilation sub-release-types like (DJ) Mix
 
 #### What's Fixed
 - Fixed issue where the scroll popup would not display correctly in landscape mode [#230]

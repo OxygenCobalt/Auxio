@@ -51,12 +51,19 @@
     <string name="lbl_compilations">Compilations</string>
     <!-- As in a compilation of music -->
     <string name="lbl_compilation">Compilation</string>
+    <!-- As in a compilation of live music -->
+    <string name="lbl_compilation_live">Live compilation</string>
+    <string name="lbl_compilation_remix">Remix compilations</string>
     <string name="lbl_soundtracks">Soundtracks</string>
     <string name="lbl_soundtrack">Soundtrack</string>
     <!-- As in the collection of music -->
     <string name="lbl_mixtapes">Mixtapes</string>
     <!-- As in the collection of music -->
     <string name="lbl_mixtape">Mixtape</string>
+    <!-- As in a compilation of several performances that blend into a single continuous flow of music -->
+    <string name="lbl_mixes">Mixes</string>
+    <!-- As in a compilation of several performances that blend into a single continuous flow of music -->
+    <string name="lbl_mix">Mix</string>
 
     <!-- As in music that was performed live -->
     <string name="lbl_live_group">Live</string>

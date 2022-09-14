@@ -245,22 +245,23 @@ class DetailViewModel(application: Application) :
         val byReleaseGroup =
             albums.groupBy {
                 when (it.releaseType.refinement) {
-                    ReleaseType.Refinement.LIVE -> R.string.lbl_live_group
-                    ReleaseType.Refinement.REMIX -> R.string.lbl_remix_group
+                    ReleaseType.Refinement.LIVE -> ReleaseTypeGrouping.LIVE
+                    ReleaseType.Refinement.REMIX -> ReleaseTypeGrouping.REMIXES
                     null ->
                         when (it.releaseType) {
-                            is ReleaseType.Album -> R.string.lbl_albums
-                            is ReleaseType.EP -> R.string.lbl_eps
-                            is ReleaseType.Single -> R.string.lbl_singles
-                            is ReleaseType.Compilation -> R.string.lbl_compilations
-                            is ReleaseType.Soundtrack -> R.string.lbl_soundtracks
-                            is ReleaseType.Mixtape -> R.string.lbl_mixtapes
+                            is ReleaseType.Album -> ReleaseTypeGrouping.ALBUMS
+                            is ReleaseType.EP -> ReleaseTypeGrouping.EPS
+                            is ReleaseType.Single -> ReleaseTypeGrouping.SINGLES
+                            is ReleaseType.Compilation -> ReleaseTypeGrouping.COMPILATIONS
+                            is ReleaseType.Soundtrack -> ReleaseTypeGrouping.SOUNDTRACKS
+                            is ReleaseType.Mix -> ReleaseTypeGrouping.MIXES
+                            is ReleaseType.Mixtape -> ReleaseTypeGrouping.MIXTAPES
                         }
                 }
             }
 
         for (entry in byReleaseGroup.entries.sortedBy { it.key }) {
-            data.add(Header(entry.key))
+            data.add(Header(entry.key.string))
             data.addAll(entry.value)
         }
 
@@ -323,6 +324,18 @@ class DetailViewModel(application: Application) :
 
     override fun onCleared() {
         musicStore.removeCallback(this)
+    }
+
+    private enum class ReleaseTypeGrouping(@StringRes val string: Int) {
+        ALBUMS(R.string.lbl_albums),
+        EPS(R.string.lbl_eps),
+        SINGLES(R.string.lbl_singles),
+        COMPILATIONS(R.string.lbl_compilations),
+        SOUNDTRACKS(R.string.lbl_compilations),
+        MIXES(R.string.lbl_mixes),
+        MIXTAPES(R.string.lbl_mixtapes),
+        LIVE(R.string.lbl_live_group),
+        REMIXES(R.string.lbl_remix_group),
     }
 }
 

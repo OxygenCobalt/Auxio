@@ -771,12 +771,13 @@ sealed class ReleaseType {
                 }
     }
 
-    object Compilation : ReleaseType() {
-        override val refinement: Refinement?
-            get() = null
-
+    data class Compilation(override val refinement: Refinement?) : ReleaseType() {
         override val stringRes: Int
-            get() = R.string.lbl_compilation
+            get() = when (refinement) {
+                null -> R.string.lbl_compilation
+                Refinement.LIVE -> R.string.lbl_compilation_live
+                Refinement.REMIX -> R.string.lbl_compilation_remix
+            }
     }
 
     object Soundtrack : ReleaseType() {
@@ -785,6 +786,14 @@ sealed class ReleaseType {
 
         override val stringRes: Int
             get() = R.string.lbl_soundtrack
+    }
+
+    object Mix : ReleaseType() {
+        override val refinement: Refinement?
+            get() = null
+
+        override val stringRes: Int
+            get() = R.string.lbl_mix
     }
 
     object Mixtape : ReleaseType() {
@@ -806,6 +815,9 @@ sealed class ReleaseType {
     }
 
     companion object {
+        // Note: The parsing code is extremely clever in order to reduce duplication. It's
+        // better just to read the specification behind release types than follow this code.
+
         fun parse(types: List<String>): ReleaseType {
             val primary = types[0]
 
@@ -823,22 +835,31 @@ sealed class ReleaseType {
 
         private inline fun List<String>.parseSecondaryTypes(
             secondaryIdx: Int,
-            target: (Refinement?) -> ReleaseType
+            convertRefinement: (Refinement?) -> ReleaseType
         ): ReleaseType {
-            val secondary = (getOrNull(secondaryIdx) ?: return target(null))
+            val secondary = getOrNull(secondaryIdx)
 
-            return when {
-                // Compilation is the only weird secondary release type, as it could
-                // theoretically have additional modifiers including soundtrack, remix,
-                // live, dj-mix, etc. However, since there is no real demand for me to
-                // respond to those, I don't implement them simply for simplicity.
-                secondary.equals("compilation", true) -> Compilation
-                secondary.equals("soundtrack", true) -> Soundtrack
-                secondary.equals("mixtape/street", true) -> Mixtape
-                secondary.equals("live", true) -> target(Refinement.LIVE)
-                secondary.equals("remix", true) -> target(Refinement.REMIX)
-                else -> target(null)
+            return if (secondary.equals("compilation", true)) {
+                // Secondary type is a compilation, actually parse the third type
+                // and put that into a compilation if needed.
+                parseSecondaryTypeImpl(getOrNull(secondaryIdx + 1)) { Compilation(it) }
+            } else {
+                // Secondary type is a plain value, use the original values given.
+                parseSecondaryTypeImpl(secondary, convertRefinement)
             }
+        }
+
+        private inline fun parseSecondaryTypeImpl(
+            type: String?,
+            convertRefinement: (Refinement?) -> ReleaseType
+        ) = when {
+            // Parse all the types that have no children
+            type.equals("soundtrack", true) -> Soundtrack
+            type.equals("mixtape/street", true) -> Mixtape
+            type.equals("dj-mix", true) -> Mix
+            type.equals("live", true) -> convertRefinement(Refinement.LIVE)
+            type.equals("remix", true) -> convertRefinement(Refinement.REMIX)
+            else -> convertRefinement(null)
         }
     }
 }
