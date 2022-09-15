@@ -232,13 +232,8 @@ class MainFragment :
         when (action) {
             is MainNavigationAction.Expand -> tryExpandAll()
             is MainNavigationAction.Collapse -> tryCollapseAll()
-            is MainNavigationAction.Settings ->
-                findNavController().navigate(MainFragmentDirections.actionShowSettings())
-            is MainNavigationAction.About ->
-                findNavController().navigate(MainFragmentDirections.actionShowAbout())
-            is MainNavigationAction.SongDetails ->
-                findNavController()
-                    .navigate(MainFragmentDirections.actionShowDetails(action.song.uid))
+            is MainNavigationAction.Directions ->
+                findNavController().navigate(action.directions)
         }
 
         navModel.finishMainNavigation()

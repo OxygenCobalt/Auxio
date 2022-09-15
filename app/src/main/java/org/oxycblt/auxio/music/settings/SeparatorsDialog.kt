@@ -69,7 +69,6 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
     }
 
     companion object {
-        const val TAG = BuildConfig.APPLICATION_ID + ".tag.EXCLUDED"
 
         private const val SEPARATOR_COMMA = ','
         private const val SEPARATOR_SEMICOLON = ';'

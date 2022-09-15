@@ -63,14 +63,6 @@ val Long.albumCoverUri: Uri
 fun Date?.resolveYear(context: Context) =
     this?.resolveYear(context) ?: context.getString(R.string.def_date)
 
-/** Converts this string to a UUID, or returns null if it is not valid. */
-fun String.toUuid() =
-    try {
-        UUID.fromString(this)
-    } catch (e: IllegalArgumentException) {
-        null
-    }
-
 /** Converts a long in milliseconds to a long in deci-seconds */
 fun Long.msToDs() = floorDiv(100)
 

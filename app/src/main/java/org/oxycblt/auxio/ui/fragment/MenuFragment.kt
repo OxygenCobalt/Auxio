@@ -23,6 +23,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
+import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -70,7 +71,11 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                     navModel.exploreNavigateTo(song.album)
                 }
                 R.id.action_song_detail -> {
-                    navModel.mainNavigateTo(MainNavigationAction.SongDetails(song))
+                    navModel.mainNavigateTo(
+                        MainNavigationAction.Directions(
+                            MainFragmentDirections.actionShowDetails(song.uid)
+                        )
+                    )
                 }
                 else -> {
                     error("Unexpected menu item selected")

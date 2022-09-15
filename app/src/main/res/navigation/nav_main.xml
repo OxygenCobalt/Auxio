@@ -19,21 +19,6 @@
             app:destination="@id/song_detail_dialog" />
     </fragment>
 
-    <fragment
-        android:id="@+id/queue_fragment"
-        android:name="org.oxycblt.auxio.playback.queue.QueueFragment"
-        android:label="QueueFragment"
-        tools:layout="@layout/fragment_queue" />
-    <fragment
-        android:id="@+id/about_fragment"
-        android:name="org.oxycblt.auxio.settings.AboutFragment"
-        android:label="dialog_about"
-        tools:layout="@layout/fragment_about" />
-    <fragment
-        android:id="@+id/settings_fragment"
-        android:name="org.oxycblt.auxio.settings.SettingsFragment"
-        android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
     <dialog
         android:id="@+id/song_detail_dialog"
         android:name="org.oxycblt.auxio.detail.SongDetailDialog"
@@ -43,4 +28,57 @@
             android:name="songUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
+
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="org.oxycblt.auxio.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/go_to_accent_dialog"
+            app:destination="@id/accent_dialog" />
+        <action
+            android:id="@+id/go_to_tab_dialog"
+            app:destination="@id/tab_dialog" />
+        <action
+            android:id="@+id/go_to_pre_amp_dialog"
+            app:destination="@id/pre_amp_dialog" />
+        <action
+            android:id="@+id/go_to_music_dirs_dialog"
+            app:destination="@id/music_dirs_dialog" />
+        <action
+            android:id="@+id/go_to_separators_dialog"
+            app:destination="@id/separators_dialog" />
+    </fragment>
+    <dialog
+        android:id="@+id/accent_dialog"
+        android:name="org.oxycblt.auxio.ui.accent.AccentCustomizeDialog"
+        android:label="accent_dialog"
+        tools:layout="@layout/dialog_accent" />
+    <dialog
+        android:id="@+id/tab_dialog"
+        android:name="org.oxycblt.auxio.home.tabs.TabCustomizeDialog"
+        android:label="tab_dialog"
+        tools:layout="@layout/dialog_tabs" />
+    <dialog
+        android:id="@+id/pre_amp_dialog"
+        android:name="org.oxycblt.auxio.playback.replaygain.PreAmpCustomizeDialog"
+        android:label="pre_amp_dialog"
+        tools:layout="@layout/dialog_pre_amp" />
+    <dialog
+        android:id="@+id/music_dirs_dialog"
+        android:name="org.oxycblt.auxio.music.settings.MusicDirsDialog"
+        android:label="music_dirs_dialog"
+        tools:layout="@layout/dialog_music_dirs" />
+    <dialog
+        android:id="@+id/separators_dialog"
+        android:name="org.oxycblt.auxio.music.settings.SeparatorsDialog"
+        android:label="music_dirs_dialog"
+        tools:layout="@layout/dialog_separators" />
+
+    <fragment
+        android:id="@+id/about_fragment"
+        android:name="org.oxycblt.auxio.settings.AboutFragment"
+        android:label="dialog_about"
+        tools:layout="@layout/fragment_about" />
 </navigation>

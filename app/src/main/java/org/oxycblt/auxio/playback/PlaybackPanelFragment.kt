@@ -27,6 +27,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.music.MusicParent
@@ -145,8 +146,12 @@ class PlaybackPanelFragment :
                 true
             }
             R.id.action_song_detail -> {
-                playbackModel.song.value?.let {
-                    navModel.mainNavigateTo(MainNavigationAction.SongDetails(it))
+                playbackModel.song.value?.let { song ->
+                    navModel.mainNavigateTo(
+                        MainNavigationAction.Directions(
+                            MainFragmentDirections.actionShowDetails(song.uid)
+                        )
+                    )
                 }
 
                 true

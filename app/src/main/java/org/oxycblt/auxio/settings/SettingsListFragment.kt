@@ -23,6 +23,7 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
@@ -30,16 +31,9 @@ import androidx.preference.children
 import androidx.recyclerview.widget.RecyclerView
 import coil.Coil
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.home.tabs.TabCustomizeDialog
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.settings.MusicDirsDialog
-import org.oxycblt.auxio.music.settings.SeparatorsDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.replaygain.PreAmpCustomizeDialog
-import org.oxycblt.auxio.settings.ui.IntListPreference
-import org.oxycblt.auxio.settings.ui.IntListPreferenceDialog
-import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
-import org.oxycblt.auxio.ui.accent.AccentCustomizeDialog
+import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
@@ -54,6 +48,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 class SettingsListFragment : PreferenceFragmentCompat() {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
+    private val navModel: NavigationViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -97,21 +92,15 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             }
             is WrappedDialogPreference -> {
                 val context = requireContext()
-                when (preference.key) {
-                    context.getString(R.string.set_key_accent) ->
-                        AccentCustomizeDialog()
-                            .show(childFragmentManager, AccentCustomizeDialog.TAG)
-                    context.getString(R.string.set_key_lib_tabs) ->
-                        TabCustomizeDialog().show(childFragmentManager, TabCustomizeDialog.TAG)
-                    context.getString(R.string.set_key_pre_amp) ->
-                        PreAmpCustomizeDialog()
-                            .show(childFragmentManager, PreAmpCustomizeDialog.TAG)
-                    context.getString(R.string.set_key_music_dirs) ->
-                        MusicDirsDialog().show(childFragmentManager, MusicDirsDialog.TAG)
-                    getString(R.string.set_key_separators) ->
-                        SeparatorsDialog().show(childFragmentManager, SeparatorsDialog.TAG)
+                val directions = when (preference.key) {
+                    context.getString(R.string.set_key_accent) -> SettingsFragmentDirections.goToAccentDialog()
+                    context.getString(R.string.set_key_lib_tabs) -> SettingsFragmentDirections.goToTabDialog()
+                    context.getString(R.string.set_key_pre_amp) -> SettingsFragmentDirections.goToPreAmpDialog()
+                    context.getString(R.string.set_key_music_dirs) -> SettingsFragmentDirections.goToMusicDirsDialog()
+                    getString(R.string.set_key_separators) -> SettingsFragmentDirections.goToSeparatorsDialog()
                     else -> error("Unexpected dialog key ${preference.key}")
                 }
+                findNavController().navigate(directions)
             }
             else -> super.onDisplayPreferenceDialog(preference)
         }

@@ -80,7 +80,6 @@ class AccentCustomizeDialog :
     }
 
     companion object {
-        const val TAG = BuildConfig.APPLICATION_ID + ".tag.ACCENT_PICKER"
         const val KEY_PENDING_ACCENT = BuildConfig.APPLICATION_ID + ".key.PENDING_ACCENT"
     }
 }

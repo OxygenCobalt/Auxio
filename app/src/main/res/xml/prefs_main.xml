@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory app:title="@string/set_ui">
 
-        <org.oxycblt.auxio.settings.ui.IntListPreference
+        <org.oxycblt.auxio.settings.IntListPreference
             app:defaultValue="@integer/theme_auto"
             app:entries="@array/entries_theme"
             app:entryIcons="@array/icons_theme"
@@ -12,7 +12,7 @@
             app:key="@string/set_key_theme"
             app:title="@string/set_theme" />
 
-        <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+        <org.oxycblt.auxio.settings.WrappedDialogPreference
             app:icon="@drawable/ic_accent_24"
             app:key="@string/set_key_accent"
             app:title="@string/set_accent" />
@@ -27,7 +27,7 @@
 
     <PreferenceCategory app:title="@string/set_display">
 
-        <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+        <org.oxycblt.auxio.settings.WrappedDialogPreference
             app:key="@string/set_key_lib_tabs"
             app:summary="@string/set_lib_tabs_desc"
             app:title="@string/set_lib_tabs" />
@@ -51,7 +51,7 @@
             app:summary="@string/set_round_mode_desc"
             app:title="@string/set_round_mode" />
 
-        <org.oxycblt.auxio.settings.ui.IntListPreference
+        <org.oxycblt.auxio.settings.IntListPreference
             app:defaultValue="@integer/bar_action_next"
             app:entries="@array/entries_bar_action"
             app:entryValues="@array/values_bar_action"
@@ -74,14 +74,14 @@
             app:summary="@string/set_headset_autoplay_desc"
             app:title="@string/set_headset_autoplay" />
 
-        <org.oxycblt.auxio.settings.ui.IntListPreference
+        <org.oxycblt.auxio.settings.IntListPreference
             app:defaultValue="@integer/replay_gain_dynamic"
             app:entries="@array/entries_replay_gain"
             app:entryValues="@array/values_replay_gain"
             app:key="@string/set_key_replay_gain"
             app:title="@string/set_replay_gain" />
 
-        <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+        <org.oxycblt.auxio.settings.WrappedDialogPreference
             app:key="@string/set_key_pre_amp"
             app:summary="@string/set_pre_amp_desc"
             app:title="@string/set_pre_amp" />
@@ -90,7 +90,7 @@
 
     <PreferenceCategory app:title="@string/set_behavior">
 
-        <org.oxycblt.auxio.settings.ui.IntListPreference
+        <org.oxycblt.auxio.settings.IntListPreference
             app:defaultValue="@integer/play_mode_songs"
             app:entries="@array/entries_library_song_playback_mode"
             app:entryValues="@array/values_library_song_playback_mode"
@@ -98,7 +98,7 @@
             app:title="@string/set_library_song_playback_mode"
             app:useSimpleSummaryProvider="true" />
 
-        <org.oxycblt.auxio.settings.ui.IntListPreference
+        <org.oxycblt.auxio.settings.IntListPreference
             app:defaultValue="@integer/play_mode_none"
             app:entries="@array/entries_detail_song_playback_mode"
             app:entryValues="@array/values_detail_song_playback_mode"
@@ -154,12 +154,12 @@
             app:summary="@string/set_observing_desc"
             app:title="@string/set_observing" />
 
-        <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+        <org.oxycblt.auxio.settings.WrappedDialogPreference
             app:key="@string/set_key_music_dirs"
             app:summary="@string/set_dirs_desc"
             app:title="@string/set_dirs" />
 
-        <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+        <org.oxycblt.auxio.settings.WrappedDialogPreference
             app:key="@string/set_key_separators"
             app:summary="@string/set_separators_desc"
             app:title="@string/set_separators" />

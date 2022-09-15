@@ -37,6 +37,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialSharedAxis
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
 import org.oxycblt.auxio.home.list.AlbumListFragment
@@ -185,11 +186,11 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             }
             R.id.action_settings -> {
                 logD("Navigating to settings")
-                navModel.mainNavigateTo(MainNavigationAction.Settings)
+                navModel.mainNavigateTo(MainNavigationAction.Directions(MainFragmentDirections.actionShowSettings()))
             }
             R.id.action_about -> {
                 logD("Navigating to about")
-                navModel.mainNavigateTo(MainNavigationAction.About)
+                navModel.mainNavigateTo(MainNavigationAction.Directions(MainFragmentDirections.actionShowAbout()))
             }
             R.id.submenu_sorting -> {
                 // Junk click event when opening the menu

@@ -18,10 +18,10 @@
 package org.oxycblt.auxio.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavDirections
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -91,12 +91,5 @@ sealed class MainNavigationAction {
     /** Collapse the playback panel. */
     object Collapse : MainNavigationAction()
 
-    /** Go to settings. */
-    object Settings : MainNavigationAction()
-
-    /** Go to the about page. */
-    object About : MainNavigationAction()
-
-    /** Show song details. */
-    data class SongDetails(val song: Song) : MainNavigationAction()
+    data class Directions(val directions: NavDirections) : MainNavigationAction()
 }

@@ -85,6 +85,5 @@ class PreAmpCustomizeDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
     }
 
     companion object {
-        const val TAG = BuildConfig.APPLICATION_ID + ".tag.PRE_AMP_CUSTOMIZE"
     }
 }

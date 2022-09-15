@@ -102,6 +102,7 @@
     <plurals name="fmt_album_count">
         <item quantity="one">%d albumas</item>
         <item quantity="few">%d albumai</item>
+        <item quantity="many">%d albumo</item>
         <item quantity="other">%d albumo</item>
     </plurals>
     <string name="lbl_remix_group">Remiksai</string>
@@ -112,6 +113,7 @@
     <plurals name="fmt_song_count">
         <item quantity="one">%d daina</item>
         <item quantity="few">%d dainos</item>
+        <item quantity="many">%d dainą</item>
         <item quantity="other">%d dainą</item>
     </plurals>
     <string name="clr_dynamic">Dinaminis</string>
@@ -194,7 +196,7 @@
     <string name="fmt_lib_genre_count">Įkrauti žanrai: %d</string>
     <string name="fmt_lib_album_count">Įkrauti albumai: %d</string>
     <string name="fmt_lib_artist_count">Įkelti atlikėjai: %d</string>
-    <string name="fmt_indexing">Kraunama jūsų muzikos biblioteka... (%1$d/%2$d)</string>
+    <string name="fmt_indexing">Kraunama jūsų muzikos biblioteka… (%1$d/%2$d)</string>
     <string name="desc_shuffle_all">Maišyti visas dainas</string>
     <string name="set_behavior">Elgesys</string>
     <string name="set_pre_amp_warning">Įspėjimas: Keičiant išankstinį stiprintuvą į didelę teigiamą vertę, kai kuriuose garso takeliuose gali atsirasti pikų.</string>

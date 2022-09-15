@@ -110,7 +110,6 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
     }
 
     companion object {
-        const val TAG = BuildConfig.APPLICATION_ID + ".tag.TAB_CUSTOMIZE"
         const val KEY_TABS = BuildConfig.APPLICATION_ID + ".key.PENDING_TABS"
     }
 }
