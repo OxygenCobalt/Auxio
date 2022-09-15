@@ -24,7 +24,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemTabBinding
-import org.oxycblt.auxio.music.ui.MusicMode
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.ui.recycler.DialogViewHolder
 import org.oxycblt.auxio.util.inflater
 

@@ -26,7 +26,6 @@ import android.provider.MediaStore
 import android.text.format.DateUtils
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.logD
-import java.util.UUID
 
 /** Shortcut for making a [ContentResolver] query with less superfluous arguments. */
 fun ContentResolver.queryCursor(

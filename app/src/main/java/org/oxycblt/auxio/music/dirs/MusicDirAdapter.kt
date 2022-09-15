@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.settings
+package org.oxycblt.auxio.music.dirs
 
 import android.view.View
 import android.view.ViewGroup

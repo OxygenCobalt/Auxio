@@ -21,7 +21,7 @@ import org.oxycblt.auxio.home.tabs.Tab.Companion.fromSequence
 import org.oxycblt.auxio.home.tabs.Tab.Companion.toSequence
 import org.oxycblt.auxio.home.tabs.Tab.Invisible
 import org.oxycblt.auxio.home.tabs.Tab.Visible
-import org.oxycblt.auxio.music.ui.MusicMode
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.util.logE
 
 /**

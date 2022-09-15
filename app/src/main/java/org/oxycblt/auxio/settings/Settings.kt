@@ -28,9 +28,9 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.Directory
-import org.oxycblt.auxio.music.settings.MusicDirs
-import org.oxycblt.auxio.music.ui.MusicMode
-import org.oxycblt.auxio.music.ui.Sort
+import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.music.dirs.MusicDirs
 import org.oxycblt.auxio.playback.BarAction
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp

@@ -23,10 +23,10 @@ import android.view.ViewGroup
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.formatDurationMs
-import org.oxycblt.auxio.music.ui.MusicMode
-import org.oxycblt.auxio.music.ui.Sort
 import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
 import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item

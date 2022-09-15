@@ -15,9 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.settings
+package org.oxycblt.auxio.music.picker
 
-import org.oxycblt.auxio.music.Directory
-
-/** Represents a the configuration for the "Folder Management" setting */
-data class MusicDirs(val dirs: List<Directory>, val shouldInclude: Boolean)
+/**
+ * Represents the actions available to the picker UI.
+ */
+enum class PickerMode {
+    PLAY,
+    GO
+}

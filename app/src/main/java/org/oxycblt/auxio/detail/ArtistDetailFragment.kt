@@ -26,6 +26,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.MaterialSharedAxis
+import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
@@ -33,10 +34,13 @@ import org.oxycblt.auxio.detail.recycler.DetailAdapter
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.ui.Sort
+import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.fragment.MenuFragment
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.collect
@@ -117,11 +121,19 @@ class ArtistDetailFragment :
     override fun onItemClick(item: Item) {
         when (item) {
             is Song -> {
-                val playbackMode = settings.detailPlaybackMode
-                if (playbackMode != null) {
-                    playbackModel.play(item, playbackMode)
-                } else {
-                    playbackModel.playFromArtist(item)
+                when (settings.detailPlaybackMode) {
+                    null, MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
+                    MusicMode.SONGS -> playbackModel.play(item)
+                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
+                    MusicMode.GENRES -> if (item.genres.size > 1) {
+                        navModel.mainNavigateTo(
+                            MainNavigationAction.Directions(
+                                MainFragmentDirections.showGenrePickerDialog(item.uid, PickerMode.PLAY)
+                            )
+                        )
+                    } else {
+                        playbackModel.playFromGenre(item, item.genres[0])
+                    }
                 }
             }
             is Album -> navModel.exploreNavigateTo(item)

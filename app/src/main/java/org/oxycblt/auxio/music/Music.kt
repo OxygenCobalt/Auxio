@@ -26,8 +26,6 @@ import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Date.Companion.from
-import org.oxycblt.auxio.music.ui.MusicMode
-import org.oxycblt.auxio.music.ui.Sort
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.inRangeOrNull
 import org.oxycblt.auxio.util.nonZeroOrNull
@@ -105,43 +103,34 @@ sealed class Music : Item {
      */
     @Parcelize
     class UID private constructor(
-        private val isMusicBrainz: Boolean,
+        private val format: Format,
         private val mode: MusicMode,
         private val uuid: UUID
     ) : Parcelable {
         // Cache the hashCode for speed
-        @IgnoredOnParcel private val hashCode: Int
+        @IgnoredOnParcel private var hashCode = format.hashCode()
 
         init {
-            var result = isMusicBrainz.hashCode()
-            result = 31 * result + mode.hashCode()
-            result = 31 * result + uuid.hashCode()
-            hashCode = result
+            hashCode = 31 * hashCode + mode.hashCode()
+            hashCode = 31 * hashCode + uuid.hashCode()
         }
 
         override fun hashCode() = hashCode
 
         override fun equals(other: Any?) = other is UID &&
-            isMusicBrainz == other.isMusicBrainz &&
+            format == other.format &&
             mode == other.mode && uuid == other.uuid
 
-        override fun toString(): String {
-            // Format comes first, delimited by a ":".
-            val format = if (isMusicBrainz) {
-                FORMAT_MUSICBRAINZ
-            } else {
-                FORMAT_AUXIO
-            }
+        // UID string format is roughly:
+        // format_namespace:music_mode_int-uuid
+        override fun toString() = "${format.namespace}:${mode.intCode.toString(16)}-$uuid"
 
-            // Instead of making new string values for the mode, be lazy and just append it's
-            // intCode in front of the UUID.
-            return "$format:${mode.intCode.toString(16)}-$uuid"
+        private enum class Format(val namespace: String) {
+            AUXIO("org.oxycblt.auxio"),
+            MUSICBRAINZ("org.musicbrainz")
         }
 
         companion object {
-            private const val FORMAT_AUXIO = "org.oxycblt.auxio"
-            private const val FORMAT_MUSICBRAINZ = "org.musicbrainz"
-
             /** Parse a [UID] from the string [uid]. Returns null if not valid. */
             fun fromString(uid: String): UID? {
                 val split = uid.split(':', limit = 2)
@@ -149,9 +138,9 @@ sealed class Music : Item {
                     return null
                 }
 
-                val isMusicBrainz = when (split[0]) {
-                    FORMAT_MUSICBRAINZ -> true
-                    FORMAT_AUXIO -> false
+                val format = when (split[0]) {
+                    Format.AUXIO.namespace -> Format.AUXIO
+                    Format.MUSICBRAINZ.namespace -> Format.MUSICBRAINZ
                     else -> return null
                 }
 
@@ -163,7 +152,7 @@ sealed class Music : Item {
                 val mode = MusicMode.fromInt(ids[0].toIntOrNull(16) ?: return null) ?: return null
                 val uuid = UUID.fromString(ids[1])
 
-                return UID(isMusicBrainz, mode, uuid)
+                return UID(format, mode, uuid)
             }
 
             /**
@@ -178,7 +167,7 @@ sealed class Music : Item {
                 val digest = MessageDigest.getInstance("MD5")
                 updates(digest)
                 val uuid = digest.digest().toUuid()
-                return UID(false, mode, uuid)
+                return UID(Format.AUXIO, mode, uuid)
             }
         }
     }

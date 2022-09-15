@@ -15,14 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.settings
+package org.oxycblt.auxio.music.separators
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import com.google.android.material.checkbox.MaterialCheckBox
-import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSeparatorsBinding
 import org.oxycblt.auxio.settings.Settings

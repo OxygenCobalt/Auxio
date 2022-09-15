@@ -21,15 +21,18 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
 import android.view.ViewGroup
+import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.formatDurationMs
+import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.music.secsToMs
-import org.oxycblt.auxio.music.ui.MusicMode
-import org.oxycblt.auxio.music.ui.Sort
 import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
@@ -109,7 +112,20 @@ class SongListFragment : HomeListFragment<Song>() {
 
     override fun onItemClick(item: Item) {
         check(item is Song) { "Unexpected datatype: ${item::class.java}" }
-        playbackModel.play(item, settings.libPlaybackMode)
+        when (settings.libPlaybackMode) {
+            MusicMode.SONGS -> playbackModel.play(item)
+            MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
+            MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
+            MusicMode.GENRES -> if (item.genres.size > 1) {
+                navModel.mainNavigateTo(
+                    MainNavigationAction.Directions(
+                        MainFragmentDirections.showGenrePickerDialog(item.uid, PickerMode.PLAY)
+                    )
+                )
+            } else {
+                playbackModel.playFromGenre(item, item.genres[0])
+            }
+        }
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {

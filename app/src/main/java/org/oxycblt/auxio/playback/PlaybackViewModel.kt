@@ -32,7 +32,6 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.dsToMs
 import org.oxycblt.auxio.music.msToDs
-import org.oxycblt.auxio.music.ui.MusicMode
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -92,19 +91,9 @@ class PlaybackViewModel(application: Application) :
 
     // --- PLAYING FUNCTIONS ---
 
-    /** Play a [song] with the [mode] specified, */
-    fun play(song: Song, mode: MusicMode) {
-        // TODO: Remove this function when selection is implemented
-
-        val parent =
-            when (mode) {
-                MusicMode.GENRES -> song.album
-                MusicMode.ARTISTS -> song.album.artist
-                MusicMode.ALBUMS -> song.genres.maxBy { it.songs.size }
-                MusicMode.SONGS -> null
-            }
-
-        playbackManager.play(song, parent, settings)
+    /** Play a [song] from all songs. */
+    fun play(song: Song) {
+        playbackManager.play(song, null, settings)
     }
 
     /** Play a song from it's album. */
