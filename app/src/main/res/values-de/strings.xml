@@ -17,8 +17,8 @@
     <string name="lbl_shuffle">Zufällig</string>
     <string name="set_playback_mode_all">Von allen Lieder abspielen</string>
     <string name="set_playback_mode_album">Von Album abspielen</string>
-    <string name="set_playback_mode_artist">Von Künstler abspielen</string>
-    <string name="set_playback_mode_genre">Von Genre abspielen</string>
+    <string name="set_playback_mode_artist">\@string/lbl_play_artist</string>
+    <string name="set_playback_mode_genre">\@string/lbl_play_genre</string>
     <string name="lbl_playback">Aktuelle Wiedergabe</string>
     <string name="lbl_queue">Warteschlange</string>
     <string name="lbl_play_next">Spiele als Nächstes</string>
@@ -235,4 +235,18 @@
     <string name="set_bar_action_repeat">Wiederholungsmodus</string>
     <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
     <string name="desc_exit">Wiedergabe anhalten</string>
+    <string name="lbl_compilation_live">Live-Kompilation</string>
+    <string name="lbl_compilation_remix">Remix-Kompilation</string>
+    <string name="lbl_mixes">Mischungen</string>
+    <string name="lbl_mix">Mischung</string>
+    <string name="set_separators">Mehrfachwert-Trenner</string>
+    <string name="set_separators_desc">Das Zeichen ändern, welche mehrere Werte in Tags trennt</string>
+    <string name="lbl_go_genre">Zum Genre gehen</string>
+    <string name="set_separators_and">Und-Zeichen (&amp;)</string>
+    <string name="lbl_play_genre">Vom Genre abspielen</string>
+    <string name="lbl_play_artist">Vom Künstler abspielen</string>
+    <string name="set_separators_semicolon">Semikolon (;)</string>
+    <string name="set_separators_comma">Komma (,)</string>
+    <string name="set_separators_slash">Schrägstrich (/)</string>
+    <string name="set_separators_plus">Plus (+)</string>
 </resources>
