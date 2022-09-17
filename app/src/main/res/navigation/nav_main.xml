@@ -83,12 +83,12 @@
         tools:layout="@layout/dialog_pre_amp" />
     <dialog
         android:id="@+id/music_dirs_dialog"
-        android:name="org.oxycblt.auxio.music.dirs.MusicDirsDialog"
+        android:name="org.oxycblt.auxio.music.settings.MusicDirsDialog"
         android:label="music_dirs_dialog"
         tools:layout="@layout/dialog_music_dirs" />
     <dialog
         android:id="@+id/separators_dialog"
-        android:name="org.oxycblt.auxio.music.separators.SeparatorsDialog"
+        android:name="org.oxycblt.auxio.music.settings.SeparatorsDialog"
         android:label="music_dirs_dialog"
         tools:layout="@layout/dialog_separators" />
 

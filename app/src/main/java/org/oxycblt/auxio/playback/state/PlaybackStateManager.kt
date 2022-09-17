@@ -151,51 +151,24 @@ class PlaybackStateManager private constructor() {
 
     /** Play a song from a parent that contains the song. */
     @Synchronized
-    fun play(song: Song, parent: MusicParent?, settings: Settings) {
+    fun play(
+        song: Song?,
+        parent: MusicParent?,
+        settings: Settings,
+        shuffled: Boolean = settings.keepShuffle && isShuffled
+    ) {
         val internalPlayer = internalPlayer ?: return
         val library = musicStore.library ?: return
 
         this.parent = parent
-
-        applyNewQueue(library, settings, settings.keepShuffle && isShuffled, song)
-
-        notifyNewPlayback()
-        notifyShuffledChanged()
-
-        internalPlayer.loadSong(song, true)
-
-        isInitialized = true
-    }
-
-    /** Play a [parent], such as an artist or album. */
-    @Synchronized
-    fun play(parent: MusicParent, shuffled: Boolean, settings: Settings) {
-        val internalPlayer = internalPlayer ?: return
-        val library = musicStore.library ?: return
-
-        this.parent = parent
-        applyNewQueue(library, settings, shuffled, null)
+        _queue = (parent?.songs ?: library.songs).toMutableList()
+        orderQueue(settings, shuffled, song)
 
         notifyNewPlayback()
         notifyShuffledChanged()
 
-        internalPlayer.loadSong(song, true)
-        isInitialized = true
-    }
+        internalPlayer.loadSong(this.song, true)
 
-    /** Shuffle all songs. */
-    @Synchronized
-    fun shuffleAll(settings: Settings) {
-        val internalPlayer = internalPlayer ?: return
-        val library = musicStore.library ?: return
-
-        parent = null
-        applyNewQueue(library, settings, true, null)
-
-        notifyNewPlayback()
-        notifyShuffledChanged()
-
-        internalPlayer.loadSong(song, true)
         isInitialized = true
     }
 
@@ -288,27 +261,24 @@ class PlaybackStateManager private constructor() {
     /** Set whether this instance is [shuffled]. Updates the queue accordingly. */
     @Synchronized
     fun reshuffle(shuffled: Boolean, settings: Settings) {
-        val library = musicStore.library ?: return
         val song = song ?: return
-        applyNewQueue(library, settings, shuffled, song)
+        orderQueue(settings, shuffled, song)
         notifyQueueReworked()
         notifyShuffledChanged()
     }
 
-    private fun applyNewQueue(
-        library: MusicStore.Library,
+    private fun orderQueue(
         settings: Settings,
         shuffled: Boolean,
         keep: Song?
     ) {
-        val newQueue = (parent?.songs ?: library.songs).toMutableList()
         val newIndex: Int
 
         if (shuffled) {
-            newQueue.shuffle()
+            _queue.shuffle()
 
             if (keep != null) {
-                newQueue.add(0, newQueue.removeAt(newQueue.indexOf(keep)))
+                _queue.add(0, _queue.removeAt(_queue.indexOf(keep)))
             }
 
             newIndex = 0
@@ -323,12 +293,11 @@ class PlaybackStateManager private constructor() {
                     }
                 }
 
-            sort.songsInPlace(newQueue)
-
-            newIndex = keep?.let(newQueue::indexOf) ?: 0
+            sort.songsInPlace(_queue)
+            newIndex = keep?.let(_queue::indexOf) ?: 0
         }
 
-        _queue = newQueue
+        _queue = queue
         index = newIndex
         isShuffled = shuffled
     }

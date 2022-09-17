@@ -15,27 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.extractor
+package org.oxycblt.auxio.music.settings
 
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.Directory
 
-/** TODO: Stub class, not implemented yet */
-class CacheLayer {
-    fun init() {
-    }
-
-    // FIXME: Make the raw datatype use raw values, with most parsing being done in the song
-    // constructor to ensure cache coherency
-
-    /**
-     * Write a list of newly-indexed raw songs to the database.
-     */
-    fun finalize(rawSongs: List<Song.Raw>) {
-    }
-
-    /**
-     * Maybe copy a cached raw song into this instance, assuming that it has not changed
-     * since it was last saved.
-     */
-    fun maybePopulateCachedRaw(raw: Song.Raw) = false
-}
+/** Represents a the configuration for the "Folder Management" setting */
+data class MusicDirs(val dirs: List<Directory>, val shouldInclude: Boolean)

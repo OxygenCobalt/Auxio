@@ -55,7 +55,7 @@ class MetadataLayer(private val context: Context, private val mediaStoreLayer: M
     suspend fun parse(emit: suspend (Song.Raw) -> Unit) {
         while (true) {
             val raw = Song.Raw()
-            if (mediaStoreLayer.populateRaw(raw) ?: break) {
+            if (mediaStoreLayer.populateRawSong(raw) ?: break) {
                 // No need to extract metadata that was successfully restored from the cache
                 emit(raw)
                 continue

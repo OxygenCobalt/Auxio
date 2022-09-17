@@ -382,7 +382,7 @@ class PlaybackService :
                     }
                 }
                 is InternalPlayer.Action.ShuffleAll -> {
-                    playbackManager.shuffleAll(settings)
+                    playbackManager.play(null, null, settings, true)
                 }
                 is InternalPlayer.Action.Open -> {
                     library.findSongForUri(application, action.uri)?.let { song ->

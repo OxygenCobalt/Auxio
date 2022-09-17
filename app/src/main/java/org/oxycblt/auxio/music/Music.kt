@@ -26,6 +26,7 @@ import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Date.Companion.from
+import org.oxycblt.auxio.music.extractor.parseId3GenreNames
 import org.oxycblt.auxio.music.extractor.parseMultiValue
 import org.oxycblt.auxio.music.extractor.parseReleaseType
 import org.oxycblt.auxio.settings.Settings
@@ -39,6 +40,8 @@ import java.text.Collator
 import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
+
+// TODO: Make empty parents a hard error
 
 // --- MUSIC MODELS ---
 
@@ -204,11 +207,11 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         update(raw.albumName)
         update(raw.date)
 
-        update(raw.artistNames)
-        update(raw.albumArtistNames)
-
         update(raw.track)
         update(raw.disc)
+
+        update(raw.artistNames)
+        update(raw.albumArtistNames)
     }
 
     override val rawName = requireNotNull(raw.name) { "Invalid raw: No title" }
@@ -317,7 +320,8 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
             }
         )
 
-    val _rawGenres = raw.genreNames.map { Genre.Raw(it) }.ifEmpty { listOf(Genre.Raw(null)) }
+    val _rawGenres = raw.genreNames.parseId3GenreNames(settings)
+        .map { Genre.Raw(it) }.ifEmpty { listOf(Genre.Raw(null)) }
 
     fun _link(album: Album) {
         _album = album
@@ -379,7 +383,7 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
 
     override fun resolveName(context: Context) = rawName
 
-    /** The latest date this album was released. */
+    /** The earliest date this album was released. */
     val date: Date?
 
     /** The release type of this album, such as "EP". Defaults to "Album". */
@@ -435,7 +439,6 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
             }
 
             totalDuration += song.durationMs
-
         }
 
         date = earliestDate
@@ -528,11 +531,11 @@ class Genre constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     val durationMs: Long
 
     init {
-        val totalDuration = 0L
+        var totalDuration = 0L
 
         for (song in songs) {
             song._link(this)
-            durationMs += song.durationMs
+            totalDuration += song.durationMs
         }
 
         durationMs = totalDuration

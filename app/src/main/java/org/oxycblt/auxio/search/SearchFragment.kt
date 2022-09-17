@@ -151,7 +151,7 @@ class SearchFragment :
     override fun onItemClick(item: Item) {
         when (item) {
             is Song -> when (settings.libPlaybackMode) {
-                MusicMode.SONGS -> playbackModel.play(item)
+                MusicMode.SONGS -> playbackModel.playFromAll(item)
                 MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
                 MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
                 MusicMode.GENRES -> if (item.genres.size > 1) {

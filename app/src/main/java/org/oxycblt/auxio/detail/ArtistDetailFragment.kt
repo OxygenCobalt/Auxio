@@ -123,7 +123,7 @@ class ArtistDetailFragment :
             is Song -> {
                 when (settings.detailPlaybackMode) {
                     null, MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
-                    MusicMode.SONGS -> playbackModel.play(item)
+                    MusicMode.SONGS -> playbackModel.playFromAll(item)
                     MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
                     MusicMode.GENRES -> if (item.genres.size > 1) {
                         navModel.mainNavigateTo(
@@ -150,11 +150,11 @@ class ArtistDetailFragment :
     }
 
     override fun onPlayParent() {
-        playbackModel.play(unlikelyToBeNull(detailModel.currentArtist.value), false)
+        playbackModel.play(unlikelyToBeNull(detailModel.currentArtist.value))
     }
 
     override fun onShuffleParent() {
-        playbackModel.play(unlikelyToBeNull(detailModel.currentArtist.value), true)
+        playbackModel.shuffle(unlikelyToBeNull(detailModel.currentArtist.value))
     }
 
     override fun onShowSortMenu(anchor: View) {

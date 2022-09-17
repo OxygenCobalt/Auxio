@@ -36,7 +36,7 @@ import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.extractor.Api21MediaStoreLayer
 import org.oxycblt.auxio.music.extractor.Api29MediaStoreLayer
 import org.oxycblt.auxio.music.extractor.Api30MediaStoreLayer
-import org.oxycblt.auxio.music.extractor.CacheLayer
+import org.oxycblt.auxio.music.extractor.CacheDatabase
 import org.oxycblt.auxio.music.extractor.MetadataLayer
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
@@ -202,7 +202,7 @@ class Indexer {
         // experience. This is technically dependency injection. Except it doesn't increase
         // your compile times by 3x. Isn't that nice.
 
-        val cacheLayer = CacheLayer()
+        val cacheLayer = CacheDatabase()
 
         val mediaStoreLayer =
             when {

@@ -68,9 +68,7 @@ import java.io.File
  * to something that actually works, not even in Android 12. ID3v2.4 has been around for *21
  * years.* *It can drink now.*
  *
- * Not to mention all the other infuriating quirks. Album artists can't be accessed from the albums
- * table, so we have to go for the less efficient "make a big query on all the songs lol" method so
- * that songs don't end up fragmented across artists. Pretty much every OEM has added some extension
+ * Not to mention all the other infuriating quirks. Pretty much every OEM has added some extension
  * or quirk to MediaStore that I cannot reproduce, with some OEMs (COUGHSAMSUNGCOUGH) crippling the
  * normal tables so that you're railroaded into their music app. I have to use a semi-deprecated
  * field to work with file paths, and the supposedly "modern" method is SLOWER and causes even more
@@ -82,12 +80,12 @@ import java.io.File
  * Is there anything we can do about it? No. Google has routinely shut down issues that begged
  * google to fix glaring issues with MediaStore or to just take the API behind the woodshed and
  * shoot it. Largely because they have zero incentive to improve it given how "obscure" local music
- * listening is. As a result, Auxio exposes an option to use an internal parser based on ExoPlayer
- * that at least tries to correct the insane metadata that this API returns, but not only is that
- * system horrifically slow and bug-prone, it also faces the even larger issue of how google keeps
- * trying to kill the filesystem and force you into their ContentResolver API. In the future
- * MediaStore could be the only system we have, which is also the day that greenland melts and
- * birthdays stop happening forever.
+ * listening is. As a result, I am forced to write my own extractor (Which is the contents of the
+ * rest of this module) based on ExoPlayer that at least tries to correct the insane metadata that
+ * this API returns, but not only is that system horrifically slow and bug-prone, it also faces the
+ * even larger issue of how google keeps trying to kill the filesystem and force you into their
+ * ContentResolver API. In the future MediaStore could be the only system we have, which is also
+ * the day that greenland melts and birthdays stop happening forever.
  *
  * I'm pretty sure nothing is going to happen and MediaStore will continue to be neglected and
  * probably deprecated eventually for a "new" API that just coincidentally excludes music indexing.
@@ -102,7 +100,7 @@ import java.io.File
  * music loading process.
  * @author OxygenCobalt
  */
-abstract class MediaStoreLayer(private val context: Context, private val cacheLayer: CacheLayer) {
+abstract class MediaStoreLayer(private val context: Context, private val cacheLayer: CacheDatabase) {
     private var cursor: Cursor? = null
 
     private var idIndex = -1
@@ -249,7 +247,7 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
      * This returns true if the song could be restored from cache, false if metadata had to be
      * re-extracted, and null if the cursor is exhausted.
      */
-    fun populateRaw(raw: Song.Raw): Boolean? {
+    fun populateRawSong(raw: Song.Raw): Boolean? {
         val cursor = requireNotNull(cursor) { "MediaStoreLayer is not properly initialized" }
         if (!cursor.moveToNext()) {
             logD("Cursor is exhausted")
@@ -374,7 +372,7 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
  * API 21 onwards to API 29.
  * @author OxygenCobalt
  */
-class Api21MediaStoreLayer(context: Context, cacheLayer: CacheLayer) :
+class Api21MediaStoreLayer(context: Context, cacheLayer: CacheDatabase) :
     MediaStoreLayer(context, cacheLayer) {
     private var trackIndex = -1
     private var dataIndex = -1
@@ -440,7 +438,7 @@ class Api21MediaStoreLayer(context: Context, cacheLayer: CacheLayer) :
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class BaseApi29MediaStoreLayer(context: Context, cacheLayer: CacheLayer) :
+open class BaseApi29MediaStoreLayer(context: Context, cacheLayer: CacheDatabase) :
     MediaStoreLayer(context, cacheLayer) {
     private var volumeIndex = -1
     private var relativePathIndex = -1
@@ -496,7 +494,7 @@ open class BaseApi29MediaStoreLayer(context: Context, cacheLayer: CacheLayer) :
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class Api29MediaStoreLayer(context: Context, cacheLayer: CacheLayer) :
+open class Api29MediaStoreLayer(context: Context, cacheLayer: CacheDatabase) :
     BaseApi29MediaStoreLayer(context, cacheLayer) {
     private var trackIndex = -1
 
@@ -528,7 +526,7 @@ open class Api29MediaStoreLayer(context: Context, cacheLayer: CacheLayer) :
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.R)
-class Api30MediaStoreLayer(context: Context, cacheLayer: CacheLayer) :
+class Api30MediaStoreLayer(context: Context, cacheLayer: CacheDatabase) :
     BaseApi29MediaStoreLayer(context, cacheLayer) {
     private var trackIndex: Int = -1
     private var discIndex: Int = -1

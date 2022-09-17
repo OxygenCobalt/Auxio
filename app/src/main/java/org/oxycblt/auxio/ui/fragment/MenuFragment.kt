@@ -96,10 +96,10 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
         musicMenuImpl(anchor, menuRes) { id ->
             when (id) {
                 R.id.action_play -> {
-                    playbackModel.play(album, false)
+                    playbackModel.play(album)
                 }
                 R.id.action_shuffle -> {
-                    playbackModel.play(album, true)
+                    playbackModel.shuffle(album)
                 }
                 R.id.action_play_next -> {
                     playbackModel.playNext(album)
@@ -131,10 +131,10 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
         musicMenuImpl(anchor, menuRes) { id ->
             when (id) {
                 R.id.action_play -> {
-                    playbackModel.play(artist, false)
+                    playbackModel.play(artist)
                 }
                 R.id.action_shuffle -> {
-                    playbackModel.play(artist, true)
+                    playbackModel.shuffle(artist)
                 }
                 R.id.action_play_next -> {
                     playbackModel.playNext(artist)
@@ -163,10 +163,10 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
         musicMenuImpl(anchor, menuRes) { id ->
             when (id) {
                 R.id.action_play -> {
-                    playbackModel.play(genre, false)
+                    playbackModel.play(genre)
                 }
                 R.id.action_shuffle -> {
-                    playbackModel.play(genre, true)
+                    playbackModel.shuffle(genre)
                 }
                 R.id.action_play_next -> {
                     playbackModel.playNext(genre)

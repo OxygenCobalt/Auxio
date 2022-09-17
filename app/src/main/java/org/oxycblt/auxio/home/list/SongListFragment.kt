@@ -113,7 +113,7 @@ class SongListFragment : HomeListFragment<Song>() {
     override fun onItemClick(item: Item) {
         check(item is Song) { "Unexpected datatype: ${item::class.java}" }
         when (settings.libPlaybackMode) {
-            MusicMode.SONGS -> playbackModel.play(item)
+            MusicMode.SONGS -> playbackModel.playFromAll(item)
             MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
             MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
             MusicMode.GENRES -> if (item.genres.size > 1) {

@@ -38,7 +38,6 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.application
-import org.oxycblt.auxio.util.logE
 
 /**
  * The ViewModel that provides a UI frontend for [PlaybackStateManager].
@@ -92,72 +91,70 @@ class PlaybackViewModel(application: Application) :
     // --- PLAYING FUNCTIONS ---
 
     /** Play a [song] from all songs. */
-    fun play(song: Song) {
+    fun playFromAll(song: Song) {
         playbackManager.play(song, null, settings)
-    }
-
-    /** Play a song from it's album. */
-    fun playFromAlbum(song: Song) {
-        playbackManager.play(song, song.album, settings)
-    }
-
-    /** Play a song from it's artist. */
-    fun playFromArtist(song: Song) {
-        playbackManager.play(song, song.album.artist, settings)
-    }
-
-    /** Play a song from the specific genre that contains the song. */
-    fun playFromGenre(song: Song, genre: Genre) {
-        if (!genre.songs.contains(song)) {
-            logE("Genre does not contain song, not playing")
-            return
-        }
-
-        playbackManager.play(song, genre, settings)
-    }
-
-    /**
-     * Play an [album].
-     * @param shuffled Whether to shuffle the new queue
-     */
-    fun play(album: Album, shuffled: Boolean) {
-        if (album.songs.isEmpty()) {
-            logE("Album is empty, Not playing")
-            return
-        }
-
-        playbackManager.play(album, shuffled, settings)
-    }
-
-    /**
-     * Play an [artist].
-     * @param shuffled Whether to shuffle the new queue
-     */
-    fun play(artist: Artist, shuffled: Boolean) {
-        if (artist.songs.isEmpty()) {
-            logE("Artist is empty, Not playing")
-            return
-        }
-
-        playbackManager.play(artist, shuffled, settings)
-    }
-
-    /**
-     * Play a [genre].
-     * @param shuffled Whether to shuffle the new queue
-     */
-    fun play(genre: Genre, shuffled: Boolean) {
-        if (genre.songs.isEmpty()) {
-            logE("Genre is empty, Not playing")
-            return
-        }
-
-        playbackManager.play(genre, shuffled, settings)
     }
 
     /** Shuffle all songs */
     fun shuffleAll() {
-        playbackManager.shuffleAll(settings)
+        playbackManager.play(null, null, settings, true)
+    }
+
+    /** Play a song from it's album. */
+    fun playFromAlbum(song: Song) {
+        playbackManager.play(song, song.album, settings, false)
+    }
+
+    /** Play a song from it's artist. */
+    fun playFromArtist(song: Song) {
+        playbackManager.play(song, song.album.artist, settings, false)
+    }
+
+    /** Play a song from the specific genre that contains the song. */
+    fun playFromGenre(song: Song, genre: Genre) {
+        playbackManager.play(song, genre, settings, false)
+    }
+
+    /**
+     * Play an [album].
+     */
+    fun play(album: Album) {
+        playbackManager.play(null, album, settings, false)
+    }
+
+    /**
+     * Play an [artist].
+     */
+    fun play(artist: Artist) {
+        playbackManager.play(null, artist, settings, false)
+    }
+
+    /**
+     * Play a [genre].
+     */
+    fun play(genre: Genre) {
+        playbackManager.play(null, genre, settings, false)
+    }
+
+    /**
+     * Shuffle an [album].
+     */
+    fun shuffle(album: Album) {
+        playbackManager.play(null, album, settings, true)
+    }
+
+    /**
+     * Shuffle an [artist].
+     */
+    fun shuffle(artist: Artist) {
+        playbackManager.play(null, artist, settings, true)
+    }
+
+    /**
+     * Shuffle a [genre].
+     */
+    fun shuffle(genre: Genre) {
+        playbackManager.play(null, genre, settings, true)
     }
 
     /**

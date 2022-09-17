@@ -131,7 +131,7 @@ class AlbumDetailFragment :
         check(item is Song) { "Unexpected datatype: ${item::class.simpleName}" }
         when (settings.detailPlaybackMode) {
             null, MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-            MusicMode.SONGS -> playbackModel.play(item)
+            MusicMode.SONGS -> playbackModel.playFromAll(item)
             MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
             MusicMode.GENRES -> if (item.genres.size > 1) {
                 navModel.mainNavigateTo(
@@ -151,11 +151,11 @@ class AlbumDetailFragment :
     }
 
     override fun onPlayParent() {
-        playbackModel.play(unlikelyToBeNull(detailModel.currentAlbum.value), false)
+        playbackModel.play(unlikelyToBeNull(detailModel.currentAlbum.value))
     }
 
     override fun onShuffleParent() {
-        playbackModel.play(unlikelyToBeNull(detailModel.currentAlbum.value), true)
+        playbackModel.shuffle(unlikelyToBeNull(detailModel.currentAlbum.value))
     }
 
     override fun onShowSortMenu(anchor: View) {
