@@ -26,6 +26,9 @@ import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Date.Companion.from
+import org.oxycblt.auxio.music.extractor.parseMultiValue
+import org.oxycblt.auxio.music.extractor.parseReleaseType
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.inRangeOrNull
 import org.oxycblt.auxio.util.nonZeroOrNull
@@ -192,14 +195,36 @@ sealed class MusicParent : Music() {
  * A song.
  * @author OxygenCobalt
  */
-class Song constructor(raw: Raw) : Music() {
-    override val uid: UID
+class Song constructor(raw: Raw, settings: Settings) : Music() {
+    override val uid = UID.hashed(MusicMode.SONGS) {
+        // Song UIDs are based on the raw data without parsing so that they remain
+        // consistent across music setting changes. Parents are not held up to the
+        // same standard since grouping is directly linked to settings.
+        update(raw.name)
+        update(raw.albumName)
+        update(raw.date)
+
+        update(raw.artistNames)
+        update(raw.albumArtistNames)
+
+        update(raw.track)
+        update(raw.disc)
+    }
 
     override val rawName = requireNotNull(raw.name) { "Invalid raw: No title" }
 
     override val rawSortName = raw.sortName
 
     override fun resolveName(context: Context) = rawName
+
+    /** The track number of this song in it's album.. */
+    val track = raw.track
+
+    /** The disc number of this song in it's album. */
+    val disc = raw.disc
+
+    /** The date of this song. May differ from the album date. */
+    val date = raw.date
 
     /** The URI pointing towards this audio file. */
     val uri = requireNotNull(raw.mediaStoreId) { "Invalid raw: No id" }.audioUri
@@ -230,12 +255,6 @@ class Song constructor(raw: Raw) : Music() {
     /** The date this audio file was added, as a unix epoch timestamp. */
     val dateAdded = requireNotNull(raw.dateAdded) { "Invalid raw: No date added" }
 
-    /** The track number of this song in it's album.. */
-    val track = raw.track
-
-    /** The disc number of this song in it's album. */
-    val disc = raw.disc
-
     private var _album: Album? = null
 
     /** The album of this song. */
@@ -245,10 +264,17 @@ class Song constructor(raw: Raw) : Music() {
     // TODO: Multi-artist support
     // private val _artists: MutableList<Artist> = mutableListOf()
 
-    private val artistName = raw.artistNames?.joinToString()
-    private val albumArtistName = raw.albumArtistNames?.joinToString()
-    private val artistSortName = raw.artistSortNames?.joinToString()
-    private val albumArtistSortName = raw.albumArtistSortNames?.joinToString()
+    private val artistName = raw.artistNames.parseMultiValue(settings)
+        .joinToString().ifEmpty { null }
+
+    private val albumArtistName = raw.albumArtistNames.parseMultiValue(settings)
+        .joinToString().ifEmpty { null }
+
+    private val artistSortName = raw.artistSortNames.parseMultiValue(settings)
+        .joinToString().ifEmpty { null }
+
+    private val albumArtistSortName = raw.albumArtistSortNames.parseMultiValue(settings)
+        .joinToString().ifEmpty { null }
 
     /**
      * The raw artist name for this song in particular. First uses the artist tag, and then falls
@@ -282,8 +308,7 @@ class Song constructor(raw: Raw) : Music() {
             mediaStoreId = requireNotNull(raw.albumMediaStoreId) { "Invalid raw: No album id" },
             name = requireNotNull(raw.albumName) { "Invalid raw: No album name" },
             sortName = raw.albumSortName,
-            date = raw.date,
-            releaseType = raw.albumReleaseType,
+            releaseType = raw.albumReleaseType.parseReleaseType(settings),
             rawArtist =
             if (albumArtistName != null) {
                 Artist.Raw(albumArtistName, albumArtistSortName)
@@ -292,7 +317,7 @@ class Song constructor(raw: Raw) : Music() {
             }
         )
 
-    val _rawGenres = raw.genreNames?.map { Genre.Raw(it) } ?: listOf(Genre.Raw(null))
+    val _rawGenres = raw.genreNames.map { Genre.Raw(it) }.ifEmpty { listOf(Genre.Raw(null)) }
 
     fun _link(album: Album) {
         _album = album
@@ -305,23 +330,6 @@ class Song constructor(raw: Raw) : Music() {
     fun _validate() {
         (checkNotNull(_album) { "Malformed song: album is null" })._validate()
         check(_genres.isNotEmpty()) { "Malformed song: genres are empty" }
-    }
-
-    init {
-        // Generally, we calculate UIDs at the end since everything will definitely be initialized
-        // by now.
-        uid =
-            UID.hashed(MusicMode.SONGS) {
-                update(rawName)
-                update(_rawAlbum.name)
-                update(_rawAlbum.date)
-
-                update(artistName)
-                update(albumArtistName)
-
-                update(track)
-                update(disc)
-            }
     }
 
     class Raw
@@ -343,12 +351,12 @@ class Song constructor(raw: Raw) : Music() {
         var albumMediaStoreId: Long? = null,
         var albumName: String? = null,
         var albumSortName: String? = null,
-        var albumReleaseType: ReleaseType? = null,
-        var artistNames: List<String>? = null,
-        var artistSortNames: List<String>? = null,
-        var albumArtistNames: List<String>? = null,
-        var albumArtistSortNames: List<String>? = null,
-        var genreNames: List<String>? = null
+        var albumReleaseType: List<String> = listOf(),
+        var artistNames: List<String> = listOf(),
+        var artistSortNames: List<String> = listOf(),
+        var albumArtistNames: List<String> = listOf(),
+        var albumArtistSortNames: List<String> = listOf(),
+        var genreNames: List<String> = listOf()
     )
 }
 
@@ -357,7 +365,13 @@ class Song constructor(raw: Raw) : Music() {
  * @author OxygenCobalt
  */
 class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent() {
-    override val uid: UID
+    override val uid = UID.hashed(MusicMode.ALBUMS) {
+        // Hash based on only names despite the presence of a date to increase stability.
+        // I don't know if there is any situation where an artist will have two albums with
+        // the exact same name, but if there is, I would love to know.
+        update(raw.name)
+        update(raw.rawArtist.name)
+    }
 
     override val rawName = raw.name
 
@@ -366,7 +380,7 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     override fun resolveName(context: Context) = rawName
 
     /** The latest date this album was released. */
-    val date = raw.date
+    val date: Date?
 
     /** The release type of this album, such as "EP". Defaults to "Album". */
     val releaseType = raw.releaseType ?: ReleaseType.Album(null)
@@ -377,11 +391,11 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
      */
     val coverUri = raw.mediaStoreId.albumCoverUri
 
-    /** The earliest date a song in this album was added. */
-    val dateAdded = songs.minOf { it.dateAdded }
-
     /** The total duration of songs in this album, in millis. */
-    val durationMs = songs.sumOf { it.durationMs }
+    val durationMs: Long
+
+    /** The earliest date a song in this album was added. */
+    val dateAdded: Long
 
     private var _artist: Artist? = null
 
@@ -402,23 +416,37 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     }
 
     init {
-        uid =
-            UID.hashed(MusicMode.ALBUMS) {
-                update(rawName)
-                update(_rawArtist.name)
-                update(date)
-            }
+        var earliestDate: Date? = null
+        var totalDuration: Long = 0
+        var earliestDateAdded: Long = 0
 
+        // Do linking and value generation in the same loop to save time
         for (song in songs) {
             song._link(this)
+
+            if (song.date != null) {
+                if (earliestDate == null || song.date < earliestDate) {
+                    earliestDate = song.date
+                }
+            }
+
+            if (song.dateAdded < earliestDateAdded) {
+                earliestDateAdded = song.dateAdded
+            }
+
+            totalDuration += song.durationMs
+
         }
+
+        date = earliestDate
+        durationMs = totalDuration
+        dateAdded = earliestDateAdded
     }
 
     class Raw(
         val mediaStoreId: Long,
         val name: String,
         val sortName: String?,
-        val date: Date?,
         val releaseType: ReleaseType?,
         val rawArtist: Artist.Raw
     ) {
@@ -441,7 +469,7 @@ constructor(
     /** The albums of this artist. */
     val albums: List<Album>
 ) : MusicParent() {
-    override val uid: UID
+    override val uid = UID.hashed(MusicMode.ARTISTS) { update(raw.name) }
 
     override val rawName = raw.name
 
@@ -449,17 +477,22 @@ constructor(
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
 
-    override val songs = albums.flatMap { it.songs }
+    private val _songs = mutableListOf<Song>()
+    override val songs = _songs
 
     /** The total duration of songs in this artist, in millis. */
-    val durationMs = songs.sumOf { it.durationMs }
+    val durationMs: Long
 
     init {
-        uid = UID.hashed(MusicMode.ARTISTS) { update(rawName) }
+        var totalDuration = 0L
 
         for (album in albums) {
             album._link(this)
+            _songs.addAll(album.songs)
+            totalDuration += album.durationMs
         }
+
+        durationMs = totalDuration
     }
 
     class Raw(val name: String?, val sortName: String?) {
@@ -482,7 +515,7 @@ constructor(
  * @author OxygenCobalt
  */
 class Genre constructor(raw: Raw, override val songs: List<Song>) : MusicParent() {
-    override val uid: UID
+    override val uid = UID.hashed(MusicMode.GENRES) { update(raw.name) }
 
     override val rawName = raw.name
 
@@ -492,14 +525,17 @@ class Genre constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
 
     /** The total duration of the songs in this genre, in millis. */
-    val durationMs = songs.sumOf { it.durationMs }
+    val durationMs: Long
 
     init {
-        uid = UID.hashed(MusicMode.GENRES) { update(rawName) }
+        val totalDuration = 0L
 
         for (song in songs) {
             song._link(this)
+            durationMs += song.durationMs
         }
+
+        durationMs = totalDuration
     }
 
     class Raw(val name: String?) {
@@ -529,6 +565,11 @@ fun MessageDigest.update(string: String?) {
 fun MessageDigest.update(date: Date?) {
     if (date == null) return
     update(date.toString().toByteArray())
+}
+
+/** Update the digest using a list of strings. */
+fun MessageDigest.update(strings: List<String>) {
+    strings.forEach(::update)
 }
 
 // Note: All methods regarding integer byte-mucking must be little-endian
@@ -807,8 +848,8 @@ sealed class ReleaseType {
         // Note: The parsing code is extremely clever in order to reduce duplication. It's
         // better just to read the specification behind release types than follow this code.
 
-        fun parse(types: List<String>): ReleaseType {
-            val primary = types[0]
+        fun parse(types: List<String>): ReleaseType? {
+            val primary = types.getOrNull(0) ?: return null
 
             // Primary types should be the first one in sequence. The spec makes no mention of
             // whether primary types are a pre-requisite for secondary types, so we assume that

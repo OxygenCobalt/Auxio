@@ -27,7 +27,6 @@ import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.audioUri
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -45,7 +44,6 @@ import org.oxycblt.auxio.util.logW
  * @author OxygenCobalt
  */
 class MetadataLayer(private val context: Context, private val mediaStoreLayer: MediaStoreLayer) {
-    private val settings = Settings(context)
     private val taskPool: Array<Task?> = arrayOfNulls(TASK_CAPACITY)
 
     /** Initialize the sub-layers that this layer relies on. */
@@ -75,11 +73,11 @@ class MetadataLayer(private val context: Context, private val mediaStoreLayer: M
                         val finishedRaw = task.get()
                         if (finishedRaw != null) {
                             emit(finishedRaw)
-                            taskPool[i] = Task(context, settings, raw)
+                            taskPool[i] = Task(context, raw)
                             break@spin
                         }
                     } else {
-                        taskPool[i] = Task(context, settings, raw)
+                        taskPool[i] = Task(context, raw)
                         break@spin
                     }
                 }
@@ -112,7 +110,7 @@ class MetadataLayer(private val context: Context, private val mediaStoreLayer: M
  * Wraps an ExoPlayer metadata retrieval task in a safe abstraction. Access is done with [get].
  * @author OxygenCobalt
  */
-class Task(context: Context, private val settings: Settings, private val raw: Song.Raw) {
+class Task(context: Context, private val raw: Song.Raw) {
     private val future =
         MetadataRetriever.retrieveMetadata(
             context,
@@ -226,18 +224,18 @@ class Task(context: Context, private val settings: Settings, private val raw: So
         tags["TSOA"]?.let { raw.albumSortName = it[0] }
 
         // (Sort) Artist
-        tags["TPE1"]?.let { raw.artistNames = it.parseMultiValue(settings) }
-        tags["TSOP"]?.let { raw.artistSortNames = it.parseMultiValue(settings) }
+        tags["TPE1"]?.let { raw.artistNames = it }
+        tags["TSOP"]?.let { raw.artistSortNames = it }
 
         // (Sort) Album artist
-        tags["TPE2"]?.let { raw.albumArtistNames = it.parseMultiValue(settings) }
-        tags["TSO2"]?.let { raw.albumArtistSortNames = it.parseMultiValue(settings) }
+        tags["TPE2"]?.let { raw.albumArtistNames = it }
+        tags["TSO2"]?.let { raw.albumArtistSortNames = it }
 
         // Genre, with the weird ID3 rules.
-        tags["TCON"]?.let { raw.genreNames = it.parseId3GenreNames(settings) }
+        tags["TCON"]?.let { raw.genreNames = it }
 
         // Release type (GRP1 is sometimes used for this, so fall back to it)
-        (tags["TXXX:MusicBrainz Album Type"] ?: tags["GRP1"])?.parseReleaseType(settings)?.let {
+        (tags["TXXX:MusicBrainz Album Type"] ?: tags["GRP1"])?.let {
             raw.albumReleaseType = it
         }
     }
@@ -297,18 +295,18 @@ class Task(context: Context, private val settings: Settings, private val raw: So
         tags["ALBUMSORT"]?.let { raw.albumSortName = it[0] }
 
         // (Sort) Artist
-        tags["ARTIST"]?.let { raw.artistNames = it.parseMultiValue(settings) }
-        tags["ARTISTSORT"]?.let { raw.artistSortNames = it.parseMultiValue(settings) }
+        tags["ARTIST"]?.let { raw.artistNames = it }
+        tags["ARTISTSORT"]?.let { raw.artistSortNames = it }
 
         // (Sort) Album artist
-        tags["ALBUMARTIST"]?.let { raw.albumArtistNames = it.parseMultiValue(settings) }
-        tags["ALBUMARTISTSORT"]?.let { raw.albumArtistSortNames = it.parseMultiValue(settings) }
+        tags["ALBUMARTIST"]?.let { raw.albumArtistNames = it }
+        tags["ALBUMARTISTSORT"]?.let { raw.albumArtistSortNames = it }
 
         // Genre, no ID3 rules here
-        tags["GENRE"]?.let { raw.genreNames = it.parseMultiValue(settings) }
+        tags["GENRE"]?.let { raw.genreNames = it }
 
         // Release type
-        tags["RELEASETYPE"]?.parseReleaseType(settings)?.let { raw.albumReleaseType = it }
+        tags["RELEASETYPE"]?.let { raw.albumReleaseType = it }
     }
 
     /**

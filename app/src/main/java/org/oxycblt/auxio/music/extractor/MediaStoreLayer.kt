@@ -26,7 +26,6 @@ import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
-import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.directoryCompat
@@ -121,7 +120,7 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
     private var albumArtistIndex = -1
 
     private val settings = Settings(context)
-    private val genreNamesMap = mutableMapOf<Long, List<String>>()
+    private val genreNamesMap = mutableMapOf<Long, String>()
 
     private val _volumes = mutableListOf<StorageVolume>()
     protected val volumes: List<StorageVolume>
@@ -212,11 +211,8 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
             val nameIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)
 
             while (genreCursor.moveToNext()) {
-                // We can't assume what format these genres are derived from, so we just have
-                // to assume ID3v2 rules.
                 val id = genreCursor.getLong(idIndex)
-                val names = (genreCursor.getStringOrNull(nameIndex) ?: continue)
-                    .parseId3GenreNames(settings)
+                val name = genreCursor.getStringOrNull(nameIndex) ?: continue
 
                 context.contentResolverSafe.useQuery(
                     MediaStore.Audio.Genres.Members.getContentUri(VOLUME_EXTERNAL, id),
@@ -227,8 +223,8 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
 
                     while (cursor.moveToNext()) {
                         // Assume that a song can't inhabit multiple genre entries, as I doubt
-                        // Android is smart enough to separate genres into separators.
-                        genreNamesMap[cursor.getLong(songIdIndex)] = names
+                        // Android is smart enough to separate genres.
+                        genreNamesMap[cursor.getLong(songIdIndex)] = name
                     }
                 }
             }
@@ -319,7 +315,7 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
         raw.displayName = cursor.getStringOrNull(displayNameIndex)
 
         raw.durationMs = cursor.getLong(durationIndex)
-        raw.date = cursor.getIntOrNull(yearIndex)?.let(Date::from)
+        raw.date = cursor.getIntOrNull(yearIndex)?.toDate()
 
         // A non-existent album name should theoretically be the name of the folder it contained
         // in, but in practice it is more often "0" (as in /storage/emulated/0), even when it the
@@ -332,23 +328,16 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
         // as <unknown>, which makes absolutely no sense given how other fields default
         // to null if they are not present. If this field is <unknown>, null it so that
         // it's easier to handle later.
-        raw.artistNames =
-            cursor.getString(artistIndex).run {
-                if (this != MediaStore.UNKNOWN_STRING) {
-                    // While we can't natively parse multi-value tags from MediaStore itself, we
-                    // can still parse by user-defined separators.
-                    maybeParseSeparators(settings)
-                } else {
-                    null
-                }
-            }
+        val artist = cursor.getString(artistIndex)
+        if (artist != MediaStore.UNKNOWN_STRING) {
+            raw.artistNames = listOf(artist)
+        }
 
         // The album artist field is nullable and never has placeholder values.
-        raw.albumArtistNames =
-            cursor.getStringOrNull(albumArtistIndex)?.maybeParseSeparators(settings)
+        cursor.getStringOrNull(albumArtistIndex)?.let { raw.albumArtistNames = listOf(it) }
 
         // Get the genre value we had to query for in initialization
-        raw.genreNames = genreNamesMap[raw.mediaStoreId]
+        genreNamesMap[raw.mediaStoreId]?.let { raw.genreNames = listOf(it) }
     }
 
     companion object {

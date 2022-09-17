@@ -38,6 +38,7 @@ import org.oxycblt.auxio.music.extractor.Api29MediaStoreLayer
 import org.oxycblt.auxio.music.extractor.Api30MediaStoreLayer
 import org.oxycblt.auxio.music.extractor.CacheLayer
 import org.oxycblt.auxio.music.extractor.MetadataLayer
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
@@ -214,7 +215,7 @@ class Indexer {
 
         val metadataLayer = MetadataLayer(context, mediaStoreLayer)
 
-        val songs = buildSongs(metadataLayer)
+        val songs = buildSongs(metadataLayer, Settings(context))
         if (songs.isEmpty()) {
             return null
         }
@@ -241,7 +242,7 @@ class Indexer {
      * [buildGenres] functions must be called with the returned list so that all songs are properly
      * linked up.
      */
-    private suspend fun buildSongs(metadataLayer: MetadataLayer): List<Song> {
+    private suspend fun buildSongs(metadataLayer: MetadataLayer, settings: Settings): List<Song> {
         logD("Starting indexing process")
 
         val start = System.currentTimeMillis()
@@ -257,7 +258,7 @@ class Indexer {
         val rawSongs = mutableListOf<Song.Raw>()
 
         metadataLayer.parse { rawSong ->
-            songs.add(Song(rawSong))
+            songs.add(Song(rawSong, settings))
             rawSongs.add(rawSong)
 
             // Check if we got cancelled after every song addition.
@@ -293,15 +294,7 @@ class Indexer {
         val songsByAlbum = songs.groupBy { it._rawAlbum }
 
         for (entry in songsByAlbum) {
-            val albumSongs = entry.value
-
-            // Use the song with the latest year as our metadata song.
-            // This allows us to replicate the LAST_YEAR field, which is useful as it means that
-            // weird years like "0" wont show up if there are alternatives.
-            val templateSong =
-                albumSongs.maxWith(compareBy(Sort.Mode.NullableComparator.DATE) { entry.key.date })
-
-            albums.add(Album(templateSong._rawAlbum, albumSongs))
+            albums.add(Album(entry.key, entry.value))
         }
 
         logD("Successfully built ${albums.size} albums")

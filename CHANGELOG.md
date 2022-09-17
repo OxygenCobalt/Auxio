@@ -8,6 +8,7 @@
 #### What's Improved
 - Sorting now takes accented characters into account
 - Added support for compilation sub-release-types like (DJ) Mix
+- Album dates now start from the earliest date instead of latest date
 
 #### What's Fixed
 - Fixed issue where the scroll popup would not display correctly in landscape mode [#230]
