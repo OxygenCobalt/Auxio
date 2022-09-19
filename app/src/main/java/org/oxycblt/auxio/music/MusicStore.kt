@@ -34,7 +34,7 @@ import org.oxycblt.auxio.util.contentResolverSafe
  *
  * The only other, memory-efficient option is to create our own hybrid database that leverages both
  * a typical DB and a mem-cache, like Vinyl. But why would we do that when I've encountered no real
- * issues with the current system.
+ * issues with the current system?
  *
  * [Library] may not be available at all times, so leveraging [Callback] is recommended. Consumers
  * should also be aware that [Library] may change while they are running, and design their work

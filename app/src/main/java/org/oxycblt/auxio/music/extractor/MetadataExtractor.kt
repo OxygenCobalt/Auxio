@@ -43,19 +43,19 @@ import org.oxycblt.auxio.util.logW
  *
  * @author OxygenCobalt
  */
-class MetadataLayer(private val context: Context, private val mediaStoreLayer: MediaStoreLayer) {
+class MetadataExtractor(private val context: Context, private val mediaStoreExtractor: MediaStoreExtractor) {
     private val taskPool: Array<Task?> = arrayOfNulls(TASK_CAPACITY)
 
     /** Initialize the sub-layers that this layer relies on. */
-    fun init() = mediaStoreLayer.init().count
+    fun init() = mediaStoreExtractor.init().count
 
     /** Finalize the sub-layers that this layer relies on. */
-    fun finalize(rawSongs: List<Song.Raw>) = mediaStoreLayer.finalize(rawSongs)
+    fun finalize(rawSongs: List<Song.Raw>) = mediaStoreExtractor.finalize(rawSongs)
 
     suspend fun parse(emit: suspend (Song.Raw) -> Unit) {
         while (true) {
             val raw = Song.Raw()
-            if (mediaStoreLayer.populateRawSong(raw) ?: break) {
+            if (mediaStoreExtractor.populateRawSong(raw) ?: break) {
                 // No need to extract metadata that was successfully restored from the cache
                 emit(raw)
                 continue

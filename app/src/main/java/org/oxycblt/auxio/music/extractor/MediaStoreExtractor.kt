@@ -100,7 +100,7 @@ import java.io.File
  * music loading process.
  * @author OxygenCobalt
  */
-abstract class MediaStoreLayer(private val context: Context, private val cacheLayer: CacheDatabase) {
+abstract class MediaStoreExtractor(private val context: Context, private val cacheDatabase: CacheDatabase) {
     private var cursor: Cursor? = null
 
     private var idIndex = -1
@@ -129,7 +129,7 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
         logD("Initializing")
         val start = System.currentTimeMillis()
 
-        cacheLayer.init()
+        cacheDatabase.init()
 
         val storageManager = context.getSystemServiceCompat(StorageManager::class)
         _volumes.addAll(storageManager.storageVolumesCompat)
@@ -238,7 +238,7 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
         cursor?.close()
         cursor = null
 
-        cacheLayer.finalize(rawSongs)
+        cacheDatabase.finalize(rawSongs)
     }
 
     /**
@@ -259,7 +259,7 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
         raw.dateAdded = cursor.getLong(dateAddedIndex)
         raw.dateModified = cursor.getLong(dateAddedIndex)
 
-        if (cacheLayer.maybePopulateCachedRaw(raw)) {
+        if (cacheDatabase.maybePopulateCachedRaw(raw)) {
             // We found a valid cache entry, no need to extract metadata.
             logD("Found cached raw: ${raw.name}")
             return true
@@ -368,12 +368,12 @@ abstract class MediaStoreLayer(private val context: Context, private val cacheLa
 // speed, we only want to add redundancy on known issues, not with possible issues.
 
 /**
- * A [MediaStoreLayer] that completes the music loading process in a way compatible from
+ * A [MediaStoreExtractor] that completes the music loading process in a way compatible from
  * API 21 onwards to API 29.
  * @author OxygenCobalt
  */
-class Api21MediaStoreLayer(context: Context, cacheLayer: CacheDatabase) :
-    MediaStoreLayer(context, cacheLayer) {
+class Api21MediaStoreExtractor(context: Context, cacheDatabase: CacheDatabase) :
+    MediaStoreExtractor(context, cacheDatabase) {
     private var trackIndex = -1
     private var dataIndex = -1
 
@@ -433,13 +433,13 @@ class Api21MediaStoreLayer(context: Context, cacheLayer: CacheDatabase) :
 }
 
 /**
- * A [MediaStoreLayer] that selects directories and builds paths using the modern volume fields
+ * A [MediaStoreExtractor] that selects directories and builds paths using the modern volume fields
  * available from API 29 onwards.
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class BaseApi29MediaStoreLayer(context: Context, cacheLayer: CacheDatabase) :
-    MediaStoreLayer(context, cacheLayer) {
+open class BaseApi29MediaStoreExtractor(context: Context, cacheDatabase: CacheDatabase) :
+    MediaStoreExtractor(context, cacheDatabase) {
     private var volumeIndex = -1
     private var relativePathIndex = -1
 
@@ -489,13 +489,13 @@ open class BaseApi29MediaStoreLayer(context: Context, cacheLayer: CacheDatabase)
 }
 
 /**
- * A [MediaStoreLayer] that completes the music loading process in a way compatible with at least
+ * A [MediaStoreExtractor] that completes the music loading process in a way compatible with at least
  * API 29.
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class Api29MediaStoreLayer(context: Context, cacheLayer: CacheDatabase) :
-    BaseApi29MediaStoreLayer(context, cacheLayer) {
+open class Api29MediaStoreExtractor(context: Context, cacheDatabase: CacheDatabase) :
+    BaseApi29MediaStoreExtractor(context, cacheDatabase) {
     private var trackIndex = -1
 
     override fun init(): Cursor {
@@ -521,13 +521,13 @@ open class Api29MediaStoreLayer(context: Context, cacheLayer: CacheDatabase) :
 }
 
 /**
- * A [MediaStoreLayer] that completes the music loading process in a way compatible with at least
+ * A [MediaStoreExtractor] that completes the music loading process in a way compatible with at least
  * API 30.
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.R)
-class Api30MediaStoreLayer(context: Context, cacheLayer: CacheDatabase) :
-    BaseApi29MediaStoreLayer(context, cacheLayer) {
+class Api30MediaStoreExtractor(context: Context, cacheDatabase: CacheDatabase) :
+    BaseApi29MediaStoreExtractor(context, cacheDatabase) {
     private var trackIndex: Int = -1
     private var discIndex: Int = -1
 

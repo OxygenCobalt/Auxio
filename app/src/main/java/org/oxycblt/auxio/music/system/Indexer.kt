@@ -33,11 +33,11 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.music.extractor.Api21MediaStoreLayer
-import org.oxycblt.auxio.music.extractor.Api29MediaStoreLayer
-import org.oxycblt.auxio.music.extractor.Api30MediaStoreLayer
+import org.oxycblt.auxio.music.extractor.Api21MediaStoreExtractor
+import org.oxycblt.auxio.music.extractor.Api29MediaStoreExtractor
+import org.oxycblt.auxio.music.extractor.Api30MediaStoreExtractor
 import org.oxycblt.auxio.music.extractor.CacheDatabase
-import org.oxycblt.auxio.music.extractor.MetadataLayer
+import org.oxycblt.auxio.music.extractor.MetadataExtractor
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -197,25 +197,25 @@ class Indexer {
     private suspend fun indexImpl(context: Context): MusicStore.Library? {
         emitIndexing(Indexing.Indeterminate)
 
-        // Create the chain of layers. Each layer builds on the previous layer and
+        // Create the chain of extractors. Each extractor builds on the previous and
         // enables version-specific features in order to create the best possible music
         // experience. This is technically dependency injection. Except it doesn't increase
         // your compile times by 3x. Isn't that nice.
 
-        val cacheLayer = CacheDatabase()
+        val cacheDatabase = CacheDatabase()
 
-        val mediaStoreLayer =
+        val mediaStoreExtractor =
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
-                    Api30MediaStoreLayer(context, cacheLayer)
+                    Api30MediaStoreExtractor(context, cacheDatabase)
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
-                    Api29MediaStoreLayer(context, cacheLayer)
-                else -> Api21MediaStoreLayer(context, cacheLayer)
+                    Api29MediaStoreExtractor(context, cacheDatabase)
+                else -> Api21MediaStoreExtractor(context, cacheDatabase)
             }
 
-        val metadataLayer = MetadataLayer(context, mediaStoreLayer)
+        val metadataExtractor = MetadataExtractor(context, mediaStoreExtractor)
 
-        val songs = buildSongs(metadataLayer, Settings(context))
+        val songs = buildSongs(metadataExtractor, Settings(context))
         if (songs.isEmpty()) {
             return null
         }
@@ -226,9 +226,21 @@ class Indexer {
         val artists = buildArtists(albums)
         val genres = buildGenres(songs)
 
-        // Sanity check: Ensure that all songs are linked up to albums/artists/genres.
+        // Make sure we finalize all the items now that they are fully built.
         for (song in songs) {
-            song._validate()
+            song._finalize()
+        }
+
+        for (album in albums) {
+            album._finalize()
+        }
+
+        for (artist in artists) {
+            artist._finalize()
+        }
+
+        for (genre in genres) {
+            genre._finalize()
         }
 
         logD("Successfully built library in ${System.currentTimeMillis() - buildStart}ms")
@@ -237,19 +249,19 @@ class Indexer {
     }
 
     /**
-     * Does the initial query over the song database using [metadataLayer]. The songs returned by
+     * Does the initial query over the song database using [metadataExtractor]. The songs returned by
      * this function are **not** well-formed. The companion [buildAlbums], [buildArtists], and
      * [buildGenres] functions must be called with the returned list so that all songs are properly
      * linked up.
      */
-    private suspend fun buildSongs(metadataLayer: MetadataLayer, settings: Settings): List<Song> {
+    private suspend fun buildSongs(metadataExtractor: MetadataExtractor, settings: Settings): List<Song> {
         logD("Starting indexing process")
 
         val start = System.currentTimeMillis()
 
         // Initialize the extractor chain. This also nets us the projected total
         // that we can show when loading.
-        val total = metadataLayer.init()
+        val total = metadataExtractor.init()
         yield()
 
         // Note: We use a set here so we can eliminate effective duplicates of
@@ -257,7 +269,7 @@ class Indexer {
         val songs = mutableSetOf<Song>()
         val rawSongs = mutableListOf<Song.Raw>()
 
-        metadataLayer.parse { rawSong ->
+        metadataExtractor.parse { rawSong ->
             songs.add(Song(rawSong, settings))
             rawSongs.add(rawSong)
 
@@ -266,7 +278,7 @@ class Indexer {
             emitIndexing(Indexing.Songs(songs.size, total))
         }
 
-        metadataLayer.finalize(rawSongs)
+        metadataExtractor.finalize(rawSongs)
 
         val sorted = Sort(Sort.Mode.ByName, true).songs(songs)
 

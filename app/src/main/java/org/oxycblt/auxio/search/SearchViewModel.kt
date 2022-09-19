@@ -144,7 +144,6 @@ class SearchViewModel(application: Application) :
 
     private fun List<Song>.filterSongsBy(value: String) =
         baseFilterBy(value) {
-            logD(it.rawSortName)
             it.rawSortName?.contains(value, ignoreCase = true) == true ||
                 it.path.name.contains(value)
         }

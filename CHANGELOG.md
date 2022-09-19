@@ -3,12 +3,14 @@
 ## dev
 
 #### What's New
+- Added support for songs with multiple genres
 - Reworked music hashing to be even more reliable (Will wipe playback state)
 
 #### What's Improved
 - Sorting now takes accented characters into account
 - Added support for compilation sub-release-types like (DJ) Mix
 - Album dates now start from the earliest date instead of latest date
+- Reshuffling the queue will no longer drop any songs you have added/removed
 
 #### What's Fixed
 - Fixed issue where the scroll popup would not display correctly in landscape mode [#230]

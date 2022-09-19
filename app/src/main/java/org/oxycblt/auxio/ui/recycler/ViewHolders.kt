@@ -64,7 +64,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
             object : SimpleItemCallback<Song>() {
                 override fun areContentsTheSame(oldItem: Song, newItem: Song) =
                     oldItem.rawName == newItem.rawName &&
-                        oldItem.individualArtistRawName == oldItem.individualArtistRawName
+                        oldItem.areArtistContentsTheSame(newItem)
             }
     }
 }

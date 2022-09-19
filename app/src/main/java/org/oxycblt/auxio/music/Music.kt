@@ -41,8 +41,6 @@ import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
 
-// TODO: Make empty parents a hard error
-
 // --- MUSIC MODELS ---
 
 /** [Item] variant that represents a music item. */
@@ -56,19 +54,30 @@ sealed class Music : Item {
     abstract val rawSortName: String?
 
     /**
+     * A key used by the sorting system that takes into account the sort tags of this item,
+     * any (english) articles that prefix the names, and collation rules.
+     */
+    abstract val collationKey: CollationKey?
+
+    /**
      * Resolve a name from it's raw form to a form suitable to be shown in a UI.
      * Null values will be resolved into their string form with this function.
      */
     abstract fun resolveName(context: Context): String
 
-    /**
-     * A key used by the sorting system that takes into account the sort tags of this item,
-     * any (english) articles that prefix the names, and collation rules.
-     */
-    val collationKey: CollationKey? by lazy {
-        // Ideally, we would generate this on creation, but this is an abstract class, which
-        // requires us to generate it lazily instead.
+    // Equality is based on UIDs, as some items (Especially artists) can have identical
+    // properties (Name) yet non-identical UIDs due to MusicBrainz tags
 
+    override fun hashCode() = uid.hashCode()
+
+    override fun equals(other: Any?) =
+        other is Music && javaClass == other.javaClass && uid == other.uid
+
+    /**
+     * Workaround to allow for easy collation key generation in the initializer without
+     * base-class initialization issues or slow lazy initialization.
+     */
+    protected fun makeCollationKeyImpl(): CollationKey? {
         val sortName = (rawSortName ?: rawName)?.run {
             when {
                 length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
@@ -78,16 +87,15 @@ sealed class Music : Item {
             }
         }
 
-        COLLATOR.getCollationKey(sortName)
+        return COLLATOR.getCollationKey(sortName)
     }
 
-    // Equality is based on UIDs, as some items (Especially artists) can have identical
-    // properties (Name) yet non-identical UIDs due to MusicBrainz tags
-
-    override fun hashCode() = uid.hashCode()
-
-    override fun equals(other: Any?) =
-        other is Music && javaClass == other.javaClass && uid == other.uid
+    /**
+     * Called when the library has been linked and validation/construction steps dependent
+     * on linked items should run. It's also used to do last-step initialization of fields
+     * that require any parent values that would not be present during startup.
+     */
+    abstract fun _finalize()
 
     /**
      * A unique identifier for a piece of music.
@@ -192,6 +200,10 @@ sealed class Music : Item {
 sealed class MusicParent : Music() {
     /** The songs that this parent owns. */
     abstract val songs: List<Song>
+
+    override fun _finalize() {
+        check(songs.isNotEmpty()) { "Invalid parent: No songs" }
+    }
 }
 
 /**
@@ -217,6 +229,8 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     override val rawName = requireNotNull(raw.name) { "Invalid raw: No title" }
 
     override val rawSortName = raw.sortName
+
+    override val collationKey = makeCollationKeyImpl()
 
     override fun resolveName(context: Context) = rawName
 
@@ -280,20 +294,19 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         .joinToString().ifEmpty { null }
 
     /**
-     * The raw artist name for this song in particular. First uses the artist tag, and then falls
-     * back to the album artist tag (i.e parent artist name). Null if name is unknown.
-     */
-    val individualArtistRawName: String?
-        // Note: This is a getter since it relies on a parent value that will not be initialized
-        // yet on creation.
-        get() = artistName ?: album.artist.rawName
-
-    /**
      * Resolve the artist name for this song in particular. First uses the artist tag, and then
      * falls back to the album artist tag (i.e parent artist name)
      */
     fun resolveIndividualArtistName(context: Context) =
         artistName ?: album.artist.resolveName(context)
+
+    fun areArtistContentsTheSame(other: Song): Boolean {
+        if (other.artistName != null && artistName != null) {
+            return other.artistName == artistName
+        }
+
+        return album.artist.rawName == other.album.artist.rawName
+    }
 
     private val _genres: MutableList<Genre> = mutableListOf()
 
@@ -331,9 +344,9 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         _genres.add(genre)
     }
 
-    fun _validate() {
-        (checkNotNull(_album) { "Malformed song: album is null" })._validate()
-        check(_genres.isNotEmpty()) { "Malformed song: genres are empty" }
+    override fun _finalize() {
+        (checkNotNull(_album) { "Malformed song: Album is null" })
+        check(_genres.isNotEmpty()) { "Malformed song: No genres" }
     }
 
     class Raw
@@ -381,6 +394,8 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
 
     override val rawSortName = raw.sortName
 
+    override val collationKey = makeCollationKeyImpl()
+
     override fun resolveName(context: Context) = rawName
 
     /** The earliest date this album was released. */
@@ -415,7 +430,8 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
         _artist = artist
     }
 
-    fun _validate() {
+    override fun _finalize() {
+        super._finalize()
         checkNotNull(_artist) { "Invalid album: Artist is null " }
     }
 
@@ -478,6 +494,8 @@ constructor(
 
     override val rawSortName = raw.sortName
 
+    override val collationKey = makeCollationKeyImpl()
+
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
 
     private val _songs = mutableListOf<Song>()
@@ -524,6 +542,8 @@ class Genre constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
 
     // Sort tags don't make sense on genres
     override val rawSortName = rawName
+
+    override val collationKey = makeCollationKeyImpl()
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
 
