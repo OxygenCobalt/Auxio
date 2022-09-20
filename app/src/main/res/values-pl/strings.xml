@@ -175,7 +175,7 @@
     <string name="desc_exit">Zatrzymaj odtwarzanie</string>
     <string name="cdc_mp4">MPEG-4</string>
     <string name="cdc_ogg">Ogg</string>
-    <string name="info_app_desc">Prosty i racjonalny odtwarzacz muzyki na Androida.</string>
+    <string name="info_app_desc">Prosty i rozsądny odtwarzacz muzyki na Androida.</string>
     <string name="desc_music_dir_delete">Usuń folder</string>
     <string name="desc_queue_bar">Pokaż kolejkę</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
@@ -185,7 +185,7 @@
     <string name="desc_queue_handle">Zmień pozycję utworu w kolejce</string>
     <string name="desc_tab_handle">Przesuń kartę</string>
     <string name="desc_artist_image">Wizerunek artysty dla %s</string>
-    <string name="lng_indexing">Ładuję bibliotekę…</string>
+    <string name="lng_indexing">Ładuję bibliotekę muzyczną…</string>
     <string name="set_playback_mode_artist">\@string/lbl_play_artist</string>
     <string name="set_show_covers_desc">Wyłącz, aby zmniejszyć użycie pamięci</string>
     <string name="set_quality_covers_desc">Zwiększa jakość okładek albumów, ale skutkuje dłuższym czasem ładowanie oraz większym użyciem pamięci</string>
@@ -210,4 +210,6 @@
     <string name="set_dirs_mode">Tryb</string>
     <string name="set_rewind_prev">Przewiń przed odtworzeniem poprzedniego utworu</string>
     <string name="set_rewind_prev_desc">Przewiń do początku utworu przed odtworzeniem poprzedniego</string>
+    <string name="set_pre_amp">ReplayGain pre-amp</string>
+    <string name="lbl_live_group">Na żywo</string>
 </resources>
