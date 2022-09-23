@@ -377,6 +377,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     class Raw
     constructor(
         var mediaStoreId: Long? = null,
+        var mbid: UUID? = null,
         var name: String? = null,
         var sortName: String? = null,
         var displayName: String? = null,
@@ -391,11 +392,14 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         var disc: Int? = null,
         var date: Date? = null,
         var albumMediaStoreId: Long? = null,
+        var albumMbid: UUID? = null,
         var albumName: String? = null,
         var albumSortName: String? = null,
         var albumReleaseType: List<String> = listOf(),
+        var artistMbids: List<UUID> = listOf(),
         var artistNames: List<String> = listOf(),
         var artistSortNames: List<String> = listOf(),
+        var albumArtistMbids: List<UUID> = listOf(),
         var albumArtistNames: List<String> = listOf(),
         var albumArtistSortNames: List<String> = listOf(),
         var genreNames: List<String> = listOf()
