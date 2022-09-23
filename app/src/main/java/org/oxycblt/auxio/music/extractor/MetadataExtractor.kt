@@ -41,6 +41,8 @@ import org.oxycblt.auxio.util.logW
  * pitfalls given ExoPlayer's cozy relationship with native code. However, this backend should do
  * enough to eliminate such issues.
  *
+ * TODO: Fix failing ID3v2 multi-value tests in fork (Implies parsing problem)
+ *
  * @author OxygenCobalt
  */
 class MetadataExtractor(private val context: Context, private val mediaStoreExtractor: MediaStoreExtractor) {
@@ -193,7 +195,8 @@ class Task(context: Context, private val raw: Song.Raw) {
     }
 
     private fun populateId3v2(tags: Map<String, List<String>>) {
-        // (Sort) Title
+        // Song
+        tags["TXXX:MusicBrainz Release Track Id"]?.let { raw.musicBrainzId = it[0] }
         tags["TIT2"]?.let { raw.name = it[0] }
         tags["TSOT"]?.let { raw.sortName = it[0] }
 
@@ -219,25 +222,26 @@ class Task(context: Context, private val raw: Song.Raw) {
             )
             ?.let { raw.date = it }
 
-        // (Sort) Album
+        // Album
+        tags["TXXX:MusicBrainz Album Id"]?.let { raw.albumMusicBrainzId = it[0] }
         tags["TALB"]?.let { raw.albumName = it[0] }
         tags["TSOA"]?.let { raw.albumSortName = it[0] }
-
-        // (Sort) Artist
-        (tags["TXXX:ARTISTS"] ?: tags["TPE1"])?.let { raw.artistNames = it }
-        tags["TSOP"]?.let { raw.artistSortNames = it }
-
-        // (Sort) Album artist
-        tags["TPE2"]?.let { raw.albumArtistNames = it }
-        tags["TSO2"]?.let { raw.albumArtistSortNames = it }
-
-        // Genre, with the weird ID3 rules.
-        tags["TCON"]?.let { raw.genreNames = it }
-
-        // Release type (GRP1 is sometimes used for this, so fall back to it)
         (tags["TXXX:MusicBrainz Album Type"] ?: tags["GRP1"])?.let {
             raw.albumReleaseType = it
         }
+
+        // Artist
+        tags["TXXX:MusicBrainz Artist Id"]?.let { raw.artistMusicBrainzIds = it }
+        (tags["TXXX:ARTISTS"] ?: tags["TPE1"])?.let { raw.artistNames = it }
+        tags["TSOP"]?.let { raw.artistSortNames = it }
+
+        // Album artist
+        tags["TXXX:MusicBrainz Album Artist Id"]?.let { raw.albumArtistMusicBrainzIds = it }
+        tags["TPE2"]?.let { raw.albumArtistNames = it }
+        tags["TSO2"]?.let { raw.albumArtistSortNames = it }
+
+        // Genre
+        tags["TCON"]?.let { raw.genreNames = it }
     }
 
     private fun parseId3v23Date(tags: Map<String, List<String>>): Date? {
@@ -267,7 +271,8 @@ class Task(context: Context, private val raw: Song.Raw) {
     }
 
     private fun populateVorbis(tags: Map<String, List<String>>) {
-        // (Sort) Title
+        // Song
+        tags["MUSICBRAINZ_RELEASETRACKID"]?.let { raw.musicBrainzId = it[0] }
         tags["TITLE"]?.let { raw.name = it[0] }
         tags["TITLESORT"]?.let { raw.sortName = it[0] }
 
@@ -290,23 +295,24 @@ class Task(context: Context, private val raw: Song.Raw) {
             )
             ?.let { raw.date = it }
 
-        // (Sort) Album
+        // Album
+        tags["MUSICBRAINZ_ALBUMID"]?.let { raw.albumMusicBrainzId = it[0] }
         tags["ALBUM"]?.let { raw.albumName = it[0] }
         tags["ALBUMSORT"]?.let { raw.albumSortName = it[0] }
+        tags["RELEASETYPE"]?.let { raw.albumReleaseType = it }
 
-        // (Sort) Artist
+        // Artist
+        tags["MUSICBRAINZ_ARTISTID"]?.let { raw.artistMusicBrainzIds = it }
         tags["ARTIST"]?.let { raw.artistNames = it }
         tags["ARTISTSORT"]?.let { raw.artistSortNames = it }
 
-        // (Sort) Album artist
+        // Album artist
+        tags["MUSICBRAINZ_ALBUMARTISTID"]?.let { raw.albumArtistMusicBrainzIds = it }
         tags["ALBUMARTIST"]?.let { raw.albumArtistNames = it }
         tags["ALBUMARTISTSORT"]?.let { raw.albumArtistSortNames = it }
 
-        // Genre, no ID3 rules here
+        // Genre
         tags["GENRE"]?.let { raw.genreNames = it }
-
-        // Release type
-        tags["RELEASETYPE"]?.let { raw.albumReleaseType = it }
     }
 
     /**

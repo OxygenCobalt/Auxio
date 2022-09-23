@@ -4,10 +4,11 @@
 
 #### What's New
 - Massively reworked music loading system:
-	- Auxio now supports multiple artists
-	- Auxio now supports multiple genres
-	- Artists and album artists are now both given equal importance in the UI
+	- Added support for multiple artists
+	- Added support for multiple genres
+	- Artists and album artists are now both given UI entires
 	- Made music hashing rely on the more reliable MD5
+	- Added support for MusicBrainz IDs (MBIDs)
 	- **This may impact your library.** Instructions on how to update your library to result in a good
 	artist experience will be added to the FAQ.
 

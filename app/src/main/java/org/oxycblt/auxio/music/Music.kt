@@ -160,17 +160,15 @@ sealed class Music : Item {
                 }
 
                 val mode = MusicMode.fromInt(ids[0].toIntOrNull(16) ?: return null) ?: return null
-                val uuid = UUID.fromString(ids[1])
+                val uuid = ids[1].toUuidOrNull() ?: return null
 
                 return UID(format, mode, uuid)
             }
 
             /**
              * Make a UUID derived from the MD5 hash of the data digested in [updates].
-             *
-             * This is Auxio's UID format.
              */
-            fun hashed(mode: MusicMode, updates: MessageDigest.() -> Unit): UID {
+            fun auxio(mode: MusicMode, updates: MessageDigest.() -> Unit): UID {
                 // Auxio hashes consist of the MD5 hash of the non-subjective, consistent
                 // tags in a music item. For easier use with MusicBrainz IDs, we transform
                 // this into a UUID too.
@@ -179,6 +177,12 @@ sealed class Music : Item {
                 val uuid = digest.digest().toUuid()
                 return UID(Format.AUXIO, mode, uuid)
             }
+
+            /**
+             * Make a UUID derived from a MusicBrainz ID.
+             */
+            fun musicBrainz(mode: MusicMode, uuid: UUID): UID =
+                UID(Format.MUSICBRAINZ, mode, uuid)
         }
     }
 
@@ -203,7 +207,7 @@ sealed class MusicParent : Music() {
  * @author OxygenCobalt
  */
 class Song constructor(raw: Raw, settings: Settings) : Music() {
-    override val uid = UID.hashed(MusicMode.SONGS) {
+    override val uid = raw.musicBrainzId?.toUuidOrNull()?.let { UID.musicBrainz(MusicMode.SONGS, it) } ?: UID.auxio(MusicMode.SONGS) {
         // Song UIDs are based on the raw data without parsing so that they remain
         // consistent across music setting changes. Parents are not held up to the
         // same standard since grouping is already inherently linked to settings.
@@ -273,20 +277,24 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     val album: Album
         get() = unlikelyToBeNull(_album)
 
+    private val artistMusicBrainzIds = raw.artistMusicBrainzIds.parseMultiValue(settings)
+
     private val artistNames = raw.artistNames.parseMultiValue(settings)
 
-    private val albumArtistNames = raw.albumArtistNames.parseMultiValue(settings)
-
     private val artistSortNames = raw.artistSortNames.parseMultiValue(settings)
+
+    private val albumArtistMusicBrainzIds = raw.albumArtistMusicBrainzIds.parseMultiValue(settings)
+
+    private val albumArtistNames = raw.albumArtistNames.parseMultiValue(settings)
 
     private val albumArtistSortNames = raw.albumArtistSortNames.parseMultiValue(settings)
 
     private val rawArtists = artistNames.mapIndexed { i, name ->
-        Artist.Raw(name, artistSortNames.getOrNull(i))
+        Artist.Raw(artistMusicBrainzIds.getOrNull(i)?.toUuidOrNull(), name, artistSortNames.getOrNull(i))
     }
 
     private val rawAlbumArtists = albumArtistNames.mapIndexed { i, name ->
-        Artist.Raw(name, albumArtistSortNames.getOrNull(i))
+        Artist.Raw(albumArtistMusicBrainzIds.getOrNull(i)?.toUuidOrNull(), name, albumArtistSortNames.getOrNull(i))
     }
 
     private val _artists = mutableListOf<Artist>()
@@ -339,15 +347,16 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     // --- INTERNAL FIELDS ---
 
     val _rawGenres = raw.genreNames.parseId3GenreNames(settings)
-        .map { Genre.Raw(it) }.ifEmpty { listOf(Genre.Raw(null)) }
+        .map { Genre.Raw(it) }.ifEmpty { listOf(Genre.Raw()) }
 
     val _rawArtists = rawArtists.ifEmpty { rawAlbumArtists }.ifEmpty {
-        listOf(Artist.Raw(null, null))
+        listOf(Artist.Raw())
     }
 
     val _rawAlbum =
         Album.Raw(
             mediaStoreId = requireNotNull(raw.albumMediaStoreId) { "Invalid raw: No album id" },
+            musicBrainzId = raw.albumMusicBrainzId?.toUuidOrNull(),
             name = requireNotNull(raw.albumName) { "Invalid raw: No album name" },
             sortName = raw.albumSortName,
             releaseType = raw.albumReleaseType.parseReleaseType(settings),
@@ -377,7 +386,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     class Raw
     constructor(
         var mediaStoreId: Long? = null,
-        var mbid: UUID? = null,
+        var musicBrainzId: String? = null,
         var name: String? = null,
         var sortName: String? = null,
         var displayName: String? = null,
@@ -392,14 +401,14 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         var disc: Int? = null,
         var date: Date? = null,
         var albumMediaStoreId: Long? = null,
-        var albumMbid: UUID? = null,
+        var albumMusicBrainzId: String? = null,
         var albumName: String? = null,
         var albumSortName: String? = null,
         var albumReleaseType: List<String> = listOf(),
-        var artistMbids: List<UUID> = listOf(),
+        var artistMusicBrainzIds: List<String> = listOf(),
         var artistNames: List<String> = listOf(),
         var artistSortNames: List<String> = listOf(),
-        var albumArtistMbids: List<UUID> = listOf(),
+        var albumArtistMusicBrainzIds: List<String> = listOf(),
         var albumArtistNames: List<String> = listOf(),
         var albumArtistSortNames: List<String> = listOf(),
         var genreNames: List<String> = listOf()
@@ -411,13 +420,14 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
  * @author OxygenCobalt
  */
 class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent() {
-    override val uid = UID.hashed(MusicMode.ALBUMS) {
-        // Hash based on only names despite the presence of a date to increase stability.
-        // I don't know if there is any situation where an artist will have two albums with
-        // the exact same name, but if there is, I would love to know.
-        update(raw.name)
-        update(raw.rawArtists.map { it.name })
-    }
+    override val uid = raw.musicBrainzId?.let { UID.musicBrainz(MusicMode.ALBUMS, it) }
+        ?: UID.auxio(MusicMode.ALBUMS) {
+            // Hash based on only names despite the presence of a date to increase stability.
+            // I don't know if there is any situation where an artist will have two albums with
+            // the exact same name, but if there is, I would love to know.
+            update(raw.name)
+            update(raw.rawArtists.map { it.name })
+        }
 
     override val rawName = raw.name
 
@@ -517,17 +527,27 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
 
     class Raw(
         val mediaStoreId: Long,
+        val musicBrainzId: UUID?,
         val name: String,
         val sortName: String?,
         val releaseType: ReleaseType?,
         val rawArtists: List<Artist.Raw>
     ) {
-        private val hashCode = 31 * name.lowercase().hashCode() + rawArtists.hashCode()
+        private val hashCode =
+            musicBrainzId?.hashCode() ?: (31 * name.lowercase().hashCode() + rawArtists.hashCode())
 
         override fun hashCode() = hashCode
 
-        override fun equals(other: Any?) =
-            other is Raw && name.equals(other.name, true) && rawArtists == other.rawArtists
+        override fun equals(other: Any?): Boolean {
+            if (other !is Raw) return false
+            if (musicBrainzId != null && other.musicBrainzId != null &&
+                musicBrainzId == other.musicBrainzId
+            ) {
+                return true
+            }
+
+            return name.equals(other.name, true) && rawArtists == other.rawArtists
+        }
     }
 }
 
@@ -538,7 +558,7 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
  */
 class Artist
 constructor(raw: Raw, songAlbums: List<Music>) : MusicParent() {
-    override val uid = UID.hashed(MusicMode.ARTISTS) { update(raw.name) }
+    override val uid = raw.musicBrainzId?.let { UID.musicBrainz(MusicMode.ARTISTS, it) } ?: UID.auxio(MusicMode.ARTISTS) { update(raw.name) }
 
     override val rawName = raw.name
 
@@ -615,18 +635,26 @@ constructor(raw: Raw, songAlbums: List<Music>) : MusicParent() {
             .sortedByDescending { genre -> songs.count { it.genres.contains(genre) } }
     }
 
-    class Raw(val name: String?, val sortName: String?) {
-        private val hashCode = name?.lowercase().hashCode()
+    class Raw(val musicBrainzId: UUID? = null, val name: String? = null, val sortName: String? = null) {
+        private val hashCode = musicBrainzId?.hashCode() ?: name?.lowercase().hashCode()
 
         override fun hashCode() = hashCode
 
-        override fun equals(other: Any?) =
-            other is Raw &&
-                when {
-                    name != null && other.name != null -> name.equals(other.name, true)
-                    name == null && other.name == null -> true
-                    else -> false
-                }
+        override fun equals(other: Any?): Boolean {
+            if (other !is Raw) return false
+
+            if (musicBrainzId != null && other.musicBrainzId != null &&
+                musicBrainzId == other.musicBrainzId
+            ) {
+                return true
+            }
+
+            return when {
+                name != null && other.name != null -> name.equals(other.name, true)
+                name == null && other.name == null -> true
+                else -> false
+            }
+        }
     }
 }
 
@@ -635,7 +663,7 @@ constructor(raw: Raw, songAlbums: List<Music>) : MusicParent() {
  * @author OxygenCobalt
  */
 class Genre constructor(raw: Raw, override val songs: List<Song>) : MusicParent() {
-    override val uid = UID.hashed(MusicMode.GENRES) { update(raw.name) }
+    override val uid = UID.auxio(MusicMode.GENRES) { update(raw.name) }
 
     override val rawName = raw.name
 
@@ -674,7 +702,7 @@ class Genre constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
         check(songs.isNotEmpty()) { "Malformed genre: Empty" }
     }
 
-    class Raw(val name: String?) {
+    class Raw(val name: String? = null) {
         private val hashCode = name?.lowercase().hashCode()
 
         override fun hashCode() = hashCode
