@@ -42,7 +42,7 @@
     <string name="err_no_music">Nie znaleziono muzyki</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Ścieżka %d</string>
-    <string name="desc_play_pause">Odtwarzanie/Pauza</string>
+    <string name="desc_play_pause">Odtwórz bądź zapauzuj</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Szukaj w bibliotece…</string>
     <!-- Color Label namespace | Accent names -->
@@ -145,7 +145,7 @@
     <string name="set_reindex">Załaduj ponownie bibliotekę</string>
     <string name="set_reindex_desc">Może wyczyścić stan odtwarzania</string>
     <string name="desc_clear_queue_item">Usuń utwór z kolejki</string>
-    <string name="set_replay_gain_album">Wzmocnienie albumu</string>
+    <string name="set_replay_gain_album">Preferuj album</string>
     <string name="set_observing">Automatyczne ponowne załadowanie</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="set_separators_and">Et (&amp;)</string>
@@ -165,7 +165,7 @@
     <string name="set_bar_action_repeat">Powtórz</string>
     <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
     <string name="set_replay_gain">Ustawienie ReplayGain</string>
-    <string name="set_replay_gain_dynamic">Wzmocnienie albumu, jeśli takowy jest odtwarzany</string>
+    <string name="set_replay_gain_dynamic">Preferuj album, jeśli takowy jest odtwarzany</string>
     <string name="set_library_song_playback_mode">Odtwarzając utwór z widoku biblioteki</string>
     <string name="set_save_state">Zapisz stan odtwarzania</string>
     <string name="set_separators_comma">Przecinek (,)</string>
@@ -173,8 +173,8 @@
     <string name="set_separators_slash">Ukośnik (/)</string>
     <string name="set_separators_plus">Plus (+)</string>
     <string name="desc_exit">Zatrzymaj odtwarzanie</string>
-    <string name="cdc_mp4">MPEG-4</string>
-    <string name="cdc_ogg">Ogg</string>
+    <string name="cdc_mp4">MPEG-4 audio</string>
+    <string name="cdc_ogg">Ogg audio</string>
     <string name="info_app_desc">Prosty i rozsądny odtwarzacz muzyki na Androida.</string>
     <string name="desc_music_dir_delete">Usuń folder</string>
     <string name="desc_queue_bar">Pokaż kolejkę</string>
@@ -189,7 +189,7 @@
     <string name="set_playback_mode_artist">\@string/lbl_play_artist</string>
     <string name="set_show_covers_desc">Wyłącz, aby zmniejszyć użycie pamięci</string>
     <string name="set_quality_covers_desc">Zwiększa jakość okładek albumów, ale skutkuje dłuższym czasem ładowanie oraz większym użyciem pamięci</string>
-    <string name="set_replay_gain_track">Wzmocnienie utworu</string>
+    <string name="set_replay_gain_track">Preferuj utwór</string>
     <string name="lbl_state_restored">Przywrócono stan odtwarzania</string>
     <string name="lbl_state_wiped">Wyczyszczono stan odtwarzania</string>
     <string name="lbl_state_saved">Zapisano stan odtwarzania</string>
@@ -201,7 +201,7 @@
     <string name="fmt_bitrate">%d kb/s</string>
     <string name="set_save_desc">Zapisz obecny stan odtwarzania</string>
     <string name="set_wipe_state">Wyczyść stan odtwarzania</string>
-    <string name="cdc_mka">Matroska</string>
+    <string name="cdc_mka">Matroska audio</string>
     <string name="set_wipe_desc">Wyczyść poprzedni stan odtwarzania (jeśli istnieje)</string>
     <string name="set_restore_state">Przywróć stan odtwarzania</string>
     <string name="set_restore_desc">Przywróć poprzedni stan odtwarzania (jeśli istnieje)</string>
@@ -210,7 +210,46 @@
     <string name="set_dirs_mode">Tryb</string>
     <string name="set_rewind_prev">Przewiń przed odtworzeniem poprzedniego utworu</string>
     <string name="set_rewind_prev_desc">Przewiń do początku utworu przed odtworzeniem poprzedniego</string>
-    <string name="set_pre_amp">ReplayGain pre-amp</string>
+    <string name="set_pre_amp">Preamplifier ReplayGain</string>
     <string name="lbl_live_group">Na żywo</string>
     <string name="lbl_indexing">Ładowanie utworów</string>
+    <string name="set_pre_amp_warning">Uwaga: Ustawienie wysokich pozytywnych wartości preamplifiera może skutkować przycinaniem dźwięku w niektórych utworach.</string>
+    <string name="set_keep_shuffle">Zapamiętaj losowe odtwarzanie</string>
+    <string name="err_no_app">Nie znaleziono aplikacji mogącej wykonać to zadanie</string>
+    <string name="lbl_library_counts">Statystyki biblioteki</string>
+    <string name="fmt_lib_artist_count">Załadowani artyści: %d</string>
+    <string name="set_alt_action">Użyj alternatywnej akcji w powiadomieniu</string>
+    <string name="set_repeat_pause">Zatrzymaj odtwarzanie przy powtórzeniu</string>
+    <string name="desc_clear_search">Wyczyść zapytanie wyszukiwania</string>
+    <string name="err_did_not_restore">Nie można przywrócić stanu odtwarzania</string>
+    <string name="desc_genre_image">Okładka gatunku %s</string>
+    <string name="lbl_play_genre">Odtwórz z gatunku</string>
+    <string name="lbl_play_artist">Odtwórz od wykonawcy</string>
+    <string name="lng_playback">Wyświetlanie oraz kontrolowanie odtwarzania muzyki</string>
+    <string name="set_alt_repeat">Preferuj akcję \"Powtórz\"</string>
+    <string name="set_pre_amp_with">Regulacja w oparciu o tagi</string>
+    <string name="set_pre_amp_without">Regulacja bez tagów</string>
+    <string name="set_pre_amp_desc">Wzmocnienie dźwięku przez preamplifier jest nakładane na wcześniej ustawione wzmocnienie podczas odtwarzania</string>
+    <string name="set_detail_song_playback_mode">Odtwarzając utwór ze szczegółów elementu</string>
+    <string name="set_playback_mode_none">Odtwarzaj tylko z elementu</string>
+    <string name="set_repeat_pause_desc">Zatrzymaj odtwarzanie kiedy utwór zostanie ponownie odtworzony</string>
+    <string name="set_dirs_mode_include_desc">Muzyka zostanie załadowana <b>tylko</b> z wybranych folderów.</string>
+    <string name="set_separators">Znaki oddzielające wartości</string>
+    <string name="set_separators_desc">Wybierz znaki oddzielające poszczególne wartości w metadanych</string>
+    <string name="err_no_perms">Auxio wymaga zgody na dostęp do twojej biblioteki muzycznej</string>
+    <string name="err_bad_dir">Ten folder nie jest wspierany</string>
+    <string name="def_playback">Utwory nie są odtwarzane</string>
+    <string name="fmt_indexing">Ładuję twoją bibliotekę muzyczną… (%1$d/%2$d)</string>
+    <string name="fmt_lib_album_count">Załadowane albumy: %d</string>
+    <string name="fmt_lib_genre_count">Załadowane gatunki: %d</string>
+    <string name="fmt_lib_total_duration">Łączny czas trwania: %s</string>
+    <string name="set_dirs_mode_exclude_desc">Muzyka <b>nie</b> zostanie załadowana z wybranych folderów.</string>
+    <string name="desc_change_repeat">Zmień tryb powtarzania</string>
+    <string name="desc_shuffle_all">Odtwarzaj losowo wszystkie utwory</string>
+    <string name="lng_observing">Monitoruję zmiany w bibliotece muzycznej…</string>
+    <string name="set_alt_shuffle">Preferuj akcję \"Losowo\"</string>
+    <string name="lbl_indexer">Ładowanie muzyki</string>
+    <string name="lbl_observing">Monitoruję bibliotekę muzyczną</string>
+    <string name="set_keep_shuffle_desc">Kontynuuj odtwarzanie losowe po wybraniu nowego utworu</string>
+    <string name="fmt_lib_song_count">Załadowane utwory: %d</string>
 </resources>
