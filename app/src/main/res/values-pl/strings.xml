@@ -140,7 +140,6 @@
     <string name="err_no_dirs">Brak folderów</string>
     <string name="set_playback_mode_all">Odtwórz wszystkie utwory</string>
     <string name="set_playback_mode_album">Odtwórz album</string>
-    <string name="set_playback_mode_genre">\@string/lbl_play_genre</string>
     <string name="set_headset_autoplay_desc">Zacznij odtawrzanie po podłączeniu słuchawek (może nie działać na wszystkich urządzeniach)</string>
     <string name="set_reindex">Załaduj ponownie bibliotekę</string>
     <string name="set_reindex_desc">Może wyczyścić stan odtwarzania</string>
@@ -223,7 +222,6 @@
     <string name="desc_clear_search">Wyczyść zapytanie wyszukiwania</string>
     <string name="err_did_not_restore">Nie można przywrócić stanu odtwarzania</string>
     <string name="desc_genre_image">Okładka gatunku %s</string>
-    <string name="lbl_play_genre">Odtwórz z gatunku</string>
     <string name="lbl_play_artist">Odtwórz od wykonawcy</string>
     <string name="lng_playback">Wyświetlanie oraz kontrolowanie odtwarzania muzyki</string>
     <string name="set_alt_repeat">Preferuj akcję \"Powtórz\"</string>

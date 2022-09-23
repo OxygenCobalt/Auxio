@@ -3,21 +3,17 @@
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">사용하기 쉽고 실용적인 Android 음악 플레이어입니다.</string>
     <string name="lng_playback">음악 재생 제어 및 상태 확인</string>
-
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">다시 시도</string>
     <string name="lbl_grant">허용</string>
-
     <string name="lbl_genres">장르</string>
     <string name="lbl_artists">아티스트</string>
     <string name="lbl_albums">앨범</string>
     <string name="lbl_songs">음악</string>
     <string name="lbl_all_songs">모든 음악</string>
-
     <string name="lbl_search">검색</string>
     <string name="lbl_filter">필터</string>
     <string name="lbl_filter_all">모두</string>
-
     <string name="lbl_sort">정렬</string>
     <string name="lbl_sort_name">제목</string>
     <string name="lbl_artist">아티스트</string>
@@ -28,32 +24,25 @@
     <string name="lbl_sort_disc">디스크</string>
     <string name="lbl_sort_track">트랙</string>
     <string name="lbl_sort_asc">오름차순</string>
-
     <string name="lbl_playback">지금 재생 중</string>
     <string name="lbl_play">재생</string>
     <string name="lbl_shuffle">무작위</string>
     <string name="set_playback_mode_all">모든 곡에서 재생</string>
     <string name="set_playback_mode_album">앨범에서 재생</string>
     <string name="set_playback_mode_artist">아티스트에서 재생</string>
-    <string name="set_playback_mode_genre">장르에서 재생</string>
-
     <string name="lbl_queue">대기열</string>
     <string name="lbl_play_next">다음 곡 재생</string>
     <string name="lbl_queue_add">대기열에 추가</string>
     <string name="lng_queue_added">대기열에 추가되었습니다.</string>
-
     <string name="lbl_go_artist">아티스트로 이동</string>
     <string name="lbl_go_album">앨범으로 이동</string>
-
     <string name="lbl_state_saved">상태를 저장했습니다.</string>
-
     <!-- Actual string: Ok -->
     <string name="lbl_ok">@android:string/ok</string>
     <!-- Actual string: Cancel -->
     <string name="lbl_cancel">@android:string/cancel</string>
     <string name="lbl_add">추가</string>
     <string name="lbl_save">저장</string>
-
     <string name="lbl_about">정보</string>
     <string name="lbl_version">버전</string>
     <string name="lbl_code">Github에서 보기</string>
@@ -61,7 +50,6 @@
     <string name="lbl_licenses">라이선스</string>
     <string name="lng_author">OxygenCobalt 개발</string>
     <string name="lbl_library_counts">라이브러리 통계</string>
-
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">설정</string>
     <string name="set_ui">사용자 인터페이스</string>
@@ -72,7 +60,6 @@
     <string name="set_accent">강조 색상</string>
     <string name="set_black_mode">검정 테마</string>
     <string name="set_black_mode_desc">어두운 테마에 검정색 사용</string>
-
     <string name="set_display">디스플레이</string>
     <string name="set_lib_tabs">라이브러리 탭</string>
     <string name="set_lib_tabs_desc">라이브러리 탭의 순서 및 표시할 탭 변경</string>
@@ -85,7 +72,6 @@
     <string name="set_alt_action">다른 방식의 알림 동작 사용</string>
     <string name="set_alt_repeat">반복 모드 동작 선호</string>
     <string name="set_alt_shuffle">무작위 동작 선호</string>
-
     <string name="set_audio">오디오</string>
     <string name="set_headset_autoplay">헤드셋 자동 재생</string>
     <string name="set_headset_autoplay_desc">헤드셋을 연결하면 항상 자동으로 음악 재생 (모든 기기에서 동작하지는 않을 수 있음)</string>
@@ -98,7 +84,6 @@
     <string name="set_pre_amp_with">태그로 조정</string>
     <string name="set_pre_amp_without">태그 없이 조정</string>
     <string name="set_pre_amp_warning">주의: 프리앰프를 높게 설정하면 일부 오디오 트랙에서 주파수가 잘릴 수 있습니다.</string>
-
     <string name="set_behavior">동작</string>
     <string name="set_library_song_playback_mode">음악을 선택했을 때</string>
     <string name="set_keep_shuffle">무작위 모드 기억</string>
@@ -107,13 +92,11 @@
     <string name="set_rewind_prev_desc">이전 곡으로 건너뛰기 전에 먼저 현재 트랙을 되감기</string>
     <string name="set_repeat_pause">반복 재생 시 일시 중지</string>
     <string name="set_repeat_pause_desc">곡이 반복 재생될 때 일시 중지</string>
-
     <string name="set_content">내용</string>
     <string name="set_save_state">재생 상태 저장</string>
     <string name="set_save_desc">현재 재생 상태를 지금 저장</string>
     <string name="set_reindex">음악 다시 불러오기</string>
     <string name="set_reindex_desc">앱이 다시 시작됩니다.</string>
-
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">음악 없음</string>
     <string name="err_index_failed">음악 불러오기 실패</string>
@@ -121,39 +104,32 @@
     <string name="err_no_app">이 링크를 열 수 있는 앱 없음</string>
     <string name="err_no_dirs">폴더 없음</string>
     <string name="err_bad_dir">이 폴더는 지원하지 않는 폴더입니다.</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">라이브러리에서 검색…</string>
-
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">트랙 %d</string>
-
     <string name="desc_play_pause">재생 또는 일시 중지</string>
     <string name="desc_skip_next">다음 곡으로 건너뛰기</string>
     <string name="desc_skip_prev">마지막 곡으로 건너뛰기</string>
     <string name="desc_change_repeat">반복 모드 변경</string>
     <string name="desc_shuffle">무작위 모드 켜기 또는 끄기</string>
     <string name="desc_shuffle_all">모든 곡 무작위 재생</string>
-
     <string name="desc_clear_queue_item">이 대기열의 음악 제거</string>
     <string name="desc_queue_handle">이 대기열의 음악 이동</string>
     <string name="desc_tab_handle">이 탭 이동</string>
     <string name="desc_clear_search">검색 기록 삭제</string>
     <string name="desc_music_dir_delete">제외한 디렉터리 제거</string>
-
     <string name="desc_auxio_icon">Auxio 아이콘</string>
     <string name="desc_no_cover">앨범 커버</string>
     <string name="desc_album_cover">%s의 앨범  커버</string>
     <string name="desc_artist_image">%s의 아티스트 이미지</string>
     <string name="desc_genre_image">%s의 장르 이미지</string>
-
     <!-- Default Namespace | Placeholder values -->
     <string name="def_artist">알 수 없는 아티스트</string>
     <string name="def_genre">알 수 없는 장르</string>
     <string name="def_date">날짜 없음</string>
     <string name="def_track">트랙 번호 없음</string>
     <string name="def_playback">재생 중인 음악 없음</string>
-
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">빨간색</string>
     <string name="clr_pink">핑크색</string>
@@ -172,23 +148,18 @@
     <string name="clr_brown">갈색</string>
     <string name="clr_grey">회색</string>
     <string name="clr_dynamic">다이나믹</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_disc_no">디스크 %d</string>
-
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
-
     <string name="fmt_lib_song_count">불러온 음악: %d</string>
     <string name="fmt_lib_album_count">불러온 앨범: %d</string>
     <string name="fmt_lib_artist_count">불러온 아티스트: %d</string>
     <string name="fmt_lib_genre_count">불러온 장르: %d</string>
     <string name="fmt_lib_total_duration">총 길이: %s</string>
-
     <plurals name="fmt_song_count">
         <item quantity="other">%d 곡</item>
     </plurals>
-
     <plurals name="fmt_album_count">
         <item quantity="other">%d 앨범</item>
     </plurals>

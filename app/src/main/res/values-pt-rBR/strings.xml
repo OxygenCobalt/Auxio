@@ -164,7 +164,6 @@
     <string name="fmt_lib_artist_count">Artistas carregados: %d</string>
     <string name="set_alt_shuffle">Prefira a ação aleatória</string>
     <string name="set_pre_amp_without">Ajuste sem TAGs</string>
-    <string name="set_playback_mode_genre">Reproduzir do gênero</string>
     <string name="set_headset_autoplay">Reprodução automática do fone de ouvido</string>
     <string name="set_pre_amp">Pré-amplificador do ganho de repetição</string>
     <string name="lbl_relative_path">Caminho principal</string>

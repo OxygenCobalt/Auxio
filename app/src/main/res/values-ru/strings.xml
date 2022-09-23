@@ -26,7 +26,6 @@
     <string name="set_playback_mode_all">Играть все треки</string>
     <string name="set_playback_mode_album">Играть альбом</string>
     <string name="set_playback_mode_artist">Играть исполнителя</string>
-    <string name="set_playback_mode_genre">Играть жанр</string>
     <string name="lbl_queue">Очередь</string>
     <string name="lbl_play_next">Играть далее</string>
     <string name="lbl_queue_add">Добавить в очередь</string>

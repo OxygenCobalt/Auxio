@@ -26,7 +26,6 @@
     <string name="set_playback_mode_all">从全部歌曲开始播放</string>
     <string name="set_playback_mode_album">从专辑开始播放</string>
     <string name="set_playback_mode_artist">\@string/lbl_play_artist</string>
-    <string name="set_playback_mode_genre">\@string/lbl_play_genre</string>
     <string name="lbl_queue">播放队列</string>
     <string name="lbl_play_next">作为下一首播放</string>
     <string name="lbl_queue_add">加入播放队列</string>
@@ -246,6 +245,5 @@
     <string name="lbl_mixes">混音</string>
     <string name="lbl_mix">混音</string>
     <string name="lbl_go_genre">转到流派</string>
-    <string name="lbl_play_artist">从艺术家播放</string>
     <string name="lbl_play_genre">从流派播放</string>
 </resources>

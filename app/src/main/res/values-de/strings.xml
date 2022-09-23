@@ -18,7 +18,6 @@
     <string name="set_playback_mode_all">Von allen Lieder abspielen</string>
     <string name="set_playback_mode_album">Von Album abspielen</string>
     <string name="set_playback_mode_artist">\@string/lbl_play_artist</string>
-    <string name="set_playback_mode_genre">\@string/lbl_play_genre</string>
     <string name="lbl_playback">Aktuelle Wiedergabe</string>
     <string name="lbl_queue">Warteschlange</string>
     <string name="lbl_play_next">Spiele als Nächstes</string>
@@ -243,7 +242,6 @@
     <string name="set_separators_desc">Das Zeichen ändern, welche mehrere Werte in Tags trennt</string>
     <string name="lbl_go_genre">Zum Genre gehen</string>
     <string name="set_separators_and">Und-Zeichen (&amp;)</string>
-    <string name="lbl_play_genre">Vom Genre abspielen</string>
     <string name="lbl_play_artist">Vom Künstler abspielen</string>
     <string name="set_separators_semicolon">Semikolon (;)</string>
     <string name="set_separators_comma">Komma (,)</string>

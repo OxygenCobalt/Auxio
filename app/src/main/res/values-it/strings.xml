@@ -26,7 +26,6 @@
     <string name="set_playback_mode_all">Riproduci da tutte le canzoni</string>
     <string name="set_playback_mode_album">Riproduci dal disco</string>
     <string name="set_playback_mode_artist">Riproduci dall\'artista</string>
-    <string name="set_playback_mode_genre">Riproduci dal genere</string>
     <string name="lbl_queue">Coda</string>
     <string name="lbl_play_next">Riproduci successivo</string>
     <string name="lbl_queue_add">Accoda</string>

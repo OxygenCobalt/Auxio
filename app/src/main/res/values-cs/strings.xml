@@ -32,7 +32,6 @@
     <string name="set_playback_mode_all">Přehrát ze všech skladeb</string>
     <string name="set_playback_mode_album">Přehrát z alba</string>
     <string name="set_playback_mode_artist">\@string/lbl_play_artist</string>
-    <string name="set_playback_mode_genre">\@string/lbl_play_genre</string>
     <string name="lbl_queue">Fronta</string>
     <string name="lbl_play_next">Přehrát další</string>
     <string name="lbl_queue_add">Přidat do fronty</string>
@@ -254,6 +253,5 @@
     <string name="lbl_compilation_live">Živá kompilace</string>
     <string name="lbl_mix">Mix</string>
     <string name="lbl_go_genre">Přejít na žánr</string>
-    <string name="lbl_play_genre">Přehrát z žánru</string>
     <string name="lbl_play_artist">Přehrát od umělce</string>
 </resources>
