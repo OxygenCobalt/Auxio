@@ -122,18 +122,21 @@ class ArtistDetailFragment :
         when (item) {
             is Song -> {
                 when (settings.detailPlaybackMode) {
-                    null, MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
+                    null -> playbackModel.playFromArtist(item, unlikelyToBeNull(detailModel.currentArtist.value))
                     MusicMode.SONGS -> playbackModel.playFromAll(item)
                     MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-                    MusicMode.GENRES -> if (item.genres.size > 1) {
-                        navModel.mainNavigateTo(
-                            MainNavigationAction.Directions(
-                                MainFragmentDirections.showGenrePickerDialog(item.uid, PickerMode.PLAY)
+                    MusicMode.ARTISTS -> {
+                        if (item.artists.size == 1) {
+                            playbackModel.playFromArtist(item, item.artists[0])
+                        } else {
+                            navModel.mainNavigateTo(
+                                MainNavigationAction.Directions(
+                                    MainFragmentDirections.actionPickArtist(item.uid, PickerMode.PLAY)
+                                )
                             )
-                        )
-                    } else {
-                        playbackModel.playFromGenre(item, item.genres[0])
+                        }
                     }
+                    else -> error("Unexpected playback mode: ${settings.detailPlaybackMode}")
                 }
             }
             is Album -> navModel.exploreNavigateTo(item)

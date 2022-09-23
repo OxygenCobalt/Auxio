@@ -22,5 +22,5 @@ package org.oxycblt.auxio.music.picker
  */
 enum class PickerMode {
     PLAY,
-    GO
+    SHOW
 }

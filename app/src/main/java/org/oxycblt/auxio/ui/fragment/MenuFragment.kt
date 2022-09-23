@@ -29,6 +29,7 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
@@ -65,7 +66,15 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                     requireContext().showToast(R.string.lng_queue_added)
                 }
                 R.id.action_go_artist -> {
-                    navModel.exploreNavigateTo(song.album.artist)
+                    if (song.artists.size == 1) {
+                        navModel.exploreNavigateTo(song.artists[0])
+                    } else {
+                        navModel.mainNavigateTo(
+                            MainNavigationAction.Directions(
+                                MainFragmentDirections.actionPickArtist(song.uid, PickerMode.SHOW)
+                            )
+                        )
+                    }
                 }
                 R.id.action_go_album -> {
                     navModel.exploreNavigateTo(song.album)
@@ -110,7 +119,15 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                     requireContext().showToast(R.string.lng_queue_added)
                 }
                 R.id.action_go_artist -> {
-                    navModel.exploreNavigateTo(album.artist)
+                    if (album.artists.size == 1) {
+                        navModel.exploreNavigateTo(album.artists[0])
+                    } else {
+                        navModel.mainNavigateTo(
+                            MainNavigationAction.Directions(
+                                MainFragmentDirections.actionPickArtist(album.uid, PickerMode.SHOW)
+                            )
+                        )
+                    }
                 }
                 else -> {
                     error("Unexpected menu item selected")

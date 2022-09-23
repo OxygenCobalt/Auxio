@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music.picker
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
@@ -32,20 +33,27 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 class PickerViewModel : ViewModel(), MusicStore.Callback {
     private val musicStore = MusicStore.getInstance()
 
-    private val _currentSong = MutableStateFlow<Song?>(null)
-    val currentSong: StateFlow<Song?> get() = _currentSong
+    private var _currentItem = MutableStateFlow<Music?>(null)
+    val currentItem: StateFlow<Music?> = _currentItem
 
     fun setSongUid(uid: Music.UID) {
-        if (_currentSong.value?.uid == uid) return
+        if (_currentItem.value?.uid == uid) return
         val library = unlikelyToBeNull(musicStore.library)
-        _currentSong.value = requireNotNull(library.find(uid)) { "Invalid song id provided" }
+        val item = requireNotNull(library.find(uid)) { "Invalid song id provided" }
+        _currentItem.value = item
     }
 
     override fun onLibraryChanged(library: MusicStore.Library?) {
         if (library != null) {
-            val song = _currentSong.value
-            if (song != null) {
-                _currentSong.value = library.sanitize(song)
+            when (val item = currentItem.value) {
+                is Song -> {
+                    _currentItem.value = library.sanitize(item)
+                }
+                is Album -> {
+                    _currentItem.value = library.sanitize(item)
+                }
+                null -> {}
+                else -> error("Invalid datatype: ${item::class.java}")
             }
         }
     }

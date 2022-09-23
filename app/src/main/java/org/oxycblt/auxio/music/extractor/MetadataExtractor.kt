@@ -224,7 +224,7 @@ class Task(context: Context, private val raw: Song.Raw) {
         tags["TSOA"]?.let { raw.albumSortName = it[0] }
 
         // (Sort) Artist
-        tags["TPE1"]?.let { raw.artistNames = it }
+        (tags["TXXX:ARTISTS"] ?: tags["TPE1"])?.let { raw.artistNames = it }
         tags["TSOP"]?.let { raw.artistSortNames = it }
 
         // (Sort) Album artist

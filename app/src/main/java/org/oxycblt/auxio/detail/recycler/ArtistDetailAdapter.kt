@@ -19,6 +19,7 @@ package org.oxycblt.auxio.detail.recycler
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -27,10 +28,8 @@ import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveYear
-import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
 import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
@@ -110,25 +109,29 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
         binding.detailType.text = binding.context.getString(R.string.lbl_artist)
         binding.detailName.text = item.resolveName(binding.context)
 
-        // Get the genre that corresponds to the most songs in this artist, which would be
-        // the most "Prominent" genre.
-        val genresByAmount = mutableMapOf<Genre, Int>()
-        for (song in item.songs) {
-            for (genre in song.genres) {
-                genresByAmount[genre] = genresByAmount[genre]?.inc() ?: 1
+        if (item.songs.isNotEmpty()) {
+            binding.detailSubhead.apply {
+                isVisible = true
+                text = item.resolveGenreContents(binding.context)
             }
+
+            binding.detailInfo.text =
+                binding.context.getString(
+                    R.string.fmt_two,
+                    binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size),
+                    binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
+                )
+
+            binding.detailPlayButton.isEnabled = true
+            binding.detailShuffleButton.isEnabled = true
+        } else {
+            // The artist is a
+            binding.detailSubhead.isVisible = false
+            binding.detailInfo.text =
+                binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size)
+            binding.detailPlayButton.isEnabled = false
+            binding.detailShuffleButton.isEnabled = false
         }
-
-        binding.detailSubhead.text =
-            genresByAmount.maxByOrNull { it.value }?.key?.resolveName(binding.context)
-                ?: binding.context.getString(R.string.def_genre)
-
-        binding.detailInfo.text =
-            binding.context.getString(
-                R.string.fmt_two,
-                binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size),
-                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
-            )
 
         binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }
         binding.detailShuffleButton.setOnClickListener { listener.onShuffleParent() }
@@ -140,7 +143,13 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
         fun new(parent: View) =
             ArtistDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
 
-        val DIFFER = ArtistViewHolder.DIFFER
+        val DIFFER = object : SimpleItemCallback<Artist>() {
+            override fun areContentsTheSame(oldItem: Artist, newItem: Artist) =
+                oldItem.rawName == newItem.rawName &&
+                    oldItem.areGenreContentsTheSame(newItem) &&
+                    oldItem.albums.size == newItem.albums.size &&
+                    oldItem.songs.size == newItem.songs.size
+        }
     }
 }
 

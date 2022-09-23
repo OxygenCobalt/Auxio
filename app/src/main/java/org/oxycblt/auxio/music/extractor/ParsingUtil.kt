@@ -52,7 +52,6 @@ fun String.parseYear() = toIntOrNull()?.toDate()
 fun String.parseTimestamp() = Date.from(this)
 
 private val SEPARATOR_REGEX_CACHE = mutableMapOf<String, Regex>()
-private val ESCAPE_REGEX_CACHE = mutableMapOf<String, Regex>()
 
 /**
  * Fully parse a multi-value tag.
@@ -80,18 +79,10 @@ fun String.maybeParseSeparators(settings: Settings): List<String> {
     // Try to cache compiled regexes for particular separator combinations.
     val regex =
         synchronized(SEPARATOR_REGEX_CACHE) {
-            SEPARATOR_REGEX_CACHE.getOrPut(separators) { Regex("[^\\\\][$separators]") }
+            SEPARATOR_REGEX_CACHE.getOrPut(separators) { Regex("[$separators]") }
         }
 
-    val escape =
-        synchronized(ESCAPE_REGEX_CACHE) {
-            ESCAPE_REGEX_CACHE.getOrPut(separators) { Regex("\\\\[$separators]") }
-        }
-
-    return regex.split(this).map { value ->
-        // Convert escaped separators to their correct value
-        escape.replace(value) { match -> match.value.substring(1) }.trim()
-    }
+    return regex.split(this).map { it.trim() }
 }
 
 /** Parse a multi-value tag into a [ReleaseType], handling separators in the process. */

@@ -240,7 +240,7 @@ class DetailViewModel(application: Application) :
     private fun refreshArtistData(artist: Artist) {
         logD("Refreshing artist data")
         val data = mutableListOf<Item>(artist)
-        val albums = Sort(Sort.Mode.ByYear, false).albums(artist.albums)
+        val albums = Sort(Sort.Mode.ByDate, false).albums(artist.albums)
 
         val byReleaseGroup =
             albums.groupBy {
@@ -265,8 +265,12 @@ class DetailViewModel(application: Application) :
             data.addAll(entry.value)
         }
 
-        data.add(SortHeader(R.string.lbl_songs))
-        data.addAll(artistSort.songs(artist.songs))
+        // Artists may not be linked to any songs, only include a header entry if we have any.
+        if (artist.songs.isNotEmpty()) {
+            data.add(SortHeader(R.string.lbl_songs))
+            data.addAll(artistSort.songs(artist.songs))
+        }
+
         _artistData.value = data.toList()
     }
 

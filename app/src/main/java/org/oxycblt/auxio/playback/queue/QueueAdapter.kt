@@ -140,7 +140,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
     fun bind(item: Song, listener: QueueItemListener) {
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)
-        binding.songInfo.text = item.resolveIndividualArtistName(binding.context)
+        binding.songInfo.text = item.resolveArtistContents(binding.context)
 
         binding.background.isInvisible = true
 

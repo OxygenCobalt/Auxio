@@ -113,7 +113,7 @@ private fun RemoteViews.applyMeta(
     applyCover(context, state)
 
     setTextViewText(R.id.widget_song, state.song.resolveName(context))
-    setTextViewText(R.id.widget_artist, state.song.resolveIndividualArtistName(context))
+    setTextViewText(R.id.widget_artist, state.song.resolveArtistContents(context))
 
     return this
 }

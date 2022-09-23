@@ -102,7 +102,7 @@ class MusicStore private constructor() {
          * not [T], null will be returned.
          */
         @Suppress("UNCHECKED_CAST")
-        fun <T : Music> find(uid: Music.UID): T? = uidMap[uid] as? T
+        fun <T : Music> find(uid: Music.UID) = uidMap[uid] as? T
 
         /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(song: Song) = find<Song>(song.uid)

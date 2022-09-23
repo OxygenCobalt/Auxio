@@ -52,7 +52,9 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
 
     override fun onBindingCreated(binding: DialogSeparatorsBinding, savedInstanceState: Bundle?) {
         for (child in binding.separatorGroup.children) {
-            (child as MaterialCheckBox).isChecked = false
+            if (child is MaterialCheckBox) {
+                child.isChecked = false
+            }
         }
 
         settings.separators?.forEach {

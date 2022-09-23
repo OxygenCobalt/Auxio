@@ -105,8 +105,6 @@
     <string name="lbl_go_genre">Go to genre</string>
     <string name="lbl_go_artist">Go to artist</string>
     <string name="lbl_go_album">Go to album</string>
-    <string name="lbl_play_genre">Play from genre</string>
-    <string name="lbl_play_artist">Play from artist</string>
     <string name="lbl_song_detail">View properties</string>
 
     <string name="lbl_props">Song properties</string>
@@ -182,7 +180,7 @@
     <!-- Skip to next (song) -->
     <string name="set_bar_action_next">Skip to next</string>
     <string name="set_bar_action_repeat">Repeat mode</string>
-    <string name="set_bar_action_shuffle">@string/lbl_shuffle</string>
+    <string name="set_bar_action_shuffle" translatable="false">@string/lbl_shuffle</string>
     <string name="set_alt_action">Use alternate notification action</string>
     <string name="set_alt_repeat">Prefer repeat mode action</string>
     <string name="set_alt_shuffle">Prefer shuffle action</string>
@@ -206,8 +204,7 @@
     <string name="set_playback_mode_none">Play from shown item</string>
     <string name="set_playback_mode_all">Play from all songs</string>
     <string name="set_playback_mode_album">Play from album</string>
-    <string name="set_playback_mode_artist">@string/lbl_play_artist</string>
-    <string name="set_playback_mode_genre">@string/lbl_play_genre</string>
+    <string name="set_playback_mode_artist">Play from artist</string>
     <string name="set_keep_shuffle">Remember shuffle</string>
     <string name="set_keep_shuffle_desc">Keep shuffle on when playing a new song</string>
     <string name="set_rewind_prev">Rewind before skipping back</string>
@@ -237,7 +234,8 @@
     <string name="set_dirs_mode_include">Include</string>
     <string name="set_dirs_mode_include_desc">Music will <b>only</b> be loaded from the folders you add.</string>
     <string name="set_separators">Multi-value separators</string>
-    <string name="set_separators_desc">Configure the characters that denote multiple values in tags</string>
+    <string name="set_separators_desc">Configure characters that denote multiple tag values</string>
+    <string name="set_separators_warning">Warning: Using this setting may result in some tags being incorrectly interpreted as having multiple values.</string>
     <string name="set_separators_comma">Comma (,)</string>
     <string name="set_separators_semicolon">Semicolon (;)</string>
     <string name="set_separators_slash">Slash (/)</string>

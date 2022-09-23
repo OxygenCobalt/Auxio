@@ -108,22 +108,8 @@ private constructor(
     private val genre: Genre
 ) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
-        // Genre logic is the most complicated, as we want to ensure album cover variation (i.e
-        // all four covers shouldn't be from the same artist) while also still leveraging mosaics
-        // whenever possible. So, if there are more than four distinct artists in a genre, make
-        // it so that one artist only adds one album cover to the mosaic. Otherwise, use order
-        // albums normally.
-        val artists = genre.songs.groupBy { it.album.artist }.keys
-        val albums =
-            Sort(Sort.Mode.ByName, true).albums(genre.songs.groupBy { it.album }.keys).run {
-                if (artists.size > 4) {
-                    distinctBy { it.artist.rawName }
-                } else {
-                    this
-                }
-            }
+        val results = genre.albums.mapAtMost(4) { fetchArt(context, it) }
 
-        val results = albums.mapAtMost(4) { album -> fetchArt(context, album) }
         return createMosaic(context, results, size)
     }
 

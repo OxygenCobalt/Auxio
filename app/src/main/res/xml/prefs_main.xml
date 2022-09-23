@@ -91,7 +91,7 @@
     <PreferenceCategory app:title="@string/set_behavior">
 
         <org.oxycblt.auxio.settings.IntListPreference
-            app:defaultValue="@integer/play_mode_songs"
+            app:defaultValue="@integer/music_mode_songs"
             app:entries="@array/entries_library_song_playback_mode"
             app:entryValues="@array/values_library_song_playback_mode"
             app:key="@string/set_key_library_song_playback_mode"
@@ -99,7 +99,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <org.oxycblt.auxio.settings.IntListPreference
-            app:defaultValue="@integer/play_mode_none"
+            app:defaultValue="@integer/music_mode_none"
             app:entries="@array/entries_detail_song_playback_mode"
             app:entryValues="@array/values_detail_song_playback_mode"
             app:key="@string/set_key_detail_song_playback_mode"

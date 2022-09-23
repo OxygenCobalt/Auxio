@@ -23,15 +23,12 @@ import android.content.Context
 import android.os.Parcelable
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
-import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.Date.Companion.from
 import org.oxycblt.auxio.music.extractor.parseId3GenreNames
 import org.oxycblt.auxio.music.extractor.parseMultiValue
 import org.oxycblt.auxio.music.extractor.parseReleaseType
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.util.inRangeOrNull
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import java.security.MessageDigest
@@ -39,7 +36,6 @@ import java.text.CollationKey
 import java.text.Collator
 import java.util.UUID
 import kotlin.math.max
-import kotlin.math.min
 
 // --- MUSIC MODELS ---
 
@@ -200,10 +196,6 @@ sealed class Music : Item {
 sealed class MusicParent : Music() {
     /** The songs that this parent owns. */
     abstract val songs: List<Song>
-
-    override fun _finalize() {
-        check(songs.isNotEmpty()) { "Invalid parent: No songs" }
-    }
 }
 
 /**
@@ -214,7 +206,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     override val uid = UID.hashed(MusicMode.SONGS) {
         // Song UIDs are based on the raw data without parsing so that they remain
         // consistent across music setting changes. Parents are not held up to the
-        // same standard since grouping is directly linked to settings.
+        // same standard since grouping is already inherently linked to settings.
         update(raw.name)
         update(raw.albumName)
         update(raw.date)
@@ -274,41 +266,63 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
 
     private var _album: Album? = null
 
-    /** The album of this song. */
+    /**
+     * The album of this song. Every song is guaranteed to have one and only one album,
+     * with a "directory" album being used if no album tag can be found.
+     */
     val album: Album
         get() = unlikelyToBeNull(_album)
 
-    // TODO: Multi-artist support
-    // private val _artists: MutableList<Artist> = mutableListOf()
+    private val artistNames = raw.artistNames.parseMultiValue(settings)
 
-    private val artistName = raw.artistNames.parseMultiValue(settings)
-        .joinToString().ifEmpty { null }
+    private val albumArtistNames = raw.albumArtistNames.parseMultiValue(settings)
 
-    private val albumArtistName = raw.albumArtistNames.parseMultiValue(settings)
-        .joinToString().ifEmpty { null }
+    private val artistSortNames = raw.artistSortNames.parseMultiValue(settings)
 
-    private val artistSortName = raw.artistSortNames.parseMultiValue(settings)
-        .joinToString().ifEmpty { null }
+    private val albumArtistSortNames = raw.albumArtistSortNames.parseMultiValue(settings)
 
-    private val albumArtistSortName = raw.albumArtistSortNames.parseMultiValue(settings)
-        .joinToString().ifEmpty { null }
-
-    /**
-     * Resolve the artist name for this song in particular. First uses the artist tag, and then
-     * falls back to the album artist tag (i.e parent artist name)
-     */
-    fun resolveIndividualArtistName(context: Context) =
-        artistName ?: album.artist.resolveName(context)
-
-    fun areArtistContentsTheSame(other: Song): Boolean {
-        if (other.artistName != null && artistName != null) {
-            return other.artistName == artistName
-        }
-
-        return album.artist.rawName == other.album.artist.rawName
+    private val rawArtists = artistNames.mapIndexed { i, name ->
+        Artist.Raw(name, artistSortNames.getOrNull(i))
     }
 
-    private val _genres: MutableList<Genre> = mutableListOf()
+    private val rawAlbumArtists = albumArtistNames.mapIndexed { i, name ->
+        Artist.Raw(name, albumArtistSortNames.getOrNull(i))
+    }
+
+    private val _artists = mutableListOf<Artist>()
+
+    /**
+     * The artists of this song. Most often one, but there could be multiple. These artists
+     * are derived from the artists tag and not the album artists tag, so they may differ from
+     * the artists of the album.
+     */
+    val artists: List<Artist>
+        get() = _artists
+
+    /**
+     * Resolve the artists of this song into a human-readable name. First tries to use artist
+     * tags, then falls back to album artist tags.
+     */
+    fun resolveArtistContents(context: Context) =
+        artists.joinToString { it.resolveName(context) }
+
+    /**
+     * Utility method for recyclerview diffing that checks if resolveArtistContents is the
+     * same without a context.
+     */
+    fun areArtistContentsTheSame(other: Song): Boolean {
+        for (i in 0 until max(artists.size, other.artists.size)) {
+            val a = artists.getOrNull(i) ?: return false
+            val b = other.artists.getOrNull(i) ?: return false
+            if (a.rawName != b.rawName) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    private val _genres = mutableListOf<Genre>()
 
     /**
      * The genres of this song. Most often one, but there could be multiple. There will always be at
@@ -317,7 +331,19 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     val genres: List<Genre>
         get() = _genres
 
+    /**
+     * Resolve the genres of the song into a human-readable string.
+     */
+    fun resolveGenreContents(context: Context) = genres.joinToString { it.resolveName(context) }
+
     // --- INTERNAL FIELDS ---
+
+    val _rawGenres = raw.genreNames.parseId3GenreNames(settings)
+        .map { Genre.Raw(it) }.ifEmpty { listOf(Genre.Raw(null)) }
+
+    val _rawArtists = rawArtists.ifEmpty { rawAlbumArtists }.ifEmpty {
+        listOf(Artist.Raw(null, null))
+    }
 
     val _rawAlbum =
         Album.Raw(
@@ -325,19 +351,15 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
             name = requireNotNull(raw.albumName) { "Invalid raw: No album name" },
             sortName = raw.albumSortName,
             releaseType = raw.albumReleaseType.parseReleaseType(settings),
-            rawArtist =
-            if (albumArtistName != null) {
-                Artist.Raw(albumArtistName, albumArtistSortName)
-            } else {
-                Artist.Raw(artistName, artistSortName)
-            }
+            rawArtists = rawAlbumArtists.ifEmpty { rawArtists }.ifEmpty { listOf(Artist.Raw(null, null)) }
         )
-
-    val _rawGenres = raw.genreNames.parseId3GenreNames(settings)
-        .map { Genre.Raw(it) }.ifEmpty { listOf(Genre.Raw(null)) }
 
     fun _link(album: Album) {
         _album = album
+    }
+
+    fun _link(artist: Artist) {
+        _artists.add(artist)
     }
 
     fun _link(genre: Genre) {
@@ -345,8 +367,11 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     }
 
     override fun _finalize() {
-        (checkNotNull(_album) { "Malformed song: Album is null" })
+        checkNotNull(_album) { "Malformed song: No album" }
+        check(_artists.isNotEmpty()) { "Malformed song: No artists" }
+        Sort(Sort.Mode.ByName, true).artistsInPlace(_artists)
         check(_genres.isNotEmpty()) { "Malformed song: No genres" }
+        Sort(Sort.Mode.ByName, true).genresInPlace(_genres)
     }
 
     class Raw
@@ -387,7 +412,7 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
         // I don't know if there is any situation where an artist will have two albums with
         // the exact same name, but if there is, I would love to know.
         update(raw.name)
-        update(raw.rawArtist.name)
+        update(raw.rawArtists.map { it.name })
     }
 
     override val rawName = raw.name
@@ -416,23 +441,33 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     /** The earliest date a song in this album was added. */
     val dateAdded: Long
 
-    private var _artist: Artist? = null
+    /**
+     * The artists of this album. Usually one, but there may be more. These are derived from
+     * the album artist first, so they may differ from the song artists.
+     */
+    private val _artists = mutableListOf<Artist>()
+    val artists: List<Artist> get() = _artists
 
-    /** The parent artist of this album. */
-    val artist: Artist
-        get() = unlikelyToBeNull(_artist)
+    /**
+     * Resolve the artists of this album in a human-readable manner.
+     */
+    fun resolveArtistContents(context: Context) =
+        artists.joinToString { it.resolveName(context) }
 
-    // --- INTERNAL FIELDS ---
+    /**
+     * Utility for RecyclerView differs to check if resolveArtistContents is the same without
+     * a context.
+     */
+    fun areArtistContentsTheSame(other: Album): Boolean {
+        for (i in 0 until max(artists.size, other.artists.size)) {
+            val a = artists.getOrNull(i) ?: return false
+            val b = other.artists.getOrNull(i) ?: return false
+            if (a.rawName != b.rawName) {
+                return false
+            }
+        }
 
-    val _rawArtist = raw.rawArtist
-
-    fun _link(artist: Artist) {
-        _artist = artist
-    }
-
-    override fun _finalize() {
-        super._finalize()
-        checkNotNull(_artist) { "Invalid album: Artist is null " }
+        return true
     }
 
     init {
@@ -462,32 +497,43 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
         dateAdded = earliestDateAdded
     }
 
+    // --- INTERNAL FIELDS ---
+
+    val _rawArtists = raw.rawArtists
+
+    fun _link(artist: Artist) {
+        _artists.add(artist)
+    }
+
+    override fun _finalize() {
+        check(songs.isNotEmpty()) { "Malformed album: Empty" }
+        check(_artists.isNotEmpty()) { "Malformed album: No artists" }
+        Sort(Sort.Mode.ByName, true).artistsInPlace(_artists)
+    }
+
     class Raw(
         val mediaStoreId: Long,
         val name: String,
         val sortName: String?,
         val releaseType: ReleaseType?,
-        val rawArtist: Artist.Raw
+        val rawArtists: List<Artist.Raw>
     ) {
-        private val hashCode = 31 * name.lowercase().hashCode() + rawArtist.hashCode()
+        private val hashCode = 31 * name.lowercase().hashCode() + rawArtists.hashCode()
 
         override fun hashCode() = hashCode
 
         override fun equals(other: Any?) =
-            other is Raw && name.equals(other.name, true) && rawArtist == other.rawArtist
+            other is Raw && name.equals(other.name, true) && rawArtists == other.rawArtists
     }
 }
 
 /**
- * An artist. This is derived from the album artist first, and then the normal artist second.
+ * An abstract artist. This is derived from both album artist values and artist values in
+ * albums and songs respectively.
  * @author OxygenCobalt
  */
 class Artist
-constructor(
-    raw: Raw,
-    /** The albums of this artist. */
-    val albums: List<Album>
-) : MusicParent() {
+constructor(raw: Raw, songAlbums: List<Music>) : MusicParent() {
     override val uid = UID.hashed(MusicMode.ARTISTS) { update(raw.name) }
 
     override val rawName = raw.name
@@ -498,22 +544,71 @@ constructor(
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
 
-    private val _songs = mutableListOf<Song>()
-    override val songs = _songs
+    /**
+     * The songs of this artist. This might be empty.
+     */
+    override val songs: List<Song>
 
-    /** The total duration of songs in this artist, in millis. */
-    val durationMs: Long
+    /** The total duration of songs in this artist, in millis. Null if there are no songs. */
+    val durationMs: Long?
 
-    init {
-        var totalDuration = 0L
+    /** The albums of this artist. This will never be empty. */
+    val albums: List<Album>
 
-        for (album in albums) {
-            album._link(this)
-            _songs.addAll(album.songs)
-            totalDuration += album.durationMs
+    private lateinit var genres: List<Genre>
+
+    /**
+     * Resolve the combined genres of this artist into a human-readable string.
+     */
+    fun resolveGenreContents(context: Context) = genres.joinToString { it.resolveName(context) }
+
+    /**
+     * Utility for RecyclerView differs to check if resolveGenreContents is the same without
+     * a context.
+     */
+    fun areGenreContentsTheSame(other: Artist): Boolean {
+        for (i in 0 until max(genres.size, other.genres.size)) {
+            val a = genres.getOrNull(i) ?: return false
+            val b = other.genres.getOrNull(i) ?: return false
+            if (a.rawName != b.rawName) {
+                return false
+            }
         }
 
-        durationMs = totalDuration
+        return true
+    }
+
+    init {
+        val distinctSongs = mutableSetOf<Song>()
+        val distinctAlbums = mutableSetOf<Album>()
+
+        for (music in songAlbums) {
+            when (music) {
+                is Song -> {
+                    music._link(this)
+                    distinctSongs.add(music)
+                    distinctAlbums.add(music.album)
+                }
+
+                is Album -> {
+                    music._link(this)
+                    distinctAlbums.add(music)
+                }
+
+                else -> error("Unexpected input music ${music::class.simpleName}")
+            }
+        }
+
+        songs = distinctSongs.toList()
+        albums = distinctAlbums.toList()
+        durationMs = songs.sumOf { it.durationMs }.nonZeroOrNull()
+    }
+
+    override fun _finalize() {
+        check(songs.isNotEmpty() || albums.isNotEmpty()) { "Malformed artist: Empty" }
+
+        genres = Sort(Sort.Mode.ByName, true).genres(songs.flatMapTo(mutableSetOf()) { it.genres })
+            .sortedByDescending { genre -> songs.count { it.genres.contains(genre) } }
     }
 
     class Raw(val name: String?, val sortName: String?) {
@@ -550,15 +645,29 @@ class Genre constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     /** The total duration of the songs in this genre, in millis. */
     val durationMs: Long
 
+    /** The albums of this genre. */
+    val albums: List<Album>
+
     init {
         var totalDuration = 0L
+        val distinctAlbums = mutableSetOf<Album>()
 
         for (song in songs) {
             song._link(this)
+            distinctAlbums.add(song.album)
             totalDuration += song.durationMs
         }
 
         durationMs = totalDuration
+
+        albums = Sort(Sort.Mode.ByName, true).albums(distinctAlbums)
+            .sortedByDescending { album ->
+                album.songs.count { it.genres.contains(this) }
+            }
+    }
+
+    override fun _finalize() {
+        check(songs.isNotEmpty()) { "Malformed genre: Empty" }
     }
 
     class Raw(val name: String?) {
@@ -591,7 +700,7 @@ fun MessageDigest.update(date: Date?) {
 }
 
 /** Update the digest using a list of strings. */
-fun MessageDigest.update(strings: List<String>) {
+fun MessageDigest.update(strings: List<String?>) {
     strings.forEach(::update)
 }
 
@@ -655,264 +764,4 @@ fun ByteArray.toUuid(): UUID {
             .or(get(14).toLong().and(0xFF).shl(8))
             .or(get(15).toLong().and(0xFF))
     )
-}
-
-/**
- * An ISO-8601/RFC 3339 Date.
- *
- * Unlike a typical Date within the standard library, this class just represents the ID3v2/Vorbis
- * date format, which is largely assumed to be a subset of ISO-8601. No validation outside of format
- * validation is done.
- *
- * The reasoning behind Date is that Auxio cannot trust any kind of metadata date to actually make
- * sense in a calendar, due to bad tagging, locale-specific issues, or simply from the limited
- * nature of tag formats. Thus, it's better to use an analogous data structure that will not mangle
- * or reject valid-ish dates.
- *
- * Date instances are immutable and their implementation is hidden. To instantiate one, use [from].
- * The string representation of a Date is RFC 3339, with granular position depending on the presence
- * of particular tokens.
- *
- * Please, **Do not use this for anything important related to time.** I cannot stress this enough.
- * This code will blow up if you try to do that.
- *
- * @author OxygenCobalt
- */
-class Date private constructor(private val tokens: List<Int>) : Comparable<Date> {
-    init {
-        if (BuildConfig.DEBUG) {
-            // Last-ditch sanity check to catch format bugs that might slip through
-            check(tokens.size in 1..6) { "There must be 1-6 date tokens" }
-            check(tokens.slice(0..min(tokens.lastIndex, 2)).all { it > 0 }) {
-                "All date tokens must be non-zero "
-            }
-            check(tokens.slice(1..tokens.lastIndex).all { it < 100 }) {
-                "All non-year tokens must be two digits"
-            }
-        }
-    }
-
-    val year = tokens[0]
-
-    /** Resolve the year field in a way suitable for the UI. */
-    fun resolveYear(context: Context) = context.getString(R.string.fmt_number, year)
-
-    private val month = tokens.getOrNull(1)
-
-    private val day = tokens.getOrNull(2)
-
-    private val hour = tokens.getOrNull(3)
-
-    private val minute = tokens.getOrNull(4)
-
-    private val second = tokens.getOrNull(5)
-
-    override fun hashCode() = tokens.hashCode()
-
-    override fun equals(other: Any?) = other is Date && tokens == other.tokens
-
-    override fun compareTo(other: Date): Int {
-        val comparator = Sort.Mode.NullableComparator.INT
-
-        for (i in 0..(max(tokens.lastIndex, other.tokens.lastIndex))) {
-            val result = comparator.compare(tokens.getOrNull(i), other.tokens.getOrNull(i))
-            if (result != 0) {
-                return result
-            }
-        }
-
-        return 0
-    }
-
-    override fun toString() = StringBuilder().appendDate().toString()
-
-    private fun StringBuilder.appendDate(): StringBuilder {
-        append(year.toFixedString(4))
-        append("-${(month ?: return this).toFixedString(2)}")
-        append("-${(day ?: return this).toFixedString(2)}")
-        append("T${(hour ?: return this).toFixedString(2)}")
-        append(":${(minute ?: return this.append('Z')).toFixedString(2)}")
-        append(":${(second ?: return this.append('Z')).toFixedString(2)}")
-        return this.append('Z')
-    }
-
-    private fun Int.toFixedString(len: Int) = toString().padStart(len, '0')
-
-    companion object {
-        private val ISO8601_REGEX =
-            Regex(
-                """^(\d{4,})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2}))?)?)?)?)?$"""
-            )
-
-        fun from(year: Int) = fromTokens(listOf(year))
-
-        fun from(year: Int, month: Int, day: Int) = fromTokens(listOf(year, month, day))
-
-        fun from(year: Int, month: Int, day: Int, hour: Int, minute: Int) =
-            fromTokens(listOf(year, month, day, hour, minute))
-
-        fun from(timestamp: String): Date? {
-            val groups =
-                (ISO8601_REGEX.matchEntire(timestamp) ?: return null)
-                    .groupValues
-                    .mapIndexedNotNull { index, s -> if (index % 2 != 0) s.toIntOrNull() else null }
-
-            return fromTokens(groups)
-        }
-
-        private fun fromTokens(tokens: List<Int>): Date? {
-            val out = mutableListOf<Int>()
-            validateTokens(tokens, out)
-            if (out.isEmpty()) {
-                return null
-            }
-
-            return Date(out)
-        }
-
-        private fun validateTokens(src: List<Int>, dst: MutableList<Int>) {
-            dst.add(src.getOrNull(0)?.nonZeroOrNull() ?: return)
-            dst.add(src.getOrNull(1)?.inRangeOrNull(1..12) ?: return)
-            dst.add(src.getOrNull(2)?.inRangeOrNull(1..31) ?: return)
-            dst.add(src.getOrNull(3)?.inRangeOrNull(0..23) ?: return)
-            dst.add(src.getOrNull(4)?.inRangeOrNull(0..59) ?: return)
-            dst.add(src.getOrNull(5)?.inRangeOrNull(0..59) ?: return)
-        }
-    }
-}
-
-/**
- * Represents the type of release a particular album is.
- *
- * This can be used to differentiate between album sub-types like Singles, EPs, Compilations, and
- * others. Internally, it operates on a reduced version of the MusicBrainz release type
- * specification. It can be extended if there is demand.
- *
- * @author OxygenCobalt
- */
-sealed class ReleaseType {
-    abstract val refinement: Refinement?
-    abstract val stringRes: Int
-
-    data class Album(override val refinement: Refinement?) : ReleaseType() {
-        override val stringRes: Int
-            get() =
-                when (refinement) {
-                    null -> R.string.lbl_album
-                    Refinement.LIVE -> R.string.lbl_album_live
-                    Refinement.REMIX -> R.string.lbl_album_remix
-                }
-    }
-
-    data class EP(override val refinement: Refinement?) : ReleaseType() {
-        override val stringRes: Int
-            get() =
-                when (refinement) {
-                    null -> R.string.lbl_ep
-                    Refinement.LIVE -> R.string.lbl_ep_live
-                    Refinement.REMIX -> R.string.lbl_ep_remix
-                }
-    }
-
-    data class Single(override val refinement: Refinement?) : ReleaseType() {
-        override val stringRes: Int
-            get() =
-                when (refinement) {
-                    null -> R.string.lbl_single
-                    Refinement.LIVE -> R.string.lbl_single_live
-                    Refinement.REMIX -> R.string.lbl_single_remix
-                }
-    }
-
-    data class Compilation(override val refinement: Refinement?) : ReleaseType() {
-        override val stringRes: Int
-            get() = when (refinement) {
-                null -> R.string.lbl_compilation
-                Refinement.LIVE -> R.string.lbl_compilation_live
-                Refinement.REMIX -> R.string.lbl_compilation_remix
-            }
-    }
-
-    object Soundtrack : ReleaseType() {
-        override val refinement: Refinement?
-            get() = null
-
-        override val stringRes: Int
-            get() = R.string.lbl_soundtrack
-    }
-
-    object Mix : ReleaseType() {
-        override val refinement: Refinement?
-            get() = null
-
-        override val stringRes: Int
-            get() = R.string.lbl_mix
-    }
-
-    object Mixtape : ReleaseType() {
-        override val refinement: Refinement?
-            get() = null
-
-        override val stringRes: Int
-            get() = R.string.lbl_mixtape
-    }
-
-    /**
-     * Roughly analogous to the MusicBrainz "live" and "remix" secondary types. Unlike the main
-     * types, these only modify an existing, primary type. They are not implemented for secondary
-     * types, however they may be expanded to compilations in the future.
-     */
-    enum class Refinement {
-        LIVE,
-        REMIX
-    }
-
-    companion object {
-        // Note: The parsing code is extremely clever in order to reduce duplication. It's
-        // better just to read the specification behind release types than follow this code.
-
-        fun parse(types: List<String>): ReleaseType? {
-            val primary = types.getOrNull(0) ?: return null
-
-            // Primary types should be the first one in sequence. The spec makes no mention of
-            // whether primary types are a pre-requisite for secondary types, so we assume that
-            // it isn't. There are technically two other types, but those are unrelated to music
-            // and thus we don't support them.
-            return when {
-                primary.equals("album", true) -> types.parseSecondaryTypes(1) { Album(it) }
-                primary.equals("ep", true) -> types.parseSecondaryTypes(1) { EP(it) }
-                primary.equals("single", true) -> types.parseSecondaryTypes(1) { Single(it) }
-                else -> types.parseSecondaryTypes(0) { Album(it) }
-            }
-        }
-
-        private inline fun List<String>.parseSecondaryTypes(
-            secondaryIdx: Int,
-            convertRefinement: (Refinement?) -> ReleaseType
-        ): ReleaseType {
-            val secondary = getOrNull(secondaryIdx)
-
-            return if (secondary.equals("compilation", true)) {
-                // Secondary type is a compilation, actually parse the third type
-                // and put that into a compilation if needed.
-                parseSecondaryTypeImpl(getOrNull(secondaryIdx + 1)) { Compilation(it) }
-            } else {
-                // Secondary type is a plain value, use the original values given.
-                parseSecondaryTypeImpl(secondary, convertRefinement)
-            }
-        }
-
-        private inline fun parseSecondaryTypeImpl(
-            type: String?,
-            convertRefinement: (Refinement?) -> ReleaseType
-        ) = when {
-            // Parse all the types that have no children
-            type.equals("soundtrack", true) -> Soundtrack
-            type.equals("mixtape/street", true) -> Mixtape
-            type.equals("dj-mix", true) -> Mix
-            type.equals("live", true) -> convertRefinement(Refinement.LIVE)
-            type.equals("remix", true) -> convertRefinement(Refinement.REMIX)
-            else -> convertRefinement(null)
-        }
-    }
 }

@@ -79,14 +79,14 @@ class SongListFragment : HomeListFragment<Song>() {
             // Name -> Use name
             is Sort.Mode.ByName -> song.collationKey?.run { sourceString.first().uppercase() }
 
-            // Artist -> Use Artist Name
-            is Sort.Mode.ByArtist -> song.album.artist.collationKey?.run { sourceString.first().uppercase() }
+            // Artist -> Use name of first artist
+            is Sort.Mode.ByArtist -> song.album.artists[0].collationKey?.run { sourceString.first().uppercase() }
 
             // Album -> Use Album Name
             is Sort.Mode.ByAlbum -> song.album.collationKey?.run { sourceString.first().uppercase() }
 
             // Year -> Use Full Year
-            is Sort.Mode.ByYear -> song.album.date?.resolveYear(requireContext())
+            is Sort.Mode.ByDate -> song.album.date?.resolveYear(requireContext())
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> song.durationMs.formatDurationMs(false)
@@ -115,16 +115,18 @@ class SongListFragment : HomeListFragment<Song>() {
         when (settings.libPlaybackMode) {
             MusicMode.SONGS -> playbackModel.playFromAll(item)
             MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-            MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
-            MusicMode.GENRES -> if (item.genres.size > 1) {
-                navModel.mainNavigateTo(
-                    MainNavigationAction.Directions(
-                        MainFragmentDirections.showGenrePickerDialog(item.uid, PickerMode.PLAY)
+            MusicMode.ARTISTS -> {
+                if (item.artists.size == 1) {
+                    playbackModel.playFromArtist(item, item.artists[0])
+                } else {
+                    navModel.mainNavigateTo(
+                        MainNavigationAction.Directions(
+                            MainFragmentDirections.actionPickArtist(item.uid, PickerMode.PLAY)
+                        )
                     )
-                )
-            } else {
-                playbackModel.playFromGenre(item, item.genres[0])
+                }
             }
+            else -> error("Unexpected playback mode: ${settings.libPlaybackMode}")
         }
     }
 

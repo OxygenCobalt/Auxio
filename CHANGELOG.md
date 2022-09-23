@@ -1,10 +1,15 @@
 # Changelog
 
-## dev
+## 3.0.0
 
 #### What's New
-- Added support for songs with multiple genres
-- Reworked music hashing to be even more reliable (Will wipe playback state)
+- Massively reworked music loading system:
+	- Auxio now supports multiple artists
+	- Auxio now supports multiple genres
+	- Artists and album artists are now both given equal importance in the UI
+	- Made music hashing rely on the more reliable MD5
+	- **This may impact your library.** Instructions on how to update your library to result in a good
+	artist experience will be added to the FAQ.
 
 #### What's Improved
 - Sorting now takes accented characters into account
@@ -17,9 +22,11 @@
 - Fixed issue where the playback progress would continue in the notification even if
 audio focus was lost
 - Fixed issue where the app would crash if a song menu in the genre UI was opened
+- Fixed issue where the artist name would not be shown in the OS audio switcher menu
 
 #### What's Changed
 - Ignore MediaStore tags is now on by default
+- Removed the "Play from genre" option in the library/detail playback mode settings
 
 #### Dev/Meta
 - Completed migration to reactive playback system

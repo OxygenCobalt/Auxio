@@ -33,6 +33,7 @@ import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.msToDs
+import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.ui.MainNavigationAction
@@ -87,11 +88,11 @@ class PlaybackPanelFragment :
         }
 
         binding.playbackArtist.setOnClickListener {
-            playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album.artist) }
+            playbackModel.song.value?.let { showCurrentArtist() }
         }
 
         binding.playbackAlbum.setOnClickListener {
-            playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album) }
+            playbackModel.song.value?.let { showCurrentAlbum() }
         }
 
         binding.playbackSeekBar.callback = this
@@ -138,11 +139,11 @@ class PlaybackPanelFragment :
                 true
             }
             R.id.action_go_artist -> {
-                playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album.artist) }
+                showCurrentArtist()
                 true
             }
             R.id.action_go_album -> {
-                playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album) }
+                showCurrentAlbum()
                 true
             }
             R.id.action_song_detail -> {
@@ -166,12 +167,11 @@ class PlaybackPanelFragment :
 
     private fun updateSong(song: Song?) {
         if (song == null) return
-
         val binding = requireBinding()
         val context = requireContext()
         binding.playbackCover.bind(song)
         binding.playbackSong.text = song.resolveName(context)
-        binding.playbackArtist.text = song.resolveIndividualArtistName(context)
+        binding.playbackArtist.text = song.resolveArtistContents(context)
         binding.playbackAlbum.text = song.album.resolveName(context)
         binding.playbackSeekBar.durationDs = song.durationMs.msToDs()
     }
@@ -179,7 +179,6 @@ class PlaybackPanelFragment :
     private fun updateParent(parent: MusicParent?) {
         val binding = requireBinding()
         val context = requireContext()
-
         binding.playbackToolbar.subtitle =
             parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs)
     }
@@ -201,5 +200,22 @@ class PlaybackPanelFragment :
 
     private fun updateShuffled(isShuffled: Boolean) {
         requireBinding().playbackShuffle.isActivated = isShuffled
+    }
+
+    private fun showCurrentArtist() {
+        val song = playbackModel.song.value ?: return
+        if (song.artists.size == 1) {
+            navModel.exploreNavigateTo(song.artists[0])
+        } else {
+            navModel.mainNavigateTo(
+                MainNavigationAction.Directions(
+                    MainFragmentDirections.actionPickArtist(song.uid, PickerMode.SHOW)
+                )
+            )
+        }
+    }
+    private fun showCurrentAlbum() {
+        val song = playbackModel.song.value ?: return
+        navModel.exploreNavigateTo(song.album)
     }
 }

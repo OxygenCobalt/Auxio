@@ -114,7 +114,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
         binding.detailName.text = item.resolveName(binding.context)
 
         binding.detailSubhead.apply {
-            text = item.artist.resolveName(context)
+            text = item.resolveArtistContents(context)
             setOnClickListener { listener.onNavigateToArtist() }
         }
 
@@ -144,7 +144,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
             object : SimpleItemCallback<Album>() {
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
-                        oldItem.artist.rawName == newItem.artist.rawName &&
+                        oldItem.areArtistContentsTheSame(newItem) &&
                         oldItem.date == newItem.date &&
                         oldItem.songs.size == newItem.songs.size &&
                         oldItem.durationMs == newItem.durationMs &&

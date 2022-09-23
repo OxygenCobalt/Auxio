@@ -80,14 +80,12 @@
         <item>@string/set_playback_mode_all</item>
         <item>@string/set_playback_mode_artist</item>
         <item>@string/set_playback_mode_album</item>
-        <item>@string/set_playback_mode_genre</item>
     </string-array>
 
     <integer-array name="values_library_song_playback_mode">
-        <item>@integer/play_mode_songs</item>
-        <item>@integer/play_mode_artist</item>
-        <item>@integer/play_mode_album</item>
-        <item>@integer/play_mode_genre</item>
+        <item>@integer/music_mode_songs</item>
+        <item>@integer/music_mode_artist</item>
+        <item>@integer/music_mode_album</item>
     </integer-array>
 
     <string-array name="entries_detail_song_playback_mode">
@@ -95,15 +93,13 @@
         <item>@string/set_playback_mode_all</item>
         <item>@string/set_playback_mode_artist</item>
         <item>@string/set_playback_mode_album</item>
-        <item>@string/set_playback_mode_genre</item>
     </string-array>
 
     <integer-array name="values_detail_song_playback_mode">
-        <item>@integer/play_mode_none</item>
-        <item>@integer/play_mode_songs</item>
-        <item>@integer/play_mode_artist</item>
-        <item>@integer/play_mode_album</item>
-        <item>@integer/play_mode_genre</item>
+        <item>@integer/music_mode_none</item>
+        <item>@integer/music_mode_songs</item>
+        <item>@integer/music_mode_artist</item>
+        <item>@integer/music_mode_album</item>
     </integer-array>
 
     <string-array name="entries_replay_gain">
@@ -126,11 +122,10 @@
     <integer name="bar_action_repeat">0xA11A</integer>
     <integer name="bar_action_shuffle">0xA11B</integer>
 
-    <integer name="play_mode_none">-2147483648</integer>
-    <integer name="play_mode_genre">0xA108</integer>
-    <integer name="play_mode_artist">0xA109</integer>
-    <integer name="play_mode_album">0xA10A</integer>
-    <integer name="play_mode_songs">0xA10B</integer>
+    <integer name="music_mode_none">-2147483648</integer>
+    <integer name="music_mode_artist">0xA109</integer>
+    <integer name="music_mode_album">0xA10A</integer>
+    <integer name="music_mode_songs">0xA10B</integer>
 
     <integer name="replay_gain_track">0xA111</integer>
     <integer name="replay_gain_album">0xA112</integer>

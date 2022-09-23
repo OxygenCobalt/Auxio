@@ -26,7 +26,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
-import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
@@ -34,45 +36,42 @@ import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.ItemClickListener
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A dialog that shows several genre options if the result of an genre-reliant operation is
+ * A dialog that shows several artist options if the result of an artist-reliant operation is
  * ambiguous.
  * @author OxygenCobalt
+ *
+ * TODO: Clean up the picker flow to reduce the amount of duplication I had to do.
  */
-class GenrePickerDialog : ViewBindingDialogFragment<DialogMusicPickerBinding>(), ItemClickListener {
+class ArtistPickerDialog : ViewBindingDialogFragment<DialogMusicPickerBinding>(), ItemClickListener {
     private val pickerModel: PickerViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
 
-    private val args: GenrePickerDialogArgs by navArgs()
-    private val adapter = GenreChoiceAdapter(this)
+    private val args: ArtistPickerDialogArgs by navArgs()
+    private val adapter = ArtistChoiceAdapter(this)
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogMusicPickerBinding.inflate(inflater)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder
-            .setTitle(
-                when (args.pickerMode) {
-                    PickerMode.GO -> R.string.lbl_go_genre
-                    PickerMode.PLAY -> R.string.lbl_play_genre
-                }
-            )
+            .setTitle(R.string.lbl_artists)
             .setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {
-        pickerModel.setSongUid(args.songUid)
+        pickerModel.setSongUid(args.uid)
 
         binding.pickerRecycler.adapter = adapter
 
-        collectImmediately(pickerModel.currentSong) { song ->
-            if (song != null) {
-                adapter.submitList(song.genres)
-            } else {
-                findNavController().navigateUp()
+        collectImmediately(pickerModel.currentItem) { item ->
+            when (item) {
+                is Song -> adapter.submitList(item.artists)
+                is Album -> adapter.submitList(item.artists)
+                null -> findNavController().navigateUp()
+                else -> error("Invalid datatype: ${item::class.java}")
             }
         }
     }
@@ -82,13 +81,14 @@ class GenrePickerDialog : ViewBindingDialogFragment<DialogMusicPickerBinding>(),
     }
 
     override fun onItemClick(item: Item) {
-        check(item is Genre) { "Unexpected datatype: ${item::class.simpleName}" }
+        check(item is Artist) { "Unexpected datatype: ${item::class.simpleName}" }
         findNavController().navigateUp()
         when (args.pickerMode) {
-            PickerMode.GO -> navModel.exploreNavigateTo(item)
+            PickerMode.SHOW -> navModel.exploreNavigateTo(item)
             PickerMode.PLAY -> {
-                val song = unlikelyToBeNull(pickerModel.currentSong.value)
-                playbackModel.playFromGenre(song, item)
+                val currentItem = pickerModel.currentItem.value
+                check(currentItem is Song) { "PickerMode.PLAY is only allowed with Songs" }
+                playbackModel.playFromArtist(currentItem, item)
             }
         }
     }

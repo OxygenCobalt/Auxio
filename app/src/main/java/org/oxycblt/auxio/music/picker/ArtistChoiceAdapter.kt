@@ -21,29 +21,29 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemPickerChoiceBinding
-import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.ui.recycler.DialogViewHolder
 import org.oxycblt.auxio.ui.recycler.ItemClickListener
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
 /**
- * The adapter that displays a list of genre choices in the picker UI.
+ * The adapter that displays a list of artist choices in the picker UI.
  */
-class GenreChoiceAdapter(private val listener: ItemClickListener) : RecyclerView.Adapter<GenreChoiceViewHolder>() {
-    private var genres = listOf<Genre>()
+class ArtistChoiceAdapter(private val listener: ItemClickListener) : RecyclerView.Adapter<ArtistChoiceViewHolder>() {
+    private var artists = listOf<Artist>()
 
-    override fun getItemCount() = genres.size
+    override fun getItemCount() = artists.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        GenreChoiceViewHolder.new(parent)
+        ArtistChoiceViewHolder.new(parent)
 
-    override fun onBindViewHolder(holder: GenreChoiceViewHolder, position: Int) =
-        holder.bind(genres[position], listener)
+    override fun onBindViewHolder(holder: ArtistChoiceViewHolder, position: Int) =
+        holder.bind(artists[position], listener)
 
-    fun submitList(newGenres: List<Genre>) {
-        if (newGenres != genres) {
-            genres = newGenres
+    fun submitList(newArtists: List<Artist>) {
+        if (newArtists != artists) {
+            artists = newArtists
 
             @Suppress("NotifyDataSetChanged")
             notifyDataSetChanged()
@@ -52,20 +52,20 @@ class GenreChoiceAdapter(private val listener: ItemClickListener) : RecyclerView
 }
 
 /**
- * The ViewHolder that displays a genre choice. Smaller than other parent items due to dialog
+ * The ViewHolder that displays a artist choice. Smaller than other parent items due to dialog
  * constraints.
  */
-class GenreChoiceViewHolder(private val binding: ItemPickerChoiceBinding) : DialogViewHolder(binding.root) {
-    fun bind(genre: Genre, listener: ItemClickListener) {
-        binding.pickerImage.bind(genre)
-        binding.pickerName.text = genre.resolveName(binding.context)
+class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) : DialogViewHolder(binding.root) {
+    fun bind(artist: Artist, listener: ItemClickListener) {
+        binding.pickerImage.bind(artist)
+        binding.pickerName.text = artist.resolveName(binding.context)
         binding.root.setOnClickListener {
-            listener.onItemClick(genre)
+            listener.onItemClick(artist)
         }
     }
 
     companion object {
         fun new(parent: View) =
-            GenreChoiceViewHolder(ItemPickerChoiceBinding.inflate(parent.context.inflater))
+            ArtistChoiceViewHolder(ItemPickerChoiceBinding.inflate(parent.context.inflater))
     }
 }

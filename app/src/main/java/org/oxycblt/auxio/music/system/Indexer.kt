@@ -30,6 +30,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
@@ -223,7 +224,7 @@ class Indexer {
         val buildStart = System.currentTimeMillis()
 
         val albums = buildAlbums(songs)
-        val artists = buildArtists(albums)
+        val artists = buildArtists(songs, albums)
         val genres = buildGenres(songs)
 
         // Make sure we finalize all the items now that they are fully built.
@@ -265,7 +266,7 @@ class Indexer {
         yield()
 
         // Note: We use a set here so we can eliminate effective duplicates of
-        // songs (by UID).
+        // songs (by UID) and sort to achieve consistent orderings
         val songs = mutableSetOf<Song>()
         val rawSongs = mutableListOf<Song.Raw>()
 
@@ -280,12 +281,10 @@ class Indexer {
 
         metadataExtractor.finalize(rawSongs)
 
-        val sorted = Sort(Sort.Mode.ByName, true).songs(songs)
-
         logD("Successfully built ${songs.size} songs in ${System.currentTimeMillis() - start}ms")
 
         // Ensure that sorting order is consistent so that grouping is also consistent.
-        return sorted
+        return Sort(Sort.Mode.ByName, true).songs(songs)
     }
 
     /**
@@ -315,17 +314,25 @@ class Indexer {
     }
 
     /**
-     * Group up albums into artists. This also requires a de-duplication step due to some edge cases
-     * where [buildAlbums] could not detect duplicates.
+     * Group up songs AND albums into artists. This process seems weird (because it is), but
+     * the purpose is that the actual artist information of albums and songs often differs,
+     * and so they are linked in different ways.
      */
-    private fun buildArtists(albums: List<Album>): List<Artist> {
-        val artists = mutableListOf<Artist>()
-        val albumsByArtist = albums.groupBy { it._rawArtist }
-
-        for (entry in albumsByArtist) {
-            // The first album will suffice for template metadata.
-            artists.add(Artist(entry.key, entry.value))
+    private fun buildArtists(songs: List<Song>, albums: List<Album>): List<Artist> {
+        val musicByArtist = mutableMapOf<Artist.Raw, MutableList<Music>>()
+        for (song in songs) {
+            for (rawArtist in song._rawArtists) {
+                musicByArtist.getOrPut(rawArtist) { mutableListOf() }.add(song)
+            }
         }
+
+        for (album in albums) {
+            for (rawArtist in album._rawArtists) {
+                musicByArtist.getOrPut(rawArtist) { mutableListOf() }.add(album)
+            }
+        }
+
+        val artists = musicByArtist.map { Artist(it.key, it.value) }
 
         logD("Successfully built ${artists.size} artists")
 

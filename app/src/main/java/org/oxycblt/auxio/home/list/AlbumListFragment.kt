@@ -66,11 +66,11 @@ class AlbumListFragment : HomeListFragment<Album>() {
             // By Name -> Use Name
             is Sort.Mode.ByName -> album.collationKey?.run { sourceString.first().uppercase() }
 
-            // By Artist -> Use Artist Name
-            is Sort.Mode.ByArtist -> album.artist.collationKey?.run { sourceString.first().uppercase() }
+            // By Artist -> Use name of first artist
+            is Sort.Mode.ByArtist -> album.artists[0].collationKey?.run { sourceString.first().uppercase() }
 
             // Year -> Use Full Year
-            is Sort.Mode.ByYear -> album.date?.resolveYear(requireContext())
+            is Sort.Mode.ByDate -> album.date?.resolveYear(requireContext())
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> album.durationMs.formatDurationMs(false)

@@ -82,8 +82,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
 
         fun Int.migratePlaybackMode() =
             when (this) {
-                IntegerTable.PLAYBACK_MODE_ALL_SONGS -> MusicMode.SONGS
-                IntegerTable.PLAYBACK_MODE_IN_GENRE -> MusicMode.GENRES
+                // Genre playback mode was retried in 3.0.0
+                IntegerTable.PLAYBACK_MODE_ALL_SONGS, IntegerTable.PLAYBACK_MODE_IN_GENRE -> MusicMode.SONGS
                 IntegerTable.PLAYBACK_MODE_IN_ARTIST -> MusicMode.ARTISTS
                 IntegerTable.PLAYBACK_MODE_IN_ALBUM -> MusicMode.ALBUMS
                 else -> null
@@ -410,7 +410,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             Sort.fromIntCode(
                 inner.getInt(context.getString(R.string.set_key_detail_artist_sort), Int.MIN_VALUE)
             )
-                ?: Sort(Sort.Mode.ByYear, false)
+                ?: Sort(Sort.Mode.ByDate, false)
         set(value) {
             inner.edit {
                 putInt(context.getString(R.string.set_key_detail_artist_sort), value.intCode)

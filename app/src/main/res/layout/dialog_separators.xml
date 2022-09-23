@@ -72,7 +72,14 @@
             android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
             tools:ignore="RtlSymmetry" />
 
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
+            android:layout_marginTop="@dimen/spacing_mid_large"
+            android:layout_marginStart="@dimen/spacing_mid_large"
+            android:layout_marginEnd="@dimen/spacing_mid_large"
+            android:text="@string/set_separators_warning"/>
     </LinearLayout>
 
 

@@ -33,6 +33,7 @@ import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
  * A [HomeListFragment] for showing a list of [Artist]s.
@@ -62,10 +63,10 @@ class ArtistListFragment : HomeListFragment<Artist>() {
             is Sort.Mode.ByName -> artist.collationKey?.run { sourceString.first().uppercase() }
 
             // Duration -> Use formatted duration
-            is Sort.Mode.ByDuration -> artist.durationMs.formatDurationMs(false)
+            is Sort.Mode.ByDuration -> artist.durationMs?.formatDurationMs(false)
 
             // Count -> Use song count
-            is Sort.Mode.ByCount -> artist.songs.size.toString()
+            is Sort.Mode.ByCount -> artist.songs.size.nonZeroOrNull()?.toString()
 
             // Unsupported sort, error gracefully
             else -> null

@@ -41,7 +41,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
     fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)
-        binding.songInfo.text = item.resolveIndividualArtistName(binding.context)
+        binding.songInfo.text = item.resolveArtistContents(binding.context)
         // binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnLongClickListener {
             listener.onOpenMenu(item, it)
@@ -79,7 +79,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
     fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
-        binding.parentInfo.text = item.artist.resolveName(binding.context)
+        binding.parentInfo.text = item.resolveArtistContents(binding.context)
         // binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnLongClickListener {
             listener.onOpenMenu(item, it)
@@ -102,7 +102,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
             object : SimpleItemCallback<Album>() {
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
-                        oldItem.artist.rawName == newItem.artist.rawName &&
+                        oldItem.areArtistContentsTheSame(newItem) &&
                         oldItem.releaseType == newItem.releaseType
             }
     }
@@ -118,12 +118,18 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
     fun bind(item: Artist, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
-        binding.parentInfo.text =
+
+        binding.parentInfo.text = if (item.songs.isNotEmpty()) {
             binding.context.getString(
                 R.string.fmt_two,
                 binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size),
                 binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
             )
+        } else {
+            // Artist has no songs, only display an album count.
+            binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size)
+        }
+
         // binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnLongClickListener {
             listener.onOpenMenu(item, it)

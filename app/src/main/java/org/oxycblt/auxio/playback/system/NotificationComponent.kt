@@ -73,9 +73,10 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
         setContentText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ARTIST))
 
         // Starting in API 24, the subtext field changed semantics from being below the
-        // content text to being above the title.
+        // content text to being above the title. Use an appropriate field for both.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            setSubText(metadata.getText(MediaSessionComponent.METADATA_KEY_PARENT))
+            // Display description -> Parent in which playback is occurring
+            setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION))
         } else {
             setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ALBUM))
         }

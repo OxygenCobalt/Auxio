@@ -131,26 +131,28 @@ class MediaSessionComponent(private val context: Context, private val callback: 
         // Note: We would leave the artist field null if it didn't exist and let downstream
         // consumers handle it, but that would break the notification display.
         val title = song.resolveName(context)
-        val artist = song.resolveIndividualArtistName(context)
+        val artist = song.resolveArtistContents(context)
         val builder =
             MediaMetadataCompat.Builder()
                 .putText(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
                 .putText(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.resolveName(context))
                 .putText(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
                 .putText(
                     MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST,
-                    song.album.artist.resolveName(context)
+                    song.album.resolveArtistContents(context)
                 )
                 .putText(MediaMetadataCompat.METADATA_KEY_AUTHOR, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_COMPOSER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_WRITER, artist)
                 .putText(
-                    MediaMetadataCompat.METADATA_KEY_GENRE,
-                    song.genres.joinToString { it.resolveName(context) }
-                )
-                .putText(
                     METADATA_KEY_PARENT,
+                    parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs)
+                )
+                .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.resolveGenreContents(context))
+                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
+                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, artist)
+                .putText(
+                    MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION,
                     parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs)
                 )
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
@@ -202,7 +204,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
                     MediaDescriptionCompat.Builder()
                         .setMediaId(song.uid.toString())
                         .setTitle(song.resolveName(context))
-                        .setSubtitle(song.resolveIndividualArtistName(context))
+                        .setSubtitle(song.resolveArtistContents(context))
                         .setIconUri(song.album.coverUri)
                         .setMediaUri(song.uri)
                         .build()

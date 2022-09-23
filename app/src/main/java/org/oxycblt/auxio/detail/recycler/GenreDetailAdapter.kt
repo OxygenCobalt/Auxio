@@ -19,6 +19,7 @@ package org.oxycblt.auxio.detail.recycler
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -95,9 +96,13 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
         binding.detailCover.bind(item)
         binding.detailType.text = binding.context.getString(R.string.lbl_genre)
         binding.detailName.text = item.resolveName(binding.context)
-        binding.detailSubhead.text =
-            binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
-        binding.detailInfo.text = item.durationMs.formatDurationMs(false)
+        binding.detailSubhead.isVisible = false
+        binding.detailInfo.text = binding.context.getString(
+            R.string.fmt_two,
+            binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size),
+            item.durationMs.formatDurationMs(false)
+        )
+
         binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }
         binding.detailShuffleButton.setOnClickListener { listener.onShuffleParent() }
     }

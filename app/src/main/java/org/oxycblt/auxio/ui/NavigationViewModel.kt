@@ -64,7 +64,7 @@ class NavigationViewModel : ViewModel() {
     /** Navigate to an item's detail menu, whether a song/album/artist */
     fun exploreNavigateTo(item: Music) {
         if (_exploreNavigationItem.value != null) {
-            logD("Already navigation, not doing explore action")
+            logD("Already navigating, not doing explore action")
             return
         }
 
