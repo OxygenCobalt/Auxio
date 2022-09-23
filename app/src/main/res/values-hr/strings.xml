@@ -240,5 +240,4 @@
     <string name="set_bar_action_repeat">Način ponavljanja</string>
     <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
     <string name="lbl_go_genre">Idi na žanr</string>
-    <string name="lbl_play_artist">Sviraj od izvođača</string>
 </resources>

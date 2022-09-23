@@ -245,5 +245,4 @@
     <string name="lbl_mixes">混音</string>
     <string name="lbl_mix">混音</string>
     <string name="lbl_go_genre">转到流派</string>
-    <string name="lbl_play_genre">从流派播放</string>
 </resources>

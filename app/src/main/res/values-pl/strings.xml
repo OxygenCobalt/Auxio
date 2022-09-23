@@ -222,7 +222,6 @@
     <string name="desc_clear_search">Wyczyść zapytanie wyszukiwania</string>
     <string name="err_did_not_restore">Nie można przywrócić stanu odtwarzania</string>
     <string name="desc_genre_image">Okładka gatunku %s</string>
-    <string name="lbl_play_artist">Odtwórz od wykonawcy</string>
     <string name="lng_playback">Wyświetlanie oraz kontrolowanie odtwarzania muzyki</string>
     <string name="set_alt_repeat">Preferuj akcję \"Powtórz\"</string>
     <string name="set_pre_amp_with">Regulacja w oparciu o tagi</string>
