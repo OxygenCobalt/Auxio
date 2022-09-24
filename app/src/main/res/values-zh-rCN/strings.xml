@@ -25,7 +25,7 @@
     <string name="lbl_shuffle">随机</string>
     <string name="set_playback_mode_all">从全部歌曲开始播放</string>
     <string name="set_playback_mode_album">从专辑开始播放</string>
-    <string name="set_playback_mode_artist">\@string/lbl_play_artist</string>
+    <string name="set_playback_mode_artist">从艺术家播放</string>
     <string name="lbl_queue">播放队列</string>
     <string name="lbl_play_next">作为下一首播放</string>
     <string name="lbl_queue_add">加入播放队列</string>
@@ -236,7 +236,7 @@
     <string name="set_separators_and">与号(&amp;)</string>
     <string name="set_separators_slash">斜线 (/)</string>
     <string name="set_separators">多值分隔符</string>
-    <string name="set_separators_desc">配置表示标签中多个值的字符</string>
+    <string name="set_separators_desc">配置表示多个标签值的字符</string>
     <string name="set_separators_plus">加号 (+)</string>
     <string name="set_separators_comma">逗号 (,)</string>
     <string name="set_separators_semicolon">分号 (;)</string>
@@ -245,4 +245,5 @@
     <string name="lbl_mixes">混音</string>
     <string name="lbl_mix">混音</string>
     <string name="lbl_go_genre">转到流派</string>
+    <string name="set_separators_warning">警告：使用此设置可能会导致某些标签被错误地阐释为具有多个值。</string>
 </resources>
