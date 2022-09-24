@@ -3,14 +3,14 @@
 ## 3.0.0
 
 #### What's New
-- Massively reworked music loading system:
+- Added multi-value tags support
 	- Added support for multiple artists
 	- Added support for multiple genres
-	- Artists and album artists are now both given UI entires
-	- Made music hashing rely on the more reliable MD5
+- Artists and album artists are now both given UI entires
+- Upgraded music ID management:
+	- Use MD5 for default UUIDS
 	- Added support for MusicBrainz IDs (MBIDs)
-	- **This may impact your library.** Instructions on how to update your library to result in a good
-	artist experience will be added to the FAQ.
+- Added toggle to load non-music (Such as podcasts)
 
 #### What's Improved
 - Sorting now takes accented characters into account

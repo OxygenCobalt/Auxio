@@ -28,10 +28,11 @@
     <string name="set_key_restore_state" translatable="false">auxio_restore_state</string>
 
     <string name="set_key_reindex" translatable="false">auxio_reindex</string>
+    <string name="set_key_observing" translatable="false">auxio_observing</string>
     <string name="set_key_music_dirs" translatable="false">auxio_music_dirs</string>
     <string name="set_key_music_dirs_include" translatable="false">auxio_include_dirs</string>
+    <string name="set_key_exclude_non_music" translatable="false">auxio_exclude_non_music</string>
     <string name="set_key_separators" translatable="false">auxio_separators</string>
-    <string name="set_key_observing" translatable="false">auxio_observing</string>
 
     <string name="set_key_search_filter" translatable="false">KEY_SEARCH_FILTER</string>
 

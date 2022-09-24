@@ -138,6 +138,10 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
         val args = mutableListOf<String>()
         var selector = BASE_SELECTOR
 
+        if (settings.excludeNonMusic) {
+            selector += " AND ${MediaStore.Audio.AudioColumns.IS_MUSIC}=1"
+        }
+
         if (dirs.dirs.isNotEmpty()) {
             // Need to select for directories. The path query is the same, only difference is
             // the presence of a NOT.
@@ -359,8 +363,7 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
          * The base selector that works across all versions of android. Does not exclude
          * directories.
          */
-        private const val BASE_SELECTOR =
-            "${MediaStore.Audio.Media.IS_MUSIC}=1 " + "AND NOT ${MediaStore.Audio.Media.SIZE}=0"
+        private const val BASE_SELECTOR = "NOT ${MediaStore.Audio.Media.SIZE}=0"
     }
 }
 

@@ -266,6 +266,10 @@ class Settings(private val context: Context, private val callback: Callback? = n
     val shouldBeObserving: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_observing), false)
 
+    /** Whether to load all audio files, even ones not considered music. */
+    val excludeNonMusic: Boolean
+        get() = inner.getBoolean(context.getString(R.string.set_key_exclude_non_music), true)
+
     /** Get the list of directories that music should be hidden/loaded from. */
     fun getMusicDirs(storageManager: StorageManager): MusicDirs {
         val dirs =

@@ -153,6 +153,12 @@
             app:summary="@string/set_observing_desc"
             app:title="@string/set_observing" />
 
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="@string/set_key_exclude_non_music"
+            app:summary="@string/set_exclude_non_music_desc"
+            app:title="@string/set_exclude_non_music" />
+
         <org.oxycblt.auxio.settings.WrappedDialogPreference
             app:key="@string/set_key_music_dirs"
             app:summary="@string/set_dirs_desc"
