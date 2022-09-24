@@ -107,8 +107,6 @@ sealed class Music : Item {
      * Please don't try to do anything interesting with this and just assume it's a black box
      * that can only be compared, serialized, and deserialized.
      *
-     * TODO: MusicBrainz tags
-     *
      * @author OxygenCobalt
      */
     @Parcelize

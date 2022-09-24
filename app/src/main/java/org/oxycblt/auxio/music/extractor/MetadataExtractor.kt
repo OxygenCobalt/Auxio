@@ -303,13 +303,13 @@ class Task(context: Context, private val raw: Song.Raw) {
 
         // Artist
         tags["MUSICBRAINZ_ARTISTID"]?.let { raw.artistMusicBrainzIds = it }
-        tags["ARTIST"]?.let { raw.artistNames = it }
-        tags["ARTISTSORT"]?.let { raw.artistSortNames = it }
+        (tags["ARTISTS"] ?: tags["ARTIST"])?.let { raw.artistNames = it }
+        (tags["ARTISTS_SORT"] ?: tags["ARTISTSORT"])?.let { raw.artistSortNames = it }
 
         // Album artist
         tags["MUSICBRAINZ_ALBUMARTISTID"]?.let { raw.albumArtistMusicBrainzIds = it }
-        tags["ALBUMARTIST"]?.let { raw.albumArtistNames = it }
-        tags["ALBUMARTISTSORT"]?.let { raw.albumArtistSortNames = it }
+        (tags["ALBUMARTISTS"] ?: tags["ALBUMARTIST"])?.let { raw.albumArtistNames = it }
+        (tags["ALBUMARTISTS_SORT"] ?: tags["ALBUMARTISTSORT"])?.let { raw.albumArtistSortNames = it }
 
         // Genre
         tags["GENRE"]?.let { raw.genreNames = it }
