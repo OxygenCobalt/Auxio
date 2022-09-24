@@ -230,7 +230,6 @@
     <string name="set_bar_action">自定义播放栏动作</string>
     <string name="set_bar_action_repeat">重复模式</string>
     <string name="set_bar_action_next">跳到下一首</string>
-    <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
     <string name="lbl_equalizer">均衡器</string>
     <string name="desc_exit">停止播放</string>
     <string name="set_separators_and">与号(&amp;)</string>

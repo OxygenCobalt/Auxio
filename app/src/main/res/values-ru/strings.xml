@@ -233,6 +233,5 @@
     <string name="lbl_genre">Жанр</string>
     <string name="set_bar_action_next">Перейти к следующей</string>
     <string name="set_bar_action_repeat">Режим повтора</string>
-    <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
     <string name="lbl_equalizer">Эквалайзер</string>
 </resources>

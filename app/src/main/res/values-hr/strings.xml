@@ -92,7 +92,6 @@
     <string name="set_library_song_playback_mode">Kada se reproducira iz zbirke</string>
     <string name="set_detail_song_playback_mode">Kada se reproducira iz detalja o predmetu</string>
     <string name="set_playback_mode_all">Reproduciraj od svih pjesama</string>
-    <string name="set_playback_mode_artist">\@string/lbl_play_artist</string>
     <string name="set_reindex">Ponovno učitaj glazbu</string>
     <string name="set_reindex_desc">Može izbrisati stanje reprodukcije</string>
     <string name="set_dirs">Mape glazbe</string>
@@ -238,6 +237,5 @@
     <string name="lbl_equalizer">Ekvilajzer</string>
     <string name="set_bar_action_next">Prijeđi na sljedeću</string>
     <string name="set_bar_action_repeat">Način ponavljanja</string>
-    <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
     <string name="lbl_go_genre">Idi na žanr</string>
 </resources>

@@ -162,7 +162,6 @@
     <string name="set_bar_action">Akcja na pasku odtwarzania</string>
     <string name="set_bar_action_next">Następny utwór</string>
     <string name="set_bar_action_repeat">Powtórz</string>
-    <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
     <string name="set_replay_gain">Ustawienie ReplayGain</string>
     <string name="set_replay_gain_dynamic">Preferuj album, jeśli takowy jest odtwarzany</string>
     <string name="set_library_song_playback_mode">Odtwarzając utwór z widoku biblioteki</string>
@@ -185,7 +184,6 @@
     <string name="desc_tab_handle">Przesuń kartę</string>
     <string name="desc_artist_image">Wizerunek artysty dla %s</string>
     <string name="lng_indexing">Ładuję bibliotekę muzyczną…</string>
-    <string name="set_playback_mode_artist">\@string/lbl_play_artist</string>
     <string name="set_show_covers_desc">Wyłącz, aby zmniejszyć użycie pamięci</string>
     <string name="set_quality_covers_desc">Zwiększa jakość okładek albumów, ale skutkuje dłuższym czasem ładowanie oraz większym użyciem pamięci</string>
     <string name="set_replay_gain_track">Preferuj utwór</string>

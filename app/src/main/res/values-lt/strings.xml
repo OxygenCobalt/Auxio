@@ -208,7 +208,6 @@
     <string name="set_reindex">Perkrauti muziką</string>
     <string name="set_reindex_desc">Gali nuvalyti grojimo būseną</string>
     <string name="set_bar_action">Pasirinktinis grojimo juostos veiksmas</string>
-    <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
     <string name="set_alt_shuffle">Pirmenybė teikiama išmaišymo veiksmui</string>
     <string name="err_did_not_restore">Jokios grojimo būsenos nepavyko atkurti</string>
     <string name="set_pre_amp">„ReplayGain“ išankstinis stiprintuvas</string>

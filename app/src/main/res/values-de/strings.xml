@@ -17,7 +17,6 @@
     <string name="lbl_shuffle">Zufällig</string>
     <string name="set_playback_mode_all">Von allen Lieder abspielen</string>
     <string name="set_playback_mode_album">Von Album abspielen</string>
-    <string name="set_playback_mode_artist">\@string/lbl_play_artist</string>
     <string name="lbl_playback">Aktuelle Wiedergabe</string>
     <string name="lbl_queue">Warteschlange</string>
     <string name="lbl_play_next">Spiele als Nächstes</string>
@@ -232,7 +231,6 @@
     <string name="set_bar_action">Angepasste Wiedergabeaktionstaste</string>
     <string name="set_bar_action_next">Zum nächsten Song gehen</string>
     <string name="set_bar_action_repeat">Wiederholungsmodus</string>
-    <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
     <string name="desc_exit">Wiedergabe anhalten</string>
     <string name="lbl_compilation_live">Live-Kompilation</string>
     <string name="lbl_compilation_remix">Remix-Kompilation</string>

@@ -65,7 +65,7 @@
     <string-array name="entries_bar_action">
         <item>@string/set_bar_action_next</item>
         <item>@string/set_bar_action_repeat</item>
-        <item>@string/set_bar_action_shuffle</item>
+        <item>@string/lbl_shuffle</item>
     </string-array>
 
     <integer-array name="values_bar_action">
