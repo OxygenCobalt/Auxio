@@ -25,8 +25,7 @@
     <string name="lbl_shuffle">随机</string>
     <string name="set_playback_mode_all">从全部歌曲开始播放</string>
     <string name="set_playback_mode_album">从专辑开始播放</string>
-    <string name="set_playback_mode_artist">从艺术家开始播放</string>
-    <string name="set_playback_mode_genre">从流派开始播放</string>
+    <string name="set_playback_mode_artist">从艺术家播放</string>
     <string name="lbl_queue">播放队列</string>
     <string name="lbl_play_next">作为下一首播放</string>
     <string name="lbl_queue_add">加入播放队列</string>
@@ -200,7 +199,7 @@
     <string name="err_did_not_restore">没有可以恢复的状态</string>
     <string name="set_restore_state">恢复播放状态</string>
     <string name="set_restore_desc">恢复此前保存的播放状态（如果有）</string>
-    <string name="set_observing">自动重载中</string>
+    <string name="set_observing">自动重载</string>
     <string name="set_observing_desc">发生更改时自动重新加载您的曲库（实验性）</string>
     <string name="desc_queue_bar">打开队列</string>
     <string name="lbl_indexing">正在加载音乐</string>
@@ -234,4 +233,17 @@
     <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
     <string name="lbl_equalizer">均衡器</string>
     <string name="desc_exit">停止播放</string>
+    <string name="set_separators_and">与号(&amp;)</string>
+    <string name="set_separators_slash">斜线 (/)</string>
+    <string name="set_separators">多值分隔符</string>
+    <string name="set_separators_desc">配置表示多个标签值的字符</string>
+    <string name="set_separators_plus">加号 (+)</string>
+    <string name="set_separators_comma">逗号 (,)</string>
+    <string name="set_separators_semicolon">分号 (;)</string>
+    <string name="lbl_compilation_remix">重混集</string>
+    <string name="lbl_compilation_live">实况音乐集</string>
+    <string name="lbl_mixes">混音</string>
+    <string name="lbl_mix">混音</string>
+    <string name="lbl_go_genre">转到流派</string>
+    <string name="set_separators_warning">警告：使用此设置可能会导致某些标签被错误地阐释为具有多个值。</string>
 </resources>

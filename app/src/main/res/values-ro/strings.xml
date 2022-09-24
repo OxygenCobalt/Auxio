@@ -3,91 +3,88 @@
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Reîncearcă</string>
     <string name="lbl_grant">Permiteți</string>
-
     <string name="lbl_genres">Genuri</string>
     <string name="lbl_artists">Artiști</string>
     <string name="lbl_albums">Albume</string>
     <string name="lbl_songs">Cântece</string>
-    <string name="lbl_all_songs">Toate Cântece</string>
-
+    <string name="lbl_all_songs">Toate cântecele</string>
     <string name="lbl_search">Căutare</string>
     <string name="lbl_filter">Filtru</string>
     <string name="lbl_filter_all">Tot</string>
-
     <string name="lbl_sort">Sortare</string>
     <string name="lbl_sort_asc">Crescător</string>
-
     <string name="lbl_play">Redă</string>
     <string name="lbl_shuffle">Amestecare</string>
-    <string name="lbl_playback">Redare Acum</string>
-
+    <string name="lbl_playback">Melodie redată acum</string>
     <string name="lbl_queue">Fila de așteptare</string>
     <string name="lbl_play_next">Redaţi următoarea</string>
     <string name="lbl_queue_add">Adăugați la lista de așteptare</string>
     <string name="lng_queue_added">A fost adăugat la liste de așteptare</string>
-
     <string name="lbl_go_artist">Accesaţi artistul</string>
     <string name="lbl_go_album">Accesaţi albumul</string>
-
     <string name="lbl_about">Despre</string>
     <string name="lbl_version">Versiune</string>
-    <string name="lbl_code">Vedeți pe GitHub</string>
+    <string name="lbl_code">Cod sursă</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licențe</string>
     <string name="lng_author">Dezvoltat de OxygenCobalt</string>
-
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Setări</string>
-
     <string name="set_ui">Aspect</string>
     <string name="set_theme">Temă</string>
     <string name="set_theme_auto">Automatică</string>
     <string name="set_theme_day">Clar</string>
     <string name="set_theme_night">Întunecat</string>
     <string name="set_accent">Culoare accentuată</string>
-
     <string name="set_quality_covers">Ignoră coperțile Media Store</string>
-
     <string name="set_audio">Audio</string>
-
     <string name="set_behavior">Comportament</string>
-
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nu s-a găsit nici o muzică</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Căutați în bibliotecă…</string>
-
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Melodie %d</string>
-
-    <string name="desc_play_pause">Redă/Pauză</string>
-
+    <string name="desc_play_pause">Start sau pauză</string>
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Roșu</string>
     <string name="clr_pink">Roz</string>
     <string name="clr_purple">Violet</string>
     <string name="clr_blue">Albastru</string>
-    <string name="clr_deep_blue">Albastru Deschis</string>
+    <string name="clr_deep_blue">Albastru Închis</string>
     <string name="clr_teal">Albastru Verde</string>
     <string name="clr_green">Verde</string>
-    <string name="clr_deep_green">Verde Deschis</string>
+    <string name="clr_deep_green">Verde Închis</string>
     <string name="clr_lime">Verde Galben</string>
     <string name="clr_yellow">Galben</string>
     <string name="clr_orange">Portocaliu</string>
     <string name="clr_brown">Brun</string>
     <string name="clr_grey">Gri</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
     <plurals name="fmt_song_count">
         <item quantity="one">%d Cântec</item>
-        <item quantity="few">%d Melodii</item>
-        <item quantity="other">%d Cântece</item>
+        <item quantity="few">%d Cântece</item>
+        <item quantity="other">%d de cântece</item>
     </plurals>
-
     <plurals name="fmt_album_count">
         <item quantity="one">%d Album</item>
         <item quantity="few">%d Albume</item>
-        <item quantity="other">%d Albume</item>
+        <item quantity="other">%d de albume</item>
     </plurals>
+    <string name="fmt_lib_total_duration">Durată totală: %s</string>
+    <string name="info_app_desc">Un player de muzică simplu și rational pentru android.</string>
+    <string name="lbl_album_live">Album live</string>
+    <string name="lbl_album_remix">Album cu remixuri</string>
+    <string name="lbl_single_live">Single live</string>
+    <string name="lbl_ep_live">EP live</string>
+    <string name="lbl_ep_remix">EP cu remixuri</string>
+    <string name="lbl_single_remix">Single remixat</string>
+    <string name="lbl_compilations">Complații</string>
+    <string name="lbl_indexer">Se încarcă muzica</string>
+    <string name="lbl_indexing">Muzica se încarcă</string>
+    <string name="lbl_observing">Se monitorizează librăria muzicală</string>
+    <string name="lbl_album">Album</string>
+    <string name="lbl_singles">Single-uri</string>
+    <string name="lbl_single">Single</string>
+    <string name="lbl_ep">EP</string>
 </resources>

@@ -121,7 +121,6 @@
     <string name="set_show_covers_desc">Bellek kullanımından tasarruf etmek için kapatın</string>
     <string name="set_quality_covers_desc">Albüm kapağı kalitesini artırır, ancak daha uzun yükleme sürelerine ve daha yüksek bellek kullanımına neden olur</string>
     <string name="set_library_song_playback_mode">Kitaplıktan çalarken</string>
-    <string name="set_playback_mode_genre">Türden çal</string>
     <string name="set_detail_song_playback_mode">Öğe ayrıntılarından çalarken</string>
     <string name="set_playback_mode_artist">Sanatçıdan çal</string>
     <string name="fmt_lib_artist_count">Yüklenen sanatçılar: %d</string>

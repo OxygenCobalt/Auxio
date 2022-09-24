@@ -20,7 +20,6 @@
     <string name="set_playback_mode_all">Speel van alle nummers </string>
     <string name="set_playback_mode_album">Speel af van album </string>
     <string name="set_playback_mode_artist">Speel van artiest </string>
-    <string name="set_playback_mode_genre">Speel vanuit genre </string>
     <string name="lbl_playback">Afspeelscherm</string>
     <string name="lbl_queue">Wachtrij</string>
     <string name="lbl_play_next">Afspelen als volgende</string>

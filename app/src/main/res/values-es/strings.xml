@@ -26,7 +26,6 @@
     <string name="set_playback_mode_all">Reproducir todo</string>
     <string name="set_playback_mode_album">Reproducir por álbum</string>
     <string name="set_playback_mode_artist">Reproducir por artista</string>
-    <string name="set_playback_mode_genre">Reproducir por género</string>
     <string name="lbl_queue">Cola</string>
     <string name="lbl_play_next">Reproducir siguiente</string>
     <string name="lbl_queue_add">Agregar a la cola</string>
