@@ -17,6 +17,7 @@
 - Added support for compilation sub-release-types like (DJ) Mix
 - Album dates now start from the earliest date instead of latest date
 - Reshuffling the queue will no longer drop any songs you have added/removed
+- Allowed light/dark theme to be customized on Android 12+
 
 #### What's Fixed
 - Fixed issue where the scroll popup would not display correctly in landscape mode [#230]

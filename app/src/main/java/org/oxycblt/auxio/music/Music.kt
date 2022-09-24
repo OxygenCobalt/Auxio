@@ -205,20 +205,21 @@ sealed class MusicParent : Music() {
  * @author OxygenCobalt
  */
 class Song constructor(raw: Raw, settings: Settings) : Music() {
-    override val uid = raw.musicBrainzId?.toUuidOrNull()?.let { UID.musicBrainz(MusicMode.SONGS, it) } ?: UID.auxio(MusicMode.SONGS) {
-        // Song UIDs are based on the raw data without parsing so that they remain
-        // consistent across music setting changes. Parents are not held up to the
-        // same standard since grouping is already inherently linked to settings.
-        update(raw.name)
-        update(raw.albumName)
-        update(raw.date)
+    override val uid = raw.musicBrainzId?.toUuidOrNull()?.let { UID.musicBrainz(MusicMode.SONGS, it) }
+        ?: UID.auxio(MusicMode.SONGS) {
+            // Song UIDs are based on the raw data without parsing so that they remain
+            // consistent across music setting changes. Parents are not held up to the
+            // same standard since grouping is already inherently linked to settings.
+            update(raw.name)
+            update(raw.albumName)
+            update(raw.date)
 
-        update(raw.track)
-        update(raw.disc)
+            update(raw.track)
+            update(raw.disc)
 
-        update(raw.artistNames)
-        update(raw.albumArtistNames)
-    }
+            update(raw.artistNames)
+            update(raw.albumArtistNames)
+        }
 
     override val rawName = requireNotNull(raw.name) { "Invalid raw: No title" }
 
