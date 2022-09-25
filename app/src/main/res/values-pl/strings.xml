@@ -177,7 +177,7 @@
     <string name="desc_music_dir_delete">Usuń folder</string>
     <string name="desc_queue_bar">Pokaż kolejkę</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
-    <string name="set_observing_desc">Automatycznie załaduj ponownie bibliotekę po wykryciu zmian (eksperymentalne)</string>
+    <string name="set_observing_desc">Automatycznie załaduj ponownie bibliotekę po wykryciu zmian (wymaga stałego powiadomienia)</string>
     <string name="set_dirs_mode_exclude">Wyklucz</string>
     <string name="set_dirs_mode_include">Uwzględnij</string>
     <string name="desc_queue_handle">Zmień pozycję utworu w kolejce</string>
