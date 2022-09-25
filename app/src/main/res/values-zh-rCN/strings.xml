@@ -200,7 +200,7 @@
     <string name="set_restore_state">恢复播放状态</string>
     <string name="set_restore_desc">恢复此前保存的播放状态（如果有）</string>
     <string name="set_observing">自动重载</string>
-    <string name="set_observing_desc">发生更改时自动重新加载您的曲库（实验性）</string>
+    <string name="set_observing_desc">发生更改时自动重新加载您的曲库（需要持久性通知）</string>
     <string name="desc_queue_bar">打开队列</string>
     <string name="lbl_indexing">正在加载音乐</string>
     <string name="lbl_observing">正在监测曲库</string>
@@ -245,4 +245,7 @@
     <string name="lbl_mix">混音</string>
     <string name="lbl_go_genre">转到流派</string>
     <string name="set_separators_warning">警告：使用此设置可能会导致某些标签被错误地阐释为具有多个值。</string>
+    <string name="set_exclude_non_music_desc">忽略不是音乐的音频文件，例如播客</string>
+    <string name="set_exclude_non_music">排除非音乐</string>
+    <string name="set_bar_action_shuffle">随机播放</string>
 </resources>
