@@ -314,7 +314,7 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
 
         // Try to use the DISPLAY_NAME field to obtain a (probably sane) file name
         // from the android system.
-        raw.displayName = cursor.getStringOrNull(displayNameIndex)
+        raw.fileName = cursor.getStringOrNull(displayNameIndex)
 
         raw.durationMs = cursor.getLong(durationIndex)
         raw.date = cursor.getIntOrNull(yearIndex)?.toDate()
@@ -411,8 +411,8 @@ class Api21MediaStoreExtractor(context: Context, cacheDatabase: CacheDatabase) :
         // that this only applies to below API 29, as beyond API 29, this field not being
         // present would completely break the scoped storage system. Fill it in with DATA
         // if it's not available.
-        if (raw.displayName == null) {
-            raw.displayName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
+        if (raw.fileName == null) {
+            raw.fileName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
         }
 
         // Find the volume that transforms the DATA field into a relative path. This is

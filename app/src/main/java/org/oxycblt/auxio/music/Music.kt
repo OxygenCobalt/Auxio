@@ -247,7 +247,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
      */
     val path =
         Path(
-            name = requireNotNull(raw.displayName) { "Invalid raw: No display name" },
+            name = requireNotNull(raw.fileName) { "Invalid raw: No display name" },
             parent = requireNotNull(raw.directory) { "Invalid raw: No parent directory" }
         )
 
@@ -387,8 +387,8 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         var mediaStoreId: Long? = null,
         var musicBrainzId: String? = null,
         var name: String? = null,
+        var fileName: String? = null,
         var sortName: String? = null,
-        var displayName: String? = null,
         var directory: Directory? = null,
         var extensionMimeType: String? = null,
         var formatMimeType: String? = null,

@@ -51,7 +51,39 @@ fun String.parseYear() = toIntOrNull()?.toDate()
 /** Parse an ISO-8601 time-stamp from this field into a [Date]. */
 fun String.parseTimestamp() = Date.from(this)
 
-private val SEPARATOR_REGEX_CACHE = mutableMapOf<String, Regex>()
+/**
+ * Parse a string by [selector], also handling string escaping.
+ */
+inline fun String.splitEscaped(selector: (Char) -> Boolean): MutableList<String> {
+    val split = mutableListOf<String>()
+    var currentString = ""
+    var i = 0
+    while (i < length) {
+        val a = get(i)
+        val b = getOrNull(i + 1)
+
+        if (selector(a)) {
+            split.add(currentString.trim())
+            currentString = ""
+            i++
+            continue
+        }
+
+        if (b != null && a == '\\' && selector(b)) {
+            currentString += b
+            i += 2
+        } else {
+            currentString += a
+            i++
+        }
+    }
+
+    if (currentString.isNotEmpty()) {
+        split.add(currentString.trim())
+    }
+
+    return split
+}
 
 /**
  * Fully parse a multi-value tag.
@@ -75,14 +107,7 @@ fun List<String>.parseMultiValue(settings: Settings) =
 fun String.maybeParseSeparators(settings: Settings): List<String> {
     // Get the separators the user desires. If null, we don't parse any.
     val separators = settings.separators ?: return listOf(this)
-
-    // Try to cache compiled regexes for particular separator combinations.
-    val regex =
-        synchronized(SEPARATOR_REGEX_CACHE) {
-            SEPARATOR_REGEX_CACHE.getOrPut(separators) { Regex("[$separators]") }
-        }
-
-    return regex.split(this).map { it.trim() }
+    return splitEscaped { separators.contains(it) }
 }
 
 /** Parse a multi-value tag into a [ReleaseType], handling separators in the process. */
