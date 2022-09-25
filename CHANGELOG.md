@@ -3,6 +3,7 @@
 ## 3.0.0
 
 #### What's New
+- Auxio now has a more unique and modern icon design
 - Added multi-value tags support
 	- Added support for multiple artists
 	- Added support for multiple genres
