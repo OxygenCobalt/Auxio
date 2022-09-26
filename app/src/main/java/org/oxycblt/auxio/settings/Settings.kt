@@ -83,7 +83,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
         fun Int.migratePlaybackMode() =
             when (this) {
                 // Genre playback mode was retried in 3.0.0
-                IntegerTable.PLAYBACK_MODE_ALL_SONGS, IntegerTable.PLAYBACK_MODE_IN_GENRE -> MusicMode.SONGS
+                IntegerTable.PLAYBACK_MODE_ALL_SONGS -> MusicMode.SONGS
                 IntegerTable.PLAYBACK_MODE_IN_ARTIST -> MusicMode.ARTISTS
                 IntegerTable.PLAYBACK_MODE_IN_ALBUM -> MusicMode.ALBUMS
                 else -> null
@@ -147,7 +147,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
 
     /** The current accent. */
     var accent: Accent
-        get() = Accent.from(inner.getInt(context.getString(R.string.set_accent), Accent.DEFAULT))
+        get() = Accent.from(inner.getInt(context.getString(R.string.set_key_accent), Accent.DEFAULT))
         set(value) {
             inner.edit {
                 putInt(context.getString(R.string.set_key_accent), value.index)

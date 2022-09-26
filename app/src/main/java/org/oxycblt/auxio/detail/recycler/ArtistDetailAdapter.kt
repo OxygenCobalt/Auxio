@@ -121,15 +121,16 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
                     binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
                 )
 
-            binding.detailPlayButton.isEnabled = true
-            binding.detailShuffleButton.isEnabled = true
+            binding.detailPlayButton.isVisible = true
+            binding.detailShuffleButton.isVisible = true
         } else {
-            // The artist is a
+            // The artist does not have any songs, so playback, genre info, and song counts
+            // make no sense.
             binding.detailSubhead.isVisible = false
             binding.detailInfo.text =
                 binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size)
-            binding.detailPlayButton.isEnabled = false
-            binding.detailShuffleButton.isEnabled = false
+            binding.detailPlayButton.isVisible = false
+            binding.detailShuffleButton.isVisible = false
         }
 
         binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }

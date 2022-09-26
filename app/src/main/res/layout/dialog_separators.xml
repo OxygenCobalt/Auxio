@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Auxio.Dialog.NestedScrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    style="@style/Widget.Auxio.Dialog.NestedScrollView"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/separator_group"
@@ -19,8 +19,8 @@
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:paddingStart="@dimen/spacing_medium"
-            android:textAlignment="viewStart"
             android:text="@string/set_separators_comma"
+            android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
             tools:ignore="RtlSymmetry" />
 
@@ -31,8 +31,8 @@
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:paddingStart="@dimen/spacing_medium"
-            android:textAlignment="viewStart"
             android:text="@string/set_separators_and"
+            android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
             tools:ignore="RtlSymmetry" />
 
@@ -43,8 +43,8 @@
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:paddingStart="@dimen/spacing_medium"
-            android:textAlignment="viewStart"
             android:text="@string/set_separators_slash"
+            android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
             tools:ignore="RtlSymmetry" />
 
@@ -55,8 +55,8 @@
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:paddingStart="@dimen/spacing_medium"
-            android:textAlignment="viewStart"
             android:text="@string/set_separators_plus"
+            android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
             tools:ignore="RtlSymmetry" />
 
@@ -67,19 +67,19 @@
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:paddingStart="@dimen/spacing_medium"
-            android:textAlignment="viewStart"
             android:text="@string/set_separators_and"
+            android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
             tools:ignore="RtlSymmetry" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
-            android:layout_marginTop="@dimen/spacing_mid_large"
             android:layout_marginStart="@dimen/spacing_mid_large"
+            android:layout_marginTop="@dimen/spacing_mid_large"
             android:layout_marginEnd="@dimen/spacing_mid_large"
-            android:text="@string/set_separators_warning"/>
+            android:text="@string/set_separators_warning"
+            android:textAppearance="@style/TextAppearance.Auxio.BodySmall" />
     </LinearLayout>
 
 

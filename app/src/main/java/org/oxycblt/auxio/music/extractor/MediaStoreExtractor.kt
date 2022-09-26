@@ -41,9 +41,9 @@ import java.io.File
 
 /*
  * This file acts as the base for most the black magic required to get a remotely sensible music
- * indexing system while still optimizing for time. I would recommend you leave this file now
- * before you lose your sanity trying to understand the hoops I had to jump through for this system,
- * but if you really want to stay, here's a debrief on why this code is so awful.
+ * indexing system from MediaStore while still optimizing for time. I would recommend you leave
+ * this file now before you lose your sanity trying to understand the hoops I had to jump through
+ * for this system, but if you really want to stay, here's a debrief on why this code is so awful.
  *
  * MediaStore is not a good API. It is not even a bad API. Calling it a bad API is an insult to
  * other bad android APIs, like CoordinatorLayout or InputMethodManager. No. MediaStore is a crime
@@ -51,7 +51,7 @@ import java.io.File
  *
  * You think that if you wanted to query a song's genre from a media database, you could just put
  * "genre" in the query and it would return it, right? But not with MediaStore! No, that's too
- * straightforward for this contract that was dropped on it's head as a baby. So instead, you have
+ * straightforward for this database that was dropped on it's head as a baby. So instead, you have
  * to query for each genre, query all the songs in each genre, and then iterate through those songs
  * to link every song with their genre. This is not documented anywhere, and the O(mom im scared)
  * algorithm you have to run to get it working single-handedly DOUBLES Auxio's query times. At no
@@ -281,13 +281,13 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
             arrayOf(
                 // These columns are guaranteed to work on all versions of android
                 MediaStore.Audio.AudioColumns._ID,
-                MediaStore.Audio.AudioColumns.TITLE,
-                MediaStore.Audio.AudioColumns.DISPLAY_NAME,
-                MediaStore.Audio.AudioColumns.MIME_TYPE,
-                MediaStore.Audio.AudioColumns.SIZE,
                 MediaStore.Audio.AudioColumns.DATE_ADDED,
                 MediaStore.Audio.AudioColumns.DATE_MODIFIED,
+                MediaStore.Audio.AudioColumns.DISPLAY_NAME,
+                MediaStore.Audio.AudioColumns.SIZE,
                 MediaStore.Audio.AudioColumns.DURATION,
+                MediaStore.Audio.AudioColumns.MIME_TYPE,
+                MediaStore.Audio.AudioColumns.TITLE,
                 MediaStore.Audio.AudioColumns.YEAR,
                 MediaStore.Audio.AudioColumns.ALBUM,
                 MediaStore.Audio.AudioColumns.ALBUM_ID,

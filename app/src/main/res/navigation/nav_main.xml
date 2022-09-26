@@ -50,7 +50,7 @@
         android:id="@+id/settings_fragment"
         android:name="org.oxycblt.auxio.settings.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" >
+        tools:layout="@layout/fragment_settings">
         <action
             android:id="@+id/go_to_accent_dialog"
             app:destination="@id/accent_dialog" />

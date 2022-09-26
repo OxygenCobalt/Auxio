@@ -18,7 +18,6 @@
 package org.oxycblt.auxio
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -108,11 +107,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupTheme() {
         val settings = Settings(this)
 
-        // Disable theme customization above Android 12, as it's far enough in as a version to
-        // the point where most phones should have an option for light/dark theming.
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            AppCompatDelegate.setDefaultNightMode(settings.theme)
-        }
+        AppCompatDelegate.setDefaultNightMode(settings.theme)
 
         // The black theme has a completely separate set of styles since style attributes cannot
         // be modified at runtime.

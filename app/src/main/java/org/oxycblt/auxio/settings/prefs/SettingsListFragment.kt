@@ -34,6 +34,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.settings.SettingsFragmentDirections
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.isNight
