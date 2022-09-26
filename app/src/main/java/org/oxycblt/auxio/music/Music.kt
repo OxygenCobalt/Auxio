@@ -34,6 +34,7 @@ import org.oxycblt.auxio.music.storage.albumCoverUri
 import org.oxycblt.auxio.music.storage.audioUri
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.recycler.Item
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import java.security.MessageDigest
@@ -491,7 +492,7 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     init {
         var earliestDate: Date? = null
         var totalDuration: Long = 0
-        var earliestDateAdded: Long = 0
+        var earliestDateAdded: Long = Long.MAX_VALUE
 
         // Do linking and value generation in the same loop to save time
         for (song in songs) {
@@ -509,6 +510,8 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
 
             totalDuration += song.durationMs
         }
+
+        logD(earliestDateAdded)
 
         date = earliestDate
         durationMs = totalDuration
