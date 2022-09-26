@@ -20,7 +20,6 @@ package org.oxycblt.auxio.playback
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.activityViewModels
-import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.music.Song
@@ -73,8 +72,8 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         // Update the secondary action to match the setting.
 
-        when (Settings(context).barAction) {
-            BarAction.NEXT -> {
+        when (Settings(context).actionMode) {
+            ActionMode.NEXT -> {
                 binding.playbackSecondaryAction.apply {
                     setIconResource(R.drawable.ic_skip_next_24)
                     contentDescription = getString(R.string.desc_skip_next)
@@ -82,7 +81,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                     setOnClickListener { playbackModel.next() }
                 }
             }
-            BarAction.REPEAT -> {
+            ActionMode.REPEAT -> {
                 binding.playbackSecondaryAction.apply {
                     contentDescription = getString(R.string.desc_change_repeat)
                     iconTint = context.getColorCompat(R.color.sel_accented)
@@ -90,7 +89,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                     collectImmediately(playbackModel.repeatMode, ::updateRepeat)
                 }
             }
-            BarAction.SHUFFLE -> {
+            ActionMode.SHUFFLE -> {
                 binding.playbackSecondaryAction.apply {
                     setIconResource(R.drawable.sel_shuffle_state_24)
                     contentDescription = getString(R.string.desc_shuffle)
@@ -142,23 +141,5 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
     private fun updatePosition(positionDs: Long) {
         requireBinding().playbackProgressBar.progress = positionDs.toInt()
-    }
-}
-
-/** Represents the action that should be shown on the playback bar. */
-enum class BarAction {
-    NEXT,
-    REPEAT,
-    SHUFFLE;
-
-    companion object {
-        /** Convert an int [code] into an instance, or null if it isn't valid. */
-        fun fromIntCode(code: Int) =
-            when (code) {
-                IntegerTable.BAR_ACTION_NEXT -> NEXT
-                IntegerTable.BAR_ACTION_REPEAT -> REPEAT
-                IntegerTable.BAR_ACTION_SHUFFLE -> SHUFFLE
-                else -> null
-            }
     }
 }

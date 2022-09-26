@@ -214,8 +214,8 @@
     <string name="set_keep_shuffle">Zapamiętaj losowe odtwarzanie</string>
     <string name="err_no_app">Nie znaleziono aplikacji mogącej wykonać to zadanie</string>
     <string name="lbl_library_counts">Statystyki biblioteki</string>
-    <string name="fmt_lib_artist_count">Załadowani wykonawcy: %d</string>
-    <string name="set_alt_action">Użyj alternatywnej akcji w powiadomieniu</string>
+    <string name="fmt_lib_artist_count">Załadowani artyści: %d</string>
+    <string name="set_notif_action">Użyj alternatywnej akcji w powiadomieniu</string>
     <string name="set_repeat_pause">Zatrzymaj odtwarzanie przy powtórzeniu</string>
     <string name="desc_clear_search">Wyczyść zapytanie wyszukiwania</string>
     <string name="err_did_not_restore">Nie można przywrócić stanu odtwarzania</string>

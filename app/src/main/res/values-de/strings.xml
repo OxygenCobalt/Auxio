@@ -49,7 +49,7 @@
     <string name="set_quality_covers_desc">Verbesst die Albumcoverqualität, führt jedoch zu längeren Ladezeiten und höherem Speicherverbrauch</string>
     <string name="set_round_mode">Abgerundete Cover</string>
     <string name="set_round_mode_desc">Rundet Ecken der Cover ab</string>
-    <string name="set_alt_action">Alternative Aktionstaste verwenden</string>
+    <string name="set_notif_action">Alternative Aktionstaste verwenden</string>
     <string name="set_alt_repeat">Wiederholen-Aktionstaste bevorzugen</string>
     <string name="set_alt_shuffle">Zufällig-Aktionstaste bevorzugen</string>
     <string name="set_audio">Audio</string>

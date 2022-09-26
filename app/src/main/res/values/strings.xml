@@ -181,9 +181,7 @@
     <string name="set_bar_action_next">Skip to next</string>
     <string name="set_bar_action_repeat">Repeat mode</string>
     <string name="set_bar_action_shuffle">Shuffle</string>
-    <string name="set_alt_action">Use alternate notification action</string>
-    <string name="set_alt_repeat">Prefer repeat mode action</string>
-    <string name="set_alt_shuffle">Prefer shuffle action</string>
+    <string name="set_notif_action">Custom notification action</string>
 
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Headset autoplay</string>

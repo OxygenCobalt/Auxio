@@ -195,7 +195,7 @@
     <string name="set_title">Postavke</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Automatski</string>
-    <string name="set_alt_action">Koristi alternativnu radnju za obavijest</string>
+    <string name="set_notif_action">Koristi alternativnu radnju za obavijest</string>
     <string name="set_round_mode_desc">Omogući zaobljene rubove na dodatnim elementima korisničkog sučelja (zahtijeva zaobljene omote albuma)</string>
     <string name="set_behavior">Ponašanje</string>
     <string name="set_rewind_prev">Premotaj prije preskakanja natrag</string>

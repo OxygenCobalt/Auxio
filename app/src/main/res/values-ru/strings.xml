@@ -61,7 +61,7 @@
     <string name="set_quality_covers_desc">Улучшает качество обложек, но увеличивает время загрузки и использование памяти</string>
     <string name="set_round_mode">Скруглённые обложки</string>
     <string name="set_round_mode_desc">Показывать обложки со скруглёнными краями</string>
-    <string name="set_alt_action">Кнопка в уведомлении</string>
+    <string name="set_notif_action">Кнопка в уведомлении</string>
     <string name="set_alt_repeat">Режим повтора</string>
     <string name="set_alt_shuffle">Режим перемешивания</string>
     <string name="set_audio">Звук</string>

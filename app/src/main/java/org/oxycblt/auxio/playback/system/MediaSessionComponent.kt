@@ -32,6 +32,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
@@ -254,7 +255,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
             context.getString(R.string.set_key_show_covers),
             context.getString(R.string.set_key_quality_covers) ->
                 updateMediaMetadata(playbackManager.song, playbackManager.parent)
-            context.getString(R.string.set_key_alt_notif_action) -> invalidateSecondaryAction()
+            context.getString(R.string.set_key_notif_action) -> invalidateSecondaryAction()
         }
     }
 
@@ -368,24 +369,23 @@ class MediaSessionComponent(private val context: Context, private val callback: 
 
         // Android 13+ leverages custom actions in the notification.
 
-        val extraAction =
-            if (settings.useAltNotifAction) {
-                PlaybackStateCompat.CustomAction.Builder(
-                    PlaybackService.ACTION_INVERT_SHUFFLE,
-                    context.getString(R.string.desc_shuffle),
-                    if (playbackManager.isShuffled) {
-                        R.drawable.ic_shuffle_on_24
-                    } else {
-                        R.drawable.ic_shuffle_off_24
-                    }
-                )
-            } else {
-                PlaybackStateCompat.CustomAction.Builder(
-                    PlaybackService.ACTION_INC_REPEAT_MODE,
-                    context.getString(R.string.desc_change_repeat),
-                    playbackManager.repeatMode.icon
-                )
-            }
+        val extraAction = when (settings.notifAction) {
+            ActionMode.SHUFFLE -> PlaybackStateCompat.CustomAction.Builder(
+                PlaybackService.ACTION_INVERT_SHUFFLE,
+                context.getString(R.string.desc_shuffle),
+                if (playbackManager.isShuffled) {
+                    R.drawable.ic_shuffle_on_24
+                } else {
+                    R.drawable.ic_shuffle_off_24
+                }
+            )
+
+            else -> PlaybackStateCompat.CustomAction.Builder(
+                PlaybackService.ACTION_INC_REPEAT_MODE,
+                context.getString(R.string.desc_change_repeat),
+                playbackManager.repeatMode.icon
+            )
+        }
 
         val exitAction =
             PlaybackStateCompat.CustomAction.Builder(
@@ -404,10 +404,9 @@ class MediaSessionComponent(private val context: Context, private val callback: 
     private fun invalidateSecondaryAction() {
         invalidateSessionState()
 
-        if (settings.useAltNotifAction) {
-            notification.updateShuffled(playbackManager.isShuffled)
-        } else {
-            notification.updateRepeatMode(playbackManager.repeatMode)
+        when (settings.notifAction) {
+            ActionMode.SHUFFLE -> notification.updateShuffled(playbackManager.isShuffled)
+            else -> notification.updateRepeatMode(playbackManager.repeatMode)
         }
 
         if (!provider.isBusy) {

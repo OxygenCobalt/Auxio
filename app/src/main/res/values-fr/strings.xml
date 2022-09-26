@@ -82,7 +82,7 @@
     <string name="set_black_mode_desc">Utiliser un thème noir pur</string>
     <string name="set_lib_tabs_desc">Modifier la visibilité et l\'ordre des onglets de la bibliothèque</string>
     <string name="lbl_bitrate">Débit binaire</string>
-    <string name="set_alt_action">Utiliser une autre action de notification</string>
+    <string name="set_notif_action">Utiliser une autre action de notification</string>
     <string name="lbl_sample_rate">Taux d\'échantillonnage</string>
     <string name="lbl_relative_path">Chemin parent</string>
     <string name="lbl_file_name">Nom du fichier</string>

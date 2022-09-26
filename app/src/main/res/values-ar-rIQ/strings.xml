@@ -61,7 +61,7 @@
     <string name="set_quality_covers_desc">يزيد من جودة غلاف الالبوم، لكن يؤذي إلى زيادة وقت التحميل واستخدام اعلى للذاكرة</string>
     <string name="set_round_mode">اغلفة البوم مدورة</string>
     <string name="set_round_mode_desc">جعل اغلفة الابومات ذات زوايا مدورة</string>
-    <string name="set_alt_action">استخدام نشاط بديل للإشعار</string>
+    <string name="set_notif_action">استخدام نشاط بديل للإشعار</string>
     <string name="set_alt_repeat">تفضيل نشاط وضع التكرار</string>
     <string name="set_alt_shuffle">تفضيل نشاط الخلط</string>
     <string name="set_audio">صوتيات</string>
