@@ -116,7 +116,6 @@
     <string name="clr_lime">Kireç</string>
     <string name="clr_yellow">Sarı</string>
     <string name="clr_orange">Turuncu</string>
-    <string name="set_quality_covers_desc">Albüm kapağı kalitesini artırır, ancak daha uzun yükleme sürelerine ve daha yüksek bellek kullanımına neden olur</string>
     <string name="set_library_song_playback_mode">Kitaplıktan çalarken</string>
     <string name="set_detail_song_playback_mode">Öğe ayrıntılarından çalarken</string>
     <string name="set_playback_mode_artist">Sanatçıdan çal</string>
@@ -144,7 +143,6 @@
     <string name="fmt_lib_album_count">Yüklenen albümler: %d</string>
     <string name="set_notif_action">Alternatif bildirim eylemi kullan</string>
     <string name="set_replay_gain_dynamic">Çalan bir albüm varsa tercih et</string>
-    <string name="set_alt_shuffle">Karıştırma eylemini tercih et</string>
     <string name="set_headset_autoplay">Kulaklıkta otomatik oynatma</string>
     <string name="set_headset_autoplay_desc">Bir kulaklık takıldığında müzik çalmaya başlar (tüm cihazlarda çalışmayabilir)</string>
     <string name="set_replay_gain_track">Parçayı tercih et</string>

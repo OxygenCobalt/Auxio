@@ -46,10 +46,8 @@
     <string name="set_theme_night">Donker</string>
     <string name="set_accent">Accent</string>
     <string name="set_display">Scherm</string>
-    <string name="set_show_covers_desc">Schakel uit om geheugengebruik te besparen</string>
     <string name="set_quality_covers_desc">Verhoogt de kwaliteit van de albumhoezen, maar resulteert in langere laadtijden en hoger geheugengebruik </string>
     <string name="set_notif_action">Gebruikt een afternatief notification action</string>
-    <string name="set_alt_shuffle">Voorkeur aan shuffle actie</string>
     <string name="set_audio">Audio</string>
     <string name="set_behavior">Gedrag</string>
     <string name="set_library_song_playback_mode">Bij het afspelen vanuit de bibliotheek</string>

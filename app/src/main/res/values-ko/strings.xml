@@ -63,12 +63,10 @@
     <string name="set_display">디스플레이</string>
     <string name="set_lib_tabs">라이브러리 탭</string>
     <string name="set_lib_tabs_desc">라이브러리 탭의 순서 및 표시할 탭 변경</string>
-    <string name="set_show_covers_desc">이 옵션을 끄면 메모리 사용량을 줄일 수 있습니다.</string>
     <string name="set_quality_covers_desc">앨범 커버의 품질을 높일 수 있지만 메모리 사용량이 늘어나고 불러오는 시간이 더 오래 걸립니다.</string>
     <string name="set_round_mode">둥근 앨범 커버 사용</string>
     <string name="set_round_mode_desc">앨범 커버의 가장자리를 둥글게 표시</string>
     <string name="set_notif_action">다른 방식의 알림 동작 사용</string>
-    <string name="set_alt_shuffle">무작위 동작 선호</string>
     <string name="set_audio">오디오</string>
     <string name="set_headset_autoplay">헤드셋 자동 재생</string>
     <string name="set_headset_autoplay_desc">헤드셋을 연결하면 항상 자동으로 음악 재생 (모든 기기에서 동작하지는 않을 수 있음)</string>

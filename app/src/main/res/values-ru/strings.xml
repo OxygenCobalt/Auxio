@@ -55,12 +55,10 @@
     <string name="set_display">Экран</string>
     <string name="set_lib_tabs">Вкладки</string>
     <string name="set_lib_tabs_desc">Изменить видимость и порядок вкладок</string>
-    <string name="set_show_covers_desc">Отключите для экономии памяти</string>
     <string name="set_quality_covers_desc">Улучшает качество обложек, но увеличивает время загрузки и использование памяти</string>
     <string name="set_round_mode">Скруглённые обложки</string>
     <string name="set_round_mode_desc">Показывать обложки со скруглёнными краями</string>
     <string name="set_notif_action">Кнопка в уведомлении</string>
-    <string name="set_alt_shuffle">Режим перемешивания</string>
     <string name="set_audio">Звук</string>
     <string name="set_headset_autoplay">Воспроизводить при подключении</string>
     <string name="set_headset_autoplay_desc">Всегда начинать воспроизведение при подключении наушников (может работать не на всех устройствах)</string>

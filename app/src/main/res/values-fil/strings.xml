@@ -73,7 +73,6 @@
     <string name="set_black_mode_desc">Gumamit ng purong-itim na temang madilim</string>
     <string name="set_display">Tanghal</string>
     <string name="set_lib_tabs">Mga library tab</string>
-    <string name="set_show_covers_desc">Patayin upang makabawas sa pag-gamit ng memorya</string>
     <string name="set_quality_covers_desc">Pinapataas ang kalidad ng album cover, ngunit nagdudulot ng mas-mahabang tagal ng pag-load at mas-mataas na pag-gamit ng memorya</string>
     <string name="set_round_mode">Modang pabilog</string>
     <string name="set_round_mode_desc">Paganahin ang mga pabilog na sulok sa mga karagdagang elemento ng UI (Kinakailangang maging pabilog ang mga album cover)</string>

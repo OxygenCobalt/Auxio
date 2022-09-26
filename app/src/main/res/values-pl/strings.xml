@@ -182,7 +182,6 @@
     <string name="desc_tab_handle">Przesuń kartę</string>
     <string name="desc_artist_image">Wizerunek wykonawcy dla %s</string>
     <string name="lng_indexing">Ładuję bibliotekę muzyczną…</string>
-    <string name="set_quality_covers_desc">Zwiększa jakość okładek albumów, ale skutkuje dłuższym czasem ładowanie oraz większym użyciem pamięci</string>
     <string name="set_replay_gain_track">Preferuj utwór</string>
     <string name="lbl_state_restored">Przywrócono stan odtwarzania</string>
     <string name="lbl_state_wiped">Wyczyszczono stan odtwarzania</string>

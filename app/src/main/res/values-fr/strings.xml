@@ -92,7 +92,6 @@
     <string name="lbl_add">Ajouter</string>
     <string name="set_display">Affichage</string>
     <string name="set_lib_tabs">Onglets de la bibliothèque</string>
-    <string name="set_alt_repeat">Préférer l\'action en mode répétition</string>
     <string name="info_app_desc">Un lecteur de musique simple et rationnel pour Android.</string>
     <string name="lbl_indexer">Chargement de musique</string>
     <string name="lng_playback">Afficher et contrôler la lecture de la musique</string>

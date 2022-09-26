@@ -55,12 +55,10 @@
     <string name="set_display">Pantalla</string>
     <string name="set_lib_tabs">Pestañas de biblioteca</string>
     <string name="set_lib_tabs_desc">Cambiar visibilidad y orden de las pestañas de la biblioteca</string>
-    <string name="set_show_covers_desc">Desactive para ahorrar memoria</string>
     <string name="set_quality_covers_desc">Incrementa la calidad de las carátulas, pero deriva en mayores tiempos de carga y uso de memoria</string>
     <string name="set_round_mode">Carátulas redondeadas</string>
     <string name="set_round_mode_desc">Usar carátulas redondeadas para los álbumes</string>
     <string name="set_notif_action">Usar acciones de notificación alternativas</string>
-    <string name="set_alt_shuffle">Preferir acción de mezcla</string>
     <string name="set_audio">Sonido</string>
     <string name="set_replay_gain">ReplayGain</string>
     <string name="set_replay_gain_track">Por pista</string>
