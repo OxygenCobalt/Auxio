@@ -1,0 +1,67 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="108dp"
+            android:height="108dp"
+            android:viewportWidth="108"
+            android:viewportHeight="108">
+            <group android:name="bg">
+                <path
+                    android:fillColor="@color/fill_icon_bg"
+                    android:pathData="M0 0h108v108H0z"
+                    android:strokeColor="#00000000" />
+            </group>
+            <group
+                android:scaleX="2.835"
+                android:scaleY="2.835"
+                android:translateX="19.98"
+                android:translateY="19.98">
+                <path
+                    android:name="note"
+                    android:fillColor="@android:color/transparent"
+                    android:pathData="M 13,4.0000207 17,8 M 12.999969,4.0004121 V 17.000315 m 0,-2.94e-4 -3.0000004,3 -2.9999997,-3 2.9999997,-3 M 7.021336,16.939069"
+                    android:strokeWidth="2"
+                    android:strokeColor="@android:color/white"
+                    android:strokeLineCap="round"
+                    android:strokeLineJoin="round" />
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="bg">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="1000"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="scaleX"
+                    android:startOffset="0"
+                    android:valueFrom="4"
+                    android:valueTo="1"
+                    android:valueType="floatType" />
+                <objectAnimator
+                    android:duration="1000"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="scaleY"
+                    android:startOffset="0"
+                    android:valueFrom="4"
+                    android:valueTo="1"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="note">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="1000"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="strokeWidth"
+                    android:startOffset="0"
+                    android:valueFrom="0"
+                    android:valueTo="2"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>

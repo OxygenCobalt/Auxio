@@ -11,9 +11,12 @@
     </style>
     <!-- Adds fully transparent system bars -->
     <style name="Theme.Auxio.V29" parent="Theme.Auxio.V27" />
+    <!-- Adds an animated splash screen. -->
+    <style name="Theme.Auxio.V31" parent="Theme.Auxio.V29" />
 
     <!-- Base theme -->
-    <style name="Theme.Auxio.Base" parent="Theme.Auxio.V29">
+    <style name="Theme.Auxio.Base" parent="Theme.Auxio.V31">
+
         <!-- Material configuration -->
         <item name="colorOutline">@color/overlay_stroke</item>
         <item name="toolbarStyle">@style/Widget.Auxio.Toolbar</item>
