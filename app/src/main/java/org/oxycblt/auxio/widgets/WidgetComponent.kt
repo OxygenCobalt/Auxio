@@ -146,8 +146,7 @@ class WidgetComponent(private val context: Context) :
     override fun onShuffledChanged(isShuffled: Boolean) = update()
     override fun onRepeatChanged(repeatMode: RepeatMode) = update()
     override fun onSettingChanged(key: String) {
-        if (key == context.getString(R.string.set_key_show_covers) ||
-            key == context.getString(R.string.set_key_quality_covers) ||
+        if (key == context.getString(R.string.set_key_cover_mode) ||
             key == context.getString(R.string.set_key_round_mode)
         ) {
             update()

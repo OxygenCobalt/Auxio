@@ -252,8 +252,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
 
     override fun onSettingChanged(key: String) {
         when (key) {
-            context.getString(R.string.set_key_show_covers),
-            context.getString(R.string.set_key_quality_covers) ->
+            context.getString(R.string.set_key_cover_mode) ->
                 updateMediaMetadata(playbackManager.song, playbackManager.parent)
             context.getString(R.string.set_key_notif_action) -> invalidateSecondaryAction()
         }

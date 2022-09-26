@@ -47,7 +47,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * @author OxygenCobalt
  */
 @Suppress("UNUSED")
-class SettingsListFragment : PreferenceFragmentCompat() {
+class PreferenceFragment : PreferenceFragmentCompat() {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
@@ -171,8 +171,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                         true
                     }
             }
-            context.getString(R.string.set_key_show_covers),
-            context.getString(R.string.set_key_quality_covers) -> {
+            context.getString(R.string.set_key_cover_mode) -> {
                 preference.onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { _, _ ->
                         Coil.imageLoader(context).memoryCache?.clear()

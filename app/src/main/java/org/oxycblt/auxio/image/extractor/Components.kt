@@ -56,7 +56,7 @@ class MusicKeyer : Keyer<Music> {
 class AlbumCoverFetcher
 private constructor(private val context: Context, private val album: Album) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? =
-        fetchArt(context, album)?.let { stream ->
+        fetchCover(context, album)?.let { stream ->
             SourceResult(
                 source = ImageSource(stream.source().buffer(), context),
                 mimeType = null,
@@ -87,7 +87,7 @@ private constructor(
 ) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
         val albums = Sort(Sort.Mode.ByName, true).albums(artist.albums)
-        val results = albums.mapAtMost(4) { album -> fetchArt(context, album) }
+        val results = albums.mapAtMost(4) { album -> fetchCover(context, album) }
         return createMosaic(context, results, size)
     }
 
@@ -108,7 +108,7 @@ private constructor(
     private val genre: Genre
 ) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
-        val results = genre.albums.mapAtMost(4) { fetchArt(context, it) }
+        val results = genre.albums.mapAtMost(4) { fetchCover(context, it) }
 
         return createMosaic(context, results, size)
     }

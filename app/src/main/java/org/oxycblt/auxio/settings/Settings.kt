@@ -27,6 +27,7 @@ import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
+import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.storage.Directory
@@ -77,6 +78,22 @@ class Settings(private val context: Context, private val callback: Callback? = n
                 putInt(context.getString(R.string.set_key_accent), accent)
                 remove(OldKeys.KEY_ACCENT3)
                 apply()
+            }
+        }
+
+        if (inner.contains(OldKeys.KEY_SHOW_COVERS) || inner.contains(OldKeys.KEY_QUALITY_COVERS)) {
+            logD("Migrating cover settings")
+
+            val mode = when {
+                !inner.getBoolean(OldKeys.KEY_SHOW_COVERS, true) -> CoverMode.OFF
+                !inner.getBoolean(OldKeys.KEY_QUALITY_COVERS, true) -> CoverMode.MEDIA_STORE
+                else -> CoverMode.QUALITY
+            }
+
+            inner.edit {
+                putInt(context.getString(R.string.set_key_cover_mode), mode.intCode)
+                remove(OldKeys.KEY_SHOW_COVERS)
+                remove(OldKeys.KEY_QUALITY_COVERS)
             }
         }
 
@@ -187,13 +204,9 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** Whether to load embedded covers */
-    val showCovers: Boolean
-        get() = inner.getBoolean(context.getString(R.string.set_key_show_covers), true)
-
-    /** Whether to ignore MediaStore covers */
-    val useQualityCovers: Boolean
-        get() = inner.getBoolean(context.getString(R.string.set_key_quality_covers), false)
+    /** The strategy used when loading images. */
+    val coverMode: CoverMode
+        get() = CoverMode.fromIntCode(inner.getInt(context.getString(R.string.set_key_cover_mode), Int.MIN_VALUE)) ?: CoverMode.MEDIA_STORE
 
     /** Whether to round additional UI elements (including album covers) */
     val roundMode: Boolean
@@ -208,8 +221,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
                 ?: ActionMode.NEXT
 
     /**
-     * Whether to display the RepeatMode or the shuffle status on the notification. False if repeat,
-     * true if shuffle.
+     * The custom action to display in the notification.
      */
     val notifAction: ActionMode
         get() = ActionMode.fromIntCode(inner.getInt(context.getString(R.string.set_key_notif_action), Int.MIN_VALUE)) ?: ActionMode.REPEAT
@@ -458,6 +470,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     private object OldKeys {
         const val KEY_ACCENT3 = "auxio_accent"
         const val KEY_ALT_NOTIF_ACTION = "KEY_ALT_NOTIF_ACTION"
+        const val KEY_SHOW_COVERS = "KEY_SHOW_COVERS"
+        const val KEY_QUALITY_COVERS = "KEY_QUALITY_COVERS"
         const val KEY_LIB_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE2"
         const val KEY_DETAIL_PLAYBACK_MODE = "auxio_detail_song_play_mode"
     }

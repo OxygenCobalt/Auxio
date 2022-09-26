@@ -31,18 +31,12 @@
             app:summary="@string/set_lib_tabs_desc"
             app:title="@string/set_lib_tabs" />
 
-        <SwitchPreferenceCompat
-            app:defaultValue="true"
-            app:key="@string/set_key_show_covers"
-            app:summary="@string/set_show_covers_desc"
-            app:title="@string/set_show_covers" />
-
-        <SwitchPreferenceCompat
-            app:defaultValue="false"
-            app:dependency="@string/set_key_show_covers"
-            app:key="@string/set_key_quality_covers"
-            app:summary="@string/set_quality_covers_desc"
-            app:title="@string/set_quality_covers" />
+        <org.oxycblt.auxio.settings.prefs.IntListPreference
+            app:defaultValue="@integer/cover_mode_media_store"
+            app:entries="@array/entries_cover_mode"
+            app:entryValues="@array/values_cover_mode"
+            app:key="@string/set_key_cover_mode"
+            app:title="@string/set_cover_mode" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"

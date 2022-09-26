@@ -15,31 +15,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback
+package org.oxycblt.auxio.image
 
 import org.oxycblt.auxio.IntegerTable
 
-/** Represents custom actions available in certain areas of the playback UI. */
-enum class ActionMode {
-    NEXT,
-    REPEAT,
-    SHUFFLE;
+/**
+ * Represents the options available for album cover loading.
+ * @author OxygenCobalt
+ */
+enum class CoverMode {
+    OFF,
+    MEDIA_STORE,
+    QUALITY;
 
-    val intCode: Int
-        get() = when (this) {
-            NEXT -> IntegerTable.ACTION_MODE_NEXT
-            REPEAT -> IntegerTable.ACTION_MODE_REPEAT
-            SHUFFLE -> IntegerTable.ACTION_MODE_SHUFFLE
-        }
+    val intCode: Int get() = when (this) {
+        OFF -> IntegerTable.COVER_MODE_OFF
+        MEDIA_STORE -> IntegerTable.COVER_MODE_MEDIA_STORE
+        QUALITY -> IntegerTable.COVER_MODE_QUALITY
+    }
 
     companion object {
-        /** Convert an int [code] into an instance, or null if it isn't valid. */
-        fun fromIntCode(code: Int) =
-            when (code) {
-                IntegerTable.ACTION_MODE_NEXT -> NEXT
-                IntegerTable.ACTION_MODE_REPEAT -> REPEAT
-                IntegerTable.ACTION_MODE_SHUFFLE -> SHUFFLE
-                else -> null
-            }
+        fun fromIntCode(intCode: Int) = when (intCode) {
+            IntegerTable.COVER_MODE_OFF -> OFF
+            IntegerTable.COVER_MODE_MEDIA_STORE -> MEDIA_STORE
+            IntegerTable.COVER_MODE_QUALITY -> QUALITY
+            else -> null
+        }
     }
 }

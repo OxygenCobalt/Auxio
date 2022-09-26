@@ -144,11 +144,20 @@ object IntegerTable {
     const val REPLAY_GAIN_MODE_DYNAMIC = 0xA113
 
     /** ActionMode.Next */
-    const val BAR_ACTION_NEXT = 0xA119
+    const val ACTION_MODE_NEXT = 0xA119
 
     /** ActionMode.Repeat */
-    const val BAR_ACTION_REPEAT = 0xA11A
+    const val ACTION_MODE_REPEAT = 0xA11A
 
     /** ActionMode.Shuffle */
-    const val BAR_ACTION_SHUFFLE = 0xA11B
+    const val ACTION_MODE_SHUFFLE = 0xA11B
+
+    /** CoverMode.Off */
+    const val COVER_MODE_OFF = 0xA11C
+
+    /** CoverMode.MediaStore */
+    const val COVER_MODE_MEDIA_STORE = 0xA11D
+
+    /** CoverMode.Quality */
+    const val COVER_MODE_QUALITY = 0xA11E
 }

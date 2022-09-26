@@ -170,10 +170,10 @@
     <string name="set_display">Display</string>
     <string name="set_lib_tabs">Library tabs</string>
     <string name="set_lib_tabs_desc">Change visibility and order of library tabs</string>
-    <string name="set_show_covers">Show album covers</string>
-    <string name="set_show_covers_desc">Turn off to save memory usage</string>
-    <string name="set_quality_covers">Ignore MediaStore covers</string>
-    <string name="set_quality_covers_desc">Increases album cover quality, but results in longer loading times and higher memory usage</string>
+    <string name="set_cover_mode">Album covers</string>
+    <string name="set_cover_mode_off">Off</string>
+    <string name="set_cover_mode_media_store">Fast</string>
+    <string name="set_cover_mode_quality">High quality</string>
     <string name="set_round_mode">Round mode</string>
     <string name="set_round_mode_desc">Enable rounded corners on additional UI elements (Requires album covers to be rounded)</string>
     <string name="set_bar_action">Custom playback bar action</string>

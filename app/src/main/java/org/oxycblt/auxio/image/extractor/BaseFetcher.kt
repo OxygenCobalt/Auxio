@@ -41,6 +41,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.source
+import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
@@ -57,21 +58,17 @@ import android.util.Size as AndroidSize
  */
 abstract class BaseFetcher : Fetcher {
     /**
-     * Fetch the artwork of an [album]. This call respects user configuration and has proper
+     * Fetch the [album] cover. This call respects user configuration and has proper
      * redundancy in the case that metadata fails to load.
      */
-    protected suspend fun fetchArt(context: Context, album: Album): InputStream? {
+    protected suspend fun fetchCover(context: Context, album: Album): InputStream? {
         val settings = Settings(context)
 
-        if (!settings.showCovers) {
-            return null
-        }
-
         return try {
-            if (settings.useQualityCovers) {
-                fetchQualityCovers(context, album)
-            } else {
-                fetchMediaStoreCovers(context, album)
+            when (settings.coverMode) {
+                CoverMode.OFF -> null
+                CoverMode.MEDIA_STORE -> fetchMediaStoreCovers(context, album)
+                CoverMode.QUALITY -> fetchQualityCovers(context, album)
             }
         } catch (e: Exception) {
             logW("Unable to extract album cover due to an error: $e")

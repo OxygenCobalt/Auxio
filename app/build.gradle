@@ -3,7 +3,6 @@ plugins {
     id "kotlin-android"
     id "androidx.navigation.safeargs.kotlin"
     id "com.diffplug.spotless"
-    id "kotlin-kapt"
     id "kotlin-parcelize"
 }
 
