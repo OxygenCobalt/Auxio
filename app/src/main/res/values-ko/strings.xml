@@ -69,7 +69,7 @@
     <string name="set_quality_covers_desc">앨범 커버의 품질을 높일 수 있지만 메모리 사용량이 늘어나고 불러오는 시간이 더 오래 걸립니다.</string>
     <string name="set_round_mode">둥근 앨범 커버 사용</string>
     <string name="set_round_mode_desc">앨범 커버의 가장자리를 둥글게 표시</string>
-    <string name="set_alt_action">다른 방식의 알림 동작 사용</string>
+    <string name="set_notif_action">다른 방식의 알림 동작 사용</string>
     <string name="set_alt_repeat">반복 모드 동작 선호</string>
     <string name="set_alt_shuffle">무작위 동작 선호</string>
     <string name="set_audio">오디오</string>

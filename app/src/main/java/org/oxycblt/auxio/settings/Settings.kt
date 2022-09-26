@@ -31,7 +31,7 @@ import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.storage.Directory
 import org.oxycblt.auxio.music.storage.MusicDirs
-import org.oxycblt.auxio.playback.BarAction
+import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
 import org.oxycblt.auxio.ui.accent.Accent
@@ -74,8 +74,24 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
 
             inner.edit {
-                putInt(context.getString(R.string.set_accent), accent)
+                putInt(context.getString(R.string.set_key_accent), accent)
                 remove(OldKeys.KEY_ACCENT3)
+                apply()
+            }
+        }
+
+        if (inner.contains(OldKeys.KEY_ALT_NOTIF_ACTION)) {
+            logD("Migrating ${OldKeys.KEY_ALT_NOTIF_ACTION}")
+
+            val mode = if (inner.getBoolean(OldKeys.KEY_ALT_NOTIF_ACTION, false)) {
+                ActionMode.SHUFFLE
+            } else {
+                ActionMode.REPEAT
+            }
+
+            inner.edit {
+                putInt(context.getString(R.string.set_key_notif_action), mode.intCode)
+                remove(OldKeys.KEY_ALT_NOTIF_ACTION)
                 apply()
             }
         }
@@ -100,6 +116,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             inner.edit {
                 putInt(context.getString(R.string.set_key_library_song_playback_mode), mode.intCode)
                 remove(OldKeys.KEY_LIB_PLAYBACK_MODE)
+                apply()
             }
         }
 
@@ -114,6 +131,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
                     mode?.intCode ?: Int.MIN_VALUE
                 )
                 remove(OldKeys.KEY_DETAIL_PLAYBACK_MODE)
+                apply()
             }
         }
     }
@@ -182,19 +200,19 @@ class Settings(private val context: Context, private val callback: Callback? = n
         get() = inner.getBoolean(context.getString(R.string.set_key_round_mode), false)
 
     /** Which action to display on the playback bar. */
-    val barAction: BarAction
+    val actionMode: ActionMode
         get() =
-            BarAction.fromIntCode(
+            ActionMode.fromIntCode(
                 inner.getInt(context.getString(R.string.set_key_bar_action), Int.MIN_VALUE)
             )
-                ?: BarAction.NEXT
+                ?: ActionMode.NEXT
 
     /**
      * Whether to display the RepeatMode or the shuffle status on the notification. False if repeat,
      * true if shuffle.
      */
-    val useAltNotifAction: Boolean
-        get() = inner.getBoolean(context.getString(R.string.set_key_alt_notif_action), false)
+    val notifAction: ActionMode
+        get() = ActionMode.fromIntCode(inner.getInt(context.getString(R.string.set_key_notif_action), Int.MIN_VALUE)) ?: ActionMode.REPEAT
 
     /** Whether to resume playback when a headset is connected (may not work well in all cases) */
     val headsetAutoplay: Boolean
@@ -439,6 +457,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
     /** Cache of the old keys used in Auxio. */
     private object OldKeys {
         const val KEY_ACCENT3 = "auxio_accent"
+        const val KEY_ALT_NOTIF_ACTION = "KEY_ALT_NOTIF_ACTION"
         const val KEY_LIB_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE2"
         const val KEY_DETAIL_PLAYBACK_MODE = "auxio_detail_song_play_mode"
     }

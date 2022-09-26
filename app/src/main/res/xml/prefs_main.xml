@@ -51,18 +51,18 @@
             app:title="@string/set_round_mode" />
 
         <org.oxycblt.auxio.settings.prefs.IntListPreference
-            app:defaultValue="@integer/bar_action_next"
+            app:defaultValue="@integer/action_mode_next"
             app:entries="@array/entries_bar_action"
             app:entryValues="@array/values_bar_action"
             app:key="@string/set_key_bar_action"
             app:title="@string/set_bar_action" />
 
-        <SwitchPreferenceCompat
-            app:defaultValue="false"
-            app:key="@string/set_key_alt_notif_action"
-            app:summaryOff="@string/set_alt_repeat"
-            app:summaryOn="@string/set_alt_shuffle"
-            app:title="@string/set_alt_action" />
+        <org.oxycblt.auxio.settings.prefs.IntListPreference
+            app:defaultValue="@integer/action_mode_repeat"
+            app:entries="@array/entries_notif_action"
+            app:entryValues="@array/values_notif_action"
+            app:key="@string/set_key_notif_action"
+            app:title="@string/set_notif_action" />
 
     </PreferenceCategory>
 

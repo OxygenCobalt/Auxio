@@ -94,7 +94,7 @@
     <string name="set_audio">Garso</string>
     <string name="set_quality_covers">Ignoruoti „MediaStore“ viršelius</string>
     <string name="set_round_mode">Apvalus režimas</string>
-    <string name="set_alt_action">Naudoti alternatyvų pranešimo veiksmą</string>
+    <string name="set_notif_action">Naudoti alternatyvų pranešimo veiksmą</string>
     <string name="cdc_mp3">MPEG-1 garsas</string>
     <string name="clr_green">Žalia</string>
     <string name="clr_deep_green">Giliai žalia</string>

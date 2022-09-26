@@ -10,7 +10,7 @@
     <string name="set_key_quality_covers" translatable="false">KEY_QUALITY_COVERS</string>
     <string name="set_key_round_mode" translatable="false">auxio_round_covers</string>
     <string name="set_key_bar_action" translatable="false">auxio_bar_action</string>
-    <string name="set_key_alt_notif_action" translatable="false">KEY_ALT_NOTIF_ACTION</string>
+    <string name="set_key_notif_action" translatable="false">auxio_notif_action</string>
 
     <string name="set_key_headset_autoplay" translatable="false">auxio_headset_autoplay</string>
     <string name="set_key_replay_gain" translatable="false">auxio_replay_gain</string>
@@ -70,9 +70,19 @@
     </string-array>
 
     <integer-array name="values_bar_action">
-        <item>@integer/bar_action_next</item>
-        <item>@integer/bar_action_repeat</item>
-        <item>@integer/bar_action_shuffle</item>
+        <item>@integer/action_mode_next</item>
+        <item>@integer/action_mode_repeat</item>
+        <item>@integer/action_mode_shuffle</item>
+    </integer-array>
+
+    <integer-array name="entries_notif_action">
+        <item>@string/set_bar_action_repeat</item>
+        <item>@string/lbl_shuffle</item>
+    </integer-array>
+
+    <integer-array name="values_notif_action">
+        <item>@integer/action_mode_repeat</item>
+        <item>@integer/action_mode_shuffle</item>
     </integer-array>
 
     <string-array name="entries_library_song_playback_mode">
@@ -117,9 +127,9 @@
     <integer name="theme_light">1</integer>
     <integer name="theme_dark">2</integer>
 
-    <integer name="bar_action_next">0xA119</integer>
-    <integer name="bar_action_repeat">0xA11A</integer>
-    <integer name="bar_action_shuffle">0xA11B</integer>
+    <integer name="action_mode_next">0xA119</integer>
+    <integer name="action_mode_repeat">0xA11A</integer>
+    <integer name="action_mode_shuffle">0xA11B</integer>
 
     <integer name="music_mode_none">-2147483648</integer>
     <integer name="music_mode_artist">0xA109</integer>

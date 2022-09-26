@@ -71,7 +71,7 @@
     <string name="set_quality_covers_desc">Zvýší kvalitu obalů alb, ale znamená také delší časy načítání a vyšší využití paměti</string>
     <string name="set_round_mode">Zakulacené obaly alb</string>
     <string name="set_round_mode_desc">Použít obaly alb se zakulacenými rohy</string>
-    <string name="set_alt_action">Použít alternativní akci oznámení</string>
+    <string name="set_notif_action">Použít alternativní akci oznámení</string>
     <string name="set_alt_repeat">Preferovat akci režimu opakování</string>
     <string name="set_alt_shuffle">Preferovat akci náhodného přehrávání</string>
     <string name="set_audio">Zvuk</string>

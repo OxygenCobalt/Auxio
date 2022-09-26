@@ -61,7 +61,7 @@
     <string name="set_quality_covers_desc">提升专辑封面质量，但需要更长的加载时间并消耗更多内存</string>
     <string name="set_round_mode">专辑封面圆角</string>
     <string name="set_round_mode_desc">使用圆角设计的专辑封面</string>
-    <string name="set_alt_action">使用替代通知操作方案</string>
+    <string name="set_notif_action">使用替代通知操作方案</string>
     <string name="set_alt_repeat">偏好重复播放操作</string>
     <string name="set_alt_shuffle">偏好随机播放操作</string>
     <string name="set_audio">音频</string>
