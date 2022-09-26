@@ -3,7 +3,6 @@
 ## 3.0.0
 
 #### What's New
-- Auxio now has a more unique and modern icon design
 - Added multi-value tags support
 	- Added support for multiple artists
 	- Added support for multiple genres
@@ -13,6 +12,8 @@
 	- Use the more unique MD5 hash of metadata when MBIDs can't be used
 - Added toggle to load non-music (Such as podcasts)
 - Music loader now caches parsed metadata for faster load times
+- Redesigned icon
+	- Added animated splash screen on Android 12+
 
 #### What's Improved
 - Sorting now takes accented characters into account
@@ -20,6 +21,7 @@
 - Album dates now start from the earliest date instead of latest date
 - Reshuffling the queue will no longer drop any songs you have added/removed
 - Allowed light/dark theme to be customized on Android 12+
+- All information now scrolls in the playback view
 
 #### What's Fixed
 - Fixed issue where the scroll popup would not display correctly in landscape mode [#230]

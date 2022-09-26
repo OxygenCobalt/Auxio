@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.system.Indexer
+import org.oxycblt.auxio.util.logD
 
 /**
  * A ViewModel representing the current indexing state.
@@ -48,6 +49,7 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
     }
 
     override fun onIndexerStateChanged(state: Indexer.State?) {
+        logD("New state: $state")
         _indexerState.value = state
         if (state is Indexer.State.Complete && state.response is Indexer.Response.Ok) {
             _libraryExists.value = true

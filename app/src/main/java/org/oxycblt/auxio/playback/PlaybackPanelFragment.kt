@@ -80,18 +80,25 @@ class PlaybackPanelFragment :
             setOnMenuItemClickListener(this@PlaybackPanelFragment)
         }
 
+        // Make sure we enable marquee on the song info
+
         binding.playbackSong.apply {
-            // Make marquee of the song title work
             isSelected = true
             setOnClickListener { playbackModel.song.value?.let(navModel::exploreNavigateTo) }
         }
 
-        binding.playbackArtist.setOnClickListener {
-            playbackModel.song.value?.let { showCurrentArtist() }
+        binding.playbackArtist.apply {
+            isSelected = true
+            setOnClickListener {
+                playbackModel.song.value?.let { showCurrentArtist() }
+            }
         }
 
-        binding.playbackAlbum.setOnClickListener {
-            playbackModel.song.value?.let { showCurrentAlbum() }
+        binding.playbackAlbum.apply {
+            isSelected = true
+            setOnClickListener {
+                playbackModel.song.value?.let { showCurrentAlbum() }
+            }
         }
 
         binding.playbackSeekBar.callback = this
@@ -114,7 +121,12 @@ class PlaybackPanelFragment :
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
         binding.playbackToolbar.setOnMenuItemClickListener(null)
+
+        // Leaving marquee on will cause a leak
         binding.playbackSong.isSelected = false
+        binding.playbackArtist.isSelected = false
+        binding.playbackAlbum.isSelected = false
+
         binding.playbackSeekBar.callback = null
     }
 

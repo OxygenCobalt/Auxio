@@ -41,7 +41,7 @@
 
     <TextView
         android:id="@+id/detail_subhead"
-        style="@style/Widget.Auxio.TextView.Secondary"
+        style="@style/Widget.Auxio.TextView.Secondary.Ellipsize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="?android:attr/textColorSecondary"
@@ -51,7 +51,7 @@
 
     <TextView
         android:id="@+id/detail_info"
-        style="@style/Widget.Auxio.TextView.Secondary"
+        style="@style/Widget.Auxio.TextView.Secondary.Ellipsize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="?android:attr/textColorSecondary"

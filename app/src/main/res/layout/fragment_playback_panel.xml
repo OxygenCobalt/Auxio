@@ -54,7 +54,7 @@
 
     <TextView
         android:id="@+id/playback_artist"
-        style="@style/Widget.Auxio.TextView.Secondary"
+        style="@style/Widget.Auxio.TextView.Secondary.Marquee"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"
@@ -67,7 +67,7 @@
 
     <TextView
         android:id="@+id/playback_album"
-        style="@style/Widget.Auxio.TextView.Secondary"
+        style="@style/Widget.Auxio.TextView.Secondary.Marquee"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"

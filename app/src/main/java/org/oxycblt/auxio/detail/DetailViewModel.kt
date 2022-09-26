@@ -335,7 +335,7 @@ class DetailViewModel(application: Application) :
         EPS(R.string.lbl_eps),
         SINGLES(R.string.lbl_singles),
         COMPILATIONS(R.string.lbl_compilations),
-        SOUNDTRACKS(R.string.lbl_compilations),
+        SOUNDTRACKS(R.string.lbl_soundtracks),
         MIXES(R.string.lbl_mixes),
         MIXTAPES(R.string.lbl_mixtapes),
         LIVE(R.string.lbl_live_group),

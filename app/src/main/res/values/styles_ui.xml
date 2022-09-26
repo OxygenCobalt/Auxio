@@ -128,11 +128,21 @@
         <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleLarge</item>
     </style>
 
-    <style name="Widget.Auxio.TextView.Secondary" parent="Widget.Auxio.TextView.Base">
-        <item name="android:ellipsize">end</item>
-        <item name="android:maxLines">1</item>
+    <style name="Widget.Auxio.TextView.Secondary.Base" parent="Widget.Auxio.TextView.Base">
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textAppearance">@style/TextAppearance.Auxio.BodyLarge</item>
+    </style>
+
+    <style name="Widget.Auxio.TextView.Secondary.Ellipsize" parent="Widget.Auxio.TextView.Secondary.Base">
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+
+    </style>
+
+    <style name="Widget.Auxio.TextView.Secondary.Marquee" parent="Widget.Auxio.TextView.Secondary.Base">
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
     </style>
 
     <style name="Widget.Auxio.TextView.Primary.Compact" parent="Widget.Auxio.TextView.Base">
