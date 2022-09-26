@@ -35,7 +35,6 @@
     <string name="set_theme_day">Jasny</string>
     <string name="set_theme_night">Ciemny</string>
     <string name="set_accent">Odcień koloru</string>
-    <string name="set_quality_covers">Ignoruj okładki z Media Store</string>
     <string name="set_audio">Dźwięk</string>
     <string name="set_behavior">Zachowanie</string>
     <!-- Error Namespace | Error Labels -->
@@ -117,7 +116,6 @@
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="lbl_add">Dodaj</string>
     <string name="set_black_mode">Czarny motyw</string>
-    <string name="set_show_covers">Pokaż okładki</string>
     <string name="clr_deep_purple">Ciemny fiolet</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="lbl_sort_name">Nazwa</string>
@@ -184,7 +182,6 @@
     <string name="desc_tab_handle">Przesuń kartę</string>
     <string name="desc_artist_image">Wizerunek wykonawcy dla %s</string>
     <string name="lng_indexing">Ładuję bibliotekę muzyczną…</string>
-    <string name="set_show_covers_desc">Wyłącz, aby zmniejszyć użycie pamięci</string>
     <string name="set_quality_covers_desc">Zwiększa jakość okładek albumów, ale skutkuje dłuższym czasem ładowanie oraz większym użyciem pamięci</string>
     <string name="set_replay_gain_track">Preferuj utwór</string>
     <string name="lbl_state_restored">Przywrócono stan odtwarzania</string>
@@ -221,7 +218,6 @@
     <string name="err_did_not_restore">Nie można przywrócić stanu odtwarzania</string>
     <string name="desc_genre_image">Okładka gatunku %s</string>
     <string name="lng_playback">Wyświetlanie oraz kontrolowanie odtwarzania muzyki</string>
-    <string name="set_alt_repeat">Preferuj akcję \"Powtórz\"</string>
     <string name="set_pre_amp_with">Regulacja w oparciu o tagi</string>
     <string name="set_pre_amp_without">Regulacja bez tagów</string>
     <string name="set_pre_amp_desc">Wzmocnienie dźwięku przez preamplifier jest nakładane na wcześniej ustawione wzmocnienie podczas odtwarzania</string>
@@ -242,7 +238,6 @@
     <string name="desc_change_repeat">Zmień tryb powtarzania</string>
     <string name="desc_shuffle_all">Odtwarzaj losowo wszystkie utwory</string>
     <string name="lng_observing">Monitoruję zmiany w bibliotece muzycznej…</string>
-    <string name="set_alt_shuffle">Preferuj akcję \"Losowo\"</string>
     <string name="lbl_indexer">Ładowanie muzyki</string>
     <string name="lbl_observing">Monitoruję bibliotekę muzyczną</string>
     <string name="set_keep_shuffle_desc">Kontynuuj odtwarzanie losowe po wybraniu nowego utworu</string>

@@ -35,7 +35,6 @@
     <string name="set_theme_day">Claro</string>
     <string name="set_theme_night">Escuro</string>
     <string name="set_accent">Cor de destaque</string>
-    <string name="set_quality_covers">Ignorar capas da loja de mídia</string>
     <string name="set_audio">Áudio</string>
     <string name="set_behavior">Comportamento</string>
     <string name="set_keep_shuffle">Lembrar aleatoriedade</string>
@@ -77,10 +76,8 @@
     <string name="lbl_add">Adicionar</string>
     <string name="lbl_save">Salvar</string>
     <string name="lbl_library_counts">Estatísticas da biblioteca</string>
-    <string name="set_show_covers_desc">Desligue para economizar o uso de memória</string>
     <string name="set_quality_covers_desc">Aumenta a qualidade da capa do álbum, mas resulta em tempos de carregamento mais longos e maior uso de memória</string>
     <string name="set_notif_action">Usar ação de notificação alternativa</string>
-    <string name="set_alt_repeat">Prefira a ação do modo de repetição</string>
     <string name="set_pre_amp_desc">O pré-amplificador é aplicado ao ajuste existente durante a reprodução</string>
     <string name="set_pre_amp_warning">Aviso: Alterar o pré-amplificador para um valor positivo alto pode resultar em picos em algumas faixas de áudio.</string>
     <string name="set_dirs">Pastas de música</string>
@@ -90,7 +87,6 @@
     <string name="err_no_app">Nenhum aplicativo encontrado que possa lidar com esta tarefa</string>
     <string name="err_no_dirs">Sem pastas</string>
     <string name="err_bad_dir">Esta pasta não é compatível</string>
-    <string name="set_show_covers">Mostrar capas de álbuns</string>
     <string name="set_reindex_desc">Pode limpar o estado de reprodução</string>
     <string name="set_rewind_prev">Retroceder antes de voltar</string>
     <string name="set_reindex">Recarregar música</string>
@@ -162,7 +158,6 @@
     <string name="fmt_lib_genre_count">Gêneros carregados: %d</string>
     <string name="fmt_lib_album_count">Álbuns carregados: %d</string>
     <string name="fmt_lib_artist_count">Artistas carregados: %d</string>
-    <string name="set_alt_shuffle">Prefira a ação aleatória</string>
     <string name="set_pre_amp_without">Ajuste sem TAGs</string>
     <string name="set_headset_autoplay">Reprodução automática do fone de ouvido</string>
     <string name="set_pre_amp">Pré-amplificador do ganho de repetição</string>

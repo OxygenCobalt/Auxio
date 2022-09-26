@@ -36,7 +36,6 @@
     <string name="set_theme_day">Clar</string>
     <string name="set_theme_night">Întunecat</string>
     <string name="set_accent">Culoare accentuată</string>
-    <string name="set_quality_covers">Ignoră coperțile Media Store</string>
     <string name="set_audio">Audio</string>
     <string name="set_behavior">Comportament</string>
     <!-- Error Namespace | Error Labels -->

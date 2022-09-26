@@ -65,14 +65,11 @@
     <string name="set_display">Zobrazení</string>
     <string name="set_lib_tabs">Karty knihovny</string>
     <string name="set_lib_tabs_desc">Změnit viditelnost a pořadí karet knihovny</string>
-    <string name="set_show_covers">Zobrazit obaly alb</string>
     <string name="set_show_covers_desc">Vypněte pro ušetření paměti</string>
-    <string name="set_quality_covers">Ignorovat obaly MediaStore</string>
     <string name="set_quality_covers_desc">Zvýší kvalitu obalů alb, ale znamená také delší časy načítání a vyšší využití paměti</string>
     <string name="set_round_mode">Zakulacené obaly alb</string>
     <string name="set_round_mode_desc">Použít obaly alb se zakulacenými rohy</string>
     <string name="set_notif_action">Použít alternativní akci oznámení</string>
-    <string name="set_alt_repeat">Preferovat akci režimu opakování</string>
     <string name="set_alt_shuffle">Preferovat akci náhodného přehrávání</string>
     <string name="set_audio">Zvuk</string>
     <string name="set_headset_autoplay">Automatické přehrávání se sluchátky</string>

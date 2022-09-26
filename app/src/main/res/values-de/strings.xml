@@ -43,14 +43,11 @@
     <string name="set_theme_night">Dunkel</string>
     <string name="set_accent">Farbgestaltung</string>
     <string name="set_display">Anzeige</string>
-    <string name="set_show_covers">Albumcover anzeigen</string>
     <string name="set_show_covers_desc">Ausschalten um Speicherplatz zu sparen</string>
-    <string name="set_quality_covers">MediaStore-Cover ignorieren</string>
     <string name="set_quality_covers_desc">Verbesst die Albumcoverqualität, führt jedoch zu längeren Ladezeiten und höherem Speicherverbrauch</string>
     <string name="set_round_mode">Abgerundete Cover</string>
     <string name="set_round_mode_desc">Rundet Ecken der Cover ab</string>
     <string name="set_notif_action">Alternative Aktionstaste verwenden</string>
-    <string name="set_alt_repeat">Wiederholen-Aktionstaste bevorzugen</string>
     <string name="set_alt_shuffle">Zufällig-Aktionstaste bevorzugen</string>
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Kopfhörer: automatische Wiedergabe</string>
