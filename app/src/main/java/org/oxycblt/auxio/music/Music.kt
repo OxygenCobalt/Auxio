@@ -358,7 +358,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
             musicBrainzId = raw.albumMusicBrainzId?.toUuidOrNull(),
             name = requireNotNull(raw.albumName) { "Invalid raw: No album name" },
             sortName = raw.albumSortName,
-            releaseType = raw.albumReleaseType.parseReleaseType(settings),
+            releaseType = raw.albumReleaseTypes.parseReleaseType(settings),
             rawArtists = rawAlbumArtists.ifEmpty { rawArtists }.ifEmpty { listOf(Artist.Raw(null, null)) }
         )
 
@@ -385,17 +385,17 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     class Raw
     constructor(
         var mediaStoreId: Long? = null,
-        var musicBrainzId: String? = null,
-        var name: String? = null,
-        var fileName: String? = null,
-        var sortName: String? = null,
-        var directory: Directory? = null,
-        var extensionMimeType: String? = null,
-        var formatMimeType: String? = null,
-        var size: Long? = null,
         var dateAdded: Long? = null,
         var dateModified: Long? = null,
+        var fileName: String? = null,
+        var directory: Directory? = null,
+        var size: Long? = null,
         var durationMs: Long? = null,
+        var extensionMimeType: String? = null,
+        var formatMimeType: String? = null,
+        var musicBrainzId: String? = null,
+        var name: String? = null,
+        var sortName: String? = null,
         var track: Int? = null,
         var disc: Int? = null,
         var date: Date? = null,
@@ -403,7 +403,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         var albumMusicBrainzId: String? = null,
         var albumName: String? = null,
         var albumSortName: String? = null,
-        var albumReleaseType: List<String> = listOf(),
+        var albumReleaseTypes: List<String> = listOf(),
         var artistMusicBrainzIds: List<String> = listOf(),
         var artistNames: List<String> = listOf(),
         var artistSortNames: List<String> = listOf(),

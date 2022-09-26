@@ -227,12 +227,12 @@ class Task(context: Context, private val raw: Song.Raw) {
         tags["TALB"]?.let { raw.albumName = it[0] }
         tags["TSOA"]?.let { raw.albumSortName = it[0] }
         (tags["TXXX:MusicBrainz Album Type"] ?: tags["GRP1"])?.let {
-            raw.albumReleaseType = it
+            raw.albumReleaseTypes = it
         }
 
         // Artist
         tags["TXXX:MusicBrainz Artist Id"]?.let { raw.artistMusicBrainzIds = it }
-        (tags["TXXX:ARTISTS"] ?: tags["TPE1"])?.let { raw.artistNames = it }
+        tags["TPE1"]?.let { raw.artistNames = it }
         tags["TSOP"]?.let { raw.artistSortNames = it }
 
         // Album artist
@@ -299,17 +299,17 @@ class Task(context: Context, private val raw: Song.Raw) {
         tags["MUSICBRAINZ_ALBUMID"]?.let { raw.albumMusicBrainzId = it[0] }
         tags["ALBUM"]?.let { raw.albumName = it[0] }
         tags["ALBUMSORT"]?.let { raw.albumSortName = it[0] }
-        tags["RELEASETYPE"]?.let { raw.albumReleaseType = it }
+        tags["RELEASETYPE"]?.let { raw.albumReleaseTypes = it }
 
         // Artist
         tags["MUSICBRAINZ_ARTISTID"]?.let { raw.artistMusicBrainzIds = it }
-        (tags["ARTISTS"] ?: tags["ARTIST"])?.let { raw.artistNames = it }
-        (tags["ARTISTS_SORT"] ?: tags["ARTISTSORT"])?.let { raw.artistSortNames = it }
+        tags["ARTIST"]?.let { raw.artistNames = it }
+        tags["ARTISTSORT"]?.let { raw.artistSortNames = it }
 
         // Album artist
         tags["MUSICBRAINZ_ALBUMARTISTID"]?.let { raw.albumArtistMusicBrainzIds = it }
-        (tags["ALBUMARTISTS"] ?: tags["ALBUMARTIST"])?.let { raw.albumArtistNames = it }
-        (tags["ALBUMARTISTS_SORT"] ?: tags["ALBUMARTISTSORT"])?.let { raw.albumArtistSortNames = it }
+        tags["ALBUMARTIST"]?.let { raw.albumArtistNames = it }
+        tags["ALBUMARTISTSORT"]?.let { raw.albumArtistSortNames = it }
 
         // Genre
         tags["GENRE"]?.let { raw.genreNames = it }

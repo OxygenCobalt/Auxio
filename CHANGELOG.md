@@ -10,8 +10,9 @@
 - Artists and album artists are now both given UI entires
 - Upgraded music ID management:
 	- Use MD5 for default UUIDS
-	- Added support for MusicBrainz IDs (MBIDs)
+	- Added support for MusicBrainz IDs (MBIDs
 - Added toggle to load non-music (Such as podcasts)
+- Music loader now caches parsed metadata for faster load times
 
 #### What's Improved
 - Sorting now takes accented characters into account

@@ -37,7 +37,7 @@ import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.extractor.Api21MediaStoreExtractor
 import org.oxycblt.auxio.music.extractor.Api29MediaStoreExtractor
 import org.oxycblt.auxio.music.extractor.Api30MediaStoreExtractor
-import org.oxycblt.auxio.music.extractor.CacheDatabase
+import org.oxycblt.auxio.music.extractor.CacheExtractor
 import org.oxycblt.auxio.music.extractor.MetadataExtractor
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
@@ -196,14 +196,12 @@ class Indexer {
      * Run the proper music loading process.
      */
     private suspend fun indexImpl(context: Context): MusicStore.Library? {
-        emitIndexing(Indexing.Indeterminate)
-
         // Create the chain of extractors. Each extractor builds on the previous and
         // enables version-specific features in order to create the best possible music
         // experience. This is technically dependency injection. Except it doesn't increase
         // your compile times by 3x. Isn't that nice.
 
-        val cacheDatabase = CacheDatabase()
+        val cacheDatabase = CacheExtractor(context)
 
         val mediaStoreExtractor =
             when {
@@ -259,6 +257,7 @@ class Indexer {
         logD("Starting indexing process")
 
         val start = System.currentTimeMillis()
+        emitIndexing(Indexing.Indeterminate)
 
         // Initialize the extractor chain. This also nets us the projected total
         // that we can show when loading.
@@ -278,6 +277,8 @@ class Indexer {
             yield()
             emitIndexing(Indexing.Songs(songs.size, total))
         }
+
+        emitIndexing(Indexing.Indeterminate)
 
         metadataExtractor.finalize(rawSongs)
 

@@ -100,7 +100,7 @@ import java.io.File
  * music loading process.
  * @author OxygenCobalt
  */
-abstract class MediaStoreExtractor(private val context: Context, private val cacheDatabase: CacheDatabase) {
+abstract class MediaStoreExtractor(private val context: Context, private val cacheDatabase: CacheExtractor) {
     private var cursor: Cursor? = null
 
     private var idIndex = -1
@@ -259,17 +259,14 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
         }
 
         // Populate the minimum required fields to maybe obtain a cache entry.
-        raw.mediaStoreId = cursor.getLong(idIndex)
-        raw.dateAdded = cursor.getLong(dateAddedIndex)
-        raw.dateModified = cursor.getLong(dateAddedIndex)
+        populateFileData(cursor, raw)
 
-        if (cacheDatabase.maybePopulateCachedRaw(raw)) {
+        if (cacheDatabase.populateFromCache(raw)) {
             // We found a valid cache entry, no need to extract metadata.
-            logD("Found cached raw: ${raw.name}")
             return true
         }
 
-        buildRaw(cursor, raw)
+        populateMetadata(cursor, raw)
 
         // We had to freshly make this raw, return false
         return false
@@ -279,7 +276,7 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
      * The projection to use when querying media. Add version-specific columns here in an
      * implementation.
      */
-    open val projection: Array<String>
+    protected open val projection: Array<String>
         get() =
             arrayOf(
                 // These columns are guaranteed to work on all versions of android
@@ -298,25 +295,35 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
                 AUDIO_COLUMN_ALBUM_ARTIST
             )
 
-    abstract val dirSelector: String
-    abstract fun addDirToSelectorArgs(dir: Directory, args: MutableList<String>): Boolean
+    protected abstract val dirSelector: String
+    protected abstract fun addDirToSelectorArgs(dir: Directory, args: MutableList<String>): Boolean
 
     /**
-     * Build an [Song.Raw] based on the current cursor values. Each implementation should try to
-     * obtain an upstream [Song.Raw] first, and then populate it with version-specific fields
-     * outlined in [projection].
+     * Populate the "file data" of the cursor, or data that is required to access a cache entry
+     * or makes no sense to cache. This includes database IDs, modification dates,
      */
-    protected open fun buildRaw(cursor: Cursor, raw: Song.Raw) {
-        raw.name = cursor.getString(titleIndex)
-
-        raw.extensionMimeType = cursor.getString(mimeTypeIndex)
-        raw.size = cursor.getLong(sizeIndex)
+    protected open fun populateFileData(cursor: Cursor, raw: Song.Raw) {
+        raw.mediaStoreId = cursor.getLong(idIndex)
+        raw.dateAdded = cursor.getLong(dateAddedIndex)
+        raw.dateModified = cursor.getLong(dateAddedIndex)
 
         // Try to use the DISPLAY_NAME field to obtain a (probably sane) file name
         // from the android system.
         raw.fileName = cursor.getStringOrNull(displayNameIndex)
+        raw.extensionMimeType = cursor.getString(mimeTypeIndex)
 
+        raw.albumMediaStoreId = cursor.getLong(albumIdIndex)
+    }
+
+    /**
+     * Extract cursor metadata into [raw].
+     */
+    protected open fun populateMetadata(cursor: Cursor, raw: Song.Raw) {
+        raw.name = cursor.getString(titleIndex)
+
+        raw.size = cursor.getLong(sizeIndex)
         raw.durationMs = cursor.getLong(durationIndex)
+
         raw.date = cursor.getIntOrNull(yearIndex)?.toDate()
 
         // A non-existent album name should theoretically be the name of the folder it contained
@@ -324,7 +331,6 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
         // file is not actually in the root internal storage directory. We can't do anything to
         // fix this, really.
         raw.albumName = cursor.getString(albumIndex)
-        raw.albumMediaStoreId = cursor.getLong(albumIdIndex)
 
         // Android does not make a non-existent artist tag null, it instead fills it in
         // as <unknown>, which makes absolutely no sense given how other fields default
@@ -375,7 +381,7 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
  * API 21 onwards to API 29.
  * @author OxygenCobalt
  */
-class Api21MediaStoreExtractor(context: Context, cacheDatabase: CacheDatabase) :
+class Api21MediaStoreExtractor(context: Context, cacheDatabase: CacheExtractor) :
     MediaStoreExtractor(context, cacheDatabase) {
     private var trackIndex = -1
     private var dataIndex = -1
@@ -401,8 +407,8 @@ class Api21MediaStoreExtractor(context: Context, cacheDatabase: CacheDatabase) :
         return true
     }
 
-    override fun buildRaw(cursor: Cursor, raw: Song.Raw) {
-        super.buildRaw(cursor, raw)
+    override fun populateFileData(cursor: Cursor, raw: Song.Raw) {
+        super.populateFileData(cursor, raw)
 
         // DATA is equivalent to the absolute path of the file.
         val data = cursor.getString(dataIndex)
@@ -426,6 +432,10 @@ class Api21MediaStoreExtractor(context: Context, cacheDatabase: CacheDatabase) :
                 break
             }
         }
+    }
+
+    override fun populateMetadata(cursor: Cursor, raw: Song.Raw) {
+        super.populateMetadata(cursor, raw)
 
         val rawTrack = cursor.getIntOrNull(trackIndex)
         if (rawTrack != null) {
@@ -441,7 +451,7 @@ class Api21MediaStoreExtractor(context: Context, cacheDatabase: CacheDatabase) :
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class BaseApi29MediaStoreExtractor(context: Context, cacheDatabase: CacheDatabase) :
+open class BaseApi29MediaStoreExtractor(context: Context, cacheDatabase: CacheExtractor) :
     MediaStoreExtractor(context, cacheDatabase) {
     private var volumeIndex = -1
     private var relativePathIndex = -1
@@ -476,8 +486,8 @@ open class BaseApi29MediaStoreExtractor(context: Context, cacheDatabase: CacheDa
         return true
     }
 
-    override fun buildRaw(cursor: Cursor, raw: Song.Raw) {
-        super.buildRaw(cursor, raw)
+    override fun populateFileData(cursor: Cursor, raw: Song.Raw) {
+        super.populateFileData(cursor, raw)
 
         val volumeName = cursor.getString(volumeIndex)
         val relativePath = cursor.getString(relativePathIndex)
@@ -497,7 +507,7 @@ open class BaseApi29MediaStoreExtractor(context: Context, cacheDatabase: CacheDa
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class Api29MediaStoreExtractor(context: Context, cacheDatabase: CacheDatabase) :
+open class Api29MediaStoreExtractor(context: Context, cacheDatabase: CacheExtractor) :
     BaseApi29MediaStoreExtractor(context, cacheDatabase) {
     private var trackIndex = -1
 
@@ -510,8 +520,8 @@ open class Api29MediaStoreExtractor(context: Context, cacheDatabase: CacheDataba
     override val projection: Array<String>
         get() = super.projection + arrayOf(MediaStore.Audio.AudioColumns.TRACK)
 
-    override fun buildRaw(cursor: Cursor, raw: Song.Raw) {
-        super.buildRaw(cursor, raw)
+    override fun populateMetadata(cursor: Cursor, raw: Song.Raw) {
+        super.populateMetadata(cursor, raw)
 
         // This backend is volume-aware, but does not support the modern track fields.
         // Use the old field instead.
@@ -529,7 +539,7 @@ open class Api29MediaStoreExtractor(context: Context, cacheDatabase: CacheDataba
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.R)
-class Api30MediaStoreExtractor(context: Context, cacheDatabase: CacheDatabase) :
+class Api30MediaStoreExtractor(context: Context, cacheDatabase: CacheExtractor) :
     BaseApi29MediaStoreExtractor(context, cacheDatabase) {
     private var trackIndex: Int = -1
     private var discIndex: Int = -1
@@ -549,8 +559,8 @@ class Api30MediaStoreExtractor(context: Context, cacheDatabase: CacheDatabase) :
                     MediaStore.Audio.AudioColumns.DISC_NUMBER
                 )
 
-    override fun buildRaw(cursor: Cursor, raw: Song.Raw) {
-        super.buildRaw(cursor, raw)
+    override fun populateMetadata(cursor: Cursor, raw: Song.Raw) {
+        super.populateMetadata(cursor, raw)
 
         // Both CD_TRACK_NUMBER and DISC_NUMBER tend to be formatted as they are in
         // the tag itself, which is to say that it is formatted as NN/TT tracks, where
