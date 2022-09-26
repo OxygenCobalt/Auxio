@@ -29,7 +29,6 @@ import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.resolveYear
 import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
@@ -158,7 +157,10 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
     fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
-        binding.parentInfo.text = item.date.resolveYear(binding.context)
+        binding.parentInfo.text =
+            item.date?.resolveYear(binding.context)
+                ?: binding.context.getString(R.string.def_date)
+
         // binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnLongClickListener {
             listener.onOpenMenu(item, it)

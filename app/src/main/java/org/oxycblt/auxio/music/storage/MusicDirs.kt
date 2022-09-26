@@ -15,9 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.settings
-
-import org.oxycblt.auxio.music.Directory
+package org.oxycblt.auxio.music.storage
 
 /** Represents a the configuration for the "Folder Management" setting */
 data class MusicDirs(val dirs: List<Directory>, val shouldInclude: Boolean)

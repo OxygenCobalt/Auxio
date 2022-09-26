@@ -26,7 +26,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.music.formatDurationMs
+import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.recycler.GenreViewHolder
 import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item

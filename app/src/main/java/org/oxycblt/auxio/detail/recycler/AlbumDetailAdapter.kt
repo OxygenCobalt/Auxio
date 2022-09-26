@@ -29,7 +29,7 @@ import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
 import org.oxycblt.auxio.detail.DiscHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.formatDurationMs
+import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
@@ -120,7 +120,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
         binding.detailInfo.apply {
             val date =
-                item.date?.let { context.getString(R.string.fmt_number, it.year) }
+                item.date?.resolveYear(context)
                     ?: context.getString(R.string.def_date)
 
             val songCount = context.getPlural(R.plurals.fmt_song_count, item.songs.size)

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.ui
+package org.oxycblt.auxio.playback
 
 import android.content.Context
 import android.graphics.drawable.LayerDrawable

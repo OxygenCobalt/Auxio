@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.settings
+package org.oxycblt.auxio.settings.prefs
 
 import android.os.Bundle
 import androidx.preference.PreferenceDialogFragmentCompat

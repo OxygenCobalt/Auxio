@@ -28,9 +28,9 @@ import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.music.formatDurationMs
 import org.oxycblt.auxio.music.picker.PickerMode
-import org.oxycblt.auxio.music.secsToMs
+import org.oxycblt.auxio.playback.formatDurationMs
+import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.recycler.IndicatorAdapter

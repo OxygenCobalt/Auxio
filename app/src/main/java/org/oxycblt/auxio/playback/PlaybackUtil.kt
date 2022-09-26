@@ -15,59 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.playback
 
-import android.content.ContentResolver
-import android.content.ContentUris
-import android.content.Context
-import android.database.Cursor
-import android.net.Uri
-import android.provider.MediaStore
 import android.text.format.DateUtils
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.logD
-import java.util.UUID
-
-/** Shortcut for making a [ContentResolver] query with less superfluous arguments. */
-fun ContentResolver.queryCursor(
-    uri: Uri,
-    projection: Array<out String>,
-    selector: String? = null,
-    args: Array<String>? = null
-) = query(uri, projection, selector, args, null)
-
-/** Shortcut for making a [ContentResolver] query and using the particular cursor with [use]. */
-inline fun <reified R> ContentResolver.useQuery(
-    uri: Uri,
-    projection: Array<out String>,
-    selector: String? = null,
-    args: Array<String>? = null,
-    block: (Cursor) -> R
-) = queryCursor(uri, projection, selector, args)?.use(block)
-
-/**
- * For some reason the album cover URI namespace does not have a member in [MediaStore], but it
- * still works since at least API 21.
- */
-private val EXTERNAL_ALBUM_ART_URI = Uri.parse("content://media/external/audio/albumart")
-
-/** Converts a [Long] Audio ID into a URI to that particular audio file. */
-val Long.audioUri: Uri
-    get() = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, this)
-
-/** Converts a [Long] Album ID into a URI pointing to MediaStore-cached album art. */
-val Long.albumCoverUri: Uri
-    get() = ContentUris.withAppendedId(EXTERNAL_ALBUM_ART_URI, this)
-
-fun String.toUuidOrNull(): UUID? = try {
-    UUID.fromString(this)
-} catch (e: IllegalArgumentException) {
-    null
-}
-
-/** Shortcut to resolve a year from a nullable date. Will return "No Date" if it is null. */
-fun Date?.resolveYear(context: Context) =
-    this?.resolveYear(context) ?: context.getString(R.string.def_date)
 
 /** Converts a long in milliseconds to a long in deci-seconds */
 fun Long.msToDs() = floorDiv(100)

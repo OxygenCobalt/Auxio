@@ -26,7 +26,12 @@ import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.extractor.parseId3GenreNames
 import org.oxycblt.auxio.music.extractor.parseMultiValue
-import org.oxycblt.auxio.music.extractor.parseReleaseType
+import org.oxycblt.auxio.music.extractor.toUuidOrNull
+import org.oxycblt.auxio.music.storage.Directory
+import org.oxycblt.auxio.music.storage.MimeType
+import org.oxycblt.auxio.music.storage.Path
+import org.oxycblt.auxio.music.storage.albumCoverUri
+import org.oxycblt.auxio.music.storage.audioUri
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.nonZeroOrNull
@@ -358,7 +363,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
             musicBrainzId = raw.albumMusicBrainzId?.toUuidOrNull(),
             name = requireNotNull(raw.albumName) { "Invalid raw: No album name" },
             sortName = raw.albumSortName,
-            releaseType = raw.albumReleaseTypes.parseReleaseType(settings),
+            releaseType = ReleaseType.parse(raw.albumReleaseTypes.parseMultiValue(settings)),
             rawArtists = rawAlbumArtists.ifEmpty { rawArtists }.ifEmpty { listOf(Artist.Raw(null, null)) }
         )
 
@@ -557,7 +562,9 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
  */
 class Artist
 constructor(raw: Raw, songAlbums: List<Music>) : MusicParent() {
-    override val uid = raw.musicBrainzId?.let { UID.musicBrainz(MusicMode.ARTISTS, it) } ?: UID.auxio(MusicMode.ARTISTS) { update(raw.name) }
+    override val uid = raw.musicBrainzId?.let { UID.musicBrainz(MusicMode.ARTISTS, it) } ?: UID.auxio(
+        MusicMode.ARTISTS
+    ) { update(raw.name) }
 
     override val rawName = raw.name
 

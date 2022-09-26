@@ -22,6 +22,7 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import org.oxycblt.auxio.music.MusicStore.Callback
 import org.oxycblt.auxio.music.MusicStore.Library
+import org.oxycblt.auxio.music.storage.useQuery
 import org.oxycblt.auxio.util.contentResolverSafe
 
 /**

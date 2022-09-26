@@ -19,9 +19,9 @@ package org.oxycblt.auxio.music.extractor
 
 import androidx.core.text.isDigitsOnly
 import org.oxycblt.auxio.music.Date
-import org.oxycblt.auxio.music.ReleaseType
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.nonZeroOrNull
+import java.util.UUID
 
 /**
  * Parse out the track number field as if the given Int is formatted as DTTT, where D Is the disc
@@ -110,8 +110,11 @@ fun String.maybeParseSeparators(settings: Settings): List<String> {
     return splitEscaped { separators.contains(it) }
 }
 
-/** Parse a multi-value tag into a [ReleaseType], handling separators in the process. */
-fun List<String>.parseReleaseType(settings: Settings) = ReleaseType.parse(parseMultiValue(settings))
+fun String.toUuidOrNull(): UUID? = try {
+    UUID.fromString(this)
+} catch (e: IllegalArgumentException) {
+    null
+}
 
 /**
  * Parse a multi-value genre name using ID3v2 rules. If there is one value, the ID3v2.3 rules will

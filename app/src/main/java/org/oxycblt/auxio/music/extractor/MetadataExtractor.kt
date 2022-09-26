@@ -26,7 +26,7 @@ import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.audioUri
+import org.oxycblt.auxio.music.storage.audioUri
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 

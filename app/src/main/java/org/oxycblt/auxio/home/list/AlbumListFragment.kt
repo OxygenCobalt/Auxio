@@ -27,8 +27,8 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.music.formatDurationMs
-import org.oxycblt.auxio.music.secsToMs
+import org.oxycblt.auxio.playback.formatDurationMs
+import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.ui.recycler.AlbumViewHolder
 import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item

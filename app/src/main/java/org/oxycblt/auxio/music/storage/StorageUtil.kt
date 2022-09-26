@@ -15,10 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.storage
 
 import android.annotation.SuppressLint
+import android.content.ContentResolver
+import android.content.ContentUris
 import android.content.Context
+import android.database.Cursor
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
@@ -90,6 +94,107 @@ class Directory private constructor(val volume: StorageVolume, val relativePath:
         }
     }
 }
+
+/**
+ * Represents a mime type as it is loaded by Auxio. [fromExtension] is based on the file extension
+ * should always exist, while [fromFormat] is based on the file itself and may not be available.
+ * @author OxygenCobalt
+ */
+data class MimeType(val fromExtension: String, val fromFormat: String?) {
+    fun resolveName(context: Context): String {
+        // We try our best to produce a more readable name for the common audio formats.
+        val formatName =
+            when (fromFormat) {
+                // We start with the extracted mime types, as they are more consistent. Note that
+                // we do not include container formats at all with these names. It is only the
+                // inner codec that we show.
+                MimeTypes.AUDIO_MPEG,
+                MimeTypes.AUDIO_MPEG_L1,
+                MimeTypes.AUDIO_MPEG_L2 -> R.string.cdc_mp3
+                MimeTypes.AUDIO_AAC -> R.string.cdc_aac
+                MimeTypes.AUDIO_VORBIS -> R.string.cdc_vorbis
+                MimeTypes.AUDIO_OPUS -> R.string.cdc_opus
+                MimeTypes.AUDIO_FLAC -> R.string.cdc_flac
+                MimeTypes.AUDIO_WAV -> R.string.cdc_wav
+
+                // We don't give a name to more unpopular formats.
+
+                else -> -1
+            }
+
+        if (formatName > -1) {
+            return context.getString(formatName)
+        }
+
+        // Fall back to the file extension in the case that we have no mime type or
+        // a useless "audio/raw" mime type. Here:
+        // - We return names for container formats instead of the inner format, as we
+        // cannot parse the file.
+        // - We are at the mercy of the Android OS, hence we check for every possible mime
+        // type for a particular format.
+        val extensionName =
+            when (fromExtension) {
+                "audio/mpeg",
+                "audio/mp3" -> R.string.cdc_mp3
+                "audio/mp4",
+                "audio/mp4a-latm",
+                "audio/mpeg4-generic" -> R.string.cdc_mp4
+                "audio/aac",
+                "audio/aacp",
+                "audio/3gpp",
+                "audio/3gpp2" -> R.string.cdc_aac
+                "audio/ogg",
+                "application/ogg",
+                "application/x-ogg" -> R.string.cdc_ogg
+                "audio/flac" -> R.string.cdc_flac
+                "audio/wav",
+                "audio/x-wav",
+                "audio/wave",
+                "audio/vnd.wave" -> R.string.cdc_wav
+                "audio/x-matroska" -> R.string.cdc_mka
+                else -> -1
+            }
+
+        return if (extensionName > -1) {
+            context.getString(extensionName)
+        } else {
+            // Fall back to the extension if we can't find a special name for this format.
+            MimeTypeMap.getSingleton().getExtensionFromMimeType(fromExtension)?.uppercase()
+                ?: context.getString(R.string.def_codec)
+        }
+    }
+}
+
+/** Shortcut for making a [ContentResolver] query with less superfluous arguments. */
+fun ContentResolver.queryCursor(
+    uri: Uri,
+    projection: Array<out String>,
+    selector: String? = null,
+    args: Array<String>? = null
+) = query(uri, projection, selector, args, null)
+
+/** Shortcut for making a [ContentResolver] query and using the particular cursor with [use]. */
+inline fun <reified R> ContentResolver.useQuery(
+    uri: Uri,
+    projection: Array<out String>,
+    selector: String? = null,
+    args: Array<String>? = null,
+    block: (Cursor) -> R
+) = queryCursor(uri, projection, selector, args)?.use(block)
+
+/**
+ * For some reason the album cover URI namespace does not have a member in [MediaStore], but it
+ * still works since at least API 21.
+ */
+private val EXTERNAL_ALBUM_ART_URI = Uri.parse("content://media/external/audio/albumart")
+
+/** Converts a [Long] Audio ID into a URI to that particular audio file. */
+val Long.audioUri: Uri
+    get() = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, this)
+
+/** Converts a [Long] Album ID into a URI pointing to MediaStore-cached album art. */
+val Long.albumCoverUri: Uri
+    get() = ContentUris.withAppendedId(EXTERNAL_ALBUM_ART_URI, this)
 
 @Suppress("NewApi")
 private val SM_API21_GET_VOLUME_LIST_METHOD: Method by
@@ -181,73 +286,3 @@ val StorageVolume.mediaStoreVolumeNameCompat: String?
                 uuidCompat?.lowercase()
             }
         }
-
-/**
- * Represents a mime type as it is loaded by Auxio. [fromExtension] is based on the file extension
- * should always exist, while [fromFormat] is based on the file itself and may not be available.
- * @author OxygenCobalt
- */
-data class MimeType(val fromExtension: String, val fromFormat: String?) {
-    fun resolveName(context: Context): String {
-        // We try our best to produce a more readable name for the common audio formats.
-        val formatName =
-            when (fromFormat) {
-                // We start with the extracted mime types, as they are more consistent. Note that
-                // we do not include container formats at all with these names. It is only the
-                // inner codec that we show.
-                MimeTypes.AUDIO_MPEG,
-                MimeTypes.AUDIO_MPEG_L1,
-                MimeTypes.AUDIO_MPEG_L2 -> R.string.cdc_mp3
-                MimeTypes.AUDIO_AAC -> R.string.cdc_aac
-                MimeTypes.AUDIO_VORBIS -> R.string.cdc_vorbis
-                MimeTypes.AUDIO_OPUS -> R.string.cdc_opus
-                MimeTypes.AUDIO_FLAC -> R.string.cdc_flac
-                MimeTypes.AUDIO_WAV -> R.string.cdc_wav
-
-                // We don't give a name to more unpopular formats.
-
-                else -> -1
-            }
-
-        if (formatName > -1) {
-            return context.getString(formatName)
-        }
-
-        // Fall back to the file extension in the case that we have no mime type or
-        // a useless "audio/raw" mime type. Here:
-        // - We return names for container formats instead of the inner format, as we
-        // cannot parse the file.
-        // - We are at the mercy of the Android OS, hence we check for every possible mime
-        // type for a particular format.
-        val extensionName =
-            when (fromExtension) {
-                "audio/mpeg",
-                "audio/mp3" -> R.string.cdc_mp3
-                "audio/mp4",
-                "audio/mp4a-latm",
-                "audio/mpeg4-generic" -> R.string.cdc_mp4
-                "audio/aac",
-                "audio/aacp",
-                "audio/3gpp",
-                "audio/3gpp2" -> R.string.cdc_aac
-                "audio/ogg",
-                "application/ogg",
-                "application/x-ogg" -> R.string.cdc_ogg
-                "audio/flac" -> R.string.cdc_flac
-                "audio/wav",
-                "audio/x-wav",
-                "audio/wave",
-                "audio/vnd.wave" -> R.string.cdc_wav
-                "audio/x-matroska" -> R.string.cdc_mka
-                else -> -1
-            }
-
-        return if (extensionName > -1) {
-            context.getString(extensionName)
-        } else {
-            // Fall back to the extension if we can't find a special name for this format.
-            MimeTypeMap.getSingleton().getExtensionFromMimeType(fromExtension)?.uppercase()
-                ?: context.getString(R.string.def_codec)
-        }
-    }
-}

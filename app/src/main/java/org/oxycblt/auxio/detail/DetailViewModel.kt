@@ -33,12 +33,12 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MimeType
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.ReleaseType
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.music.storage.MimeType
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item

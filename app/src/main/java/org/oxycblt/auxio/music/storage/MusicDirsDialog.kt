@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.settings
+package org.oxycblt.auxio.music.storage
 
 import android.net.Uri
 import android.os.Bundle
@@ -28,7 +28,6 @@ import androidx.core.view.isVisible
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
-import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context

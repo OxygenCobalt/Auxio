@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.settings
+package org.oxycblt.auxio.settings.prefs
 
 import android.os.Bundle
 import android.view.View
@@ -33,6 +33,7 @@ import coil.Coil
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.isNight
