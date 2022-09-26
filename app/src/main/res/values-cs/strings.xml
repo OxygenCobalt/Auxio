@@ -209,7 +209,7 @@
     <string name="lbl_observing">Monitorování hudební knihovny</string>
     <string name="set_observing">Automatické znovunačítání</string>
     <string name="lng_observing">Sledování změn v hudební knihovně…</string>
-    <string name="set_observing_desc">Znovu načíst vaší hudební knihovnu při změně (experimentální)</string>
+    <string name="set_observing_desc">Znovu načíst vaší hudební knihovnu při změně (vyžaduje trvalé oznámení)</string>
     <string name="lbl_indexing">Načítání hudby</string>
     <string name="lbl_sort_date_added">Datum přidání</string>
     <string name="lbl_single">Singl</string>
@@ -253,4 +253,7 @@
     <string name="lbl_mix">Mix</string>
     <string name="lbl_go_genre">Přejít na žánr</string>
     <string name="set_separators_warning">Varování: Při použití tohoto nastavení mohou být některé značky nesprávně interpretovány jako vícehodnotové.</string>
+    <string name="set_exclude_non_music">Vyloučit nehudební obsah</string>
+    <string name="set_exclude_non_music_desc">Ignorovat zvukové soubory, které nejsou hudbou, například podcasty</string>
+    <string name="set_bar_action_shuffle">Zamíchat</string>
 </resources>

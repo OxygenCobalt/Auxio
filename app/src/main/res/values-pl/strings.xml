@@ -177,12 +177,12 @@
     <string name="desc_music_dir_delete">Usuń folder</string>
     <string name="desc_queue_bar">Pokaż kolejkę</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
-    <string name="set_observing_desc">Automatycznie załaduj ponownie bibliotekę po wykryciu zmian (eksperymentalne)</string>
+    <string name="set_observing_desc">Automatycznie załaduj ponownie bibliotekę po wykryciu zmian (wymaga stałego powiadomienia)</string>
     <string name="set_dirs_mode_exclude">Wyklucz</string>
     <string name="set_dirs_mode_include">Uwzględnij</string>
     <string name="desc_queue_handle">Zmień pozycję utworu w kolejce</string>
     <string name="desc_tab_handle">Przesuń kartę</string>
-    <string name="desc_artist_image">Wizerunek artysty dla %s</string>
+    <string name="desc_artist_image">Wizerunek wykonawcy dla %s</string>
     <string name="lng_indexing">Ładuję bibliotekę muzyczną…</string>
     <string name="set_show_covers_desc">Wyłącz, aby zmniejszyć użycie pamięci</string>
     <string name="set_quality_covers_desc">Zwiększa jakość okładek albumów, ale skutkuje dłuższym czasem ładowanie oraz większym użyciem pamięci</string>
@@ -247,4 +247,7 @@
     <string name="lbl_observing">Monitoruję bibliotekę muzyczną</string>
     <string name="set_keep_shuffle_desc">Kontynuuj odtwarzanie losowe po wybraniu nowego utworu</string>
     <string name="fmt_lib_song_count">Załadowane utwory: %d</string>
+    <string name="set_bar_action_shuffle">Losowo</string>
+    <string name="set_exclude_non_music_desc">Ignoruj pliki audio które nie są utworami muzycznymi, np. podcasty</string>
+    <string name="set_playback_mode_artist">Odtwórz od wykonawcy</string>
 </resources>
