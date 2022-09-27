@@ -244,4 +244,10 @@
     <string name="set_bar_action_shuffle">Losowo</string>
     <string name="set_exclude_non_music_desc">Ignoruj pliki audio które nie są utworami muzycznymi, np. podcasty</string>
     <string name="set_playback_mode_artist">Odtwórz od wykonawcy</string>
+    <string name="set_exclude_non_music">Wyklucz inne pliki dźwiękowe</string>
+    <string name="set_cover_mode">Okładki albumów</string>
+    <string name="set_cover_mode_off">Wyłączone</string>
+    <string name="set_cover_mode_media_store">Szybkie</string>
+    <string name="set_cover_mode_quality">Wysoka jakość</string>
+    <string name="set_separators_warning">Uwaga: To ustawienie może powodować nieprawidłowe przetwarzenie tagów jako posiadających wiele wartości. Problem ten należy rozwiązać stawiając ukośnik wsteczny (\\) przed niepożądanymi znakami rozdzielającymi.</string>
 </resources>
