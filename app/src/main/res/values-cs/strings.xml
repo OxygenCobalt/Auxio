@@ -65,7 +65,6 @@
     <string name="set_display">Zobrazení</string>
     <string name="set_lib_tabs">Karty knihovny</string>
     <string name="set_lib_tabs_desc">Změnit viditelnost a pořadí karet knihovny</string>
-    <string name="set_quality_covers_desc">Zvýší kvalitu obalů alb, ale znamená také delší časy načítání a vyšší využití paměti</string>
     <string name="set_round_mode">Zakulacené obaly alb</string>
     <string name="set_round_mode_desc">Použít obaly alb se zakulacenými rohy</string>
     <string name="set_notif_action">Použít alternativní akci oznámení</string>
@@ -247,8 +246,12 @@
     <string name="lbl_compilation_live">Živá kompilace</string>
     <string name="lbl_mix">Mix</string>
     <string name="lbl_go_genre">Přejít na žánr</string>
-    <string name="set_separators_warning">Varování: Při použití tohoto nastavení mohou být některé značky nesprávně interpretovány jako vícehodnotové.</string>
+    <string name="set_separators_warning">Varování: Při použití tohoto nastavení mohou být některé značky nesprávně interpretovány jako vícehodnotové. Tento problém můžete vyřešit přidáním zpětného lomítka (\\) před nechtěné oddělovací znaky.</string>
     <string name="set_exclude_non_music">Vyloučit nehudební obsah</string>
     <string name="set_exclude_non_music_desc">Ignorovat zvukové soubory, které nejsou hudbou, například podcasty</string>
     <string name="set_bar_action_shuffle">Zamíchat</string>
+    <string name="set_cover_mode">Obaly alb</string>
+    <string name="set_cover_mode_quality">Vysoká kvalita</string>
+    <string name="set_cover_mode_off">Vypnuté</string>
+    <string name="set_cover_mode_media_store">Rychlé</string>
 </resources>
