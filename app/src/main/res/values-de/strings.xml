@@ -43,7 +43,6 @@
     <string name="set_theme_night">Dunkel</string>
     <string name="set_accent">Farbgestaltung</string>
     <string name="set_display">Anzeige</string>
-    <string name="set_quality_covers_desc">Verbesst die Albumcoverqualität, führt jedoch zu längeren Ladezeiten und höherem Speicherverbrauch</string>
     <string name="set_round_mode">Abgerundete Cover</string>
     <string name="set_round_mode_desc">Rundet Ecken der Cover ab</string>
     <string name="set_notif_action">Alternative Aktionstaste verwenden</string>
@@ -240,8 +239,12 @@
     <string name="set_separators_slash">Schrägstrich (/)</string>
     <string name="set_separators_plus">Plus (+)</string>
     <string name="set_playback_mode_artist">Vom Künstler abspielen</string>
-    <string name="set_separators_warning">Achtung: Verwenden dieser Einstellung könnte dazu führen, dass einige Tags fälschlicherweise interpretiert werden, als hätten sie mehrere Werte.</string>
+    <string name="set_separators_warning">Achtung: Verwenden dieser Einstellung könnte dazu führen, dass einige Tags fälschlicherweise interpretiert werden, als hätten sie mehrere Werte. Das kann gelöst werden, in dem vor ungewollte Trenner ein Backslash (\\) eingefügt wird.</string>
     <string name="set_exclude_non_music">Nicht-Musik ausschließen</string>
     <string name="set_exclude_non_music_desc">Audio-Dateien, die keine Musik sind (wie Podcasts), ignorieren</string>
     <string name="set_bar_action_shuffle">Zufällig</string>
+    <string name="set_cover_mode">Album-Cover</string>
+    <string name="set_cover_mode_off">Aus</string>
+    <string name="set_cover_mode_media_store">Schnell</string>
+    <string name="set_cover_mode_quality">Hohe Qualität</string>
 </resources>
