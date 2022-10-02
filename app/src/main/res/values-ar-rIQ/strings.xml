@@ -55,15 +55,10 @@
     <string name="set_display">عرض</string>
     <string name="set_lib_tabs">تبويتات المكتبة</string>
     <string name="set_lib_tabs_desc">تغيير ظهور وترتيب تبويتات المكتبة</string>
-    <string name="set_show_covers">عرض اغلفة الالبومات</string>
-    <string name="set_show_covers_desc">أطفاء لتقليل استخدام الذاكرة</string>
-    <string name="set_quality_covers">تجاهل اغلفة وسائط التخزين</string>
     <string name="set_quality_covers_desc">يزيد من جودة غلاف الالبوم، لكن يؤذي إلى زيادة وقت التحميل واستخدام اعلى للذاكرة</string>
     <string name="set_round_mode">اغلفة البوم مدورة</string>
     <string name="set_round_mode_desc">جعل اغلفة الابومات ذات زوايا مدورة</string>
     <string name="set_notif_action">استخدام نشاط بديل للإشعار</string>
-    <string name="set_alt_repeat">تفضيل نشاط وضع التكرار</string>
-    <string name="set_alt_shuffle">تفضيل نشاط الخلط</string>
     <string name="set_audio">صوتيات</string>
     <string name="set_replay_gain">صخب الصوت</string>
     <string name="set_replay_gain_track">تفضيل المقطع</string>

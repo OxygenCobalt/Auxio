@@ -34,7 +34,6 @@
     <string name="set_theme_day">Φωτεινό</string>
     <string name="set_theme_night">Σκοτεινό</string>
     <string name="set_accent">Χρώματα</string>
-    <string name="set_quality_covers">Παράληψη των Media Store εξωφύλλων</string>
     <string name="set_audio">Ήχος</string>
     <string name="set_behavior">Συμπεριφορά</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -112,11 +111,9 @@
     <string name="lbl_shuffle_shortcut_long">Tυχαία αναπαραγωγή όλων</string>
     <string name="lbl_shuffle_shortcut_short">Tυχαία αναπαραγωγή</string>
     <string name="lbl_ok">Οκ</string>
-    <string name="set_show_covers">Έμφανιση εξώφυλλου άλμπουμ</string>
     <string name="set_display">Προβολή</string>
     <string name="lbl_save">Αποθήκευση</string>
     <string name="lbl_bitrate">Pυθμός μεταβίβασης δεδομένων</string>
-    <string name="set_alt_shuffle">Προτίμηση τυχαίας αναπαραγωγής</string>
     <string name="set_black_mode">Μάυρο θέμα</string>
     <string name="set_black_mode_desc">Χρησιμοποίηση ενός καθαρά μαύρο σκοτεινό θέμα</string>
     <string name="lbl_cancel">Ακύρωση</string>

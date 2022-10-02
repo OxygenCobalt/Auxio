@@ -84,15 +84,10 @@
     <string name="set_replay_gain">„ReplayGain“ strategija</string>
     <string name="lbl_singles">Singlaiai</string>
     <string name="lbl_ok">Gerai</string>
-    <string name="set_show_covers">Rodyti albumų viršelius</string>
-    <string name="set_show_covers_desc">Išjungti, kad sutaupytumėte atminties naudojimą</string>
-    <string name="set_quality_covers_desc">Pagerėja albumo viršelio kokybė, tačiau ilgėja įkrovimo laikas ir naudojama daugiau atminties</string>
     <string name="set_round_mode_desc">Įgalinti papildomų vartotojo sąsajos elementų suapvalintus kampus (Reikia, kad albumo viršeliai būtų suapvalinti)</string>
-    <string name="set_alt_repeat">Pirmenybė teikiama pakartotinio režimo veiksmams</string>
     <string name="lbl_soundtrack">Garso takelis</string>
     <string name="lbl_soundtracks">Garso takeliai</string>
     <string name="set_audio">Garso</string>
-    <string name="set_quality_covers">Ignoruoti „MediaStore“ viršelius</string>
     <string name="set_round_mode">Apvalus režimas</string>
     <string name="set_notif_action">Naudoti alternatyvų pranešimo veiksmą</string>
     <string name="cdc_mp3">MPEG-1 garsas</string>
@@ -208,7 +203,6 @@
     <string name="set_reindex">Perkrauti muziką</string>
     <string name="set_reindex_desc">Gali nuvalyti grojimo būseną</string>
     <string name="set_bar_action">Pasirinktinis grojimo juostos veiksmas</string>
-    <string name="set_alt_shuffle">Pirmenybė teikiama išmaišymo veiksmui</string>
     <string name="err_did_not_restore">Jokios grojimo būsenos nepavyko atkurti</string>
     <string name="set_pre_amp">„ReplayGain“ išankstinis stiprintuvas</string>
     <string name="set_save_state">Išsaugoti grojimo būseną</string>

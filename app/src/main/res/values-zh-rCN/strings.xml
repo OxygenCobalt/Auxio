@@ -55,15 +55,9 @@
     <string name="set_display">显示</string>
     <string name="set_lib_tabs">媒体库标签</string>
     <string name="set_lib_tabs_desc">更改媒体库标签页面的可见性和顺序</string>
-    <string name="set_show_covers">显示专辑封面</string>
-    <string name="set_show_covers_desc">关闭以节省内存使用</string>
-    <string name="set_quality_covers">忽略 MediaStore 封面</string>
-    <string name="set_quality_covers_desc">提升专辑封面质量，但需要更长的加载时间并消耗更多内存</string>
     <string name="set_round_mode">专辑封面圆角</string>
     <string name="set_round_mode_desc">使用圆角设计的专辑封面</string>
     <string name="set_notif_action">使用替代通知操作方案</string>
-    <string name="set_alt_repeat">偏好重复播放操作</string>
-    <string name="set_alt_shuffle">偏好随机播放操作</string>
     <string name="set_audio">音频</string>
     <string name="set_headset_autoplay">自动播放</string>
     <string name="set_headset_autoplay_desc">连接至耳机时总是自动播放（并非在所有设备上都有用）</string>
@@ -244,8 +238,12 @@
     <string name="lbl_mixes">混音</string>
     <string name="lbl_mix">混音</string>
     <string name="lbl_go_genre">转到流派</string>
-    <string name="set_separators_warning">警告：使用此设置可能会导致某些标签被错误地阐释为具有多个值。要解决这个问题，你可以使用反斜杠 (\\) 跳过不想要的分隔符。</string>
+    <string name="set_separators_warning">警告：使用此设置可能会导致某些标签被错误地阐释为具有多个值。要解决这个问题，你可以在不想要的分隔符前加上反斜杠 (\\)。</string>
     <string name="set_exclude_non_music_desc">忽略不是音乐的音频文件，例如播客</string>
     <string name="set_exclude_non_music">排除非音乐</string>
     <string name="set_bar_action_shuffle">随机播放</string>
+    <string name="set_cover_mode_quality">高质量</string>
+    <string name="set_cover_mode">专辑封面</string>
+    <string name="set_cover_mode_off">关</string>
+    <string name="set_cover_mode_media_store">快速</string>
 </resources>

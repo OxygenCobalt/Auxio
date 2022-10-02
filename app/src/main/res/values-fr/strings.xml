@@ -36,7 +36,6 @@
     <string name="set_theme_day">Clair</string>
     <string name="set_theme_night">Sombre</string>
     <string name="set_accent">Couleur d\'accentuation</string>
-    <string name="set_quality_covers">Ignorer le stockage des pochettes</string>
     <string name="set_audio">Audio</string>
     <string name="set_behavior">Comportement</string>
     <!-- Error Namespace | Error Labels -->
@@ -92,10 +91,7 @@
     <string name="lbl_size">Taille</string>
     <string name="lbl_add">Ajouter</string>
     <string name="set_display">Affichage</string>
-    <string name="set_show_covers">Afficher les pochettes d\'album</string>
     <string name="set_lib_tabs">Onglets de la bibliothèque</string>
-    <string name="set_quality_covers_desc">Augmente la qualité de la pochette de l\'album mais entraîne des temps de chargement plus longs et une utilisation accrue de la mémoire</string>
-    <string name="set_alt_repeat">Préférer l\'action en mode répétition</string>
     <string name="info_app_desc">Un lecteur de musique simple et rationnel pour Android.</string>
     <string name="lbl_indexer">Chargement de musique</string>
     <string name="lng_playback">Afficher et contrôler la lecture de la musique</string>
@@ -110,7 +106,6 @@
     <string name="lbl_sort_track">Piste</string>
     <string name="lbl_song_detail">Voir les propriétés</string>
     <string name="lbl_props">Propriétés de la chanson</string>
-    <string name="set_show_covers_desc">Désactiver pour économiser la mémoire</string>
     <string name="lbl_ep_live">EP live</string>
     <string name="lbl_ep_remix">EP de remixes</string>
     <string name="lbl_single_live">Single live</string>
