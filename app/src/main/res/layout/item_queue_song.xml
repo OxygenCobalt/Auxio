@@ -10,7 +10,7 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorPrimary"
+        android:background="?attr/colorError"
         android:visibility="invisible" />
 
     <ImageView
@@ -20,7 +20,8 @@
         android:contentDescription="@string/desc_clear_queue_item"
         android:padding="@dimen/spacing_medium"
         android:src="@drawable/ic_delete_24"
-        app:tint="?attr/colorSurface" />
+        android:layout_marginEnd="@dimen/spacing_small"
+        app:tint="?attr/colorOnError" />
 
     <FrameLayout
         android:id="@+id/body"
