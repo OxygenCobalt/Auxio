@@ -31,7 +31,7 @@
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:paddingStart="@dimen/spacing_medium"
-            android:text="@string/set_separators_and"
+            android:text="@string/set_separators_semicolon"
             android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
             tools:ignore="RtlSymmetry" />

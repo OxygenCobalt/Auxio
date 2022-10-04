@@ -55,7 +55,6 @@
     <string name="set_display">Экран</string>
     <string name="set_lib_tabs">Вкладки</string>
     <string name="set_lib_tabs_desc">Изменить видимость и порядок вкладок</string>
-    <string name="set_quality_covers_desc">Улучшает качество обложек, но увеличивает время загрузки и использование памяти</string>
     <string name="set_round_mode">Скруглённые обложки</string>
     <string name="set_round_mode_desc">Показывать обложки со скруглёнными краями</string>
     <string name="set_notif_action">Кнопка в уведомлении</string>

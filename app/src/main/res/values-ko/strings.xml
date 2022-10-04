@@ -179,9 +179,7 @@
     <string name="lbl_mixes">믹스</string>
     <string name="lbl_equalizer">이퀄라이저</string>
     <string name="lbl_shuffle_shortcut_short">셔플</string>
-    <string name="set_bar_action_shuffle">셔플</string>
     <string name="set_playback_mode_none">표시된 항목에서 재생</string>
-    <string name="lbl_go_genre">장르로 이동</string>
     <string name="lng_indexing">음악 라이브러리 불러오기 중…</string>
     <string name="set_wipe_state">재생 상태 지우기</string>
     <string name="set_restore_state">재생 상태 복원</string>

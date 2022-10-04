@@ -70,7 +70,6 @@
     <string name="set_display">Prikaz</string>
     <string name="set_lib_tabs">Pločice zbirke</string>
     <string name="set_lib_tabs_desc">Promijeni vidljivost i redoslijed pločica zbirke</string>
-    <string name="set_quality_covers_desc">Povećava kvalitetu omota albuma, no uzrokuje dulje učitavanje i povećanje korištenja memorije</string>
     <string name="set_round_mode">Zaobljena naslovnica</string>
     <string name="set_audio">Zvuk</string>
     <string name="set_headset_autoplay">Slušalice: odmah reproduciraj</string>
@@ -232,5 +231,4 @@
     <string name="lbl_equalizer">Ekvilajzer</string>
     <string name="set_bar_action_next">Prijeđi na sljedeću</string>
     <string name="set_bar_action_repeat">Način ponavljanja</string>
-    <string name="lbl_go_genre">Idi na žanr</string>
 </resources>

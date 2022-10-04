@@ -56,7 +56,6 @@
     <string name="set_display">Visualizzazione</string>
     <string name="set_lib_tabs">Schede libreria</string>
     <string name="set_lib_tabs_desc">Cambia la visibilità e l\'ordine delle schede della libreria</string>
-    <string name="set_quality_covers_desc">Migliora la qualità delle copertine, ma comporta maggiori tempi di caricamento e consumo di memoria</string>
     <string name="set_round_mode">Copertine dischi arrotondate</string>
     <string name="set_round_mode_desc">Usa copertine dischi con angoli arrotondati</string>
     <string name="set_notif_action">Usa azioni notifica alternative</string>
@@ -229,5 +228,4 @@
     <string name="set_bar_action_next">Vai alla prossima</string>
     <string name="set_bar_action_repeat">Modalità ripetizione</string>
     <string name="desc_exit">Interrompi riproduzione</string>
-    <string name="set_bar_action_shuffle">Mescola</string>
 </resources>

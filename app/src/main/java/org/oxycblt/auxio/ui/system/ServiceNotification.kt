@@ -46,7 +46,10 @@ abstract class ServiceNotification(context: Context, info: ChannelInfo) :
 
     abstract val code: Int
 
+    @Suppress("MissingPermission")
     fun post() {
+        // This is safe to call without the POST_NOTIFICATIONS permission, as it's a foreground
+        // notification.
         notificationManager.notify(code, build())
     }
 

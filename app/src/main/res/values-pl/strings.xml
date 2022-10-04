@@ -153,7 +153,6 @@
     <string name="lbl_mix">Mix</string>
     <string name="desc_skip_prev">Przejdź do ostatniego utworu</string>
     <string name="desc_skip_next">Przejdź do następnego utworu</string>
-    <string name="lbl_go_genre">Przejdź do gatunku</string>
     <string name="lng_author">Autorstwa OxygenCobalt</string>
     <string name="set_round_mode">Zaokrąglone okładki</string>
     <string name="set_round_mode_desc">Zaokrąglone rogi okładek</string>
@@ -241,7 +240,6 @@
     <string name="lbl_observing">Monitoruję bibliotekę muzyczną</string>
     <string name="set_keep_shuffle_desc">Kontynuuj odtwarzanie losowe po wybraniu nowego utworu</string>
     <string name="fmt_lib_song_count">Załadowane utwory: %d</string>
-    <string name="set_bar_action_shuffle">Losowo</string>
     <string name="set_exclude_non_music_desc">Ignoruj pliki audio które nie są utworami muzycznymi, np. podcasty</string>
     <string name="set_playback_mode_artist">Odtwórz od wykonawcy</string>
     <string name="set_exclude_non_music">Wyklucz inne pliki dźwiękowe</string>

@@ -46,7 +46,6 @@
     <string name="set_theme_night">Donker</string>
     <string name="set_accent">Accent</string>
     <string name="set_display">Scherm</string>
-    <string name="set_quality_covers_desc">Verhoogt de kwaliteit van de albumhoezen, maar resulteert in langere laadtijden en hoger geheugengebruik </string>
     <string name="set_notif_action">Gebruikt een afternatief notification action</string>
     <string name="set_audio">Audio</string>
     <string name="set_behavior">Gedrag</string>

@@ -245,11 +245,9 @@
     <string name="lbl_mixes">Mixy</string>
     <string name="lbl_compilation_live">Živá kompilace</string>
     <string name="lbl_mix">Mix</string>
-    <string name="lbl_go_genre">Přejít na žánr</string>
     <string name="set_separators_warning">Varování: Při použití tohoto nastavení mohou být některé značky nesprávně interpretovány jako vícehodnotové. Tento problém můžete vyřešit přidáním zpětného lomítka (\\) před nechtěné oddělovací znaky.</string>
     <string name="set_exclude_non_music">Vyloučit nehudební obsah</string>
     <string name="set_exclude_non_music_desc">Ignorovat zvukové soubory, které nejsou hudbou, například podcasty</string>
-    <string name="set_bar_action_shuffle">Zamíchat</string>
     <string name="set_cover_mode">Obaly alb</string>
     <string name="set_cover_mode_quality">Vysoká kvalita</string>
     <string name="set_cover_mode_off">Vypnuté</string>

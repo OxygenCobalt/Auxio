@@ -232,7 +232,6 @@
     <string name="lbl_mix">Mischung</string>
     <string name="set_separators">Mehrfachwert-Trenner</string>
     <string name="set_separators_desc">Zeichen ändern, welche mehrere Tag-Werte trennt</string>
-    <string name="lbl_go_genre">Zum Genre gehen</string>
     <string name="set_separators_and">Und-Zeichen (&amp;)</string>
     <string name="set_separators_semicolon">Semikolon (;)</string>
     <string name="set_separators_comma">Komma (,)</string>
@@ -242,7 +241,6 @@
     <string name="set_separators_warning">Achtung: Verwenden dieser Einstellung könnte dazu führen, dass einige Tags fälschlicherweise interpretiert werden, als hätten sie mehrere Werte. Das kann gelöst werden, in dem vor ungewollte Trenner ein Backslash (\\) eingefügt wird.</string>
     <string name="set_exclude_non_music">Nicht-Musik ausschließen</string>
     <string name="set_exclude_non_music_desc">Audio-Dateien, die keine Musik sind (wie Podcasts), ignorieren</string>
-    <string name="set_bar_action_shuffle">Zufällig</string>
     <string name="set_cover_mode">Album-Cover</string>
     <string name="set_cover_mode_off">Aus</string>
     <string name="set_cover_mode_media_store">Schnell</string>

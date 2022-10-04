@@ -102,7 +102,6 @@
     <string name="lbl_play_next">Play next</string>
     <string name="lbl_queue_add">Add to queue</string>
 
-    <string name="lbl_go_genre">Go to genre</string>
     <string name="lbl_go_artist">Go to artist</string>
     <string name="lbl_go_album">Go to album</string>
     <string name="lbl_song_detail">View properties</string>
@@ -180,7 +179,6 @@
     <!-- Skip to next (song) -->
     <string name="set_bar_action_next">Skip to next</string>
     <string name="set_bar_action_repeat">Repeat mode</string>
-    <string name="set_bar_action_shuffle">Shuffle</string>
     <string name="set_notif_action">Custom notification action</string>
 
     <string name="set_audio">Audio</string>
