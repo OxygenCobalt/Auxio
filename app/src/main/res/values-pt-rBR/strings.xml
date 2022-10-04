@@ -230,7 +230,6 @@
     <string name="lbl_compilation_remix">Compilações de remix</string>
     <string name="set_separators_plus">Mais (+)</string>
     <string name="set_separators_and">E comercial (&amp;)</string>
-    <string name="lbl_go_genre">Ir para o gênero</string>
     <string name="set_separators_comma">Vírgula (,)</string>
     <string name="set_separators_semicolon">Ponto-e-vírgula (;)</string>
     <string name="set_separators_slash">Barra (/)</string>
@@ -243,5 +242,4 @@
     <string name="set_cover_mode_off">Desligado</string>
     <string name="set_cover_mode_media_store">Rápido</string>
     <string name="set_cover_mode_quality">Qualidade alta</string>
-    <string name="set_bar_action_shuffle">Aleatório</string>
 </resources>
