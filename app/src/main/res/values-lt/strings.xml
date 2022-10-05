@@ -76,7 +76,7 @@
     <string name="lng_observing">Stebima, ar jūsų muzikos bibliotekoje yra pakeitimų…</string>
     <string name="lbl_shuffle_shortcut_short">Maišyti</string>
     <string name="lbl_shuffle_shortcut_long">Maišyti viską</string>
-    <string name="lbl_state_restored">Atkurta grojimo būsena</string>
+    <string name="lbl_state_restored">Būsena atkurta</string>
     <string name="lbl_state_saved">Išsaugota būsena</string>
     <string name="lbl_cancel">Atšaukti</string>
     <string name="lbl_code">Šaltinio kodas</string>
@@ -214,4 +214,9 @@
     <string name="clr_indigo">Indigos</string>
     <string name="def_sample_rate">Nėra diskretizavimo dažnio</string>
     <string name="fmt_bitrate">%d kbps</string>
+    <string name="lbl_mixes">Miksai</string>
+    <string name="lbl_mix">Miksas</string>
+    <string name="lbl_compilation_live">Gyvai kompiliacija</string>
+    <string name="lbl_compilation_remix">Remikso kompiliacijos</string>
+    <string name="lbl_relative_path">Pagrindinis aplankas</string>
 </resources>
