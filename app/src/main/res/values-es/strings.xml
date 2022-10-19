@@ -154,7 +154,7 @@
     <string name="set_dirs_mode_exclude_desc">La música<b>no</b> se cargará de las carpetas que añadas.</string>
     <string name="set_dirs_mode_include">Incluir</string>
     <string name="def_sample_rate">Sin frecuencia de muestreo</string>
-    <string name="def_bitrate">Sin bitrate</string>
+    <string name="def_bitrate">Sin tasa de bits</string>
     <string name="cdc_mka">Audio matroska</string>
     <string name="cdc_flac">Free Losless Audio Codec (FLAC)</string>
     <string name="cdc_aac">Advances Audio Coding (AAC)</string>
