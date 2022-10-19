@@ -188,6 +188,8 @@ class PlaybackService :
     // Communicate using PlaybackStateManager, SettingsManager, or Broadcasts instead.
     override fun onBind(intent: Intent): IBinder? = null
 
+    // TODO: Implement task removal (Have to radically alter state saving to occur at runtime)
+
     override fun onDestroy() {
         super.onDestroy()
 

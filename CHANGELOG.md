@@ -29,6 +29,8 @@
 audio focus was lost
 - Fixed issue where the app would crash if a song menu in the genre UI was opened
 - Fixed issue where the artist name would not be shown in the OS audio switcher menu
+- Fixed issue where the search view would not update if the library changed
+- Fixed visual bug with transitions in the black theme
 
 #### What's Changed
 - Ignore MediaStore tags is now on by default

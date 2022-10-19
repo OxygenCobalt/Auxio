@@ -136,8 +136,6 @@ class Indexer {
      * complete, a new completion state will be pushed to each callback.
      */
     suspend fun index(context: Context) {
-        delay(2000)
-
         val notGranted =
             ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
                 PackageManager.PERMISSION_DENIED
