@@ -30,7 +30,6 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * Auxio's one and only appwidget. This widget follows a more unorthodox approach, effectively
@@ -170,9 +169,9 @@ class WidgetProvider : AppWidgetProvider() {
 
                 val layout =
                     candidates.maxByOrNull { it.height * it.width }
-                        ?: unlikelyToBeNull(views.minOfOrNull { it.key.width * it.key.height })
+                        ?: views.minBy { it.key.width * it.key.height }.key
 
-                logD("Using widget layout $layout")
+                logD("Using widget layout $layout ${views.contains(layout)}")
                 updateAppWidget(id, views[layout])
             }
         }

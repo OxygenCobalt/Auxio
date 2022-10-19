@@ -100,19 +100,19 @@ class PlaybackViewModel(application: Application) :
 
     /** Play a song from it's album. */
     fun playFromAlbum(song: Song) {
-        playbackManager.play(song, song.album, settings, false)
+        playbackManager.play(song, song.album, settings)
     }
 
     /** Play a song from it's artist. */
     fun playFromArtist(song: Song, artist: Artist) {
         check(artist.songs.contains(song)) { "Invalid input: Artist is not linked to song" }
-        playbackManager.play(song, artist, settings, false)
+        playbackManager.play(song, artist, settings)
     }
 
     /** Play a song from the specific genre that contains the song. */
     fun playFromGenre(song: Song, genre: Genre) {
         check(genre.songs.contains(song)) { "Invalid input: Genre is not linked to song" }
-        playbackManager.play(song, genre, settings, false)
+        playbackManager.play(song, genre, settings)
     }
 
     /**
