@@ -59,7 +59,7 @@
     <string name="set_round_mode_desc">Usar carátulas redondeadas para los álbumes</string>
     <string name="set_notif_action">Usar acciones de notificación alternativas</string>
     <string name="set_audio">Sonido</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">Estrategia de la ganancia de la repetición</string>
     <string name="set_replay_gain_track">Por pista</string>
     <string name="set_replay_gain_album">Por álbum</string>
     <string name="set_replay_gain_dynamic">Preferir el álbum si se está en reproducción</string>
@@ -80,7 +80,7 @@
     <string name="err_no_music">Sin música</string>
     <string name="err_index_failed">Falló la carga de música</string>
     <string name="err_no_perms">Auxio necesita permiso para leer su biblioteca de música</string>
-    <string name="err_no_app">Sin aplicación para abrir este enlace</string>
+    <string name="err_no_app">No se encontró ninguna aplicación que pueda manejar esta tarea</string>
     <string name="err_bad_dir">Directorio no soportado</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Buscar en la biblioteca…</string>
@@ -112,7 +112,7 @@
     <string name="clr_red">Rojo</string>
     <string name="clr_pink">Rosa</string>
     <string name="clr_purple">Púrpura</string>
-    <string name="clr_deep_purple">Púrpura intenso</string>
+    <string name="clr_deep_purple">Morado intenso</string>
     <string name="clr_indigo">Índigo</string>
     <string name="clr_blue">Azul</string>
     <string name="clr_deep_blue">Azul intenso</string>
@@ -129,10 +129,12 @@
     <string name="fmt_lib_song_count">Canciones cargadas: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d canción</item>
+        <item quantity="many">%d canciones</item>
         <item quantity="other">%d canciones</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d álbum</item>
+        <item quantity="many">%d álbumes</item>
         <item quantity="other">%d álbumes</item>
     </plurals>
     <string name="lbl_size">Tamaño</string>
@@ -144,7 +146,7 @@
     <string name="lbl_song_detail">Ver propiedades</string>
     <string name="lbl_shuffle_shortcut_short">Mezclar</string>
     <string name="lbl_shuffle_shortcut_long">Mezclar todo</string>
-    <string name="lbl_ok">@android:string/ok</string>
+    <string name="lbl_ok">De acuerdo</string>
     <string name="lbl_library_counts">Estadísticas de la biblioteca</string>
     <string name="set_pre_amp_without">Ajuste sin etiquetas</string>
     <string name="set_pre_amp_warning">Advertencia: Cambiar el pre-amp a un valor alto puede resultar en picos en algunas pistas de audio.</string>
@@ -165,7 +167,7 @@
     <string name="lbl_sort_count">Número de canciones</string>
     <string name="lbl_state_restored">Estado restaurado</string>
     <string name="set_observing">Recarga automática</string>
-    <string name="set_observing_desc">Recarga tu biblioteca de música cuando cambia (Experimental)</string>
+    <string name="set_observing_desc">Vuelva a cargar su biblioteca de música cada vez que cambie (Requiere notificación persistente)</string>
     <string name="err_did_not_restore">No se puedo restaurar ningún estado</string>
     <string name="lng_indexing">Cargando tu librería de música…</string>
     <string name="lbl_indexing">Cargando música</string>
@@ -176,7 +178,7 @@
     <string name="lbl_sort_date_added">Fecha de añadido</string>
     <string name="lbl_props">Propiedades de la canción</string>
     <string name="lbl_sample_rate">Frecuencia de muestreo</string>
-    <string name="lbl_cancel">@android:string/cancel</string>
+    <string name="lbl_cancel">Cancelar</string>
     <string name="set_headset_autoplay">Reproducción automática con auriculares</string>
     <string name="set_restore_state">Reestablecer el estado de reproducción</string>
     <string name="set_restore_desc">Reestablecer el estado de reproducción guardado previamente (si existe)</string>
@@ -223,4 +225,27 @@
     <string name="lbl_genre">Género</string>
     <string name="lbl_state_wiped">Estado limpiado</string>
     <string name="set_wipe_state">Limpiar el estado de reproducción</string>
+    <string name="set_separators">Separadores de varios valores</string>
+    <string name="set_exclude_non_music">Excluye la música</string>
+    <string name="set_separators_desc">Configurar caracteres que denotan múltiples valores de la etiqueta</string>
+    <string name="set_separators_comma">Coma (,)</string>
+    <string name="set_separators_semicolon">Punto y coma (;)</string>
+    <string name="set_separators_slash">Barra oblicua (/)</string>
+    <string name="lbl_compilation_live">Recopilación en directo</string>
+    <string name="lbl_compilation_remix">Compilaciones de remezclas</string>
+    <string name="lbl_mixes">Mezclas</string>
+    <string name="lbl_mix">Mezcla</string>
+    <string name="lbl_equalizer">Ecualizador</string>
+    <string name="set_cover_mode">Portadas de álbumes</string>
+    <string name="set_cover_mode_off">Apagado</string>
+    <string name="set_bar_action_repeat">Modo de repetición</string>
+    <string name="set_separators_plus">Más (+)</string>
+    <string name="set_separators_and">Y Ampersand (&amp;)</string>
+    <string name="desc_exit">Detener la reproducción</string>
+    <string name="set_exclude_non_music_desc">Ignorar archivos de audio que no sean música, como podcasts</string>
+    <string name="set_separators_warning">Advertencia: El uso de esta configuración puede dar lugar a que algunas etiquetas se interpreten incorrectamente como si tuvieran varios valores. Puede resolverlo anteponiendo a los caracteres separadores no deseados una barra invertida (\\).</string>
+    <string name="set_cover_mode_quality">Alta calidad</string>
+    <string name="set_cover_mode_media_store">Rápido</string>
+    <string name="set_bar_action">Acción personalizada de la barra de reproducción</string>
+    <string name="set_bar_action_next">Saltar al siguiente</string>
 </resources>
