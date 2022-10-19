@@ -138,6 +138,7 @@ class HomeViewModel(application: Application) :
 
     override fun onLibraryChanged(library: MusicStore.Library?) {
         if (library != null) {
+            logD("Library changed, refreshing library")
             _songs.value = settings.libSongSort.songs(library.songs)
             _albums.value = settings.libAlbumSort.albums(library.albums)
             _artists.value = settings.libArtistSort.artists(library.artists)

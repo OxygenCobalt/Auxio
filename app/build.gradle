@@ -124,7 +124,3 @@ spotless {
         licenseHeaderFile("NOTICE")
     }
 }
-
-afterEvaluate {
-    preDebugBuild.dependsOn spotlessApply
-}

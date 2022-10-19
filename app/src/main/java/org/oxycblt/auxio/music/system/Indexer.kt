@@ -24,6 +24,7 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.BuildConfig
@@ -135,6 +136,8 @@ class Indexer {
      * complete, a new completion state will be pushed to each callback.
      */
     suspend fun index(context: Context) {
+        delay(2000)
+
         val notGranted =
             ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
                 PackageManager.PERMISSION_DENIED

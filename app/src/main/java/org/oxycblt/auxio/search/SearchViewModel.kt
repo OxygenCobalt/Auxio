@@ -65,6 +65,10 @@ class SearchViewModel(application: Application) :
     private var lastQuery: String? = null
     private var currentSearchJob: Job? = null
 
+    init {
+        musicStore.addCallback(this)
+    }
+
     /**
      * Use [query] to perform a search of the music library. Will push results to [searchResults].
      */
@@ -175,6 +179,7 @@ class SearchViewModel(application: Application) :
 
     override fun onLibraryChanged(library: MusicStore.Library?) {
         if (library != null) {
+            logD("Library changed, re-searching")
             // Make sure our query is up to date with the music library.
             search(lastQuery)
         }

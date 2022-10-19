@@ -34,7 +34,6 @@ import org.oxycblt.auxio.music.storage.albumCoverUri
 import org.oxycblt.auxio.music.storage.audioUri
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import java.security.MessageDigest
@@ -204,6 +203,11 @@ sealed class Music : Item {
 sealed class MusicParent : Music() {
     /** The songs that this parent owns. */
     abstract val songs: List<Song>
+
+    override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
+
+    override fun equals(other: Any?) =
+        other is MusicParent && javaClass == other.javaClass && uid == other.uid && songs == other.songs
 }
 
 /**
@@ -510,8 +514,6 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
 
             totalDuration += song.durationMs
         }
-
-        logD(earliestDateAdded)
 
         date = earliestDate
         durationMs = totalDuration
