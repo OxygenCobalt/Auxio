@@ -15,7 +15,7 @@
     <string name="lbl_sort_asc">Kylantis</string>
     <string name="lbl_play_next">Groti kitą</string>
     <string name="lbl_queue_add">Pridėti į eilę</string>
-    <string name="lbl_queue">Eilę</string>
+    <string name="lbl_queue">Eilė</string>
     <string name="lbl_go_artist">Eiti į atlikėją</string>
     <string name="lbl_go_album">Eiti į albumą</string>
     <string name="lbl_song_detail">Peržiūrėti ypatybes</string>
@@ -72,10 +72,10 @@
     <string name="def_artist">Nežinomas atlikėjas</string>
     <string name="desc_no_cover">Albumo viršelis</string>
     <string name="clr_deep_purple">Giliai violetinė</string>
-    <string name="lbl_observing">Stebėjimas muzikos biblioteką</string>
+    <string name="lbl_observing">Stebėjima muzikos biblioteką</string>
     <string name="lng_observing">Stebima, ar jūsų muzikos bibliotekoje yra pakeitimų…</string>
     <string name="lbl_shuffle_shortcut_short">Maišyti</string>
-    <string name="lbl_shuffle_shortcut_long">Maišyti viską</string>
+    <string name="lbl_shuffle_shortcut_long">Išmaišyti viską</string>
     <string name="lbl_state_restored">Būsena atkurta</string>
     <string name="lbl_state_saved">Išsaugota būsena</string>
     <string name="lbl_cancel">Atšaukti</string>
@@ -97,8 +97,7 @@
     <plurals name="fmt_album_count">
         <item quantity="one">%d albumas</item>
         <item quantity="few">%d albumai</item>
-        <item quantity="many">%d albumo</item>
-        <item quantity="other">%d albumo</item>
+        <item quantity="other">%d albumų</item>
     </plurals>
     <string name="lbl_remix_group">Remiksai</string>
     <string name="clr_teal">Arbatžolė</string>
@@ -108,8 +107,7 @@
     <plurals name="fmt_song_count">
         <item quantity="one">%d daina</item>
         <item quantity="few">%d dainos</item>
-        <item quantity="many">%d dainą</item>
-        <item quantity="other">%d dainą</item>
+        <item quantity="other">%d dainų</item>
     </plurals>
     <string name="clr_dynamic">Dinaminis</string>
     <string name="clr_grey">Pilka</string>
