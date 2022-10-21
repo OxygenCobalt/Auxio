@@ -188,16 +188,16 @@
     <string name="def_codec">Formato desconocido</string>
     <string name="clr_dynamic">Dinámico</string>
     <string name="fmt_disc_no">Disco %d</string>
-    <string name="lbl_eps">EPs</string>
+    <string name="lbl_eps">Reproducción extendidas (EPs)</string>
     <string name="lbl_ep">EP</string>
-    <string name="lbl_singles">Singles</string>
-    <string name="lbl_single">Single</string>
+    <string name="lbl_singles">Sencillos</string>
+    <string name="lbl_single">Sencillo</string>
     <string name="lbl_soundtrack">Pista de audio</string>
     <string name="lbl_album_remix">Álbum remix</string>
     <string name="lbl_soundtracks">Pistas de audio</string>
-    <string name="lbl_mixtapes">Mixtapes</string>
-    <string name="lbl_mixtape">Mixtape</string>
-    <string name="lbl_remix_group">Remixes</string>
+    <string name="lbl_mixtapes">Mixtapes (recopilación de canciones)</string>
+    <string name="lbl_mixtape">Mixtape (recopilación de canciones)</string>
+    <string name="lbl_remix_group">Remezcla</string>
     <string name="lbl_file_name">Nombre de archivo</string>
     <string name="set_headset_autoplay_desc">Siempre empezar la reproducción cuando se conectan unos auriculares (puede no funcionar en todos los dispositivos)</string>
     <string name="set_pre_amp">Pre-amp ReplayGain</string>
@@ -240,7 +240,7 @@
     <string name="set_cover_mode_off">Apagado</string>
     <string name="set_bar_action_repeat">Modo de repetición</string>
     <string name="set_separators_plus">Más (+)</string>
-    <string name="set_separators_and">Y Ampersand (&amp;)</string>
+    <string name="set_separators_and">Ampersand (&amp;)</string>
     <string name="desc_exit">Detener la reproducción</string>
     <string name="set_exclude_non_music_desc">Ignorar archivos de audio que no sean música, como podcasts</string>
     <string name="set_separators_warning">Advertencia: El uso de esta configuración puede dar lugar a que algunas etiquetas se interpreten incorrectamente como si tuvieran varios valores. Puede resolverlo anteponiendo a los caracteres separadores no deseados una barra invertida (\\).</string>
@@ -248,4 +248,6 @@
     <string name="set_cover_mode_media_store">Rápido</string>
     <string name="set_bar_action">Acción personalizada de la barra de reproducción</string>
     <string name="set_bar_action_next">Saltar al siguiente</string>
+    <string name="set_hide_collaborators_desc">Mostrar solo los artistas que aparecen en las etiquetas de \'artista del álbum\' en tu biblioteca</string>
+    <string name="set_hide_collaborators">Ocultar colaboradores</string>
 </resources>
