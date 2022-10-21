@@ -77,7 +77,7 @@
     <string name="info_app_desc">Pemutar musik yang simpel dan rasional untuk android.</string>
     <string name="lbl_indexer">Pemuatan Musik</string>
     <string name="lng_playback">Lihat dan kontrol pemutaran musik</string>
-    <string name="lbl_sort_year">Tahun</string>
+    <string name="lbl_sort_date">Tahun</string>
     <string name="lbl_sort_duration">Durasi</string>
     <string name="lbl_sort_disc">Disk</string>
     <string name="lbl_song_detail">Lihat properti</string>

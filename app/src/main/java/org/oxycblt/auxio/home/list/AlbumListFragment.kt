@@ -70,7 +70,7 @@ class AlbumListFragment : HomeListFragment<Album>() {
             is Sort.Mode.ByArtist -> album.artists[0].collationKey?.run { sourceString.first().uppercase() }
 
             // Year -> Use Full Year
-            is Sort.Mode.ByDate -> album.date?.resolveYear(requireContext())
+            is Sort.Mode.ByDate -> album.date?.resolveDate(requireContext())
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> album.durationMs.formatDurationMs(false)

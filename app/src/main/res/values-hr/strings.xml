@@ -27,7 +27,7 @@
     <string name="lbl_genres">Žanrovi</string>
     <string name="lbl_sort">Sortiraj</string>
     <string name="lbl_sort_name">Naziv</string>
-    <string name="lbl_sort_year">Godina</string>
+    <string name="lbl_sort_date">Godina</string>
     <string name="lbl_sort_duration">Trajanje</string>
     <string name="lbl_sort_count">Broj pjesama</string>
     <string name="lbl_sort_disc">Disk</string>

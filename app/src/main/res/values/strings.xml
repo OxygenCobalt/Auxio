@@ -85,7 +85,7 @@
 
     <string name="lbl_sort">Sort</string>
     <string name="lbl_sort_name">Name</string>
-    <string name="lbl_sort_year">Year</string>
+    <string name="lbl_sort_date">Date</string>
     <string name="lbl_sort_duration">Duration</string>
     <string name="lbl_sort_count">Song count</string>
     <string name="lbl_sort_disc">Disc</string>

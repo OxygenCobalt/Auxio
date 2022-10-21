@@ -119,7 +119,7 @@
     <string name="clr_deep_purple">Ciemny fiolet</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="lbl_sort_name">Nazwa</string>
-    <string name="lbl_sort_year">Rok</string>
+    <string name="lbl_sort_date">Rok</string>
     <string name="lbl_single">Singiel</string>
     <string name="lbl_singles">Single</string>
     <string name="lbl_sort_duration">Czas trwania</string>

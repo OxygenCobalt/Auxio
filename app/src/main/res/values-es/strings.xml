@@ -18,7 +18,7 @@
     <string name="lbl_sort_name">Nombre</string>
     <string name="lbl_artist">Artista</string>
     <string name="lbl_album">Álbum</string>
-    <string name="lbl_sort_year">Año</string>
+    <string name="lbl_sort_date">Año</string>
     <string name="lbl_sort_asc">Ascendente</string>
     <string name="lbl_playback">En reproducción</string>
     <string name="lbl_play">Reproducir</string>

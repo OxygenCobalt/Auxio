@@ -20,7 +20,7 @@
     <string name="lbl_compilations">Mga Compilation</string>
     <string name="lbl_sort">Ayusin</string>
     <string name="lbl_sort_name">Pangalan</string>
-    <string name="lbl_sort_year">Taon</string>
+    <string name="lbl_sort_date">Taon</string>
     <string name="lbl_sort_duration">Tagal</string>
     <string name="lbl_sort_count">Bilang ng kanta</string>
     <string name="lbl_compilation">Compilation</string>

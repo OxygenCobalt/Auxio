@@ -7,7 +7,7 @@
     <string name="lbl_filter_all">Visos</string>
     <string name="lbl_sort">Rūšiuoti</string>
     <string name="lbl_sort_name">Pavadinimas</string>
-    <string name="lbl_sort_year">Metai</string>
+    <string name="lbl_sort_date">Metai</string>
     <string name="lbl_sort_duration">Trukmė</string>
     <string name="lbl_sort_count">Dainų skaičius</string>
     <string name="lbl_sort_disc">Diskas</string>

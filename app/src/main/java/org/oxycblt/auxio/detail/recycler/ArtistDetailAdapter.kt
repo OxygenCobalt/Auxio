@@ -159,7 +159,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text =
-            item.date?.resolveYear(binding.context)
+            item.date?.resolveDate(binding.context)
                 ?: binding.context.getString(R.string.def_date)
 
         // binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }

@@ -18,10 +18,21 @@
 package org.oxycblt.auxio.music
 
 import android.content.Context
+import android.os.Build
+import android.text.format.DateUtils
+import androidx.annotation.RequiresApi
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.util.inRangeOrNull
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.nonZeroOrNull
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalQueries
+import java.util.Formatter
+import java.util.Locale
 import kotlin.math.max
 import kotlin.math.min
 
@@ -60,10 +71,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
         }
     }
 
-    val year = tokens[0]
-
-    /** Resolve the year field in a way suitable for the UI. */
-    fun resolveYear(context: Context) = context.getString(R.string.fmt_number, year)
+    private val year = tokens[0]
 
     private val month = tokens.getOrNull(1)
 
@@ -74,6 +82,37 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
     private val minute = tokens.getOrNull(4)
 
     private val second = tokens.getOrNull(5)
+
+    fun resolveDate(context: Context): String {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return try {
+                resolveFullDate(context).also { logD(it) }
+            } catch (e: Exception) {
+                logE("Failed to format a full date")
+                logE(e.stackTraceToString())
+                return resolveYear(context)
+            }
+        } else {
+            return resolveYear(context)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun resolveFullDate(context: Context) =
+        if( month != null ) {
+            val temporal = DateTimeFormatter.ISO_DATE.parse(
+                "$year-$month-${day ?: 1}",
+                TemporalQueries.localDate()
+            )
+
+            temporal.atStartOfDay(ZoneId.systemDefault())
+                .format(DateTimeFormatter.ofPattern("MMM yyyy", Locale.getDefault()))
+        } else {
+            resolveYear(context)
+        }
+
+    /** Resolve the year field in a way suitable for the UI. */
+    private fun resolveYear(context: Context) = context.getString(R.string.fmt_number, year)
 
     override fun hashCode() = tokens.hashCode()
 
@@ -103,20 +142,20 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
     private fun StringBuilder.appendDate(): StringBuilder {
         append(year.toFixedString(4))
-        append("-${(month ?: return this).toFixedString(2)}")
-        append("-${(day ?: return this).toFixedString(2)}")
-        append("T${(hour ?: return this).toFixedString(2)}")
-        append(":${(minute ?: return this.append('Z')).toFixedString(2)}")
-        append(":${(second ?: return this.append('Z')).toFixedString(2)}")
+        append("-${(month ?: 1).toFixedString(2)}")
+        append("-${(day ?: 1).toFixedString(2)}")
+        append("T${(hour ?: 0).toFixedString(2)}")
+        append(":${(minute ?: 0).toFixedString(2)}")
+        append(":${(second ?: 0).toFixedString(2)}")
         return this.append('Z')
     }
 
-    private fun Int.toFixedString(len: Int) = toString().padStart(len, '0')
+    private fun Int.toFixedString(len: Int) = toString().padStart(len, '0').substring(0 until len)
 
     companion object {
         private val ISO8601_REGEX =
             Regex(
-                """^(\d{4,})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2}))?)?)?)?)?$"""
+                """^(\d{4,})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2})(Z)?)?)?)?)?)?$"""
             )
 
         fun from(year: Int) = fromTokens(listOf(year))

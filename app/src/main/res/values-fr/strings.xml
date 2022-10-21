@@ -99,7 +99,7 @@
     <string name="lbl_sort_name">Nom</string>
     <string name="lbl_artist">Artiste</string>
     <string name="lbl_album">Album</string>
-    <string name="lbl_sort_year">Année</string>
+    <string name="lbl_sort_date">Année</string>
     <string name="lbl_sort_duration">Durée</string>
     <string name="lbl_sort_count">Nombre de chansons</string>
     <string name="lbl_sort_disc">Disque</string>

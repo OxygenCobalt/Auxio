@@ -78,7 +78,7 @@
     <string name="lbl_sort_name">İsim</string>
     <string name="lbl_artist">Sanatçı</string>
     <string name="lbl_album">Albüm</string>
-    <string name="lbl_sort_year">Yıl</string>
+    <string name="lbl_sort_date">Yıl</string>
     <string name="lbl_sort_duration">Süre</string>
     <string name="lbl_state_saved">Durum kaydedildi</string>
     <string name="lng_author">OxygenCobalt tarafından geliştirildi</string>

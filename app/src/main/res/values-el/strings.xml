@@ -74,7 +74,7 @@
     <string name="fmt_disc_no">Δίσκος %d</string>
     <string name="fmt_lib_album_count">Album που φορτώθηκαν: %d</string>
     <string name="fmt_lib_artist_count">Καλλιτέχνες που φορτώθηκαν: %d</string>
-    <string name="lbl_sort_year">Έτος</string>
+    <string name="lbl_sort_date">Έτος</string>
     <string name="lbl_sort_disc">Δίσκος</string>
     <string name="err_no_music">Δεν βρέθηκε καθόλου μουσική</string>
     <string name="err_index_failed">Η φόρτωση μουσικής απέτυχε</string>
