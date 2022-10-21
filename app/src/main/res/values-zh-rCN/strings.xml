@@ -244,4 +244,6 @@
     <string name="set_cover_mode">专辑封面</string>
     <string name="set_cover_mode_off">关</string>
     <string name="set_cover_mode_media_store">快速</string>
+    <string name="set_hide_collaborators">隐藏协作者</string>
+    <string name="set_hide_collaborators_desc">在库中仅显示在出现在“专辑艺术家”标签中的艺术家</string>
 </resources>
