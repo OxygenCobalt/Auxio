@@ -169,6 +169,8 @@
     <string name="set_display">Display</string>
     <string name="set_lib_tabs">Library tabs</string>
     <string name="set_lib_tabs_desc">Change visibility and order of library tabs</string>
+    <string name="set_hide_collaborators">Hide collaborators</string>
+    <string name="set_hide_collaborators_desc">Only show artists that appear in the \'album artist\' tags in your library</string>
     <string name="set_cover_mode">Album covers</string>
     <string name="set_cover_mode_off">Off</string>
     <string name="set_cover_mode_media_store">Fast</string>

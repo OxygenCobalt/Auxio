@@ -204,9 +204,9 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The strategy used when loading images. */
-    val coverMode: CoverMode
-        get() = CoverMode.fromIntCode(inner.getInt(context.getString(R.string.set_key_cover_mode), Int.MIN_VALUE)) ?: CoverMode.MEDIA_STORE
+    /** Whether to hide collaborator artists or not. */
+    val shouldHideCollaborators: Boolean
+        get() = inner.getBoolean(context.getString(R.string.set_key_hide_collaborators), false)
 
     /** Whether to round additional UI elements (including album covers) */
     val roundMode: Boolean
@@ -295,6 +295,10 @@ class Settings(private val context: Context, private val callback: Callback? = n
     /** Whether to be actively watching for changes in the music library. */
     val shouldBeObserving: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_observing), false)
+
+    /** The strategy used when loading images. */
+    val coverMode: CoverMode
+        get() = CoverMode.fromIntCode(inner.getInt(context.getString(R.string.set_key_cover_mode), Int.MIN_VALUE)) ?: CoverMode.MEDIA_STORE
 
     /** Whether to load all audio files, even ones not considered music. */
     val excludeNonMusic: Boolean

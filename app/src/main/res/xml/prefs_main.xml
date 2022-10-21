@@ -31,12 +31,11 @@
             app:summary="@string/set_lib_tabs_desc"
             app:title="@string/set_lib_tabs" />
 
-        <org.oxycblt.auxio.settings.prefs.IntListPreference
-            app:defaultValue="@integer/cover_mode_media_store"
-            app:entries="@array/entries_cover_mode"
-            app:entryValues="@array/values_cover_mode"
-            app:key="@string/set_key_cover_mode"
-            app:title="@string/set_cover_mode" />
+        <SwitchPreferenceCompat
+            app:key="@string/set_key_hide_collaborators"
+            app:summary="@string/set_hide_collaborators_desc"
+            app:title="@string/set_hide_collaborators"
+            app:defaultValue="false" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
@@ -146,6 +145,13 @@
             app:key="@string/set_key_observing"
             app:summary="@string/set_observing_desc"
             app:title="@string/set_observing" />
+
+        <org.oxycblt.auxio.settings.prefs.IntListPreference
+            app:defaultValue="@integer/cover_mode_media_store"
+            app:entries="@array/entries_cover_mode"
+            app:entryValues="@array/values_cover_mode"
+            app:key="@string/set_key_cover_mode"
+            app:title="@string/set_cover_mode" />
 
         <org.oxycblt.auxio.settings.prefs.WrappedDialogPreference
             app:key="@string/set_key_music_dirs"

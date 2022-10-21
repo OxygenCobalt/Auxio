@@ -5,11 +5,13 @@
     <string name="set_key_black_theme" translatable="false">KEY_BLACK_THEME</string>
     <string name="set_key_accent" translatable="false">auxio_accent2</string>
 
-    <string name="set_key_lib_tabs" translatable="false">auxio_lib_tabs</string>
+    <string name="set_key_reindex" translatable="false">auxio_reindex</string>
+    <string name="set_key_observing" translatable="false">auxio_observing</string>
+    <string name="set_key_music_dirs" translatable="false">auxio_music_dirs</string>
     <string name="set_key_cover_mode" translatable="false">auxio_cover_mode</string>
-    <string name="set_key_round_mode" translatable="false">auxio_round_covers</string>
-    <string name="set_key_bar_action" translatable="false">auxio_bar_action</string>
-    <string name="set_key_notif_action" translatable="false">auxio_notif_action</string>
+    <string name="set_key_music_dirs_include" translatable="false">auxio_include_dirs</string>
+    <string name="set_key_exclude_non_music" translatable="false">auxio_exclude_non_music</string>
+    <string name="set_key_separators" translatable="false">auxio_separators</string>
 
     <string name="set_key_headset_autoplay" translatable="false">auxio_headset_autoplay</string>
     <string name="set_key_replay_gain" translatable="false">auxio_replay_gain</string>
@@ -26,12 +28,11 @@
     <string name="set_key_wipe_state" translatable="false">auxio_wipe_state</string>
     <string name="set_key_restore_state" translatable="false">auxio_restore_state</string>
 
-    <string name="set_key_reindex" translatable="false">auxio_reindex</string>
-    <string name="set_key_observing" translatable="false">auxio_observing</string>
-    <string name="set_key_music_dirs" translatable="false">auxio_music_dirs</string>
-    <string name="set_key_music_dirs_include" translatable="false">auxio_include_dirs</string>
-    <string name="set_key_exclude_non_music" translatable="false">auxio_exclude_non_music</string>
-    <string name="set_key_separators" translatable="false">auxio_separators</string>
+    <string name="set_key_lib_tabs" translatable="false">auxio_lib_tabs</string>
+    <string name="set_key_hide_collaborators" translatable="false">auxio_hide_collaborators</string>
+    <string name="set_key_round_mode" translatable="false">auxio_round_covers</string>
+    <string name="set_key_bar_action" translatable="false">auxio_bar_action</string>
+    <string name="set_key_notif_action" translatable="false">auxio_notif_action</string>
 
     <string name="set_key_search_filter" translatable="false">KEY_SEARCH_FILTER</string>
 

@@ -141,7 +141,15 @@ class HomeViewModel(application: Application) :
             logD("Library changed, refreshing library")
             _songs.value = settings.libSongSort.songs(library.songs)
             _albums.value = settings.libAlbumSort.albums(library.albums)
-            _artists.value = settings.libArtistSort.artists(library.artists)
+
+            _artists.value = settings.libArtistSort.artists(
+                if (settings.shouldHideCollaborators) {
+                    library.artists.filter { !it.isCollaborator }
+                } else {
+                    library.artists
+                }
+            )
+
             _genres.value = settings.libGenreSort.genres(library.genres)
         }
     }
@@ -150,6 +158,10 @@ class HomeViewModel(application: Application) :
         if (key == application.getString(R.string.set_key_lib_tabs)) {
             tabs = visibleTabs
             _shouldRecreateTabs.value = true
+        }
+
+        if (key == application.getString(R.string.set_key_hide_collaborators)) {
+            onLibraryChanged(musicStore.library)
         }
     }
 

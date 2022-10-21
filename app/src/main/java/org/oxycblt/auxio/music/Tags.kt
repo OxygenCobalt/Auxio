@@ -105,6 +105,10 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
                 TemporalQueries.localDate()
             )
 
+            // When it comes to songs, we only want to show the month and year. This
+            // cannot be done with DateUtils due to it's dynamic nature, so instead
+            // it's done with the built-in date formatter. Since the legacy date API
+            // is awful, we only use instant and limit it to Android 8 onwards.
             temporal.atStartOfDay(ZoneId.systemDefault())
                 .format(DateTimeFormatter.ofPattern("MMM yyyy", Locale.getDefault()))
         } else {

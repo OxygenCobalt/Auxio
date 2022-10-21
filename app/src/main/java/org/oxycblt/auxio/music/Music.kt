@@ -590,6 +590,9 @@ constructor(raw: Raw, songAlbums: List<Music>) : MusicParent() {
     /** The albums of this artist. This will never be empty. */
     val albums: List<Album>
 
+    /** Whether this artist is not credited on any albums. */
+    val isCollaborator: Boolean
+
     private lateinit var genres: List<Genre>
 
     /**
@@ -616,6 +619,8 @@ constructor(raw: Raw, songAlbums: List<Music>) : MusicParent() {
     init {
         val distinctSongs = mutableSetOf<Song>()
         val distinctAlbums = mutableSetOf<Album>()
+        
+        var noAlbums = true
 
         for (music in songAlbums) {
             when (music) {
@@ -628,6 +633,7 @@ constructor(raw: Raw, songAlbums: List<Music>) : MusicParent() {
                 is Album -> {
                     music._link(this)
                     distinctAlbums.add(music)
+                    noAlbums = false
                 }
 
                 else -> error("Unexpected input music ${music::class.simpleName}")
@@ -636,6 +642,7 @@ constructor(raw: Raw, songAlbums: List<Music>) : MusicParent() {
 
         songs = distinctSongs.toList()
         albums = distinctAlbums.toList()
+        isCollaborator = noAlbums
         durationMs = songs.sumOf { it.durationMs }.nonZeroOrNull()
     }
 

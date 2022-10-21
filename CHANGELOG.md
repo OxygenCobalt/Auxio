@@ -7,6 +7,7 @@
 	- Added support for multiple artists
 	- Added support for multiple genres
 - Artists and album artists are now both given UI entires
+	- Added setting to hide "collaborator" artists
 - Upgraded music ID management:
 	- Added support for MusicBrainz IDs (MBIDs)
 	- Use the more unique MD5 hash of metadata when MBIDs can't be used
