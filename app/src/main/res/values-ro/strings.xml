@@ -86,4 +86,6 @@
     <string name="lbl_singles">Single-uri</string>
     <string name="lbl_single">Single</string>
     <string name="lbl_ep">EP</string>
+    <string name="lbl_compilation_live">Compilare Live</string>
+    <string name="lbl_compilation">Compilare</string>
 </resources>
