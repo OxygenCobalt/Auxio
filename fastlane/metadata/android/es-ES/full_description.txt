@@ -1,19 +1,21 @@
-Auxio es un reproductor de música local con una interfaz rápida y fiable, sin muchas de las opciones inútiles presentes en otros reproductores. Construido sobre <a href="https://exoplayer.dev/">Exoplayer</a>, Auxio ofrece una mejor experiencia auditiva en comparación con otras aplicaciones que usan la API nativa MediaPlayer. En resumen, <b>reproduce música.</b>
+Auxio es un reproductor de música local con una UI/UX rápida y fiable, sin las muchas funciones inútiles presentes en otros reproductores de música. Construido a partir de <a href="https://exoplayer.dev/">Exoplayer</a>, Auxio tiene una experiencia de escucha mucho mejor en comparación con otras aplicaciones que utilizan la API nativa de MediaPlayer. En pocas palabras, <b>Pone música.</b>
 
 <b>Características</b>
 
 - Reproducción basada en ExoPlayer
--Interfaz rápida derivada de las últimas directrices de Diseño Material
-- Experiencia de usuario opinionada que prioriza la facilidad de uso sobre casos límite
+- Snappy UI derivada de las últimas pautas de Diseño de Materiales
+- Opinionated UX que prioriza la facilidad de uso sobre los casos de borde
 - Comportamiento personalizable
-- Indexador personalizable que prioriza los metadatos correctos
-- Gestión de carpetas consciente de tarjetas SD
-- Persistencia de estado de reproducción fisble
-- Soporte completo para ReplayGain (En MP3, MP4, FLAC, OGG y OPUS)
-- Borde-a-borde
-- Soporte para carátulas embebidas
+- Indicador avanzado de medios que prioriza los metadatos correctos
+- Fechas exactas/Originales, Ordenar Etiquetas, y soporte de tipo de versión (Experimental) 
+- Tarjeta SD-conocida gestión de carpetas
+- Persistencia confiable del estado de reproducción
+- Soporte completo ReplayGain (en MP3, MP4, FLAC, OGG, y OPUS) 
+- Funcionalidad de ecualizador externo (En aplicaciones como Wavelet) 
+- De borde a borde
+- Embebido cubre soporte
 - Funcionalidad de búsqueda
-- Reproducción automática con auriculares
-- Widgets estilizados que se adaptan automáticamente a su tamaño
-- Completamente privado y sin conexión
-- Sin carátulas de álbumes redondeadas (A menos que lo desees. Entonces puedes.)
+- Auriculares reproducción automática
+- Elegantes widgets que se adaptan automáticamente a su tamaño
+- Completamente privado y offline
+- No hay portadas de álbumes redondeadas (a menos que las quieras. Entonces puedes hacerlo)

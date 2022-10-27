@@ -95,7 +95,7 @@
     <string name="set_dirs_mode_exclude_desc">A música <b>não</b> será carregada das pastas que você adicionar.</string>
     <string name="set_dirs_mode">Modo</string>
     <string name="err_no_perms">O Auxio precisa de permissão para ler sua biblioteca de músicas</string>
-    <string name="info_app_desc">Um leitor de música simples e racional para android.</string>
+    <string name="info_app_desc">Um reprodutor de música simples e racional para android.</string>
     <string name="lng_indexing">Carregando sua biblioteca de músicas…</string>
     <string name="lbl_sort_date">Ano</string>
     <string name="lbl_sort_duration">Duração</string>
@@ -157,7 +157,7 @@
     <string name="fmt_lib_genre_count">Gêneros carregados: %d</string>
     <string name="fmt_lib_album_count">Álbuns carregados: %d</string>
     <string name="fmt_lib_artist_count">Artistas carregados: %d</string>
-    <string name="set_pre_amp_without">Ajuste sem TAGs</string>
+    <string name="set_pre_amp_without">Ajuste sem etiquetas</string>
     <string name="set_headset_autoplay">Reprodução automática do fone de ouvido</string>
     <string name="set_pre_amp">Pré-amplificador do ganho de repetição</string>
     <string name="lbl_relative_path">Caminho principal</string>
@@ -170,7 +170,7 @@
     <string name="set_replay_gain_album">Preferir álbum</string>
     <string name="set_replay_gain_dynamic">Prefira o álbum se estiver tocando</string>
     <string name="set_observing">Recarregamento automático</string>
-    <string name="set_observing_desc">Recarregue sua biblioteca de música sempre que ela mudar (Experimental)</string>
+    <string name="set_observing_desc">Recarregue sua biblioteca de música sempre que ela mudar (Requer notificação persistente)</string>
     <string name="lbl_sort_date_added">Data adicionada</string>
     <string name="lbl_cancel">Cancelar</string>
     <string name="set_replay_gain_track">Preferir música</string>
@@ -187,7 +187,7 @@
     <string name="lbl_genre">Gênero</string>
     <string name="set_playback_mode_artist">Reproduzir do artista</string>
     <string name="set_restore_desc">Restaurar o estado de reprodução salvo anteriormente (se houver)</string>
-    <string name="set_pre_amp_with">Ajuste com TAGs</string>
+    <string name="set_pre_amp_with">Ajuste com etiquetas</string>
     <string name="lbl_state_wiped">Estado liberado</string>
     <string name="lbl_state_restored">Estado restaurado</string>
     <string name="lbl_indexer">Carregando música</string>
@@ -212,7 +212,7 @@
     <string name="lbl_compilation">Compilação</string>
     <string name="lbl_single_remix">Música remix</string>
     <string name="set_content">Conteúdo</string>
-    <string name="lbl_sort_track">Música</string>
+    <string name="lbl_sort_track">Faixa</string>
     <string name="set_library_song_playback_mode">Ao tocar da biblioteca</string>
     <string name="set_detail_song_playback_mode">Ao tocar a partir dos detalhes do item</string>
     <string name="lbl_mixtapes">Mixtapes</string>
@@ -226,4 +226,20 @@
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="fmt_bitrate">%d kbps</string>
+    <string name="lbl_compilation_live">Compilação ao vivo</string>
+    <string name="lbl_compilation_remix">Compilações de remix</string>
+    <string name="set_separators_plus">Mais (+)</string>
+    <string name="set_separators_and">E comercial (&amp;)</string>
+    <string name="set_separators_comma">Vírgula (,)</string>
+    <string name="set_separators_semicolon">Ponto-e-vírgula (;)</string>
+    <string name="set_separators_slash">Barra (/)</string>
+    <string name="set_separators">Separadores multi-valor</string>
+    <string name="set_separators_desc">Configurar caracteres que denotam múltiplos valores de etiqueta</string>
+    <string name="set_exclude_non_music_desc">Ignorar arquivos de áudio que não são música, tal como podcasts</string>
+    <string name="set_separators_warning">Aviso: Usar essa configuração pode resultar em algumas etiquetas serem interpretadas incorretamente como tendo múltiplos valores. Você pode resolver isso pré-definindo caracteres de separador indesejados com uma barra invertida (\\).</string>
+    <string name="set_exclude_non_music">Excluir não-música</string>
+    <string name="set_cover_mode">Capas de álbuns</string>
+    <string name="set_cover_mode_off">Desligado</string>
+    <string name="set_cover_mode_media_store">Rápido</string>
+    <string name="set_cover_mode_quality">Qualidade alta</string>
 </resources>
