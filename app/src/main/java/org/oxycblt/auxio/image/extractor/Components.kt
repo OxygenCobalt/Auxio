@@ -86,7 +86,8 @@ private constructor(
     private val artist: Artist
 ) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
-        val albums = Sort(Sort.Mode.ByName, true).albums(artist.albums)
+        // Pick the "most prominent" albums (i.e albums with the most songs) to show in the image.
+        val albums = Sort(Sort.Mode.ByCount, false).albums(artist.albums)
         val results = albums.mapAtMost(4) { album -> fetchCover(context, album) }
         return createMosaic(context, results, size)
     }
