@@ -253,5 +253,5 @@
     <string name="set_cover_mode_off">Vypnuté</string>
     <string name="set_cover_mode_media_store">Rychlé</string>
     <string name="set_hide_collaborators">Skrýt spoluautory</string>
-    <string name="set_hide_collaborators_desc">Zobrazit pouze umělce, kteří jsou přímo uvedeni na albu</string>
+    <string name="set_hide_collaborators_desc">Zobrazit pouze umělce, kteří jsou přímo uvedeni na albu v knihovně</string>
 </resources>
