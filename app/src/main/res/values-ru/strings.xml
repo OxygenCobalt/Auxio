@@ -243,4 +243,9 @@
     <string name="set_exclude_non_music_desc">Игнорировать аудиофайлы, которые не являются музыкой, например, подкасты</string>
     <string name="set_cover_mode">Обложки альбомов</string>
     <string name="lbl_mix">Микс</string>
+    <string name="set_pre_amp_with">В соответствие с тегами</string>
+    <string name="set_pre_amp_without">без тегов</string>
+    <string name="set_cover_mode_off">откл.</string>
+    <string name="set_cover_mode_media_store">Быстро</string>
+    <string name="set_cover_mode_quality">Высокое качество</string>
 </resources>
