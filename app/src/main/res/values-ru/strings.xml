@@ -228,4 +228,24 @@
     <string name="set_bar_action_next">Перейти к следующей</string>
     <string name="set_bar_action_repeat">Режим повтора</string>
     <string name="lbl_equalizer">Эквалайзер</string>
+    <string name="set_hide_collaborators">Скрыть соавторов</string>
+    <string name="set_hide_collaborators_desc">Показывать только исполнителей, которые напрямую указаны в альбоме</string>
+    <string name="set_exclude_non_music">Исключить не-музыку</string>
+    <string name="set_separators">Многозначные разделители</string>
+    <string name="set_separators_slash">Косая черта (/)</string>
+    <string name="set_separators_desc">Настройка символов, обозначающих несколько значений тегов</string>
+    <string name="set_separators_comma">Запятая (,)</string>
+    <string name="set_separators_semicolon">Точка с запятой (;)</string>
+    <string name="set_separators_plus">Плюс (+)</string>
+    <string name="set_separators_and">Амперсанд (&amp;)</string>
+    <string name="lbl_mixes">Миксы</string>
+    <string name="desc_exit">Остановить воспроизведение</string>
+    <string name="set_exclude_non_music_desc">Игнорировать аудиофайлы, которые не являются музыкой, например, подкасты</string>
+    <string name="set_cover_mode">Обложки альбомов</string>
+    <string name="lbl_mix">Микс</string>
+    <string name="set_pre_amp_with">В соответствие с тегами</string>
+    <string name="set_pre_amp_without">без тегов</string>
+    <string name="set_cover_mode_off">откл.</string>
+    <string name="set_cover_mode_media_store">Быстро</string>
+    <string name="set_cover_mode_quality">Высокое качество</string>
 </resources>
