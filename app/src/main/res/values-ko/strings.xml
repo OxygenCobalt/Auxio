@@ -247,5 +247,5 @@
     <string name="set_bar_action_next">다음 곡으로 건너뛰기</string>
     <string name="set_exclude_non_music_desc">팟캐스트와 같이 음악이 아닌 오디오 파일 무시</string>
     <string name="set_hide_collaborators">공동작업자 숨기기</string>
-    <string name="set_hide_collaborators_desc">앨범에 직접 크레딧을 부여한 아티스트만 표시</string>
+    <string name="set_hide_collaborators_desc">라이브러리의 앨범에 직접 크레딧이 적용된 아티스트만 표시</string>
 </resources>
