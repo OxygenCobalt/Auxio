@@ -240,5 +240,5 @@
     <string name="set_pre_amp_with">Reguliavimas su žymėmis</string>
     <string name="set_restore_desc">Atkurti anksčiau išsaugotą grojimo būseną (jei yra)</string>
     <string name="set_hide_collaborators">Slėpti bendradarbius</string>
-    <string name="set_hide_collaborators_desc">Rodyti tik tuos atlikėjus, kurie yra tiesiogiai įrašyti į albumą</string>
+    <string name="set_hide_collaborators_desc">Rodyti tik tuos atlikėjus, kurie yra tiesiogiai įrašyti į albumą bibliotekoje</string>
 </resources>
