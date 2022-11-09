@@ -136,10 +136,12 @@
     <string name="fmt_lib_total_duration">Durata totale: %s</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d canzone</item>
+        <item quantity="many">%d canzoni</item>
         <item quantity="other">%d canzoni</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d disco</item>
+        <item quantity="many">%d dischi</item>
         <item quantity="other">%d dischi</item>
     </plurals>
     <string name="set_dirs_mode">Modo</string>
@@ -229,7 +231,7 @@
     <string name="set_bar_action_repeat">Modalità ripetizione</string>
     <string name="desc_exit">Interrompi riproduzione</string>
     <string name="set_hide_collaborators">Nascondi collaboratori</string>
-    <string name="set_hide_collaborators_desc">Mostra solo artisti accreditati di un album</string>
+    <string name="set_hide_collaborators_desc">Mostra solo artisti accreditati di un album nella libreria</string>
     <string name="set_cover_mode">Copertine album</string>
     <string name="set_cover_mode_off">Off</string>
     <string name="set_cover_mode_media_store">Veloce</string>
