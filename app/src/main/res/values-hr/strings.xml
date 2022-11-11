@@ -86,18 +86,18 @@
     <string name="set_library_song_playback_mode">Kada se reproducira iz zbirke</string>
     <string name="set_detail_song_playback_mode">Kada se reproducira iz detalja o predmetu</string>
     <string name="set_playback_mode_all">Reproduciraj od svih pjesama</string>
-    <string name="set_reindex">Ponovno učitaj glazbu</string>
+    <string name="set_reindex">Ponovo učitaj glazbu</string>
     <string name="set_reindex_desc">Može izbrisati stanje reprodukcije</string>
     <string name="set_dirs">Mape glazbe</string>
-    <string name="set_dirs_desc">Upravljajte odakle će se vaša glazba učitati</string>
+    <string name="set_dirs_desc">Upravljaj odakle će se glazba učitati</string>
     <string name="set_dirs_mode">Način</string>
     <string name="set_dirs_mode_exclude">Isključi</string>
     <string name="set_dirs_mode_exclude_desc">Glazba se <b>neće</b> učitati iz dodanih mapa.</string>
     <string name="set_dirs_mode_include">Uključi</string>
     <string name="set_dirs_mode_include_desc">Glazba će se učitati <b>samo</b> iz dodanih mapa.</string>
     <string name="set_observing">Automatsko ponovno učitavanje</string>
-    <string name="set_observing_desc">Ponovo učitaj svoju zbirku glazbe čim se dogode promjene (eksperimentalno)</string>
-    <string name="err_no_music">Nijedan zvučni zapis nije pronađen</string>
+    <string name="set_observing_desc">Ponovo učitaj svoju zbirku glazbe čim se dogode promjene (zahtijeva stalno obavještavanje)</string>
+    <string name="err_no_music">Nijedna glazba nije pronađena</string>
     <string name="err_index_failed">Greška u učitvanju glazbe</string>
     <string name="err_no_perms">Auxio treba dozvolu za čitanje tvoje zbirke glazbe</string>
     <string name="err_no_app">Nijedna aplikacija ne može obraditi ovaj zadatak</string>
@@ -222,7 +222,7 @@
     <string name="lbl_mixes">Kompilacije</string>
     <string name="set_separators">Znakovi odjeljivanja vrijednosti</string>
     <string name="desc_exit">Prekini reprodukciju</string>
-    <string name="set_separators_desc">Konfiguriraj znakove koji označavaju vrijednosti u oznakama</string>
+    <string name="set_separators_desc">Konfiguriraj znakove koji označavaju višestruke vrijednosti oznaka</string>
     <string name="set_separators_slash">Kosa crta (/)</string>
     <string name="set_separators_plus">Plus (+)</string>
     <string name="lbl_mix">Kompilacija</string>
@@ -231,4 +231,14 @@
     <string name="lbl_equalizer">Ekvilajzer</string>
     <string name="set_bar_action_next">Prijeđi na sljedeću</string>
     <string name="set_bar_action_repeat">Način ponavljanja</string>
+    <string name="set_hide_collaborators">Sakrij suradnike</string>
+    <string name="set_cover_mode_off">Isključeno</string>
+    <string name="set_exclude_non_music">Isključi sve što nije glazba</string>
+    <string name="set_playback_mode_artist">Reproduciraj od izvođača</string>
+    <string name="set_cover_mode_quality">Visoka kvaliteta</string>
+    <string name="set_cover_mode_media_store">Brzo</string>
+    <string name="set_exclude_non_music_desc">Zanemari sve audio datoteke koje nisu glazba, npr. podcast datoteke</string>
+    <string name="set_separators_warning">Upozorenje: Korištenje ove postavke može dovesti do pogrešnog tumačenja nekih oznaka kao da imaju više vrijednosti. To možeš riješiti postavljanjem obrnute kose crte (\\) ispred neželjenih znakova rastavljanja.</string>
+    <string name="set_cover_mode">Omoti albuma</string>
+    <string name="set_hide_collaborators_desc">Prikaži samo umjetnike koji su izravno navedeni na albumu u biblioteci</string>
 </resources>
