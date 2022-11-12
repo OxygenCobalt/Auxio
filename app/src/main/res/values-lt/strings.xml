@@ -58,7 +58,7 @@
     <string name="lbl_library_counts">Bibliotekos statistika</string>
     <string name="clr_pink">Rožinis</string>
     <string name="lbl_album">Albumas</string>
-    <string name="lbl_ep">Minialbumas</string>
+    <string name="lbl_ep">Mini albumas</string>
     <string name="lbl_single">Singlas</string>
     <string name="lbl_artist">Atlikėjas</string>
     <string name="def_genre">Nežinomas žanras</string>
@@ -68,12 +68,12 @@
     <string name="clr_blue">Mėlyna</string>
     <string name="clr_deep_blue">Giliai mėlyna</string>
     <string name="clr_cyan">Žydra</string>
-    <string name="lbl_eps">Minialbumai</string>
+    <string name="lbl_eps">Mini albumai</string>
     <string name="def_artist">Nežinomas atlikėjas</string>
     <string name="desc_no_cover">Albumo viršelis</string>
     <string name="clr_deep_purple">Giliai violetinė</string>
     <string name="lbl_observing">Stebėjima muzikos biblioteka</string>
-    <string name="lng_observing">Stebima, ar jūsų muzikos bibliotekoje yra pakeitimų…</string>
+    <string name="lng_observing">Stebima jūsų muzikos biblioteka dėl pakeitimų…</string>
     <string name="lbl_shuffle_shortcut_short">Maišyti</string>
     <string name="lbl_shuffle_shortcut_long">Išmaišyti viską</string>
     <string name="lbl_state_restored">Būsena atkurta</string>
@@ -113,8 +113,8 @@
     <string name="clr_grey">Pilka</string>
     <string name="clr_orange">Oranžinė</string>
     <string name="clr_brown">Ruda</string>
-    <string name="lbl_ep_live">Gyvai minialbumas</string>
-    <string name="lbl_ep_remix">Remikso minialbumas</string>
+    <string name="lbl_ep_live">Gyvai mini albumas</string>
+    <string name="lbl_ep_remix">Remikso mini albumas</string>
     <string name="cdc_mp4">MPEG-4 garsas</string>
     <string name="cdc_mka">Matroska garsas</string>
     <string name="lbl_album_live">Gyvai albumas</string>
@@ -183,10 +183,10 @@
     <string name="set_dirs_mode_exclude">Neįtraukti</string>
     <string name="set_dirs_mode_include_desc">Muzika <b>bus</b> įkeliama iš aplankų jūs pridėsite.</string>
     <string name="fmt_sample_rate">%d Hz</string>
-    <string name="set_observing_desc">Perkrauti jūsų muzikos biblioteką, kai tai pasikeičia (Reikia nuolatinio pranešimo)</string>
+    <string name="set_observing_desc">Perkrauti jūsų muzikos biblioteką, kai ji pasikeičia (Reikia nuolatinio pranešimo)</string>
     <string name="fmt_lib_song_count">Įkeltos dainos: %d</string>
     <string name="fmt_lib_genre_count">Įkrauti žanrai: %d</string>
-    <string name="fmt_lib_album_count">Įkelti albumai: %d</string>
+    <string name="fmt_lib_album_count">Įkeltos albumai: %d</string>
     <string name="fmt_lib_artist_count">Įkrauti atlikėjai: %d</string>
     <string name="fmt_indexing">Kraunama jūsų muzikos biblioteka… (%1$d/%2$d)</string>
     <string name="desc_shuffle_all">Maišyti visas dainas</string>
