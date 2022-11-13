@@ -70,8 +70,8 @@ dependencies {
     // 1.4.0 is used in order to avoid a ripple bug in material components
     implementation "androidx.appcompat:appcompat:1.4.0"
     implementation "androidx.core:core-ktx:1.9.0"
-    implementation "androidx.activity:activity-ktx:1.6.0"
-    implementation "androidx.fragment:fragment-ktx:1.5.3"
+    implementation "androidx.activity:activity-ktx:1.6.1"
+    implementation "androidx.fragment:fragment-ktx:1.5.4"
 
     // UI
     implementation "androidx.recyclerview:recyclerview:1.2.1"

@@ -361,4 +361,9 @@
         <item quantity="one">%d album</item>
         <item quantity="other">%d albums</item>
     </plurals>
+
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d artist</item>
+        <item quantity="other">%d artists</item>
+    </plurals>
 </resources>

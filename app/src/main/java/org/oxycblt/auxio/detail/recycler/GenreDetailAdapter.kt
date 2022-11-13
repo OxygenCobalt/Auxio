@@ -97,11 +97,11 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
         binding.detailType.text = binding.context.getString(R.string.lbl_genre)
         binding.detailName.text = item.resolveName(binding.context)
         binding.detailSubhead.isVisible = false
-        binding.detailInfo.text = binding.context.getString(
-            R.string.fmt_two,
-            binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size),
-            item.durationMs.formatDurationMs(false)
-        )
+        binding.detailInfo.text =             binding.context.getString(
+                R.string.fmt_two,
+                binding.context.getPlural(R.plurals.fmt_artist_count, item.artists.size),
+                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
+            )
 
         binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }
         binding.detailShuffleButton.setOnClickListener { listener.onShuffleParent() }

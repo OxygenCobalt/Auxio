@@ -169,7 +169,11 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text =
-            binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
+            binding.context.getString(
+                R.string.fmt_two,
+                binding.context.getPlural(R.plurals.fmt_artist_count, item.artists.size),
+                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
+            )
         // binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnLongClickListener {
             listener.onOpenMenu(item, it)

@@ -110,7 +110,6 @@ private constructor(
 ) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
         val results = genre.albums.mapAtMost(4) { fetchCover(context, it) }
-
         return createMosaic(context, results, size)
     }
 

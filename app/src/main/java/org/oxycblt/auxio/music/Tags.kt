@@ -41,7 +41,7 @@ import kotlin.math.min
  *
  * Unlike a typical Date within the standard library, this class just represents the ID3v2/Vorbis
  * date format, which is largely assumed to be a subset of ISO-8601. No validation outside of format
- * validation is done.
+ * validation is done, and any date calculation is (fallibly) performed when displayed in the UI.
  *
  * The reasoning behind Date is that Auxio cannot trust any kind of metadata date to actually make
  * sense in a calendar, due to bad tagging, locale-specific issues, or simply from the limited
@@ -51,9 +51,6 @@ import kotlin.math.min
  * Date instances are immutable and their implementation is hidden. To instantiate one, use [from].
  * The string representation of a Date is RFC 3339, with granular position depending on the presence
  * of particular tokens.
- *
- * Please, **Do not use this for anything important related to time.** I cannot stress this enough.
- * This code will blow up if you try to do that.
  *
  * @author OxygenCobalt
  */
@@ -83,10 +80,15 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
     private val second = tokens.getOrNull(5)
 
+    /**
+     * Resolve this date into a string. This could result in a year string formatted
+     * as "YYYY", or a month and year string formatted as "MMM YYYY" depending on the
+     * situation.
+     */
     fun resolveDate(context: Context): String {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return try {
-                resolveFullDate(context).also { logD(it) }
+                resolveFullDate(context)
             } catch (e: Exception) {
                 logE("Failed to format a full date")
                 logE(e.stackTraceToString())

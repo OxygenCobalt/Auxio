@@ -698,13 +698,18 @@ class Genre constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     /** The albums of this genre. */
     val albums: List<Album>
 
+    /** The artists of this genre. */
+    val artists: List<Artist>
+
     init {
         var totalDuration = 0L
         val distinctAlbums = mutableSetOf<Album>()
+        val distinctArtists = mutableSetOf<Artist>()
 
         for (song in songs) {
             song._link(this)
             distinctAlbums.add(song.album)
+            distinctArtists.addAll(song.artists)
             totalDuration += song.durationMs
         }
 
@@ -714,6 +719,8 @@ class Genre constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
             .sortedByDescending { album ->
                 album.songs.count { it.genres.contains(this) }
             }
+
+        artists = Sort(Sort.Mode.ByName, true).artists(distinctArtists)
     }
 
     override fun _finalize() {
