@@ -247,4 +247,8 @@
     <string name="set_cover_mode_quality">Hohe Qualität</string>
     <string name="set_hide_collaborators">Mitarbeiter ausblenden</string>
     <string name="set_hide_collaborators_desc">Nur Künstler anzeigen, die als „Albumskünstler” in der Bibliothek auftreten</string>
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d Künstler</item>
+        <item quantity="other">%d Künstler</item>
+    </plurals>
 </resources>
