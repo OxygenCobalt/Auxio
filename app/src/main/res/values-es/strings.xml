@@ -248,6 +248,6 @@
     <string name="set_cover_mode_media_store">Rápido</string>
     <string name="set_bar_action">Acción personalizada de la barra de reproducción</string>
     <string name="set_bar_action_next">Saltar al siguiente</string>
-    <string name="set_hide_collaborators_desc">Mostrar solo los artistas que aparecen en las etiquetas de \'artista del álbum\' en tu biblioteca</string>
+    <string name="set_hide_collaborators_desc">Sólo se muestran los artistas que están directamente acreditados en un álbum en la biblioteca</string>
     <string name="set_hide_collaborators">Ocultar colaboradores</string>
 </resources>

@@ -191,7 +191,7 @@
     <string name="lbl_cancel">Cancella</string>
     <string name="set_pre_amp">Pre-amp ReplayGain</string>
     <string name="lng_observing">Sto monitorando i cambiamenti nella tua libreria musicale…</string>
-    <string name="set_observing_desc">Ricarica la tua libreria musicale se subisce cambiamenti (sperimentale)</string>
+    <string name="set_observing_desc">Ricarica la tua libreria musicale se subisce cambiamenti (richiede notifica persistente)</string>
     <string name="lbl_indexing">Caricamento musica</string>
     <string name="lbl_observing">Monitoraggio libreria musicale</string>
     <string name="lbl_state_restored">Stato ripristinato</string>
@@ -228,4 +228,24 @@
     <string name="set_bar_action_next">Vai alla prossima</string>
     <string name="set_bar_action_repeat">Modalità ripetizione</string>
     <string name="desc_exit">Interrompi riproduzione</string>
+    <string name="set_hide_collaborators">Nascondi collaboratori</string>
+    <string name="set_hide_collaborators_desc">Mostra solo artisti accreditati di un album</string>
+    <string name="set_cover_mode">Copertine album</string>
+    <string name="set_cover_mode_off">Off</string>
+    <string name="set_cover_mode_media_store">Veloce</string>
+    <string name="set_exclude_non_music">Escludi non-musica</string>
+    <string name="set_exclude_non_music_desc">Ignora file audio non musicali, come i podcast</string>
+    <string name="set_separators">Separatori multi-valore</string>
+    <string name="set_separators_desc">Configura caratteri che indicano valori multipli di tag</string>
+    <string name="set_separators_slash">Barra (/)</string>
+    <string name="set_separators_warning">Attenzione: potrebbero verificarsi degli errori nella interpretazione di alcuni tag con valori multipli. Puoi risolvere aggiungendo come prefisso la barra rovesciata (\\) ai separatori indesiderati.</string>
+    <string name="set_separators_and">E commerciale (&amp;)</string>
+    <string name="lbl_compilation_live">Raccolte live</string>
+    <string name="lbl_compilation_remix">Raccolte remix</string>
+    <string name="lbl_mixes">Mixes</string>
+    <string name="lbl_mix">Mix</string>
+    <string name="set_cover_mode_quality">Alta qualità</string>
+    <string name="set_separators_comma">Virgola (,)</string>
+    <string name="set_separators_semicolon">Punto e virgola (;)</string>
+    <string name="set_separators_plus">Più (+)</string>
 </resources>

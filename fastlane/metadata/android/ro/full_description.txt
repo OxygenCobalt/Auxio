@@ -1,0 +1,21 @@
+Auxio este un player de muzică locală cu un UI/UX rapid și fiabil, fără multe caracteristici inutile prezente în alte playere muzicale. Bazat pe X <a href="https://exoplayer.dev/">Exoplayer</a>, Auxio are o experiență de ascultare mult mai bună în comparație cu alte aplicații care utilizează API-ul nativ MediaPlayer. Pe scurt, <b> redă muzică. </b>
+
+<b>Caracteristici</b>
+
+- Redare bazată pe ExoPlayer
+- Interfață rapidă derivată din cele mai recente orientări Material Design
+- UX cu opinie care prioritizează ușurința de utilizare în detrimentul cazurilor limită
+- Comportament personalizabil
+- Indexer media avansat care prioritizează metadatele corecte
+- Suport pentru date precise/originale, etichete de sortare și tip de versiune (experimental)
+- Gestionare a dosarelor compatibilă cu cardul SD
+- Persistența fiabilă a stării de redare
+- Suport complet pentru ReplayGain (pe MP3, MP4, FLAC, OGG și OPUS)
+- Funcționalitate de egalizator extern (În aplicații precum Wavelet)
+- Edge-to-edge
+- Suport pentru coperți încorporate
+- Funcționalitate de căutare
+- Redare automată cu cască
+- Widget-uri elegante care se adaptează automat la dimensiunea lor
+- Complet privat și offline
+- Fără coperte de album rotunjite (Doar dacă nu le doriți. Atunci puteți.)

@@ -245,4 +245,6 @@
     <string name="set_cover_mode_off">Aus</string>
     <string name="set_cover_mode_media_store">Schnell</string>
     <string name="set_cover_mode_quality">Hohe Qualität</string>
+    <string name="set_hide_collaborators">Mitarbeiter ausblenden</string>
+    <string name="set_hide_collaborators_desc">Nur Künstler anzeigen, die als „Albumskünstler” in der Bibliothek auftreten</string>
 </resources>

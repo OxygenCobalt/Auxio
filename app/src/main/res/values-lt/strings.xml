@@ -72,7 +72,7 @@
     <string name="def_artist">Nežinomas atlikėjas</string>
     <string name="desc_no_cover">Albumo viršelis</string>
     <string name="clr_deep_purple">Giliai violetinė</string>
-    <string name="lbl_observing">Stebėjima muzikos biblioteką</string>
+    <string name="lbl_observing">Stebėjima muzikos biblioteka</string>
     <string name="lng_observing">Stebima, ar jūsų muzikos bibliotekoje yra pakeitimų…</string>
     <string name="lbl_shuffle_shortcut_short">Maišyti</string>
     <string name="lbl_shuffle_shortcut_long">Išmaišyti viską</string>
@@ -184,9 +184,9 @@
     <string name="set_dirs_mode_include_desc">Muzika <b>bus</b> įkeliama iš aplankų jūs pridėsite.</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="set_observing_desc">Perkrauti jūsų muzikos biblioteką, kai tai pasikeičia (Reikia nuolatinio pranešimo)</string>
-    <string name="fmt_lib_song_count">Įkrautos dainos: %d</string>
+    <string name="fmt_lib_song_count">Įkeltos dainos: %d</string>
     <string name="fmt_lib_genre_count">Įkrauti žanrai: %d</string>
-    <string name="fmt_lib_album_count">Įkrauti albumai: %d</string>
+    <string name="fmt_lib_album_count">Įkelti albumai: %d</string>
     <string name="fmt_lib_artist_count">Įkrauti atlikėjai: %d</string>
     <string name="fmt_indexing">Kraunama jūsų muzikos biblioteka… (%1$d/%2$d)</string>
     <string name="desc_shuffle_all">Maišyti visas dainas</string>
@@ -239,4 +239,6 @@
     <string name="set_pre_amp_desc">Išankstinis stiprintuvas taikomas esamam reguliavimui grojimo metu</string>
     <string name="set_pre_amp_with">Reguliavimas su žymėmis</string>
     <string name="set_restore_desc">Atkurti anksčiau išsaugotą grojimo būseną (jei yra)</string>
+    <string name="set_hide_collaborators">Slėpti bendradarbius</string>
+    <string name="set_hide_collaborators_desc">Rodyti tik tuos atlikėjus, kurie yra tiesiogiai įrašyti į albumą</string>
 </resources>
