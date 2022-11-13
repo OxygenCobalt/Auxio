@@ -250,4 +250,9 @@
     <string name="set_separators_comma">Virgola (,)</string>
     <string name="set_separators_semicolon">Punto e virgola (;)</string>
     <string name="set_separators_plus">Più (+)</string>
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d artista</item>
+        <item quantity="many">%d artisti</item>
+        <item quantity="other">%d artisti</item>
+    </plurals>
 </resources>
