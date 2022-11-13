@@ -240,7 +240,7 @@
     <string name="set_cover_mode_off">Apagado</string>
     <string name="set_bar_action_repeat">Modo de repetición</string>
     <string name="set_separators_plus">Más (+)</string>
-    <string name="set_separators_and">Ampersand (&amp;)</string>
+    <string name="set_separators_and">El signo et (&amp;)</string>
     <string name="desc_exit">Detener la reproducción</string>
     <string name="set_exclude_non_music_desc">Ignorar archivos de audio que no sean música, como podcasts</string>
     <string name="set_separators_warning">Advertencia: El uso de esta configuración puede dar lugar a que algunas etiquetas se interpreten incorrectamente como si tuvieran varios valores. Puede resolverlo anteponiendo a los caracteres separadores no deseados una barra invertida (\\).</string>
@@ -250,4 +250,9 @@
     <string name="set_bar_action_next">Saltar al siguiente</string>
     <string name="set_hide_collaborators_desc">Sólo se muestran los artistas que están directamente acreditados en un álbum en la biblioteca</string>
     <string name="set_hide_collaborators">Ocultar colaboradores</string>
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d artista</item>
+        <item quantity="many">%d artistas</item>
+        <item quantity="other">%d artistas</item>
+    </plurals>
 </resources>
