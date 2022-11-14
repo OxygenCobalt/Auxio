@@ -52,7 +52,7 @@ import org.oxycblt.auxio.util.logW
  * (and hacky garbage) in order to produce the best possible experience. It is split into three
  * distinct steps:
  *
- * 1. Creating the chain of layers to extract metadata with
+ * 1. Creating the chain of extractors to extract metadata with
  * 2. Running the chain process
  * 3. Using the songs to build the library, which primarily involves linking up all data objects
  * with their corresponding parents/children.

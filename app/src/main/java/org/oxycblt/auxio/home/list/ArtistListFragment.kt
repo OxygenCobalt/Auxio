@@ -80,7 +80,7 @@ class ArtistListFragment : HomeListFragment<Artist>() {
 
     override fun onOpenMenu(item: Item, anchor: View) {
         check(item is Artist) { "Unexpected datatype: ${item::class.java}" }
-        musicMenu(anchor, R.menu.menu_genre_artist_actions, item)
+        musicMenu(anchor, R.menu.menu_artist_actions, item)
     }
 
     private fun handleParent(parent: MusicParent?, isPlaying: Boolean) {

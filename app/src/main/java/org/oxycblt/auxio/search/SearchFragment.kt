@@ -29,7 +29,6 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialSharedAxis
-import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.music.Album
@@ -41,8 +40,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.MainNavigationAction
-import org.oxycblt.auxio.ui.fragment.MenuFragment
+import org.oxycblt.auxio.ui.fragment.MusicFragment
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.util.androidViewModels
@@ -57,7 +55,7 @@ import org.oxycblt.auxio.util.logW
  * @author OxygenCobalt
  */
 class SearchFragment :
-    MenuFragment<FragmentSearchBinding>(), MenuItemListener, Toolbar.OnMenuItemClickListener {
+    MusicFragment<FragmentSearchBinding>(), MenuItemListener, Toolbar.OnMenuItemClickListener {
 
     // SearchViewModel is only scoped to this Fragment
     private val searchModel: SearchViewModel by androidViewModels()
@@ -153,17 +151,7 @@ class SearchFragment :
             is Song -> when (settings.libPlaybackMode) {
                 MusicMode.SONGS -> playbackModel.playFromAll(item)
                 MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-                MusicMode.ARTISTS -> {
-                    if (item.artists.size == 1) {
-                        playbackModel.playFromArtist(item, item.artists[0])
-                    } else {
-                        navModel.mainNavigateTo(
-                            MainNavigationAction.Directions(
-                                MainFragmentDirections.actionPickArtist(item.uid, PickerMode.PLAY)
-                            )
-                        )
-                    }
-                }
+                MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)
                 else -> error("Unexpected playback mode: ${settings.libPlaybackMode}")
             }
             is MusicParent -> navModel.exploreNavigateTo(item)
@@ -174,8 +162,8 @@ class SearchFragment :
         when (item) {
             is Song -> musicMenu(anchor, R.menu.menu_song_actions, item)
             is Album -> musicMenu(anchor, R.menu.menu_album_actions, item)
-            is Artist -> musicMenu(anchor, R.menu.menu_genre_artist_actions, item)
-            is Genre -> musicMenu(anchor, R.menu.menu_genre_artist_actions, item)
+            is Artist -> musicMenu(anchor, R.menu.menu_artist_actions, item)
+            is Genre -> musicMenu(anchor, R.menu.menu_artist_actions, item)
             else -> logW("Unexpected datatype when opening menu: ${item::class.java}")
         }
     }

@@ -28,7 +28,7 @@
 
 #### What's Fixed
 - Fixed issue where the scroll popup would not display correctly in landscape mode [#230]
-- Fixed issue where the playback progress would continue in the notification even if
+- Fixed issue where the playback progress would continue in the notification when
 audio focus was lost
 - Fixed issue where the app would crash if a song menu in the genre UI was opened
 - Fixed issue where the artist name would not be shown in the OS audio switcher menu

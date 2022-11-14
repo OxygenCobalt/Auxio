@@ -42,7 +42,7 @@ import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.MainNavigationAction
-import org.oxycblt.auxio.ui.fragment.MenuFragment
+import org.oxycblt.auxio.ui.fragment.MusicFragment
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -56,7 +56,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author OxygenCobalt
  */
 class GenreDetailFragment :
-    MenuFragment<FragmentDetailBinding>(), Toolbar.OnMenuItemClickListener, DetailAdapter.Listener {
+    MusicFragment<FragmentDetailBinding>(), Toolbar.OnMenuItemClickListener, DetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
 
     private val args: GenreDetailFragmentArgs by navArgs()
@@ -120,29 +120,27 @@ class GenreDetailFragment :
     }
 
     override fun onItemClick(item: Item) {
-        check(item is Song) { "Unexpected datatype: ${item::class.simpleName}" }
-        when (settings.detailPlaybackMode) {
-            null -> playbackModel.playFromGenre(item, unlikelyToBeNull(detailModel.currentGenre.value))
-            MusicMode.SONGS -> playbackModel.playFromAll(item)
-            MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-            MusicMode.ARTISTS -> {
-                if (item.artists.size == 1) {
-                    playbackModel.playFromArtist(item, item.artists[0])
-                } else {
-                    navModel.mainNavigateTo(
-                        MainNavigationAction.Directions(
-                            MainFragmentDirections.actionPickArtist(item.uid, PickerMode.PLAY)
-                        )
-                    )
-                }
+        when (item) {
+            is Artist -> navModel.exploreNavigateTo(item)
+
+            is Song -> when (settings.detailPlaybackMode) {
+                null -> playbackModel.playFromGenre(item, unlikelyToBeNull(detailModel.currentGenre.value))
+                MusicMode.SONGS -> playbackModel.playFromAll(item)
+                MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
+                MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)
+                else -> error("Unexpected playback mode: ${settings.detailPlaybackMode}")
             }
-            else -> error("Unexpected playback mode: ${settings.detailPlaybackMode}")
+
+            else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {
-        check(item is Song) { "Unexpected datatype: ${item::class.simpleName}" }
-        musicMenu(anchor, R.menu.menu_song_actions, item)
+        when (item) {
+            is Artist -> musicMenu(anchor, R.menu.menu_artist_actions, item)
+            is Song -> musicMenu(anchor, R.menu.menu_song_actions, item)
+            else -> error("Unexpected datatype: ${item::class.simpleName}")
+        }
     }
 
     override fun onPlayParent() {

@@ -41,7 +41,7 @@ import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.MainNavigationAction
-import org.oxycblt.auxio.ui.fragment.MenuFragment
+import org.oxycblt.auxio.ui.fragment.MusicFragment
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -55,7 +55,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author OxygenCobalt
  */
 class ArtistDetailFragment :
-    MenuFragment<FragmentDetailBinding>(), Toolbar.OnMenuItemClickListener, DetailAdapter.Listener {
+    MusicFragment<FragmentDetailBinding>(), Toolbar.OnMenuItemClickListener, DetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
 
     private val args: ArtistDetailFragmentArgs by navArgs()
@@ -125,17 +125,7 @@ class ArtistDetailFragment :
                     null -> playbackModel.playFromArtist(item, unlikelyToBeNull(detailModel.currentArtist.value))
                     MusicMode.SONGS -> playbackModel.playFromAll(item)
                     MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-                    MusicMode.ARTISTS -> {
-                        if (item.artists.size == 1) {
-                            playbackModel.playFromArtist(item, item.artists[0])
-                        } else {
-                            navModel.mainNavigateTo(
-                                MainNavigationAction.Directions(
-                                    MainFragmentDirections.actionPickArtist(item.uid, PickerMode.PLAY)
-                                )
-                            )
-                        }
-                    }
+                    MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)
                     else -> error("Unexpected playback mode: ${settings.detailPlaybackMode}")
                 }
             }

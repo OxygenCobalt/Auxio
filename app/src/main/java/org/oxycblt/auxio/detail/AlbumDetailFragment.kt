@@ -43,7 +43,7 @@ import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.MainNavigationAction
-import org.oxycblt.auxio.ui.fragment.MenuFragment
+import org.oxycblt.auxio.ui.fragment.MusicFragment
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.canScroll
 import org.oxycblt.auxio.util.collect
@@ -58,7 +58,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author OxygenCobalt
  */
 class AlbumDetailFragment :
-    MenuFragment<FragmentDetailBinding>(),
+    MusicFragment<FragmentDetailBinding>(),
     Toolbar.OnMenuItemClickListener,
     AlbumDetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
@@ -132,17 +132,7 @@ class AlbumDetailFragment :
         when (settings.detailPlaybackMode) {
             null, MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
             MusicMode.SONGS -> playbackModel.playFromAll(item)
-            MusicMode.ARTISTS -> {
-                if (item.artists.size == 1) {
-                    playbackModel.playFromArtist(item, item.artists[0])
-                } else {
-                    navModel.mainNavigateTo(
-                        MainNavigationAction.Directions(
-                            MainFragmentDirections.actionPickArtist(item.uid, PickerMode.PLAY)
-                        )
-                    )
-                }
-            }
+            MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)
             else -> error("Unexpected playback mode: ${settings.detailPlaybackMode}")
         }
     }
@@ -179,16 +169,7 @@ class AlbumDetailFragment :
     }
 
     override fun onNavigateToArtist() {
-        val album = unlikelyToBeNull(detailModel.currentAlbum.value)
-        if (album.artists.size == 1) {
-            navModel.exploreNavigateTo(album.artists[0])
-        } else {
-            navModel.mainNavigateTo(
-                MainNavigationAction.Directions(
-                    MainFragmentDirections.actionPickArtist(album.uid, PickerMode.SHOW)
-                )
-            )
-        }
+        navigateToArtist(unlikelyToBeNull(detailModel.currentAlbum.value))
     }
 
     private fun handleItemChange(album: Album?) {

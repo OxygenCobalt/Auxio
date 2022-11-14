@@ -115,17 +115,7 @@ class SongListFragment : HomeListFragment<Song>() {
         when (settings.libPlaybackMode) {
             MusicMode.SONGS -> playbackModel.playFromAll(item)
             MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-            MusicMode.ARTISTS -> {
-                if (item.artists.size == 1) {
-                    playbackModel.playFromArtist(item, item.artists[0])
-                } else {
-                    navModel.mainNavigateTo(
-                        MainNavigationAction.Directions(
-                            MainFragmentDirections.actionPickArtist(item.uid, PickerMode.PLAY)
-                        )
-                    )
-                }
-            }
+            MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)
             else -> error("Unexpected playback mode: ${settings.libPlaybackMode}")
         }
     }

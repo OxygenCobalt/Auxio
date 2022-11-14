@@ -87,6 +87,8 @@ class GenreDetailAdapter(private val listener: Listener) :
                     return when {
                         oldItem is Genre && newItem is Genre ->
                             GenreDetailViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
+                        oldItem is Artist && newItem is Artist ->
+                            ArtistViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         oldItem is Song && newItem is Song ->
                             SongViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
                         else -> DetailAdapter.DIFFER.areContentsTheSame(oldItem, newItem)
