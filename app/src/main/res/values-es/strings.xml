@@ -168,7 +168,7 @@
     <string name="lbl_state_restored">Estado restaurado</string>
     <string name="set_observing">Recarga automática</string>
     <string name="set_observing_desc">Vuelva a cargar su biblioteca de música cada vez que cambie (Requiere notificación persistente)</string>
-    <string name="err_did_not_restore">No se puedo restaurar ningún estado</string>
+    <string name="err_did_not_restore">No es posible restaurar el estado</string>
     <string name="lng_indexing">Cargando tu librería de música…</string>
     <string name="lbl_indexing">Cargando música</string>
     <string name="lbl_observing">Monitorizando la librería de música</string>
@@ -240,7 +240,7 @@
     <string name="set_cover_mode_off">Apagado</string>
     <string name="set_bar_action_repeat">Modo de repetición</string>
     <string name="set_separators_plus">Más (+)</string>
-    <string name="set_separators_and">El signo et (&amp;)</string>
+    <string name="set_separators_and">Ampersand (&amp;)</string>
     <string name="desc_exit">Detener la reproducción</string>
     <string name="set_exclude_non_music_desc">Ignorar archivos de audio que no sean música, como podcasts</string>
     <string name="set_separators_warning">Advertencia: El uso de esta configuración puede dar lugar a que algunas etiquetas se interpreten incorrectamente como si tuvieran varios valores. Puede resolverlo anteponiendo a los caracteres separadores no deseados una barra invertida (\\).</string>
@@ -255,4 +255,6 @@
         <item quantity="many">%d artistas</item>
         <item quantity="other">%d artistas</item>
     </plurals>
+    <string name="err_did_not_save">Imposible guardar el estado</string>
+    <string name="err_did_not_wipe">No se puede borrar el estado</string>
 </resources>
