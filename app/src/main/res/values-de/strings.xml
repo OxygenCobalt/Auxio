@@ -196,7 +196,7 @@
     <string name="set_observing">Automatisch neuladen</string>
     <string name="lbl_state_restored">Zustand wiederhergestellt</string>
     <string name="set_restore_desc">Den vorher gespeicherten Wiedergabezustand wiederherstellen (wenn verfügbar)</string>
-    <string name="err_did_not_restore">Kein Zustand konnte wiederhergestellt werden</string>
+    <string name="err_did_not_restore">Zustand konnte nicht wiederhergestellt werden</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_eps">EPs</string>
     <string name="lbl_single">Single</string>
@@ -251,4 +251,6 @@
         <item quantity="one">%d Künstler</item>
         <item quantity="other">%d Künstler</item>
     </plurals>
+    <string name="err_did_not_wipe">Zustand konnte nicht gelöscht werden</string>
+    <string name="err_did_not_save">Zustand konnte nicht gespeichert werden</string>
 </resources>
