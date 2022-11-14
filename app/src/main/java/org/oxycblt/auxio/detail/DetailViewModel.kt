@@ -277,6 +277,8 @@ class DetailViewModel(application: Application) :
     private fun refreshGenreData(genre: Genre) {
         logD("Refreshing genre data")
         val data = mutableListOf<Item>(genre)
+        data.add(Header(R.string.lbl_artists))
+        data.addAll(genre.artists)
         data.add(SortHeader(R.string.lbl_songs))
         data.addAll(genreSort.songs(genre.songs))
         _genreData.value = data

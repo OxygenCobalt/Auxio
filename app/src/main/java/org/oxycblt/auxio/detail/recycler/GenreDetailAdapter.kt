@@ -24,9 +24,12 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemDetailBinding
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.formatDurationMs
+import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
+import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
@@ -43,6 +46,7 @@ class GenreDetailAdapter(private val listener: Listener) :
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
             is Genre -> GenreDetailViewHolder.VIEW_TYPE
+            is Artist -> ArtistViewHolder.VIEW_TYPE
             is Song -> SongViewHolder.VIEW_TYPE
             else -> super.getItemViewType(position)
         }
@@ -50,6 +54,7 @@ class GenreDetailAdapter(private val listener: Listener) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
             GenreDetailViewHolder.VIEW_TYPE -> GenreDetailViewHolder.new(parent)
+            ArtistViewHolder.VIEW_TYPE -> ArtistViewHolder.new(parent)
             SongViewHolder.VIEW_TYPE -> SongViewHolder.new(parent)
             else -> super.onCreateViewHolder(parent, viewType)
         }
@@ -64,6 +69,7 @@ class GenreDetailAdapter(private val listener: Listener) :
         if (payloads.isEmpty()) {
             when (val item = differ.currentList[position]) {
                 is Genre -> (holder as GenreDetailViewHolder).bind(item, listener)
+                is Artist -> (holder as ArtistViewHolder).bind(item, listener)
                 is Song -> (holder as SongViewHolder).bind(item, listener)
             }
         }

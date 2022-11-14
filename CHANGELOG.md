@@ -11,6 +11,7 @@
 - Upgraded music ID management:
 	- Added support for MusicBrainz IDs (MBIDs)
 	- Use the more unique MD5 hash of metadata when MBIDs can't be used
+- Genres now display a list of artists
 - Added toggle to load non-music (Such as podcasts)
 - Music loader now caches parsed metadata for faster load times
 - Redesigned icon

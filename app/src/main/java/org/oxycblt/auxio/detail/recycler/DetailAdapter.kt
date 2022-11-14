@@ -35,6 +35,7 @@ import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 
 abstract class DetailAdapter<L : DetailAdapter.Listener>(
     private val listener: L,
