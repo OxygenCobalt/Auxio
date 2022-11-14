@@ -201,7 +201,7 @@
     <string name="set_reindex">Perkrauti muziką</string>
     <string name="set_reindex_desc">Gali nuvalyti grojimo būseną</string>
     <string name="set_bar_action">Pasirinktinis grojimo juostos veiksmas</string>
-    <string name="err_did_not_restore">Jokios grojimo būsenos nepavyko atkurti</string>
+    <string name="err_did_not_restore">Nepavyko atkurti būsenos</string>
     <string name="set_pre_amp">„ReplayGain“ išankstinis stiprintuvas</string>
     <string name="set_save_state">Išsaugoti grojimo būseną</string>
     <string name="set_dirs_desc">Tvarkykite, kur muzika turėtų būti įkeliama iš</string>
@@ -241,4 +241,11 @@
     <string name="set_restore_desc">Atkurti anksčiau išsaugotą grojimo būseną (jei yra)</string>
     <string name="set_hide_collaborators">Slėpti bendradarbius</string>
     <string name="set_hide_collaborators_desc">Rodyti tik tuos atlikėjus, kurie yra tiesiogiai įrašyti į albumą bibliotekoje</string>
+    <string name="err_did_not_wipe">Nepavyko išvalyti būsenos</string>
+    <string name="err_did_not_save">Nepavyko išsaugoti būsenos</string>
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d atlikėjas</item>
+        <item quantity="few">%d atlikėjai</item>
+        <item quantity="other">%d atlikėjų</item>
+    </plurals>
 </resources>
