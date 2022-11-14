@@ -386,10 +386,26 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
 
     override fun _finalize() {
         checkNotNull(_album) { "Malformed song: No album" }
+
         check(_artists.isNotEmpty()) { "Malformed song: No artists" }
-        Sort(Sort.Mode.ByName, true).artistsInPlace(_artists)
+        for( i in _artists.indices ) {
+            // Non-destructively reorder the linked artists so that they align with
+            // the artist ordering within the song metadata.
+            val newIdx = _artists[i]._getOriginalPositionIn(_rawArtists)
+            val other = _artists[newIdx]
+            _artists[newIdx] = _artists[i]
+            _artists[i] = other
+        }
+
         check(_genres.isNotEmpty()) { "Malformed song: No genres" }
-        Sort(Sort.Mode.ByName, true).genresInPlace(_genres)
+        for( i in _genres.indices ) {
+            // Non-destructively reorder the linked genres so that they align with
+            // the genre ordering within the song metadata.
+            val newIdx = _genres[i]._getOriginalPositionIn(_rawGenres)
+            val other = _genres[newIdx]
+            _genres[newIdx] = _genres[i]
+            _genres[i] = other
+        }
     }
 
     class Raw
@@ -531,7 +547,14 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     override fun _finalize() {
         check(songs.isNotEmpty()) { "Malformed album: Empty" }
         check(_artists.isNotEmpty()) { "Malformed album: No artists" }
-        Sort(Sort.Mode.ByName, true).artistsInPlace(_artists)
+        for( i in _artists.indices ) {
+            // Non-destructively reorder the linked artists so that they align with
+            // the artist ordering within the song metadata.
+            val newIdx = _artists[i]._getOriginalPositionIn(_rawArtists)
+            val other = _artists[newIdx]
+            _artists[newIdx] = _artists[i]
+            _artists[i] = other
+        }
     }
 
     class Raw(
@@ -566,7 +589,7 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
  * @author OxygenCobalt
  */
 class Artist
-constructor(raw: Raw, songAlbums: List<Music>) : MusicParent() {
+constructor(private val raw: Raw, songAlbums: List<Music>) : MusicParent() {
     override val uid = raw.musicBrainzId?.let { UID.musicBrainz(MusicMode.ARTISTS, it) } ?: UID.auxio(
         MusicMode.ARTISTS
     ) { update(raw.name) }
@@ -616,6 +639,7 @@ constructor(raw: Raw, songAlbums: List<Music>) : MusicParent() {
         return true
     }
 
+
     init {
         val distinctSongs = mutableSetOf<Song>()
         val distinctAlbums = mutableSetOf<Album>()
@@ -644,6 +668,10 @@ constructor(raw: Raw, songAlbums: List<Music>) : MusicParent() {
         albums = distinctAlbums.toList()
         isCollaborator = noAlbums
         durationMs = songs.sumOf { it.durationMs }.nonZeroOrNull()
+    }
+
+    fun _getOriginalPositionIn(rawArtists: List<Raw>): Int {
+        return rawArtists.indexOf(raw)
     }
 
     override fun _finalize() {
@@ -680,7 +708,7 @@ constructor(raw: Raw, songAlbums: List<Music>) : MusicParent() {
  * A genre.
  * @author OxygenCobalt
  */
-class Genre constructor(raw: Raw, override val songs: List<Song>) : MusicParent() {
+class Genre constructor(private val raw: Raw, override val songs: List<Song>) : MusicParent() {
     override val uid = UID.auxio(MusicMode.GENRES) { update(raw.name) }
 
     override val rawName = raw.name
@@ -721,6 +749,10 @@ class Genre constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
             }
 
         artists = Sort(Sort.Mode.ByName, true).artists(distinctArtists)
+    }
+
+    fun _getOriginalPositionIn(rawGenres: List<Raw>): Int {
+        return rawGenres.indexOf(raw)
     }
 
     override fun _finalize() {
