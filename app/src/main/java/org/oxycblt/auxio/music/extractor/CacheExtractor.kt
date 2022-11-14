@@ -26,6 +26,7 @@ import androidx.core.database.getStringOrNull
 import androidx.core.database.sqlite.transaction
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.queryAll
 import org.oxycblt.auxio.util.requireBackgroundThread
 import java.io.File
@@ -42,7 +43,12 @@ class CacheExtractor(private val context: Context) {
     private var shouldWriteCache = false
 
     fun init() {
-        cacheMap = CacheDatabase.getInstance(context).read()
+        try {
+            cacheMap = CacheDatabase.getInstance(context).read()
+        } catch (e: Exception) {
+            logE("Unable to load cache database.")
+            logE(e.stackTraceToString())
+        }
     }
 
     /**
@@ -55,16 +61,21 @@ class CacheExtractor(private val context: Context) {
             // If the entire library could not be loaded from the cache, we need to re-write it
             // with the new library.
             logD("Cache was invalidated during loading, rewriting")
-            CacheDatabase.getInstance(context).write(rawSongs)
+            try {
+                CacheDatabase.getInstance(context).write(rawSongs)
+            } catch (e: Exception) {
+                logE("Unable to save cache database.")
+                logE(e.stackTraceToString())
+            }
         }
     }
 
     /**
      * Maybe copy a cached raw song into this instance, assuming that it has not changed
-     * since it was last saved.
+     * since it was last saved. Returns true if a song was loaded.
      */
     fun populateFromCache(rawSong: Song.Raw): Boolean {
-        val map = requireNotNull(cacheMap) { "CacheExtractor was not properly initialized" }
+        val map = cacheMap ?: return false
 
         val cachedRawSong = map[rawSong.mediaStoreId]
         if (cachedRawSong != null && cachedRawSong.dateAdded == rawSong.dateAdded && cachedRawSong.dateModified == rawSong.dateModified) {

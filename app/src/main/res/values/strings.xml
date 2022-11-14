@@ -251,7 +251,11 @@
     <string name="err_no_dirs">No folders</string>
     <string name="err_bad_dir">This folder is not supported</string>
     <!-- Referring to playback state -->
-    <string name="err_did_not_restore">No state could be restored</string>
+    <string name="err_did_not_restore">Unable to restore state</string>
+    <!-- Referring to playback state -->
+    <string name="err_did_not_wipe">Unable to clear state</string>
+    <!-- Referring to playback state -->
+    <string name="err_did_not_save">Unable to save state</string>
 
     <!-- Description Namespace | Accessibility Strings -->
 

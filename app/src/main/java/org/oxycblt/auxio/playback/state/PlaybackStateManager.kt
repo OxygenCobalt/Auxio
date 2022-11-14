@@ -29,6 +29,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager.Callback
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
 import kotlin.math.max
 
@@ -368,7 +369,13 @@ class PlaybackStateManager private constructor() {
 
         val library = musicStore.library ?: return false
         val internalPlayer = internalPlayer ?: return false
-        val state = withContext(Dispatchers.IO) { database.read(library) }
+        val state = try {
+            withContext(Dispatchers.IO) { database.read(library) }
+        } catch (e: Exception) {
+            logE("Unable to restore playback state.")
+            logE(e.stackTraceToString())
+            return false
+        }
 
         synchronized(this) {
             if (state != null && (!isInitialized || force)) {
@@ -397,15 +404,32 @@ class PlaybackStateManager private constructor() {
     }
 
     /** Save the current state to the [database]. */
-    suspend fun saveState(database: PlaybackStateDatabase) {
+    suspend fun saveState(database: PlaybackStateDatabase): Boolean {
         logD("Saving state to DB")
+
         val state = synchronized(this) { makeStateImpl() }
-        withContext(Dispatchers.IO) { database.write(state) }
+        return try {
+            withContext(Dispatchers.IO) { database.write(state) }
+            true
+        } catch (e: Exception) {
+            logE("Unable to save playback state.")
+            logE(e.stackTraceToString())
+            false
+        }
     }
 
-    suspend fun wipeState(database: PlaybackStateDatabase) {
+    /** Wipe the current state. */
+    suspend fun wipeState(database: PlaybackStateDatabase): Boolean {
         logD("Wiping state")
-        withContext(Dispatchers.IO) { database.write(null) }
+
+        return try {
+            withContext(Dispatchers.IO) { database.write(null) }
+            true
+        } catch (e: Exception) {
+            logE("Unable to wipe playback state.")
+            logE(e.stackTraceToString())
+            false
+        }
     }
 
     /** Sanitize the state with [newLibrary]. */

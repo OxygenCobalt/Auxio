@@ -248,26 +248,32 @@ class PlaybackViewModel(application: Application) :
 
     // --- SAVE/RESTORE FUNCTIONS ---
 
-    /** Force save the current [PlaybackStateManager] state to the database. */
-    fun savePlaybackState(onDone: () -> Unit) {
+    /**
+     * Force save the current [PlaybackStateManager] state to the database. [onDone]
+     * will be called with true if it was done, or false if an error occurred.
+     */
+    fun savePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
-            playbackManager.saveState(PlaybackStateDatabase.getInstance(application))
-            onDone()
+            val saved = playbackManager.saveState(PlaybackStateDatabase.getInstance(application))
+            onDone(saved)
         }
     }
 
-    /** Wipe the saved playback state (if any). */
-    fun wipePlaybackState(onDone: () -> Unit) {
+    /**
+     * Wipe the saved playback state (if any). [onDone] will be called with true if it was
+     * successfully done, or false if an error occurred.
+     */
+    fun wipePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
-            playbackManager.wipeState(PlaybackStateDatabase.getInstance(application))
-            onDone()
+            val wiped = playbackManager.wipeState(PlaybackStateDatabase.getInstance(application))
+            onDone(wiped)
         }
     }
 
     /**
      * Force restore the last [PlaybackStateManager] saved state, regardless of if a library exists
      * or not. [onDone] will be called with true if it was successfully done, or false if there was
-     * no state or if a library was not present.
+     * no state, a library was not present, or there was an error.
      */
     fun tryRestorePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {

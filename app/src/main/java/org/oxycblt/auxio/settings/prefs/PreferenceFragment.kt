@@ -113,13 +113,21 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
         when (preference.key) {
             context.getString(R.string.set_key_save_state) -> {
-                playbackModel.savePlaybackState {
-                    this.context?.showToast(R.string.lbl_state_saved)
+                playbackModel.savePlaybackState { saved ->
+                    if (saved) {
+                        this.context?.showToast(R.string.lbl_state_saved)
+                    } else {
+                        this.context?.showToast(R.string.err_did_not_save)
+                    }
                 }
             }
             context.getString(R.string.set_key_wipe_state) -> {
-                playbackModel.wipePlaybackState {
-                    this.context?.showToast(R.string.lbl_state_wiped)
+                playbackModel.wipePlaybackState { wiped ->
+                    if (wiped) {
+                        this.context?.showToast(R.string.lbl_state_wiped)
+                    } else {
+                        this.context?.showToast(R.string.err_did_not_wipe)
+                    }
                 }
             }
             context.getString(R.string.set_key_restore_state) ->
