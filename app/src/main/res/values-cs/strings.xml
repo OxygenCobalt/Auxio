@@ -199,7 +199,7 @@
     <string name="set_restore_state">Obnovit stav přehrávání</string>
     <string name="lbl_state_restored">Stav obnoven</string>
     <string name="set_restore_desc">Obnovit dříve uložený stav přehrávání (pokud existuje)</string>
-    <string name="err_did_not_restore">Nemohl být obnoven žádný stav</string>
+    <string name="err_did_not_restore">Nepodařilo se obnovit stav</string>
     <string name="lbl_observing">Monitorování hudební knihovny</string>
     <string name="set_observing">Automatické znovunačítání</string>
     <string name="lng_observing">Sledování změn v hudební knihovně…</string>
@@ -254,4 +254,11 @@
     <string name="set_cover_mode_media_store">Rychlé</string>
     <string name="set_hide_collaborators">Skrýt spoluautory</string>
     <string name="set_hide_collaborators_desc">Zobrazit pouze umělce, kteří jsou přímo uvedeni na albu v knihovně</string>
+    <string name="err_did_not_save">Nepodařilo se uložit stav</string>
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d umělec</item>
+        <item quantity="few">%d umělci</item>
+        <item quantity="other">%d umělců</item>
+    </plurals>
+    <string name="err_did_not_wipe">Nepodařilo se vymazat stav</string>
 </resources>

@@ -168,7 +168,7 @@
     <string name="lbl_state_restored">Estado restaurado</string>
     <string name="set_observing">Recarga automática</string>
     <string name="set_observing_desc">Vuelva a cargar su biblioteca de música cada vez que cambie (Requiere notificación persistente)</string>
-    <string name="err_did_not_restore">No se puedo restaurar ningún estado</string>
+    <string name="err_did_not_restore">No es posible restaurar el estado</string>
     <string name="lng_indexing">Cargando tu librería de música…</string>
     <string name="lbl_indexing">Cargando música</string>
     <string name="lbl_observing">Monitorizando la librería de música</string>
@@ -250,4 +250,11 @@
     <string name="set_bar_action_next">Saltar al siguiente</string>
     <string name="set_hide_collaborators_desc">Sólo se muestran los artistas que están directamente acreditados en un álbum en la biblioteca</string>
     <string name="set_hide_collaborators">Ocultar colaboradores</string>
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d artista</item>
+        <item quantity="many">%d artistas</item>
+        <item quantity="other">%d artistas</item>
+    </plurals>
+    <string name="err_did_not_save">Imposible guardar el estado</string>
+    <string name="err_did_not_wipe">No se puede borrar el estado</string>
 </resources>

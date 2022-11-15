@@ -7,7 +7,7 @@ Auxio è un lettore di musica locale con una UI/UX veloce, affidabile e senza ta
 - UI facile da usare
 - Comportamento personalizzabile
 - Indicizzazione multimediale avanzata che prioritizza metadati corretti
-- Supporto a date precise, tags,  e tipo di release (sperimentale)
+- Supporto a date precise, tags, e tipo di release (sperimentale)
 - Gestione delle cartelle
 - Persistenza stato di riproduzione affidabile
 - Supporto Replay Gain (su MP3, MP4, FLAC, OGG, e OPUS)
