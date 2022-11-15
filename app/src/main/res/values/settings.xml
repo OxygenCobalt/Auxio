@@ -14,7 +14,6 @@
     <string name="set_key_separators" translatable="false">auxio_separators</string>
 
     <string name="set_key_headset_autoplay" translatable="false">auxio_headset_autoplay</string>
-    <string name="set_key_bluetooth_autoplay" translatable="false">auxio_bluetooth_autoplay</string>
     <string name="set_key_replay_gain" translatable="false">auxio_replay_gain</string>
     <string name="set_key_pre_amp" translatable="false">auxio_pre_amp</string>
     <string name="set_key_pre_amp_with" translatable="false">auxio_pre_amp_with</string>

@@ -71,18 +71,6 @@ class MainActivity : AppCompatActivity() {
         if (!startIntentAction(intent)) {
             playbackModel.startAction(InternalPlayer.Action.RestoreState)
         }
-
-        // Check bluetooth connect permissions if required for bt autoconnect feature
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val settings = Settings(this)
-            if (settings.bluetoothAutoplay) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf<String>(android.Manifest.permission.BLUETOOTH_CONNECT),
-                    BLUETOOTH_PERMISSION_REQUEST_ID
-                )
-            }
-        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -145,6 +133,5 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val KEY_INTENT_USED = BuildConfig.APPLICATION_ID + ".key.FILE_INTENT_USED"
-        private const val BLUETOOTH_PERMISSION_REQUEST_ID = 1337 * 42;
     }
 }
