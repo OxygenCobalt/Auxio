@@ -69,15 +69,17 @@ constructor(
     var positionDs: Long
         get() = binding.seekBarSlider.value.toLong()
         set(value) {
+            val sanitized = max(value, 0)
+
             // Sanity check: Ensure that this value is within the duration and will not crash
             // the app, and that the user is not currently seeking (which would cause the SeekBar
             // to jump around).
-            if (value <= durationDs && !isActivated) {
-                binding.seekBarSlider.value = value.toFloat()
+            if (sanitized <= durationDs && !isActivated) {
+                binding.seekBarSlider.value = sanitized.toFloat()
 
                 // We would want to keep this in the callback, but the callback only fires when
                 // a value changes completely, and sometimes that does not happen with this view.
-                binding.seekBarPosition.text = value.formatDurationDs(true)
+                binding.seekBarPosition.text = sanitized.formatDurationDs(true)
             }
         }
 
