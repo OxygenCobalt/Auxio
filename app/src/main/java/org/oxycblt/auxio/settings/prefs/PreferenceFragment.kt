@@ -17,6 +17,8 @@
  
 package org.oxycblt.auxio.settings.prefs
 
+import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.DrawableRes
@@ -41,6 +43,8 @@ import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
+import java.security.Permission
+import java.util.jar.Manifest
 
 /**
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
