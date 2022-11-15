@@ -92,7 +92,7 @@
     <string name="set_save_state">Uložit stav přehrávání</string>
     <string name="set_save_desc">Uložit aktuální stav přehrávání</string>
     <string name="set_reindex">Znovu načíst hudbu</string>
-    <string name="set_reindex_desc">Může vymazat stav přehrávání</string>
+    <string name="set_reindex_desc">Znovu načíst hudební knihovnu a pokud je to možné, použít mezipaměť</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nenalezena žádná hudba</string>
     <string name="err_index_failed">Načítání hudby selhalo</string>
@@ -203,7 +203,7 @@
     <string name="lbl_observing">Monitorování hudební knihovny</string>
     <string name="set_observing">Automatické znovunačítání</string>
     <string name="lng_observing">Sledování změn v hudební knihovně…</string>
-    <string name="set_observing_desc">Znovu načíst vaší hudební knihovnu při změně (vyžaduje trvalé oznámení)</string>
+    <string name="set_observing_desc">Znovu načíst hudební knihovnu při změně (vyžaduje trvalé oznámení)</string>
     <string name="lbl_indexing">Načítání hudby</string>
     <string name="lbl_sort_date_added">Datum přidání</string>
     <string name="lbl_single">Singl</string>
@@ -261,4 +261,6 @@
         <item quantity="other">%d umělců</item>
     </plurals>
     <string name="err_did_not_wipe">Nepodařilo se vymazat stav</string>
+    <string name="set_rescan">Znovu najít hudbu</string>
+    <string name="set_rescan_desc">Znovu načíst hudební knihovnu a znovu vytvořit mezipaměť (pomalejší, ale úplnější)</string>
 </resources>
