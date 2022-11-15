@@ -203,11 +203,16 @@ class GenreDetailFragment :
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        if (parent is Genre && parent == unlikelyToBeNull(detailModel.currentGenre.value)) {
-            detailAdapter.updateIndicator(song, isPlaying)
-        } else {
-            // Ignore song playback not from the genre
-            detailAdapter.updateIndicator(null, isPlaying)
+        var item: Item? = null
+
+        if (parent is Artist) {
+            item = parent
         }
+
+        if (parent is Genre && parent.uid == unlikelyToBeNull(detailModel.currentGenre.value).uid) {
+            item = song
+        }
+
+        detailAdapter.updateIndicator(item, isPlaying)
     }
 }

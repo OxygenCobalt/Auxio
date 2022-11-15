@@ -98,7 +98,6 @@ class DetailViewModel(application: Application) :
     var artistSort: Sort
         get() = settings.detailArtistSort
         set(value) {
-            logD(value)
             settings.detailArtistSort = value
             currentArtist.value?.let(::refreshArtistData)
         }
@@ -227,7 +226,7 @@ class DetailViewModel(application: Application) :
             for (entry in byDisc.entries) {
                 val disc = entry.key
                 val discSongs = entry.value
-                data.add(DiscHeader(disc)) // Ensure ID uniqueness
+                data.add(DiscHeader(disc))
                 data.addAll(discSongs)
             }
         } else {
