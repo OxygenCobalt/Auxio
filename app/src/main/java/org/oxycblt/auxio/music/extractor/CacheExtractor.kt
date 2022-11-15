@@ -38,11 +38,15 @@ import java.io.File
  * modification times for files, as these are required for the cache to function well.
  * @author OxygenCobalt
  */
-class CacheExtractor(private val context: Context) {
+class CacheExtractor(private val context: Context, private val noop: Boolean) {
     private var cacheMap: Map<Long, Song.Raw>? = null
-    private var shouldWriteCache = false
+    private var shouldWriteCache = noop
 
     fun init() {
+        if (noop) {
+            return
+        }
+
         try {
             cacheMap = CacheDatabase.getInstance(context).read()
         } catch (e: Exception) {

@@ -218,9 +218,12 @@
 
     <string name="set_content">Content</string>
     <string name="set_reindex">Reload music</string>
-    <string name="set_reindex_desc">May wipe playback state</string>
+    <string name="set_reindex_desc">Reload the music library, using the cache whenever possible</string>
+    <!-- Different from "Reload music" -->
+    <string name="set_rescan">Rescan music</string>
+    <string name="set_rescan_desc">Reload the music library and re-create the cache (Slower, but more complete)</string>
     <string name="set_observing">Automatic reloading</string>
-    <string name="set_observing_desc">Reload your music library whenever it changes (Requires persistent notification)</string>
+    <string name="set_observing_desc">Reload the music library whenever it changes (Requires persistent notification)</string>
     <string name="set_dirs">Music folders</string>
     <string name="set_dirs_desc">Manage where music should be loaded from</string>
     <!-- As in the mode to be used with the music folders setting -->

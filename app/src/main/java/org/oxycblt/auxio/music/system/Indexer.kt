@@ -24,7 +24,6 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.BuildConfig
@@ -134,8 +133,9 @@ class Indexer {
     /**
      * Start the indexing process. This should be done by [Controller] in a background thread. When
      * complete, a new completion state will be pushed to each callback.
+     * @param fresh Whether to use the cache when loading.
      */
-    suspend fun index(context: Context) {
+    suspend fun index(context: Context, fresh: Boolean) {
         val notGranted =
             ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
                 PackageManager.PERMISSION_DENIED
@@ -148,7 +148,7 @@ class Indexer {
         val response =
             try {
                 val start = System.currentTimeMillis()
-                val library = indexImpl(context)
+                val library = indexImpl(context, fresh)
                 if (library != null) {
                     logD(
                         "Music indexing completed successfully in " +
@@ -175,11 +175,12 @@ class Indexer {
     /**
      * Request that re-indexing should be done. This should be used by components that do not manage
      * the indexing process to re-index music.
+     * @param withCache Whether to use the cache when loading music.
      */
     @Synchronized
-    fun requestReindex() {
+    fun requestReindex(withCache: Boolean) {
         logD("Requesting reindex")
-        controller?.onStartIndexing()
+        controller?.onStartIndexing(withCache)
     }
 
     /**
@@ -196,13 +197,13 @@ class Indexer {
     /**
      * Run the proper music loading process.
      */
-    private suspend fun indexImpl(context: Context): MusicStore.Library? {
+    private suspend fun indexImpl(context: Context, withCache: Boolean): MusicStore.Library? {
         // Create the chain of extractors. Each extractor builds on the previous and
         // enables version-specific features in order to create the best possible music
         // experience. This is technically dependency injection. Except it doesn't increase
         // your compile times by 3x. Isn't that nice.
 
-        val cacheDatabase = CacheExtractor(context)
+        val cacheDatabase = CacheExtractor(context, !withCache)
 
         val mediaStoreExtractor =
             when {
@@ -434,7 +435,7 @@ class Indexer {
     }
 
     interface Controller : Callback {
-        fun onStartIndexing()
+        fun onStartIndexing(withCache: Boolean)
     }
 
     companion object {

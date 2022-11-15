@@ -145,6 +145,9 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             context.getString(R.string.set_key_reindex) -> {
                 musicModel.reindex()
             }
+            context.getString(R.string.set_key_rescan) -> {
+                musicModel.rescan()
+            }
             else -> return super.onPreferenceTreeClick(preference)
         }
 

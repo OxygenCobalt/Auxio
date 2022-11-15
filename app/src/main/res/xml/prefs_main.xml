@@ -139,6 +139,10 @@
             app:key="@string/set_key_reindex"
             app:summary="@string/set_reindex_desc"
             app:title="@string/set_reindex" />
+        <Preference
+            app:key="@string/set_key_rescan"
+            app:summary="@string/set_rescan_desc"
+            app:title="@string/set_rescan" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
