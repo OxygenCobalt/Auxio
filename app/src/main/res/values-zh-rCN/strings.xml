@@ -77,7 +77,7 @@
     <string name="set_save_state">保存播放状态</string>
     <string name="set_save_desc">立即保存当前播放状态</string>
     <string name="set_reindex">重新加载音乐</string>
-    <string name="set_reindex_desc">可能会抹除播放状态</string>
+    <string name="set_reindex_desc">重新加载音乐库，尽可能使用缓存</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">没有找到音乐</string>
     <string name="err_index_failed">加载音乐失败</string>
@@ -194,7 +194,7 @@
     <string name="set_restore_state">恢复播放状态</string>
     <string name="set_restore_desc">恢复此前保存的播放状态（如果有）</string>
     <string name="set_observing">自动重载</string>
-    <string name="set_observing_desc">发生更改时自动重新加载您的曲库（需要持久性通知）</string>
+    <string name="set_observing_desc">只要发生更改就重新加载曲库（需要持久性通知）</string>
     <string name="desc_queue_bar">打开队列</string>
     <string name="lbl_indexing">正在加载音乐</string>
     <string name="lbl_observing">正在监测曲库</string>
@@ -226,7 +226,7 @@
     <string name="set_bar_action_next">跳到下一首</string>
     <string name="lbl_equalizer">均衡器</string>
     <string name="desc_exit">停止播放</string>
-    <string name="set_separators_and">与号(&amp;)</string>
+    <string name="set_separators_and">与号 (&amp;)</string>
     <string name="set_separators_slash">斜线 (/)</string>
     <string name="set_separators">多值分隔符</string>
     <string name="set_separators_desc">配置表示多个标签值的字符</string>
@@ -251,4 +251,6 @@
     </plurals>
     <string name="err_did_not_save">无法保存状态</string>
     <string name="err_did_not_wipe">无法清除状态</string>
+    <string name="set_rescan">重新扫描音乐</string>
+    <string name="set_rescan_desc">重新加载曲库并重新创建缓存（更慢，但更完整）</string>
 </resources>
