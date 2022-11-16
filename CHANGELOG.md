@@ -46,6 +46,12 @@ audio focus was lost
 - Refactor music backends into a unified chain of extractors
 - Add bluetooth connection reciever (No functionality in app yet)
 
+## 2.6.4
+
+#### What's Fixed
+- Fixed issue where invalid position values would crash the app
+- Fixed issue where opening the song menu in the genre view would crash the app
+
 ## 2.6.3
 
 #### What's New
