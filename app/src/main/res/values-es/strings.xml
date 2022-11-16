@@ -75,7 +75,7 @@
     <string name="set_save_state">Guardar estado de reproducción</string>
     <string name="set_save_desc">Guardar el estado de reproduccion ahora</string>
     <string name="set_reindex">Recargar música</string>
-    <string name="set_reindex_desc">Puede borrar el estado de reproducción</string>
+    <string name="set_reindex_desc">Recargar la biblioteca musical, utilizando la caché siempre que sea posible</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Sin música</string>
     <string name="err_index_failed">Falló la carga de música</string>
@@ -167,7 +167,7 @@
     <string name="lbl_sort_count">Número de canciones</string>
     <string name="lbl_state_restored">Estado restaurado</string>
     <string name="set_observing">Recarga automática</string>
-    <string name="set_observing_desc">Vuelva a cargar su biblioteca de música cada vez que cambie (Requiere notificación persistente)</string>
+    <string name="set_observing_desc">Volver a cargar la biblioteca musical cada vez que esta cambie (requiere una notificacion persistente)</string>
     <string name="err_did_not_restore">No es posible restaurar el estado</string>
     <string name="lng_indexing">Cargando tu librería de música…</string>
     <string name="lbl_indexing">Cargando música</string>
@@ -257,4 +257,6 @@
     </plurals>
     <string name="err_did_not_save">Imposible guardar el estado</string>
     <string name="err_did_not_wipe">No se puede borrar el estado</string>
+    <string name="set_rescan_desc">Recargar la biblioteca musical y volver a crear la caché (Más lento, pero más completo)</string>
+    <string name="set_rescan">Volver a escanear la música</string>
 </resources>
