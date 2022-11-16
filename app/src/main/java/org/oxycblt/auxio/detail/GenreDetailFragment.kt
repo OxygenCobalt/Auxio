@@ -126,8 +126,6 @@ class GenreDetailFragment :
         if (item is Song) {
             musicMenu(anchor, R.menu.menu_song_actions, item)
         }
-
-        error("Unexpected datatype when opening menu: ${item::class.java}")
     }
 
     override fun onPlayParent() {
