@@ -56,7 +56,7 @@
     <string name="set_lib_tabs">Вкладки</string>
     <string name="set_lib_tabs_desc">Изменить видимость и порядок вкладок</string>
     <string name="set_round_mode">Скруглённые обложки</string>
-    <string name="set_round_mode_desc">Показывать обложки со скруглёнными краями</string>
+    <string name="set_round_mode_desc">Включить скруглённые края на некоторых элементах интерфейса</string>
     <string name="set_notif_action">Кнопка в уведомлении</string>
     <string name="set_audio">Звук</string>
     <string name="set_headset_autoplay">Воспроизводить при подключении</string>
@@ -76,8 +76,8 @@
     <string name="set_content">Библиотека</string>
     <string name="set_save_state">Запоминать позицию</string>
     <string name="set_save_desc">Запоминать позицию в треке</string>
-    <string name="set_reindex">Перезагрузить музыку</string>
-    <string name="set_reindex_desc">Может стереть состояние воспроизведения</string>
+    <string name="set_reindex">Обновить музыку</string>
+    <string name="set_reindex_desc">Обновлять библиотеку, при возможности используя кеш тегов</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Треков нет</string>
     <string name="err_index_failed">Ошибка чтения библиотеки</string>
@@ -205,7 +205,7 @@
     <string name="lbl_single_remix">Ремикс сингл</string>
     <string name="lbl_compilations">Сборники</string>
     <string name="set_wipe_desc">Очистить ранее сохраненное состояние воспроизведения (если есть)</string>
-    <string name="set_observing_desc">Перезагружать библиотеку при каждом изменении (экспериментально)</string>
+    <string name="set_observing_desc">Перезагружать библиотеку при изменении (экспериментально)</string>
     <string name="fmt_db_neg">-%.1f дБ</string>
     <string name="fmt_lib_genre_count">Жанров загружено: %d</string>
     <string name="set_restore_desc">Восстановить предыдущее состояние воспроизведения (если есть)</string>
@@ -229,7 +229,7 @@
     <string name="set_bar_action_repeat">Режим повтора</string>
     <string name="lbl_equalizer">Эквалайзер</string>
     <string name="set_hide_collaborators">Скрыть соавторов</string>
-    <string name="set_hide_collaborators_desc">Показывать только исполнителей, которые напрямую указаны в альбоме</string>
+    <string name="set_hide_collaborators_desc">Показывать только тех исполнителей, которые напрямую указаны в альбоме</string>
     <string name="set_exclude_non_music">Исключить не-музыку</string>
     <string name="set_separators">Многозначные разделители</string>
     <string name="set_separators_slash">Косая черта (/)</string>
@@ -244,8 +244,12 @@
     <string name="set_cover_mode">Обложки альбомов</string>
     <string name="lbl_mix">Микс</string>
     <string name="set_pre_amp_with">В соответствие с тегами</string>
-    <string name="set_pre_amp_without">без тегов</string>
+    <string name="set_pre_amp_without">Правка без тегов</string>
     <string name="set_cover_mode_off">откл.</string>
     <string name="set_cover_mode_media_store">Быстро</string>
     <string name="set_cover_mode_quality">Высокое качество</string>
+    <string name="lbl_compilation_live">Подборка в реальном времени</string>
+    <string name="set_bar_action">Пользовательское поведение панели воспроизведения</string>
+    <string name="set_rescan">Пересканировать библиотеку</string>
+    <string name="set_rescan_desc">Очистить кеш тегов и полностью обновить библиотеку (медленно, но более эффективно)</string>
 </resources>
