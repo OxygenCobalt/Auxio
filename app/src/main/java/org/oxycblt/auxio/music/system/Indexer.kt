@@ -133,9 +133,9 @@ class Indexer {
     /**
      * Start the indexing process. This should be done by [Controller] in a background thread. When
      * complete, a new completion state will be pushed to each callback.
-     * @param fresh Whether to use the cache when loading.
+     * @param withCache Whether to use the cache when loading.
      */
-    suspend fun index(context: Context, fresh: Boolean) {
+    suspend fun index(context: Context, withCache: Boolean) {
         val notGranted =
             ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
                 PackageManager.PERMISSION_DENIED
@@ -148,12 +148,11 @@ class Indexer {
         val response =
             try {
                 val start = System.currentTimeMillis()
-                val library = indexImpl(context, fresh)
+                val library = indexImpl(context, withCache)
                 if (library != null) {
                     logD(
                         "Music indexing completed successfully in " +
-                            "${System.currentTimeMillis() - start}ms"
-                    )
+                            "${System.currentTimeMillis() - start}ms")
                     Response.Ok(library)
                 } else {
                     logE("No music found")
@@ -194,9 +193,7 @@ class Indexer {
         emitIndexing(null)
     }
 
-    /**
-     * Run the proper music loading process.
-     */
+    /** Run the proper music loading process. */
     private suspend fun indexImpl(context: Context, withCache: Boolean): MusicStore.Library? {
         // Create the chain of extractors. Each extractor builds on the previous and
         // enables version-specific features in order to create the best possible music
@@ -250,12 +247,15 @@ class Indexer {
     }
 
     /**
-     * Does the initial query over the song database using [metadataExtractor]. The songs returned by
-     * this function are **not** well-formed. The companion [buildAlbums], [buildArtists], and
+     * Does the initial query over the song database using [metadataExtractor]. The songs returned
+     * by this function are **not** well-formed. The companion [buildAlbums], [buildArtists], and
      * [buildGenres] functions must be called with the returned list so that all songs are properly
      * linked up.
      */
-    private suspend fun buildSongs(metadataExtractor: MetadataExtractor, settings: Settings): List<Song> {
+    private suspend fun buildSongs(
+        metadataExtractor: MetadataExtractor,
+        settings: Settings
+    ): List<Song> {
         logD("Starting indexing process")
 
         val start = System.currentTimeMillis()
@@ -317,9 +317,9 @@ class Indexer {
     }
 
     /**
-     * Group up songs AND albums into artists. This process seems weird (because it is), but
-     * the purpose is that the actual artist information of albums and songs often differs,
-     * and so they are linked in different ways.
+     * Group up songs AND albums into artists. This process seems weird (because it is), but the
+     * purpose is that the actual artist information of albums and songs often differs, and so they
+     * are linked in different ways.
      */
     private fun buildArtists(songs: List<Song>, albums: List<Album>): List<Artist> {
         val musicByArtist = mutableMapOf<Artist.Raw, MutableList<Music>>()

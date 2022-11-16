@@ -27,10 +27,9 @@ import org.oxycblt.auxio.ui.recycler.ItemClickListener
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
-/**
- * The adapter that displays a list of artist choices in the picker UI.
- */
-class ArtistChoiceAdapter(private val listener: ItemClickListener) : RecyclerView.Adapter<ArtistChoiceViewHolder>() {
+/** The adapter that displays a list of artist choices in the picker UI. */
+class ArtistChoiceAdapter(private val listener: ItemClickListener) :
+    RecyclerView.Adapter<ArtistChoiceViewHolder>() {
     private var artists = listOf<Artist>()
 
     override fun getItemCount() = artists.size
@@ -45,8 +44,7 @@ class ArtistChoiceAdapter(private val listener: ItemClickListener) : RecyclerVie
         if (newArtists != artists) {
             artists = newArtists
 
-            @Suppress("NotifyDataSetChanged")
-            notifyDataSetChanged()
+            @Suppress("NotifyDataSetChanged") notifyDataSetChanged()
         }
     }
 }
@@ -55,13 +53,12 @@ class ArtistChoiceAdapter(private val listener: ItemClickListener) : RecyclerVie
  * The ViewHolder that displays a artist choice. Smaller than other parent items due to dialog
  * constraints.
  */
-class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) : DialogViewHolder(binding.root) {
+class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
+    DialogViewHolder(binding.root) {
     fun bind(artist: Artist, listener: ItemClickListener) {
         binding.pickerImage.bind(artist)
         binding.pickerName.text = artist.resolveName(binding.context)
-        binding.root.setOnClickListener {
-            listener.onItemClick(artist)
-        }
+        binding.root.setOnClickListener { listener.onItemClick(artist) }
     }
 
     companion object {

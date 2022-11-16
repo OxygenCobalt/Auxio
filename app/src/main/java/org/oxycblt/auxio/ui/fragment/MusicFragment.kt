@@ -49,8 +49,8 @@ abstract class MusicFragment<T : ViewBinding> : ViewBindingFragment<T>() {
     protected val navModel: NavigationViewModel by activityViewModels()
 
     /**
-     * Run the UI flow to perform a specific [PickerMode] action with a particular
-     * artist from [song].
+     * Run the UI flow to perform a specific [PickerMode] action with a particular artist from
+     * [song].
      */
     fun doArtistDependentAction(song: Song, mode: PickerMode) {
         if (song.artists.size == 1) {
@@ -61,24 +61,18 @@ abstract class MusicFragment<T : ViewBinding> : ViewBindingFragment<T>() {
         } else {
             navModel.mainNavigateTo(
                 MainNavigationAction.Directions(
-                    MainFragmentDirections.actionPickArtist(song.uid, mode)
-                )
-            )
+                    MainFragmentDirections.actionPickArtist(song.uid, mode)))
         }
     }
 
-    /**
-     * Run the UI flow to navigate to a particular artist from [album].
-     */
+    /** Run the UI flow to navigate to a particular artist from [album]. */
     fun navigateToArtist(album: Album) {
         if (album.artists.size == 1) {
             navModel.exploreNavigateTo(album.artists[0])
         } else {
             navModel.mainNavigateTo(
                 MainNavigationAction.Directions(
-                    MainFragmentDirections.actionPickArtist(album.uid, PickerMode.SHOW)
-                )
-            )
+                    MainFragmentDirections.actionPickArtist(album.uid, PickerMode.SHOW)))
         }
     }
 
@@ -108,9 +102,7 @@ abstract class MusicFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                 R.id.action_song_detail -> {
                     navModel.mainNavigateTo(
                         MainNavigationAction.Directions(
-                            MainFragmentDirections.actionShowDetails(song.uid)
-                        )
-                    )
+                            MainFragmentDirections.actionShowDetails(song.uid)))
                 }
                 else -> {
                     error("Unexpected menu item selected")

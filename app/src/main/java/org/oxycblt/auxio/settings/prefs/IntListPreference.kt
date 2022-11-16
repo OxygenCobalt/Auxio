@@ -26,10 +26,10 @@ import androidx.core.content.res.getTextArrayOrThrow
 import androidx.preference.DialogPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
+import java.lang.reflect.Field
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
-import java.lang.reflect.Field
 
 class IntListPreference
 @JvmOverloads
@@ -57,18 +57,13 @@ constructor(
     init {
         val prefAttrs =
             context.obtainStyledAttributes(
-                attrs,
-                R.styleable.IntListPreference,
-                defStyleAttr,
-                defStyleRes
-            )
+                attrs, R.styleable.IntListPreference, defStyleAttr, defStyleRes)
 
         entries = prefAttrs.getTextArrayOrThrow(R.styleable.IntListPreference_entries)
 
         values =
             context.resources.getIntArray(
-                prefAttrs.getResourceIdOrThrow(R.styleable.IntListPreference_entryValues)
-            )
+                prefAttrs.getResourceIdOrThrow(R.styleable.IntListPreference_entryValues))
 
         val offValueId = prefAttrs.getResourceId(R.styleable.IntListPreference_offValue, -1)
         if (offValueId > -1) {
@@ -152,6 +147,6 @@ constructor(
 
     companion object {
         private val PREFERENCE_DEFAULT_VALUE_FIELD: Field by
-        lazyReflectedField(Preference::class, "mDefaultValue")
+            lazyReflectedField(Preference::class, "mDefaultValue")
     }
 }

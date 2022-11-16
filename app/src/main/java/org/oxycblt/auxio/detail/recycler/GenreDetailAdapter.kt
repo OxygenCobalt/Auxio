@@ -27,9 +27,7 @@ import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
-import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
@@ -105,11 +103,11 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
         binding.detailType.text = binding.context.getString(R.string.lbl_genre)
         binding.detailName.text = item.resolveName(binding.context)
         binding.detailSubhead.isVisible = false
-        binding.detailInfo.text =             binding.context.getString(
+        binding.detailInfo.text =
+            binding.context.getString(
                 R.string.fmt_two,
                 binding.context.getPlural(R.plurals.fmt_artist_count, item.artists.size),
-                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
-            )
+                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
 
         binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }
         binding.detailShuffleButton.setOnClickListener { listener.onShuffleParent() }

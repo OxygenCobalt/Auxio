@@ -29,10 +29,10 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
+import java.lang.reflect.Field
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.AuxioAppBarLayout
 import org.oxycblt.auxio.util.lazyReflectedField
-import java.lang.reflect.Field
 
 /**
  * An [AuxioAppBarLayout] variant that also shows the name of the toolbar whenever the detail
@@ -145,6 +145,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         private const val TOOLBAR_FADE_DURATION = 150L
 
         private val TOOLBAR_TITLE_TEXT_FIELD: Field by
-        lazyReflectedField(Toolbar::class, "mTitleTextView")
+            lazyReflectedField(Toolbar::class, "mTitleTextView")
     }
 }

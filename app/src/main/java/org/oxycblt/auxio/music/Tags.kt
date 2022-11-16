@@ -19,22 +19,18 @@ package org.oxycblt.auxio.music
 
 import android.content.Context
 import android.os.Build
-import android.text.format.DateUtils
 import androidx.annotation.RequiresApi
-import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.playback.secsToMs
-import org.oxycblt.auxio.util.inRangeOrNull
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.nonZeroOrNull
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalQueries
-import java.util.Formatter
 import java.util.Locale
 import kotlin.math.max
 import kotlin.math.min
+import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.util.inRangeOrNull
+import org.oxycblt.auxio.util.logE
+import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
  * An ISO-8601/RFC 3339 Date.
@@ -81,9 +77,8 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
     private val second = tokens.getOrNull(5)
 
     /**
-     * Resolve this date into a string. This could result in a year string formatted
-     * as "YYYY", or a month and year string formatted as "MMM YYYY" depending on the
-     * situation.
+     * Resolve this date into a string. This could result in a year string formatted as "YYYY", or a
+     * month and year string formatted as "MMM YYYY" depending on the situation.
      */
     fun resolveDate(context: Context): String {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -101,17 +96,17 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun resolveFullDate(context: Context) =
-        if( month != null ) {
-            val temporal = DateTimeFormatter.ISO_DATE.parse(
-                "$year-$month-${day ?: 1}",
-                TemporalQueries.localDate()
-            )
+        if (month != null) {
+            val temporal =
+                DateTimeFormatter.ISO_DATE.parse(
+                    "$year-$month-${day ?: 1}", TemporalQueries.localDate())
 
             // When it comes to songs, we only want to show the month and year. This
             // cannot be done with DateUtils due to it's dynamic nature, so instead
             // it's done with the built-in date formatter. Since the legacy date API
             // is awful, we only use instant and limit it to Android 8 onwards.
-            temporal.atStartOfDay(ZoneId.systemDefault())
+            temporal
+                .atStartOfDay(ZoneId.systemDefault())
                 .format(DateTimeFormatter.ofPattern("MMM yyyy", Locale.getDefault()))
         } else {
             resolveYear(context)
@@ -161,8 +156,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
     companion object {
         private val ISO8601_REGEX =
             Regex(
-                """^(\d{4,})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2})(Z)?)?)?)?)?)?$"""
-            )
+                """^(\d{4,})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2})(Z)?)?)?)?)?)?$""")
 
         fun from(year: Int) = fromTokens(listOf(year))
 
@@ -246,11 +240,12 @@ sealed class ReleaseType {
 
     data class Compilation(override val refinement: Refinement?) : ReleaseType() {
         override val stringRes: Int
-            get() = when (refinement) {
-                null -> R.string.lbl_compilation
-                Refinement.LIVE -> R.string.lbl_compilation_live
-                Refinement.REMIX -> R.string.lbl_compilation_remix
-            }
+            get() =
+                when (refinement) {
+                    null -> R.string.lbl_compilation
+                    Refinement.LIVE -> R.string.lbl_compilation_live
+                    Refinement.REMIX -> R.string.lbl_compilation_remix
+                }
     }
 
     object Soundtrack : ReleaseType() {
@@ -325,14 +320,15 @@ sealed class ReleaseType {
         private inline fun parseSecondaryTypeImpl(
             type: String?,
             convertRefinement: (Refinement?) -> ReleaseType
-        ) = when {
-            // Parse all the types that have no children
-            type.equals("soundtrack", true) -> Soundtrack
-            type.equals("mixtape/street", true) -> Mixtape
-            type.equals("dj-mix", true) -> Mix
-            type.equals("live", true) -> convertRefinement(Refinement.LIVE)
-            type.equals("remix", true) -> convertRefinement(Refinement.REMIX)
-            else -> convertRefinement(null)
-        }
+        ) =
+            when {
+                // Parse all the types that have no children
+                type.equals("soundtrack", true) -> Soundtrack
+                type.equals("mixtape/street", true) -> Mixtape
+                type.equals("dj-mix", true) -> Mix
+                type.equals("live", true) -> convertRefinement(Refinement.LIVE)
+                type.equals("remix", true) -> convertRefinement(Refinement.REMIX)
+                else -> convertRefinement(null)
+            }
     }
 }

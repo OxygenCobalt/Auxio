@@ -126,8 +126,7 @@ class SyncListDiffer<T>(
                                 throw AssertionError()
                             }
                         }
-                    }
-                )
+                    })
 
             field = newList
             result.dispatchUpdatesTo(updateCallback)

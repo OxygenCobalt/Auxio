@@ -49,8 +49,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             initialPadding.left,
             initialPadding.top,
             initialPadding.right,
-            initialPadding.bottom + insets.systemBarInsetsCompat.bottom
-        )
+            initialPadding.bottom + insets.systemBarInsetsCompat.bottom)
 
         return insets
     }

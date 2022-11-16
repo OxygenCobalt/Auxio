@@ -98,8 +98,7 @@ class MusicDirsDialog :
                 dirs =
                     MusicDirs(
                         pendingDirs.mapNotNull { Directory.fromDocumentUri(storageManager, it) },
-                        savedInstanceState.getBoolean(KEY_PENDING_MODE)
-                    )
+                        savedInstanceState.getBoolean(KEY_PENDING_MODE))
             }
         }
 
@@ -112,8 +111,7 @@ class MusicDirsDialog :
                     R.id.dirs_mode_include
                 } else {
                     R.id.dirs_mode_exclude
-                }
-            )
+                })
 
             updateMode()
             addOnButtonCheckedListener { _, _, _ -> updateMode() }
@@ -123,9 +121,7 @@ class MusicDirsDialog :
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putStringArrayList(
-            KEY_PENDING_DIRS,
-            ArrayList(dirAdapter.dirs.map { it.toString() })
-        )
+            KEY_PENDING_DIRS, ArrayList(dirAdapter.dirs.map { it.toString() }))
         outState.putBoolean(KEY_PENDING_MODE, isInclude(requireBinding()))
     }
 
@@ -159,9 +155,7 @@ class MusicDirsDialog :
         // Turn the raw URI into a document tree URI
         val docUri =
             DocumentsContract.buildDocumentUriUsingTree(
-                uri,
-                DocumentsContract.getTreeDocumentId(uri)
-            )
+                uri, DocumentsContract.getTreeDocumentId(uri))
 
         // Turn it into a semi-usable path
         val treeUri = DocumentsContract.getTreeDocumentId(docUri)

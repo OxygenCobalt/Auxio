@@ -84,8 +84,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         binding.aboutTotalDuration.text =
             getString(
                 R.string.fmt_lib_total_duration,
-                songs.sumOf { it.durationMs }.formatDurationMs(false)
-            )
+                songs.sumOf { it.durationMs }.formatDurationMs(false))
     }
 
     private fun updateAlbumCount(albums: List<Album>) {

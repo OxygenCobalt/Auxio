@@ -170,13 +170,13 @@
     <string name="set_lib_tabs">Library tabs</string>
     <string name="set_lib_tabs_desc">Change visibility and order of library tabs</string>
     <string name="set_hide_collaborators">Hide collaborators</string>
-    <string name="set_hide_collaborators_desc">Only show artists that are directly credited on an album in the library</string>
+    <string name="set_hide_collaborators_desc">Only show artists that are directly credited on an album (works best on well-tagged libraries)</string>
     <string name="set_cover_mode">Album covers</string>
     <string name="set_cover_mode_off">Off</string>
     <string name="set_cover_mode_media_store">Fast</string>
     <string name="set_cover_mode_quality">High quality</string>
     <string name="set_round_mode">Round mode</string>
-    <string name="set_round_mode_desc">Enable rounded corners on additional UI elements (Requires album covers to be rounded)</string>
+    <string name="set_round_mode_desc">Enable rounded corners on additional UI elements (requires album covers to be rounded)</string>
     <string name="set_bar_action">Custom playback bar action</string>
     <!-- Skip to next (song) -->
     <string name="set_bar_action_next">Skip to next</string>
@@ -217,13 +217,13 @@
     <string name="set_restore_desc">Restore the previously saved playback state (if any)</string>
 
     <string name="set_content">Content</string>
-    <string name="set_reindex">Reload music</string>
-    <string name="set_reindex_desc">Reload the music library, using the cache whenever possible</string>
+    <string name="set_reindex">Refresh music</string>
+    <string name="set_reindex_desc">Reload the music library, using cached tags when possible</string>
     <!-- Different from "Reload music" -->
     <string name="set_rescan">Rescan music</string>
-    <string name="set_rescan_desc">Reload the music library and re-create the cache (Slower, but more complete)</string>
+    <string name="set_rescan_desc">Clear the tag cache and fully reload the music library (slower, but more complete)</string>
     <string name="set_observing">Automatic reloading</string>
-    <string name="set_observing_desc">Reload the music library whenever it changes (Requires persistent notification)</string>
+    <string name="set_observing_desc">Reload the music library whenever it changes (requires persistent notification)</string>
     <string name="set_dirs">Music folders</string>
     <string name="set_dirs_desc">Manage where music should be loaded from</string>
     <!-- As in the mode to be used with the music folders setting -->

@@ -80,13 +80,14 @@ class SearchFragment :
 
     override fun onBindingCreated(binding: FragmentSearchBinding, savedInstanceState: Bundle?) {
         binding.searchToolbar.apply {
-            val itemIdToSelect = when (searchModel.filterMode) {
-                MusicMode.SONGS -> R.id.option_filter_songs
-                MusicMode.ALBUMS -> R.id.option_filter_albums
-                MusicMode.ARTISTS -> R.id.option_filter_artists
-                MusicMode.GENRES -> R.id.option_filter_genres
-                null -> R.id.option_filter_all
-            }
+            val itemIdToSelect =
+                when (searchModel.filterMode) {
+                    MusicMode.SONGS -> R.id.option_filter_songs
+                    MusicMode.ALBUMS -> R.id.option_filter_albums
+                    MusicMode.ARTISTS -> R.id.option_filter_artists
+                    MusicMode.GENRES -> R.id.option_filter_genres
+                    null -> R.id.option_filter_all
+                }
 
             menu.findItem(itemIdToSelect).isChecked = true
 
@@ -119,11 +120,7 @@ class SearchFragment :
 
         collectImmediately(searchModel.searchResults, ::handleResults)
         collectImmediately(
-            playbackModel.song,
-            playbackModel.parent,
-            playbackModel.isPlaying,
-            ::handlePlayback
-        )
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::handlePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
@@ -148,12 +145,13 @@ class SearchFragment :
 
     override fun onItemClick(item: Item) {
         when (item) {
-            is Song -> when (settings.libPlaybackMode) {
-                MusicMode.SONGS -> playbackModel.playFromAll(item)
-                MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-                MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)
-                else -> error("Unexpected playback mode: ${settings.libPlaybackMode}")
-            }
+            is Song ->
+                when (settings.libPlaybackMode) {
+                    MusicMode.SONGS -> playbackModel.playFromAll(item)
+                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
+                    MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)
+                    else -> error("Unexpected playback mode: ${settings.libPlaybackMode}")
+                }
             is MusicParent -> navModel.exploreNavigateTo(item)
         }
     }
@@ -194,8 +192,7 @@ class SearchFragment :
                     is Artist -> SearchFragmentDirections.actionShowArtist(item.uid)
                     is Genre -> SearchFragmentDirections.actionShowGenre(item.uid)
                     else -> return
-                }
-            )
+                })
 
         imm.hide()
     }

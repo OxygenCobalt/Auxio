@@ -26,11 +26,11 @@ import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.shape.MaterialShapeDrawable
+import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.getDrawableCompat
-import kotlin.math.max
 
 /**
  * View that displays the playback indicator. Nominally emulates [StyledImageView], but is much
@@ -111,21 +111,15 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                         0f,
                         0f,
                         drawable.intrinsicWidth.toFloat(),
-                        drawable.intrinsicHeight.toFloat()
-                    )
+                        drawable.intrinsicHeight.toFloat())
                     indicatorMatrixDst.set(0f, 0f, iconSize.toFloat(), iconSize.toFloat())
                     indicatorMatrix.setRectToRect(
-                        indicatorMatrixSrc,
-                        indicatorMatrixDst,
-                        Matrix.ScaleToFit.CENTER
-                    )
+                        indicatorMatrixSrc, indicatorMatrixDst, Matrix.ScaleToFit.CENTER)
 
                     // Then actually center it into the icon, which the previous call does not
                     // actually do.
                     indicatorMatrix.postTranslate(
-                        (measuredWidth - iconSize) / 2f,
-                        (measuredHeight - iconSize) / 2f
-                    )
+                        (measuredWidth - iconSize) / 2f, (measuredHeight - iconSize) / 2f)
                 }
             }
     }

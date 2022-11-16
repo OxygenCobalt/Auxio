@@ -62,8 +62,7 @@ class AccentCustomizeDialog :
                 Accent.from(savedInstanceState.getInt(KEY_PENDING_ACCENT))
             } else {
                 settings.accent
-            }
-        )
+            })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

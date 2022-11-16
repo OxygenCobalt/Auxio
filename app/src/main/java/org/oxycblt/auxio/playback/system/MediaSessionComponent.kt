@@ -140,22 +140,19 @@ class MediaSessionComponent(private val context: Context, private val callback: 
                 .putText(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
                 .putText(
                     MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST,
-                    song.album.resolveArtistContents(context)
-                )
+                    song.album.resolveArtistContents(context))
                 .putText(MediaMetadataCompat.METADATA_KEY_AUTHOR, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_COMPOSER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_WRITER, artist)
                 .putText(
                     METADATA_KEY_PARENT,
-                    parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs)
-                )
+                    parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
                 .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.resolveGenreContents(context))
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, artist)
                 .putText(
                     MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION,
-                    parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs)
-                )
+                    parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
 
         song.track?.let {
@@ -166,9 +163,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
             builder.putLong(MediaMetadataCompat.METADATA_KEY_DISC_NUMBER, it.toLong())
         }
 
-        song.date?.let {
-            builder.putString(MediaMetadataCompat.METADATA_KEY_DATE, it.toString())
-        }
+        song.date?.let { builder.putString(MediaMetadataCompat.METADATA_KEY_DATE, it.toString()) }
 
         // Cover loading is a mess. Android expects you to provide a clean, easy URI for it to
         // leverage, but Auxio cannot do that as quality-of-life features like scaling or
@@ -192,8 +187,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
                     notification.updateMetadata(metadata)
                     callback.onPostNotification(notification, PostingReason.METADATA)
                 }
-            }
-        )
+            })
     }
 
     private fun updateQueue(queue: List<Song>) {
@@ -230,8 +224,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
                 RepeatMode.NONE -> PlaybackStateCompat.REPEAT_MODE_NONE
                 RepeatMode.TRACK -> PlaybackStateCompat.REPEAT_MODE_ONE
                 RepeatMode.ALL -> PlaybackStateCompat.REPEAT_MODE_ALL
-            }
-        )
+            })
 
         invalidateSecondaryAction()
     }
@@ -242,8 +235,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
                 PlaybackStateCompat.SHUFFLE_MODE_ALL
             } else {
                 PlaybackStateCompat.SHUFFLE_MODE_NONE
-            }
-        )
+            })
 
         invalidateSecondaryAction()
     }
@@ -328,8 +320,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
         playbackManager.reshuffle(
             shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ||
                 shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP,
-            settings
-        )
+            settings)
     }
 
     override fun onSkipToQueueItem(id: Long) {
@@ -368,30 +359,29 @@ class MediaSessionComponent(private val context: Context, private val callback: 
 
         // Android 13+ leverages custom actions in the notification.
 
-        val extraAction = when (settings.notifAction) {
-            ActionMode.SHUFFLE -> PlaybackStateCompat.CustomAction.Builder(
-                PlaybackService.ACTION_INVERT_SHUFFLE,
-                context.getString(R.string.desc_shuffle),
-                if (playbackManager.isShuffled) {
-                    R.drawable.ic_shuffle_on_24
-                } else {
-                    R.drawable.ic_shuffle_off_24
-                }
-            )
-
-            else -> PlaybackStateCompat.CustomAction.Builder(
-                PlaybackService.ACTION_INC_REPEAT_MODE,
-                context.getString(R.string.desc_change_repeat),
-                playbackManager.repeatMode.icon
-            )
-        }
+        val extraAction =
+            when (settings.notifAction) {
+                ActionMode.SHUFFLE ->
+                    PlaybackStateCompat.CustomAction.Builder(
+                        PlaybackService.ACTION_INVERT_SHUFFLE,
+                        context.getString(R.string.desc_shuffle),
+                        if (playbackManager.isShuffled) {
+                            R.drawable.ic_shuffle_on_24
+                        } else {
+                            R.drawable.ic_shuffle_off_24
+                        })
+                else ->
+                    PlaybackStateCompat.CustomAction.Builder(
+                        PlaybackService.ACTION_INC_REPEAT_MODE,
+                        context.getString(R.string.desc_change_repeat),
+                        playbackManager.repeatMode.icon)
+            }
 
         val exitAction =
             PlaybackStateCompat.CustomAction.Builder(
-                PlaybackService.ACTION_EXIT,
-                context.getString(R.string.desc_exit),
-                R.drawable.ic_close_24
-            )
+                    PlaybackService.ACTION_EXIT,
+                    context.getString(R.string.desc_exit),
+                    R.drawable.ic_close_24)
                 .build()
 
         state.addCustomAction(extraAction.build())

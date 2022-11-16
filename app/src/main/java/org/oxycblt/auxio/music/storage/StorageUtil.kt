@@ -30,10 +30,10 @@ import android.os.storage.StorageVolume
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import com.google.android.exoplayer2.util.MimeTypes
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.lazyReflectedMethod
 import java.io.File
 import java.lang.reflect.Method
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.util.lazyReflectedMethod
 
 /** A path to a file. [name] is the stripped file name, [parent] is the parent path. */
 data class Path(val name: String, val parent: Directory)
@@ -70,9 +70,7 @@ class Directory private constructor(val volume: StorageVolume, val relativePath:
 
         fun from(volume: StorageVolume, relativePath: String) =
             Directory(
-                volume,
-                relativePath.removePrefix(File.separator).removeSuffix(File.separator)
-            )
+                volume, relativePath.removePrefix(File.separator).removeSuffix(File.separator))
 
         /**
          * Converts an opaque document uri in the form of VOLUME:PATH into a [Directory]. This is a
@@ -198,15 +196,14 @@ val Long.albumCoverUri: Uri
 
 @Suppress("NewApi")
 private val SM_API21_GET_VOLUME_LIST_METHOD: Method by
-lazyReflectedMethod(StorageManager::class, "getVolumeList")
+    lazyReflectedMethod(StorageManager::class, "getVolumeList")
 
 @Suppress("NewApi")
 private val SV_API21_GET_PATH_METHOD: Method by lazyReflectedMethod(StorageVolume::class, "getPath")
 
 /** The "primary" storage volume containing the OS. May be an SD Card. */
 val StorageManager.primaryStorageVolumeCompat: StorageVolume
-    @Suppress("NewApi")
-    get() = primaryStorageVolume
+    @Suppress("NewApi") get() = primaryStorageVolume
 
 /**
  * A list of recognized volumes, retrieved in a compatible manner. Note that these volumes may be
@@ -243,13 +240,11 @@ fun StorageVolume.getDescriptionCompat(context: Context): String = getDescriptio
 
 /** If this volume is the primary volume. May still be removable storage. */
 val StorageVolume.isPrimaryCompat: Boolean
-    @SuppressLint("NewApi")
-    get() = isPrimary
+    @SuppressLint("NewApi") get() = isPrimary
 
 /** If this volume is emulated. */
 val StorageVolume.isEmulatedCompat: Boolean
-    @SuppressLint("NewApi")
-    get() = isEmulated
+    @SuppressLint("NewApi") get() = isEmulated
 
 /**
  * If this volume corresponds to "Internal shared storage", represented in document URIs as
@@ -260,13 +255,11 @@ val StorageVolume.isInternalCompat: Boolean
 
 /** Returns the UUID of the volume in a compatible manner. */
 val StorageVolume.uuidCompat: String?
-    @SuppressLint("NewApi")
-    get() = uuid
+    @SuppressLint("NewApi") get() = uuid
 
 /** Returns the state of the volume in a compatible manner. */
 val StorageVolume.stateCompat: String
-    @SuppressLint("NewApi")
-    get() = state
+    @SuppressLint("NewApi") get() = state
 
 /**
  * Returns the name of this volume as it is used in [MediaStore]. This will be

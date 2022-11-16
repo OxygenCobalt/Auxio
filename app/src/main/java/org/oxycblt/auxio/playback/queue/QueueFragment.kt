@@ -61,18 +61,13 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         invalidateDivider()
                     }
-                }
-            )
+                })
         }
 
         // --- VIEWMODEL SETUP ----
 
         collectImmediately(
-            queueModel.queue,
-            queueModel.index,
-            playbackModel.isPlaying,
-            ::updateQueue
-        )
+            queueModel.queue, queueModel.index, playbackModel.isPlaying, ::updateQueue)
     }
 
     override fun onDestroyBinding(binding: FragmentQueueBinding) {
@@ -102,7 +97,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
 
         binding.queueDivider.isInvisible =
             (binding.queueRecycler.layoutManager as LinearLayoutManager)
-            .findFirstCompletelyVisibleItemPosition() < 1
+                .findFirstCompletelyVisibleItemPosition() < 1
 
         queueModel.finishReplace()
 
@@ -127,6 +122,6 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
         val binding = requireBinding()
         binding.queueDivider.isInvisible =
             (binding.queueRecycler.layoutManager as LinearLayoutManager)
-            .findFirstCompletelyVisibleItemPosition() < 1
+                .findFirstCompletelyVisibleItemPosition() < 1
     }
 }

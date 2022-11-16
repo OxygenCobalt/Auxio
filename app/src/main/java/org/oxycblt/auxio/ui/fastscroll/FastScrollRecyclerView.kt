@@ -33,6 +33,7 @@ import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.recycler.AuxioRecyclerView
 import org.oxycblt.auxio.util.getDimenSize
@@ -40,7 +41,6 @@ import org.oxycblt.auxio.util.getDrawableCompat
 import org.oxycblt.auxio.util.isRtl
 import org.oxycblt.auxio.util.isUnder
 import org.oxycblt.auxio.util.systemBarInsetsCompat
-import kotlin.math.abs
 
 /**
  * A [RecyclerView] that enables better fast-scrolling. This is fundamentally a implementation of
@@ -97,9 +97,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         FastScrollPopupView(context).apply {
             layoutParams =
                 FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                     .apply {
                         gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
                         marginEnd = context.getDimenSize(R.dimen.spacing_small)
@@ -174,8 +172,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 override fun onDraw(canvas: Canvas, parent: RecyclerView, state: State) {
                     onPreDraw()
                 }
-            }
-        )
+            })
 
         // We use a listener instead of overriding onTouchEvent so that we don't conflict with
         // RecyclerView touch events.
@@ -191,8 +188,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 ): Boolean {
                     return onItemTouch(event)
                 }
-            }
-        )
+            })
     }
 
     // --- RECYCLERVIEW EVENT MANAGEMENT ---
@@ -247,8 +243,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                         thumbWidth +
                         popupLayoutParams.leftMargin +
                         popupLayoutParams.rightMargin,
-                    popupLayoutParams.width
-                )
+                    popupLayoutParams.width)
 
             val heightMeasureSpec =
                 ViewGroup.getChildMeasureSpec(
@@ -257,8 +252,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                         thumbPadding.bottom +
                         popupLayoutParams.topMargin +
                         popupLayoutParams.bottomMargin,
-                    popupLayoutParams.height
-                )
+                    popupLayoutParams.height)
 
             popupView.measure(widthMeasureSpec, heightMeasureSpec)
         }
@@ -279,8 +273,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             (thumbTop + thumbAnchorY - popupAnchorY)
                 .coerceAtLeast(thumbPadding.top + popupLayoutParams.topMargin)
                 .coerceAtMost(
-                    height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight
-                )
+                    height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight)
 
         popupView.layout(popupLeft, popupTop, popupLeft + popupWidth, popupTop + popupHeight)
     }
@@ -355,8 +348,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             MotionEvent.ACTION_MOVE -> {
                 if (!dragging &&
                     thumbView.isUnder(downX, thumbView.top.toFloat(), minTouchTargetSize) &&
-                    abs(eventY - downY) > touchSlop
-                ) {
+                    abs(eventY - downY) > touchSlop) {
                     if (thumbView.isUnder(downX, downY, minTouchTargetSize)) {
                         dragStartY = lastY
                         dragStartThumbOffset = thumbOffset

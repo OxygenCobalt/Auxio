@@ -22,6 +22,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
+import kotlin.math.sqrt
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.extractor.SquareFrameTransform
@@ -33,7 +34,6 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.getDimenSize
 import org.oxycblt.auxio.util.logD
-import kotlin.math.sqrt
 
 /**
  * A wrapper around each [WidgetProvider] that plugs into the main Auxio process and updates the
@@ -109,8 +109,7 @@ class WidgetComponent(private val context: Context) :
                             .size(computeSize(sw, sh, 10f))
                             .transformations(
                                 SquareFrameTransform.INSTANCE,
-                                RoundedCornersTransformation(cornerRadius.toFloat())
-                            )
+                                RoundedCornersTransformation(cornerRadius.toFloat()))
                     } else {
                         // Divide by two to really make sure we aren't hitting the memory limit.
                         builder.size(computeSize(sw, sh, 2f))
@@ -121,8 +120,7 @@ class WidgetComponent(private val context: Context) :
                     val state = WidgetState(song, bitmap, isPlaying, repeatMode, isShuffled)
                     widget.update(context, state)
                 }
-            }
-        )
+            })
     }
 
     private fun computeSize(sw: Int, sh: Int, modifier: Float) =
@@ -147,8 +145,7 @@ class WidgetComponent(private val context: Context) :
     override fun onRepeatChanged(repeatMode: RepeatMode) = update()
     override fun onSettingChanged(key: String) {
         if (key == context.getString(R.string.set_key_cover_mode) ||
-            key == context.getString(R.string.set_key_round_mode)
-        ) {
+            key == context.getString(R.string.set_key_round_mode)) {
             update()
         }
     }

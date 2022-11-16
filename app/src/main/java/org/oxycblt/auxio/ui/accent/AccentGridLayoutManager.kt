@@ -21,9 +21,9 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getDimenSize
-import kotlin.math.max
 
 /**
  * A sub-class of [GridLayoutManager] that automatically sets the spans so that they fit the width

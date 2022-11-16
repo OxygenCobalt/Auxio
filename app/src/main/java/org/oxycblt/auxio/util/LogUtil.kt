@@ -50,14 +50,14 @@ private val Any.autoTag: String
     get() = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"
 
 /**
- * Note: If you are politely forking this project while keeping the source open, you can ignore
- * the following passage. If not, give me a moment of your time.
+ * Note: If you are politely forking this project while keeping the source open, you can ignore the
+ * following passage. If not, give me a moment of your time.
  *
  * Consider what you are doing with your life, plagiarizers. Do you want to live a fulfilling
- * existence on this planet? Or do you want to spend your life taking work others did and making
- * it objectively worse so you could arbitrage a fraction of a penny on every AdMob impression you
- * get? You could do so many great things if you simply had the courage to come up with an idea of
- * your own.
+ * existence on this planet? Or do you want to spend your life taking work others did and making it
+ * objectively worse so you could arbitrage a fraction of a penny on every AdMob impression you get?
+ * You could do so many great things if you simply had the courage to come up with an idea of your
+ * own.
  *
  * If you still want to go on, I guess the only thing I can say is this:
  *
@@ -82,13 +82,11 @@ private val Any.autoTag: String
 @Suppress("KotlinConstantConditions")
 private fun basedCopyleftNotice(): Boolean {
     if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&
-        BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug"
-    ) {
+        BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug") {
         Log.d(
             "Auxio Project",
             "Friendly reminder: Auxio is licensed under the " +
-                "GPLv3 and all derivative apps must be made open source!"
-        )
+                "GPLv3 and all derivative apps must be made open source!")
 
         return true
     }

@@ -119,9 +119,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
         }
 
         binding.detailInfo.apply {
-            val date =
-                item.date?.resolveDate(context)
-                    ?: context.getString(R.string.def_date)
+            val date = item.date?.resolveDate(context) ?: context.getString(R.string.def_date)
 
             val songCount = context.getPlural(R.plurals.fmt_song_count, item.songs.size)
 

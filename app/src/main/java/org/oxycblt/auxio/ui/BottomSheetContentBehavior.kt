@@ -23,10 +23,10 @@ import android.view.View
 import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
+import kotlin.math.abs
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
-import kotlin.math.abs
 
 /**
  * A behavior that automatically re-layouts and re-insets content to align with the parent layout's
@@ -127,11 +127,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
                 val bars = insets.systemBarInsetsCompat
 
                 insets.replaceSystemBarInsetsCompat(
-                    bars.left,
-                    bars.top,
-                    bars.right,
-                    (bars.bottom - consumed).coerceAtLeast(0)
-                )
+                    bars.left, bars.top, bars.right, (bars.bottom - consumed).coerceAtLeast(0))
             }
 
             setup = true
@@ -145,9 +141,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
             View.MeasureSpec.makeMeasureSpec(parent.measuredWidth, View.MeasureSpec.EXACTLY)
         val contentHeightSpec =
             View.MeasureSpec.makeMeasureSpec(
-                parent.measuredHeight - consumed,
-                View.MeasureSpec.EXACTLY
-            )
+                parent.measuredHeight - consumed, View.MeasureSpec.EXACTLY)
 
         child.measure(contentWidthSpec, contentHeightSpec)
     }

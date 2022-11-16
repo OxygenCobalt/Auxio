@@ -160,11 +160,12 @@ class DetailViewModel(application: Application) :
     private fun generateDetailSong(song: Song) {
         currentSongJob?.cancel()
         _currentSong.value = DetailSong(song, null)
-        currentSongJob = viewModelScope.launch(Dispatchers.IO) {
-            val info = generateDetailSongInfo(song)
-            yield()
-            _currentSong.value = DetailSong(song, info)
-        }
+        currentSongJob =
+            viewModelScope.launch(Dispatchers.IO) {
+                val info = generateDetailSongInfo(song)
+                yield()
+                _currentSong.value = DetailSong(song, info)
+            }
     }
 
     private fun generateDetailSongInfo(song: Song): SongInfo {

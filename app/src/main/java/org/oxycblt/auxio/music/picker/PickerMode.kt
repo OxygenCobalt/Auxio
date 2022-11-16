@@ -17,9 +17,7 @@
  
 package org.oxycblt.auxio.music.picker
 
-/**
- * Represents the actions available to the picker UI.
- */
+/** Represents the actions available to the picker UI. */
 enum class PickerMode {
     PLAY,
     SHOW

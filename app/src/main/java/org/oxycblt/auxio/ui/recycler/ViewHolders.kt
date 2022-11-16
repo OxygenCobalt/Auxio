@@ -63,8 +63,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
         val DIFFER =
             object : SimpleItemCallback<Song>() {
                 override fun areContentsTheSame(oldItem: Song, newItem: Song) =
-                    oldItem.rawName == newItem.rawName &&
-                        oldItem.areArtistContentsTheSame(newItem)
+                    oldItem.rawName == newItem.rawName && oldItem.areArtistContentsTheSame(newItem)
             }
     }
 }
@@ -119,16 +118,16 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
 
-        binding.parentInfo.text = if (item.songs.isNotEmpty()) {
-            binding.context.getString(
-                R.string.fmt_two,
-                binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size),
-                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
-            )
-        } else {
-            // Artist has no songs, only display an album count.
-            binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size)
-        }
+        binding.parentInfo.text =
+            if (item.songs.isNotEmpty()) {
+                binding.context.getString(
+                    R.string.fmt_two,
+                    binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size),
+                    binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
+            } else {
+                // Artist has no songs, only display an album count.
+                binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size)
+            }
 
         // binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnLongClickListener {
@@ -172,8 +171,7 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
             binding.context.getString(
                 R.string.fmt_two,
                 binding.context.getPlural(R.plurals.fmt_artist_count, item.artists.size),
-                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
-            )
+                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
         // binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnLongClickListener {
             listener.onOpenMenu(item, it)

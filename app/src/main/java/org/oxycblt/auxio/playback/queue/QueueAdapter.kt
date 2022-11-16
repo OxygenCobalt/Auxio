@@ -131,9 +131,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
                         fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
                         elevation = binding.context.getDimen(R.dimen.elevation_normal)
                     },
-                    backgroundDrawable
-                )
-            )
+                    backgroundDrawable))
     }
 
     @SuppressLint("ClickableViewAccessibility")

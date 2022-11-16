@@ -23,6 +23,7 @@ import androidx.annotation.IdRes
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import java.text.Normalizer
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,7 +43,6 @@ import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.application
 import org.oxycblt.auxio.util.logD
-import java.text.Normalizer
 
 /**
  * The [ViewModel] for search functionality.
@@ -87,43 +87,44 @@ class SearchViewModel(application: Application) :
         logD("Performing search for $query")
 
         // Searching can be quite expensive, so get on a co-routine
-        currentSearchJob = viewModelScope.launch {
-            val sort = Sort(Sort.Mode.ByName, true)
-            val results = mutableListOf<Item>()
+        currentSearchJob =
+            viewModelScope.launch {
+                val sort = Sort(Sort.Mode.ByName, true)
+                val results = mutableListOf<Item>()
 
-            // Note: a filter mode of null means to not filter at all.
+                // Note: a filter mode of null means to not filter at all.
 
-            if (filterMode == null || filterMode == MusicMode.ARTISTS) {
-                library.artists.filterArtistsBy(query)?.let { artists ->
-                    results.add(Header(R.string.lbl_artists))
-                    results.addAll(sort.artists(artists))
+                if (filterMode == null || filterMode == MusicMode.ARTISTS) {
+                    library.artists.filterArtistsBy(query)?.let { artists ->
+                        results.add(Header(R.string.lbl_artists))
+                        results.addAll(sort.artists(artists))
+                    }
                 }
-            }
 
-            if (filterMode == null || filterMode == MusicMode.ALBUMS) {
-                library.albums.filterAlbumsBy(query)?.let { albums ->
-                    results.add(Header(R.string.lbl_albums))
-                    results.addAll(sort.albums(albums))
+                if (filterMode == null || filterMode == MusicMode.ALBUMS) {
+                    library.albums.filterAlbumsBy(query)?.let { albums ->
+                        results.add(Header(R.string.lbl_albums))
+                        results.addAll(sort.albums(albums))
+                    }
                 }
-            }
 
-            if (filterMode == null || filterMode == MusicMode.GENRES) {
-                library.genres.filterGenresBy(query)?.let { genres ->
-                    results.add(Header(R.string.lbl_genres))
-                    results.addAll(sort.genres(genres))
+                if (filterMode == null || filterMode == MusicMode.GENRES) {
+                    library.genres.filterGenresBy(query)?.let { genres ->
+                        results.add(Header(R.string.lbl_genres))
+                        results.addAll(sort.genres(genres))
+                    }
                 }
-            }
 
-            if (filterMode == null || filterMode == MusicMode.SONGS) {
-                library.songs.filterSongsBy(query)?.let { songs ->
-                    results.add(Header(R.string.lbl_songs))
-                    results.addAll(sort.songs(songs))
+                if (filterMode == null || filterMode == MusicMode.SONGS) {
+                    library.songs.filterSongsBy(query)?.let { songs ->
+                        results.add(Header(R.string.lbl_songs))
+                        results.addAll(sort.songs(songs))
+                    }
                 }
-            }
 
-            yield()
-            _searchResults.value = results
-        }
+                yield()
+                _searchResults.value = results
+            }
     }
 
     /**
@@ -162,14 +163,14 @@ class SearchViewModel(application: Application) :
 
     private inline fun <T : Music> List<T>.baseFilterBy(value: String, fallback: (T) -> Boolean) =
         filter {
-            // The basic comparison is first by the *normalized* name, as that allows a
-            // non-unicode search to match with some unicode characters. In an ideal world, we
-            // would just want to leverage CollationKey, but that is not designed for a contains
-            // algorithm. If that fails, filter impls have fallback values, primarily around
-            // sort tags or file names.
-            it.resolveNameNormalized(application).contains(value, ignoreCase = true) ||
-                fallback(it)
-        }
+                // The basic comparison is first by the *normalized* name, as that allows a
+                // non-unicode search to match with some unicode characters. In an ideal world, we
+                // would just want to leverage CollationKey, but that is not designed for a contains
+                // algorithm. If that fails, filter impls have fallback values, primarily around
+                // sort tags or file names.
+                it.resolveNameNormalized(application).contains(value, ignoreCase = true) ||
+                    fallback(it)
+            }
             .ifEmpty { null }
 
     private fun Music.resolveNameNormalized(context: Context): String {

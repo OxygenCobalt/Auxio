@@ -62,12 +62,7 @@ sealed class Tab(open val mode: MusicMode) {
          * Maps between the integer code in the tab sequence and the actual [MusicMode] instance.
          */
         private val MODE_TABLE =
-            arrayOf(
-                MusicMode.SONGS,
-                MusicMode.ALBUMS,
-                MusicMode.ARTISTS,
-                MusicMode.GENRES
-            )
+            arrayOf(MusicMode.SONGS, MusicMode.ALBUMS, MusicMode.ARTISTS, MusicMode.GENRES)
 
         /** Convert an array [tabs] into a sequence of tabs. */
         fun toSequence(tabs: Array<Tab>): Int {

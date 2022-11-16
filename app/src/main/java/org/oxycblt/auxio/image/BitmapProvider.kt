@@ -51,9 +51,7 @@ class BitmapProvider(private val context: Context) {
      */
     @Synchronized
     fun load(song: Song, target: Target) {
-        val handle = synchronized(handleLock) {
-            ++currentHandle
-        }
+        val handle = synchronized(handleLock) { ++currentHandle }
 
         currentRequest?.run { disposable.dispose() }
         currentRequest = null
@@ -77,10 +75,8 @@ class BitmapProvider(private val context: Context) {
                                     target.onCompleted(null)
                                 }
                             }
-                        }
-                    )
-                    .transformations(SquareFrameTransform.INSTANCE)
-            )
+                        })
+                    .transformations(SquareFrameTransform.INSTANCE))
 
         currentRequest = Request(context.imageLoader.enqueue(request.build()), target)
     }

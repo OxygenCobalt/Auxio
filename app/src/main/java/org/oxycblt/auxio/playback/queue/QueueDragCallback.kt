@@ -42,9 +42,7 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
         val queueHolder = viewHolder as QueueSongViewHolder
         return if (queueHolder.isEnabled) {
             makeFlag(
-                ItemTouchHelper.ACTION_STATE_DRAG,
-                ItemTouchHelper.UP or ItemTouchHelper.DOWN
-            ) or
+                ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN) or
                 makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)
         } else {
             0
@@ -134,9 +132,7 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
         target: RecyclerView.ViewHolder
     ) =
         playbackModel.moveQueueDataItems(
-            viewHolder.bindingAdapterPosition,
-            target.bindingAdapterPosition
-        )
+            viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         playbackModel.removeQueueDataItem(viewHolder.bindingAdapterPosition)

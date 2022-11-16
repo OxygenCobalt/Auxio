@@ -60,8 +60,7 @@ class WidgetProvider : AppWidgetProvider() {
                 SizeF(180f, 152f) to createSmallWidget(context, state),
                 SizeF(272f, 152f) to createWideWidget(context, state),
                 SizeF(180f, 272f) to createMediumWidget(context, state),
-                SizeF(272f, 272f) to createLargeWidget(context, state)
-            )
+                SizeF(272f, 272f) to createLargeWidget(context, state))
 
         val awm = AppWidgetManager.getInstance(context)
 
@@ -70,9 +69,7 @@ class WidgetProvider : AppWidgetProvider() {
         } catch (e: Exception) {
             logW("Unable to update widget: $e")
             awm.updateAppWidget(
-                ComponentName(context, this::class.java),
-                createDefaultWidget(context)
-            )
+                ComponentName(context, this::class.java), createDefaultWidget(context))
         }
     }
 

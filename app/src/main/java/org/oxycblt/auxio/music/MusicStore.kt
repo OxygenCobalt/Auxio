@@ -99,11 +99,10 @@ class MusicStore private constructor() {
         }
 
         /**
-         * Find a music [T] by its [uid]. If the music does not exist, or if the music is
-         * not [T], null will be returned.
+         * Find a music [T] by its [uid]. If the music does not exist, or if the music is not [T],
+         * null will be returned.
          */
-        @Suppress("UNCHECKED_CAST")
-        fun <T : Music> find(uid: Music.UID) = uidMap[uid] as? T
+        @Suppress("UNCHECKED_CAST") fun <T : Music> find(uid: Music.UID) = uidMap[uid] as? T
 
         /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(song: Song) = find<Song>(song.uid)
@@ -122,8 +121,8 @@ class MusicStore private constructor() {
 
         /** Find a song for a [uri]. */
         fun findSongForUri(context: Context, uri: Uri) =
-            context.contentResolverSafe.useQuery(uri, arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE)) {
-                    cursor ->
+            context.contentResolverSafe.useQuery(
+                uri, arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE)) { cursor ->
                 cursor.moveToFirst()
 
                 // We are weirdly limited to DISPLAY_NAME and SIZE when trying to locate a
@@ -132,9 +131,7 @@ class MusicStore private constructor() {
                 val displayName =
                     cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
 
-                val size = cursor.getLong(
-                    cursor.getColumnIndexOrThrow(OpenableColumns.SIZE)
-                )
+                val size = cursor.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE))
 
                 songs.find { it.path.name == displayName && it.size == size }
             }

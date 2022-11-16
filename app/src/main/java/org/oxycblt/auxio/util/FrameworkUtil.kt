@@ -231,8 +231,7 @@ val WindowInsets.systemGestureInsetsCompat: Insets
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
                 Insets.max(
                     getCompatInsets(WindowInsets.Type.systemGestures()),
-                    getCompatInsets(WindowInsets.Type.systemBars())
-                )
+                    getCompatInsets(WindowInsets.Type.systemBars()))
             }
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
                 @Suppress("DEPRECATION")
@@ -247,8 +246,7 @@ fun WindowInsets.getSystemWindowCompatInsets() =
         systemWindowInsetLeft,
         systemWindowInsetTop,
         systemWindowInsetRight,
-        systemWindowInsetBottom
-    )
+        systemWindowInsetBottom)
 
 @Suppress("DEPRECATION")
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -272,8 +270,7 @@ fun WindowInsets.replaceSystemBarInsetsCompat(
             WindowInsets.Builder(this)
                 .setInsets(
                     WindowInsets.Type.systemBars(),
-                    Insets.of(left, top, right, bottom).toPlatformInsets()
-                )
+                    Insets.of(left, top, right, bottom).toPlatformInsets())
                 .build()
         }
         else -> {

@@ -26,7 +26,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.MaterialSharedAxis
-import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
@@ -40,7 +39,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.fragment.MusicFragment
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.collect
@@ -55,7 +53,9 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author OxygenCobalt
  */
 class ArtistDetailFragment :
-    MusicFragment<FragmentDetailBinding>(), Toolbar.OnMenuItemClickListener, DetailAdapter.Listener {
+    MusicFragment<FragmentDetailBinding>(),
+    Toolbar.OnMenuItemClickListener,
+    DetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
 
     private val args: ArtistDetailFragmentArgs by navArgs()
@@ -88,11 +88,7 @@ class ArtistDetailFragment :
         collectImmediately(detailModel.currentArtist, ::handleItemChange)
         collectImmediately(detailModel.artistData, detailAdapter::submitList)
         collectImmediately(
-            playbackModel.song,
-            playbackModel.parent,
-            playbackModel.isPlaying,
-            ::updatePlayback
-        )
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
@@ -122,7 +118,9 @@ class ArtistDetailFragment :
         when (item) {
             is Song -> {
                 when (settings.detailPlaybackMode) {
-                    null -> playbackModel.playFromArtist(item, unlikelyToBeNull(detailModel.currentArtist.value))
+                    null ->
+                        playbackModel.playFromArtist(
+                            item, unlikelyToBeNull(detailModel.currentArtist.value))
                     MusicMode.SONGS -> playbackModel.playFromAll(item)
                     MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
                     MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)

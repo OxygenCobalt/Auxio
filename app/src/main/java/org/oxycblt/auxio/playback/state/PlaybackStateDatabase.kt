@@ -110,8 +110,7 @@ class PlaybackStateDatabase private constructor(context: Context) :
             queue = queue,
             positionMs = rawState.positionMs,
             repeatMode = rawState.repeatMode,
-            isShuffled = rawState.isShuffled
-        )
+            isShuffled = rawState.isShuffled)
     }
 
     private fun readRawState(): RawState? {
@@ -134,12 +133,11 @@ class PlaybackStateDatabase private constructor(context: Context) :
                 index = cursor.getInt(indexIndex),
                 positionMs = cursor.getLong(posIndex),
                 repeatMode = RepeatMode.fromIntCode(cursor.getInt(repeatModeIndex))
-                    ?: RepeatMode.NONE,
+                        ?: RepeatMode.NONE,
                 isShuffled = cursor.getInt(shuffleIndex) == 1,
                 songUid = Music.UID.fromString(cursor.getString(songUidIndex))
-                    ?: return@queryAll null,
-                parentUid = cursor.getString(parentUidIndex)?.let(Music.UID::fromString)
-            )
+                        ?: return@queryAll null,
+                parentUid = cursor.getString(parentUidIndex)?.let(Music.UID::fromString))
         }
     }
 
@@ -175,8 +173,7 @@ class PlaybackStateDatabase private constructor(context: Context) :
                     repeatMode = state.repeatMode,
                     isShuffled = state.isShuffled,
                     songUid = state.queue[state.index].uid,
-                    parentUid = state.parent?.uid
-                )
+                    parentUid = state.parent?.uid)
 
             writeRawState(rawState)
             writeQueue(state.queue)

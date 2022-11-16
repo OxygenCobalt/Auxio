@@ -21,6 +21,7 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
 import android.view.ViewGroup
+import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Album
@@ -35,7 +36,6 @@ import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
-import java.util.Formatter
 
 /**
  * A [HomeListFragment] for showing a list of [Album]s.
@@ -67,7 +67,8 @@ class AlbumListFragment : HomeListFragment<Album>() {
             is Sort.Mode.ByName -> album.collationKey?.run { sourceString.first().uppercase() }
 
             // By Artist -> Use name of first artist
-            is Sort.Mode.ByArtist -> album.artists[0].collationKey?.run { sourceString.first().uppercase() }
+            is Sort.Mode.ByArtist ->
+                album.artists[0].collationKey?.run { sourceString.first().uppercase() }
 
             // Year -> Use Full Year
             is Sort.Mode.ByDate -> album.date?.resolveDate(requireContext())
@@ -83,12 +84,11 @@ class AlbumListFragment : HomeListFragment<Album>() {
                 val dateAddedMillis = album.dateAdded.secsToMs()
                 formatterSb.setLength(0)
                 DateUtils.formatDateRange(
-                    context,
-                    formatter,
-                    dateAddedMillis,
-                    dateAddedMillis,
-                    DateUtils.FORMAT_ABBREV_ALL
-                )
+                        context,
+                        formatter,
+                        dateAddedMillis,
+                        dateAddedMillis,
+                        DateUtils.FORMAT_ABBREV_ALL)
                     .toString()
             }
 

@@ -28,18 +28,21 @@ enum class CoverMode {
     MEDIA_STORE,
     QUALITY;
 
-    val intCode: Int get() = when (this) {
-        OFF -> IntegerTable.COVER_MODE_OFF
-        MEDIA_STORE -> IntegerTable.COVER_MODE_MEDIA_STORE
-        QUALITY -> IntegerTable.COVER_MODE_QUALITY
-    }
+    val intCode: Int
+        get() =
+            when (this) {
+                OFF -> IntegerTable.COVER_MODE_OFF
+                MEDIA_STORE -> IntegerTable.COVER_MODE_MEDIA_STORE
+                QUALITY -> IntegerTable.COVER_MODE_QUALITY
+            }
 
     companion object {
-        fun fromIntCode(intCode: Int) = when (intCode) {
-            IntegerTable.COVER_MODE_OFF -> OFF
-            IntegerTable.COVER_MODE_MEDIA_STORE -> MEDIA_STORE
-            IntegerTable.COVER_MODE_QUALITY -> QUALITY
-            else -> null
-        }
+        fun fromIntCode(intCode: Int) =
+            when (intCode) {
+                IntegerTable.COVER_MODE_OFF -> OFF
+                IntegerTable.COVER_MODE_MEDIA_STORE -> MEDIA_STORE
+                IntegerTable.COVER_MODE_QUALITY -> QUALITY
+                else -> null
+            }
     }
 }

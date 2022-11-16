@@ -21,7 +21,7 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
 import android.view.ViewGroup
-import org.oxycblt.auxio.MainFragmentDirections
+import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.MusicMode
@@ -32,7 +32,6 @@ import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
@@ -40,7 +39,6 @@ import org.oxycblt.auxio.ui.recycler.SongViewHolder
 import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
-import java.util.Formatter
 
 /**
  * A [HomeListFragment] for showing a list of [Song]s.
@@ -62,11 +60,7 @@ class SongListFragment : HomeListFragment<Song>() {
 
         collectImmediately(homeModel.songs, homeAdapter::replaceList)
         collectImmediately(
-            playbackModel.song,
-            playbackModel.parent,
-            playbackModel.isPlaying,
-            ::handlePlayback
-        )
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::handlePlayback)
     }
 
     override fun getPopup(pos: Int): String? {
@@ -80,10 +74,12 @@ class SongListFragment : HomeListFragment<Song>() {
             is Sort.Mode.ByName -> song.collationKey?.run { sourceString.first().uppercase() }
 
             // Artist -> Use name of first artist
-            is Sort.Mode.ByArtist -> song.album.artists[0].collationKey?.run { sourceString.first().uppercase() }
+            is Sort.Mode.ByArtist ->
+                song.album.artists[0].collationKey?.run { sourceString.first().uppercase() }
 
             // Album -> Use Album Name
-            is Sort.Mode.ByAlbum -> song.album.collationKey?.run { sourceString.first().uppercase() }
+            is Sort.Mode.ByAlbum ->
+                song.album.collationKey?.run { sourceString.first().uppercase() }
 
             // Year -> Use Full Year
             is Sort.Mode.ByDate -> song.album.date?.resolveDate(requireContext())
@@ -96,12 +92,11 @@ class SongListFragment : HomeListFragment<Song>() {
                 val dateAddedMillis = song.dateAdded.secsToMs()
                 formatterSb.setLength(0)
                 DateUtils.formatDateRange(
-                    context,
-                    formatter,
-                    dateAddedMillis,
-                    dateAddedMillis,
-                    DateUtils.FORMAT_ABBREV_ALL
-                )
+                        context,
+                        formatter,
+                        dateAddedMillis,
+                        dateAddedMillis,
+                        DateUtils.FORMAT_ABBREV_ALL)
                     .toString()
             }
 

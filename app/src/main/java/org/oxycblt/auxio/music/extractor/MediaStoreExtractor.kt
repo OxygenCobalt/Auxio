@@ -26,6 +26,7 @@ import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
+import java.io.File
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.storage.Directory
 import org.oxycblt.auxio.music.storage.directoryCompat
@@ -37,7 +38,6 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
-import java.io.File
 
 /*
  * This file acts as the base for most the black magic required to get a remotely sensible music
@@ -100,7 +100,10 @@ import java.io.File
  * music loading process.
  * @author OxygenCobalt
  */
-abstract class MediaStoreExtractor(private val context: Context, private val cacheDatabase: CacheExtractor) {
+abstract class MediaStoreExtractor(
+    private val context: Context,
+    private val cacheDatabase: CacheExtractor
+) {
     private var cursor: Cursor? = null
 
     private var idIndex = -1
@@ -173,13 +176,11 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
 
         val cursor =
             requireNotNull(
-                context.contentResolverSafe.queryCursor(
-                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                    projection,
-                    selector,
-                    args.toTypedArray()
-                )
-            ) { "Content resolver failure: No Cursor returned" }
+                    context.contentResolverSafe.queryCursor(
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        projection,
+                        selector,
+                        args.toTypedArray())) { "Content resolver failure: No Cursor returned" }
                 .also { cursor = it }
 
         idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
@@ -207,8 +208,7 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
         // obscure formats where genre support is only really covered by this.
         context.contentResolverSafe.useQuery(
             MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
-            arrayOf(MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME)
-        ) { genreCursor ->
+            arrayOf(MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME)) { genreCursor ->
             val idIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres._ID)
             val nameIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)
 
@@ -218,8 +218,7 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
 
                 context.contentResolverSafe.useQuery(
                     MediaStore.Audio.Genres.Members.getContentUri(VOLUME_EXTERNAL, id),
-                    arrayOf(MediaStore.Audio.Genres.Members._ID)
-                ) { cursor ->
+                    arrayOf(MediaStore.Audio.Genres.Members._ID)) { cursor ->
                     val songIdIndex =
                         cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.Members._ID)
 
@@ -292,15 +291,14 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
                 MediaStore.Audio.AudioColumns.ALBUM,
                 MediaStore.Audio.AudioColumns.ALBUM_ID,
                 MediaStore.Audio.AudioColumns.ARTIST,
-                AUDIO_COLUMN_ALBUM_ARTIST
-            )
+                AUDIO_COLUMN_ALBUM_ARTIST)
 
     protected abstract val dirSelector: String
     protected abstract fun addDirToSelectorArgs(dir: Directory, args: MutableList<String>): Boolean
 
     /**
-     * Populate the "file data" of the cursor, or data that is required to access a cache entry
-     * or makes no sense to cache. This includes database IDs, modification dates,
+     * Populate the "file data" of the cursor, or data that is required to access a cache entry or
+     * makes no sense to cache. This includes database IDs, modification dates,
      */
     protected open fun populateFileData(cursor: Cursor, raw: Song.Raw) {
         raw.mediaStoreId = cursor.getLong(idIndex)
@@ -315,9 +313,7 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
         raw.albumMediaStoreId = cursor.getLong(albumIdIndex)
     }
 
-    /**
-     * Extract cursor metadata into [raw].
-     */
+    /** Extract cursor metadata into [raw]. */
     protected open fun populateMetadata(cursor: Cursor, raw: Song.Raw) {
         raw.name = cursor.getString(titleIndex)
 
@@ -362,8 +358,7 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
          * External has existed since at least API 21, but no constant existed for it until API 29.
          * This constant is safe to use.
          */
-        @Suppress("InlinedApi")
-        private const val VOLUME_EXTERNAL = MediaStore.VOLUME_EXTERNAL
+        @Suppress("InlinedApi") private const val VOLUME_EXTERNAL = MediaStore.VOLUME_EXTERNAL
 
         /**
          * The base selector that works across all versions of android. Does not exclude
@@ -377,8 +372,8 @@ abstract class MediaStoreExtractor(private val context: Context, private val cac
 // speed, we only want to add redundancy on known issues, not with possible issues.
 
 /**
- * A [MediaStoreExtractor] that completes the music loading process in a way compatible from
- * API 21 onwards to API 29.
+ * A [MediaStoreExtractor] that completes the music loading process in a way compatible from API 21
+ * onwards to API 29.
  * @author OxygenCobalt
  */
 class Api21MediaStoreExtractor(context: Context, cacheDatabase: CacheExtractor) :
@@ -471,8 +466,7 @@ open class BaseApi29MediaStoreExtractor(context: Context, cacheDatabase: CacheEx
             super.projection +
                 arrayOf(
                     MediaStore.Audio.AudioColumns.VOLUME_NAME,
-                    MediaStore.Audio.AudioColumns.RELATIVE_PATH
-                )
+                    MediaStore.Audio.AudioColumns.RELATIVE_PATH)
 
     override val dirSelector: String
         get() =
@@ -502,8 +496,8 @@ open class BaseApi29MediaStoreExtractor(context: Context, cacheDatabase: CacheEx
 }
 
 /**
- * A [MediaStoreExtractor] that completes the music loading process in a way compatible with at least
- * API 29.
+ * A [MediaStoreExtractor] that completes the music loading process in a way compatible with at
+ * least API 29.
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -534,8 +528,8 @@ open class Api29MediaStoreExtractor(context: Context, cacheDatabase: CacheExtrac
 }
 
 /**
- * A [MediaStoreExtractor] that completes the music loading process in a way compatible with at least
- * API 30.
+ * A [MediaStoreExtractor] that completes the music loading process in a way compatible with at
+ * least API 30.
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.R)
@@ -556,8 +550,7 @@ class Api30MediaStoreExtractor(context: Context, cacheDatabase: CacheExtractor) 
             super.projection +
                 arrayOf(
                     MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER,
-                    MediaStore.Audio.AudioColumns.DISC_NUMBER
-                )
+                    MediaStore.Audio.AudioColumns.DISC_NUMBER)
 
     override fun populateMetadata(cursor: Cursor, raw: Song.Raw) {
         super.populateMetadata(cursor, raw)

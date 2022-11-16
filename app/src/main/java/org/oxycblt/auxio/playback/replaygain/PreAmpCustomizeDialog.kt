@@ -21,12 +21,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPreAmpBinding
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
-import kotlin.math.abs
 
 /**
  * The dialog for customizing the ReplayGain pre-amp values.
@@ -81,8 +81,5 @@ class PreAmpCustomizeDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
             } else {
                 getString(R.string.fmt_db_neg, abs(valueDb))
             }
-    }
-
-    companion object {
     }
 }

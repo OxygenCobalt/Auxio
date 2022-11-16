@@ -29,7 +29,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearSmoothScroller
 import com.google.android.material.transition.MaterialSharedAxis
-import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
@@ -42,7 +41,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.fragment.MusicFragment
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.canScroll
@@ -93,11 +91,7 @@ class AlbumDetailFragment :
         collectImmediately(detailModel.currentAlbum, ::handleItemChange)
         collectImmediately(detailModel.albumData, detailAdapter::submitList)
         collectImmediately(
-            playbackModel.song,
-            playbackModel.parent,
-            playbackModel.isPlaying,
-            ::updatePlayback
-        )
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
@@ -130,7 +124,8 @@ class AlbumDetailFragment :
     override fun onItemClick(item: Item) {
         check(item is Song) { "Unexpected datatype: ${item::class.simpleName}" }
         when (settings.detailPlaybackMode) {
-            null, MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
+            null,
+            MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
             MusicMode.SONGS -> playbackModel.playFromAll(item)
             MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)
             else -> error("Unexpected playback mode: ${settings.detailPlaybackMode}")
@@ -233,8 +228,7 @@ class AlbumDetailFragment :
             binding.detailRecycler.post {
                 // Make sure to increment the position to make up for the detail header
                 binding.detailRecycler.layoutManager?.startSmoothScroll(
-                    CenterSmoothScroller(requireContext(), pos)
-                )
+                    CenterSmoothScroller(requireContext(), pos))
 
                 // If the recyclerview can scroll, its certain that it will have to scroll to
                 // correctly center the playing item, so make sure that the Toolbar is lifted in

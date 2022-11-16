@@ -142,13 +142,13 @@ class HomeViewModel(application: Application) :
             _songs.value = settings.libSongSort.songs(library.songs)
             _albums.value = settings.libAlbumSort.albums(library.albums)
 
-            _artists.value = settings.libArtistSort.artists(
-                if (settings.shouldHideCollaborators) {
-                    library.artists.filter { !it.isCollaborator }
-                } else {
-                    library.artists
-                }
-            )
+            _artists.value =
+                settings.libArtistSort.artists(
+                    if (settings.shouldHideCollaborators) {
+                        library.artists.filter { !it.isCollaborator }
+                    } else {
+                        library.artists
+                    })
 
             _genres.value = settings.libGenreSort.genres(library.genres)
         }

@@ -17,8 +17,6 @@
  
 package org.oxycblt.auxio.settings.prefs
 
-import android.app.Activity
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.DrawableRes
@@ -43,8 +41,6 @@ import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
-import java.security.Permission
-import java.util.jar.Manifest
 
 /**
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
@@ -98,14 +94,20 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             }
             is WrappedDialogPreference -> {
                 val context = requireContext()
-                val directions = when (preference.key) {
-                    context.getString(R.string.set_key_accent) -> SettingsFragmentDirections.goToAccentDialog()
-                    context.getString(R.string.set_key_lib_tabs) -> SettingsFragmentDirections.goToTabDialog()
-                    context.getString(R.string.set_key_pre_amp) -> SettingsFragmentDirections.goToPreAmpDialog()
-                    context.getString(R.string.set_key_music_dirs) -> SettingsFragmentDirections.goToMusicDirsDialog()
-                    getString(R.string.set_key_separators) -> SettingsFragmentDirections.goToSeparatorsDialog()
-                    else -> error("Unexpected dialog key ${preference.key}")
-                }
+                val directions =
+                    when (preference.key) {
+                        context.getString(R.string.set_key_accent) ->
+                            SettingsFragmentDirections.goToAccentDialog()
+                        context.getString(R.string.set_key_lib_tabs) ->
+                            SettingsFragmentDirections.goToTabDialog()
+                        context.getString(R.string.set_key_pre_amp) ->
+                            SettingsFragmentDirections.goToPreAmpDialog()
+                        context.getString(R.string.set_key_music_dirs) ->
+                            SettingsFragmentDirections.goToMusicDirsDialog()
+                        getString(R.string.set_key_separators) ->
+                            SettingsFragmentDirections.goToSeparatorsDialog()
+                        else -> error("Unexpected dialog key ${preference.key}")
+                    }
                 findNavController().navigate(directions)
             }
             else -> super.onDisplayPreferenceDialog(preference)

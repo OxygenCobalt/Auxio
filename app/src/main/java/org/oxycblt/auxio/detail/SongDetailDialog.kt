@@ -74,16 +74,14 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
                 if (song.info.bitrateKbps != null) {
                     binding.detailBitrate.setText(
-                        getString(R.string.fmt_bitrate, song.info.bitrateKbps)
-                    )
+                        getString(R.string.fmt_bitrate, song.info.bitrateKbps))
                 } else {
                     binding.detailBitrate.setText(R.string.def_bitrate)
                 }
 
                 if (song.info.sampleRate != null) {
                     binding.detailSampleRate.setText(
-                        getString(R.string.fmt_sample_rate, song.info.sampleRate)
-                    )
+                        getString(R.string.fmt_sample_rate, song.info.sampleRate))
                 } else {
                     binding.detailSampleRate.setText(R.string.def_sample_rate)
                 }

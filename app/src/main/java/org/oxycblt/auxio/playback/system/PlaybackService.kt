@@ -39,6 +39,8 @@ import com.google.android.exoplayer2.ext.flac.LibflacAudioRenderer
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.mediacodec.MediaCodecSelector
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import kotlin.math.max
+import kotlin.math.min
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -57,8 +59,6 @@ import org.oxycblt.auxio.ui.system.ForegroundManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * A service that manages the system-side aspects of playback, such as:
@@ -123,10 +123,8 @@ class PlaybackService :
                     handler,
                     audioListener,
                     AudioCapabilities.DEFAULT_AUDIO_CAPABILITIES,
-                    replayGainProcessor
-                ),
-                LibflacAudioRenderer(handler, audioListener, replayGainProcessor)
-            )
+                    replayGainProcessor),
+                LibflacAudioRenderer(handler, audioListener, replayGainProcessor))
         }
 
         // Enable constant bitrate seeking so that certain MP3s/AACs are seekable
@@ -141,8 +139,7 @@ class PlaybackService :
                         .setUsage(C.USAGE_MEDIA)
                         .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                         .build(),
-                    true
-                )
+                    true)
                 .build()
 
         player.addListener(this)
@@ -227,10 +224,7 @@ class PlaybackService :
 
     override fun makeState(durationMs: Long) =
         InternalPlayer.State.new(
-            player.playWhenReady,
-            player.isPlaying,
-            max(min(player.currentPosition, durationMs), 0)
-        )
+            player.playWhenReady, player.isPlaying, max(min(player.currentPosition, durationMs), 0))
 
     override fun loadSong(song: Song?, play: Boolean) {
         if (song == null) {
@@ -340,8 +334,7 @@ class PlaybackService :
     override fun onSettingChanged(key: String) {
         if (key == getString(R.string.set_key_replay_gain) ||
             key == getString(R.string.set_key_pre_amp_with) ||
-            key == getString(R.string.set_key_pre_amp_without)
-        ) {
+            key == getString(R.string.set_key_pre_amp_without)) {
             onTracksChanged(player.currentTracks)
         }
     }
@@ -353,8 +346,7 @@ class PlaybackService :
             Intent(event)
                 .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
                 .putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
-                .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-        )
+                .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC))
     }
 
     /** Stop the foreground state and hide the notification */
@@ -378,9 +370,7 @@ class PlaybackService :
                 is InternalPlayer.Action.RestoreState -> {
                     restoreScope.launch {
                         playbackManager.restoreState(
-                            PlaybackStateDatabase.getInstance(this@PlaybackService),
-                            false
-                        )
+                            PlaybackStateDatabase.getInstance(this@PlaybackService), false)
                     }
                 }
                 is InternalPlayer.Action.ShuffleAll -> {
@@ -475,8 +465,7 @@ class PlaybackService :
         private fun maybeResumeFromPlug() {
             if (playbackManager.song != null &&
                 settings.headsetAutoplay &&
-                initialHeadsetPlugEventHandled
-            ) {
+                initialHeadsetPlugEventHandled) {
                 logD("Device connected, resuming")
                 playbackManager.changePlaying(true)
             }

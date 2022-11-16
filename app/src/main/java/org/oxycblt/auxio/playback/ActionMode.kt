@@ -26,11 +26,12 @@ enum class ActionMode {
     SHUFFLE;
 
     val intCode: Int
-        get() = when (this) {
-            NEXT -> IntegerTable.ACTION_MODE_NEXT
-            REPEAT -> IntegerTable.ACTION_MODE_REPEAT
-            SHUFFLE -> IntegerTable.ACTION_MODE_SHUFFLE
-        }
+        get() =
+            when (this) {
+                NEXT -> IntegerTable.ACTION_MODE_NEXT
+                REPEAT -> IntegerTable.ACTION_MODE_REPEAT
+                SHUFFLE -> IntegerTable.ACTION_MODE_SHUFFLE
+            }
 
     companion object {
         /** Convert an int [code] into an instance, or null if it isn't valid. */

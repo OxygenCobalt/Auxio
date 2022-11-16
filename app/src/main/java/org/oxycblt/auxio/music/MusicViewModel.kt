@@ -44,9 +44,7 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
         indexer.registerCallback(this)
     }
 
-    /**
-     * Re-index the music library.
-     */
+    /** Re-index the music library. */
     fun reindex() {
         indexer.requestReindex(true)
     }

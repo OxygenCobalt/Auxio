@@ -82,8 +82,7 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
                     MusicMode.ALBUMS -> R.string.lbl_albums
                     MusicMode.ARTISTS -> R.string.lbl_artists
                     MusicMode.GENRES -> R.string.lbl_genres
-                }
-            )
+                })
             isChecked = item is Tab.Visible
         }
 

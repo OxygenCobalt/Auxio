@@ -18,10 +18,10 @@
 package org.oxycblt.auxio.music
 
 import androidx.annotation.IdRes
+import kotlin.math.max
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Sort.Mode
-import kotlin.math.max
 
 /**
  * Represents the sort modes used in Auxio.
@@ -79,11 +79,11 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
         albums.sortWith(mode.getAlbumComparator(isAscending))
     }
 
-    fun artistsInPlace(artists: MutableList<Artist>) {
+    private fun artistsInPlace(artists: MutableList<Artist>) {
         artists.sortWith(mode.getArtistComparator(isAscending))
     }
 
-    fun genresInPlace(genres: MutableList<Genre>) {
+    private fun genresInPlace(genres: MutableList<Genre>) {
         genres.sortWith(mode.getGenreComparator(isAscending))
     }
 
@@ -141,8 +141,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                     compareByDynamic(ascending, BasicComparator.ALBUM) { it.album },
                     compareBy(NullableComparator.INT) { it.disc },
                     compareBy(NullableComparator.INT) { it.track },
-                    compareBy(BasicComparator.SONG)
-                )
+                    compareBy(BasicComparator.SONG))
         }
 
         /** Sort by the artist of an item, only supported by [Album] and [Song] */
@@ -160,15 +159,13 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                     compareByDescending(BasicComparator.ALBUM) { it.album },
                     compareBy(NullableComparator.INT) { it.disc },
                     compareBy(NullableComparator.INT) { it.track },
-                    compareBy(BasicComparator.SONG)
-                )
+                    compareBy(BasicComparator.SONG))
 
             override fun getAlbumComparator(ascending: Boolean): Comparator<Album> =
                 MultiComparator(
                     compareByDynamic(ascending, ListComparator.ARTISTS) { it.artists },
                     compareByDescending(NullableComparator.DATE) { it.date },
-                    compareBy(BasicComparator.ALBUM)
-                )
+                    compareBy(BasicComparator.ALBUM))
         }
 
         /** Sort by the date of an item, only supported by [Album] and [Song] */
@@ -185,14 +182,12 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                     compareByDescending(BasicComparator.ALBUM) { it.album },
                     compareBy(NullableComparator.INT) { it.disc },
                     compareBy(NullableComparator.INT) { it.track },
-                    compareBy(BasicComparator.SONG)
-                )
+                    compareBy(BasicComparator.SONG))
 
             override fun getAlbumComparator(ascending: Boolean): Comparator<Album> =
                 MultiComparator(
                     compareByDynamic(ascending, NullableComparator.DATE) { it.date },
-                    compareBy(BasicComparator.ALBUM)
-                )
+                    compareBy(BasicComparator.ALBUM))
         }
 
         /** Sort by the duration of the item. Supports all items. */
@@ -205,27 +200,20 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
 
             override fun getSongComparator(ascending: Boolean): Comparator<Song> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.durationMs },
-                    compareBy(BasicComparator.SONG)
-                )
+                    compareByDynamic(ascending) { it.durationMs }, compareBy(BasicComparator.SONG))
 
             override fun getAlbumComparator(ascending: Boolean): Comparator<Album> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.durationMs },
-                    compareBy(BasicComparator.ALBUM)
-                )
+                    compareByDynamic(ascending) { it.durationMs }, compareBy(BasicComparator.ALBUM))
 
             override fun getArtistComparator(ascending: Boolean): Comparator<Artist> =
                 MultiComparator(
                     compareByDynamic(ascending, NullableComparator.LONG) { it.durationMs },
-                    compareBy(BasicComparator.ARTIST)
-                )
+                    compareBy(BasicComparator.ARTIST))
 
             override fun getGenreComparator(ascending: Boolean): Comparator<Genre> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.durationMs },
-                    compareBy(BasicComparator.GENRE)
-                )
+                    compareByDynamic(ascending) { it.durationMs }, compareBy(BasicComparator.GENRE))
         }
 
         /** Sort by the amount of songs. Only applicable to music parents. */
@@ -238,21 +226,16 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
 
             override fun getAlbumComparator(ascending: Boolean): Comparator<Album> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.songs.size },
-                    compareBy(BasicComparator.ALBUM)
-                )
+                    compareByDynamic(ascending) { it.songs.size }, compareBy(BasicComparator.ALBUM))
 
             override fun getArtistComparator(ascending: Boolean): Comparator<Artist> =
                 MultiComparator(
                     compareByDynamic(ascending, NullableComparator.INT) { it.songs.size },
-                    compareBy(BasicComparator.ARTIST)
-                )
+                    compareBy(BasicComparator.ARTIST))
 
             override fun getGenreComparator(ascending: Boolean): Comparator<Genre> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.songs.size },
-                    compareBy(BasicComparator.GENRE)
-                )
+                    compareByDynamic(ascending) { it.songs.size }, compareBy(BasicComparator.GENRE))
         }
 
         /** Sort by the disc, and then track number of an item. Only supported by [Song]. */
@@ -267,8 +250,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                 MultiComparator(
                     compareByDynamic(ascending, NullableComparator.INT) { it.disc },
                     compareBy(NullableComparator.INT) { it.track },
-                    compareBy(BasicComparator.SONG)
-                )
+                    compareBy(BasicComparator.SONG))
         }
 
         /**
@@ -286,8 +268,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                 MultiComparator(
                     compareBy(NullableComparator.INT) { it.disc },
                     compareByDynamic(ascending, NullableComparator.INT) { it.track },
-                    compareBy(BasicComparator.SONG)
-                )
+                    compareBy(BasicComparator.SONG))
         }
 
         /** Sort by the time the item was added. Only supported by [Song] */
@@ -300,15 +281,12 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
 
             override fun getSongComparator(ascending: Boolean): Comparator<Song> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.dateAdded },
-                    compareBy(BasicComparator.SONG)
-                )
+                    compareByDynamic(ascending) { it.dateAdded }, compareBy(BasicComparator.SONG))
 
             override fun getAlbumComparator(ascending: Boolean): Comparator<Album> =
                 MultiComparator(
                     compareByDynamic(ascending) { album -> album.songs.minOf { it.dateAdded } },
-                    compareBy(BasicComparator.ALBUM)
-                )
+                    compareBy(BasicComparator.ALBUM))
         }
 
         protected inline fun <T : Music, K> compareByDynamic(

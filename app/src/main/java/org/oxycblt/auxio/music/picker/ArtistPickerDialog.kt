@@ -44,7 +44,8 @@ import org.oxycblt.auxio.util.collectImmediately
  *
  * TODO: Clean up the picker flow to reduce the amount of duplication I had to do.
  */
-class ArtistPickerDialog : ViewBindingDialogFragment<DialogMusicPickerBinding>(), ItemClickListener {
+class ArtistPickerDialog :
+    ViewBindingDialogFragment<DialogMusicPickerBinding>(), ItemClickListener {
     private val pickerModel: PickerViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
@@ -56,9 +57,7 @@ class ArtistPickerDialog : ViewBindingDialogFragment<DialogMusicPickerBinding>()
         DialogMusicPickerBinding.inflate(inflater)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
-        builder
-            .setTitle(R.string.lbl_artists)
-            .setNegativeButton(R.string.lbl_cancel, null)
+        builder.setTitle(R.string.lbl_artists).setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {

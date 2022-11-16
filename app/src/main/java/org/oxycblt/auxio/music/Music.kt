@@ -21,6 +21,11 @@ package org.oxycblt.auxio.music
 
 import android.content.Context
 import android.os.Parcelable
+import java.security.MessageDigest
+import java.text.CollationKey
+import java.text.Collator
+import java.util.UUID
+import kotlin.math.max
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.R
@@ -36,11 +41,6 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
-import java.security.MessageDigest
-import java.text.CollationKey
-import java.text.Collator
-import java.util.UUID
-import kotlin.math.max
 
 // --- MUSIC MODELS ---
 
@@ -55,14 +55,14 @@ sealed class Music : Item {
     abstract val rawSortName: String?
 
     /**
-     * A key used by the sorting system that takes into account the sort tags of this item,
-     * any (english) articles that prefix the names, and collation rules.
+     * A key used by the sorting system that takes into account the sort tags of this item, any
+     * (english) articles that prefix the names, and collation rules.
      */
     abstract val collationKey: CollationKey?
 
     /**
-     * Resolve a name from it's raw form to a form suitable to be shown in a UI.
-     * Null values will be resolved into their string form with this function.
+     * Resolve a name from it's raw form to a form suitable to be shown in a UI. Null values will be
+     * resolved into their string form with this function.
      */
     abstract fun resolveName(context: Context): String
 
@@ -75,26 +75,27 @@ sealed class Music : Item {
         other is Music && javaClass == other.javaClass && uid == other.uid
 
     /**
-     * Workaround to allow for easy collation key generation in the initializer without
-     * base-class initialization issues or slow lazy initialization.
+     * Workaround to allow for easy collation key generation in the initializer without base-class
+     * initialization issues or slow lazy initialization.
      */
     protected fun makeCollationKeyImpl(): CollationKey? {
-        val sortName = (rawSortName ?: rawName)?.run {
-            when {
-                length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
-                length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
-                length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
-                else -> this
+        val sortName =
+            (rawSortName ?: rawName)?.run {
+                when {
+                    length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
+                    length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
+                    length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
+                    else -> this
+                }
             }
-        }
 
         return COLLATOR.getCollationKey(sortName)
     }
 
     /**
-     * Called when the library has been linked and validation/construction steps dependent
-     * on linked items should run. It's also used to do last-step initialization of fields
-     * that require any parent values that would not be present during startup.
+     * Called when the library has been linked and validation/construction steps dependent on linked
+     * items should run. It's also used to do last-step initialization of fields that require any
+     * parent values that would not be present during startup.
      */
     abstract fun _finalize()
 
@@ -107,15 +108,16 @@ sealed class Music : Item {
      * external sources, as it can persist across app restarts and does not need to encode useless
      * information about the relationships between items.
      *
-     * Note: While the core of a UID is a UUID. The whole is not technically a UUID, with
-     * string representation in particular having multiple extensions to increase uniqueness.
-     * Please don't try to do anything interesting with this and just assume it's a black box
-     * that can only be compared, serialized, and deserialized.
+     * Note: While the core of a UID is a UUID. The whole is not technically a UUID, with string
+     * representation in particular having multiple extensions to increase uniqueness. Please don't
+     * try to do anything interesting with this and just assume it's a black box that can only be
+     * compared, serialized, and deserialized.
      *
      * @author OxygenCobalt
      */
     @Parcelize
-    class UID private constructor(
+    class UID
+    private constructor(
         private val format: Format,
         private val mode: MusicMode,
         private val uuid: UUID
@@ -130,9 +132,8 @@ sealed class Music : Item {
 
         override fun hashCode() = hashCode
 
-        override fun equals(other: Any?) = other is UID &&
-            format == other.format &&
-            mode == other.mode && uuid == other.uuid
+        override fun equals(other: Any?) =
+            other is UID && format == other.format && mode == other.mode && uuid == other.uuid
 
         // UID string format is roughly:
         // format_namespace:music_mode_int-uuid
@@ -151,11 +152,12 @@ sealed class Music : Item {
                     return null
                 }
 
-                val format = when (split[0]) {
-                    Format.AUXIO.namespace -> Format.AUXIO
-                    Format.MUSICBRAINZ.namespace -> Format.MUSICBRAINZ
-                    else -> return null
-                }
+                val format =
+                    when (split[0]) {
+                        Format.AUXIO.namespace -> Format.AUXIO
+                        Format.MUSICBRAINZ.namespace -> Format.MUSICBRAINZ
+                        else -> return null
+                    }
 
                 val ids = split[1].split('-', limit = 2)
                 if (ids.size != 2) {
@@ -168,9 +170,7 @@ sealed class Music : Item {
                 return UID(format, mode, uuid)
             }
 
-            /**
-             * Make a UUID derived from the MD5 hash of the data digested in [updates].
-             */
+            /** Make a UUID derived from the MD5 hash of the data digested in [updates]. */
             fun auxio(mode: MusicMode, updates: MessageDigest.() -> Unit): UID {
                 // Auxio hashes consist of the MD5 hash of the non-subjective, consistent
                 // tags in a music item. For easier use with MusicBrainz IDs, we transform
@@ -181,18 +181,13 @@ sealed class Music : Item {
                 return UID(Format.AUXIO, mode, uuid)
             }
 
-            /**
-             * Make a UUID derived from a MusicBrainz ID.
-             */
-            fun musicBrainz(mode: MusicMode, uuid: UUID): UID =
-                UID(Format.MUSICBRAINZ, mode, uuid)
+            /** Make a UUID derived from a MusicBrainz ID. */
+            fun musicBrainz(mode: MusicMode, uuid: UUID): UID = UID(Format.MUSICBRAINZ, mode, uuid)
         }
     }
 
     companion object {
-        private val COLLATOR = Collator.getInstance().apply {
-            strength = Collator.PRIMARY
-        }
+        private val COLLATOR = Collator.getInstance().apply { strength = Collator.PRIMARY }
     }
 }
 
@@ -207,7 +202,10 @@ sealed class MusicParent : Music() {
     override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
 
     override fun equals(other: Any?) =
-        other is MusicParent && javaClass == other.javaClass && uid == other.uid && songs == other.songs
+        other is MusicParent &&
+            javaClass == other.javaClass &&
+            uid == other.uid &&
+            songs == other.songs
 }
 
 /**
@@ -215,21 +213,22 @@ sealed class MusicParent : Music() {
  * @author OxygenCobalt
  */
 class Song constructor(raw: Raw, settings: Settings) : Music() {
-    override val uid = raw.musicBrainzId?.toUuidOrNull()?.let { UID.musicBrainz(MusicMode.SONGS, it) }
-        ?: UID.auxio(MusicMode.SONGS) {
-            // Song UIDs are based on the raw data without parsing so that they remain
-            // consistent across music setting changes. Parents are not held up to the
-            // same standard since grouping is already inherently linked to settings.
-            update(raw.name)
-            update(raw.albumName)
-            update(raw.date)
+    override val uid =
+        raw.musicBrainzId?.toUuidOrNull()?.let { UID.musicBrainz(MusicMode.SONGS, it) }
+            ?: UID.auxio(MusicMode.SONGS) {
+                // Song UIDs are based on the raw data without parsing so that they remain
+                // consistent across music setting changes. Parents are not held up to the
+                // same standard since grouping is already inherently linked to settings.
+                update(raw.name)
+                update(raw.albumName)
+                update(raw.date)
 
-            update(raw.track)
-            update(raw.disc)
+                update(raw.track)
+                update(raw.disc)
 
-            update(raw.artistNames)
-            update(raw.albumArtistNames)
-        }
+                update(raw.artistNames)
+                update(raw.albumArtistNames)
+            }
 
     override val rawName = requireNotNull(raw.name) { "Invalid raw: No title" }
 
@@ -258,15 +257,13 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     val path =
         Path(
             name = requireNotNull(raw.fileName) { "Invalid raw: No display name" },
-            parent = requireNotNull(raw.directory) { "Invalid raw: No parent directory" }
-        )
+            parent = requireNotNull(raw.directory) { "Invalid raw: No parent directory" })
 
     /** The mime type of the audio file. Only intended for display. */
     val mimeType =
         MimeType(
             fromExtension = requireNotNull(raw.extensionMimeType) { "Invalid raw: No mime type" },
-            fromFormat = raw.formatMimeType
-        )
+            fromFormat = raw.formatMimeType)
 
     /** The size of this audio file. */
     val size = requireNotNull(raw.size) { "Invalid raw: No size" }
@@ -280,8 +277,8 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     private var _album: Album? = null
 
     /**
-     * The album of this song. Every song is guaranteed to have one and only one album,
-     * with a "directory" album being used if no album tag can be found.
+     * The album of this song. Every song is guaranteed to have one and only one album, with a
+     * "directory" album being used if no album tag can be found.
      */
     val album: Album
         get() = unlikelyToBeNull(_album)
@@ -298,34 +295,41 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
 
     private val albumArtistSortNames = raw.albumArtistSortNames.parseMultiValue(settings)
 
-    private val rawArtists = artistNames.mapIndexed { i, name ->
-        Artist.Raw(artistMusicBrainzIds.getOrNull(i)?.toUuidOrNull(), name, artistSortNames.getOrNull(i))
-    }
+    private val rawArtists =
+        artistNames.mapIndexed { i, name ->
+            Artist.Raw(
+                artistMusicBrainzIds.getOrNull(i)?.toUuidOrNull(),
+                name,
+                artistSortNames.getOrNull(i))
+        }
 
-    private val rawAlbumArtists = albumArtistNames.mapIndexed { i, name ->
-        Artist.Raw(albumArtistMusicBrainzIds.getOrNull(i)?.toUuidOrNull(), name, albumArtistSortNames.getOrNull(i))
-    }
+    private val rawAlbumArtists =
+        albumArtistNames.mapIndexed { i, name ->
+            Artist.Raw(
+                albumArtistMusicBrainzIds.getOrNull(i)?.toUuidOrNull(),
+                name,
+                albumArtistSortNames.getOrNull(i))
+        }
 
     private val _artists = mutableListOf<Artist>()
 
     /**
-     * The artists of this song. Most often one, but there could be multiple. These artists
-     * are derived from the artists tag and not the album artists tag, so they may differ from
-     * the artists of the album.
+     * The artists of this song. Most often one, but there could be multiple. These artists are
+     * derived from the artists tag and not the album artists tag, so they may differ from the
+     * artists of the album.
      */
     val artists: List<Artist>
         get() = _artists
 
     /**
-     * Resolve the artists of this song into a human-readable name. First tries to use artist
-     * tags, then falls back to album artist tags.
+     * Resolve the artists of this song into a human-readable name. First tries to use artist tags,
+     * then falls back to album artist tags.
      */
-    fun resolveArtistContents(context: Context) =
-        artists.joinToString { it.resolveName(context) }
+    fun resolveArtistContents(context: Context) = artists.joinToString { it.resolveName(context) }
 
     /**
-     * Utility method for recyclerview diffing that checks if resolveArtistContents is the
-     * same without a context.
+     * Utility method for recyclerview diffing that checks if resolveArtistContents is the same
+     * without a context.
      */
     fun areArtistContentsTheSame(other: Song): Boolean {
         for (i in 0 until max(artists.size, other.artists.size)) {
@@ -348,19 +352,18 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     val genres: List<Genre>
         get() = _genres
 
-    /**
-     * Resolve the genres of the song into a human-readable string.
-     */
+    /** Resolve the genres of the song into a human-readable string. */
     fun resolveGenreContents(context: Context) = genres.joinToString { it.resolveName(context) }
 
     // --- INTERNAL FIELDS ---
 
-    val _rawGenres = raw.genreNames.parseId3GenreNames(settings)
-        .map { Genre.Raw(it) }.ifEmpty { listOf(Genre.Raw()) }
+    val _rawGenres =
+        raw.genreNames
+            .parseId3GenreNames(settings)
+            .map { Genre.Raw(it) }
+            .ifEmpty { listOf(Genre.Raw()) }
 
-    val _rawArtists = rawArtists.ifEmpty { rawAlbumArtists }.ifEmpty {
-        listOf(Artist.Raw())
-    }
+    val _rawArtists = rawArtists.ifEmpty { rawAlbumArtists }.ifEmpty { listOf(Artist.Raw()) }
 
     val _rawAlbum =
         Album.Raw(
@@ -369,8 +372,8 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
             name = requireNotNull(raw.albumName) { "Invalid raw: No album name" },
             sortName = raw.albumSortName,
             releaseType = ReleaseType.parse(raw.albumReleaseTypes.parseMultiValue(settings)),
-            rawArtists = rawAlbumArtists.ifEmpty { rawArtists }.ifEmpty { listOf(Artist.Raw(null, null)) }
-        )
+            rawArtists =
+                rawAlbumArtists.ifEmpty { rawArtists }.ifEmpty { listOf(Artist.Raw(null, null)) })
 
     fun _link(album: Album) {
         _album = album
@@ -388,7 +391,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         checkNotNull(_album) { "Malformed song: No album" }
 
         check(_artists.isNotEmpty()) { "Malformed song: No artists" }
-        for( i in _artists.indices ) {
+        for (i in _artists.indices) {
             // Non-destructively reorder the linked artists so that they align with
             // the artist ordering within the song metadata.
             val newIdx = _artists[i]._getOriginalPositionIn(_rawArtists)
@@ -398,7 +401,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         }
 
         check(_genres.isNotEmpty()) { "Malformed song: No genres" }
-        for( i in _genres.indices ) {
+        for (i in _genres.indices) {
             // Non-destructively reorder the linked genres so that they align with
             // the genre ordering within the song metadata.
             val newIdx = _genres[i]._getOriginalPositionIn(_rawGenres)
@@ -445,14 +448,15 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
  * @author OxygenCobalt
  */
 class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent() {
-    override val uid = raw.musicBrainzId?.let { UID.musicBrainz(MusicMode.ALBUMS, it) }
-        ?: UID.auxio(MusicMode.ALBUMS) {
-            // Hash based on only names despite the presence of a date to increase stability.
-            // I don't know if there is any situation where an artist will have two albums with
-            // the exact same name, but if there is, I would love to know.
-            update(raw.name)
-            update(raw.rawArtists.map { it.name })
-        }
+    override val uid =
+        raw.musicBrainzId?.let { UID.musicBrainz(MusicMode.ALBUMS, it) }
+            ?: UID.auxio(MusicMode.ALBUMS) {
+                // Hash based on only names despite the presence of a date to increase stability.
+                // I don't know if there is any situation where an artist will have two albums with
+                // the exact same name, but if there is, I would love to know.
+                update(raw.name)
+                update(raw.rawArtists.map { it.name })
+            }
 
     override val rawName = raw.name
 
@@ -481,21 +485,19 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     val dateAdded: Long
 
     /**
-     * The artists of this album. Usually one, but there may be more. These are derived from
-     * the album artist first, so they may differ from the song artists.
+     * The artists of this album. Usually one, but there may be more. These are derived from the
+     * album artist first, so they may differ from the song artists.
      */
     private val _artists = mutableListOf<Artist>()
-    val artists: List<Artist> get() = _artists
+    val artists: List<Artist>
+        get() = _artists
+
+    /** Resolve the artists of this album in a human-readable manner. */
+    fun resolveArtistContents(context: Context) = artists.joinToString { it.resolveName(context) }
 
     /**
-     * Resolve the artists of this album in a human-readable manner.
-     */
-    fun resolveArtistContents(context: Context) =
-        artists.joinToString { it.resolveName(context) }
-
-    /**
-     * Utility for RecyclerView differs to check if resolveArtistContents is the same without
-     * a context.
+     * Utility for RecyclerView differs to check if resolveArtistContents is the same without a
+     * context.
      */
     fun areArtistContentsTheSame(other: Album): Boolean {
         for (i in 0 until max(artists.size, other.artists.size)) {
@@ -547,7 +549,7 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     override fun _finalize() {
         check(songs.isNotEmpty()) { "Malformed album: Empty" }
         check(_artists.isNotEmpty()) { "Malformed album: No artists" }
-        for( i in _artists.indices ) {
+        for (i in _artists.indices) {
             // Non-destructively reorder the linked artists so that they align with
             // the artist ordering within the song metadata.
             val newIdx = _artists[i]._getOriginalPositionIn(_rawArtists)
@@ -572,9 +574,9 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
 
         override fun equals(other: Any?): Boolean {
             if (other !is Raw) return false
-            if (musicBrainzId != null && other.musicBrainzId != null &&
-                musicBrainzId == other.musicBrainzId
-            ) {
+            if (musicBrainzId != null &&
+                other.musicBrainzId != null &&
+                musicBrainzId == other.musicBrainzId) {
                 return true
             }
 
@@ -584,15 +586,14 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
 }
 
 /**
- * An abstract artist. This is derived from both album artist values and artist values in
- * albums and songs respectively.
+ * An abstract artist. This is derived from both album artist values and artist values in albums and
+ * songs respectively.
  * @author OxygenCobalt
  */
-class Artist
-constructor(private val raw: Raw, songAlbums: List<Music>) : MusicParent() {
-    override val uid = raw.musicBrainzId?.let { UID.musicBrainz(MusicMode.ARTISTS, it) } ?: UID.auxio(
-        MusicMode.ARTISTS
-    ) { update(raw.name) }
+class Artist constructor(private val raw: Raw, songAlbums: List<Music>) : MusicParent() {
+    override val uid =
+        raw.musicBrainzId?.let { UID.musicBrainz(MusicMode.ARTISTS, it) }
+            ?: UID.auxio(MusicMode.ARTISTS) { update(raw.name) }
 
     override val rawName = raw.name
 
@@ -602,9 +603,7 @@ constructor(private val raw: Raw, songAlbums: List<Music>) : MusicParent() {
 
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
 
-    /**
-     * The songs of this artist. This might be empty.
-     */
+    /** The songs of this artist. This might be empty. */
     override val songs: List<Song>
 
     /** The total duration of songs in this artist, in millis. Null if there are no songs. */
@@ -618,14 +617,12 @@ constructor(private val raw: Raw, songAlbums: List<Music>) : MusicParent() {
 
     private lateinit var genres: List<Genre>
 
-    /**
-     * Resolve the combined genres of this artist into a human-readable string.
-     */
+    /** Resolve the combined genres of this artist into a human-readable string. */
     fun resolveGenreContents(context: Context) = genres.joinToString { it.resolveName(context) }
 
     /**
-     * Utility for RecyclerView differs to check if resolveGenreContents is the same without
-     * a context.
+     * Utility for RecyclerView differs to check if resolveGenreContents is the same without a
+     * context.
      */
     fun areGenreContentsTheSame(other: Artist): Boolean {
         for (i in 0 until max(genres.size, other.genres.size)) {
@@ -639,11 +636,10 @@ constructor(private val raw: Raw, songAlbums: List<Music>) : MusicParent() {
         return true
     }
 
-
     init {
         val distinctSongs = mutableSetOf<Song>()
         val distinctAlbums = mutableSetOf<Album>()
-        
+
         var noAlbums = true
 
         for (music in songAlbums) {
@@ -653,13 +649,11 @@ constructor(private val raw: Raw, songAlbums: List<Music>) : MusicParent() {
                     distinctSongs.add(music)
                     distinctAlbums.add(music.album)
                 }
-
                 is Album -> {
                     music._link(this)
                     distinctAlbums.add(music)
                     noAlbums = false
                 }
-
                 else -> error("Unexpected input music ${music::class.simpleName}")
             }
         }
@@ -677,11 +671,17 @@ constructor(private val raw: Raw, songAlbums: List<Music>) : MusicParent() {
     override fun _finalize() {
         check(songs.isNotEmpty() || albums.isNotEmpty()) { "Malformed artist: Empty" }
 
-        genres = Sort(Sort.Mode.ByName, true).genres(songs.flatMapTo(mutableSetOf()) { it.genres })
-            .sortedByDescending { genre -> songs.count { it.genres.contains(genre) } }
+        genres =
+            Sort(Sort.Mode.ByName, true)
+                .genres(songs.flatMapTo(mutableSetOf()) { it.genres })
+                .sortedByDescending { genre -> songs.count { it.genres.contains(genre) } }
     }
 
-    class Raw(val musicBrainzId: UUID? = null, val name: String? = null, val sortName: String? = null) {
+    class Raw(
+        val musicBrainzId: UUID? = null,
+        val name: String? = null,
+        val sortName: String? = null
+    ) {
         private val hashCode = musicBrainzId?.hashCode() ?: name?.lowercase().hashCode()
 
         override fun hashCode() = hashCode
@@ -689,9 +689,9 @@ constructor(private val raw: Raw, songAlbums: List<Music>) : MusicParent() {
         override fun equals(other: Any?): Boolean {
             if (other !is Raw) return false
 
-            if (musicBrainzId != null && other.musicBrainzId != null &&
-                musicBrainzId == other.musicBrainzId
-            ) {
+            if (musicBrainzId != null &&
+                other.musicBrainzId != null &&
+                musicBrainzId == other.musicBrainzId) {
                 return true
             }
 
@@ -743,8 +743,8 @@ class Genre constructor(private val raw: Raw, override val songs: List<Song>) : 
 
         durationMs = totalDuration
 
-        albums = Sort(Sort.Mode.ByName, true).albums(distinctAlbums)
-            .sortedByDescending { album ->
+        albums =
+            Sort(Sort.Mode.ByName, true).albums(distinctAlbums).sortedByDescending { album ->
                 album.songs.count { it.genres.contains(this) }
             }
 
@@ -819,9 +819,7 @@ fun MessageDigest.update(n: Long?) {
             n.shr(32).toByte(),
             n.shr(40).toByte(),
             n.shl(48).toByte(),
-            n.shr(56).toByte()
-        )
-    )
+            n.shr(56).toByte()))
 }
 
 /**
@@ -851,6 +849,5 @@ fun ByteArray.toUuid(): UUID {
             .or(get(12).toLong().and(0xFF).shl(24))
             .or(get(13).toLong().and(0xFF).shl(16))
             .or(get(14).toLong().and(0xFF).shl(8))
-            .or(get(15).toLong().and(0xFF))
-    )
+            .or(get(15).toLong().and(0xFF)))
 }

@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.playback.state
 
+import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.BuildConfig
@@ -31,7 +32,6 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
-import kotlin.math.max
 
 /**
  * Master class (and possible god object) for the playback state.
@@ -268,11 +268,7 @@ class PlaybackStateManager private constructor() {
         notifyShuffledChanged()
     }
 
-    private fun orderQueue(
-        settings: Settings,
-        shuffled: Boolean,
-        keep: Song?
-    ) {
+    private fun orderQueue(settings: Settings, shuffled: Boolean, keep: Song?) {
         val newIndex: Int
 
         if (shuffled) {
@@ -369,13 +365,14 @@ class PlaybackStateManager private constructor() {
 
         val library = musicStore.library ?: return false
         val internalPlayer = internalPlayer ?: return false
-        val state = try {
-            withContext(Dispatchers.IO) { database.read(library) }
-        } catch (e: Exception) {
-            logE("Unable to restore playback state.")
-            logE(e.stackTraceToString())
-            return false
-        }
+        val state =
+            try {
+                withContext(Dispatchers.IO) { database.read(library) }
+            } catch (e: Exception) {
+                logE("Unable to restore playback state.")
+                logE(e.stackTraceToString())
+                return false
+            }
 
         synchronized(this) {
             if (state != null && (!isInitialized || force)) {
@@ -484,8 +481,7 @@ class PlaybackStateManager private constructor() {
             queue = _queue,
             positionMs = playerState.calculateElapsedPosition(),
             isShuffled = isShuffled,
-            repeatMode = repeatMode
-        )
+            repeatMode = repeatMode)
 
     // --- CALLBACKS ---
 

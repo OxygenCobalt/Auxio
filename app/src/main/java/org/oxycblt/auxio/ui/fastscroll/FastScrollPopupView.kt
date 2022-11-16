@@ -165,8 +165,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0)
                 centerY + radius,
                 startAngle,
                 sweepAngle,
-                false
-            )
+                false)
         }
     }
 

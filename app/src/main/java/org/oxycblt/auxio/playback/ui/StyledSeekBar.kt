@@ -20,11 +20,11 @@ package org.oxycblt.auxio.playback.ui
 import android.content.Context
 import android.util.AttributeSet
 import com.google.android.material.slider.Slider
+import kotlin.math.max
 import org.oxycblt.auxio.databinding.ViewSeekBarBinding
 import org.oxycblt.auxio.playback.formatDurationDs
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logD
-import kotlin.math.max
 
 /**
  * A wrapper around [Slider] that shows not only position and duration values, but also basically

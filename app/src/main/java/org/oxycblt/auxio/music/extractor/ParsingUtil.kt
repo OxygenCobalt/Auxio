@@ -18,10 +18,10 @@
 package org.oxycblt.auxio.music.extractor
 
 import androidx.core.text.isDigitsOnly
+import java.util.UUID
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.nonZeroOrNull
-import java.util.UUID
 
 /**
  * Parse out the track number field as if the given Int is formatted as DTTT, where D Is the disc
@@ -51,9 +51,7 @@ fun String.parseYear() = toIntOrNull()?.toDate()
 /** Parse an ISO-8601 time-stamp from this field into a [Date]. */
 fun String.parseTimestamp() = Date.from(this)
 
-/**
- * Parse a string by [selector], also handling string escaping.
- */
+/** Parse a string by [selector], also handling string escaping. */
 inline fun String.splitEscaped(selector: (Char) -> Boolean): MutableList<String> {
     val split = mutableListOf<String>()
     var currentString = ""
@@ -110,11 +108,12 @@ fun String.maybeParseSeparators(settings: Settings): List<String> {
     return splitEscaped { separators.contains(it) }
 }
 
-fun String.toUuidOrNull(): UUID? = try {
-    UUID.fromString(this)
-} catch (e: IllegalArgumentException) {
-    null
-}
+fun String.toUuidOrNull(): UUID? =
+    try {
+        UUID.fromString(this)
+    } catch (e: IllegalArgumentException) {
+        null
+    }
 
 /**
  * Parse a multi-value genre name using ID3v2 rules. If there is one value, the ID3v2.3 rules will
@@ -392,5 +391,4 @@ private val GENRE_TABLE =
         "Psybient",
 
         // Auxio's extensions (Future garage is also based and deserves a slot)
-        "Future Garage"
-    )
+        "Future Garage")

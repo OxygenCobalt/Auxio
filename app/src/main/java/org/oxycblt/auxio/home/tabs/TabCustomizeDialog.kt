@@ -88,8 +88,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
                 when (tab) {
                     is Tab.Visible -> Tab.Invisible(tab.mode)
                     is Tab.Invisible -> Tab.Visible(tab.mode)
-                }
-            )
+                })
         }
 
         (requireDialog() as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =

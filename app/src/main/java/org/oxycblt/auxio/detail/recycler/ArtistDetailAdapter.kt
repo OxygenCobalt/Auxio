@@ -118,8 +118,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
                 binding.context.getString(
                     R.string.fmt_two,
                     binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size),
-                    binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
-                )
+                    binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
 
             binding.detailPlayButton.isVisible = true
             binding.detailShuffleButton.isVisible = true
@@ -143,13 +142,14 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
         fun new(parent: View) =
             ArtistDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
 
-        val DIFFER = object : SimpleItemCallback<Artist>() {
-            override fun areContentsTheSame(oldItem: Artist, newItem: Artist) =
-                oldItem.rawName == newItem.rawName &&
-                    oldItem.areGenreContentsTheSame(newItem) &&
-                    oldItem.albums.size == newItem.albums.size &&
-                    oldItem.songs.size == newItem.songs.size
-        }
+        val DIFFER =
+            object : SimpleItemCallback<Artist>() {
+                override fun areContentsTheSame(oldItem: Artist, newItem: Artist) =
+                    oldItem.rawName == newItem.rawName &&
+                        oldItem.areGenreContentsTheSame(newItem) &&
+                        oldItem.albums.size == newItem.albums.size &&
+                        oldItem.songs.size == newItem.songs.size
+            }
     }
 }
 
@@ -159,8 +159,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text =
-            item.date?.resolveDate(binding.context)
-                ?: binding.context.getString(R.string.def_date)
+            item.date?.resolveDate(binding.context) ?: binding.context.getString(R.string.def_date)
 
         // binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnLongClickListener {

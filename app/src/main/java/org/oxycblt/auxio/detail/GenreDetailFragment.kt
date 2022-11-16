@@ -26,7 +26,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.MaterialSharedAxis
-import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.DetailAdapter
@@ -41,7 +40,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.fragment.MusicFragment
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.collect
@@ -56,7 +54,9 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author OxygenCobalt
  */
 class GenreDetailFragment :
-    MusicFragment<FragmentDetailBinding>(), Toolbar.OnMenuItemClickListener, DetailAdapter.Listener {
+    MusicFragment<FragmentDetailBinding>(),
+    Toolbar.OnMenuItemClickListener,
+    DetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
 
     private val args: GenreDetailFragmentArgs by navArgs()
@@ -89,11 +89,7 @@ class GenreDetailFragment :
         collectImmediately(detailModel.currentGenre, ::handleItemChange)
         collectImmediately(detailModel.genreData, detailAdapter::submitList)
         collectImmediately(
-            playbackModel.song,
-            playbackModel.parent,
-            playbackModel.isPlaying,
-            ::updatePlayback
-        )
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
@@ -122,15 +118,16 @@ class GenreDetailFragment :
     override fun onItemClick(item: Item) {
         when (item) {
             is Artist -> navModel.exploreNavigateTo(item)
-
-            is Song -> when (settings.detailPlaybackMode) {
-                null -> playbackModel.playFromGenre(item, unlikelyToBeNull(detailModel.currentGenre.value))
-                MusicMode.SONGS -> playbackModel.playFromAll(item)
-                MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-                MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)
-                else -> error("Unexpected playback mode: ${settings.detailPlaybackMode}")
-            }
-
+            is Song ->
+                when (settings.detailPlaybackMode) {
+                    null ->
+                        playbackModel.playFromGenre(
+                            item, unlikelyToBeNull(detailModel.currentGenre.value))
+                    MusicMode.SONGS -> playbackModel.playFromAll(item)
+                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
+                    MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)
+                    else -> error("Unexpected playback mode: ${settings.detailPlaybackMode}")
+                }
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }

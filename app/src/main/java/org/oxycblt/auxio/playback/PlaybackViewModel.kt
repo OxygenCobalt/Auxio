@@ -115,44 +115,32 @@ class PlaybackViewModel(application: Application) :
         playbackManager.play(song, genre, settings)
     }
 
-    /**
-     * Play an [album].
-     */
+    /** Play an [album]. */
     fun play(album: Album) {
         playbackManager.play(null, album, settings, false)
     }
 
-    /**
-     * Play an [artist].
-     */
+    /** Play an [artist]. */
     fun play(artist: Artist) {
         playbackManager.play(null, artist, settings, false)
     }
 
-    /**
-     * Play a [genre].
-     */
+    /** Play a [genre]. */
     fun play(genre: Genre) {
         playbackManager.play(null, genre, settings, false)
     }
 
-    /**
-     * Shuffle an [album].
-     */
+    /** Shuffle an [album]. */
     fun shuffle(album: Album) {
         playbackManager.play(null, album, settings, true)
     }
 
-    /**
-     * Shuffle an [artist].
-     */
+    /** Shuffle an [artist]. */
     fun shuffle(artist: Artist) {
         playbackManager.play(null, artist, settings, true)
     }
 
-    /**
-     * Shuffle a [genre].
-     */
+    /** Shuffle a [genre]. */
     fun shuffle(genre: Genre) {
         playbackManager.play(null, genre, settings, true)
     }
@@ -249,8 +237,8 @@ class PlaybackViewModel(application: Application) :
     // --- SAVE/RESTORE FUNCTIONS ---
 
     /**
-     * Force save the current [PlaybackStateManager] state to the database. [onDone]
-     * will be called with true if it was done, or false if an error occurred.
+     * Force save the current [PlaybackStateManager] state to the database. [onDone] will be called
+     * with true if it was done, or false if an error occurred.
      */
     fun savePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {

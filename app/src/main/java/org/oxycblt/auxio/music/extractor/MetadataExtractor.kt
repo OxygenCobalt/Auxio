@@ -45,7 +45,10 @@ import org.oxycblt.auxio.util.logW
  *
  * @author OxygenCobalt
  */
-class MetadataExtractor(private val context: Context, private val mediaStoreExtractor: MediaStoreExtractor) {
+class MetadataExtractor(
+    private val context: Context,
+    private val mediaStoreExtractor: MediaStoreExtractor
+) {
     private val taskPool: Array<Task?> = arrayOfNulls(TASK_CAPACITY)
 
     /** Initialize the sub-layers that this layer relies on. */
@@ -116,8 +119,7 @@ class Task(context: Context, private val raw: Song.Raw) {
     private val future =
         MetadataRetriever.retrieveMetadata(
             context,
-            MediaItem.fromUri(requireNotNull(raw.mediaStoreId) { "Invalid raw: No id" }.audioUri)
-        )
+            MediaItem.fromUri(requireNotNull(raw.mediaStoreId) { "Invalid raw: No id" }.audioUri))
 
     /**
      * Get the song that this task is trying to complete. If the task is still busy, this will
@@ -215,20 +217,16 @@ class Task(context: Context, private val raw: Song.Raw) {
         // 3. ID3v2.4 Release Date, as it is the second most common date type
         // 4. ID3v2.3 Original Date, as it is like #1
         // 5. ID3v2.3 Release Year, as it is the most common date type
-        (
-            tags["TDOR"]?.run { get(0).parseTimestamp() }
+        (tags["TDOR"]?.run { get(0).parseTimestamp() }
                 ?: tags["TDRC"]?.run { get(0).parseTimestamp() }
-                ?: tags["TDRL"]?.run { get(0).parseTimestamp() } ?: parseId3v23Date(tags)
-            )
+                    ?: tags["TDRL"]?.run { get(0).parseTimestamp() } ?: parseId3v23Date(tags))
             ?.let { raw.date = it }
 
         // Album
         tags["TXXX:MusicBrainz Album Id"]?.let { raw.albumMusicBrainzId = it[0] }
         tags["TALB"]?.let { raw.albumName = it[0] }
         tags["TSOA"]?.let { raw.albumSortName = it[0] }
-        (tags["TXXX:MusicBrainz Album Type"] ?: tags["GRP1"])?.let {
-            raw.albumReleaseTypes = it
-        }
+        (tags["TXXX:MusicBrainz Album Type"] ?: tags["GRP1"])?.let { raw.albumReleaseTypes = it }
 
         // Artist
         tags["TXXX:MusicBrainz Artist Id"]?.let { raw.artistMusicBrainzIds = it }
@@ -288,11 +286,9 @@ class Task(context: Context, private val raw: Song.Raw) {
         // 2. Date, as it is the most common date type
         // 3. Year, as old vorbis tags tended to use this (I know this because it's the only
         // tag that android supports, so it must be 15 years old or more!)
-        (
-            tags["ORIGINALDATE"]?.run { get(0).parseTimestamp() }
+        (tags["ORIGINALDATE"]?.run { get(0).parseTimestamp() }
                 ?: tags["DATE"]?.run { get(0).parseTimestamp() }
-                ?: tags["YEAR"]?.run { get(0).parseYear() }
-            )
+                    ?: tags["YEAR"]?.run { get(0).parseYear() })
             ?.let { raw.date = it }
 
         // Album

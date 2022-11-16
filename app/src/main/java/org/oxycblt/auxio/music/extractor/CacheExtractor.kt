@@ -24,18 +24,18 @@ import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import androidx.core.database.sqlite.transaction
+import java.io.File
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.queryAll
 import org.oxycblt.auxio.util.requireBackgroundThread
-import java.io.File
 
 /**
  * The extractor that caches music metadata for faster use later. The cache is only responsible for
- * storing "intrinsic" data, as in information derived from the file format and not
- * information from the media database or file system. The exceptions are the database ID and
- * modification times for files, as these are required for the cache to function well.
+ * storing "intrinsic" data, as in information derived from the file format and not information from
+ * the media database or file system. The exceptions are the database ID and modification times for
+ * files, as these are required for the cache to function well.
  * @author OxygenCobalt
  */
 class CacheExtractor(private val context: Context, private val noop: Boolean) {
@@ -55,9 +55,7 @@ class CacheExtractor(private val context: Context, private val noop: Boolean) {
         }
     }
 
-    /**
-     * Write a list of newly-indexed raw songs to the database.
-     */
+    /** Write a list of newly-indexed raw songs to the database. */
     fun finalize(rawSongs: List<Song.Raw>) {
         cacheMap = null
 
@@ -75,14 +73,16 @@ class CacheExtractor(private val context: Context, private val noop: Boolean) {
     }
 
     /**
-     * Maybe copy a cached raw song into this instance, assuming that it has not changed
-     * since it was last saved. Returns true if a song was loaded.
+     * Maybe copy a cached raw song into this instance, assuming that it has not changed since it
+     * was last saved. Returns true if a song was loaded.
      */
     fun populateFromCache(rawSong: Song.Raw): Boolean {
         val map = cacheMap ?: return false
 
         val cachedRawSong = map[rawSong.mediaStoreId]
-        if (cachedRawSong != null && cachedRawSong.dateAdded == rawSong.dateAdded && cachedRawSong.dateModified == rawSong.dateModified) {
+        if (cachedRawSong != null &&
+            cachedRawSong.dateAdded == rawSong.dateAdded &&
+            cachedRawSong.dateModified == rawSong.dateModified) {
             rawSong.musicBrainzId = cachedRawSong.musicBrainzId
             rawSong.name = cachedRawSong.name
             rawSong.sortName = cachedRawSong.sortName
@@ -118,33 +118,35 @@ class CacheExtractor(private val context: Context, private val noop: Boolean) {
     }
 }
 
-private class CacheDatabase(context: Context) : SQLiteOpenHelper(context, File(context.cacheDir, DB_NAME).absolutePath, null, DB_VERSION) {
+private class CacheDatabase(context: Context) :
+    SQLiteOpenHelper(context, File(context.cacheDir, DB_NAME).absolutePath, null, DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
-        val command = StringBuilder()
-            .append("CREATE TABLE IF NOT EXISTS $TABLE_RAW_SONGS(")
-            .append("${Columns.MEDIA_STORE_ID} LONG PRIMARY KEY,")
-            .append("${Columns.DATE_ADDED} LONG NOT NULL,")
-            .append("${Columns.DATE_MODIFIED} LONG NOT NULL,")
-            .append("${Columns.SIZE} LONG NOT NULL,")
-            .append("${Columns.DURATION} LONG NOT NULL,")
-            .append("${Columns.FORMAT_MIME_TYPE} STRING,")
-            .append("${Columns.MUSIC_BRAINZ_ID} STRING,")
-            .append("${Columns.NAME} STRING NOT NULL,")
-            .append("${Columns.SORT_NAME} STRING,")
-            .append("${Columns.TRACK} INT,")
-            .append("${Columns.DISC} INT,")
-            .append("${Columns.DATE} STRING,")
-            .append("${Columns.ALBUM_MUSIC_BRAINZ_ID} STRING,")
-            .append("${Columns.ALBUM_NAME} STRING NOT NULL,")
-            .append("${Columns.ALBUM_SORT_NAME} STRING,")
-            .append("${Columns.ALBUM_RELEASE_TYPES} STRING,")
-            .append("${Columns.ARTIST_MUSIC_BRAINZ_IDS} STRING,")
-            .append("${Columns.ARTIST_NAMES} STRING,")
-            .append("${Columns.ARTIST_SORT_NAMES} STRING,")
-            .append("${Columns.ALBUM_ARTIST_MUSIC_BRAINZ_IDS} STRING,")
-            .append("${Columns.ALBUM_ARTIST_NAMES} STRING,")
-            .append("${Columns.ALBUM_ARTIST_SORT_NAMES} STRING,")
-            .append("${Columns.GENRE_NAMES} STRING)")
+        val command =
+            StringBuilder()
+                .append("CREATE TABLE IF NOT EXISTS $TABLE_RAW_SONGS(")
+                .append("${Columns.MEDIA_STORE_ID} LONG PRIMARY KEY,")
+                .append("${Columns.DATE_ADDED} LONG NOT NULL,")
+                .append("${Columns.DATE_MODIFIED} LONG NOT NULL,")
+                .append("${Columns.SIZE} LONG NOT NULL,")
+                .append("${Columns.DURATION} LONG NOT NULL,")
+                .append("${Columns.FORMAT_MIME_TYPE} STRING,")
+                .append("${Columns.MUSIC_BRAINZ_ID} STRING,")
+                .append("${Columns.NAME} STRING NOT NULL,")
+                .append("${Columns.SORT_NAME} STRING,")
+                .append("${Columns.TRACK} INT,")
+                .append("${Columns.DISC} INT,")
+                .append("${Columns.DATE} STRING,")
+                .append("${Columns.ALBUM_MUSIC_BRAINZ_ID} STRING,")
+                .append("${Columns.ALBUM_NAME} STRING NOT NULL,")
+                .append("${Columns.ALBUM_SORT_NAME} STRING,")
+                .append("${Columns.ALBUM_RELEASE_TYPES} STRING,")
+                .append("${Columns.ARTIST_MUSIC_BRAINZ_IDS} STRING,")
+                .append("${Columns.ARTIST_NAMES} STRING,")
+                .append("${Columns.ARTIST_SORT_NAMES} STRING,")
+                .append("${Columns.ALBUM_ARTIST_MUSIC_BRAINZ_IDS} STRING,")
+                .append("${Columns.ALBUM_ARTIST_NAMES} STRING,")
+                .append("${Columns.ALBUM_ARTIST_SORT_NAMES} STRING,")
+                .append("${Columns.GENRE_NAMES} STRING)")
 
         db.execSQL(command.toString())
     }
@@ -185,18 +187,22 @@ private class CacheDatabase(context: Context) : SQLiteOpenHelper(context, File(c
             val discIndex = cursor.getColumnIndexOrThrow(Columns.DISC)
             val dateIndex = cursor.getColumnIndexOrThrow(Columns.DATE)
 
-            val albumMusicBrainzIdIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_MUSIC_BRAINZ_ID)
+            val albumMusicBrainzIdIndex =
+                cursor.getColumnIndexOrThrow(Columns.ALBUM_MUSIC_BRAINZ_ID)
             val albumNameIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_NAME)
             val albumSortNameIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_SORT_NAME)
             val albumReleaseTypesIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_RELEASE_TYPES)
 
-            val artistMusicBrainzIdsIndex = cursor.getColumnIndexOrThrow(Columns.ARTIST_MUSIC_BRAINZ_IDS)
+            val artistMusicBrainzIdsIndex =
+                cursor.getColumnIndexOrThrow(Columns.ARTIST_MUSIC_BRAINZ_IDS)
             val artistNamesIndex = cursor.getColumnIndexOrThrow(Columns.ARTIST_NAMES)
             val artistSortNamesIndex = cursor.getColumnIndexOrThrow(Columns.ARTIST_SORT_NAMES)
 
-            val albumArtistMusicBrainzIdsIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_ARTIST_MUSIC_BRAINZ_IDS)
+            val albumArtistMusicBrainzIdsIndex =
+                cursor.getColumnIndexOrThrow(Columns.ALBUM_ARTIST_MUSIC_BRAINZ_IDS)
             val albumArtistNamesIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_ARTIST_NAMES)
-            val albumArtistSortNamesIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_ARTIST_SORT_NAMES)
+            val albumArtistSortNamesIndex =
+                cursor.getColumnIndexOrThrow(Columns.ALBUM_ARTIST_SORT_NAMES)
 
             val genresIndex = cursor.getColumnIndexOrThrow(Columns.GENRE_NAMES)
 
@@ -223,26 +229,31 @@ private class CacheDatabase(context: Context) : SQLiteOpenHelper(context, File(c
                 raw.albumMusicBrainzId = cursor.getStringOrNull(albumMusicBrainzIdIndex)
                 raw.albumName = cursor.getString(albumNameIndex)
                 raw.albumSortName = cursor.getStringOrNull(albumSortNameIndex)
-                cursor.getStringOrNull(albumReleaseTypesIndex)?.parseMultiValue()
-                    ?.let { raw.albumReleaseTypes = it }
+                cursor.getStringOrNull(albumReleaseTypesIndex)?.parseMultiValue()?.let {
+                    raw.albumReleaseTypes = it
+                }
 
                 cursor.getStringOrNull(artistMusicBrainzIdsIndex)?.let {
                     raw.artistMusicBrainzIds = it.parseMultiValue()
                 }
-                cursor.getStringOrNull(artistNamesIndex)
-                    ?.let { raw.artistNames = it.parseMultiValue() }
-                cursor.getStringOrNull(artistSortNamesIndex)
-                    ?.let { raw.artistSortNames = it.parseMultiValue() }
+                cursor.getStringOrNull(artistNamesIndex)?.let {
+                    raw.artistNames = it.parseMultiValue()
+                }
+                cursor.getStringOrNull(artistSortNamesIndex)?.let {
+                    raw.artistSortNames = it.parseMultiValue()
+                }
 
-                cursor.getStringOrNull(albumArtistMusicBrainzIdsIndex)
-                    ?.let { raw.albumArtistMusicBrainzIds = it.parseMultiValue() }
-                cursor.getStringOrNull(albumArtistNamesIndex)
-                    ?.let { raw.albumArtistNames = it.parseMultiValue() }
-                cursor.getStringOrNull(albumArtistSortNamesIndex)
-                    ?.let { raw.albumArtistSortNames = it.parseMultiValue() }
+                cursor.getStringOrNull(albumArtistMusicBrainzIdsIndex)?.let {
+                    raw.albumArtistMusicBrainzIds = it.parseMultiValue()
+                }
+                cursor.getStringOrNull(albumArtistNamesIndex)?.let {
+                    raw.albumArtistNames = it.parseMultiValue()
+                }
+                cursor.getStringOrNull(albumArtistSortNamesIndex)?.let {
+                    raw.albumArtistSortNames = it.parseMultiValue()
+                }
 
-                cursor.getStringOrNull(genresIndex)
-                    ?.let { raw.genreNames = it.parseMultiValue() }
+                cursor.getStringOrNull(genresIndex)?.let { raw.genreNames = it.parseMultiValue() }
 
                 map[id] = raw
             }
@@ -287,15 +298,23 @@ private class CacheDatabase(context: Context) : SQLiteOpenHelper(context, File(c
                             put(Columns.ALBUM_MUSIC_BRAINZ_ID, rawSong.albumMusicBrainzId)
                             put(Columns.ALBUM_NAME, rawSong.albumName)
                             put(Columns.ALBUM_SORT_NAME, rawSong.albumSortName)
-                            put(Columns.ALBUM_RELEASE_TYPES, rawSong.albumReleaseTypes.toMultiValue())
+                            put(
+                                Columns.ALBUM_RELEASE_TYPES,
+                                rawSong.albumReleaseTypes.toMultiValue())
 
-                            put(Columns.ARTIST_MUSIC_BRAINZ_IDS, rawSong.artistMusicBrainzIds.toMultiValue())
+                            put(
+                                Columns.ARTIST_MUSIC_BRAINZ_IDS,
+                                rawSong.artistMusicBrainzIds.toMultiValue())
                             put(Columns.ARTIST_NAMES, rawSong.artistNames.toMultiValue())
                             put(Columns.ARTIST_SORT_NAMES, rawSong.artistSortNames.toMultiValue())
 
-                            put(Columns.ALBUM_ARTIST_MUSIC_BRAINZ_IDS, rawSong.albumArtistMusicBrainzIds.toMultiValue())
+                            put(
+                                Columns.ALBUM_ARTIST_MUSIC_BRAINZ_IDS,
+                                rawSong.albumArtistMusicBrainzIds.toMultiValue())
                             put(Columns.ALBUM_ARTIST_NAMES, rawSong.albumArtistNames.toMultiValue())
-                            put(Columns.ALBUM_ARTIST_SORT_NAMES, rawSong.albumArtistSortNames.toMultiValue())
+                            put(
+                                Columns.ALBUM_ARTIST_SORT_NAMES,
+                                rawSong.albumArtistSortNames.toMultiValue())
 
                             put(Columns.GENRE_NAMES, rawSong.genreNames.toMultiValue())
                         }

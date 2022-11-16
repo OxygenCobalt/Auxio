@@ -52,12 +52,10 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
 
         addAction(buildRepeatAction(context, RepeatMode.NONE))
         addAction(
-            buildAction(context, PlaybackService.ACTION_SKIP_PREV, R.drawable.ic_skip_prev_24)
-        )
+            buildAction(context, PlaybackService.ACTION_SKIP_PREV, R.drawable.ic_skip_prev_24))
         addAction(buildPlayPauseAction(context, true))
         addAction(
-            buildAction(context, PlaybackService.ACTION_SKIP_NEXT, R.drawable.ic_skip_next_24)
-        )
+            buildAction(context, PlaybackService.ACTION_SKIP_NEXT, R.drawable.ic_skip_next_24))
         addAction(buildAction(context, PlaybackService.ACTION_EXIT, R.drawable.ic_close_24))
 
         setStyle(MediaStyle().setMediaSession(sessionToken).setShowActionsInCompactView(1, 2, 3))
@@ -134,10 +132,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
     ): NotificationCompat.Action {
         val action =
             NotificationCompat.Action.Builder(
-                iconRes,
-                actionName,
-                context.newBroadcastPendingIntent(actionName)
-            )
+                iconRes, actionName, context.newBroadcastPendingIntent(actionName))
 
         return action.build()
     }
@@ -146,7 +141,6 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
         val CHANNEL_INFO =
             ChannelInfo(
                 id = BuildConfig.APPLICATION_ID + ".channel.PLAYBACK",
-                nameRes = R.string.lbl_playback
-            )
+                nameRes = R.string.lbl_playback)
     }
 }

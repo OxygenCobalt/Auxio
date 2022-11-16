@@ -24,13 +24,13 @@ import com.google.android.exoplayer2.audio.BaseAudioProcessor
 import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
+import java.nio.ByteBuffer
+import kotlin.math.pow
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
-import java.nio.ByteBuffer
-import kotlin.math.pow
 
 /**
  * An [AudioProcessor] that handles ReplayGain values and their amplification of the audio stream.

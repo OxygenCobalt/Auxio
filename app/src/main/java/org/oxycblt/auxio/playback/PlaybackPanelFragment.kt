@@ -89,16 +89,12 @@ class PlaybackPanelFragment :
 
         binding.playbackArtist.apply {
             isSelected = true
-            setOnClickListener {
-                playbackModel.song.value?.let { showCurrentArtist() }
-            }
+            setOnClickListener { playbackModel.song.value?.let { showCurrentArtist() } }
         }
 
         binding.playbackAlbum.apply {
             isSelected = true
-            setOnClickListener {
-                playbackModel.song.value?.let { showCurrentAlbum() }
-            }
+            setOnClickListener { playbackModel.song.value?.let { showCurrentAlbum() } }
         }
 
         binding.playbackSeekBar.callback = this
@@ -136,9 +132,7 @@ class PlaybackPanelFragment :
                 val equalizerIntent =
                     Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
                         .putExtra(
-                            AudioEffect.EXTRA_AUDIO_SESSION,
-                            playbackModel.currentAudioSessionId
-                        )
+                            AudioEffect.EXTRA_AUDIO_SESSION, playbackModel.currentAudioSessionId)
                         .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
 
                 try {
@@ -161,9 +155,7 @@ class PlaybackPanelFragment :
                 playbackModel.song.value?.let { song ->
                     navModel.mainNavigateTo(
                         MainNavigationAction.Directions(
-                            MainFragmentDirections.actionShowDetails(song.uid)
-                        )
-                    )
+                            MainFragmentDirections.actionShowDetails(song.uid)))
                 }
 
                 true

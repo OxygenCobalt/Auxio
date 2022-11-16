@@ -60,7 +60,5 @@ class PlaybackSheetBehavior<V : View>(context: Context, attributeSet: AttributeS
                 MaterialShapeDrawable(sheetBackgroundDrawable.shapeAppearanceModel).apply {
                     fillColor = sheetBackgroundDrawable.fillColor
                 },
-                sheetBackgroundDrawable
-            )
-        )
+                sheetBackgroundDrawable))
 }
