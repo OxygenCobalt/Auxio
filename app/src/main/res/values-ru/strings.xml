@@ -252,4 +252,5 @@
     <string name="set_bar_action">Пользовательское поведение панели воспроизведения</string>
     <string name="set_rescan">Пересканировать библиотеку</string>
     <string name="set_rescan_desc">Очистить кеш тегов и полностью обновить библиотеку (медленно, но более эффективно)</string>
+    <string name="lbl_compilation_remix">Сборники ремиксов</string>
 </resources>
