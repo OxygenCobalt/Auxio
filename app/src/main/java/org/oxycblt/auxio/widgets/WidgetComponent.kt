@@ -65,8 +65,6 @@ class WidgetComponent(private val context: Context) :
         // 1. We can't use the typical primitives like ViewModels
         // 2. The component range is far smaller, so we have to do some odd hacks to get
         // the same UX.
-        // 3. RemoteView memory is limited, so we want to batch updates as much as physically
-        // possible.
         val song = playbackManager.song
         if (song == null) {
             logD("No song, resetting widget")

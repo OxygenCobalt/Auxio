@@ -20,38 +20,19 @@ package org.oxycblt.auxio.music.picker
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.ItemClickListener
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 
-/**
- * A dialog that shows several artist options if the result of an artist-reliant operation is
- * ambiguous.
- * @author OxygenCobalt
- *
- * TODO: Clean up the picker flow to reduce the amount of duplication I had to do.
- */
-class ArtistPickerDialog :
+abstract class ArtistPickerDialog :
     ViewBindingDialogFragment<DialogMusicPickerBinding>(), ItemClickListener {
-    private val pickerModel: PickerViewModel by viewModels()
-    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
-    private val navModel: NavigationViewModel by activityViewModels()
-
-    private val args: ArtistPickerDialogArgs by navArgs()
-    private val adapter = ArtistChoiceAdapter(this)
+    protected val pickerModel: MusicPickerViewModel by viewModels()
+    private val artistAdapter = ArtistChoiceAdapter(this)
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogMusicPickerBinding.inflate(inflater)
@@ -61,16 +42,12 @@ class ArtistPickerDialog :
     }
 
     override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {
-        pickerModel.setSongUid(args.uid)
-
-        binding.pickerRecycler.adapter = adapter
-
-        collectImmediately(pickerModel.currentItem) { item ->
-            when (item) {
-                is Song -> adapter.submitList(item.artists)
-                is Album -> adapter.submitList(item.artists)
-                null -> findNavController().navigateUp()
-                else -> error("Invalid datatype: ${item::class.java}")
+        binding.pickerRecycler.adapter = artistAdapter
+        collectImmediately(pickerModel.currentArtists) { artists ->
+            if (artists != null) {
+                artistAdapter.submitList(artists)
+            } else {
+                findNavController().navigateUp()
             }
         }
     }
@@ -80,15 +57,6 @@ class ArtistPickerDialog :
     }
 
     override fun onItemClick(item: Item) {
-        check(item is Artist) { "Unexpected datatype: ${item::class.simpleName}" }
         findNavController().navigateUp()
-        when (args.pickerMode) {
-            PickerMode.SHOW -> navModel.exploreNavigateTo(item)
-            PickerMode.PLAY -> {
-                val currentItem = pickerModel.currentItem.value
-                check(currentItem is Song) { "PickerMode.PLAY is only allowed with Songs" }
-                playbackModel.playFromArtist(currentItem, item)
-            }
-        }
     }
 }

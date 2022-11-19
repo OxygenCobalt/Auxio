@@ -77,10 +77,17 @@ class PlaybackViewModel(application: Application) :
     val isShuffled: StateFlow<Boolean>
         get() = _isShuffled
 
+    /** The current ID of the app's audio session. */
     val currentAudioSessionId: Int?
         get() = playbackManager.currentAudioSessionId
 
     private var lastPositionJob: Job? = null
+
+    private val _artistPlaybackPickerSong = MutableStateFlow<Song?>(null)
+
+    /** Flag for resolving an ambiguous artist choice when playing from a song's artists. */
+    val artistPlaybackPickerSong: StateFlow<Song?>
+        get() = _artistPlaybackPickerSong
 
     init {
         playbackManager.addCallback(this)
@@ -104,9 +111,22 @@ class PlaybackViewModel(application: Application) :
     }
 
     /** Play a song from it's artist. */
-    fun playFromArtist(song: Song, artist: Artist) {
-        check(artist.songs.contains(song)) { "Invalid input: Artist is not linked to song" }
-        playbackManager.play(song, artist, settings)
+    fun playFromArtist(song: Song, artist: Artist? = null) {
+        if (artist != null) {
+            check(artist in song.artists) { "Artist not in song artists" }
+            playbackManager.play(song, artist, settings)
+        } else {
+            if (song.artists.size == 1) {
+                playbackManager.play(song, song.artists[0], settings)
+            } else {
+                _artistPlaybackPickerSong.value = song
+            }
+        }
+    }
+
+    /** Complete the picker opening process when playing from an artist.  */
+    fun finishPlaybackArtistPicker() {
+        _artistPlaybackPickerSong.value = null
     }
 
     /** Play a song from the specific genre that contains the song. */

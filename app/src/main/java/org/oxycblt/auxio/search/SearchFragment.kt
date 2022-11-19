@@ -38,9 +38,8 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.fragment.MusicFragment
+import org.oxycblt.auxio.ui.fragment.MenuFragment
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.util.androidViewModels
@@ -55,7 +54,7 @@ import org.oxycblt.auxio.util.logW
  * @author OxygenCobalt
  */
 class SearchFragment :
-    MusicFragment<FragmentSearchBinding>(), MenuItemListener, Toolbar.OnMenuItemClickListener {
+    MenuFragment<FragmentSearchBinding>(), MenuItemListener, Toolbar.OnMenuItemClickListener {
 
     // SearchViewModel is only scoped to this Fragment
     private val searchModel: SearchViewModel by androidViewModels()
@@ -149,7 +148,7 @@ class SearchFragment :
                 when (settings.libPlaybackMode) {
                     MusicMode.SONGS -> playbackModel.playFromAll(item)
                     MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-                    MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)
+                    MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
                     else -> error("Unexpected playback mode: ${settings.libPlaybackMode}")
                 }
             is MusicParent -> navModel.exploreNavigateTo(item)

@@ -39,9 +39,8 @@ import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.fragment.MusicFragment
+import org.oxycblt.auxio.ui.fragment.MenuFragment
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.canScroll
 import org.oxycblt.auxio.util.collect
@@ -56,7 +55,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author OxygenCobalt
  */
 class AlbumDetailFragment :
-    MusicFragment<FragmentDetailBinding>(),
+    MenuFragment<FragmentDetailBinding>(),
     Toolbar.OnMenuItemClickListener,
     AlbumDetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
@@ -127,7 +126,7 @@ class AlbumDetailFragment :
             null,
             MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
             MusicMode.SONGS -> playbackModel.playFromAll(item)
-            MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)
+            MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
             else -> error("Unexpected playback mode: ${settings.detailPlaybackMode}")
         }
     }
@@ -164,7 +163,7 @@ class AlbumDetailFragment :
     }
 
     override fun onNavigateToArtist() {
-        navigateToArtist(unlikelyToBeNull(detailModel.currentAlbum.value))
+        navModel.exploreNavigateTo(unlikelyToBeNull(detailModel.currentAlbum.value).artists)
     }
 
     private fun handleItemChange(album: Album?) {

@@ -51,7 +51,7 @@ fun String.parseYear() = toIntOrNull()?.toDate()
 /** Parse an ISO-8601 time-stamp from this field into a [Date]. */
 fun String.parseTimestamp() = Date.from(this)
 
-/** Parse a string by [selector], also handling string escaping. */
+/** Split a string by [selector], also handling escaping. */
 inline fun String.splitEscaped(selector: (Char) -> Boolean): MutableList<String> {
     val split = mutableListOf<String>()
     var currentString = ""

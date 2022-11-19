@@ -204,8 +204,8 @@ abstract class MediaStoreExtractor(
 
         // Since we can't obtain the genre tag from a song query, we must construct
         // our own equivalent from genre database queries. Theoretically, this isn't
-        // needed since MetadataLayer will fill this in for us, but there are some
-        // obscure formats where genre support is only really covered by this.
+        // needed since MetadataLayer will fill this in for us, but I'd imagine there
+        // are some obscure formats where genre support is only really covered by this.
         context.contentResolverSafe.useQuery(
             MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
             arrayOf(MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME)) { genreCursor ->

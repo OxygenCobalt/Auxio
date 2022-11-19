@@ -28,7 +28,6 @@ import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.settings.Settings
@@ -110,7 +109,7 @@ class SongListFragment : HomeListFragment<Song>() {
         when (settings.libPlaybackMode) {
             MusicMode.SONGS -> playbackModel.playFromAll(item)
             MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-            MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)
+            MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
             else -> error("Unexpected playback mode: ${settings.libPlaybackMode}")
         }
     }

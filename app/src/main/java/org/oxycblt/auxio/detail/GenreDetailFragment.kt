@@ -38,9 +38,8 @@ import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.fragment.MusicFragment
+import org.oxycblt.auxio.ui.fragment.MenuFragment
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -54,9 +53,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author OxygenCobalt
  */
 class GenreDetailFragment :
-    MusicFragment<FragmentDetailBinding>(),
-    Toolbar.OnMenuItemClickListener,
-    DetailAdapter.Listener {
+    MenuFragment<FragmentDetailBinding>(), Toolbar.OnMenuItemClickListener, DetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
 
     private val args: GenreDetailFragmentArgs by navArgs()
@@ -125,7 +122,7 @@ class GenreDetailFragment :
                             item, unlikelyToBeNull(detailModel.currentGenre.value))
                     MusicMode.SONGS -> playbackModel.playFromAll(item)
                     MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-                    MusicMode.ARTISTS -> doArtistDependentAction(item, PickerMode.PLAY)
+                    MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
                     else -> error("Unexpected playback mode: ${settings.detailPlaybackMode}")
                 }
             else -> error("Unexpected datatype: ${item::class.simpleName}")

@@ -32,11 +32,10 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.picker.PickerMode
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.ui.MainNavigationAction
-import org.oxycblt.auxio.ui.fragment.MusicFragment
+import org.oxycblt.auxio.ui.fragment.MenuFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -49,7 +48,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * TODO: Make seek thumb grow when selected
  */
 class PlaybackPanelFragment :
-    MusicFragment<FragmentPlaybackPanelBinding>(),
+    MenuFragment<FragmentPlaybackPanelBinding>(),
     StyledSeekBar.Callback,
     Toolbar.OnMenuItemClickListener {
     // AudioEffect expects you to use startActivityForResult with the panel intent. Use
@@ -207,7 +206,7 @@ class PlaybackPanelFragment :
 
     private fun showCurrentArtist() {
         val song = playbackModel.song.value ?: return
-        doArtistDependentAction(song, PickerMode.SHOW)
+        navModel.exploreNavigateTo(song.artists)
     }
     private fun showCurrentAlbum() {
         val song = playbackModel.song.value ?: return

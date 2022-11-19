@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavDirections
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.logD
 
@@ -43,6 +44,15 @@ class NavigationViewModel : ViewModel() {
      */
     val exploreNavigationItem: StateFlow<Music?>
         get() = _exploreNavigationItem
+
+    private val _exploreNavigationArtists = MutableStateFlow<List<Artist>?>(null)
+
+    /**
+     * Flag for navigation within the explore fragments. In this case, it involves an ambiguous list
+     * of artist choices.
+     */
+    val exploreNavigationArtists: StateFlow<List<Artist>?>
+        get() = _exploreNavigationArtists
 
     /** Notify MainFragment to navigate to the location outlined in [MainNavigationAction]. */
     fun mainNavigateTo(action: MainNavigationAction) {
@@ -72,10 +82,26 @@ class NavigationViewModel : ViewModel() {
         _exploreNavigationItem.value = item
     }
 
+    /** Navigate to one item out of a list of items. */
+    fun exploreNavigateTo(items: List<Artist>) {
+        if (_exploreNavigationArtists.value != null) {
+            logD("Already navigating, not doing explore action")
+            return
+        }
+
+        if (items.size == 1) {
+            exploreNavigateTo(items[0])
+        } else {
+            logD("Navigating to a choice of ${items.map { it.rawName }}")
+            _exploreNavigationArtists.value = items
+        }
+    }
+
     /** Mark that the item navigation process is done. */
     fun finishExploreNavigation() {
         logD("Finishing explore navigation process")
         _exploreNavigationItem.value = null
+        _exploreNavigationArtists.value = null
     }
 }
 
@@ -91,5 +117,6 @@ sealed class MainNavigationAction {
     /** Collapse the playback panel. */
     object Collapse : MainNavigationAction()
 
+    /** Provide raw navigation directions. */
     data class Directions(val directions: NavDirections) : MainNavigationAction()
 }

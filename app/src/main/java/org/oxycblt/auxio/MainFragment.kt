@@ -34,6 +34,7 @@ import com.google.android.material.transition.MaterialFadeThrough
 import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackSheetBehavior
@@ -124,7 +125,9 @@ class MainFragment :
 
         collect(navModel.mainNavigationAction, ::handleMainNavigation)
         collect(navModel.exploreNavigationItem, ::handleExploreNavigation)
+        collect(navModel.exploreNavigationArtists, ::handleExplorePicker)
         collectImmediately(playbackModel.song, ::updateSong)
+        collect(playbackModel.artistPlaybackPickerSong, ::handlePlaybackPicker)
     }
 
     override fun onStart() {
@@ -213,14 +216,6 @@ class MainFragment :
         return true
     }
 
-    private fun updateSong(song: Song?) {
-        if (song != null) {
-            tryUnhideAll()
-        } else {
-            tryHideAll()
-        }
-    }
-
     private fun handleMainNavigation(action: MainNavigationAction?) {
         if (action == null) return
 
@@ -236,6 +231,32 @@ class MainFragment :
     private fun handleExploreNavigation(item: Music?) {
         if (item != null) {
             tryCollapseAll()
+        }
+    }
+
+    private fun handleExplorePicker(items: List<Artist>?) {
+        if (items != null) {
+            navModel.mainNavigateTo(MainNavigationAction.Directions(
+                MainFragmentDirections.actionPickNavigationArtist(items.map { it.uid }.toTypedArray())
+            ))
+            navModel.finishExploreNavigation()
+        }
+    }
+
+    private fun updateSong(song: Song?) {
+        if (song != null) {
+            tryUnhideAll()
+        } else {
+            tryHideAll()
+        }
+    }
+
+    private fun handlePlaybackPicker(song: Song?) {
+        if (song != null) {
+            navModel.mainNavigateTo(MainNavigationAction.Directions(
+                MainFragmentDirections.actionPickPlaybackArtist(song.uid)
+            ))
+            playbackModel.finishPlaybackArtistPicker()
         }
     }
 

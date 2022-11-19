@@ -71,6 +71,8 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  * not the source of truth for the state, but rather the means to control system-side playback. Both
  * of those tasks are what [PlaybackStateManager] is for.
  *
+ * TODO: Refactor lifecycle to run completely headless (i.e no activity needed)
+ *
  * TODO: Android Auto
  *
  * @author OxygenCobalt

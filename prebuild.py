@@ -29,6 +29,7 @@ OK="\033[1;92m"
 NC="\033[0m"
 
 # We do some shell scripting later on, so we can't support windows.
+# TODO: Support windows
 system = platform.system()
 if system not in ["Linux", "Darwin"]:
     print("fatal: unsupported platform " + system)
