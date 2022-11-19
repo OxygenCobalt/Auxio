@@ -67,7 +67,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Add vibration when popup changes
  *
- * TODO: Improve this for variably sized items
+ * TODO: Improve support for variably sized items
  *
  * @author Hai Zhang, OxygenCobalt
  */

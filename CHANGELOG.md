@@ -24,7 +24,7 @@
 - Reshuffling the queue will no longer drop any songs you have added/removed
 - Allowed light/dark theme to be customized on Android 12+
 - All information now scrolls in the playback view
-- A month is now shown for song/album dates when available (Android O+ only)
+- A month is now shown for song/album dates when available
 
 #### What's Fixed
 - Fixed issue where the scroll popup would not display correctly in landscape mode [#230]

@@ -31,6 +31,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.inRangeOrNull
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.nonZeroOrNull
+import java.text.SimpleDateFormat
 
 /**
  * An ISO-8601/RFC 3339 Date.
@@ -80,37 +81,26 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
      * Resolve this date into a string. This could result in a year string formatted as "YYYY", or a
      * month and year string formatted as "MMM YYYY" depending on the situation.
      */
-    fun resolveDate(context: Context): String {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return try {
-                resolveFullDate(context)
-            } catch (e: Exception) {
-                logE("Failed to format a full date")
-                logE(e.stackTraceToString())
-                return resolveYear(context)
-            }
-        } else {
-            return resolveYear(context)
+    fun resolveDate(context: Context) =
+        try {
+            resolveFullDate(context)
+        } catch (e: Exception) {
+            logE("Failed to format a full date")
+            logE(e.stackTraceToString())
+            resolveYear(context)
         }
-    }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun resolveFullDate(context: Context) =
-        if (month != null) {
-            val temporal =
-                DateTimeFormatter.ISO_DATE.parse(
-                    "$year-$month-${day ?: 1}", TemporalQueries.localDate())
-
-            // When it comes to songs, we only want to show the month and year. This
-            // cannot be done with DateUtils due to it's dynamic nature, so instead
-            // it's done with the built-in date formatter. Since the legacy date API
-            // is awful, we only use instant and limit it to Android 8 onwards.
-            temporal
-                .atStartOfDay(ZoneId.systemDefault())
-                .format(DateTimeFormatter.ofPattern("MMM yyyy", Locale.getDefault()))
+    private fun resolveFullDate(context: Context): String {
+        return if (month != null) {
+            val format = (SimpleDateFormat.getDateInstance() as SimpleDateFormat)
+            format.applyPattern("yyyy-MM-dd")
+            val date = format.parse("$year-$month-${day ?: 1}") ?: return resolveYear(context)
+            format.applyPattern("MMM yyyy")
+            format.format(date)
         } else {
             resolveYear(context)
         }
+    }
 
     /** Resolve the year field in a way suitable for the UI. */
     private fun resolveYear(context: Context) = context.getString(R.string.fmt_number, year)
@@ -143,11 +133,11 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
     private fun StringBuilder.appendDate(): StringBuilder {
         append(year.toFixedString(4))
-        append("-${(month ?: 1).toFixedString(2)}")
-        append("-${(day ?: 1).toFixedString(2)}")
-        append("T${(hour ?: 0).toFixedString(2)}")
-        append(":${(minute ?: 0).toFixedString(2)}")
-        append(":${(second ?: 0).toFixedString(2)}")
+        append("-${(month ?: return this).toFixedString(2)}")
+        append("-${(day ?: return this).toFixedString(2)}")
+        append("T${(hour ?: return this).toFixedString(2)}")
+        append(":${(minute ?: return this.append('Z')).toFixedString(2)}")
+        append(":${(second ?: return this.append('Z')).toFixedString(2)}")
         return this.append('Z')
     }
 
