@@ -205,13 +205,13 @@
     <string name="lbl_single_remix">Ремикс сингл</string>
     <string name="lbl_compilations">Сборники</string>
     <string name="set_wipe_desc">Очистить ранее сохраненное состояние воспроизведения (если есть)</string>
-    <string name="set_observing_desc">Перезагружать библиотеку при изменении (экспериментально)</string>
+    <string name="set_observing_desc">Перезагружать библиотеку при изменении (требует постоянное уведомление)</string>
     <string name="fmt_db_neg">-%.1f дБ</string>
     <string name="fmt_lib_genre_count">Жанров загружено: %d</string>
     <string name="set_restore_desc">Восстановить предыдущее состояние воспроизведения (если есть)</string>
     <string name="set_dirs_mode">Режим</string>
     <string name="set_dirs_mode_include_desc">Музыка будет загружена <b>только</b> из указанных папок.</string>
-    <string name="err_did_not_restore">Невозможно восстановить состояние воспроизведения</string>
+    <string name="err_did_not_restore">Не удалось восстановить состояние воспроизведения</string>
     <string name="def_track">Нет номера трека</string>
     <string name="fmt_sample_rate">%d Гц</string>
     <string name="fmt_lib_artist_count">Исполнителей загружено: %d</string>
@@ -250,7 +250,15 @@
     <string name="set_cover_mode_quality">Высокое качество</string>
     <string name="lbl_compilation_live">Подборка в реальном времени</string>
     <string name="set_bar_action">Пользовательское поведение панели воспроизведения</string>
-    <string name="set_rescan">Пересканировать библиотеку</string>
+    <string name="set_rescan">Пересканировать музыку</string>
     <string name="set_rescan_desc">Очистить кеш тегов и полностью обновить библиотеку (медленно, но более эффективно)</string>
     <string name="lbl_compilation_remix">Сборники ремиксов</string>
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d исполнитель</item>
+        <item quantity="few">%d исполнителя</item>
+        <item quantity="many">%d исполнителей</item>
+        <item quantity="other">%d исполнителей</item>
+    </plurals>
+    <string name="err_did_not_wipe">Не удалось очистить состояние</string>
+    <string name="err_did_not_save">Не удалось сохранить состояние</string>
 </resources>
