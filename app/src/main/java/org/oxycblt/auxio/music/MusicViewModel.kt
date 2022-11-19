@@ -31,14 +31,12 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
     private val indexer = Indexer.getInstance()
 
     private val _indexerState = MutableStateFlow<Indexer.State?>(null)
-
     /** The current music indexing state. */
     val indexerState: StateFlow<Indexer.State?> = _indexerState
 
-    private val _libraryExists = MutableStateFlow(false)
-
-    /** Whether a music library has successfully been loaded. */
-    val libraryExists: StateFlow<Boolean> = _libraryExists
+    private val _statistics = MutableStateFlow<Statistics?>(null)
+    /** The current statistics of the music library. */
+    val statistics: StateFlow<Statistics?> get() = _statistics
 
     init {
         indexer.registerCallback(this)
@@ -56,12 +54,35 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
     override fun onIndexerStateChanged(state: Indexer.State?) {
         logD("New state: $state")
         _indexerState.value = state
+
         if (state is Indexer.State.Complete && state.response is Indexer.Response.Ok) {
-            _libraryExists.value = true
+            val library = state.response.library
+            _statistics.value = Statistics(
+                library.songs.size,
+                library.albums.size,
+                library.artists.size,
+                library.genres.size,
+                library.songs.sumOf { it.durationMs }
+            )
         }
     }
 
     override fun onCleared() {
         indexer.unregisterCallback(this)
     }
+
+    /**
+     * Non-manipulated statistics about the music library.
+     */
+    data class Statistics(
+        /** The amount of songs. */
+        val songs: Int,
+        /** The amount of albums. */
+        val albums: Int,
+        /** The amount of artists. */
+        val artists: Int,
+        /** The amount of genres. */
+        val genres: Int,
+        val durationMs: Long
+    )
 }

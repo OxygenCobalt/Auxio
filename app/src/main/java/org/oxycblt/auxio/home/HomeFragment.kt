@@ -156,7 +156,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         collect(homeModel.recreateTabs, ::handleRecreateTabs)
         collectImmediately(homeModel.currentTab, ::updateCurrentTab)
-        collectImmediately(musicModel.libraryExists, homeModel.isFastScrolling, ::updateFab)
+        collectImmediately(homeModel.songs, homeModel.isFastScrolling, ::updateFab)
         collectImmediately(musicModel.indexerState, ::handleIndexerState)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
@@ -373,9 +373,9 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun updateFab(hasLoaded: Boolean, isFastScrolling: Boolean) {
+    private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
         val binding = requireBinding()
-        if (!hasLoaded || isFastScrolling) {
+        if (songs.isEmpty() || isFastScrolling) {
             binding.homeFab.hide()
         } else {
             binding.homeFab.show()

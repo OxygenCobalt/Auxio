@@ -25,20 +25,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.net.toUri
 import androidx.core.view.updatePadding
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.transition.MaterialFadeThrough
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
-import org.oxycblt.auxio.home.HomeViewModel
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
@@ -49,7 +45,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * @author OxygenCobalt
  */
 class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
-    private val homeModel: HomeViewModel by androidActivityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,32 +68,25 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         binding.aboutFaq.setOnClickListener { openLinkInBrowser(LINK_FAQ) }
         binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }
 
-        collectImmediately(homeModel.songs, ::updateSongCount)
-        collectImmediately(homeModel.albums, ::updateAlbumCount)
-        collectImmediately(homeModel.artists, ::updateArtistCount)
-        collectImmediately(homeModel.genres, ::updateGenreCount)
+        collectImmediately(musicModel.statistics, ::updateStatistics)
     }
 
-    private fun updateSongCount(songs: List<Song>) {
+    private fun updateStatistics(statistics: MusicViewModel.Statistics?) {
+
         val binding = requireBinding()
-        binding.aboutSongCount.text = getString(R.string.fmt_lib_song_count, songs.size)
+        binding.aboutSongCount.text = getString(R.string.fmt_lib_song_count, statistics?.songs ?: 0)
+
+        requireBinding().aboutAlbumCount.text = getString(R.string.fmt_lib_album_count, statistics?.albums ?: 0)
+
+        requireBinding().aboutArtistCount.text =
+            getString(R.string.fmt_lib_artist_count, statistics?.artists ?: 0)
+
+        requireBinding().aboutGenreCount.text = getString(R.string.fmt_lib_genre_count, statistics?.genres ?: 0)
+
         binding.aboutTotalDuration.text =
             getString(
                 R.string.fmt_lib_total_duration,
-                songs.sumOf { it.durationMs }.formatDurationMs(false))
-    }
-
-    private fun updateAlbumCount(albums: List<Album>) {
-        requireBinding().aboutAlbumCount.text = getString(R.string.fmt_lib_album_count, albums.size)
-    }
-
-    private fun updateArtistCount(artists: List<Artist>) {
-        requireBinding().aboutArtistCount.text =
-            getString(R.string.fmt_lib_artist_count, artists.size)
-    }
-
-    private fun updateGenreCount(genres: List<Genre>) {
-        requireBinding().aboutGenreCount.text = getString(R.string.fmt_lib_genre_count, genres.size)
+                (statistics?.durationMs ?: 0).formatDurationMs(false))
     }
 
     /** Go through the process of opening a [link] in a browser. */
