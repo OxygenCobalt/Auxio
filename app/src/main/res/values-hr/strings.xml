@@ -86,8 +86,8 @@
     <string name="set_library_song_playback_mode">Kada se reproducira iz zbirke</string>
     <string name="set_detail_song_playback_mode">Kada se reproducira iz detalja o predmetu</string>
     <string name="set_playback_mode_all">Reproduciraj od svih pjesama</string>
-    <string name="set_reindex">Ponovo učitaj glazbu</string>
-    <string name="set_reindex_desc">Može izbrisati stanje reprodukcije</string>
+    <string name="set_reindex">Aktualiziraj glazbu</string>
+    <string name="set_reindex_desc">Ponovo učitaj glazbenu biblioteku, koristeći predmemorirane oznake kada je to moguće</string>
     <string name="set_dirs">Mape glazbe</string>
     <string name="set_dirs_desc">Upravljaj odakle će se glazba učitati</string>
     <string name="set_dirs_mode">Način</string>
@@ -103,7 +103,7 @@
     <string name="err_no_app">Nijedna aplikacija ne može obraditi ovaj zadatak</string>
     <string name="err_no_dirs">Nema mapa</string>
     <string name="err_bad_dir">Ova mapa nije podržana</string>
-    <string name="err_did_not_restore">Nijedno stanje nije bilo moguće vratiti</string>
+    <string name="err_did_not_restore">Nije moguće obnoviti stanje</string>
     <string name="lng_search_library">Pretraži svoju zbirku …</string>
     <string name="desc_track_number">Zvučni zapis %d</string>
     <string name="desc_shuffle">Omogućite ili onemogućite miješanje</string>
@@ -155,7 +155,7 @@
     <string name="fmt_indexing">Učitavanje tvoje zbirke blazbe … (%1$d/%2$d)</string>
     <string name="fmt_lib_song_count">Učitano pjesama: %d</string>
     <string name="fmt_lib_album_count">Učitano albuma: %d</string>
-    <string name="fmt_lib_artist_count">Učitano izvođača: %d</string>
+    <string name="fmt_lib_artist_count">Učitanih izvođača: %d</string>
     <string name="fmt_lib_genre_count">Učitano žanrova: %d</string>
     <string name="fmt_lib_total_duration">Ukupno trajanje: %s</string>
     <plurals name="fmt_song_count">
@@ -234,11 +234,20 @@
     <string name="set_hide_collaborators">Sakrij suradnike</string>
     <string name="set_cover_mode_off">Isključeno</string>
     <string name="set_exclude_non_music">Isključi sve što nije glazba</string>
-    <string name="set_playback_mode_artist">Reproduciraj od izvođača</string>
+    <string name="set_playback_mode_artist">Reproduciraj glazbu izvođača</string>
     <string name="set_cover_mode_quality">Visoka kvaliteta</string>
     <string name="set_cover_mode_media_store">Brzo</string>
     <string name="set_exclude_non_music_desc">Zanemari sve audio datoteke koje nisu glazba, npr. podcast datoteke</string>
     <string name="set_separators_warning">Upozorenje: Korištenje ove postavke može dovesti do pogrešnog tumačenja nekih oznaka kao da imaju više vrijednosti. To možeš riješiti postavljanjem obrnute kose crte (\\) ispred neželjenih znakova rastavljanja.</string>
     <string name="set_cover_mode">Omoti albuma</string>
-    <string name="set_hide_collaborators_desc">Prikaži samo umjetnike koji su izravno navedeni na albumu u biblioteci</string>
+    <string name="set_hide_collaborators_desc">Prikaži samo izvođače koji su izravno navedeni na albumu</string>
+    <string name="err_did_not_wipe">Nije moguće očistiti stanje</string>
+    <string name="err_did_not_save">Nije moguće spremiti stanje</string>
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d izvođač</item>
+        <item quantity="few">%d izvođača</item>
+        <item quantity="other">%d izvođača</item>
+    </plurals>
+    <string name="set_rescan">Ponovo pretraži glazbu</string>
+    <string name="set_rescan_desc">Izbriši predmemoriju oznaka i ponovo potpuno učitaj glazbenu biblioteku (sporije, ali potpunije)</string>
 </resources>
