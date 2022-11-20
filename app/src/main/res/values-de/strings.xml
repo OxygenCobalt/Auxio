@@ -44,7 +44,7 @@
     <string name="set_accent">Farbgestaltung</string>
     <string name="set_display">Anzeige</string>
     <string name="set_round_mode">Abgerundete Cover</string>
-    <string name="set_round_mode_desc">Rundet Ecken der Cover ab</string>
+    <string name="set_round_mode_desc">Abgerundete Ecken für weitere UI-Elemente aktivieren (benötigt abgerundete Album-Cover)</string>
     <string name="set_notif_action">Alternative Aktionstaste verwenden</string>
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Kopfhörer: automatische Wiedergabe</string>
@@ -66,7 +66,7 @@
     <string name="set_save_state">Wiedergabezustand speichern</string>
     <string name="set_save_desc">Den aktuellen Wiedergabezustand speichern</string>
     <string name="set_reindex">Musik neu laden</string>
-    <string name="set_reindex_desc">Könnte den Wiedergabezustand löschen</string>
+    <string name="set_reindex_desc">Musikbibliothek neu laden, verwendet gecachte Tags wenn möglich</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Keine Musik gefunden</string>
     <string name="err_index_failed">Laden der Musik fehlgeschlagen</string>
@@ -153,7 +153,7 @@
     <string name="fmt_lib_genre_count">Geladene Genres: %d</string>
     <string name="fmt_lib_total_duration">Gesamtdauer: %s</string>
     <string name="lbl_cancel">Abbrechen</string>
-    <string name="set_pre_amp_warning">Warnung: Das erhöhen der Vorverstärkung zu einem hohen positiven Wert könnte zu einer Übersteuerung bei einigen Audiospuren führen.</string>
+    <string name="set_pre_amp_warning">Warnung: Das Erhöhen der Vorverstärkung zu einem hohen positiven Wert könnte zu einer Übersteuerung bei einigen Audiospuren führen.</string>
     <string name="set_detail_song_playback_mode">Wenn ein Lied aus den Elementdetails abgespielt wird</string>
     <string name="set_playback_mode_none">Vom dargestellten Element abspielen</string>
     <string name="set_dirs">Musikordner</string>
@@ -192,7 +192,7 @@
     <string name="lbl_indexing">Musik wird geladen</string>
     <string name="lng_observing">Musikbibliothek wird auf Änderungen überwacht…</string>
     <string name="lbl_sort_date_added">Hinzugefügt am</string>
-    <string name="set_observing_desc">Musikbibliothek neu laden, sobald es Änderungen gibt (Erfordert persistente Benachrichtigung)</string>
+    <string name="set_observing_desc">Musikbibliothek neu laden, sobald es Änderungen gibt (erfordert persistente Benachrichtigung)</string>
     <string name="set_observing">Automatisch neuladen</string>
     <string name="lbl_state_restored">Zustand wiederhergestellt</string>
     <string name="set_restore_desc">Den vorher gespeicherten Wiedergabezustand wiederherstellen (wenn verfügbar)</string>
@@ -246,11 +246,13 @@
     <string name="set_cover_mode_media_store">Schnell</string>
     <string name="set_cover_mode_quality">Hohe Qualität</string>
     <string name="set_hide_collaborators">Mitarbeiter ausblenden</string>
-    <string name="set_hide_collaborators_desc">Nur Künstler anzeigen, die als „Albumskünstler” in der Bibliothek auftreten</string>
+    <string name="set_hide_collaborators_desc">Nur Künstler anzeigen, die direkt auf einem Album erwähnt werden (funktioniert am besten mit gut getaggten Bibliotheken)</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d Künstler</item>
         <item quantity="other">%d Künstler</item>
     </plurals>
     <string name="err_did_not_wipe">Zustand konnte nicht gelöscht werden</string>
     <string name="err_did_not_save">Zustand konnte nicht gespeichert werden</string>
+    <string name="set_rescan">Music neu scannen</string>
+    <string name="set_rescan_desc">Tag-Cache vollständig löschen und die Musik-Bibliothek vollständig neu laden (langsamer, aber vollständiger)</string>
 </resources>

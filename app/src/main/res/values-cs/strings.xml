@@ -65,8 +65,8 @@
     <string name="set_display">Zobrazení</string>
     <string name="set_lib_tabs">Karty knihovny</string>
     <string name="set_lib_tabs_desc">Změnit viditelnost a pořadí karet knihovny</string>
-    <string name="set_round_mode">Zakulacené obaly alb</string>
-    <string name="set_round_mode_desc">Použít obaly alb se zakulacenými rohy</string>
+    <string name="set_round_mode">Zaoblený režim</string>
+    <string name="set_round_mode_desc">Povolit zaoblené rohy u dodatečných prvků rozhraní (vyžaduje zaoblené rohy obalů alb)</string>
     <string name="set_notif_action">Použít alternativní akci oznámení</string>
     <string name="set_audio">Zvuk</string>
     <string name="set_headset_autoplay">Automatické přehrávání se sluchátky</string>
@@ -91,8 +91,8 @@
     <string name="set_content">Obsah</string>
     <string name="set_save_state">Uložit stav přehrávání</string>
     <string name="set_save_desc">Uložit aktuální stav přehrávání</string>
-    <string name="set_reindex">Znovu načíst hudbu</string>
-    <string name="set_reindex_desc">Může vymazat stav přehrávání</string>
+    <string name="set_reindex">Obnovit hudbu</string>
+    <string name="set_reindex_desc">Znovu načíst hudební knihovnu, pokud možno s použitím značek uložených v mezipaměti</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nenalezena žádná hudba</string>
     <string name="err_index_failed">Načítání hudby selhalo</string>
@@ -203,7 +203,7 @@
     <string name="lbl_observing">Monitorování hudební knihovny</string>
     <string name="set_observing">Automatické znovunačítání</string>
     <string name="lng_observing">Sledování změn v hudební knihovně…</string>
-    <string name="set_observing_desc">Znovu načíst vaší hudební knihovnu při změně (vyžaduje trvalé oznámení)</string>
+    <string name="set_observing_desc">Znovu načíst hudební knihovnu při změně (vyžaduje trvalé oznámení)</string>
     <string name="lbl_indexing">Načítání hudby</string>
     <string name="lbl_sort_date_added">Datum přidání</string>
     <string name="lbl_single">Singl</string>
@@ -253,7 +253,7 @@
     <string name="set_cover_mode_off">Vypnuté</string>
     <string name="set_cover_mode_media_store">Rychlé</string>
     <string name="set_hide_collaborators">Skrýt spoluautory</string>
-    <string name="set_hide_collaborators_desc">Zobrazit pouze umělce, kteří jsou přímo uvedeni na albu v knihovně</string>
+    <string name="set_hide_collaborators_desc">Zobrazit pouze umělce, kteří jsou přímo uvedeni na albu (funguje nejlépe u dobře označených knihoven)</string>
     <string name="err_did_not_save">Nepodařilo se uložit stav</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d umělec</item>
@@ -261,4 +261,6 @@
         <item quantity="other">%d umělců</item>
     </plurals>
     <string name="err_did_not_wipe">Nepodařilo se vymazat stav</string>
+    <string name="set_rescan">Znovu najít hudbu</string>
+    <string name="set_rescan_desc">Vymazat mezipaměť značek a znovu úplně znovu načíst hudební knihovnu (pomalejší, ale úplnější)</string>
 </resources>

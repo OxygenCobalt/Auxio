@@ -57,7 +57,7 @@
     <string name="set_lib_tabs">Schede libreria</string>
     <string name="set_lib_tabs_desc">Cambia la visibilità e l\'ordine delle schede della libreria</string>
     <string name="set_round_mode">Copertine dischi arrotondate</string>
-    <string name="set_round_mode_desc">Usa copertine dischi con angoli arrotondati</string>
+    <string name="set_round_mode_desc">Abilita gli angoli arrotondati su ulteriori elementi dell\'interfaccia utente (richiede che le copertine degli album siano arrotondate)</string>
     <string name="set_notif_action">Usa azioni notifica alternative</string>
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Autoplay cuffie</string>
@@ -77,8 +77,8 @@
     <string name="set_content">Contenuti</string>
     <string name="set_save_state">Salva stato riproduzione</string>
     <string name="set_save_desc">Salva lo stato di riproduzione corrente</string>
-    <string name="set_reindex">Ricarica musica</string>
-    <string name="set_reindex_desc">Potrebbe cancellare lo stato di riproduzione</string>
+    <string name="set_reindex">Aggiorna musica</string>
+    <string name="set_reindex_desc">Ricarica la libreria musicale, usando i tag nella cache quando possibile</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Musica non trovata</string>
     <string name="err_index_failed">Caricamento musica fallito</string>
@@ -231,7 +231,7 @@
     <string name="set_bar_action_repeat">Modalità ripetizione</string>
     <string name="desc_exit">Interrompi riproduzione</string>
     <string name="set_hide_collaborators">Nascondi collaboratori</string>
-    <string name="set_hide_collaborators_desc">Mostra solo artisti accreditati di un album nella libreria</string>
+    <string name="set_hide_collaborators_desc">Mostra solo artisti che sono direttamente accreditati in un album (funziona meglio su librerie ben taggate)</string>
     <string name="set_cover_mode">Copertine album</string>
     <string name="set_cover_mode_off">Off</string>
     <string name="set_cover_mode_media_store">Veloce</string>
@@ -255,4 +255,8 @@
         <item quantity="many">%d artisti</item>
         <item quantity="other">%d artisti</item>
     </plurals>
+    <string name="set_rescan">Riscansiona musica</string>
+    <string name="err_did_not_save">Impossibile salvare</string>
+    <string name="set_rescan_desc">Svuota la cache dei tag e ricarica completamente la libreria musicale (più lento, ma più completo)</string>
+    <string name="err_did_not_wipe">Impossibile svuotare</string>
 </resources>
