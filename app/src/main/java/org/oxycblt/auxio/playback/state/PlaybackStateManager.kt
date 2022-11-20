@@ -456,7 +456,7 @@ class PlaybackStateManager private constructor() {
                 }
             }
 
-        _queue = newLibrary.sanitize(_queue).toMutableList()
+        _queue = _queue.mapNotNullTo(mutableListOf()) { newLibrary.sanitize(it) }
 
         while (song?.uid != oldSongUid && index > -1) {
             index--

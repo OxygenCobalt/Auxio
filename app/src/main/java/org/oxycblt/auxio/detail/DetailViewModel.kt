@@ -116,6 +116,10 @@ class DetailViewModel(application: Application) :
             currentGenre.value?.let(::refreshGenreData)
         }
 
+    init {
+        musicStore.addCallback(this)
+    }
+
     fun setSongUid(uid: Music.UID) {
         if (_currentSong.value?.run { song.uid } == uid) return
         val library = unlikelyToBeNull(musicStore.library)
@@ -151,10 +155,6 @@ class DetailViewModel(application: Application) :
         val genre = requireNotNull(library.find<Genre>(uid)) { "Invalid genre id provided" }
         _currentGenre.value = genre
         refreshGenreData(genre)
-    }
-
-    init {
-        musicStore.addCallback(this)
     }
 
     private fun generateDetailSong(song: Song) {

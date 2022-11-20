@@ -108,9 +108,6 @@ class MusicStore private constructor() {
         fun sanitize(song: Song) = find<Song>(song.uid)
 
         /** Sanitize an old item to find the corresponding item in a new library. */
-        fun sanitize(songs: List<Song>) = songs.mapNotNull { sanitize(it) }
-
-        /** Sanitize an old item to find the corresponding item in a new library. */
         fun sanitize(album: Album) = find<Album>(album.uid)
 
         /** Sanitize an old item to find the corresponding item in a new library. */

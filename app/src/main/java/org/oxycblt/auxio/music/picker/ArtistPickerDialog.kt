@@ -44,7 +44,7 @@ abstract class ArtistPickerDialog :
     override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {
         binding.pickerRecycler.adapter = artistAdapter
         collectImmediately(pickerModel.currentArtists) { artists ->
-            if (artists != null) {
+            if (!artists.isNullOrEmpty()) {
                 artistAdapter.submitList(artists)
             } else {
                 findNavController().navigateUp()
