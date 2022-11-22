@@ -21,7 +21,6 @@ import android.os.Bundle
 import android.text.format.Formatter
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs

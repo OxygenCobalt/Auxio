@@ -20,16 +20,21 @@ package org.oxycblt.auxio.image
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.annotation.AttrRes
+import androidx.core.view.updateMarginsRelative
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
+import org.oxycblt.auxio.util.getDimenSize
 
 /**
  * Effectively a super-charged [StyledImageView].
@@ -51,7 +56,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private val cornerRadius: Float
     private val inner: StyledImageView
     private var customView: View? = null
-    private val indicator: IndicatorView
+    private val playingIndicator: IndicatorView
+    private val selectionIndicator: ImageView
 
     init {
         // Android wants you to make separate attributes for each view type, but will
@@ -62,7 +68,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         styledAttrs.recycle()
 
         inner = StyledImageView(context, attrs)
-        indicator = IndicatorView(context).apply { cornerRadius = this@ImageGroup.cornerRadius }
+        playingIndicator =
+            IndicatorView(context).apply { cornerRadius = this@ImageGroup.cornerRadius }
+        selectionIndicator =
+            ImageView(context).apply {
+                imageTintList = context.getAttrColorCompat(R.attr.colorOnPrimary)
+                setImageResource(R.drawable.ic_check_20)
+                setBackgroundResource(R.drawable.ui_selection_badge_bg)
+            }
 
         addView(inner)
     }
@@ -83,42 +96,63 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     }
             }
 
-        addView(indicator)
+        addView(playingIndicator)
+        addView(
+            selectionIndicator,
+            LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
+                gravity = Gravity.BOTTOM or Gravity.END
+                val spacing = context.getDimenSize(R.dimen.spacing_tiny)
+                updateMarginsRelative(bottom = spacing, end = spacing)
+            })
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        invalidateIndicator()
+        invalidateAlpha()
+        invalidatePlayingIndicator()
     }
 
     override fun setActivated(activated: Boolean) {
         super.setActivated(activated)
-        invalidateIndicator()
+        invalidateAlpha()
+        invalidatePlayingIndicator()
     }
 
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
-        invalidateIndicator()
+        invalidateAlpha()
+        invalidatePlayingIndicator()
+    }
+
+    override fun setSelected(selected: Boolean) {
+        super.setSelected(selected)
+        invalidateSelectionIndicator()
     }
 
     var isPlaying: Boolean
-        get() = indicator.isPlaying
+        get() = playingIndicator.isPlaying
         set(value) {
-            indicator.isPlaying = value
+            playingIndicator.isPlaying = value
         }
 
-    private fun invalidateIndicator() {
+    private fun invalidateAlpha() {
+        alpha = if (isActivated || isEnabled) 1f else 0.5f
+    }
+
+    private fun invalidatePlayingIndicator() {
         if (isActivated) {
-            alpha = 1f
             customView?.alpha = 0f
             inner.alpha = 0f
-            indicator.alpha = 1f
+            playingIndicator.alpha = 1f
         } else {
-            alpha = if (isEnabled) 1f else 0.5f
             customView?.alpha = 1f
             inner.alpha = 1f
-            indicator.alpha = 0f
+            playingIndicator.alpha = 0f
         }
+    }
+
+    private fun invalidateSelectionIndicator() {
+        selectionIndicator.alpha = if (isSelected) 1f else 0f
     }
 
     fun bind(song: Song) {
