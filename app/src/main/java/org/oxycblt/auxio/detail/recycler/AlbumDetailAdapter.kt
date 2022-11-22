@@ -197,7 +197,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
     }
 
     override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
-        binding.root.isActivated = isActive
+        binding.root.isSelected = isActive
         binding.songTrackBg.isPlaying = isPlaying
     }
 

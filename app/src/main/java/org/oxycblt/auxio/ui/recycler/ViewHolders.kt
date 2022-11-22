@@ -47,7 +47,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
     }
 
     override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
-        binding.root.isActivated = isActive
+        binding.root.isSelected = isActive
         binding.songAlbumCover.isPlaying = isPlaying
     }
 
@@ -80,7 +80,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
     }
 
     override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
-        binding.root.isActivated = isActive
+        binding.root.isSelected = isActive
         binding.parentImage.isPlaying = isPlaying
     }
 
@@ -126,7 +126,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
     }
 
     override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
-        binding.root.isActivated = isActive
+        binding.root.isSelected = isActive
         binding.parentImage.isPlaying = isPlaying
     }
 
@@ -165,7 +165,7 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
     }
 
     override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
-        binding.root.isActivated = isActive
+        binding.root.isSelected = isActive
         binding.parentImage.isPlaying = isPlaying
     }
 

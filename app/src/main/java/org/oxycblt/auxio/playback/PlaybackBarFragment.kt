@@ -84,7 +84,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
             ActionMode.REPEAT -> {
                 binding.playbackSecondaryAction.apply {
                     contentDescription = getString(R.string.desc_change_repeat)
-                    iconTint = context.getColorCompat(R.color.sel_accented)
+                    iconTint = context.getColorCompat(R.color.sel_activatable_icon)
                     setOnClickListener { playbackModel.incrementRepeatMode() }
                     collectImmediately(playbackModel.repeatMode, ::updateRepeat)
                 }
@@ -93,7 +93,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 binding.playbackSecondaryAction.apply {
                     setIconResource(R.drawable.sel_shuffle_state_24)
                     contentDescription = getString(R.string.desc_shuffle)
-                    iconTint = context.getColorCompat(R.color.sel_accented)
+                    iconTint = context.getColorCompat(R.color.sel_activatable_icon)
                     setOnClickListener { playbackModel.invertShuffled() }
                     collectImmediately(playbackModel.isShuffled, ::updateShuffled)
                 }

@@ -96,7 +96,7 @@
                 android:layout_marginEnd="@dimen/spacing_huge"
                 android:contentDescription="@string/desc_change_repeat"
                 app:icon="@drawable/ic_repeat_off_24"
-                app:iconTint="@color/sel_accented"
+                app:iconTint="@color/sel_activatable_icon"
                 app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
                 app:layout_constraintEnd_toStartOf="@+id/playback_skip_prev"
                 app:layout_constraintHorizontal_chainStyle="packed"
@@ -147,11 +147,11 @@
                 android:layout_marginStart="@dimen/spacing_huge"
                 android:contentDescription="@string/desc_shuffle"
                 app:icon="@drawable/sel_shuffle_state_24"
-                app:iconTint="@color/sel_accented"
+                app:iconTint="@color/sel_activatable_icon"
                 app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
                 app:layout_constraintStart_toEndOf="@+id/playback_skip_next"
                 app:layout_constraintTop_toTopOf="@+id/playback_skip_next"
-                app:tint="@color/sel_accented" />
+                app:tint="@color/sel_activatable_icon" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </org.oxycblt.auxio.playback.ui.ForcedLTRFrameLayout>

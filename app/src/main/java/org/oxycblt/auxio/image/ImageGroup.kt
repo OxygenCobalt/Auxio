@@ -115,8 +115,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     override fun setActivated(activated: Boolean) {
         super.setActivated(activated)
-        invalidateAlpha()
-        invalidatePlayingIndicator()
+        invalidateSelectionIndicator()
     }
 
     override fun setEnabled(enabled: Boolean) {
@@ -127,7 +126,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     override fun setSelected(selected: Boolean) {
         super.setSelected(selected)
-        invalidateSelectionIndicator()
+        invalidateAlpha()
+        invalidatePlayingIndicator()
     }
 
     var isPlaying: Boolean
@@ -137,11 +137,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
     private fun invalidateAlpha() {
-        alpha = if (isActivated || isEnabled) 1f else 0.5f
+        alpha = if (isSelected || isEnabled) 1f else 0.5f
     }
 
     private fun invalidatePlayingIndicator() {
-        if (isActivated) {
+        if (isSelected) {
             customView?.alpha = 0f
             inner.alpha = 0f
             playingIndicator.alpha = 1f
@@ -153,7 +153,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun invalidateSelectionIndicator() {
-        selectionIndicator.alpha = if (isSelected) 1f else 0f
+        selectionIndicator.alpha = if (isActivated) 1f else 0f
     }
 
     fun bind(song: Song) {

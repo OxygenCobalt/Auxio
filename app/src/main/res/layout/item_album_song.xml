@@ -54,7 +54,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_small"
-        android:textColor="@color/sel_accented_primary"
+        android:textColor="@color/sel_selectable_text_primary"
         app:layout_constraintBottom_toTopOf="@+id/song_duration"
         app:layout_constraintEnd_toStartOf="@+id/song_menu"
         app:layout_constraintStart_toEndOf="@+id/song_track_bg"

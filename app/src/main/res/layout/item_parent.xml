@@ -24,7 +24,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_mid_medium"
-        android:textColor="@color/sel_accented_primary"
+        android:textColor="@color/sel_selectable_text_primary"
         app:layout_constraintBottom_toTopOf="@+id/parent_info"
         app:layout_constraintEnd_toStartOf="@+id/parent_menu"
         app:layout_constraintStart_toEndOf="@+id/parent_image"

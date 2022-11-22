@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_change_repeat"
                 app:icon="@drawable/ic_repeat_off_24"
-                app:iconTint="@color/sel_accented"
+                app:iconTint="@color/sel_activatable_icon"
                 app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/playback_skip_prev" />
@@ -158,11 +158,11 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_shuffle"
                 app:icon="@drawable/sel_shuffle_state_24"
-                app:iconTint="@color/sel_accented"
+                app:iconTint="@color/sel_activatable_icon"
                 app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/playback_skip_next"
-                app:tint="@color/sel_accented" />
+                app:tint="@color/sel_activatable_icon" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
