@@ -36,19 +36,16 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
 
     private val _statistics = MutableStateFlow<Statistics?>(null)
     /** The current statistics of the music library. */
-    val statistics: StateFlow<Statistics?> get() = _statistics
+    val statistics: StateFlow<Statistics?>
+        get() = _statistics
 
     init {
         indexer.registerCallback(this)
     }
 
-    /** Re-index the music library. */
-    fun reindex() {
-        indexer.requestReindex(true)
-    }
-
-    fun rescan() {
-        indexer.requestReindex(false)
+    /** Re-index the music library while using the cache. */
+    fun reindex(ignoreCache: Boolean) {
+        indexer.requestReindex(ignoreCache)
     }
 
     override fun onIndexerStateChanged(state: Indexer.State?) {
@@ -57,13 +54,13 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
 
         if (state is Indexer.State.Complete && state.response is Indexer.Response.Ok) {
             val library = state.response.library
-            _statistics.value = Statistics(
-                library.songs.size,
-                library.albums.size,
-                library.artists.size,
-                library.genres.size,
-                library.songs.sumOf { it.durationMs }
-            )
+            _statistics.value =
+                Statistics(
+                    library.songs.size,
+                    library.albums.size,
+                    library.artists.size,
+                    library.genres.size,
+                    library.songs.sumOf { it.durationMs })
         }
     }
 
@@ -71,9 +68,7 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
         indexer.unregisterCallback(this)
     }
 
-    /**
-     * Non-manipulated statistics about the music library.
-     */
+    /** Non-manipulated statistics about the music library. */
     data class Statistics(
         /** The amount of songs. */
         val songs: Int,
@@ -83,6 +78,7 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
         val artists: Int,
         /** The amount of genres. */
         val genres: Int,
+        /** The total duration of the music library. */
         val durationMs: Long
     )
 }

@@ -160,12 +160,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text =
             item.date?.resolveDate(binding.context) ?: binding.context.getString(R.string.def_date)
-
-        // binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.setOnLongClickListener {
-            listener.onOpenMenu(item, it)
-            true
-        }
+        binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
@@ -194,11 +189,7 @@ private class ArtistSongViewHolder private constructor(private val binding: Item
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)
         binding.songInfo.text = item.album.resolveName(binding.context)
-        // binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.setOnLongClickListener {
-            listener.onOpenMenu(item, it)
-            true
-        }
+        binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 

@@ -19,13 +19,11 @@ package org.oxycblt.auxio.music.picker
 
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.util.collectImmediately
 
 /**
  * The [ArtistPickerDialog] for ambiguous artist navigation operations.

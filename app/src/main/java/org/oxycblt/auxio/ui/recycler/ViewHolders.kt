@@ -42,11 +42,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)
         binding.songInfo.text = item.resolveArtistContents(binding.context)
-        // binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.setOnLongClickListener {
-            listener.onOpenMenu(item, it)
-            true
-        }
+        binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
@@ -79,11 +75,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text = item.resolveArtistContents(binding.context)
-        // binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.setOnLongClickListener {
-            listener.onOpenMenu(item, it)
-            true
-        }
+        binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
@@ -129,11 +121,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
                 binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size)
             }
 
-        // binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.setOnLongClickListener {
-            listener.onOpenMenu(item, it)
-            true
-        }
+        binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
@@ -172,11 +160,7 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
                 R.string.fmt_two,
                 binding.context.getPlural(R.plurals.fmt_artist_count, item.artists.size),
                 binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
-        // binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.setOnLongClickListener {
-            listener.onOpenMenu(item, it)
-            true
-        }
+        binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 

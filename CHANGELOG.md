@@ -30,13 +30,12 @@
 - Fixed issue where the scroll popup would not display correctly in landscape mode [#230]
 - Fixed issue where the playback progress would continue in the notification when
 audio focus was lost
-- Fixed issue where the app would crash if a song menu in the genre UI was opened
 - Fixed issue where the artist name would not be shown in the OS audio switcher menu
 - Fixed issue where the search view would not update if the library changed
 - Fixed visual bug with transitions in the black theme
 
 #### What's Changed
-- Ignore MediaStore tags is now on by default
+- Ignore MediaStore tags is now Auxio's default and unchangeable behavior. The option has been removed.
 - Removed the "Play from genre" option in the library/detail playback mode settings+
 - "Use alternate notification action" is now "Custom notification action"
 - "Show covers" and "Ignore MediaStore covers" have been unified into "Album covers"

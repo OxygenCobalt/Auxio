@@ -80,7 +80,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     // lifecycleObject builds this in the creation step, so doing this is okay.
     private val storagePermissionLauncher: ActivityResultLauncher<String> by lifecycleObject {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            musicModel.reindex()
+            musicModel.reindex(true)
         }
     }
 
@@ -321,7 +321,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = context.getString(R.string.lbl_retry)
-                        setOnClickListener { musicModel.reindex() }
+                        setOnClickListener { musicModel.reindex(true) }
                     }
                 }
                 is Indexer.Response.NoMusic -> {
@@ -330,7 +330,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = context.getString(R.string.lbl_retry)
-                        setOnClickListener { musicModel.reindex() }
+                        setOnClickListener { musicModel.reindex(true) }
                     }
                 }
                 is Indexer.Response.NoPerms -> {

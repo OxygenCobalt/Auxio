@@ -192,12 +192,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
 
         binding.songName.text = item.resolveName(binding.context)
         binding.songDuration.text = item.durationMs.formatDurationMs(false)
-
-        // binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.setOnLongClickListener {
-            listener.onOpenMenu(item, it)
-            true
-        }
+        binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 

@@ -284,15 +284,11 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         get() = unlikelyToBeNull(_album)
 
     private val artistMusicBrainzIds = raw.artistMusicBrainzIds.parseMultiValue(settings)
-
     private val artistNames = raw.artistNames.parseMultiValue(settings)
-
     private val artistSortNames = raw.artistSortNames.parseMultiValue(settings)
 
     private val albumArtistMusicBrainzIds = raw.albumArtistMusicBrainzIds.parseMultiValue(settings)
-
     private val albumArtistNames = raw.albumArtistNames.parseMultiValue(settings)
-
     private val albumArtistSortNames = raw.albumArtistSortNames.parseMultiValue(settings)
 
     private val rawArtists =

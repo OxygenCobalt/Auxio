@@ -18,12 +18,7 @@
 package org.oxycblt.auxio.music
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalQueries
-import java.util.Locale
+import java.text.SimpleDateFormat
 import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.BuildConfig
@@ -31,7 +26,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.inRangeOrNull
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.nonZeroOrNull
-import java.text.SimpleDateFormat
 
 /**
  * An ISO-8601/RFC 3339 Date.
@@ -92,9 +86,12 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
     private fun resolveFullDate(context: Context): String {
         return if (month != null) {
+            // Parse out from an ISO-ish format
             val format = (SimpleDateFormat.getDateInstance() as SimpleDateFormat)
-            format.applyPattern("yyyy-MM-dd")
-            val date = format.parse("$year-$month-${day ?: 1}") ?: return resolveYear(context)
+            format.applyPattern("yyyy-MM")
+            val date = format.parse("$year-$month") ?: return resolveYear(context)
+
+            // Reformat as a readable month and year
             format.applyPattern("MMM yyyy")
             format.format(date)
         } else {
@@ -264,8 +261,7 @@ sealed class ReleaseType {
 
     /**
      * Roughly analogous to the MusicBrainz "live" and "remix" secondary types. Unlike the main
-     * types, these only modify an existing, primary type. They are not implemented for secondary
-     * types, however they may be expanded to compilations in the future.
+     * types, these only modify an existing, primary type.
      */
     enum class Refinement {
         LIVE,
@@ -274,7 +270,7 @@ sealed class ReleaseType {
 
     companion object {
         // Note: The parsing code is extremely clever in order to reduce duplication. It's
-        // better just to read the specification behind release types than follow this code.
+        // better just to read the specification behind release types than to follow this code.
 
         fun parse(types: List<String>): ReleaseType? {
             val primary = types.getOrNull(0) ?: return null

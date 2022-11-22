@@ -24,7 +24,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.androidActivityViewModels
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The [ArtistPickerDialog] for ambiguous artist playback operations.
@@ -42,8 +41,6 @@ class ArtistPlaybackPickerDialog : ArtistPickerDialog() {
     override fun onItemClick(item: Item) {
         super.onItemClick(item)
         check(item is Artist) { "Unexpected datatype: ${item::class.simpleName}" }
-        pickerModel.currentSong.value?.let { song ->
-            playbackModel.playFromArtist(song, item)
-        }
+        pickerModel.currentSong.value?.let { song -> playbackModel.playFromArtist(song, item) }
     }
 }

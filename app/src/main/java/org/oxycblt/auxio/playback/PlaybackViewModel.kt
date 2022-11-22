@@ -124,7 +124,7 @@ class PlaybackViewModel(application: Application) :
         }
     }
 
-    /** Complete the picker opening process when playing from an artist.  */
+    /** Complete the picker opening process when playing from an artist. */
     fun finishPlaybackArtistPicker() {
         _artistPlaybackPickerSong.value = null
     }

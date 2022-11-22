@@ -236,9 +236,10 @@ class MainFragment :
 
     private fun handleExplorePicker(items: List<Artist>?) {
         if (items != null) {
-            navModel.mainNavigateTo(MainNavigationAction.Directions(
-                MainFragmentDirections.actionPickNavigationArtist(items.map { it.uid }.toTypedArray())
-            ))
+            navModel.mainNavigateTo(
+                MainNavigationAction.Directions(
+                    MainFragmentDirections.actionPickNavigationArtist(
+                        items.map { it.uid }.toTypedArray())))
             navModel.finishExploreNavigation()
         }
     }
@@ -253,9 +254,9 @@ class MainFragment :
 
     private fun handlePlaybackPicker(song: Song?) {
         if (song != null) {
-            navModel.mainNavigateTo(MainNavigationAction.Directions(
-                MainFragmentDirections.actionPickPlaybackArtist(song.uid)
-            ))
+            navModel.mainNavigateTo(
+                MainNavigationAction.Directions(
+                    MainFragmentDirections.actionPickPlaybackArtist(song.uid)))
             playbackModel.finishPlaybackArtistPicker()
         }
     }

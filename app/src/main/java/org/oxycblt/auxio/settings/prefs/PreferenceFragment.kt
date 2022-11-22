@@ -120,6 +120,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         when (preference.key) {
             context.getString(R.string.set_key_save_state) -> {
                 playbackModel.savePlaybackState { saved ->
+                    // Use the nullable context, as we could try to show a toast when this
+                    // fragment is no longer attached.
                     if (saved) {
                         this.context?.showToast(R.string.lbl_state_saved)
                     } else {
@@ -144,12 +146,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                         this.context?.showToast(R.string.err_did_not_restore)
                     }
                 }
-            context.getString(R.string.set_key_reindex) -> {
-                musicModel.reindex()
-            }
-            context.getString(R.string.set_key_rescan) -> {
-                musicModel.rescan()
-            }
+            context.getString(R.string.set_key_reindex) -> musicModel.reindex(true)
+            context.getString(R.string.set_key_rescan) -> musicModel.reindex(false)
             else -> return super.onPreferenceTreeClick(preference)
         }
 

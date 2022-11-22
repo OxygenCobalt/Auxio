@@ -21,7 +21,7 @@
 
 ## About
 
-Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of <a href="https://exoplayer.dev/">Exoplayer</a>, Auxio has a much better listening experience compared to other apps that use the native MediaPlayer API. In short, **It plays music.**
+Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of <a href="https://exoplayer.dev/">Exoplayer</a>, Auxio has superior library support and listening quality compared to other apps that use outdated android functionality. In short, **It plays music.**
 
 I primarily built Auxio for myself, but you can use it too, I guess.
 
@@ -46,32 +46,25 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Snappy UI derived from the latest Material Design guidelines
 - Opinionated UX that prioritizes ease of use over edge cases
 - Customizable behavior
-- Advanced media indexer that prioritizes correct metadata
-- Precise/Original Dates, Sort Tags, and Release Type support (Experimental)
+- Seamless artist system that unifies album artist and artist tags
+- Advanced media indexer with support for multiple artists, release types,
+precise/original dates, sort tags, and more
 - SD Card-aware folder management
 - Reliable playback state persistence
 - Full ReplayGain support (On MP3, MP4, FLAC, OGG, and OPUS)
 - External equalizer support (ex. Wavelet)
 - Edge-to-edge
 - Embedded covers support
-- Search Functionality
+- Search functionality
 - Headset autoplay
 - Stylish widgets that automatically adapt to their size
 - Completely private and offline
 - No rounded album covers (Unless you want them. Then you can.)
 
-## To come in the future:
-
-- Playlists
-- Liked songs
-- Artist Images
-- More customization options
-- Other things, probably
-
 ## Permissions
 
-- Storage (`READ_EXTERNAL_STORAGE`): to read and play your media files
-- Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`): to keep the music playing even if the app itself is in background
+- Storage (`READ_MEDIA_AUDIO`, `READ_EXTERNAL_STORAGE`) to read and play your media files
+- Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`) to keep the music playing even if the app itself is in background
 
 ## Building
 

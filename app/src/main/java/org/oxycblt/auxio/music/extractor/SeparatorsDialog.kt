@@ -70,7 +70,6 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
     }
 
     companion object {
-
         private const val SEPARATOR_COMMA = ','
         private const val SEPARATOR_SEMICOLON = ';'
         private const val SEPARATOR_SLASH = '/'

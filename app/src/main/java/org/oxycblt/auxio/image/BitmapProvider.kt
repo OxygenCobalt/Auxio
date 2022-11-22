@@ -32,7 +32,8 @@ import org.oxycblt.auxio.music.Song
  *
  * Pretty much each service component needs to load bitmaps of some kind, but doing a blind image
  * request with some target callbacks could result in overlapping requests causing incorrect
- * updates. This class (to an extent) resolves this by adding several guards
+ * updates. This class (to an extent) resolves this by adding a concurrency guard to the image
+ * callbacks.
  *
  * @author OxygenCobalt
  */
