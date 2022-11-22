@@ -40,6 +40,9 @@ interface ItemClickListener {
 
 /** An interface for detecting if an item has had it's menu opened. */
 interface MenuItemListener : ItemClickListener {
+    /** Called when an item is long-clicked. */
+    fun onItemLongClick(item: Item) {}
+
     /** Called when an item desires to open a menu relating to it. */
     fun onOpenMenu(item: Item, anchor: View)
 }

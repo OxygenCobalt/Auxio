@@ -25,6 +25,7 @@ import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Sort
@@ -97,9 +98,9 @@ class AlbumListFragment : HomeListFragment<Album>() {
         }
     }
 
-    override fun onItemClick(item: Item) {
-        check(item is Album) { "Unexpected datatype: ${item::class.java}" }
-        navModel.exploreNavigateTo(item)
+    override fun onItemClick(music: Music) {
+        check(music is Album) { "Unexpected datatype: ${music::class.java}" }
+        navModel.exploreNavigateTo(music)
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {

@@ -3,6 +3,7 @@ package org.oxycblt.auxio.ui.recycler
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.util.logD
 
 /**
  * An adapter that implements selection indicators.
@@ -23,14 +24,14 @@ abstract class SelectionIndicatorAdapter<VH : RecyclerView.ViewHolder> : Playing
         }
     }
 
-    fun updateSelection(items: Set<Music>) {
+    fun updateSelection(items: List<Music>) {
         val oldSelectedItems = selectedItems
-
-        if (items == oldSelectedItems) {
+        val newSelectedItems = items.toSet()
+        if (newSelectedItems == oldSelectedItems) {
             return
         }
 
-        selectedItems = items
+        selectedItems = newSelectedItems
         for (i in currentList.indices) {
             // TODO: Perhaps add an optimization that allows me to avoid the O(n) iteration
             //  assuming all list items are unique?
@@ -39,14 +40,16 @@ abstract class SelectionIndicatorAdapter<VH : RecyclerView.ViewHolder> : Playing
                 continue
             }
 
-            if (oldSelectedItems.contains(item) || items.contains(item)) {
+            val added = !oldSelectedItems.contains(item) && newSelectedItems.contains(item)
+            val removed = oldSelectedItems.contains(item) && !newSelectedItems.contains(item)
+            if (added || removed) {
                 notifyItemChanged(i, PAYLOAD_INDICATOR_CHANGED)
             }
         }
     }
 
     /** A ViewHolder that can respond to selection indicator updates. */
-    abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
+    abstract class ViewHolder(root: View) : PlayingIndicatorAdapter.ViewHolder(root) {
         abstract fun updateSelectionIndicator(isSelected: Boolean)
     }
 }

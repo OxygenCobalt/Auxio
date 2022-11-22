@@ -22,6 +22,8 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.ui.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.ui.fragment.MenuFragment
 import org.oxycblt.auxio.ui.recycler.Item
@@ -63,4 +65,25 @@ abstract class HomeListFragment<T : Item> :
     override fun onFastScrollStop() {
         homeModel.updateFastScrolling(false)
     }
+
+    abstract fun onItemClick(music: Music)
+
+    override fun onItemClick(item: Item) {
+        check(item is Music) { "Unexpected datatype: ${item::class.java}" }
+        if(homeModel.selected.value.isEmpty()) {
+            onItemClick(item)
+        } else {
+            homeModel.select(item)
+        }
+    }
+
+    override fun onItemLongClick(item: Item) {
+        check(item is Music) { "Unexpected datatype: ${item::class.java}" }
+        if (homeModel.selected.value.isEmpty()) {
+            homeModel.select(item)
+        } else {
+            onItemClick(item)
+        }
+    }
+
 }

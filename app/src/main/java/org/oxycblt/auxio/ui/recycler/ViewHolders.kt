@@ -31,17 +31,19 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 
 /**
  * The shared ViewHolder for a [Song].
  * @author OxygenCobalt
  */
 class SongViewHolder private constructor(private val binding: ItemSongBinding) :
-    PlayingIndicatorAdapter.ViewHolder(binding.root) {
+    SelectionIndicatorAdapter.ViewHolder(binding.root) {
     fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)
         binding.songInfo.text = item.resolveArtistContents(binding.context)
+
         binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
@@ -49,6 +51,11 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
         binding.songAlbumCover.isPlaying = isPlaying
+    }
+
+    override fun updateSelectionIndicator(isSelected: Boolean) {
+        logD("Selected")
+        binding.root.isActivated = isSelected
     }
 
     companion object {

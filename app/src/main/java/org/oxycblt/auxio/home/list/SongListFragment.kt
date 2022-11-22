@@ -24,6 +24,7 @@ import android.view.ViewGroup
 import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
@@ -34,6 +35,7 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
+import org.oxycblt.auxio.ui.recycler.SelectionIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
 import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
@@ -58,6 +60,7 @@ class SongListFragment : HomeListFragment<Song>() {
         }
 
         collectImmediately(homeModel.songs, homeAdapter::replaceList)
+        collectImmediately(homeModel.selected, homeAdapter::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::handlePlayback)
     }
@@ -104,12 +107,12 @@ class SongListFragment : HomeListFragment<Song>() {
         }
     }
 
-    override fun onItemClick(item: Item) {
-        check(item is Song) { "Unexpected datatype: ${item::class.java}" }
+    override fun onItemClick(music: Music) {
+        check(music is Song) { "Unexpected datatype: ${music::class.java}" }
         when (settings.libPlaybackMode) {
-            MusicMode.SONGS -> playbackModel.playFromAll(item)
-            MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-            MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
+            MusicMode.SONGS -> playbackModel.playFromAll(music)
+            MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
+            MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
             else -> error("Unexpected playback mode: ${settings.libPlaybackMode}")
         }
     }
@@ -129,7 +132,7 @@ class SongListFragment : HomeListFragment<Song>() {
     }
 
     private class SongAdapter(private val listener: MenuItemListener) :
-        PlayingIndicatorAdapter<SongViewHolder>() {
+        SelectionIndicatorAdapter<SongViewHolder>() {
         private val differ = SyncListDiffer(this, SongViewHolder.DIFFER)
 
         override val currentList: List<Item>
