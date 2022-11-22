@@ -18,11 +18,9 @@
 package org.oxycblt.auxio.home
 
 import android.app.Application
-import androidx.collection.arraySetOf
 import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.getAndUpdate
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.Album

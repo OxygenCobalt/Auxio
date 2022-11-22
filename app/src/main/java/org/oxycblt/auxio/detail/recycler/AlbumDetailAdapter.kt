@@ -30,9 +30,9 @@ import org.oxycblt.auxio.detail.DiscHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.formatDurationMs
-import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
+import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
@@ -192,8 +192,15 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
 
         binding.songName.text = item.resolveName(binding.context)
         binding.songDuration.text = item.durationMs.formatDurationMs(false)
+
         binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.setOnClickListener { listener.onItemClick(item) }
+        binding.root.apply {
+            setOnClickListener { listener.onItemClick(item) }
+            setOnLongClickListener {
+                listener.onItemLongClick(item)
+                true
+            }
+        }
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {

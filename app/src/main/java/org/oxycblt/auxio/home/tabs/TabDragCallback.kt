@@ -63,5 +63,5 @@ class TabDragCallback(private val adapter: TabAdapter) : ItemTouchHelper.Callbac
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
 
     // We use a custom drag handle, so disable the long press action.
-    override fun isLongPressDragEnabled(): Boolean = false
+    override fun isLongPressDragEnabled() = false
 }

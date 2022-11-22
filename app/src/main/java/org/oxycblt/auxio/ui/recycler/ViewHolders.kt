@@ -31,7 +31,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logD
 
 /**
  * The shared ViewHolder for a [Song].
@@ -45,7 +44,13 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
         binding.songInfo.text = item.resolveArtistContents(binding.context)
 
         binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.setOnClickListener { listener.onItemClick(item) }
+        binding.root.apply {
+            setOnClickListener { listener.onItemClick(item) }
+            setOnLongClickListener {
+                listener.onItemLongClick(item)
+                true
+            }
+        }
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -54,7 +59,6 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
     }
 
     override fun updateSelectionIndicator(isSelected: Boolean) {
-        logD("Selected")
         binding.root.isActivated = isSelected
     }
 
@@ -76,19 +80,30 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
  * @author OxygenCobalt
  */
 class AlbumViewHolder private constructor(private val binding: ItemParentBinding) :
-    PlayingIndicatorAdapter.ViewHolder(binding.root) {
+    SelectionIndicatorAdapter.ViewHolder(binding.root) {
 
     fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text = item.resolveArtistContents(binding.context)
+
         binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.setOnClickListener { listener.onItemClick(item) }
+        binding.root.apply {
+            setOnClickListener { listener.onItemClick(item) }
+            setOnLongClickListener {
+                listener.onItemLongClick(item)
+                true
+            }
+        }
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
         binding.parentImage.isPlaying = isPlaying
+    }
+
+    override fun updateSelectionIndicator(isSelected: Boolean) {
+        binding.root.isActivated = isSelected
     }
 
     companion object {
@@ -111,7 +126,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
  * @author OxygenCobalt
  */
 class ArtistViewHolder private constructor(private val binding: ItemParentBinding) :
-    PlayingIndicatorAdapter.ViewHolder(binding.root) {
+    SelectionIndicatorAdapter.ViewHolder(binding.root) {
 
     fun bind(item: Artist, listener: MenuItemListener) {
         binding.parentImage.bind(item)
@@ -129,12 +144,22 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
             }
 
         binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.setOnClickListener { listener.onItemClick(item) }
+        binding.root.apply {
+            setOnClickListener { listener.onItemClick(item) }
+            setOnLongClickListener {
+                listener.onItemLongClick(item)
+                true
+            }
+        }
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
         binding.parentImage.isPlaying = isPlaying
+    }
+
+    override fun updateSelectionIndicator(isSelected: Boolean) {
+        binding.root.isActivated = isSelected
     }
 
     companion object {
@@ -157,7 +182,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
  * @author OxygenCobalt
  */
 class GenreViewHolder private constructor(private val binding: ItemParentBinding) :
-    PlayingIndicatorAdapter.ViewHolder(binding.root) {
+    SelectionIndicatorAdapter.ViewHolder(binding.root) {
 
     fun bind(item: Genre, listener: MenuItemListener) {
         binding.parentImage.bind(item)
@@ -168,12 +193,23 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
                 binding.context.getPlural(R.plurals.fmt_artist_count, item.artists.size),
                 binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
         binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.setOnClickListener { listener.onItemClick(item) }
+
+        binding.root.apply {
+            setOnClickListener { listener.onItemClick(item) }
+            setOnLongClickListener {
+                listener.onItemLongClick(item)
+                true
+            }
+        }
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
         binding.parentImage.isPlaying = isPlaying
+    }
+
+    override fun updateSelectionIndicator(isSelected: Boolean) {
+        binding.root.isActivated = isSelected
     }
 
     companion object {

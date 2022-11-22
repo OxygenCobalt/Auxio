@@ -32,9 +32,9 @@ import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.ui.recycler.AlbumViewHolder
-import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
+import org.oxycblt.auxio.ui.recycler.SelectionIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
 
@@ -56,6 +56,7 @@ class AlbumListFragment : HomeListFragment<Album>() {
         }
 
         collectImmediately(homeModel.albums, homeAdapter::replaceList)
+        collectImmediately(homeModel.selected, homeAdapter::updateSelection)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::handleParent)
     }
 
@@ -118,7 +119,7 @@ class AlbumListFragment : HomeListFragment<Album>() {
     }
 
     private class AlbumAdapter(private val listener: MenuItemListener) :
-        PlayingIndicatorAdapter<AlbumViewHolder>() {
+        SelectionIndicatorAdapter<AlbumViewHolder>() {
         private val differ = SyncListDiffer(this, AlbumViewHolder.DIFFER)
 
         override val currentList: List<Item>

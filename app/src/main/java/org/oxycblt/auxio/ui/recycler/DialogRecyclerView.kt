@@ -96,8 +96,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 }
 
 /**
- * ViewHolder that correctly resizes the item to match the parent width, which it is not normally
- * in dialogs.
+ * ViewHolder that correctly resizes the item to match the parent width, which it is not normally in
+ * dialogs.
  */
 abstract class DialogViewHolder(root: View) : RecyclerView.ViewHolder(root) {
     init {

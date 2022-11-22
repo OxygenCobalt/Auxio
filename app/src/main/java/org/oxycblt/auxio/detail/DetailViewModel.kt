@@ -135,13 +135,11 @@ class DetailViewModel(application: Application) :
         if (_currentAlbum.value?.uid == uid) return
         val library = unlikelyToBeNull(musicStore.library)
         val album = requireNotNull(library.find<Album>(uid)) { "Invalid album id provided " }
-
         _currentAlbum.value = album
         refreshAlbumData(album)
     }
 
     fun setArtistUid(uid: Music.UID) {
-        logD(uid)
         if (_currentArtist.value?.uid == uid) return
         val library = unlikelyToBeNull(musicStore.library)
         val artist = requireNotNull(library.find<Artist>(uid)) { "Invalid artist id provided" }

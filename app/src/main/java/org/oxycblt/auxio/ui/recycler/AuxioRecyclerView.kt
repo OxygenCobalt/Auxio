@@ -21,7 +21,6 @@ import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.WindowInsets
-import android.widget.Checkable
 import androidx.annotation.AttrRes
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager

@@ -30,9 +30,9 @@ import org.oxycblt.auxio.ui.recycler.AuxioRecyclerView
 import org.oxycblt.auxio.ui.recycler.GenreViewHolder
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.HeaderViewHolder
-import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
+import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
 

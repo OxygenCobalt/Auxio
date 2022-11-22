@@ -32,7 +32,6 @@ import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SelectionIndicatorAdapter
