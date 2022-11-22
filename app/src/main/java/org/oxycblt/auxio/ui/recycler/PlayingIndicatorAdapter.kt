@@ -19,7 +19,6 @@ package org.oxycblt.auxio.ui.recycler
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.logW
 
 /**

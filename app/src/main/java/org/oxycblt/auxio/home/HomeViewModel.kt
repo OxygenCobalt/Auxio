@@ -59,7 +59,7 @@ class HomeViewModel(application: Application) :
     private val _genres = MutableStateFlow(listOf<Genre>())
     val genres: StateFlow<List<Genre>>
         get() = _genres
-    
+
     var tabs: List<MusicMode> = visibleTabs
         private set
 
