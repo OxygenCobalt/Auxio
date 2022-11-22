@@ -28,7 +28,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
+import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
 import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.context
@@ -60,7 +60,7 @@ class QueueAdapter(private val listener: QueueItemListener) :
         }
 
         viewHolder.isEnabled = position > currentIndex
-        viewHolder.updateIndicator(position == currentIndex, isPlaying)
+        viewHolder.updatePlayingIndicator(position == currentIndex, isPlaying)
     }
 
     fun submitList(newList: List<Song>) {
@@ -110,7 +110,7 @@ interface QueueItemListener {
 }
 
 class QueueSongViewHolder private constructor(private val binding: ItemQueueSongBinding) :
-    IndicatorAdapter.ViewHolder(binding.root) {
+    PlayingIndicatorAdapter.ViewHolder(binding.root) {
     val bodyView: View
         get() = binding.body
     val backgroundView: View
@@ -164,7 +164,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
             binding.songDragHandle.isEnabled = value
         }
 
-    override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
+    override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.interactBody.isSelected = isActive
         binding.songAlbumCover.isPlaying = isPlaying
     }

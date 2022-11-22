@@ -31,7 +31,7 @@ import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
+import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SongViewHolder
@@ -129,7 +129,7 @@ class SongListFragment : HomeListFragment<Song>() {
     }
 
     private class SongAdapter(private val listener: MenuItemListener) :
-        IndicatorAdapter<SongViewHolder>() {
+        PlayingIndicatorAdapter<SongViewHolder>() {
         private val differ = SyncListDiffer(this, SongViewHolder.DIFFER)
 
         override val currentList: List<Item>

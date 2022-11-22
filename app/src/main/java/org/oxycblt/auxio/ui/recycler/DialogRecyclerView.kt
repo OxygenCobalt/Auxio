@@ -19,6 +19,7 @@ package org.oxycblt.auxio.ui.recycler
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.AttrRes
 import androidx.core.view.isInvisible
@@ -91,5 +92,18 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         topDivider.isInvisible = manager.findFirstCompletelyVisibleItemPosition() < 1
         bottomDivider.isInvisible =
             manager.findLastCompletelyVisibleItemPosition() == (manager.itemCount - 1)
+    }
+}
+
+/**
+ * ViewHolder that correctly resizes the item to match the parent width, which it is not normally
+ * in dialogs.
+ */
+abstract class DialogViewHolder(root: View) : RecyclerView.ViewHolder(root) {
+    init {
+        // Actually make the item full-width, which it won't be in dialogs
+        root.layoutParams =
+            RecyclerView.LayoutParams(
+                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
     }
 }

@@ -19,6 +19,7 @@ package org.oxycblt.auxio.ui.recycler
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.logW
 
 /**
@@ -27,7 +28,7 @@ import org.oxycblt.auxio.util.logW
  * itself.
  * @author OxygenCobalt
  */
-abstract class IndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
+abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
     private var isPlaying = false
     private var currentItem: Item? = null
 
@@ -37,7 +38,7 @@ abstract class IndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ada
         if (holder is ViewHolder) {
             val item = currentList[position]
             val currentItem = currentItem
-            holder.updateIndicator(item == currentItem, isPlaying)
+            holder.updatePlayingIndicator(item == currentItem, isPlaying)
         }
     }
 
@@ -92,20 +93,8 @@ abstract class IndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ada
         val PAYLOAD_INDICATOR_CHANGED = Any()
     }
 
-    /** A ViewHolder that can respond to indicator updates. */
+    /** A ViewHolder that can respond to playing ]indicator updates. */
     abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-        abstract fun updateIndicator(isActive: Boolean, isPlaying: Boolean)
-    }
-}
-
-/**
- * ViewHolder that correctly resizes the item to match the parent width, which it is not normally.
- */
-abstract class DialogViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-    init {
-        // Actually make the item full-width, which it won't be in dialogs
-        root.layoutParams =
-            RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+        abstract fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean)
     }
 }

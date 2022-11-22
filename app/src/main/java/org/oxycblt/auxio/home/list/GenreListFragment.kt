@@ -28,7 +28,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.recycler.GenreViewHolder
-import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
+import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SyncListDiffer
@@ -92,7 +92,7 @@ class GenreListFragment : HomeListFragment<Genre>() {
     }
 
     private class GenreAdapter(private val listener: MenuItemListener) :
-        IndicatorAdapter<GenreViewHolder>() {
+        PlayingIndicatorAdapter<GenreViewHolder>() {
         private val differ = SyncListDiffer(this, GenreViewHolder.DIFFER)
 
         override val currentList: List<Item>

@@ -29,7 +29,7 @@ import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
+import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
@@ -154,7 +154,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 }
 
 private class ArtistAlbumViewHolder private constructor(private val binding: ItemParentBinding) :
-    IndicatorAdapter.ViewHolder(binding.root) {
+    PlayingIndicatorAdapter.ViewHolder(binding.root) {
     fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
@@ -164,7 +164,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
-    override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
+    override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
         binding.parentImage.isPlaying = isPlaying
     }
@@ -184,7 +184,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
 }
 
 private class ArtistSongViewHolder private constructor(private val binding: ItemSongBinding) :
-    IndicatorAdapter.ViewHolder(binding.root) {
+    PlayingIndicatorAdapter.ViewHolder(binding.root) {
     fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)
@@ -193,7 +193,7 @@ private class ArtistSongViewHolder private constructor(private val binding: Item
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
-    override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
+    override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
         binding.songAlbumCover.isPlaying = isPlaying
     }

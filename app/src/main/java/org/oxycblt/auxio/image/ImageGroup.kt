@@ -40,8 +40,8 @@ import org.oxycblt.auxio.util.getDimenSize
  * Effectively a super-charged [StyledImageView].
  *
  * This class enables the following features alongside the base features pf [StyledImageView]:
- * - Activation indicator
- * - (Eventually) selection indicator
+ * - Selection indicator
+ * - (Eventually) activation indicator
  * - Support for ONE custom view
  *
  * This class is primarily intended for list items. For most uses, the simpler [StyledImageView] is

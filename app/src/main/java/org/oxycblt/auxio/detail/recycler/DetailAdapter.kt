@@ -29,7 +29,7 @@ import org.oxycblt.auxio.detail.SortHeader
 import org.oxycblt.auxio.ui.recycler.AuxioRecyclerView
 import org.oxycblt.auxio.ui.recycler.Header
 import org.oxycblt.auxio.ui.recycler.HeaderViewHolder
-import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
+import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
@@ -39,7 +39,7 @@ import org.oxycblt.auxio.util.inflater
 abstract class DetailAdapter<L : DetailAdapter.Listener>(
     private val listener: L,
     diffCallback: DiffUtil.ItemCallback<Item>
-) : IndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
+) : PlayingIndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
     private var isPlaying = false
 
     @Suppress("LeakingThis") override fun getItemCount() = differ.currentList.size

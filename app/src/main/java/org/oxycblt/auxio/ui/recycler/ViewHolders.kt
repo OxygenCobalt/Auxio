@@ -37,7 +37,7 @@ import org.oxycblt.auxio.util.inflater
  * @author OxygenCobalt
  */
 class SongViewHolder private constructor(private val binding: ItemSongBinding) :
-    IndicatorAdapter.ViewHolder(binding.root) {
+    PlayingIndicatorAdapter.ViewHolder(binding.root) {
     fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)
@@ -46,7 +46,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
-    override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
+    override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
         binding.songAlbumCover.isPlaying = isPlaying
     }
@@ -69,7 +69,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
  * @author OxygenCobalt
  */
 class AlbumViewHolder private constructor(private val binding: ItemParentBinding) :
-    IndicatorAdapter.ViewHolder(binding.root) {
+    PlayingIndicatorAdapter.ViewHolder(binding.root) {
 
     fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
@@ -79,7 +79,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
-    override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
+    override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
         binding.parentImage.isPlaying = isPlaying
     }
@@ -104,7 +104,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
  * @author OxygenCobalt
  */
 class ArtistViewHolder private constructor(private val binding: ItemParentBinding) :
-    IndicatorAdapter.ViewHolder(binding.root) {
+    PlayingIndicatorAdapter.ViewHolder(binding.root) {
 
     fun bind(item: Artist, listener: MenuItemListener) {
         binding.parentImage.bind(item)
@@ -125,7 +125,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
-    override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
+    override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
         binding.parentImage.isPlaying = isPlaying
     }
@@ -150,7 +150,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
  * @author OxygenCobalt
  */
 class GenreViewHolder private constructor(private val binding: ItemParentBinding) :
-    IndicatorAdapter.ViewHolder(binding.root) {
+    PlayingIndicatorAdapter.ViewHolder(binding.root) {
 
     fun bind(item: Genre, listener: MenuItemListener) {
         binding.parentImage.bind(item)
@@ -164,7 +164,7 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
-    override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
+    override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
         binding.parentImage.isPlaying = isPlaying
     }

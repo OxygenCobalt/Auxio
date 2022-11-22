@@ -30,7 +30,7 @@ import org.oxycblt.auxio.detail.DiscHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.formatDurationMs
-import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
+import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
 import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
@@ -173,7 +173,7 @@ class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
 }
 
 private class AlbumSongViewHolder private constructor(private val binding: ItemAlbumSongBinding) :
-    IndicatorAdapter.ViewHolder(binding.root) {
+    PlayingIndicatorAdapter.ViewHolder(binding.root) {
     fun bind(item: Song, listener: MenuItemListener) {
         // Hide the track number view if the song does not have a track.
         if (item.track != null) {
@@ -196,7 +196,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
         binding.root.setOnClickListener { listener.onItemClick(item) }
     }
 
-    override fun updateIndicator(isActive: Boolean, isPlaying: Boolean) {
+    override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
         binding.songTrackBg.isPlaying = isPlaying
     }
