@@ -84,7 +84,7 @@
     <string name="set_replay_gain">„ReplayGain“ strategija</string>
     <string name="lbl_singles">Singlai</string>
     <string name="lbl_ok">Gerai</string>
-    <string name="set_round_mode_desc">Įgalinti papildomų vartotojo sąsajos elementų suapvalintus kampus (Reikia, kad albumo viršeliai būtų suapvalinti)</string>
+    <string name="set_round_mode_desc">Įgalinti papildomų vartotojo sąsajos elementų suapvalintus kampus (reikia, kad albumo viršeliai būtų suapvalinti)</string>
     <string name="lbl_soundtrack">Garso takelis</string>
     <string name="lbl_soundtracks">Garso takeliai</string>
     <string name="set_audio">Garso</string>
@@ -120,7 +120,7 @@
     <string name="lbl_album_live">Gyvai albumas</string>
     <string name="lbl_album_remix">Remikso albumas</string>
     <string name="lbl_live_group">Gyvai</string>
-    <string name="set_headset_autoplay_desc">Visada pradėta groti, kai prijungtos ausinės (gali veikti ne visuose įrenginiuose)</string>
+    <string name="set_headset_autoplay_desc">Visada pradėti groti, kai prijungtos ausinės (gali veikti ne visuose įrenginiuose)</string>
     <string name="cdc_ogg">Ogg garsas</string>
     <string name="lng_author">Sukūrė OxygenCobalt</string>
     <string name="set_replay_gain_track">Pageidaujamas takeliui</string>
@@ -130,7 +130,7 @@
     <string name="desc_skip_next">Pereiti į kitą dainą</string>
     <string name="desc_skip_prev">Pereiti į paskutinę dainą</string>
     <string name="lbl_mixtape">Mikstapas</string>
-    <string name="lbl_mixtapes">Miksai</string>
+    <string name="lbl_mixtapes">Mikstapai</string>
     <string name="set_lib_tabs">Bibliotekos skirtukai</string>
     <string name="set_lib_tabs_desc">Keisti bibliotekos skirtukų matomumą ir tvarką</string>
     <string name="set_replay_gain_album">Pageidaujamas albumui</string>
@@ -183,7 +183,7 @@
     <string name="set_dirs_mode_exclude">Neįtraukti</string>
     <string name="set_dirs_mode_include_desc">Muzika <b>bus</b> įkeliama iš aplankų jūs pridėsite.</string>
     <string name="fmt_sample_rate">%d Hz</string>
-    <string name="set_observing_desc">Perkrauti jūsų muzikos biblioteką, kai ji pasikeičia (Reikia nuolatinio pranešimo)</string>
+    <string name="set_observing_desc">Perkrauti muzikos biblioteką, kai ji pasikeičia (reikia nuolatinio pranešimo)</string>
     <string name="fmt_lib_song_count">Įkeltos dainos: %d</string>
     <string name="fmt_lib_genre_count">Įkrauti žanrai: %d</string>
     <string name="fmt_lib_album_count">Įkeltos albumai: %d</string>
@@ -198,8 +198,8 @@
     <string name="set_repeat_pause_desc">Pauzė, kai daina kartojasi</string>
     <string name="set_content">Turinys</string>
     <string name="set_dirs">Muzikos aplankai</string>
-    <string name="set_reindex">Perkrauti muziką</string>
-    <string name="set_reindex_desc">Gali nuvalyti grojimo būseną</string>
+    <string name="set_reindex">Atnaujinti muziką</string>
+    <string name="set_reindex_desc">Perkrauti muzikos biblioteką, naudojant talpyklos žymes, kai įmanoma</string>
     <string name="set_bar_action">Pasirinktinis grojimo juostos veiksmas</string>
     <string name="err_did_not_restore">Nepavyko atkurti būsenos</string>
     <string name="set_pre_amp">„ReplayGain“ išankstinis stiprintuvas</string>
@@ -240,7 +240,7 @@
     <string name="set_pre_amp_with">Reguliavimas su žymėmis</string>
     <string name="set_restore_desc">Atkurti anksčiau išsaugotą grojimo būseną (jei yra)</string>
     <string name="set_hide_collaborators">Slėpti bendradarbius</string>
-    <string name="set_hide_collaborators_desc">Rodyti tik tuos atlikėjus, kurie yra tiesiogiai įrašyti į albumą bibliotekoje</string>
+    <string name="set_hide_collaborators_desc">Rodyti tik tuos atlikėjus, kurie yra tiesiogiai įrašyti į albumą (geriausiai veikia gerai pažymėtose bibliotekose)</string>
     <string name="err_did_not_wipe">Nepavyko išvalyti būsenos</string>
     <string name="err_did_not_save">Nepavyko išsaugoti būsenos</string>
     <plurals name="fmt_artist_count">
@@ -248,4 +248,6 @@
         <item quantity="few">%d atlikėjai</item>
         <item quantity="other">%d atlikėjų</item>
     </plurals>
+    <string name="set_rescan">Perskenuoti muziką</string>
+    <string name="set_rescan_desc">Išvalyti žymių talpyklą ir pilnai perkrauti muzikos biblioteką (lėčiau, bet labiau išbaigta)</string>
 </resources>
