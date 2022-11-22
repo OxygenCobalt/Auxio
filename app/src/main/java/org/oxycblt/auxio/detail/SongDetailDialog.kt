@@ -22,6 +22,7 @@ import android.text.format.Formatter
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isGone
+import androidx.core.view.isInvisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
@@ -64,8 +65,10 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
         if (song != null) {
             if (song.info != null) {
+                binding.detailLoading.isInvisible = true
+                binding.detailContainer.isInvisible = false
+
                 val context = requireContext()
-                binding.detailContainer.isGone = false
                 binding.detailFileName.setText(song.song.path.name)
                 binding.detailRelativeDir.setText(song.song.path.parent.resolveName(context))
                 binding.detailFormat.setText(song.info.resolvedMimeType.resolveName(context))
@@ -86,7 +89,8 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
                     binding.detailSampleRate.setText(R.string.def_sample_rate)
                 }
             } else {
-                binding.detailContainer.isGone = true
+                binding.detailLoading.isInvisible = false
+                binding.detailContainer.isInvisible = true
             }
         } else {
             findNavController().navigateUp()

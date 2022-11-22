@@ -25,6 +25,7 @@
 - Allowed light/dark theme to be customized on Android 12+
 - All information now scrolls in the playback view
 - A month is now shown for song/album dates when available
+- Added loading indicator to song properties view
 
 #### What's Fixed
 - Fixed issue where the scroll popup would not display correctly in landscape mode [#230]
