@@ -110,6 +110,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         super.onAttachedToWindow()
         invalidateAlpha()
         invalidatePlayingIndicator()
+        invalidateSelectionIndicator()
     }
 
     override fun setActivated(activated: Boolean) {
