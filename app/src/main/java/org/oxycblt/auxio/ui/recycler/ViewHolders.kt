@@ -43,7 +43,6 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
         binding.songName.text = item.resolveName(binding.context)
         binding.songInfo.text = item.resolveArtistContents(binding.context)
 
-        binding.songAlbumCover.setOnClickListener { listener.onSelect(item) }
         binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
@@ -88,7 +87,6 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text = item.resolveArtistContents(binding.context)
 
-        binding.parentImage.setOnClickListener { listener.onSelect(item) }
         binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
@@ -145,7 +143,6 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
                 binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size)
             }
 
-        binding.parentImage.setOnClickListener { listener.onSelect(item) }
         binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
@@ -196,7 +193,6 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
                 binding.context.getPlural(R.plurals.fmt_artist_count, item.artists.size),
                 binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
 
-        binding.parentImage.setOnClickListener { listener.onSelect(item) }
         binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }

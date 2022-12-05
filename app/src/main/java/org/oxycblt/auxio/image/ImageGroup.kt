@@ -26,7 +26,9 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.AttrRes
 import androidx.core.view.updateMarginsRelative
+import androidx.transition.TransitionManager
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.transition.MaterialFade
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -142,6 +144,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     private fun invalidatePlayingIndicator() {
         if (isSelected) {
+            // TODO: Animate the other indicators?
             customView?.alpha = 0f
             inner.alpha = 0f
             playingIndicator.alpha = 1f
@@ -153,7 +156,26 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun invalidateSelectionIndicator() {
-        selectionIndicator.alpha = if (isActivated) 1f else 0f
+        val targetVis: Int
+        val targetDuration: Long
+
+        if (isActivated) {
+            targetVis = VISIBLE
+            targetDuration = 150L
+        } else {
+            targetVis = INVISIBLE
+            targetDuration = 84L
+        }
+
+        if (selectionIndicator.visibility == targetVis) {
+            return
+        }
+
+        TransitionManager.beginDelayedTransition(this, MaterialFade().apply {
+            duration = targetDuration
+        })
+
+        selectionIndicator.visibility = targetVis
     }
 
     fun bind(song: Song) {
