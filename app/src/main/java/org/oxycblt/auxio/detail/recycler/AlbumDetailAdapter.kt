@@ -197,7 +197,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
             setOnLongClickListener {
-                listener.onItemLongClick(item)
+                listener.onSelect(item)
                 true
             }
         }

@@ -72,16 +72,12 @@ abstract class HomeListFragment<T : Item> :
         if (homeModel.selected.value.isEmpty()) {
             onItemClick(item)
         } else {
-            homeModel.select(item)
+            onSelect(item)
         }
     }
 
-    override fun onItemLongClick(item: Item) {
+    override fun onSelect(item: Item) {
         check(item is Music) { "Unexpected datatype: ${item::class.java}" }
-        if (homeModel.selected.value.isEmpty()) {
-            homeModel.select(item)
-        } else {
-            onItemClick(item)
-        }
+        homeModel.select(item)
     }
 }
