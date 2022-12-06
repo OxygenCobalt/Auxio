@@ -51,7 +51,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_mid_medium"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:hint="@string/lbl_relative_path"
                     app:expandedHintEnabled="false">
 
@@ -67,7 +67,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_mid_medium"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:hint="@string/lbl_format"
                     app:expandedHintEnabled="false">
 
@@ -83,7 +83,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_mid_medium"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:hint="@string/lbl_size"
                     app:expandedHintEnabled="false">
 
@@ -99,7 +99,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_mid_medium"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:hint="@string/lbl_sort_duration"
                     app:expandedHintEnabled="false">
 
@@ -115,7 +115,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_mid_medium"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:hint="@string/lbl_bitrate"
                     app:expandedHintEnabled="false">
 
@@ -131,7 +131,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_mid_medium"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:hint="@string/lbl_sample_rate"
                     app:expandedHintEnabled="false">
 

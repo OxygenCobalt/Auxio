@@ -21,6 +21,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import com.google.android.material.button.MaterialButton
+import org.oxycblt.auxio.R
 
 /**
  * A [MaterialButton] that automatically morphs from a circle to a squircle shape appearance when it
@@ -46,7 +47,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         animator?.cancel()
         animator =
             ValueAnimator.ofFloat(currentCornerRadiusRatio, target).apply {
-                duration = ACTIVATION_DURATION
+                duration = context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
                 addUpdateListener { updateCornerRadiusRatio(animatedValue as Float) }
                 start()
             }
@@ -55,9 +56,5 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private fun updateCornerRadiusRatio(ratio: Float) {
         currentCornerRadiusRatio = ratio
         shapeAppearanceModel = shapeAppearanceModel.withCornerSize { it.width() * ratio }
-    }
-
-    companion object {
-        const val ACTIVATION_DURATION = 150L
     }
 }

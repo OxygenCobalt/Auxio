@@ -33,13 +33,17 @@ import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionManager
+import com.google.android.material.transition.MaterialFade
 import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.recycler.AuxioRecyclerView
+import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getDimenSize
 import org.oxycblt.auxio.util.getDrawableCompat
 import org.oxycblt.auxio.util.isRtl
 import org.oxycblt.auxio.util.isUnder
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
@@ -431,7 +435,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         showingThumb = true
-        animateView(thumbView, 1f)
+        animateViewIn(thumbView)
     }
 
     private fun hideScrollbar() {
@@ -440,7 +444,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         showingThumb = false
-        animateView(thumbView, 0f)
+        animateViewOut(thumbView)
     }
 
     private fun showPopup() {
@@ -449,7 +453,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         showingPopup = true
-        animateView(popupView, 1f)
+        animateViewIn(popupView)
     }
 
     private fun hidePopup() {
@@ -458,11 +462,22 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         showingPopup = false
-        animateView(popupView, 0f)
+        animateViewOut(popupView)
     }
 
-    private fun animateView(view: View, alpha: Float) {
-        view.animate().alpha(alpha).setDuration(ANIM_MILLIS).start()
+    private fun animateViewIn(view: View) {
+        logD(view.translationX)
+        view.animate()
+            .alpha(1f)
+            .setDuration(context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong())
+            .start()
+    }
+
+    private fun animateViewOut(view: View) {
+        view.animate()
+            .alpha(0f)
+            .setDuration(context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong())
+            .start()
     }
 
     // --- LAYOUT STATE ---

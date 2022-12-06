@@ -161,10 +161,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         if (isActivated) {
             targetVis = VISIBLE
-            targetDuration = 150L
+            targetDuration = context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
         } else {
             targetVis = INVISIBLE
-            targetDuration = 84L
+            targetDuration = context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong()
         }
 
         if (selectionIndicator.visibility == targetVis) {

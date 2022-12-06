@@ -70,7 +70,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             // Sanity check 2: Ensure that this value is within the duration and will not crash
             // the app, and that the user is not currently seeking (which would cause the SeekBar
             // to jump around).
-            if (from <= durationDs && !isSelected) {
+            if (from <= durationDs && !isActivated) {
                 binding.seekBarSlider.value = from.toFloat()
 
                 // We would want to keep this in the callback, but the callback only fires when
@@ -106,13 +106,13 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         logD("Starting seek mode")
         // User has begun seeking, place the SeekBar into a "Suspended" mode in which no
         // position updates are sent and is indicated by the position value turning accented.
-        isSelected = true
+        isActivated = true
     }
 
     override fun onStopTrackingTouch(slider: Slider) {
         logD("Confirming seek")
         // End of seek event, send off new value to callback.
-        isSelected = false
+        isActivated = false
         callback?.seekTo(slider.value.toLong())
     }
 

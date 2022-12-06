@@ -46,7 +46,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Use proper material attributes (Not the weird dimen attributes I currently have)
  *
- * TODO: Test out material animation system
+ * TODO: Migrate to material animation system
  *
  * @author OxygenCobalt
  */
