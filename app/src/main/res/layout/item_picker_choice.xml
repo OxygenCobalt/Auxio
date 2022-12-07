@@ -6,9 +6,9 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:paddingStart="@dimen/spacing_large"
-    android:paddingTop="@dimen/spacing_medium"
+    android:paddingTop="@dimen/spacing_mid_medium"
     android:paddingEnd="@dimen/spacing_large"
-    android:paddingBottom="@dimen/spacing_medium">
+    android:paddingBottom="@dimen/spacing_mid_medium">
 
     <org.oxycblt.auxio.image.ImageGroup
         android:id="@+id/picker_image"

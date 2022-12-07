@@ -6,9 +6,9 @@
     android:layout_height="wrap_content"
     android:background="@drawable/ui_item_ripple"
     android:paddingStart="@dimen/spacing_medium"
-    android:paddingTop="@dimen/spacing_medium"
+    android:paddingTop="@dimen/spacing_mid_medium"
     android:paddingEnd="@dimen/spacing_mid_medium"
-    android:paddingBottom="@dimen/spacing_medium">
+    android:paddingBottom="@dimen/spacing_mid_medium">
 
     <org.oxycblt.auxio.image.ImageGroup
         android:id="@+id/parent_image"

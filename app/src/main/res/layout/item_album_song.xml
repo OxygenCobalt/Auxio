@@ -7,9 +7,9 @@
     android:layout_height="wrap_content"
     android:background="@drawable/ui_item_ripple"
     android:paddingStart="@dimen/spacing_medium"
-    android:paddingTop="@dimen/spacing_medium"
+    android:paddingTop="@dimen/spacing_mid_medium"
     android:paddingEnd="@dimen/spacing_mid_medium"
-    android:paddingBottom="@dimen/spacing_medium">
+    android:paddingBottom="@dimen/spacing_mid_medium">
 
     <!--
     We don't want to show an album cover, but we still want the spacing of this song

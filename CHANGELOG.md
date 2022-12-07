@@ -26,6 +26,7 @@
 - All information now scrolls in the playback view
 - A month is now shown for song/album dates when available
 - Added loading indicator to song properties view
+- List items have been made more compact
 
 #### What's Fixed
 - Fixed issue where the scroll popup would not display correctly in landscape mode [#230]
