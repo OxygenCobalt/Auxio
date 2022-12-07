@@ -28,9 +28,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.TransitionManager
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.transition.MaterialFade
 import java.lang.reflect.Field
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.AuxioAppBarLayout
@@ -113,11 +111,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         this.titleAnimator =
             ValueAnimator.ofFloat(from, to).apply {
                 addUpdateListener { titleView.alpha = it.animatedValue as Float }
-                duration = if (titleShown == true) {
-                    context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
-                } else {
-                    context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong()
-                }
+                duration =
+                    if (titleShown == true) {
+                        context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
+                    } else {
+                        context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong()
+                    }
                 start()
             }
     }

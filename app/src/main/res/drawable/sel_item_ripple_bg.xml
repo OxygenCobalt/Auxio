@@ -10,8 +10,7 @@
             <solid android:color="@color/sel_item_activated_bg" />
         </shape>
     </item>
-    <item
-        android:id="@+id/def">
+    <item android:id="@+id/def">
         <shape android:shape="rectangle">
             <solid android:color="@android:color/transparent" />
         </shape>

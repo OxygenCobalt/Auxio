@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingStart="@dimen/spacing_medium"
-    android:paddingEnd="@dimen/spacing_medium"
     android:paddingTop="@dimen/spacing_mid_medium"
+    android:paddingEnd="@dimen/spacing_medium"
     android:paddingBottom="@dimen/spacing_mid_medium">
 
     <org.oxycblt.auxio.image.StyledImageView

@@ -33,12 +33,9 @@ import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.TransitionManager
-import com.google.android.material.transition.MaterialFade
 import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.recycler.AuxioRecyclerView
-import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getDimenSize
 import org.oxycblt.auxio.util.getDrawableCompat
 import org.oxycblt.auxio.util.isRtl
@@ -467,14 +464,16 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     private fun animateViewIn(view: View) {
         logD(view.translationX)
-        view.animate()
+        view
+            .animate()
             .alpha(1f)
             .setDuration(context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong())
             .start()
     }
 
     private fun animateViewOut(view: View) {
-        view.animate()
+        view
+            .animate()
             .alpha(0f)
             .setDuration(context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong())
             .start()

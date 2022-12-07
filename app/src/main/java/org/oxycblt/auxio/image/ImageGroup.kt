@@ -161,19 +161,20 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         if (isActivated) {
             targetVis = VISIBLE
-            targetDuration = context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
+            targetDuration =
+                context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
         } else {
             targetVis = INVISIBLE
-            targetDuration = context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong()
+            targetDuration =
+                context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong()
         }
 
         if (selectionIndicator.visibility == targetVis) {
             return
         }
 
-        TransitionManager.beginDelayedTransition(this, MaterialFade().apply {
-            duration = targetDuration
-        })
+        TransitionManager.beginDelayedTransition(
+            this, MaterialFade().apply { duration = targetDuration })
 
         selectionIndicator.visibility = targetVis
     }
