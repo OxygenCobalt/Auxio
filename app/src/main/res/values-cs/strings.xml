@@ -50,7 +50,7 @@
     <string name="lbl_code">Zdrojový kód</string>
     <string name="lbl_faq">Často kladené otázky</string>
     <string name="lbl_licenses">Licence</string>
-    <string name="lng_author">Vytvořil OxygenCobalt</string>
+    <string name="lng_author">Vytvořil Alexander Capehart</string>
     <string name="lbl_library_counts">Statistiky knihovny</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Nastavení</string>
