@@ -526,7 +526,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             }
 
     companion object {
-        private const val ANIM_MILLIS = 150L
         private const val AUTO_HIDE_SCROLLBAR_DELAY_MILLIS = 1500
     }
 }

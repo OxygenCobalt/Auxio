@@ -13,12 +13,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_large"
-        android:layout_marginEnd="@dimen/spacing_medium"
+        android:layout_marginEnd="@dimen/spacing_mid_medium"
         android:layout_weight="1"
         android:gravity="center"
         android:maxLines="@null"
-        android:paddingTop="@dimen/spacing_small"
-        android:paddingBottom="@dimen/spacing_small"
         android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
         tools:text="primary:path/to/music" />
 
@@ -27,7 +25,7 @@
         style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_mid_medium"
+        android:layout_marginEnd="@dimen/spacing_mid_large"
         android:contentDescription="@string/desc_music_dir_delete"
         app:icon="@drawable/ic_delete_24"
         app:tint="?attr/colorControlNormal" />

@@ -97,6 +97,7 @@
     <plurals name="fmt_album_count">
         <item quantity="one">%d albumas</item>
         <item quantity="few">%d albumai</item>
+        <item quantity="many">%d albumų</item>
         <item quantity="other">%d albumų</item>
     </plurals>
     <string name="lbl_remix_group">Remiksai</string>
@@ -107,6 +108,7 @@
     <plurals name="fmt_song_count">
         <item quantity="one">%d daina</item>
         <item quantity="few">%d dainos</item>
+        <item quantity="many">%d albumų</item>
         <item quantity="other">%d dainų</item>
     </plurals>
     <string name="clr_dynamic">Dinaminis</string>
@@ -246,6 +248,7 @@
     <plurals name="fmt_artist_count">
         <item quantity="one">%d atlikėjas</item>
         <item quantity="few">%d atlikėjai</item>
+        <item quantity="many">%d albumų</item>
         <item quantity="other">%d atlikėjų</item>
     </plurals>
     <string name="set_rescan">Perskenuoti muziką</string>

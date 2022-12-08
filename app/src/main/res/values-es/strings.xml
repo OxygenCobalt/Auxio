@@ -74,7 +74,7 @@
     <string name="set_content">Contenido</string>
     <string name="set_save_state">Guardar estado de reproducción</string>
     <string name="set_save_desc">Guardar el estado de reproduccion ahora</string>
-    <string name="set_reindex">Actualizar musica</string>
+    <string name="set_reindex">Actualizar música</string>
     <string name="set_reindex_desc">Recargar la biblioteca musical, utilizando las etiquetas en caché cuando sea posible</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Sin música</string>
@@ -129,12 +129,10 @@
     <string name="fmt_lib_song_count">Canciones cargadas: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d canción</item>
-        <item quantity="many">%d canciones</item>
         <item quantity="other">%d canciones</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d álbum</item>
-        <item quantity="many">%d álbumes</item>
         <item quantity="other">%d álbumes</item>
     </plurals>
     <string name="lbl_size">Tamaño</string>
@@ -252,7 +250,6 @@
     <string name="set_hide_collaborators">Ocultar colaboradores</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d artista</item>
-        <item quantity="many">%d artistas</item>
         <item quantity="other">%d artistas</item>
     </plurals>
     <string name="err_did_not_save">Imposible guardar el estado</string>

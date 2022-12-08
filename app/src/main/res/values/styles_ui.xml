@@ -177,7 +177,10 @@
 
     <style name="Widget.Auxio.TextView.Icon" parent="Widget.Auxio.TextView.Base">
         <item name="android:drawablePadding">@dimen/spacing_medium</item>
-        <item name="android:padding">@dimen/spacing_medium</item>
+        <item name="android:paddingTop">@dimen/spacing_mid_medium</item>
+        <item name="android:paddingStart">@dimen/spacing_medium</item>
+        <item name="android:paddingBottom">@dimen/spacing_mid_medium</item>
+        <item name="android:paddingEnd">@dimen/spacing_medium</item>
         <item name="android:textAppearance">@style/TextAppearance.Auxio.BodyLarge</item>
     </style>
 

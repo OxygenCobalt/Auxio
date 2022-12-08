@@ -258,6 +258,7 @@
     <plurals name="fmt_artist_count">
         <item quantity="one">%d umělec</item>
         <item quantity="few">%d umělci</item>
+        <item quantity="many">%d umělců</item>
         <item quantity="other">%d umělců</item>
     </plurals>
     <string name="err_did_not_wipe">Nepodařilo se vymazat stav</string>
