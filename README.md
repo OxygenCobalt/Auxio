@@ -51,7 +51,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
   precise/original dates, sort tags, and more
 - SD Card-aware folder management
 - Reliable playback state persistence
-- Full ReplayGain support (On MP3, MP4, FLAC, OGG, and OPUS)
+- Full ReplayGain support (On MP3, FLAC, OGG, OPUS, and (some) MP4 files)
 - External equalizer support (ex. Wavelet)
 - Edge-to-edge
 - Embedded covers support
