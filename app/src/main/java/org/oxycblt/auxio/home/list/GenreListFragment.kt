@@ -51,7 +51,7 @@ class GenreListFragment : HomeListFragment<Genre>() {
         }
 
         collectImmediately(homeModel.genres, homeAdapter::replaceList)
-        collectImmediately(homeModel.selected, homeAdapter::updateSelection)
+        collectImmediately(selectionModel.selected, homeAdapter::updateSelection)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::handlePlayback)
     }
 

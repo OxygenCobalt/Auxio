@@ -75,7 +75,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"
-        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_marginTop="@dimen/spacing_mid_medium"
         android:layout_marginEnd="@dimen/spacing_small"
         android:text="@string/lbl_play"
         app:layout_constraintBottom_toBottomOf="@+id/detail_cover"

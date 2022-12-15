@@ -59,7 +59,7 @@ class SongListFragment : HomeListFragment<Song>() {
         }
 
         collectImmediately(homeModel.songs, homeAdapter::replaceList)
-        collectImmediately(homeModel.selected, homeAdapter::updateSelection)
+        collectImmediately(selectionModel.selected, homeAdapter::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::handlePlayback)
     }

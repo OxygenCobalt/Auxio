@@ -59,7 +59,7 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-        throw IllegalStateException()
+        throw NotImplementedError()
 
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,

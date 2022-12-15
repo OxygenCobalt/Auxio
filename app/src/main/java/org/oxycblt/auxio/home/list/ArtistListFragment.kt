@@ -52,7 +52,7 @@ class ArtistListFragment : HomeListFragment<Artist>() {
         }
 
         collectImmediately(homeModel.artists, homeAdapter::replaceList)
-        collectImmediately(homeModel.selected, homeAdapter::updateSelection)
+        collectImmediately(selectionModel.selected, homeAdapter::updateSelection)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::handleParent)
     }
 

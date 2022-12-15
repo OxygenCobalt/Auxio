@@ -48,7 +48,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Customizable behavior
 - Seamless artist system that unifies album artist and artist tags
 - Advanced media indexer with support for multiple artists, release types,
-precise/original dates, sort tags, and more
+  precise/original dates, sort tags, and more
 - SD Card-aware folder management
 - Reliable playback state persistence
 - Full ReplayGain support (On MP3, MP4, FLAC, OGG, and OPUS)

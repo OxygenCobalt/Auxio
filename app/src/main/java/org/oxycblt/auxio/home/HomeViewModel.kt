@@ -60,10 +60,6 @@ class HomeViewModel(application: Application) :
     val genres: StateFlow<List<Genre>>
         get() = _genres
 
-    private val _selected = MutableStateFlow(listOf<Music>())
-    val selected: StateFlow<List<Music>>
-        get() = _selected
-
     var tabs: List<MusicMode> = visibleTabs
         private set
 
@@ -86,19 +82,6 @@ class HomeViewModel(application: Application) :
 
     init {
         musicStore.addCallback(this)
-    }
-
-    /** Select a music item. */
-    fun select(item: Music) {
-        val items = _selected.value.toMutableList()
-        if (items.remove(item)) {
-            logD("Unselecting item $item")
-            _selected.value = items
-        } else {
-            logD("Selecting item $item")
-            items.add(item)
-            _selected.value = items
-        }
     }
 
     /** Update the current tab based off of the new ViewPager position. */
