@@ -34,11 +34,10 @@ import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
 
 /**
- * Master class (and possible god object) for the playback state.
+ * Core playback controller class.
  *
  * Whereas other apps centralize the playback state around the MediaSession, Auxio does not, as
- * MediaSession is a terrible API that prevents nice features like better album cover loading or a
- * reasonable queue system.
+ * MediaSession is poorly designed. We use our own playback state system instead.
  *
  * This should ***NOT*** be used outside of the playback module.
  * - If you want to use the playback state in the UI, use

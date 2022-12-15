@@ -155,7 +155,7 @@ Monitoring the loading progress (Internally called the indexing state) should be
 and is best done with `MusicViewModel`.
 
 #### Playback System
-The android/androidx media state APIs are terrible, and are often the cause of the strange queue
+The android/androidx media state APIs are poorly designed, and are often the cause of the strange queue
 behavior and jank you see in other apps. So, Auxio does not use it, instead implementing it's own
 playback engine that is more controllable and sensible and simply mirroring it to the android APIs.
 
@@ -246,7 +246,7 @@ playing indicator and one custom view.
 #### `.music`
 This package contains all `Music` implementations, the music loading implementation, and the music
 folder system. This is the second  most complicated package in the app, as loading music in a sane
-way is horribly difficult.
+way is quite difficult.
 
 The major classes are:
 - `MusicStore`, which is the container for a `Library` instance. Any code wanting to access the
@@ -314,8 +314,7 @@ default implementations.
 - `ForegroundManager` and `ServiceNotification`, which remove boilerplate regarding service
 foreground instantiation.
 - The `RecyclerView` adapter framework described previously.
-- `BottomSheetLayout`, which implements a bottom sheet in a way that is not completely broken and
-insane.
+- `BottomSheetLayout`, which implements a bottom sheet in a way that is not completely broken.
 - Standard `ViewHolder` implementations that can be used for common datatypes.
 - `NavigationViewModel`, which acts as an interface to control navigation to a particular item and
 navigation within `MainFragment`

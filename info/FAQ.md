@@ -47,7 +47,7 @@ metadata parser is stuck in 2008.
 
 **Some files with accented/symbolic characters have corrupted tags:** When Android extracts metadata, at some point it tries to convert the bytes it extracted to a
 java string, which apparently involves detecting the encoding of the data dynamically and then converting it to Java's Unicode dialect. Of course, trying to detect
-codings on the fly like that is a [terrible idea](https://en.wikipedia.org/wiki/Bush_hid_the_facts), and more often than not it results in UTF-8 tags (Seen on
+codings on the fly like that is a [bad idea](https://en.wikipedia.org/wiki/Bush_hid_the_facts), and more often than not it results in UTF-8 tags (Seen on
 FLAC/OGG/OPUS files most often) being corrupted. It also affects MP3 files with ID3v2.4.0 tags that use the UTF-8 encoding in text-based tags.
 
 **I have a large library and Auxio takes really long to load it:** This is expected since reading from the audio database takes awhile, especially with libraries

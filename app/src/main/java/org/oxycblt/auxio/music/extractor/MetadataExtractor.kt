@@ -33,9 +33,9 @@ import org.oxycblt.auxio.util.logW
 /**
  * The layer that leverages ExoPlayer's metadata retrieval system to index metadata.
  *
- * Normally, leveraging ExoPlayer's metadata system would be a terrible idea, as it is horrifically
- * slow. However, if we parallelize it, we can get similar throughput to other metadata extractors,
- * which is nice as it means we don't have to bundle a redundant metadata library like JAudioTagger.
+ * Normally, ExoPlayer's metadata system is quite slow. However, if we parallelize it, we can get
+ * similar throughput to other metadata extractors, which is nice as it means we don't have to
+ * bundle a redundant metadata library like JAudioTagger.
  *
  * Now, ExoPlayer's metadata API is not the best. It's opaque, undocumented, and prone to weird
  * pitfalls given ExoPlayer's cozy relationship with native code. However, this backend should do
@@ -312,16 +312,8 @@ class Task(context: Context, private val raw: Song.Raw) {
     }
 
     /**
-     * Copies and sanitizes this string under the assumption that it is UTF-8.
-     *
-     * Sometimes ExoPlayer emits weird UTF-8. Worse still, sometimes it emits strings backed by data
-     * allocated by some native function. This could easily cause a terrible crash if you even look
-     * at the malformed string the wrong way.
-     *
-     * This function mitigates it by first encoding the string as UTF-8 bytes (replacing malformed
-     * characters with the replacement in the process), and then re-interpreting it as a new string,
-     * which hopefully fixes encoding insanity while also copying the string out of dodgy native
-     * memory.
+     * Copies and sanitizes this string under the assumption that it is UTF-8. This should
+     * launder away any weird UTF-8 issues that ExoPlayer may cause.
      */
     private fun String.sanitize() = String(encodeToByteArray())
 }

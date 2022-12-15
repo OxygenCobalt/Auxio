@@ -40,20 +40,10 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 
 /**
- * The component managing the [MediaSessionCompat] instance, alongside the [NotificationComponent]
+ * The component managing the [MediaSessionCompat] instance, alongside the [NotificationComponent].
  *
- * MediaSession is easily one of the most poorly thought out APIs in Android. It tries to hard to be
- * hElpfUl and implement so many fundamental behaviors into a one-size-fits-all package that it only
- * ends up causing bugs and frustration. The queue system is horribly designed, the playback state
- * system has unending coherency issues, and the overstretched abstractions result in god-awful
- * performance bottlenecks and insane state bugs.
- *
- * The sheer absurdity of the hoops we have jump through to get this working in an okay manner is
- * the reason why Auxio only mirrors a saner playback state to the media session instead of relying
- * on it. I thought that Android 13 would at least try to make the state more coherent, but NOPE.
- * You still have to do a delicate dance of posting notifications and updating the session state
- * while also keeping in mind the absurd rate limiting system in place just to have a sort-of
- * coherent state. And even then it will break if you skip too much.
+ * Auxio does not directly rely on MediaSession, as it is extremely poorly designed. We instead
+ * just mirror the playback state into the media session.
  *
  * @author OxygenCobalt
  */
@@ -165,17 +155,9 @@ class MediaSessionComponent(private val context: Context, private val callback: 
 
         song.date?.let { builder.putString(MediaMetadataCompat.METADATA_KEY_DATE, it.toString()) }
 
-        // Cover loading is a mess. Android expects you to provide a clean, easy URI for it to
-        // leverage, but Auxio cannot do that as quality-of-life features like scaling or
-        // 1:1 cropping could not be used.
-        //
-        // Thus, we have two options to handle album art:
-        // 1. Load the bitmap, then post the notification
-        // 2. Post the notification with text metadata, then post it with the bitmap when it's
-        // loaded.
-        //
-        // Neither of these are good, but 1 is the only one that will work on all versions
-        // without the notification being eaten by rate-limiting.
+        // We are normally supposed to use URIs for album art, but that removes some of the
+        // nice things we can do like square cropping or high quality covers. Instead,
+        // we load a full-size bitmap into the media session and take the performance hit.
         provider.load(
             song,
             object : BitmapProvider.Target {

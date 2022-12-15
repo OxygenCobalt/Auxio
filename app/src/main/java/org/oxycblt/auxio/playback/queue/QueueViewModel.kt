@@ -25,8 +25,8 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 /**
- * Class enabling more advanced queue list functionality and queue editing.
- * TODO: Allow editing previous parts of the queue
+ * Class enabling more advanced queue list functionality and queue editing. TODO: Allow editing
+ * previous parts of the queue
  * @author OxygenCobalt
  */
 class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {

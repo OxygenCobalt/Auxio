@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.music.extractor
 
 import android.content.Context
@@ -38,62 +38,6 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
-
-/*
- * This file acts as the base for most the black magic required to get a remotely sensible music
- * indexing system from MediaStore while still optimizing for time. I would recommend you leave
- * this file now before you lose your sanity trying to understand the hoops I had to jump through
- * for this system, but if you really want to stay, here's a debrief on why this code is so awful.
- *
- * MediaStore is not a good API. It is not even a bad API. Calling it a bad API is an insult to
- * other bad android APIs, like CoordinatorLayout or InputMethodManager. No. MediaStore is a crime
- * against humanity and probably a way to summon Zalgo if you look at it the wrong way.
- *
- * You think that if you wanted to query a song's genre from a media database, you could just put
- * "genre" in the query and it would return it, right? But not with MediaStore! No, that's too
- * straightforward for this database that was dropped on it's head as a baby. So instead, you have
- * to query for each genre, query all the songs in each genre, and then iterate through those songs
- * to link every song with their genre. This is not documented anywhere, and the O(mom im scared)
- * algorithm you have to run to get it working single-handedly DOUBLES Auxio's query times. At no
- * point have the devs considered that this system is absolutely insane, and instead focused on
- * adding infuriat- I mean nice proprietary extensions to MediaStore for their own Google Play
- * Music, and of course every Google Play Music user knew how great that turned out!
- *
- * It's not even ergonomics that makes this API bad. It's base implementation is completely borked
- * as well. Did you know that MediaStore doesn't accept dates that aren't from ID3v2.3 MP3 files? I
- * sure didn't, until I decided to upgrade my music collection to ID3v2.4 and FLAC only to see that
- * the metadata parser has a brain aneurysm the moment it stumbles upon a dreaded TRDC or DATE tag.
- * Once again, this is because internally android uses an ancient in-house metadata parser to get
- * everything indexed, and so far they have not bothered to modernize this parser or even switch it
- * to something that actually works, not even in Android 12. ID3v2.4 has been around for *21
- * years.* *It can drink now.*
- *
- * Not to mention all the other infuriating quirks. Pretty much every OEM has added some extension
- * or quirk to MediaStore that I cannot reproduce, with some OEMs (COUGHSAMSUNGCOUGH) crippling the
- * normal tables so that you're railroaded into their music app. I have to use a semi-deprecated
- * field to work with file paths, and the supposedly "modern" method is SLOWER and causes even more
- * problems since some devices just don't expose those fields for some insane reason. Sometimes
- * music will have a deformed clone that I can't filter out, sometimes Genres will just break for
- * no reason, and sometimes tags encoded in UTF-8 will be interpreted as anything from UTF-16 to
- * Latin-1 to *Shift JIS* WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY
- *
- * Is there anything we can do about it? No. Google has routinely shut down issues that begged
- * google to fix glaring issues with MediaStore or to just take the API behind the woodshed and
- * shoot it. Largely because they have zero incentive to improve it given how "obscure" local music
- * listening is. As a result, I am forced to write my own extractor (Which is the contents of the
- * rest of this module) based on ExoPlayer that at least tries to correct the insane metadata that
- * this API returns, but not only is that system horrifically slow and bug-prone, it also faces the
- * even larger issue of how google keeps trying to kill the filesystem and force you into their
- * ContentResolver API. In the future MediaStore could be the only system we have, which is also
- * the day that greenland melts and birthdays stop happening forever.
- *
- * I'm pretty sure nothing is going to happen and MediaStore will continue to be neglected and
- * probably deprecated eventually for a "new" API that just coincidentally excludes music indexing.
- * Because go screw yourself for wanting to listen to music you own. Be a good consoomer and listen
- * to your AlgoPop StreamMix™.
- *
- * I wish I was born in the neolithic.
- */
 
 /**
  * The layer that loads music from the MediaStore database. This is an intermediate step in the
@@ -205,7 +149,8 @@ abstract class MediaStoreExtractor(
         // Since we can't obtain the genre tag from a song query, we must construct
         // our own equivalent from genre database queries. Theoretically, this isn't
         // needed since MetadataLayer will fill this in for us, but I'd imagine there
-        // are some obscure formats where genre support is only really covered by this.
+        // are some obscure formats where genre support is only really covered by this,
+        // so we are forced to bite the O(n^2) complexity here.
         context.contentResolverSafe.useQuery(
             MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
             arrayOf(MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME)) { genreCursor ->

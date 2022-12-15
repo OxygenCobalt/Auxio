@@ -4,13 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:startDestination="@id/home_fragment">
 
-    <!--
-    Now, it would be quite cool if we could implement shared element transitions
-    between elements in this navigation web. Sadly though, the shared element transition
-    system is filled with so many bugs and visual errors to make this a terrible idea.
-    Just use the boring, yet sane and functional axis transitions.
-    -->
-
     <fragment
         android:id="@+id/artist_detail_fragment"
         android:name="org.oxycblt.auxio.detail.ArtistDetailFragment"

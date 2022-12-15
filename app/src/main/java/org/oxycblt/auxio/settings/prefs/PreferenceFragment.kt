@@ -79,15 +79,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
     override fun onDisplayPreferenceDialog(preference: Preference) {
         when (preference) {
             is IntListPreference -> {
-                // Creating our own preference dialog is hilariously difficult. For one, we need
-                // to override this random method within the class in order to launch the dialog in
-                // the first (because apparently you can't just implement some interface that
-                // automatically provides this behavior), then we also need to use a deprecated
-                // method to adequately supply a "target fragment" (otherwise we will crash since
-                // the dialog requires one), and then we need to actually show the dialog, making
-                // sure we use  the parent FragmentManager as again, it will crash if we don't.
-                //
-                // Fragments were a mistake.
+                // Copy the built-in preference dialog launching code into our project so
+                // we can automatically use the provided preference class.
                 val dialog = IntListPreferenceDialog.from(preference)
                 dialog.setTargetFragment(this, 0)
                 dialog.show(parentFragmentManager, IntListPreferenceDialog.TAG)

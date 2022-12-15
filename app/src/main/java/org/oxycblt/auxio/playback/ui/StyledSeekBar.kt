@@ -27,17 +27,8 @@ import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logD
 
 /**
- * A wrapper around [Slider] that shows not only position and duration values, but also basically
- * hacks in behavior consistent with a normal SeekBar in a way that will not crash the app.
- *
- * SeekBar, like most android OS components, is a version-specific mess that requires constant hacks
- * on older versions. Instead, we use the more "modern" [Slider] component, but it is not designed
- * for the job that Auxio's progress bar has. It does not gracefully degrade when positions don't
- * make sense (which happens incredibly often), it just crashes the entire app, which is insane but
- * also checks out for something more meant for configuration than seeking.
- *
- * Instead, we wrap it in a safe class that hopefully implements enough sanity checks to not crash
- * the app or result in blatantly janky behavior. Mostly.
+ * A wrapper around [Slider] that shows not only position and duration values, but also hacks
+ * in bounds checking to avoid app crashes if bad position input comes in.
  *
  * @author OxygenCobalt
  */

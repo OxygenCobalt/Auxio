@@ -33,9 +33,9 @@ import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.getDrawableCompat
 
 /**
- * View that displays the playback indicator. Nominally emulates [StyledImageView], but is much
- * different internally as an animated icon can't be wrapped within StyledDrawable without causing
- * insane issues.
+ * View that displays the playback indicator. Nominally emulates [StyledImageView], but
+ * relies on the existing ImageView infrastructure to achieve the same result while also
+ * allowing animation to work.
  * @author OxygenCobalt
  */
 class IndicatorView

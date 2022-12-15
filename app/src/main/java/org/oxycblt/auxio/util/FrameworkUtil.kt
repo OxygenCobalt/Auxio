@@ -199,12 +199,13 @@ val AndroidViewModel.application: Application
 fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
     query(tableName, null, null, null, null, null, null)?.use(block)
 
-// Note: WindowInsetsCompat and it's related methods are an over-engineered mess that does not
-// work for Auxio's use-case. Use our own compat methods instead.
+// Note: WindowInsetsCompat and it's related methods cause too many issues.
+// Use our own compat methods instead.
+
 
 /**
  * Resolve system bar insets in a version-aware manner. This can be used to apply padding to a view
- * that properly follows all the frustrating changes that were made between Android 8-11.
+ * that properly follows all the changes that were made between Android 8-11.
  */
 val WindowInsets.systemBarInsetsCompat: Insets
     get() =
@@ -217,8 +218,8 @@ val WindowInsets.systemBarInsetsCompat: Insets
 
 /**
  * Resolve gesture insets in a version-aware manner. This can be used to apply padding to a view
- * that properly follows all the frustrating changes that were made between Android 8-11. Note that
- * if the gesture insets are not present (i.e zeroed), the bar insets will be used instead.
+ * that properly follows all the changes that were made between Android 8-11. Note that if the
+ * gesture insets are not present (i.e zeroed), the bar insets will be used instead.
  */
 val WindowInsets.systemGestureInsetsCompat: Insets
     get() =
@@ -241,7 +242,7 @@ val WindowInsets.systemGestureInsetsCompat: Insets
         }
 
 @Suppress("DEPRECATION")
-fun WindowInsets.getSystemWindowCompatInsets() =
+private fun WindowInsets.getSystemWindowCompatInsets() =
     Insets.of(
         systemWindowInsetLeft,
         systemWindowInsetTop,
@@ -250,14 +251,14 @@ fun WindowInsets.getSystemWindowCompatInsets() =
 
 @Suppress("DEPRECATION")
 @RequiresApi(Build.VERSION_CODES.Q)
-fun WindowInsets.getSystemGestureCompatInsets() = Insets.toCompatInsets(systemGestureInsets)
+private fun WindowInsets.getSystemGestureCompatInsets() = Insets.toCompatInsets(systemGestureInsets)
 
 @RequiresApi(Build.VERSION_CODES.R)
-fun WindowInsets.getCompatInsets(typeMask: Int) = Insets.toCompatInsets(getInsets(typeMask))
+private fun WindowInsets.getCompatInsets(typeMask: Int) = Insets.toCompatInsets(getInsets(typeMask))
 
 /**
  * Replaces the system bar insets in a version-aware manner. This can be used to modify the insets
- * for child views in a way that follows all of the frustrating changes that were made between 8-11.
+ * for child views in a way that follows all of the changes that were made between 8-11.
  */
 fun WindowInsets.replaceSystemBarInsetsCompat(
     left: Int,

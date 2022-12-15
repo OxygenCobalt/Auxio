@@ -144,9 +144,9 @@ class MainFragment :
     }
 
     override fun onPreDraw(): Boolean {
-        // CoordinatorLayout is insane and thus makes bottom sheet callbacks insane. Do our
-        // checks before every draw, which is not ideal in the slightest but also has minimal
-        // performance impact since we are only mutating attributes used during drawing.
+        // We overload CoordinatorLayout far too much to rely on any of it's typical
+        // callback functionality. Just update all transitions before every draw. Should
+        // probably be cheap *enough.*
         val binding = requireBinding()
 
         val playbackSheetBehavior =
