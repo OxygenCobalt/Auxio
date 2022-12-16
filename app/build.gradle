@@ -68,7 +68,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:1.4.0"
     implementation "androidx.core:core-ktx:1.9.0"
     implementation "androidx.activity:activity-ktx:1.6.1"
-    implementation "androidx.fragment:fragment-ktx:1.5.4"
+    implementation "androidx.fragment:fragment-ktx:1.5.5"
 
     // UI
     implementation "androidx.recyclerview:recyclerview:1.2.1"
@@ -97,7 +97,7 @@ dependencies {
     // Exoplayer
     // WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE PRE-BUILD SCRIPT.
     // IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
-    implementation("com.google.android.exoplayer:exoplayer-core:2.18.1") {
+    implementation("com.google.android.exoplayer:exoplayer-core:2.18.2") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
     }
 
