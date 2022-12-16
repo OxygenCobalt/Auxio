@@ -41,7 +41,7 @@
     <string name="lbl_code">Исходный код</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Лицензии</string>
-    <string name="lng_author">Разработчик: OxygenCobalt</string>
+    <string name="lng_author">Разработано Александром Кейпхартом</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Настройки</string>
     <string name="set_ui">Внешний вид</string>
@@ -261,4 +261,5 @@
     </plurals>
     <string name="err_did_not_wipe">Не удалось очистить состояние</string>
     <string name="err_did_not_save">Не удалось сохранить состояние</string>
+    <string name="set_separators_warning">Предупреждение: Использование этой настройки может привести к тому, что некоторые теги будут неправильно интерпретироваться как имеющие несколько значений. Вы можете решить эту проблему, добавив к нежелательным символам-разделителям обратную косую черту (\\).</string>
 </resources>

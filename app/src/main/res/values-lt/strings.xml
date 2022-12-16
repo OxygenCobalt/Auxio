@@ -124,7 +124,7 @@
     <string name="lbl_live_group">Gyvai</string>
     <string name="set_headset_autoplay_desc">Visada pradėti groti, kai prijungtos ausinės (gali veikti ne visuose įrenginiuose)</string>
     <string name="cdc_ogg">Ogg garsas</string>
-    <string name="lng_author">Sukūrė OxygenCobalt</string>
+    <string name="lng_author">Sukūrė Alexanderis Capehartas</string>
     <string name="set_replay_gain_track">Pageidaujamas takeliui</string>
     <string name="err_no_dirs">Jokių aplankų</string>
     <string name="err_bad_dir">Šis aplankas nepalaikomas</string>
