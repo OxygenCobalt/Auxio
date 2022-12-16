@@ -60,12 +60,7 @@ import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.SelectionViewModel
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
-import org.oxycblt.auxio.util.collect
-import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.getColorCompat
-import org.oxycblt.auxio.util.lazyReflectedField
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.*
 
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail views for each
@@ -117,6 +112,11 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                     bottom = binding.homeAppbar.totalScrollRange + offset)
             }
         }
+
+        binding.homeToolbarOverlay.registerListeners(
+            onExit = { selectionModel.consume() },
+            onMenuItemClick = this
+        )
 
         binding.homeToolbar.setOnMenuItemClickListener(this@HomeFragment)
 
@@ -175,11 +175,14 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
     override fun onDestroyBinding(binding: FragmentHomeBinding) {
         super.onDestroyBinding(binding)
+        binding.homeToolbarOverlay.unregisterListeners()
         binding.homeToolbar.setOnMenuItemClickListener(null)
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
         when (item.itemId) {
+            // HOME
+
             R.id.action_search -> {
                 logD("Navigating to search")
                 initAxisTransitions(MaterialSharedAxis.Z)
@@ -205,6 +208,19 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                         .getSortForTab(homeModel.currentTab.value)
                         .withAscending(item.isChecked))
             }
+
+            // SELECTION
+
+            R.id.action_play_next_selection -> {
+                playbackModel.playNext(selectionModel.consume())
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+
+            R.id.action_queue_add_selection -> {
+                playbackModel.addToQueue(selectionModel.consume())
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+
             else -> {
                 // Sorting option was selected, mark it as selected and update the mode
                 item.isChecked = true

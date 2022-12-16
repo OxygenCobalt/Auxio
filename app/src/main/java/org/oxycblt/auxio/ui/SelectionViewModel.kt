@@ -40,4 +40,11 @@ class SelectionViewModel : ViewModel() {
             _selected.value = items
         }
     }
+
+    /** Clear and return all selected items. */
+    fun consume(): List<Music> {
+        return _selected.value.also {
+            _selected.value = listOf()
+        }
+    }
 }

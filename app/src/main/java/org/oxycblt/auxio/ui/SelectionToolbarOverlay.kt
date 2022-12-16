@@ -3,6 +3,7 @@ package org.oxycblt.auxio.ui
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.Toolbar
@@ -30,6 +31,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         setNavigationIcon(R.drawable.ic_close_24)
     }
 
+    private val selectionMenu = selectionToolbar.menu
+
     private var fadeThroughAnimator: ValueAnimator? = null
 
     override fun onFinishInflate() {
@@ -45,9 +48,22 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     /**
      * Add listeners for the selection toolbar.
      */
-    fun setListeners(onExit: Toolbar.OnMenuItemClickListener,
-                     onMenuItemClick: Toolbar.OnMenuItemClickListener) {
-        // TODO: Sub
+    fun registerListeners(onExit: OnClickListener,
+                          onMenuItemClick: Toolbar.OnMenuItemClickListener) {
+        selectionToolbar.apply {
+            setNavigationOnClickListener(onExit)
+            setOnMenuItemClickListener(onMenuItemClick)
+        }
+    }
+
+    /**
+     * Unregister listeners for this instance.
+     */
+    fun unregisterListeners() {
+        selectionToolbar.apply {
+            setNavigationOnClickListener(null)
+            setOnMenuItemClickListener(null)
+        }
     }
 
     /**
@@ -69,13 +85,16 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         //  don't work due to translation)
         val targetInnerAlpha: Float
         val targetSelectionAlpha: Float
+        val targetDuration: Long
 
         if (selectionVisible) {
             targetInnerAlpha = 0f
             targetSelectionAlpha = 1f
+            targetDuration = context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
         } else {
             targetInnerAlpha = 1f
             targetSelectionAlpha = 0f
+            targetDuration = context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong()
         }
 
         if (innerToolbar.alpha == targetInnerAlpha &&
@@ -94,7 +113,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         fadeThroughAnimator = ValueAnimator.ofFloat(innerToolbar.alpha, targetInnerAlpha).apply {
-            duration = context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
+            duration = targetDuration
             addUpdateListener {
                 changeToolbarAlpha(it.animatedValue as Float)
             }

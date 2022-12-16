@@ -25,11 +25,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -44,6 +40,8 @@ import org.oxycblt.auxio.util.application
  * an interface that properly sanitizes input and abstracts functions unlike the master class.**
  *
  * @author OxygenCobalt
+ *
+ * TODO: Queue additions without a song should map to playing selected
  */
 class PlaybackViewModel(application: Application) :
     AndroidViewModel(application), PlaybackStateManager.Callback {
@@ -217,6 +215,11 @@ class PlaybackViewModel(application: Application) :
         playbackManager.playNext(settings.detailGenreSort.songs(genre.songs))
     }
 
+    /** Add a selection [selection] to the top of the queue. */
+    fun playNext(selection: List<Music>) {
+        playbackManager.playNext(selectionToSongs(selection))
+    }
+
     /** Add a [Song] to the end of the queue. */
     fun addToQueue(song: Song) {
         playbackManager.addToQueue(song)
@@ -235,6 +238,22 @@ class PlaybackViewModel(application: Application) :
     /** Add a [Genre] to the end of the queue. */
     fun addToQueue(genre: Genre) {
         playbackManager.addToQueue(settings.detailGenreSort.songs(genre.songs))
+    }
+
+    /** Add a selection [selection] to the top of the queue. */
+    fun addToQueue(selection: List<Music>) {
+        playbackManager.addToQueue(selectionToSongs(selection))
+    }
+
+    private fun selectionToSongs(selection: List<Music>): List<Song> {
+        return selection.flatMap {
+            when (it) {
+                is Album -> settings.detailAlbumSort.songs(it.songs)
+                is Artist -> settings.detailArtistSort.songs(it.songs)
+                is Genre -> settings.detailGenreSort.songs(it.songs)
+                is Song -> listOf(it)
+            }
+        }
     }
 
     // --- STATUS FUNCTIONS ---

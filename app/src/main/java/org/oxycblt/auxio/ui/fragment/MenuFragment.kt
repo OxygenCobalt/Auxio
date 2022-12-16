@@ -185,12 +185,6 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
 
     private fun musicMenuImpl(anchor: View, @MenuRes menuRes: Int, onSelect: (Int) -> Boolean) {
         menu(anchor, menuRes) {
-            for (item in menu.children) {
-                if (item.itemId == R.id.action_play_next || item.itemId == R.id.action_queue_add) {
-                    item.isEnabled = playbackModel.song.value != null
-                }
-            }
-
             setOnMenuItemClickListener { item -> onSelect(item.itemId) }
         }
     }
