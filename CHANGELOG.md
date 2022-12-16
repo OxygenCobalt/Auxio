@@ -16,6 +16,7 @@
 - Music loader now caches parsed metadata for faster load times
 - Redesigned icon
 	- Added animated splash screen on Android 12+
+- Added support for MP4 ReplayGain (`----`) atoms
 
 #### What's Improved
 - Sorting now takes accented characters into account

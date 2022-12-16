@@ -23,6 +23,7 @@ import com.google.android.exoplayer2.audio.AudioProcessor
 import com.google.android.exoplayer2.audio.BaseAudioProcessor
 import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
+import com.google.android.exoplayer2.metadata.id3.InternalFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import java.nio.ByteBuffer
 import kotlin.math.pow
@@ -129,8 +130,14 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
                 // (like "replaygain_track_gain"), but can also be uppercase. Make sure that
                 // capitalization is consistent before continuing.
                 is TextInformationFrame -> {
-                    key = entry.description?.uppercase()
+                    key = entry.description
                     value = entry.values[0]
+                }
+                // Internal Frame. This is actually MP4's "----" atom, but mapped to an ID3v2
+                // frame by ExoPlayer (presumably to reduce duplication).
+                is InternalFrame -> {
+                    key = entry.description
+                    value = entry.text
                 }
                 // Vorbis comment. These are nearly always uppercase, so a check for such is
                 // skipped.
@@ -148,14 +155,14 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
 
         // Case 1: Normal ReplayGain, most commonly found on MPEG files.
         tags
-            .findLast { tag -> tag.key == RG_TRACK }
+            .findLast { tag -> tag.key.equals(RG_TRACK, ignoreCase = true) }
             ?.let { tag ->
                 trackGain = tag.value
                 found = true
             }
 
         tags
-            .findLast { tag -> tag.key == RG_ALBUM }
+            .findLast { tag -> tag.key.equals(RG_ALBUM, ignoreCase = true) }
             ?.let { tag ->
                 albumGain = tag.value
                 found = true
@@ -168,14 +175,14 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
         // want to read it is to zero previous ReplayGain values for being invalid, however there
         // is no demand to fix that edge case right now.
         tags
-            .findLast { tag -> tag.key == R128_TRACK }
+            .findLast { tag -> tag.key.equals(R128_TRACK, ignoreCase = true) }
             ?.let { tag ->
                 trackGain += tag.value / 256f
                 found = true
             }
 
         tags
-            .findLast { tag -> tag.key == R128_ALBUM }
+            .findLast { tag -> tag.key.equals(R128_ALBUM, ignoreCase = true) }
             ?.let { tag ->
                 albumGain += tag.value / 256f
                 found = true
@@ -253,10 +260,10 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
     }
 
     companion object {
-        private const val RG_TRACK = "REPLAYGAIN_TRACK_GAIN"
-        private const val RG_ALBUM = "REPLAYGAIN_ALBUM_GAIN"
-        private const val R128_TRACK = "R128_TRACK_GAIN"
-        private const val R128_ALBUM = "R128_ALBUM_GAIN"
+        private const val RG_TRACK = "replaygain_track_gain"
+        private const val RG_ALBUM = "replaygain_album_gain"
+        private const val R128_TRACK = "r128_track_gain"
+        private const val R128_ALBUM = "r128_album_gain"
 
         private val REPLAY_GAIN_TAGS = arrayOf(RG_TRACK, RG_ALBUM, R128_ALBUM, R128_TRACK)
     }
