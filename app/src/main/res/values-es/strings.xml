@@ -259,4 +259,7 @@
     <string name="err_did_not_wipe">No se puede borrar el estado</string>
     <string name="set_rescan_desc">Borrar la caché de las etiquetas y recargar completamente la biblioteca musical (más lento, pero más completo)</string>
     <string name="set_rescan">Volver a escanear la música</string>
+    <string name="lbl_shuffle_selected">Nodo aleatorio seleccionado</string>
+    <string name="fmt_selected">%d seleccionado</string>
+    <string name="lbl_play_selected">Reproducir los seleccionados</string>
 </resources>
