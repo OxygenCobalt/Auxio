@@ -96,7 +96,9 @@
     <string name="lbl_playback">Now playing</string>
     <string name="lbl_equalizer">Equalizer</string>
     <string name="lbl_play">Play</string>
+    <string name="lbl_play_selected">Play selected</string>
     <string name="lbl_shuffle">Shuffle</string>
+    <string name="lbl_shuffle_selected">Shuffle selected</string>
 
     <string name="lbl_queue">Queue</string>
     <string name="lbl_play_next">Play next</string>
@@ -337,6 +339,9 @@
 
     <!-- Format Namespace | Value formatting/plurals -->
     <eat-comment />
+
+    <!-- As in an amount of items that are selected -->
+    <string name="fmt_selected">%d Selected</string>
 
     <!-- As in "Disc 1", "Disc 2", etc. in a set -->
     <string name="fmt_disc_no">Disc %d</string>

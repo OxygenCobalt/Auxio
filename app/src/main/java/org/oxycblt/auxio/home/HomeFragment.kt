@@ -58,6 +58,7 @@ import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
+import org.oxycblt.auxio.ui.SelectionViewModel
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collect
@@ -75,6 +76,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private val homeModel: HomeViewModel by androidActivityViewModels()
+    private val selectionModel: SelectionViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
 
     // lifecycleObject builds this in the creation step, so doing this is okay.
@@ -109,7 +111,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             addOnOffsetChangedListener { _, offset ->
                 val range = binding.homeAppbar.totalScrollRange
 
-                binding.homeToolbar.alpha = 1f - (abs(offset.toFloat()) / (range.toFloat() / 2))
+                binding.homeToolbarOverlay.alpha = 1f - (abs(offset.toFloat()) / (range.toFloat() / 2))
 
                 binding.homeContent.updatePadding(
                     bottom = binding.homeAppbar.totalScrollRange + offset)
@@ -158,6 +160,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         collectImmediately(homeModel.currentTab, ::updateCurrentTab)
         collectImmediately(homeModel.songs, homeModel.isFastScrolling, ::updateFab)
         collectImmediately(musicModel.indexerState, ::handleIndexerState)
+        collectImmediately(selectionModel.selected, ::updateSelection)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
@@ -276,7 +279,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
     private fun updateTabConfiguration() {
         val binding = requireBinding()
-        val toolbarParams = binding.homeToolbar.layoutParams as AppBarLayout.LayoutParams
+        val toolbarParams = binding.homeToolbarOverlay.layoutParams as AppBarLayout.LayoutParams
         if (homeModel.tabs.size == 1) {
             // A single tag makes the tab layout redundant, hide it and disable the collapsing
             // behavior.
@@ -380,6 +383,10 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         } else {
             binding.homeFab.show()
         }
+    }
+
+    private fun updateSelection(selected: List<Music>) {
+        requireBinding().homeToolbarOverlay.updateSelectionAmount(selected.size)
     }
 
     private fun handleNavigation(item: Music?) {

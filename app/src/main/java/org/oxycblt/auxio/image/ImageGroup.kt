@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.image
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
@@ -60,6 +61,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private var customView: View? = null
     private val playingIndicator: IndicatorView
     private val selectionIndicator: ImageView
+
+    private var fadeAnimator: ValueAnimator? = null
 
     init {
         // Android wants you to make separate attributes for each view type, but will
@@ -156,27 +159,40 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun invalidateSelectionIndicator() {
-        val targetVis: Int
+        val targetAlpha: Float
         val targetDuration: Long
 
         if (isActivated) {
-            targetVis = VISIBLE
+            targetAlpha = 1f
             targetDuration =
                 context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
         } else {
-            targetVis = INVISIBLE
+            targetAlpha = 0f
             targetDuration =
                 context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong()
         }
 
-        if (selectionIndicator.visibility == targetVis) {
+        if (selectionIndicator.alpha == targetAlpha) {
             return
         }
 
-        TransitionManager.beginDelayedTransition(
-            this, MaterialFade().apply { duration = targetDuration })
+        if (!isLaidOut) {
+            selectionIndicator.alpha = targetAlpha
+            return
+        }
 
-        selectionIndicator.visibility = targetVis
+        if (fadeAnimator != null) {
+            fadeAnimator?.cancel()
+            fadeAnimator = null
+        }
+
+        fadeAnimator = ValueAnimator.ofFloat(selectionIndicator.alpha, targetAlpha).apply {
+            duration = targetDuration
+            addUpdateListener {
+                selectionIndicator.alpha = it.animatedValue as Float
+            }
+            start()
+        }
     }
 
     fun bind(song: Song) {

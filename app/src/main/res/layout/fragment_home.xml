@@ -13,13 +13,20 @@
         style="@style/Widget.Auxio.AppBarLayout"
         android:fitsSystemWindows="true">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/home_toolbar"
+        <org.oxycblt.auxio.ui.SelectionToolbarOverlay
+            android:id="@+id/home_toolbar_overlay"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:menu="@menu/menu_home"
-            app:title="@string/info_app_name" />
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/home_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:menu="@menu/menu_home"
+                app:title="@string/info_app_name" />
+
+        </org.oxycblt.auxio.ui.SelectionToolbarOverlay>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/home_tabs"
