@@ -27,8 +27,8 @@ import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logD
 
 /**
- * A wrapper around [Slider] that shows not only position and duration values, but also hacks
- * in bounds checking to avoid app crashes if bad position input comes in.
+ * A wrapper around [Slider] that shows not only position and duration values, but also hacks in
+ * bounds checking to avoid app crashes if bad position input comes in.
  *
  * @author OxygenCobalt
  */

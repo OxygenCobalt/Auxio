@@ -312,8 +312,8 @@ class Task(context: Context, private val raw: Song.Raw) {
     }
 
     /**
-     * Copies and sanitizes this string under the assumption that it is UTF-8. This should
-     * launder away any weird UTF-8 issues that ExoPlayer may cause.
+     * Copies and sanitizes this string under the assumption that it is UTF-8. This should launder
+     * away any weird UTF-8 issues that ExoPlayer may cause.
      */
     private fun String.sanitize() = String(encodeToByteArray())
 }

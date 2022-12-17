@@ -24,11 +24,11 @@ import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.ui.selection.SelectionViewModel
 import org.oxycblt.auxio.ui.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.ui.fragment.MenuFragment
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
+import org.oxycblt.auxio.ui.selection.SelectionViewModel
 import org.oxycblt.auxio.util.androidActivityViewModels
 
 /**

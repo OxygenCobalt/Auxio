@@ -42,8 +42,8 @@ import org.oxycblt.auxio.util.logD
 /**
  * The component managing the [MediaSessionCompat] instance, alongside the [NotificationComponent].
  *
- * Auxio does not directly rely on MediaSession, as it is extremely poorly designed. We instead
- * just mirror the playback state into the media session.
+ * Auxio does not directly rely on MediaSession, as it is extremely poorly designed. We instead just
+ * mirror the playback state into the media session.
  *
  * @author OxygenCobalt
  */

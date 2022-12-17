@@ -26,6 +26,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
@@ -43,15 +45,8 @@ import org.oxycblt.auxio.playback.queue.QueueSheetBehavior
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
-import org.oxycblt.auxio.util.collect
-import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.coordinatorLayoutBehavior
-import org.oxycblt.auxio.util.getAttrColorCompat
-import org.oxycblt.auxio.util.getDimen
-import org.oxycblt.auxio.util.systemBarInsetsCompat
-import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.auxio.ui.selection.SelectionViewModel
+import org.oxycblt.auxio.util.*
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls the more
@@ -87,6 +82,7 @@ class MainFragment :
             lastInsets = insets
             insets
         }
+
 
         // Send meaningful accessibility events for bottom sheets
         ViewCompat.setAccessibilityPaneTitle(
@@ -222,6 +218,8 @@ class MainFragment :
         when (action) {
             is MainNavigationAction.Expand -> tryExpandAll()
             is MainNavigationAction.Collapse -> tryCollapseAll()
+            // No need to reset selection despite navigating to another screen, as the
+            // main fragment destinations don't have selections
             is MainNavigationAction.Directions -> findNavController().navigate(action.directions)
         }
 

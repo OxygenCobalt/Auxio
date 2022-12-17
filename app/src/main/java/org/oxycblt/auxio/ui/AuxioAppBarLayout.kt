@@ -29,11 +29,10 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
-import org.oxycblt.auxio.util.logD
 
 /**
- * An [AppBarLayout] that fixes several bugs with the default implementation where the lifted
- * state will not properly respond to RecyclerView events.
+ * An [AppBarLayout] that fixes several bugs with the default implementation where the lifted state
+ * will not properly respond to RecyclerView events.
  *
  * **Note:** This layout relies on [AppBarLayout.liftOnScrollTargetViewId] to figure out what
  * scrolling view to use. Failure to specify this will result in the layout not working.
@@ -64,14 +63,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     /**
-     * Expand this app bar layout with the given recyclerview, preventing it from
-     * jumping around.
+     * Expand this app bar layout with the given recyclerview, preventing it from jumping around.
      */
     fun expandWithRecycler(recycler: RecyclerView?) {
         setExpanded(true)
-        recycler?.let {
-            addOnOffsetChangedListener(ExpansionHackListener(it))
-        }
+        recycler?.let { addOnOffsetChangedListener(ExpansionHackListener(it)) }
     }
 
     override fun onDetachedFromWindow() {
@@ -104,20 +100,20 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     /**
-     * Hack to prevent RecyclerView jumping when the appbar expands.
-     * Adapted from Material Files:
+     * Hack to prevent RecyclerView jumping when the appbar expands. Adapted from Material Files:
      * https://github.com/zhanghai/MaterialFiles/blob/master/app/src/main/java/me/zhanghai/android/files/ui/AppBarLayoutExpandHackListener.kt
      */
-    private class ExpansionHackListener(private val recycler: RecyclerView) : OnOffsetChangedListener {
-        private val offsetAnimationMaxEndTime = (AnimationUtils.currentAnimationTimeMillis()
-            + 600)
+    private class ExpansionHackListener(private val recycler: RecyclerView) :
+        OnOffsetChangedListener {
+        private val offsetAnimationMaxEndTime = (AnimationUtils.currentAnimationTimeMillis() + 600)
 
         private var lastVerticalOffset: Int? = null
 
         override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-            if (verticalOffset == 0
-                || AnimationUtils.currentAnimationTimeMillis() > offsetAnimationMaxEndTime) {
-                // AppBarLayout crashes with IndexOutOfBoundsException when a non-last listener removes
+            if (verticalOffset == 0 ||
+                AnimationUtils.currentAnimationTimeMillis() > offsetAnimationMaxEndTime) {
+                // AppBarLayout crashes with IndexOutOfBoundsException when a non-last listener
+                // removes
                 // itself, so we have to do the removal asynchronously.
                 appBarLayout.postOnAnimation { appBarLayout.removeOnOffsetChangedListener(this) }
             }

@@ -47,9 +47,7 @@ class SelectionViewModel : ViewModel() {
 
     /** Clear and return all selected items. */
     fun consume(): List<Music> {
-        return _selected.value.also {
-            _selected.value = listOf()
-        }
+        return _selected.value.also { _selected.value = listOf() }
     }
 
     override fun onCleared() {

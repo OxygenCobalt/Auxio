@@ -27,9 +27,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.AttrRes
 import androidx.core.view.updateMarginsRelative
-import androidx.transition.TransitionManager
 import com.google.android.material.shape.MaterialShapeDrawable
-import com.google.android.material.transition.MaterialFade
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -186,13 +184,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             fadeAnimator = null
         }
 
-        fadeAnimator = ValueAnimator.ofFloat(selectionIndicator.alpha, targetAlpha).apply {
-            duration = targetDuration
-            addUpdateListener {
-                selectionIndicator.alpha = it.animatedValue as Float
+        fadeAnimator =
+            ValueAnimator.ofFloat(selectionIndicator.alpha, targetAlpha).apply {
+                duration = targetDuration
+                addUpdateListener { selectionIndicator.alpha = it.animatedValue as Float }
+                start()
             }
-            start()
-        }
     }
 
     fun bind(song: Song) {

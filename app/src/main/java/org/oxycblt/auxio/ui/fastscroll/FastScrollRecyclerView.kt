@@ -40,7 +40,6 @@ import org.oxycblt.auxio.util.getDimenSize
 import org.oxycblt.auxio.util.getDrawableCompat
 import org.oxycblt.auxio.util.isRtl
 import org.oxycblt.auxio.util.isUnder
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**

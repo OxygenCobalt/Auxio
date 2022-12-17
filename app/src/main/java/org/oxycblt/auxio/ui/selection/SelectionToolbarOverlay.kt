@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2022 Auxio Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.ui.selection
 
 import android.animation.ValueAnimator
@@ -12,19 +29,20 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.logD
 
 /**
- * A wrapper around a Toolbar that enables an overlaid toolbar showing information about
- * an item selection.
+ * A wrapper around a Toolbar that enables an overlaid toolbar showing information about an item
+ * selection.
  * @author OxygenCobalt
  */
 class SelectionToolbarOverlay
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
-    FrameLayout(context, attrs, defStyleAttr){
+    FrameLayout(context, attrs, defStyleAttr) {
     private lateinit var innerToolbar: MaterialToolbar
-    private val selectionToolbar = MaterialToolbar(context).apply { 
-        inflateMenu(R.menu.menu_selection_actions)
-        setNavigationIcon(R.drawable.ic_close_24)
-    }
+    private val selectionToolbar =
+        MaterialToolbar(context).apply {
+            inflateMenu(R.menu.menu_selection_actions)
+            setNavigationIcon(R.drawable.ic_close_24)
+        }
 
     private var fadeThroughAnimator: ValueAnimator? = null
 
@@ -38,20 +56,18 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         addView(selectionToolbar)
     }
 
-    /**
-     * Add listeners for the selection toolbar.
-     */
-    fun registerListeners(onExit: OnClickListener,
-                          onMenuItemClick: Toolbar.OnMenuItemClickListener) {
+    /** Add listeners for the selection toolbar. */
+    fun registerListeners(
+        onExit: OnClickListener,
+        onMenuItemClick: Toolbar.OnMenuItemClickListener
+    ) {
         selectionToolbar.apply {
             setNavigationOnClickListener(onExit)
             setOnMenuItemClickListener(onMenuItemClick)
         }
     }
 
-    /**
-     * Unregister listeners for this instance.
-     */
+    /** Unregister listeners for this instance. */
     fun unregisterListeners() {
         selectionToolbar.apply {
             setNavigationOnClickListener(null)
@@ -60,8 +76,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     /**
-     * Update the selection amount in the selection Toolbar. This will animate the selection
-     * Toolbar into focus if there is now a selection to show.
+     * Update the selection amount in the selection Toolbar. This will animate the selection Toolbar
+     * into focus if there is now a selection to show.
      */
     fun updateSelectionAmount(amount: Int): Boolean {
         logD("Updating selection amount to $amount")
@@ -83,11 +99,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         if (selectionVisible) {
             targetInnerAlpha = 0f
             targetSelectionAlpha = 1f
-            targetDuration = context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
+            targetDuration =
+                context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
         } else {
             targetInnerAlpha = 1f
             targetSelectionAlpha = 0f
-            targetDuration = context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong()
+            targetDuration =
+                context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong()
         }
 
         if (innerToolbar.alpha == targetInnerAlpha &&
@@ -107,18 +125,17 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             fadeThroughAnimator = null
         }
 
-        fadeThroughAnimator = ValueAnimator.ofFloat(innerToolbar.alpha, targetInnerAlpha).apply {
-            duration = targetDuration
-            addUpdateListener {
-                changeToolbarAlpha(it.animatedValue as Float)
+        fadeThroughAnimator =
+            ValueAnimator.ofFloat(innerToolbar.alpha, targetInnerAlpha).apply {
+                duration = targetDuration
+                addUpdateListener { changeToolbarAlpha(it.animatedValue as Float) }
+                start()
             }
-            start()
-        }
 
         return true
     }
 
-    private fun changeToolbarAlpha(innerAlpha: Float ) {
+    private fun changeToolbarAlpha(innerAlpha: Float) {
         innerToolbar.apply {
             alpha = innerAlpha
             isInvisible = innerAlpha == 0f

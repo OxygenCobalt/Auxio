@@ -202,7 +202,6 @@ fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
 // Note: WindowInsetsCompat and it's related methods cause too many issues.
 // Use our own compat methods instead.
 
-
 /**
  * Resolve system bar insets in a version-aware manner. This can be used to apply padding to a view
  * that properly follows all the changes that were made between Android 8-11.

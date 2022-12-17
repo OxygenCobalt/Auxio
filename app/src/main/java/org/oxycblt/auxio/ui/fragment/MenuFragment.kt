@@ -20,7 +20,6 @@ package org.oxycblt.auxio.ui.fragment
 import android.view.View
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.MainFragmentDirections
@@ -184,9 +183,7 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
     }
 
     private fun musicMenuImpl(anchor: View, @MenuRes menuRes: Int, onSelect: (Int) -> Boolean) {
-        menu(anchor, menuRes) {
-            setOnMenuItemClickListener { item -> onSelect(item.itemId) }
-        }
+        menu(anchor, menuRes) { setOnMenuItemClickListener { item -> onSelect(item.itemId) } }
     }
 
     /**
