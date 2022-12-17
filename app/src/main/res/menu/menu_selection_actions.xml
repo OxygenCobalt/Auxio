@@ -4,10 +4,11 @@
     <item
         android:id="@+id/action_play_next_selection"
         android:title="@string/lbl_play_next"
-        android:icon="@drawable/ic_play_next_24"
+        android:icon="@drawable/ic_play_next"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_queue_add_selection"
+        android:icon="@drawable/ic_play_next"
         android:title="@string/lbl_queue_add"
         app:showAsAction="never" />
     <!-- TOOD: Disabled until able to get queue system into shape -->

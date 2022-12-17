@@ -54,7 +54,7 @@ class SongListFragment : HomeListFragment<Song>() {
         super.onBindingCreated(binding, savedInstanceState)
 
         binding.homeRecycler.apply {
-            id = R.id.home_song_list
+            id = R.id.home_song_recycler
             adapter = homeAdapter
         }
 

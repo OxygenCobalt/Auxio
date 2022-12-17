@@ -463,7 +463,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun animateViewIn(view: View) {
-        logD(view.translationX)
         view
             .animate()
             .alpha(1f)

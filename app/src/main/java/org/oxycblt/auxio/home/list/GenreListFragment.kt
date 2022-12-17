@@ -46,7 +46,7 @@ class GenreListFragment : HomeListFragment<Genre>() {
         super.onBindingCreated(binding, savedInstanceState)
 
         binding.homeRecycler.apply {
-            id = R.id.home_genre_list
+            id = R.id.home_genre_recycler
             adapter = homeAdapter
         }
 

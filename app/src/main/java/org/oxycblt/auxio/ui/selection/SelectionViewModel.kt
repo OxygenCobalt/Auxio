@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.ui
+package org.oxycblt.auxio.ui.selection
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +23,10 @@ import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.logD
 
+/**
+ * ViewModel that manages the current selection.
+ * @author OxygenCobalt
+ */
 class SelectionViewModel : ViewModel() {
     private val _selected = MutableStateFlow(listOf<Music>())
     val selected: StateFlow<List<Music>>
@@ -46,5 +50,10 @@ class SelectionViewModel : ViewModel() {
         return _selected.value.also {
             _selected.value = listOf()
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        logD("Cleared")
     }
 }

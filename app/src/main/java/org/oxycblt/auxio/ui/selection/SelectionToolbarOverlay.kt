@@ -1,20 +1,15 @@
-package org.oxycblt.auxio.ui
+package org.oxycblt.auxio.ui.selection
 
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isInvisible
-import androidx.transition.TransitionManager
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.transition.MaterialFadeThrough
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.logD
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * A wrapper around a Toolbar that enables an overlaid toolbar showing information about
@@ -30,8 +25,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         inflateMenu(R.menu.menu_selection_actions)
         setNavigationIcon(R.drawable.ic_close_24)
     }
-
-    private val selectionMenu = selectionToolbar.menu
 
     private var fadeThroughAnimator: ValueAnimator? = null
 
@@ -103,8 +96,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         if (!isLaidOut) {
+            // Not laid out, just change it immediately while are not shown to the user.
+            // This is an initialization, so we return false despite changing.
             changeToolbarAlpha(targetInnerAlpha)
-            return true
+            return false
         }
 
         if (fadeThroughAnimator != null) {

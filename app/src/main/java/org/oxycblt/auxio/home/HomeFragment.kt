@@ -29,6 +29,7 @@ import androidx.core.view.iterator
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -58,7 +59,7 @@ import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
-import org.oxycblt.auxio.ui.SelectionViewModel
+import org.oxycblt.auxio.ui.selection.SelectionViewModel
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.*
 
@@ -69,10 +70,11 @@ import org.oxycblt.auxio.util.*
  */
 class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuItemClickListener {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
-    private val navModel: NavigationViewModel by activityViewModels()
     private val homeModel: HomeViewModel by androidActivityViewModels()
-    private val selectionModel: SelectionViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
+    private val navModel: NavigationViewModel by activityViewModels()
+    // Makes no sense to share selections across screens
+    private val selectionModel: SelectionViewModel by activityViewModels()
 
     // lifecycleObject builds this in the creation step, so doing this is okay.
     private val storagePermissionLauncher: ActivityResultLauncher<String> by lifecycleObject {
@@ -237,15 +239,12 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     private fun updateCurrentTab(tab: MusicMode) {
         // Make sure that we update the scrolling view and allowed menu items whenever
         // the tab changes.
-        val binding = requireBinding()
         when (tab) {
             MusicMode.SONGS -> {
                 updateSortMenu(tab) { id -> id != R.id.option_sort_count }
-                binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_song_list
             }
             MusicMode.ALBUMS -> {
                 updateSortMenu(tab) { id -> id != R.id.option_sort_album }
-                binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_album_list
             }
             MusicMode.ARTISTS -> {
                 updateSortMenu(tab) { id ->
@@ -254,7 +253,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                         id == R.id.option_sort_count ||
                         id == R.id.option_sort_duration
                 }
-                binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_artist_list
             }
             MusicMode.GENRES -> {
                 updateSortMenu(tab) { id ->
@@ -263,9 +261,10 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                         id == R.id.option_sort_count ||
                         id == R.id.option_sort_duration
                 }
-                binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_genre_list
             }
         }
+
+        requireBinding().homeAppbar.liftOnScrollTargetViewId = getRecyclerId(tab)
     }
 
     private fun updateSortMenu(mode: MusicMode, isVisible: (Int) -> Boolean) {
@@ -402,7 +401,15 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     }
 
     private fun updateSelection(selected: List<Music>) {
-        requireBinding().homeToolbarOverlay.updateSelectionAmount(selected.size)
+        val binding = requireBinding()
+        if (binding.homeToolbarOverlay.updateSelectionAmount(selected.size) && selected.isNotEmpty()) {
+            logD("Significant selection occurred, expanding AppBar")
+            // Significant enough change where we want to expand the RecyclerView
+            binding.homeAppbar.expandWithRecycler(
+                binding.homePager.findViewById(
+                    getRecyclerId(homeModel.currentTab.value))
+            )
+        }
     }
 
     private fun handleNavigation(item: Music?) {
@@ -448,6 +455,14 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         currentItem = 0
         adapter = HomePagerAdapter()
     }
+
+    private fun getRecyclerId(tab: MusicMode) =
+        when (tab) {
+            MusicMode.SONGS -> R.id.home_song_recycler
+            MusicMode.ALBUMS -> R.id.home_album_recycler
+            MusicMode.ARTISTS -> R.id.home_artist_recycler
+            MusicMode.GENRES -> R.id.home_genre_recycler
+        }
 
     private inner class HomePagerAdapter :
         FragmentStateAdapter(childFragmentManager, viewLifecycleOwner.lifecycle) {

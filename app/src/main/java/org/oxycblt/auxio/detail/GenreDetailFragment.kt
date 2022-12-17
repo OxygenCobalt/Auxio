@@ -92,7 +92,11 @@ class GenreDetailFragment :
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
-        binding.detailToolbar.setOnMenuItemClickListener(null)
+        binding.detailToolbar.apply {
+            setNavigationOnClickListener(null)
+            setOnMenuItemClickListener(null)
+        }
+
         binding.detailRecycler.adapter = null
     }
 

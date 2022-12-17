@@ -65,6 +65,9 @@ class PlaybackStateManager private constructor() {
         private set
     private var _queue = mutableListOf<Song>()
 
+    private val orderedQueue = listOf<Song>()
+    private val shuffledQueue = listOf<Song>()
+
     /** The current queue determined by [parent] */
     val queue
         get() = _queue
