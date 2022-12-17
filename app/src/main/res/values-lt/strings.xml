@@ -253,4 +253,7 @@
     </plurals>
     <string name="set_rescan">Perskenuoti muziką</string>
     <string name="set_rescan_desc">Išvalyti žymių talpyklą ir pilnai perkrauti muzikos biblioteką (lėčiau, bet labiau išbaigta)</string>
+    <string name="fmt_selected">%d Pasirinkta</string>
+    <string name="lbl_play_selected">Groti pasirinktą</string>
+    <string name="lbl_shuffle_selected">Pasirinktas maišymas</string>
 </resources>
