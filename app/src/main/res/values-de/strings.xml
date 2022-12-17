@@ -255,4 +255,7 @@
     <string name="err_did_not_save">Zustand konnte nicht gespeichert werden</string>
     <string name="set_rescan">Music neu scannen</string>
     <string name="set_rescan_desc">Tag-Cache vollständig löschen und die Musik-Bibliothek vollständig neu laden (langsamer, aber vollständiger)</string>
+    <string name="lbl_play_selected">Ausgewählte abspielen</string>
+    <string name="lbl_shuffle_selected">Ausgewählte zufällig abspielen</string>
+    <string name="fmt_selected">%d ausgewählt</string>
 </resources>
