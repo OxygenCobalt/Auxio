@@ -27,6 +27,7 @@ import androidx.core.view.isInvisible
 import androidx.core.view.postDelayed
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialSharedAxis
 import org.oxycblt.auxio.R
@@ -42,22 +43,21 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.fragment.MenuFragment
 import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.ui.recycler.MenuItemListener
-import org.oxycblt.auxio.util.androidViewModels
-import org.oxycblt.auxio.util.collect
-import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.getSystemServiceCompat
-import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.ui.selection.SelectionToolbarOverlay
+import org.oxycblt.auxio.ui.selection.SelectionViewModel
+import org.oxycblt.auxio.util.*
 
 /**
  * A [Fragment] that allows for the searching of the entire music library.
+ * FIXME: Keyboard logic is really wonky
  * @author OxygenCobalt
  */
 class SearchFragment :
-    MenuFragment<FragmentSearchBinding>(), MenuItemListener, Toolbar.OnMenuItemClickListener {
+    MenuFragment<FragmentSearchBinding>(), MenuItemListener, Toolbar.OnMenuItemClickListener, SelectionToolbarOverlay.Callback {
 
     // SearchViewModel is only scoped to this Fragment
     private val searchModel: SearchViewModel by androidViewModels()
+    private val selectionModel: SelectionViewModel by activityViewModels()
 
     private val searchAdapter = SearchAdapter(this)
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
@@ -78,6 +78,8 @@ class SearchFragment :
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentSearchBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentSearchBinding, savedInstanceState: Bundle?) {
+        binding.searchToolbarOverlay.callback = this
+
         binding.searchToolbar.apply {
             val itemIdToSelect =
                 when (searchModel.filterMode) {
@@ -91,7 +93,12 @@ class SearchFragment :
             menu.findItem(itemIdToSelect).isChecked = true
 
             setNavigationOnClickListener {
+                // Reset selection (navigating to another selectable screen)
+                selectionModel.consume()
+
+                // Drop keyboard as it's no longer needed
                 imm.hide()
+
                 findNavController().navigateUp()
             }
 
@@ -121,38 +128,59 @@ class SearchFragment :
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::handlePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
+        collectImmediately(selectionModel.selected, ::handleSelection)
     }
 
     override fun onDestroyBinding(binding: FragmentSearchBinding) {
+        binding.searchToolbarOverlay.callback = null
         binding.searchToolbar.setOnMenuItemClickListener(null)
         binding.searchRecycler.adapter = null
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.submenu_filtering -> {}
-            else -> {
-                if (item.itemId != R.id.submenu_filtering) {
-                    searchModel.updateFilterModeWithId(item.itemId)
-                    item.isChecked = true
-                }
-            }
+        if (item.itemId != R.id.submenu_filtering) {
+            searchModel.updateFilterModeWithId(item.itemId)
+            item.isChecked = true
         }
 
         return true
     }
 
+    override fun onClearSelection() {
+        selectionModel.consume()
+    }
+
+    override fun onPlaySelectionNext() {
+        playbackModel.playNext(selectionModel.consume())
+        requireContext().showToast(R.string.lng_queue_added)
+    }
+
+    override fun onAddSelectionToQueue() {
+        playbackModel.addToQueue(selectionModel.consume())
+        requireContext().showToast(R.string.lng_queue_added)
+    }
+
     override fun onItemClick(item: Item) {
-        when (item) {
-            is Song ->
-                when (settings.libPlaybackMode) {
-                    MusicMode.SONGS -> playbackModel.playFromAll(item)
-                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-                    MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
-                    else -> error("Unexpected playback mode: ${settings.libPlaybackMode}")
-                }
-            is MusicParent -> navModel.exploreNavigateTo(item)
+        check(item is Music) { "Unexpected datatype ${item::class.simpleName}"}
+        if (selectionModel.selected.value.isEmpty()) {
+            when (item) {
+                is Song ->
+                    when (settings.libPlaybackMode) {
+                        MusicMode.SONGS -> playbackModel.playFromAll(item)
+                        MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
+                        MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
+                        else -> error("Unexpected playback mode: ${settings.libPlaybackMode}")
+                    }
+                is MusicParent -> navModel.exploreNavigateTo(item)
+            }
+        } else {
+            selectionModel.select(item)
         }
+    }
+
+    override fun onSelect(item: Item) {
+        check(item is Music) { "Unexpected datatype ${item::class.simpleName}"}
+        selectionModel.select(item)
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {
@@ -193,7 +221,18 @@ class SearchFragment :
                     else -> return
                 })
 
+        // Reset selection (navigating to another selectable screen)
+        selectionModel.consume()
+
+        // Drop keyboard as it's no longer needed
         imm.hide()
+    }
+
+    private fun handleSelection(selected: List<Music>) {
+        searchAdapter.updateSelection(selected)
+        if (requireBinding().searchToolbarOverlay.updateSelectionAmount(selected.size) && selected.isNotEmpty()) {
+            imm.hide()
+        }
     }
 
     private fun InputMethodManager.hide() {

@@ -20,6 +20,7 @@ package org.oxycblt.auxio.ui.selection
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.view.MenuItem
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.Toolbar
@@ -37,11 +38,29 @@ class SelectionToolbarOverlay
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     FrameLayout(context, attrs, defStyleAttr) {
+    var callback: Callback? = null
+
     private lateinit var innerToolbar: MaterialToolbar
     private val selectionToolbar =
         MaterialToolbar(context).apply {
-            inflateMenu(R.menu.menu_selection_actions)
             setNavigationIcon(R.drawable.ic_close_24)
+            setNavigationOnClickListener {
+                callback?.onClearSelection()
+            }
+
+            inflateMenu(R.menu.menu_selection_actions)
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_play_next -> {
+                        callback?.onPlaySelectionNext()
+                    }
+                    R.id.action_queue_add -> {
+                        callback?.onAddSelectionToQueue()
+                    }
+                }
+
+                true
+            }
         }
 
     private var fadeThroughAnimator: ValueAnimator? = null
@@ -56,23 +75,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         addView(selectionToolbar)
     }
 
-    /** Add listeners for the selection toolbar. */
-    fun registerListeners(
-        onExit: OnClickListener,
-        onMenuItemClick: Toolbar.OnMenuItemClickListener
-    ) {
-        selectionToolbar.apply {
-            setNavigationOnClickListener(onExit)
-            setOnMenuItemClickListener(onMenuItemClick)
-        }
-    }
-
-    /** Unregister listeners for this instance. */
-    fun unregisterListeners() {
-        selectionToolbar.apply {
-            setNavigationOnClickListener(null)
-            setOnMenuItemClickListener(null)
-        }
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        callback = null
     }
 
     /**
@@ -145,5 +150,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             alpha = 1 - innerAlpha
             isInvisible = innerAlpha == 1f
         }
+    }
+
+    interface Callback {
+        fun onClearSelection()
+        fun onPlaySelectionNext()
+        fun onAddSelectionToQueue()
     }
 }

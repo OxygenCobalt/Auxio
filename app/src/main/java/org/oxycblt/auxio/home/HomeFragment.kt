@@ -59,6 +59,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
+import org.oxycblt.auxio.ui.selection.SelectionToolbarOverlay
 import org.oxycblt.auxio.ui.selection.SelectionViewModel
 import org.oxycblt.auxio.util.*
 
@@ -67,7 +68,7 @@ import org.oxycblt.auxio.util.*
  * respective item.
  * @author OxygenCobalt
  */
-class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuItemClickListener {
+class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuItemClickListener, SelectionToolbarOverlay.Callback {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val homeModel: HomeViewModel by androidActivityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
@@ -114,9 +115,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             }
         }
 
-        binding.homeToolbarOverlay.registerListeners(
-            onExit = { selectionModel.consume() }, onMenuItemClick = this)
-
+        binding.homeToolbarOverlay.callback = this
         binding.homeToolbar.setOnMenuItemClickListener(this@HomeFragment)
 
         updateTabConfiguration()
@@ -174,14 +173,12 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
     override fun onDestroyBinding(binding: FragmentHomeBinding) {
         super.onDestroyBinding(binding)
-        binding.homeToolbarOverlay.unregisterListeners()
+        binding.homeToolbarOverlay.callback = null
         binding.homeToolbar.setOnMenuItemClickListener(null)
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
         when (item.itemId) {
-            // HOME
-
             R.id.action_search -> {
                 logD("Navigating to search")
                 // Reset selection (navigating to another selectable screen)
@@ -210,16 +207,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                         .withAscending(item.isChecked))
             }
 
-            // SELECTION
-
-            R.id.action_play_next_selection -> {
-                playbackModel.playNext(selectionModel.consume())
-                requireContext().showToast(R.string.lng_queue_added)
-            }
-            R.id.action_queue_add_selection -> {
-                playbackModel.addToQueue(selectionModel.consume())
-                requireContext().showToast(R.string.lng_queue_added)
-            }
             else -> {
                 // Sorting option was selected, mark it as selected and update the mode
                 item.isChecked = true
@@ -230,7 +217,22 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             }
         }
 
+        // Always handling an item
         return true
+    }
+
+    override fun onClearSelection() {
+        selectionModel.consume()
+    }
+
+    override fun onPlaySelectionNext() {
+        playbackModel.playNext(selectionModel.consume())
+        requireContext().showToast(R.string.lng_queue_added)
+    }
+
+    override fun onAddSelectionToQueue() {
+        playbackModel.addToQueue(selectionModel.consume())
+        requireContext().showToast(R.string.lng_queue_added)
     }
 
     private fun updateCurrentTab(tab: MusicMode) {
@@ -453,9 +455,9 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
      * https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
      */
     private fun ViewPager2.reduceSensitivity(by: Int) {
-        val recycler = VIEW_PAGER_RECYCLER_FIELD.get(this@reduceSensitivity)
-        val slop = VIEW_PAGER_TOUCH_SLOP_FIELD.get(recycler) as Int
-        VIEW_PAGER_TOUCH_SLOP_FIELD.set(recycler, slop * by)
+        val recycler = VP_RECYCLER_FIELD.get(this@reduceSensitivity)
+        val slop = RV_TOUCH_SLOP_FIELD.get(recycler) as Int
+        RV_TOUCH_SLOP_FIELD.set(recycler, slop * by)
     }
 
     /** Forces the view to recreate all fragments contained within it. */
@@ -480,9 +482,9 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     }
 
     companion object {
-        private val VIEW_PAGER_RECYCLER_FIELD: Field by
+        private val VP_RECYCLER_FIELD: Field by
             lazyReflectedField(ViewPager2::class, "mRecyclerView")
-        private val VIEW_PAGER_TOUCH_SLOP_FIELD: Field by
+        private val RV_TOUCH_SLOP_FIELD: Field by
             lazyReflectedField(RecyclerView::class, "mTouchSlop")
         private const val KEY_LAST_TRANSITION_AXIS =
             BuildConfig.APPLICATION_ID + ".key.LAST_TRANSITION_AXIS"

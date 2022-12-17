@@ -12,37 +12,44 @@
         app:liftOnScroll="true"
         app:liftOnScrollTargetViewId="@id/search_recycler">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/search_toolbar"
+        <org.oxycblt.auxio.ui.selection.SelectionToolbarOverlay
+            android:id="@+id/search_toolbar_overlay"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:menu="@menu/menu_search"
-            app:navigationIcon="@drawable/ic_back_24">
+            android:layout_height="wrap_content">
 
-            <com.google.android.material.textfield.TextInputLayout
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/search_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:endIconContentDescription="@string/desc_clear_search"
-                app:endIconDrawable="@drawable/ic_close_24"
-                app:endIconMode="clear_text"
-                app:endIconTint="?attr/colorControlNormal"
-                app:errorEnabled="false"
-                app:hintEnabled="false">
+                app:menu="@menu/menu_search"
+                app:navigationIcon="@drawable/ic_back_24">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/search_edit_text"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/lng_search_library"
-                    android:imeOptions="actionSearch|flagNoExtractUi"
-                    android:inputType="textFilter"
-                    android:paddingStart="@dimen/spacing_tiny"
-                    android:paddingEnd="0dp" />
+                    app:endIconContentDescription="@string/desc_clear_search"
+                    app:endIconDrawable="@drawable/ic_close_24"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="?attr/colorControlNormal"
+                    app:errorEnabled="false"
+                    app:hintEnabled="false">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/search_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/lng_search_library"
+                        android:imeOptions="actionSearch|flagNoExtractUi"
+                        android:inputType="textFilter"
+                        android:paddingStart="@dimen/spacing_tiny"
+                        android:paddingEnd="0dp" />
 
-        </com.google.android.material.appbar.MaterialToolbar>
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </com.google.android.material.appbar.MaterialToolbar>
+
+        </org.oxycblt.auxio.ui.selection.SelectionToolbarOverlay>
 
     </org.oxycblt.auxio.ui.AuxioAppBarLayout>
 
