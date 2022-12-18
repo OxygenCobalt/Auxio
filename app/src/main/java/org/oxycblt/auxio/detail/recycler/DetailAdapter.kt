@@ -26,22 +26,20 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemSortHeaderBinding
 import org.oxycblt.auxio.detail.SortHeader
-import org.oxycblt.auxio.ui.recycler.AuxioRecyclerView
-import org.oxycblt.auxio.ui.recycler.Header
-import org.oxycblt.auxio.ui.recycler.HeaderViewHolder
-import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.ui.recycler.MenuItemListener
-import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
-import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
+import org.oxycblt.auxio.list.Header
+import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.ItemSelectCallback
+import org.oxycblt.auxio.list.recycler.AuxioRecyclerView
+import org.oxycblt.auxio.list.recycler.HeaderViewHolder
+import org.oxycblt.auxio.list.recycler.PlayingIndicatorAdapter
+import org.oxycblt.auxio.list.recycler.SimpleItemCallback
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
-abstract class DetailAdapter<L : DetailAdapter.Listener>(
-    private val listener: L,
+abstract class DetailAdapter(
+    private val callback: Callback,
     diffCallback: DiffUtil.ItemCallback<Item>
 ) : PlayingIndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
-    private var isPlaying = false
-
     @Suppress("LeakingThis") override fun getItemCount() = differ.currentList.size
 
     override fun getItemViewType(position: Int) =
@@ -71,7 +69,7 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
         if (payloads.isEmpty()) {
             when (item) {
                 is Header -> (holder as HeaderViewHolder).bind(item)
-                is SortHeader -> (holder as SortHeaderViewHolder).bind(item, listener)
+                is SortHeader -> (holder as SortHeaderViewHolder).bind(item, callback)
             }
         }
 
@@ -107,20 +105,23 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
             }
     }
 
-    interface Listener : MenuItemListener {
-        fun onPlayParent()
-        fun onShuffleParent()
-        fun onShowSortMenu(anchor: View)
-    }
+    open class Callback(
+        onClick: (Item) -> Unit,
+        onOpenItemMenu: (Item, View) -> Unit,
+        onSelect: (Item) -> Unit,
+        val onPlay: () -> Unit,
+        val onShuffle: () -> Unit,
+        val onOpenSortMenu: (View) -> Unit
+    ) : ItemSelectCallback(onClick, onOpenItemMenu, onSelect)
 }
 
 class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: SortHeader, listener: DetailAdapter.Listener) {
+    fun bind(item: SortHeader, callback: DetailAdapter.Callback) {
         binding.headerTitle.text = binding.context.getString(item.string)
         binding.headerButton.apply {
             TooltipCompat.setTooltipText(this, contentDescription)
-            setOnClickListener(listener::onShowSortMenu)
+            setOnClickListener(callback.onOpenSortMenu)
         }
     }
 

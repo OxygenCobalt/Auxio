@@ -26,8 +26,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
@@ -39,13 +37,12 @@ import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.PlaybackSheetBehavior
+import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.queue.QueueSheetBehavior
-import org.oxycblt.auxio.ui.MainNavigationAction
-import org.oxycblt.auxio.ui.NavigationViewModel
-import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
-import org.oxycblt.auxio.ui.selection.SelectionViewModel
+import org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior
+import org.oxycblt.auxio.shared.MainNavigationAction
+import org.oxycblt.auxio.shared.NavigationViewModel
+import org.oxycblt.auxio.shared.ViewBindingFragment
 import org.oxycblt.auxio.util.*
 
 /**
@@ -83,17 +80,17 @@ class MainFragment :
             insets
         }
 
-
         // Send meaningful accessibility events for bottom sheets
         ViewCompat.setAccessibilityPaneTitle(
             binding.playbackSheet, context.getString(R.string.lbl_playback))
         ViewCompat.setAccessibilityPaneTitle(
             binding.queueSheet, context.getString(R.string.lbl_queue))
 
-        val queueSheetBehavior = binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
+        val queueSheetBehavior =
+            binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
         if (queueSheetBehavior != null) {
             val playbackSheetBehavior =
-                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
 
             unlikelyToBeNull(binding.handleWrapper).setOnClickListener {
                 if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED &&
@@ -146,7 +143,7 @@ class MainFragment :
         val binding = requireBinding()
 
         val playbackSheetBehavior =
-            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
 
         val playbackRatio = max(playbackSheetBehavior.calculateSlideOffset(), 0f)
 
@@ -154,7 +151,8 @@ class MainFragment :
         val halfOutRatio = min(playbackRatio * 2, 1f)
         val halfInPlaybackRatio = max(playbackRatio - 0.5f, 0f) * 2
 
-        val queueSheetBehavior = binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
+        val queueSheetBehavior =
+            binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
         if (queueSheetBehavior != null) {
             // Queue sheet, take queue into account so the playback bar is shown and the playback
@@ -262,7 +260,7 @@ class MainFragment :
     private fun tryExpandAll() {
         val binding = requireBinding()
         val playbackSheetBehavior =
-            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
 
         if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_COLLAPSED) {
             // State is collapsed and non-hidden, expand
@@ -273,12 +271,12 @@ class MainFragment :
     private fun tryCollapseAll() {
         val binding = requireBinding()
         val playbackSheetBehavior =
-            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
 
         if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED) {
             // Make sure the queue is also collapsed here.
             val queueSheetBehavior =
-                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
+                binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
             playbackSheetBehavior.state = NeoBottomSheetBehavior.STATE_COLLAPSED
             queueSheetBehavior?.state = NeoBottomSheetBehavior.STATE_COLLAPSED
@@ -288,11 +286,11 @@ class MainFragment :
     private fun tryUnhideAll() {
         val binding = requireBinding()
         val playbackSheetBehavior =
-            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
 
         if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_HIDDEN) {
             val queueSheetBehavior =
-                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
+                binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
             // Queue sheet behavior is either collapsed or expanded, no hiding needed
             queueSheetBehavior?.isDraggable = true
@@ -308,11 +306,11 @@ class MainFragment :
     private fun tryHideAll() {
         val binding = requireBinding()
         val playbackSheetBehavior =
-            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
 
         if (playbackSheetBehavior.state != NeoBottomSheetBehavior.STATE_HIDDEN) {
             val queueSheetBehavior =
-                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
+                binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
             // Make these views non-draggable so the user can't halt the hiding event.
 
@@ -336,9 +334,9 @@ class MainFragment :
         override fun handleOnBackPressed() {
             val binding = requireBinding()
             val playbackSheetBehavior =
-                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
             val queueSheetBehavior =
-                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
+                binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
             if (queueSheetBehavior != null &&
                 queueSheetBehavior.state != NeoBottomSheetBehavior.STATE_COLLAPSED &&
@@ -361,9 +359,9 @@ class MainFragment :
         fun updateEnabledState() {
             val binding = requireBinding()
             val playbackSheetBehavior =
-                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackSheetBehavior
+                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
             val queueSheetBehavior =
-                binding.queueSheet.coordinatorLayoutBehavior as QueueSheetBehavior?
+                binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
             val exploreNavController = binding.exploreNavHost.findNavController()
 

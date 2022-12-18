@@ -19,11 +19,19 @@ package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
+import org.oxycblt.auxio.home.HomeViewModel
+import org.oxycblt.auxio.list.*
+import org.oxycblt.auxio.list.SelectionFragment
+import org.oxycblt.auxio.list.recycler.AlbumViewHolder
+import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.recycler.SyncListDiffer
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
@@ -31,21 +39,23 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.secsToMs
-import org.oxycblt.auxio.ui.recycler.AlbumViewHolder
-import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.ui.recycler.MenuItemListener
-import org.oxycblt.auxio.ui.recycler.SelectionIndicatorAdapter
-import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
 
 /**
  * A [HomeListFragment] for showing a list of [Album]s.
  * @author OxygenCobalt
  */
-class AlbumListFragment : HomeListFragment<Album>() {
-    private val homeAdapter = AlbumAdapter(this)
+class AlbumListFragment : SelectionFragment<FragmentHomeListBinding>() {
+    private val homeModel: HomeViewModel by activityViewModels()
+
+    private val homeAdapter =
+        AlbumAdapter(ItemSelectCallback(::handleClick, ::handleOpenMenu, ::handleClick))
+
     private val formatterSb = StringBuilder(32)
     private val formatter = Formatter(formatterSb)
+
+    override fun onCreateBinding(inflater: LayoutInflater) =
+        FragmentHomeListBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
@@ -53,14 +63,32 @@ class AlbumListFragment : HomeListFragment<Album>() {
         binding.homeRecycler.apply {
             id = R.id.home_album_recycler
             adapter = homeAdapter
+
+            popupProvider = ::updatePopup
+            fastScrollCallback = { homeModel.setFastScrolling(it) }
         }
 
         collectImmediately(homeModel.albums, homeAdapter::replaceList)
-        collectImmediately(selectionModel.selected, homeAdapter::updateSelection)
-        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::handleParent)
+        collectImmediately(selectionModel.selected, homeAdapter::setSelected)
+        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
-    override fun getPopup(pos: Int): String? {
+    override fun onDestroyBinding(binding: FragmentHomeListBinding) {
+        super.onDestroyBinding(binding)
+        binding.homeRecycler.adapter = null
+    }
+
+    override fun onClick(music: Music) {
+        check(music is Album) { "Unexpected datatype: ${music::class.java}" }
+        navModel.exploreNavigateTo(music)
+    }
+
+    private fun handleOpenMenu(item: Item, anchor: View) {
+        check(item is Album) { "Unexpected datatype: ${item::class.java}" }
+        openMusicMenu(anchor, R.menu.menu_album_actions, item)
+    }
+
+    private fun updatePopup(pos: Int): String? {
         val album = homeModel.albums.value[pos]
 
         // Change how we display the popup depending on the mode.
@@ -98,18 +126,7 @@ class AlbumListFragment : HomeListFragment<Album>() {
             else -> null
         }
     }
-
-    override fun onItemClick(music: Music) {
-        check(music is Album) { "Unexpected datatype: ${music::class.java}" }
-        navModel.exploreNavigateTo(music)
-    }
-
-    override fun onOpenMenu(item: Item, anchor: View) {
-        check(item is Album) { "Unexpected datatype: ${item::class.java}" }
-        musicMenu(anchor, R.menu.menu_album_actions, item)
-    }
-
-    private fun handleParent(parent: MusicParent?, isPlaying: Boolean) {
+    private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
         if (parent is Album) {
             homeAdapter.updateIndicator(parent, isPlaying)
         } else {
@@ -118,7 +135,7 @@ class AlbumListFragment : HomeListFragment<Album>() {
         }
     }
 
-    private class AlbumAdapter(private val listener: MenuItemListener) :
+    private class AlbumAdapter(private val callback: ItemSelectCallback) :
         SelectionIndicatorAdapter<AlbumViewHolder>() {
         private val differ = SyncListDiffer(this, AlbumViewHolder.DIFFER)
 
@@ -134,7 +151,7 @@ class AlbumListFragment : HomeListFragment<Album>() {
             super.onBindViewHolder(holder, position, payloads)
 
             if (payloads.isEmpty()) {
-                holder.bind(differ.currentList[position], listener)
+                holder.bind(differ.currentList[position], callback)
             }
         }
 

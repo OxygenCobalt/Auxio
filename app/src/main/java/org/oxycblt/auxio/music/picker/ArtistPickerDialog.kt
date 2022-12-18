@@ -24,15 +24,15 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
-import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
-import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.ui.recycler.ItemClickListener
+import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.ItemClickCallback
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.shared.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 
-abstract class ArtistPickerDialog :
-    ViewBindingDialogFragment<DialogMusicPickerBinding>(), ItemClickListener {
+abstract class ArtistPickerDialog : ViewBindingDialogFragment<DialogMusicPickerBinding>() {
     protected val pickerModel: MusicPickerViewModel by viewModels()
-    private val artistAdapter = ArtistChoiceAdapter(this)
+    private val artistAdapter = ArtistChoiceAdapter(ItemClickCallback(::onChoiceConfirmed))
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogMusicPickerBinding.inflate(inflater)
@@ -43,6 +43,7 @@ abstract class ArtistPickerDialog :
 
     override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {
         binding.pickerRecycler.adapter = artistAdapter
+
         collectImmediately(pickerModel.currentArtists) { artists ->
             if (!artists.isNullOrEmpty()) {
                 artistAdapter.submitList(artists)
@@ -56,7 +57,8 @@ abstract class ArtistPickerDialog :
         binding.pickerRecycler.adapter = null
     }
 
-    override fun onItemClick(item: Item) {
+    open fun onChoiceConfirmed(item: Item) {
+        check(item is Artist) { "Unexpected datatype: ${item::class.java}" }
         findNavController().navigateUp()
     }
 }

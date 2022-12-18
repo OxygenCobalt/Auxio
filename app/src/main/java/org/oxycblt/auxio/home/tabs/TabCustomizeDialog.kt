@@ -27,7 +27,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogTabsBinding
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
+import org.oxycblt.auxio.shared.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
 
@@ -35,8 +35,8 @@ import org.oxycblt.auxio.util.logD
  * The dialog for customizing library tabs.
  * @author OxygenCobalt
  */
-class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAdapter.Listener {
-    private val tabAdapter = TabAdapter(this)
+class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>() {
+    private val tabAdapter = TabAdapter(TabAdapter.Callback(::toggleVisibility, ::pickUpTab))
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
     private val touchHelper: ItemTouchHelper by lifecycleObject {
         ItemTouchHelper(TabDragCallback(tabAdapter))
@@ -79,7 +79,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
         binding.tabRecycler.adapter = null
     }
 
-    override fun onVisibilityToggled(mode: MusicMode) {
+    private fun toggleVisibility(mode: MusicMode) {
         val index = tabAdapter.tabs.indexOfFirst { it.mode == mode }
         if (index > -1) {
             val tab = tabAdapter.tabs[index]
@@ -95,7 +95,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
             tabAdapter.tabs.filterIsInstance<Tab.Visible>().isNotEmpty()
     }
 
-    override fun onPickUpTab(viewHolder: RecyclerView.ViewHolder) {
+    private fun pickUpTab(viewHolder: RecyclerView.ViewHolder) {
         touchHelper.startDrag(viewHolder)
     }
 

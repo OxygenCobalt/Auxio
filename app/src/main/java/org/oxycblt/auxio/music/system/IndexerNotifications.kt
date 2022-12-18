@@ -23,7 +23,7 @@ import androidx.core.app.NotificationCompat
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.system.ServiceNotification
+import org.oxycblt.auxio.shared.ServiceNotification
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
 

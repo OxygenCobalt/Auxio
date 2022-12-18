@@ -25,7 +25,7 @@ import com.google.android.material.checkbox.MaterialCheckBox
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSeparatorsBinding
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
+import org.oxycblt.auxio.shared.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
 
 class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {

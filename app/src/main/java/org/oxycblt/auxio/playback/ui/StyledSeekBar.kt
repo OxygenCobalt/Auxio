@@ -45,7 +45,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         binding.seekBarSlider.addOnChangeListener(this)
     }
 
-    var callback: Callback? = null
+    var onSeekConfirmed: ((Long) -> Unit)? = null
 
     /**
      * The current position, in seconds. This is the current value of the SeekBar and is indicated
@@ -104,17 +104,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         logD("Confirming seek")
         // End of seek event, send off new value to callback.
         isActivated = false
-        callback?.seekTo(slider.value.toLong())
+        onSeekConfirmed?.invoke(slider.value.toLong())
     }
 
     override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
         binding.seekBarPosition.text = value.toLong().formatDurationDs(true)
-    }
-
-    interface Callback {
-        /**
-         * Called when a seek event was completed and the new position must be seeked to by the app.
-         */
-        fun seekTo(positionDs: Long)
     }
 }

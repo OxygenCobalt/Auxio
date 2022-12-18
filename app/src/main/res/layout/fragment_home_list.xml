@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.oxycblt.auxio.ui.fastscroll.FastScrollRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_recycler"
     style="@style/Widget.Auxio.RecyclerView.Grid.WithAdaptiveFab"

@@ -7,12 +7,12 @@
     android:background="?attr/colorSurface"
     android:transitionGroup="true">
 
-    <org.oxycblt.auxio.ui.AuxioAppBarLayout
+    <org.oxycblt.auxio.shared.AuxioAppBarLayout
         style="@style/Widget.Auxio.AppBarLayout"
         app:liftOnScroll="true"
         app:liftOnScrollTargetViewId="@id/search_recycler">
 
-        <org.oxycblt.auxio.ui.selection.SelectionToolbarOverlay
+        <org.oxycblt.auxio.list.SelectionToolbarOverlay
             android:id="@+id/search_toolbar_overlay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -49,11 +49,11 @@
 
             </com.google.android.material.appbar.MaterialToolbar>
 
-        </org.oxycblt.auxio.ui.selection.SelectionToolbarOverlay>
+        </org.oxycblt.auxio.list.SelectionToolbarOverlay>
 
-    </org.oxycblt.auxio.ui.AuxioAppBarLayout>
+    </org.oxycblt.auxio.shared.AuxioAppBarLayout>
 
-    <org.oxycblt.auxio.ui.recycler.AuxioRecyclerView
+    <org.oxycblt.auxio.list.recycler.AuxioRecyclerView
         android:id="@+id/search_recycler"
         style="@style/Widget.Auxio.RecyclerView.Grid"
         android:layout_width="match_parent"

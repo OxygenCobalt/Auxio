@@ -78,7 +78,7 @@
     </fragment>
     <dialog
         android:id="@+id/accent_dialog"
-        android:name="org.oxycblt.auxio.ui.accent.AccentCustomizeDialog"
+        android:name="org.oxycblt.auxio.settings.accent.AccentCustomizeDialog"
         android:label="accent_dialog"
         tools:layout="@layout/dialog_accent" />
     <dialog

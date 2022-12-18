@@ -24,18 +24,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.playback.ui.StyledSeekBar
-import org.oxycblt.auxio.ui.MainNavigationAction
-import org.oxycblt.auxio.ui.fragment.MenuFragment
+import org.oxycblt.auxio.shared.MainNavigationAction
+import org.oxycblt.auxio.shared.NavigationViewModel
+import org.oxycblt.auxio.shared.ViewBindingFragment
+import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -47,10 +48,10 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Make seek thumb grow when selected
  */
-class PlaybackPanelFragment :
-    MenuFragment<FragmentPlaybackPanelBinding>(),
-    StyledSeekBar.Callback,
-    Toolbar.OnMenuItemClickListener {
+class PlaybackPanelFragment : ViewBindingFragment<FragmentPlaybackPanelBinding>() {
+    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    private val navModel: NavigationViewModel by activityViewModels()
+
     // AudioEffect expects you to use startActivityForResult with the panel intent. Use
     // the contract analogue for this since there is no built-in contract for AudioEffect.
     private val activityLauncher by lifecycleObject {
@@ -76,7 +77,10 @@ class PlaybackPanelFragment :
 
         binding.playbackToolbar.apply {
             setNavigationOnClickListener { navModel.mainNavigateTo(MainNavigationAction.Collapse) }
-            setOnMenuItemClickListener(this@PlaybackPanelFragment)
+            setOnMenuItemClickListener {
+                handleMenuItem(it)
+                true
+            }
         }
 
         // Make sure we enable marquee on the song info
@@ -96,7 +100,7 @@ class PlaybackPanelFragment :
             setOnClickListener { playbackModel.song.value?.let { showCurrentAlbum() } }
         }
 
-        binding.playbackSeekBar.callback = this
+        binding.playbackSeekBar.onSeekConfirmed = playbackModel::seekTo
 
         binding.playbackRepeat.setOnClickListener { playbackModel.incrementRepeatMode() }
         binding.playbackSkipPrev.setOnClickListener { playbackModel.prev() }
@@ -115,18 +119,14 @@ class PlaybackPanelFragment :
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
-        binding.playbackToolbar.setOnMenuItemClickListener(null)
-
         // Leaving marquee on will cause a leak
         binding.playbackSong.isSelected = false
         binding.playbackArtist.isSelected = false
         binding.playbackAlbum.isSelected = false
-
-        binding.playbackSeekBar.callback = null
     }
 
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        return when (item.itemId) {
+    private fun handleMenuItem(item: MenuItem) {
+        when (item.itemId) {
             R.id.action_open_equalizer -> {
                 val equalizerIntent =
                     Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
@@ -139,16 +139,12 @@ class PlaybackPanelFragment :
                 } catch (e: ActivityNotFoundException) {
                     requireContext().showToast(R.string.err_no_app)
                 }
-
-                true
             }
             R.id.action_go_artist -> {
                 showCurrentArtist()
-                true
             }
             R.id.action_go_album -> {
                 showCurrentAlbum()
-                true
             }
             R.id.action_song_detail -> {
                 playbackModel.song.value?.let { song ->
@@ -156,15 +152,8 @@ class PlaybackPanelFragment :
                         MainNavigationAction.Directions(
                             MainFragmentDirections.actionShowDetails(song.uid)))
                 }
-
-                true
             }
-            else -> false
         }
-    }
-
-    override fun seekTo(positionDs: Long) {
-        playbackModel.seekTo(positionDs)
     }
 
     private fun updateSong(song: Song?) {
@@ -208,6 +197,7 @@ class PlaybackPanelFragment :
         val song = playbackModel.song.value ?: return
         navModel.exploreNavigateTo(song.artists)
     }
+
     private fun showCurrentAlbum() {
         val song = playbackModel.song.value ?: return
         navModel.exploreNavigateTo(song.album)

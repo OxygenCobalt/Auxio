@@ -23,7 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialFadeThrough
 import org.oxycblt.auxio.databinding.FragmentSettingsBinding
-import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
+import org.oxycblt.auxio.shared.ViewBindingFragment
 
 /**
  * A container [Fragment] for the settings menu.

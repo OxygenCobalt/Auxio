@@ -19,7 +19,6 @@ package org.oxycblt.auxio.playback.queue
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -28,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
+import org.oxycblt.auxio.shared.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
@@ -52,16 +51,6 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
         binding.queueRecycler.apply {
             adapter = queueAdapter
             touchHelper.attachToRecyclerView(this)
-
-            // Sometimes the scroll can change without the listener being updated, so we also
-            // check for relayout events.
-            addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> invalidateDivider() }
-            addOnScrollListener(
-                object : RecyclerView.OnScrollListener() {
-                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        invalidateDivider()
-                    }
-                })
         }
 
         // --- VIEWMODEL SETUP ----
@@ -95,10 +84,6 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
             queueAdapter.submitList(queue)
         }
 
-        binding.queueDivider.isInvisible =
-            (binding.queueRecycler.layoutManager as LinearLayoutManager)
-                .findFirstCompletelyVisibleItemPosition() < 1
-
         queueModel.finishReplace()
 
         val scrollTo = queueModel.scrollTo
@@ -116,12 +101,5 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
         queueModel.finishScrollTo()
 
         queueAdapter.updateIndicator(index, isPlaying)
-    }
-
-    private fun invalidateDivider() {
-        val binding = requireBinding()
-        binding.queueDivider.isInvisible =
-            (binding.queueRecycler.layoutManager as LinearLayoutManager)
-                .findFirstCompletelyVisibleItemPosition() < 1
     }
 }

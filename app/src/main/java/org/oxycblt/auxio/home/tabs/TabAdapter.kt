@@ -24,11 +24,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemTabBinding
+import org.oxycblt.auxio.list.recycler.DialogViewHolder
 import org.oxycblt.auxio.music.MusicMode
-import org.oxycblt.auxio.ui.recycler.DialogViewHolder
 import org.oxycblt.auxio.util.inflater
 
-class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewHolder>() {
+class TabAdapter(private val callback: Callback) : RecyclerView.Adapter<TabViewHolder>() {
     var tabs = arrayOf<Tab>()
         private set
 
@@ -37,7 +37,7 @@ class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewH
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TabViewHolder.new(parent)
 
     override fun onBindViewHolder(holder: TabViewHolder, position: Int) {
-        holder.bind(tabs[position], listener)
+        holder.bind(tabs[position], callback)
     }
 
     @Suppress("NotifyDatasetChanged")
@@ -59,10 +59,10 @@ class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewH
         notifyItemMoved(from, to)
     }
 
-    interface Listener {
-        fun onVisibilityToggled(mode: MusicMode)
-        fun onPickUpTab(viewHolder: RecyclerView.ViewHolder)
-    }
+    class Callback(
+        val toggleVisibility: (MusicMode) -> Unit,
+        val pickUpTab: (RecyclerView.ViewHolder) -> Unit
+    )
 
     companion object {
         val PAYLOAD_TAB_CHANGED = Any()
@@ -72,8 +72,8 @@ class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewH
 class TabViewHolder private constructor(private val binding: ItemTabBinding) :
     DialogViewHolder(binding.root) {
     @SuppressLint("ClickableViewAccessibility")
-    fun bind(item: Tab, listener: TabAdapter.Listener) {
-        binding.root.setOnClickListener { listener.onVisibilityToggled(item.mode) }
+    fun bind(item: Tab, callback: TabAdapter.Callback) {
+        binding.root.setOnClickListener { callback.toggleVisibility(item.mode) }
 
         binding.tabIcon.apply {
             setText(
@@ -90,7 +90,7 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
         binding.tabDragHandle.setOnTouchListener { _, motionEvent ->
             binding.tabDragHandle.performClick()
             if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
-                listener.onPickUpTab(this)
+                callback.pickUpTab(this)
                 true
             } else false
         }

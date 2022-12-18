@@ -20,13 +20,14 @@ package org.oxycblt.auxio.search
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.list.*
+import org.oxycblt.auxio.list.recycler.*
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.recycler.*
 
-class SearchAdapter(private val listener: MenuItemListener) :
+class SearchAdapter(private val callback: ItemSelectCallback) :
     SelectionIndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
     private val differ = AsyncListDiffer(this, DIFFER)
 
@@ -61,10 +62,10 @@ class SearchAdapter(private val listener: MenuItemListener) :
 
         if (payloads.isEmpty()) {
             when (val item = differ.currentList[position]) {
-                is Song -> (holder as SongViewHolder).bind(item, listener)
-                is Album -> (holder as AlbumViewHolder).bind(item, listener)
-                is Artist -> (holder as ArtistViewHolder).bind(item, listener)
-                is Genre -> (holder as GenreViewHolder).bind(item, listener)
+                is Song -> (holder as SongViewHolder).bind(item, callback)
+                is Album -> (holder as AlbumViewHolder).bind(item, callback)
+                is Artist -> (holder as ArtistViewHolder).bind(item, callback)
+                is Genre -> (holder as GenreViewHolder).bind(item, callback)
                 is Header -> (holder as HeaderViewHolder).bind(item)
             }
         }

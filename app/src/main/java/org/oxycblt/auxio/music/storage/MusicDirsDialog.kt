@@ -29,7 +29,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
+import org.oxycblt.auxio.shared.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
@@ -59,7 +59,8 @@ class MusicDirsDialog :
             .setPositiveButton(R.string.lbl_save) { _, _ ->
                 val dirs = settings.getMusicDirs(storageManager)
                 val newDirs =
-                    MusicDirs(dirs = dirAdapter.dirs, shouldInclude = isInclude(requireBinding()))
+                    MusicDirs(
+                        dirs = dirAdapter.dirs, shouldInclude = isUiModeInclude(requireBinding()))
                 if (dirs != newDirs) {
                     logD("Committing changes")
                     settings.setMusicDirs(newDirs)
@@ -122,7 +123,7 @@ class MusicDirsDialog :
         super.onSaveInstanceState(outState)
         outState.putStringArrayList(
             KEY_PENDING_DIRS, ArrayList(dirAdapter.dirs.map { it.toString() }))
-        outState.putBoolean(KEY_PENDING_MODE, isInclude(requireBinding()))
+        outState.putBoolean(KEY_PENDING_MODE, isUiModeInclude(requireBinding()))
     }
 
     override fun onDestroyBinding(binding: DialogMusicDirsBinding) {
@@ -166,14 +167,14 @@ class MusicDirsDialog :
 
     private fun updateMode() {
         val binding = requireBinding()
-        if (isInclude(binding)) {
+        if (isUiModeInclude(binding)) {
             binding.dirsModeDesc.setText(R.string.set_dirs_mode_include_desc)
         } else {
             binding.dirsModeDesc.setText(R.string.set_dirs_mode_exclude_desc)
         }
     }
 
-    private fun isInclude(binding: DialogMusicDirsBinding) =
+    private fun isUiModeInclude(binding: DialogMusicDirsBinding) =
         binding.folderModeGroup.checkedButtonId == R.id.dirs_mode_include
 
     companion object {

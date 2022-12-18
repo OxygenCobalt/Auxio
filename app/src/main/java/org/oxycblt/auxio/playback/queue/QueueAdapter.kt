@@ -27,10 +27,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
+import org.oxycblt.auxio.list.recycler.PlayingIndicatorAdapter
+import org.oxycblt.auxio.list.recycler.SongViewHolder
+import org.oxycblt.auxio.list.recycler.SyncListDiffer
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
-import org.oxycblt.auxio.ui.recycler.SongViewHolder
-import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen

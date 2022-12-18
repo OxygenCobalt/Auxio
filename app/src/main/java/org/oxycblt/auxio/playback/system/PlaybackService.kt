@@ -55,7 +55,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.system.ForegroundManager
+import org.oxycblt.auxio.shared.ForegroundManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider

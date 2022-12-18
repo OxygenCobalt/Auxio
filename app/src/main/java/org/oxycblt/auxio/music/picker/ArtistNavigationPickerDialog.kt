@@ -21,9 +21,9 @@ import android.os.Bundle
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.ui.NavigationViewModel
-import org.oxycblt.auxio.ui.recycler.Item
+import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.shared.NavigationViewModel
 
 /**
  * The [ArtistPickerDialog] for ambiguous artist navigation operations.
@@ -31,6 +31,7 @@ import org.oxycblt.auxio.ui.recycler.Item
  */
 class ArtistNavigationPickerDialog : ArtistPickerDialog() {
     private val navModel: NavigationViewModel by activityViewModels()
+
     private val args: ArtistNavigationPickerDialogArgs by navArgs()
 
     override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {
@@ -38,9 +39,9 @@ class ArtistNavigationPickerDialog : ArtistPickerDialog() {
         super.onBindingCreated(binding, savedInstanceState)
     }
 
-    override fun onItemClick(item: Item) {
-        super.onItemClick(item)
-        check(item is Music) { "Unexpected datatype: ${item::class.simpleName}" }
+    override fun onChoiceConfirmed(item: Item) {
+        super.onChoiceConfirmed(item)
+        check(item is Artist) { "Unexpected datatype: ${item::class.simpleName}" }
         navModel.exploreNavigateTo(item)
     }
 }

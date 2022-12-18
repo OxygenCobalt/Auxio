@@ -35,7 +35,7 @@ import org.oxycblt.auxio.music.storage.MusicDirs
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
-import org.oxycblt.auxio.ui.accent.Accent
+import org.oxycblt.auxio.settings.accent.Accent
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 

@@ -23,7 +23,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.core.view.iterator
 import androidx.core.view.updatePadding
@@ -46,6 +45,7 @@ import org.oxycblt.auxio.home.list.AlbumListFragment
 import org.oxycblt.auxio.home.list.ArtistListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
+import org.oxycblt.auxio.list.SelectionFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -55,12 +55,7 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.system.Indexer
-import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.MainNavigationAction
-import org.oxycblt.auxio.ui.NavigationViewModel
-import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
-import org.oxycblt.auxio.ui.selection.SelectionToolbarOverlay
-import org.oxycblt.auxio.ui.selection.SelectionViewModel
+import org.oxycblt.auxio.shared.MainNavigationAction
 import org.oxycblt.auxio.util.*
 
 /**
@@ -68,12 +63,9 @@ import org.oxycblt.auxio.util.*
  * respective item.
  * @author OxygenCobalt
  */
-class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuItemClickListener, SelectionToolbarOverlay.Callback {
-    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
+class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
     private val homeModel: HomeViewModel by androidActivityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
-    private val navModel: NavigationViewModel by activityViewModels()
-    private val selectionModel: SelectionViewModel by activityViewModels()
 
     // lifecycleObject builds this in the creation step, so doing this is okay.
     private val storagePermissionLauncher: ActivityResultLauncher<String> by lifecycleObject {
@@ -103,22 +95,14 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentHomeBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
-        binding.homeAppbar.apply {
-            addOnOffsetChangedListener { _, offset ->
-                val range = binding.homeAppbar.totalScrollRange
-
-                binding.homeToolbarOverlay.alpha =
-                    1f - (abs(offset.toFloat()) / (range.toFloat() / 2))
-
-                binding.homeContent.updatePadding(
-                    bottom = binding.homeAppbar.totalScrollRange + offset)
-            }
+        binding.homeAppbar.addOnOffsetChangedListener { _, it -> handleAppBarAnimation(it) }
+        setupOverlay(binding.homeToolbarOverlay)
+        binding.homeToolbar.setOnMenuItemClickListener {
+            handleHomeMenuItem(it)
+            true
         }
 
-        binding.homeToolbarOverlay.callback = this
-        binding.homeToolbar.setOnMenuItemClickListener(this@HomeFragment)
-
-        updateTabConfiguration()
+        setupTabs(binding)
 
         // Load the track color in manually as it's unclear whether the track actually supports
         // using a ColorStateList in the resources
@@ -128,17 +112,11 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         binding.homePager.apply {
             adapter = HomePagerAdapter()
 
-            // We know that there will only be a fixed amount of tabs, so we manually set this
-            // limit to that. This also prevents the appbar lift state from being confused during
-            // page transitions.
-            offscreenPageLimit = homeModel.tabs.size
-
-            reduceSensitivity(3)
-
             registerOnPageChangeCallback(
                 object : ViewPager2.OnPageChangeCallback() {
-                    override fun onPageSelected(position: Int) =
-                        homeModel.updateCurrentTab(position)
+                    override fun onPageSelected(position: Int) {
+                        homeModel.setCurrentTab(position)
+                    }
                 })
 
             TabLayoutMediator(binding.homeTabs, this, AdaptiveTabStrategy(context, homeModel))
@@ -148,6 +126,22 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             // insets applied to the indexing view before API 30. Fix this by overriding the
             // callback with a non-consuming listener.
             setOnApplyWindowInsetsListener { _, insets -> insets }
+
+            // We know that there will only be a fixed amount of tabs, so we manually set this
+            // limit to that. This also prevents the appbar lift state from being confused during
+            // page transitions.
+            offscreenPageLimit = homeModel.tabs.size
+
+            // By default, ViewPager2's sensitivity is high enough to result in vertical scroll
+            // events being
+            // registered as horizontal scroll events. Reflect into the internal recyclerview and
+            // change the
+            // touch slope so that touch actions will act more as a scroll than as a swipe. Derived
+            // from:
+            // https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
+            val recycler = VP_RECYCLER_FIELD.get(this@apply)
+            val slop = RV_TOUCH_SLOP_FIELD.get(recycler) as Int
+            RV_TOUCH_SLOP_FIELD.set(recycler, slop * 3)
         }
 
         binding.homeFab.setOnClickListener { playbackModel.shuffleAll() }
@@ -157,9 +151,11 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         collect(homeModel.recreateTabs, ::handleRecreateTabs)
         collectImmediately(homeModel.currentTab, ::updateCurrentTab)
         collectImmediately(homeModel.songs, homeModel.isFastScrolling, ::updateFab)
-        collectImmediately(musicModel.indexerState, ::handleIndexerState)
-        collectImmediately(selectionModel.selected, ::updateSelection)
+
+        collectImmediately(musicModel.indexerState, ::updateIndexerState)
+
         collect(navModel.exploreNavigationItem, ::handleNavigation)
+        collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -171,13 +167,18 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         super.onSaveInstanceState(outState)
     }
 
-    override fun onDestroyBinding(binding: FragmentHomeBinding) {
-        super.onDestroyBinding(binding)
-        binding.homeToolbarOverlay.callback = null
-        binding.homeToolbar.setOnMenuItemClickListener(null)
+    private fun handleAppBarAnimation(verticalOffset: Int) {
+        val binding = requireBinding()
+        val range = binding.homeAppbar.totalScrollRange
+
+        binding.homeToolbarOverlay.alpha =
+            1f - (abs(verticalOffset.toFloat()) / (range.toFloat() / 2))
+
+        binding.homeContent.updatePadding(
+            bottom = binding.homeAppbar.totalScrollRange + verticalOffset)
     }
 
-    override fun onMenuItemClick(item: MenuItem): Boolean {
+    private fun handleHomeMenuItem(item: MenuItem) {
         when (item.itemId) {
             R.id.action_search -> {
                 logD("Navigating to search")
@@ -206,7 +207,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                         .getSortForTab(homeModel.currentTab.value)
                         .withAscending(item.isChecked))
             }
-
             else -> {
                 // Sorting option was selected, mark it as selected and update the mode
                 item.isChecked = true
@@ -216,23 +216,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                         .withMode(requireNotNull(Sort.Mode.fromItemId(item.itemId))))
             }
         }
-
-        // Always handling an item
-        return true
-    }
-
-    override fun onClearSelection() {
-        selectionModel.consume()
-    }
-
-    override fun onPlaySelectionNext() {
-        playbackModel.playNext(selectionModel.consume())
-        requireContext().showToast(R.string.lng_queue_added)
-    }
-
-    override fun onAddSelectionToQueue() {
-        playbackModel.addToQueue(selectionModel.consume())
-        requireContext().showToast(R.string.lng_queue_added)
     }
 
     private fun updateCurrentTab(tab: MusicMode) {
@@ -263,7 +246,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             }
         }
 
-        requireBinding().homeAppbar.liftOnScrollTargetViewId = getRecyclerId(tab)
+        requireBinding().homeAppbar.liftOnScrollTargetViewId = getTabRecyclerId(tab)
     }
 
     private fun updateSortMenu(mode: MusicMode, isVisible: (Int) -> Boolean) {
@@ -285,34 +268,24 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
     private fun handleRecreateTabs(recreate: Boolean) {
         if (recreate) {
-            requireBinding().homePager.recreate()
-            updateTabConfiguration()
+            val binding = requireBinding()
+
+            binding.homePager.apply {
+                currentItem = 0
+                adapter = HomePagerAdapter()
+            }
+
+            setupTabs(binding)
+
             homeModel.finishRecreateTabs()
         }
     }
 
-    private fun updateTabConfiguration() {
-        val binding = requireBinding()
-        val toolbarParams = binding.homeToolbarOverlay.layoutParams as AppBarLayout.LayoutParams
-        if (homeModel.tabs.size == 1) {
-            // A single tab makes the tab layout redundant, hide it and disable the collapsing
-            // behavior.
-            binding.homeTabs.isVisible = false
-            binding.homeAppbar.setExpanded(true, false)
-            toolbarParams.scrollFlags = 0
-        } else {
-            binding.homeTabs.isVisible = true
-            toolbarParams.scrollFlags =
-                AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
-                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
-        }
-    }
-
-    private fun handleIndexerState(state: Indexer.State?) {
+    private fun updateIndexerState(state: Indexer.State?) {
         val binding = requireBinding()
         when (state) {
-            is Indexer.State.Complete -> handleIndexerResponse(binding, state.response)
-            is Indexer.State.Indexing -> handleIndexingState(binding, state.indexing)
+            is Indexer.State.Complete -> setupCompleteState(binding, state.response)
+            is Indexer.State.Indexing -> setupIndexingState(binding, state.indexing)
             null -> {
                 logD("Indexer is in indeterminate state")
                 binding.homeIndexingContainer.visibility = View.INVISIBLE
@@ -320,7 +293,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun handleIndexerResponse(binding: FragmentHomeBinding, response: Indexer.Response) {
+    private fun setupCompleteState(binding: FragmentHomeBinding, response: Indexer.Response) {
         if (response is Indexer.Response.Ok) {
             binding.homeFab.show()
             binding.homeIndexingContainer.visibility = View.INVISIBLE
@@ -366,7 +339,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun handleIndexingState(binding: FragmentHomeBinding, indexing: Indexer.Indexing) {
+    private fun setupIndexingState(binding: FragmentHomeBinding, indexing: Indexer.Indexing) {
         binding.homeIndexingContainer.visibility = View.VISIBLE
         binding.homeIndexingProgress.visibility = View.VISIBLE
         binding.homeIndexingAction.visibility = View.INVISIBLE
@@ -399,17 +372,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun updateSelection(selected: List<Music>) {
-        val binding = requireBinding()
-        if (binding.homeToolbarOverlay.updateSelectionAmount(selected.size) &&
-            selected.isNotEmpty()) {
-            logD("Significant selection occurred, expanding AppBar")
-            // Significant enough change where we want to expand the RecyclerView
-            binding.homeAppbar.expandWithRecycler(
-                binding.homePager.findViewById(getRecyclerId(homeModel.currentTab.value)))
-        }
-    }
-
     private fun handleNavigation(item: Music?) {
         val action =
             when (item) {
@@ -426,6 +388,42 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         findNavController().navigate(action)
     }
 
+    private fun updateSelection(selected: List<Music>) {
+        val binding = requireBinding()
+        if (binding.homeToolbarOverlay.updateSelectionAmount(selected.size) &&
+            selected.isNotEmpty()) {
+            logD("Significant selection occurred, expanding AppBar")
+            // Significant enough change where we want to expand the RecyclerView
+            binding.homeAppbar.expandWithRecycler(
+                binding.homePager.findViewById(getTabRecyclerId(homeModel.currentTab.value)))
+        }
+    }
+
+    /** Returns the ID of a RecyclerView that the given [tab] contains */
+    private fun getTabRecyclerId(tab: MusicMode) =
+        when (tab) {
+            MusicMode.SONGS -> R.id.home_song_recycler
+            MusicMode.ALBUMS -> R.id.home_album_recycler
+            MusicMode.ARTISTS -> R.id.home_artist_recycler
+            MusicMode.GENRES -> R.id.home_genre_recycler
+        }
+
+    private fun setupTabs(binding: FragmentHomeBinding) {
+        val toolbarParams = binding.homeToolbarOverlay.layoutParams as AppBarLayout.LayoutParams
+        if (homeModel.tabs.size == 1) {
+            // A single tab makes the tab layout redundant, hide it and disable the collapsing
+            // behavior.
+            binding.homeTabs.isVisible = false
+            binding.homeAppbar.setExpanded(true, false)
+            toolbarParams.scrollFlags = 0
+        } else {
+            binding.homeTabs.isVisible = true
+            toolbarParams.scrollFlags =
+                AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+        }
+    }
+
     private fun initAxisTransitions(axis: Int) {
         // Sanity check
         check(axis == MaterialSharedAxis.X || axis == MaterialSharedAxis.Z) {
@@ -435,35 +433,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         returnTransition = MaterialSharedAxis(axis, false)
         exitTransition = MaterialSharedAxis(axis, true)
         reenterTransition = MaterialSharedAxis(axis, false)
-    }
-
-    /**
-     * Returns the ID of a RecyclerView that the given [tab] contains
-     */
-    private fun getRecyclerId(tab: MusicMode) =
-        when (tab) {
-            MusicMode.SONGS -> R.id.home_song_recycler
-            MusicMode.ALBUMS -> R.id.home_album_recycler
-            MusicMode.ARTISTS -> R.id.home_artist_recycler
-            MusicMode.GENRES -> R.id.home_genre_recycler
-        }
-
-    /**
-     * By default, ViewPager2's sensitivity is high enough to result in vertical scroll events being
-     * registered as horizontal scroll events. Reflect into the internal recyclerview and change the
-     * touch slope so that touch actions will act more as a scroll than as a swipe. Derived from:
-     * https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
-     */
-    private fun ViewPager2.reduceSensitivity(by: Int) {
-        val recycler = VP_RECYCLER_FIELD.get(this@reduceSensitivity)
-        val slop = RV_TOUCH_SLOP_FIELD.get(recycler) as Int
-        RV_TOUCH_SLOP_FIELD.set(recycler, slop * by)
-    }
-
-    /** Forces the view to recreate all fragments contained within it. */
-    private fun ViewPager2.recreate() {
-        currentItem = 0
-        adapter = HomePagerAdapter()
     }
 
     private inner class HomePagerAdapter :

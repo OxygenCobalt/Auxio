@@ -31,7 +31,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import java.lang.reflect.Field
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.AuxioAppBarLayout
+import org.oxycblt.auxio.shared.AuxioAppBarLayout
 import org.oxycblt.auxio.util.lazyReflectedField
 
 /**

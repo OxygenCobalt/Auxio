@@ -27,13 +27,12 @@ import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
 import org.oxycblt.auxio.detail.DiscHeader
+import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.recycler.PlayingIndicatorAdapter
+import org.oxycblt.auxio.list.recycler.SimpleItemCallback
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.formatDurationMs
-import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.ui.recycler.MenuItemListener
-import org.oxycblt.auxio.ui.recycler.PlayingIndicatorAdapter
-import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
@@ -42,8 +41,8 @@ import org.oxycblt.auxio.util.inflater
  * An adapter for displaying [Album] information and it's children.
  * @author OxygenCobalt
  */
-class AlbumDetailAdapter(private val listener: Listener) :
-    DetailAdapter<AlbumDetailAdapter.Listener>(listener, DIFFER) {
+class AlbumDetailAdapter(private val callback: AlbumDetailAdapter.Callback) :
+    DetailAdapter(callback, DIFFER) {
 
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
@@ -70,9 +69,9 @@ class AlbumDetailAdapter(private val listener: Listener) :
 
         if (payloads.isEmpty()) {
             when (val item = differ.currentList[position]) {
-                is Album -> (holder as AlbumDetailViewHolder).bind(item, listener)
+                is Album -> (holder as AlbumDetailViewHolder).bind(item, callback)
                 is DiscHeader -> (holder as DiscHeaderViewHolder).bind(item)
-                is Song -> (holder as AlbumSongViewHolder).bind(item, listener)
+                is Song -> (holder as AlbumSongViewHolder).bind(item, callback)
             }
         }
     }
@@ -99,15 +98,23 @@ class AlbumDetailAdapter(private val listener: Listener) :
             }
     }
 
-    interface Listener : DetailAdapter.Listener {
-        fun onNavigateToArtist()
-    }
+    class Callback(
+        onClick: (Item) -> Unit,
+        onOpenItemMenu: (Item, View) -> Unit,
+        onSelect: (Item) -> Unit,
+        onPlay: () -> Unit,
+        onShuffle: () -> Unit,
+        onOpenSortMenu: (View) -> Unit,
+        val onNavigateToArtist: () -> Unit
+    ) :
+        DetailAdapter.Callback(
+            onClick, onOpenItemMenu, onSelect, onPlay, onShuffle, onOpenSortMenu)
 }
 
 private class AlbumDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: Album, listener: AlbumDetailAdapter.Listener) {
+    fun bind(item: Album, callback: AlbumDetailAdapter.Callback) {
         binding.detailCover.bind(item)
         binding.detailType.text = binding.context.getString(item.releaseType.stringRes)
 
@@ -115,7 +122,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
         binding.detailSubhead.apply {
             text = item.resolveArtistContents(context)
-            setOnClickListener { listener.onNavigateToArtist() }
+            setOnClickListener { callback.onNavigateToArtist() }
         }
 
         binding.detailInfo.apply {
@@ -128,8 +135,8 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
             text = context.getString(R.string.fmt_three, date, songCount, duration)
         }
 
-        binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }
-        binding.detailShuffleButton.setOnClickListener { listener.onShuffleParent() }
+        binding.detailPlayButton.setOnClickListener { callback.onPlay() }
+        binding.detailShuffleButton.setOnClickListener { callback.onShuffle() }
     }
 
     companion object {
@@ -174,7 +181,7 @@ class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
 
 private class AlbumSongViewHolder private constructor(private val binding: ItemAlbumSongBinding) :
     PlayingIndicatorAdapter.ViewHolder(binding.root) {
-    fun bind(item: Song, listener: MenuItemListener) {
+    fun bind(item: Song, callback: AlbumDetailAdapter.Callback) {
         // Hide the track number view if the song does not have a track.
         if (item.track != null) {
             binding.songTrack.apply {
@@ -193,11 +200,11 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
         binding.songName.text = item.resolveName(binding.context)
         binding.songDuration.text = item.durationMs.formatDurationMs(false)
 
-        binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
+        binding.songMenu.setOnClickListener { callback.onOpenMenu(item, it) }
         binding.root.apply {
-            setOnClickListener { listener.onItemClick(item) }
+            setOnClickListener { callback.onClick(item) }
             setOnLongClickListener {
-                listener.onSelect(item)
+                callback.onSelect(item)
                 true
             }
         }

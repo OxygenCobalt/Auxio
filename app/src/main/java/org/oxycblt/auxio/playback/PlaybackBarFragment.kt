@@ -25,9 +25,9 @@ import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.MainNavigationAction
-import org.oxycblt.auxio.ui.NavigationViewModel
-import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
+import org.oxycblt.auxio.shared.MainNavigationAction
+import org.oxycblt.auxio.shared.NavigationViewModel
+import org.oxycblt.auxio.shared.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getAttrColorCompat
@@ -63,16 +63,29 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         binding.playbackSong.isSelected = true
         binding.playbackInfo.isSelected = true
 
+        binding.playbackPlayPause.setOnClickListener { playbackModel.invertPlaying() }
+        setupSecondaryActions(binding, Settings(context))
+
         // Load the track color in manually as it's unclear whether the track actually supports
         // using a ColorStateList in the resources
         binding.playbackProgressBar.trackColor =
             context.getColorCompat(R.color.sel_track).defaultColor
 
-        binding.playbackPlayPause.setOnClickListener { playbackModel.invertPlaying() }
+        // -- VIEWMODEL SETUP ---
 
-        // Update the secondary action to match the setting.
+        collectImmediately(playbackModel.song, ::updateSong)
+        collectImmediately(playbackModel.isPlaying, ::updatePlaying)
+        collectImmediately(playbackModel.positionDs, ::updatePosition)
+    }
 
-        when (Settings(context).actionMode) {
+    override fun onDestroyBinding(binding: FragmentPlaybackBarBinding) {
+        super.onDestroyBinding(binding)
+        binding.playbackSong.isSelected = false
+        binding.playbackInfo.isSelected = false
+    }
+
+    private fun setupSecondaryActions(binding: FragmentPlaybackBarBinding, settings: Settings) {
+        when (settings.actionMode) {
             ActionMode.NEXT -> {
                 binding.playbackSecondaryAction.apply {
                     setIconResource(R.drawable.ic_skip_next_24)
@@ -99,18 +112,6 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 }
             }
         }
-
-        // -- VIEWMODEL SETUP ---
-
-        collectImmediately(playbackModel.song, ::updateSong)
-        collectImmediately(playbackModel.isPlaying, ::updateIsPlaying)
-        collectImmediately(playbackModel.positionDs, ::updatePosition)
-    }
-
-    override fun onDestroyBinding(binding: FragmentPlaybackBarBinding) {
-        super.onDestroyBinding(binding)
-        binding.playbackSong.isSelected = false
-        binding.playbackInfo.isSelected = false
     }
 
     private fun updateSong(song: Song?) {
@@ -124,7 +125,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         }
     }
 
-    private fun updateIsPlaying(isPlaying: Boolean) {
+    private fun updatePlaying(isPlaying: Boolean) {
         requireBinding().playbackPlayPause.isActivated = isPlaying
     }
 

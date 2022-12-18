@@ -8,12 +8,12 @@
     android:background="?attr/colorSurface"
     android:transitionGroup="true">
 
-    <org.oxycblt.auxio.ui.AuxioAppBarLayout
+    <org.oxycblt.auxio.shared.AuxioAppBarLayout
         android:id="@+id/home_appbar"
         style="@style/Widget.Auxio.AppBarLayout"
         android:fitsSystemWindows="true">
 
-        <org.oxycblt.auxio.ui.selection.SelectionToolbarOverlay
+        <org.oxycblt.auxio.list.SelectionToolbarOverlay
             android:id="@+id/home_toolbar_overlay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -26,7 +26,7 @@
                 app:menu="@menu/menu_home"
                 app:title="@string/info_app_name" />
 
-        </org.oxycblt.auxio.ui.selection.SelectionToolbarOverlay>
+        </org.oxycblt.auxio.list.SelectionToolbarOverlay>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/home_tabs"
@@ -37,7 +37,7 @@
             app:tabGravity="start"
             app:tabMode="scrollable" />
 
-    </org.oxycblt.auxio.ui.AuxioAppBarLayout>
+    </org.oxycblt.auxio.shared.AuxioAppBarLayout>
 
 
     <FrameLayout

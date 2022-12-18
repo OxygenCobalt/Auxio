@@ -19,11 +19,19 @@ package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
+import org.oxycblt.auxio.home.HomeViewModel
+import org.oxycblt.auxio.list.*
+import org.oxycblt.auxio.list.SelectionFragment
+import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.recycler.SongViewHolder
+import org.oxycblt.auxio.list.recycler.SyncListDiffer
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
@@ -32,11 +40,6 @@ import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.ui.recycler.MenuItemListener
-import org.oxycblt.auxio.ui.recycler.SelectionIndicatorAdapter
-import org.oxycblt.auxio.ui.recycler.SongViewHolder
-import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
 
@@ -44,11 +47,19 @@ import org.oxycblt.auxio.util.context
  * A [HomeListFragment] for showing a list of [Song]s.
  * @author OxygenCobalt
  */
-class SongListFragment : HomeListFragment<Song>() {
-    private val homeAdapter = SongAdapter(this)
+class SongListFragment : SelectionFragment<FragmentHomeListBinding>() {
+    private val homeModel: HomeViewModel by activityViewModels()
+
+    private val homeAdapter =
+        SongAdapter(ItemSelectCallback(::handleClick, ::handleOpenMenu, ::handleSelect))
+
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
+
     private val formatterSb = StringBuilder(50)
     private val formatter = Formatter(formatterSb)
+
+    override fun onCreateBinding(inflater: LayoutInflater) =
+        FragmentHomeListBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
@@ -56,15 +67,23 @@ class SongListFragment : HomeListFragment<Song>() {
         binding.homeRecycler.apply {
             id = R.id.home_song_recycler
             adapter = homeAdapter
+
+            popupProvider = ::updatePopup
+            fastScrollCallback = homeModel::setFastScrolling
         }
 
         collectImmediately(homeModel.songs, homeAdapter::replaceList)
-        collectImmediately(selectionModel.selected, homeAdapter::updateSelection)
+        collectImmediately(selectionModel.selected, homeAdapter::setSelected)
         collectImmediately(
-            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::handlePlayback)
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
-    override fun getPopup(pos: Int): String? {
+    override fun onDestroyBinding(binding: FragmentHomeListBinding) {
+        super.onDestroyBinding(binding)
+        binding.homeRecycler.adapter = null
+    }
+
+    private fun updatePopup(pos: Int): String? {
         val song = homeModel.songs.value[pos]
 
         // Change how we display the popup depending on the mode.
@@ -106,7 +125,7 @@ class SongListFragment : HomeListFragment<Song>() {
         }
     }
 
-    override fun onItemClick(music: Music) {
+    override fun onClick(music: Music) {
         check(music is Song) { "Unexpected datatype: ${music::class.java}" }
         when (settings.libPlaybackMode) {
             MusicMode.SONGS -> playbackModel.playFromAll(music)
@@ -116,12 +135,12 @@ class SongListFragment : HomeListFragment<Song>() {
         }
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
+    private fun handleOpenMenu(item: Item, anchor: View) {
         check(item is Song) { "Unexpected datatype: ${item::class.java}" }
-        musicMenu(anchor, R.menu.menu_song_actions, item)
+        openMusicMenu(anchor, R.menu.menu_song_actions, item)
     }
 
-    private fun handlePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         if (parent == null) {
             homeAdapter.updateIndicator(song, isPlaying)
         } else {
@@ -130,7 +149,7 @@ class SongListFragment : HomeListFragment<Song>() {
         }
     }
 
-    private class SongAdapter(private val listener: MenuItemListener) :
+    private class SongAdapter(private val callback: ItemSelectCallback) :
         SelectionIndicatorAdapter<SongViewHolder>() {
         private val differ = SyncListDiffer(this, SongViewHolder.DIFFER)
 
@@ -146,7 +165,7 @@ class SongListFragment : HomeListFragment<Song>() {
             super.onBindViewHolder(holder, position, payloads)
 
             if (payloads.isEmpty()) {
-                holder.bind(differ.currentList[position], listener)
+                holder.bind(differ.currentList[position], callback)
             }
         }
 

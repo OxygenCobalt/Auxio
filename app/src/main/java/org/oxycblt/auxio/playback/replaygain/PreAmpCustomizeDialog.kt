@@ -25,7 +25,7 @@ import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPreAmpBinding
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
+import org.oxycblt.auxio.shared.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
 
 /**

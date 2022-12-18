@@ -21,7 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemMusicDirBinding
-import org.oxycblt.auxio.ui.recycler.DialogViewHolder
+import org.oxycblt.auxio.list.recycler.DialogViewHolder
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 

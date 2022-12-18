@@ -84,7 +84,7 @@ class HomeViewModel(application: Application) :
     }
 
     /** Update the current tab based off of the new ViewPager position. */
-    fun updateCurrentTab(pos: Int) {
+    fun setCurrentTab(pos: Int) {
         logD("Updating current tab to ${tabs[pos]}")
         _currentTab.value = tabs[pos]
     }
@@ -129,9 +129,9 @@ class HomeViewModel(application: Application) :
      * Update the fast scroll state. This is used to control the FAB visibility whenever the user
      * begins to fast scroll.
      */
-    fun updateFastScrolling(scrolling: Boolean) {
-        logD("Updating fast scrolling state: $scrolling")
-        _isFastScrolling.value = scrolling
+    fun setFastScrolling(fastScrolling: Boolean) {
+        logD("Updating fast scrolling state: $fastScrolling")
+        _isFastScrolling.value = fastScrolling
     }
 
     // --- OVERRIDES ---

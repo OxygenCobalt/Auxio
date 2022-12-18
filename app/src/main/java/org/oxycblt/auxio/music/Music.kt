@@ -29,6 +29,7 @@ import kotlin.math.max
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.extractor.parseId3GenreNames
 import org.oxycblt.auxio.music.extractor.parseMultiValue
 import org.oxycblt.auxio.music.extractor.toUuidOrNull
@@ -38,7 +39,6 @@ import org.oxycblt.auxio.music.storage.Path
 import org.oxycblt.auxio.music.storage.albumCoverUri
 import org.oxycblt.auxio.music.storage.audioUri
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 

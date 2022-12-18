@@ -22,7 +22,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -32,6 +31,8 @@ import com.google.android.material.transition.MaterialSharedAxis
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
+import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.MenuFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
@@ -40,8 +41,6 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.fragment.MenuFragment
-import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.canScroll
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -54,15 +53,22 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A fragment that shows information for a particular [Album].
  * @author OxygenCobalt
  */
-class AlbumDetailFragment :
-    MenuFragment<FragmentDetailBinding>(),
-    Toolbar.OnMenuItemClickListener,
-    AlbumDetailAdapter.Listener {
+class AlbumDetailFragment : MenuFragment<FragmentDetailBinding>() {
     private val detailModel: DetailViewModel by activityViewModels()
 
     private val args: AlbumDetailFragmentArgs by navArgs()
-    private val detailAdapter = AlbumDetailAdapter(this)
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
+
+    private val detailAdapter =
+        AlbumDetailAdapter(
+            AlbumDetailAdapter.Callback(
+                ::handleClick,
+                ::handleOpenItemMenu,
+                {},
+                ::handlePlay,
+                ::handleShuffle,
+                ::handleOpenSortMenu,
+                ::handleArtistNavigation))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,14 +86,17 @@ class AlbumDetailFragment :
         binding.detailToolbar.apply {
             inflateMenu(R.menu.menu_album_detail)
             setNavigationOnClickListener { findNavController().navigateUp() }
-            setOnMenuItemClickListener(this@AlbumDetailFragment)
+            setOnMenuItemClickListener {
+                handleDetailMenuItem(it)
+                true
+            }
         }
 
         binding.detailRecycler.adapter = detailAdapter
 
         // -- VIEWMODEL SETUP ---
 
-        collectImmediately(detailModel.currentAlbum, ::handleItemChange)
+        collectImmediately(detailModel.currentAlbum, ::updateItem)
         collectImmediately(detailModel.albumData, detailAdapter::submitList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -96,35 +105,10 @@ class AlbumDetailFragment :
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
-        binding.detailToolbar.apply {
-            setNavigationOnClickListener(null)
-            setOnMenuItemClickListener(null)
-        }
-
         binding.detailRecycler.adapter = null
     }
 
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_play_next -> {
-                playbackModel.playNext(unlikelyToBeNull(detailModel.currentAlbum.value))
-                requireContext().showToast(R.string.lng_queue_added)
-                true
-            }
-            R.id.action_queue_add -> {
-                playbackModel.addToQueue(unlikelyToBeNull(detailModel.currentAlbum.value))
-                requireContext().showToast(R.string.lng_queue_added)
-                true
-            }
-            R.id.action_go_artist -> {
-                onNavigateToArtist()
-                true
-            }
-            else -> false
-        }
-    }
-
-    override fun onItemClick(item: Item) {
+    private fun handleClick(item: Item) {
         check(item is Song) { "Unexpected datatype: ${item::class.simpleName}" }
         when (settings.detailPlaybackMode) {
             null,
@@ -135,21 +119,21 @@ class AlbumDetailFragment :
         }
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
+    private fun handleOpenItemMenu(item: Item, anchor: View) {
         check(item is Song) { "Unexpected datatype: ${item::class.simpleName}" }
-        musicMenu(anchor, R.menu.menu_album_song_actions, item)
+        openMusicMenu(anchor, R.menu.menu_album_song_actions, item)
     }
 
-    override fun onPlayParent() {
+    private fun handlePlay() {
         playbackModel.play(unlikelyToBeNull(detailModel.currentAlbum.value))
     }
 
-    override fun onShuffleParent() {
+    private fun handleShuffle() {
         playbackModel.shuffle(unlikelyToBeNull(detailModel.currentAlbum.value))
     }
 
-    override fun onShowSortMenu(anchor: View) {
-        menu(anchor, R.menu.menu_album_sort) {
+    private fun handleOpenSortMenu(anchor: View) {
+        openMenu(anchor, R.menu.menu_album_sort) {
             val sort = detailModel.albumSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
             unlikelyToBeNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
@@ -166,11 +150,27 @@ class AlbumDetailFragment :
         }
     }
 
-    override fun onNavigateToArtist() {
+    private fun handleArtistNavigation() {
         navModel.exploreNavigateTo(unlikelyToBeNull(detailModel.currentAlbum.value).artists)
     }
 
-    private fun handleItemChange(album: Album?) {
+    private fun handleDetailMenuItem(item: MenuItem) {
+        when (item.itemId) {
+            R.id.action_play_next -> {
+                playbackModel.playNext(unlikelyToBeNull(detailModel.currentAlbum.value))
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_queue_add -> {
+                playbackModel.addToQueue(unlikelyToBeNull(detailModel.currentAlbum.value))
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_go_artist -> {
+                handleArtistNavigation()
+            }
+        }
+    }
+
+    private fun updateItem(album: Album?) {
         if (album == null) {
             findNavController().navigateUp()
             return

@@ -124,12 +124,9 @@ class MusicStore private constructor() {
 
                 // We are weirdly limited to DISPLAY_NAME and SIZE when trying to locate a
                 // song. Do what we can to hopefully find the song the user wanted to open.
-
                 val displayName =
                     cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
-
                 val size = cursor.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE))
-
                 songs.find { it.path.name == displayName && it.size == size }
             }
     }

@@ -35,7 +35,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.system.ForegroundManager
+import org.oxycblt.auxio.shared.ForegroundManager
 import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD

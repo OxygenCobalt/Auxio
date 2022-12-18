@@ -9,7 +9,7 @@
     android:transitionGroup="true"
     tools:context=".settings.AboutFragment">
 
-    <org.oxycblt.auxio.ui.AuxioAppBarLayout
+    <org.oxycblt.auxio.shared.AuxioAppBarLayout
         android:id="@+id/about_appbar"
         style="@style/Widget.Auxio.AppBarLayout"
         app:liftOnScroll="true">
@@ -21,7 +21,7 @@
             app:navigationIcon="@drawable/ic_back_24"
             app:title="@string/lbl_about" />
 
-    </org.oxycblt.auxio.ui.AuxioAppBarLayout>
+    </org.oxycblt.auxio.shared.AuxioAppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/about_contents"

@@ -18,21 +18,24 @@
 package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
+import org.oxycblt.auxio.home.HomeViewModel
+import org.oxycblt.auxio.list.*
+import org.oxycblt.auxio.list.SelectionFragment
+import org.oxycblt.auxio.list.recycler.ArtistViewHolder
+import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.recycler.SyncListDiffer
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.playback.formatDurationMs
-import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
-import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.ui.recycler.MenuItemListener
-import org.oxycblt.auxio.ui.recycler.SelectionIndicatorAdapter
-import org.oxycblt.auxio.ui.recycler.SyncListDiffer
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.nonZeroOrNull
 
@@ -40,8 +43,14 @@ import org.oxycblt.auxio.util.nonZeroOrNull
  * A [HomeListFragment] for showing a list of [Artist]s.
  * @author OxygenCobalt
  */
-class ArtistListFragment : HomeListFragment<Artist>() {
-    private val homeAdapter = ArtistAdapter(this)
+class ArtistListFragment : SelectionFragment<FragmentHomeListBinding>() {
+    private val homeModel: HomeViewModel by activityViewModels()
+
+    private val homeAdapter =
+        ArtistAdapter(ItemSelectCallback(::handleClick, ::handleOpenMenu, ::handleSelect))
+
+    override fun onCreateBinding(inflater: LayoutInflater) =
+        FragmentHomeListBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
@@ -49,14 +58,22 @@ class ArtistListFragment : HomeListFragment<Artist>() {
         binding.homeRecycler.apply {
             id = R.id.home_artist_recycler
             adapter = homeAdapter
+
+            popupProvider = ::updatePopup
+            fastScrollCallback = homeModel::setFastScrolling
         }
 
         collectImmediately(homeModel.artists, homeAdapter::replaceList)
-        collectImmediately(selectionModel.selected, homeAdapter::updateSelection)
-        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::handleParent)
+        collectImmediately(selectionModel.selected, homeAdapter::setSelected)
+        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
-    override fun getPopup(pos: Int): String? {
+    override fun onDestroyBinding(binding: FragmentHomeListBinding) {
+        super.onDestroyBinding(binding)
+        binding.homeRecycler.adapter = null
+    }
+
+    private fun updatePopup(pos: Int): String? {
         val artist = homeModel.artists.value[pos]
 
         // Change how we display the popup depending on the mode.
@@ -75,17 +92,17 @@ class ArtistListFragment : HomeListFragment<Artist>() {
         }
     }
 
-    override fun onItemClick(music: Music) {
+    override fun onClick(music: Music) {
         check(music is Artist) { "Unexpected datatype: ${music::class.java}" }
         navModel.exploreNavigateTo(music)
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
+    private fun handleOpenMenu(item: Item, anchor: View) {
         check(item is Artist) { "Unexpected datatype: ${item::class.java}" }
-        musicMenu(anchor, R.menu.menu_artist_actions, item)
+        openMusicMenu(anchor, R.menu.menu_artist_actions, item)
     }
 
-    private fun handleParent(parent: MusicParent?, isPlaying: Boolean) {
+    private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
         if (parent is Artist) {
             homeAdapter.updateIndicator(parent, isPlaying)
         } else {
@@ -94,7 +111,7 @@ class ArtistListFragment : HomeListFragment<Artist>() {
         }
     }
 
-    private class ArtistAdapter(private val listener: MenuItemListener) :
+    private class ArtistAdapter(private val callback: ItemSelectCallback) :
         SelectionIndicatorAdapter<ArtistViewHolder>() {
         private val differ = SyncListDiffer(this, ArtistViewHolder.DIFFER)
 
@@ -114,7 +131,7 @@ class ArtistListFragment : HomeListFragment<Artist>() {
             super.onBindViewHolder(holder, position, payloads)
 
             if (payloads.isEmpty()) {
-                holder.bind(differ.currentList[position], listener)
+                holder.bind(differ.currentList[position], callback)
             }
         }
 

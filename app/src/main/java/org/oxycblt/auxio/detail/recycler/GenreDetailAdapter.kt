@@ -24,13 +24,13 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemDetailBinding
+import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.recycler.ArtistViewHolder
+import org.oxycblt.auxio.list.recycler.SimpleItemCallback
+import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
-import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
-import org.oxycblt.auxio.ui.recycler.SongViewHolder
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
@@ -39,8 +39,7 @@ import org.oxycblt.auxio.util.inflater
  * An adapter for displaying genre information and it's children.
  * @author OxygenCobalt
  */
-class GenreDetailAdapter(private val listener: Listener) :
-    DetailAdapter<DetailAdapter.Listener>(listener, DIFFER) {
+class GenreDetailAdapter(private val callback: Callback) : DetailAdapter(callback, DIFFER) {
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
             is Genre -> GenreDetailViewHolder.VIEW_TYPE
@@ -66,9 +65,9 @@ class GenreDetailAdapter(private val listener: Listener) :
 
         if (payloads.isEmpty()) {
             when (val item = differ.currentList[position]) {
-                is Genre -> (holder as GenreDetailViewHolder).bind(item, listener)
-                is Artist -> (holder as ArtistViewHolder).bind(item, listener)
-                is Song -> (holder as SongViewHolder).bind(item, listener)
+                is Genre -> (holder as GenreDetailViewHolder).bind(item, callback)
+                is Artist -> (holder as ArtistViewHolder).bind(item, callback)
+                is Song -> (holder as SongViewHolder).bind(item, callback)
             }
         }
     }
@@ -98,7 +97,7 @@ class GenreDetailAdapter(private val listener: Listener) :
 
 private class GenreDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: Genre, listener: DetailAdapter.Listener) {
+    fun bind(item: Genre, callback: DetailAdapter.Callback) {
         binding.detailCover.bind(item)
         binding.detailType.text = binding.context.getString(R.string.lbl_genre)
         binding.detailName.text = item.resolveName(binding.context)
@@ -109,8 +108,8 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
                 binding.context.getPlural(R.plurals.fmt_artist_count, item.artists.size),
                 binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
 
-        binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }
-        binding.detailShuffleButton.setOnClickListener { listener.onShuffleParent() }
+        binding.detailPlayButton.setOnClickListener { callback.onPlay() }
+        binding.detailShuffleButton.setOnClickListener { callback.onShuffle() }
     }
 
     companion object {

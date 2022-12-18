@@ -21,7 +21,7 @@
 
     </org.oxycblt.auxio.detail.DetailAppBarLayout>
 
-    <org.oxycblt.auxio.ui.recycler.AuxioRecyclerView
+    <org.oxycblt.auxio.list.recycler.AuxioRecyclerView
         android:id="@+id/detail_recycler"
         style="@style/Widget.Auxio.RecyclerView.Grid"
         android:layout_width="match_parent"

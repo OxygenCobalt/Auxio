@@ -34,7 +34,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
-import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
+import org.oxycblt.auxio.shared.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast

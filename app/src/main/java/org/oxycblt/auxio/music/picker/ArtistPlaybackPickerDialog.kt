@@ -20,9 +20,9 @@ package org.oxycblt.auxio.music.picker
 import android.os.Bundle
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
+import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.androidActivityViewModels
 
 /**
@@ -31,6 +31,7 @@ import org.oxycblt.auxio.util.androidActivityViewModels
  */
 class ArtistPlaybackPickerDialog : ArtistPickerDialog() {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
+
     private val args: ArtistPlaybackPickerDialogArgs by navArgs()
 
     override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {
@@ -38,8 +39,8 @@ class ArtistPlaybackPickerDialog : ArtistPickerDialog() {
         super.onBindingCreated(binding, savedInstanceState)
     }
 
-    override fun onItemClick(item: Item) {
-        super.onItemClick(item)
+    override fun onChoiceConfirmed(item: Item) {
+        super.onChoiceConfirmed(item)
         check(item is Artist) { "Unexpected datatype: ${item::class.simpleName}" }
         pickerModel.currentSong.value?.let { song -> playbackModel.playFromArtist(song, item) }
     }

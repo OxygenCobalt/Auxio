@@ -21,7 +21,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -30,6 +29,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
 import org.oxycblt.auxio.detail.recycler.DetailAdapter
+import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.MenuFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
@@ -38,8 +39,6 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.fragment.MenuFragment
-import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
@@ -51,13 +50,21 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A fragment that shows information for a particular [Artist].
  * @author OxygenCobalt
  */
-class ArtistDetailFragment :
-    MenuFragment<FragmentDetailBinding>(), Toolbar.OnMenuItemClickListener, DetailAdapter.Listener {
+class ArtistDetailFragment : MenuFragment<FragmentDetailBinding>() {
     private val detailModel: DetailViewModel by activityViewModels()
 
     private val args: ArtistDetailFragmentArgs by navArgs()
-    private val detailAdapter = ArtistDetailAdapter(this)
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
+
+    private val detailAdapter =
+        ArtistDetailAdapter(
+            DetailAdapter.Callback(
+                ::handleClick,
+                ::handleOpenItemMenu,
+                {},
+                ::handlePlay,
+                ::handleShuffle,
+                ::handleOpenSortMenu))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,14 +82,17 @@ class ArtistDetailFragment :
         binding.detailToolbar.apply {
             inflateMenu(R.menu.menu_genre_artist_detail)
             setNavigationOnClickListener { findNavController().navigateUp() }
-            setOnMenuItemClickListener(this@ArtistDetailFragment)
+            setOnMenuItemClickListener {
+                handleDetailMenuItem(it)
+                true
+            }
         }
 
         binding.detailRecycler.adapter = detailAdapter
 
         // --- VIEWMODEL SETUP ---
 
-        collectImmediately(detailModel.currentArtist, ::handleItemChange)
+        collectImmediately(detailModel.currentArtist, ::updateItem)
         collectImmediately(detailModel.artistData, detailAdapter::submitList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -91,31 +101,10 @@ class ArtistDetailFragment :
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
-        binding.detailToolbar.apply {
-            setNavigationOnClickListener(null)
-            setOnMenuItemClickListener(null)
-        }
-
         binding.detailRecycler.adapter = null
     }
 
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_play_next -> {
-                playbackModel.playNext(unlikelyToBeNull(detailModel.currentArtist.value))
-                requireContext().showToast(R.string.lng_queue_added)
-                true
-            }
-            R.id.action_queue_add -> {
-                playbackModel.addToQueue(unlikelyToBeNull(detailModel.currentArtist.value))
-                requireContext().showToast(R.string.lng_queue_added)
-                true
-            }
-            else -> false
-        }
-    }
-
-    override fun onItemClick(item: Item) {
+    private fun handleClick(item: Item) {
         when (item) {
             is Song -> {
                 when (settings.detailPlaybackMode) {
@@ -133,24 +122,24 @@ class ArtistDetailFragment :
         }
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
+    private fun handleOpenItemMenu(item: Item, anchor: View) {
         when (item) {
-            is Song -> musicMenu(anchor, R.menu.menu_artist_song_actions, item)
-            is Album -> musicMenu(anchor, R.menu.menu_artist_album_actions, item)
+            is Song -> openMusicMenu(anchor, R.menu.menu_artist_song_actions, item)
+            is Album -> openMusicMenu(anchor, R.menu.menu_artist_album_actions, item)
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
 
-    override fun onPlayParent() {
+    private fun handlePlay() {
         playbackModel.play(unlikelyToBeNull(detailModel.currentArtist.value))
     }
 
-    override fun onShuffleParent() {
+    private fun handleShuffle() {
         playbackModel.shuffle(unlikelyToBeNull(detailModel.currentArtist.value))
     }
 
-    override fun onShowSortMenu(anchor: View) {
-        menu(anchor, R.menu.menu_artist_sort) {
+    private fun handleOpenSortMenu(anchor: View) {
+        openMenu(anchor, R.menu.menu_artist_sort) {
             val sort = detailModel.artistSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
             unlikelyToBeNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
@@ -169,7 +158,20 @@ class ArtistDetailFragment :
         }
     }
 
-    private fun handleItemChange(artist: Artist?) {
+    private fun handleDetailMenuItem(item: MenuItem) {
+        when (item.itemId) {
+            R.id.action_play_next -> {
+                playbackModel.playNext(unlikelyToBeNull(detailModel.currentArtist.value))
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_queue_add -> {
+                playbackModel.addToQueue(unlikelyToBeNull(detailModel.currentArtist.value))
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+        }
+    }
+
+    private fun updateItem(artist: Artist?) {
         if (artist == null) {
             findNavController().navigateUp()
             return

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.oxycblt.auxio.ui.recycler.DialogRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<org.oxycblt.auxio.list.recycler.DialogRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tab_recycler"
     style="@style/Widget.Auxio.RecyclerView.Linear"
