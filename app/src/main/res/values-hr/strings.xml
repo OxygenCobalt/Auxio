@@ -36,7 +36,7 @@
     <string name="lbl_sort_asc">Uzlazno</string>
     <string name="lbl_playback">Trenutačno svira</string>
     <string name="lbl_play">Reproduciraj</string>
-    <string name="lbl_shuffle">Izmiješaj</string>
+    <string name="lbl_shuffle">Promiješaj</string>
     <string name="lbl_queue">Popis pjesama</string>
     <string name="lbl_play_next">Reproduciraj sljedeću</string>
     <string name="lbl_props">Svojstva pjesme</string>
@@ -171,7 +171,7 @@
     <string name="info_app_desc">Jednostavan i racionalan izvođač glazbe za Android.</string>
     <string name="lbl_retry">Pokušaj ponovo</string>
     <string name="lbl_indexer">Učitavanje glazbe</string>
-    <string name="lng_playback">Pregledaj i upravljaj reprodukcijom glazbe</string>
+    <string name="lng_playback">Prikaži i upravljaj reprodukcijom glazbe</string>
     <string name="lbl_grant">Dozvoli</string>
     <string name="lbl_single_live">Singl uživo</string>
     <string name="lbl_single_remix">Singl remiks</string>
@@ -182,7 +182,7 @@
     <string name="lbl_filter_all">Sve</string>
     <string name="lbl_queue_add">Dodaj u popis pjesama</string>
     <string name="lng_queue_added">Dodano u popis pjesama</string>
-    <string name="lbl_song_detail">Vidi svojstva</string>
+    <string name="lbl_song_detail">Prikaži svojstva</string>
     <string name="lbl_go_artist">Idi na izvođača</string>
     <string name="lbl_go_album">Idi na album</string>
     <string name="set_keep_shuffle_desc">Ostavi miješanje omogućeno kada se druga pjesma reproducira</string>
@@ -250,4 +250,7 @@
     </plurals>
     <string name="set_rescan">Ponovo pretraži glazbu</string>
     <string name="set_rescan_desc">Izbriši predmemoriju oznaka i ponovo potpuno učitaj glazbenu biblioteku (sporije, ali potpunije)</string>
+    <string name="fmt_selected">Odabrano: %d</string>
+    <string name="lbl_shuffle_selected">Promiješaj odabrane</string>
+    <string name="lbl_play_selected">Reproduciraj odabrane</string>
 </resources>
