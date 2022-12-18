@@ -28,7 +28,9 @@ import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ItemMenuCallback
+import org.oxycblt.auxio.list.ItemSelectCallback
 import org.oxycblt.auxio.list.recycler.PlayingIndicatorAdapter
+import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SimpleItemCallback
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -153,19 +155,30 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 }
 
 private class ArtistAlbumViewHolder private constructor(private val binding: ItemParentBinding) :
-    PlayingIndicatorAdapter.ViewHolder(binding.root) {
-    fun bind(item: Album, callback: ItemMenuCallback) {
+    SelectionIndicatorAdapter.ViewHolder(binding.root) {
+    fun bind(item: Album, callback: ItemSelectCallback) {
         binding.parentImage.bind(item)
         binding.parentName.text = item.resolveName(binding.context)
         binding.parentInfo.text =
             item.date?.resolveDate(binding.context) ?: binding.context.getString(R.string.def_date)
         binding.parentMenu.setOnClickListener { callback.onOpenMenu(item, it) }
         binding.root.setOnClickListener { callback.onClick(item) }
+        binding.root.apply {
+            setOnClickListener { callback.onClick(item) }
+            setOnLongClickListener {
+                callback.onSelect(item)
+                true
+            }
+        }
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
         binding.parentImage.isPlaying = isPlaying
+    }
+
+    override fun updateSelectionIndicator(isSelected: Boolean) {
+        binding.root.isActivated = isSelected
     }
 
     companion object {
@@ -183,18 +196,29 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
 }
 
 private class ArtistSongViewHolder private constructor(private val binding: ItemSongBinding) :
-    PlayingIndicatorAdapter.ViewHolder(binding.root) {
-    fun bind(item: Song, callback: ItemMenuCallback) {
+    SelectionIndicatorAdapter.ViewHolder(binding.root) {
+    fun bind(item: Song, callback: ItemSelectCallback) {
         binding.songAlbumCover.bind(item)
         binding.songName.text = item.resolveName(binding.context)
         binding.songInfo.text = item.album.resolveName(binding.context)
         binding.songMenu.setOnClickListener { callback.onOpenMenu(item, it) }
         binding.root.setOnClickListener { callback.onClick(item) }
+        binding.root.apply {
+            setOnClickListener { callback.onClick(item) }
+            setOnLongClickListener {
+                callback.onSelect(item)
+                true
+            }
+        }
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
         binding.songAlbumCover.isPlaying = isPlaying
+    }
+
+    override fun updateSelectionIndicator(isSelected: Boolean) {
+        binding.root.isActivated = isSelected
     }
 
     companion object {

@@ -32,7 +32,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.list.MenuFragment
+import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
@@ -53,7 +53,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A fragment that shows information for a particular [Album].
  * @author OxygenCobalt
  */
-class AlbumDetailFragment : MenuFragment<FragmentDetailBinding>() {
+class AlbumDetailFragment : ListFragment<FragmentDetailBinding>() {
     private val detailModel: DetailViewModel by activityViewModels()
 
     private val args: AlbumDetailFragmentArgs by navArgs()
@@ -64,7 +64,7 @@ class AlbumDetailFragment : MenuFragment<FragmentDetailBinding>() {
             AlbumDetailAdapter.Callback(
                 ::handleClick,
                 ::handleOpenItemMenu,
-                {},
+                ::handleSelect,
                 ::handlePlay,
                 ::handleShuffle,
                 ::handleOpenSortMenu,
@@ -81,7 +81,7 @@ class AlbumDetailFragment : MenuFragment<FragmentDetailBinding>() {
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
-        detailModel.setAlbumUid(args.albumUid)
+        setupSelectionToolbar(binding.detailSelectionToolbar)
 
         binding.detailToolbar.apply {
             inflateMenu(R.menu.menu_album_detail)
@@ -96,11 +96,14 @@ class AlbumDetailFragment : MenuFragment<FragmentDetailBinding>() {
 
         // -- VIEWMODEL SETUP ---
 
+        detailModel.setAlbumUid(args.albumUid)
+
         collectImmediately(detailModel.currentAlbum, ::updateItem)
         collectImmediately(detailModel.albumData, detailAdapter::submitList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
+        collectImmediately(selectionModel.selected, ::handleSelection)
     }
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
@@ -108,13 +111,13 @@ class AlbumDetailFragment : MenuFragment<FragmentDetailBinding>() {
         binding.detailRecycler.adapter = null
     }
 
-    private fun handleClick(item: Item) {
-        check(item is Song) { "Unexpected datatype: ${item::class.simpleName}" }
+    override fun onRealClick(music: Music) {
+        check(music is Song) { "Unexpected datatype: ${music::class.java}"}
         when (settings.detailPlaybackMode) {
             null,
-            MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-            MusicMode.SONGS -> playbackModel.playFromAll(item)
-            MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
+            MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
+            MusicMode.SONGS -> playbackModel.playFromAll(music)
+            MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
             else -> error("Unexpected playback mode: ${settings.detailPlaybackMode}")
         }
     }
@@ -179,6 +182,26 @@ class AlbumDetailFragment : MenuFragment<FragmentDetailBinding>() {
         requireBinding().detailToolbar.title = album.resolveName(requireContext())
     }
 
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        val binding = requireBinding()
+
+        for (item in binding.detailToolbar.menu.children) {
+            // If there is no playback going in, any queue additions will be wiped as soon as
+            // something is played. Disable these actions when playback is going on so that
+            // it isn't possible to add anything during that time.
+            if (item.itemId == R.id.action_play_next || item.itemId == R.id.action_queue_add) {
+                item.isEnabled = song != null
+            }
+        }
+
+        if (parent is Album && parent == unlikelyToBeNull(detailModel.currentAlbum.value)) {
+            detailAdapter.setPlayingItem(song, isPlaying)
+        } else {
+            // Clear the ViewHolders if the mode isn't ALL_SONGS
+            detailAdapter.setPlayingItem(null, isPlaying)
+        }
+    }
+
     private fun handleNavigation(item: Music?) {
         val binding = requireBinding()
         when (item) {
@@ -221,7 +244,7 @@ class AlbumDetailFragment : MenuFragment<FragmentDetailBinding>() {
         }
     }
 
-    /** Scroll to an [song]. */
+    /** Scroll to a [song]. */
     private fun scrollToItem(song: Song) {
         // Calculate where the item for the currently played song is
         val pos = detailModel.albumData.value.indexOf(song)
@@ -241,24 +264,9 @@ class AlbumDetailFragment : MenuFragment<FragmentDetailBinding>() {
         }
     }
 
-    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        val binding = requireBinding()
-
-        for (item in binding.detailToolbar.menu.children) {
-            // If there is no playback going in, any queue additions will be wiped as soon as
-            // something is played. Disable these actions when playback is going on so that
-            // it isn't possible to add anything during that time.
-            if (item.itemId == R.id.action_play_next || item.itemId == R.id.action_queue_add) {
-                item.isEnabled = song != null
-            }
-        }
-
-        if (parent is Album && parent == unlikelyToBeNull(detailModel.currentAlbum.value)) {
-            detailAdapter.updateIndicator(song, isPlaying)
-        } else {
-            // Clear the ViewHolders if the mode isn't ALL_SONGS
-            detailAdapter.updateIndicator(null, isPlaying)
-        }
+    private fun handleSelection(selected: List<Music>) {
+        detailAdapter.setSelectedItems(selected)
+        requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
     }
 
     /**
@@ -279,4 +287,5 @@ class AlbumDetailFragment : MenuFragment<FragmentDetailBinding>() {
             snapPreference: Int
         ): Int = (boxStart + (boxEnd - boxStart) / 2) - (viewStart + (viewEnd - viewStart) / 2)
     }
+
 }

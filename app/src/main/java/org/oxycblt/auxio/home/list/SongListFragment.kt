@@ -28,7 +28,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.list.*
-import org.oxycblt.auxio.list.SelectionFragment
+import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.list.recycler.SyncListDiffer
@@ -47,7 +47,7 @@ import org.oxycblt.auxio.util.context
  * A [HomeListFragment] for showing a list of [Song]s.
  * @author OxygenCobalt
  */
-class SongListFragment : SelectionFragment<FragmentHomeListBinding>() {
+class SongListFragment : ListFragment<FragmentHomeListBinding>() {
     private val homeModel: HomeViewModel by activityViewModels()
 
     private val homeAdapter =
@@ -73,7 +73,7 @@ class SongListFragment : SelectionFragment<FragmentHomeListBinding>() {
         }
 
         collectImmediately(homeModel.songs, homeAdapter::replaceList)
-        collectImmediately(selectionModel.selected, homeAdapter::setSelected)
+        collectImmediately(selectionModel.selected, homeAdapter::setSelectedItems)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
@@ -125,7 +125,7 @@ class SongListFragment : SelectionFragment<FragmentHomeListBinding>() {
         }
     }
 
-    override fun onClick(music: Music) {
+    override fun onRealClick(music: Music) {
         check(music is Song) { "Unexpected datatype: ${music::class.java}" }
         when (settings.libPlaybackMode) {
             MusicMode.SONGS -> playbackModel.playFromAll(music)
@@ -142,10 +142,10 @@ class SongListFragment : SelectionFragment<FragmentHomeListBinding>() {
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         if (parent == null) {
-            homeAdapter.updateIndicator(song, isPlaying)
+            homeAdapter.setPlayingItem(song, isPlaying)
         } else {
             // Ignore playback that is not from all songs
-            homeAdapter.updateIndicator(null, isPlaying)
+            homeAdapter.setPlayingItem(null, isPlaying)
         }
     }
 

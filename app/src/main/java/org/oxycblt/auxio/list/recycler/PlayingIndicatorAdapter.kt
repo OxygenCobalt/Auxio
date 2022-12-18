@@ -44,7 +44,12 @@ abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerV
 
     abstract val currentList: List<Item>
 
-    fun updateIndicator(item: Item?, isPlaying: Boolean) {
+    /**
+     * Update the currently playing item in the list.
+     * @param item The item being played, null if nothing is being played.
+     * @param isPlaying Whether playback is ongoing or paused.
+     */
+    fun setPlayingItem(item: Item?, isPlaying: Boolean) {
         var updatedItem = false
 
         if (currentItem != item) {

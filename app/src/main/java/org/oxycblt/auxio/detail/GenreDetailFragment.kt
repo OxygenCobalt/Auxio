@@ -30,7 +30,7 @@ import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.DetailAdapter
 import org.oxycblt.auxio.detail.recycler.GenreDetailAdapter
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.list.MenuFragment
+import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -51,7 +51,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A fragment that shows information for a particular [Genre].
  * @author OxygenCobalt
  */
-class GenreDetailFragment : MenuFragment<FragmentDetailBinding>() {
+class GenreDetailFragment : ListFragment<FragmentDetailBinding>() {
     private val detailModel: DetailViewModel by activityViewModels()
 
     private val args: GenreDetailFragmentArgs by navArgs()
@@ -62,10 +62,11 @@ class GenreDetailFragment : MenuFragment<FragmentDetailBinding>() {
             DetailAdapter.Callback(
                 ::handleClick,
                 ::handleOpenItemMenu,
-                {},
+                ::handleSelect,
                 ::handlePlay,
                 ::handleShuffle,
                 ::handleOpenSortMenu))
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
@@ -77,7 +78,7 @@ class GenreDetailFragment : MenuFragment<FragmentDetailBinding>() {
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
-        detailModel.setGenreUid(args.genreUid)
+        setupSelectionToolbar(binding.detailSelectionToolbar)
 
         binding.detailToolbar.apply {
             inflateMenu(R.menu.menu_genre_artist_detail)
@@ -92,11 +93,14 @@ class GenreDetailFragment : MenuFragment<FragmentDetailBinding>() {
 
         // --- VIEWMODEL SETUP ---
 
+        detailModel.setGenreUid(args.genreUid)
+
         collectImmediately(detailModel.currentGenre, ::handleItemChange)
         collectImmediately(detailModel.genreData, detailAdapter::submitList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
+        collectImmediately(selectionModel.selected, ::handleSelection)
     }
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
@@ -117,20 +121,20 @@ class GenreDetailFragment : MenuFragment<FragmentDetailBinding>() {
         }
     }
 
-    private fun handleClick(item: Item) {
-        when (item) {
-            is Artist -> navModel.exploreNavigateTo(item)
+    override fun onRealClick(music: Music) {
+        when (music) {
+            is Artist -> navModel.exploreNavigateTo(music)
             is Song ->
                 when (settings.detailPlaybackMode) {
                     null ->
                         playbackModel.playFromGenre(
-                            item, unlikelyToBeNull(detailModel.currentGenre.value))
-                    MusicMode.SONGS -> playbackModel.playFromAll(item)
-                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-                    MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
+                            music, unlikelyToBeNull(detailModel.currentGenre.value))
+                    MusicMode.SONGS -> playbackModel.playFromAll(music)
+                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
+                    MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
                     else -> error("Unexpected playback mode: ${settings.detailPlaybackMode}")
                 }
-            else -> error("Unexpected datatype: ${item::class.simpleName}")
+            else -> error("Unexpected datatype: ${music::class.simpleName}")
         }
     }
 
@@ -177,6 +181,21 @@ class GenreDetailFragment : MenuFragment<FragmentDetailBinding>() {
         requireBinding().detailToolbar.title = genre.resolveName(requireContext())
     }
 
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        var item: Item? = null
+
+        if (parent is Artist) {
+            item = parent
+        }
+
+        if (parent is Genre && parent.uid == unlikelyToBeNull(detailModel.currentGenre.value).uid) {
+            item = song
+        }
+
+        detailAdapter.setPlayingItem(item, isPlaying)
+    }
+
+
     private fun handleNavigation(item: Music?) {
         when (item) {
             is Song -> {
@@ -201,17 +220,8 @@ class GenreDetailFragment : MenuFragment<FragmentDetailBinding>() {
         }
     }
 
-    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        var item: Item? = null
-
-        if (parent is Artist) {
-            item = parent
-        }
-
-        if (parent is Genre && parent.uid == unlikelyToBeNull(detailModel.currentGenre.value).uid) {
-            item = song
-        }
-
-        detailAdapter.updateIndicator(item, isPlaying)
+    private fun handleSelection(selected: List<Music>) {
+        detailAdapter.setSelectedItems(selected)
+        requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
     }
 }

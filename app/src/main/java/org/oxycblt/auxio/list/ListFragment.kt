@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.list
 
+import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.MenuRes
@@ -25,10 +26,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.list.selection.SelectionToolbarOverlay
+import org.oxycblt.auxio.list.selection.SelectionViewModel
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.shared.MainNavigationAction
 import org.oxycblt.auxio.shared.NavigationViewModel
@@ -37,16 +37,66 @@ import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 
-/**
- * A fragment capable of creating menus. Automatically keeps track of and disposes of menus,
- * preventing UI issues and memory leaks.
- * @author OxygenCobalt
- */
-abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
+abstract class ListFragment<VB : ViewBinding> : ViewBindingFragment<VB>() {
+    protected val selectionModel: SelectionViewModel by activityViewModels()
     private var currentMenu: PopupMenu? = null
 
     protected val playbackModel: PlaybackViewModel by androidActivityViewModels()
     protected val navModel: NavigationViewModel by activityViewModels()
+
+    override fun onDestroyBinding(binding: VB) {
+        super.onDestroyBinding(binding)
+        currentMenu?.dismiss()
+        currentMenu = null
+    }
+
+    fun setupSelectionToolbar(toolbar: SelectionToolbarOverlay) {
+        toolbar.apply {
+            setOnSelectionCancelListener { selectionModel.consume() }
+            setOnMenuItemClickListener {
+                handleSelectionMenuItem(it)
+                true
+            }
+        }
+    }
+
+    /** Handle a media item with a selection. */
+    private fun handleSelectionMenuItem(item: MenuItem) {
+        when (item.itemId) {
+            R.id.action_play_next -> {
+                playbackModel.playNext(selectionModel.consume())
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_queue_add -> {
+                playbackModel.addToQueue(selectionModel.consume())
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+        }
+    }
+
+    /**
+     * Called when an item is clicked by the user and was not selected by [handleClick]. This can be
+     * optionally implemented if [handleClick] is used.
+     */
+    open fun onRealClick(music: Music) {
+        throw NotImplementedError()
+    }
+
+    /** Provided implementation of an item click callback that handles selection. */
+    protected fun handleClick(item: Item) {
+        check(item is Music) { "Unexpected datatype: ${item::class.simpleName}" }
+        if (selectionModel.selected.value.isNotEmpty()) {
+            selectionModel.select(item)
+        } else {
+            onRealClick(item)
+        }
+    }
+
+    /** Provided implementation of an item selection callback. */
+    protected fun handleSelect(item: Item) {
+        check(item is Music) { "Unexpected datatype: ${item::class.simpleName}" }
+        selectionModel.select(item)
+    }
 
     /**
      * Opens the given menu in context of [song]. Assumes that the menu is only composed of common
@@ -206,11 +256,5 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                 setOnDismissListener { currentMenu = null }
                 show()
             }
-    }
-
-    override fun onDestroyBinding(binding: T) {
-        super.onDestroyBinding(binding)
-        currentMenu?.dismiss()
-        currentMenu = null
     }
 }

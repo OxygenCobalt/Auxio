@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.list
+package org.oxycblt.auxio.list.selection
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,9 +46,7 @@ class SelectionViewModel : ViewModel() {
     }
 
     /** Clear and return all selected items. */
-    fun consume(): List<Music> {
-        return _selected.value.also { _selected.value = listOf() }
-    }
+    fun consume() = _selected.value.also { _selected.value = listOf() }
 
     override fun onCleared() {
         super.onCleared()

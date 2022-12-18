@@ -32,7 +32,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ItemSelectCallback
-import org.oxycblt.auxio.list.SelectionFragment
+import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -48,7 +48,7 @@ import org.oxycblt.auxio.util.*
  * better keyboard logic, recycler updating, and chips
  * @author OxygenCobalt
  */
-class SearchFragment : SelectionFragment<FragmentSearchBinding>() {
+class SearchFragment : ListFragment<FragmentSearchBinding>() {
 
     // SearchViewModel is only scoped to this Fragment
     private val searchModel: SearchViewModel by androidViewModels()
@@ -73,7 +73,7 @@ class SearchFragment : SelectionFragment<FragmentSearchBinding>() {
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentSearchBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentSearchBinding, savedInstanceState: Bundle?) {
-        setupOverlay(binding.searchToolbarOverlay)
+        setupSelectionToolbar(binding.searchSelectionToolbar)
 
         binding.searchToolbar.apply {
             val itemIdToSelect =
@@ -124,7 +124,7 @@ class SearchFragment : SelectionFragment<FragmentSearchBinding>() {
         binding.searchRecycler.adapter = null
     }
 
-    override fun onClick(music: Music) {
+    override fun onRealClick(music: Music) {
         when (music) {
             is Song ->
                 when (settings.libPlaybackMode) {
@@ -138,8 +138,6 @@ class SearchFragment : SelectionFragment<FragmentSearchBinding>() {
     }
 
     private fun handleSearchNavigateUp() {
-        // Reset selection (navigating to another selectable screen)
-        selectionModel.consume()
         // Drop keyboard as it's no longer needed
         imm.hide()
         findNavController().navigateUp()
@@ -176,7 +174,7 @@ class SearchFragment : SelectionFragment<FragmentSearchBinding>() {
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        searchAdapter.updateIndicator(parent ?: song, isPlaying)
+        searchAdapter.setPlayingItem(parent ?: song, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {
@@ -190,17 +188,13 @@ class SearchFragment : SelectionFragment<FragmentSearchBinding>() {
             }
 
         findNavController().navigate(action)
-
-        // Reset selection (navigating to another selectable screen)
-        selectionModel.consume()
-
         // Drop keyboard as it's no longer needed
         imm.hide()
     }
 
     private fun updateSelection(selected: List<Music>) {
-        searchAdapter.setSelected(selected)
-        if (requireBinding().searchToolbarOverlay.updateSelectionAmount(selected.size) &&
+        searchAdapter.setSelectedItems(selected)
+        if (requireBinding().searchSelectionToolbar.updateSelectionAmount(selected.size) &&
             selected.isNotEmpty()) {
             imm.hide()
         }

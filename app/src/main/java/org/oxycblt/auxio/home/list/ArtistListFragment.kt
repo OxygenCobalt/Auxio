@@ -26,7 +26,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.list.*
-import org.oxycblt.auxio.list.SelectionFragment
+import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.recycler.ArtistViewHolder
 import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SyncListDiffer
@@ -43,7 +43,7 @@ import org.oxycblt.auxio.util.nonZeroOrNull
  * A [HomeListFragment] for showing a list of [Artist]s.
  * @author OxygenCobalt
  */
-class ArtistListFragment : SelectionFragment<FragmentHomeListBinding>() {
+class ArtistListFragment : ListFragment<FragmentHomeListBinding>() {
     private val homeModel: HomeViewModel by activityViewModels()
 
     private val homeAdapter =
@@ -64,7 +64,7 @@ class ArtistListFragment : SelectionFragment<FragmentHomeListBinding>() {
         }
 
         collectImmediately(homeModel.artists, homeAdapter::replaceList)
-        collectImmediately(selectionModel.selected, homeAdapter::setSelected)
+        collectImmediately(selectionModel.selected, homeAdapter::setSelectedItems)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
@@ -92,7 +92,7 @@ class ArtistListFragment : SelectionFragment<FragmentHomeListBinding>() {
         }
     }
 
-    override fun onClick(music: Music) {
+    override fun onRealClick(music: Music) {
         check(music is Artist) { "Unexpected datatype: ${music::class.java}" }
         navModel.exploreNavigateTo(music)
     }
@@ -104,10 +104,10 @@ class ArtistListFragment : SelectionFragment<FragmentHomeListBinding>() {
 
     private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
         if (parent is Artist) {
-            homeAdapter.updateIndicator(parent, isPlaying)
+            homeAdapter.setPlayingItem(parent, isPlaying)
         } else {
             // Ignore playback not from artists
-            homeAdapter.updateIndicator(null, isPlaying)
+            homeAdapter.setPlayingItem(null, isPlaying)
         }
     }
 

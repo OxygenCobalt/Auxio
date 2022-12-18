@@ -45,7 +45,8 @@ import org.oxycblt.auxio.home.list.AlbumListFragment
 import org.oxycblt.auxio.home.list.ArtistListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
-import org.oxycblt.auxio.list.SelectionFragment
+import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.selection.SelectionToolbarOverlay
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -63,7 +64,7 @@ import org.oxycblt.auxio.util.*
  * respective item.
  * @author OxygenCobalt
  */
-class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
+class HomeFragment : ListFragment<FragmentHomeBinding>() {
     private val homeModel: HomeViewModel by androidActivityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
 
@@ -96,7 +97,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
 
     override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
         binding.homeAppbar.addOnOffsetChangedListener { _, it -> handleAppBarAnimation(it) }
-        setupOverlay(binding.homeToolbarOverlay)
+        setupSelectionToolbar(binding.homeSelectionToolbar)
         binding.homeToolbar.setOnMenuItemClickListener {
             handleHomeMenuItem(it)
             true
@@ -171,7 +172,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         val binding = requireBinding()
         val range = binding.homeAppbar.totalScrollRange
 
-        binding.homeToolbarOverlay.alpha =
+        binding.homeSelectionToolbar.alpha =
             1f - (abs(verticalOffset.toFloat()) / (range.toFloat() / 2))
 
         binding.homeContent.updatePadding(
@@ -182,8 +183,6 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         when (item.itemId) {
             R.id.action_search -> {
                 logD("Navigating to search")
-                // Reset selection (navigating to another selectable screen)
-                selectionModel.consume()
                 initAxisTransitions(MaterialSharedAxis.Z)
                 findNavController().navigate(HomeFragmentDirections.actionShowSearch())
             }
@@ -382,15 +381,13 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
                 else -> return
             }
 
-        // Reset selection (navigating to another selectable screen)
-        selectionModel.consume()
         initAxisTransitions(MaterialSharedAxis.X)
         findNavController().navigate(action)
     }
 
     private fun updateSelection(selected: List<Music>) {
         val binding = requireBinding()
-        if (binding.homeToolbarOverlay.updateSelectionAmount(selected.size) &&
+        if (binding.homeSelectionToolbar.updateSelectionAmount(selected.size) &&
             selected.isNotEmpty()) {
             logD("Significant selection occurred, expanding AppBar")
             // Significant enough change where we want to expand the RecyclerView
@@ -409,7 +406,7 @@ class HomeFragment : SelectionFragment<FragmentHomeBinding>() {
         }
 
     private fun setupTabs(binding: FragmentHomeBinding) {
-        val toolbarParams = binding.homeToolbarOverlay.layoutParams as AppBarLayout.LayoutParams
+        val toolbarParams = binding.homeSelectionToolbar.layoutParams as AppBarLayout.LayoutParams
         if (homeModel.tabs.size == 1) {
             // A single tab makes the tab layout redundant, hide it and disable the collapsing
             // behavior.

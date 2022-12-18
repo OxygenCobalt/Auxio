@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.list
+package org.oxycblt.auxio.list.selection
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -43,6 +43,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         MaterialToolbar(context).apply {
             setNavigationIcon(R.drawable.ic_close_24)
             inflateMenu(R.menu.menu_selection_actions)
+
+            if (isInEditMode) {
+                isInvisible = true
+            }
         }
 
     private var fadeThroughAnimator: ValueAnimator? = null

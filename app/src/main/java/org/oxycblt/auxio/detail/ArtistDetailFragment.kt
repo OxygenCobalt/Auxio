@@ -30,7 +30,7 @@ import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
 import org.oxycblt.auxio.detail.recycler.DetailAdapter
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.list.MenuFragment
+import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
@@ -50,7 +50,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A fragment that shows information for a particular [Artist].
  * @author OxygenCobalt
  */
-class ArtistDetailFragment : MenuFragment<FragmentDetailBinding>() {
+class ArtistDetailFragment : ListFragment<FragmentDetailBinding>() {
     private val detailModel: DetailViewModel by activityViewModels()
 
     private val args: ArtistDetailFragmentArgs by navArgs()
@@ -61,7 +61,7 @@ class ArtistDetailFragment : MenuFragment<FragmentDetailBinding>() {
             DetailAdapter.Callback(
                 ::handleClick,
                 ::handleOpenItemMenu,
-                {},
+                ::handleSelect,
                 ::handlePlay,
                 ::handleShuffle,
                 ::handleOpenSortMenu))
@@ -77,7 +77,7 @@ class ArtistDetailFragment : MenuFragment<FragmentDetailBinding>() {
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
-        detailModel.setArtistUid(args.artistUid)
+        setupSelectionToolbar(binding.detailSelectionToolbar)
 
         binding.detailToolbar.apply {
             inflateMenu(R.menu.menu_genre_artist_detail)
@@ -92,11 +92,14 @@ class ArtistDetailFragment : MenuFragment<FragmentDetailBinding>() {
 
         // --- VIEWMODEL SETUP ---
 
+        detailModel.setArtistUid(args.artistUid)
+
         collectImmediately(detailModel.currentArtist, ::updateItem)
         collectImmediately(detailModel.artistData, detailAdapter::submitList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
+        collectImmediately(selectionModel.selected, ::handleSelection)
     }
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
@@ -104,21 +107,21 @@ class ArtistDetailFragment : MenuFragment<FragmentDetailBinding>() {
         binding.detailRecycler.adapter = null
     }
 
-    private fun handleClick(item: Item) {
-        when (item) {
+    override fun onRealClick(music: Music) {
+        when (music) {
             is Song -> {
                 when (settings.detailPlaybackMode) {
                     null ->
                         playbackModel.playFromArtist(
-                            item, unlikelyToBeNull(detailModel.currentArtist.value))
-                    MusicMode.SONGS -> playbackModel.playFromAll(item)
-                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-                    MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
+                            music, unlikelyToBeNull(detailModel.currentArtist.value))
+                    MusicMode.SONGS -> playbackModel.playFromAll(music)
+                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
+                    MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
                     else -> error("Unexpected playback mode: ${settings.detailPlaybackMode}")
                 }
             }
-            is Album -> navModel.exploreNavigateTo(item)
-            else -> error("Unexpected datatype: ${item::class.simpleName}")
+            is Album -> navModel.exploreNavigateTo(music)
+            else -> error("Unexpected datatype: ${music::class.simpleName}")
         }
     }
 
@@ -180,6 +183,20 @@ class ArtistDetailFragment : MenuFragment<FragmentDetailBinding>() {
         requireBinding().detailToolbar.title = artist.resolveName(requireContext())
     }
 
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        var item: Item? = null
+
+        if (parent is Album) {
+            item = parent
+        }
+
+        if (parent is Artist && parent == unlikelyToBeNull(detailModel.currentArtist.value)) {
+            item = song
+        }
+
+        detailAdapter.setPlayingItem(item, isPlaying)
+    }
+
     private fun handleNavigation(item: Music?) {
         val binding = requireBinding()
 
@@ -210,17 +227,8 @@ class ArtistDetailFragment : MenuFragment<FragmentDetailBinding>() {
         }
     }
 
-    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        var item: Item? = null
-
-        if (parent is Album) {
-            item = parent
-        }
-
-        if (parent is Artist && parent == unlikelyToBeNull(detailModel.currentArtist.value)) {
-            item = song
-        }
-
-        detailAdapter.updateIndicator(item, isPlaying)
+    private fun handleSelection(selected: List<Music>) {
+        detailAdapter.setSelectedItems(selected)
+        requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
     }
 }

@@ -28,7 +28,7 @@ import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
 import org.oxycblt.auxio.detail.DiscHeader
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.list.recycler.PlayingIndicatorAdapter
+import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SimpleItemCallback
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
@@ -41,7 +41,7 @@ import org.oxycblt.auxio.util.inflater
  * An adapter for displaying [Album] information and it's children.
  * @author OxygenCobalt
  */
-class AlbumDetailAdapter(private val callback: AlbumDetailAdapter.Callback) :
+class AlbumDetailAdapter(private val callback: Callback) :
     DetailAdapter(callback, DIFFER) {
 
     override fun getItemViewType(position: Int) =
@@ -180,7 +180,7 @@ class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
 }
 
 private class AlbumSongViewHolder private constructor(private val binding: ItemAlbumSongBinding) :
-    PlayingIndicatorAdapter.ViewHolder(binding.root) {
+    SelectionIndicatorAdapter.ViewHolder(binding.root) {
     fun bind(item: Song, callback: AlbumDetailAdapter.Callback) {
         // Hide the track number view if the song does not have a track.
         if (item.track != null) {
@@ -213,6 +213,10 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
         binding.songTrackBg.isPlaying = isPlaying
+    }
+
+    override fun updateSelectionIndicator(isSelected: Boolean) {
+        binding.root.isActivated = isSelected
     }
 
     companion object {

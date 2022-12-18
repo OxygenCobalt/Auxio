@@ -26,7 +26,6 @@ import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.ItemSelectCallback
-import org.oxycblt.auxio.list.MenuItemListener
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -41,20 +40,6 @@ import org.oxycblt.auxio.util.inflater
  */
 class SongViewHolder private constructor(private val binding: ItemSongBinding) :
     SelectionIndicatorAdapter.ViewHolder(binding.root) {
-    fun bind(item: Song, listener: MenuItemListener) {
-        binding.songAlbumCover.bind(item)
-        binding.songName.text = item.resolveName(binding.context)
-        binding.songInfo.text = item.resolveArtistContents(binding.context)
-
-        binding.songMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.apply {
-            setOnClickListener { listener.onItemClick(item) }
-            setOnLongClickListener {
-                listener.onSelect(item)
-                true
-            }
-        }
-    }
 
     fun bind(item: Song, callback: ItemSelectCallback) {
         binding.songAlbumCover.bind(item)
@@ -99,21 +84,6 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
  */
 class AlbumViewHolder private constructor(private val binding: ItemParentBinding) :
     SelectionIndicatorAdapter.ViewHolder(binding.root) {
-
-    fun bind(item: Album, listener: MenuItemListener) {
-        binding.parentImage.bind(item)
-        binding.parentName.text = item.resolveName(binding.context)
-        binding.parentInfo.text = item.resolveArtistContents(binding.context)
-
-        binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.apply {
-            setOnClickListener { listener.onItemClick(item) }
-            setOnLongClickListener {
-                listener.onSelect(item)
-                true
-            }
-        }
-    }
 
     fun bind(item: Album, callback: ItemSelectCallback) {
         binding.parentImage.bind(item)
@@ -160,31 +130,6 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
  */
 class ArtistViewHolder private constructor(private val binding: ItemParentBinding) :
     SelectionIndicatorAdapter.ViewHolder(binding.root) {
-
-    fun bind(item: Artist, listener: MenuItemListener) {
-        binding.parentImage.bind(item)
-        binding.parentName.text = item.resolveName(binding.context)
-
-        binding.parentInfo.text =
-            if (item.songs.isNotEmpty()) {
-                binding.context.getString(
-                    R.string.fmt_two,
-                    binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size),
-                    binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
-            } else {
-                // Artist has no songs, only display an album count.
-                binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size)
-            }
-
-        binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.apply {
-            setOnClickListener { listener.onItemClick(item) }
-            setOnLongClickListener {
-                listener.onSelect(item)
-                true
-            }
-        }
-    }
 
     fun bind(item: Artist, callback: ItemSelectCallback) {
         binding.parentImage.bind(item)
@@ -241,25 +186,6 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
  */
 class GenreViewHolder private constructor(private val binding: ItemParentBinding) :
     SelectionIndicatorAdapter.ViewHolder(binding.root) {
-
-    fun bind(item: Genre, listener: MenuItemListener) {
-        binding.parentImage.bind(item)
-        binding.parentName.text = item.resolveName(binding.context)
-        binding.parentInfo.text =
-            binding.context.getString(
-                R.string.fmt_two,
-                binding.context.getPlural(R.plurals.fmt_artist_count, item.artists.size),
-                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
-
-        binding.parentMenu.setOnClickListener { listener.onOpenMenu(item, it) }
-        binding.root.apply {
-            setOnClickListener { listener.onItemClick(item) }
-            setOnLongClickListener {
-                listener.onSelect(item)
-                true
-            }
-        }
-    }
 
     fun bind(item: Genre, callback: ItemSelectCallback) {
         binding.parentImage.bind(item)

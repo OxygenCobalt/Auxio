@@ -37,7 +37,10 @@ abstract class SelectionIndicatorAdapter<VH : RecyclerView.ViewHolder> :
         }
     }
 
-    fun setSelected(items: List<Music>) {
+    /**
+     * Update the list of selected [items] within the adapter.
+     */
+    fun setSelectedItems(items: List<Music>) {
         val oldSelectedItems = selectedItems
         val newSelectedItems = items.toSet()
         if (newSelectedItems == oldSelectedItems) {

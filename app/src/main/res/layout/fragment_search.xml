@@ -12,8 +12,8 @@
         app:liftOnScroll="true"
         app:liftOnScrollTargetViewId="@id/search_recycler">
 
-        <org.oxycblt.auxio.list.SelectionToolbarOverlay
-            android:id="@+id/search_toolbar_overlay"
+        <org.oxycblt.auxio.list.selection.SelectionToolbarOverlay
+            android:id="@+id/search_selection_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -49,7 +49,7 @@
 
             </com.google.android.material.appbar.MaterialToolbar>
 
-        </org.oxycblt.auxio.list.SelectionToolbarOverlay>
+        </org.oxycblt.auxio.list.selection.SelectionToolbarOverlay>
 
     </org.oxycblt.auxio.shared.AuxioAppBarLayout>
 

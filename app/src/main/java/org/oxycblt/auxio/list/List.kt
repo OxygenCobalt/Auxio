@@ -39,18 +39,3 @@ open class ItemSelectCallback(
     onOpenMenu: (Item, View) -> Unit,
     val onSelect: (Item) -> Unit
 ) : ItemMenuCallback(onClick, onOpenMenu)
-
-/** An interface for detecting if an item has been clicked once. */
-interface ItemClickListener {
-    /** Called when an item is clicked once. */
-    fun onItemClick(item: Item)
-}
-
-/** An interface for detecting if an item has had it's menu opened. */
-interface MenuItemListener : ItemClickListener {
-    /** Called when an item is long-clicked. */
-    fun onSelect(item: Item) {}
-
-    /** Called when an item desires to open a menu relating to it. */
-    fun onOpenMenu(item: Item, anchor: View)
-}
