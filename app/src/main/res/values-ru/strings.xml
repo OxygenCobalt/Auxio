@@ -262,4 +262,7 @@
     <string name="err_did_not_wipe">Не удалось очистить состояние</string>
     <string name="err_did_not_save">Не удалось сохранить состояние</string>
     <string name="set_separators_warning">Предупреждение: Использование этой настройки может привести к тому, что некоторые теги будут неправильно интерпретироваться как имеющие несколько значений. Вы можете решить эту проблему, добавив к нежелательным символам-разделителям обратную косую черту (\\).</string>
+    <string name="lbl_play_selected">Воспроизвести выбранное</string>
+    <string name="lbl_shuffle_selected">Перемешать выбранное</string>
+    <string name="fmt_selected">%d Выбрано</string>
 </resources>
