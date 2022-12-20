@@ -33,7 +33,7 @@ import android.widget.FrameLayout
  *
  * This layout can only contain one child.
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 open class ForcedLTRFrameLayout
 @JvmOverloads

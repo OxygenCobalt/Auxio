@@ -15,33 +15,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.home
+package org.oxycblt.auxio.home.tabs
 
 import android.content.Context
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.util.logD
 
 /**
- * A tag configuration strategy that automatically adapts the tab layout to the screen size.
- * - On small screens, use only an icon
- * - On medium screens, use only text
- * - On large screens, use text and an icon
- * @author OxygenCobalt
+ * A [TabLayoutMediator.TabConfigurationStrategy] that uses larger/smaller tab configurations
+ * depending on the screen configuration.
+ * @param context [Context] required to obtain window information
+ * @param tabs Current tab configuration from settings
+ * @author Alexander Capehart (OxygenCobalt)
  */
-class AdaptiveTabStrategy(context: Context, private val homeModel: HomeViewModel) :
+class AdaptiveTabStrategy(context: Context, private val tabs: List<MusicMode>) :
     TabLayoutMediator.TabConfigurationStrategy {
     private val width = context.resources.configuration.smallestScreenWidthDp
 
     override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
-        val tabMode = homeModel.tabs[position]
-
         val icon: Int
         val string: Int
 
-        when (tabMode) {
+        when (tabs[position]) {
             MusicMode.SONGS -> {
                 icon = R.drawable.ic_song_24
                 string = R.string.lbl_songs
@@ -60,15 +59,19 @@ class AdaptiveTabStrategy(context: Context, private val homeModel: HomeViewModel
             }
         }
 
+        // Use expected sw* size thresholds when choosing a configuration.
         when {
+            // On small screens, only display an icon.
             width < 370 -> {
                 logD("Using icon-only configuration")
                 tab.setIcon(icon).setContentDescription(string)
             }
+            // On large screens, display an icon and text.
             width < 600 -> {
                 logD("Using text-only configuration")
                 tab.setText(string)
             }
+            // On medium-size screens, display text.
             else -> {
                 logD("Using icon-and-text configuration")
                 tab.setIcon(icon).setText(string)

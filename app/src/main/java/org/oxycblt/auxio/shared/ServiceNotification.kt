@@ -26,7 +26,7 @@ import androidx.core.app.NotificationManagerCompat
 /**
  * Wrapper around [NotificationCompat.Builder] that automates parts of the notification setup, under
  * the assumption that the notification will be used in a service.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class ServiceNotification(context: Context, info: ChannelInfo) :
     NotificationCompat.Builder(context, info.id) {

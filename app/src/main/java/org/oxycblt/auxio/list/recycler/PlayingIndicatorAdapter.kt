@@ -20,59 +20,82 @@ package org.oxycblt.auxio.list.recycler
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
 /**
- * An adapter capable of highlighting particular viewholders as "Playing". All behavior is handled
- * by the adapter, only the implementation ViewHolders need to add code to handle the indicator UI
- * itself.
- * @author OxygenCobalt
+ * A [RecyclerView.Adapter] that supports indicating the playback status of a particular item.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
-    private var isPlaying = false
-    private var currentItem: Item? = null
+    /**
+     * A [RecyclerView.ViewHolder] that can display a playing indicator.
+     */
+    abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
+        /**
+         * Update the playing indicator within this [RecyclerView.ViewHolder].
+         * @param isActive True if this item is playing, false otherwise.
+         * @param isPlaying True if playback is ongoing, false if paused. If this
+         * is true, [isActive] will also be true.
+         */
+        abstract fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean)
+    }
 
-    override fun onBindViewHolder(holder: VH, position: Int) = throw UnsupportedOperationException()
+    // There are actually two states for this adapter:
+    // This is sub-divided into two states:
+    // - The currently playing item, which is usually marked as "selected" and becomes accented.
+    // - Whether playback is ongoing, which corresponds to whether the item's ImageGroup is
+    // displaying
+    private var currentItem: Item? = null
+    private var isPlaying = false
 
     override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
+        if (payloads.isEmpty()) {
+            // Not updating any indicator-specific things, so delegate to the concrete
+            // adapter (actually bind the item)
+            onBindViewHolder(holder, position)
+        }
+
+        // Only try to update the playing indicator if the ViewHolder supports it
         if (holder is ViewHolder) {
-            val item = currentList[position]
-            val currentItem = currentItem
-            holder.updatePlayingIndicator(item == currentItem, isPlaying)
+            holder.updatePlayingIndicator(currentList[position] == currentItem, isPlaying)
         }
     }
 
+    /**
+     * The current list of the adapter. This is used to update items if the indicator
+     * state changes.
+     */
     abstract val currentList: List<Item>
 
     /**
      * Update the currently playing item in the list.
-     * @param item The item being played, null if nothing is being played.
+     * @param item The item currently being played, or null if it is not being played.
      * @param isPlaying Whether playback is ongoing or paused.
      */
     fun setPlayingItem(item: Item?, isPlaying: Boolean) {
         var updatedItem = false
-
         if (currentItem != item) {
             val oldItem = currentItem
             currentItem = item
 
+            // Remove the playing indicator from the old item
             if (oldItem != null) {
                 val pos = currentList.indexOfFirst { it == oldItem }
-
                 if (pos > -1) {
-                    notifyItemChanged(pos, PAYLOAD_INDICATOR_CHANGED)
+                    notifyItemChanged(pos, PAYLOAD_PLAYING_INDICATOR_CHANGED)
                 } else {
-                    logW("oldItem was not in adapter data")
+                    logD("oldItem was not in adapter data")
                 }
             }
 
+            // Enable the playing indicator on the new item
             if (item != null) {
                 val pos = currentList.indexOfFirst { it == item }
-
                 if (pos > -1) {
-                    notifyItemChanged(pos, PAYLOAD_INDICATOR_CHANGED)
+                    notifyItemChanged(pos, PAYLOAD_PLAYING_INDICATOR_CHANGED)
                 } else {
-                    logW("newItem was not in adapter data")
+                    logD("newItem was not in adapter data")
                 }
             }
 
@@ -82,24 +105,21 @@ abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerV
         if (this.isPlaying != isPlaying) {
             this.isPlaying = isPlaying
 
+            // We may have already called notifyItemChanged before when checking
+            // if the item was being played, so in that case we don't need to
+            // update again here.
             if (!updatedItem && item != null) {
                 val pos = currentList.indexOfFirst { it == item }
-
                 if (pos > -1) {
-                    notifyItemChanged(pos, PAYLOAD_INDICATOR_CHANGED)
+                    notifyItemChanged(pos, PAYLOAD_PLAYING_INDICATOR_CHANGED)
                 } else {
-                    logW("newItem was not in adapter data")
+                    logD("newItem was not in adapter data")
                 }
             }
         }
     }
 
     companion object {
-        val PAYLOAD_INDICATOR_CHANGED = Any()
-    }
-
-    /** A ViewHolder that can respond to playing ]indicator updates. */
-    abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-        abstract fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean)
+        private val PAYLOAD_PLAYING_INDICATOR_CHANGED = Any()
     }
 }

@@ -23,16 +23,16 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
-import org.oxycblt.auxio.list.ItemClickCallback
+import org.oxycblt.auxio.list.BasicListListener
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.inflater
 
 /**
  * An adapter that displays the accent palette.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
-class AccentAdapter(private val callback: ItemClickCallback) :
+class AccentAdapter(private val listener: BasicListListener) :
     RecyclerView.Adapter<AccentViewHolder>() {
     var selectedAccent: Accent? = null
         private set
@@ -52,7 +52,7 @@ class AccentAdapter(private val callback: ItemClickCallback) :
         val item = Accent.from(position)
 
         if (payloads.isEmpty()) {
-            holder.bind(item, callback)
+            holder.bind(item, listener)
         }
 
         holder.setSelected(item == selectedAccent)
@@ -73,14 +73,14 @@ class AccentAdapter(private val callback: ItemClickCallback) :
 class AccentViewHolder private constructor(private val binding: ItemAccentBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: Accent, callback: ItemClickCallback) {
+    fun bind(item: Accent, listener: BasicListListener) {
         setSelected(false)
 
         binding.accent.apply {
             backgroundTintList = context.getColorCompat(item.primary)
             contentDescription = context.getString(item.name)
             TooltipCompat.setTooltipText(this, contentDescription)
-            setOnClickListener { callback.onClick(item) }
+            setOnClickListener { listener.onClick(item) }
         }
     }
 

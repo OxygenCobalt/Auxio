@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.list
 
-import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.MenuRes
@@ -26,23 +25,20 @@ import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.list.selection.SelectionToolbarOverlay
-import org.oxycblt.auxio.list.selection.SelectionViewModel
+import org.oxycblt.auxio.list.selection.SelectionFragment
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.shared.MainNavigationAction
 import org.oxycblt.auxio.shared.NavigationViewModel
-import org.oxycblt.auxio.shared.ViewBindingFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 
-abstract class ListFragment<VB : ViewBinding> : ViewBindingFragment<VB>() {
-    protected val selectionModel: SelectionViewModel by activityViewModels()
-    private var currentMenu: PopupMenu? = null
-
-    protected val playbackModel: PlaybackViewModel by androidActivityViewModels()
+/**
+ * A Fragment containing a selectable list.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), ExtendedListListener {
     protected val navModel: NavigationViewModel by activityViewModels()
+    private var currentMenu: PopupMenu? = null
 
     override fun onDestroyBinding(binding: VB) {
         super.onDestroyBinding(binding)
@@ -50,57 +46,35 @@ abstract class ListFragment<VB : ViewBinding> : ViewBindingFragment<VB>() {
         currentMenu = null
     }
 
-    fun setupSelectionToolbar(toolbar: SelectionToolbarOverlay) {
-        toolbar.apply {
-            setOnSelectionCancelListener { selectionModel.consume() }
-            setOnMenuItemClickListener {
-                handleSelectionMenuItem(it)
-                true
-            }
-        }
-    }
-
-    /** Handle a media item with a selection. */
-    private fun handleSelectionMenuItem(item: MenuItem) {
-        when (item.itemId) {
-            R.id.action_play_next -> {
-                playbackModel.playNext(selectionModel.consume())
-                requireContext().showToast(R.string.lng_queue_added)
-            }
-            R.id.action_queue_add -> {
-                playbackModel.addToQueue(selectionModel.consume())
-                requireContext().showToast(R.string.lng_queue_added)
-            }
-        }
-    }
-
     /**
-     * Called when an item is clicked by the user and was not selected by [handleClick]. This can be
-     * optionally implemented if [handleClick] is used.
+     * Called when [onClick] is called, but does not result in the item being selected. This
+     * more or less corresponds to an [onClick] implementation in a non-[ListFragment].
+     * @param music The [Music] item that was clicked.
      */
-    open fun onRealClick(music: Music) {
-        throw NotImplementedError()
-    }
+    abstract fun onRealClick(music: Music)
 
-    /** Provided implementation of an item click callback that handles selection. */
-    protected fun handleClick(item: Item) {
+    override fun onClick(item: Item) {
         check(item is Music) { "Unexpected datatype: ${item::class.simpleName}" }
         if (selectionModel.selected.value.isNotEmpty()) {
+            // Map clicking an item to selecting an item when items are already selected.
             selectionModel.select(item)
         } else {
+            // Delegate to the concrete implementation when we don't select the item.
             onRealClick(item)
         }
     }
 
-    /** Provided implementation of an item selection callback. */
-    protected fun handleSelect(item: Item) {
+    override fun onSelect(item: Item) {
         check(item is Music) { "Unexpected datatype: ${item::class.simpleName}" }
         selectionModel.select(item)
     }
 
     /**
-     * Opens the given menu in context of [song]. Assumes that the menu is only composed of common
-     * [Song] options.
+     * Opens a menu in the context of a [Song]. This menu will be managed by the Fragment and
+     * closed when the view is destroyed. If a menu is already opened, this call is ignored.
+     * @param anchor The [View] to anchor the menu to.
+     * @param menuRes The resource of the menu to load.
+     * @param song The [Song] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, song: Song) {
         logD("Launching new song menu: ${song.rawName}")
@@ -134,8 +108,11 @@ abstract class ListFragment<VB : ViewBinding> : ViewBindingFragment<VB>() {
     }
 
     /**
-     * Opens the given menu in context of [album]. Assumes that the menu is only composed of common
-     * [Album] options.
+     * Opens a menu in the context of a [Album]. This menu will be managed by the Fragment and
+     * closed when the view is destroyed. If a menu is already opened, this call is ignored.
+     * @param anchor The [View] to anchor the menu to.
+     * @param menuRes The resource of the menu to load.
+     * @param song The [Artist] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, album: Album) {
         logD("Launching new album menu: ${album.rawName}")
@@ -167,8 +144,11 @@ abstract class ListFragment<VB : ViewBinding> : ViewBindingFragment<VB>() {
     }
 
     /**
-     * Opens the given menu in context of [artist]. Assumes that the menu is only composed of common
-     * [Artist] options.
+     * Opens a menu in the context of a [Artist]. This menu will be managed by the Fragment and
+     * closed when the view is destroyed. If a menu is already opened, this call is ignored.
+     * @param anchor The [View] to anchor the menu to.
+     * @param menuRes The resource of the menu to load.
+     * @param song The [Artist] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, artist: Artist) {
         logD("Launching new artist menu: ${artist.rawName}")
@@ -197,8 +177,11 @@ abstract class ListFragment<VB : ViewBinding> : ViewBindingFragment<VB>() {
     }
 
     /**
-     * Opens the given menu in context of [genre]. Assumes that the menu is only composed of common
-     * [Genre] options.
+     * Opens a menu in the context of a [Genre]. This menu will be managed by the Fragment and
+     * closed when the view is destroyed. If a menu is already opened, this call is ignored.
+     * @param anchor The [View] to anchor the menu to.
+     * @param menuRes The resource of the menu to load.
+     * @param song The [Genre] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, genre: Genre) {
         logD("Launching new genre menu: ${genre.rawName}")
@@ -226,22 +209,31 @@ abstract class ListFragment<VB : ViewBinding> : ViewBindingFragment<VB>() {
         }
     }
 
+    /**
+     * Internally create a menu for a [Music] item.
+     * @param anchor The [View] to anchor the menu to.
+     * @param menuRes The resource of the menu to load.
+     * @param onMenuItemClick A callback for when a [MenuItem] is selected.
+     */
     private fun openMusicMenuImpl(
         anchor: View,
         @MenuRes menuRes: Int,
-        onClick: (MenuItem) -> Unit
+        onMenuItemClick: (MenuItem) -> Unit
     ) {
         openMenu(anchor, menuRes) {
             setOnMenuItemClickListener { item ->
-                onClick(item)
+                onMenuItemClick(item)
                 true
             }
         }
     }
 
     /**
-     * Open a generic menu with configuration in [block]. If a menu is already opened, then this
-     * function is a no-op.
+     * Open a menu. This menu will be managed by the Fragment and closed when the view is
+     * destroyed. If a menu is already opened, this call is ignored.
+     * @param anchor The [View] to anchor the menu to.
+     * @param menuRes The resource of the menu to load.
+     * @param block A block that is ran within [PopupMenu] that allows further configuration.
      */
     protected fun openMenu(anchor: View, @MenuRes menuRes: Int, block: PopupMenu.() -> Unit) {
         if (currentMenu != null) {

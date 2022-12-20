@@ -22,7 +22,7 @@ import org.oxycblt.auxio.R
 
 /**
  * Enum that determines the playback repeat mode.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 enum class RepeatMode {
     NONE,

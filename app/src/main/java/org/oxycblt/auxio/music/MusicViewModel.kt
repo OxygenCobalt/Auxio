@@ -25,7 +25,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * A ViewModel representing the current indexing state.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class MusicViewModel : ViewModel(), Indexer.Callback {
     private val indexer = Indexer.getInstance()

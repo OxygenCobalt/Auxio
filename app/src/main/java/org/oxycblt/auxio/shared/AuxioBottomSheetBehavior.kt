@@ -32,7 +32,7 @@ import org.oxycblt.auxio.util.systemGestureInsetsCompat
 /**
  * Implements a reasonable enough skeleton around BottomSheetBehavior (Excluding auxio extensions in
  * the vendored code because of course I have to) for normal use without absurd bugs.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class AuxioBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     NeoBottomSheetBehavior<V>(context, attributeSet) {

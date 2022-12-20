@@ -27,7 +27,7 @@ import org.oxycblt.auxio.shared.ViewBindingFragment
 
 /**
  * A container [Fragment] for the settings menu.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class SettingsFragment : ViewBindingFragment<FragmentSettingsBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -40,7 +40,7 @@ import org.oxycblt.auxio.util.logD
  * widget state based off of that. This cannot be rolled into [WidgetProvider] directly, as it may
  * result in memory leaks if [PlaybackStateManager]/[Settings] gets created and bound to without
  * being released.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class WidgetComponent(private val context: Context) :
     PlaybackStateManager.Callback, Settings.Callback {

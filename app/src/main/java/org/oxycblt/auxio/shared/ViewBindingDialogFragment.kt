@@ -33,7 +33,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A dialog fragment enabling ViewBinding inflation and usage across the dialog fragment lifecycle.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
     private var _binding: VB? = null
@@ -74,7 +74,7 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
                 "right now, but instead it was ${lifecycle.currentState}"
         }
     }
-
+    // TODO: Phase this out
     fun <T> lifecycleObject(create: (VB) -> T): ReadOnlyProperty<Fragment, T> {
         lifecycleObjects.add(LifecycleObject(null, create))
 

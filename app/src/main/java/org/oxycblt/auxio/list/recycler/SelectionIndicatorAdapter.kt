@@ -22,28 +22,41 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.Music
 
 /**
- * An adapter that implements selection indicators.
- * @author OxygenCobalt
+ * A [PlayingIndicatorAdapter] that also supports indicating the selection status of a group of
+ * items.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class SelectionIndicatorAdapter<VH : RecyclerView.ViewHolder> :
     PlayingIndicatorAdapter<VH>() {
+    /**
+     * A [PlayingIndicatorAdapter.ViewHolder] that can display a selection indicator.
+     */
+    abstract class ViewHolder(root: View) : PlayingIndicatorAdapter.ViewHolder(root) {
+        /**
+         * Update the selection indicator within this [PlayingIndicatorAdapter.ViewHolder].
+         * @param isSelected Whether this [PlayingIndicatorAdapter.ViewHolder] is selected.
+         */
+        abstract fun updateSelectionIndicator(isSelected: Boolean)
+    }
+
     private var selectedItems = setOf<Music>()
 
     override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
         super.onBindViewHolder(holder, position, payloads)
-
         if (holder is ViewHolder) {
             holder.updateSelectionIndicator(selectedItems.contains(currentList[position]))
         }
     }
 
     /**
-     * Update the list of selected [items] within the adapter.
+     * Update the list of selected items.
+     * @param items A list of selected [Music].
      */
     fun setSelectedItems(items: List<Music>) {
         val oldSelectedItems = selectedItems
         val newSelectedItems = items.toSet()
         if (newSelectedItems == oldSelectedItems) {
+            // Nothing to do.
             return
         }
 
@@ -53,19 +66,20 @@ abstract class SelectionIndicatorAdapter<VH : RecyclerView.ViewHolder> :
             //  assuming all list items are unique?
             val item = currentList[i]
             if (item !is Music) {
+                // Not applicable.
                 continue
             }
 
+            // Only update items that were added or removed from the list.
             val added = !oldSelectedItems.contains(item) && newSelectedItems.contains(item)
             val removed = oldSelectedItems.contains(item) && !newSelectedItems.contains(item)
             if (added || removed) {
-                notifyItemChanged(i, PAYLOAD_INDICATOR_CHANGED)
+                notifyItemChanged(i, PAYLOAD_SELECTION_INDICATOR_CHANGED)
             }
         }
     }
 
-    /** A ViewHolder that can respond to selection indicator updates. */
-    abstract class ViewHolder(root: View) : PlayingIndicatorAdapter.ViewHolder(root) {
-        abstract fun updateSelectionIndicator(isSelected: Boolean)
+    companion object {
+        private val PAYLOAD_SELECTION_INDICATOR_CHANGED = Any()
     }
 }

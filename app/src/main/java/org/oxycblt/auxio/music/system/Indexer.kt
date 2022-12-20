@@ -63,7 +63,7 @@ import org.oxycblt.auxio.util.logW
  * like a job for [MusicStore] but in practice is only really leveraged by the components that
  * directly work with music loading, making such redundant.
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class Indexer {
     private var lastResponse: Response? = null

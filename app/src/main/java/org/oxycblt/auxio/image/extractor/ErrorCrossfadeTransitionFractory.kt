@@ -28,9 +28,9 @@ import coil.transition.TransitionTarget
 /**
  * A copy of [CrossfadeTransition.Factory] that applies a transition to error results. You know.
  * Like they used to.
- * @author Coil Team
+ * @author Coil Team, Alexander Capehart (OxygenCobalt)
  */
-class CrossfadeTransitionFactory : Transition.Factory {
+class ErrorCrossfadeTransitionFractory : Transition.Factory {
     override fun create(target: TransitionTarget, result: ImageResult): Transition {
         // Don't animate if the request was fulfilled by the memory cache.
         if (result is SuccessResult && result.dataSource == DataSource.MEMORY_CACHE) {

@@ -46,7 +46,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * The [ViewModel] for search functionality.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class SearchViewModel(application: Application) :
     AndroidViewModel(application), MusicStore.Callback {

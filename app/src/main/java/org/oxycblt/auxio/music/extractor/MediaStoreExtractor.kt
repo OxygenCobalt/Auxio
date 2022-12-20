@@ -42,7 +42,7 @@ import org.oxycblt.auxio.util.logD
 /**
  * The layer that loads music from the MediaStore database. This is an intermediate step in the
  * music loading process.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class MediaStoreExtractor(
     private val context: Context,
@@ -319,7 +319,7 @@ abstract class MediaStoreExtractor(
 /**
  * A [MediaStoreExtractor] that completes the music loading process in a way compatible from API 21
  * onwards to API 29.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class Api21MediaStoreExtractor(context: Context, cacheDatabase: CacheExtractor) :
     MediaStoreExtractor(context, cacheDatabase) {
@@ -388,7 +388,7 @@ class Api21MediaStoreExtractor(context: Context, cacheDatabase: CacheExtractor) 
 /**
  * A [MediaStoreExtractor] that selects directories and builds paths using the modern volume fields
  * available from API 29 onwards.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.Q)
 open class BaseApi29MediaStoreExtractor(context: Context, cacheDatabase: CacheExtractor) :
@@ -443,7 +443,7 @@ open class BaseApi29MediaStoreExtractor(context: Context, cacheDatabase: CacheEx
 /**
  * A [MediaStoreExtractor] that completes the music loading process in a way compatible with at
  * least API 29.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.Q)
 open class Api29MediaStoreExtractor(context: Context, cacheDatabase: CacheExtractor) :
@@ -475,7 +475,7 @@ open class Api29MediaStoreExtractor(context: Context, cacheDatabase: CacheExtrac
 /**
  * A [MediaStoreExtractor] that completes the music loading process in a way compatible with at
  * least API 30.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.R)
 class Api30MediaStoreExtractor(context: Context, cacheDatabase: CacheExtractor) :

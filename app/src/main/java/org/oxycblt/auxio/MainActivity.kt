@@ -52,7 +52,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Unit testing
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class MainActivity : AppCompatActivity() {
     private val playbackModel: PlaybackViewModel by androidViewModels()

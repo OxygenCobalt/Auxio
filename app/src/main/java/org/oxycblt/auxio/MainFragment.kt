@@ -48,7 +48,7 @@ import org.oxycblt.auxio.util.*
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls the more
  * high-level navigation features.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class MainFragment :
     ViewBindingFragment<FragmentMainBinding>(), ViewTreeObserver.OnPreDrawListener {

@@ -33,27 +33,36 @@ import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.getDrawableCompat
 
 /**
- * View that displays the playback indicator. Nominally emulates [StyledImageView], but relies on
- * the existing ImageView infrastructure to achieve the same result while also allowing animation to
- * work.
- * @author OxygenCobalt
+ * A view that displays an activation (i.e playback) indicator, with an accented styling and
+ * an animated equalizer icon.
+ *
+ * This is only meant for use with [ImageGroup]. Due to limitations with [AnimationDrawable]
+ * instances within custom views, this cannot be merged with [ImageGroup].
+ *
+ * @author Alexander Capehart (OxygenCobalt)
  */
-class IndicatorView
+class PlaybackIndicatorView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AppCompatImageView(context, attrs, defStyleAttr) {
+    // The playing drawable will cycle through an active equalizer animation.
     private val playingIndicatorDrawable =
         context.getDrawableCompat(R.drawable.ic_playing_indicator_24) as AnimationDrawable
-
+    // The paused drawable will be a static drawable of an inactive equalizer.
     private val pausedIndicatorDrawable =
         context.getDrawableCompat(R.drawable.ic_paused_indicator_24)
 
+    // Required transformation matrices for the drawables.
     private val indicatorMatrix = Matrix()
     private val indicatorMatrixSrc = RectF()
     private val indicatorMatrixDst = RectF()
 
     private val settings = Settings(context)
 
+    /**
+     * The corner radius of this view. This allows the outer ImageGroup to apply it's
+     * corner radius to this view without any attribute hacks.
+     */
     var cornerRadius = 0f
         set(value) {
             field = value
@@ -66,6 +75,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             }
         }
 
+    /**
+     * Whether this view should be indicated to have ongoing playback or not. If true,
+     * the animated playing icon will be shown. If false, the static paused icon will be shown.
+     */
     var isPlaying: Boolean
         get() = drawable == playingIndicatorDrawable
         set(value) {
@@ -79,6 +92,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
     init {
+        // We will need to manually re-scale the playing/paused drawables to align with
+        // StyledDrawable, so use the matrix scale type.
+        scaleType = ScaleType.MATRIX
+        // Tint the playing/paused drawables so they are harmonious with the background.
+        ImageViewCompat.setImageTintList(this, context.getColorCompat(R.color.sel_on_cover_bg))
+
         // Use clipToOutline and a background drawable to crop images. While Coil's transformation
         // could theoretically be used to round corners, the corner radius is dependent on the
         // dimensions of the image, which will result in inconsistent corners across different
@@ -91,9 +110,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 fillColor = context.getColorCompat(R.color.sel_cover_bg)
                 setCornerSize(cornerRadius)
             }
-
-        scaleType = ScaleType.MATRIX
-        ImageViewCompat.setImageTintList(this, context.getColorCompat(R.color.sel_on_cover_bg))
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -101,7 +117,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         // Emulate StyledDrawable scaling with matrix scaling.
         val iconSize = max(measuredWidth, measuredHeight) / 2
-
         imageMatrix =
             indicatorMatrix.apply {
                 reset()
@@ -116,8 +131,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     indicatorMatrix.setRectToRect(
                         indicatorMatrixSrc, indicatorMatrixDst, Matrix.ScaleToFit.CENTER)
 
-                    // Then actually center it into the icon, which the previous call does not
-                    // actually do.
+                    // Then actually center it into the icon.
                     indicatorMatrix.postTranslate(
                         (measuredWidth - iconSize) / 2f, (measuredHeight - iconSize) / 2f)
                 }

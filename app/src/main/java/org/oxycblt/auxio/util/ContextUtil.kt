@@ -33,6 +33,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.Dimension
 import androidx.annotation.DrawableRes
+import androidx.annotation.IntegerRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.Px
 import androidx.annotation.StringRes
@@ -66,13 +67,20 @@ val Context.contentResolverSafe: ContentResolver
     get() = applicationContext.contentResolver
 
 /**
- * Convenience method for getting a plural.
- * @param pluralsRes Resource for the plural
+ * @brief Convenience method for getting a plural.
+ * @param pluralRes Resource ID for the plural
  * @param value Int value for the plural.
  * @return The formatted string requested
  */
-fun Context.getPlural(@PluralsRes pluralsRes: Int, value: Int) =
-    resources.getQuantityString(pluralsRes, value, value)
+fun Context.getPlural(@PluralsRes pluralRes: Int, value: Int) =
+    resources.getQuantityString(pluralRes, value, value)
+
+/**
+ * @brief Convenience method for obtaining an integer resource
+ * @param integerRes Resource ID for the integer
+ * @return The integer resource requested
+ */
+fun Context.getInteger(@IntegerRes integerRes: Int) = resources.getInteger(integerRes)
 
 /**
  * Convenience method for getting a [ColorStateList] resource safely.

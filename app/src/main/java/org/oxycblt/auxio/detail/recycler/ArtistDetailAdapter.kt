@@ -26,10 +26,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
+import org.oxycblt.auxio.list.ExtendedListListener
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.list.ItemMenuCallback
-import org.oxycblt.auxio.list.ItemSelectCallback
-import org.oxycblt.auxio.list.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SimpleItemCallback
 import org.oxycblt.auxio.music.Album
@@ -40,14 +38,14 @@ import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
 /**
- * An adapter for displaying [Artist] information and it's children. Unlike the other adapters, this
- * one actually contains both album information and song information.
- * @author OxygenCobalt
+ * A [DetailAdapter] implementing the header and sub-items for the [Artist] detail view.
+ * @param listener A [DetailAdapter.Listener] for list interactions.
+ * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistDetailAdapter(private val callback: Callback) : DetailAdapter(callback, DIFFER) {
-
+class ArtistDetailAdapter(private val listener: Listener) : DetailAdapter(listener, DIFF_CALLBACK) {
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
+            // Support an artist header, and special artist albums/songs.
             is Artist -> ArtistDetailViewHolder.VIEW_TYPE
             is Album -> ArtistAlbumViewHolder.VIEW_TYPE
             is Song -> ArtistSongViewHolder.VIEW_TYPE
@@ -62,88 +60,107 @@ class ArtistDetailAdapter(private val callback: Callback) : DetailAdapter(callba
             else -> super.onCreateViewHolder(parent, viewType)
         }
 
-    override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder,
-        position: Int,
-        payloads: List<Any>
-    ) {
-        super.onBindViewHolder(holder, position, payloads)
-
-        if (payloads.isEmpty()) {
-            when (val item = differ.currentList[position]) {
-                is Artist -> (holder as ArtistDetailViewHolder).bind(item, callback)
-                is Album -> (holder as ArtistAlbumViewHolder).bind(item, callback)
-                is Song -> (holder as ArtistSongViewHolder).bind(item, callback)
-            }
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        super.onBindViewHolder(holder, position)
+        // Re-binding an item with new data and not just a changed selection/playing state.
+        when (val item = differ.currentList[position]) {
+            is Artist -> (holder as ArtistDetailViewHolder).bind(item, listener)
+            is Album -> (holder as ArtistAlbumViewHolder).bind(item, listener)
+            is Song -> (holder as ArtistSongViewHolder).bind(item, listener)
         }
     }
 
     override fun isItemFullWidth(position: Int): Boolean {
+        // Artist headers should be full-width in all configurations.
         val item = differ.currentList[position]
         return super.isItemFullWidth(position) || item is Artist
     }
 
     companion object {
-        private val DIFFER =
+        /** A comparator that can be used with DiffUtil. */
+        private val DIFF_CALLBACK =
             object : SimpleItemCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Artist && newItem is Artist ->
-                            ArtistDetailViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
+                            ArtistDetailViewHolder.DIFF_CALLBACK.areContentsTheSame(
+                                oldItem, newItem)
                         oldItem is Album && newItem is Album ->
-                            ArtistAlbumViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
+                            ArtistAlbumViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is Song && newItem is Song ->
-                            ArtistSongViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
-                        else -> DetailAdapter.DIFFER.areContentsTheSame(oldItem, newItem)
+                            ArtistSongViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
+                        else -> DetailAdapter.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                     }
                 }
             }
     }
 }
 
+/**
+ * A [RecyclerView.ViewHolder] that displays the [Artist] header in the detail view. Use [new] to
+ * create an instance.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 private class ArtistDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: Artist, callback: DetailAdapter.Callback) {
-        binding.detailCover.bind(item)
+    /**
+     * Bind new data to this instance.
+     * @param artist The new [Artist] to bind.
+     * @param listener A [DetailAdapter.Listener] to bind interactions to.
+     */
+    fun bind(artist: Artist, listener: DetailAdapter.Listener) {
+        binding.detailCover.bind(artist)
         binding.detailType.text = binding.context.getString(R.string.lbl_artist)
-        binding.detailName.text = item.resolveName(binding.context)
+        binding.detailName.text = artist.resolveName(binding.context)
 
-        if (item.songs.isNotEmpty()) {
+        if (artist.songs.isNotEmpty()) {
+            // Information about the artist's genre(s) map to the sub-head text
             binding.detailSubhead.apply {
                 isVisible = true
-                text = item.resolveGenreContents(binding.context)
+                text = artist.resolveGenreContents(binding.context)
             }
 
+            // Song and album counts map to the info
             binding.detailInfo.text =
                 binding.context.getString(
                     R.string.fmt_two,
-                    binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size),
-                    binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
+                    binding.context.getPlural(R.plurals.fmt_album_count, artist.albums.size),
+                    binding.context.getPlural(R.plurals.fmt_song_count, artist.songs.size))
 
+            // In the case that this header used to he configured to have no songs,
+            // we want to reset the visibility of all information that was hidden.
             binding.detailPlayButton.isVisible = true
             binding.detailShuffleButton.isVisible = true
         } else {
-            // The artist does not have any songs, so playback, genre info, and song counts
-            // make no sense.
+            // The artist does not have any songs, so hide functionality that makes no sense.
+            // ex. Play and Shuffle, Song Counts, and Genre Information.
+            // Artists are always guaranteed to have albums however, so continue to show those.
             binding.detailSubhead.isVisible = false
             binding.detailInfo.text =
-                binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size)
+                binding.context.getPlural(R.plurals.fmt_album_count, artist.albums.size)
             binding.detailPlayButton.isVisible = false
             binding.detailShuffleButton.isVisible = false
         }
 
-        binding.detailPlayButton.setOnClickListener { callback.onPlay() }
-        binding.detailShuffleButton.setOnClickListener { callback.onShuffle() }
+        binding.detailPlayButton.setOnClickListener { listener.onPlay() }
+        binding.detailShuffleButton.setOnClickListener { listener.onShuffle() }
     }
 
     companion object {
+        /** A unique ID for this [RecyclerView.ViewHolder] type. */
         const val VIEW_TYPE = IntegerTable.VIEW_TYPE_ARTIST_DETAIL
 
+        /**
+         * Create a new instance.
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
         fun new(parent: View) =
             ArtistDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
 
-        val DIFFER =
+        /** A comparator that can be used with DiffUtil. */
+        val DIFF_CALLBACK =
             object : SimpleItemCallback<Artist>() {
                 override fun areContentsTheSame(oldItem: Artist, newItem: Artist) =
                     oldItem.rawName == newItem.rawName &&
@@ -154,22 +171,25 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
     }
 }
 
+/**
+ * A [RecyclerView.ViewHolder] that displays an [Album] in the context of an [Artist]. Use [new] to
+ * create an instance.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 private class ArtistAlbumViewHolder private constructor(private val binding: ItemParentBinding) :
     SelectionIndicatorAdapter.ViewHolder(binding.root) {
-    fun bind(item: Album, callback: ItemSelectCallback) {
-        binding.parentImage.bind(item)
-        binding.parentName.text = item.resolveName(binding.context)
+    /**
+     * Bind new data to this instance.
+     * @param album The new [Album] to bind.
+     * @param listener An [ExtendedListListener] to bind interactions to.
+     */
+    fun bind(album: Album, listener: ExtendedListListener) {
+        listener.bind(album, binding.root, binding.parentMenu)
+        binding.parentImage.bind(album)
+        binding.parentName.text = album.resolveName(binding.context)
         binding.parentInfo.text =
-            item.date?.resolveDate(binding.context) ?: binding.context.getString(R.string.def_date)
-        binding.parentMenu.setOnClickListener { callback.onOpenMenu(item, it) }
-        binding.root.setOnClickListener { callback.onClick(item) }
-        binding.root.apply {
-            setOnClickListener { callback.onClick(item) }
-            setOnLongClickListener {
-                callback.onSelect(item)
-                true
-            }
-        }
+            // Fall back to a friendlier "No date" text if the album doesn't have date information
+            album.date?.resolveDate(binding.context) ?: binding.context.getString(R.string.def_date)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -182,12 +202,19 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
     }
 
     companion object {
+        /** A unique ID for this [RecyclerView.ViewHolder] type. */
         const val VIEW_TYPE = IntegerTable.VIEW_TYPE_ARTIST_ALBUM
 
+        /**
+         * Create a new instance.
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
         fun new(parent: View) =
             ArtistAlbumViewHolder(ItemParentBinding.inflate(parent.context.inflater))
 
-        val DIFFER =
+        /** A comparator that can be used with DiffUtil. */
+        val DIFF_CALLBACK =
             object : SimpleItemCallback<Album>() {
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName && oldItem.date == newItem.date
@@ -195,21 +222,23 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
     }
 }
 
+/**
+ * A [RecyclerView.ViewHolder] that displays a [Song] in the context of an [Artist]. Use [new] to
+ * create an instance.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 private class ArtistSongViewHolder private constructor(private val binding: ItemSongBinding) :
     SelectionIndicatorAdapter.ViewHolder(binding.root) {
-    fun bind(item: Song, callback: ItemSelectCallback) {
-        binding.songAlbumCover.bind(item)
-        binding.songName.text = item.resolveName(binding.context)
-        binding.songInfo.text = item.album.resolveName(binding.context)
-        binding.songMenu.setOnClickListener { callback.onOpenMenu(item, it) }
-        binding.root.setOnClickListener { callback.onClick(item) }
-        binding.root.apply {
-            setOnClickListener { callback.onClick(item) }
-            setOnLongClickListener {
-                callback.onSelect(item)
-                true
-            }
-        }
+    /**
+     * Bind new data to this instance.
+     * @param song The new [Song] to bind.
+     * @param listener An [ExtendedListListener] to bind interactions to.
+     */
+    fun bind(song: Song, listener: ExtendedListListener) {
+        listener.bind(song, binding.root, binding.songMenu)
+        binding.songAlbumCover.bind(song)
+        binding.songName.text = song.resolveName(binding.context)
+        binding.songInfo.text = song.album.resolveName(binding.context)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -222,12 +251,19 @@ private class ArtistSongViewHolder private constructor(private val binding: Item
     }
 
     companion object {
+        /** Unique ID for this ViewHolder type. */
         const val VIEW_TYPE = IntegerTable.VIEW_TYPE_ARTIST_SONG
 
+        /**
+         * Create a new instance.
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
         fun new(parent: View) =
             ArtistSongViewHolder(ItemSongBinding.inflate(parent.context.inflater))
 
-        val DIFFER =
+        /** A comparator that can be used with DiffUtil. */
+        val DIFF_CALLBACK =
             object : SimpleItemCallback<Song>() {
                 override fun areContentsTheSame(oldItem: Song, newItem: Song) =
                     oldItem.rawName == newItem.rawName &&

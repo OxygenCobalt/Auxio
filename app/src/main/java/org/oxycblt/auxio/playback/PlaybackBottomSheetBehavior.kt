@@ -32,7 +32,7 @@ import org.oxycblt.auxio.util.getDimen
 /**
  * The coordinator layout behavior used for the playback sheet, hacking in the many fixes required
  * to make bottom sheets like this work.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     AuxioBottomSheetBehavior<V>(context, attributeSet) {

@@ -36,7 +36,7 @@ import org.oxycblt.auxio.util.getColorCompat
 /**
  * A fragment showing the current playback state in a compact manner. Used as the bar for the
  * playback sheet.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()

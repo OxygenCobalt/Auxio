@@ -21,14 +21,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemPickerChoiceBinding
-import org.oxycblt.auxio.list.ItemClickCallback
-import org.oxycblt.auxio.list.recycler.DialogViewHolder
+import org.oxycblt.auxio.list.BasicListListener
+import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
 /** The adapter that displays a list of artist choices in the picker UI. */
-class ArtistChoiceAdapter(private val callback: ItemClickCallback) :
+class ArtistChoiceAdapter(private val listener: BasicListListener) :
     RecyclerView.Adapter<ArtistChoiceViewHolder>() {
     private var artists = listOf<Artist>()
 
@@ -38,7 +38,7 @@ class ArtistChoiceAdapter(private val callback: ItemClickCallback) :
         ArtistChoiceViewHolder.new(parent)
 
     override fun onBindViewHolder(holder: ArtistChoiceViewHolder, position: Int) =
-        holder.bind(artists[position], callback)
+        holder.bind(artists[position], listener)
 
     fun submitList(newArtists: List<Artist>) {
         if (newArtists != artists) {
@@ -54,11 +54,11 @@ class ArtistChoiceAdapter(private val callback: ItemClickCallback) :
  * constraints.
  */
 class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
-    DialogViewHolder(binding.root) {
-    fun bind(artist: Artist, callback: ItemClickCallback) {
+    DialogRecyclerView.ViewHolder(binding.root) {
+    fun bind(artist: Artist, listener: BasicListListener) {
         binding.pickerImage.bind(artist)
         binding.pickerName.text = artist.resolveName(binding.context)
-        binding.root.setOnClickListener { callback.onClick(artist) }
+        binding.root.setOnClickListener { listener.onClick(artist) }
     }
 
     companion object {

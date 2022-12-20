@@ -27,7 +27,7 @@ import org.oxycblt.auxio.util.androidActivityViewModels
 
 /**
  * The [ArtistPickerDialog] for ambiguous artist playback operations.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class ArtistPlaybackPickerDialog : ArtistPickerDialog() {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
@@ -39,8 +39,8 @@ class ArtistPlaybackPickerDialog : ArtistPickerDialog() {
         super.onBindingCreated(binding, savedInstanceState)
     }
 
-    override fun onChoiceConfirmed(item: Item) {
-        super.onChoiceConfirmed(item)
+    override fun onClick(item: Item) {
+        super.onClick(item)
         check(item is Artist) { "Unexpected datatype: ${item::class.simpleName}" }
         pickerModel.currentSong.value?.let { song -> playbackModel.playFromArtist(song, item) }
     }

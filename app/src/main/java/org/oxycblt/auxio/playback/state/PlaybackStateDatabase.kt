@@ -33,7 +33,7 @@ import org.oxycblt.auxio.util.requireBackgroundThread
 /**
  * A SQLite database for managing the persistent playback state and queue. Yes. I know Room exists.
  * But that would needlessly bloat my app and has crippling bugs.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class PlaybackStateDatabase private constructor(context: Context) :
     SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {

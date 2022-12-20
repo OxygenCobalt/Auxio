@@ -39,8 +39,8 @@ import org.oxycblt.auxio.util.getDimenSize
 import org.oxycblt.auxio.util.isRtl
 
 /**
- * Internal view responsible for the fast scroller popup.
- * @author OxygenCobalt, Hai Zhang
+ * A [MaterialTextView] that displays the popup indicator used in FastScrollRecyclerView
+ * @author Alexander Capehart (OxygenCobalt), Hai Zhang
  */
 class FastScrollPopupView
 @JvmOverloads
@@ -170,7 +170,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0)
     }
 
     companion object {
-        // Pre-calculate sqrt(2) for faster drawing
+        // Pre-calculate sqrt(2)
         private const val SQRT2 = 1.4142135f
     }
 }

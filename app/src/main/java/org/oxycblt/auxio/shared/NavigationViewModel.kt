@@ -27,7 +27,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * A ViewModel that handles complicated navigation situations.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class NavigationViewModel : ViewModel() {
     private val _mainNavigationAction = MutableStateFlow<MainNavigationAction?>(null)

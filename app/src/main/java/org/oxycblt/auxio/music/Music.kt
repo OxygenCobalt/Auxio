@@ -113,7 +113,7 @@ sealed class Music : Item {
      * try to do anything interesting with this and just assume it's a black box that can only be
      * compared, serialized, and deserialized.
      *
-     * @author OxygenCobalt
+     * @author Alexander Capehart (OxygenCobalt)
      */
     @Parcelize
     class UID
@@ -210,7 +210,7 @@ sealed class MusicParent : Music() {
 
 /**
  * A song.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class Song constructor(raw: Raw, settings: Settings) : Music() {
     override val uid =
@@ -441,7 +441,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
 
 /**
  * An album.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent() {
     override val uid =
@@ -584,7 +584,7 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
 /**
  * An abstract artist. This is derived from both album artist values and artist values in albums and
  * songs respectively.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class Artist constructor(private val raw: Raw, songAlbums: List<Music>) : MusicParent() {
     override val uid =
@@ -702,7 +702,7 @@ class Artist constructor(private val raw: Raw, songAlbums: List<Music>) : MusicP
 
 /**
  * A genre.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class Genre constructor(private val raw: Raw, override val songs: List<Song>) : MusicParent() {
     override val uid = UID.auxio(MusicMode.GENRES) { update(raw.name) }

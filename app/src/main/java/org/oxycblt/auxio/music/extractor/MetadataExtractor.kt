@@ -43,7 +43,7 @@ import org.oxycblt.auxio.util.logW
  *
  * TODO: Fix failing ID3v2 multi-value tests in fork (Implies parsing problem)
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class MetadataExtractor(
     private val context: Context,
@@ -113,7 +113,7 @@ class MetadataExtractor(
 
 /**
  * Wraps an ExoPlayer metadata retrieval task in a safe abstraction. Access is done with [get].
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class Task(context: Context, private val raw: Song.Raw) {
     private val future =

@@ -27,7 +27,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 /**
  * Class enabling more advanced queue list functionality and queue editing. TODO: Allow editing
  * previous parts of the queue
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val playbackManager = PlaybackStateManager.getInstance()

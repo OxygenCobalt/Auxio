@@ -24,8 +24,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemHeaderBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
+import org.oxycblt.auxio.list.ExtendedListListener
 import org.oxycblt.auxio.list.Header
-import org.oxycblt.auxio.list.ItemSelectCallback
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -35,25 +35,21 @@ import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
 /**
- * The shared ViewHolder for a [Song].
- * @author OxygenCobalt
+ * A basic [RecyclerView.ViewHolder] that displays a [Song]. Use [new] to create an instance.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class SongViewHolder private constructor(private val binding: ItemSongBinding) :
     SelectionIndicatorAdapter.ViewHolder(binding.root) {
-
-    fun bind(item: Song, callback: ItemSelectCallback) {
-        binding.songAlbumCover.bind(item)
-        binding.songName.text = item.resolveName(binding.context)
-        binding.songInfo.text = item.resolveArtistContents(binding.context)
-
-        binding.songMenu.setOnClickListener { callback.onOpenMenu(item, it) }
-        binding.root.apply {
-            setOnClickListener { callback.onClick(item) }
-            setOnLongClickListener {
-                callback.onSelect(item)
-                true
-            }
-        }
+    /**
+     * Bind new data to this instance.
+     * @param song The new [Song] to bind.
+     * @param listener An [ExtendedListListener] to bind interactions to.
+     */
+    fun bind(song: Song, listener: ExtendedListListener) {
+        listener.bind(song, binding.root, binding.songMenu)
+        binding.songAlbumCover.bind(song)
+        binding.songName.text = song.resolveName(binding.context)
+        binding.songInfo.text = song.resolveArtistContents(binding.context)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -66,11 +62,18 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
     }
 
     companion object {
+        /** Unique ID for this ViewHolder type. */
         const val VIEW_TYPE = IntegerTable.VIEW_TYPE_SONG
 
+        /**
+         * Create a new instance.
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
         fun new(parent: View) = SongViewHolder(ItemSongBinding.inflate(parent.context.inflater))
 
-        val DIFFER =
+        /** A comparator that can be used with DiffUtil. */
+        val DIFF_CALLBACK =
             object : SimpleItemCallback<Song>() {
                 override fun areContentsTheSame(oldItem: Song, newItem: Song) =
                     oldItem.rawName == newItem.rawName && oldItem.areArtistContentsTheSame(newItem)
@@ -79,25 +82,21 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
 }
 
 /**
- * The Shared ViewHolder for a [Album].
- * @author OxygenCobalt
+ * A basic [RecyclerView.ViewHolder] that displays a [Album]. Use [new] to create an instance.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumViewHolder private constructor(private val binding: ItemParentBinding) :
     SelectionIndicatorAdapter.ViewHolder(binding.root) {
-
-    fun bind(item: Album, callback: ItemSelectCallback) {
-        binding.parentImage.bind(item)
-        binding.parentName.text = item.resolveName(binding.context)
-        binding.parentInfo.text = item.resolveArtistContents(binding.context)
-
-        binding.parentMenu.setOnClickListener { callback.onOpenMenu(item, it) }
-        binding.root.apply {
-            setOnClickListener { callback.onClick(item) }
-            setOnLongClickListener {
-                callback.onSelect(item)
-                true
-            }
-        }
+    /**
+     * Bind new data to this instance.
+     * @param album The new [Album] to bind.
+     * @param listener An [ExtendedListListener] to bind interactions to.
+     */
+    fun bind(album: Album, listener: ExtendedListListener) {
+        listener.bind(album, binding.root, binding.parentMenu)
+        binding.parentImage.bind(album)
+        binding.parentName.text = album.resolveName(binding.context)
+        binding.parentInfo.text = album.resolveArtistContents(binding.context)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -110,11 +109,18 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
     }
 
     companion object {
+        /** Unique ID for this ViewHolder type. */
         const val VIEW_TYPE = IntegerTable.VIEW_TYPE_ALBUM
 
+        /**
+         * Create a new instance.
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
         fun new(parent: View) = AlbumViewHolder(ItemParentBinding.inflate(parent.context.inflater))
 
-        val DIFFER =
+        /** A comparator that can be used with DiffUtil. */
+        val DIFF_CALLBACK =
             object : SimpleItemCallback<Album>() {
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
@@ -125,35 +131,30 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
 }
 
 /**
- * The Shared ViewHolder for a [Artist].
- * @author OxygenCobalt
+ * A basic [RecyclerView.ViewHolder] that displays a [Artist]. Use [new] to create an instance.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class ArtistViewHolder private constructor(private val binding: ItemParentBinding) :
     SelectionIndicatorAdapter.ViewHolder(binding.root) {
-
-    fun bind(item: Artist, callback: ItemSelectCallback) {
-        binding.parentImage.bind(item)
-        binding.parentName.text = item.resolveName(binding.context)
-
+    /**
+     * Bind new data to this instance.
+     * @param artist The new [Artist] to bind.
+     * @param listener An [ExtendedListListener] to bind interactions to.
+     */
+    fun bind(artist: Artist, listener: ExtendedListListener) {
+        listener.bind(artist, binding.root, binding.parentMenu)
+        binding.parentImage.bind(artist)
+        binding.parentName.text = artist.resolveName(binding.context)
         binding.parentInfo.text =
-            if (item.songs.isNotEmpty()) {
+            if (artist.songs.isNotEmpty()) {
                 binding.context.getString(
                     R.string.fmt_two,
-                    binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size),
-                    binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
+                    binding.context.getPlural(R.plurals.fmt_album_count, artist.albums.size),
+                    binding.context.getPlural(R.plurals.fmt_song_count, artist.songs.size))
             } else {
                 // Artist has no songs, only display an album count.
-                binding.context.getPlural(R.plurals.fmt_album_count, item.albums.size)
+                binding.context.getPlural(R.plurals.fmt_album_count, artist.albums.size)
             }
-
-        binding.parentMenu.setOnClickListener { callback.onOpenMenu(item, it) }
-        binding.root.apply {
-            setOnClickListener { callback.onClick(item) }
-            setOnLongClickListener {
-                callback.onSelect(item)
-                true
-            }
-        }
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -166,11 +167,18 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
     }
 
     companion object {
+        /** Unique ID for this ViewHolder type. */
         const val VIEW_TYPE = IntegerTable.VIEW_TYPE_ARTIST
 
+        /**
+         * Create a new instance.
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
         fun new(parent: View) = ArtistViewHolder(ItemParentBinding.inflate(parent.context.inflater))
 
-        val DIFFER =
+        /** A comparator that can be used with DiffUtil. */
+        val DIFF_CALLBACK =
             object : SimpleItemCallback<Artist>() {
                 override fun areContentsTheSame(oldItem: Artist, newItem: Artist) =
                     oldItem.rawName == newItem.rawName &&
@@ -181,29 +189,25 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
 }
 
 /**
- * The Shared ViewHolder for a [Genre].
- * @author OxygenCobalt
+ * A basic [RecyclerView.ViewHolder] that displays a [Genre]. Use [new] to create an instance.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class GenreViewHolder private constructor(private val binding: ItemParentBinding) :
     SelectionIndicatorAdapter.ViewHolder(binding.root) {
-
-    fun bind(item: Genre, callback: ItemSelectCallback) {
-        binding.parentImage.bind(item)
-        binding.parentName.text = item.resolveName(binding.context)
+    /**
+     * Bind new data to this instance.
+     * @param genre The new [Genre] to bind.
+     * @param listener An [ExtendedListListener] to bind interactions to.
+     */
+    fun bind(genre: Genre, listener: ExtendedListListener) {
+        listener.bind(genre, binding.root, binding.parentMenu)
+        binding.parentImage.bind(genre)
+        binding.parentName.text = genre.resolveName(binding.context)
         binding.parentInfo.text =
             binding.context.getString(
                 R.string.fmt_two,
-                binding.context.getPlural(R.plurals.fmt_artist_count, item.artists.size),
-                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
-
-        binding.parentMenu.setOnClickListener { callback.onOpenMenu(item, it) }
-        binding.root.apply {
-            setOnClickListener { callback.onClick(item) }
-            setOnLongClickListener {
-                callback.onSelect(item)
-                true
-            }
-        }
+                binding.context.getPlural(R.plurals.fmt_artist_count, genre.artists.size),
+                binding.context.getPlural(R.plurals.fmt_song_count, genre.songs.size))
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -216,11 +220,18 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
     }
 
     companion object {
+        /** Unique ID for this ViewHolder type. */
         const val VIEW_TYPE = IntegerTable.VIEW_TYPE_GENRE
 
+        /**
+         * Create a new instance.
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
         fun new(parent: View) = GenreViewHolder(ItemParentBinding.inflate(parent.context.inflater))
 
-        val DIFFER =
+        /** A comparator that can be used with DiffUtil. */
+        val DIFF_CALLBACK =
             object : SimpleItemCallback<Genre>() {
                 override fun areContentsTheSame(oldItem: Genre, newItem: Genre): Boolean =
                     oldItem.rawName == newItem.rawName && oldItem.songs.size == newItem.songs.size
@@ -229,25 +240,35 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
 }
 
 /**
- * The Shared ViewHolder for a [Header].
- * @author OxygenCobalt
+ * A basic [RecyclerView.ViewHolder] that displays a [Header]. Use [new] to create an instance.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class HeaderViewHolder private constructor(private val binding: ItemHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
-
-    fun bind(item: Header) {
-        binding.title.text = binding.context.getString(item.string)
+    /**
+     * Bind new data to this instance.
+     * @param header The new [Header] to bind.
+     */
+    fun bind(header: Header) {
+        binding.title.text = binding.context.getString(header.titleRes)
     }
 
     companion object {
+        /** Unique ID for this ViewHolder type. */
         const val VIEW_TYPE = IntegerTable.VIEW_TYPE_HEADER
 
+        /**
+         * Create a new instance.
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
         fun new(parent: View) = HeaderViewHolder(ItemHeaderBinding.inflate(parent.context.inflater))
 
-        val DIFFER =
+        /** A comparator that can be used with DiffUtil. */
+        val DIFF_CALLBACK =
             object : SimpleItemCallback<Header>() {
                 override fun areContentsTheSame(oldItem: Header, newItem: Header): Boolean =
-                    oldItem.string == newItem.string
+                    oldItem.titleRes == newItem.titleRes
             }
     }
 }

@@ -27,9 +27,9 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
-class SearchAdapter(private val callback: ItemSelectCallback) :
+class SearchAdapter(private val listener: ExtendedListListener) :
     SelectionIndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
-    private val differ = AsyncListDiffer(this, DIFFER)
+    private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
 
     override fun getItemCount() = differ.currentList.size
 
@@ -53,21 +53,13 @@ class SearchAdapter(private val callback: ItemSelectCallback) :
             else -> error("Invalid item type $viewType")
         }
 
-    override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder,
-        position: Int,
-        payloads: List<Any>
-    ) {
-        super.onBindViewHolder(holder, position, payloads)
-
-        if (payloads.isEmpty()) {
-            when (val item = differ.currentList[position]) {
-                is Song -> (holder as SongViewHolder).bind(item, callback)
-                is Album -> (holder as AlbumViewHolder).bind(item, callback)
-                is Artist -> (holder as ArtistViewHolder).bind(item, callback)
-                is Genre -> (holder as GenreViewHolder).bind(item, callback)
-                is Header -> (holder as HeaderViewHolder).bind(item)
-            }
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+       when (val item = differ.currentList[position]) {
+            is Song -> (holder as SongViewHolder).bind(item, listener)
+            is Album -> (holder as AlbumViewHolder).bind(item, listener)
+            is Artist -> (holder as ArtistViewHolder).bind(item, listener)
+            is Genre -> (holder as GenreViewHolder).bind(item, listener)
+            is Header -> (holder as HeaderViewHolder).bind(item)
         }
     }
 
@@ -76,23 +68,25 @@ class SearchAdapter(private val callback: ItemSelectCallback) :
     override val currentList: List<Item>
         get() = differ.currentList
 
-    fun submitList(list: List<Item>, callback: () -> Unit) = differ.submitList(list, callback)
+    fun submitList(list: List<Item>, callback: () -> Unit) {
+        differ.submitList(list, callback)
+    }
 
     companion object {
-        private val DIFFER =
+        private val DIFF_CALLBACK =
             object : SimpleItemCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item) =
                     when {
                         oldItem is Song && newItem is Song ->
-                            SongViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
+                            SongViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is Album && newItem is Album ->
-                            AlbumViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
+                            AlbumViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is Artist && newItem is Artist ->
-                            ArtistViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
+                            ArtistViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is Genre && newItem is Genre ->
-                            GenreViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
+                            GenreViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is Header && newItem is Header ->
-                            HeaderViewHolder.DIFFER.areContentsTheSame(oldItem, newItem)
+                            HeaderViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         else -> false
                     }
             }

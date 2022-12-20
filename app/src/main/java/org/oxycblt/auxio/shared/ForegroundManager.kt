@@ -23,7 +23,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * Wrapper to create consistent behavior regarding a service's foreground state.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class ForegroundManager(private val service: Service) {
     private var isForeground = false

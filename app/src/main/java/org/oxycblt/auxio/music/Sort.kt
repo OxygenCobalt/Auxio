@@ -38,7 +38,7 @@ import org.oxycblt.auxio.music.Sort.Mode
  * Where SORT INT is the corresponding integer value of this specific sort and A is a bit
  * representing whether this sort is ascending or descending.
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 data class Sort(val mode: Mode, val isAscending: Boolean) {
     fun withAscending(new: Boolean) = Sort(mode, new)

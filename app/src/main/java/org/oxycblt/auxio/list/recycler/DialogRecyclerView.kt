@@ -31,31 +31,43 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getDimenSize
 
 /**
- * A RecyclerView that enables something resembling the android:scrollIndicators attribute. Only
- * used in dialogs.
- * @author OxygenCobalt
+ * A [RecyclerView] intended for use in Dialogs, adding features such as:
+ * - NestedScrollView scrollIndicators behavior emulation
+ * - Dialog-specific [ViewHolder] that automatically resolves certain issues.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class DialogRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     RecyclerView(context, attrs, defStyleAttr) {
+    /**
+     * A [RecyclerView.ViewHolder] that implements dialog-specific fixes.
+     */
+    abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
+        init {
+            // ViewHolders are not automatically full-width in dialogs, manually resize
+            // them to be as such.
+            root.layoutParams =
+                LayoutParams(
+                    LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        }
+    }
+
     private val topDivider = MaterialDivider(context)
     private val bottomDivider = MaterialDivider(context)
     private val spacingMedium = context.getDimenSize(R.dimen.spacing_medium)
 
     init {
+        // Apply top padding to give enough room to the dialog title, assuming that this view
+        // is at the top of the dialog.
         updatePadding(top = spacingMedium)
+        // Disable over-scrolling, the top and bottom dividers have the same purpose.
         overScrollMode = OVER_SCROLL_NEVER
-
+        // Safer to use the overlay than the actual RecyclerView children.
         overlay.apply {
             add(topDivider)
             add(bottomDivider)
         }
-    }
-
-    override fun onScrolled(dx: Int, dy: Int) {
-        super.onScrolled(dx, dy)
-        invalidateDividers()
     }
 
     override fun onMeasure(widthSpec: Int, heightSpec: Int) {
@@ -64,46 +76,48 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         measureDivider(bottomDivider)
     }
 
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        super.onLayout(changed, l, t, r, b)
+        topDivider.layout(l, spacingMedium, r, spacingMedium + topDivider.measuredHeight)
+        bottomDivider.layout(l, measuredHeight - bottomDivider.measuredHeight, r, b)
+        // Make sure we initialize the dividers here before we start drawing.
+        invalidateDividers()
+    }
+
+    override fun onScrolled(dx: Int, dy: Int) {
+        super.onScrolled(dx, dy)
+        // Scroll event occurred, need to update the dividers.
+        invalidateDividers()
+    }
+
+    /**
+     * Measure a [divider] with the equivalent of match_parent and wrap_content.
+     * @param divider The divider to measure.
+     */
     private fun measureDivider(divider: MaterialDivider) {
         val widthMeasureSpec =
             ViewGroup.getChildMeasureSpec(
                 MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                 0,
                 divider.layoutParams.width)
-
         val heightMeasureSpec =
             ViewGroup.getChildMeasureSpec(
                 MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
                 0,
                 divider.layoutParams.height)
-
         divider.measure(widthMeasureSpec, heightMeasureSpec)
     }
 
-    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        super.onLayout(changed, l, t, r, b)
-        topDivider.layout(l, spacingMedium, r, spacingMedium + topDivider.measuredHeight)
-        bottomDivider.layout(l, measuredHeight - bottomDivider.measuredHeight, r, b)
-        invalidateDividers()
-    }
-
+    /**
+     * Invalidate the visibility of both dividers.
+     */
     private fun invalidateDividers() {
-        val manager = layoutManager as LinearLayoutManager
-        topDivider.isInvisible = manager.findFirstCompletelyVisibleItemPosition() < 1
+        val lmm = layoutManager as LinearLayoutManager
+        // Top divider should only be visible when the first item has gone off-screen.
+        topDivider.isInvisible = lmm.findFirstCompletelyVisibleItemPosition() < 1
+        // Bottom divider should only be visible when the lsat item is completely on-screen.
         bottomDivider.isInvisible =
-            manager.findLastCompletelyVisibleItemPosition() == (manager.itemCount - 1)
+            lmm.findLastCompletelyVisibleItemPosition() == (lmm.itemCount - 1)
     }
 }
 
-/**
- * ViewHolder that correctly resizes the item to match the parent width, which it is not normally in
- * dialogs.
- */
-abstract class DialogViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-    init {
-        // Actually make the item full-width, which it won't be in dialogs
-        root.layoutParams =
-            RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-    }
-}

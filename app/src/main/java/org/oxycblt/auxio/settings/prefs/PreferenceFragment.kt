@@ -44,7 +44,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 @Suppress("UNUSED")
 class PreferenceFragment : PreferenceFragmentCompat() {

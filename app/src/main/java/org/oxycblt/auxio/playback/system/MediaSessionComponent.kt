@@ -45,7 +45,7 @@ import org.oxycblt.auxio.util.logD
  * Auxio does not directly rely on MediaSession, as it is extremely poorly designed. We instead just
  * mirror the playback state into the media session.
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class MediaSessionComponent(private val context: Context, private val callback: Callback) :
     MediaSessionCompat.Callback(), PlaybackStateManager.Callback, Settings.Callback {

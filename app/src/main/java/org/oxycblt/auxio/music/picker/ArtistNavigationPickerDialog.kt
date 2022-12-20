@@ -27,7 +27,7 @@ import org.oxycblt.auxio.shared.NavigationViewModel
 
 /**
  * The [ArtistPickerDialog] for ambiguous artist navigation operations.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class ArtistNavigationPickerDialog : ArtistPickerDialog() {
     private val navModel: NavigationViewModel by activityViewModels()
@@ -39,8 +39,8 @@ class ArtistNavigationPickerDialog : ArtistPickerDialog() {
         super.onBindingCreated(binding, savedInstanceState)
     }
 
-    override fun onChoiceConfirmed(item: Item) {
-        super.onChoiceConfirmed(item)
+    override fun onClick(item: Item) {
+        super.onClick(item)
         check(item is Artist) { "Unexpected datatype: ${item::class.simpleName}" }
         navModel.exploreNavigateTo(item)
     }

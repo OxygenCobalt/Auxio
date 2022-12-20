@@ -27,30 +27,50 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
-/** A [RecyclerView] that enables some extra functionality for Auxio's use-case. */
+/**
+ * A [RecyclerView] with a few QoL extensions, such as:
+ * - Automatic edge-to-edge support
+ * - Adapter-based [SpanSizeLookup] implementation
+ * - Automatic [setHasFixedSize] setup
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 open class AuxioRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     RecyclerView(context, attrs, defStyleAttr) {
-    private val initialPadding = Rect(paddingLeft, paddingTop, paddingRight, paddingBottom)
+    /**
+     * An adapter-specific hook to [GridLayoutManager.SpanSizeLookup].
+     */
+    interface SpanSizeLookup {
+        /**
+         * Get if the item at a position takes up the whole width of the [RecyclerView] or not.
+         * @param position The position of the item.
+         * @return true if the item is full-width, false otherwise.
+         */
+        fun isItemFullWidth(position: Int): Boolean
+    }
+
+    // Keep track of the layout-defined bottom padding so we can re-apply it when applying insets.
+    private val initialPaddingBottom = paddingBottom
 
     init {
         // Prevent children from being clipped by window insets
         clipToPadding = false
+        // Auxio's non-dialog RecyclerViews never change their size based on adapter contents,
+        // so we can enable fixed-size optimizations.
         setHasFixedSize(true)
     }
 
     final override fun setHasFixedSize(hasFixedSize: Boolean) {
+        // Prevent a this leak by marking setHasFixedSize as final.
         super.setHasFixedSize(hasFixedSize)
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        // Update the RecyclerView's padding such that the bottom insets are applied
+        // while still preserving bottom padding.
         updatePadding(
-            initialPadding.left,
-            initialPadding.top,
-            initialPadding.right,
-            initialPadding.bottom + insets.systemBarInsetsCompat.bottom)
-
+            bottom = initialPaddingBottom + insets.systemBarInsetsCompat.bottom)
         return insets
     }
 
@@ -58,16 +78,18 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         super.setAdapter(adapter)
 
         if (adapter is SpanSizeLookup) {
+            // This adapter has support for special span sizes, hook it up to the
+            // GridLayoutManager.
             val glm = (layoutManager as GridLayoutManager)
+            val fullWidthSpanCount = glm.spanCount
             glm.spanSizeLookup =
                 object : GridLayoutManager.SpanSizeLookup() {
+                    // Using the adapter implementation, if the adapter specifies that
+                    // an item is full width, it will take up all of the spans, using a
+                    // single span otherwise.
                     override fun getSpanSize(position: Int) =
-                        if (adapter.isItemFullWidth(position)) glm.spanCount else 1
+                        if (adapter.isItemFullWidth(position)) fullWidthSpanCount else 1
                 }
         }
-    }
-
-    interface SpanSizeLookup {
-        fun isItemFullWidth(position: Int): Boolean
     }
 }

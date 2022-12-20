@@ -83,7 +83,7 @@ import java.util.Map;
  * window-like. For BottomSheetDialog use {@link BottomSheetDialog#setTitle(int)}, and for
  * BottomSheetDialogFragment use {@link ViewCompat#setAccessibilityPaneTitle(View, CharSequence)}.
  *
- * Modified at several points by OxygenCobalt to work around miscellaneous insanity.
+ * Modified at several points by Alexander Capehart to work around miscellaneous issues.
  */
 public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
 

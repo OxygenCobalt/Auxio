@@ -36,7 +36,7 @@ import org.oxycblt.auxio.util.requireBackgroundThread
  * storing "intrinsic" data, as in information derived from the file format and not information from
  * the media database or file system. The exceptions are the database ID and modification times for
  * files, as these are required for the cache to function well.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class CacheExtractor(private val context: Context, private val noop: Boolean) {
     private var cacheMap: Map<Long, Song.Raw>? = null

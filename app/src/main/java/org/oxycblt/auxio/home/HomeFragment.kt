@@ -27,7 +27,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.iterator
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -45,8 +47,8 @@ import org.oxycblt.auxio.home.list.AlbumListFragment
 import org.oxycblt.auxio.home.list.ArtistListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
-import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.selection.SelectionToolbarOverlay
+import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
+import org.oxycblt.auxio.list.selection.SelectionFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -57,16 +59,19 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.shared.MainNavigationAction
+import org.oxycblt.auxio.shared.NavigationViewModel
 import org.oxycblt.auxio.util.*
 
 /**
- * The main "Launching Point" fragment of Auxio, allowing navigation to the detail views for each
- * respective item.
- * @author OxygenCobalt
+ * The starting [SelectionFragment] of Auxio. Shows the user's music library and enables navigation
+ * to other views.
+ * @author Alexander Capehart (OxygenCobalt)
  */
-class HomeFragment : ListFragment<FragmentHomeBinding>() {
+class HomeFragment :
+    SelectionFragment<FragmentHomeBinding>(), AppBarLayout.OnOffsetChangedListener {
     private val homeModel: HomeViewModel by androidActivityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
+    private val navModel: NavigationViewModel by activityViewModels()
 
     // lifecycleObject builds this in the creation step, so doing this is okay.
     private val storagePermissionLauncher: ActivityResultLauncher<String> by lifecycleObject {
@@ -95,15 +100,14 @@ class HomeFragment : ListFragment<FragmentHomeBinding>() {
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentHomeBinding.inflate(inflater)
 
-    override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
-        binding.homeAppbar.addOnOffsetChangedListener { _, it -> handleAppBarAnimation(it) }
-        setupSelectionToolbar(binding.homeSelectionToolbar)
-        binding.homeToolbar.setOnMenuItemClickListener {
-            handleHomeMenuItem(it)
-            true
-        }
+    override fun getSelectionToolbar(binding: FragmentHomeBinding) =
+        binding.homeSelectionToolbar
 
-        setupTabs(binding)
+    override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
+        super.onBindingCreated(binding, savedInstanceState)
+
+        binding.homeAppbar.addOnOffsetChangedListener(this)
+        binding.homeToolbar.setOnMenuItemClickListener(this)
 
         // Load the track color in manually as it's unclear whether the track actually supports
         // using a ColorStateList in the resources
@@ -111,17 +115,15 @@ class HomeFragment : ListFragment<FragmentHomeBinding>() {
             requireContext().getColorCompat(R.color.sel_track).defaultColor
 
         binding.homePager.apply {
-            adapter = HomePagerAdapter()
-
+            // Update HomeViewModel whenever the user swipes through the ViewPager.
+            // This would be implemented in HomeFragment itself, but OnPageChangeCallback
+            // is an object for some reason.
             registerOnPageChangeCallback(
                 object : ViewPager2.OnPageChangeCallback() {
                     override fun onPageSelected(position: Int) {
-                        homeModel.setCurrentTab(position)
+                        homeModel.synchronizeTabPosition(position)
                     }
                 })
-
-            TabLayoutMediator(binding.homeTabs, this, AdaptiveTabStrategy(context, homeModel))
-                .attach()
 
             // ViewPager2 will nominally consume window insets, which will then break the window
             // insets applied to the indexing view before API 30. Fix this by overriding the
@@ -131,27 +133,29 @@ class HomeFragment : ListFragment<FragmentHomeBinding>() {
             // We know that there will only be a fixed amount of tabs, so we manually set this
             // limit to that. This also prevents the appbar lift state from being confused during
             // page transitions.
-            offscreenPageLimit = homeModel.tabs.size
+            offscreenPageLimit = homeModel.currentTabModes.size
 
             // By default, ViewPager2's sensitivity is high enough to result in vertical scroll
-            // events being
-            // registered as horizontal scroll events. Reflect into the internal recyclerview and
-            // change the
-            // touch slope so that touch actions will act more as a scroll than as a swipe. Derived
-            // from:
+            // events being registered as horizontal scroll events. Reflect into the internal
+            // RecyclerView and change the touch slope so that touch actions will act more as a
+            // scroll than as a swipe. Derived from:
             // https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
             val recycler = VP_RECYCLER_FIELD.get(this@apply)
             val slop = RV_TOUCH_SLOP_FIELD.get(recycler) as Int
             RV_TOUCH_SLOP_FIELD.set(recycler, slop * 3)
         }
 
+        // Further initialization must be done in the function that also handles
+        // re-creating the ViewPager.
+        setupPager(binding)
+
         binding.homeFab.setOnClickListener { playbackModel.shuffleAll() }
 
         // --- VIEWMODEL SETUP ---
 
-        collect(homeModel.recreateTabs, ::handleRecreateTabs)
-        collectImmediately(homeModel.currentTab, ::updateCurrentTab)
-        collectImmediately(homeModel.songs, homeModel.isFastScrolling, ::updateFab)
+        collect(homeModel.shouldRecreate, ::handleRecreate)
+        collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
+        collectImmediately(homeModel.songLists, homeModel.isFastScrolling, ::updateFab)
 
         collectImmediately(musicModel.indexerState, ::updateIndexerState)
 
@@ -168,19 +172,31 @@ class HomeFragment : ListFragment<FragmentHomeBinding>() {
         super.onSaveInstanceState(outState)
     }
 
-    private fun handleAppBarAnimation(verticalOffset: Int) {
-        val binding = requireBinding()
-        val range = binding.homeAppbar.totalScrollRange
+    override fun onDestroyBinding(binding: FragmentHomeBinding) {
+        super.onDestroyBinding(binding)
+        binding.homeAppbar.removeOnOffsetChangedListener(this)
+        binding.homeToolbar.setOnMenuItemClickListener(null)
+    }
 
+    override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+        val binding = requireBinding()
+        val range = appBarLayout.totalScrollRange
+        // Fade out the toolbar as the AppBarLayout collapses. To prevent status bar overlap,
+        // the alpha transition is shifted such that the Toolbar becomes fully transparent
+        // when the AppBarLayout is only at half-collapsed.
         binding.homeSelectionToolbar.alpha =
             1f - (abs(verticalOffset.toFloat()) / (range.toFloat() / 2))
-
         binding.homeContent.updatePadding(
             bottom = binding.homeAppbar.totalScrollRange + verticalOffset)
     }
 
-    private fun handleHomeMenuItem(item: MenuItem) {
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        if (super.onMenuItemClick(item)) {
+            return true
+        }
+
         when (item.itemId) {
+            // Handle main actions (Search, Settings, About)
             R.id.action_search -> {
                 logD("Navigating to search")
                 initAxisTransitions(MaterialSharedAxis.Z)
@@ -196,90 +212,127 @@ class HomeFragment : ListFragment<FragmentHomeBinding>() {
                 navModel.mainNavigateTo(
                     MainNavigationAction.Directions(MainFragmentDirections.actionShowAbout()))
             }
+
+            // Handle sort menu
             R.id.submenu_sorting -> {
                 // Junk click event when opening the menu
             }
             R.id.option_sort_asc -> {
                 item.isChecked = !item.isChecked
-                homeModel.updateCurrentSort(
+                homeModel.setSortForCurrentTab(
                     homeModel
-                        .getSortForTab(homeModel.currentTab.value)
+                        .getSortForTab(homeModel.currentTabMode.value)
                         .withAscending(item.isChecked))
             }
             else -> {
                 // Sorting option was selected, mark it as selected and update the mode
                 item.isChecked = true
-                homeModel.updateCurrentSort(
+                homeModel.setSortForCurrentTab(
                     homeModel
-                        .getSortForTab(homeModel.currentTab.value)
+                        .getSortForTab(homeModel.currentTabMode.value)
                         .withMode(requireNotNull(Sort.Mode.fromItemId(item.itemId))))
             }
         }
+
+        // Always handling it one way or another, so always return true
+        return true
     }
 
-    private fun updateCurrentTab(tab: MusicMode) {
-        // Make sure that we update the scrolling view and allowed menu items whenever
-        // the tab changes.
-        when (tab) {
-            MusicMode.SONGS -> {
-                updateSortMenu(tab) { id -> id != R.id.option_sort_count }
+    /**
+     * Set up the TabLayout and [ViewPager2] to reflect the current tab configuration.
+     * @param binding The [FragmentHomeBinding] to apply the tab configuration to.
+     */
+    private fun setupPager(binding: FragmentHomeBinding) {
+        binding.homePager.adapter = HomePagerAdapter(homeModel.currentTabModes, childFragmentManager, viewLifecycleOwner)
+
+        val toolbarParams = binding.homeSelectionToolbar.layoutParams as AppBarLayout.LayoutParams
+        if (homeModel.currentTabModes.size == 1) {
+            // A single tab makes the tab layout redundant, hide it and disable the collapsing
+            // behavior.
+            binding.homeTabs.isVisible = false
+            binding.homeAppbar.setExpanded(true, false)
+            toolbarParams.scrollFlags = 0
+        } else {
+            binding.homeTabs.isVisible = true
+            toolbarParams.scrollFlags =
+                AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+        }
+
+        // Set up the mapping between the ViewPager and TabLayout.
+        TabLayoutMediator(binding.homeTabs, binding.homePager,
+            AdaptiveTabStrategy(requireContext(), homeModel.currentTabModes)).attach()
+    }
+
+    /**
+     * Update the UI to reflect the current tab.
+     * @param tabMode The [MusicMode] of the currently shown tab.
+     */
+    private fun updateCurrentTab(tabMode: MusicMode) {
+        // Update the sort options to align with those allowed by the tab
+         val isVisible: (Int) -> Boolean = when (tabMode) {
+            // Disallow sorting by count for songs
+            MusicMode.SONGS -> { id -> id != R.id.option_sort_count }
+            // Disallow sorting by album for albums
+            MusicMode.ALBUMS -> { id -> id != R.id.option_sort_album }
+            // Only allow sorting by name, count, and duration for artists
+            MusicMode.ARTISTS -> { id ->
+                id == R.id.option_sort_asc ||
+                    id == R.id.option_sort_name ||
+                    id == R.id.option_sort_count ||
+                    id == R.id.option_sort_duration
             }
-            MusicMode.ALBUMS -> {
-                updateSortMenu(tab) { id -> id != R.id.option_sort_album }
-            }
-            MusicMode.ARTISTS -> {
-                updateSortMenu(tab) { id ->
-                    id == R.id.option_sort_asc ||
-                        id == R.id.option_sort_name ||
-                        id == R.id.option_sort_count ||
-                        id == R.id.option_sort_duration
-                }
-            }
-            MusicMode.GENRES -> {
-                updateSortMenu(tab) { id ->
-                    id == R.id.option_sort_asc ||
-                        id == R.id.option_sort_name ||
-                        id == R.id.option_sort_count ||
-                        id == R.id.option_sort_duration
-                }
+            // Only allow sorting by name, count, and duration for genres
+            MusicMode.GENRES -> { id ->
+                id == R.id.option_sort_asc ||
+                    id == R.id.option_sort_name ||
+                    id == R.id.option_sort_count ||
+                    id == R.id.option_sort_duration
             }
         }
 
-        requireBinding().homeAppbar.liftOnScrollTargetViewId = getTabRecyclerId(tab)
-    }
-
-    private fun updateSortMenu(mode: MusicMode, isVisible: (Int) -> Boolean) {
         val sortMenu = requireNotNull(sortItem.subMenu)
-        val toHighlight = homeModel.getSortForTab(mode)
+        val toHighlight = homeModel.getSortForTab(tabMode)
 
         for (option in sortMenu) {
-            if (option.itemId == toHighlight.mode.itemId) {
-                option.isChecked = true
-            }
+            // Check the ascending option and corresponding sort option to align with
+            // the current sort of the tab.
+            option.isChecked = option.itemId == toHighlight.mode.itemId
+                    || (option.itemId == R.id.option_sort_asc && toHighlight.isAscending)
 
-            if (option.itemId == R.id.option_sort_asc) {
-                option.isChecked = toHighlight.isAscending
-            }
-
+            // Disable options that are not allowed by the isVisible lambda
             option.isVisible = isVisible(option.itemId)
         }
+
+        // Update the scrolling view in AppBarLayout to align with the current tab's
+        // scrolling state. This prevents the lift state from being confused as one
+        // goes between different tabs.
+        requireBinding().homeAppbar.liftOnScrollTargetViewId = getTabRecyclerId(tabMode)
     }
 
-    private fun handleRecreateTabs(recreate: Boolean) {
-        if (recreate) {
-            val binding = requireBinding()
-
-            binding.homePager.apply {
-                currentItem = 0
-                adapter = HomePagerAdapter()
-            }
-
-            setupTabs(binding)
-
-            homeModel.finishRecreateTabs()
+    /**
+     * Handle a request to recreate all home tabs.
+     * @param recreate Whether to recreate all tabs.
+     */
+    private fun handleRecreate(recreate: Boolean) {
+        if (!recreate) {
+            // Nothing to do
+            return
         }
+
+        val binding = requireBinding()
+        // Move back to position zero, as there must be a tab there.
+        binding.homePager.currentItem = 0
+        // Make sure tabs are set up to also follow the new ViewPager configuration.
+        setupPager(binding)
+        homeModel.finishRecreate()
     }
 
+    /**
+     * Update the currently displayed [Indexer.State]
+     * @param state The new [Indexer.State] to show. Null if the state is currently
+     * indeterminate (Not loading or complete).
+     */
     private fun updateIndexerState(state: Indexer.State?) {
         val binding = requireBinding()
         when (state) {
@@ -292,21 +345,27 @@ class HomeFragment : ListFragment<FragmentHomeBinding>() {
         }
     }
 
+    /**
+     * Configure the UI to display the given [Indexer.Response].
+     * @param binding The [FragmentHomeBinding] whose views should be updated.
+     * @param response The [Indexer.Response] to show.
+     */
     private fun setupCompleteState(binding: FragmentHomeBinding, response: Indexer.Response) {
         if (response is Indexer.Response.Ok) {
+            logD("Received ok response")
             binding.homeFab.show()
             binding.homeIndexingContainer.visibility = View.INVISIBLE
         } else {
+            logD("Received non-ok response")
             val context = requireContext()
-
             binding.homeIndexingContainer.visibility = View.VISIBLE
-
-            logD("Received non-ok response $response")
-
+            binding.homeIndexingProgress.visibility = View.INVISIBLE
             when (response) {
                 is Indexer.Response.Err -> {
-                    binding.homeIndexingProgress.visibility = View.INVISIBLE
+                    logD("Updating UI to Response.Err state")
                     binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
+
+                    // Configure the indexing button to act as a rescan trigger.
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = context.getString(R.string.lbl_retry)
@@ -314,8 +373,10 @@ class HomeFragment : ListFragment<FragmentHomeBinding>() {
                     }
                 }
                 is Indexer.Response.NoMusic -> {
-                    binding.homeIndexingProgress.visibility = View.INVISIBLE
+                    logD("Updating UI to Response.NoMusic state")
                     binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
+
+                    // Configure the indexing button to act as a rescan trigger.
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = context.getString(R.string.lbl_retry)
@@ -323,8 +384,10 @@ class HomeFragment : ListFragment<FragmentHomeBinding>() {
                     }
                 }
                 is Indexer.Response.NoPerms -> {
-                    binding.homeIndexingProgress.visibility = View.INVISIBLE
+                    logD("Updating UI to Response.NoPerms state")
                     binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
+
+                    // Configure the indexing button to act as a permission launcher.
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = context.getString(R.string.lbl_grant)
@@ -338,21 +401,27 @@ class HomeFragment : ListFragment<FragmentHomeBinding>() {
         }
     }
 
+    /**
+     * Configure the UI to display the given [Indexer.Indexing] state..
+     * @param binding The [FragmentHomeBinding] whose views should be updated.
+     * @param indexing The [Indexer.Indexing] state to show.
+     */
     private fun setupIndexingState(binding: FragmentHomeBinding, indexing: Indexer.Indexing) {
+        // Remove all content except for the progress indicator.
         binding.homeIndexingContainer.visibility = View.VISIBLE
         binding.homeIndexingProgress.visibility = View.VISIBLE
         binding.homeIndexingAction.visibility = View.INVISIBLE
 
-        val context = requireContext()
-
         when (indexing) {
             is Indexer.Indexing.Indeterminate -> {
-                binding.homeIndexingStatus.text = context.getString(R.string.lng_indexing)
+                // In a query/initialization state, show a generic loading status.
+                binding.homeIndexingStatus.text = getString(R.string.lng_indexing)
                 binding.homeIndexingProgress.isIndeterminate = true
             }
             is Indexer.Indexing.Songs -> {
+                // Actively loading songs, show the current progress.
                 binding.homeIndexingStatus.text =
-                    context.getString(R.string.fmt_indexing, indexing.current, indexing.total)
+                    getString(R.string.fmt_indexing, indexing.current, indexing.total)
                 binding.homeIndexingProgress.apply {
                     isIndeterminate = false
                     max = indexing.total
@@ -362,8 +431,16 @@ class HomeFragment : ListFragment<FragmentHomeBinding>() {
         }
     }
 
+    /**
+     * Update the FAB visibility to reflect the state of other home elements.
+     * @param songs The current list of songs in the home view.
+     * @param isFastScrolling Whether the user is currently fast-scrolling.
+     */
     private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
         val binding = requireBinding()
+        // If there are no songs, it's likely that the library has not been loaded, so
+        // displaying the shuffle FAB makes no sense. We also don't want the fast scroll
+        // popup to overlap with the FAB, so we hide the FAB when fast scrolling too.
         if (songs.isEmpty() || isFastScrolling) {
             binding.homeFab.hide()
         } else {
@@ -371,6 +448,10 @@ class HomeFragment : ListFragment<FragmentHomeBinding>() {
         }
     }
 
+    /**
+     * Handle a navigation event.
+     * @param item The [Music] to navigate to, null if there is no item.
+     */
     private fun handleNavigation(item: Music?) {
         val action =
             when (item) {
@@ -385,6 +466,10 @@ class HomeFragment : ListFragment<FragmentHomeBinding>() {
         findNavController().navigate(action)
     }
 
+    /**
+     * Update the current item selection.
+     * @param selected The list of selected items.
+     */
     private fun updateSelection(selected: List<Music>) {
         val binding = requireBinding()
         if (binding.homeSelectionToolbar.updateSelectionAmount(selected.size) &&
@@ -392,59 +477,62 @@ class HomeFragment : ListFragment<FragmentHomeBinding>() {
             logD("Significant selection occurred, expanding AppBar")
             // Significant enough change where we want to expand the RecyclerView
             binding.homeAppbar.expandWithRecycler(
-                binding.homePager.findViewById(getTabRecyclerId(homeModel.currentTab.value)))
+                binding.homePager.findViewById(getTabRecyclerId(homeModel.currentTabMode.value)))
         }
     }
 
-    /** Returns the ID of a RecyclerView that the given [tab] contains */
-    private fun getTabRecyclerId(tab: MusicMode) =
-        when (tab) {
+    /**
+     * Get the ID of the RecyclerView contained by a tab.
+     * @param tabMode The mode of the tab to get the ID from
+     * @return The ID of the RecyclerView contained by the given tab.
+     */
+    private fun getTabRecyclerId(tabMode: MusicMode) =
+        when (tabMode) {
             MusicMode.SONGS -> R.id.home_song_recycler
             MusicMode.ALBUMS -> R.id.home_album_recycler
             MusicMode.ARTISTS -> R.id.home_artist_recycler
             MusicMode.GENRES -> R.id.home_genre_recycler
         }
 
-    private fun setupTabs(binding: FragmentHomeBinding) {
-        val toolbarParams = binding.homeSelectionToolbar.layoutParams as AppBarLayout.LayoutParams
-        if (homeModel.tabs.size == 1) {
-            // A single tab makes the tab layout redundant, hide it and disable the collapsing
-            // behavior.
-            binding.homeTabs.isVisible = false
-            binding.homeAppbar.setExpanded(true, false)
-            toolbarParams.scrollFlags = 0
-        } else {
-            binding.homeTabs.isVisible = true
-            toolbarParams.scrollFlags =
-                AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
-                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
-        }
-    }
-
+    /**
+     * Set up [MaterialSharedAxis] transitions.
+     * @param axis The axis that the transition should occur on, such as [MaterialSharedAxis.X]
+     */
     private fun initAxisTransitions(axis: Int) {
-        // Sanity check
+        // Sanity check to avoid in-correct axis transitions
         check(axis == MaterialSharedAxis.X || axis == MaterialSharedAxis.Z) {
             "Not expecting Y axis transition"
         }
+
         enterTransition = MaterialSharedAxis(axis, true)
         returnTransition = MaterialSharedAxis(axis, false)
         exitTransition = MaterialSharedAxis(axis, true)
         reenterTransition = MaterialSharedAxis(axis, false)
     }
 
-    private inner class HomePagerAdapter :
-        FragmentStateAdapter(childFragmentManager, viewLifecycleOwner.lifecycle) {
+    /**
+     * [FragmentStateAdapter] implementation for the [HomeFragment]'s [ViewPager2] instance.
+     * @param tabs The current tab configuration. This should define the fragments created.
+     * @param fragmentManager The [FragmentManager] required by [FragmentStateAdapter].
+     * @param lifecycleOwner The [LifecycleOwner], whose Lifecycle is required by
+     * [FragmentStateAdapter].
+     */
+    private class HomePagerAdapter(
+        private val tabs: List<MusicMode>,
+        fragmentManager: FragmentManager,
+        lifecycleOwner: LifecycleOwner
+    ) :
+        FragmentStateAdapter(fragmentManager, lifecycleOwner.lifecycle ) {
 
-        override fun getItemCount(): Int = homeModel.tabs.size
+        override fun getItemCount() = tabs.size
 
-        override fun createFragment(position: Int): Fragment {
-            return when (homeModel.tabs[position]) {
+        override fun createFragment(position: Int): Fragment =
+            when (tabs[position]) {
                 MusicMode.SONGS -> SongListFragment()
                 MusicMode.ALBUMS -> AlbumListFragment()
                 MusicMode.ARTISTS -> ArtistListFragment()
                 MusicMode.GENRES -> GenreListFragment()
             }
-        }
     }
 
     companion object {

@@ -42,7 +42,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A [BottomSheetDialogFragment] that shows Auxio's about screen.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
     private val musicModel: MusicViewModel by activityViewModels()

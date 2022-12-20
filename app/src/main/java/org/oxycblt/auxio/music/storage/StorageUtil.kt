@@ -96,7 +96,7 @@ class Directory private constructor(val volume: StorageVolume, val relativePath:
 /**
  * Represents a mime type as it is loaded by Auxio. [fromExtension] is based on the file extension
  * should always exist, while [fromFormat] is based on the file itself and may not be available.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 data class MimeType(val fromExtension: String, val fromFormat: String?) {
     fun resolveName(context: Context): String {

@@ -33,7 +33,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * The bottom sheet behavior designed for the queue in particular.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     AuxioBottomSheetBehavior<V>(context, attributeSet) {

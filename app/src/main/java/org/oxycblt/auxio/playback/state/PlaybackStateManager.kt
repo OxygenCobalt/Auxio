@@ -49,7 +49,7 @@ import org.oxycblt.auxio.util.logW
  * itself should instead operate as a [InternalPlayer].
  *
  * All access should be done with [PlaybackStateManager.getInstance].
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class PlaybackStateManager private constructor() {
     private val musicStore = MusicStore.getInstance()

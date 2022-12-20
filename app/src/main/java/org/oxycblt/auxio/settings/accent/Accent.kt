@@ -113,7 +113,7 @@ private val ACCENT_PRIMARY_COLORS =
  * @property theme The theme resource for this accent
  * @property blackTheme The black theme resource for this accent
  * @property primary The primary color resource for this accent
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class Accent private constructor(val index: Int) : Item {
     val name: Int

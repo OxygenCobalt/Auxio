@@ -37,7 +37,7 @@ import org.oxycblt.auxio.util.newMainPendingIntent
  * The unified notification for [PlaybackService]. Due to the nature of how this notification is
  * used, it is *not self-sufficient*. Updates have to be delivered manually, as to prevent state
  * inconsistency derived from callback order.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 @SuppressLint("RestrictedApi")
 class NotificationComponent(private val context: Context, sessionToken: MediaSessionCompat.Token) :

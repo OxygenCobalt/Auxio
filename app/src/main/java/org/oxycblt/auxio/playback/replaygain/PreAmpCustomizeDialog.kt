@@ -30,7 +30,7 @@ import org.oxycblt.auxio.util.context
 
 /**
  * The dialog for customizing the ReplayGain pre-amp values.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class PreAmpCustomizeDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }

@@ -41,7 +41,7 @@ import org.oxycblt.auxio.util.contentResolverSafe
  * should also be aware that [Library] may change while they are running, and design their work
  * accordingly.
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class MusicStore private constructor() {
     private val callbacks = mutableListOf<Callback>()

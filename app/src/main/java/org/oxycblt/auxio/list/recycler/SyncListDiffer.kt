@@ -22,9 +22,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- * Like AsyncListDiffer, but synchronous. This may seem like it would be inefficient, but in
- * practice Auxio's lists tend to be small enough to the point where this does not matter, and
- * situations that would be inefficient are ruled out with [replaceList].
+ * A list differ that operates synchronously. This can help resolve some shortcomings with
+ * AsyncListDiffer, at the cost of performance.
+ * Derived from Material Files: https://github.com/zhanghai/MaterialFiles
+ * @author Hai Zhang, Alexander Capehart (OxygenCobalt)
  */
 class SyncListDiffer<T>(
     adapter: RecyclerView.Adapter<*>,
@@ -109,17 +110,26 @@ class SyncListDiffer<T>(
             result.dispatchUpdatesTo(updateCallback)
         }
 
-    /** Submit a list normally, doing a diff synchronously. Only use this for trivial changes. */
+    /**
+     * Submit a list like AsyncListDiffer. This is exceedingly slow for large diffs, so only
+     * use it if the changes are trivial.
+     */
     fun submitList(newList: List<T>) {
+        if (newList == currentList) {
+            // Nothing to do.
+            return
+        }
+
         currentList = newList
     }
 
     /**
-     * Replace this list with a new list. This is useful for very large list diffs that would
-     * generally be too chaotic and slow to provide a good UX.
+     * Replace this list with a new list. This is good for large diffs that are too slow to
+     * update synchronously, but too chaotic to update asynchronously.
      */
     fun replaceList(newList: List<T>) {
         if (newList == currentList) {
+            // Nothing to do.
             return
         }
 

@@ -1,67 +1,35 @@
-/*
- * Copyright (c) 2022 Auxio Project
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
- 
 package org.oxycblt.auxio.image.extractor
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
 import android.media.MediaMetadataRetriever
-import android.util.Size as AndroidSize
-import androidx.core.graphics.drawable.toDrawable
-import coil.decode.DataSource
-import coil.decode.ImageSource
-import coil.fetch.DrawableResult
-import coil.fetch.FetchResult
-import coil.fetch.Fetcher
-import coil.fetch.SourceResult
-import coil.size.Dimension
-import coil.size.Size
-import coil.size.pxOrElse
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.MetadataRetriever
 import com.google.android.exoplayer2.metadata.flac.PictureFrame
 import com.google.android.exoplayer2.metadata.id3.ApicFrame
-import java.io.ByteArrayInputStream
-import java.io.InputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okio.buffer
-import okio.source
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
+import java.io.ByteArrayInputStream
+import java.io.InputStream
 
 /**
- * The base implementation for all image fetchers in Auxio.
- * @author OxygenCobalt
- *
- * TODO: File-system derived images [cover.jpg, Artist Images]
+ * Internal utilities for loading album covers.
+ * @author Alexander Capehart (OxygenCobalt).
  */
-abstract class BaseFetcher : Fetcher {
+object Covers {
     /**
-     * Fetch the [album] cover. This call respects user configuration and has proper redundancy in
-     * the case that metadata fails to load.
+     * Fetch an album cover, respecting the current cover configuration.
+     * @param context [Context] required to load the image.
+     * @param album [Album] to load the cover from.
+     * @return An [InputStream] of image data if the cover loading was successful, null if the
+     * cover loading failed or should not occur.
      */
-    protected suspend fun fetchCover(context: Context, album: Album): InputStream? {
+    suspend fun fetch(context: Context, album: Album): InputStream? {
         val settings = Settings(context)
 
         return try {
@@ -76,18 +44,28 @@ abstract class BaseFetcher : Fetcher {
         }
     }
 
+    /**
+     * Load an [Album] cover directly from one of it's Song files. This attempts
+     * the following in order:
+     * - [MediaMetadataRetriever], as it has the best support and speed.
+     * - ExoPlayer's [MetadataRetriever], as some devices (notably Samsung) can have broken
+     * [MediaMetadataRetriever] implementations.
+     * - MediaStore, as a last-ditch fallback if the format is really obscure.
+     *
+     * @param context [Context] required to load the image.
+     * @param album [Album] to load the cover from.
+     * @return An [InputStream] of image data if the cover loading was successful, null otherwise.
+     */
     private suspend fun fetchQualityCovers(context: Context, album: Album) =
-        // Loading quality covers basically means to parse the file metadata ourselves
-        // and then extract the cover.
-
-        // First try MediaMetadataRetriever. We will always do this first, as it supports
-        // a variety of formats, has multiple levels of fault tolerance, and is pretty fast
-        // for a manual parser.
-        // However, this does not seem to work on some devices (Notably Samsung), so we
-        // have to have redundancy.
         fetchAospMetadataCovers(context, album)
             ?: fetchExoplayerCover(context, album) ?: fetchMediaStoreCovers(context, album)
 
+    /**
+     * Loads an album cover with [MediaMetadataRetriever].
+     * @param context [Context] required to load the image.
+     * @param album [Album] to load the cover from.
+     * @return An [InputStream] of image data if the cover loading was successful, null otherwise.
+     */
     private fun fetchAospMetadataCovers(context: Context, album: Album): InputStream? {
         MediaMetadataRetriever().apply {
             // This call is time-consuming but it also doesn't seem to hold up the main thread,
@@ -101,6 +79,12 @@ abstract class BaseFetcher : Fetcher {
         }
     }
 
+    /**
+     * Loads an [Album] cover with ExoPlayer's [MetadataRetriever].
+     * @param context [Context] required to load the image.
+     * @param album [Album] to load the cover from.
+     * @return An [InputStream] of image data if the cover loading was successful, null otherwise.
+     */
     private suspend fun fetchExoplayerCover(context: Context, album: Album): InputStream? {
         val uri = album.songs[0].uri
         val future = MetadataRetriever.retrieveMetadata(context, MediaItem.fromUri(uri))
@@ -167,80 +151,17 @@ abstract class BaseFetcher : Fetcher {
         return stream
     }
 
+    /**
+     * Loads an [Album] cover from MediaStore.
+     * @param context [Context] required to load the image.
+     * @param album [Album] to load the cover from.
+     * @return An [InputStream] of image data if the cover loading was successful, null otherwise.
+     */
     @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun fetchMediaStoreCovers(context: Context, data: Album): InputStream? {
         val uri = data.coverUri
 
         // Eliminate any chance that this blocking call might mess up the loading process
         return withContext(Dispatchers.IO) { context.contentResolver.openInputStream(uri) }
-    }
-
-    /**
-     * Create a mosaic image from multiple streams of image data, Code adapted from Phonograph
-     * https://github.com/kabouzeid/Phonograph
-     */
-    protected suspend fun createMosaic(
-        context: Context,
-        streams: List<InputStream>,
-        size: Size
-    ): FetchResult? {
-        if (streams.size < 4) {
-            return streams.firstOrNull()?.let { stream ->
-                return SourceResult(
-                    source = ImageSource(stream.source().buffer(), context),
-                    mimeType = null,
-                    dataSource = DataSource.DISK)
-            }
-        }
-
-        // Use whatever size coil gives us to create the mosaic, rounding it to even so that we
-        // get a symmetrical mosaic [and to prevent bugs]. If there is no size, default to a
-        // 512x512 mosaic.
-        val mosaicSize = AndroidSize(size.width.mosaicSize(), size.height.mosaicSize())
-        val mosaicFrameSize =
-            Size(Dimension(mosaicSize.width / 2), Dimension(mosaicSize.height / 2))
-
-        val mosaicBitmap =
-            Bitmap.createBitmap(mosaicSize.width, mosaicSize.height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(mosaicBitmap)
-
-        var x = 0
-        var y = 0
-
-        // For each stream, create a bitmap scaled to 1/4th of the mosaics combined size
-        // and place it on a corner of the canvas.
-        for (stream in streams) {
-            if (y == mosaicSize.height) {
-                break
-            }
-
-            // Run the bitmap through a transform to make sure it's a square of the desired
-            // resolution.
-            val bitmap =
-                SquareFrameTransform.INSTANCE.transform(
-                    BitmapFactory.decodeStream(stream), mosaicFrameSize)
-
-            canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
-
-            x += bitmap.width
-
-            if (x == mosaicSize.width) {
-                x = 0
-                y += bitmap.height
-            }
-        }
-
-        // It's way easier to map this into a drawable then try to serialize it into an
-        // BufferedSource. Just make sure we mark it as "sampled" so Coil doesn't try to
-        // load low-res mosaics into high-res ImageViews.
-        return DrawableResult(
-            drawable = mosaicBitmap.toDrawable(context.resources),
-            isSampled = true,
-            dataSource = DataSource.DISK)
-    }
-
-    private fun Dimension.mosaicSize(): Int {
-        val size = pxOrElse { 512 }
-        return if (size.mod(2) > 0) size + 1 else size
     }
 }

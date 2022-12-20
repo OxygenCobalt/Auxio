@@ -44,7 +44,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * 3. Touch events. Bottom sheets must always intercept touches in their bounds, or they will click
  * the now overlapping content view that is only inset and not moved out of the way..
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     CoordinatorLayout.Behavior<V>(context, attributeSet) {

@@ -21,13 +21,25 @@ import org.oxycblt.auxio.IntegerTable
 
 /**
  * Represents the options available for album cover loading.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 enum class CoverMode {
+    /**
+     * Do not load album covers ("Off").
+     */
     OFF,
+    /**
+     * Load covers from the fast, but lower-quality media store database ("Fast").
+     */
     MEDIA_STORE,
+    /**
+     * Load high-quality covers directly from music files ("Quality").
+     */
     QUALITY;
 
+    /**
+     * The integer representation of this instance.
+     */
     val intCode: Int
         get() =
             when (this) {
@@ -37,6 +49,11 @@ enum class CoverMode {
             }
 
     companion object {
+        /**
+         * Convert a [CoverMode], integer representation into an instance.
+         * @param intCode An integer representation of a [CoverMode]
+         * @return The corresponding [CoverMode], or null if the [CoverMode] is invalid.
+         */
         fun fromIntCode(intCode: Int) =
             when (intCode) {
                 IntegerTable.COVER_MODE_OFF -> OFF

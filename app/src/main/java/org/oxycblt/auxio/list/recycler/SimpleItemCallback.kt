@@ -21,8 +21,10 @@ import androidx.recyclerview.widget.DiffUtil
 import org.oxycblt.auxio.list.Item
 
 /**
- * A base [DiffUtil.ItemCallback] that automatically provides an implementation of
- * [areContentsTheSame] any object that is derived from [Item].
+ * A [DiffUtil.ItemCallback] that automatically implements the [areItemsTheSame] method.
+ * Use this whenever creating [DiffUtil.ItemCallback] implementations with an [Item]
+ * subclass.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class SimpleItemCallback<T : Item> : DiffUtil.ItemCallback<T>() {
     final override fun areItemsTheSame(oldItem: T, newItem: T) = oldItem == newItem

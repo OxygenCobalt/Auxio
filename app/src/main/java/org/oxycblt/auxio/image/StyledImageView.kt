@@ -44,41 +44,33 @@ import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.getDrawableCompat
 
 /**
- * An [AppCompatImageView] that applies many of the stylistic choices that Auxio uses regarding
- * images.
+ * An [AppCompatImageView] with some additional styling, including:
  *
- * Default behavior includes the addition of a tonal background, automatic sizing of icons to half
- * of the view size, and corner radius application depending on user preference.
+ * - Tonal background
+ * - Rounded corners based on user preferences
+ * - Built-in support for binding image data or using a static icon with the same
+ * styling as placeholder drawables.
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class StyledImageView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AppCompatImageView(context, attrs, defStyleAttr) {
-    private val settings = Settings(context)
-
-    private var cornerRadius = 0f
-        set(value) {
-            field = value
-            (background as? MaterialShapeDrawable)?.let { bg ->
-                if (settings.roundMode) {
-                    bg.setCornerSize(value)
-                } else {
-                    bg.setCornerSize(0f)
-                }
-            }
-        }
-
-    var staticIcon: Drawable? = null
-        set(value) {
-            field = value?.let { StyledDrawable(context, it) }
-            setImageDrawable(field)
-        }
-
-    private var useLargeIcon: Boolean = false
-
     init {
+        // Load view attributes
+        val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.StyledImageView)
+        val staticIcon =
+            styledAttrs.getResourceId(
+                R.styleable.StyledImageView_staticIcon, ResourcesCompat.ID_NULL)
+        val cornerRadius = styledAttrs.getDimension(R.styleable.StyledImageView_cornerRadius, 0f)
+        styledAttrs.recycle()
+
+        if (staticIcon != ResourcesCompat.ID_NULL) {
+            // Use the static icon if specified for this image.
+            setImageDrawable(StyledDrawable(context, context.getDrawableCompat(staticIcon)))
+        }
+
         // Use clipToOutline and a background drawable to crop images. While Coil's transformation
         // could theoretically be used to round corners, the corner radius is dependent on the
         // dimensions of the image, which will result in inconsistent corners across different
@@ -89,71 +81,90 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         background =
             MaterialShapeDrawable().apply {
                 fillColor = context.getColorCompat(R.color.sel_cover_bg)
-                setCornerSize(cornerRadius)
+                if (Settings(context).roundMode) {
+                    // Only use the specified corner radius when round mode is enabled.
+                    setCornerSize(cornerRadius)
+                }
             }
-
-        val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.StyledImageView)
-        val staticIcon =
-            styledAttrs.getResourceId(
-                R.styleable.StyledImageView_staticIcon, ResourcesCompat.ID_NULL)
-        if (staticIcon != ResourcesCompat.ID_NULL) {
-            this.staticIcon = context.getDrawableCompat(staticIcon)
-        }
-
-        useLargeIcon = styledAttrs.getBoolean(R.styleable.StyledImageView_useLargeIcon, false)
-
-        cornerRadius = styledAttrs.getDimension(R.styleable.StyledImageView_cornerRadius, 0f)
-        styledAttrs.recycle()
     }
 
-    /** Bind the album cover for a [song]. */
-    fun bind(song: Song) = loadImpl(song, R.drawable.ic_song_24, R.string.desc_album_cover)
+    /**
+     * Bind a [Song]'s album cover to this view, also updating the content description.
+     * @param song The [Song] to bind.
+     */
+    fun bind(song: Song) = bindImpl(song, R.drawable.ic_song_24, R.string.desc_album_cover)
 
-    /** Bind the album cover for an [album]. */
-    fun bind(album: Album) = loadImpl(album, R.drawable.ic_album_24, R.string.desc_album_cover)
+    /**
+     * Bind an [Album]'s cover to this view, also updating the content description.
+     * @param album the [Album] to bind.
+     */
+    fun bind(album: Album) = bindImpl(album, R.drawable.ic_album_24, R.string.desc_album_cover)
 
-    /** Bind the image for an [artist] */
-    fun bind(artist: Artist) = loadImpl(artist, R.drawable.ic_artist_24, R.string.desc_artist_image)
+    /**
+     * Bind an [Artist]'s image to this view, also updating the content description.
+     * @param artist the [Artist] to bind.
+     */
+    fun bind(artist: Artist) = bindImpl(artist, R.drawable.ic_artist_24, R.string.desc_artist_image)
 
-    /** Bind the image for a [genre] */
-    fun bind(genre: Genre) = loadImpl(genre, R.drawable.ic_genre_24, R.string.desc_genre_image)
+    /**
+     * Bind an [Genre]'s image to this view, also updating the content description.
+     * @param genre the [Genre] to bind.
+     */
+    fun bind(genre: Genre) = bindImpl(genre, R.drawable.ic_genre_24, R.string.desc_genre_image)
 
-    private fun <T : Music> loadImpl(music: T, @DrawableRes error: Int, @StringRes desc: Int) {
-        if (staticIcon != null) {
-            error("Static StyledImageViews cannot bind new images")
-        }
-
-        contentDescription = context.getString(desc, music.resolveName(context))
-
+    /**
+     * Internally bind a [Music]'s image to this view.
+     * @param music The music to find.
+     * @param errorRes The error drawable resource to use if the music cannot be loaded.
+     * @param descRes The content description string resource to use. The resource must have
+     * one field for the name of the [Music].
+     */
+    private fun bindImpl(music: Music, @DrawableRes errorRes: Int, @StringRes descRes: Int) {
+        // Dispose of any previous image request and load a new image.
         dispose()
         load(music) {
-            error(StyledDrawable(context, context.getDrawableCompat(error)))
+            error(StyledDrawable(context, context.getDrawableCompat(errorRes)))
             transformations(SquareFrameTransform.INSTANCE)
         }
+
+        // Update the content description to the specified resource.
+        contentDescription = context.getString(descRes, music.resolveName(context))
     }
 
-    private class StyledDrawable(context: Context, private val src: Drawable) : Drawable() {
+    /**
+     * A [Drawable] wrapper that re-styles the drawable to better align with the style
+     * of [StyledImageView].
+     * @param context [Context] required for initialization.
+     * @param inner The [Drawable] to wrap.
+     */
+    private class StyledDrawable(context: Context, private val inner: Drawable) : Drawable() {
         init {
-            DrawableCompat.setTintList(src, context.getColorCompat(R.color.sel_on_cover_bg))
+            // Re-tint the drawable to use the analogous "on surface" color for
+            // StyledImageView.
+            DrawableCompat.setTintList(inner, context.getColorCompat(R.color.sel_on_cover_bg))
         }
 
         override fun draw(canvas: Canvas) {
+            // Resize the drawable such that it's always 1/4 the size of the image and
+            // centered in the middle of the canvas.
             val adjustWidth = bounds.width() / 4
             val adjustHeight = bounds.height() / 4
-            src.bounds.set(
+            inner.bounds.set(
                 adjustWidth,
                 adjustHeight,
                 bounds.width() - adjustWidth,
                 bounds.height() - adjustHeight)
-            src.draw(canvas)
+            inner.draw(canvas)
         }
 
+        // Required drawable overrides. Just forward to the wrapped drawable.
+
         override fun setAlpha(alpha: Int) {
-            src.alpha = alpha
+            inner.alpha = alpha
         }
 
         override fun setColorFilter(colorFilter: ColorFilter?) {
-            src.colorFilter = colorFilter
+            inner.colorFilter = colorFilter
         }
 
         override fun getOpacity(): Int = PixelFormat.TRANSLUCENT

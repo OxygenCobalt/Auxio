@@ -27,6 +27,7 @@ import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
+import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.recycler.AlbumViewHolder
@@ -42,16 +43,14 @@ import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.util.collectImmediately
 
 /**
- * A [HomeListFragment] for showing a list of [Album]s.
- * @author OxygenCobalt
+ * A [ListFragment] that shows a list of [Album]s.
+ * @author Alexander Capehart (OxygenCobalt)
  */
-class AlbumListFragment : ListFragment<FragmentHomeListBinding>() {
+class AlbumListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRecyclerView.Listener, FastScrollRecyclerView.PopupProvider {
     private val homeModel: HomeViewModel by activityViewModels()
-
-    private val homeAdapter =
-        AlbumAdapter(ItemSelectCallback(::handleClick, ::handleOpenMenu, ::handleClick))
-
-    private val formatterSb = StringBuilder(32)
+    private val albumAdapter = AlbumAdapter(this)
+    // Save memory by re-using the same formatter and string builder when creating popup text
+    private val formatterSb = StringBuilder(64)
     private val formatter = Formatter(formatterSb)
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -62,36 +61,28 @@ class AlbumListFragment : ListFragment<FragmentHomeListBinding>() {
 
         binding.homeRecycler.apply {
             id = R.id.home_album_recycler
-            adapter = homeAdapter
-
-            popupProvider = ::updatePopup
-            fastScrollCallback = { homeModel.setFastScrolling(it) }
+            adapter = albumAdapter
+            popupProvider = this@AlbumListFragment
+            listener = this@AlbumListFragment
         }
 
-        collectImmediately(homeModel.albums, homeAdapter::replaceList)
-        collectImmediately(selectionModel.selected, homeAdapter::setSelectedItems)
+        collectImmediately(homeModel.albumsList, albumAdapter::replaceList)
+        collectImmediately(selectionModel.selected, albumAdapter::setSelectedItems)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
     override fun onDestroyBinding(binding: FragmentHomeListBinding) {
         super.onDestroyBinding(binding)
-        binding.homeRecycler.adapter = null
+        binding.homeRecycler.apply {
+            adapter = null
+            popupProvider = null
+            listener = null
+        }
     }
 
-    override fun onRealClick(music: Music) {
-        check(music is Album) { "Unexpected datatype: ${music::class.java}" }
-        navModel.exploreNavigateTo(music)
-    }
-
-    private fun handleOpenMenu(item: Item, anchor: View) {
-        check(item is Album) { "Unexpected datatype: ${item::class.java}" }
-        openMusicMenu(anchor, R.menu.menu_album_actions, item)
-    }
-
-    private fun updatePopup(pos: Int): String? {
-        val album = homeModel.albums.value[pos]
-
-        // Change how we display the popup depending on the mode.
+    override fun getPopup(pos: Int): String? {
+        val album = homeModel.albumsList.value[pos]
+        // Change how we display the popup depending on the current sort mode.
         return when (homeModel.getSortForTab(MusicMode.ALBUMS).mode) {
             // By Name -> Use Name
             is Sort.Mode.ByName -> album.collationKey?.run { sourceString.first().uppercase() }
@@ -126,18 +117,38 @@ class AlbumListFragment : ListFragment<FragmentHomeListBinding>() {
             else -> null
         }
     }
-    private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
-        if (parent is Album) {
-            homeAdapter.setPlayingItem(parent, isPlaying)
-        } else {
-            // Ignore playback not from albums
-            homeAdapter.setPlayingItem(null, isPlaying)
-        }
+
+    override fun onFastScrollingChanged(isFastScrolling: Boolean) {
+        homeModel.setFastScrolling(isFastScrolling)
     }
 
-    private class AlbumAdapter(private val callback: ItemSelectCallback) :
+    override fun onRealClick(music: Music) {
+        check(music is Album) { "Unexpected datatype: ${music::class.java}" }
+        navModel.exploreNavigateTo(music)
+    }
+
+    override fun onOpenMenu(item: Item, anchor: View) {
+        check(item is Album) { "Unexpected datatype: ${item::class.java}" }
+        openMusicMenu(anchor, R.menu.menu_album_actions, item)
+    }
+
+    /**
+     * Update the current playback state in the context of the current [Album] list.
+     * @param parent The current [MusicParent] playing, null if all songs.
+     * @param isPlaying Whether playback is ongoing or paused.
+     */
+    private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
+        // If an album is playing, highlight it within this adapter.
+        albumAdapter.setPlayingItem(parent as? Album, isPlaying)
+    }
+
+    /**
+     * A [SelectionIndicatorAdapter] that shows a list of [Album]s using [AlbumViewHolder].
+     * @param listener An [ExtendedListListener] for list interactions.
+     */
+    private class AlbumAdapter(private val listener: ExtendedListListener) :
         SelectionIndicatorAdapter<AlbumViewHolder>() {
-        private val differ = SyncListDiffer(this, AlbumViewHolder.DIFFER)
+        private val differ = SyncListDiffer(this, AlbumViewHolder.DIFF_CALLBACK)
 
         override val currentList: List<Item>
             get() = differ.currentList
@@ -147,14 +158,14 @@ class AlbumListFragment : ListFragment<FragmentHomeListBinding>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             AlbumViewHolder.new(parent)
 
-        override fun onBindViewHolder(holder: AlbumViewHolder, position: Int, payloads: List<Any>) {
-            super.onBindViewHolder(holder, position, payloads)
-
-            if (payloads.isEmpty()) {
-                holder.bind(differ.currentList[position], callback)
-            }
+        override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
+            holder.bind(differ.currentList[position], listener)
         }
 
+        /**
+         * Asynchronously update the list with new [Album]s.
+         * @param newList The new [Album]s for the adapter to display.
+         */
         fun replaceList(newList: List<Album>) {
             differ.replaceList(newList)
         }

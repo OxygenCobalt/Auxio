@@ -36,6 +36,10 @@ import org.oxycblt.auxio.util.coordinatorLayoutBehavior
  *
  * **Note:** This layout relies on [AppBarLayout.liftOnScrollTargetViewId] to figure out what
  * scrolling view to use. Failure to specify this will result in the layout not working.
+ *
+ * Derived from Material Files: https://github.com/zhanghai/MaterialFiles
+ *
+ * @author Hai Zhang, Alexander Capehart (OxygenCobalt)
  */
 open class AuxioAppBarLayout
 @JvmOverloads
@@ -99,10 +103,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         return scrollingChild
     }
 
-    /**
-     * Hack to prevent RecyclerView jumping when the appbar expands. Adapted from Material Files:
-     * https://github.com/zhanghai/MaterialFiles/blob/master/app/src/main/java/me/zhanghai/android/files/ui/AppBarLayoutExpandHackListener.kt
-     */
+    /** Hack to prevent RecyclerView jumping when the appbar expands. */
     private class ExpansionHackListener(private val recycler: RecyclerView) :
         OnOffsetChangedListener {
         private val offsetAnimationMaxEndTime = (AnimationUtils.currentAnimationTimeMillis() + 600)

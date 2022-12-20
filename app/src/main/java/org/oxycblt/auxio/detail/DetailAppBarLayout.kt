@@ -22,8 +22,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.AttrRes
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,17 +35,23 @@ import org.oxycblt.auxio.shared.AuxioAppBarLayout
 import org.oxycblt.auxio.util.lazyReflectedField
 
 /**
- * An [AuxioAppBarLayout] variant that also shows the name of the toolbar whenever the detail
- * recyclerview is scrolled beyond it's first item (a.k.a the header). This is used instead of
- * CollapsingToolbarLayout since that thing is a mess with crippling bugs and state issues. This
- * just works.
- * @author OxygenCobalt
+ * An [AuxioAppBarLayout] that displays the title of a hidden [Toolbar] when the scrolling view goes
+ * beyond it's first item.
+ *
+ * This is intended for the detail views, in which the first item is the album/artist/genre header,
+ * and thus scrolling past them should make the toolbar show the name in order to give context on
+ * where the user currently is.
+ *
+ * This task should nominally be accomplished with CollapsingToolbarLayout, but I have not figured
+ * out how to get that working sensibly yet.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class DetailAppBarLayout
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AuxioAppBarLayout(context, attrs, defStyleAttr) {
-    private var titleView: AppCompatTextView? = null
+    private var titleView: TextView? = null
     private var recycler: RecyclerView? = null
 
     private var titleShown: Boolean? = null
@@ -56,18 +62,25 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         (layoutParams as CoordinatorLayout.LayoutParams).behavior = Behavior(context)
     }
 
-    private fun findTitleView(): AppCompatTextView {
+    private fun findTitleView(): TextView {
         val titleView = titleView
         if (titleView != null) {
             return titleView
         }
 
+        // Assume that we have a Toolbar with a detail_toolbar ID, as this view is only
+        // used within the detail layouts.
         val toolbar = findViewById<Toolbar>(R.id.detail_toolbar)
 
-        // Reflect to get the actual title view to do transformations on
-        val newTitleView = TOOLBAR_TITLE_TEXT_FIELD.get(toolbar) as AppCompatTextView
+        // The Toolbar's title view is actually hidden. To avoid having to create our own
+        // title view, we just reflect into Toolbar and grab the hidden field.
+        val newTitleView = (TOOLBAR_TITLE_TEXT_FIELD.get(toolbar) as TextView).apply {
+            // We can never properly initialize the title view's state before draw time,
+            // so we just set it's alpha to 0f to produce a less jarring initialization
+            // animation..
+            alpha = 0f
+        }
 
-        newTitleView.alpha = 0f
         this.titleView = newTitleView
         return newTitleView
     }
@@ -78,6 +91,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             return recycler
         }
 
+        // Use the scrolling view in order to find a RecyclerView to use.
         val newRecycler = (parent as ViewGroup).findViewById<RecyclerView>(liftOnScrollTargetViewId)
         this.recycler = newRecycler
         return newRecycler
@@ -85,7 +99,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     private fun setTitleVisibility(visible: Boolean) {
         if (titleShown == visible) return
-
         titleShown = visible
 
         val titleAnimator = titleAnimator
@@ -94,6 +107,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             this.titleAnimator = null
         }
 
+        // Emulate the AppBarLayout lift animation (Linear, alpha 0f -> 1f), but now with
+        // the title view's alpha instead of the AppBarLayout's elevation.
         val titleView = findTitleView()
         val from: Float
         val to: Float
@@ -106,7 +121,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             to = 0f
         }
 
-        if (titleView.alpha == to) return
+        if (titleView.alpha == to) {
+            // Nothing to do
+            return
+        }
 
         this.titleAnimator =
             ValueAnimator.ofFloat(from, to).apply {
@@ -136,13 +154,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         ) {
             super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
 
-            val appBar = child as DetailAppBarLayout
-            val recycler = appBar.findRecyclerView()
+            val appBarLayout = child as DetailAppBarLayout
+            val recycler = appBarLayout.findRecyclerView()
 
-            val showTitle =
+            // Title should be visible if we are no longer showing the top item
+            // (i.e the header)
+            appBarLayout.setTitleVisibility(
                 (recycler.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() > 0
-
-            appBar.setTitleVisibility(showTitle)
+            )
         }
     }
 

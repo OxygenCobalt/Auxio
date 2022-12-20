@@ -41,7 +41,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * Note that you must still give it a [Metadata] instance for it to function, which should be done
  * when the active track changes.
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  *
  * TODO: Convert to a low-level audio processor capable of handling any kind of PCM data.
  */

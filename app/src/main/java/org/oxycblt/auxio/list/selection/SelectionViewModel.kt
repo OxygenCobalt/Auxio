@@ -20,36 +20,67 @@ package org.oxycblt.auxio.list.selection
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.util.logD
 
 /**
- * ViewModel that manages the current selection.
- * @author OxygenCobalt
+ * A [ViewModel] that manages the current selection.
+ * @author Alexander Capehart (OxygenCobalt)
  */
-class SelectionViewModel : ViewModel() {
+class SelectionViewModel : ViewModel(), MusicStore.Callback {
+    private val musicStore = MusicStore.getInstance()
+
     private val _selected = MutableStateFlow(listOf<Music>())
+    /**
+     * the currently selected items. These are ordered in earliest selected
+     * and latest selected.
+     */
     val selected: StateFlow<List<Music>>
         get() = _selected
 
-    /** Select a music item. */
-    fun select(music: Music) {
-        val selected = _selected.value.toMutableList()
-        if (selected.remove(music)) {
-            logD("Unselecting item $music")
-            _selected.value = selected
-        } else {
-            logD("Selecting item $music")
-            selected.add(music)
-            _selected.value = selected
+    init {
+        musicStore.addCallback(this)
+    }
+
+    override fun onLibraryChanged(library: MusicStore.Library?) {
+        if (library == null) {
+            return
+        }
+
+        // Sanitize the selection to remove items that no longer exist and thus
+        // won't appear in any list.
+        _selected.value = _selected.value.mapNotNull {
+            when (it) {
+                is Song -> library.sanitize(it)
+                is Album -> library.sanitize(it)
+                is Artist -> library.sanitize(it)
+                is Genre -> library.sanitize(it)
+            }
         }
     }
 
-    /** Clear and return all selected items. */
-    fun consume() = _selected.value.also { _selected.value = listOf() }
-
     override fun onCleared() {
         super.onCleared()
-        logD("Cleared")
+        musicStore.removeCallback(this)
     }
+
+    /**
+     * Select a new [Music] item. If this item is already within the selected items, the item will be
+     * removed. Otherwise, it will be added.
+     * @param music The [Music] item to select.
+     */
+    fun select(music: Music) {
+        val selected = _selected.value.toMutableList()
+        if (!selected.remove(music)) {
+            selected.add(music)
+        }
+        _selected.value = selected
+    }
+
+    /**
+     * Consume the current selection. This will clear any items that were selected prior.
+     * @return The list of selected items before it was cleared.
+     */
+    fun consume() =
+        _selected.value.also { _selected.value = listOf() }
 }

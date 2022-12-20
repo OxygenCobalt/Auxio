@@ -37,7 +37,7 @@ import org.oxycblt.auxio.util.showToast
 
 /**
  * Dialog that manages the music dirs setting.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class MusicDirsDialog :
     ViewBindingDialogFragment<DialogMusicDirsBinding>(), MusicDirAdapter.Listener {

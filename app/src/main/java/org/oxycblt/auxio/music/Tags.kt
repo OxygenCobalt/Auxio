@@ -43,7 +43,7 @@ import org.oxycblt.auxio.util.nonZeroOrNull
  * The string representation of a Date is RFC 3339, with granular position depending on the presence
  * of particular tokens.
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class Date private constructor(private val tokens: List<Int>) : Comparable<Date> {
     init {
@@ -189,7 +189,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
  * others. Internally, it operates on a reduced version of the MusicBrainz release type
  * specification. It can be extended if there is demand.
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 sealed class ReleaseType {
     abstract val refinement: Refinement?

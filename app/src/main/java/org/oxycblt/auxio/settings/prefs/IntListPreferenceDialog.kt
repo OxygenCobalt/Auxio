@@ -23,6 +23,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 
+/**
+ * @brief The companion dialog to [IntListPreference].
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
     private val listPreference: IntListPreference
         get() = (preference as IntListPreference)

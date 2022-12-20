@@ -46,7 +46,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * settings that Auxio uses. Mutability is determined by use, as some values are written by
  * PreferenceManager and others are written by Auxio's code.
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class Settings(private val context: Context, private val callback: Callback? = null) :
     SharedPreferences.OnSharedPreferenceChangeListener {

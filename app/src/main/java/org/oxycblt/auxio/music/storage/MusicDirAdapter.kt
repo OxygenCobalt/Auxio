@@ -21,13 +21,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemMusicDirBinding
-import org.oxycblt.auxio.list.recycler.DialogViewHolder
+import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
 /**
  * Adapter that shows the list of music folder and their "Clear" button.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class MusicDirAdapter(private val listener: Listener) : RecyclerView.Adapter<MusicDirViewHolder>() {
     private val _dirs = mutableListOf<Directory>()
@@ -69,7 +69,7 @@ class MusicDirAdapter(private val listener: Listener) : RecyclerView.Adapter<Mus
 
 /** The viewholder for [MusicDirAdapter]. Not intended for use in other adapters. */
 class MusicDirViewHolder private constructor(private val binding: ItemMusicDirBinding) :
-    DialogViewHolder(binding.root) {
+    DialogRecyclerView.ViewHolder(binding.root) {
     fun bind(item: Directory, listener: MusicDirAdapter.Listener) {
         binding.dirPath.text = item.resolveName(binding.context)
         binding.dirDelete.setOnClickListener { listener.onRemoveDirectory(item) }

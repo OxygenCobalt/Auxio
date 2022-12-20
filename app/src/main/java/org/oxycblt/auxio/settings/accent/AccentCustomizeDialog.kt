@@ -23,8 +23,8 @@ import androidx.appcompat.app.AlertDialog
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
+import org.oxycblt.auxio.list.BasicListListener
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.list.ItemClickCallback
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.shared.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
@@ -33,10 +33,10 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * Dialog responsible for showing the list of accents to select.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
-class AccentCustomizeDialog : ViewBindingDialogFragment<DialogAccentBinding>() {
-    private var accentAdapter = AccentAdapter(ItemClickCallback(::handleClick))
+class AccentCustomizeDialog : ViewBindingDialogFragment<DialogAccentBinding>(), BasicListListener {
+    private var accentAdapter = AccentAdapter(this)
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogAccentBinding.inflate(inflater)
@@ -75,7 +75,7 @@ class AccentCustomizeDialog : ViewBindingDialogFragment<DialogAccentBinding>() {
         binding.accentRecycler.adapter = null
     }
 
-    private fun handleClick(item: Item) {
+    override fun onClick(item: Item) {
         check(item is Accent) { "Unexpected datatype: ${item::class.java}" }
         accentAdapter.setSelectedAccent(item)
     }

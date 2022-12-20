@@ -31,8 +31,8 @@ import com.google.android.material.transition.MaterialSharedAxis
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.list.ItemSelectCallback
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.selection.SelectionToolbarOverlay
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -46,16 +46,13 @@ import org.oxycblt.auxio.util.*
 /**
  * A [Fragment] that allows for the searching of the entire music library. TODO: Minor rework with
  * better keyboard logic, recycler updating, and chips
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class SearchFragment : ListFragment<FragmentSearchBinding>() {
-
     // SearchViewModel is only scoped to this Fragment
     private val searchModel: SearchViewModel by androidViewModels()
 
-    private val searchAdapter =
-        SearchAdapter(ItemSelectCallback(::handleClick, ::handleOpenMenu, ::handleSelect))
-    private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
+    private val searchAdapter = SearchAdapter(this)
     private val imm: InputMethodManager by lifecycleObject { binding ->
         binding.context.getSystemServiceCompat(InputMethodManager::class)
     }
@@ -72,8 +69,11 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentSearchBinding.inflate(inflater)
 
+    override fun getSelectionToolbar(binding: FragmentSearchBinding) =
+        binding.searchSelectionToolbar
+
     override fun onBindingCreated(binding: FragmentSearchBinding, savedInstanceState: Bundle?) {
-        setupSelectionToolbar(binding.searchSelectionToolbar)
+        super.onBindingCreated(binding, savedInstanceState)
 
         binding.searchToolbar.apply {
             val itemIdToSelect =
@@ -87,11 +87,13 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
 
             menu.findItem(itemIdToSelect).isChecked = true
 
-            setNavigationOnClickListener { handleSearchNavigateUp() }
-            setOnMenuItemClickListener {
-                handleSearchMenuItem(it)
-                true
+            setNavigationOnClickListener {
+                // Drop keyboard as it's no longer needed
+                imm.hide()
+                findNavController().navigateUp()
             }
+
+            setOnMenuItemClickListener(this@SearchFragment)
         }
 
         binding.searchEditText.apply {
@@ -112,45 +114,48 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
         // --- VIEWMODEL SETUP ---
 
         collectImmediately(searchModel.searchResults, ::updateResults)
-
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
-
         collect(navModel.exploreNavigationItem, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
     override fun onDestroyBinding(binding: FragmentSearchBinding) {
+        super.onDestroyBinding(binding)
+        binding.searchToolbar.setOnMenuItemClickListener(null)
         binding.searchRecycler.adapter = null
+    }
+
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        if (super.onMenuItemClick(item)) {
+            return true
+        }
+
+        // Ignore junk sub-menu click events
+        if (item.itemId != R.id.submenu_filtering) {
+            // Is a change in filter mode and not just a junk submenu click, update
+            // the filtering within SearchViewModel.
+            searchModel.updateFilterModeWithId(item.itemId)
+            return true
+        }
+
+        return false
     }
 
     override fun onRealClick(music: Music) {
         when (music) {
             is Song ->
-                when (settings.libPlaybackMode) {
+                when (val mode = Settings(requireContext()).libPlaybackMode) {
                     MusicMode.SONGS -> playbackModel.playFromAll(music)
                     MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
                     MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-                    else -> error("Unexpected playback mode: ${settings.libPlaybackMode}")
+                    else -> error("Unexpected playback mode: ${mode}")
                 }
             is MusicParent -> navModel.exploreNavigateTo(music)
         }
     }
 
-    private fun handleSearchNavigateUp() {
-        // Drop keyboard as it's no longer needed
-        imm.hide()
-        findNavController().navigateUp()
-    }
-
-    private fun handleSearchMenuItem(item: MenuItem) {
-        // Ignore junk sub-menu click events
-        if (item.itemId != R.id.submenu_filtering) {
-            searchModel.updateFilterModeWithId(item.itemId)
-        }
-    }
-
-    private fun handleOpenMenu(item: Item, anchor: View) {
+    override fun onOpenMenu(item: Item, anchor: View) {
         when (item) {
             is Song -> openMusicMenu(anchor, R.menu.menu_song_actions, item)
             is Album -> openMusicMenu(anchor, R.menu.menu_album_actions, item)

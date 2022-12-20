@@ -75,7 +75,7 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  *
  * TODO: Android Auto
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class PlaybackService :
     Service(),

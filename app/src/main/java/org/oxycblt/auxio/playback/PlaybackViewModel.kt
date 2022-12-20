@@ -39,7 +39,7 @@ import org.oxycblt.auxio.util.application
  * **PLEASE Use this instead of [PlaybackStateManager], UIs are extremely volatile and this provides
  * an interface that properly sanitizes input and abstracts functions unlike the master class.**
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  *
  * TODO: Queue additions without a song should map to playing selected
  */

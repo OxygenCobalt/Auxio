@@ -30,7 +30,7 @@ import org.oxycblt.auxio.util.logD
  * A highly customized [ItemTouchHelper.Callback] that handles the queue system while basically
  * rebuilding most the "Material-y" aspects of an editable list because Google's implementations are
  * hot garbage. This shouldn't have *too many* UI bugs. I hope.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHelper.Callback() {
     private var shouldLift = true

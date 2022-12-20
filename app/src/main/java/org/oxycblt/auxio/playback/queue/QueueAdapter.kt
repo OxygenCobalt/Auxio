@@ -38,7 +38,7 @@ import org.oxycblt.auxio.util.inflater
 
 class QueueAdapter(private val listener: QueueItemListener) :
     RecyclerView.Adapter<QueueSongViewHolder>() {
-    private var differ = SyncListDiffer(this, QueueSongViewHolder.DIFFER)
+    private var differ = SyncListDiffer(this, QueueSongViewHolder.DIFF_CALLBACK)
     private var currentIndex = 0
     private var isPlaying = false
 
@@ -173,6 +173,6 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
         fun new(parent: View) =
             QueueSongViewHolder(ItemQueueSongBinding.inflate(parent.context.inflater))
 
-        val DIFFER = SongViewHolder.DIFFER
+        val DIFF_CALLBACK = SongViewHolder.DIFF_CALLBACK
     }
 }

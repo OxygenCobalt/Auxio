@@ -41,7 +41,7 @@ import org.oxycblt.auxio.util.logW
  *
  * For more specific details about these sub-widgets, see Forms.kt.
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class WidgetProvider : AppWidgetProvider() {
     /*

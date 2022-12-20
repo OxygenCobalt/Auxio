@@ -27,6 +27,7 @@ import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
+import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
@@ -41,21 +42,16 @@ import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.context
 
 /**
- * A [HomeListFragment] for showing a list of [Song]s.
- * @author OxygenCobalt
+ * A [ListFragment] that shows a list of [Song]s.
+ * @author Alexander Capehart (OxygenCobalt)
  */
-class SongListFragment : ListFragment<FragmentHomeListBinding>() {
+class SongListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRecyclerView.PopupProvider, FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
-
-    private val homeAdapter =
-        SongAdapter(ItemSelectCallback(::handleClick, ::handleOpenMenu, ::handleSelect))
-
-    private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
-
-    private val formatterSb = StringBuilder(50)
+    private val homeAdapter = SongAdapter(this)
+    // Save memory by re-using the same formatter and string builder when creating popup text
+    private val formatterSb = StringBuilder(64)
     private val formatter = Formatter(formatterSb)
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -67,12 +63,11 @@ class SongListFragment : ListFragment<FragmentHomeListBinding>() {
         binding.homeRecycler.apply {
             id = R.id.home_song_recycler
             adapter = homeAdapter
-
-            popupProvider = ::updatePopup
-            fastScrollCallback = homeModel::setFastScrolling
+            popupProvider = this@SongListFragment
+            listener = this@SongListFragment
         }
 
-        collectImmediately(homeModel.songs, homeAdapter::replaceList)
+        collectImmediately(homeModel.songLists, homeAdapter::replaceList)
         collectImmediately(selectionModel.selected, homeAdapter::setSelectedItems)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -80,13 +75,16 @@ class SongListFragment : ListFragment<FragmentHomeListBinding>() {
 
     override fun onDestroyBinding(binding: FragmentHomeListBinding) {
         super.onDestroyBinding(binding)
-        binding.homeRecycler.adapter = null
+        binding.homeRecycler.apply {
+            adapter = null
+            popupProvider = null
+            listener = null
+        }
     }
 
-    private fun updatePopup(pos: Int): String? {
-        val song = homeModel.songs.value[pos]
-
-        // Change how we display the popup depending on the mode.
+    override fun getPopup(pos: Int): String? {
+        val song = homeModel.songLists.value[pos]
+        // Change how we display the popup depending on the current sort mode.
         // Note: We don't use the more correct individual artist name here, as sorts are largely
         // based off the names of the parent objects and not the child objects.
         return when (homeModel.getSortForTab(MusicMode.SONGS).mode) {
@@ -125,21 +123,30 @@ class SongListFragment : ListFragment<FragmentHomeListBinding>() {
         }
     }
 
+    override fun onFastScrollingChanged(isFastScrolling: Boolean) {
+        homeModel.setFastScrolling(isFastScrolling)
+    }
+
     override fun onRealClick(music: Music) {
         check(music is Song) { "Unexpected datatype: ${music::class.java}" }
-        when (settings.libPlaybackMode) {
+        when (val mode = Settings(requireContext()).libPlaybackMode) {
             MusicMode.SONGS -> playbackModel.playFromAll(music)
             MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
             MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-            else -> error("Unexpected playback mode: ${settings.libPlaybackMode}")
+            else -> error("Unexpected playback mode: $mode")
         }
     }
 
-    private fun handleOpenMenu(item: Item, anchor: View) {
+    override fun onOpenMenu(item: Item, anchor: View) {
         check(item is Song) { "Unexpected datatype: ${item::class.java}" }
         openMusicMenu(anchor, R.menu.menu_song_actions, item)
     }
 
+    /**
+     * Update the current playback state in the context of the current [Song] list.
+     * @param parent The current [MusicParent] playing, null if all songs.
+     * @param isPlaying Whether playback is ongoing or paused.
+     */
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         if (parent == null) {
             homeAdapter.setPlayingItem(song, isPlaying)
@@ -149,9 +156,13 @@ class SongListFragment : ListFragment<FragmentHomeListBinding>() {
         }
     }
 
-    private class SongAdapter(private val callback: ItemSelectCallback) :
+    /**
+     * A [SelectionIndicatorAdapter] that shows a list of [Song]s using [SongViewHolder].
+     * @param listener An [ExtendedListListener] for list interactions.
+     */
+    private class SongAdapter(private val listener: ExtendedListListener) :
         SelectionIndicatorAdapter<SongViewHolder>() {
-        private val differ = SyncListDiffer(this, SongViewHolder.DIFFER)
+        private val differ = SyncListDiffer(this, SongViewHolder.DIFF_CALLBACK)
 
         override val currentList: List<Item>
             get() = differ.currentList
@@ -161,14 +172,14 @@ class SongListFragment : ListFragment<FragmentHomeListBinding>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             SongViewHolder.new(parent)
 
-        override fun onBindViewHolder(holder: SongViewHolder, position: Int, payloads: List<Any>) {
-            super.onBindViewHolder(holder, position, payloads)
-
-            if (payloads.isEmpty()) {
-                holder.bind(differ.currentList[position], callback)
-            }
+        override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
+            holder.bind(differ.currentList[position], listener)
         }
 
+        /**
+         * Asynchronously update the list with new [Song]s.
+         * @param newList The new [Song]s for the adapter to display.
+         */
         fun replaceList(newList: List<Song>) {
             differ.replaceList(newList)
         }

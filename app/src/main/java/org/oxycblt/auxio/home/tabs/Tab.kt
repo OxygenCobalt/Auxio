@@ -25,37 +25,48 @@ import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.util.logE
 
 /**
- * A data representation of a library tab. A tab can come in two moves, [Visible] or [Invisible].
- * Invisibility means that the tab will still be present in the customization menu, but will not be
- * shown on the home UI.
- *
- * Like other IO-bound datatypes in Auxio, tabs are stored in a binary format. However, tabs cannot
- * be serialized on their own. Instead, they are saved as a sequence of tabs as shown below:
- *
- * 0bTAB1_TAB2_TAB3_TAB4_TAB5
- *
- * Where TABN is a chunk representing a tab at position N. TAB5 is reserved for playlists. Each
- * chunk in a sequence is represented as:
- *
- * VTTT
- *
- * Where V is a bit representing the visibility and T is a 3-bit integer representing the
- * [MusicMode] ordinal for this tab.
- *
- * To serialize and deserialize a tab sequence, [toSequence] and [fromSequence] can be used
- * respectively.
- *
- * By default, the tab order will be SONGS, ALBUMS, ARTISTS, GENRES, PLAYLISTS
+ * A representation of a library tab suitable for configuration.
+ * @param mode The type of list in the home view this instance corresponds to.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 sealed class Tab(open val mode: MusicMode) {
+    /**
+     * A visible tab. This will be visible in the home and tab configuration views.
+     * @param mode The type of list in the home view this instance corresponds to.
+     */
     data class Visible(override val mode: MusicMode) : Tab(mode)
+
+    /**
+     * A visible tab. This will be visible in the tab configuration view, but not in the
+     * home view.
+     * @param mode The type of list in the home view this instance corresponds to.
+     */
     data class Invisible(override val mode: MusicMode) : Tab(mode)
 
     companion object {
-        /** The length a well-formed tab sequence should be */
+        // Like other IO-bound datatypes in Auxio, tabs are stored in a binary format. However, tabs
+        // cannot be serialized on their own. Instead, they are saved as a sequence of tabs as shown
+        // below:
+        //
+        // 0bTAB1_TAB2_TAB3_TAB4_TAB5
+        //
+        // Where TABN is a chunk representing a tab at position N. TAB5 is reserved for playlists.
+        // Each chunk in a sequence is represented as:
+        //
+        // VTTT
+        //
+        // Where V is a bit representing the visibility and T is a 3-bit integer representing the
+        // MusicMode for this tab.
+
+        /**
+         * The length a well-formed tab sequence should be
+         */
         private const val SEQUENCE_LEN = 4
 
-        /** The default tab sequence, represented in integer form */
+        /**
+         * The default tab sequence, in integer form.
+         * This will be SONGS, ALBUMS, ARTISTS, GENRES, PLAYLISTS.
+         */
         const val SEQUENCE_DEFAULT = 0b1000_1001_1010_1011_0100
 
         /**
@@ -64,7 +75,11 @@ sealed class Tab(open val mode: MusicMode) {
         private val MODE_TABLE =
             arrayOf(MusicMode.SONGS, MusicMode.ALBUMS, MusicMode.ARTISTS, MusicMode.GENRES)
 
-        /** Convert an array [tabs] into a sequence of tabs. */
+        /**
+         * Convert an array of tabs into it's integer representation.
+         * @param tabs The array of tabs to convert
+         * @return An integer representation of the tab array
+         */
         fun toSequence(tabs: Array<Tab>): Int {
             // Like when deserializing, make sure there are no duplicate tabs for whatever reason.
             val distinct = tabs.distinctBy { it.mode }
@@ -86,7 +101,11 @@ sealed class Tab(open val mode: MusicMode) {
             return sequence
         }
 
-        /** Convert a [sequence] into an array of tabs. */
+        /**
+         * Convert a tab integer representation into an array of tabs.
+         * @param sequence The integer representation of the tabs.
+         * @return An array of tabs corresponding to the sequence.
+         */
         fun fromSequence(sequence: Int): Array<Tab>? {
             val tabs = mutableListOf<Tab>()
 

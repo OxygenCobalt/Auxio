@@ -32,12 +32,13 @@ import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 
 /**
- * A dialog displayed when "View properties" is selected on a song, showing more information about
- * the properties of the audio file itself.
- * @author OxygenCobalt
+ * A [ViewBindingDialogFragment] that shows information about a Song.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
     private val detailModel: DetailViewModel by androidActivityViewModels()
+    // Information about what song to display is initially within the navigation arguments
+    // as a UID, as that is the only safe way to parcel an song.
     private val args: SongDetailDialogArgs by navArgs()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -50,49 +51,60 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
     override fun onBindingCreated(binding: DialogSongDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
+        // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setSongUid(args.songUid)
         collectImmediately(detailModel.currentSong, ::updateSong)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        detailModel.clearSong()
-    }
-
-    private fun updateSong(song: DetailViewModel.DetailSong?) {
+    /**
+     * Update the currently displayed song.
+     * @param song The [DetailViewModel.DetailSong] to display. Null if there is no longer one.
+     */
+    private fun updateSong(song: DetailSong?) {
         val binding = requireBinding()
 
-        if (song != null) {
-            if (song.info != null) {
-                binding.detailLoading.isInvisible = true
-                binding.detailContainer.isInvisible = false
-
-                val context = requireContext()
-                binding.detailFileName.setText(song.song.path.name)
-                binding.detailRelativeDir.setText(song.song.path.parent.resolveName(context))
-                binding.detailFormat.setText(song.info.resolvedMimeType.resolveName(context))
-                binding.detailSize.setText(Formatter.formatFileSize(context, song.song.size))
-                binding.detailDuration.setText(song.song.durationMs.formatDurationMs(true))
-
-                if (song.info.bitrateKbps != null) {
-                    binding.detailBitrate.setText(
-                        getString(R.string.fmt_bitrate, song.info.bitrateKbps))
-                } else {
-                    binding.detailBitrate.setText(R.string.def_bitrate)
-                }
-
-                if (song.info.sampleRate != null) {
-                    binding.detailSampleRate.setText(
-                        getString(R.string.fmt_sample_rate, song.info.sampleRate))
-                } else {
-                    binding.detailSampleRate.setText(R.string.def_sample_rate)
-                }
-            } else {
-                binding.detailLoading.isInvisible = false
-                binding.detailContainer.isInvisible = true
-            }
-        } else {
+        if (song == null) {
+            // Song we were showing no longer exists.
             findNavController().navigateUp()
+            return
+        }
+
+        if (song.properties != null) {
+            // Finished loading Song properties, populate and show the list of Song information.
+            val context = requireContext()
+            // File name
+            binding.detailFileName.setText(song.song.path.name)
+            // Relative (Parent) directory
+            binding.detailRelativeDir.setText(song.song.path.parent.resolveName(context))
+            // Format
+            binding.detailFormat.setText(song.properties.resolvedMimeType.resolveName(context))
+            // Size
+            binding.detailSize.setText(Formatter.formatFileSize(context, song.song.size))
+            // Duration
+            binding.detailDuration.setText(song.song.durationMs.formatDurationMs(true))
+
+            // Bit rate (if present)
+            if (song.properties.bitrateKbps != null) {
+                binding.detailBitrate.setText(
+                    getString(R.string.fmt_bitrate, song.properties.bitrateKbps))
+            } else {
+                binding.detailBitrate.setText(R.string.def_bitrate)
+            }
+
+            // Sample rate (if present)
+            if (song.properties.sampleRateHz != null) {
+                binding.detailSampleRate.setText(
+                    getString(R.string.fmt_sample_rate, song.properties.sampleRateHz))
+            } else {
+                binding.detailSampleRate.setText(R.string.def_sample_rate)
+            }
+
+            binding.detailLoading.isInvisible = true
+            binding.detailContainer.isInvisible = false
+        } else {
+            // Loading is still on-going, don't show anything yet.
+            binding.detailLoading.isInvisible = false
+            binding.detailContainer.isInvisible = true
         }
     }
 }

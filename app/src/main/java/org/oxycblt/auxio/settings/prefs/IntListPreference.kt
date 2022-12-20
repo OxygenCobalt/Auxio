@@ -29,8 +29,15 @@ import androidx.preference.PreferenceViewHolder
 import java.lang.reflect.Field
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.lazyReflectedField
-import org.oxycblt.auxio.util.logD
 
+/**
+ * @brief An implementation of the built-in list preference, backed with integers.
+ *
+ * This is not implemented automatically, so a preference screen must override it's dialog opening
+ * code in order to handle the preference.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class IntListPreference
 @JvmOverloads
 constructor(
@@ -49,22 +56,19 @@ constructor(
     private val defValue: Int
         get() = PREFERENCE_DEFAULT_VALUE_FIELD.get(this) as Int
 
-    override fun onDependencyChanged(dependency: Preference, disableDependent: Boolean) {
-        super.onDependencyChanged(dependency, disableDependent)
-        logD("dependency changed: $dependency")
-    }
-
     init {
         val prefAttrs =
             context.obtainStyledAttributes(
                 attrs, R.styleable.IntListPreference, defStyleAttr, defStyleRes)
 
+        // Can't piggy-back on ListPreference, we have to instead define our own
+        // attributes for entires/values.
         entries = prefAttrs.getTextArrayOrThrow(R.styleable.IntListPreference_entries)
-
         values =
             context.resources.getIntArray(
                 prefAttrs.getResourceIdOrThrow(R.styleable.IntListPreference_entryValues))
 
+        // Additional values: offValue defines an "off" position
         val offValueId = prefAttrs.getResourceId(R.styleable.IntListPreference_offValue, -1)
         if (offValueId > -1) {
             offValue = context.resources.getInteger(offValueId)

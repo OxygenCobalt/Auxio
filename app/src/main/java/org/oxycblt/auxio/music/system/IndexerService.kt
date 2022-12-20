@@ -49,7 +49,7 @@ import org.oxycblt.auxio.util.logD
  * You could probably do the same using WorkManager and the GooberQueue library or whatever, but the
  * boilerplate you skip is not worth the insanity of androidx.
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     private val indexer = Indexer.getInstance()

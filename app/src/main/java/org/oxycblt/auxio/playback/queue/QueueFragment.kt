@@ -35,7 +35,7 @@ import org.oxycblt.auxio.util.logD
 /**
  * A [Fragment] that shows the queue and enables editing as well.
  *
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemListener {
     private val queueModel: QueueViewModel by activityViewModels()

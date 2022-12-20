@@ -29,16 +29,17 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.logD
 
 /**
- * A wrapper around a Toolbar that enables an overlaid toolbar showing information about an item
- * selection.
- * @author OxygenCobalt
+ * A wrapper around a [MaterialToolbar] that adds an additional [MaterialToolbar] showing the
+ * current selection state.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class SelectionToolbarOverlay
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     FrameLayout(context, attrs, defStyleAttr) {
-
+    // This will be populated after the inflation completes.
     private lateinit var innerToolbar: MaterialToolbar
+    // The selection toolbar will be overlaid over the inner toolbar when shown.
     private val selectionToolbar =
         MaterialToolbar(context).apply {
             setNavigationIcon(R.drawable.ic_close_24)
@@ -48,44 +49,65 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 isInvisible = true
             }
         }
-
+    // Animator to handle selection visibility animations
     private var fadeThroughAnimator: ValueAnimator? = null
 
     override fun onFinishInflate() {
         super.onFinishInflate()
+        // Sanity check: Avoid incorrect views from being included in this layout.
         check(childCount == 1 && getChildAt(0) is MaterialToolbar) {
             "SelectionToolbarOverlay Must have only one MaterialToolbar child"
         }
-
+        // The inner toolbar should be the first child.
         innerToolbar = getChildAt(0) as MaterialToolbar
+        // Now layer the selection toolbar on top.
         addView(selectionToolbar)
     }
 
+    /**
+     * Set an OnClickListener for when the "cancel" button in the selection [MaterialToolbar] is
+     * pressed.
+     * @param listener The OnClickListener to respond to this interaction.
+     */
     fun setOnSelectionCancelListener(listener: OnClickListener) {
         selectionToolbar.setNavigationOnClickListener(listener)
     }
 
-    fun setOnMenuItemClickListener(listener: OnMenuItemClickListener) {
+    /**
+     * Set an [OnMenuItemClickListener] for when a MenuItem is selected from the selection
+     * [MaterialToolbar].
+     * @param listener The [OnMenuItemClickListener] to respond to this interaction.
+     */
+    fun setOnMenuItemClickListener(listener: OnMenuItemClickListener?) {
         selectionToolbar.setOnMenuItemClickListener(listener)
     }
 
     /**
-     * Update the selection amount in the selection Toolbar. This will animate the selection Toolbar
-     * into focus if there is now a selection to show.
+     * Update the selection [MaterialToolbar] to reflect the current selection amount.
+     * @param amount The amount of items that are currently selected.
+     * @return true if the selection [MaterialToolbar] changes, false otherwise.
      */
     fun updateSelectionAmount(amount: Int): Boolean {
         logD("Updating selection amount to $amount")
         return if (amount > 0) {
+            // Only update the selected amount when it's non-zero to prevent a strange
+            // title text.
             selectionToolbar.title = context.getString(R.string.fmt_selected, amount)
-            animateToolbarVisibility(true)
+            animateToolbarsVisibility(true)
         } else {
-            animateToolbarVisibility(false)
+            animateToolbarsVisibility(false)
         }
     }
 
-    private fun animateToolbarVisibility(selectionVisible: Boolean): Boolean {
+    /**
+     * Animate the visibility of the inner and selection [MaterialToolbar]s to the given state.
+     * @param selectionVisible Whether the selection [MaterialToolbar] should be visible or not.
+     * @return true if the toolbars have changed, false otherwise.
+     */
+    private fun animateToolbarsVisibility(selectionVisible: Boolean): Boolean {
         // TODO: Animate nicer Material Fade transitions using animators (Normal transitions
         //  don't work due to translation)
+        // Set up the target transitions for both the inner and selection toolbars.
         val targetInnerAlpha: Float
         val targetSelectionAlpha: Float
         val targetDuration: Long
@@ -104,6 +126,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         if (innerToolbar.alpha == targetInnerAlpha &&
             selectionToolbar.alpha == targetSelectionAlpha) {
+            // Nothing to do.
             return false
         }
 
@@ -129,6 +152,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         return true
     }
 
+    /**
+     * Update the alpha of the inner and selection [MaterialToolbar]s.
+     * @param innerAlpha The opacity of the inner [MaterialToolbar]. This will map to the
+     * inverse opacity of the selection [MaterialToolbar].
+     */
     private fun changeToolbarAlpha(innerAlpha: Float) {
         innerToolbar.apply {
             alpha = innerAlpha

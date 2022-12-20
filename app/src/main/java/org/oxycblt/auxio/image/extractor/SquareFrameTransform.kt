@@ -26,7 +26,7 @@ import kotlin.math.min
 /**
  * A transformation that performs a center crop-style transformation on an image, however unlike the
  * actual ScaleType, this isn't affected by any hacks we do with ImageView itself.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class SquareFrameTransform : Transformation {
     override val cacheKey: String

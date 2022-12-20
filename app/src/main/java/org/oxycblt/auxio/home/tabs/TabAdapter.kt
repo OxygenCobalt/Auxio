@@ -24,11 +24,36 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemTabBinding
-import org.oxycblt.auxio.list.recycler.DialogViewHolder
+import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.util.inflater
 
-class TabAdapter(private val callback: Callback) : RecyclerView.Adapter<TabViewHolder>() {
+/**
+ * A [RecyclerView.Adapter] that displays an array of [Tab]s open for configuration.
+ * @param listener A [Listener] for tab interactions.
+ */
+class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewHolder>() {
+    /**
+     * A listener for interactions specific to tab configuration.
+     */
+    interface Listener {
+        /**
+         * Called when a tab is clicked, requesting that the visibility should be inverted
+         * (i.e Visible -> Invisible and vice versa).
+         * @param tabMode The [MusicMode] of the tab clicked.
+         */
+        fun onToggleVisibility(tabMode: MusicMode)
+
+        /**
+         * Called when the drag handle is pressed, requesting that a drag should be started.
+         * @param viewHolder The [RecyclerView.ViewHolder] to start dragging.
+         */
+        fun onPickUpTab(viewHolder: RecyclerView.ViewHolder)
+    }
+
+    /**
+     * The current array of [Tab]s.
+     */
     var tabs = arrayOf<Tab>()
         private set
 
@@ -37,66 +62,94 @@ class TabAdapter(private val callback: Callback) : RecyclerView.Adapter<TabViewH
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TabViewHolder.new(parent)
 
     override fun onBindViewHolder(holder: TabViewHolder, position: Int) {
-        holder.bind(tabs[position], callback)
+        holder.bind(tabs[position], listener)
     }
 
+    /**
+     * Immediately update the tab array. This should be used when initializing the list.
+     * @param newTabs The new array of tabs to show.
+     */
     @Suppress("NotifyDatasetChanged")
     fun submitTabs(newTabs: Array<Tab>) {
         tabs = newTabs
         notifyDataSetChanged()
     }
 
+    /**
+     * Update a specific tab to the given value.
+     * @param at The position of the tab to update.
+     * @param tab The new tab.
+     */
     fun setTab(at: Int, tab: Tab) {
         tabs[at] = tab
+        // Use a payload to avoid an item change animation.
         notifyItemChanged(at, PAYLOAD_TAB_CHANGED)
     }
 
-    fun moveItems(from: Int, to: Int) {
-        val t = tabs[to]
-        val f = tabs[from]
-        tabs[from] = t
-        tabs[to] = f
-        notifyItemMoved(from, to)
+    /**
+     * Swap two tabs with eachother.
+     * @param a The position of the first tab to swap.
+     * @param b The position of the second tab to swap.
+     */
+    fun swapTabs(a: Int, b: Int) {
+        val tmp = tabs[b]
+        tabs[b] = tabs[a]
+        tabs[a] = tmp
+        notifyItemMoved(a, b)
     }
 
-    class Callback(
-        val toggleVisibility: (MusicMode) -> Unit,
-        val pickUpTab: (RecyclerView.ViewHolder) -> Unit
-    )
-
     companion object {
-        val PAYLOAD_TAB_CHANGED = Any()
+        private val PAYLOAD_TAB_CHANGED = Any()
     }
 }
 
+/**
+ * A [RecyclerView.ViewHolder] that displays a [Tab]. Use [new] to create an instance.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class TabViewHolder private constructor(private val binding: ItemTabBinding) :
-    DialogViewHolder(binding.root) {
+    DialogRecyclerView.ViewHolder(binding.root) {
+    /**
+     * Bind new data to this instance.
+     * @param tab The new [Tab] to bind.
+     * @param listener An [TabAdapter.Listener] to bind interactions to.
+     */
     @SuppressLint("ClickableViewAccessibility")
-    fun bind(item: Tab, callback: TabAdapter.Callback) {
-        binding.root.setOnClickListener { callback.toggleVisibility(item.mode) }
+    fun bind(tab: Tab, listener: TabAdapter.Listener) {
+        binding.root.setOnClickListener { listener.onToggleVisibility(tab.mode) }
 
-        binding.tabIcon.apply {
+        binding.tabCheckBox.apply {
+            // Update the CheckBox name to align with the mode
             setText(
-                when (item.mode) {
+                when (tab.mode) {
                     MusicMode.SONGS -> R.string.lbl_songs
                     MusicMode.ALBUMS -> R.string.lbl_albums
                     MusicMode.ARTISTS -> R.string.lbl_artists
                     MusicMode.GENRES -> R.string.lbl_genres
                 })
-            isChecked = item is Tab.Visible
+
+            // Unlike in other adapters, we update the checked state alongside
+            // the tab data since they are in the same data structure (Tab)
+            isChecked = tab is Tab.Visible
         }
 
-        // Roll our own drag handlers as the default ones suck
+        // Set up the drag handle to start a drag whenever it is touched.
         binding.tabDragHandle.setOnTouchListener { _, motionEvent ->
             binding.tabDragHandle.performClick()
             if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
-                callback.pickUpTab(this)
+                listener.onPickUpTab(this)
                 true
             } else false
         }
     }
 
     companion object {
+
+        /**
+         * Create a new instance.
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
         fun new(parent: View) = TabViewHolder(ItemTabBinding.inflate(parent.context.inflater))
     }
 }

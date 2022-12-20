@@ -27,11 +27,15 @@ import coil.ImageLoaderFactory
 import coil.request.CachePolicy
 import org.oxycblt.auxio.image.extractor.AlbumCoverFetcher
 import org.oxycblt.auxio.image.extractor.ArtistImageFetcher
-import org.oxycblt.auxio.image.extractor.CrossfadeTransitionFactory
+import org.oxycblt.auxio.image.extractor.ErrorCrossfadeTransitionFractory
 import org.oxycblt.auxio.image.extractor.GenreImageFetcher
 import org.oxycblt.auxio.image.extractor.MusicKeyer
 import org.oxycblt.auxio.settings.Settings
 
+/**
+ * Auxio.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class AuxioApp : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
@@ -57,14 +61,17 @@ class AuxioApp : Application(), ImageLoaderFactory {
     override fun newImageLoader() =
         ImageLoader.Builder(applicationContext)
             .components {
+                // Add fetchers for Music components to make them usable with ImageRequest
+                add(MusicKeyer())
                 add(AlbumCoverFetcher.SongFactory())
                 add(AlbumCoverFetcher.AlbumFactory())
                 add(ArtistImageFetcher.Factory())
                 add(GenreImageFetcher.Factory())
-                add(MusicKeyer())
             }
-            .transitionFactory(CrossfadeTransitionFactory())
-            .diskCachePolicy(CachePolicy.DISABLED) // Not downloading anything, so no disk-caching
+            // Use our own crossfade with error drawable support
+            .transitionFactory(ErrorCrossfadeTransitionFractory())
+            // Not downloading anything, so no disk-caching
+            .diskCachePolicy(CachePolicy.DISABLED)
             .build()
 
     companion object {
