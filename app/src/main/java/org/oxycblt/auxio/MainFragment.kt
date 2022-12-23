@@ -56,7 +56,6 @@ class MainFragment :
     private val navModel: NavigationViewModel by activityViewModels()
     private val callback = DynamicBackPressedCallback()
     private var lastInsets: WindowInsets? = null
-
     private val elevationNormal: Float by lifecycleObject { binding ->
         binding.context.getDimen(R.dimen.elevation_normal)
     }
@@ -72,7 +71,8 @@ class MainFragment :
     override fun onBindingCreated(binding: FragmentMainBinding, savedInstanceState: Bundle?) {
         // --- UI SETUP ---
         val context = requireActivity()
-
+        // Override the back pressed callback so we can map back navigation to collapsing
+        // navigation, navigation out of detail views, etc.
         context.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
         binding.root.setOnApplyWindowInsetsListener { _, insets ->
@@ -89,24 +89,26 @@ class MainFragment :
         val queueSheetBehavior =
             binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
         if (queueSheetBehavior != null) {
+            // Bottom sheet mode, set up click listeners.
             val playbackSheetBehavior =
                 binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
-
             unlikelyToBeNull(binding.handleWrapper).setOnClickListener {
                 if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED &&
                     queueSheetBehavior.state == NeoBottomSheetBehavior.STATE_COLLAPSED) {
+                    // Playback sheet is expanded and queue sheet is collapsed, we can expand it.
                     queueSheetBehavior.state = NeoBottomSheetBehavior.STATE_EXPANDED
                 }
             }
         } else {
-            // Dual-pane mode, color/pad the queue sheet manually.
+            // Dual-pane mode, manually style the static queue sheet.
             binding.queueSheet.apply {
+                // Emulate the elevated bottom sheet style.
                 background =
                     MaterialShapeDrawable.createWithElevationOverlay(context).apply {
                         fillColor = context.getAttrColorCompat(R.attr.colorSurface)
                         elevation = context.getDimen(R.dimen.elevation_normal)
                     }
-
+                // Apply bar insets for the queue's RecyclerView to usee.
                 setOnApplyWindowInsetsListener { v, insets ->
                     v.updatePadding(top = insets.systemBarInsetsCompat.top)
                     insets
@@ -115,7 +117,6 @@ class MainFragment :
         }
 
         // --- VIEWMODEL SETUP ---
-
         collect(navModel.mainNavigationAction, ::handleMainNavigation)
         collect(navModel.exploreNavigationItem, ::handleExploreNavigation)
         collect(navModel.exploreNavigationArtists, ::handleExplorePicker)
@@ -125,7 +126,6 @@ class MainFragment :
 
     override fun onStart() {
         super.onStart()
-
         // Callback could still reasonably fire even if we clear the binding, attach/detach
         // our pre-draw listener our listener in onStart/onStop respectively.
         requireBinding().playbackSheet.viewTreeObserver.addOnPreDrawListener(this)
@@ -139,33 +139,33 @@ class MainFragment :
     override fun onPreDraw(): Boolean {
         // We overload CoordinatorLayout far too much to rely on any of it's typical
         // callback functionality. Just update all transitions before every draw. Should
-        // probably be cheap *enough.*
+        // probably be cheap enough.
         val binding = requireBinding()
-
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
+        val queueSheetBehavior =
+            binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
         val playbackRatio = max(playbackSheetBehavior.calculateSlideOffset(), 0f)
-
         val outPlaybackRatio = 1 - playbackRatio
         val halfOutRatio = min(playbackRatio * 2, 1f)
         val halfInPlaybackRatio = max(playbackRatio - 0.5f, 0f) * 2
 
-        val queueSheetBehavior =
-            binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
-
         if (queueSheetBehavior != null) {
-            // Queue sheet, take queue into account so the playback bar is shown and the playback
-            // panel is hidden when the queue sheet is expanded.
+            // Queue sheet available, the normal transition applies, but it now much be combined
+            // with another transition where the playback panel disappears and the playback bar
+            // appears as the queue sheet expands.
             val queueRatio = max(queueSheetBehavior.calculateSlideOffset(), 0f)
             val halfOutQueueRatio = min(queueRatio * 2, 1f)
             val halfInQueueRatio = max(queueRatio - 0.5f, 0f) * 2
+
             binding.playbackBarFragment.alpha = max(1 - halfOutRatio, halfInQueueRatio)
             binding.playbackPanelFragment.alpha = min(halfInPlaybackRatio, 1 - halfOutQueueRatio)
             binding.queueFragment.alpha = queueRatio
 
             if (playbackModel.song.value != null) {
-                // Hack around the playback sheet intercepting swipe events on the queue bar
+                // Playback sheet intercepts queue sheet touch events, prevent that from
+                // occurring by disabling dragging whenever the queue sheet is expanded.
                 playbackSheetBehavior.isDraggable =
                     queueSheetBehavior.state == NeoBottomSheetBehavior.STATE_COLLAPSED
             }
@@ -175,26 +175,42 @@ class MainFragment :
             binding.playbackPanelFragment.alpha = halfInPlaybackRatio
         }
 
+        // Fade out the content as the playback panel expands.
+        // TODO: Replace with shadow?
         binding.exploreNavHost.apply {
             alpha = outPlaybackRatio
+            // Prevent interactions when the content fully fades out.
             isInvisible = alpha == 0f
         }
 
+        // Reduce playback sheet elevation as it expands. This involves both updating the
+        // shadow elevation for older versions, and fading out the background drawable
+        // containing the elevation overlay.
         binding.playbackSheet.translationZ = elevationNormal * outPlaybackRatio
         playbackSheetBehavior.sheetBackgroundDrawable.alpha = (outPlaybackRatio * 255).toInt()
 
+        // Fade out the playback bar as the panel expands.
         binding.playbackBarFragment.apply {
+            // Prevent interactions when the playback bar fully fades out.
             isInvisible = alpha == 0f
+            // As the playback bar expands, we also want to subtly translate the bar to
+            // align with the top inset. This results in both a smooth transition from the bar
+            // to the playback panel's toolbar, but also a correctly positioned playback bar
+            // for when the queue sheet expands.
             lastInsets?.let { translationY = it.systemBarInsetsCompat.top * halfOutRatio }
         }
 
+        // Prevent interactions when the playback panell fully fades out.
         binding.playbackPanelFragment.isInvisible = binding.playbackPanelFragment.alpha == 0f
 
         binding.queueSheet.apply {
+            // Queue sheet (not queue content) should fade out with the playback panel.
             alpha = halfInPlaybackRatio
+            // Prevent interactions when the queue sheet fully fades out.
             binding.queueSheet.isInvisible = alpha == 0f
         }
 
+        // Prevent interactions when the queue content fully fades out.
         binding.queueFragment.isInvisible = binding.queueFragment.alpha == 0f
 
         if (playbackModel.song.value == null) {
@@ -216,8 +232,7 @@ class MainFragment :
         when (action) {
             is MainNavigationAction.Expand -> tryExpandAll()
             is MainNavigationAction.Collapse -> tryCollapseAll()
-            // No need to reset selection despite navigating to another screen, as the
-            // main fragment destinations don't have selections
+            // TODO: Figure out how to clear out the selections as one moves between screens.
             is MainNavigationAction.Directions -> findNavController().navigate(action.directions)
         }
 

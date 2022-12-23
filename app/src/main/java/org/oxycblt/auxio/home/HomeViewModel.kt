@@ -31,7 +31,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.application
+import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -131,13 +131,13 @@ class HomeViewModel(application: Application) :
 
     override fun onSettingChanged(key: String) {
         when (key) {
-            application.getString(R.string.set_key_lib_tabs) -> {
+            context.getString(R.string.set_key_lib_tabs) -> {
                 // Tabs changed, update  the current tabs and set up a re-create event.
                 currentTabModes = getVisibleTabModes()
                 _shouldRecreate.value = true
             }
 
-            application.getString(R.string.set_key_hide_collaborators) -> {
+            context.getString(R.string.set_key_hide_collaborators) -> {
                 // Changes in the hide collaborator setting will change the artist contents
                 // of the library, consider it a library update.
                 onLibraryChanged(musicStore.library)

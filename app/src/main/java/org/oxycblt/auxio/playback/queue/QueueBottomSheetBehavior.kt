@@ -27,7 +27,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.shared.AuxioBottomSheetBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
-import org.oxycblt.auxio.util.getDimenSize
+import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -38,7 +38,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     AuxioBottomSheetBehavior<V>(context, attributeSet) {
     private var barHeight = 0
-    private var barSpacing = context.getDimenSize(R.dimen.spacing_small)
+    private var barSpacing = context.getDimenPixels(R.dimen.spacing_small)
 
     init {
         isHideable = false

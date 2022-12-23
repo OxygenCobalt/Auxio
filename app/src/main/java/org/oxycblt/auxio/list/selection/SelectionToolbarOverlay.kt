@@ -26,6 +26,7 @@ import androidx.appcompat.widget.Toolbar.OnMenuItemClickListener
 import androidx.core.view.isInvisible
 import com.google.android.material.appbar.MaterialToolbar
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.util.getInteger
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -116,12 +117,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             targetInnerAlpha = 0f
             targetSelectionAlpha = 1f
             targetDuration =
-                context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
+                context.getInteger(R.integer.anim_fade_enter_duration).toLong()
         } else {
             targetInnerAlpha = 1f
             targetSelectionAlpha = 0f
             targetDuration =
-                context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong()
+                context.getInteger(R.integer.anim_fade_exit_duration).toLong()
         }
 
         if (innerToolbar.alpha == targetInnerAlpha &&

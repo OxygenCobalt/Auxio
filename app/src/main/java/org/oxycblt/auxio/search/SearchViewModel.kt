@@ -41,7 +41,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.application
+import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -168,7 +168,7 @@ class SearchViewModel(application: Application) :
                 // would just want to leverage CollationKey, but that is not designed for a contains
                 // algorithm. If that fails, filter impls have fallback values, primarily around
                 // sort tags or file names.
-                it.resolveNameNormalized(application).contains(value, ignoreCase = true) ||
+                it.resolveNameNormalized(context).contains(value, ignoreCase = true) ||
                     fallback(it)
             }
             .ifEmpty { null }

@@ -35,7 +35,8 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
-import org.oxycblt.auxio.util.getDimenSize
+import org.oxycblt.auxio.util.getDimenPixels
+import org.oxycblt.auxio.util.getInteger
 
 /**
  * A super-charged [StyledImageView]. This class enables the following features in addition
@@ -114,7 +115,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 // Override the layout params of the indicator so that it's in the
                 // bottom left corner.
                 gravity = Gravity.BOTTOM or Gravity.END
-                val spacing = context.getDimenSize(R.dimen.spacing_tiny)
+                val spacing = context.getDimenPixels(R.dimen.spacing_tiny)
                 updateMarginsRelative(bottom = spacing, end = spacing)
             })
     }
@@ -225,12 +226,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             // Activated -> Show selection indicator
             targetAlpha = 1f
             targetDuration =
-                context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
+                context.getInteger(R.integer.anim_fade_enter_duration).toLong()
         } else {
             // Activated -> Hide selection indicator.
             targetAlpha = 0f
             targetDuration =
-                context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong()
+                context.getInteger(R.integer.anim_fade_exit_duration).toLong()
         }
 
         if (selectionIndicatorView.alpha == targetAlpha) {

@@ -72,19 +72,14 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
     }
 
     private fun updateStatistics(statistics: MusicViewModel.Statistics?) {
-
         val binding = requireBinding()
         binding.aboutSongCount.text = getString(R.string.fmt_lib_song_count, statistics?.songs ?: 0)
-
         requireBinding().aboutAlbumCount.text =
             getString(R.string.fmt_lib_album_count, statistics?.albums ?: 0)
-
         requireBinding().aboutArtistCount.text =
             getString(R.string.fmt_lib_artist_count, statistics?.artists ?: 0)
-
         requireBinding().aboutGenreCount.text =
             getString(R.string.fmt_lib_genre_count, statistics?.genres ?: 0)
-
         binding.aboutTotalDuration.text =
             getString(
                 R.string.fmt_lib_total_duration,

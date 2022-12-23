@@ -33,15 +33,14 @@ import org.oxycblt.auxio.image.extractor.MusicKeyer
 import org.oxycblt.auxio.settings.Settings
 
 /**
- * Auxio.
+ * Auxio: A simple, rational music player for android.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AuxioApp : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
-
+        // Migrate any settings that may have changed in an app update.
         Settings(this).migrate()
-
         // Adding static shortcuts in a dynamic manner is better than declaring them
         // manually, as it will properly handle the difference between debug and release
         // Auxio instances.
@@ -75,7 +74,14 @@ class AuxioApp : Application(), ImageLoaderFactory {
             .build()
 
     companion object {
+        /**
+         * The ID of the "Shuffle All" shortcut.
+         */
         const val SHORTCUT_SHUFFLE_ID = "shortcut_shuffle"
+
+        /**
+         * The [Intent] name for the "Shuffle All" shortcut.
+         */
         const val INTENT_KEY_SHORTCUT_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE_ALL"
     }
 }

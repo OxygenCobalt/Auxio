@@ -32,7 +32,7 @@ import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.getDimenSize
+import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -84,10 +84,10 @@ class WidgetComponent(private val context: Context) :
                     val cornerRadius =
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                             // Android 12, always round the cover with the app widget's inner radius
-                            context.getDimenSize(android.R.dimen.system_app_widget_inner_radius)
+                            context.getDimenPixels(android.R.dimen.system_app_widget_inner_radius)
                         } else if (settings.roundMode) {
                             // < Android 12, but the user still enabled round mode.
-                            context.getDimenSize(R.dimen.size_corners_medium)
+                            context.getDimenPixels(R.dimen.size_corners_medium)
                         } else {
                             // User did not enable round mode.
                             0

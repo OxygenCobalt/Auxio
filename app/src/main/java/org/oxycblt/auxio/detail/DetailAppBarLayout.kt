@@ -32,6 +32,7 @@ import com.google.android.material.appbar.AppBarLayout
 import java.lang.reflect.Field
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.shared.AuxioAppBarLayout
+import org.oxycblt.auxio.util.getInteger
 import org.oxycblt.auxio.util.lazyReflectedField
 
 /**
@@ -131,9 +132,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 addUpdateListener { titleView.alpha = it.animatedValue as Float }
                 duration =
                     if (titleShown == true) {
-                        context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
+                        context.getInteger(R.integer.anim_fade_enter_duration).toLong()
                     } else {
-                        context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong()
+                        context.getInteger(R.integer.anim_fade_exit_duration).toLong()
                     }
                 start()
             }

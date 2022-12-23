@@ -22,6 +22,7 @@ import android.content.Context
 import android.util.AttributeSet
 import com.google.android.material.button.MaterialButton
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.util.getInteger
 
 /**
  * A [MaterialButton] that automatically morphs from a circle to a squircle shape appearance when it
@@ -47,7 +48,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         animator?.cancel()
         animator =
             ValueAnimator.ofFloat(currentCornerRadiusRatio, target).apply {
-                duration = context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong()
+                duration = context.getInteger(R.integer.anim_fade_enter_duration).toLong()
                 addUpdateListener { updateCornerRadiusRatio(animatedValue as Float) }
                 start()
             }

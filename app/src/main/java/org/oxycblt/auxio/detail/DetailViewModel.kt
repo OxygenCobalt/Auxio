@@ -295,7 +295,7 @@ class DetailViewModel(application: Application) :
         val extractor = MediaExtractor()
 
         try {
-            extractor.setDataSource(application, song.uri, emptyMap())
+            extractor.setDataSource(context, song.uri, emptyMap())
         } catch (e: Exception) {
             // Can feasibly fail with invalid file formats. Note that this isn't considered
             // an error condition in the UI, as there is still plenty of other song information

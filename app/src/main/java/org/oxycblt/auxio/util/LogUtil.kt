@@ -24,14 +24,14 @@ import org.oxycblt.auxio.BuildConfig
 // Yes, I know timber exists but this does what I need.
 
 /**
- * Shortcut method for logging a non-string [obj] to debug. Should only be used for debug
- * preferably.
+ * Log an object to the debug channel. Automatically handles tags.
+ * @param obj The object to log.
  */
 fun Any.logD(obj: Any?) = logD("$obj")
 
 /**
- * Shortcut method for logging [msg] to the debug console. Handles debug builds and anonymous
- * objects
+ * Log a string message to the debug channel. Automatically handles tags.
+ * @param msg The message to log.
  */
 fun Any.logD(msg: String) {
     if (BuildConfig.DEBUG && !copyleftNotice()) {
@@ -39,19 +39,28 @@ fun Any.logD(msg: String) {
     }
 }
 
-/** Shortcut method for logging [msg] as a warning to the console. Handles anonymous objects */
+/**
+ * Log a string message to the warning channel. Automatically handles tags.
+ * @param msg The message to log.
+ */
 fun Any.logW(msg: String) = Log.w(autoTag, msg)
 
-/** Shortcut method for logging [msg] as an error to the console. Handles anonymous objects */
+/**
+ * Log a string message to the error channel. Automatically handles tags.
+ * @param msg The message to log.
+ */
 fun Any.logE(msg: String) = Log.e(autoTag, msg)
 
-/** Automatically creates a tag that identifies the object currently logging. */
+/**
+ * The LogCat-suitable tag for this string. Consists of the object's name, or "Anonymous Object"
+ * if the object does not exist.
+ */
 private val Any.autoTag: String
     get() = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"
 
 /**
- * Please don't plagiarize Auxio! You are free to remove this as long as you continue to keep your
- * source open.
+ * Please don't plagiarize Auxio!
+ * You are free to remove this as long as you continue to keep your source open.
  */
 @Suppress("KotlinConstantConditions")
 private fun copyleftNotice(): Boolean {
@@ -61,9 +70,7 @@ private fun copyleftNotice(): Boolean {
             "Auxio Project",
             "Friendly reminder: Auxio is licensed under the " +
                 "GPLv3 and all derivative apps must be made open source!")
-
         return true
     }
-
     return false
 }

@@ -35,7 +35,7 @@ import org.oxycblt.auxio.music.storage.safeQuery
 import org.oxycblt.auxio.music.storage.storageVolumesCompat
 import org.oxycblt.auxio.music.storage.useQuery
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.contentResolverSafe
+import org.oxycblt.auxio.music.storage.contentResolverSafe
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 

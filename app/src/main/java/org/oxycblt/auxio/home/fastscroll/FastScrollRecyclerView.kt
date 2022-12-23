@@ -19,6 +19,7 @@ package org.oxycblt.auxio.home.fastscroll
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.PointF
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.Gravity
@@ -36,11 +37,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.recycler.AuxioRecyclerView
-import org.oxycblt.auxio.util.getDimenSize
-import org.oxycblt.auxio.util.getDrawableCompat
-import org.oxycblt.auxio.util.isRtl
-import org.oxycblt.auxio.util.isUnder
-import org.oxycblt.auxio.util.systemBarInsetsCompat
+import org.oxycblt.auxio.util.*
 
 /**
  * A [RecyclerView] that enables better fast-scrolling. This is fundamentally a implementation of
@@ -126,7 +123,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                     .apply {
                         gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
-                        marginEnd = context.getDimenSize(R.dimen.spacing_small)
+                        marginEnd = context.getDimenPixels(R.dimen.spacing_small)
                     }
         }
 
@@ -134,7 +131,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     // Touch
     private val minTouchTargetSize =
-        context.getDimenSize(R.dimen.fast_scroll_thumb_touch_target_size)
+        context.getDimenPixels(R.dimen.fast_scroll_thumb_touch_target_size)
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
 
     private var downX = 0f
@@ -474,7 +471,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         view
             .animate()
             .alpha(1f)
-            .setDuration(context.resources.getInteger(R.integer.anim_fade_enter_duration).toLong())
+            .setDuration(context.getInteger(R.integer.anim_fade_enter_duration).toLong())
             .start()
     }
 
@@ -482,7 +479,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         view
             .animate()
             .alpha(0f)
-            .setDuration(context.resources.getInteger(R.integer.anim_fade_exit_duration).toLong())
+            .setDuration(context.getInteger(R.integer.anim_fade_exit_duration).toLong())
             .start()
     }
 

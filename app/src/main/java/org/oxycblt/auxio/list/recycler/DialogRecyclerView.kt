@@ -28,7 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.MaterialDivider
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.getDimenSize
+import org.oxycblt.auxio.util.getDimenPixels
 
 /**
  * A [RecyclerView] intended for use in Dialogs, adding features such as:
@@ -55,7 +55,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     private val topDivider = MaterialDivider(context)
     private val bottomDivider = MaterialDivider(context)
-    private val spacingMedium = context.getDimenSize(R.dimen.spacing_medium)
+    private val spacingMedium = context.getDimenPixels(R.dimen.spacing_medium)
 
     init {
         // Apply top padding to give enough room to the dialog title, assuming that this view

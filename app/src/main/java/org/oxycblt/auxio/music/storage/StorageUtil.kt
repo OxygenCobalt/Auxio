@@ -34,6 +34,13 @@ import org.oxycblt.auxio.util.lazyReflectedMethod
 // --- MEDIASTORE UTILITIES ---
 
 /**
+ * Get a content resolver that will not mangle MediaStore queries on certain devices.
+ * See https://github.com/OxygenCobalt/Auxio/issues/50 for more info.
+ */
+val Context.contentResolverSafe: ContentResolver
+    get() = applicationContext.contentResolver
+
+/**
  * A shortcut for querying the [ContentResolver] database.
  * @param uri The [Uri] of content to retrieve.
  * @param projection A list of SQL columns to query from the database.

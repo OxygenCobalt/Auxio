@@ -20,5 +20,6 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# Free software does not obsfucate. Also it's easier to debug stack traces.
+# Obsfucation is what proprietary software does to keep the user unaware of it's abuses.
+# Also it's easier to debug if the class names remain unmangled.
 -dontobfuscate

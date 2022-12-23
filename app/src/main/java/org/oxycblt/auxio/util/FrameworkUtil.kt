@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.util
 
-import android.app.Application
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.graphics.PointF
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
@@ -47,13 +47,28 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 /**
- * Determines if the point given by [x] and [y] falls within this view.
- * @param minTouchTargetSize The minimum touch size, independent of the view's size (Optional)
+ * Get if this [View] contains the given [PointF], with optional leeway.
+ * @param x The x value of the point to check.
+ * @param y The y value of the point to check.
+ * @param minTouchTargetSize A minimum size to use when checking the value.
+ * This can be used to extend the range where a point is considered "contained"
+ * by the [View] beyond it's actual size.
+ * @return true if the [PointF] is contained by the view, false otherwise.
+ * Adapted from AndroidFastScroll: https://github.com/zhanghai/AndroidFastScroll
  */
 fun View.isUnder(x: Float, y: Float, minTouchTargetSize: Int = 0) =
     isUnderImpl(x, left, right, (parent as View).width, minTouchTargetSize) &&
         isUnderImpl(y, top, bottom, (parent as View).height, minTouchTargetSize)
 
+/**
+ * Internal implementation of [isUnder].
+ * @param position The position to check.
+ * @param viewStart The start of the view bounds, on the same axis as [position].
+ * @param viewEnd The end of the view bounds, on the same axis as [position]
+ * @param parentEnd The end of the parent bounds, on the same axis as [position].
+ * @param minTouchTargetSize The minimum size to use when checking if the value is
+ * in range.
+ */
 private fun isUnderImpl(
     position: Float,
     viewStart: Int,
@@ -62,12 +77,11 @@ private fun isUnderImpl(
     minTouchTargetSize: Int
 ): Boolean {
     val viewSize = viewEnd - viewStart
-
     if (viewSize >= minTouchTargetSize) {
         return position >= viewStart && position < viewEnd
     }
-    var touchTargetStart = viewStart - (minTouchTargetSize - viewSize) / 2
 
+    var touchTargetStart = viewStart - (minTouchTargetSize - viewSize) / 2
     if (touchTargetStart < 0) {
         touchTargetStart = 0
     }
@@ -76,7 +90,6 @@ private fun isUnderImpl(
     if (touchTargetEnd > parentEnd) {
         touchTargetEnd = parentEnd
         touchTargetStart = touchTargetEnd - minTouchTargetSize
-
         if (touchTargetStart < 0) {
             touchTargetStart = 0
         }
@@ -85,66 +98,88 @@ private fun isUnderImpl(
     return position >= touchTargetStart && position < touchTargetEnd
 }
 
-/** Returns if this view is RTL in a compatible manner. */
+/**
+ * Whether this [View] is using an RTL layout direction.
+ */
 val View.isRtl: Boolean
     get() = layoutDirection == View.LAYOUT_DIRECTION_RTL
 
-/** Returns if this drawable is RTL in a compatible manner.] */
+/**
+ * Whether this [Drawable] is using an RTL layout direction.
+ */
 val Drawable.isRtl: Boolean
     get() = DrawableCompat.getLayoutDirection(this) == View.LAYOUT_DIRECTION_RTL
 
-/** Shortcut to get a context from a ViewBinding */
+/**
+ * Get a [Context] from a [ViewBinding]'s root [View].
+ */
 val ViewBinding.context: Context
     get() = root.context
 
-/** Returns whether a recyclerview can scroll. */
+/**
+ * Compute if this [RecyclerView] can scroll through their items, or if the items can all fit on
+ * one screen.
+ */
 fun RecyclerView.canScroll() = computeVerticalScrollRange() > height
 
 /**
- * Shortcut to obtain the CoordinatorLayout behavior of a view. Null if not from a coordinator
- * layout or if no behavior is present.
+ * Get the [CoordinatorLayout.Behavior] of a [View], or null if the [View] is not part of a
+ * [CoordinatorLayout] or does not have a [CoordinatorLayout.Behavior].
  */
 val View.coordinatorLayoutBehavior: CoordinatorLayout.Behavior<View>?
     get() = (layoutParams as? CoordinatorLayout.LayoutParams)?.behavior
 
 /**
- * Collect a [stateFlow] into [block] eventually.
- *
- * This does have an initializing call, but it usually occurs ~100ms into draw-time, which might not
- * be ideal for some views. This should be used in cases where the state only needs to be updated
- * during runtime.
+ * Collect a [StateFlow] into [block] in a lifecycle-aware manner *eventually.* Due to co-routine
+ * launching, the initializing call will occur ~100ms after draw time. If this is not desirable,
+ * use [collectImmediately].
+ * @param stateFlow The [StateFlow] to collect.
+ * @param block The code to run when the [StateFlow] updates.
  */
 fun <T> Fragment.collect(stateFlow: StateFlow<T>, block: (T) -> Unit) {
     launch { stateFlow.collect(block) }
 }
 
 /**
- * Collect a [stateFlow] into [block] immediately.
- *
- * This method automatically calls [block] when initially starting to ensure UI state consistency at
- * soon as the view is visible. This does nominally mean that there are two initializing
- * collections, but this is considered okay. [block] should be a function pointer in order to ensure
- * lifecycle consistency.
- *
- * This should be used if the state absolutely needs to be shown at draw-time.
+ * Collect a [StateFlow] into a [block] in a lifecycle-aware manner *immediately.* This will
+ * immediately run an initializing call to ensure the UI is set up before draw-time. Note
+ * that this will result in two initializing calls.
+ * @param stateFlow The [StateFlow] to collect.
+ * @param block The code to run when the [StateFlow] updates.
  */
 fun <T> Fragment.collectImmediately(stateFlow: StateFlow<T>, block: (T) -> Unit) {
     block(stateFlow.value)
     launch { stateFlow.collect(block) }
 }
 
-/** Like [collectImmediately], but with two [StateFlow] values. */
+/**
+ * Like [collectImmediately], but with two [StateFlow] instances that are collected
+ * with the same block.
+ * @param a The first [StateFlow] to collect.
+ * @param b The second [StateFlow] to collect.
+ * @param block The code to run when either [StateFlow] updates.
+ */
 fun <T1, T2> Fragment.collectImmediately(
     a: StateFlow<T1>,
     b: StateFlow<T2>,
     block: (T1, T2) -> Unit
 ) {
     block(a.value, b.value)
+    // We can combine flows, but only if we transform them into one flow output.
+    // Thus, we have to first combine the two flow values into a Pair, and then
+    // decompose it when we collect the values.
     val combine = a.combine(b) { first, second -> Pair(first, second) }
     launch { combine.collect { block(it.first, it.second) } }
 }
 
-/** Like [collectImmediately], but with three [StateFlow] values. */
+/**
+ * Like [collectImmediately], but with three [StateFlow] instances that are collected
+ * with the same block.
+ * @param a The first [StateFlow] to collect.
+ * @param b The second [StateFlow] to collect.
+ * @param c The third [StateFlow] to collect.
+ * @param block The code to run when any of the [StateFlow]s update.
+ */
 fun <T1, T2, T3> Fragment.collectImmediately(
     a: StateFlow<T1>,
     b: StateFlow<T2>,
@@ -157,9 +192,12 @@ fun <T1, T2, T3> Fragment.collectImmediately(
 }
 
 /**
- * Launches [block] in a lifecycle-aware coroutine once [state] is reached. This is primarily a
- * shortcut intended to correctly launch a co-routine on a fragment in a way that won't cause
- * miscellaneous coroutine insanity.
+ * Launch a [Fragment] co-routine whenever the [Lifecycle] hits the given [Lifecycle.State].
+ * This should always been used when launching [Fragment] co-routines was it will not result
+ * in unexpected behavior.
+ * @param state The [Lifecycle.State] to launch the co-routine in.
+ * @param block The block to run in the co-routine.
+ * @see repeatOnLifecycle
  */
 private fun Fragment.launch(
     state: Lifecycle.State = Lifecycle.State.STARTED,
@@ -169,77 +207,108 @@ private fun Fragment.launch(
 }
 
 /**
- * Shortcut to generate a AndroidViewModel [T] without having to specify the bloated factory syntax.
+ * An extension to [viewModels] that automatically provides an
+ * [ViewModelProvider.AndroidViewModelFactory]. Use whenever an [AndroidViewModel]
+ * is used.
  */
 inline fun <reified T : AndroidViewModel> Fragment.androidViewModels() =
     viewModels<T> { ViewModelProvider.AndroidViewModelFactory(requireActivity().application) }
 
 /**
- * Shortcut to generate a AndroidViewModel [T] without having to specify the bloated factory syntax.
+ * An extension to [viewModels] that automatically provides an
+ * [ViewModelProvider.AndroidViewModelFactory]. Use whenever an [AndroidViewModel]
+ * is used. Note that this implementation is for an [AppCompatActivity], and thus
+ * makes this functionally equivalent in scope to [androidActivityViewModels].
  */
 inline fun <reified T : AndroidViewModel> AppCompatActivity.androidViewModels() =
     viewModels<T> { ViewModelProvider.AndroidViewModelFactory(application) }
 
 /**
- * Shortcut to generate a AndroidViewModel [T] without having to specify the bloated factory syntax.
+ * An extension to [activityViewModels] that automatically provides an
+ * [ViewModelProvider.AndroidViewModelFactory]. Use whenever an [AndroidViewModel]
+ * is used.
  */
 inline fun <reified T : AndroidViewModel> Fragment.androidActivityViewModels() =
     activityViewModels<T> {
         ViewModelProvider.AndroidViewModelFactory(requireActivity().application)
     }
 
-/** Shortcut to get the [Application] from an [AndroidViewModel] */
-val AndroidViewModel.application: Application
+/**
+ * The [Context] provided to an [AndroidViewModel].
+ */
+inline val AndroidViewModel.context: Context
     get() = getApplication()
 
 /**
- * Shortcut for querying all items in a database and running [block] with the cursor returned. Will
- * not run if the cursor is null.
+ * Query all columns in the given [SQLiteDatabase] table, running the block when the [Cursor]
+ * is loaded. The block will be called with [use], allowing for automatic cleanup of [Cursor]
+ * resources.
+ * @param tableName The name of the table to query all columns in.
+ * @param block The code block to run with the loaded [Cursor].
  */
-fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
+inline fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
     query(tableName, null, null, null, null, null, null)?.use(block)
 
-// Note: WindowInsetsCompat and it's related methods cause too many issues.
-// Use our own compat methods instead.
-
 /**
- * Resolve system bar insets in a version-aware manner. This can be used to apply padding to a view
- * that properly follows all the changes that were made between Android 8-11.
+ * Get the "System Bar" [Insets] in this [WindowInsets] instance in a version-compatible manner
+ * This can be used to prevent [View] elements from intersecting with the navigation bars.
  */
 val WindowInsets.systemBarInsetsCompat: Insets
     get() =
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                // API 30+, use window inset map.
                 getCompatInsets(WindowInsets.Type.systemBars())
             }
+            // API 21+, use window inset fields.
             else -> getSystemWindowCompatInsets()
         }
 
 /**
- * Resolve gesture insets in a version-aware manner. This can be used to apply padding to a view
- * that properly follows all the changes that were made between Android 8-11. Note that if the
- * gesture insets are not present (i.e zeroed), the bar insets will be used instead.
+ * Get the "System Gesture" [Insets] in this [WindowInsets] instance in a version-compatible manner
+ * This can be used to prevent [View] elements from intersecting with the navigation bars and
+ * their extended gesture hit-boxes. Note that "System Bar" insets will be used if the system
+ * does not provide gesture insets.
  */
 val WindowInsets.systemGestureInsetsCompat: Insets
     get() =
-        // The reasoning for why we take a larger inset is because gesture insets are seemingly
-        // not present on some android versions. To prevent the app from appearing below the
-        // system bars, we fall back to the bar insets. This is guaranteed not to fire in any
-        // context but the gesture insets being invalid, as gesture insets are intended to
-        // be larger than bar insets.
+        // Some android versions seemingly don't provide gesture insets, setting them to zero.
+        // To resolve this, we take the maximum between the system bar and system gesture
+        // insets. Since system gesture insets should extend further than system bar insets,
+        // this should allow this code to fall back to system bar insets easily if the system
+        // does not provide system gesture insets. This does require androidx Insets to allow
+        // us to use the max method on all versions however, so we will want to convert the
+        // system-provided insets to such..
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                // API 30+, use window inset map.
                 Insets.max(
                     getCompatInsets(WindowInsets.Type.systemGestures()),
                     getCompatInsets(WindowInsets.Type.systemBars()))
             }
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
-                @Suppress("DEPRECATION")
+                // API 29, use window inset fields.
                 Insets.max(getSystemGestureCompatInsets(), getSystemWindowCompatInsets())
             }
+            // API 21+ do not support gesture insets, as they don't have gesture navigation.
+            // Just use system bar insets.
             else -> getSystemWindowCompatInsets()
         }
 
+/**
+ * Returns the given [Insets] based on the to the API 30+ [WindowInsets] convention.
+ * @param typeMask The type of [Insets] to obtain.
+ * @return Compat [Insets] corresponding to the given type.
+ * @see WindowInsets.getInsets
+ */
+@RequiresApi(Build.VERSION_CODES.R)
+private fun WindowInsets.getCompatInsets(typeMask: Int) = Insets.toCompatInsets(getInsets(typeMask))
+
+/**
+ * Returns "System Bar" [Insets] based on the API 21+ [WindowInsets] convention.
+ * @return Compat [Insets] consisting of the [WindowInsets] "System Bar" [Insets] field.
+ * @see WindowInsets.getSystemWindowInsets
+ */
 @Suppress("DEPRECATION")
 private fun WindowInsets.getSystemWindowCompatInsets() =
     Insets.of(
@@ -248,16 +317,22 @@ private fun WindowInsets.getSystemWindowCompatInsets() =
         systemWindowInsetRight,
         systemWindowInsetBottom)
 
+/**
+ * Returns "System Bar" [Insets] based on the API 29 [WindowInsets] convention.
+ * @return Compat [Insets] consisting of the [WindowInsets] "System Gesture" [Insets] fields.
+ * @see WindowInsets.getSystemGestureInsets
+ */
 @Suppress("DEPRECATION")
 @RequiresApi(Build.VERSION_CODES.Q)
 private fun WindowInsets.getSystemGestureCompatInsets() = Insets.toCompatInsets(systemGestureInsets)
 
-@RequiresApi(Build.VERSION_CODES.R)
-private fun WindowInsets.getCompatInsets(typeMask: Int) = Insets.toCompatInsets(getInsets(typeMask))
-
 /**
- * Replaces the system bar insets in a version-aware manner. This can be used to modify the insets
- * for child views in a way that follows all of the changes that were made between 8-11.
+ * Replace the "System Bar" [Insets] in [WindowInsets] with a new set of [Insets].
+ * @param left The new left inset.
+ * @param top The new top inset.
+ * @param right The new right inset.
+ * @param bottom The new bottom inset.
+ * @return A new [WindowInsets] with the given "System Bar" inset values applied.
  */
 fun WindowInsets.replaceSystemBarInsetsCompat(
     left: Int,
@@ -267,6 +342,7 @@ fun WindowInsets.replaceSystemBarInsetsCompat(
 ): WindowInsets {
     return when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+            // API 30+, use a Builder to create a new instance.
             WindowInsets.Builder(this)
                 .setInsets(
                     WindowInsets.Type.systemBars(),
@@ -274,6 +350,7 @@ fun WindowInsets.replaceSystemBarInsetsCompat(
                 .build()
         }
         else -> {
+            // API 21+, replace the system bar inset fields.
             @Suppress("DEPRECATION") replaceSystemWindowInsets(left, top, right, bottom)
         }
     }

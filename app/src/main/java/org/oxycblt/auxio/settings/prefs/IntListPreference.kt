@@ -28,6 +28,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import java.lang.reflect.Field
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.util.getInteger
 import org.oxycblt.auxio.util.lazyReflectedField
 
 /**
@@ -71,7 +72,7 @@ constructor(
         // Additional values: offValue defines an "off" position
         val offValueId = prefAttrs.getResourceId(R.styleable.IntListPreference_offValue, -1)
         if (offValueId > -1) {
-            offValue = context.resources.getInteger(offValueId)
+            offValue = context.getInteger(offValueId)
         }
 
         val iconsId = prefAttrs.getResourceId(R.styleable.IntListPreference_entryIcons, -1)

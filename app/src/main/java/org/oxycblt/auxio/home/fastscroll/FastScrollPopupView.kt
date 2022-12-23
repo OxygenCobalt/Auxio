@@ -35,7 +35,7 @@ import androidx.core.widget.TextViewCompat
 import com.google.android.material.textview.MaterialTextView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getAttrColorCompat
-import org.oxycblt.auxio.util.getDimenSize
+import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.isRtl
 
 /**
@@ -47,8 +47,8 @@ class FastScrollPopupView
 constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0) :
     MaterialTextView(context, attrs, defStyleRes) {
     init {
-        minimumWidth = context.getDimenSize(R.dimen.fast_scroll_popup_min_width)
-        minimumHeight = context.getDimenSize(R.dimen.fast_scroll_popup_min_height)
+        minimumWidth = context.getDimenPixels(R.dimen.fast_scroll_popup_min_width)
+        minimumHeight = context.getDimenPixels(R.dimen.fast_scroll_popup_min_height)
 
         TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_HeadlineLarge)
         setTextColor(context.getAttrColorCompat(R.attr.colorOnSecondary))
@@ -57,7 +57,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0)
         includeFontPadding = false
 
         alpha = 0f
-        elevation = context.getDimenSize(R.dimen.elevation_normal).toFloat()
+        elevation = context.getDimenPixels(R.dimen.elevation_normal).toFloat()
         background = FastScrollPopupDrawable(context)
     }
 
@@ -72,8 +72,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0)
         private val path = Path()
         private val matrix = Matrix()
 
-        private val paddingStart = context.getDimenSize(R.dimen.fast_scroll_popup_padding_start)
-        private val paddingEnd = context.getDimenSize(R.dimen.fast_scroll_popup_padding_end)
+        private val paddingStart = context.getDimenPixels(R.dimen.fast_scroll_popup_padding_start)
+        private val paddingEnd = context.getDimenPixels(R.dimen.fast_scroll_popup_padding_end)
 
         override fun draw(canvas: Canvas) {
             canvas.drawPath(path, paint)

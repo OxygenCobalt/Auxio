@@ -31,7 +31,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.application
+import org.oxycblt.auxio.util.context
 
 /**
  * The ViewModel that provides a UI frontend for [PlaybackStateManager].
@@ -281,7 +281,7 @@ class PlaybackViewModel(application: Application) :
      */
     fun savePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
-            val saved = playbackManager.saveState(PlaybackStateDatabase.getInstance(application))
+            val saved = playbackManager.saveState(PlaybackStateDatabase.getInstance(context))
             onDone(saved)
         }
     }
@@ -292,7 +292,7 @@ class PlaybackViewModel(application: Application) :
      */
     fun wipePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
-            val wiped = playbackManager.wipeState(PlaybackStateDatabase.getInstance(application))
+            val wiped = playbackManager.wipeState(PlaybackStateDatabase.getInstance(context))
             onDone(wiped)
         }
     }
@@ -305,7 +305,7 @@ class PlaybackViewModel(application: Application) :
     fun tryRestorePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
             val restored =
-                playbackManager.restoreState(PlaybackStateDatabase.getInstance(application), true)
+                playbackManager.restoreState(PlaybackStateDatabase.getInstance(context), true)
             onDone(restored)
         }
     }
