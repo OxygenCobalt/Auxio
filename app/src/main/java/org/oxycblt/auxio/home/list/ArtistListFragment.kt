@@ -107,11 +107,6 @@ class ArtistListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRe
         openMusicMenu(anchor, R.menu.menu_artist_actions, item)
     }
 
-    /**
-     * Update the current playback state in the context of the current [Artist] list.
-     * @param parent The current [MusicParent] playing, null if all songs.
-     * @param isPlaying Whether playback is ongoing or paused.
-     */
     private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
         // If an artist is playing, highlight it within this adapter.
         homeAdapter.setPlayingItem(parent as? Artist, isPlaying)
@@ -119,7 +114,7 @@ class ArtistListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRe
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Artist]s using [ArtistViewHolder].
-     * @param listener An [ExtendedListListener] for list interactions.
+     * @param listener An [ExtendedListListener] to bind interactions to.
      */
     private class ArtistAdapter(private val listener: ExtendedListListener) :
         SelectionIndicatorAdapter<ArtistViewHolder>() {

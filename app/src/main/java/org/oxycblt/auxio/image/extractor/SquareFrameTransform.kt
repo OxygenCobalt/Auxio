@@ -50,9 +50,7 @@ class SquareFrameTransform : Transformation {
     }
 
     companion object {
-        /**
-         * A shared instance that can be re-used.
-         */
+        /** A re-usable instance. */
         val INSTANCE = SquareFrameTransform()
     }
 }

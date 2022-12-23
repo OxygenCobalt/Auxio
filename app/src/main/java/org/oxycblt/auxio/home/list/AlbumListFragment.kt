@@ -132,11 +132,6 @@ class AlbumListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRec
         openMusicMenu(anchor, R.menu.menu_album_actions, item)
     }
 
-    /**
-     * Update the current playback state in the context of the current [Album] list.
-     * @param parent The current [MusicParent] playing, null if all songs.
-     * @param isPlaying Whether playback is ongoing or paused.
-     */
     private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
         // If an album is playing, highlight it within this adapter.
         albumAdapter.setPlayingItem(parent as? Album, isPlaying)
@@ -144,7 +139,7 @@ class AlbumListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRec
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Album]s using [AlbumViewHolder].
-     * @param listener An [ExtendedListListener] for list interactions.
+     * @param listener An [ExtendedListListener] to bind interactions to.
      */
     private class AlbumAdapter(private val listener: ExtendedListListener) :
         SelectionIndicatorAdapter<AlbumViewHolder>() {

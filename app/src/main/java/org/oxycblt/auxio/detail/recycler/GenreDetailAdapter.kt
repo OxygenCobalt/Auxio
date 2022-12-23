@@ -37,7 +37,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * An [DetailAdapter] implementing the header and sub-items for the [Genre] detail view.
- * @param listener A [DetailAdapter.Listener] for list interactions.
+ * @param listener A [DetailAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class GenreDetailAdapter(private val listener: Listener) : DetailAdapter(listener, DIFF_CALLBACK) {

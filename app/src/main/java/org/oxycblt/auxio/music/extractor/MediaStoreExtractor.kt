@@ -81,14 +81,10 @@ abstract class MediaStoreExtractor(
      * @return A [Cursor] of the music data returned from the database.
      */
     open fun init(): Cursor {
-        // Initialize sub-extractors for later use.
-        cacheExtractor.init()
-
         val start = System.currentTimeMillis()
+        cacheExtractor.init()
         val settings = Settings(context)
         val storageManager = context.getSystemServiceCompat(StorageManager::class)
-        // Set up the volume list for concrete implementations to use.
-        volumes = storageManager.storageVolumesCompat
 
         val args = mutableListOf<String>()
         var selector = BASE_SELECTOR
@@ -151,8 +147,6 @@ abstract class MediaStoreExtractor(
         artistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)
         albumArtistIndex = cursor.getColumnIndexOrThrow(AUDIO_COLUMN_ALBUM_ARTIST)
 
-        logD("Assembling genre map")
-
         // Since we can't obtain the genre tag from a song query, we must construct our own
         // equivalent from genre database queries. Theoretically, this isn't needed since
         // MetadataLayer will fill this in for us, but I'd imagine there are some obscure
@@ -183,18 +177,21 @@ abstract class MediaStoreExtractor(
             }
         }
 
+        volumes = storageManager.storageVolumesCompat
         logD("Finished initialization in ${System.currentTimeMillis() - start}ms")
 
         return cursor
     }
 
-    /** Finalize this instance by closing the cursor and finalizing the cache. */
+    /**
+     * Finalize the Extractor by writing the newly-loaded [Song.Raw]s back into the cache,
+     * alongside freeing up memory.
+     * @param rawSongs The songs to write into the cache.
+     */
     fun finalize(rawSongs: List<Song.Raw>) {
         // Free the cursor (and it's resources)
         cursor?.close()
         cursor = null
-
-        // Finalize sub-extractors
         cacheExtractor.finalize(rawSongs)
     }
 
@@ -502,6 +499,7 @@ open class Api29MediaStoreExtractor(context: Context, cacheExtractor: CacheExtra
 
     override fun init(): Cursor {
         val cursor = super.init()
+        // Set up cursor indices for later use.
         trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
         return cursor
     }
@@ -537,6 +535,7 @@ class Api30MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor)
 
     override fun init(): Cursor {
         val cursor = super.init()
+        // Set up cursor indices for later use.
         trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
         discIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISC_NUMBER)
         return cursor

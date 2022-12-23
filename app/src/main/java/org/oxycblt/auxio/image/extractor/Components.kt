@@ -66,17 +66,13 @@ private constructor(private val context: Context, private val album: Album) : Fe
                 dataSource = DataSource.DISK)
         }
 
-    /**
-     * A [Fetcher.Factory] implementation that works with [Song]s.
-     */
+    /** A [Fetcher.Factory] implementation that works with [Song]s.*/
     class SongFactory : Fetcher.Factory<Song> {
         override fun create(data: Song, options: Options, imageLoader: ImageLoader) =
             AlbumCoverFetcher(options.context, data.album)
     }
 
-    /**
-     * A [Fetcher.Factory] implementation that works with [Album]s.
-     */
+    /** A [Fetcher.Factory] implementation that works with [Album]s. */
     class AlbumFactory : Fetcher.Factory<Album> {
         override fun create(data: Album, options: Options, imageLoader: ImageLoader) =
             AlbumCoverFetcher(options.context, data)
@@ -100,9 +96,7 @@ private constructor(
         return Images.createMosaic(context, results, size)
     }
 
-    /**
-     * [Fetcher.Factory] implementation.
-     */
+    /** [Fetcher.Factory] implementation. */
     class Factory : Fetcher.Factory<Artist> {
         override fun create(data: Artist, options: Options, imageLoader: ImageLoader) =
             ArtistImageFetcher(options.context, options.size, data)
@@ -124,6 +118,7 @@ private constructor(
         return Images.createMosaic(context, results, size)
     }
 
+    /** [Fetcher.Factory] implementation. */
     class Factory : Fetcher.Factory<Genre> {
         override fun create(data: Genre, options: Options, imageLoader: ImageLoader) =
             GenreImageFetcher(options.context, options.size, data)

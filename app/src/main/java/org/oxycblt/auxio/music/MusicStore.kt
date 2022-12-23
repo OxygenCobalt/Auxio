@@ -20,8 +20,6 @@ package org.oxycblt.auxio.music
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
-import org.oxycblt.auxio.music.MusicStore.Callback
-import org.oxycblt.auxio.music.MusicStore.Library
 import org.oxycblt.auxio.music.storage.useQuery
 import org.oxycblt.auxio.music.storage.contentResolverSafe
 
@@ -92,8 +90,8 @@ class MusicStore private constructor() {
 
         init {
             // The data passed to Library initially are complete, but are still volitaile.
-            // Finalize them to ensure they are well-formed. Initialize the UID map in the
-            // same loop for efficiency.
+            // Finalize them to ensure they are well-formed. Also initialize the UID map in
+            // the same loop for efficiency.
             for (song in songs) {
                 song._finalize()
                 uidMap[song.uid] = song
@@ -146,7 +144,7 @@ class MusicStore private constructor() {
 
         /**
          * Convert a [Genre] from an another library into a [Genre] in this [Library].
-         * @param song The [Genre] to convert.
+         * @param genre The [Genre] to convert.
          * @return The analogous [Genre] in this [Library], or null if it does not exist.
          */
         fun sanitize(genre: Genre) = find<Genre>(genre.uid)
@@ -170,9 +168,7 @@ class MusicStore private constructor() {
             }
     }
 
-    /**
-     * A callback for changes in the music library.
-     */
+    /** A callback for changes in the music library. */
     interface Callback {
         /**
          * Called when the current [Library] has changed.

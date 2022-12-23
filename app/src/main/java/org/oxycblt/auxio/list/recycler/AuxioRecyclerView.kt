@@ -38,19 +38,6 @@ open class AuxioRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     RecyclerView(context, attrs, defStyleAttr) {
-    /**
-     * An adapter-specific hook to [GridLayoutManager.SpanSizeLookup].
-     */
-    interface SpanSizeLookup {
-        /**
-         * Get if the item at a position takes up the whole width of the [RecyclerView] or not.
-         * @param position The position of the item.
-         * @return true if the item is full-width, false otherwise.
-         */
-        fun isItemFullWidth(position: Int): Boolean
-    }
-
-    // Keep track of the layout-defined bottom padding so we can re-apply it when applying insets.
     private val initialPaddingBottom = paddingBottom
 
     init {
@@ -91,5 +78,15 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                         if (adapter.isItemFullWidth(position)) fullWidthSpanCount else 1
                 }
         }
+    }
+
+    /** An [RecyclerView.Adapter]-specific hook to [GridLayoutManager.SpanSizeLookup]. */
+    interface SpanSizeLookup {
+        /**
+         * Get if the item at a position takes up the whole width of the [RecyclerView] or not.
+         * @param position The position of the item.
+         * @return true if the item is full-width, false otherwise.
+         */
+        fun isItemFullWidth(position: Int): Boolean
     }
 }

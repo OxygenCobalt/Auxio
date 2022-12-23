@@ -38,9 +38,7 @@ class SelectionToolbarOverlay
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     FrameLayout(context, attrs, defStyleAttr) {
-    // This will be populated after the inflation completes.
     private lateinit var innerToolbar: MaterialToolbar
-    // The selection toolbar will be overlaid over the inner toolbar when shown.
     private val selectionToolbar =
         MaterialToolbar(context).apply {
             setNavigationIcon(R.drawable.ic_close_24)
@@ -50,7 +48,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 isInvisible = true
             }
         }
-    // Animator to handle selection visibility animations
     private var fadeThroughAnimator: ValueAnimator? = null
 
     override fun onFinishInflate() {
@@ -61,7 +58,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
         // The inner toolbar should be the first child.
         innerToolbar = getChildAt(0) as MaterialToolbar
-        // Now layer the selection toolbar on top.
+        // Selection toolbar should appear on top of the inner toolbar.
         addView(selectionToolbar)
     }
 
@@ -69,6 +66,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * Set an OnClickListener for when the "cancel" button in the selection [MaterialToolbar] is
      * pressed.
      * @param listener The OnClickListener to respond to this interaction.
+     * @see MaterialToolbar.setNavigationOnClickListener
      */
     fun setOnSelectionCancelListener(listener: OnClickListener) {
         selectionToolbar.setNavigationOnClickListener(listener)
@@ -78,6 +76,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * Set an [OnMenuItemClickListener] for when a MenuItem is selected from the selection
      * [MaterialToolbar].
      * @param listener The [OnMenuItemClickListener] to respond to this interaction.
+     * @see MaterialToolbar.setOnMenuItemClickListener
      */
     fun setOnMenuItemClickListener(listener: OnMenuItemClickListener?) {
         selectionToolbar.setOnMenuItemClickListener(listener)
@@ -134,7 +133,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         if (!isLaidOut) {
             // Not laid out, just change it immediately while are not shown to the user.
             // This is an initialization, so we return false despite changing.
-            changeToolbarAlpha(targetInnerAlpha)
+            setToolbarsAlpha(targetInnerAlpha)
             return false
         }
 
@@ -146,7 +145,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         fadeThroughAnimator =
             ValueAnimator.ofFloat(innerToolbar.alpha, targetInnerAlpha).apply {
                 duration = targetDuration
-                addUpdateListener { changeToolbarAlpha(it.animatedValue as Float) }
+                addUpdateListener { setToolbarsAlpha(it.animatedValue as Float) }
                 start()
             }
 
@@ -158,7 +157,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param innerAlpha The opacity of the inner [MaterialToolbar]. This will map to the
      * inverse opacity of the selection [MaterialToolbar].
      */
-    private fun changeToolbarAlpha(innerAlpha: Float) {
+    private fun setToolbarsAlpha(innerAlpha: Float) {
         innerToolbar.apply {
             alpha = innerAlpha
             isInvisible = innerAlpha == 0f

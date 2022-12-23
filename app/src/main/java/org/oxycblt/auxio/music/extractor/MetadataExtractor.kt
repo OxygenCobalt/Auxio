@@ -56,8 +56,9 @@ class MetadataExtractor(
     fun init() = mediaStoreExtractor.init().count
 
     /**
-     * Finalize this extractor with the newly parsed [Song.Raw]. This actually finalizes the
-     * sub-extractors that this instance relies on.
+     * Finalize the Extractor by writing the newly-loaded [Song.Raw]s back into the cache,
+     * alongside freeing up memory.
+     * @param rawSongs The songs to write into the cache.
      */
     fun finalize(rawSongs: List<Song.Raw>) = mediaStoreExtractor.finalize(rawSongs)
 
@@ -85,7 +86,6 @@ class MetadataExtractor(
             spin@ while (true) {
                 for (i in taskPool.indices) {
                     val task = taskPool[i]
-
                     if (task != null) {
                         val finishedRaw = task.get()
                         if (finishedRaw != null) {
@@ -105,7 +105,6 @@ class MetadataExtractor(
             // Spin until all of the remaining tasks are complete.
             for (i in taskPool.indices) {
                 val task = taskPool[i]
-
                 if (task != null) {
                     val finishedRaw = task.get() ?: continue@spin
                     emit(finishedRaw)
@@ -118,9 +117,6 @@ class MetadataExtractor(
     }
 
     companion object {
-        /**
-         * The amount of [Task]s this instance can return
-         */
         private const val TASK_CAPACITY = 8
     }
 }
@@ -158,7 +154,6 @@ class Task(context: Context, private val raw: Song.Raw) {
                 logW(e.stackTraceToString())
                 null
             }
-
         if (format == null) {
             logD("Nothing could be extracted for ${raw.name}")
             return raw

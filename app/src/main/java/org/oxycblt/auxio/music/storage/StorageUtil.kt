@@ -48,9 +48,8 @@ val Context.contentResolverSafe: ContentResolver
  * arguments should be filled in are represented with a "?".
  * @param args The arguments used for the selector.
  * @return A [Cursor] of the queried values, organized by the column projection.
- * @throws IllegalStateException If the [ContentResolver] did not successfully return
+ * @throws IllegalStateException If the [ContentResolver] did not return the queried [Cursor].
  * @see ContentResolver.query
- * a queried [Cursor].
  */
 fun ContentResolver.safeQuery(
     uri: Uri,
@@ -71,9 +70,8 @@ fun ContentResolver.safeQuery(
  * @param args The arguments used for the selector.
  * @param block The block of code to run with the queried [Cursor]. Will not be ran if the
  * [Cursor] is empty.
- * @throws IllegalStateException If the [ContentResolver] did not successfully return
+ * @throws IllegalStateException If the [ContentResolver] did not return the queried [Cursor].
  * @see ContentResolver.query
- * a queried [Cursor].
  */
 inline fun <reified R> ContentResolver.useQuery(
     uri: Uri,

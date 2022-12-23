@@ -112,7 +112,7 @@ abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), Extende
      * closed when the view is destroyed. If a menu is already opened, this call is ignored.
      * @param anchor The [View] to anchor the menu to.
      * @param menuRes The resource of the menu to load.
-     * @param song The [Artist] to create the menu for.
+     * @param album The [Album] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, album: Album) {
         logD("Launching new album menu: ${album.rawName}")
@@ -148,7 +148,7 @@ abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), Extende
      * closed when the view is destroyed. If a menu is already opened, this call is ignored.
      * @param anchor The [View] to anchor the menu to.
      * @param menuRes The resource of the menu to load.
-     * @param song The [Artist] to create the menu for.
+     * @param artist The [Artist] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, artist: Artist) {
         logD("Launching new artist menu: ${artist.rawName}")
@@ -181,7 +181,7 @@ abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), Extende
      * closed when the view is destroyed. If a menu is already opened, this call is ignored.
      * @param anchor The [View] to anchor the menu to.
      * @param menuRes The resource of the menu to load.
-     * @param song The [Genre] to create the menu for.
+     * @param genre The [Genre] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, genre: Genre) {
         logD("Launching new genre menu: ${genre.rawName}")
@@ -209,12 +209,6 @@ abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), Extende
         }
     }
 
-    /**
-     * Internally create a menu for a [Music] item.
-     * @param anchor The [View] to anchor the menu to.
-     * @param menuRes The resource of the menu to load.
-     * @param onMenuItemClick A callback for when a [MenuItem] is selected.
-     */
     private fun openMusicMenuImpl(
         anchor: View,
         @MenuRes menuRes: Int,

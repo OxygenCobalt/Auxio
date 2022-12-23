@@ -44,7 +44,7 @@ interface CacheExtractor {
     fun init()
 
     /**
-     * Finalize the Extractor by writing the newly-loaded [Song.Raw] back into the cache,
+     * Finalize the Extractor by writing the newly-loaded [Song.Raw]s back into the cache,
      * alongside freeing up memory.
      * @param rawSongs The songs to write into the cache.
      */
@@ -437,123 +437,58 @@ private class CacheDatabase(context: Context) :
      * Defines the columns used in this database.
      */
     private object Columns {
-        /**
-         * @see Song.Raw.mediaStoreId
-         */
+        /** @see Song.Raw.mediaStoreId */
         const val MEDIA_STORE_ID = "msid"
-        /**
-         * @see Song.Raw.dateAdded
-         */
+        /** @see Song.Raw.dateAdded */
         const val DATE_ADDED = "date_added"
-        /**
-         * @see Song.Raw.dateModified
-         */
+        /** @see Song.Raw.dateModified */
         const val DATE_MODIFIED = "date_modified"
-
-        /**
-         * @see Song.Raw.size
-         */
+        /** @see Song.Raw.size */
         const val SIZE = "size"
-        /**
-         * @see Song.Raw.durationMs
-         */
+        /** @see Song.Raw.durationMs */
         const val DURATION = "duration"
-        /**
-         * @see Song.Raw.formatMimeType
-         */
+        /** @see Song.Raw.formatMimeType */
         const val FORMAT_MIME_TYPE = "fmt_mime"
-
-        /**
-         * @see Song.Raw.musicBrainzId
-         */
+        /** @see Song.Raw.musicBrainzId */
         const val MUSIC_BRAINZ_ID = "mbid"
-        /**
-         * @see Song.Raw.name
-         */
+        /** @see Song.Raw.name */
         const val NAME = "name"
-        /**
-         * @see Song.Raw.sortName
-         */
+        /** @see Song.Raw.sortName */
         const val SORT_NAME = "sort_name"
-
-        /**
-         * @see Song.Raw.track
-         */
+        /** @see Song.Raw.track */
         const val TRACK = "track"
-        /**
-         * @see Song.Raw.disc
-         */
+        /** @see Song.Raw.disc */
         const val DISC = "disc"
-        /**
-         * @see [Song.Raw.date
-         */
+        /** @see Song.Raw.date */
         const val DATE = "date"
-
-        /**
-         * @see [Song.Raw.albumMusicBrainzId
-         */
+        /** @see Song.Raw.albumMusicBrainzId */
         const val ALBUM_MUSIC_BRAINZ_ID = "album_mbid"
-        /**
-         * @see Song.Raw.albumName
-         */
+        /** @see Song.Raw.albumName */
         const val ALBUM_NAME = "album"
-        /**
-         * @see Song.Raw.albumSortName
-         */
+        /** @see Song.Raw.albumSortName */
         const val ALBUM_SORT_NAME = "album_sort"
-        /**
-         * @see Song.Raw.albumReleaseTypes
-         */
+        /** @see Song.Raw.albumTypes */
         const val ALBUM_TYPES = "album_types"
-
-        /**
-         * @see Song.Raw.artistMusicBrainzIds
-         */
+        /** @see Song.Raw.artistMusicBrainzIds */
         const val ARTIST_MUSIC_BRAINZ_IDS = "artists_mbid"
-        /**
-         * @see Song.Raw.artistNames
-         */
+        /** @see Song.Raw.artistNames */
         const val ARTIST_NAMES = "artists"
-        /**
-         * @see Song.Raw.artistSortNames
-         */
+        /** @see Song.Raw.artistSortNames */
         const val ARTIST_SORT_NAMES = "artists_sort"
-
-        /**
-         * @see Song.Raw.albumArtistMusicBrainzIds
-         */
+        /** @see Song.Raw.albumArtistMusicBrainzIds */
         const val ALBUM_ARTIST_MUSIC_BRAINZ_IDS = "album_artists_mbid"
-        /**
-         * @see Song.Raw.albumArtistNames
-         */
+        /** @see Song.Raw.albumArtistNames */
         const val ALBUM_ARTIST_NAMES = "album_artists"
-        /**
-         * @see Song.Raw.albumArtistSortNames
-         */
+        /** @see Song.Raw.albumArtistSortNames */
         const val ALBUM_ARTIST_SORT_NAMES = "album_artists_sort"
-
-        /**
-         * @see Song.Raw.genreNames
-         */
+        /** @see Song.Raw.genreNames */
         const val GENRE_NAMES = "genres"
     }
 
     companion object {
-        /**
-         * The file name of the database.
-         */
-        const val DB_NAME = "auxio_music_cache.db"
-
-        /**
-         * The current version of the database. Increment whenever a breaking change is made
-         * to the schema. When incremented, the database will be wiped.
-         */
-        const val DB_VERSION = 1
-
-        /**
-         * The table containing the cached [Song.Raw] instances.
-         */
-        const val TABLE_RAW_SONGS = "raw_songs"
+        private const val DB_NAME = "auxio_music_cache.db"
+        private const val DB_VERSION = 1
+        private const val TABLE_RAW_SONGS = "raw_songs"
 
         @Volatile private var INSTANCE: CacheDatabase? = null
 

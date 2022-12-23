@@ -77,7 +77,7 @@ class HomeViewModel(application: Application) :
      * A list of [MusicMode] corresponding to the current [Tab] configuration, excluding
      * invisible [Tab]s.
      */
-    var currentTabModes: List<MusicMode> = getVisibleTabModes()
+    var currentTabModes: List<MusicMode> = makeTabModes()
         private set
 
     private val _currentTabMode = MutableStateFlow(currentTabModes[0])
@@ -133,7 +133,7 @@ class HomeViewModel(application: Application) :
         when (key) {
             context.getString(R.string.set_key_lib_tabs) -> {
                 // Tabs changed, update  the current tabs and set up a re-create event.
-                currentTabModes = getVisibleTabModes()
+                currentTabModes = makeTabModes()
                 _shouldRecreate.value = true
             }
 
@@ -155,7 +155,8 @@ class HomeViewModel(application: Application) :
     }
 
     /**
-     * Mark the recreation process as completed, resetting [shouldRecreate].
+     * Mark the recreation process as complete.
+     * @see shouldRecreate
      */
     fun finishRecreate() {
         _shouldRecreate.value = false
@@ -211,9 +212,10 @@ class HomeViewModel(application: Application) :
     }
 
     /**
-     * Get the [MusicMode]s of the visible [Tab]s from the [Tab] configuration.
-     * @return A list of [MusicMode]s for each visible [Tab] in the [Tab] configuration.
+     * Create a list of [MusicMode]s representing a simpler version of the [Tab] configuration.
+     * @return A list of the [MusicMode]s for each visible [Tab] in the configuration,
+     * ordered in the same way as the configuration.
      */
-    private fun getVisibleTabModes() =
+    private fun makeTabModes() =
          settings.libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
 }

@@ -56,9 +56,7 @@ class Indexer private constructor() {
     private var controller: Controller? = null
     private var callback: Callback? = null
 
-    /**
-     * Whether this instance is currently loading music.
-      */
+    /** Whether music loading is occurring or not. */
     val isIndexing: Boolean
         get() = indexingState != null
 
@@ -226,6 +224,7 @@ class Indexer private constructor() {
         } else {
             WriteOnlyCacheExtractor(context)
         }
+
         val mediaStoreExtractor =
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
@@ -234,7 +233,9 @@ class Indexer private constructor() {
                     Api29MediaStoreExtractor(context, cacheDatabase)
                 else -> Api21MediaStoreExtractor(context, cacheDatabase)
             }
+
         val metadataExtractor = MetadataExtractor(context, mediaStoreExtractor)
+
         val songs = buildSongs(metadataExtractor, Settings(context))
         if (songs.isEmpty()) {
             // No songs, nothing else to do.
@@ -248,6 +249,7 @@ class Indexer private constructor() {
         val artists = buildArtists(songs, albums)
         val genres = buildGenres(songs)
         logD("Successfully built library in ${System.currentTimeMillis() - buildStart}ms")
+
         return MusicStore.Library(songs, albums, artists, genres)
     }
 
@@ -265,11 +267,10 @@ class Indexer private constructor() {
     ): List<Song> {
         logD("Starting indexing process")
         val start = System.currentTimeMillis()
-        // Start initializing the extractors. Here, we will signal that we are loading music,
-        // but have no ETA on how far we are.
+        // Start initializing the extractors. Use an indeterminate state, as there is no ETA on
+        // how long a media database query will take.
         emitIndexing(Indexing.Indeterminate)
         val total = metadataExtractor.init()
-        // Handle if we were canceled while initializing the extractors.
         yield()
 
         // Note: We use a set here so we can eliminate song duplicates.
@@ -278,19 +279,20 @@ class Indexer private constructor() {
         metadataExtractor.parse { rawSong ->
             songs.add(Song(rawSong, settings))
             rawSongs.add(rawSong)
-            // Handle if we were cancelled while loading a song.
-            yield()
+
             // Now we can signal a defined progress by showing how many songs we have
             // loaded, and the projected amount of songs we found in the library
             // (obtained by the extractors)
+            yield()
             emitIndexing(Indexing.Songs(songs.size, total))
         }
 
-        // Finalize the extractors with the songs we have no loaded. There is no ETA
+        // Finalize the extractors with the songs we have now loaded. There is no ETA
         // on this process, so go back to an indeterminate state.
         emitIndexing(Indexing.Indeterminate)
         metadataExtractor.finalize(rawSongs)
         logD("Successfully built ${songs.size} songs in ${System.currentTimeMillis() - start}ms")
+
         // Ensure that sorting order is consistent so that grouping is also consistent.
         // Rolling this into the set is not an option, as songs with the same sort result
         // would be lost.
@@ -330,6 +332,7 @@ class Indexer private constructor() {
         // Add every raw artist credited to each Song/Album to the grouping. This way,
         // different multi-artist combinations are not treated as different artists.
         val musicByArtist = mutableMapOf<Artist.Raw, MutableList<Music>>()
+
         for (song in songs) {
             for (rawArtist in song._rawArtists) {
                 musicByArtist.getOrPut(rawArtist) { mutableListOf() }.add(song)
@@ -396,8 +399,6 @@ class Indexer private constructor() {
      * process.
      */
     private suspend fun emitCompletion(response: Response) {
-        // Handle if this co-routine was canceled in the period between the last loading state
-        // and this completion state.
         yield()
         // Swap to the Main thread so that downstream callbacks don't crash from being on
         // a background thread. Does not occur in emitIndexing due to efficiency reasons.
@@ -415,9 +416,7 @@ class Indexer private constructor() {
         }
     }
 
-    /**
-     * Represents the current state of the music loading process.
-     */
+    /** Represents the current state of [Indexer]. */
     sealed class State {
         /**
          * Music loading is ongoing.
@@ -435,7 +434,7 @@ class Indexer private constructor() {
     }
 
     /**
-     * The current progress of the music loader. Usually encapsulated in a [State].
+     * Represents the current progress of the music loader. Usually encapsulated in a [State].
      * @see State.Indexing
      */
     sealed class Indexing {
@@ -453,9 +452,7 @@ class Indexer private constructor() {
         class Songs(val current: Int, val total: Int) : Indexing()
     }
 
-    /**
-     * The possible outcomes of the music loading process.
-     */
+    /** Represents the possible outcomes of the music loading process. */
     sealed class Response {
         /**
          * Music load was successful and produced a [MusicStore.Library].
@@ -469,14 +466,10 @@ class Indexer private constructor() {
          */
         data class Err(val throwable: Throwable) : Response()
 
-        /**
-         * Music loading occurred, but resulted in no music.
-         */
+        /** Music loading occurred, but resulted in no music. */
         object NoMusic : Response()
 
-        /**
-         * Music loading could not occur due to a lack of storage permissions.
-         */
+        /** Music loading could not occur due to a lack of storage permissions. */
         object NoPerms : Response()
     }
 

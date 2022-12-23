@@ -31,17 +31,11 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
     private val indexer = Indexer.getInstance()
 
     private val _indexerState = MutableStateFlow<Indexer.State?>(null)
-    /**
-     * The current music loading state, or null if no loading is going on.
-     * @see Indexer.State
-     */
+    /** The current music loading state, or null if no loading is going on. */
     val indexerState: StateFlow<Indexer.State?> = _indexerState
 
     private val _statistics = MutableStateFlow<Statistics?>(null)
-    /**
-     * Statistics about the last completed music load.
-     * @see Statistics
-     */
+    /** [Statistics] about the last completed music load. */
     val statistics: StateFlow<Statistics?>
         get() = _statistics
 
@@ -68,16 +62,12 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
         }
     }
 
-    /**
-     * Requests that the music library should be re-loaded while leveraging the cache.
-     */
+    /** Requests that the music library should be re-loaded while leveraging the cache. */
     fun refresh() {
         indexer.requestReindex(true)
     }
 
-    /**
-     * Requests that the music library should be re-loaded while ignoring the cache.
-     */
+    /** Requests that the music library be re-loaded without the cache. */
     fun rescan() {
         indexer.requestReindex(false)
     }

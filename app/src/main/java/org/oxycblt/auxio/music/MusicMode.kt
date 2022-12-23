@@ -24,24 +24,13 @@ import org.oxycblt.auxio.IntegerTable
  * @author Alexander Capehart (OxygenCobalt)
  */
 enum class MusicMode {
-    /**
-     * Configure with respect to [Song] instances.
-     */
+    /** Configure with respect to [Song] instances. */
     SONGS,
-
-    /**
-     * Configure with respect to [Album] instances.
-     */
+    /** Configure with respect to [Album] instances. */
     ALBUMS,
-
-    /**
-     * Configure with respect to [Artist] instances.
-     */
+    /** Configure with respect to [Artist] instances. */
     ARTISTS,
-
-    /**
-     * Configure with respect to [Genre] instances.
-     */
+    /** Configure with respect to [Genre] instances. */
     GENRES;
 
     /**

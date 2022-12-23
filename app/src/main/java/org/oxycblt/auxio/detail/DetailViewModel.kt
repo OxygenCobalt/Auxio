@@ -61,8 +61,7 @@ class DetailViewModel(application: Application) :
 
     private val _currentSong = MutableStateFlow<DetailSong?>(null)
     /**
-     * The current [Song] that should be displayed in the [Song] detail view. Null if there
-     * is no [Song].
+     * The current [DetailSong] to display. Null if there is nothing to show.
      * TODO: De-couple Song and Properties?
      */
     val currentSong: StateFlow<DetailSong?>
@@ -71,23 +70,16 @@ class DetailViewModel(application: Application) :
     // --- ALBUM ---
 
     private val _currentAlbum = MutableStateFlow<Album?>(null)
-    /**
-     * The current [Album] that should be displayed in the [Album] detail view. Null if there
-     * is no [Album].
-     */
+    /** The current [Album] to display. Null if there is nothing to show. */
     val currentAlbum: StateFlow<Album?>
         get() = _currentAlbum
 
-    private val _albumData = MutableStateFlow(listOf<Item>())
-    /**
-     * The current list data derived from [currentAlbum], for use in the [Album] detail view.
-     */
+    private val _albumList = MutableStateFlow(listOf<Item>())
+    /** The current list data derived from [currentAlbum]. */
     val albumList: StateFlow<List<Item>>
-        get() = _albumData
+        get() = _albumList
 
-    /**
-     * The current [Sort] used for [Song]s in the [Album] detail view.
-     */
+    /** The current [Sort] used for [Song]s in [albumList]. */
     var albumSort: Sort
         get() = settings.detailAlbumSort
         set(value) {
@@ -99,22 +91,15 @@ class DetailViewModel(application: Application) :
     // --- ARTIST ---
 
     private val _currentArtist = MutableStateFlow<Artist?>(null)
-    /**
-     * The current [Artist] that should be displayed in the [Artist] detail view. Null if there
-     * is no [Artist].
-     */
+    /** The current [Artist] to display. Null if there is nothing to show. */
     val currentArtist: StateFlow<Artist?>
         get() = _currentArtist
 
-    private val _artistData = MutableStateFlow(listOf<Item>())
-    /**
-     * The current list derived from [currentArtist], for use in the [Artist] detail view.
-     */
-    val artistList: StateFlow<List<Item>> = _artistData
+    private val _artistList = MutableStateFlow(listOf<Item>())
+    /** The current list derived from [currentArtist]. */
+    val artistList: StateFlow<List<Item>> = _artistList
 
-    /**
-     * The current [Sort] used for [Song]s in the [Artist] detail view.
-     */
+    /** The current [Sort] used for [Song]s in [artistList]. */
     var artistSort: Sort
         get() = settings.detailArtistSort
         set(value) {
@@ -126,22 +111,15 @@ class DetailViewModel(application: Application) :
     // --- GENRE ---
 
     private val _currentGenre = MutableStateFlow<Genre?>(null)
-    /**
-     * The current [Genre] that should be displayed in the [Genre] detail view. Null if there
-     * is no [Genre].
-     */
+    /** The current [Genre] to display. Null if there is nothing to show. */
     val currentGenre: StateFlow<Genre?>
         get() = _currentGenre
 
-    private val _genreData = MutableStateFlow(listOf<Item>())
-    /**
-     * The current list data derived from [currentGenre], for use in the [Genre] detail view.
-     */
-    val genreList: StateFlow<List<Item>> = _genreData
+    private val _genreList = MutableStateFlow(listOf<Item>())
+    /** The current list data derived from [currentGenre]. */
+    val genreList: StateFlow<List<Item>> = _genreList
 
-    /**
-     * The current [Sort] used for [Song]s in the [Genre] detail view.
-     */
+    /** The current [Sort] used for [Song]s in [genreList]. */
     var genreSort: Sort
         get() = settings.detailGenreSort
         set(value) {
@@ -254,14 +232,6 @@ class DetailViewModel(application: Application) :
         _currentGenre.value = requireMusic<Genre>(uid).also { refreshGenreList(it) }
     }
 
-    /**
-     * A wrapper around [MusicStore.Library.find] that asserts that the returned data should
-     * be valid.
-     * @param T The type of music that should be found
-     * @param uid The [Music.UID] of the [T] to find
-     * @return A [T] with the given [Music.UID]
-     * @throws IllegalStateException If nothing can be found
-     */
     private fun <T: Music> requireMusic(uid: Music.UID): T =
         requireNotNull(unlikelyToBeNull(musicStore.library).find(uid)) { "Invalid id provided" }
 
@@ -275,20 +245,13 @@ class DetailViewModel(application: Application) :
         _currentSong.value = DetailSong(song, null)
         currentSongJob =
             viewModelScope.launch(Dispatchers.IO) {
-                val info = loadSongProperties(song)
+                val info = loadProperties(song)
                 yield()
                 _currentSong.value = DetailSong(song, info)
             }
     }
 
-    /**
-     * Load a new set of [DetailSong.Properties] based on the given [Song]'s file using
-     * [MediaExtractor].
-     * @param song The song to load the properties from.
-     * @return A [DetailSong.Properties] containing the properties that could be
-     * extracted from the file.
-     */
-    private fun loadSongProperties(song: Song): DetailSong.Properties {
+    private fun loadProperties(song: Song): DetailSong.Properties {
         // While we would use ExoPlayer to extract this information, it doesn't support
         // common data like bit rate in progressive data sources due to there being no
         // demand. Thus, we are stuck with the inferior OS-provided MediaExtractor.
@@ -349,10 +312,6 @@ class DetailViewModel(application: Application) :
         return DetailSong.Properties(bitrate, sampleRate, resolvedMimeType)
     }
 
-    /**
-     * Refresh [albumList] to reflect the given [Album] and any [Sort] changes.
-     * @param album The [Album] to create the list from.
-     */
     private fun refreshAlbumList(album: Album) {
         logD("Refreshing album data")
         val data = mutableListOf<Item>(album)
@@ -374,13 +333,9 @@ class DetailViewModel(application: Application) :
             data.addAll(songs)
         }
 
-        _albumData.value = data
+        _albumList.value = data
     }
 
-    /**
-     * Refresh [artistList] to reflect the given [Artist] and any [Sort] changes.
-     * @param artist The [Artist] to create the list from.
-     */
     private fun refreshArtistList(artist: Artist) {
         logD("Refreshing artist data")
         val data = mutableListOf<Item>(artist)
@@ -421,13 +376,9 @@ class DetailViewModel(application: Application) :
             data.addAll(artistSort.songs(artist.songs))
         }
 
-        _artistData.value = data.toList()
+        _artistList.value = data.toList()
     }
 
-    /**
-     * Refresh [genreList] to reflect the given [Genre] and any [Sort] changes.
-     * @param genre The [Genre] to create the list from.
-     */
     private fun refreshGenreList(genre: Genre) {
         logD("Refreshing genre data")
         val data = mutableListOf<Item>(genre)
@@ -436,7 +387,7 @@ class DetailViewModel(application: Application) :
         data.addAll(genre.artists)
         data.add(SortHeader(R.string.lbl_songs))
         data.addAll(genreSort.songs(genre.songs))
-        _genreData.value = data
+        _genreList.value = data
     }
 
     /**

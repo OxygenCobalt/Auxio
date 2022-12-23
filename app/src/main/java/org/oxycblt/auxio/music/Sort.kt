@@ -129,19 +129,14 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
      */
     val intCode: Int
         // Sort's integer representation is formatted as AMMMM, where A is a bitflag
-        // representing on if the mode is ascending or descending, and M is the integer
-        // representation of the sort mode.
+        // representing if the sort is in ascending or descending order, and M is the
+        // integer representation of the sort mode.
         get() = mode.intCode.shl(1) or if (isAscending) 1 else 0
 
     sealed class Mode {
-        /**
-         * The integer representation of this sort mode.
-         */
+        /** The integer representation of this sort mode. */
         abstract val intCode: Int
-
-        /**
-         * The item ID of this sort mode in menu resources.
-         */
+        /** The item ID of this sort mode in menu resources. */
         abstract val itemId: Int
 
         /**
@@ -276,9 +271,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                     compareBy(BasicComparator.ALBUM))
         }
 
-        /**
-         * Sort by the duration of an item.
-         */
+        /** Sort by the duration of an item. */
         object ByDuration : Mode() {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_DURATION
@@ -494,9 +487,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             }
 
             companion object {
-                /**
-                 * A shared instance configured for [Artist]s that can be re-used.
-                 */
+                /** A re-usable configured for [Artist]s.. */
                 val ARTISTS: Comparator<List<Artist>> = ListComparator(BasicComparator.ARTIST)
             }
         }
@@ -520,21 +511,13 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             }
 
             companion object {
-                /**
-                 * A shared instance configured for [Song]s that can be re-used.
-                 */
+                /** A re-usable  instance configured for [Song]s. */
                 val SONG: Comparator<Song> = BasicComparator()
-                /**
-                 * A shared instance configured for [Album]s that can be re-used.
-                 */
+                /** A re-usable instance configured for [Album]s. */
                 val ALBUM: Comparator<Album> = BasicComparator()
-                /**
-                 * A shared instance configured for [Artist]s that can be re-used.
-                 */
+                /** A re-usable instance configured for [Artist]s. */
                 val ARTIST: Comparator<Artist> = BasicComparator()
-                /**
-                 * A shared instance configured for [Genre]s that can be re-used.
-                 */
+                /** A re-usable instance configured for [Genre]s. */
                 val GENRE: Comparator<Genre> = BasicComparator()
             }
         }
@@ -553,17 +536,11 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                 }
 
             companion object {
-                /**
-                 * A shared instance configured for [Int]s that can be re-used.
-                 */
+                /** A re-usable instance configured for [Int]s. */
                 val INT = NullableComparator<Int>()
-                /**
-                 * A shared instance configured for [Long]s that can be re-used.
-                 */
+                /** A re-usable instance configured for [Long]s. */
                 val LONG = NullableComparator<Long>()
-                /**
-                 * A shared instance configured for [Date]s that can be re-used.
-                 */
+                /** A re-usable instance configured for [Date]s. */
                 val DATE = NullableComparator<Date>()
             }
         }

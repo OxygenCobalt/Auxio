@@ -142,11 +142,6 @@ class SongListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRecy
         openMusicMenu(anchor, R.menu.menu_song_actions, item)
     }
 
-    /**
-     * Update the current playback state in the context of the current [Song] list.
-     * @param parent The current [MusicParent] playing, null if all songs.
-     * @param isPlaying Whether playback is ongoing or paused.
-     */
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         if (parent == null) {
             homeAdapter.setPlayingItem(song, isPlaying)
@@ -158,7 +153,7 @@ class SongListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRecy
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Song]s using [SongViewHolder].
-     * @param listener An [ExtendedListListener] for list interactions.
+     * @param listener An [ExtendedListListener] to bind interactions to.
      */
     private class SongAdapter(private val listener: ExtendedListListener) :
         SelectionIndicatorAdapter<SongViewHolder>() {

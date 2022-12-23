@@ -179,10 +179,6 @@ class ArtistDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapte
         }
     }
 
-    /**
-     * Update the currently displayed [Artist]
-     * @param artist The new [Artist] to display. Null if there is no longer one.
-     */
     private fun updateItem(artist: Artist?) {
         if (artist == null) {
             // Artist we were showing no longer exists.
@@ -193,17 +189,11 @@ class ArtistDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapte
         requireBinding().detailToolbar.title = artist.resolveName(requireContext())
     }
 
-    /**
-     * Update the current playback state in the context of the currently displayed [Artist].
-     * @param song The current [Song] playing.
-     * @param parent The current [MusicParent] playing, null if all songs.
-     * @param isPlaying Whether playback is ongoing or paused.
-     */
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         val currentArtist = unlikelyToBeNull(detailModel.currentArtist.value)
         val playingItem =
             when (parent) {
-                // Always highlight a playing album from this artist.
+                // Always highlight a playing album if it's from this artist.
                 is Album -> parent
                 // If the parent is the artist itself, use the currently playing song.
                 currentArtist -> song
@@ -214,10 +204,6 @@ class ArtistDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapte
         detailAdapter.setPlayingItem(playingItem, isPlaying)
     }
 
-    /**
-     * Handle a navigation event.
-     * @param item The [Music] to navigate to, null if there is no item.
-     */
     private fun handleNavigation(item: Music?) {
         val binding = requireBinding()
 
@@ -253,10 +239,6 @@ class ArtistDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapte
         }
     }
 
-    /**
-     * Update the current item selection.
-     * @param selected The list of selected items.
-     */
     private fun updateSelection(selected: List<Music>) {
         detailAdapter.setSelectedItems(selected)
         requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)

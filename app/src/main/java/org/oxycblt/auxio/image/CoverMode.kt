@@ -24,17 +24,11 @@ import org.oxycblt.auxio.IntegerTable
  * @author Alexander Capehart (OxygenCobalt)
  */
 enum class CoverMode {
-    /**
-     * Do not load album covers ("Off").
-     */
+    /** Do not load album covers ("Off"). */
     OFF,
-    /**
-     * Load covers from the fast, but lower-quality media store database ("Fast").
-     */
+    /** Load covers from the fast, but lower-quality media store database ("Fast"). */
     MEDIA_STORE,
-    /**
-     * Load high-quality covers directly from music files ("Quality").
-     */
+    /** Load high-quality covers directly from music files ("Quality"). */
     QUALITY;
 
     /**

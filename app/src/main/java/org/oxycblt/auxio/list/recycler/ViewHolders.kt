@@ -35,7 +35,7 @@ import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
 /**
- * A basic [RecyclerView.ViewHolder] that displays a [Song]. Use [new] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [Song]. Use [new] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SongViewHolder private constructor(private val binding: ItemSongBinding) :
@@ -82,7 +82,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
 }
 
 /**
- * A basic [RecyclerView.ViewHolder] that displays a [Album]. Use [new] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [Album]. Use [new] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumViewHolder private constructor(private val binding: ItemParentBinding) :
@@ -131,7 +131,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
 }
 
 /**
- * A basic [RecyclerView.ViewHolder] that displays a [Artist]. Use [new] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [Artist]. Use [new] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class ArtistViewHolder private constructor(private val binding: ItemParentBinding) :
@@ -189,7 +189,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
 }
 
 /**
- * A basic [RecyclerView.ViewHolder] that displays a [Genre]. Use [new] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [Genre]. Use [new] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class GenreViewHolder private constructor(private val binding: ItemParentBinding) :
@@ -240,7 +240,7 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
 }
 
 /**
- * A basic [RecyclerView.ViewHolder] that displays a [Header]. Use [new] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [Header]. Use [new] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class HeaderViewHolder private constructor(private val binding: ItemHeaderBinding) :

@@ -28,24 +28,10 @@ import org.oxycblt.auxio.util.logW
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
-    /**
-     * A [RecyclerView.ViewHolder] that can display a playing indicator.
-     */
-    abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-        /**
-         * Update the playing indicator within this [RecyclerView.ViewHolder].
-         * @param isActive True if this item is playing, false otherwise.
-         * @param isPlaying True if playback is ongoing, false if paused. If this
-         * is true, [isActive] will also be true.
-         */
-        abstract fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean)
-    }
-
     // There are actually two states for this adapter:
-    // This is sub-divided into two states:
     // - The currently playing item, which is usually marked as "selected" and becomes accented.
     // - Whether playback is ongoing, which corresponds to whether the item's ImageGroup is
-    // displaying
+    // marked as "playing" or not.
     private var currentItem: Item? = null
     private var isPlaying = false
 
@@ -117,6 +103,19 @@ abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerV
                 }
             }
         }
+    }
+
+    /**
+     * A [RecyclerView.ViewHolder] that can display a playing indicator.
+     */
+    abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
+        /**
+         * Update the playing indicator within this [RecyclerView.ViewHolder].
+         * @param isActive True if this item is playing, false otherwise.
+         * @param isPlaying True if playback is ongoing, false if paused. If this
+         * is true, [isActive] will also be true.
+         */
+        abstract fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean)
     }
 
     companion object {

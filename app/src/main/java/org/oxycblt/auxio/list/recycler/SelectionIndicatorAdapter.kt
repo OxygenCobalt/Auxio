@@ -28,17 +28,6 @@ import org.oxycblt.auxio.music.Music
  */
 abstract class SelectionIndicatorAdapter<VH : RecyclerView.ViewHolder> :
     PlayingIndicatorAdapter<VH>() {
-    /**
-     * A [PlayingIndicatorAdapter.ViewHolder] that can display a selection indicator.
-     */
-    abstract class ViewHolder(root: View) : PlayingIndicatorAdapter.ViewHolder(root) {
-        /**
-         * Update the selection indicator within this [PlayingIndicatorAdapter.ViewHolder].
-         * @param isSelected Whether this [PlayingIndicatorAdapter.ViewHolder] is selected.
-         */
-        abstract fun updateSelectionIndicator(isSelected: Boolean)
-    }
-
     private var selectedItems = setOf<Music>()
 
     override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
@@ -77,6 +66,17 @@ abstract class SelectionIndicatorAdapter<VH : RecyclerView.ViewHolder> :
                 notifyItemChanged(i, PAYLOAD_SELECTION_INDICATOR_CHANGED)
             }
         }
+    }
+
+    /**
+     * A [PlayingIndicatorAdapter.ViewHolder] that can display a selection indicator.
+     */
+    abstract class ViewHolder(root: View) : PlayingIndicatorAdapter.ViewHolder(root) {
+        /**
+         * Update the selection indicator within this [PlayingIndicatorAdapter.ViewHolder].
+         * @param isSelected Whether this [PlayingIndicatorAdapter.ViewHolder] is selected.
+         */
+        abstract fun updateSelectionIndicator(isSelected: Boolean)
     }
 
     companion object {

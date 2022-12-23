@@ -35,13 +35,13 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * A [RecyclerView.Adapter] that implements behavior shared across each detail view's adapters.
- * @param callback A [Listener] for list interactions.
+ * @param listener A [Listener] to bind interactions to.
  * @param itemCallback A [DiffUtil.ItemCallback] to use with [AsyncListDiffer] when updating the
  * internal list.
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class DetailAdapter(
-    private val callback: Listener,
+    private val listener: Listener,
     itemCallback: DiffUtil.ItemCallback<Item>
 ) : SelectionIndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
     // Safe to leak this since the callback will not fire during initialization
@@ -67,7 +67,7 @@ abstract class DetailAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = differ.currentList[position]) {
             is Header -> (holder as HeaderViewHolder).bind(item)
-            is SortHeader -> (holder as SortHeaderViewHolder).bind(item, callback)
+            is SortHeader -> (holder as SortHeaderViewHolder).bind(item, listener)
         }
     }
 
@@ -89,9 +89,7 @@ abstract class DetailAdapter(
         differ.submitList(newList)
     }
 
-    /**
-     * An extended [ExtendedListListener] for [DetailAdapter] implementations.
-     */
+    /** An extended [ExtendedListListener] for [DetailAdapter] implementations. */
     interface Listener : ExtendedListListener {
         // TODO: Split off into sub-listeners if a collapsing toolbar is implemented.
         /**

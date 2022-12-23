@@ -93,7 +93,7 @@ class HomeFragment :
             // our transitions.
             val axis = savedInstanceState.getInt(KEY_LAST_TRANSITION_AXIS, -1)
             if (axis > -1) {
-                initAxisTransitions(axis)
+                setupAxisTransitions(axis)
             }
         }
     }
@@ -199,7 +199,7 @@ class HomeFragment :
             // Handle main actions (Search, Settings, About)
             R.id.action_search -> {
                 logD("Navigating to search")
-                initAxisTransitions(MaterialSharedAxis.Z)
+                setupAxisTransitions(MaterialSharedAxis.Z)
                 findNavController().navigate(HomeFragmentDirections.actionShowSearch())
             }
             R.id.action_settings -> {
@@ -238,10 +238,6 @@ class HomeFragment :
         return true
     }
 
-    /**
-     * Set up the TabLayout and [ViewPager2] to reflect the current tab configuration.
-     * @param binding The [FragmentHomeBinding] to apply the tab configuration to.
-     */
     private fun setupPager(binding: FragmentHomeBinding) {
         binding.homePager.adapter = HomePagerAdapter(homeModel.currentTabModes, childFragmentManager, viewLifecycleOwner)
 
@@ -264,10 +260,6 @@ class HomeFragment :
             AdaptiveTabStrategy(requireContext(), homeModel.currentTabModes)).attach()
     }
 
-    /**
-     * Update the UI to reflect the current tab.
-     * @param tabMode The [MusicMode] of the currently shown tab.
-     */
     private fun updateCurrentTab(tabMode: MusicMode) {
         // Update the sort options to align with those allowed by the tab
          val isVisible: (Int) -> Boolean = when (tabMode) {
@@ -310,10 +302,6 @@ class HomeFragment :
         requireBinding().homeAppbar.liftOnScrollTargetViewId = getTabRecyclerId(tabMode)
     }
 
-    /**
-     * Handle a request to recreate all home tabs.
-     * @param recreate Whether to recreate all tabs.
-     */
     private fun handleRecreate(recreate: Boolean) {
         if (!recreate) {
             // Nothing to do
@@ -328,11 +316,6 @@ class HomeFragment :
         homeModel.finishRecreate()
     }
 
-    /**
-     * Update the currently displayed [Indexer.State]
-     * @param state The new [Indexer.State] to show. Null if the state is currently
-     * indeterminate (Not loading or complete).
-     */
     private fun updateIndexerState(state: Indexer.State?) {
         val binding = requireBinding()
         when (state) {
@@ -345,11 +328,6 @@ class HomeFragment :
         }
     }
 
-    /**
-     * Configure the UI to display the given [Indexer.Response].
-     * @param binding The [FragmentHomeBinding] whose views should be updated.
-     * @param response The [Indexer.Response] to show.
-     */
     private fun setupCompleteState(binding: FragmentHomeBinding, response: Indexer.Response) {
         if (response is Indexer.Response.Ok) {
             logD("Received ok response")
@@ -401,11 +379,6 @@ class HomeFragment :
         }
     }
 
-    /**
-     * Configure the UI to display the given [Indexer.Indexing] state..
-     * @param binding The [FragmentHomeBinding] whose views should be updated.
-     * @param indexing The [Indexer.Indexing] state to show.
-     */
     private fun setupIndexingState(binding: FragmentHomeBinding, indexing: Indexer.Indexing) {
         // Remove all content except for the progress indicator.
         binding.homeIndexingContainer.visibility = View.VISIBLE
@@ -431,11 +404,6 @@ class HomeFragment :
         }
     }
 
-    /**
-     * Update the FAB visibility to reflect the state of other home elements.
-     * @param songs The current list of songs in the home view.
-     * @param isFastScrolling Whether the user is currently fast-scrolling.
-     */
     private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
         val binding = requireBinding()
         // If there are no songs, it's likely that the library has not been loaded, so
@@ -448,10 +416,6 @@ class HomeFragment :
         }
     }
 
-    /**
-     * Handle a navigation event.
-     * @param item The [Music] to navigate to, null if there is no item.
-     */
     private fun handleNavigation(item: Music?) {
         val action =
             when (item) {
@@ -462,14 +426,10 @@ class HomeFragment :
                 else -> return
             }
 
-        initAxisTransitions(MaterialSharedAxis.X)
+        setupAxisTransitions(MaterialSharedAxis.X)
         findNavController().navigate(action)
     }
 
-    /**
-     * Update the current item selection.
-     * @param selected The list of selected items.
-     */
     private fun updateSelection(selected: List<Music>) {
         val binding = requireBinding()
         if (binding.homeSelectionToolbar.updateSelectionAmount(selected.size) &&
@@ -481,24 +441,7 @@ class HomeFragment :
         }
     }
 
-    /**
-     * Get the ID of the RecyclerView contained by a tab.
-     * @param tabMode The mode of the tab to get the ID from
-     * @return The ID of the RecyclerView contained by the given tab.
-     */
-    private fun getTabRecyclerId(tabMode: MusicMode) =
-        when (tabMode) {
-            MusicMode.SONGS -> R.id.home_song_recycler
-            MusicMode.ALBUMS -> R.id.home_album_recycler
-            MusicMode.ARTISTS -> R.id.home_artist_recycler
-            MusicMode.GENRES -> R.id.home_genre_recycler
-        }
-
-    /**
-     * Set up [MaterialSharedAxis] transitions.
-     * @param axis The axis that the transition should occur on, such as [MaterialSharedAxis.X]
-     */
-    private fun initAxisTransitions(axis: Int) {
+    private fun setupAxisTransitions(axis: Int) {
         // Sanity check to avoid in-correct axis transitions
         check(axis == MaterialSharedAxis.X || axis == MaterialSharedAxis.Z) {
             "Not expecting Y axis transition"
@@ -511,8 +454,22 @@ class HomeFragment :
     }
 
     /**
+     * Get the ID of the RecyclerView contained by [ViewPager2] tab represented with
+     * the given [MusicMode].
+     * @param tabMode The [MusicMode] of the tab.
+     * @return The ID of the RecyclerView contained by the given tab.
+     */
+    private fun getTabRecyclerId(tabMode: MusicMode) =
+        when (tabMode) {
+            MusicMode.SONGS -> R.id.home_song_recycler
+            MusicMode.ALBUMS -> R.id.home_album_recycler
+            MusicMode.ARTISTS -> R.id.home_artist_recycler
+            MusicMode.GENRES -> R.id.home_genre_recycler
+        }
+
+    /**
      * [FragmentStateAdapter] implementation for the [HomeFragment]'s [ViewPager2] instance.
-     * @param tabs The current tab configuration. This should define the fragments created.
+     * @param tabs The current tab configuration. This will define the [Fragment]s created.
      * @param fragmentManager The [FragmentManager] required by [FragmentStateAdapter].
      * @param lifecycleOwner The [LifecycleOwner], whose Lifecycle is required by
      * [FragmentStateAdapter].

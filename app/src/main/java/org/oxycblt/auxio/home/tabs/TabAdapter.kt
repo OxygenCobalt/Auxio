@@ -33,34 +33,12 @@ import org.oxycblt.auxio.util.inflater
  * @param listener A [Listener] for tab interactions.
  */
 class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewHolder>() {
-    /**
-     * A listener for interactions specific to tab configuration.
-     */
-    interface Listener {
-        /**
-         * Called when a tab is clicked, requesting that the visibility should be inverted
-         * (i.e Visible -> Invisible and vice versa).
-         * @param tabMode The [MusicMode] of the tab clicked.
-         */
-        fun onToggleVisibility(tabMode: MusicMode)
-
-        /**
-         * Called when the drag handle is pressed, requesting that a drag should be started.
-         * @param viewHolder The [RecyclerView.ViewHolder] to start dragging.
-         */
-        fun onPickUpTab(viewHolder: RecyclerView.ViewHolder)
-    }
-
-    /**
-     * The current array of [Tab]s.
-     */
+    /** The current array of [Tab]s. */
     var tabs = arrayOf<Tab>()
         private set
 
     override fun getItemCount() = tabs.size
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TabViewHolder.new(parent)
-
     override fun onBindViewHolder(holder: TabViewHolder, position: Int) {
         holder.bind(tabs[position], listener)
     }
@@ -86,7 +64,7 @@ class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewH
     }
 
     /**
-     * Swap two tabs with eachother.
+     * Swap two tabs with each other.
      * @param a The position of the first tab to swap.
      * @param b The position of the second tab to swap.
      */
@@ -95,6 +73,22 @@ class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewH
         tabs[b] = tabs[a]
         tabs[a] = tmp
         notifyItemMoved(a, b)
+    }
+
+    /** A listener for interactions specific to tab configuration. */
+    interface Listener {
+        /**
+         * Called when a tab is clicked, requesting that the visibility should be inverted
+         * (i.e Visible -> Invisible and vice versa).
+         * @param tabMode The [MusicMode] of the tab clicked.
+         */
+        fun onToggleVisibility(tabMode: MusicMode)
+
+        /**
+         * Called when the drag handle is pressed, requesting that a drag should be started.
+         * @param viewHolder The [RecyclerView.ViewHolder] to start dragging.
+         */
+        fun onPickUpTab(viewHolder: RecyclerView.ViewHolder)
     }
 
     companion object {

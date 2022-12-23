@@ -54,20 +54,17 @@ sealed class Tab(open val mode: MusicMode) {
         // Where V is a bit representing the visibility and T is a 3-bit integer representing the
         // MusicMode for this tab.
 
-        /**
-         * The length a well-formed tab sequence should be
-         */
+        /** The length a well-formed tab sequence should be. */
         private const val SEQUENCE_LEN = 4
 
         /**
          * The default tab sequence, in integer form.
-         * This will be SONGS, ALBUMS, ARTISTS, GENRES, PLAYLISTS.
+         * This represents a set of four visible tabs ordered as "Song", "Album", "Artist", and
+         * "Genre".
          */
         const val SEQUENCE_DEFAULT = 0b1000_1001_1010_1011_0100
 
-        /**
-         * Maps between the integer code in the tab sequence and the actual [MusicMode] instance.
-         */
+        /** Maps between the integer code in the tab sequence and it's [MusicMode]. */
         private val MODE_TABLE =
             arrayOf(MusicMode.SONGS, MusicMode.ALBUMS, MusicMode.ARTISTS, MusicMode.GENRES)
 
@@ -82,7 +79,6 @@ sealed class Tab(open val mode: MusicMode) {
 
             var sequence = 0b0100
             var shift = SEQUENCE_LEN * 4
-
             for (tab in distinct) {
                 val bin =
                     when (tab) {

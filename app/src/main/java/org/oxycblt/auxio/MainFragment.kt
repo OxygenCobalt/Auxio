@@ -121,7 +121,7 @@ class MainFragment :
         collect(navModel.exploreNavigationItem, ::handleExploreNavigation)
         collect(navModel.exploreNavigationArtists, ::handleExplorePicker)
         collectImmediately(playbackModel.song, ::updateSong)
-        collect(playbackModel.artistPlaybackPickerSong, ::handlePlaybackPicker)
+        collect(playbackModel.artistPlaybackPickerSong, ::handlePlaybackArtistPicker)
     }
 
     override fun onStart() {
@@ -216,22 +216,25 @@ class MainFragment :
         if (playbackModel.song.value == null) {
             // Sometimes lingering drags can un-hide the playback sheet even when we intend to
             // hide it, make sure we keep it hidden.
-            tryHideAll()
+            tryHideAllSheets()
         }
 
         // Since the callback is also reliant on the bottom sheets, we must also update it
         // every frame.
-        callback.updateEnabledState()
+        callback.invalidateEnabled()
 
         return true
     }
 
     private fun handleMainNavigation(action: MainNavigationAction?) {
-        if (action == null) return
+        if (action == null) {
+            // Nothing to do.
+            return
+        }
 
         when (action) {
-            is MainNavigationAction.Expand -> tryExpandAll()
-            is MainNavigationAction.Collapse -> tryCollapseAll()
+            is MainNavigationAction.Expand -> tryExpandSheets()
+            is MainNavigationAction.Collapse -> tryCollapseSheets()
             // TODO: Figure out how to clear out the selections as one moves between screens.
             is MainNavigationAction.Directions -> findNavController().navigate(action.directions)
         }
@@ -241,12 +244,13 @@ class MainFragment :
 
     private fun handleExploreNavigation(item: Music?) {
         if (item != null) {
-            tryCollapseAll()
+            tryCollapseSheets()
         }
     }
 
     private fun handleExplorePicker(items: List<Artist>?) {
         if (items != null) {
+            // Navigate to the analogous artist picker dialog.
             navModel.mainNavigateTo(
                 MainNavigationAction.Directions(
                     MainFragmentDirections.actionPickNavigationArtist(
@@ -257,14 +261,15 @@ class MainFragment :
 
     private fun updateSong(song: Song?) {
         if (song != null) {
-            tryUnhideAll()
+            tryShowSheets()
         } else {
-            tryHideAll()
+            tryHideAllSheets()
         }
     }
 
-    private fun handlePlaybackPicker(song: Song?) {
+    private fun handlePlaybackArtistPicker(song: Song?) {
         if (song != null) {
+            // Navigate to the analogous artist picker dialog.
             navModel.mainNavigateTo(
                 MainNavigationAction.Directions(
                     MainFragmentDirections.actionPickPlaybackArtist(song.uid)))
@@ -272,18 +277,18 @@ class MainFragment :
         }
     }
 
-    private fun tryExpandAll() {
+    private fun tryExpandSheets() {
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
 
         if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_COLLAPSED) {
-            // State is collapsed and non-hidden, expand
+            // Playback sheet is not expanded and not hidden, we can expand it.
             playbackSheetBehavior.state = NeoBottomSheetBehavior.STATE_EXPANDED
         }
     }
 
-    private fun tryCollapseAll() {
+    private fun tryCollapseSheets() {
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
@@ -292,13 +297,12 @@ class MainFragment :
             // Make sure the queue is also collapsed here.
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
-
             playbackSheetBehavior.state = NeoBottomSheetBehavior.STATE_COLLAPSED
             queueSheetBehavior?.state = NeoBottomSheetBehavior.STATE_COLLAPSED
         }
     }
 
-    private fun tryUnhideAll() {
+    private fun tryShowSheets() {
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
@@ -318,7 +322,7 @@ class MainFragment :
         }
     }
 
-    private fun tryHideAll() {
+    private fun tryHideAllSheets() {
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
@@ -342,8 +346,8 @@ class MainFragment :
     }
 
     /**
-     * A back press callback that handles how to respond to backwards navigation in the detail
-     * fragments and the playback panel.
+     * A [OnBackPressedCallback] that overrides the back button to first navigate out of
+     * internal app components, such as the Bottom Sheets or Explore Navigation.
      */
     private inner class DynamicBackPressedCallback : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
@@ -353,36 +357,45 @@ class MainFragment :
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
+            // If expanded, collapse the queue sheet first.
             if (queueSheetBehavior != null &&
                 queueSheetBehavior.state != NeoBottomSheetBehavior.STATE_COLLAPSED &&
                 playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED) {
-                // Collapse the queue first if it is expanded.
                 queueSheetBehavior.state = NeoBottomSheetBehavior.STATE_COLLAPSED
                 return
             }
 
+            // If expanded, collapse the playback sheet next.
             if (playbackSheetBehavior.state != NeoBottomSheetBehavior.STATE_COLLAPSED &&
                 playbackSheetBehavior.state != NeoBottomSheetBehavior.STATE_HIDDEN) {
-                // Then collapse the playback sheet.
                 playbackSheetBehavior.state = NeoBottomSheetBehavior.STATE_COLLAPSED
                 return
             }
 
+            // Then try to navigate out of the explore navigation fragments (i.e Detail Views)
             binding.exploreNavHost.findNavController().navigateUp()
         }
 
-        fun updateEnabledState() {
+        /**
+         * Force this instance to update whether it's enabled or not. If there are no app
+         * components that the back button should close first, the instance is disabled and
+         * back navigation is delegated to the system.
+         *
+         * Normally, this callback would have just called the [MainActivity.onBackPressed]
+         * if there were no components to close, but that prevents adaptive back navigation
+         * from working on Android 14+, so we must do it this way.
+         */
+        fun invalidateEnabled() {
             val binding = requireBinding()
             val playbackSheetBehavior =
                 binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
-
             val exploreNavController = binding.exploreNavHost.findNavController()
 
             isEnabled =
+                queueSheetBehavior?.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
                 playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
-                    queueSheetBehavior?.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
                     exploreNavController.currentDestination?.id !=
                         exploreNavController.graph.startDestinationId
         }

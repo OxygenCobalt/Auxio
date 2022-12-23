@@ -65,8 +65,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private val cornerRadius: Float
 
     init {
-        // Android wants you to make separate attributes for each view type, but will
-        // then throw an error if you do because of duplicate attribute names.
+        // Obtain some StyledImageView attributes to use later when theming the cusotm view.
         @SuppressLint("CustomViewStyleable")
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.StyledImageView)
         // Keep track of our corner radius so that we can apply the same attributes to the custom
@@ -123,7 +122,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         // Initialize each component before this view is drawn.
-        invalidateAlpha()
+        invalidateImageAlpha()
         invalidatePlayingIndicator()
         invalidateSelectionIndicator()
     }
@@ -135,13 +134,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
-        invalidateAlpha()
+        invalidateImageAlpha()
         invalidatePlayingIndicator()
     }
 
     override fun setSelected(selected: Boolean) {
         super.setSelected(selected)
-        invalidateAlpha()
+        invalidateImageAlpha()
         invalidatePlayingIndicator()
     }
 
@@ -185,18 +184,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             playbackIndicatorView.isPlaying = value
         }
 
-    /**
-     * Invalidate the overall opacity of this view.
-     */
-    private fun invalidateAlpha() {
+    private fun invalidateImageAlpha() {
         // If this view is disabled, show it at half-opacity, *unless* it is also marked
         // as playing, in which we still want to show it at full-opacity.
         alpha = if (isSelected || isEnabled) 1f else 0.5f
     }
 
-    /**
-     * Invalidate the view's playing ([isSelected]) indicator.
-     */
     private fun invalidatePlayingIndicator() {
         if (isSelected) {
             // View is "selected" (actually marked as playing), so show the playing indicator
@@ -213,22 +206,18 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
     }
 
-    /**
-     * Invalidate the view's selection ([isActivated]) indicator, animating it from invisible
-     * to visible (or vice versa).
-     */
     private fun invalidateSelectionIndicator() {
         // Set up a target transition for the selection indicator.
         val targetAlpha: Float
         val targetDuration: Long
 
         if (isActivated) {
-            // Activated -> Show selection indicator
+            // View is "activated" (i.e marked as selected), so show the selection indicator.
             targetAlpha = 1f
             targetDuration =
                 context.getInteger(R.integer.anim_fade_enter_duration).toLong()
         } else {
-            // Activated -> Hide selection indicator.
+            // View is not "activated", hide the selection indicator.
             targetAlpha = 0f
             targetDuration =
                 context.getInteger(R.integer.anim_fade_exit_duration).toLong()

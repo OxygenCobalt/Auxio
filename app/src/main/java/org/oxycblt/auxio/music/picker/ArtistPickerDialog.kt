@@ -38,7 +38,7 @@ import org.oxycblt.auxio.util.collectImmediately
  */
 abstract class ArtistPickerDialog : ViewBindingDialogFragment<DialogMusicPickerBinding>(), BasicListListener {
     protected val pickerModel: PickerViewModel by viewModels()
-    // Okay to leak this since the Listener will not be called until after full initialization.
+    // Okay to leak this since the Listener will not be called until after initialization.
     private val artistAdapter = ArtistChoiceAdapter(@Suppress("LeakingThis") this)
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -53,7 +53,7 @@ abstract class ArtistPickerDialog : ViewBindingDialogFragment<DialogMusicPickerB
 
         collectImmediately(pickerModel.currentArtists) { artists ->
             if (!artists.isNullOrEmpty()) {
-                // Make sure the artist choices align with the current music library.
+                // Make sure the artist choices align with any changes in the music library.
                 // TODO: I really don't think it makes sense to do this. I'd imagine it would
                 //  be more productive to just exit this dialog rather than try to update it.
                 artistAdapter.submitList(artists)

@@ -27,7 +27,7 @@ import coil.ImageLoaderFactory
 import coil.request.CachePolicy
 import org.oxycblt.auxio.image.extractor.AlbumCoverFetcher
 import org.oxycblt.auxio.image.extractor.ArtistImageFetcher
-import org.oxycblt.auxio.image.extractor.ErrorCrossfadeTransitionFractory
+import org.oxycblt.auxio.image.extractor.ErrorCrossfadeTransitionFactory
 import org.oxycblt.auxio.image.extractor.GenreImageFetcher
 import org.oxycblt.auxio.image.extractor.MusicKeyer
 import org.oxycblt.auxio.settings.Settings
@@ -68,7 +68,7 @@ class AuxioApp : Application(), ImageLoaderFactory {
                 add(GenreImageFetcher.Factory())
             }
             // Use our own crossfade with error drawable support
-            .transitionFactory(ErrorCrossfadeTransitionFractory())
+            .transitionFactory(ErrorCrossfadeTransitionFactory())
             // Not downloading anything, so no disk-caching
             .diskCachePolicy(CachePolicy.DISABLED)
             .build()

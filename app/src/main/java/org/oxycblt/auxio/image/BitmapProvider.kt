@@ -39,14 +39,10 @@ import org.oxycblt.auxio.music.Song
  * @author Alexander Capehart (OxygenCobalt)
  */
 class BitmapProvider(private val context: Context) {
-    /**
-     * An extension of [Disposable] with an additional [Target] to deliver the final [Bitmap] to.
-     */
+    /** An extension of [Disposable] with an additional [Target] to deliver the final [Bitmap] to. */
     private data class Request(val disposable: Disposable, val callback: Target)
 
-    /**
-     * The target that will recieve the requested [Bitmap].
-     */
+    /** The target that will receive the requested [Bitmap]. */
     interface Target {
         /**
          * Configure the [ImageRequest.Builder] to enable [Target]-specific configuration.
@@ -65,11 +61,7 @@ class BitmapProvider(private val context: Context) {
     }
 
     private var currentRequest: Request? = null
-    // Keeps track of the current image request we are on. If the stored handle in an
-    // ImageRequest is still equal to this, it means that the request has not been
-    // superceded by a new one.
     private var currentHandle = 0L
-    private var handleLock = Any()
 
     /** If this provider is currently attempting to load something. */
     val isBusy: Boolean
@@ -82,13 +74,12 @@ class BitmapProvider(private val context: Context) {
      */
     @Synchronized
     fun load(song: Song, target: Target) {
-        // Increment the handle, indicating a newer request being created.
-        val handle = synchronized(handleLock) { ++currentHandle }
-        // Be even safer and cancel the previous request.
+        // Increment the handle, indicating a newer request has been created
+        val handle = ++currentHandle
         currentRequest?.run { disposable.dispose() }
         currentRequest = null
 
-        val request =
+        val imageRequest =
             target.onConfigRequest(
                 ImageRequest.Builder(context)
                     .data(song)
@@ -99,31 +90,32 @@ class BitmapProvider(private val context: Context) {
                     // callback.
                     .target(
                         onSuccess = {
-                            synchronized(handleLock) {
+                            synchronized(this) {
                                 if (currentHandle == handle) {
-                                    // Still the active request, deliver it to the target.
+                                    // Has not been superceded by a new request, can deliver
+                                    // this result.
                                     target.onCompleted(it.toBitmap())
                                 }
                             }
                         },
                         onError = {
-                            synchronized(handleLock) {
+                            synchronized(this) {
                                 if (currentHandle == handle) {
-                                    // Still the active request, deliver it to the target.
+                                    // Has not been superceded by a new request, can deliver
+                                    // this result.
                                     target.onCompleted(null)
                                 }
                             }
                         })
-        currentRequest = Request(context.imageLoader.enqueue(request.build()), target)
+        currentRequest = Request(context.imageLoader.enqueue(imageRequest.build()), target)
     }
 
     /**
-     * Release this instance. Run this when the object is no longer used to prevent
-     * stray loading callbacks.
+     * Release this instance, cancelling any currently running operations.
      */
     @Synchronized
     fun release() {
-        synchronized(handleLock) { ++currentHandle }
+        ++currentHandle
         currentRequest?.run { disposable.dispose() }
         currentRequest = null
     }

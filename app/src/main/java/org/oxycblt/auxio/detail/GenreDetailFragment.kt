@@ -174,10 +174,6 @@ class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter
         }
     }
 
-    /**
-     * Update the currently displayed [Genre]
-     * @param genre The new [Genre] to display. Null if there is no longer one.
-     */
     private fun updateItem(genre: Genre?) {
         if (genre == null) {
             // Genre we were showing no longer exists.
@@ -188,12 +184,6 @@ class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter
         requireBinding().detailToolbar.title = genre.resolveName(requireContext())
     }
 
-    /**
-     * Update the current playback state in the context of the currently displayed [Genre].
-     * @param song The current [Song] playing.
-     * @param parent The current [MusicParent] playing, null if all songs.
-     * @param isPlaying Whether playback is ongoing or paused.
-     */
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         var item: Item? = null
 
@@ -208,10 +198,6 @@ class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter
         detailAdapter.setPlayingItem(item, isPlaying)
     }
 
-    /**
-     * Handle a navigation event.
-     * @param item The [Music] to navigate to, null if there is no item.
-     */
     private fun handleNavigation(item: Music?) {
         when (item) {
             is Song -> {
@@ -236,10 +222,6 @@ class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter
         }
     }
 
-    /**
-     * Update the current item selection.
-     * @param selected The list of selected items.
-     */
     private fun updateSelection(selected: List<Music>) {
         detailAdapter.setSelectedItems(selected)
         requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)

@@ -56,10 +56,6 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
         collectImmediately(detailModel.currentSong, ::updateSong)
     }
 
-    /**
-     * Update the currently displayed song.
-     * @param song The [DetailViewModel.DetailSong] to display. Null if there is no longer one.
-     */
     private fun updateSong(song: DetailSong?) {
         val binding = requireBinding()
 
@@ -71,19 +67,16 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
         if (song.properties != null) {
             // Finished loading Song properties, populate and show the list of Song information.
+            binding.detailLoading.isInvisible = true
+            binding.detailContainer.isInvisible = false
+
             val context = requireContext()
-            // File name
             binding.detailFileName.setText(song.song.path.name)
-            // Relative (Parent) directory
             binding.detailRelativeDir.setText(song.song.path.parent.resolveName(context))
-            // Format
             binding.detailFormat.setText(song.properties.resolvedMimeType.resolveName(context))
-            // Size
             binding.detailSize.setText(Formatter.formatFileSize(context, song.song.size))
-            // Duration
             binding.detailDuration.setText(song.song.durationMs.formatDurationMs(true))
 
-            // Bit rate (if present)
             if (song.properties.bitrateKbps != null) {
                 binding.detailBitrate.setText(
                     getString(R.string.fmt_bitrate, song.properties.bitrateKbps))
@@ -91,16 +84,12 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
                 binding.detailBitrate.setText(R.string.def_bitrate)
             }
 
-            // Sample rate (if present)
             if (song.properties.sampleRateHz != null) {
                 binding.detailSampleRate.setText(
                     getString(R.string.fmt_sample_rate, song.properties.sampleRateHz))
             } else {
                 binding.detailSampleRate.setText(R.string.def_sample_rate)
             }
-
-            binding.detailLoading.isInvisible = true
-            binding.detailContainer.isInvisible = false
         } else {
             // Loading is still on-going, don't show anything yet.
             binding.detailLoading.isInvisible = false

@@ -36,7 +36,7 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
- * The single [AppCompatActivity] for Auxio.
+ * Auxio's single [AppCompatActivity].
  *
  * TODO: Add error screens
  *
@@ -85,6 +85,14 @@ class MainActivity : AppCompatActivity() {
         startIntentAction(intent)
     }
 
+    /**
+     * Transform an [Intent] given to [MainActivity] into a [InternalPlayer.Action]
+     * that can be used in the playback system.
+     * @param intent The (new) [Intent] given to this [MainActivity], or null if there
+     * is no intent.
+     * @return true If the analogous [InternalPlayer.Action] to the given [Intent] was started,
+     * false otherwise.
+     */
     private fun startIntentAction(intent: Intent?): Boolean {
         if (intent == null) {
             return false
@@ -97,7 +105,6 @@ class MainActivity : AppCompatActivity() {
             // RestoreState action.
             return true
         }
-
         intent.putExtra(KEY_INTENT_USED, true)
 
         val action =
@@ -106,19 +113,16 @@ class MainActivity : AppCompatActivity() {
                 AuxioApp.INTENT_KEY_SHORTCUT_SHUFFLE -> InternalPlayer.Action.ShuffleAll
                 else -> return false
             }
-
         playbackModel.startAction(action)
-
         return true
     }
 
     private fun setupTheme() {
         val settings = Settings(this)
-
+        // Set up the current theme.
         AppCompatDelegate.setDefaultNightMode(settings.theme)
-
-        // The black theme has a completely separate set of styles since style attributes cannot
-        // be modified at runtime.
+        // Set up the color scheme. Note that the black theme has it's own set
+        // of styles since the color schemes cannot be modified at runtime.
         if (isNight && settings.useBlackTheme) {
             logD("Applying black theme [accent ${settings.accent}]")
             setTheme(settings.accent.blackTheme)
@@ -130,7 +134,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupEdgeToEdge(contentView: View) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
         contentView.setOnApplyWindowInsetsListener { view, insets ->
             val bars = insets.systemBarInsetsCompat
             view.updatePadding(left = bars.left, right = bars.right)

@@ -106,11 +106,6 @@ class GenreListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRec
         openMusicMenu(anchor, R.menu.menu_artist_actions, item)
     }
 
-    /**
-     * Update the current playback state in the context of the current [Genre] list.
-     * @param parent The current [MusicParent] playing, null if all songs.
-     * @param isPlaying Whether playback is ongoing or paused.
-     */
     private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
         // If a genre is playing, highlight it within this adapter.
         homeAdapter.setPlayingItem(parent as? Genre, isPlaying)
@@ -118,7 +113,7 @@ class GenreListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRec
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Genre]s using [GenreViewHolder].
-     * @param listener An [ExtendedListListener] for list interactions.
+     * @param listener An [ExtendedListListener] to bind interactions to.
      */
     private class GenreAdapter(private val listener: ExtendedListListener) :
         SelectionIndicatorAdapter<GenreViewHolder>() {

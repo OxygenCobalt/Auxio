@@ -40,19 +40,6 @@ class DialogRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     RecyclerView(context, attrs, defStyleAttr) {
-    /**
-     * A [RecyclerView.ViewHolder] that implements dialog-specific fixes.
-     */
-    abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-        init {
-            // ViewHolders are not automatically full-width in dialogs, manually resize
-            // them to be as such.
-            root.layoutParams =
-                LayoutParams(
-                    LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-        }
-    }
-
     private val topDivider = MaterialDivider(context)
     private val bottomDivider = MaterialDivider(context)
     private val spacingMedium = context.getDimenPixels(R.dimen.spacing_medium)
@@ -90,10 +77,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         invalidateDividers()
     }
 
-    /**
-     * Measure a [divider] with the equivalent of match_parent and wrap_content.
-     * @param divider The divider to measure.
-     */
     private fun measureDivider(divider: MaterialDivider) {
         val widthMeasureSpec =
             ViewGroup.getChildMeasureSpec(
@@ -108,9 +91,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         divider.measure(widthMeasureSpec, heightMeasureSpec)
     }
 
-    /**
-     * Invalidate the visibility of both dividers.
-     */
     private fun invalidateDividers() {
         val lmm = layoutManager as LinearLayoutManager
         // Top divider should only be visible when the first item has gone off-screen.
@@ -118,6 +98,19 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // Bottom divider should only be visible when the lsat item is completely on-screen.
         bottomDivider.isInvisible =
             lmm.findLastCompletelyVisibleItemPosition() == (lmm.itemCount - 1)
+    }
+
+    /**
+     * A [RecyclerView.ViewHolder] that implements dialog-specific fixes.
+     */
+    abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
+        init {
+            // ViewHolders are not automatically full-width in dialogs, manually resize
+            // them to be as such.
+            root.layoutParams =
+                LayoutParams(
+                    LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        }
     }
 }
 

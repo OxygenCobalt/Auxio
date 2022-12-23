@@ -45,18 +45,13 @@ class PlaybackIndicatorView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AppCompatImageView(context, attrs, defStyleAttr) {
-    // The playing drawable will cycle through an active equalizer animation.
     private val playingIndicatorDrawable =
         context.getDrawableCompat(R.drawable.ic_playing_indicator_24) as AnimationDrawable
-    // The paused drawable will be a static drawable of an inactive equalizer.
     private val pausedIndicatorDrawable =
         context.getDrawableCompat(R.drawable.ic_paused_indicator_24)
-
-    // Required transformation matrices for the drawables.
     private val indicatorMatrix = Matrix()
     private val indicatorMatrixSrc = RectF()
     private val indicatorMatrixDst = RectF()
-
     private val settings = Settings(context)
 
     /**

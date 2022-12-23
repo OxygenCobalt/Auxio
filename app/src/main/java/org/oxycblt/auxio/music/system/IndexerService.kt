@@ -164,11 +164,16 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
 
     // --- INTERNAL ---
 
+    /**
+     * Update the current state to "Active", in which the service signals that music
+     * loading is on-going.
+     * @param state The current music loading state.
+     */
     private fun updateActiveSession(state: Indexer.Indexing) {
         // When loading, we want to enter the foreground state so that android does
         // not shut off the loading process. Note that while we will always post the
         // notification when initially starting, we will not update the notification
-        // unless it indicates that we have changed it.
+        // unless it indicates that it has changed.
         val changed = indexingNotification.updateIndexingState(state)
         if (!foregroundManager.tryStartForeground(indexingNotification) && changed) {
             logD("Notification changed, re-posting notification")
@@ -178,6 +183,10 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         wakeLock.acquireSafe()
     }
 
+    /**
+     * Update the current state to "Idle", in which it either does nothing or signals
+     * that it's currently monitoring the music library for changes.
+     */
     private fun updateIdleSession() {
         if (settings.shouldBeObserving) {
             // There are a few reasons why we stay in the foreground with automatic rescanning:
@@ -199,6 +208,9 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         wakeLock.releaseSafe()
     }
 
+    /**
+     * Utility to safely acquire a [PowerManager.WakeLock] without crashes/inefficiency.
+     */
     private fun PowerManager.WakeLock.acquireSafe() {
         // Avoid unnecessary acquire calls.
         if (!wakeLock.isHeld) {
@@ -210,6 +222,9 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         }
     }
 
+    /**
+     * Utility to safely release a [PowerManager.WakeLock] without crashes/inefficiency.
+     */
     private fun PowerManager.WakeLock.releaseSafe() {
         // Avoid unnecessary release calls.
         if (wakeLock.isHeld) {
@@ -277,16 +292,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     }
 
     companion object {
-        /**
-         * The amount of time to hold the wake lock when loading music, in milliseconds.
-         * Equivalent to one minute.
-         */
         private const val WAKELOCK_TIMEOUT_MS = 60 * 1000L
-
-        /**
-         * The amount of time to wait between a change in the music library and to start
-         * the music loading process, in milliseconds. Equivalent to half a second.
-         */
         private const val REINDEX_DELAY_MS = 500L
     }
 }

@@ -27,7 +27,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * [RecyclerView.Adapter] that manages a list of [Directory] instances.
- * @param listener [Listener] for list interactions.
+ * @param listener A [DirectoryAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class DirectoryAdapter(private val listener: Listener) : RecyclerView.Adapter<MusicDirViewHolder>() {
@@ -78,23 +78,34 @@ class DirectoryAdapter(private val listener: Listener) : RecyclerView.Adapter<Mu
         notifyItemRemoved(idx)
     }
 
-    /**
-     * A Listener for [DirectoryAdapter] interactions.
-     */
+    /** A Listener for [DirectoryAdapter] interactions. */
     interface Listener {
         fun onRemoveDirectory(dir: Directory)
     }
 }
 
-/** The viewholder for [DirectoryAdapter]. Not intended for use in other adapters. */
+/**
+ * A [RecyclerView.Recycler] that displays a [Directory]. Use [new] to create an instance.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class MusicDirViewHolder private constructor(private val binding: ItemMusicDirBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
-    fun bind(item: Directory, listener: DirectoryAdapter.Listener) {
-        binding.dirPath.text = item.resolveName(binding.context)
-        binding.dirDelete.setOnClickListener { listener.onRemoveDirectory(item) }
+    /**
+     * Bind new data to this instance.
+     * @param dir The new [Directory] to bind.
+     * @param listener A [DirectoryAdapter.Listener] to bind interactions to.
+     */
+    fun bind(dir: Directory, listener: DirectoryAdapter.Listener) {
+        binding.dirPath.text = dir.resolveName(binding.context)
+        binding.dirDelete.setOnClickListener { listener.onRemoveDirectory(dir) }
     }
 
     companion object {
+        /**
+         * Create a new instance.
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
         fun new(parent: View) =
             MusicDirViewHolder(ItemMusicDirBinding.inflate(parent.context.inflater))
     }

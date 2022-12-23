@@ -29,7 +29,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * An adapter responsible for showing a list of [Artist] choices in [ArtistPickerDialog].
- * @param listener A [BasicListListener] for list interactions.
+ * @param listener A [BasicListListener] to bind interactions to.
  * @author OxygenCobalt.
  */
 class ArtistChoiceAdapter(private val listener: BasicListListener) :
@@ -45,8 +45,8 @@ class ArtistChoiceAdapter(private val listener: BasicListListener) :
         holder.bind(artists[position], listener)
 
     /**
-     * Immediately update the tab array. This should be used when initializing the list.
-     * @param newTabs The new array of tabs to show.
+     * Immediately update the [Artist] choices.
+     * @param newArtists The new [Artist]s to show.
      */
     fun submitList(newArtists: List<Artist>) {
         if (newArtists != artists) {
@@ -58,7 +58,7 @@ class ArtistChoiceAdapter(private val listener: BasicListListener) :
 
 /**
  * A [DialogRecyclerView.ViewHolder] that displays a smaller variant of a typical
- * [Artist] item, for use with [ArtistChoiceAdapter]. Use [new] to instantiate a new instance.
+ * [Artist] item, for use with [ArtistChoiceAdapter]. Use [new] to create an instance.
  */
 class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {

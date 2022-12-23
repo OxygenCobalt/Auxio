@@ -59,8 +59,7 @@ class MusicDirsDialog :
             .setPositiveButton(R.string.lbl_save) { _, _ ->
                 val dirs = settings.getMusicDirs(storageManager)
                 val newDirs =
-                    MusicDirectories(
-                        dirs = dirAdapter.dirs, shouldInclude = isUiModeInclude(requireBinding()))
+                    MusicDirectories(dirAdapter.dirs, isUiModeInclude(requireBinding()))
                 if (dirs != newDirs) {
                     logD("Committing changes")
                     settings.setMusicDirs(newDirs)
@@ -70,7 +69,7 @@ class MusicDirsDialog :
 
     override fun onBindingCreated(binding: DialogMusicDirsBinding, savedInstanceState: Bundle?) {
         val launcher =
-            registerForActivityResult(ActivityResultContracts.OpenDocumentTree(), ::addDocTreePath)
+            registerForActivityResult(ActivityResultContracts.OpenDocumentTree(), ::addDocumentTreeUriToDirs)
 
         // Now that the dialog exists, we get the view manually when the dialog is shown
         // and override its click listener so that the dialog does not auto-dismiss when we
@@ -78,7 +77,6 @@ class MusicDirsDialog :
         // and the app from crashing in the latter.
         requireDialog().setOnShowListener {
             val dialog = it as AlertDialog
-
             dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setOnClickListener {
                 logD("Opening launcher")
                 launcher.launch(null)
@@ -94,7 +92,6 @@ class MusicDirsDialog :
 
         if (savedInstanceState != null) {
             val pendingDirs = savedInstanceState.getStringArrayList(KEY_PENDING_DIRS)
-
             if (pendingDirs != null) {
                 dirs =
                     MusicDirectories(
@@ -136,33 +133,32 @@ class MusicDirsDialog :
         requireBinding().dirsEmpty.isVisible = dirAdapter.dirs.isEmpty()
     }
 
-    private fun addDocTreePath(uri: Uri?) {
+    /**
+     * Add a Document Tree [Uri] chosen by the user to the current [MusicDirectories] instance.
+     * @param uri The document tree [Uri] to add, chosen by the user. Will do nothing if the [Uri]
+     * is null or not valid.
+     */
+    private fun addDocumentTreeUriToDirs(uri: Uri?) {
         if (uri == null) {
             // A null URI means that the user left the file picker without picking a directory
             logD("No URI given (user closed the dialog)")
             return
         }
 
-        val dir = parseExcludedUri(uri)
+        // Convert the document tree URI into it's relative path form, which can then be
+        // parsed into a Directory instance.
+        val docUri =
+            DocumentsContract.buildDocumentUriUsingTree(
+                uri, DocumentsContract.getTreeDocumentId(uri))
+        val treeUri = DocumentsContract.getTreeDocumentId(docUri)
+        val dir = Directory.fromDocumentTreeUri(storageManager, treeUri)
+
         if (dir != null) {
             dirAdapter.add(dir)
             requireBinding().dirsEmpty.isVisible = false
         } else {
             requireContext().showToast(R.string.err_bad_dir)
         }
-    }
-
-    private fun parseExcludedUri(uri: Uri): Directory? {
-        // Turn the raw URI into a document tree URI
-        val docUri =
-            DocumentsContract.buildDocumentUriUsingTree(
-                uri, DocumentsContract.getTreeDocumentId(uri))
-
-        // Turn it into a semi-usable path
-        val treeUri = DocumentsContract.getTreeDocumentId(docUri)
-
-        // Parsing handles the rest
-        return Directory.fromDocumentTreeUri(storageManager, treeUri)
     }
 
     private fun updateMode() {
@@ -174,6 +170,9 @@ class MusicDirsDialog :
         }
     }
 
+    /**
+     * Get if the UI has currently configured [MusicDirectories.shouldInclude] to be true.
+     */
     private fun isUiModeInclude(binding: DialogMusicDirsBinding) =
         binding.folderModeGroup.checkedButtonId == R.id.dirs_mode_include
 

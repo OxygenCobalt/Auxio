@@ -110,7 +110,7 @@ inline fun String.splitEscaped(selector: (Char) -> Boolean): MutableList<String>
     }
 
     if (currentString.isNotEmpty()) {
-        // Had an in-progress split string we should add.
+        // Had an in-progress split string that is now terminated, add it..
         split.add(currentString.trim())
     }
 

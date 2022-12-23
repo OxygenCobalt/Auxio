@@ -109,9 +109,7 @@ class ObservingNotification(context: Context) : ServiceNotification(context, IND
         get() = IntegerTable.INDEXER_NOTIFICATION_CODE
 }
 
-/**
- * Shared channel that [IndexingNotification] and [ObservingNotification] post to.
- */
+/** Notification channel shared by [IndexingNotification] and [ObservingNotification]. */
 private val INDEXER_CHANNEL =
     ServiceNotification.ChannelInfo(
         id = BuildConfig.APPLICATION_ID + ".channel.INDEXER", nameRes = R.string.lbl_indexer)

@@ -44,9 +44,7 @@ object Images {
             }
         }
 
-        // Use whatever size coil gives us to create the mosaic, rounding it to even so that we
-        // get a symmetrical mosaic [and to prevent bugs]. If there is no size, default to a
-        // 512x512 mosaic.
+        // Use whatever size coil gives us to create the mosaic.
         val mosaicSize = AndroidSize(size.width.mosaicSize(), size.height.mosaicSize())
         val mosaicFrameSize =
             Size(Dimension(mosaicSize.width / 2), Dimension(mosaicSize.height / 2))
@@ -65,16 +63,13 @@ object Images {
                 break
             }
 
-            // Run the bitmap through a transform to make sure it's a square of the desired
-            // resolution.
+            // Run the bitmap through a transform to reflect the configuration of other images.
             val bitmap =
                 SquareFrameTransform.INSTANCE.transform(
                     BitmapFactory.decodeStream(stream), mosaicFrameSize)
-
             canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
 
             x += bitmap.width
-
             if (x == mosaicSize.width) {
                 x = 0
                 y += bitmap.height
@@ -90,6 +85,11 @@ object Images {
             dataSource = DataSource.DISK)
     }
 
+    /**
+     * Get an image dimension suitable to create a mosaic with.
+     * @return A pixel dimension derived from the given [Dimension] that will always be even,
+     * allowing it to be sub-divided.
+     */
     private fun Dimension.mosaicSize(): Int {
         val size = pxOrElse { 512 }
         return if (size.mod(2) > 0) size + 1 else size

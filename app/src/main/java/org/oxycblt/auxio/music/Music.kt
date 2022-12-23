@@ -167,20 +167,13 @@ sealed class Music : Item {
         override fun toString() = "${format.namespace}:${mode.intCode.toString(16)}-$uuid"
 
         /**
-         * Defines the format of this [UID].
-         * @param namespace The namespace that will be used in the [UID]'s string representation
-         * to indicate the format.
+         * Internal marker of [Music.UID] format type.
+         * @param namespace Namespace to use in the [Music.UID]'s string representation.
          */
         private enum class Format(val namespace: String) {
-            /**
-             * Auxio-style [UID]s derived from hash of the*non-subjective, unlikely-to-change
-             * metadata.
-             */
+            /** @see auxio */
             AUXIO("org.oxycblt.auxio"),
-
-            /**
-             * Auxio-style [UID]s derived from a MusicBrainz ID.
-             */
+            /** @see musicBrainz */
             MUSICBRAINZ("org.musicbrainz")
         }
 
@@ -250,9 +243,7 @@ sealed class Music : Item {
     }
 
     companion object {
-        /**
-         * Cached collator instance to be used with [makeCollationKeyImpl].
-         */
+        /** Cached collator instance re-used with [makeCollationKeyImpl]. */
         private val COLLATOR = Collator.getInstance().apply { strength = Collator.PRIMARY }
     }
 }
@@ -308,23 +299,21 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     override val collationKey = makeCollationKeyImpl()
     override fun resolveName(context: Context) = rawName
 
-    /**
-     * The track number. Will be null if no valid track number was present in the metadata.
-     */
+    /** The track number. Will be null if no valid track number was present in the metadata. */
     val track = raw.track
-    /**
-     * The disc number. Will be null if no valid disc number was present in the metadata.
-     */
+
+    /** The disc number. Will be null if no valid disc number was present in the metadata. */
     val disc = raw.disc
-    /**
-     * The release [Date]. Will be null if no valid date was present in the metadata.
-     */
+
+    /** The release [Date]. Will be null if no valid date was present in the metadata. */
     val date = raw.date
+
     /**
      * The URI to the audio file that this instance was created from. This can be used to
      * access the audio file in a way that is scoped-storage-safe.
      */
     val uri = requireNotNull(raw.mediaStoreId) { "Invalid raw: No id" }.toAudioUri()
+
     /**
      * The [Path] to this audio file. This is only intended for display, [uri] should be
      * favored instead for accessing the audio file.
@@ -333,24 +322,20 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         Path(
             name = requireNotNull(raw.fileName) { "Invalid raw: No display name" },
             parent = requireNotNull(raw.directory) { "Invalid raw: No parent directory" })
-    /**
-     * The [MimeType] of the audio file. Only intended for display.
-     */
+
+    /** The [MimeType] of the audio file. Only intended for display. */
     val mimeType =
         MimeType(
             fromExtension = requireNotNull(raw.extensionMimeType) { "Invalid raw: No mime type" },
             fromFormat = raw.formatMimeType)
-    /**
-     * The size of the audio file, in bytes.
-     */
+
+    /** The size of the audio file, in bytes. */
     val size = requireNotNull(raw.size) { "Invalid raw: No size" }
-    /**
-     * The duration of the audio file, in milliseconds.
-     */
+
+    /** The duration of the audio file, in milliseconds. */
     val durationMs = requireNotNull(raw.durationMs) { "Invalid raw: No duration" }
-    /**
-     * The date the audio file was added to the device, as a unix epoch timestamp.
-     */
+
+    /** The date the audio file was added to the device, as a unix epoch timestamp. */
     val dateAdded = requireNotNull(raw.dateAdded) { "Invalid raw: No date added" }
 
     private var _album: Album? = null
@@ -532,109 +517,57 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
          * ID is highly unstable and should only be used for accessing the audio file.
          */
         var mediaStoreId: Long? = null,
-        /**
-         * @see Song.dateAdded
-         */
+        /** @see Song.dateAdded */
         var dateAdded: Long? = null,
-        /**
-         * The latest date the [Song]'s audio file was modified, as a unix epoch timestamp.
-         */
+        /** The latest date the [Song]'s audio file was modified, as a unix epoch timestamp. */
         var dateModified: Long? = null,
-        /**
-         * @see Song.path
-         */
+        /** @see Song.path */
         var fileName: String? = null,
-        /**
-         * @see Song.path
-         */
+        /** @see Song.path */
         var directory: Directory? = null,
-        /**
-         * @see Song.size
-         */
+        /** @see Song.size */
         var size: Long? = null,
-        /**
-         * @see Song.durationMs
-         */
+        /** @see Song.durationMs */
         var durationMs: Long? = null,
-        /**
-         * @see Song.mimeType
-         */
+        /** @see Song.mimeType */
         var extensionMimeType: String? = null,
-        /**
-         * @see Song.mimeType
-         */
+        /** @see Song.mimeType */
         var formatMimeType: String? = null,
-        /**
-         * @see Music.UID
-         */
+        /** @see Music.UID */
         var musicBrainzId: String? = null,
-        /**
-         * @see Music.rawName
-         */
+        /** @see Music.rawName */
         var name: String? = null,
-        /**
-         * @see Music.rawSortName
-         */
+        /** @see Music.rawSortName */
         var sortName: String? = null,
-        /**
-         * @see Song.track
-         */
+        /** @see Song.track */
         var track: Int? = null,
-        /**
-         * @see Song.disc
-         */
+        /** @see Song.disc */
         var disc: Int? = null,
-        /**
-         * @see Song.date
-         */
+        /** @see Song.date */
         var date: Date? = null,
-        /**
-         * @see Album.Raw.mediaStoreId
-         */
+        /** @see Album.Raw.mediaStoreId */
         var albumMediaStoreId: Long? = null,
-        /**
-         * @see Album.Raw.musicBrainzId
-         */
+        /** @see Album.Raw.musicBrainzId */
         var albumMusicBrainzId: String? = null,
-        /**
-         * @see Album.Raw.name
-         */
+        /** @see Album.Raw.name */
         var albumName: String? = null,
-        /**
-         * @see Album.Raw.sortName
-         */
+        /** @see Album.Raw.sortName */
         var albumSortName: String? = null,
-        /**
-         * @see Album.Raw.type
-         */
+        /** @see Album.Raw.type */
         var albumTypes: List<String> = listOf(),
-        /**
-         * @see Artist.Raw.musicBrainzId
-         */
+        /** @see Artist.Raw.musicBrainzId */
         var artistMusicBrainzIds: List<String> = listOf(),
-        /**
-         * @see Artist.Raw.name
-         */
+        /** @see Artist.Raw.name */
         var artistNames: List<String> = listOf(),
-        /**
-         * @see Artist.Raw.sortName
-         */
+        /** @see Artist.Raw.sortName */
         var artistSortNames: List<String> = listOf(),
-        /**
-         * @see Artist.Raw.musicBrainzId
-         */
+        /** @see Artist.Raw.musicBrainzId */
         var albumArtistMusicBrainzIds: List<String> = listOf(),
-        /**
-         * @see Artist.Raw.name
-         */
+        /** @see Artist.Raw.name */
         var albumArtistNames: List<String> = listOf(),
-        /**
-         * @see Artist.Raw.sortName
-         */
+        /** @see Artist.Raw.sortName */
         var albumArtistSortNames: List<String> = listOf(),
-        /**
-         * @see Genre.Raw
-         */
+        /** @see Genre.Raw.name */
         var genreNames: List<String> = listOf()
     )
 }
@@ -669,23 +602,24 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
      * TODO: Date ranges?
      */
     val date: Date?
+
     /**
      * The [Type] of this album, signifying the type of release it actually is.
      * Defaults to [Type.Album].
      */
+
     val type = raw.type ?: Type.Album(null)
     /**
      * The URI to a MediaStore-provided album cover. These images will be fast to load, but
      * at the cost of image quality.
      */
+
     val coverUri = raw.mediaStoreId.toCoverUri()
-    /**
-     * The duration of all songs in the album, in milliseconds.
-     */
+
+    /** The duration of all songs in the album, in milliseconds. */
     val durationMs: Long
-    /**
-     * The earliest date a song in this album was added, as a unix epoch timestamp.
-     */
+
+    /** The earliest date a song in this album was added, as a unix epoch timestamp. */
     val dateAdded: Long
 
     init {
@@ -798,9 +732,7 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
          */
         abstract val refinement: Refinement?
     
-        /**
-         * The string resource corresponding to the name of this release type to show in the UI.
-         */
+        /** The string resource corresponding to the name of this release type to show in the UI. */
         abstract val stringRes: Int
     
         /**
@@ -999,33 +931,27 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
          * cover art.
          */
         val mediaStoreId: Long,
-        /**
-         * @see Music.uid
-         */
+        /** @see Music.uid */
         val musicBrainzId: UUID?,
-        /**
-         * @see Music.rawName
-         */
+        /** @see Music.rawName */
         val name: String,
-        /**
-         * @see Music.rawSortName
-         */
+        /** @see Music.rawSortName */
         val sortName: String?,
-        /**
-         * @see Album.type
-         */
+        /** @see Album.type */
         val type: Type?,
-        /**
-         * @see Artist.Raw.name
-         */
+        /** @see Artist.Raw.name */
         val rawArtists: List<Artist.Raw>
     ) {
+        // Albums are grouped as follows:
+        // - If we have a MusicBrainz ID, only group by it. This allows different Albums with the
+        // same name to be differentiated, which is common in large libraries.
+        // - If we do not have a MusicBrainz ID, compare by the lowercase album name and lowercase
+        // artist name. This allows for case-insensitive artist/album grouping, which can be common
+        // for albums/artists that have different naming (ex. "RAMMSTEIN" vs. "Rammstein").
+
         // Cache the hash-code for HashMap efficiency.
         private val hashCode =
             musicBrainzId?.hashCode() ?: (31 * name.lowercase().hashCode() + rawArtists.hashCode())
-
-        // Make Album.Raw equality based on album name and raw artist lists in order to
-        // differentiate between albums with the same name but different artists.
 
         override fun hashCode() = hashCode
 
@@ -1068,11 +994,13 @@ class Artist constructor(private val raw: Raw, songAlbums: List<Music>) : MusicP
      * thus included in this list.
      */
     val albums: List<Album>
+
     /**
      * The duration of all [Song]s in the artist, in milliseconds.
      * Will be null if there are no songs.
      */
     val durationMs: Long?
+
     /**
      * Whether this artist is considered a "collaborator", i.e it is not directly credited on
      * any [Album].
@@ -1159,19 +1087,19 @@ class Artist constructor(private val raw: Raw, songAlbums: List<Music>) : MusicP
      * **This is only meant for use within the music package.**
      */
     class Raw(
-        /**
-         * @see Music.UID
-         */
+        /** @see Music.UID */
         val musicBrainzId: UUID? = null,
-        /**
-         * @see Music.rawName
-         */
+        /** @see Music.rawName */
         val name: String? = null,
-        /**
-         * @see Music.rawSortName
-         */
+        /** @see Music.rawSortName */
         val sortName: String? = null
     ) {
+        // Artists are grouped as follows:
+        // - If we have a MusicBrainz ID, only group by it. This allows different Artists with the
+        // same name to be differentiated, which is common in large libraries.
+        // - If we do not have a MusicBrainz ID, compare by the lowercase name. This allows artist
+        // grouping to be case-insensitive.
+
         // Cache the hashCode for HashMap efficiency.
         private val hashCode = musicBrainzId?.hashCode() ?: name?.lowercase().hashCode()
 
@@ -1271,6 +1199,10 @@ class Genre constructor(private val raw: Raw, override val songs: List<Song>) : 
          */
         val name: String? = null
     ) {
+        // Only group by the lowercase genre name. This allows Genre grouping to be
+        // case-insensitive, which may be helpful in some libraries with different ways of
+        // formatting genres.
+
         // Cache the hashCode for HashMap efficiency.
         private val hashCode = name?.lowercase().hashCode()
 
@@ -1361,22 +1293,16 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
     private fun StringBuilder.appendDate(): StringBuilder {
         // Construct an ISO-8601 date, dropping precision that doesn't exist.
-        append(year.toFixedString(4))
-        append("-${(month ?: return this).toFixedString(2)}")
-        append("-${(day ?: return this).toFixedString(2)}")
-        append("T${(hour ?: return this).toFixedString(2)}")
-        append(":${(minute ?: return this.append('Z')).toFixedString(2)}")
-        append(":${(second ?: return this.append('Z')).toFixedString(2)}")
+        append(year.toStringFixed(4))
+        append("-${(month ?: return this).toStringFixed(2)}")
+        append("-${(day ?: return this).toStringFixed(2)}")
+        append("T${(hour ?: return this).toStringFixed(2)}")
+        append(":${(minute ?: return this.append('Z')).toStringFixed(2)}")
+        append(":${(second ?: return this.append('Z')).toStringFixed(2)}")
         return this.append('Z')
     }
 
-    /**
-     * Converts an integer to a fixed-size [String] of the specified length.
-     * @param len The end length of the formatted [String].
-     * @return The integer as a formatted [String] prefixed with zeroes in order to make it
-     * the specified length.
-     */
-    private fun Int.toFixedString(len: Int) = toString().padStart(len, '0').substring(0 until len)
+    private fun Int.toStringFixed(len: Int) = toString().padStart(len, '0').substring(0 until len)
 
     companion object {
         /**

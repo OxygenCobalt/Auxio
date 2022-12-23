@@ -40,7 +40,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * An [DetailAdapter] implementing the header and sub-items for the [Album] detail view.
- * @param listener A [Listener] for list interactions.
+ * @param listener A [Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listener, DIFF_CALLBACK) {

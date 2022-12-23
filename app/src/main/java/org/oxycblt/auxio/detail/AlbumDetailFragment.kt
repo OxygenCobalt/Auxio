@@ -175,10 +175,7 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
         navModel.exploreNavigateTo(unlikelyToBeNull(detailModel.currentAlbum.value).artists)
     }
 
-    /**
-     * Update the currently displayed [Album].
-     * @param album The new [Album] to display. Null if there is no longer one.
-     */
+
     private fun updateAlbum(album: Album?) {
         if (album == null) {
             // Album we were showing no longer exists.
@@ -189,12 +186,6 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
         requireBinding().detailToolbar.title = album.resolveName(requireContext())
     }
 
-    /**
-     * Update the current playback state in the context of the currently displayed [Album].
-     * @param song The current [Song] playing.
-     * @param parent The current [MusicParent] playing, null if all songs.
-     * @param isPlaying Whether playback is ongoing or paused.
-     */
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         if (parent is Album && parent == unlikelyToBeNull(detailModel.currentAlbum.value)) {
             detailAdapter.setPlayingItem(song, isPlaying)
@@ -204,10 +195,6 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
         }
     }
 
-    /**
-     * Handle a navigation event.
-     * @param item The [Music] to navigate to, null if there is no item.
-     */
     private fun handleNavigation(item: Music?) {
         val binding = requireBinding()
         when (item) {
@@ -216,7 +203,7 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
             is Song -> {
                 if (unlikelyToBeNull(detailModel.currentAlbum.value) == item.album) {
                     logD("Navigating to a song in this album")
-                    scrollToItem(item)
+                    scrollToAlbumSong(item)
                     navModel.finishExploreNavigation()
                 } else {
                     logD("Navigating to another album")
@@ -250,11 +237,7 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
         }
     }
 
-    /**
-     * Scroll to a [Song] within the [Album] view, assuming that it is present.
-     * @param song The song to try to scroll to.
-     */
-    private fun scrollToItem(song: Song) {
+    private fun scrollToAlbumSong(song: Song) {
         // Calculate where the item for the currently played song is
         val pos = detailModel.albumList.value.indexOf(song)
 
@@ -293,10 +276,6 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
         }
     }
 
-    /**
-     * Update the current item selection.
-     * @param selected The list of selected items.
-     */
     private fun updateSelection(selected: List<Music>) {
         detailAdapter.setSelectedItems(selected)
         requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
