@@ -39,6 +39,7 @@ enum class CoverMode {
 
     /**
      * The integer representation of this instance.
+     * @see fromIntCode
      */
     val intCode: Int
         get() =
@@ -50,9 +51,10 @@ enum class CoverMode {
 
     companion object {
         /**
-         * Convert a [CoverMode], integer representation into an instance.
+         * Convert a [CoverMode] integer representation into an instance.
          * @param intCode An integer representation of a [CoverMode]
          * @return The corresponding [CoverMode], or null if the [CoverMode] is invalid.
+         * @see intCode
          */
         fun fromIntCode(intCode: Int) =
             when (intCode) {

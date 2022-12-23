@@ -59,7 +59,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
         var tabs = settings.libTabs
         // Try to restore a pending tab configuration that was saved prior.
         if (savedInstanceState != null) {
-            val savedTabs = Tab.fromSequence(savedInstanceState.getInt(KEY_TABS))
+            val savedTabs = Tab.fromIntCode(savedInstanceState.getInt(KEY_TABS))
             if (savedTabs != null) {
                 tabs = savedTabs
             }
@@ -76,7 +76,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         // Save any pending tab configurations to restore from when this dialog is re-created.
-        outState.putInt(KEY_TABS, Tab.toSequence(tabAdapter.tabs))
+        outState.putInt(KEY_TABS, Tab.toIntCode(tabAdapter.tabs))
     }
 
     override fun onDestroyBinding(binding: DialogTabsBinding) {

@@ -31,7 +31,7 @@ import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.storage.Directory
-import org.oxycblt.auxio.music.storage.MusicDirs
+import org.oxycblt.auxio.music.storage.MusicDirectories
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
@@ -196,12 +196,12 @@ class Settings(private val context: Context, private val callback: Callback? = n
     /** The current library tabs preferred by the user. */
     var libTabs: Array<Tab>
         get() =
-            Tab.fromSequence(
+            Tab.fromIntCode(
                 inner.getInt(context.getString(R.string.set_key_lib_tabs), Tab.SEQUENCE_DEFAULT))
-                ?: unlikelyToBeNull(Tab.fromSequence(Tab.SEQUENCE_DEFAULT))
+                ?: unlikelyToBeNull(Tab.fromIntCode(Tab.SEQUENCE_DEFAULT))
         set(value) {
             inner.edit {
-                putInt(context.getString(R.string.set_key_lib_tabs), Tab.toSequence(value))
+                putInt(context.getString(R.string.set_key_lib_tabs), Tab.toIntCode(value))
                 apply()
             }
         }
@@ -256,7 +256,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
     /** What queue to create when a song is selected from the library or search */
     val libPlaybackMode: MusicMode
         get() =
-            MusicMode.fromInt(
+            MusicMode.fromIntCode(
                 inner.getInt(
                     context.getString(R.string.set_key_library_song_playback_mode), Int.MIN_VALUE))
                 ?: MusicMode.SONGS
@@ -267,7 +267,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
      */
     val detailPlaybackMode: MusicMode?
         get() =
-            MusicMode.fromInt(
+            MusicMode.fromIntCode(
                 inner.getInt(
                     context.getString(R.string.set_key_detail_song_playback_mode), Int.MIN_VALUE))
 
@@ -302,21 +302,21 @@ class Settings(private val context: Context, private val callback: Callback? = n
         get() = inner.getBoolean(context.getString(R.string.set_key_exclude_non_music), true)
 
     /** Get the list of directories that music should be hidden/loaded from. */
-    fun getMusicDirs(storageManager: StorageManager): MusicDirs {
+    fun getMusicDirs(storageManager: StorageManager): MusicDirectories {
         val dirs =
             (inner.getStringSet(context.getString(R.string.set_key_music_dirs), null) ?: emptySet())
-                .mapNotNull { Directory.fromDocumentUri(storageManager, it) }
+                .mapNotNull { Directory.fromDocumentTreeUri(storageManager, it) }
 
-        return MusicDirs(
+        return MusicDirectories(
             dirs, inner.getBoolean(context.getString(R.string.set_key_music_dirs_include), false))
     }
 
     /** Set the list of directories that music should be hidden/loaded from. */
-    fun setMusicDirs(musicDirs: MusicDirs) {
+    fun setMusicDirs(musicDirs: MusicDirectories) {
         inner.edit {
             putStringSet(
                 context.getString(R.string.set_key_music_dirs),
-                musicDirs.dirs.map(Directory::toDocumentUri).toSet())
+                musicDirs.dirs.map(Directory::toDocumentTreeUri).toSet())
             putBoolean(
                 context.getString(R.string.set_key_music_dirs_include), musicDirs.shouldInclude)
             apply()
@@ -339,7 +339,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
     /** The current filter mode of the search tab */
     var searchFilterMode: MusicMode?
         get() =
-            MusicMode.fromInt(
+            MusicMode.fromIntCode(
                 inner.getInt(context.getString(R.string.set_key_search_filter), Int.MIN_VALUE))
         set(value) {
             inner.edit {

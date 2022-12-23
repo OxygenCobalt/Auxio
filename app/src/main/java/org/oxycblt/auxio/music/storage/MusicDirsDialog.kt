@@ -40,8 +40,8 @@ import org.oxycblt.auxio.util.showToast
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MusicDirsDialog :
-    ViewBindingDialogFragment<DialogMusicDirsBinding>(), MusicDirAdapter.Listener {
-    private val dirAdapter = MusicDirAdapter(this)
+    ViewBindingDialogFragment<DialogMusicDirsBinding>(), DirectoryAdapter.Listener {
+    private val dirAdapter = DirectoryAdapter(this)
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
     private val storageManager: StorageManager by lifecycleObject { binding ->
         binding.context.getSystemServiceCompat(StorageManager::class)
@@ -59,7 +59,7 @@ class MusicDirsDialog :
             .setPositiveButton(R.string.lbl_save) { _, _ ->
                 val dirs = settings.getMusicDirs(storageManager)
                 val newDirs =
-                    MusicDirs(
+                    MusicDirectories(
                         dirs = dirAdapter.dirs, shouldInclude = isUiModeInclude(requireBinding()))
                 if (dirs != newDirs) {
                     logD("Committing changes")
@@ -97,8 +97,8 @@ class MusicDirsDialog :
 
             if (pendingDirs != null) {
                 dirs =
-                    MusicDirs(
-                        pendingDirs.mapNotNull { Directory.fromDocumentUri(storageManager, it) },
+                    MusicDirectories(
+                        pendingDirs.mapNotNull { Directory.fromDocumentTreeUri(storageManager, it) },
                         savedInstanceState.getBoolean(KEY_PENDING_MODE))
             }
         }
@@ -162,7 +162,7 @@ class MusicDirsDialog :
         val treeUri = DocumentsContract.getTreeDocumentId(docUri)
 
         // Parsing handles the rest
-        return Directory.fromDocumentUri(storageManager, treeUri)
+        return Directory.fromDocumentTreeUri(storageManager, treeUri)
     }
 
     private fun updateMode() {

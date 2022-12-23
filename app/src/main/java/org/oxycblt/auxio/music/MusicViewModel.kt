@@ -24,18 +24,24 @@ import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.util.logD
 
 /**
- * A ViewModel representing the current indexing state.
+ * A [ViewModel] providing data specific to the music loading process.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MusicViewModel : ViewModel(), Indexer.Callback {
     private val indexer = Indexer.getInstance()
 
     private val _indexerState = MutableStateFlow<Indexer.State?>(null)
-    /** The current music indexing state. */
+    /**
+     * The current music loading state, or null if no loading is going on.
+     * @see Indexer.State
+     */
     val indexerState: StateFlow<Indexer.State?> = _indexerState
 
     private val _statistics = MutableStateFlow<Statistics?>(null)
-    /** The current statistics of the music library. */
+    /**
+     * Statistics about the last completed music load.
+     * @see Statistics
+     */
     val statistics: StateFlow<Statistics?>
         get() = _statistics
 
@@ -43,16 +49,14 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
         indexer.registerCallback(this)
     }
 
-    /** Re-index the music library while using the cache. */
-    fun reindex(ignoreCache: Boolean) {
-        indexer.requestReindex(ignoreCache)
+    override fun onCleared() {
+        indexer.unregisterCallback(this)
     }
 
     override fun onIndexerStateChanged(state: Indexer.State?) {
-        logD("New state: $state")
         _indexerState.value = state
-
         if (state is Indexer.State.Complete && state.response is Indexer.Response.Ok) {
+            // New state is a completed library, update the statistics values.
             val library = state.response.library
             _statistics.value =
                 Statistics(
@@ -64,21 +68,33 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
         }
     }
 
-    override fun onCleared() {
-        indexer.unregisterCallback(this)
+    /**
+     * Requests that the music library should be re-loaded while leveraging the cache.
+     */
+    fun refresh() {
+        indexer.requestReindex(true)
     }
 
-    /** Non-manipulated statistics about the music library. */
+    /**
+     * Requests that the music library should be re-loaded while ignoring the cache.
+     */
+    fun rescan() {
+        indexer.requestReindex(false)
+    }
+
+    /**
+     * Non-manipulated statistics bound the last successful music load.
+     * @param songs The amount of [Song]s that were loaded.
+     * @param albums The amount of [Album]s that were created.
+     * @param artists The amount of [Artist]s that were created.
+     * @param genres The amount of [Genre]s that were created.
+     * @param durationMs The total duration of all songs in the library, in milliseconds.
+     */
     data class Statistics(
-        /** The amount of songs. */
         val songs: Int,
-        /** The amount of albums. */
         val albums: Int,
-        /** The amount of artists. */
         val artists: Int,
-        /** The amount of genres. */
         val genres: Int,
-        /** The total duration of the music library. */
         val durationMs: Long
     )
 }

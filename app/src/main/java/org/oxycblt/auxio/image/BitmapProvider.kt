@@ -114,7 +114,6 @@ class BitmapProvider(private val context: Context) {
                                 }
                             }
                         })
-
         currentRequest = Request(context.imageLoader.enqueue(request.build()), target)
     }
 

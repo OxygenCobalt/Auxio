@@ -37,7 +37,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.ReleaseType
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.storage.MimeType
@@ -53,23 +52,6 @@ import org.oxycblt.auxio.util.*
  */
 class DetailViewModel(application: Application) :
     AndroidViewModel(application), MusicStore.Callback {
-    /**
-     * A simpler mapping of [ReleaseType] used for grouping and sorting songs.
-     * @param headerTitleRes The title string resource to use for a header created
-     * out of an instance of this enum.
-     */
-    private enum class ReleaseTypeGrouping(@StringRes val headerTitleRes: Int) {
-        ALBUMS(R.string.lbl_albums),
-        EPS(R.string.lbl_eps),
-        SINGLES(R.string.lbl_singles),
-        COMPILATIONS(R.string.lbl_compilations),
-        SOUNDTRACKS(R.string.lbl_soundtracks),
-        MIXES(R.string.lbl_mixes),
-        MIXTAPES(R.string.lbl_mixtapes),
-        LIVE(R.string.lbl_live_group),
-        REMIXES(R.string.lbl_remix_group),
-    }
-
     private val musicStore = MusicStore.getInstance()
     private val settings = Settings(application)
 
@@ -183,7 +165,8 @@ class DetailViewModel(application: Application) :
         }
 
         // If we are showing any item right now, we will need to refresh it (and any information
-        // related to it) with the new library in order to keep it fresh.
+        // related to it) with the new library in order to prevent stale items from showing up
+        // in the UI.
 
         val song = currentSong.value
         if (song != null) {
@@ -232,7 +215,7 @@ class DetailViewModel(application: Application) :
     /**
      * Set a new [currentAlbum] from it's [Music.UID]. If the [Music.UID] differs, [currentAlbum]
      * and [albumList] will be updated to align with the new [Album].
-     * @param uid The UID of the [Album] to update to. Must be valid.
+     * @param uid The [Music.UID] of the [Album] to update [currentAlbum] to. Must be valid.
      */
     fun setAlbumUid(uid: Music.UID) {
         if (_currentAlbum.value?.uid == uid) {
@@ -246,7 +229,7 @@ class DetailViewModel(application: Application) :
     /**
      * Set a new [currentArtist] from it's [Music.UID]. If the [Music.UID] differs, [currentArtist]
      * and [artistList] will be updated to align with the new [Artist].
-     * @param uid The UID of the [Album] to update to. Must be valid.
+     * @param uid The [Music.UID] of the [Artist] to update [currentArtist] to. Must be valid.
      */
     fun setArtistUid(uid: Music.UID) {
         if (_currentArtist.value?.uid == uid) {
@@ -260,7 +243,7 @@ class DetailViewModel(application: Application) :
     /**
      * Set a new [currentGenre] from it's [Music.UID]. If the [Music.UID] differs, [currentGenre]
      * and [genreList] will be updated to align with the new album.
-     * @param uid The UID of the [Album] to update to. Must be valid.
+     * @param uid The [Music.UID] of the [Genre] to update [currentGenre] to. Must be valid.
      */
     fun setGenreUid(uid: Music.UID) {
         if (_currentGenre.value?.uid == uid)  {
@@ -405,21 +388,21 @@ class DetailViewModel(application: Application) :
 
         val byReleaseGroup =
             albums.groupBy {
-                // Remap the complicated ReleaseType data structure into an easier
-                // "ReleaseTypeGrouping" enum that will automatically group and sort
+                // Remap the complicated Album.Type data structure into an easier
+                // "AlbumGrouping" enum that will automatically group and sort
                 // the artist's albums.
-                when (it.releaseType.refinement) {
-                    ReleaseType.Refinement.LIVE -> ReleaseTypeGrouping.LIVE
-                    ReleaseType.Refinement.REMIX -> ReleaseTypeGrouping.REMIXES
+                when (it.type.refinement) {
+                    Album.Type.Refinement.LIVE -> AlbumGrouping.LIVE
+                    Album.Type.Refinement.REMIX -> AlbumGrouping.REMIXES
                     null ->
-                        when (it.releaseType) {
-                            is ReleaseType.Album -> ReleaseTypeGrouping.ALBUMS
-                            is ReleaseType.EP -> ReleaseTypeGrouping.EPS
-                            is ReleaseType.Single -> ReleaseTypeGrouping.SINGLES
-                            is ReleaseType.Compilation -> ReleaseTypeGrouping.COMPILATIONS
-                            is ReleaseType.Soundtrack -> ReleaseTypeGrouping.SOUNDTRACKS
-                            is ReleaseType.Mix -> ReleaseTypeGrouping.MIXES
-                            is ReleaseType.Mixtape -> ReleaseTypeGrouping.MIXTAPES
+                        when (it.type) {
+                            is Album.Type.Album -> AlbumGrouping.ALBUMS
+                            is Album.Type.EP -> AlbumGrouping.EPS
+                            is Album.Type.Single -> AlbumGrouping.SINGLES
+                            is Album.Type.Compilation -> AlbumGrouping.COMPILATIONS
+                            is Album.Type.Soundtrack -> AlbumGrouping.SOUNDTRACKS
+                            is Album.Type.Mix -> AlbumGrouping.MIXES
+                            is Album.Type.Mixtape -> AlbumGrouping.MIXTAPES
                         }
                 }
             }
@@ -454,5 +437,22 @@ class DetailViewModel(application: Application) :
         data.add(SortHeader(R.string.lbl_songs))
         data.addAll(genreSort.songs(genre.songs))
         _genreData.value = data
+    }
+
+    /**
+     * A simpler mapping of [Album.Type] used for grouping and sorting songs.
+     * @param headerTitleRes The title string resource to use for a header created
+     * out of an instance of this enum.
+     */
+    private enum class AlbumGrouping(@StringRes val headerTitleRes: Int) {
+        ALBUMS(R.string.lbl_albums),
+        EPS(R.string.lbl_eps),
+        SINGLES(R.string.lbl_singles),
+        COMPILATIONS(R.string.lbl_compilations),
+        SOUNDTRACKS(R.string.lbl_soundtracks),
+        MIXES(R.string.lbl_mixes),
+        MIXTAPES(R.string.lbl_mixtapes),
+        LIVE(R.string.lbl_live_group),
+        REMIXES(R.string.lbl_remix_group),
     }
 }

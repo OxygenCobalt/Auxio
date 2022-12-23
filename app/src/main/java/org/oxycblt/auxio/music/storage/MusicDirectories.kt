@@ -16,6 +16,3 @@
  */
  
 package org.oxycblt.auxio.music.storage
-
-/** Represents a the configuration for the "Folder Management" setting */
-data class MusicDirs(val dirs: List<Directory>, val shouldInclude: Boolean)

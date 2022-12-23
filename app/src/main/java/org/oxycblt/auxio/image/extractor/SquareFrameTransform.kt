@@ -24,8 +24,8 @@ import coil.transform.Transformation
 import kotlin.math.min
 
 /**
- * A transformation that performs a center crop-style transformation on an image, however unlike the
- * actual ScaleType, this isn't affected by any hacks we do with ImageView itself.
+ * A transformation that performs a center crop-style transformation on an image. Allowing this
+ * behavior to be intrinsic without any view configuration.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SquareFrameTransform : Transformation {
@@ -38,20 +38,21 @@ class SquareFrameTransform : Transformation {
         val dstSize = min(input.width, input.height)
         val x = (input.width - dstSize) / 2
         val y = (input.height - dstSize) / 2
+        val dst = Bitmap.createBitmap(input, x, y, dstSize, dstSize)
 
         val desiredWidth = size.width.pxOrElse { dstSize }
         val desiredHeight = size.height.pxOrElse { dstSize }
-
-        val dst = Bitmap.createBitmap(input, x, y, dstSize, dstSize)
-
         if (dstSize != desiredWidth || dstSize != desiredHeight) {
+            // Image is not the desired size, upscale it.
             return Bitmap.createScaledBitmap(dst, desiredWidth, desiredHeight, true)
         }
-
         return dst
     }
 
     companion object {
+        /**
+         * A shared instance that can be re-used.
+         */
         val INSTANCE = SquareFrameTransform()
     }
 }

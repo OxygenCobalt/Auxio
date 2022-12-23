@@ -26,30 +26,40 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
-class MusicPickerViewModel : ViewModel(), MusicStore.Callback {
+/**
+ * a [ViewModel] that manages the current music picker state.
+ * TODO: This really shouldn't exist. Make it so that the dialogs just contain the music
+ * themselves and then exit if the library changes.
+ * TODO: While we are at it, let's go and add ClickableSpan too to reduce the extent of
+ * this dialog.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+class PickerViewModel : ViewModel(), MusicStore.Callback {
     private val musicStore = MusicStore.getInstance()
 
     private val _currentSong = MutableStateFlow<Song?>(null)
+    /**
+     * The current [Song] whose choices are being shown in the picker. Null if there is no [Song].
+     */
     val currentSong: StateFlow<Song?>
         get() = _currentSong
 
     private val _currentArtists = MutableStateFlow<List<Artist>?>(null)
+    /**
+     * The current [Artist] whose choices are being shown in the picker. Null/Empty if there is none.
+     */
     val currentArtists: StateFlow<List<Artist>?>
         get() = _currentArtists
 
-    fun setSongUid(uid: Music.UID) {
-        val library = unlikelyToBeNull(musicStore.library)
-        _currentSong.value = library.find(uid)
-        _currentArtists.value = _currentSong.value?.artists
-    }
-
-    fun setArtistUids(uids: Array<Music.UID>) {
-        val library = unlikelyToBeNull(musicStore.library)
-        _currentArtists.value = uids.mapNotNull { library.find<Artist>(it) }.ifEmpty { null }
+    override fun onCleared() {
+        musicStore.removeCallback(this)
     }
 
     override fun onLibraryChanged(library: MusicStore.Library?) {
         if (library != null) {
+            // If we are showing any item right now, we will need to refresh it (and any information
+            // related to it) with the new library in order to prevent stale items from appearing
+            // in the UI.
             val song = _currentSong.value
             val artists = _currentArtists.value
             if (song != null) {
@@ -60,4 +70,25 @@ class MusicPickerViewModel : ViewModel(), MusicStore.Callback {
             }
         }
     }
+
+    /**
+     * Set a new [currentSong] from it's [Music.UID].
+     * @param uid The [Music.UID] of the [Song] to update to.
+     */
+    fun setSongUid(uid: Music.UID) {
+        val library = unlikelyToBeNull(musicStore.library)
+        _currentSong.value = library.find(uid)
+        _currentArtists.value = _currentSong.value?.artists
+    }
+
+    /**
+     * Set a new [currentArtists] list from a list of [Music.UID]'s.
+     * @param uids The [Music.UID]s of the [Artist]s to [currentArtists] to.
+     */
+    fun setArtistUids(uids: Array<Music.UID>) {
+        val library = unlikelyToBeNull(musicStore.library)
+        // Map the UIDs to artist instances and filter out the ones that can't be found.
+        _currentArtists.value = uids.mapNotNull { library.find<Artist>(it) }.ifEmpty { null }
+    }
+
 }

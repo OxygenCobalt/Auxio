@@ -28,6 +28,12 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.shared.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
 
+/**
+ * A [ViewBindingDialogFragment] that allows the user to configure the separator characters
+ * used to split tags with multiple values.
+ * TODO: Add saved state for pending configurations.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
 
@@ -39,6 +45,9 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
             .setTitle(R.string.set_separators)
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
+                // Create the separator list based on the checked configuration of each
+                // view element. It's generally more stable to duplicate this code instead
+                // of use a mapping that could feasibly drift from the actual layout.
                 var separators = ""
                 val binding = requireBinding()
                 if (binding.separatorComma.isChecked) separators += SEPARATOR_COMMA
@@ -53,10 +62,15 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
     override fun onBindingCreated(binding: DialogSeparatorsBinding, savedInstanceState: Bundle?) {
         for (child in binding.separatorGroup.children) {
             if (child is MaterialCheckBox) {
+                // Reset the CheckBox state so that we can ensure that state we load in
+                // from settings is not contaminated from the built-in CheckBox saved state.
                 child.isChecked = false
             }
         }
 
+        // More efficient to do one iteration through the separator list and initialize
+        // the corresponding CheckBox for each character instead of doing an iteration
+        // through the separator list for each CheckBox.
         settings.separators?.forEach {
             when (it) {
                 SEPARATOR_COMMA -> binding.separatorComma.isChecked = true
@@ -70,6 +84,7 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
     }
 
     companion object {
+        // TODO: Move these to a more "Correct" location?
         private const val SEPARATOR_COMMA = ','
         private const val SEPARATOR_SEMICOLON = ';'
         private const val SEPARATOR_SLASH = '/'

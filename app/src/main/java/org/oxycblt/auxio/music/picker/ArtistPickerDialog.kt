@@ -30,9 +30,16 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.shared.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 
+/**
+ * The base class for dialogs that implements common behavior across all [Artist] pickers.
+ * These are shown whenever what to do with an item's [Artist] is ambiguous, as there are
+ * multiple [Artist]'s to choose from.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 abstract class ArtistPickerDialog : ViewBindingDialogFragment<DialogMusicPickerBinding>(), BasicListListener {
-    protected val pickerModel: MusicPickerViewModel by viewModels()
-    private val artistAdapter = ArtistChoiceAdapter(this)
+    protected val pickerModel: PickerViewModel by viewModels()
+    // Okay to leak this since the Listener will not be called until after full initialization.
+    private val artistAdapter = ArtistChoiceAdapter(@Suppress("LeakingThis") this)
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogMusicPickerBinding.inflate(inflater)
@@ -46,8 +53,12 @@ abstract class ArtistPickerDialog : ViewBindingDialogFragment<DialogMusicPickerB
 
         collectImmediately(pickerModel.currentArtists) { artists ->
             if (!artists.isNullOrEmpty()) {
+                // Make sure the artist choices align with the current music library.
+                // TODO: I really don't think it makes sense to do this. I'd imagine it would
+                //  be more productive to just exit this dialog rather than try to update it.
                 artistAdapter.submitList(artists)
             } else {
+                // Not showing any choices, navigate up.
                 findNavController().navigateUp()
             }
         }

@@ -28,186 +28,109 @@ import android.os.Environment
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.provider.MediaStore
-import android.webkit.MimeTypeMap
-import com.google.android.exoplayer2.util.MimeTypes
-import java.io.File
 import java.lang.reflect.Method
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.lazyReflectedMethod
 
-/** A path to a file. [name] is the stripped file name, [parent] is the parent path. */
-data class Path(val name: String, val parent: Directory)
+// --- MEDIASTORE UTILITIES ---
 
 /**
- * A path to a directory. [volume] is the volume the directory resides in, and [relativePath] is the
- * path from the volume's root to the directory itself.
+ * A shortcut for querying the [ContentResolver] database.
+ * @param uri The [Uri] of content to retrieve.
+ * @param projection A list of SQL columns to query from the database.
+ * @param selector A SQL selection statement to filter results. Spaces where
+ * arguments should be filled in are represented with a "?".
+ * @param args The arguments used for the selector.
+ * @return A [Cursor] of the queried values, organized by the column projection.
+ * @throws IllegalStateException If the [ContentResolver] did not successfully return
+ * @see ContentResolver.query
+ * a queried [Cursor].
  */
-class Directory private constructor(val volume: StorageVolume, val relativePath: String) {
-    fun resolveName(context: Context) =
-        context.getString(R.string.fmt_path, volume.getDescriptionCompat(context), relativePath)
-
-    /** Converts this dir into an opaque document URI in the form of VOLUME:PATH. */
-    fun toDocumentUri() =
-        // "primary" actually corresponds to the internal storage, not the primary volume.
-        // Removable storage is represented with the UUID.
-        if (volume.isInternalCompat) {
-            "$DOCUMENT_URI_PRIMARY_NAME:$relativePath"
-        } else {
-            volume.uuidCompat?.let { uuid -> "$uuid:$relativePath" }
-        }
-
-    override fun hashCode(): Int {
-        var result = volume.hashCode()
-        result = 31 * result + relativePath.hashCode()
-        return result
-    }
-
-    override fun equals(other: Any?) =
-        other is Directory && other.volume == volume && other.relativePath == relativePath
-
-    companion object {
-        private const val DOCUMENT_URI_PRIMARY_NAME = "primary"
-
-        fun from(volume: StorageVolume, relativePath: String) =
-            Directory(
-                volume, relativePath.removePrefix(File.separator).removeSuffix(File.separator))
-
-        /**
-         * Converts an opaque document uri in the form of VOLUME:PATH into a [Directory]. This is a
-         * flagrant violation of the API convention, but since we never really write to the URI I
-         * really doubt it matters.
-         */
-        fun fromDocumentUri(storageManager: StorageManager, uri: String): Directory? {
-            val split = uri.split(File.pathSeparator, limit = 2)
-
-            val volume =
-                when (split[0]) {
-                    DOCUMENT_URI_PRIMARY_NAME -> storageManager.primaryStorageVolumeCompat
-                    else -> storageManager.storageVolumesCompat.find { it.uuidCompat == split[0] }
-                }
-
-            val relativePath = split.getOrNull(1)
-
-            return from(volume ?: return null, relativePath ?: return null)
-        }
-    }
-}
-
-/**
- * Represents a mime type as it is loaded by Auxio. [fromExtension] is based on the file extension
- * should always exist, while [fromFormat] is based on the file itself and may not be available.
- * @author Alexander Capehart (OxygenCobalt)
- */
-data class MimeType(val fromExtension: String, val fromFormat: String?) {
-    fun resolveName(context: Context): String {
-        // We try our best to produce a more readable name for the common audio formats.
-        val formatName =
-            when (fromFormat) {
-                // We start with the extracted mime types, as they are more consistent. Note that
-                // we do not include container formats at all with these names. It is only the
-                // inner codec that we show.
-                MimeTypes.AUDIO_MPEG,
-                MimeTypes.AUDIO_MPEG_L1,
-                MimeTypes.AUDIO_MPEG_L2 -> R.string.cdc_mp3
-                MimeTypes.AUDIO_AAC -> R.string.cdc_aac
-                MimeTypes.AUDIO_VORBIS -> R.string.cdc_vorbis
-                MimeTypes.AUDIO_OPUS -> R.string.cdc_opus
-                MimeTypes.AUDIO_FLAC -> R.string.cdc_flac
-                MimeTypes.AUDIO_WAV -> R.string.cdc_wav
-
-                // We don't give a name to more unpopular formats.
-
-                else -> -1
-            }
-
-        if (formatName > -1) {
-            return context.getString(formatName)
-        }
-
-        // Fall back to the file extension in the case that we have no mime type or
-        // a useless "audio/raw" mime type. Here:
-        // - We return names for container formats instead of the inner format, as we
-        // cannot parse the file.
-        // - We are at the mercy of the Android OS, hence we check for every possible mime
-        // type for a particular format.
-        val extensionName =
-            when (fromExtension) {
-                "audio/mpeg",
-                "audio/mp3" -> R.string.cdc_mp3
-                "audio/mp4",
-                "audio/mp4a-latm",
-                "audio/mpeg4-generic" -> R.string.cdc_mp4
-                "audio/aac",
-                "audio/aacp",
-                "audio/3gpp",
-                "audio/3gpp2" -> R.string.cdc_aac
-                "audio/ogg",
-                "application/ogg",
-                "application/x-ogg" -> R.string.cdc_ogg
-                "audio/flac" -> R.string.cdc_flac
-                "audio/wav",
-                "audio/x-wav",
-                "audio/wave",
-                "audio/vnd.wave" -> R.string.cdc_wav
-                "audio/x-matroska" -> R.string.cdc_mka
-                else -> -1
-            }
-
-        return if (extensionName > -1) {
-            context.getString(extensionName)
-        } else {
-            // Fall back to the extension if we can't find a special name for this format.
-            MimeTypeMap.getSingleton().getExtensionFromMimeType(fromExtension)?.uppercase()
-                ?: context.getString(R.string.def_codec)
-        }
-    }
-}
-
-/** Shortcut for making a [ContentResolver] query with less superfluous arguments. */
-fun ContentResolver.queryCursor(
+fun ContentResolver.safeQuery(
     uri: Uri,
     projection: Array<out String>,
     selector: String? = null,
     args: Array<String>? = null
-) = query(uri, projection, selector, args, null)
+) = requireNotNull(query(uri, projection, selector, args, null)) {
+    "ContentResolver query failed"
+}
 
-/** Shortcut for making a [ContentResolver] query and using the particular cursor with [use]. */
+/**
+ * A shortcut for [safeQuery] with [use] applied, automatically cleaning up the [Cursor]'s
+ * resources when no longer used.
+ * @param uri The [Uri] of content to retrieve.
+ * @param projection A list of SQL columns to query from the database.
+ * @param selector A SQL selection statement to filter results. Spaces where
+ * arguments should be filled in are represented with a "?".
+ * @param args The arguments used for the selector.
+ * @param block The block of code to run with the queried [Cursor]. Will not be ran if the
+ * [Cursor] is empty.
+ * @throws IllegalStateException If the [ContentResolver] did not successfully return
+ * @see ContentResolver.query
+ * a queried [Cursor].
+ */
 inline fun <reified R> ContentResolver.useQuery(
     uri: Uri,
     projection: Array<out String>,
     selector: String? = null,
     args: Array<String>? = null,
     block: (Cursor) -> R
-) = queryCursor(uri, projection, selector, args)?.use(block)
+) = safeQuery(uri, projection, selector, args).use(block)
 
 /**
- * For some reason the album cover URI namespace does not have a member in [MediaStore], but it
- * still works since at least API 21.
+ * Album art [MediaStore] database is not a built-in constant, have to define it ourselves.
  */
-private val EXTERNAL_ALBUM_ART_URI = Uri.parse("content://media/external/audio/albumart")
+private val EXTERNAL_COVERS_URI = Uri.parse("content://media/external/audio/albumart")
 
-/** Converts a [Long] Audio ID into a URI to that particular audio file. */
-val Long.audioUri: Uri
-    get() = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, this)
+/**
+ * Convert a [MediaStore] Song ID into a [Uri] to it's audio file.
+ * @return An external storage audio file [Uri]. May not exist.
+ * @see ContentUris.withAppendedId
+ * @see MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+ */
+fun Long.toAudioUri() = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, this)
 
-/** Converts a [Long] Album ID into a URI pointing to MediaStore-cached album art. */
-val Long.albumCoverUri: Uri
-    get() = ContentUris.withAppendedId(EXTERNAL_ALBUM_ART_URI, this)
+/**
+ * Convert a [MediaStore] Album ID into a [Uri] to it's system-provided album cover. This cover
+ * will be fast to load, but will be lower quality.
+ * @return An external storage image [Uri]. May not exist.
+ * @see ContentUris.withAppendedId
+ */
+fun Long.toCoverUri() = ContentUris.withAppendedId(EXTERNAL_COVERS_URI, this)
 
+// --- STORAGEMANAGER UTILITIES ---
+// Largely derived from Material Files: https://github.com/zhanghai/MaterialFiles
+
+/**
+ * Provides the analogous method to [StorageManager.getStorageVolumes] method that is usable from
+ * API 21 to API 23, in which the [StorageManager] API was hidden and differed greatly.
+ * @see StorageManager.getStorageVolumes
+ */
 @Suppress("NewApi")
 private val SM_API21_GET_VOLUME_LIST_METHOD: Method by
     lazyReflectedMethod(StorageManager::class, "getVolumeList")
 
+
+/**
+ * Provides the analogous method to [StorageVolume.getDirectory] method that is usable from
+ * API 21 to API 23, in which the [StorageVolume] API was hidden and differed greatly.
+ * @see StorageVolume.getDirectory
+ */
 @Suppress("NewApi")
 private val SV_API21_GET_PATH_METHOD: Method by lazyReflectedMethod(StorageVolume::class, "getPath")
 
-/** The "primary" storage volume containing the OS. May be an SD Card. */
+/**
+ * The [StorageVolume] considered the "primary" volume by the system, obtained in a
+ * version-compatible manner.
+ * @see StorageManager.getPrimaryStorageVolume
+ * @see StorageVolume.isPrimary
+ */
 val StorageManager.primaryStorageVolumeCompat: StorageVolume
     @Suppress("NewApi") get() = primaryStorageVolume
 
 /**
- * A list of recognized volumes, retrieved in a compatible manner. Note that these volumes may be
- * mounted or unmounted.
+ * The list of [StorageVolume]s currently recognized by [StorageManager], in a version-compatible
+ * manner.
+ * @see StorageManager.getStorageVolumes
  */
 val StorageManager.storageVolumesCompat: List<StorageVolume>
     get() =
@@ -218,14 +141,18 @@ val StorageManager.storageVolumesCompat: List<StorageVolume>
             (SM_API21_GET_VOLUME_LIST_METHOD.invoke(this) as Array<StorageVolume>).toList()
         }
 
-/** Returns the absolute path to a particular volume in a compatible manner. */
+/**
+ * The the absolute path to this [StorageVolume]'s directory within the file-system, in a
+ * version-compatible manner. Will be null if the [StorageVolume] cannot be read.
+ * @see StorageVolume.getDirectory
+ */
 val StorageVolume.directoryCompat: String?
     @SuppressLint("NewApi")
     get() =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             directory?.absolutePath
         } else {
-            // Replicate API: getPath if mounted, null if not
+            // Replicate API: Analogous method if mounted, null if not
             when (stateCompat) {
                 Environment.MEDIA_MOUNTED,
                 Environment.MEDIA_MOUNTED_READ_ONLY ->
@@ -234,37 +161,59 @@ val StorageVolume.directoryCompat: String?
             }
         }
 
-/** Get the readable description of the volume in a compatible manner. */
+/**
+ * Get the human-readable description of this volume, such as "Internal Shared Storage".
+ * @param context [Context] required to obtain human-readable string resources.
+ * @return A human-readable name for this volume.
+ */
 @SuppressLint("NewApi")
 fun StorageVolume.getDescriptionCompat(context: Context): String = getDescription(context)
 
-/** If this volume is the primary volume. May still be removable storage. */
+/**
+ * If this [StorageVolume] is considered the "Primary" volume where the Android System is
+ * kept. May still be a removable volume.
+ * @see StorageVolume.isPrimary
+ */
 val StorageVolume.isPrimaryCompat: Boolean
     @SuppressLint("NewApi") get() = isPrimary
 
-/** If this volume is emulated. */
+/**
+ * If this storage is "emulated", i.e intrinsic to the device, obtained in a version compatible
+ * manner.
+ * @see StorageVolume.isEmulated
+ */
 val StorageVolume.isEmulatedCompat: Boolean
     @SuppressLint("NewApi") get() = isEmulated
 
 /**
- * If this volume corresponds to "Internal shared storage", represented in document URIs as
- * "primary". These volumes are primary volumes, but are also non-removable and emulated.
+ * If this [StorageVolume] represents the "Internal Shared Storage" volume, also known as
+ * "primary" to [MediaStore] and Document [Uri]s, obtained in a version compatible manner.
  */
 val StorageVolume.isInternalCompat: Boolean
+    // Must contain the android system AND be an emulated drive, as non-emulated system
+    // volumes use their UUID instead of primary in MediaStore/Document URIs.
     get() = isPrimaryCompat && isEmulatedCompat
 
-/** Returns the UUID of the volume in a compatible manner. */
+/**
+ * The unique identifier for this [StorageVolume], obtained in a version compatible manner
+ * Can be null.
+ * @see StorageVolume.getUuid
+ */
 val StorageVolume.uuidCompat: String?
     @SuppressLint("NewApi") get() = uuid
 
-/** Returns the state of the volume in a compatible manner. */
+/**
+ * The current state of this [StorageVolume], such as "mounted" or "read-only", obtained in
+ * a version compatible manner.
+ * @see StorageVolume.getState
+ */
 val StorageVolume.stateCompat: String
     @SuppressLint("NewApi") get() = state
 
 /**
- * Returns the name of this volume as it is used in [MediaStore]. This will be
- * [MediaStore.VOLUME_EXTERNAL_PRIMARY] if it is the primary volume, and the lowercase UUID of the
- * volume otherwise.
+ * Returns the name of this volume that can be used to interact with [MediaStore], in
+ * a version compatible manner. Will be null if the volume is not scanned by [MediaStore].
+ * @see StorageVolume.getMediaStoreVolumeName
  */
 val StorageVolume.mediaStoreVolumeNameCompat: String?
     get() =
@@ -273,8 +222,8 @@ val StorageVolume.mediaStoreVolumeNameCompat: String?
         } else {
             // Replicate API: primary_external if primary storage, lowercase uuid otherwise
             if (isPrimaryCompat) {
-                @Suppress("NewApi") // Inlined constant
-                MediaStore.VOLUME_EXTERNAL_PRIMARY
+                // "primary_external" is used in all versions that Auxio supports, is safe to use.
+                @Suppress("NewApi") MediaStore.VOLUME_EXTERNAL_PRIMARY
             } else {
                 uuidCompat?.lowercase()
             }

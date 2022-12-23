@@ -44,28 +44,6 @@ abstract class DetailAdapter(
     private val callback: Listener,
     itemCallback: DiffUtil.ItemCallback<Item>
 ) : SelectionIndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
-    /** An extended [ExtendedListListener] for [DetailAdapter] implementations. */
-    interface Listener : ExtendedListListener {
-        // TODO: Split off into sub-listeners if a collapsing toolbar is implemented.
-        /**
-         * Called when the play button in a detail header is pressed, requesting that the current
-         * item should be played.
-         */
-        fun onPlay()
-
-        /**
-         * Called when the shuffle button in a detail header is pressed, requesting that the current
-         * item should be shuffled
-         */
-        fun onShuffle()
-
-        /**
-         * Called when the button in a [SortHeader] item is pressed, requesting that the sort menu
-         * should be opened.
-         */
-        fun onOpenSortMenu(anchor: View)
-    }
-
     // Safe to leak this since the callback will not fire during initialization
     @Suppress("LeakingThis") protected val differ = AsyncListDiffer(this, itemCallback)
 
@@ -109,6 +87,30 @@ abstract class DetailAdapter(
      */
     fun submitList(newList: List<Item>) {
         differ.submitList(newList)
+    }
+
+    /**
+     * An extended [ExtendedListListener] for [DetailAdapter] implementations.
+     */
+    interface Listener : ExtendedListListener {
+        // TODO: Split off into sub-listeners if a collapsing toolbar is implemented.
+        /**
+         * Called when the play button in a detail header is pressed, requesting that the current
+         * item should be played.
+         */
+        fun onPlay()
+
+        /**
+         * Called when the shuffle button in a detail header is pressed, requesting that the current
+         * item should be shuffled
+         */
+        fun onShuffle()
+
+        /**
+         * Called when the button in a [SortHeader] item is pressed, requesting that the sort menu
+         * should be opened.
+         */
+        fun onOpenSortMenu(anchor: View)
     }
 
     companion object {

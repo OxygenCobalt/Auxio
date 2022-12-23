@@ -69,10 +69,9 @@ class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewH
      * Immediately update the tab array. This should be used when initializing the list.
      * @param newTabs The new array of tabs to show.
      */
-    @Suppress("NotifyDatasetChanged")
     fun submitTabs(newTabs: Array<Tab>) {
         tabs = newTabs
-        notifyDataSetChanged()
+        @Suppress("NotifyDatasetChanged") notifyDataSetChanged()
     }
 
     /**

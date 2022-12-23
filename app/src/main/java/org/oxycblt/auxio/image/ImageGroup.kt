@@ -55,17 +55,12 @@ class ImageGroup
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     FrameLayout(context, attrs, defStyleAttr) {
-    // Most attributes are simply handled by StyledImageView.
     private val innerImageView: StyledImageView
-    // The custom view is populated when the layout inflates.
     private var customView: View? = null
-    // PlaybackIndicatorView overlays on top of the StyledImageView and custom view.
     private val playbackIndicatorView: PlaybackIndicatorView
-    // The selection indicator view overlays all previous views.
     private val selectionIndicatorView: ImageView
-    // Animator to handle selection visibility animations
+
     private var fadeAnimator: ValueAnimator? = null
-    // Keep track of our corner radius so that we can apply the same attributes to the custom view.
     private val cornerRadius: Float
 
     init {
@@ -73,6 +68,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // then throw an error if you do because of duplicate attribute names.
         @SuppressLint("CustomViewStyleable")
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.StyledImageView)
+        // Keep track of our corner radius so that we can apply the same attributes to the custom
+        // view.
         cornerRadius = styledAttrs.getDimension(R.styleable.StyledImageView_cornerRadius, 0f)
         styledAttrs.recycle()
 
@@ -87,6 +84,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 setBackgroundResource(R.drawable.ui_selection_badge_bg)
             }
 
+        // The inner StyledImageView should be at the bottom and hidden by any other elements
+        // if they become visible.
         addView(innerImageView)
     }
 
@@ -95,8 +94,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // Due to innerImageView, the max child count is actually 2 and not 1.
         check(childCount < 3) { "Only one custom view is allowed" }
 
-        // Get the second inflated child, if it exists, and then customize it to
-        // act like the other components in this view.
+        // Get the second inflated child, making sure we customize it to align with
+        // the rest of this view.
         customView =
             getChildAt(1)?.apply {
                 background =
@@ -106,8 +105,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     }
             }
 
-        // Add the other two views to complete the layering.
+        // Playback indicator should sit above the inner StyledImageView and custom view/
         addView(playbackIndicatorView)
+        // Selction indicator should never be obscured, so place it at the top.
         addView(
             selectionIndicatorView,
             LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {

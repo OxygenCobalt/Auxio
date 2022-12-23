@@ -27,7 +27,11 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
-/** The adapter that displays a list of artist choices in the picker UI. */
+/**
+ * An adapter responsible for showing a list of [Artist] choices in [ArtistPickerDialog].
+ * @param listener A [BasicListListener] for list interactions.
+ * @author OxygenCobalt.
+ */
 class ArtistChoiceAdapter(private val listener: BasicListListener) :
     RecyclerView.Adapter<ArtistChoiceViewHolder>() {
     private var artists = listOf<Artist>()
@@ -40,28 +44,41 @@ class ArtistChoiceAdapter(private val listener: BasicListListener) :
     override fun onBindViewHolder(holder: ArtistChoiceViewHolder, position: Int) =
         holder.bind(artists[position], listener)
 
+    /**
+     * Immediately update the tab array. This should be used when initializing the list.
+     * @param newTabs The new array of tabs to show.
+     */
     fun submitList(newArtists: List<Artist>) {
         if (newArtists != artists) {
             artists = newArtists
-
             @Suppress("NotifyDataSetChanged") notifyDataSetChanged()
         }
     }
 }
 
 /**
- * The ViewHolder that displays a artist choice. Smaller than other parent items due to dialog
- * constraints.
+ * A [DialogRecyclerView.ViewHolder] that displays a smaller variant of a typical
+ * [Artist] item, for use with [ArtistChoiceAdapter]. Use [new] to instantiate a new instance.
  */
 class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
+    /**
+     * Bind new data to this instance.
+     * @param artist The new [Artist] to bind.
+     * @param listener A [BasicListListener] to bind interactions to.
+     */
     fun bind(artist: Artist, listener: BasicListListener) {
+        binding.root.setOnClickListener { listener.onClick(artist) }
         binding.pickerImage.bind(artist)
         binding.pickerName.text = artist.resolveName(binding.context)
-        binding.root.setOnClickListener { listener.onClick(artist) }
     }
 
     companion object {
+        /**
+         * Create a new instance.
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
         fun new(parent: View) =
             ArtistChoiceViewHolder(ItemPickerChoiceBinding.inflate(parent.context.inflater))
     }

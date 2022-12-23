@@ -26,102 +26,141 @@ import org.oxycblt.auxio.music.storage.useQuery
 import org.oxycblt.auxio.util.contentResolverSafe
 
 /**
- * The main storage for music items.
+ * A repository granting access to the music library..
  *
- * Whereas other apps load music from MediaStore as it is shown, Auxio does not do that, as it
- * cripples any kind of advanced metadata functionality. Instead, Auxio loads all music into a
- * in-memory relational data-structure called [Library]. This costs more memory-wise, but is also
- * much more sensible.
- *
- * The only other, memory-efficient option is to create our own hybrid database that leverages both
- * a typical DB and a mem-cache, like Vinyl. But why would we do that when I've encountered no real
- * issues with the current system?
- *
- * [Library] may not be available at all times, so leveraging [Callback] is recommended. Consumers
- * should also be aware that [Library] may change while they are running, and design their work
- * accordingly.
+ * This can be used to obtain certain music items, or await changes to the music library.
+ * It is generally recommended to use this over Indexer to keep track of the library state,
+ * as the interface will be less volatile.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MusicStore private constructor() {
     private val callbacks = mutableListOf<Callback>()
 
+    /**
+     * The current [Library]. May be null if a [Library] has not been successfully loaded yet.
+     * This can change, so it's highly recommended to not access this directly and instead
+     * rely on [Callback].
+     */
     var library: Library? = null
-        private set
+        set(value) {
+            field = value
+            for (callback in callbacks) {
+                callback.onLibraryChanged(library)
+            }
+        }
 
-    /** Add a callback to this instance. Make sure to remove it when done. */
+    /**
+     * Add a [Callback] to this instance. This can be used to receive changes in the music
+     * library. Will invoke all [Callback] methods to initialize the instance with the
+     * current state.
+     * @param callback The [Callback] to add.
+     * @see Callback
+     */
     @Synchronized
     fun addCallback(callback: Callback) {
         callback.onLibraryChanged(library)
         callbacks.add(callback)
     }
 
-    /** Remove a callback from this instance. */
+    /**
+     * Remove a [Callback] from this instance, preventing it from recieving any further
+     * updates.
+     * @param callback The [Callback] to remove. Does nothing if the [Callback] was never
+     * added in the first place.
+     * @see Callback
+     */
     @Synchronized
     fun removeCallback(callback: Callback) {
         callbacks.remove(callback)
     }
 
-    /** Update the library in this instance. This is only meant for use by the internal indexer. */
-    @Synchronized
-    fun updateLibrary(newLibrary: Library?) {
-        library = newLibrary
-        for (callback in callbacks) {
-            callback.onLibraryChanged(library)
-        }
-    }
-
-    /** Represents a library of music owned by [MusicStore]. */
+    /**
+     * A library of [Music] instances.
+     * @param songs All [Song]s loaded from the device.
+     * @param albums All [Album]s that could be created.
+     * @param artists All [Artist]s that could be created.
+     * @param genres All [Genre]s that could be created.
+     */
     data class Library(
-        val genres: List<Genre>,
-        val artists: List<Artist>,
+        val songs: List<Song>,
         val albums: List<Album>,
-        val songs: List<Song>
+        val artists: List<Artist>,
+        val genres: List<Genre>,
     ) {
         private val uidMap = HashMap<Music.UID, Music>()
 
         init {
+            // The data passed to Library initially are complete, but are still volitaile.
+            // Finalize them to ensure they are well-formed. Initialize the UID map in the
+            // same loop for efficiency.
             for (song in songs) {
+                song._finalize()
                 uidMap[song.uid] = song
             }
 
             for (album in albums) {
+                album._finalize()
                 uidMap[album.uid] = album
             }
 
             for (artist in artists) {
+                artist._finalize()
                 uidMap[artist.uid] = artist
             }
 
             for (genre in genres) {
+                genre._finalize()
                 uidMap[genre.uid] = genre
             }
         }
 
         /**
-         * Find a music [T] by its [uid]. If the music does not exist, or if the music is not [T],
-         * null will be returned.
+         * Finds a [Music] item [T] in the library by it's [Music.UID].
+         * @param uid The [Music.UID] to search for.
+         * @return The [T] corresponding to the given [Music.UID], or null if nothing could be
+         * found or the [Music.UID] did not correspond to a [T].
          */
         @Suppress("UNCHECKED_CAST") fun <T : Music> find(uid: Music.UID) = uidMap[uid] as? T
 
-        /** Sanitize an old item to find the corresponding item in a new library. */
+        /**
+         * Convert a [Song] from an another library into a [Song] in this [Library].
+         * @param song The [Song] to convert.
+         * @return The analogous [Song] in this [Library], or null if it does not exist.
+         */
         fun sanitize(song: Song) = find<Song>(song.uid)
 
-        /** Sanitize an old item to find the corresponding item in a new library. */
+        /**
+         * Convert a [Album] from an another library into a [Album] in this [Library].
+         * @param album The [Album] to convert.
+         * @return The analogous [Album] in this [Library], or null if it does not exist.
+         */
         fun sanitize(album: Album) = find<Album>(album.uid)
 
-        /** Sanitize an old item to find the corresponding item in a new library. */
+        /**
+         * Convert a [Artist] from an another library into a [Artist] in this [Library].
+         * @param artist The [Artist] to convert.
+         * @return The analogous [Artist] in this [Library], or null if it does not exist.
+         */
         fun sanitize(artist: Artist) = find<Artist>(artist.uid)
 
-        /** Sanitize an old item to find the corresponding item in a new library. */
+        /**
+         * Convert a [Genre] from an another library into a [Genre] in this [Library].
+         * @param song The [Genre] to convert.
+         * @return The analogous [Genre] in this [Library], or null if it does not exist.
+         */
         fun sanitize(genre: Genre) = find<Genre>(genre.uid)
 
-        /** Find a song for a [uri]. */
+        /**
+         * Find a [Song] instance corresponding to the given Intent.ACTION_VIEW [Uri].
+         * @param context [Context] required to analyze the [Uri].
+         * @param uri [Uri] to search for.
+         * @return A [Song] corresponding to the given [Uri], or null if one could not be found.
+         */
         fun findSongForUri(context: Context, uri: Uri) =
             context.contentResolverSafe.useQuery(
                 uri, arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE)) { cursor ->
                 cursor.moveToFirst()
-
                 // We are weirdly limited to DISPLAY_NAME and SIZE when trying to locate a
                 // song. Do what we can to hopefully find the song the user wanted to open.
                 val displayName =
@@ -131,18 +170,26 @@ class MusicStore private constructor() {
             }
     }
 
-    /** A callback for awaiting the loading of music. */
+    /**
+     * A callback for changes in the music library.
+     */
     interface Callback {
+        /**
+         * Called when the current [Library] has changed.
+         * @param library The new [Library], or null if no [Library] has been loaded yet.
+         */
         fun onLibraryChanged(library: Library?)
     }
 
     companion object {
         @Volatile private var INSTANCE: MusicStore? = null
 
-        /** Get the process-level instance of [MusicStore] */
+        /**
+         * Get a singleton instance.
+         * @return The (possibly newly-created) singleton instance.
+         */
         fun getInstance(): MusicStore {
             val currentInstance = INSTANCE
-
             if (currentInstance != null) {
                 return currentInstance
             }

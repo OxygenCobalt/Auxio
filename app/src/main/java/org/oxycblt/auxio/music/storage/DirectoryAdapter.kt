@@ -26,11 +26,15 @@ import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
 /**
- * Adapter that shows the list of music folder and their "Clear" button.
+ * [RecyclerView.Adapter] that manages a list of [Directory] instances.
+ * @param listener [Listener] for list interactions.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MusicDirAdapter(private val listener: Listener) : RecyclerView.Adapter<MusicDirViewHolder>() {
+class DirectoryAdapter(private val listener: Listener) : RecyclerView.Adapter<MusicDirViewHolder>() {
     private val _dirs = mutableListOf<Directory>()
+    /**
+     * The current list of [Directory]s, may not line up with [MusicDirectories] due to removals.
+     */
     val dirs: List<Directory> = _dirs
 
     override fun getItemCount() = dirs.size
@@ -41,6 +45,10 @@ class MusicDirAdapter(private val listener: Listener) : RecyclerView.Adapter<Mus
     override fun onBindViewHolder(holder: MusicDirViewHolder, position: Int) =
         holder.bind(dirs[position], listener)
 
+    /**
+     * Add a [Directory] to the end of the list.
+     * @param dir The [Directory] to add.
+     */
     fun add(dir: Directory) {
         if (_dirs.contains(dir)) {
             return
@@ -50,27 +58,38 @@ class MusicDirAdapter(private val listener: Listener) : RecyclerView.Adapter<Mus
         notifyItemInserted(_dirs.lastIndex)
     }
 
+    /**
+     * Add a list of [Directory] instances to the end of the list.
+     * @param dirs The [Directory instances to add.
+     */
     fun addAll(dirs: List<Directory>) {
         val oldLastIndex = dirs.lastIndex
         _dirs.addAll(dirs)
         notifyItemRangeInserted(oldLastIndex, dirs.size)
     }
 
+    /**
+     * Remove a [Directory] from the list.
+     * @param dir The [Directory] to remove. Must exist in the list.
+     */
     fun remove(dir: Directory) {
         val idx = _dirs.indexOf(dir)
         _dirs.removeAt(idx)
         notifyItemRemoved(idx)
     }
 
+    /**
+     * A Listener for [DirectoryAdapter] interactions.
+     */
     interface Listener {
         fun onRemoveDirectory(dir: Directory)
     }
 }
 
-/** The viewholder for [MusicDirAdapter]. Not intended for use in other adapters. */
+/** The viewholder for [DirectoryAdapter]. Not intended for use in other adapters. */
 class MusicDirViewHolder private constructor(private val binding: ItemMusicDirBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
-    fun bind(item: Directory, listener: MusicDirAdapter.Listener) {
+    fun bind(item: Directory, listener: DirectoryAdapter.Listener) {
         binding.dirPath.text = item.resolveName(binding.context)
         binding.dirDelete.setOnClickListener { listener.onRemoveDirectory(item) }
     }

@@ -33,50 +33,73 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.extractor.parseId3GenreNames
 import org.oxycblt.auxio.music.extractor.parseMultiValue
 import org.oxycblt.auxio.music.extractor.toUuidOrNull
-import org.oxycblt.auxio.music.storage.Directory
-import org.oxycblt.auxio.music.storage.MimeType
-import org.oxycblt.auxio.music.storage.Path
-import org.oxycblt.auxio.music.storage.albumCoverUri
-import org.oxycblt.auxio.music.storage.audioUri
+import org.oxycblt.auxio.music.storage.*
 import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.util.inRangeOrNull
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import java.text.ParseException
+import java.text.SimpleDateFormat
 
 // --- MUSIC MODELS ---
 
-/** [Item] variant that represents a music item. */
+/**
+ * Abstract music data. This contains universal information about all concrete music implementations,
+ * such as identification information and names.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 sealed class Music : Item {
+    /**
+     * A unique identifier for this music item.
+     * @see UID
+     */
     abstract val uid: UID
 
-    /** The raw name of this item. Null if unknown. */
+    /**
+     * The raw name of this item as it was extracted from the file-system. Will be null if the
+     * item's name is unknown. When showing this item in a UI, avoid this in favor of [resolveName].
+     */
     abstract val rawName: String?
 
-    /** The raw sorting name of this item. Null if not present. */
+    /**
+     * Returns a name suitable for use in the app UI. This should be favored over [rawName] in
+     * nearly all cases.
+     * @param context [Context] required to obtain placeholder text or formatting information.
+     * @return A human-readable string representing the name of this music. In the case that
+     * the item does not have a name, an analogous "Unknown X" name is returned.
+     */
+    abstract fun resolveName(context: Context): String
+
+    /**
+     * The raw sort name of this item as it was extracted from the file-system. This can be used
+     * not only when sorting music, but also trying to locate music based on a fuzzy search by
+     * the user. Will be null if the item has no known sort name.
+     */
     abstract val rawSortName: String?
 
     /**
-     * A key used by the sorting system that takes into account the sort tags of this item, any
-     * (english) articles that prefix the names, and collation rules.
+     * A [CollationKey] derived from [rawName] and [rawSortName] that can be used to sort items
+     * in a semantically-correct manner. Will be null if the item has no name.
+     *
+     * The key will have the following attributes:
+     * - If [rawSortName] is present, this key will be derived from it. Otherwise [rawName]
+     * is used.
+     * - If the string begins with an article, such as "the", it will be stripped, as is usually
+     * convention for sorting media. This is not internationalized.
      */
     abstract val collationKey: CollationKey?
 
     /**
-     * Resolve a name from it's raw form to a form suitable to be shown in a UI. Null values will be
-     * resolved into their string form with this function.
+     * Finalize this item once the music library has been fully constructed. This is where
+     * any final ordering or sanity checking should occur.
+     * **This function is internal to the music package. Do not use it elsewhere.**
      */
-    abstract fun resolveName(context: Context): String
-
-    // Equality is based on UIDs, as some items (Especially artists) can have identical
-    // properties (Name) yet non-identical UIDs due to MusicBrainz tags
-
-    override fun hashCode() = uid.hashCode()
-
-    override fun equals(other: Any?) =
-        other is Music && javaClass == other.javaClass && uid == other.uid
+    abstract fun _finalize()
 
     /**
-     * Workaround to allow for easy collation key generation in the initializer without base-class
-     * initialization issues or slow lazy initialization.
+     * Provided implementation to create a [CollationKey] in the way described by [collationKey].
+     * This should be used in all overrides of all [CollationKey].
+     * @return A [CollationKey] that follows the specification described by [collationKey].
      */
     protected fun makeCollationKeyImpl(): CollationKey? {
         val sortName =
@@ -92,26 +115,32 @@ sealed class Music : Item {
         return COLLATOR.getCollationKey(sortName)
     }
 
-    /**
-     * Called when the library has been linked and validation/construction steps dependent on linked
-     * items should run. It's also used to do last-step initialization of fields that require any
-     * parent values that would not be present during startup.
-     */
-    abstract fun _finalize()
+    // Note: We solely use the UID in comparisons so that certain items that differ in all
+    // but UID are treated differently.
+
+    override fun hashCode() = uid.hashCode()
+
+    override fun equals(other: Any?) =
+        other is Music && javaClass == other.javaClass && uid == other.uid
 
     /**
      * A unique identifier for a piece of music.
      *
-     * UID enables a much cheaper and more reliable form of differentiating music, derived from
-     * either a hash of meaningful metadata or the MusicBrainz UUID spec. It is the default datatype
-     * used when comparing music, and it is also the datatype used when serializing music to
-     * external sources, as it can persist across app restarts and does not need to encode useless
-     * information about the relationships between items.
+     * [UID] enables a much cheaper and more reliable form of differentiating music, derived from
+     * either a hash of meaningful metadata or the MusicBrainz ID spec. Using this enables
+     * several improvements to music management in this app, including:
      *
-     * Note: While the core of a UID is a UUID. The whole is not technically a UUID, with string
-     * representation in particular having multiple extensions to increase uniqueness. Please don't
-     * try to do anything interesting with this and just assume it's a black box that can only be
-     * compared, serialized, and deserialized.
+     * - Proper differentiation of identical music. It's common for large, well-tagged libraries
+     * to have functionally duplicate items that are differentiated with MusicBrainz IDs, and so
+     * [UID] allows us to properly differentiate between these in the app.
+     * - Better music persistence between restarts. Whereas directly storing song names would be
+     * prone to collisions, and storing MediaStore IDs would drift rapidly as the music library
+     * changes, [UID] enables a much stronger form of persistence given it's unique link to a
+     * specific files metadata configuration, which is unlikely to collide with another item
+     * or drift as the music library changes.
+     *
+     * Note: Generally try to use [UID] as a black box that can only be read, written, and
+     * compared. It will not be fun if you try to manipulate it in any other manner.
      *
      * @author Alexander Capehart (OxygenCobalt)
      */
@@ -122,7 +151,7 @@ sealed class Music : Item {
         private val mode: MusicMode,
         private val uuid: UUID
     ) : Parcelable {
-        // Cache the hashCode for speed
+        // Cache the hashCode for HashMap efficiency.
         @IgnoredOnParcel private var hashCode = format.hashCode()
 
         init {
@@ -135,17 +164,65 @@ sealed class Music : Item {
         override fun equals(other: Any?) =
             other is UID && format == other.format && mode == other.mode && uuid == other.uuid
 
-        // UID string format is roughly:
-        // format_namespace:music_mode_int-uuid
         override fun toString() = "${format.namespace}:${mode.intCode.toString(16)}-$uuid"
 
+        /**
+         * Defines the format of this [UID].
+         * @param namespace The namespace that will be used in the [UID]'s string representation
+         * to indicate the format.
+         */
         private enum class Format(val namespace: String) {
+            /**
+             * Auxio-style [UID]s derived from hash of the*non-subjective, unlikely-to-change
+             * metadata.
+             */
             AUXIO("org.oxycblt.auxio"),
+
+            /**
+             * Auxio-style [UID]s derived from a MusicBrainz ID.
+             */
             MUSICBRAINZ("org.musicbrainz")
         }
 
         companion object {
-            /** Parse a [UID] from the string [uid]. Returns null if not valid. */
+            /**
+             * Creates an auxio-style [UID] with a [UUID] composed of a hash of the
+             * non-subjective, unlikely-to-change metadata of the music.
+             * @param mode The analogous [MusicMode] of the item that created this [UID].
+             * @param updates Block to update the [MessageDigest] hash with the metadata of
+             * the item. Make sure the metadata hashed semantically aligns with the format
+             * specification.
+             * @return A new auxio-style [UID].
+             */
+            fun auxio(mode: MusicMode, updates: MessageDigest.() -> Unit): UID {
+                // Auxio hashes consist of the MD5 hash of the non-subjective, consistent
+                // tags in a music item. For easier use with MusicBrainz IDs, we transform
+                // this into a UUID too.
+                val uuid = MessageDigest.getInstance("MD5").run {
+                    updates()
+                    digest().toUuid()
+                }
+
+                return UID(Format.AUXIO, mode, uuid)
+            }
+
+            /**
+             * Creates a MusicBrainz-style [UID] with a [UUID] derived from the MusicBrainz ID
+             * extracted from a file.
+             * @param mode The analogous [MusicMode] of the item that created this [UID].
+             * @param mbid The analogous MusicBrainz ID for this item that was extracted from a
+             * file.
+             * @return A new MusicBrainz-style [UID]
+             */
+            fun musicBrainz(mode: MusicMode, mbid: UUID): UID = UID(Format.MUSICBRAINZ, mode, mbid)
+
+            /**
+             * Convert a [UID]'s string representation back into a concrete [UID] instance.
+             * @param uid The [UID]'s string representation, formatted as
+             * `format_namespace:music_mode_int-uuid`.
+             * @return A [UID] converted from the string representation, or null if the string
+             * representation was invalid.
+             */
             fun fromString(uid: String): UID? {
                 val split = uid.split(':', limit = 2)
                 if (split.size != 2) {
@@ -164,40 +241,34 @@ sealed class Music : Item {
                     return null
                 }
 
-                val mode = MusicMode.fromInt(ids[0].toIntOrNull(16) ?: return null) ?: return null
+                val mode = MusicMode.fromIntCode(ids[0].toIntOrNull(16) ?: return null) ?: return null
                 val uuid = ids[1].toUuidOrNull() ?: return null
 
                 return UID(format, mode, uuid)
             }
-
-            /** Make a UUID derived from the MD5 hash of the data digested in [updates]. */
-            fun auxio(mode: MusicMode, updates: MessageDigest.() -> Unit): UID {
-                // Auxio hashes consist of the MD5 hash of the non-subjective, consistent
-                // tags in a music item. For easier use with MusicBrainz IDs, we transform
-                // this into a UUID too.
-                val digest = MessageDigest.getInstance("MD5")
-                updates(digest)
-                val uuid = digest.digest().toUuid()
-                return UID(Format.AUXIO, mode, uuid)
-            }
-
-            /** Make a UUID derived from a MusicBrainz ID. */
-            fun musicBrainz(mode: MusicMode, uuid: UUID): UID = UID(Format.MUSICBRAINZ, mode, uuid)
         }
     }
 
     companion object {
+        /**
+         * Cached collator instance to be used with [makeCollationKeyImpl].
+         */
         private val COLLATOR = Collator.getInstance().apply { strength = Collator.PRIMARY }
     }
 }
 
 /**
- * [Music] variant that denotes that this object is a parent of other data objects, such as an
- * [Album] or [Artist]
+ * An abstract grouping of [Song]s and other [Music] data.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 sealed class MusicParent : Music() {
-    /** The songs that this parent owns. */
+    /**
+     * The [Song]s in this this group.
+     */
     abstract val songs: List<Song>
+
+    // Note: Append song contents to MusicParent equality so that Groups with
+    // the same UID but different contents are not equal.
 
     override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
 
@@ -209,11 +280,14 @@ sealed class MusicParent : Music() {
 }
 
 /**
- * A song.
+ * A song. Perhaps the foundation of the entirety of Auxio.
+ * @param raw The [Song.Raw] to derive the member data from.
+ * @param settings [Settings] to determine the artist configuration.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Song constructor(raw: Raw, settings: Settings) : Music() {
     override val uid =
+        // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         raw.musicBrainzId?.toUuidOrNull()?.let { UID.musicBrainz(MusicMode.SONGS, it) }
             ?: UID.auxio(MusicMode.SONGS) {
                 // Song UIDs are based on the raw data without parsing so that they remain
@@ -229,56 +303,60 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
                 update(raw.artistNames)
                 update(raw.albumArtistNames)
             }
-
     override val rawName = requireNotNull(raw.name) { "Invalid raw: No title" }
-
     override val rawSortName = raw.sortName
-
     override val collationKey = makeCollationKeyImpl()
-
     override fun resolveName(context: Context) = rawName
 
-    /** The track number of this song in it's album.. */
-    val track = raw.track
-
-    /** The disc number of this song in it's album. */
-    val disc = raw.disc
-
-    /** The date of this song. May differ from the album date. */
-    val date = raw.date
-
-    /** The URI pointing towards this audio file. */
-    val uri = requireNotNull(raw.mediaStoreId) { "Invalid raw: No id" }.audioUri
-
     /**
-     * The path component of the audio file for this music. Only intended for display. Use [uri] to
-     * open the audio file.
+     * The track number. Will be null if no valid track number was present in the metadata.
+     */
+    val track = raw.track
+    /**
+     * The disc number. Will be null if no valid disc number was present in the metadata.
+     */
+    val disc = raw.disc
+    /**
+     * The release [Date]. Will be null if no valid date was present in the metadata.
+     */
+    val date = raw.date
+    /**
+     * The URI to the audio file that this instance was created from. This can be used to
+     * access the audio file in a way that is scoped-storage-safe.
+     */
+    val uri = requireNotNull(raw.mediaStoreId) { "Invalid raw: No id" }.toAudioUri()
+    /**
+     * The [Path] to this audio file. This is only intended for display, [uri] should be
+     * favored instead for accessing the audio file.
      */
     val path =
         Path(
             name = requireNotNull(raw.fileName) { "Invalid raw: No display name" },
             parent = requireNotNull(raw.directory) { "Invalid raw: No parent directory" })
-
-    /** The mime type of the audio file. Only intended for display. */
+    /**
+     * The [MimeType] of the audio file. Only intended for display.
+     */
     val mimeType =
         MimeType(
             fromExtension = requireNotNull(raw.extensionMimeType) { "Invalid raw: No mime type" },
             fromFormat = raw.formatMimeType)
-
-    /** The size of this audio file. */
+    /**
+     * The size of the audio file, in bytes.
+     */
     val size = requireNotNull(raw.size) { "Invalid raw: No size" }
-
-    /** The duration of this audio file, in millis. */
+    /**
+     * The duration of the audio file, in milliseconds.
+     */
     val durationMs = requireNotNull(raw.durationMs) { "Invalid raw: No duration" }
-
-    /** The date this audio file was added, as a unix epoch timestamp. */
+    /**
+     * The date the audio file was added to the device, as a unix epoch timestamp.
+     */
     val dateAdded = requireNotNull(raw.dateAdded) { "Invalid raw: No date added" }
 
     private var _album: Album? = null
-
     /**
-     * The album of this song. Every song is guaranteed to have one and only one album, with a
-     * "directory" album being used if no album tag can be found.
+     * The parent [Album]. If the metadata did not specify an album, it's parent directory is
+     * used instead.
      */
     val album: Album
         get() = unlikelyToBeNull(_album)
@@ -286,11 +364,6 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     private val artistMusicBrainzIds = raw.artistMusicBrainzIds.parseMultiValue(settings)
     private val artistNames = raw.artistNames.parseMultiValue(settings)
     private val artistSortNames = raw.artistSortNames.parseMultiValue(settings)
-
-    private val albumArtistMusicBrainzIds = raw.albumArtistMusicBrainzIds.parseMultiValue(settings)
-    private val albumArtistNames = raw.albumArtistNames.parseMultiValue(settings)
-    private val albumArtistSortNames = raw.albumArtistSortNames.parseMultiValue(settings)
-
     private val rawArtists =
         artistNames.mapIndexed { i, name ->
             Artist.Raw(
@@ -299,6 +372,9 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
                 artistSortNames.getOrNull(i))
         }
 
+    private val albumArtistMusicBrainzIds = raw.albumArtistMusicBrainzIds.parseMultiValue(settings)
+    private val albumArtistNames = raw.albumArtistNames.parseMultiValue(settings)
+    private val albumArtistSortNames = raw.albumArtistSortNames.parseMultiValue(settings)
     private val rawAlbumArtists =
         albumArtistNames.mapIndexed { i, name ->
             Artist.Raw(
@@ -308,24 +384,26 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         }
 
     private val _artists = mutableListOf<Artist>()
-
     /**
-     * The artists of this song. Most often one, but there could be multiple. These artists are
-     * derived from the artists tag and not the album artists tag, so they may differ from the
-     * artists of the album.
+     * The parent [Artist]s of this [Song]. Is often one, but there can be multiple if more
+     * than one [Artist] name was specified in the metadata. Unliked [Album], artists are
+     * prioritized for this field.
      */
     val artists: List<Artist>
         get() = _artists
 
     /**
-     * Resolve the artists of this song into a human-readable name. First tries to use artist tags,
-     * then falls back to album artist tags.
+     * Resolves one or more [Artist]s into a single piece of human-readable names.
+     * @param context [Context] required for [resolveName].
+     * TODO Internationalize the list formatter.
      */
     fun resolveArtistContents(context: Context) = artists.joinToString { it.resolveName(context) }
 
     /**
-     * Utility method for recyclerview diffing that checks if resolveArtistContents is the same
-     * without a context.
+     * Checks if the [Artist] *display* of this [Song] and another [Song] are equal. This
+     * will only compare surface-level names, and not [Music.UID]s.
+     * @param other The [Song] to compare to.
+     * @return True if the [Artist] displays are equal, false otherwise
      */
     fun areArtistContentsTheSame(other: Song): Boolean {
         for (i in 0 until max(artists.size, other.artists.size)) {
@@ -340,45 +418,80 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     }
 
     private val _genres = mutableListOf<Genre>()
-
     /**
-     * The genres of this song. Most often one, but there could be multiple. There will always be at
-     * least one genre, even if it is an "unknown genre" instance.
+     * The parent [Genre]s of this [Song]. Is often one, but there can be multiple if more
+     * than one [Genre] name was specified in the metadata.
      */
     val genres: List<Genre>
         get() = _genres
 
-    /** Resolve the genres of the song into a human-readable string. */
+    /**
+     * Resolves one or more [Genre]s into a single piece human-readable names.
+     * @param context [Context] required for [resolveName].
+     */
     fun resolveGenreContents(context: Context) = genres.joinToString { it.resolveName(context) }
 
     // --- INTERNAL FIELDS ---
 
-    val _rawGenres =
-        raw.genreNames
-            .parseId3GenreNames(settings)
-            .map { Genre.Raw(it) }
-            .ifEmpty { listOf(Genre.Raw()) }
-
-    val _rawArtists = rawArtists.ifEmpty { rawAlbumArtists }.ifEmpty { listOf(Artist.Raw()) }
-
+    /**
+     * The [Album.Raw] instances collated by the [Song]. This can be used to group [Song]s into
+     * an [Album].
+     * **This is only meant for use within the music package.**
+     */
     val _rawAlbum =
         Album.Raw(
             mediaStoreId = requireNotNull(raw.albumMediaStoreId) { "Invalid raw: No album id" },
             musicBrainzId = raw.albumMusicBrainzId?.toUuidOrNull(),
             name = requireNotNull(raw.albumName) { "Invalid raw: No album name" },
             sortName = raw.albumSortName,
-            releaseType = ReleaseType.parse(raw.albumReleaseTypes.parseMultiValue(settings)),
+            type = Album.Type.parse(raw.albumTypes.parseMultiValue(settings)),
             rawArtists =
                 rawAlbumArtists.ifEmpty { rawArtists }.ifEmpty { listOf(Artist.Raw(null, null)) })
 
+    /**
+     * The [Artist.Raw] instances collated by the [Song]. The artists of the song take
+     * priority, followed by the album artists. If there are no artists, this field will
+     * be a single "unknown" [Artist.Raw]. This can be used to group up [Song]s into
+     * an [Artist].
+     * **This is only meant for use within the music package.**
+     */
+    val _rawArtists = rawArtists.ifEmpty { rawAlbumArtists }.ifEmpty { listOf(Artist.Raw()) }
+
+    /**
+     * The [Genre.Raw] instances collated by the [Song]. This can be used to group up
+     * [Song]s into a [Genre]. ID3v2 Genre names are automatically converted to their
+     * resolved names.
+     * **This is only meant for use within the music package.**
+     */
+    val _rawGenres =
+        raw.genreNames
+            .parseId3GenreNames(settings)
+            .map { Genre.Raw(it) }
+            .ifEmpty { listOf(Genre.Raw()) }
+
+    /**
+     * Links this [Song] with a parent [Album].
+     * @param album The parent [Album] to link to.
+     * **This is only meant for use within the music package.**
+     */
     fun _link(album: Album) {
         _album = album
     }
 
+    /**
+     * Links this [Song] with a parent [Artist].
+     * @param artist The parent [Artist] to link to.
+     * **This is only meant for use within the music package.**
+     */
     fun _link(artist: Artist) {
         _artists.add(artist)
     }
 
+    /**
+     * Links this [Song] with a parent [Genre].
+     * @param genre The parent [Genre] to link to.
+     * **This is only meant for use within the music package.**
+     */
     fun _link(genre: Genre) {
         _genres.add(genre)
     }
@@ -390,6 +503,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         for (i in _artists.indices) {
             // Non-destructively reorder the linked artists so that they align with
             // the artist ordering within the song metadata.
+            // TODO: Make sure this works for artists only derived from album artists.
             val newIdx = _artists[i]._getOriginalPositionIn(_rawArtists)
             val other = _artists[newIdx]
             _artists[newIdx] = _artists[i]
@@ -407,44 +521,135 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         }
     }
 
+    /**
+     * Raw information about a [Song] obtained from the filesystem/Extractor instances.
+     * **This is only meant for use within the music package.**
+     */
     class Raw
     constructor(
+        /**
+         * The ID of the [Song]'s audio file, obtained from MediaStore. Note that this
+         * ID is highly unstable and should only be used for accessing the audio file.
+         */
         var mediaStoreId: Long? = null,
+        /**
+         * @see Song.dateAdded
+         */
         var dateAdded: Long? = null,
+        /**
+         * The latest date the [Song]'s audio file was modified, as a unix epoch timestamp.
+         */
         var dateModified: Long? = null,
+        /**
+         * @see Song.path
+         */
         var fileName: String? = null,
+        /**
+         * @see Song.path
+         */
         var directory: Directory? = null,
+        /**
+         * @see Song.size
+         */
         var size: Long? = null,
+        /**
+         * @see Song.durationMs
+         */
         var durationMs: Long? = null,
+        /**
+         * @see Song.mimeType
+         */
         var extensionMimeType: String? = null,
+        /**
+         * @see Song.mimeType
+         */
         var formatMimeType: String? = null,
+        /**
+         * @see Music.UID
+         */
         var musicBrainzId: String? = null,
+        /**
+         * @see Music.rawName
+         */
         var name: String? = null,
+        /**
+         * @see Music.rawSortName
+         */
         var sortName: String? = null,
+        /**
+         * @see Song.track
+         */
         var track: Int? = null,
+        /**
+         * @see Song.disc
+         */
         var disc: Int? = null,
+        /**
+         * @see Song.date
+         */
         var date: Date? = null,
+        /**
+         * @see Album.Raw.mediaStoreId
+         */
         var albumMediaStoreId: Long? = null,
+        /**
+         * @see Album.Raw.musicBrainzId
+         */
         var albumMusicBrainzId: String? = null,
+        /**
+         * @see Album.Raw.name
+         */
         var albumName: String? = null,
+        /**
+         * @see Album.Raw.sortName
+         */
         var albumSortName: String? = null,
-        var albumReleaseTypes: List<String> = listOf(),
+        /**
+         * @see Album.Raw.type
+         */
+        var albumTypes: List<String> = listOf(),
+        /**
+         * @see Artist.Raw.musicBrainzId
+         */
         var artistMusicBrainzIds: List<String> = listOf(),
+        /**
+         * @see Artist.Raw.name
+         */
         var artistNames: List<String> = listOf(),
+        /**
+         * @see Artist.Raw.sortName
+         */
         var artistSortNames: List<String> = listOf(),
+        /**
+         * @see Artist.Raw.musicBrainzId
+         */
         var albumArtistMusicBrainzIds: List<String> = listOf(),
+        /**
+         * @see Artist.Raw.name
+         */
         var albumArtistNames: List<String> = listOf(),
+        /**
+         * @see Artist.Raw.sortName
+         */
         var albumArtistSortNames: List<String> = listOf(),
+        /**
+         * @see Genre.Raw
+         */
         var genreNames: List<String> = listOf()
     )
 }
 
 /**
- * An album.
+ * An abstract release group. While it may be called an album, it encompasses other types of
+ * releases like singles, EPs, and compilations.
+ * @param raw The [Album.Raw] to derive the member data from.
+ * @param songs The [Song]s that are a part of this [Album]. These items will be linked to this
+ * [Album].
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent() {
     override val uid =
+        // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         raw.musicBrainzId?.let { UID.musicBrainz(MusicMode.ALBUMS, it) }
             ?: UID.auxio(MusicMode.ALBUMS) {
                 // Hash based on only names despite the presence of a date to increase stability.
@@ -453,70 +658,49 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
                 update(raw.name)
                 update(raw.rawArtists.map { it.name })
             }
-
     override val rawName = raw.name
-
     override val rawSortName = raw.sortName
-
     override val collationKey = makeCollationKeyImpl()
-
     override fun resolveName(context: Context) = rawName
 
-    /** The earliest date this album was released. */
+    /**
+     * The earliest [Date] this album was released.
+     * Will be null if no valid date was present in the metadata of any [Song].
+     * TODO: Date ranges?
+     */
     val date: Date?
-
-    /** The release type of this album, such as "EP". Defaults to "Album". */
-    val releaseType = raw.releaseType ?: ReleaseType.Album(null)
-
     /**
-     * The album cover URI for this album. Usually low quality, so using Coil is recommended
-     * instead.
+     * The [Type] of this album, signifying the type of release it actually is.
+     * Defaults to [Type.Album].
      */
-    val coverUri = raw.mediaStoreId.albumCoverUri
-
-    /** The total duration of songs in this album, in millis. */
+    val type = raw.type ?: Type.Album(null)
+    /**
+     * The URI to a MediaStore-provided album cover. These images will be fast to load, but
+     * at the cost of image quality.
+     */
+    val coverUri = raw.mediaStoreId.toCoverUri()
+    /**
+     * The duration of all songs in the album, in milliseconds.
+     */
     val durationMs: Long
-
-    /** The earliest date a song in this album was added. */
+    /**
+     * The earliest date a song in this album was added, as a unix epoch timestamp.
+     */
     val dateAdded: Long
-
-    /**
-     * The artists of this album. Usually one, but there may be more. These are derived from the
-     * album artist first, so they may differ from the song artists.
-     */
-    private val _artists = mutableListOf<Artist>()
-    val artists: List<Artist>
-        get() = _artists
-
-    /** Resolve the artists of this album in a human-readable manner. */
-    fun resolveArtistContents(context: Context) = artists.joinToString { it.resolveName(context) }
-
-    /**
-     * Utility for RecyclerView differs to check if resolveArtistContents is the same without a
-     * context.
-     */
-    fun areArtistContentsTheSame(other: Album): Boolean {
-        for (i in 0 until max(artists.size, other.artists.size)) {
-            val a = artists.getOrNull(i) ?: return false
-            val b = other.artists.getOrNull(i) ?: return false
-            if (a.rawName != b.rawName) {
-                return false
-            }
-        }
-
-        return true
-    }
 
     init {
         var earliestDate: Date? = null
         var totalDuration: Long = 0
         var earliestDateAdded: Long = Long.MAX_VALUE
 
-        // Do linking and value generation in the same loop to save time
+        // Do linking and value generation in the same loop for efficiency.
         for (song in songs) {
             song._link(this)
 
             if (song.date != null) {
+                // Since we can't really assign a maximum value for dates, we instead
+                // just check if the current earliest date doesn't exist and fill it
+                // in with the current song if that's the case.
                 if (earliestDate == null || song.date < earliestDate) {
                     earliestDate = song.date
                 }
@@ -534,10 +718,55 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
         dateAdded = earliestDateAdded
     }
 
+    private val _artists = mutableListOf<Artist>()
+    /**
+     * The parent [Artist]s of this [Album]. Is often one, but there can be multiple if more
+     * than one [Artist] name was specified in the metadata of the [Song]'s. Unlike [Song],
+     * album artists are prioritized for this field.
+     */
+    val artists: List<Artist>
+        get() = _artists
+
+    /**
+     * Resolves one or more [Artist]s into a single piece of human-readable names.
+     * @param context [Context] required for [resolveName].
+     */
+    fun resolveArtistContents(context: Context) = artists.joinToString { it.resolveName(context) }
+
+    /**
+     * Checks if the [Artist] *display* of this [Album] and another [Album] are equal. This
+     * will only compare surface-level names, and not [Music.UID]s.
+     * @param other The [Album] to compare to.
+     * @return True if the [Artist] displays are equal, false otherwise
+     */
+    fun areArtistContentsTheSame(other: Album): Boolean {
+        for (i in 0 until max(artists.size, other.artists.size)) {
+            val a = artists.getOrNull(i) ?: return false
+            val b = other.artists.getOrNull(i) ?: return false
+            if (a.rawName != b.rawName) {
+                return false
+            }
+        }
+
+        return true
+    }
+
     // --- INTERNAL FIELDS ---
 
+    /**
+     * The [Artist.Raw] instances collated by the [Album]. The album artists of the song take
+     * priority, followed by the artists. If there are no artists, this field will
+     * be a single "unknown" [Artist.Raw]. This can be used to group up [Album]s into
+     * an [Artist].
+     * **This is only meant for use within the music package.**
+     */
     val _rawArtists = raw.rawArtists
 
+    /**
+     * Links this [Album] with a parent [Artist].
+     * @param artist The parent [Artist] to link to.
+     * **This is only meant for use within the music package.**
+     */
     fun _link(artist: Artist) {
         _artists.add(artist)
     }
@@ -555,16 +784,248 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
         }
     }
 
+    /**
+     * The type of release an [Album] is considered. This includes EPs, Singles, Compilations, etc.
+     *
+     * This class is derived from the MusicBrainz Release Group Type specification. It can
+     * be found at: https://musicbrainz.org/doc/Release_Group/Type
+     * @author Alexander Capehart (OxygenCobalt)
+     */
+    sealed class Type {
+        /**
+         * A specification of what kind of performance this release is. If null, the release is
+         * considered "Plain".
+         */
+        abstract val refinement: Refinement?
+    
+        /**
+         * The string resource corresponding to the name of this release type to show in the UI.
+         */
+        abstract val stringRes: Int
+    
+        /**
+         * A plain album.
+         * @param refinement A specification of what kind of performance this release is. If null,
+         * the release is considered "Plain".
+         */
+        data class Album(override val refinement: Refinement?) : Type() {
+            override val stringRes: Int
+                get() =
+                    when (refinement) {
+                        null -> R.string.lbl_album
+                        // If present, include the refinement in the name of this release type.
+                        Refinement.LIVE -> R.string.lbl_album_live
+                        Refinement.REMIX -> R.string.lbl_album_remix
+                    }
+        }
+    
+        /**
+         * A "Extended Play", or EP. Usually a smaller release consisting of 4-5 songs.
+         * @param refinement A specification of what kind of performance this release is. If null,
+         * the release is considered "Plain".
+         */
+        data class EP(override val refinement: Refinement?) : Type() {
+            override val stringRes: Int
+                get() =
+                    when (refinement) {
+                        null -> R.string.lbl_ep
+                        // If present, include the refinement in the name of this release type.
+                        Refinement.LIVE -> R.string.lbl_ep_live
+                        Refinement.REMIX -> R.string.lbl_ep_remix
+                    }
+        }
+    
+        /**
+         * A single. Usually a release consisting of 1-2 songs.
+         * @param refinement A specification of what kind of performance this release is. If null,
+         * the release is considered "Plain".
+         */
+        data class Single(override val refinement: Refinement?) : Type() {
+            override val stringRes: Int
+                get() =
+                    when (refinement) {
+                        null -> R.string.lbl_single
+                        // If present, include the refinement in the name of this release type.
+                        Refinement.LIVE -> R.string.lbl_single_live
+                        Refinement.REMIX -> R.string.lbl_single_remix
+                    }
+        }
+    
+        /**
+         * A compilation. Usually consists of many songs from a variety of artists.
+         * @param refinement A specification of what kind of performance this release is. If null,
+         * the release is considered "Plain".
+         */
+        data class Compilation(override val refinement: Refinement?) : Type() {
+            override val stringRes: Int
+                get() =
+                    when (refinement) {
+                        null -> R.string.lbl_compilation
+                        // If present, include the refinement in the name of this release type.
+                        Refinement.LIVE -> R.string.lbl_compilation_live
+                        Refinement.REMIX -> R.string.lbl_compilation_remix
+                    }
+        }
+    
+        /**
+         * A soundtrack. Similar to a [Compilation], but created for a specific piece of (usually
+         * visual) media.
+         */
+        object Soundtrack : Type() {
+            override val refinement: Refinement?
+                get() = null
+    
+            override val stringRes: Int
+                get() = R.string.lbl_soundtrack
+        }
+    
+        /**
+         * A (DJ) Mix. These are usually one large track consisting of the artist playing several
+         * sub-tracks with smooth transitions between them.
+         */
+        object Mix : Type() {
+            override val refinement: Refinement?
+                get() = null
+    
+            override val stringRes: Int
+                get() = R.string.lbl_mix
+        }
+    
+        /**
+         * A Mix-tape. These are usually [EP]-sized releases of music made to promote an [Artist]
+         * or a future release.
+         */
+        object Mixtape : Type() {
+            override val refinement: Refinement?
+                get() = null
+    
+            override val stringRes: Int
+                get() = R.string.lbl_mixtape
+        }
+    
+        /**
+         * A specification of what kind of performance a particular release is.
+         */
+        enum class Refinement {
+            /**
+             * A release consisting of a live performance
+             */
+            LIVE,
+    
+            /**
+             * A release consisting of another [Artist]s remix of a prior performance.
+             */
+            REMIX
+        }
+    
+        companion object {
+            /**
+             * Parse a [Type] from a string formatted with the MusicBrainz Release Group Type
+             * specification.
+             * @param types A list of values consisting of valid release type values.
+             * @return A [Type] consisting of the given types, or null if the types
+             * were not valid.
+             */
+            fun parse(types: List<String>): Type? {
+                val primary = types.getOrNull(0) ?: return null
+                return when {
+                    // Primary types should be the first types in the sequence.
+                    primary.equals("album", true) -> types.parseSecondaryTypes(1) { Album(it) }
+                    primary.equals("ep", true) -> types.parseSecondaryTypes(1) { EP(it) }
+                    primary.equals("single", true) -> types.parseSecondaryTypes(1) { Single(it) }
+                    // The spec makes no mention of whether primary types are a pre-requisite for
+                    // secondary types, so we assume that it's not and map oprhan secondary types
+                    // to Album release types.
+                    else -> types.parseSecondaryTypes(0) { Album(it) }
+                }
+            }
+    
+            /**
+             * Parse "secondary" types (i.e not [Album], [EP], or [Single]) from a string formatted
+             * with the MusicBrainz Release Group Type specification.
+             * @param index The index of the release type to parse.
+             * @param convertRefinement Code to convert a [Refinement] into a [Type]
+             * corresponding to the callee's context. This is used in order to handle secondary
+             * times that are actually [Refinement]s.
+             * @return A [Type] corresponding to the secondary type found at that index.
+             */
+            private inline fun List<String>.parseSecondaryTypes(
+                index: Int,
+                convertRefinement: (Refinement?) -> Type
+            ): Type {
+                val secondary = getOrNull(index)
+                return if (secondary.equals("compilation", true)) {
+                    // Secondary type is a compilation, actually parse the third type
+                    // and put that into a compilation if needed.
+                    parseSecondaryTypeImpl(getOrNull(index + 1)) { Compilation(it) }
+                } else {
+                    // Secondary type is a plain value, use the original values given.
+                    parseSecondaryTypeImpl(secondary, convertRefinement)
+                }
+            }
+    
+            /**
+             * Parse "secondary" types (i.e not [Album], [EP], [Single]) that do not correspond
+             * to any child values.
+             * @param type The release type value to parse.
+             * @param convertRefinement Code to convert a [Refinement] into a [Type]
+             * corresponding to the callee's context. This is used in order to handle secondary
+             * times that are actually [Refinement]s.
+             */
+            private inline fun parseSecondaryTypeImpl(
+                type: String?,
+                convertRefinement: (Refinement?) -> Type
+            ) =
+                when {
+                    // Parse all the types that have no children
+                    type.equals("soundtrack", true) -> Soundtrack
+                    type.equals("mixtape/street", true) -> Mixtape
+                    type.equals("dj-mix", true) -> Mix
+                    type.equals("live", true) -> convertRefinement(Refinement.LIVE)
+                    type.equals("remix", true) -> convertRefinement(Refinement.REMIX)
+                    else -> convertRefinement(null)
+                }
+        }
+    }
+
+    /**
+     * Raw information about an [Album] obtained from the component [Song] instances.
+     * **This is only meant for use within the music package.**
+     */
     class Raw(
+        /**
+         * The ID of the [Album]'s grouping, obtained from MediaStore. Note that this
+         * ID is highly unstable and should only be used for accessing the system-provided
+         * cover art.
+         */
         val mediaStoreId: Long,
+        /**
+         * @see Music.uid
+         */
         val musicBrainzId: UUID?,
+        /**
+         * @see Music.rawName
+         */
         val name: String,
+        /**
+         * @see Music.rawSortName
+         */
         val sortName: String?,
-        val releaseType: ReleaseType?,
+        /**
+         * @see Album.type
+         */
+        val type: Type?,
+        /**
+         * @see Artist.Raw.name
+         */
         val rawArtists: List<Artist.Raw>
     ) {
+        // Cache the hash-code for HashMap efficiency.
         private val hashCode =
             musicBrainzId?.hashCode() ?: (31 * name.lowercase().hashCode() + rawArtists.hashCode())
+
+        // Make Album.Raw equality based on album name and raw artist lists in order to
+        // differentiate between albums with the same name but different artists.
 
         override fun hashCode() = hashCode
 
@@ -582,55 +1043,41 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
 }
 
 /**
- * An abstract artist. This is derived from both album artist values and artist values in albums and
- * songs respectively.
+ * An abstract artist. These are actually a combination of the artist and album artist tags
+ * from within the library, derived from [Song]s and [Album]s respectively.
+ * @param raw The [Artist.Raw] to derive the member data from.
+ * @param songAlbums A list of the [Song]s and [Album]s that are a part of this [Artist],
+ * either through artist or album artist tags. Providing [Song]s to the artist is optional.
+ * These instances will be linked to this [Artist].
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Artist constructor(private val raw: Raw, songAlbums: List<Music>) : MusicParent() {
     override val uid =
+        // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         raw.musicBrainzId?.let { UID.musicBrainz(MusicMode.ARTISTS, it) }
             ?: UID.auxio(MusicMode.ARTISTS) { update(raw.name) }
-
     override val rawName = raw.name
-
     override val rawSortName = raw.sortName
-
     override val collationKey = makeCollationKeyImpl()
-
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
-
-    /** The songs of this artist. This might be empty. */
     override val songs: List<Song>
 
-    /** The total duration of songs in this artist, in millis. Null if there are no songs. */
-    val durationMs: Long?
-
-    /** The albums of this artist. This will never be empty. */
-    val albums: List<Album>
-
-    /** Whether this artist is not credited on any albums. */
-    val isCollaborator: Boolean
-
-    private lateinit var genres: List<Genre>
-
-    /** Resolve the combined genres of this artist into a human-readable string. */
-    fun resolveGenreContents(context: Context) = genres.joinToString { it.resolveName(context) }
-
     /**
-     * Utility for RecyclerView differs to check if resolveGenreContents is the same without a
-     * context.
+     * All of the [Album]s this artist is credited to. Note that any [Song] credited to this
+     * artist will have it's [Album] considered to be "indirectly" linked to this [Artist], and
+     * thus included in this list.
      */
-    fun areGenreContentsTheSame(other: Artist): Boolean {
-        for (i in 0 until max(genres.size, other.genres.size)) {
-            val a = genres.getOrNull(i) ?: return false
-            val b = other.genres.getOrNull(i) ?: return false
-            if (a.rawName != b.rawName) {
-                return false
-            }
-        }
-
-        return true
-    }
+    val albums: List<Album>
+    /**
+     * The duration of all [Song]s in the artist, in milliseconds.
+     * Will be null if there are no songs.
+     */
+    val durationMs: Long?
+    /**
+     * Whether this artist is considered a "collaborator", i.e it is not directly credited on
+     * any [Album].
+     */
+    val isCollaborator: Boolean
 
     init {
         val distinctSongs = mutableSetOf<Song>()
@@ -656,29 +1103,80 @@ class Artist constructor(private val raw: Raw, songAlbums: List<Music>) : MusicP
 
         songs = distinctSongs.toList()
         albums = distinctAlbums.toList()
-        isCollaborator = noAlbums
         durationMs = songs.sumOf { it.durationMs }.nonZeroOrNull()
+        isCollaborator = noAlbums
     }
 
-    fun _getOriginalPositionIn(rawArtists: List<Raw>): Int {
-        return rawArtists.indexOf(raw)
+    private lateinit var genres: List<Genre>
+
+    /**
+     * Resolves one or more [Genre]s into a single piece of human-readable names.
+     * @param context [Context] required for [resolveName].
+     */
+    fun resolveGenreContents(context: Context) = genres.joinToString { it.resolveName(context) }
+
+    /**
+     * Checks if the [Genre] *display* of this [Artist] and another [Artist] are equal. This
+     * will only compare surface-level names, and not [Music.UID]s.
+     * @param other The [Artist] to compare to.
+     * @return True if the [Genre] displays are equal, false otherwise
+     */
+    fun areGenreContentsTheSame(other: Artist): Boolean {
+        for (i in 0 until max(genres.size, other.genres.size)) {
+            val a = genres.getOrNull(i) ?: return false
+            val b = other.genres.getOrNull(i) ?: return false
+            if (a.rawName != b.rawName) {
+                return false
+            }
+        }
+
+        return true
     }
+
+    // --- INTERNAL METHODS ---
+
+    /**
+     * Returns the original position of this [Artist]'s [Artist.Raw] within the given [Artist.Raw]
+     * list. This can be used to create a consistent ordering within child [Artist] lists
+     * based on the original tag order.
+     * @param rawArtists The [Artist.Raw] instances to check. It is assumed that this [Artist]'s
+     * [Artist.Raw] will be within the list.
+     * @return The index of the [Artist]'s [Artist.Raw] within the list.
+     * **This is only meant for use within the music package.**
+     */
+    fun _getOriginalPositionIn(rawArtists: List<Raw>) = rawArtists.indexOf(raw)
 
     override fun _finalize() {
         check(songs.isNotEmpty() || albums.isNotEmpty()) { "Malformed artist: Empty" }
-
         genres =
             Sort(Sort.Mode.ByName, true)
                 .genres(songs.flatMapTo(mutableSetOf()) { it.genres })
                 .sortedByDescending { genre -> songs.count { it.genres.contains(genre) } }
     }
 
+    /**
+     * Raw information about an [Artist] obtained from the component [Song] and [Album] instances.
+     * **This is only meant for use within the music package.**
+     */
     class Raw(
+        /**
+         * @see Music.UID
+         */
         val musicBrainzId: UUID? = null,
+        /**
+         * @see Music.rawName
+         */
         val name: String? = null,
+        /**
+         * @see Music.rawSortName
+         */
         val sortName: String? = null
     ) {
+        // Cache the hashCode for HashMap efficiency.
         private val hashCode = musicBrainzId?.hashCode() ?: name?.lowercase().hashCode()
+
+        // Compare names and MusicBrainz IDs in order to differentiate artists with the
+        // same name in large libraries.
 
         override fun hashCode() = hashCode
 
@@ -701,34 +1199,35 @@ class Artist constructor(private val raw: Raw, songAlbums: List<Music>) : MusicP
 }
 
 /**
- * A genre.
+ * A genre of [Song]s.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Genre constructor(private val raw: Raw, override val songs: List<Song>) : MusicParent() {
     override val uid = UID.auxio(MusicMode.GENRES) { update(raw.name) }
-
     override val rawName = raw.name
-
-    // Sort tags don't make sense on genres
     override val rawSortName = rawName
-
     override val collationKey = makeCollationKeyImpl()
-
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
 
-    /** The total duration of the songs in this genre, in millis. */
-    val durationMs: Long
-
-    /** The albums of this genre. */
+    /**
+     * The albums indirectly linked to by the [Song]s of this [Genre].
+     */
     val albums: List<Album>
 
-    /** The artists of this genre. */
+    /**
+     * The artists indirectly linked to by the [Artist]s of this [Genre].
+     */
     val artists: List<Artist>
 
+    /**
+     * The total duration of the songs in this genre, in milliseconds.
+     */
+    val durationMs: Long
+
     init {
-        var totalDuration = 0L
         val distinctAlbums = mutableSetOf<Album>()
         val distinctArtists = mutableSetOf<Artist>()
+        var totalDuration = 0L
 
         for (song in songs) {
             song._link(this)
@@ -737,25 +1236,42 @@ class Genre constructor(private val raw: Raw, override val songs: List<Song>) : 
             totalDuration += song.durationMs
         }
 
-        durationMs = totalDuration
-
         albums =
             Sort(Sort.Mode.ByName, true).albums(distinctAlbums).sortedByDescending { album ->
                 album.songs.count { it.genres.contains(this) }
             }
-
         artists = Sort(Sort.Mode.ByName, true).artists(distinctArtists)
+        durationMs = totalDuration
     }
 
-    fun _getOriginalPositionIn(rawGenres: List<Raw>): Int {
-        return rawGenres.indexOf(raw)
-    }
+    // --- INTERNAL METHODS ---
+
+    /**
+     * Returns the original position of this [Genre]'s [Genre.Raw] within the given [Genre.Raw]
+     * list. This can be used to create a consistent ordering within child [Genre] lists
+     * based on the original tag order.
+     * @param rawGenres The [Genre.Raw] instances to check. It is assumed that this [Genre]'s
+     * [Genre.Raw] will be within the list.
+     * @return The index of the [Genre]'s [Genre.Raw] within the list.
+     * **This is only meant for use within the music package.**
+     */
+    fun _getOriginalPositionIn(rawGenres: List<Raw>) = rawGenres.indexOf(raw)
 
     override fun _finalize() {
         check(songs.isNotEmpty()) { "Malformed genre: Empty" }
     }
 
-    class Raw(val name: String? = null) {
+    /**
+     * Raw information about a [Genre] obtained from the component [Song] instances.
+     * **This is only meant for use within the music package.**
+     */
+    class Raw(
+        /**
+         * @see Music.rawName
+         */
+        val name: String? = null
+    ) {
+        // Cache the hashCode for HashMap efficiency.
         private val hashCode = name?.lowercase().hashCode()
 
         override fun hashCode() = hashCode
@@ -770,58 +1286,235 @@ class Genre constructor(private val raw: Raw, override val songs: List<Song>) : 
     }
 }
 
-// Hashing extensions
 
-/** Update the digest using the lowercase variant of a string, or don't update if null. */
-fun MessageDigest.update(string: String?) {
-    if (string == null) return
-    update(string.lowercase().toByteArray())
+/**
+ * An ISO-8601/RFC 3339 Date.
+ *
+ * This class only encodes the timestamp spec and it's conversion to a human-readable date,
+ * without any other time management or validation. In general, this should only be used for
+ * display.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+class Date private constructor(private val tokens: List<Int>) : Comparable<Date> {
+    private val year = tokens[0]
+    private val month = tokens.getOrNull(1)
+    private val day = tokens.getOrNull(2)
+    private val hour = tokens.getOrNull(3)
+    private val minute = tokens.getOrNull(4)
+    private val second = tokens.getOrNull(5)
+
+    /**
+     * Resolve this instance into a human-readable date.
+     * @param context [Context] required to get human-readable names.
+     * @return If the [Date] has a valid month and year value, a more fine-grained date
+     * (ex. "Jan 2020") will be returned. Otherwise, a plain year value (ex. "2020") is
+     * returned. Dates will be properly localized.
+     */
+    fun resolveDate(context: Context): String {
+        if (month != null) {
+            // Parse a date format from an ISO-ish format
+            val format = (SimpleDateFormat.getDateInstance() as SimpleDateFormat)
+            format.applyPattern("yyyy-MM")
+            val date = try {
+                format.parse("$year-$month")
+            } catch (e: ParseException) {
+                null
+            }
+
+            if (date != null) {
+                // Reformat as a readable month and year
+                format.applyPattern("MMM yyyy")
+                return format.format(date)
+            }
+        }
+
+        // Unable to create fine-grained date, just format as a year.
+        return context.getString(R.string.fmt_number, year)
+    }
+
+    override fun hashCode() = tokens.hashCode()
+
+    override fun equals(other: Any?) = other is Date && tokens == other.tokens
+
+    override fun compareTo(other: Date): Int {
+        for (i in 0 until max(tokens.size, other.tokens.size)) {
+            val ai = tokens.getOrNull(i)
+            val bi = other.tokens.getOrNull(i)
+            when {
+                ai != null && bi != null -> {
+                    val result = ai.compareTo(bi)
+                    if (result != 0) {
+                        return result
+                    }
+                }
+                ai == null && bi != null -> return -1 // a < b
+                ai == null && bi == null -> return 0 // a = b
+                else -> return 1 // a < b
+            }
+        }
+
+        return 0
+    }
+
+    override fun toString() = StringBuilder().appendDate().toString()
+
+    private fun StringBuilder.appendDate(): StringBuilder {
+        // Construct an ISO-8601 date, dropping precision that doesn't exist.
+        append(year.toFixedString(4))
+        append("-${(month ?: return this).toFixedString(2)}")
+        append("-${(day ?: return this).toFixedString(2)}")
+        append("T${(hour ?: return this).toFixedString(2)}")
+        append(":${(minute ?: return this.append('Z')).toFixedString(2)}")
+        append(":${(second ?: return this.append('Z')).toFixedString(2)}")
+        return this.append('Z')
+    }
+
+    /**
+     * Converts an integer to a fixed-size [String] of the specified length.
+     * @param len The end length of the formatted [String].
+     * @return The integer as a formatted [String] prefixed with zeroes in order to make it
+     * the specified length.
+     */
+    private fun Int.toFixedString(len: Int) = toString().padStart(len, '0').substring(0 until len)
+
+    companion object {
+        /**
+         * A [Regex] that can parse a variable-precision ISO-8601 timestamp.
+         * Derived from https://github.com/quodlibet/mutagen
+         */
+        private val ISO8601_REGEX =
+            Regex(
+                """^(\d{4,})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2})(Z)?)?)?)?)?)?$""")
+
+        /**
+         * Create a [Date] from a year component.
+         * @param year The year component.
+         * @return A new [Date] of the given component, or null if the component is invalid.
+         */
+        fun from(year: Int) = fromTokens(listOf(year))
+
+        /**
+         * Create a [Date] from a date component.
+         * @param year The year component.
+         * @param month The month component.
+         * @param day The day component.
+         * @return A new [Date] consisting of the given components. May have reduced precision
+         * if the components were partially invalid, and will be null if all components are
+         * invalid.
+         */
+        fun from(year: Int, month: Int, day: Int) = fromTokens(listOf(year, month, day))
+
+        /**
+         * Create [Date] from a datetime component.
+         * @param year The year component.
+         * @param month The month component.
+         * @param day The day component.
+         * @param hour The hour component
+         * @return A new [Date] consisting of the given components. May have reduced precision
+         * if the components were partially invalid, and will be null if all components are
+         * invalid.
+         */
+        fun from(year: Int, month: Int, day: Int, hour: Int, minute: Int) =
+            fromTokens(listOf(year, month, day, hour, minute))
+
+        /**
+         * Create a [Date] from a [String] timestamp.
+         * @param timestamp The ISO-8601 timestamp to parse. Can have reduced precision.
+         * @return A new [Date] consisting of the given components. May have reduced precision
+         * if the components were partially invalid, and will be null if all components are
+         * invalid or if the timestamp is invalid.
+         */
+        fun from(timestamp: String): Date? {
+            val tokens =
+                // Match the input with the timestamp regex
+                (ISO8601_REGEX.matchEntire(timestamp) ?: return null)
+                    .groupValues
+                    // Filter to the specific tokens we want and convert them to integer tokens.
+                    .mapIndexedNotNull { index, s -> if (index % 2 != 0) s.toIntOrNull() else null }
+            return fromTokens(tokens)
+        }
+
+        /**
+         * Create a [Date] from the given non-validated tokens.
+         * @param tokens The tokens to use for each date component, in order of precision.
+         * @return A new [Date] consisting of the given components. May have reduced precision
+         * if the components were partially invalid, and will be null if all components are
+         * invalid.
+         */
+        private fun fromTokens(tokens: List<Int>): Date? {
+            val validated = mutableListOf<Int>()
+            validateTokens(tokens, validated)
+            if (validated.isEmpty()) {
+                // No token was valid, return null.
+                return null
+            }
+            return Date(validated)
+        }
+
+        /**
+         * Validate a list of tokens provided by [src], and add the valid ones to [dst].
+         * Will stop as soon as an invalid token is found.
+         * @param src The input tokens to validate.
+         * @param dst The destination list to add valid tokens to.
+         */
+        private fun validateTokens(src: List<Int>, dst: MutableList<Int>) {
+            dst.add(src.getOrNull(0)?.nonZeroOrNull() ?: return)
+            dst.add(src.getOrNull(1)?.inRangeOrNull(1..12) ?: return)
+            dst.add(src.getOrNull(2)?.inRangeOrNull(1..31) ?: return)
+            dst.add(src.getOrNull(3)?.inRangeOrNull(0..23) ?: return)
+            dst.add(src.getOrNull(4)?.inRangeOrNull(0..59) ?: return)
+            dst.add(src.getOrNull(5)?.inRangeOrNull(0..59) ?: return)
+        }
+    }
 }
 
-/** Update the digest using a date. */
-fun MessageDigest.update(date: Date?) {
-    if (date == null) return
-    update(date.toString().toByteArray())
+// --- MUSIC UID CREATION UTILITIES ---
+
+// TODO: Use a stronger hash (SHA-2?, append a 0 for null values to further waterfall effect??)
+
+/**
+ * Update a [MessageDigest] with a lowercase [String].
+ * @param string The [String] to hash. If null, it will not be hashed.
+ */
+private fun MessageDigest.update(string: String?) {
+    if (string != null) {
+        update(string.lowercase().toByteArray())
+    }
 }
 
-/** Update the digest using a list of strings. */
-fun MessageDigest.update(strings: List<String?>) {
+/**
+ * Update a [MessageDigest] with the string representation of a [Date].
+ * @param date The [Date] to hash. If null, nothing will be done.
+ */
+private fun MessageDigest.update(date: Date?) {
+    if (date != null) {
+        update(date.toString().toByteArray())
+    }
+}
+
+/**
+ * Update a [MessageDigest] with the lowercase versions of all of the input [String]s.
+ * @param strings The [String]s to hash. If a [String] is null, it will not be hashed.
+ */
+private fun MessageDigest.update(strings: List<String?>) {
     strings.forEach(::update)
 }
 
-// Note: All methods regarding integer byte-mucking must be little-endian
-
 /**
- * Update the digest using the little-endian byte representation of a byte, or do not update if
- * null.
+ * Update a [MessageDigest] with the little-endian bytes of a [Int].
+ * @param n The [Int] to write. If null, nothing will be done.
  */
-fun MessageDigest.update(n: Int?) {
-    if (n == null) return
-    update(byteArrayOf(n.toByte(), n.shr(8).toByte(), n.shr(16).toByte(), n.shr(24).toByte()))
+private fun MessageDigest.update(n: Int?) {
+    if (n != null) {
+        update(byteArrayOf(n.toByte(), n.shr(8).toByte(), n.shr(16).toByte(), n.shr(24).toByte()))
+    }
 }
 
 /**
- * Update the digest using the little-endian byte representation of a long, or do not update if
- * null.
- */
-fun MessageDigest.update(n: Long?) {
-    if (n == null) return
-    update(
-        byteArrayOf(
-            n.toByte(),
-            n.shr(8).toByte(),
-            n.shr(16).toByte(),
-            n.shr(24).toByte(),
-            n.shr(32).toByte(),
-            n.shr(40).toByte(),
-            n.shl(48).toByte(),
-            n.shr(56).toByte()))
-}
-
-/**
- * Convert an array of 16 bytes to a UUID. Java is a bit strange in that it represents their UUIDs
- * as two longs, however we will not assume that the given bytes represent two little endian longs.
- * We will treat them as a raw sequence of bytes and serialize them as such.
+ * Convert a [ByteArray] to a [UUID]. Assumes that the [ByteArray] has a length of 16.
+ * @return A [UUID] derived from the [ByteArray]'s contents. Internally, the two [Long]s
+ * in the [UUID] will be little-endian.
  */
 fun ByteArray.toUuid(): UUID {
     check(size == 16)

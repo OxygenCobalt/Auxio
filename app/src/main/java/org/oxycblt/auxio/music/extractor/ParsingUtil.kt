@@ -24,43 +24,73 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
- * Parse out the track number field as if the given Int is formatted as DTTT, where D Is the disc
- * and T is the track number. Values of zero will be ignored under the assumption that they are
- * invalid.
+ * Unpack the track number from a combined track + disc [Int] field.
+ * These fields appear within MediaStore's TRACK column, and combine the track and disc value
+ * into a single field where the disc number is the 4th+ digit.
+ * @return The track number extracted from the combined integer value, or null if the value
+ * was zero.
  */
 fun Int.unpackTrackNo() = mod(1000).nonZeroOrNull()
 
 /**
- * Parse out the disc number field as if the given Int is formatted as DTTT, where D Is the disc and
- * T is the track number. Values of zero will be ignored under the assumption that they are invalid.
+ * Unpack the disc number from a combined track + disc [Int] field.
+ * These fields appear within MediaStore's TRACK column, and combine the track and disc value
+ * into a single field where the disc number is the 4th+ digit.
+ * @return The disc number extracted from the combined integer field, or null if the value
+ * was zero.
  */
 fun Int.unpackDiscNo() = div(1000).nonZeroOrNull()
 
 /**
- * Parse out the number field from an NN/TT string that is typically found in DISC_NUMBER and
- * CD_TRACK_NUMBER. Values of zero will be ignored under the assumption that they are invalid.
+ * Parse the number out of a combined number + total position [String] field.
+ * These fields often appear in ID3v2 files, and consist of a number and an (optional) total
+ * value delimited by a /.
+ * @return The number value extracted from the string field, or null if the value could not be
+ * parsed or if the value was zero.
  */
 fun String.parsePositionNum() = split('/', limit = 2)[0].toIntOrNull()?.nonZeroOrNull()
 
-/** Transform an int year into a [Date] */
+/**
+ * Transform an [Int] year field into a [Date].
+ * @return A [Date] consisting of the year value, or null if the value was zero.
+ * @see Date.from
+ */
 fun Int.toDate() = Date.from(this)
 
-/** Parse a plain year from the field into a [Date]. */
+/**
+ * Parse an integer year field from a [String] and transform it into a [Date].
+ * @return A [Date] consisting of the year value, or null if the value could not
+ * be parsed or if the value was zero.
+ * @see Date.from
+ */
 fun String.parseYear() = toIntOrNull()?.toDate()
 
-/** Parse an ISO-8601 time-stamp from this field into a [Date]. */
+/**
+ * Parse an ISO-8601 timestamp [String] into a [Date].
+ * @return A [Date] consisting of the year value plus one or more refinement values
+ * (ex. month, day), or null if the timestamp was not valid.
+ */
 fun String.parseTimestamp() = Date.from(this)
 
-/** Split a string by [selector], also handling escaping. */
+/**
+ * Split a [String] by the given selector, automatically handling escaped characters
+ * that satisfy the selector.
+ * @param selector A block that determines if the string should be split at a given
+ * character.
+ * @return One or more [String]s split by the selector.
+ */
 inline fun String.splitEscaped(selector: (Char) -> Boolean): MutableList<String> {
     val split = mutableListOf<String>()
     var currentString = ""
     var i = 0
+
     while (i < length) {
         val a = get(i)
         val b = getOrNull(i + 1)
 
         if (selector(a)) {
+            // Non-escaped separator, split the string here, making sure any stray whitespace
+            // is removed.
             split.add(currentString.trim())
             currentString = ""
             i++
@@ -68,15 +98,19 @@ inline fun String.splitEscaped(selector: (Char) -> Boolean): MutableList<String>
         }
 
         if (b != null && a == '\\' && selector(b)) {
+            // Is an escaped character, add the non-escaped variant and skip two
+            // characters to move on to the next one.
             currentString += b
             i += 2
         } else {
+            // Non-escaped, increment normally.
             currentString += a
             i++
         }
     }
 
     if (currentString.isNotEmpty()) {
+        // Had an in-progress split string we should add.
         split.add(currentString.trim())
     }
 
@@ -84,30 +118,36 @@ inline fun String.splitEscaped(selector: (Char) -> Boolean): MutableList<String>
 }
 
 /**
- * Fully parse a multi-value tag.
- *
- * If there is only one string in the tag, and if enabled, it will be parsed for any multi-value
- * separators desired. Escaped separators will be ignored and replaced with their correct character.
- *
- * Alternatively, if there are several tags already, it will be returned without modification.
+ * Parse a multi-value tag based on the user configuration. If the value is already composed of
+ * more than one value, nothing is done. Otherwise, this function will attempt to split it based
+ * on the user's separator preferences.
+ * @param settings [Settings] required to obtain user separator configuration.
+ * @return A new list of one or more [String]s.
  */
 fun List<String>.parseMultiValue(settings: Settings) =
     if (size == 1) {
         get(0).maybeParseSeparators(settings)
     } else {
+        // Nothing to do.
         this
     }
 
 /**
- * Maybe a single tag into multi values with the user-preferred separators. If not enabled, the
- * plain string will be returned.
+ * Attempt to parse a string by the user's separator preferences.
+ * @param settings [Settings] required to obtain user separator configuration.
+ * @return A list of one or more [String]s that were split up by the user-defined separators.
  */
 fun String.maybeParseSeparators(settings: Settings): List<String> {
-    // Get the separators the user desires. If null, we don't parse any.
+    // Get the separators the user desires. If null, there's nothing to do.
     val separators = settings.separators ?: return listOf(this)
     return splitEscaped { separators.contains(it) }
 }
 
+/**
+ * Convert a [String] to a [UUID].
+ * @return A [UUID] converted from the [String] value, or null if the value was not valid.
+ * @see UUID.fromString
+ */
 fun String.toUuidOrNull(): UUID? =
     try {
         UUID.fromString(this)
@@ -116,21 +156,32 @@ fun String.toUuidOrNull(): UUID? =
     }
 
 /**
- * Parse a multi-value genre name using ID3v2 rules. If there is one value, the ID3v2.3 rules will
- * be used, followed by separator parsing. Otherwise, each value will be iterated through, and
- * numeric values transformed into string values.
+ * Parse a multi-value genre name using ID3 rules. This will convert any ID3v1 integer
+ * representations of genre fields into their named counterparts, and split up singular
+ * ID3v2-style integer genre fields into one or more genres.
+ * @param settings [Settings] required to obtain user separator configuration.
+ * @return A list of one or more genre names..
  */
 fun List<String>.parseId3GenreNames(settings: Settings) =
     if (size == 1) {
         get(0).parseId3GenreNames(settings)
     } else {
+        // Nothing to split, just map any ID3v1 genres to their name counterparts.
         map { it.parseId3v1Genre() ?: it }
     }
 
-/** Parse a single genre name using ID3v2.3 rules. */
+/**
+ * Parse a single ID3v1/ID3v2 integer genre field into their named representations.
+ * @return A list of one or more genre names.
+ */
 fun String.parseId3GenreNames(settings: Settings) =
     parseId3v1Genre()?.let { listOf(it) } ?: parseId3v2Genre() ?: maybeParseSeparators(settings)
 
+/**
+ * Parse an ID3v1 integer genre field.
+ * @return A named genre if the field is a valid integer, "Cover" or "Remix" if the field is
+ * "CR"/"RX" respectively, and nothing if the field is not a valid ID3v1 integer genre.
+ */
 private fun String.parseId3v1Genre(): String? =
     when {
         // ID3v1 genres are a plain integer value without formatting, so in that case
@@ -145,8 +196,20 @@ private fun String.parseId3v1Genre(): String? =
         else -> null
     }
 
+/**
+ * A [Regex] that implements parsing for ID3v2's genre format.
+ * Derived from mutagen: https://github.com/quodlibet/mutagen
+ */
+private val ID3V2_GENRE_RE = Regex("((?:\\((\\d+|RX|CR)\\))*)(.+)?")
+
+/**
+ * Parse an ID3v2 integer genre field, which has support for multiple genre values and
+ * combined named/integer genres.
+ * @return A list of one or more genres, or null if the field is not a valid ID3v2
+ * integer genre.
+ */
 private fun String.parseId3v2Genre(): List<String>? {
-    val groups = (GENRE_RE.matchEntire(this) ?: return null).groupValues
+    val groups = (ID3V2_GENRE_RE.matchEntire(this) ?: return null).groupValues
     val genres = mutableSetOf<String>()
 
     // ID3v2.3 genres are far more complex and require string grokking to properly implement.
@@ -182,12 +245,9 @@ private fun String.parseId3v2Genre(): List<String>? {
     return genres.toList()
 }
 
-/** Regex that implements matching for ID3v2's genre format. */
-private val GENRE_RE = Regex("((?:\\((\\d+|RX|CR)\\))*)(.+)?")
-
 /**
- * A complete table of all the constant genre values for ID3(v2), including non-standard extensions.
- * Note that we do not translate these, as that greatly increases technical complexity.
+ * A table of the "conventional" mapping between ID3v1 integer genres and their named counterparts.
+ * Includes non-standard extensions.
  */
 private val GENRE_TABLE =
     arrayOf(
@@ -343,8 +403,8 @@ private val GENRE_TABLE =
         "JPop",
         "Synthpop",
 
-        // Winamp 5.6+ extensions, also used by EasyTAG.
-        // I only include this because post-rock is a based genre and deserves a slot.
+        // Winamp 5.6+ extensions, also used by EasyTAG. Not common, but post-rock is a good
+        // genre and should be included in the mapping.
         "Abstract",
         "Art Rock",
         "Baroque",
@@ -390,5 +450,5 @@ private val GENRE_TABLE =
         "Garage Rock",
         "Psybient",
 
-        // Auxio's extensions (Future garage is also based and deserves a slot)
+        // Auxio's extensions, added because Future Garage is also a good genre.
         "Future Garage")

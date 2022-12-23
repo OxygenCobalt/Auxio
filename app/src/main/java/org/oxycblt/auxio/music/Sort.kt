@@ -24,90 +24,166 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Sort.Mode
 
 /**
- * Represents the sort modes used in Auxio.
+ * A sorting method.
  *
- * Sorting can be done by Name, Artist, Album, and others. Sorting of names is always
- * case-insensitive and article-aware. Certain datatypes may only support a subset of sorts since
- * certain sorts cannot be easily applied to them (For Example, [Mode.ByArtist] and [Mode.ByDate] or
- * [Mode.ByAlbum]).
+ * This can be used not only to sort items, but also represent a sorting mode within the UI.
  *
- * Internally, sorts are saved as an integer in the following format
- *
- * 0b(SORT INT)A
- *
- * Where SORT INT is the corresponding integer value of this specific sort and A is a bit
- * representing whether this sort is ascending or descending.
- *
+ * @param mode A [Mode] dictating how to sort the list.
+ * @param isAscending Whether to sort in ascending or descending order.
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class Sort(val mode: Mode, val isAscending: Boolean) {
-    fun withAscending(new: Boolean) = Sort(mode, new)
-    fun withMode(new: Mode) = Sort(new, isAscending)
+    /**
+     * Create a new [Sort] with the same [mode], but different [isAscending] value.
+     * @param isAscending Whether the new sort should be in ascending order or not.
+     * @return A new sort with the same mode, but with the new [isAscending] value applied.
+     */
+    fun withAscending(isAscending: Boolean) = Sort(mode, isAscending)
 
-    val intCode: Int
-        get() = mode.intCode.shl(1) or if (isAscending) 1 else 0
+    /**
+     * Create a new [Sort] with the same [isAscending] value, but different [mode] value.
+     * @param mode Tbe new mode to use for the Sort.
+     * @return A new sort with the same [isAscending] value, but with the new [mode] applied.
+     */
+    fun withMode(mode: Mode) = Sort(mode, isAscending)
 
+    /**
+     * Sort a list of [Song]s.
+     * @param songs The list of [Song]s.
+     * @return A new list of [Song]s sorted by this [Sort]'s configuration.
+     */
     fun songs(songs: Collection<Song>): List<Song> {
         val mutable = songs.toMutableList()
         songsInPlace(mutable)
         return mutable
     }
 
+    /**
+     * Sort a list of [Album]s.
+     * @param albums The list of [Album]s.
+     * @return A new list of [Album]s sorted by this [Sort]'s configuration.
+     */
     fun albums(albums: Collection<Album>): List<Album> {
         val mutable = albums.toMutableList()
         albumsInPlace(mutable)
         return mutable
     }
 
+    /**
+     * Sort a list of [Artist]s.
+     * @param artists The list of [Artist]s.
+     * @return A new list of [Artist]s sorted by this [Sort]'s configuration.
+     */
     fun artists(artists: Collection<Artist>): List<Artist> {
         val mutable = artists.toMutableList()
         artistsInPlace(mutable)
         return mutable
     }
 
+    /**
+     * Sort a list of [Genre]s.
+     * @param genres The list of [Genre]s.
+     * @return A new list of [Genre]s sorted by this [Sort]'s configuration.
+     */
     fun genres(genres: Collection<Genre>): List<Genre> {
         val mutable = genres.toMutableList()
         genresInPlace(mutable)
         return mutable
     }
 
+    /**
+     * Sort a *mutable* list of [Song]s in-place using this [Sort]'s configuration.
+     * @param songs The [Song]s to sort.
+     */
     fun songsInPlace(songs: MutableList<Song>) {
         songs.sortWith(mode.getSongComparator(isAscending))
     }
 
+    /**
+     * Sort a *mutable* list of [Album]s in-place using this [Sort]'s configuration.
+     * @param albums The [Album]s to sort.
+     */
     private fun albumsInPlace(albums: MutableList<Album>) {
         albums.sortWith(mode.getAlbumComparator(isAscending))
     }
 
+    /**
+     * Sort a *mutable* list of [Artist]s in-place using this [Sort]'s configuration.
+     * @param artists The [Album]s to sort.
+     */
     private fun artistsInPlace(artists: MutableList<Artist>) {
         artists.sortWith(mode.getArtistComparator(isAscending))
     }
 
+    /**
+     * Sort a *mutable* list of [Genre]s in-place using this [Sort]'s configuration.
+     * @param genres The [Genre]s to sort.
+     */
     private fun genresInPlace(genres: MutableList<Genre>) {
         genres.sortWith(mode.getGenreComparator(isAscending))
     }
 
+    /**
+     * The integer representation of this instance.
+     * @see fromIntCode
+     */
+    val intCode: Int
+        // Sort's integer representation is formatted as AMMMM, where A is a bitflag
+        // representing on if the mode is ascending or descending, and M is the integer
+        // representation of the sort mode.
+        get() = mode.intCode.shl(1) or if (isAscending) 1 else 0
+
     sealed class Mode {
+        /**
+         * The integer representation of this sort mode.
+         */
         abstract val intCode: Int
+
+        /**
+         * The item ID of this sort mode in menu resources.
+         */
         abstract val itemId: Int
 
-        open fun getSongComparator(ascending: Boolean): Comparator<Song> {
+        /**
+         * Get a [Comparator] that sorts [Song]s according to this [Mode].
+         * @param isAscending Whether to sort in ascending or descending order.
+         * @return A [Comparator] that can be used to sort a [Song] list according to this [Mode].
+         */
+        open fun getSongComparator(isAscending: Boolean): Comparator<Song> {
             throw UnsupportedOperationException()
         }
 
-        open fun getAlbumComparator(ascending: Boolean): Comparator<Album> {
+        /**
+         * Get  a [Comparator] that sorts [Album]s according to this [Mode].
+         * @param isAscending Whether to sort in ascending or descending order.
+         * @return A [Comparator] that can be used to sort a [Album] list according to this [Mode].
+         */
+        open fun getAlbumComparator(isAscending: Boolean): Comparator<Album> {
             throw UnsupportedOperationException()
         }
 
-        open fun getArtistComparator(ascending: Boolean): Comparator<Artist> {
+        /**
+         * Return a [Comparator] that sorts [Artist]s according to this [Mode].
+         * @param isAscending Whether to sort in ascending or descending order.
+         * @return A [Comparator] that can be used to sort a [Artist] list according to this [Mode].
+         */
+        open fun getArtistComparator(isAscending: Boolean): Comparator<Artist> {
             throw UnsupportedOperationException()
         }
 
-        open fun getGenreComparator(ascending: Boolean): Comparator<Genre> {
+        /**
+         * Return a [Comparator] that sorts [Genre]s according to this [Mode].
+         * @param isAscending Whether to sort in ascending or descending order.
+         * @return A [Comparator] that can be used to sort a [Genre] list according to this [Mode].
+         */
+        open fun getGenreComparator(isAscending: Boolean): Comparator<Genre> {
             throw UnsupportedOperationException()
         }
 
-        /** Sort by the names of an item */
+        /**
+         * Sort by the item's name.
+         * @see Music.collationKey
+         */
         object ByName : Mode() {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_NAME
@@ -115,20 +191,23 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             override val itemId: Int
                 get() = R.id.option_sort_name
 
-            override fun getSongComparator(ascending: Boolean) =
-                compareByDynamic(ascending, BasicComparator.SONG)
+            override fun getSongComparator(isAscending: Boolean) =
+                compareByDynamic(isAscending, BasicComparator.SONG)
 
-            override fun getAlbumComparator(ascending: Boolean) =
-                compareByDynamic(ascending, BasicComparator.ALBUM)
+            override fun getAlbumComparator(isAscending: Boolean) =
+                compareByDynamic(isAscending, BasicComparator.ALBUM)
 
-            override fun getArtistComparator(ascending: Boolean) =
-                compareByDynamic(ascending, BasicComparator.ARTIST)
+            override fun getArtistComparator(isAscending: Boolean) =
+                compareByDynamic(isAscending, BasicComparator.ARTIST)
 
-            override fun getGenreComparator(ascending: Boolean) =
-                compareByDynamic(ascending, BasicComparator.GENRE)
+            override fun getGenreComparator(isAscending: Boolean) =
+                compareByDynamic(isAscending, BasicComparator.GENRE)
         }
 
-        /** Sort by the album of an item, only supported by [Song] */
+        /**
+         * Sort by the [Album] of an item. Only available for [Song]s.
+         * @see Album.collationKey
+         */
         object ByAlbum : Mode() {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_ALBUM
@@ -136,15 +215,18 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             override val itemId: Int
                 get() = R.id.option_sort_album
 
-            override fun getSongComparator(ascending: Boolean): Comparator<Song> =
+            override fun getSongComparator(isAscending: Boolean): Comparator<Song> =
                 MultiComparator(
-                    compareByDynamic(ascending, BasicComparator.ALBUM) { it.album },
+                    compareByDynamic(isAscending, BasicComparator.ALBUM) { it.album },
                     compareBy(NullableComparator.INT) { it.disc },
                     compareBy(NullableComparator.INT) { it.track },
                     compareBy(BasicComparator.SONG))
         }
 
-        /** Sort by the artist of an item, only supported by [Album] and [Song] */
+        /**
+         * Sort by the [Artist] name of an item. Only available for [Song] and [Album].
+         * @see Artist.collationKey
+         */
         object ByArtist : Mode() {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_ARTIST
@@ -152,23 +234,27 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             override val itemId: Int
                 get() = R.id.option_sort_artist
 
-            override fun getSongComparator(ascending: Boolean): Comparator<Song> =
+            override fun getSongComparator(isAscending: Boolean): Comparator<Song> =
                 MultiComparator(
-                    compareByDynamic(ascending, ListComparator.ARTISTS) { it.artists },
+                    compareByDynamic(isAscending, ListComparator.ARTISTS) { it.artists },
                     compareByDescending(NullableComparator.DATE) { it.album.date },
                     compareByDescending(BasicComparator.ALBUM) { it.album },
                     compareBy(NullableComparator.INT) { it.disc },
                     compareBy(NullableComparator.INT) { it.track },
                     compareBy(BasicComparator.SONG))
 
-            override fun getAlbumComparator(ascending: Boolean): Comparator<Album> =
+            override fun getAlbumComparator(isAscending: Boolean): Comparator<Album> =
                 MultiComparator(
-                    compareByDynamic(ascending, ListComparator.ARTISTS) { it.artists },
+                    compareByDynamic(isAscending, ListComparator.ARTISTS) { it.artists },
                     compareByDescending(NullableComparator.DATE) { it.date },
                     compareBy(BasicComparator.ALBUM))
         }
 
-        /** Sort by the date of an item, only supported by [Album] and [Song] */
+        /**
+         * Sort by the [Date] of an item. Only available for [Song] and [Album].
+         * @see Song.date
+         * @see Album.date
+         */
         object ByDate : Mode() {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_YEAR
@@ -176,21 +262,23 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             override val itemId: Int
                 get() = R.id.option_sort_year
 
-            override fun getSongComparator(ascending: Boolean): Comparator<Song> =
+            override fun getSongComparator(isAscending: Boolean): Comparator<Song> =
                 MultiComparator(
-                    compareByDynamic(ascending, NullableComparator.DATE) { it.album.date },
+                    compareByDynamic(isAscending, NullableComparator.DATE) { it.album.date },
                     compareByDescending(BasicComparator.ALBUM) { it.album },
                     compareBy(NullableComparator.INT) { it.disc },
                     compareBy(NullableComparator.INT) { it.track },
                     compareBy(BasicComparator.SONG))
 
-            override fun getAlbumComparator(ascending: Boolean): Comparator<Album> =
+            override fun getAlbumComparator(isAscending: Boolean): Comparator<Album> =
                 MultiComparator(
-                    compareByDynamic(ascending, NullableComparator.DATE) { it.date },
+                    compareByDynamic(isAscending, NullableComparator.DATE) { it.date },
                     compareBy(BasicComparator.ALBUM))
         }
 
-        /** Sort by the duration of the item. Supports all items. */
+        /**
+         * Sort by the duration of an item.
+         */
         object ByDuration : Mode() {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_DURATION
@@ -198,25 +286,28 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             override val itemId: Int
                 get() = R.id.option_sort_duration
 
-            override fun getSongComparator(ascending: Boolean): Comparator<Song> =
+            override fun getSongComparator(isAscending: Boolean): Comparator<Song> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.durationMs }, compareBy(BasicComparator.SONG))
+                    compareByDynamic(isAscending) { it.durationMs }, compareBy(BasicComparator.SONG))
 
-            override fun getAlbumComparator(ascending: Boolean): Comparator<Album> =
+            override fun getAlbumComparator(isAscending: Boolean): Comparator<Album> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.durationMs }, compareBy(BasicComparator.ALBUM))
+                    compareByDynamic(isAscending) { it.durationMs }, compareBy(BasicComparator.ALBUM))
 
-            override fun getArtistComparator(ascending: Boolean): Comparator<Artist> =
+            override fun getArtistComparator(isAscending: Boolean): Comparator<Artist> =
                 MultiComparator(
-                    compareByDynamic(ascending, NullableComparator.LONG) { it.durationMs },
+                    compareByDynamic(isAscending, NullableComparator.LONG) { it.durationMs },
                     compareBy(BasicComparator.ARTIST))
 
-            override fun getGenreComparator(ascending: Boolean): Comparator<Genre> =
+            override fun getGenreComparator(isAscending: Boolean): Comparator<Genre> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.durationMs }, compareBy(BasicComparator.GENRE))
+                    compareByDynamic(isAscending) { it.durationMs }, compareBy(BasicComparator.GENRE))
         }
 
-        /** Sort by the amount of songs. Only applicable to music parents. */
+        /**
+         * Sort by the amount of songs an item contains. Only available for [MusicParent]s.
+         * @see MusicParent.songs
+         */
         object ByCount : Mode() {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_COUNT
@@ -224,21 +315,24 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             override val itemId: Int
                 get() = R.id.option_sort_count
 
-            override fun getAlbumComparator(ascending: Boolean): Comparator<Album> =
+            override fun getAlbumComparator(isAscending: Boolean): Comparator<Album> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.songs.size }, compareBy(BasicComparator.ALBUM))
+                    compareByDynamic(isAscending) { it.songs.size }, compareBy(BasicComparator.ALBUM))
 
-            override fun getArtistComparator(ascending: Boolean): Comparator<Artist> =
+            override fun getArtistComparator(isAscending: Boolean): Comparator<Artist> =
                 MultiComparator(
-                    compareByDynamic(ascending, NullableComparator.INT) { it.songs.size },
+                    compareByDynamic(isAscending, NullableComparator.INT) { it.songs.size },
                     compareBy(BasicComparator.ARTIST))
 
-            override fun getGenreComparator(ascending: Boolean): Comparator<Genre> =
+            override fun getGenreComparator(isAscending: Boolean): Comparator<Genre> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.songs.size }, compareBy(BasicComparator.GENRE))
+                    compareByDynamic(isAscending) { it.songs.size }, compareBy(BasicComparator.GENRE))
         }
 
-        /** Sort by the disc, and then track number of an item. Only supported by [Song]. */
+        /**
+         * Sort by the disc number of an item. Only available for [Song]s.
+         * @see Song.disc
+         */
         object ByDisc : Mode() {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_DISC
@@ -246,16 +340,16 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             override val itemId: Int
                 get() = R.id.option_sort_disc
 
-            override fun getSongComparator(ascending: Boolean): Comparator<Song> =
+            override fun getSongComparator(isAscending: Boolean): Comparator<Song> =
                 MultiComparator(
-                    compareByDynamic(ascending, NullableComparator.INT) { it.disc },
+                    compareByDynamic(isAscending, NullableComparator.INT) { it.disc },
                     compareBy(NullableComparator.INT) { it.track },
                     compareBy(BasicComparator.SONG))
         }
 
         /**
-         * Sort by the disc, and then track number of an item. Only supported by [Song]. Do not use
-         * this in a main sorting view, as it is not assigned to a particular item ID
+         * Sort by the track number of an item. Only available for [Song]s.
+         * @see Song.track
          */
         object ByTrack : Mode() {
             override val intCode: Int
@@ -264,14 +358,18 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             override val itemId: Int
                 get() = R.id.option_sort_track
 
-            override fun getSongComparator(ascending: Boolean): Comparator<Song> =
+            override fun getSongComparator(isAscending: Boolean): Comparator<Song> =
                 MultiComparator(
                     compareBy(NullableComparator.INT) { it.disc },
-                    compareByDynamic(ascending, NullableComparator.INT) { it.track },
+                    compareByDynamic(isAscending, NullableComparator.INT) { it.track },
                     compareBy(BasicComparator.SONG))
         }
 
-        /** Sort by the time the item was added. Only supported by [Song] */
+        /**
+         * Sort by the date an item was added. Only supported by [Song]s and [Album]s.
+         * @see Song.dateAdded
+         * @see Album.date
+         */
         object ByDateAdded : Mode() {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_DATE_ADDED
@@ -279,52 +377,81 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             override val itemId: Int
                 get() = R.id.option_sort_date_added
 
-            override fun getSongComparator(ascending: Boolean): Comparator<Song> =
+            override fun getSongComparator(isAscending: Boolean): Comparator<Song> =
                 MultiComparator(
-                    compareByDynamic(ascending) { it.dateAdded }, compareBy(BasicComparator.SONG))
+                    compareByDynamic(isAscending) { it.dateAdded }, compareBy(BasicComparator.SONG))
 
-            override fun getAlbumComparator(ascending: Boolean): Comparator<Album> =
+            override fun getAlbumComparator(isAscending: Boolean): Comparator<Album> =
                 MultiComparator(
-                    compareByDynamic(ascending) { album -> album.songs.minOf { it.dateAdded } },
+                    compareByDynamic(isAscending) { album -> album.dateAdded },
                     compareBy(BasicComparator.ALBUM))
         }
 
-        protected inline fun <T : Music, K> compareByDynamic(
-            ascending: Boolean,
-            comparator: Comparator<in K>,
-            crossinline selector: (T) -> K
-        ) =
-            if (ascending) {
-                compareBy(comparator, selector)
-            } else {
-                compareByDescending(comparator, selector)
-            }
-
-        protected fun <T : Music> compareByDynamic(
-            ascending: Boolean,
-            comparator: Comparator<in T>
-        ): Comparator<T> = compareByDynamic(ascending, comparator) { it }
-
+        /**
+         * Utility function to create a [Comparator] in a dynamic way determined by [isAscending].
+         * @param isAscending Whether to sort in ascending or descending order.
+         * @see compareBy
+         * @see compareByDescending
+         */
         protected inline fun <T : Music, K : Comparable<K>> compareByDynamic(
-            ascending: Boolean,
+            isAscending: Boolean,
             crossinline selector: (T) -> K
         ) =
-            if (ascending) {
+            if (isAscending) {
                 compareBy(selector)
             } else {
                 compareByDescending(selector)
             }
 
+        /**
+         * Utility function to create a [Comparator] in a dynamic way determined by [isAscending]
+         * @param isAscending Whether to sort in ascending or descending order.
+         * @param comparator A [Comparator] to wrap.
+         * @return A new [Comparator] with the specified configuration.
+         * @see compareBy
+         * @see compareByDescending
+         */
+        protected fun <T : Music> compareByDynamic(
+            isAscending: Boolean,
+            comparator: Comparator<in T>
+        ): Comparator<T> = compareByDynamic(isAscending, comparator) { it }
+
+        /**
+         * Utility function to create a [Comparator] a dynamic way determined by [isAscending]
+         * @param isAscending Whether to sort in ascending or descending order.
+         * @param comparator A [Comparator] to wrap.
+         * @param selector Called to obtain a specific attribute to sort by.
+         * @return A new [Comparator] with the specified configuration.
+         * @see compareBy
+         * @see compareByDescending
+         */
+        protected inline fun <T : Music, K> compareByDynamic(
+            isAscending: Boolean,
+            comparator: Comparator<in K>,
+            crossinline selector: (T) -> K
+        ) =
+            if (isAscending) {
+                compareBy(comparator, selector)
+            } else {
+                compareByDescending(comparator, selector)
+            }
+
+        /**
+         * Utility function to create a [Comparator] that sorts in ascending order based on
+         * the given [Comparator], with a selector based on the item itself.
+         * @param comparator The [Comparator] to wrap.
+         * @return A new [Comparator] with the specified configuration.
+         * @see compareBy
+         */
         protected fun <T : Music> compareBy(comparator: Comparator<T>): Comparator<T> =
             compareBy(comparator) { it }
 
         /**
-         * Chains the given comparators together to form one comparator.
-         *
-         * Sorts often need to compare multiple things at once across several hierarchies, with this
-         * class doing such in a more efficient manner than resorting at multiple intervals or
-         * grouping items up. Comparators are checked from first to last, with the first comparator
-         * that returns a non-equal result being propagated upwards.
+         * A [Comparator] that chains several other [Comparator]s together to form one
+         * comparison.
+         * @param comparators The [Comparator]s to chain. These will be iterated through
+         * in order during a comparison, with the first non-equal result becoming the
+         * result.
          */
         private class MultiComparator<T>(vararg comparators: Comparator<T>) : Comparator<T> {
             private val _comparators = comparators
@@ -341,6 +468,10 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             }
         }
 
+        /**
+         * Wraps a [Comparator], extending it to compare two lists.
+         * @param inner The [Comparator] to use.
+         */
         private class ListComparator<T>(private val inner: Comparator<T>) : Comparator<List<T>> {
             override fun compare(a: List<T>, b: List<T>): Int {
                 for (i in 0 until max(a.size, b.size)) {
@@ -363,10 +494,19 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             }
 
             companion object {
+                /**
+                 * A shared instance configured for [Artist]s that can be re-used.
+                 */
                 val ARTISTS: Comparator<List<Artist>> = ListComparator(BasicComparator.ARTIST)
             }
         }
 
+        /**
+         * A [Comparator] that compares abstract [Music] values. Internally, this is similar
+         * to [NullableComparator], however comparing [Music.collationKey] instead of [Comparable].
+         * @see NullableComparator
+         * @see Music.collationKey
+         */
         private class BasicComparator<T : Music> private constructor() : Comparator<T> {
             override fun compare(a: T, b: T): Int {
                 val aKey = a.collationKey
@@ -380,13 +520,29 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             }
 
             companion object {
+                /**
+                 * A shared instance configured for [Song]s that can be re-used.
+                 */
                 val SONG: Comparator<Song> = BasicComparator()
+                /**
+                 * A shared instance configured for [Album]s that can be re-used.
+                 */
                 val ALBUM: Comparator<Album> = BasicComparator()
+                /**
+                 * A shared instance configured for [Artist]s that can be re-used.
+                 */
                 val ARTIST: Comparator<Artist> = BasicComparator()
+                /**
+                 * A shared instance configured for [Genre]s that can be re-used.
+                 */
                 val GENRE: Comparator<Genre> = BasicComparator()
             }
         }
 
+        /**
+         * A [Comparator] that compares two possibly null values. Values will be considered
+         * lesser if they are null, and greater if they are non-null.
+         */
         private class NullableComparator<T : Comparable<T>> private constructor() : Comparator<T?> {
             override fun compare(a: T?, b: T?) =
                 when {
@@ -397,13 +553,48 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                 }
 
             companion object {
+                /**
+                 * A shared instance configured for [Int]s that can be re-used.
+                 */
                 val INT = NullableComparator<Int>()
+                /**
+                 * A shared instance configured for [Long]s that can be re-used.
+                 */
                 val LONG = NullableComparator<Long>()
+                /**
+                 * A shared instance configured for [Date]s that can be re-used.
+                 */
                 val DATE = NullableComparator<Date>()
             }
         }
 
         companion object {
+            /**
+             * Convert a [Mode] integer representation into an instance.
+             * @param intCode An integer representation of a [Mode]
+             * @return The corresponding [Mode], or null if the [Mode] is invalid.
+             * @see intCode
+             */
+            fun fromIntCode(intCode: Int) =
+                when (intCode) {
+                    ByName.intCode -> ByName
+                    ByArtist.intCode -> ByArtist
+                    ByAlbum.intCode -> ByAlbum
+                    ByDate.intCode -> ByDate
+                    ByDuration.intCode -> ByDuration
+                    ByCount.intCode -> ByCount
+                    ByDisc.intCode -> ByDisc
+                    ByTrack.intCode -> ByTrack
+                    ByDateAdded.intCode -> ByDateAdded
+                    else -> null
+                }
+
+            /**
+             * Convert a menu item ID into a [Mode].
+             * @param itemId The menu resource ID to convert
+             * @return A [Mode] corresponding to the given ID, or null if the ID is invalid.
+             * @see itemId
+             */
             fun fromItemId(@IdRes itemId: Int) =
                 when (itemId) {
                     ByName.itemId -> ByName
@@ -421,28 +612,18 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
     }
 
     companion object {
-
         /**
-         * Convert a sort's integer representation into a [Sort] instance.
-         *
-         * @return A [Sort] instance, null if the data is malformed.
+         * Convert a [Sort] integer representation into an instance.
+         * @param intCode An integer representation of a [Sort]
+         * @return The corresponding [Sort], or null if the [Sort] is invalid.
+         * @see intCode
          */
-        fun fromIntCode(value: Int): Sort? {
-            val isAscending = (value and 1) == 1
-            val mode =
-                when (value.shr(1)) {
-                    Mode.ByName.intCode -> Mode.ByName
-                    Mode.ByArtist.intCode -> Mode.ByArtist
-                    Mode.ByAlbum.intCode -> Mode.ByAlbum
-                    Mode.ByDate.intCode -> Mode.ByDate
-                    Mode.ByDuration.intCode -> Mode.ByDuration
-                    Mode.ByCount.intCode -> Mode.ByCount
-                    Mode.ByDisc.intCode -> Mode.ByDisc
-                    Mode.ByTrack.intCode -> Mode.ByTrack
-                    Mode.ByDateAdded.intCode -> Mode.ByDateAdded
-                    else -> return null
-                }
-
+        fun fromIntCode(intCode: Int): Sort? {
+            // Sort's integer representation is formatted as AMMMM, where A is a bitflag
+            // representing on if the mode is ascending or descending, and M is the integer
+            // representation of the sort mode.
+            val isAscending = (intCode and 1) == 1
+            val mode = Mode.fromIntCode(intCode.shr(1)) ?: return null
             return Sort(mode, isAscending)
         }
     }

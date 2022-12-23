@@ -17,10 +17,6 @@
  
 package org.oxycblt.auxio.home.tabs
 
-import org.oxycblt.auxio.home.tabs.Tab.Companion.fromSequence
-import org.oxycblt.auxio.home.tabs.Tab.Companion.toSequence
-import org.oxycblt.auxio.home.tabs.Tab.Invisible
-import org.oxycblt.auxio.home.tabs.Tab.Visible
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.util.logE
 
@@ -76,11 +72,11 @@ sealed class Tab(open val mode: MusicMode) {
             arrayOf(MusicMode.SONGS, MusicMode.ALBUMS, MusicMode.ARTISTS, MusicMode.GENRES)
 
         /**
-         * Convert an array of tabs into it's integer representation.
-         * @param tabs The array of tabs to convert
-         * @return An integer representation of the tab array
+         * Convert an array of [Tab]s into it's integer representation.
+         * @param tabs The array of [Tab]s to convert
+         * @return An integer representation of the [Tab] array
          */
-        fun toSequence(tabs: Array<Tab>): Int {
+        fun toIntCode(tabs: Array<Tab>): Int {
             // Like when deserializing, make sure there are no duplicate tabs for whatever reason.
             val distinct = tabs.distinctBy { it.mode }
 
@@ -102,11 +98,11 @@ sealed class Tab(open val mode: MusicMode) {
         }
 
         /**
-         * Convert a tab integer representation into an array of tabs.
-         * @param sequence The integer representation of the tabs.
-         * @return An array of tabs corresponding to the sequence.
+         * Convert a [Tab] integer representation into it's corresponding array of [Tab]s.
+         * @param sequence The integer representation of the [Tab]s.
+         * @return An array of [Tab]s corresponding to the sequence.
          */
-        fun fromSequence(sequence: Int): Array<Tab>? {
+        fun fromIntCode(sequence: Int): Array<Tab>? {
             val tabs = mutableListOf<Tab>()
 
             // Try to parse a mode for each chunk in the sequence.

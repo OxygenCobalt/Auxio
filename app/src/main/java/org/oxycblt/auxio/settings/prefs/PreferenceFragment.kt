@@ -139,8 +139,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                         this.context?.showToast(R.string.err_did_not_restore)
                     }
                 }
-            context.getString(R.string.set_key_reindex) -> musicModel.reindex(true)
-            context.getString(R.string.set_key_rescan) -> musicModel.reindex(false)
+            context.getString(R.string.set_key_reindex) -> musicModel.refresh()
+            context.getString(R.string.set_key_rescan) -> musicModel.rescan()
             else -> return super.onPreferenceTreeClick(preference)
         }
 

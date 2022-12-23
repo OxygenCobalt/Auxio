@@ -32,22 +32,75 @@ import org.oxycblt.auxio.util.queryAll
 import org.oxycblt.auxio.util.requireBackgroundThread
 
 /**
- * The extractor that caches music metadata for faster use later. The cache is only responsible for
- * storing "intrinsic" data, as in information derived from the file format and not information from
- * the media database or file system. The exceptions are the database ID and modification times for
- * files, as these are required for the cache to function well.
+ * Defines an Extractor that can load cached music. This is the first step in the music extraction
+ * process and is an optimization to avoid the slow [MediaStoreExtractor] and [MetadataExtractor]
+ * extraction process.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class CacheExtractor(private val context: Context, private val noop: Boolean) {
-    private var cacheMap: Map<Long, Song.Raw>? = null
-    private var shouldWriteCache = noop
+interface CacheExtractor {
+    /**
+     * Initialize the Extractor by reading the cache data into memory.
+     */
+    fun init()
 
-    fun init() {
-        if (noop) {
-            return
-        }
+    /**
+     * Finalize the Extractor by writing the newly-loaded [Song.Raw] back into the cache,
+     * alongside freeing up memory.
+     * @param rawSongs The songs to write into the cache.
+     */
+    fun finalize(rawSongs: List<Song.Raw>)
 
+    /**
+     * Use the cache to populate the given [Song.Raw].
+     * @param rawSong The [Song.Raw] to attempt to populate. Note that this [Song.Raw] will
+     * only contain the bare minimum information required to load a cache entry.
+     * @return An [ExtractionResult] representing the result of the operation.
+     * [ExtractionResult.PARSED] is not returned.
+     */
+    fun populate(rawSong: Song.Raw): ExtractionResult
+}
+
+/**
+ * A [CacheExtractor] only capable of writing to the cache. This can be used to load music
+ * with without the cache if the user desires.
+ * @param context [Context] required to read the cache database.
+ * @see CacheExtractor
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+open class WriteOnlyCacheExtractor(private val context: Context) : CacheExtractor {
+    override fun init() {
+        // Nothing to do.
+    }
+
+    override fun finalize(rawSongs: List<Song.Raw>) {
         try {
+            // Still write out whatever data was extracted.
+            CacheDatabase.getInstance(context).write(rawSongs)
+        } catch (e: Exception) {
+            logE("Unable to save cache database.")
+            logE(e.stackTraceToString())
+        }
+    }
+
+    override fun populate(rawSong: Song.Raw) =
+        // Nothing to do.
+        ExtractionResult.NONE
+}
+
+/**
+ * A [CacheExtractor] that supports reading from and writing to the cache.
+ * @param context [Context] required to load
+ * @see CacheExtractor
+ * @author Alexander Capehart
+ */
+class ReadWriteCacheExtractor(private val context: Context) : WriteOnlyCacheExtractor(context) {
+    private var cacheMap: Map<Long, Song.Raw>? = null
+    private var invalidate = false
+
+    override fun init() {
+        try {
+            // Faster to load the whole database into memory than do a query on each
+            // populate call.
             cacheMap = CacheDatabase.getInstance(context).read()
         } catch (e: Exception) {
             logE("Unable to load cache database.")
@@ -55,34 +108,32 @@ class CacheExtractor(private val context: Context, private val noop: Boolean) {
         }
     }
 
-    /** Write a list of newly-indexed raw songs to the database. */
-    fun finalize(rawSongs: List<Song.Raw>) {
+    override fun finalize(rawSongs: List<Song.Raw>) {
         cacheMap = null
-
-        if (shouldWriteCache) {
-            // If the entire library could not be loaded from the cache, we need to re-write it
-            // with the new library.
+        // Same some time by not re-writing the cache if we were able to create the entire
+        // library from it. If there is even just one song we could not populate from the
+        // cache, then we will re-write it.
+        if (invalidate) {
             logD("Cache was invalidated during loading, rewriting")
-            try {
-                CacheDatabase.getInstance(context).write(rawSongs)
-            } catch (e: Exception) {
-                logE("Unable to save cache database.")
-                logE(e.stackTraceToString())
-            }
+            super.finalize(rawSongs)
         }
     }
 
-    /**
-     * Maybe copy a cached raw song into this instance, assuming that it has not changed since it
-     * was last saved. Returns true if a song was loaded.
-     */
-    fun populateFromCache(rawSong: Song.Raw): Boolean {
-        val map = cacheMap ?: return false
+    override fun populate(rawSong: Song.Raw): ExtractionResult {
+        val map = requireNotNull(cacheMap) {
+            "Must initialize this extractor before populating a raw song."
+        }
 
+        // For a cached raw song to be used, it must exist within the cache and have matching
+        // addition and modification timestamps. Technically the addition timestamp doesn't
+        // exist, but to safeguard against possible OEM-specific timestamp incoherence, we
+        // check for it anyway.
         val cachedRawSong = map[rawSong.mediaStoreId]
         if (cachedRawSong != null &&
             cachedRawSong.dateAdded == rawSong.dateAdded &&
             cachedRawSong.dateModified == rawSong.dateModified) {
+            // No built-in "copy from" method for data classes, just have to assign
+            // the data ourselves.
             rawSong.musicBrainzId = cachedRawSong.musicBrainzId
             rawSong.name = cachedRawSong.name
             rawSong.sortName = cachedRawSong.sortName
@@ -98,7 +149,7 @@ class CacheExtractor(private val context: Context, private val noop: Boolean) {
             rawSong.albumMusicBrainzId = cachedRawSong.albumMusicBrainzId
             rawSong.albumName = cachedRawSong.albumName
             rawSong.albumSortName = cachedRawSong.albumSortName
-            rawSong.albumReleaseTypes = cachedRawSong.albumReleaseTypes
+            rawSong.albumTypes = cachedRawSong.albumTypes
 
             rawSong.artistMusicBrainzIds = cachedRawSong.artistMusicBrainzIds
             rawSong.artistNames = cachedRawSong.artistNames
@@ -110,17 +161,27 @@ class CacheExtractor(private val context: Context, private val noop: Boolean) {
 
             rawSong.genreNames = cachedRawSong.genreNames
 
-            return true
+            return ExtractionResult.CACHED
         }
 
-        shouldWriteCache = true
-        return false
+        // We could not populate this song. This means our cache is stale and should be
+        // re-written with newly-loaded music.
+        invalidate = true
+        return ExtractionResult.NONE
     }
 }
 
+/**
+ * Internal [Song.Raw] cache database.
+ * @author Alexander Capehart (OxygenCobalt)
+ * @see [CacheExtractor]
+ */
 private class CacheDatabase(context: Context) :
     SQLiteOpenHelper(context, File(context.cacheDir, DB_NAME).absolutePath, null, DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
+        // Map the cacheable raw song fields to database fields. Cache-able in this context
+        // means information independent of the file-system, excluding IDs and timestamps required
+        // to retrieve items from the cache.
         val command =
             StringBuilder()
                 .append("CREATE TABLE IF NOT EXISTS $TABLE_RAW_SONGS(")
@@ -139,7 +200,7 @@ private class CacheDatabase(context: Context) :
                 .append("${Columns.ALBUM_MUSIC_BRAINZ_ID} STRING,")
                 .append("${Columns.ALBUM_NAME} STRING NOT NULL,")
                 .append("${Columns.ALBUM_SORT_NAME} STRING,")
-                .append("${Columns.ALBUM_RELEASE_TYPES} STRING,")
+                .append("${Columns.ALBUM_TYPES} STRING,")
                 .append("${Columns.ARTIST_MUSIC_BRAINZ_IDS} STRING,")
                 .append("${Columns.ARTIST_NAMES} STRING,")
                 .append("${Columns.ARTIST_SORT_NAMES} STRING,")
@@ -156,6 +217,7 @@ private class CacheDatabase(context: Context) :
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) = nuke(db)
 
     private fun nuke(db: SQLiteDatabase) {
+        // No cost to nuking this database, only causes higher loading times.
         logD("Nuking database")
         db.apply {
             execSQL("DROP TABLE IF EXISTS $TABLE_RAW_SONGS")
@@ -163,13 +225,21 @@ private class CacheDatabase(context: Context) :
         }
     }
 
+    /**
+     * Read out this database into memory.
+     * @return A mapping between the MediaStore IDs of the cache entries and a [Song.Raw] containing
+     * the cacheable data for the entry. Note that any filesystem-dependent information
+     * (excluding IDs and timestamps) is not cached.
+     */
     fun read(): Map<Long, Song.Raw> {
         requireBackgroundThread()
-
+        val start = System.currentTimeMillis()
         val map = mutableMapOf<Long, Song.Raw>()
-
         readableDatabase.queryAll(TABLE_RAW_SONGS) { cursor ->
-            if (cursor.count == 0) return@queryAll
+            if (cursor.count == 0) {
+                // Nothing to do.
+                return@queryAll
+            }
 
             val idIndex = cursor.getColumnIndexOrThrow(Columns.MEDIA_STORE_ID)
             val dateAddedIndex = cursor.getColumnIndexOrThrow(Columns.DATE_ADDED)
@@ -191,7 +261,7 @@ private class CacheDatabase(context: Context) :
                 cursor.getColumnIndexOrThrow(Columns.ALBUM_MUSIC_BRAINZ_ID)
             val albumNameIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_NAME)
             val albumSortNameIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_SORT_NAME)
-            val albumReleaseTypesIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_RELEASE_TYPES)
+            val albumReleaseTypesIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_TYPES)
 
             val artistMusicBrainzIdsIndex =
                 cursor.getColumnIndexOrThrow(Columns.ARTIST_MUSIC_BRAINZ_IDS)
@@ -229,40 +299,48 @@ private class CacheDatabase(context: Context) :
                 raw.albumMusicBrainzId = cursor.getStringOrNull(albumMusicBrainzIdIndex)
                 raw.albumName = cursor.getString(albumNameIndex)
                 raw.albumSortName = cursor.getStringOrNull(albumSortNameIndex)
-                cursor.getStringOrNull(albumReleaseTypesIndex)?.parseMultiValue()?.let {
-                    raw.albumReleaseTypes = it
+                cursor.getStringOrNull(albumReleaseTypesIndex)?.parseSQLMultiValue()?.let {
+                    raw.albumTypes = it
                 }
 
                 cursor.getStringOrNull(artistMusicBrainzIdsIndex)?.let {
-                    raw.artistMusicBrainzIds = it.parseMultiValue()
+                    raw.artistMusicBrainzIds = it.parseSQLMultiValue()
                 }
                 cursor.getStringOrNull(artistNamesIndex)?.let {
-                    raw.artistNames = it.parseMultiValue()
+                    raw.artistNames = it.parseSQLMultiValue()
                 }
                 cursor.getStringOrNull(artistSortNamesIndex)?.let {
-                    raw.artistSortNames = it.parseMultiValue()
+                    raw.artistSortNames = it.parseSQLMultiValue()
                 }
 
                 cursor.getStringOrNull(albumArtistMusicBrainzIdsIndex)?.let {
-                    raw.albumArtistMusicBrainzIds = it.parseMultiValue()
+                    raw.albumArtistMusicBrainzIds = it.parseSQLMultiValue()
                 }
                 cursor.getStringOrNull(albumArtistNamesIndex)?.let {
-                    raw.albumArtistNames = it.parseMultiValue()
+                    raw.albumArtistNames = it.parseSQLMultiValue()
                 }
                 cursor.getStringOrNull(albumArtistSortNamesIndex)?.let {
-                    raw.albumArtistSortNames = it.parseMultiValue()
+                    raw.albumArtistSortNames = it.parseSQLMultiValue()
                 }
 
-                cursor.getStringOrNull(genresIndex)?.let { raw.genreNames = it.parseMultiValue() }
+                cursor.getStringOrNull(genresIndex)?.let { raw.genreNames = it.parseSQLMultiValue() }
 
                 map[id] = raw
             }
         }
 
+        logD("Read cache in ${System.currentTimeMillis() - start}ms")
+
         return map
     }
 
+    /**
+     * Write a new list of [Song.Raw] to this database.
+     * @param rawSongs The new [Song.Raw] instances to cache. Note that any filesystem-dependent
+     * information (excluding IDs and timestamps) is not cached.
+     */
     fun write(rawSongs: List<Song.Raw>) {
+        val start = System.currentTimeMillis()
         var position = 0
         val database = writableDatabase
         database.transaction { delete(TABLE_RAW_SONGS, null, null) }
@@ -299,24 +377,24 @@ private class CacheDatabase(context: Context) :
                             put(Columns.ALBUM_NAME, rawSong.albumName)
                             put(Columns.ALBUM_SORT_NAME, rawSong.albumSortName)
                             put(
-                                Columns.ALBUM_RELEASE_TYPES,
-                                rawSong.albumReleaseTypes.toMultiValue())
+                                Columns.ALBUM_TYPES,
+                                rawSong.albumTypes.toSQLMultiValue())
 
                             put(
                                 Columns.ARTIST_MUSIC_BRAINZ_IDS,
-                                rawSong.artistMusicBrainzIds.toMultiValue())
-                            put(Columns.ARTIST_NAMES, rawSong.artistNames.toMultiValue())
-                            put(Columns.ARTIST_SORT_NAMES, rawSong.artistSortNames.toMultiValue())
+                                rawSong.artistMusicBrainzIds.toSQLMultiValue())
+                            put(Columns.ARTIST_NAMES, rawSong.artistNames.toSQLMultiValue())
+                            put(Columns.ARTIST_SORT_NAMES, rawSong.artistSortNames.toSQLMultiValue())
 
                             put(
                                 Columns.ALBUM_ARTIST_MUSIC_BRAINZ_IDS,
-                                rawSong.albumArtistMusicBrainzIds.toMultiValue())
-                            put(Columns.ALBUM_ARTIST_NAMES, rawSong.albumArtistNames.toMultiValue())
+                                rawSong.albumArtistMusicBrainzIds.toSQLMultiValue())
+                            put(Columns.ALBUM_ARTIST_NAMES, rawSong.albumArtistNames.toSQLMultiValue())
                             put(
                                 Columns.ALBUM_ARTIST_SORT_NAMES,
-                                rawSong.albumArtistSortNames.toMultiValue())
+                                rawSong.albumArtistSortNames.toSQLMultiValue())
 
-                            put(Columns.GENRE_NAMES, rawSong.genreNames.toMultiValue())
+                            put(Columns.GENRE_NAMES, rawSong.genreNames.toSQLMultiValue())
                         }
 
                     insert(TABLE_RAW_SONGS, null, itemData)
@@ -329,62 +407,160 @@ private class CacheDatabase(context: Context) :
 
             logD("Wrote batch of raw songs. Position is now at $position")
         }
+
+        logD("Wrote cache in ${System.currentTimeMillis() - start}ms")
     }
 
     // SQLite does not natively support multiple values, so we have to serialize multi-value
     // tags with separators. Not ideal, but nothing we can do.
 
-    private fun List<String>.toMultiValue() =
+    /**
+     * Transforms the multi-string list into a SQL-safe multi-string value.
+     * @return A single string containing all values within the multi-string list, delimited
+     * by a ";". Pre-existing ";" characters will be escaped.
+     */
+    private fun List<String>.toSQLMultiValue() =
         if (isNotEmpty()) {
             joinToString(";") { it.replace(";", "\\;") }
         } else {
             null
         }
 
-    private fun String.parseMultiValue() = splitEscaped { it == ';' }
+    /**
+     * Transforms the SQL-safe multi-string value into a multi-string list.
+     * @return A list of strings corresponding to the delimited values present within the
+     * original string. Escaped delimiters are converted back into their normal forms.
+     */
+    private fun String.parseSQLMultiValue() = splitEscaped { it == ';' }
 
+    /**
+     * Defines the columns used in this database.
+     */
     private object Columns {
+        /**
+         * @see Song.Raw.mediaStoreId
+         */
         const val MEDIA_STORE_ID = "msid"
+        /**
+         * @see Song.Raw.dateAdded
+         */
         const val DATE_ADDED = "date_added"
+        /**
+         * @see Song.Raw.dateModified
+         */
         const val DATE_MODIFIED = "date_modified"
 
+        /**
+         * @see Song.Raw.size
+         */
         const val SIZE = "size"
+        /**
+         * @see Song.Raw.durationMs
+         */
         const val DURATION = "duration"
+        /**
+         * @see Song.Raw.formatMimeType
+         */
         const val FORMAT_MIME_TYPE = "fmt_mime"
 
+        /**
+         * @see Song.Raw.musicBrainzId
+         */
         const val MUSIC_BRAINZ_ID = "mbid"
+        /**
+         * @see Song.Raw.name
+         */
         const val NAME = "name"
+        /**
+         * @see Song.Raw.sortName
+         */
         const val SORT_NAME = "sort_name"
 
+        /**
+         * @see Song.Raw.track
+         */
         const val TRACK = "track"
+        /**
+         * @see Song.Raw.disc
+         */
         const val DISC = "disc"
+        /**
+         * @see [Song.Raw.date
+         */
         const val DATE = "date"
 
+        /**
+         * @see [Song.Raw.albumMusicBrainzId
+         */
         const val ALBUM_MUSIC_BRAINZ_ID = "album_mbid"
+        /**
+         * @see Song.Raw.albumName
+         */
         const val ALBUM_NAME = "album"
+        /**
+         * @see Song.Raw.albumSortName
+         */
         const val ALBUM_SORT_NAME = "album_sort"
-        const val ALBUM_RELEASE_TYPES = "album_types"
+        /**
+         * @see Song.Raw.albumReleaseTypes
+         */
+        const val ALBUM_TYPES = "album_types"
 
+        /**
+         * @see Song.Raw.artistMusicBrainzIds
+         */
         const val ARTIST_MUSIC_BRAINZ_IDS = "artists_mbid"
+        /**
+         * @see Song.Raw.artistNames
+         */
         const val ARTIST_NAMES = "artists"
+        /**
+         * @see Song.Raw.artistSortNames
+         */
         const val ARTIST_SORT_NAMES = "artists_sort"
 
+        /**
+         * @see Song.Raw.albumArtistMusicBrainzIds
+         */
         const val ALBUM_ARTIST_MUSIC_BRAINZ_IDS = "album_artists_mbid"
+        /**
+         * @see Song.Raw.albumArtistNames
+         */
         const val ALBUM_ARTIST_NAMES = "album_artists"
+        /**
+         * @see Song.Raw.albumArtistSortNames
+         */
         const val ALBUM_ARTIST_SORT_NAMES = "album_artists_sort"
 
+        /**
+         * @see Song.Raw.genreNames
+         */
         const val GENRE_NAMES = "genres"
     }
 
     companion object {
+        /**
+         * The file name of the database.
+         */
         const val DB_NAME = "auxio_music_cache.db"
+
+        /**
+         * The current version of the database. Increment whenever a breaking change is made
+         * to the schema. When incremented, the database will be wiped.
+         */
         const val DB_VERSION = 1
 
+        /**
+         * The table containing the cached [Song.Raw] instances.
+         */
         const val TABLE_RAW_SONGS = "raw_songs"
 
         @Volatile private var INSTANCE: CacheDatabase? = null
 
-        /** Get/Instantiate the single instance of [CacheDatabase]. */
+        /**
+         * Get a singleton instance.
+         * @return The (possibly newly-created) singleton instance.
+         */
         fun getInstance(context: Context): CacheDatabase {
             val currentInstance = INSTANCE
 

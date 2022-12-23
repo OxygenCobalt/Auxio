@@ -76,7 +76,7 @@ class HomeFragment :
     // lifecycleObject builds this in the creation step, so doing this is okay.
     private val storagePermissionLauncher: ActivityResultLauncher<String> by lifecycleObject {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            musicModel.reindex(true)
+            musicModel.refresh()
         }
     }
 
@@ -365,29 +365,29 @@ class HomeFragment :
                     logD("Updating UI to Response.Err state")
                     binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
 
-                    // Configure the indexing button to act as a rescan trigger.
+                    // Configure the action to act as a reload trigger.
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = context.getString(R.string.lbl_retry)
-                        setOnClickListener { musicModel.reindex(true) }
+                        setOnClickListener { musicModel.refresh() }
                     }
                 }
                 is Indexer.Response.NoMusic -> {
                     logD("Updating UI to Response.NoMusic state")
                     binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
 
-                    // Configure the indexing button to act as a rescan trigger.
+                    // Configure the action to act as a reload trigger.
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = context.getString(R.string.lbl_retry)
-                        setOnClickListener { musicModel.reindex(true) }
+                        setOnClickListener { musicModel.refresh() }
                     }
                 }
                 is Indexer.Response.NoPerms -> {
                     logD("Updating UI to Response.NoPerms state")
                     binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
 
-                    // Configure the indexing button to act as a permission launcher.
+                    // Configure the action to act as a permission launcher.
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = context.getString(R.string.lbl_grant)

@@ -26,12 +26,13 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.androidActivityViewModels
 
 /**
- * The [ArtistPickerDialog] for ambiguous artist playback operations.
+ * An [ArtistPickerDialog] intended for when [Artist] playback is ambiguous.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class ArtistPlaybackPickerDialog : ArtistPickerDialog() {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
-
+    // Information about what artists to display is initially within the navigation arguments
+    // as a list of UIDs, as that is the only safe way to parcel an artist.
     private val args: ArtistPlaybackPickerDialogArgs by navArgs()
 
     override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {
@@ -42,6 +43,7 @@ class ArtistPlaybackPickerDialog : ArtistPickerDialog() {
     override fun onClick(item: Item) {
         super.onClick(item)
         check(item is Artist) { "Unexpected datatype: ${item::class.simpleName}" }
+        // User made a choice, play the given song from that artist.
         pickerModel.currentSong.value?.let { song -> playbackModel.playFromArtist(song, item) }
     }
 }
