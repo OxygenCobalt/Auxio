@@ -25,7 +25,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isInvisible
 import androidx.core.view.postDelayed
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialSharedAxis
 import org.oxycblt.auxio.R
@@ -43,20 +42,21 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.*
 
 /**
- * A [Fragment] that allows for the searching of the entire music library. TODO: Minor rework with
- * better keyboard logic, recycler updating, and chips
+ * The [ListFragment] providing search functionality for the music library.
+ *
+ * TODO: Better keyboard management
+ *
+ * TODO: Multi-filtering with chips
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SearchFragment : ListFragment<FragmentSearchBinding>() {
-    // SearchViewModel is only scoped to this Fragment
     private val searchModel: SearchViewModel by androidViewModels()
-
     private val searchAdapter = SearchAdapter(this)
+    private var launchedKeyboard = false
     private val imm: InputMethodManager by lifecycleObject { binding ->
         binding.context.getSystemServiceCompat(InputMethodManager::class)
     }
-
-    private var launchedKeyboard = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,19 +75,11 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
         super.onBindingCreated(binding, savedInstanceState)
 
         binding.searchToolbar.apply {
-            val itemIdToSelect =
-                when (searchModel.filterMode) {
-                    MusicMode.SONGS -> R.id.option_filter_songs
-                    MusicMode.ALBUMS -> R.id.option_filter_albums
-                    MusicMode.ARTISTS -> R.id.option_filter_artists
-                    MusicMode.GENRES -> R.id.option_filter_genres
-                    null -> R.id.option_filter_all
-                }
-
-            menu.findItem(itemIdToSelect).isChecked = true
+            // Initialize the current filtering mode.
+            menu.findItem(searchModel.getFilterOptionId()).isChecked = true
 
             setNavigationOnClickListener {
-                // Drop keyboard as it's no longer needed
+                // Keyboard is no longer needed, drop it.
                 imm.hide()
                 findNavController().navigateUp()
             }
@@ -112,7 +104,7 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
 
         // --- VIEWMODEL SETUP ---
 
-        collectImmediately(searchModel.searchResults, ::updateResults)
+        collectImmediately(searchModel.searchResults, ::updateSearchResults)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
@@ -134,7 +126,7 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
         if (item.itemId != R.id.submenu_filtering) {
             // Is a change in filter mode and not just a junk submenu click, update
             // the filtering within SearchViewModel.
-            searchModel.updateFilterModeWithId(item.itemId)
+            searchModel.setFilterOptionId(item.itemId)
             return true
         }
 
@@ -148,7 +140,7 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
                     MusicMode.SONGS -> playbackModel.playFromAll(music)
                     MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
                     MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-                    else -> error("Unexpected playback mode: ${mode}")
+                    else -> error("Unexpected playback mode: $mode")
                 }
             is MusicParent -> navModel.exploreNavigateTo(music)
         }
@@ -164,17 +156,17 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
         }
     }
 
-    private fun updateResults(results: List<Item>) {
+    private fun updateSearchResults(results: List<Item>) {
         val binding = requireBinding()
-
+        // Don't show the RecyclerView (and it's stray overscroll effects) when there
+        // are no results.
+        binding.searchRecycler.isInvisible = results.isEmpty()
         searchAdapter.submitList(results.toMutableList()) {
             // I would make it so that the position is only scrolled back to the top when
             // the query actually changes instead of once every re-creation event, but sadly
             // that doesn't seem possible.
             binding.searchRecycler.scrollToPosition(0)
         }
-
-        binding.searchRecycler.isInvisible = results.isEmpty()
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
@@ -204,6 +196,10 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
         }
     }
 
+    /**
+     * Safely focus the keyboard on a particular [View].
+     * @param view The [View] to focus the keyboard on.
+     */
     private fun InputMethodManager.show(view: View) {
         view.apply {
             requestFocus()
@@ -211,6 +207,9 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
         }
     }
 
+    /**
+     * Safely hide the keyboard from this view.
+     */
     private fun InputMethodManager.hide() {
         hideSoftInputFromWindow(requireView().windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }

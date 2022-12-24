@@ -148,8 +148,6 @@ class AlbumListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRec
         override val currentList: List<Item>
             get() = differ.currentList
 
-        override fun getItemCount() = differ.currentList.size
-
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             AlbumViewHolder.new(parent)
 

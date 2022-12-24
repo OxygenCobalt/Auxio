@@ -27,11 +27,17 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
+/**
+ * An adapter that displays search results.
+ * @param listener An [ExtendedListListener] to bind interactions to.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class SearchAdapter(private val listener: ExtendedListListener) :
     SelectionIndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
     private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
 
-    override fun getItemCount() = differ.currentList.size
+    override val currentList: List<Item>
+        get() = differ.currentList
 
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
@@ -65,14 +71,18 @@ class SearchAdapter(private val listener: ExtendedListListener) :
 
     override fun isItemFullWidth(position: Int) = differ.currentList[position] is Header
 
-    override val currentList: List<Item>
-        get() = differ.currentList
-
-    fun submitList(list: List<Item>, callback: () -> Unit) {
-        differ.submitList(list, callback)
+    /**
+     * Asynchronously update the list with new items. Assumes that the list only contains
+     * supported data..
+     * @param newList The new [Item]s for the adapter to display.
+     * @param callback A block called when the asynchronous update is completed.
+     */
+    fun submitList(newList: List<Item>, callback: () -> Unit) {
+        differ.submitList(newList, callback)
     }
 
     companion object {
+        /** A comparator that can be used with DiffUtil. */
         private val DIFF_CALLBACK =
             object : SimpleItemCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item) =

@@ -35,6 +35,14 @@ abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerV
     private var currentItem: Item? = null
     private var isPlaying = false
 
+    /**
+     * The current list of the adapter. This is used to update items if the indicator
+     * state changes.
+     */
+    abstract val currentList: List<Item>
+
+    override fun getItemCount() = currentList.size
+
     override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
         if (payloads.isEmpty()) {
             // Not updating any indicator-specific things, so delegate to the concrete
@@ -47,13 +55,6 @@ abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerV
             holder.updatePlayingIndicator(currentList[position] == currentItem, isPlaying)
         }
     }
-
-    /**
-     * The current list of the adapter. This is used to update items if the indicator
-     * state changes.
-     */
-    abstract val currentList: List<Item>
-
     /**
      * Update the currently playing item in the list.
      * @param item The item currently being played, or null if it is not being played.

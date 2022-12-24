@@ -61,6 +61,7 @@ class GenreDetailAdapter(private val listener: Listener) : DetailAdapter(listene
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        super.onBindViewHolder(holder, position)
         when (val item = differ.currentList[position]) {
             is Genre -> (holder as GenreDetailViewHolder).bind(item, listener)
             is Artist -> (holder as ArtistViewHolder).bind(item, listener)

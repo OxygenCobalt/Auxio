@@ -47,8 +47,6 @@ abstract class DetailAdapter(
     // Safe to leak this since the callback will not fire during initialization
     @Suppress("LeakingThis") protected val differ = AsyncListDiffer(this, itemCallback)
 
-    override fun getItemCount() = differ.currentList.size
-
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
             // Implement support for headers and sort headers

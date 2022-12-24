@@ -75,8 +75,8 @@
         </activity>
 
         <!--
-        IndexerService handles querying the media database,
-        extracting metadata, and constructing the music library.
+        Service handling querying the media database,  extracting metadata, and constructing
+        the music library.
         -->
         <service
             android:name=".music.system.IndexerService"
@@ -86,7 +86,7 @@
             android:roundIcon="@mipmap/ic_launcher" />
 
         <!--
-        PlaybackService handles music playback, system components, and state saving.
+        Service handling music playback, system components, and state saving.
         -->
         <service
             android:name=".playback.system.PlaybackService"
@@ -107,7 +107,7 @@
             </intent-filter>
         </receiver>
 
-        <!-- Auxio's reciever for bluetooth headset events -->
+        <!-- Receiver for bluetooth headset events -->
 <!--        <receiver-->
 <!--            android:name=".playback.system.BluetoothConnectReceiver"-->
 <!--            android:exported="true">-->
@@ -116,7 +116,7 @@
 <!--            </intent-filter>-->
 <!--        </receiver>-->
 
-        <!-- Auxio's one and only AppWidget. -->
+        <!-- "Now Playing" widget.. -->
         <receiver
             android:name=".widgets.WidgetProvider"
             android:exported="false"

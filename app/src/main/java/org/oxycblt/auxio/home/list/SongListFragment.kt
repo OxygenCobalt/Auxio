@@ -162,8 +162,6 @@ class SongListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRecy
         override val currentList: List<Item>
             get() = differ.currentList
 
-        override fun getItemCount() = differ.currentList.size
-
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             SongViewHolder.new(parent)
 

@@ -123,8 +123,6 @@ class ArtistListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRe
         override val currentList: List<Item>
             get() = differ.currentList
 
-        override fun getItemCount() = differ.currentList.size
-
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ArtistViewHolder.new(parent)
 

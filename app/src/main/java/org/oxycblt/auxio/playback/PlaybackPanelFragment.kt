@@ -43,7 +43,6 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A [Fragment] that displays more information about the song, along with more media controls.
- * Instantiation is done by the navigation component, **do not instantiate this fragment manually.**
  * @author Alexander Capehart (OxygenCobalt)
  *
  * TODO: Make seek thumb grow when selected
