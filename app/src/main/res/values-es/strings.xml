@@ -2,7 +2,7 @@
 <resources>
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Un reproductor de música simple y racional para Android.</string>
-    <string name="lng_playback">Ver y controlar la reproducción musical</string>
+    <string name="lng_widget">Ver y controlar la reproducción musical</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Reintentar</string>
     <string name="lbl_grant">Permitir</string>

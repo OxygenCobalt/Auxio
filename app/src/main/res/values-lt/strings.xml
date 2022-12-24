@@ -49,7 +49,7 @@
     <string name="set_black_mode_desc">Naudokti grynai juodą tamsią temą</string>
     <string name="info_app_desc">Paprastas, racionalus „Android“ muzikos grotuvas.</string>
     <string name="lbl_indexer">Muzika kraunama</string>
-    <string name="lng_playback">Peržiūrėti ir valdyti muzikos grojimą</string>
+    <string name="lng_widget">Peržiūrėti ir valdyti muzikos grojimą</string>
     <string name="lbl_genres">Žanrai</string>
     <string name="lbl_retry">Bandykite dar kartą</string>
     <string name="lbl_grant">Suteikti</string>

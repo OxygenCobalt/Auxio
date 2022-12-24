@@ -69,6 +69,8 @@ class MainFragment :
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentMainBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentMainBinding, savedInstanceState: Bundle?) {
+        super.onBindingCreated(binding, savedInstanceState)
+
         // --- UI SETUP ---
         val context = requireActivity()
         // Override the back pressed callback so we can map back navigation to collapsing

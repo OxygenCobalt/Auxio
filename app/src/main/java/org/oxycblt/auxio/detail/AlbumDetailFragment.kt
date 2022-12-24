@@ -75,6 +75,7 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
+        // --- UI SETUP --
         binding.detailToolbar.apply {
             inflateMenu(R.menu.menu_album_detail)
             setNavigationOnClickListener { findNavController().navigateUp() }
@@ -84,10 +85,8 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
         binding.detailRecycler.adapter = detailAdapter
 
         // -- VIEWMODEL SETUP ---
-
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setAlbumUid(args.albumUid)
-
         collectImmediately(detailModel.currentAlbum, ::updateAlbum)
         collectImmediately(detailModel.albumList, detailAdapter::submitList)
         collectImmediately(

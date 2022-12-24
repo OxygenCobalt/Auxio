@@ -94,7 +94,7 @@
     <string name="lbl_singles">Mga Single</string>
     <string name="lbl_grant">Bigyan</string>
     <string name="lbl_genres">Mga Genre</string>
-    <string name="lng_playback">Tignan at ayusin ang pagtugtog ng kanta</string>
+    <string name="lng_widget">Tignan at ayusin ang pagtugtog ng kanta</string>
     <string name="set_theme">Tema</string>
     <string name="set_lib_tabs_desc">Ibahin ang pagkakita at ayos ng mga library tab</string>
     <string name="set_pre_amp_desc">Inilalapat ang pre-amp sa kasalukuyang ayos habang ito\'y tumutugtog</string>

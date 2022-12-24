@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">단순하고, 실용적인 안드로이드용 뮤직 플레이어입니다.</string>
-    <string name="lng_playback">음악 재생 제어 및 상태 확인</string>
+    <string name="lng_widget">음악 재생 제어 및 상태 확인</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">재시도</string>
     <string name="lbl_grant">허가</string>

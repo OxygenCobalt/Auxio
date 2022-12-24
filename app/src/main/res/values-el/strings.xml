@@ -100,7 +100,7 @@
     <string name="err_no_dirs">Καθόλου φάκελοι</string>
     <string name="info_app_desc">Μιά απλή, λογική εφαρμογή αναπαραγωγής μουσικής για Android.</string>
     <string name="lbl_indexer">Φόρτωση μουσικής</string>
-    <string name="lng_playback">Προβολή και έλεγχος αναπαραγωγής μουσικής</string>
+    <string name="lng_widget">Προβολή και έλεγχος αναπαραγωγής μουσικής</string>
     <string name="lbl_album">Album</string>
     <string name="lbl_eps">EP</string>
     <string name="lbl_ep">EP</string>

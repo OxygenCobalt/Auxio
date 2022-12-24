@@ -171,7 +171,7 @@
     <string name="info_app_desc">Jednostavan i racionalan izvođač glazbe za Android.</string>
     <string name="lbl_retry">Pokušaj ponovo</string>
     <string name="lbl_indexer">Učitavanje glazbe</string>
-    <string name="lng_playback">Prikaži i upravljaj reprodukcijom glazbe</string>
+    <string name="lng_widget">Prikaži i upravljaj reprodukcijom glazbe</string>
     <string name="lbl_grant">Dozvoli</string>
     <string name="lbl_single_live">Singl uživo</string>
     <string name="lbl_single_remix">Singl remiks</string>

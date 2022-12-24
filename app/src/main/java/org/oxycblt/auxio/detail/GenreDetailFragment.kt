@@ -74,6 +74,7 @@ class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
+        // --- UI SETUP ---
         binding.detailToolbar.apply {
             inflateMenu(R.menu.menu_genre_artist_detail)
             setNavigationOnClickListener { findNavController().navigateUp() }
@@ -83,10 +84,8 @@ class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter
         binding.detailRecycler.adapter = detailAdapter
 
         // --- VIEWMODEL SETUP ---
-
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setGenreUid(args.genreUid)
-
         collectImmediately(detailModel.currentGenre, ::updateItem)
         collectImmediately(detailModel.genreList, detailAdapter::submitList)
         collectImmediately(

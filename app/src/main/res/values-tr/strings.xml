@@ -71,7 +71,7 @@
     <string name="lbl_size">Boyut</string>
     <string name="lbl_bitrate">Bit hızı</string>
     <string name="lbl_sample_rate">Örnek hızı</string>
-    <string name="lng_playback">Müzik çalmayı görüntüle ve kontrol et</string>
+    <string name="lng_widget">Müzik çalmayı görüntüle ve kontrol et</string>
     <string name="info_app_desc">Android için basit, rasyonel bir müzik çalar.</string>
     <string name="lbl_indexer">Müzik Yükleniyor</string>
     <string name="lng_indexing">Müzik kitaplığınız yükleniyor…</string>

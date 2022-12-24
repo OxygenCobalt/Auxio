@@ -451,7 +451,7 @@ class PlaybackService :
                     playbackManager.changePlaying(false)
                     stopAndSave()
                 }
-                WidgetProvider.ACTION_WIDGET_UPDATE -> widgetComponent.update()
+                WidgetProvider.ACTION_WIDGET_UPDATE -> widgetComponent.updateNowPlaying()
             }
         }
 
