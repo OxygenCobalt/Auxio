@@ -215,7 +215,7 @@
     <string name="desc_clear_search">Wyczyść zapytanie wyszukiwania</string>
     <string name="err_did_not_restore">Nie można przywrócić stanu odtwarzania</string>
     <string name="desc_genre_image">Okładka gatunku %s</string>
-    <string name="lng_playback">Wyświetlanie oraz kontrolowanie odtwarzania muzyki</string>
+    <string name="lng_widget">Wyświetlanie oraz kontrolowanie odtwarzania muzyki</string>
     <string name="set_pre_amp_with">Regulacja w oparciu o tagi</string>
     <string name="set_pre_amp_without">Regulacja bez tagów</string>
     <string name="set_pre_amp_desc">Wzmocnienie dźwięku przez preamplifier jest nakładane na wcześniej ustawione wzmocnienie podczas odtwarzania</string>

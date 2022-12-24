@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Простой и рациональный музыкальный проигрыватель.</string>
-    <string name="lng_playback">Настройки воспроизведения</string>
+    <string name="lng_widget">Настройки воспроизведения</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Повторить попытку</string>
     <string name="lbl_grant">Разрешить</string>

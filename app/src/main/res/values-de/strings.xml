@@ -117,7 +117,7 @@
         <item quantity="other">%d Alben</item>
     </plurals>
     <string name="info_app_desc">Ein einfacher, rationaler Musikplayer für Android.</string>
-    <string name="lng_playback">Musikwiedergabe anzeigen und kontrollieren</string>
+    <string name="lng_widget">Musikwiedergabe anzeigen und kontrollieren</string>
     <string name="lbl_artist">Künstler</string>
     <string name="lbl_album">Album</string>
     <string name="lbl_sort_date">Jahr</string>

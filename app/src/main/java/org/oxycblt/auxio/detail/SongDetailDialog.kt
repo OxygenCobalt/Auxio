@@ -57,14 +57,13 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
     }
 
     private fun updateSong(song: DetailSong?) {
-        val binding = requireBinding()
-
         if (song == null) {
             // Song we were showing no longer exists.
             findNavController().navigateUp()
             return
         }
 
+        val binding = requireBinding()
         if (song.properties != null) {
             // Finished loading Song properties, populate and show the list of Song information.
             binding.detailLoading.isInvisible = true

@@ -147,7 +147,7 @@
     <!-- Long Namespace | Longer Descriptions -->
     <eat-comment />
 
-    <string name="lng_playback">View and control music playback</string>
+    <string name="lng_widget">View and control music playback</string>
     <string name="lng_indexing">Loading your music library…</string>
     <string name="lng_observing">Monitoring your music library for changes…</string>
     <string name="lng_queue_added">Added to queue</string>

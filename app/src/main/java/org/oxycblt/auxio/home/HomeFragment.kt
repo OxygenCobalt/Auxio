@@ -106,6 +106,7 @@ class HomeFragment :
     override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
+        // --- UI SETUP ---
         binding.homeAppbar.addOnOffsetChangedListener(this)
         binding.homeToolbar.setOnMenuItemClickListener(this)
 
@@ -152,7 +153,6 @@ class HomeFragment :
         binding.homeFab.setOnClickListener { playbackModel.shuffleAll() }
 
         // --- VIEWMODEL SETUP ---
-
         collect(homeModel.shouldRecreate, ::handleRecreate)
         collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
         collectImmediately(homeModel.songLists, homeModel.isFastScrolling, ::updateFab)

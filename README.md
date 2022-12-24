@@ -1,4 +1,4 @@
-<p align="center"><img src="fastlane/metadata/android/en-US/images/icon.png" width="150"></p>
+d<p align="center"><img src="fastlane/metadata/android/en-US/images/icon.png" width="150"></p>
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
@@ -46,9 +46,10 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Snappy UI derived from the latest Material Design guidelines
 - Opinionated UX that prioritizes ease of use over edge cases
 - Customizable behavior
-- Seamless artist system that unifies album artist and artist tags
-- Advanced media indexer with support for multiple artists, release types,
-  precise/original dates, sort tags, and more
+- Support for disc numbers, multiple artists, release types,
+precise/original dates, sort tags, and more
+- Advanced artist system that unifies artists and album artists
+into a single entry
 - SD Card-aware folder management
 - Reliable playback state persistence
 - Full ReplayGain support (On MP3, FLAC, OGG, OPUS, and MP4 files)

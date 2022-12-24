@@ -201,7 +201,7 @@
     <string name="set_save_state">Salvar lista de reprodução</string>
     <string name="set_wipe_state">Limpar lista de reprodução</string>
     <string name="set_restore_state">Restaurar lista de reprodução</string>
-    <string name="lng_playback">Visualize e controle a reprodução de música</string>
+    <string name="lng_widget">Visualize e controle a reprodução de música</string>
     <string name="set_bar_action">Ação personalizada na barra de reprodução</string>
     <string name="set_bar_action_repeat">Modo de repetição</string>
     <string name="set_wipe_desc">Limpa a lista de reprodução salva anteriormente (se houver)</string>

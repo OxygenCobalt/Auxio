@@ -59,13 +59,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setupTheme()
-
+        // Inflate the views after setting up the theme so that the theme attributes are applied.
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupEdgeToEdge(binding.root)
-
         logD("Activity created")
     }
 
@@ -76,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         startService(Intent(this, PlaybackService::class.java))
 
         if (!startIntentAction(intent)) {
+            // No intent action to do, just restore the previously saved state.
             playbackModel.startAction(InternalPlayer.Action.RestoreState)
         }
     }
@@ -83,6 +82,32 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         startIntentAction(intent)
+    }
+
+    private fun setupTheme() {
+        val settings = Settings(this)
+        // Apply the theme configuration.
+        AppCompatDelegate.setDefaultNightMode(settings.theme)
+        // Apply the color scheme. The black theme requires it's own set of themes since
+        // it's not possible to modify the themes at run-time.
+        if (isNight && settings.useBlackTheme) {
+            logD("Applying black theme [accent ${settings.accent}]")
+            setTheme(settings.accent.blackTheme)
+        } else {
+            logD("Applying normal theme [accent ${settings.accent}]")
+            setTheme(settings.accent.theme)
+        }
+    }
+
+    private fun setupEdgeToEdge(contentView: View) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        contentView.setOnApplyWindowInsetsListener { view, insets ->
+            // Automatically inset the view to the left/right, as component support for
+            // these insets are highly lacking.
+            val bars = insets.systemBarInsetsCompat
+            view.updatePadding(left = bars.left, right = bars.right)
+            insets
+        }
     }
 
     /**
@@ -115,30 +140,6 @@ class MainActivity : AppCompatActivity() {
             }
         playbackModel.startAction(action)
         return true
-    }
-
-    private fun setupTheme() {
-        val settings = Settings(this)
-        // Set up the current theme.
-        AppCompatDelegate.setDefaultNightMode(settings.theme)
-        // Set up the color scheme. Note that the black theme has it's own set
-        // of styles since the color schemes cannot be modified at runtime.
-        if (isNight && settings.useBlackTheme) {
-            logD("Applying black theme [accent ${settings.accent}]")
-            setTheme(settings.accent.blackTheme)
-        } else {
-            logD("Applying normal theme [accent ${settings.accent}]")
-            setTheme(settings.accent.theme)
-        }
-    }
-
-    private fun setupEdgeToEdge(contentView: View) {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        contentView.setOnApplyWindowInsetsListener { view, insets ->
-            val bars = insets.systemBarInsetsCompat
-            view.updatePadding(left = bars.left, right = bars.right)
-            insets
-        }
     }
 
     companion object {

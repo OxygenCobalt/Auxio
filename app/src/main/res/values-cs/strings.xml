@@ -3,7 +3,7 @@
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Jednoduchý, rozumný hudební přehrávač pro Android.</string>
     <string name="lbl_indexer">Načítání hudby</string>
-    <string name="lng_playback">Zobrazení a ovládání přehrávání hudby</string>
+    <string name="lng_widget">Zobrazení a ovládání přehrávání hudby</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lng_indexing">Načítání vaší hudební knihovny…</string>
     <string name="lbl_retry">Zkusit znovu</string>

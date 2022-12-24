@@ -114,7 +114,7 @@
     <string name="fmt_disc_no">Schijf %d</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="fmt_db_pos">+%.1f dB</string>
-    <string name="lng_playback">Muziekweergave bekijken en regelen</string>
+    <string name="lng_widget">Muziekweergave bekijken en regelen</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="lbl_song_detail">Bekijk eigenschappen</string>
     <string name="lbl_sort_name">Naam</string>
