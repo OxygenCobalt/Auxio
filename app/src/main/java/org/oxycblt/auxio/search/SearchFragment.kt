@@ -79,7 +79,7 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
             menu.findItem(searchModel.getFilterOptionId()).isChecked = true
 
             setNavigationOnClickListener {
-                // Keyboard is no longer needed, drop it.
+                // Keyboard is no longer needed.
                 imm.hide()
                 findNavController().navigateUp()
             }
@@ -126,6 +126,7 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
         if (item.itemId != R.id.submenu_filtering) {
             // Is a change in filter mode and not just a junk submenu click, update
             // the filtering within SearchViewModel.
+            item.isChecked = true
             searchModel.setFilterOptionId(item.itemId)
             return true
         }
@@ -182,16 +183,16 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
                 is Genre -> SearchFragmentDirections.actionShowGenre(item.uid)
                 else -> return
             }
-
-        findNavController().navigate(action)
-        // Drop keyboard as it's no longer needed
+        // Keyboard is no longer needed.
         imm.hide()
+        findNavController().navigate(action)
     }
 
     private fun updateSelection(selected: List<Music>) {
         searchAdapter.setSelectedItems(selected)
         if (requireBinding().searchSelectionToolbar.updateSelectionAmount(selected.size) &&
             selected.isNotEmpty()) {
+            // Make selection of obscured items easier by hiding the keyboard.
             imm.hide()
         }
     }

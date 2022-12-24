@@ -31,10 +31,11 @@ import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 
 /**
- * An [AppBarLayout] that fixes several bugs with the default implementation where the lifted state
- * will not properly respond to RecyclerView events.
+ * An [AppBarLayout] that resolves two issues with the default implementation:
+ * 1. Lift state failing to update when list data changes.
+ * 2. Expansion causing jumping in [RecyclerView] instances.
  *
- * **Note:** This layout relies on [AppBarLayout.liftOnScrollTargetViewId] to figure out what
+ * Note: This layout relies on [AppBarLayout.liftOnScrollTargetViewId] to figure out what
  * scrolling view to use. Failure to specify this will result in the layout not working.
  *
  * Derived from Material Files: https://github.com/zhanghai/MaterialFiles
@@ -46,8 +47,8 @@ open class AuxioAppBarLayout
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AppBarLayout(context, attrs, defStyleAttr) {
     private var scrollingChild: View? = null
-    private val tConsumed = IntArray(2)
 
+    private val tConsumed = IntArray(2)
     private val onPreDraw =
         ViewTreeObserver.OnPreDrawListener {
             val child = findScrollingChild()
@@ -67,7 +68,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     /**
-     * Expand this app bar layout with the given recyclerview, preventing it from jumping around.
+     * Expand this [AppBarLayout] with respect to the given [RecyclerView], preventing it from
+     * jumping around.
+     * @param recycler [RecyclerView] to expand with, or null if one is currently unavailable.
+     * TODO: Is it possible to use liftOnScrollTargetViewId to avoid the [RecyclerView] argument?
      */
     fun expandWithRecycler(recycler: RecyclerView?) {
         setExpanded(true)
@@ -82,7 +86,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     override fun setLiftOnScrollTargetViewId(liftOnScrollTargetViewId: Int) {
         super.setLiftOnScrollTargetViewId(liftOnScrollTargetViewId)
-
         // Sometimes we dynamically set the scrolling child [such as in HomeFragment], so clear it
         // and re-draw when that occurs.
         scrollingChild = null
@@ -103,26 +106,40 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         return scrollingChild
     }
 
-    /** Hack to prevent RecyclerView jumping when the appbar expands. */
+    /**
+     * An [AppBarLayout.OnOffsetChangedListener] that will automatically move the given
+     * [RecyclerView] as the [AppBarLayout] expands. Should be added right when the view
+     * is expanding. Will be removed automatically.
+     * @param recycler [RecyclerView] to scroll with the [AppBarLayout].
+     */
     private class ExpansionHackListener(private val recycler: RecyclerView) :
         OnOffsetChangedListener {
-        private val offsetAnimationMaxEndTime = (AnimationUtils.currentAnimationTimeMillis() + 600)
-
-        private var lastVerticalOffset: Int? = null
+        private val offsetAnimationMaxEndTime = (AnimationUtils.currentAnimationTimeMillis() +
+                APP_BAR_LAYOUT_MAX_OFFSET_ANIMATION_DURATION)
+        private var currentVerticalOffset: Int? = null
 
         override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
             if (verticalOffset == 0 ||
                 AnimationUtils.currentAnimationTimeMillis() > offsetAnimationMaxEndTime) {
                 // AppBarLayout crashes with IndexOutOfBoundsException when a non-last listener
-                // removes
-                // itself, so we have to do the removal asynchronously.
-                appBarLayout.postOnAnimation { appBarLayout.removeOnOffsetChangedListener(this) }
+                // removes itself, so we have to do the removal asynchronously.
+                appBarLayout.postOnAnimation {
+                    appBarLayout.removeOnOffsetChangedListener(this) }
             }
-            val lastVerticalOffset = lastVerticalOffset
-            this.lastVerticalOffset = verticalOffset
-            if (lastVerticalOffset != null) {
-                recycler.scrollBy(0, verticalOffset - lastVerticalOffset)
+
+            // If possible, scroll by the offset delta between this update and the last update.
+            val oldVerticalOffset = currentVerticalOffset
+            currentVerticalOffset = verticalOffset
+            if (oldVerticalOffset != null) {
+                recycler.scrollBy(0, verticalOffset - oldVerticalOffset)
             }
         }
+    }
+
+    companion object {
+        /**
+         * @see AppBarLayout.BaseBehavior.MAX_OFFSET_ANIMATION_DURATION
+         */
+        private const val APP_BAR_LAYOUT_MAX_OFFSET_ANIMATION_DURATION = 600
     }
 }

@@ -29,7 +29,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.shared.ServiceNotification
+import org.oxycblt.auxio.shared.ForegroundServiceNotification
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 
@@ -41,7 +41,7 @@ import org.oxycblt.auxio.util.newMainPendingIntent
  */
 @SuppressLint("RestrictedApi")
 class NotificationComponent(private val context: Context, sessionToken: MediaSessionCompat.Token) :
-    ServiceNotification(context, CHANNEL_INFO) {
+    ForegroundServiceNotification(context, CHANNEL_INFO) {
     init {
         setSmallIcon(R.drawable.ic_auxio_24)
         setCategory(NotificationCompat.CATEGORY_TRANSPORT)

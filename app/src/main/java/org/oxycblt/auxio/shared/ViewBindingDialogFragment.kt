@@ -32,41 +32,51 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A dialog fragment enabling ViewBinding inflation and usage across the dialog fragment lifecycle.
+ * A lifecycle-aware [DialogFragment] that automatically manages the [ViewBinding] lifecycle.
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
     private var _binding: VB? = null
     private var lifecycleObjects = mutableListOf<LifecycleObject<VB, *>>()
 
-    /** Called during [onCreateDialog]. Dialog elements should be configured here. */
+    /**
+     * Configure the [AlertDialog.Builder] during [onCreateDialog].
+     * @param builder The [AlertDialog.Builder] to configure.
+     * @see onCreateDialog
+     */
     protected open fun onConfigDialog(builder: AlertDialog.Builder) {}
 
     /**
-     * Inflate the binding from the given [inflater]. This should usually be done by the binding
-     * implementation's inflate function.
+     * Inflate the [ViewBinding] during [onCreateView].
+     * @param inflater The [LayoutInflater] to inflate the [ViewBinding] with.
+     * @return A new [ViewBinding] instance.
+     * @see onCreateView
      */
     protected abstract fun onCreateBinding(inflater: LayoutInflater): VB
 
     /**
-     * Called during [onViewCreated] when the binding was successfully inflated and set as the view.
-     * This is where view setup should occur.
+     * Configure the newly-inflated [ViewBinding] during [onViewCreated].
+     * @param binding The [ViewBinding] to configure.
+     * @param savedInstanceState The previously saved state of the UI.
+     * @see onViewCreated
      */
     protected open fun onBindingCreated(binding: VB, savedInstanceState: Bundle?) {}
 
     /**
-     * Called during [onDestroyView] when the binding should be destroyed and all callbacks or
-     * leaking elements be released.
+     * Free memory held by the [ViewBinding] during [onDestroyView]
+     * @param binding The [ViewBinding] to release.
+     * @see onDestroyView
      */
     protected open fun onDestroyBinding(binding: VB) {}
 
-    /** Maybe get the binding. This will be null outside of the fragment view lifecycle. */
+    /** The [ViewBinding], or null if it has not been inflated yet. */
     protected val binding: VB?
         get() = _binding
 
     /**
-     * Get the binding under the assumption that the fragment has a view at this state in the
-     * lifecycle. This will throw an exception if the fragment is not in a valid lifecycle.
+     * Get the [ViewBinding] under the assumption that it has been inflated.
+     * @return The currently-inflated [ViewBinding].
+     * @throws IllegalStateException if the [ViewBinding] is not inflated.
      */
     protected fun requireBinding(): VB {
         return requireNotNull(_binding) {
@@ -74,7 +84,12 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
                 "right now, but instead it was ${lifecycle.currentState}"
         }
     }
-    // TODO: Phase this out
+
+    /**
+     * Delegate to automatically create and destroy an object derived from the [ViewBinding].
+     * TODO: Phase this out, it's really dumb
+     * @param create Block to create the object from the [ViewBinding].
+     */
     fun <T> lifecycleObject(create: (VB) -> T): ReadOnlyProperty<Fragment, T> {
         lifecycleObjects.add(LifecycleObject(null, create))
 
@@ -90,35 +105,44 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
         }
     }
 
-    override fun onCreateView(
+    final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = onCreateBinding(inflater).also { _binding = it }.root
+    ) = onCreateBinding(inflater).also { _binding = it }.root
 
-    override fun onCreateDialog(savedInstanceState: Bundle?) =
+    final override fun onCreateDialog(savedInstanceState: Bundle?) =
+        // Use a material-styled dialog for all implementations.
         MaterialAlertDialogBuilder(requireActivity(), theme).run {
             onConfigDialog(this)
             create()
         }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = unlikelyToBeNull(_binding)
+        // Populate lifecycle-dependent objects
         lifecycleObjects.forEach { it.populate(binding) }
+        // Configure binding
         onBindingCreated(requireBinding(), savedInstanceState)
+        // Apply the newly-configured view to the dialog.
         (requireDialog() as AlertDialog).setView(view)
         logD("Fragment created")
     }
 
-    override fun onDestroyView() {
+    final override fun onDestroyView() {
         super.onDestroyView()
         onDestroyBinding(unlikelyToBeNull(_binding))
+        // Clear the lifecycle-dependent objects
         lifecycleObjects.forEach { it.clear() }
+        // Clear binding
         _binding = null
         logD("Fragment destroyed")
     }
 
+    /**
+     * Internal implementation of [lifecycleObject].
+     */
     private data class LifecycleObject<VB, T>(var data: T?, val create: (VB) -> T) {
         fun populate(binding: VB) {
             data = create(binding)

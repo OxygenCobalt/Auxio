@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.shared
+package org.oxycblt.auxio.playback.ui
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -30,24 +30,34 @@ import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.systemGestureInsetsCompat
 
 /**
- * Implements a reasonable enough skeleton around BottomSheetBehavior (Excluding auxio extensions in
- * the vendored code because of course I have to) for normal use without absurd bugs.
- * @author Alexander Capehart (OxygenCobalt)
+ * A BottomSheetBehavior that resolves several issues with the default implementation, including:
+ * 1.
  */
-abstract class AuxioBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
+abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     NeoBottomSheetBehavior<V>(context, attributeSet) {
-    private var setup = false
+    private var initalized = false
 
     init {
-        // We need to disable isFitToContents for us to have our bottom sheet expand to the
-        // whole of the screen and not just whatever portion it takes up.
+        // Disable isFitToContents to make the bottom sheet expand to the top of the screen and
+        // not just how much the content takes up.
         isFitToContents = false
     }
 
-    /** Called when the sheet background is being created */
+    /**
+     * Create a background [Drawable] to use for this [BaseBottomSheetBehavior]'s child [View].
+     * @param context [Context] that can be used to draw the [Drawable].
+     * @return A background drawable.
+     */
     abstract fun createBackground(context: Context): Drawable
 
-    /** Called when the child the bottom sheet applies to receives window insets. */
+    /**
+     * Called when window insets are being applied to the [View] this [BaseBottomSheetBehavior]
+     * is linked to.
+     * @param child The child view recieving the [WindowInsets].
+     * @param insets The [WindowInsets] to apply.
+     * @return The (possibly modified) [WindowInsets].
+     * @see View.onApplyWindowInsets
+     */
     open fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {
         // All sheet behaviors derive their peek height from the size of the "bar" (i.e the
         // first child) plus the gesture insets.
@@ -56,8 +66,7 @@ abstract class AuxioBottomSheetBehavior<V : View>(context: Context, attributeSet
         return insets
     }
 
-    // Enable experimental settings to allow us to skip the half expanded state without
-    // dumb hacks.
+    // Enable experimental settings that allow us to skip the half-expanded state.
     override fun shouldSkipHalfExpandedStateWhenDragging() = true
     override fun shouldExpandOnUpwardDrag(dragDurationMillis: Long, yPositionPercentage: Float) =
         true
@@ -65,18 +74,21 @@ abstract class AuxioBottomSheetBehavior<V : View>(context: Context, attributeSet
     override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
         val layout = super.onLayoutChild(parent, child, layoutDirection)
 
-        if (!setup) {
+        // Don't repeat redundant initialization.
+        if (!initalized) {
             child.apply {
+                // Set up compat elevation attributes. These are only shown below API 28.
                 translationZ = context.getDimen(R.dimen.elevation_normal)
+                // Background differs depending on concrete implementation.
                 background = createBackground(context)
                 setOnApplyWindowInsetsListener(::applyWindowInsets)
             }
 
-            setup = true
+            initalized = true
         }
 
-        // Sometimes CoordinatorLayout tries to be "hElpfUl" and just does not dispatch window
-        // insets sometimes. Ensure that we get them.
+        // Sometimes CoordinatorLayout doesn't dispatch window insets to us, likely due to how
+        // much we overload it. Ensure that we get them.
         child.requestApplyInsets()
 
         return layout

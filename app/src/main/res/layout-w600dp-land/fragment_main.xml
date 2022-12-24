@@ -12,7 +12,7 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="org.oxycblt.auxio.shared.BottomSheetContentBehavior"
+        app:layout_behavior="org.oxycblt.auxio.playback.ui.BottomSheetContentBehavior"
         app:navGraph="@navigation/nav_explore"
         tools:layout="@layout/fragment_home" />
 

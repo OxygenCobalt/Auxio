@@ -23,17 +23,17 @@ import androidx.core.app.NotificationCompat
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.shared.ServiceNotification
+import org.oxycblt.auxio.shared.ForegroundServiceNotification
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
 
 /**
- * A dynamic [ServiceNotification] that shows the current music loading state.
+ * A dynamic [ForegroundServiceNotification] that shows the current music loading state.
  * @param context [Context] required to create the notification.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class IndexingNotification(private val context: Context) :
-    ServiceNotification(context, INDEXER_CHANNEL) {
+    ForegroundServiceNotification(context, INDEXER_CHANNEL) {
     private var lastUpdateTime = -1L
 
     init {
@@ -89,11 +89,11 @@ class IndexingNotification(private val context: Context) :
 }
 
 /**
- * A static [ServiceNotification] that signals to the user that the app is currently monitoring
+ * A static [ForegroundServiceNotification] that signals to the user that the app is currently monitoring
  * the music library for changes.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ObservingNotification(context: Context) : ServiceNotification(context, INDEXER_CHANNEL) {
+class ObservingNotification(context: Context) : ForegroundServiceNotification(context, INDEXER_CHANNEL) {
     init {
         setSmallIcon(R.drawable.ic_indexer_24)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
@@ -111,5 +111,5 @@ class ObservingNotification(context: Context) : ServiceNotification(context, IND
 
 /** Notification channel shared by [IndexingNotification] and [ObservingNotification]. */
 private val INDEXER_CHANNEL =
-    ServiceNotification.ChannelInfo(
+    ForegroundServiceNotification.ChannelInfo(
         id = BuildConfig.APPLICATION_ID + ".channel.INDEXER", nameRes = R.string.lbl_indexer)

@@ -24,7 +24,7 @@ import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.shared.AuxioBottomSheetBehavior
+import org.oxycblt.auxio.playback.ui.BaseBottomSheetBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getDimenPixels
@@ -36,7 +36,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
-    AuxioBottomSheetBehavior<V>(context, attributeSet) {
+    BaseBottomSheetBehavior<V>(context, attributeSet) {
     private var barHeight = 0
     private var barSpacing = context.getDimenPixels(R.dimen.spacing_small)
 

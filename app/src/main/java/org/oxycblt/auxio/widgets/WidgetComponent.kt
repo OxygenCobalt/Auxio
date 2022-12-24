@@ -22,7 +22,6 @@ import android.graphics.Bitmap
 import android.os.Build
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
-import kotlin.math.sqrt
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.extractor.SquareFrameTransform
@@ -36,9 +35,9 @@ import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.logD
 
 /**
- * A component that manages the state of all of Auxio's widgets.
- * This is kept separate from the AppWidgetProviders themselves to prevent possible memory
- * leaks and enable the main functionality to be extended to more widgets in the future.
+ * A component that manages the "Now Playing" state.
+ * This is kept separate from the [WidgetProvider] itself to prevent possible memory
+ * leaks and enable extension to more widgets in the future.
  * @param context [Context] required to manage AppWidgetProviders.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -56,7 +55,7 @@ class WidgetComponent(private val context: Context) :
     /**
      * Update [WidgetProvider] with the current playback state.
      */
-    fun updateNowPlaying() {
+    fun update() {
         val song = playbackManager.song
         if (song == null) {
             logD("No song, resetting widget")
@@ -85,22 +84,16 @@ class WidgetComponent(private val context: Context) :
                             0
                         }
 
-                    val metrics = context.resources.displayMetrics
-                    val sw = metrics.widthPixels
-                    val sh = metrics.heightPixels
-
                     return if (cornerRadius > 0) {
-                        // Reduce the size by 10x, not only to make 16dp-ish corners, but also
-                        // to work around a bug in Android 13 where the bitmaps aren't pooled
-                        // properly, massively reducing the memory size we can work with.
+                        // If rounded, educe the bitmap size further to obtain more pronounced
+                        // rounded corners.
                         builder
-                            .size(computeWidgetImageSize(sw, sh, 10f))
+                            .size(getSafeRemoteViewsImageSize(context, 10f))
                             .transformations(
                                 SquareFrameTransform.INSTANCE,
                                 RoundedCornersTransformation(cornerRadius.toFloat()))
                     } else {
-                        // Divide by two to really make sure we aren't hitting the memory limit.
-                        builder.size(computeWidgetImageSize(sw, sh, 2f))
+                        builder.size(getSafeRemoteViewsImageSize(context))
                     }
                 }
 
@@ -110,18 +103,6 @@ class WidgetComponent(private val context: Context) :
                 }
             })
     }
-
-    /**
-     * Get the recommended image size to load for use.
-     * @param sw The current screen width
-     * @param sh The current screen height
-     * @param modifier Modifier to reduce the image size.
-     * @return An image size that is guaranteed not to exceed the widget bitmap memory limit.
-     */
-    private fun computeWidgetImageSize(sw: Int, sh: Int, modifier: Float) =
-        // Maximum size is 1/3 total screen area * 4 bytes per pixel. Reverse
-        // that to obtain the image size.
-        sqrt((6f / 4f / modifier) * sw * sh).toInt()
 
     /**
      * Release this instance, preventing any further events from updating the widget instances.
@@ -137,15 +118,15 @@ class WidgetComponent(private val context: Context) :
 
     // Hook all the major song-changing updates + the major player state updates
     // to updating the "Now Playing" widget.
-    override fun onIndexMoved(index: Int) = updateNowPlaying()
-    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) = updateNowPlaying()
-    override fun onStateChanged(state: InternalPlayer.State) = updateNowPlaying()
-    override fun onShuffledChanged(isShuffled: Boolean) = updateNowPlaying()
-    override fun onRepeatChanged(repeatMode: RepeatMode) = updateNowPlaying()
+    override fun onIndexMoved(index: Int) = update()
+    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) = update()
+    override fun onStateChanged(state: InternalPlayer.State) = update()
+    override fun onShuffledChanged(isShuffled: Boolean) = update()
+    override fun onRepeatChanged(repeatMode: RepeatMode) = update()
     override fun onSettingChanged(key: String) {
         if (key == context.getString(R.string.set_key_cover_mode) ||
             key == context.getString(R.string.set_key_round_mode)) {
-            updateNowPlaying()
+            update()
         }
     }
 

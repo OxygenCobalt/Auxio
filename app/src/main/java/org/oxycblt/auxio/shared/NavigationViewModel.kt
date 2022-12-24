@@ -26,35 +26,40 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.logD
 
 /**
- * A ViewModel that handles complicated navigation situations.
- * @author Alexander Capehart (OxygenCobalt)
+ * A [ViewModel] that handles complicated navigation functionality.
  */
 class NavigationViewModel : ViewModel() {
     private val _mainNavigationAction = MutableStateFlow<MainNavigationAction?>(null)
-
-    /** Flag for main fragment navigation. Intended for MainFragment use only. */
+    /**
+     * Flag for navigation within the main navigation graph. Only intended for use by
+     * MainFragment.
+     */
     val mainNavigationAction: StateFlow<MainNavigationAction?>
         get() = _mainNavigationAction
 
     private val _exploreNavigationItem = MutableStateFlow<Music?>(null)
-
     /**
-     * Flag for navigation within the explore fragments. Observe this to coordinate navigation to an
-     * item's UI.
+     * Flag for navigation within the explore navigation graph. Observe this to coordinate
+     * navigation to a specific [Music] item.
      */
     val exploreNavigationItem: StateFlow<Music?>
         get() = _exploreNavigationItem
 
     private val _exploreNavigationArtists = MutableStateFlow<List<Artist>?>(null)
-
     /**
-     * Flag for navigation within the explore fragments. In this case, it involves an ambiguous list
-     * of artist choices.
+     * Variation of [exploreNavigationItem] for situations where the choice of [Artist]
+     * to navigate to is ambiguous. Only intended for use by MainFragment, as the resolved
+     * choice will eventually be assigned to [exploreNavigationItem].
      */
     val exploreNavigationArtists: StateFlow<List<Artist>?>
         get() = _exploreNavigationArtists
 
-    /** Notify MainFragment to navigate to the location outlined in [MainNavigationAction]. */
+    /**
+     * Navigate to something in the main navigation graph. This can be used by UIs in the explore
+     * navigation graph to trigger navigation in the higher-level main navigation graph.
+     * Will do nothing if already navigating.
+     * @param action The [MainNavigationAction] to perform.
+     */
     fun mainNavigateTo(action: MainNavigationAction) {
         if (_mainNavigationAction.value != null) {
             logD("Already navigating, not doing main action")
@@ -65,13 +70,20 @@ class NavigationViewModel : ViewModel() {
         _mainNavigationAction.value = action
     }
 
-    /** Mark that the main navigation process is done. */
+    /**
+     * Mark that the navigation process within the main navigation graph (initiated by
+     * [mainNavigateTo]) was completed.
+     */
     fun finishMainNavigation() {
         logD("Finishing main navigation process")
         _mainNavigationAction.value = null
     }
 
-    /** Navigate to an item's detail menu, whether a song/album/artist */
+    /**
+     * Navigate to a given [Music] item. Will do nothing if already navigating.
+     * @param item The [Music] to navigate to.
+     * TODO: Extend to song properties???
+     */
     fun exploreNavigateTo(item: Music) {
         if (_exploreNavigationItem.value != null) {
             logD("Already navigating, not doing explore action")
@@ -82,22 +94,29 @@ class NavigationViewModel : ViewModel() {
         _exploreNavigationItem.value = item
     }
 
-    /** Navigate to one item out of a list of items. */
-    fun exploreNavigateTo(items: List<Artist>) {
+    /**
+     * Navigate to an [Artist] out of a list of [Artist]s, like [exploreNavigateTo].
+     * @param artists The [Artist]s to navigate to. In the case of multiple artists, the
+     * user will be prompted with a choice on which [Artist] to navigate to.
+     */
+    fun exploreNavigateTo(artists: List<Artist>) {
         if (_exploreNavigationArtists.value != null) {
             logD("Already navigating, not doing explore action")
             return
         }
 
-        if (items.size == 1) {
-            exploreNavigateTo(items[0])
+        if (artists.size == 1) {
+            exploreNavigateTo(artists[0])
         } else {
-            logD("Navigating to a choice of ${items.map { it.rawName }}")
-            _exploreNavigationArtists.value = items
+            logD("Navigating to a choice of ${artists.map { it.rawName }}")
+            _exploreNavigationArtists.value = artists
         }
     }
 
-    /** Mark that the item navigation process is done. */
+    /**
+     *  Mark that the navigation process within the explore navigation graph (initiated by
+     * [exploreNavigateTo]) was completed.
+     */
     fun finishExploreNavigation() {
         logD("Finishing explore navigation process")
         _exploreNavigationItem.value = null
@@ -106,17 +125,22 @@ class NavigationViewModel : ViewModel() {
 }
 
 /**
- * Represents the navigation options for the Main Fragment, which tends to be multiple layers above
- * normal fragments. This can be passed to [NavigationViewModel.mainNavigateTo] in order to
- * facilitate navigation without workarounds..
+ * Represents the possible actions within the main navigation graph. This can be used with
+ * [NavigationViewModel] to initiate navigation in the main navigation graph from anywhere
+ * in the app, including outside the main navigation graph.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 sealed class MainNavigationAction {
     /** Expand the playback panel. */
     object Expand : MainNavigationAction()
 
-    /** Collapse the playback panel. */
+    /** Collapse the playback bottom sheet. */
     object Collapse : MainNavigationAction()
 
-    /** Provide raw navigation directions. */
+    /**
+     * Navigate to the given [NavDirections].
+     * @param directions The [NavDirections] to navigate to. Assumed to be part of the main
+     * navigation graph.
+     */
     data class Directions(val directions: NavDirections) : MainNavigationAction()
 }

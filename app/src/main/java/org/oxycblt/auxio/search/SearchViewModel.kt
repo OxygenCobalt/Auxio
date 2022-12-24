@@ -20,7 +20,6 @@ package org.oxycblt.auxio.search
 import android.app.Application
 import androidx.annotation.IdRes
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import java.text.Normalizer
 import kotlinx.coroutines.Job
@@ -76,7 +75,9 @@ class SearchViewModel(application: Application) :
     }
 
     /**
-     * Use [query] to perform a search of the music library. Will push results to [searchResults].
+     * Asynchronously search the music library. Results will be pushed to [searchResults]. Will
+     * cancel any previous search operations started prior.
+     * @param query The query to search the music library for.
      */
     fun search(query: String?) {
         // Cancel the previous background search.
@@ -107,30 +108,30 @@ class SearchViewModel(application: Application) :
         // Note: A null filter mode maps to the "All" filter option, hence the check.
 
         if (filterMode == null || filterMode == MusicMode.ARTISTS) {
-            library.artists.filterArtistsBy(query)?.let { artists ->
+            library.artists.searchListImpl(query)?.let {
                 results.add(Header(R.string.lbl_artists))
-                results.addAll(sort.artists(artists))
+                results.addAll(sort.artists(it))
             }
         }
 
         if (filterMode == null || filterMode == MusicMode.ALBUMS) {
-            library.albums.filterAlbumsBy(query)?.let { albums ->
+            library.albums.searchListImpl(query)?.let {
                 results.add(Header(R.string.lbl_albums))
-                results.addAll(sort.albums(albums))
+                results.addAll(sort.albums(it))
             }
         }
 
         if (filterMode == null || filterMode == MusicMode.GENRES) {
-            library.genres.filterGenresBy(query)?.let { genres ->
+            library.genres.searchListImpl(query)?.let {
                 results.add(Header(R.string.lbl_genres))
-                results.addAll(sort.genres(genres))
+                results.addAll(sort.genres(it))
             }
         }
 
         if (filterMode == null || filterMode == MusicMode.SONGS) {
-            library.songs.filterSongsBy(query)?.let { songs ->
+            library.songs.searchListImpl(query) { q, song -> song.path.name.contains(q) }?.let {
                 results.add(Header(R.string.lbl_songs))
-                results.addAll(sort.songs(songs))
+                results.addAll(sort.songs(it))
             }
         }
 
@@ -138,26 +139,18 @@ class SearchViewModel(application: Application) :
         return results
     }
 
-    private fun List<Song>.filterSongsBy(value: String) =
-        searchListImpl(value) {
-            // Include both the sort name (can have normalized versions of titles) and
-            // file name (helpful for poorly tagged songs) to the filtering.
-            it.rawSortName?.contains(value, ignoreCase = true) == true ||
-                it.path.name.contains(value)
-        }
-
-    private fun List<Album>.filterAlbumsBy(value: String) =
-        // Include the sort name (can have normalized versions of names) to the filtering.
-        searchListImpl(value) { it.rawSortName?.contains(value, ignoreCase = true) == true }
-
-    private fun List<Artist>.filterArtistsBy(value: String) =
-        // Include the sort name (can have normalized versions of names) to the filtering.
-        searchListImpl(value) { it.rawSortName?.contains(value, ignoreCase = true) == true }
-
-    private fun List<Genre>.filterGenresBy(value: String) = searchListImpl(value) { false }
-
-    private inline fun <T : Music> List<T>.searchListImpl(query: String, fallback: (T) -> Boolean) =
-        filter {
+    /**
+     * Search a given [Music] list.
+     * @param query The query to search for. The routine will compare this query to the names
+     * of each object in the list and
+     * @param fallback Additional comparison code to run if the item does not match the query
+     * initially. This can be used to compare against additional attributes to improve search
+     * result quality.
+     */
+    private inline fun <T : Music> List<T>.searchListImpl(
+        query: String,
+        fallback: (String, T) -> Boolean = { _, _ -> false }
+    ) = filter {
             // See if the plain resolved name matches the query. This works for most situations.
             val name = it.resolveName(context)
             if (name.contains(query, ignoreCase = true)) {
@@ -180,7 +173,7 @@ class SearchViewModel(application: Application) :
                 return@filter true
             }
 
-            fallback(it)
+            fallback(query, it)
         }
         .ifEmpty { null }
 

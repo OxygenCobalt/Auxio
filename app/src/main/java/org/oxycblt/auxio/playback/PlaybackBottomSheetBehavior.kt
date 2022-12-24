@@ -25,7 +25,7 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.shared.AuxioBottomSheetBehavior
+import org.oxycblt.auxio.playback.ui.BaseBottomSheetBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 
@@ -35,7 +35,7 @@ import org.oxycblt.auxio.util.getDimen
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
-    AuxioBottomSheetBehavior<V>(context, attributeSet) {
+    BaseBottomSheetBehavior<V>(context, attributeSet) {
     val sheetBackgroundDrawable =
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
             fillColor = context.getAttrColorCompat(R.attr.colorSurface)
