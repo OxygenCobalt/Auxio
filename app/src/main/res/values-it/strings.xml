@@ -41,7 +41,7 @@
     <string name="lbl_code">Codice sorgente</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licenze</string>
-    <string name="lng_author">Sviluppato da OxygenCobalt</string>
+    <string name="lng_author">Sviluppato da Alexander Capehart</string>
     <string name="lbl_library_counts">Statistiche libreria</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Opzioni</string>
@@ -136,10 +136,12 @@
     <string name="fmt_lib_total_duration">Durata totale: %s</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d canzone</item>
+        <item quantity="many">%d canzoni</item>
         <item quantity="other">%d canzoni</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d disco</item>
+        <item quantity="many">%d dischi</item>
         <item quantity="other">%d dischi</item>
     </plurals>
     <string name="set_dirs_mode">Modo</string>
@@ -257,4 +259,7 @@
     <string name="err_did_not_save">Impossibile salvare</string>
     <string name="set_rescan_desc">Svuota la cache dei tag e ricarica completamente la libreria musicale (più lento, ma più completo)</string>
     <string name="err_did_not_wipe">Impossibile svuotare</string>
+    <string name="lbl_shuffle_selected">Mescola selezionati</string>
+    <string name="lbl_play_selected">Riproduci selezionati</string>
+    <string name="fmt_selected">%d Selezionati</string>
 </resources>
