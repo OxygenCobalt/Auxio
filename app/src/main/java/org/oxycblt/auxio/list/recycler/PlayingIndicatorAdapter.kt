@@ -44,15 +44,15 @@ abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerV
     override fun getItemCount() = currentList.size
 
     override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
-        if (payloads.isEmpty()) {
-            // Not updating any indicator-specific things, so delegate to the concrete
-            // adapter (actually bind the item)
-            onBindViewHolder(holder, position)
-        }
-
         // Only try to update the playing indicator if the ViewHolder supports it
         if (holder is ViewHolder) {
             holder.updatePlayingIndicator(currentList[position] == currentItem, isPlaying)
+        }
+
+        if (payloads.isEmpty()) {
+            // Not updating any indicator-specific attributes, so delegate to the concrete
+            // adapter (actually bind the item)
+            onBindViewHolder(holder, position)
         }
     }
     /**

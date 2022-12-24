@@ -22,8 +22,9 @@ import android.util.AttributeSet
 import androidx.preference.DialogPreference
 
 /**
- * Wraps [DialogPreference] as to make it type-distinct from other preferences while also making it
- * possible to use in a PreferenceScreen.
+ * Wraps a [DialogPreference] to be instantiatable. This has no purpose other to ensure that
+ * custom dialog preferences are handled.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class WrappedDialogPreference
 @JvmOverloads

@@ -342,7 +342,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
         // Android 13+ leverages custom actions in the notification.
 
         val extraAction =
-            when (settings.notifAction) {
+            when (settings.playbackNotificationAction) {
                 ActionMode.SHUFFLE ->
                     PlaybackStateCompat.CustomAction.Builder(
                         PlaybackService.ACTION_INVERT_SHUFFLE,
@@ -375,7 +375,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
     private fun invalidateSecondaryAction() {
         invalidateSessionState()
 
-        when (settings.notifAction) {
+        when (settings.playbackNotificationAction) {
             ActionMode.SHUFFLE -> notification.updateShuffled(playbackManager.isShuffled)
             else -> notification.updateRepeatMode(playbackManager.repeatMode)
         }

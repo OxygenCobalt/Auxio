@@ -32,10 +32,10 @@ import org.oxycblt.auxio.util.getInteger
 import org.oxycblt.auxio.util.lazyReflectedField
 
 /**
- * @brief An implementation of the built-in list preference, backed with integers.
+ * An implementation of a list-based preference backed with integers.
  *
- * This is not implemented automatically, so a preference screen must override it's dialog opening
- * code in order to handle the preference.
+ * The dialog this preference corresponds to is not handled automatically, so a preference screen
+ * must override onDisplayPreferenceDialog in order to handle it.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -47,37 +47,37 @@ constructor(
     defStyleAttr: Int = androidx.preference.R.attr.dialogPreferenceStyle,
     defStyleRes: Int = 0
 ) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
+    /** The names of each entry. */
     val entries: Array<CharSequence>
+    /** The corresponding integer values for each entry. */
     val values: IntArray
-    private var offValue: Int? = -1
-    private var icons: TypedArray? = null
-    private var currentValue: Int? = null
 
-    // Reflect into Preference to get the (normally inaccessible) default value.
-    private val defValue: Int
-        get() = PREFERENCE_DEFAULT_VALUE_FIELD.get(this) as Int
+    private var entryIcons: TypedArray? = null
+    private var offValue: Int? = -1
+    private var currentValue: Int? = null
 
     init {
         val prefAttrs =
             context.obtainStyledAttributes(
                 attrs, R.styleable.IntListPreference, defStyleAttr, defStyleRes)
 
-        // Can't piggy-back on ListPreference, we have to instead define our own
-        // attributes for entires/values.
+        // Can't depend on ListPreference due to it working with strings we have to instead
+        // define our own attributes for entries/values.
         entries = prefAttrs.getTextArrayOrThrow(R.styleable.IntListPreference_entries)
         values =
             context.resources.getIntArray(
                 prefAttrs.getResourceIdOrThrow(R.styleable.IntListPreference_entryValues))
 
-        // Additional values: offValue defines an "off" position
+        // entryIcons defines an additional set of icons to use for each entry.
+        val iconsId = prefAttrs.getResourceId(R.styleable.IntListPreference_entryIcons, -1)
+        if (iconsId > -1) {
+            entryIcons = context.resources.obtainTypedArray(iconsId)
+        }
+
+        // offValue defines an value in which the preference should be disabled.
         val offValueId = prefAttrs.getResourceId(R.styleable.IntListPreference_offValue, -1)
         if (offValueId > -1) {
             offValue = context.getInteger(offValueId)
-        }
-
-        val iconsId = prefAttrs.getResourceId(R.styleable.IntListPreference_entryIcons, -1)
-        if (iconsId > -1) {
-            icons = context.resources.obtainTypedArray(iconsId)
         }
 
         prefAttrs.recycle()
@@ -89,59 +89,73 @@ constructor(
 
     override fun onSetInitialValue(defaultValue: Any?) {
         super.onSetInitialValue(defaultValue)
-
         if (defaultValue != null) {
             // If were given a default value, we need to assign it.
             setValue(defaultValue as Int)
         } else {
-            currentValue = getPersistedInt(defValue)
+            // Reflect into Preference to get the (normally inaccessible) default value.
+            currentValue = getPersistedInt(PREFERENCE_DEFAULT_VALUE_FIELD.get(this) as Int)
         }
     }
 
-    override fun shouldDisableDependents(): Boolean = currentValue == offValue
+    override fun shouldDisableDependents() = currentValue == offValue
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
         val index = getValueIndex()
         if (index > -1) {
-            val resourceId = icons?.getResourceId(index, -1) ?: -1
+            // If we have a specific icon to use, make sure it is set in the view.
+            val resourceId = entryIcons?.getResourceId(index, -1) ?: -1
             if (resourceId > -1) {
                 (holder.findViewById(android.R.id.icon) as ImageView).setImageResource(resourceId)
             }
         }
     }
 
+    /**
+     * Get the index of the current value.
+     * @return The index of the current value within [values], or -1 if the [IntListPreference]
+     * is not set.
+     */
     fun getValueIndex(): Int {
         val curValue = currentValue
-
         if (curValue != null) {
             return values.indexOf(curValue)
         }
-
         return -1
     }
 
-    /** Set a value using the index of it in [values] */
+    /**
+     * Set the current value of this preference using it's index.
+     * @param index The index of the new value within [values]. Must be valid.
+     */
     fun setValueIndex(index: Int) {
         setValue(values[index])
     }
 
     private fun setValue(value: Int) {
         if (value != currentValue) {
-            currentValue = value
+            if (!callChangeListener(value)) {
+                // Listener rejected the value
+                return
+            }
 
-            callChangeListener(value)
+            // Update internal value.
+            currentValue = value
             notifyDependencyChange(shouldDisableDependents())
             persistInt(value)
             notifyChanged()
         }
     }
 
+    /**
+     * Copy of ListPreference's [Preference.SummaryProvider] for this [IntListPreference].
+     */
     private inner class IntListSummaryProvider : SummaryProvider<IntListPreference> {
         override fun provideSummary(preference: IntListPreference): CharSequence {
             val index = getValueIndex()
-
             if (index != -1) {
+                // Get the entry corresponding to the currently shown value.
                 return entries[index]
             }
 

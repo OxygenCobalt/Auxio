@@ -85,7 +85,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     }
 
     private fun setupSecondaryActions(binding: FragmentPlaybackBarBinding, settings: Settings) {
-        when (settings.actionMode) {
+        when (settings.playbackBarAction) {
             ActionMode.NEXT -> {
                 binding.playbackSecondaryAction.apply {
                     setIconResource(R.drawable.ic_skip_next_24)

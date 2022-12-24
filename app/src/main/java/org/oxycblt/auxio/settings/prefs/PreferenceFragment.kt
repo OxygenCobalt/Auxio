@@ -19,7 +19,6 @@ package org.oxycblt.auxio.settings.prefs
 
 import android.os.Bundle
 import android.view.View
-import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
@@ -35,7 +34,6 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.settings.SettingsFragmentDirections
-import org.oxycblt.auxio.shared.NavigationViewModel
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
@@ -43,14 +41,12 @@ import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
- * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
+ * The [PreferenceFragmentCompat] that displays the list of settings.
  * @author Alexander Capehart (OxygenCobalt)
  */
-@Suppress("UNUSED")
 class PreferenceFragment : PreferenceFragmentCompat() {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
-    private val navModel: NavigationViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,10 +54,9 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         preferenceManager.onDisplayPreferenceDialogListener = this
         preferenceScreen.children.forEach(::setupPreference)
 
-        // Make the RecycleView edge-to-edge capable
+        // Configure the RecyclerView to support edge-to-edge.
         view.findViewById<RecyclerView>(androidx.preference.R.id.recycler_view).apply {
             clipToPadding = false
-
             setOnApplyWindowInsetsListener { _, insets ->
                 updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
                 insets
@@ -81,21 +76,22 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             is IntListPreference -> {
                 // Copy the built-in preference dialog launching code into our project so
                 // we can automatically use the provided preference class.
-                val dialog = IntListPreferenceDialog.from(preference)
+                val dialog = IntListPreferenceDialog.new(preference)
                 dialog.setTargetFragment(this, 0)
                 dialog.show(parentFragmentManager, IntListPreferenceDialog.TAG)
             }
             is WrappedDialogPreference -> {
-                val context = requireContext()
+                // WrappedDialogPreference cannot launch a dialog on it's own, it has to
+                // be handled manually.
                 val directions =
                     when (preference.key) {
-                        context.getString(R.string.set_key_accent) ->
+                        getString(R.string.set_key_accent) ->
                             SettingsFragmentDirections.goToAccentDialog()
-                        context.getString(R.string.set_key_lib_tabs) ->
+                        getString(R.string.set_key_lib_tabs) ->
                             SettingsFragmentDirections.goToTabDialog()
-                        context.getString(R.string.set_key_pre_amp) ->
+                        getString(R.string.set_key_pre_amp) ->
                             SettingsFragmentDirections.goToPreAmpDialog()
-                        context.getString(R.string.set_key_music_dirs) ->
+                        getString(R.string.set_key_music_dirs) ->
                             SettingsFragmentDirections.goToMusicDirsDialog()
                         getString(R.string.set_key_separators) ->
                             SettingsFragmentDirections.goToSeparatorsDialog()
@@ -110,6 +106,9 @@ class PreferenceFragment : PreferenceFragmentCompat() {
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         val context = requireContext()
 
+        // Hook generic preferences to their specified preferences
+        // TODO: These seem like good things to put into a side navigation view, if I choose to
+        //  do one.
         when (preference.key) {
             context.getString(R.string.set_key_save_state) -> {
                 playbackModel.savePlaybackState { saved ->
@@ -125,6 +124,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             context.getString(R.string.set_key_wipe_state) -> {
                 playbackModel.wipePlaybackState { wiped ->
                     if (wiped) {
+                    // Use the nullable context, as we could try to show a toast when this
+                    // fragment is no longer attached.
                         this.context?.showToast(R.string.lbl_state_wiped)
                     } else {
                         this.context?.showToast(R.string.err_did_not_wipe)
@@ -134,6 +135,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             context.getString(R.string.set_key_restore_state) ->
                 playbackModel.tryRestorePlaybackState { restored ->
                     if (restored) {
+                    // Use the nullable context, as we could try to show a toast when this
+                    // fragment is no longer attached.
                         this.context?.showToast(R.string.lbl_state_restored)
                     } else {
                         this.context?.showToast(R.string.err_did_not_restore)
@@ -151,7 +154,10 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         val context = requireActivity()
         val settings = Settings(context)
 
-        if (!preference.isVisible) return
+        if (!preference.isVisible) {
+            // Nothing to do.
+            return
+        }
 
         if (preference is PreferenceCategory) {
             preference.children.forEach(::setupPreference)
@@ -186,17 +192,6 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                         true
                     }
             }
-        }
-    }
-
-    /** Convert an theme integer into an icon that can be used. */
-    @DrawableRes
-    private fun Int.toThemeIcon(): Int {
-        return when (this) {
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> R.drawable.ic_auto_24
-            AppCompatDelegate.MODE_NIGHT_NO -> R.drawable.ic_light_24
-            AppCompatDelegate.MODE_NIGHT_YES -> R.drawable.ic_dark_24
-            else -> R.drawable.ic_auto_24
         }
     }
 }

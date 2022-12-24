@@ -26,7 +26,7 @@ import org.oxycblt.auxio.databinding.FragmentSettingsBinding
 import org.oxycblt.auxio.shared.ViewBindingFragment
 
 /**
- * A container [Fragment] for the settings menu.
+ * A [Fragment] wrapper containing the preference fragment and a companion Toolbar.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SettingsFragment : ViewBindingFragment<FragmentSettingsBinding>() {
@@ -40,6 +40,7 @@ class SettingsFragment : ViewBindingFragment<FragmentSettingsBinding>() {
         FragmentSettingsBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentSettingsBinding, savedInstanceState: Bundle?) {
+        // Point AppBarLayout to the preference fragment's RecyclerView.
         binding.settingsAppbar.liftOnScrollTargetViewId = androidx.preference.R.id.recycler_view
         binding.settingsToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
     }

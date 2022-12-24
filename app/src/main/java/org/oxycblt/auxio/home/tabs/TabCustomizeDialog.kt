@@ -75,7 +75,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        // Save any pending tab configurations to restore from when this dialog is re-created.
+        // Save any pending tab configurations to restore if this dialog is re-created.
         outState.putInt(KEY_TABS, Tab.toIntCode(tabAdapter.tabs))
     }
 

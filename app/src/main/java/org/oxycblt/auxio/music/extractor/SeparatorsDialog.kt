@@ -55,7 +55,7 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
                 if (binding.separatorSlash.isChecked) separators += SEPARATOR_SLASH
                 if (binding.separatorPlus.isChecked) separators += SEPARATOR_PLUS
                 if (binding.separatorAnd.isChecked) separators += SEPARATOR_AND
-                settings.separators = separators
+                settings.musicSeparators = separators
             }
     }
 
@@ -71,7 +71,7 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
         // More efficient to do one iteration through the separator list and initialize
         // the corresponding CheckBox for each character instead of doing an iteration
         // through the separator list for each CheckBox.
-        settings.separators?.forEach {
+        settings.musicSeparators?.forEach {
             when (it) {
                 SEPARATOR_COMMA -> binding.separatorComma.isChecked = true
                 SEPARATOR_SEMICOLON -> binding.separatorSemicolon.isChecked = true

@@ -24,7 +24,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 
 /**
- * @brief The companion dialog to [IntListPreference].
+ * The companion dialog to [IntListPreference]. Use [new] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
@@ -34,7 +34,7 @@ class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?) =
         // PreferenceDialogFragmentCompat does not allow us to customize the actual creation
-        // of the alert dialog, so we have to manually override onCreateDialog and customize it
+        // of the alert dialog, so we have to override onCreateDialog and create a new dialog
         // ourselves.
         MaterialAlertDialogBuilder(requireContext(), theme)
             .setTitle(listPreference.title)
@@ -54,11 +54,18 @@ class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
     }
 
     companion object {
+        /** The tag to use when instantiating this dialog. */
         const val TAG = BuildConfig.APPLICATION_ID + ".tag.INT_PREF"
 
-        fun from(pref: IntListPreference): IntListPreferenceDialog {
+        /**
+         * Create a new instance.
+         * @param preference The [IntListPreference] to display.
+         * @return A new instance.
+         */
+        fun new(preference: IntListPreference): IntListPreferenceDialog {
             return IntListPreferenceDialog().apply {
-                arguments = Bundle().apply { putString(ARG_KEY, pref.key) }
+                // Populate the key field required by PreferenceDialogFragmentCompat.
+                arguments = Bundle().apply { putString(ARG_KEY, preference.key) }
             }
         }
     }

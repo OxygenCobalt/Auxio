@@ -105,23 +105,27 @@ private val ACCENT_PRIMARY_COLORS =
         R.color.dynamic_primary)
 
 /**
- * The data object for an accent. In the UI this is known as a "Color Scheme." This can be nominally
- * used to gleam some attributes about a given color scheme, but this is not recommended. Attributes
- * are the better option in nearly all cases.
+ * The data object for a colored theme to use in the UI. This can be nominally used to gleam some
+ * attributes about a given color scheme, but this is not recommended. Attributes are the better
+ * option in nearly all cases.
  *
- * @property name The name of this accent
- * @property theme The theme resource for this accent
- * @property blackTheme The black theme resource for this accent
- * @property primary The primary color resource for this accent
+ * @param index The unique number for this particular accent.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Accent private constructor(val index: Int) : Item {
+    /** The name of this [Accent]. */
     val name: Int
         get() = ACCENT_NAMES[index]
+    /** The theme resource for this accent. */
     val theme: Int
         get() = ACCENT_THEMES[index]
+    /**
+     * The black theme resource for this accent. Identical to [theme], but with a black
+     * background.
+     */
     val blackTheme: Int
         get() = ACCENT_BLACK_THEMES[index]
+    /** The accent's primary color. */
     val primary: Int
         get() = ACCENT_PRIMARY_COLORS[index]
 
@@ -130,31 +134,40 @@ class Accent private constructor(val index: Int) : Item {
     override fun hashCode() = index.hashCode()
 
     companion object {
+        /**
+         * Create a new instance.
+         * @param index The unique number for this particular accent.
+         * @return A new [Accent] with the specified [index]. If [index] is not within the
+         * range of valid accents, [index] will be [DEFAULT] instead.
+         */
         fun from(index: Int): Accent {
-            if (index > (MAX - 1)) {
-                logW("Account outside of bounds [idx: $index, max: $MAX]")
-                return Accent(5)
+            if (index !in 0 until MAX ) {
+                logW("Accent is out of bounds [idx: $index]")
+                return Accent(DEFAULT)
             }
-
             return Accent(index)
         }
 
+        /**
+         * The default accent.
+         */
         val DEFAULT =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                // Use dynamic coloring on devices that support it.
                 ACCENT_THEMES.lastIndex
             } else {
+                // Use blue everywhere else.
                 5
             }
 
         /**
-         * The maximum amount of accents that are valid. This excludes the dynamic accent on
-         * versions that do not support it.
+         * The amount of valid accents.
          */
         val MAX =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 ACCENT_THEMES.size
             } else {
-                // Disable the option for a dynamic accent
+                // Disable the option for a dynamic accent on unsupported devices.
                 ACCENT_THEMES.size - 1
             }
     }

@@ -40,12 +40,8 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * Auxio's settings.
- *
- * This object wraps [SharedPreferences] in a type-safe manner, allowing access to all of the major
- * settings that Auxio uses. Mutability is determined by use, as some values are written by
- * PreferenceManager and others are written by Auxio's code.
- *
+ * A [SharedPreferences] wrapper providing type-safe interfaces to all of the app's settings.
+ * Object mutability
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Settings(private val context: Context, private val callback: Callback? = null) :
@@ -59,8 +55,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     }
 
     /**
-     * Try to migrate shared preference keys to their new versions. Only intended for use by
-     * AuxioApp. Compat code will persist for 6 months before being removed.
+     * Migrate any settings from an old version into their modern counterparts. This can cause
+     * data loss depending on the feasibility of a migration.
      */
     fun migrate() {
         if (inner.contains(OldKeys.KEY_ACCENT3)) {
@@ -117,7 +113,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
 
         fun Int.migratePlaybackMode() =
             when (this) {
-                // Genre playback mode was retried in 3.0.0
+                // Genre playback mode was removed in 3.0.0
                 IntegerTable.PLAYBACK_MODE_ALL_SONGS -> MusicMode.SONGS
                 IntegerTable.PLAYBACK_MODE_IN_ARTIST -> MusicMode.ARTISTS
                 IntegerTable.PLAYBACK_MODE_IN_ALBUM -> MusicMode.ALBUMS
@@ -156,6 +152,10 @@ class Settings(private val context: Context, private val callback: Callback? = n
         }
     }
 
+    /**
+     * Release this instance and any callbacks held by it. This is not needed if no [Callback]
+     * was originally attached.
+     */
     fun release() {
         inner.unregisterOnSharedPreferenceChangeListener(this)
     }
@@ -164,25 +164,27 @@ class Settings(private val context: Context, private val callback: Callback? = n
         unlikelyToBeNull(callback).onSettingChanged(key)
     }
 
-    /** An interface for receiving some preference updates. */
+    /**
+     * TODO: Remove this
+     */
     interface Callback {
         fun onSettingChanged(key: String)
     }
 
     // --- VALUES ---
 
-    /** The current theme */
+    /** The current theme. Represented by the [AppCompatDelegate] constants. */
     val theme: Int
         get() =
             inner.getInt(
                 context.getString(R.string.set_key_theme),
                 AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
-    /** Whether the dark theme should be black or not */
+    /** Whether to use a black background when a dark theme is currently used. */
     val useBlackTheme: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_black_theme), false)
 
-    /** The current accent. */
+    /** The current [Accent] (Color Scheme). */
     var accent: Accent
         get() =
             Accent.from(inner.getInt(context.getString(R.string.set_key_accent), Accent.DEFAULT))
@@ -193,7 +195,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The current library tabs preferred by the user. */
+    /** The tabs to show in the home UI. */
     var libTabs: Array<Tab>
         get() =
             Tab.fromIntCode(
@@ -206,40 +208,40 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** Whether to hide collaborator artists or not. */
+    /** Whether to hide artists considered "collaborators" from the home UI. */
     val shouldHideCollaborators: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_hide_collaborators), false)
 
-    /** Whether to round additional UI elements (including album covers) */
+    /** Whether to round additional UI elements that require album covers to be rounded. */
     val roundMode: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_round_mode), false)
 
-    /** Which action to display on the playback bar. */
-    val actionMode: ActionMode
+    /** The action to display on the playback bar. */
+    val playbackBarAction: ActionMode
         get() =
             ActionMode.fromIntCode(
                 inner.getInt(context.getString(R.string.set_key_bar_action), Int.MIN_VALUE))
                 ?: ActionMode.NEXT
 
-    /** The custom action to display in the notification. */
-    val notifAction: ActionMode
+    /** The action to display in the playback notification. */
+    val playbackNotificationAction: ActionMode
         get() =
             ActionMode.fromIntCode(
                 inner.getInt(context.getString(R.string.set_key_notif_action), Int.MIN_VALUE))
                 ?: ActionMode.REPEAT
 
-    /** Whether to resume playback when a headset is connected (may not work well in all cases) */
+    /** Whether to start playback when a headset is plugged in. */
     val headsetAutoplay: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_headset_autoplay), false)
 
-    /** The current ReplayGain configuration */
+    /** The current ReplayGain configuration. */
     val replayGainMode: ReplayGainMode
         get() =
             ReplayGainMode.fromIntCode(
                 inner.getInt(context.getString(R.string.set_key_replay_gain), Int.MIN_VALUE))
                 ?: ReplayGainMode.DYNAMIC
 
-    /** The current ReplayGain pre-amp configuration */
+    /** The current ReplayGain pre-amp configuration. */
     var replayGainPreAmp: ReplayGainPreAmp
         get() =
             ReplayGainPreAmp(
@@ -253,7 +255,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** What queue to create when a song is selected from the library or search */
+    /** What MusicParent item to play from when a Song is played from the home view. */
     val libPlaybackMode: MusicMode
         get() =
             MusicMode.fromIntCode(
@@ -262,8 +264,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
                 ?: MusicMode.SONGS
 
     /**
-     * What queue t create when a song is selected from an album/artist/genre. Null means to default
-     * to the currently shown item.
+     * What MusicParent item to play from when a Song is played from the detail view.
+     * Will be null if configured to play from the currently shown item.
      */
     val detailPlaybackMode: MusicMode?
         get() =
@@ -271,18 +273,15 @@ class Settings(private val context: Context, private val callback: Callback? = n
                 inner.getInt(
                     context.getString(R.string.set_key_detail_song_playback_mode), Int.MIN_VALUE))
 
-    /** Whether shuffle should stay on when a new song is selected. */
+    /** Whether to keep shuffle on when playing a new Song. */
     val keepShuffle: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_keep_shuffle), true)
 
-    /** Whether to rewind when the back button is pressed. */
+    /** Whether to rewind when the skip previous button is pressed before skipping back. */
     val rewindWithPrev: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_rewind_prev), true)
 
-    /**
-     * Whether [org.oxycblt.auxio.playback.state.RepeatMode.TRACK] should pause when the track
-     * repeats
-     */
+    /** Whether a song should pause after every repeat. */
     val pauseOnRepeat: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_repeat_pause), false)
 
@@ -290,28 +289,34 @@ class Settings(private val context: Context, private val callback: Callback? = n
     val shouldBeObserving: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_observing), false)
 
-    /** The strategy used when loading images. */
+    /** The strategy used when loading album covers. */
     val coverMode: CoverMode
         get() =
             CoverMode.fromIntCode(
                 inner.getInt(context.getString(R.string.set_key_cover_mode), Int.MIN_VALUE))
                 ?: CoverMode.MEDIA_STORE
 
-    /** Whether to load all audio files, even ones not considered music. */
+    /** Whether to exclude non-music audio files from the music library. */
     val excludeNonMusic: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_exclude_non_music), true)
 
-    /** Get the list of directories that music should be hidden/loaded from. */
+    /**
+     * Set the configuration on how to handle particular directories in the music library.
+     * @param storageManager [StorageManager] required to parse directories.
+     * @return The [MusicDirectories] configuration.
+     */
     fun getMusicDirs(storageManager: StorageManager): MusicDirectories {
         val dirs =
             (inner.getStringSet(context.getString(R.string.set_key_music_dirs), null) ?: emptySet())
                 .mapNotNull { Directory.fromDocumentTreeUri(storageManager, it) }
-
         return MusicDirectories(
             dirs, inner.getBoolean(context.getString(R.string.set_key_music_dirs_include), false))
     }
 
-    /** Set the list of directories that music should be hidden/loaded from. */
+    /**
+     * Set the configuration on how to handle particular directories in the music library.
+     * @param musicDirs The new [MusicDirectories] configuration.
+     */
     fun setMusicDirs(musicDirs: MusicDirectories) {
         inner.edit {
             putStringSet(
@@ -323,8 +328,11 @@ class Settings(private val context: Context, private val callback: Callback? = n
         }
     }
 
-    /** The list of separators the user wants to parse by. */
-    var separators: String?
+    /**
+     * A string of characters representing the desired separator characters to denote
+     * multi-value tags.
+     */
+    var musicSeparators: String?
         // Differ from convention and store a string of separator characters instead of an int
         // code. This makes it easier to use in Regexes and makes it more extendable.
         get() =
@@ -336,7 +344,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The current filter mode of the search tab */
+    /** The type of Music the search view is currently filtering to. */
     var searchFilterMode: MusicMode?
         get() =
             MusicMode.fromIntCode(
@@ -350,7 +358,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The song sort mode on HomeFragment */
+    /** The Song [Sort] mode used in the Home UI.  */
     var libSongSort: Sort
         get() =
             Sort.fromIntCode(
@@ -363,7 +371,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The album sort mode on HomeFragment */
+    /** The Album [Sort] mode used in the Home UI.  */
     var libAlbumSort: Sort
         get() =
             Sort.fromIntCode(
@@ -376,7 +384,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The artist sort mode on HomeFragment */
+    /** The Artist [Sort] mode used in the Home UI.  */
     var libArtistSort: Sort
         get() =
             Sort.fromIntCode(
@@ -389,7 +397,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The genre sort mode on HomeFragment */
+    /** The Genre [Sort] mode used in the Home UI.  */
     var libGenreSort: Sort
         get() =
             Sort.fromIntCode(
@@ -402,7 +410,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The detail album sort mode */
+    /** The [Sort] mode used in the Album Detail UI.  */
     var detailAlbumSort: Sort
         get() {
             var sort =
@@ -425,7 +433,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The detail artist sort mode */
+    /** The [Sort] mode used in the Artist Detail UI.  */
     var detailArtistSort: Sort
         get() =
             Sort.fromIntCode(
@@ -438,7 +446,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The detail genre sort mode */
+    /** The [Sort] mode used in the Genre Detail UI.  */
     var detailGenreSort: Sort
         get() =
             Sort.fromIntCode(
@@ -451,7 +459,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** Cache of the old keys used in Auxio. */
+    /** Legacy keys that are no longer used, but still have to be migrated. */
     private object OldKeys {
         const val KEY_ACCENT3 = "auxio_accent"
         const val KEY_ALT_NOTIF_ACTION = "KEY_ALT_NOTIF_ACTION"

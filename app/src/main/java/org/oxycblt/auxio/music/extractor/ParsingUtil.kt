@@ -139,7 +139,7 @@ fun List<String>.parseMultiValue(settings: Settings) =
  */
 fun String.maybeParseSeparators(settings: Settings): List<String> {
     // Get the separators the user desires. If null, there's nothing to do.
-    val separators = settings.separators ?: return listOf(this)
+    val separators = settings.musicSeparators ?: return listOf(this)
     return splitEscaped { separators.contains(it) }
 }
 

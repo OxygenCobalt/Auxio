@@ -27,7 +27,6 @@ import androidx.core.net.toUri
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.transition.MaterialFadeThrough
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
@@ -41,7 +40,7 @@ import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
- * A [BottomSheetDialogFragment] that shows Auxio's about screen.
+ * A [ViewBindingFragment] that displays information about the app and the current music library.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
@@ -56,18 +55,21 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentAboutBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentAboutBinding, savedInstanceState: Bundle?) {
+        super.onBindingCreated(binding, savedInstanceState)
+
+        // --- UI SETUP ---
+        binding.aboutToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
         binding.aboutContents.setOnApplyWindowInsetsListener { view, insets ->
             view.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
             insets
         }
 
-        binding.aboutToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
-
         binding.aboutVersion.text = BuildConfig.VERSION_NAME
-        binding.aboutCode.setOnClickListener { openLinkInBrowser(LINK_CODEBASE) }
+        binding.aboutCode.setOnClickListener { openLinkInBrowser(LINK_SOURCE) }
         binding.aboutFaq.setOnClickListener { openLinkInBrowser(LINK_FAQ) }
         binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }
 
+        // VIEWMODEL SETUP
         collectImmediately(musicModel.statistics, ::updateStatistics)
     }
 
@@ -86,14 +88,15 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
                 (statistics?.durationMs ?: 0).formatDurationMs(false))
     }
 
-    /** Go through the process of opening a [link] in a browser. */
-    private fun openLinkInBrowser(link: String) {
-        logD("Opening $link")
-
+    /**
+     * Open the given URI in a web browser.
+     * @param uri The URL to open.
+     */
+    private fun openLinkInBrowser(uri: String) {
+        logD("Opening $uri")
         val context = requireContext()
-
         val browserIntent =
-            Intent(Intent.ACTION_VIEW, link.toUri()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            Intent(Intent.ACTION_VIEW, uri.toUri()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Android 11 seems to now handle the app chooser situations on its own now
@@ -124,7 +127,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
                         browserIntent.setPackage(pkgName)
                         startActivity(browserIntent)
                     } catch (e: ActivityNotFoundException) {
-                        // Not browser but an app chooser due to OEM garbage
+                        // Not a browser but an app chooser
                         browserIntent.setPackage(null)
                         openAppChooser(browserIntent)
                     }
@@ -136,18 +139,24 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         }
     }
 
+    /**
+     * Open an app chooser for a given [Intent].
+     * @param intent The [Intent] to show an app chooser for.
+     */
     private fun openAppChooser(intent: Intent) {
         val chooserIntent =
             Intent(Intent.ACTION_CHOOSER)
                 .putExtra(Intent.EXTRA_INTENT, intent)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
         startActivity(chooserIntent)
     }
 
     companion object {
-        private const val LINK_CODEBASE = "https://github.com/oxygencobalt/Auxio"
-        private const val LINK_FAQ = "$LINK_CODEBASE/blob/master/info/FAQ.md"
-        private const val LINK_LICENSES = "$LINK_CODEBASE/blob/master/info/LICENSES.md"
+        /** The URL to the source code. */
+        private const val LINK_SOURCE = "https://github.com/oxygencobalt/Auxio"
+        /** The URL to the FAQ document. */
+        private const val LINK_FAQ = "$LINK_SOURCE/blob/master/info/FAQ.md"
+        /** The URL to the licenses document. */
+        private const val LINK_LICENSES = "$LINK_SOURCE/blob/master/info/LICENSES.md"
     }
 }
