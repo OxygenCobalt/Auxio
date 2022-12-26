@@ -187,15 +187,34 @@ sealed class Music : Item {
              * @return A new auxio-style [UID].
              */
             fun auxio(mode: MusicMode, updates: MessageDigest.() -> Unit): UID {
-                // Auxio hashes consist of the MD5 hash of the non-subjective, consistent
-                // tags in a music item. For easier use with MusicBrainz IDs, we transform
-                // this into a UUID too.
-                val uuid =
+                val digest =
                     MessageDigest.getInstance("SHA-256").run {
                         updates()
-                        digestUUID()
+                        digest()
                     }
-
+                // Convert the digest to a UUID. This does cleave off some of the hash, but this
+                // is considered okay.
+                val uuid =  UUID(
+                    digest[0]
+                        .toLong()
+                        .shl(56)
+                        .or(digest[1].toLong().and(0xFF).shl(48))
+                        .or(digest[2].toLong().and(0xFF).shl(40))
+                        .or(digest[3].toLong().and(0xFF).shl(32))
+                        .or(digest[4].toLong().and(0xFF).shl(24))
+                        .or(digest[5].toLong().and(0xFF).shl(16))
+                        .or(digest[6].toLong().and(0xFF).shl(8))
+                        .or(digest[7].toLong().and(0xFF)),
+                    digest[8]
+                        .toLong()
+                        .shl(56)
+                        .or(digest[9].toLong().and(0xFF).shl(48))
+                        .or(digest[10].toLong().and(0xFF).shl(40))
+                        .or(digest[11].toLong().and(0xFF).shl(32))
+                        .or(digest[12].toLong().and(0xFF).shl(24))
+                        .or(digest[13].toLong().and(0xFF).shl(16))
+                        .or(digest[14].toLong().and(0xFF).shl(8))
+                        .or(digest[15].toLong().and(0xFF)))
                 return UID(Format.AUXIO, mode, uuid)
             }
 
@@ -237,7 +256,6 @@ sealed class Music : Item {
                 val mode =
                     MusicMode.fromIntCode(ids[0].toIntOrNull(16) ?: return null) ?: return null
                 val uuid = ids[1].toUuidOrNull() ?: return null
-
                 return UID(format, mode, uuid)
             }
         }
@@ -1411,33 +1429,4 @@ private fun MessageDigest.update(n: Int?) {
     }else {
         update(0)
     }
-}
-
-/**
- * Digest a 8-byte+ hash into a [UUID].
- * @return A [UUID] derived from the first 8 bytes of the digest.
- */
-fun MessageDigest.digestUUID(): UUID {
-    val digest = digest()
-    return UUID(
-        digest[0]
-            .toLong()
-            .shl(56)
-            .or(digest[1].toLong().and(0xFF).shl(48))
-            .or(digest[2].toLong().and(0xFF).shl(40))
-            .or(digest[3].toLong().and(0xFF).shl(32))
-            .or(digest[4].toLong().and(0xFF).shl(24))
-            .or(digest[5].toLong().and(0xFF).shl(16))
-            .or(digest[6].toLong().and(0xFF).shl(8))
-            .or(digest[7].toLong().and(0xFF)),
-        digest[8]
-            .toLong()
-            .shl(56)
-            .or(digest[9].toLong().and(0xFF).shl(48))
-            .or(digest[10].toLong().and(0xFF).shl(40))
-            .or(digest[11].toLong().and(0xFF).shl(32))
-            .or(digest[12].toLong().and(0xFF).shl(24))
-            .or(digest[13].toLong().and(0xFF).shl(16))
-            .or(digest[14].toLong().and(0xFF).shl(8))
-            .or(digest[15].toLong().and(0xFF)))
 }
