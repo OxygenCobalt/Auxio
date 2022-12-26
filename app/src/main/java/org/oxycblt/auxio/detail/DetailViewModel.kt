@@ -61,8 +61,9 @@ class DetailViewModel(application: Application) :
 
     private val _currentSong = MutableStateFlow<DetailSong?>(null)
     /**
-     * The current [DetailSong] to display. Null if there is nothing to show. TODO: De-couple Song
-     * and Properties?
+     * The current [DetailSong] to display. Null if there is nothing to show.
+     *
+     * TODO: De-couple Song and Properties?
      */
     val currentSong: StateFlow<DetailSong?>
         get() = _currentSong

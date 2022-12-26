@@ -76,11 +76,11 @@ abstract class ViewBindingFragment<VB : ViewBinding> : Fragment() {
     }
 
     /**
-     * Delegate to automatically create and destroy an object derived from the [ViewBinding]. TODO:
-     * Phase this out, it's really dumb
+     * Delegate to automatically create and destroy an object derived from the [ViewBinding].
      * @param create Block to create the object from the [ViewBinding].
      */
     fun <T> lifecycleObject(create: (VB) -> T): ReadOnlyProperty<Fragment, T> {
+        // TODO: Phase this out.
         lifecycleObjects.add(LifecycleObject(null, create))
 
         return object : ReadOnlyProperty<Fragment, T> {

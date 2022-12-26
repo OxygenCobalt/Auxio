@@ -191,9 +191,9 @@ sealed class Music : Item {
                 // tags in a music item. For easier use with MusicBrainz IDs, we transform
                 // this into a UUID too.
                 val uuid =
-                    MessageDigest.getInstance("MD5").run {
+                    MessageDigest.getInstance("SHA-256").run {
                         updates()
-                        digest().toUuid()
+                        digestUUID()
                     }
 
                 return UID(Format.AUXIO, mode, uuid)
@@ -1369,8 +1369,6 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
 // --- MUSIC UID CREATION UTILITIES ---
 
-// TODO: Use a stronger hash (SHA-2?, append a 0 for null values to further waterfall effect??)
-
 /**
  * Update a [MessageDigest] with a lowercase [String].
  * @param string The [String] to hash. If null, it will not be hashed.
@@ -1378,6 +1376,8 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 private fun MessageDigest.update(string: String?) {
     if (string != null) {
         update(string.lowercase().toByteArray())
+    } else {
+        update(0)
     }
 }
 
@@ -1388,6 +1388,8 @@ private fun MessageDigest.update(string: String?) {
 private fun MessageDigest.update(date: Date?) {
     if (date != null) {
         update(date.toString().toByteArray())
+    }else {
+        update(0)
     }
 }
 
@@ -1406,35 +1408,36 @@ private fun MessageDigest.update(strings: List<String?>) {
 private fun MessageDigest.update(n: Int?) {
     if (n != null) {
         update(byteArrayOf(n.toByte(), n.shr(8).toByte(), n.shr(16).toByte(), n.shr(24).toByte()))
+    }else {
+        update(0)
     }
 }
 
 /**
- * Convert a [ByteArray] to a [UUID]. Assumes that the [ByteArray] has a length of 16.
- * @return A [UUID] derived from the [ByteArray]'s contents. Internally, the two [Long]s in the
- * [UUID] will be little-endian.
+ * Digest a 8-byte+ hash into a [UUID].
+ * @return A [UUID] derived from the first 8 bytes of the digest.
  */
-fun ByteArray.toUuid(): UUID {
-    check(size == 16)
+fun MessageDigest.digestUUID(): UUID {
+    val digest = digest()
     return UUID(
-        get(0)
+        digest[0]
             .toLong()
             .shl(56)
-            .or(get(1).toLong().and(0xFF).shl(48))
-            .or(get(2).toLong().and(0xFF).shl(40))
-            .or(get(3).toLong().and(0xFF).shl(32))
-            .or(get(4).toLong().and(0xFF).shl(24))
-            .or(get(5).toLong().and(0xFF).shl(16))
-            .or(get(6).toLong().and(0xFF).shl(8))
-            .or(get(7).toLong().and(0xFF)),
-        get(8)
+            .or(digest[1].toLong().and(0xFF).shl(48))
+            .or(digest[2].toLong().and(0xFF).shl(40))
+            .or(digest[3].toLong().and(0xFF).shl(32))
+            .or(digest[4].toLong().and(0xFF).shl(24))
+            .or(digest[5].toLong().and(0xFF).shl(16))
+            .or(digest[6].toLong().and(0xFF).shl(8))
+            .or(digest[7].toLong().and(0xFF)),
+        digest[8]
             .toLong()
             .shl(56)
-            .or(get(9).toLong().and(0xFF).shl(48))
-            .or(get(10).toLong().and(0xFF).shl(40))
-            .or(get(11).toLong().and(0xFF).shl(32))
-            .or(get(12).toLong().and(0xFF).shl(24))
-            .or(get(13).toLong().and(0xFF).shl(16))
-            .or(get(14).toLong().and(0xFF).shl(8))
-            .or(get(15).toLong().and(0xFF)))
+            .or(digest[9].toLong().and(0xFF).shl(48))
+            .or(digest[10].toLong().and(0xFF).shl(40))
+            .or(digest[11].toLong().and(0xFF).shl(32))
+            .or(digest[12].toLong().and(0xFF).shl(24))
+            .or(digest[13].toLong().and(0xFF).shl(16))
+            .or(digest[14].toLong().and(0xFF).shl(8))
+            .or(digest[15].toLong().and(0xFF)))
 }
