@@ -85,10 +85,11 @@ class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewH
         fun onToggleVisibility(tabMode: MusicMode)
 
         /**
-         * Called when the drag handle is pressed, requesting that a drag should be started.
+         * Called when the drag handle on a [RecyclerView.ViewHolder] is clicked, requesting that a
+         * drag should be started.
          * @param viewHolder The [RecyclerView.ViewHolder] to start dragging.
          */
-        fun onPickUpTab(viewHolder: RecyclerView.ViewHolder)
+        fun onPickUp(viewHolder: RecyclerView.ViewHolder)
     }
 
     companion object {
@@ -105,7 +106,7 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
     /**
      * Bind new data to this instance.
      * @param tab The new [Tab] to bind.
-     * @param listener An [TabAdapter.Listener] to bind interactions to.
+     * @param listener A [TabAdapter.Listener] to bind interactions to.
      */
     @SuppressLint("ClickableViewAccessibility")
     fun bind(tab: Tab, listener: TabAdapter.Listener) {
@@ -130,14 +131,13 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
         binding.tabDragHandle.setOnTouchListener { _, motionEvent ->
             binding.tabDragHandle.performClick()
             if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
-                listener.onPickUpTab(this)
+                listener.onPickUp(this)
                 true
             } else false
         }
     }
 
     companion object {
-
         /**
          * Create a new instance.
          * @param parent The parent to inflate this instance from.

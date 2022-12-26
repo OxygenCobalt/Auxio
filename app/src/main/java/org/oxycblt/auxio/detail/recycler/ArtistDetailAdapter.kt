@@ -26,7 +26,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
-import org.oxycblt.auxio.list.ExtendedListListener
+import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SimpleItemCallback
@@ -181,10 +181,10 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
     /**
      * Bind new data to this instance.
      * @param album The new [Album] to bind.
-     * @param listener An [ExtendedListListener] to bind interactions to.
+     * @param listener An [SelectableListListener] to bind interactions to.
      */
-    fun bind(album: Album, listener: ExtendedListListener) {
-        listener.bind(album, binding.root, binding.parentMenu)
+    fun bind(album: Album, listener: SelectableListListener) {
+        listener.bind(this, album, binding.parentMenu)
         binding.parentImage.bind(album)
         binding.parentName.text = album.resolveName(binding.context)
         binding.parentInfo.text =
@@ -232,10 +232,10 @@ private class ArtistSongViewHolder private constructor(private val binding: Item
     /**
      * Bind new data to this instance.
      * @param song The new [Song] to bind.
-     * @param listener An [ExtendedListListener] to bind interactions to.
+     * @param listener An [SelectableListListener] to bind interactions to.
      */
-    fun bind(song: Song, listener: ExtendedListListener) {
-        listener.bind(song, binding.root, binding.songMenu)
+    fun bind(song: Song, listener: SelectableListListener) {
+        listener.bind(this, song, binding.songMenu)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.resolveName(binding.context)
         binding.songInfo.text = song.album.resolveName(binding.context)

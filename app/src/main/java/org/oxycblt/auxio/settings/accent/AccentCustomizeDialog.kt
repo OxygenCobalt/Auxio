@@ -23,7 +23,7 @@ import androidx.appcompat.app.AlertDialog
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
-import org.oxycblt.auxio.list.BasicListListener
+import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.shared.ViewBindingDialogFragment
@@ -35,7 +35,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A [ViewBindingDialogFragment] that allows the user to configure the current [Accent].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AccentCustomizeDialog : ViewBindingDialogFragment<DialogAccentBinding>(), BasicListListener {
+class AccentCustomizeDialog : ViewBindingDialogFragment<DialogAccentBinding>(), ClickableListListener {
     private var accentAdapter = AccentAdapter(this)
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
 

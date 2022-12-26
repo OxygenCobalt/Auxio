@@ -32,7 +32,8 @@ import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
- * The bottom sheet behavior designed for the queue in particular.
+ * The [BaseBottomSheetBehavior] for the queue bottom sheet. This is placed within the playback
+ * sheet and automatically arranges itself to show the playback bar at the top.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
@@ -41,6 +42,7 @@ class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: Attribu
     private var barSpacing = context.getDimenPixels(R.dimen.spacing_small)
 
     init {
+        // Not hide-able (and not programmatically hide-able)
         isHideable = false
     }
 
@@ -53,18 +55,19 @@ class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: Attribu
         dependency: View
     ): Boolean {
         barHeight = dependency.height
-        return false // No change, just grabbed the height
+        // No change, just grabbed the height
+        return false
     }
 
     override fun createBackground(context: Context) =
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
+            // The queue sheet's background is a static elevated background.
             fillColor = context.getAttrColorCompat(R.attr.colorSurface)
             elevation = context.getDimen(R.dimen.elevation_normal)
         }
 
     override fun applyWindowInsets(child: View, insets: WindowInsets): WindowInsets {
         super.applyWindowInsets(child, insets)
-
         // Offset our expanded panel by the size of the playback bar, as that is shown when
         // we slide up the panel.
         val bars = insets.systemBarInsetsCompat

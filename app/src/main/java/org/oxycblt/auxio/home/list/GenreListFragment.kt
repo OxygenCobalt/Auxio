@@ -113,9 +113,9 @@ class GenreListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRec
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Genre]s using [GenreViewHolder].
-     * @param listener An [ExtendedListListener] to bind interactions to.
+     * @param listener An [SelectableListListener] to bind interactions to.
      */
-    private class GenreAdapter(private val listener: ExtendedListListener) :
+    private class GenreAdapter(private val listener: SelectableListListener) :
         SelectionIndicatorAdapter<GenreViewHolder>() {
         private val differ = SyncListDiffer(this, GenreViewHolder.DIFF_CALLBACK)
 

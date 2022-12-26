@@ -23,17 +23,17 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
-import org.oxycblt.auxio.list.BasicListListener
+import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.inflater
 
 /**
  * A [RecyclerView.Adapter] that displays [Accent] choices.
- * @param listener A [BasicListListener] to bind interactions to.
+ * @param listener A [ClickableListListener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AccentAdapter(private val listener: BasicListListener) :
+class AccentAdapter(private val listener: ClickableListListener) :
     RecyclerView.Adapter<AccentViewHolder>() {
     /** The currently selected [Accent]. */
     var selectedAccent: Accent? = null
@@ -90,9 +90,9 @@ class AccentViewHolder private constructor(private val binding: ItemAccentBindin
     /**
      * Bind new data to this instance.
      * @param accent The new [Accent] to bind.
-     * @param listener A [BasicListListener] to bind interactions to.
+     * @param listener A [ClickableListListener] to bind interactions to.
      */
-    fun bind(accent: Accent, listener: BasicListListener) {
+    fun bind(accent: Accent, listener: ClickableListListener) {
         binding.accent.apply {
             setOnClickListener { listener.onClick(accent) }
             backgroundTintList = context.getColorCompat(accent.primary)

@@ -48,9 +48,11 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Migrate to material animation system
  *
- * TODO: Re-document project
- *
  * TODO: Unit testing
+ *
+ * TODO: Standardize from/new usage
+ *
+ * TODO: Standardize companion object usage
  *
  * @author Alexander Capehart (OxygenCobalt)
  */

@@ -24,7 +24,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
-import org.oxycblt.auxio.list.BasicListListener
+import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.shared.ViewBindingDialogFragment
@@ -36,7 +36,7 @@ import org.oxycblt.auxio.util.collectImmediately
  * multiple [Artist]'s to choose from.
  * @author Alexander Capehart (OxygenCobalt)
  */
-abstract class ArtistPickerDialog : ViewBindingDialogFragment<DialogMusicPickerBinding>(), BasicListListener {
+abstract class ArtistPickerDialog : ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener {
     protected val pickerModel: PickerViewModel by viewModels()
     // Okay to leak this since the Listener will not be called until after initialization.
     private val artistAdapter = ArtistChoiceAdapter(@Suppress("LeakingThis") this)

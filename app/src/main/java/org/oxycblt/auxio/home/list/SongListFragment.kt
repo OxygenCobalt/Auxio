@@ -153,9 +153,9 @@ class SongListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRecy
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Song]s using [SongViewHolder].
-     * @param listener An [ExtendedListListener] to bind interactions to.
+     * @param listener An [SelectableListListener] to bind interactions to.
      */
-    private class SongAdapter(private val listener: ExtendedListListener) :
+    private class SongAdapter(private val listener: SelectableListListener) :
         SelectionIndicatorAdapter<SongViewHolder>() {
         private val differ = SyncListDiffer(this, SongViewHolder.DIFF_CALLBACK)
 

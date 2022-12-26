@@ -21,7 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemPickerChoiceBinding
-import org.oxycblt.auxio.list.BasicListListener
+import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.util.context
@@ -29,10 +29,10 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * An adapter responsible for showing a list of [Artist] choices in [ArtistPickerDialog].
- * @param listener A [BasicListListener] to bind interactions to.
+ * @param listener A [ClickableListListener] to bind interactions to.
  * @author OxygenCobalt.
  */
-class ArtistChoiceAdapter(private val listener: BasicListListener) :
+class ArtistChoiceAdapter(private val listener: ClickableListListener) :
     RecyclerView.Adapter<ArtistChoiceViewHolder>() {
     private var artists = listOf<Artist>()
 
@@ -65,9 +65,9 @@ class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
     /**
      * Bind new data to this instance.
      * @param artist The new [Artist] to bind.
-     * @param listener A [BasicListListener] to bind interactions to.
+     * @param listener A [ClickableListListener] to bind interactions to.
      */
-    fun bind(artist: Artist, listener: BasicListListener) {
+    fun bind(artist: Artist, listener: ClickableListListener) {
         binding.root.setOnClickListener { listener.onClick(artist) }
         binding.pickerImage.bind(artist)
         binding.pickerName.text = artist.resolveName(binding.context)

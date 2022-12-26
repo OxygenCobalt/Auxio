@@ -24,7 +24,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemHeaderBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
-import org.oxycblt.auxio.list.ExtendedListListener
+import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -43,10 +43,10 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
     /**
      * Bind new data to this instance.
      * @param song The new [Song] to bind.
-     * @param listener An [ExtendedListListener] to bind interactions to.
+     * @param listener An [SelectableListListener] to bind interactions to.
      */
-    fun bind(song: Song, listener: ExtendedListListener) {
-        listener.bind(song, binding.root, binding.songMenu)
+    fun bind(song: Song, listener: SelectableListListener) {
+        listener.bind(this, song, binding.songMenu)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.resolveName(binding.context)
         binding.songInfo.text = song.resolveArtistContents(binding.context)
@@ -90,10 +90,10 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
     /**
      * Bind new data to this instance.
      * @param album The new [Album] to bind.
-     * @param listener An [ExtendedListListener] to bind interactions to.
+     * @param listener An [SelectableListListener] to bind interactions to.
      */
-    fun bind(album: Album, listener: ExtendedListListener) {
-        listener.bind(album, binding.root, binding.parentMenu)
+    fun bind(album: Album, listener: SelectableListListener) {
+        listener.bind(this, album, binding.parentMenu)
         binding.parentImage.bind(album)
         binding.parentName.text = album.resolveName(binding.context)
         binding.parentInfo.text = album.resolveArtistContents(binding.context)
@@ -139,10 +139,10 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
     /**
      * Bind new data to this instance.
      * @param artist The new [Artist] to bind.
-     * @param listener An [ExtendedListListener] to bind interactions to.
+     * @param listener An [SelectableListListener] to bind interactions to.
      */
-    fun bind(artist: Artist, listener: ExtendedListListener) {
-        listener.bind(artist, binding.root, binding.parentMenu)
+    fun bind(artist: Artist, listener: SelectableListListener) {
+        listener.bind(this, artist, binding.parentMenu)
         binding.parentImage.bind(artist)
         binding.parentName.text = artist.resolveName(binding.context)
         binding.parentInfo.text =
@@ -197,10 +197,10 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
     /**
      * Bind new data to this instance.
      * @param genre The new [Genre] to bind.
-     * @param listener An [ExtendedListListener] to bind interactions to.
+     * @param listener An [SelectableListListener] to bind interactions to.
      */
-    fun bind(genre: Genre, listener: ExtendedListListener) {
-        listener.bind(genre, binding.root, binding.parentMenu)
+    fun bind(genre: Genre, listener: SelectableListListener) {
+        listener.bind(this, genre, binding.parentMenu)
         binding.parentImage.bind(genre)
         binding.parentName.text = genre.resolveName(binding.context)
         binding.parentInfo.text =

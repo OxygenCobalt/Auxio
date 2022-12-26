@@ -36,7 +36,7 @@ import org.oxycblt.auxio.util.showToast
  * A Fragment containing a selectable list.
  * @author Alexander Capehart (OxygenCobalt)
  */
-abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), ExtendedListListener {
+abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), SelectableListListener {
     protected val navModel: NavigationViewModel by activityViewModels()
     private var currentMenu: PopupMenu? = null
 

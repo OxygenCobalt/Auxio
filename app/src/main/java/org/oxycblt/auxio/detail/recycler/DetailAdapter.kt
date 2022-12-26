@@ -26,7 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemSortHeaderBinding
 import org.oxycblt.auxio.detail.SortHeader
-import org.oxycblt.auxio.list.ExtendedListListener
+import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.recycler.*
@@ -87,8 +87,8 @@ abstract class DetailAdapter(
         differ.submitList(newList)
     }
 
-    /** An extended [ExtendedListListener] for [DetailAdapter] implementations. */
-    interface Listener : ExtendedListListener {
+    /** An extended [SelectableListListener] for [DetailAdapter] implementations. */
+    interface Listener : SelectableListListener {
         // TODO: Split off into sub-listeners if a collapsing toolbar is implemented.
         /**
          * Called when the play button in a detail header is pressed, requesting that the current

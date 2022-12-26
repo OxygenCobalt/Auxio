@@ -104,7 +104,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
             tabAdapter.tabs.filterIsInstance<Tab.Visible>().isNotEmpty()
     }
 
-    override fun onPickUpTab(viewHolder: RecyclerView.ViewHolder) {
+    override fun onPickUp(viewHolder: RecyclerView.ViewHolder) {
         touchHelper.startDrag(viewHolder)
     }
 

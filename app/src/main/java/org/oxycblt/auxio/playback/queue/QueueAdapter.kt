@@ -36,9 +36,17 @@ import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.inflater
 
-class QueueAdapter(private val listener: QueueItemListener) :
+/**
+ * A [RecyclerView.Adapter] that shows an editable list of queue items.
+ * @param listener A [Listener] to bind interactions to.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+class QueueAdapter(private val listener: Listener) :
     RecyclerView.Adapter<QueueSongViewHolder>() {
     private var differ = SyncListDiffer(this, QueueSongViewHolder.DIFF_CALLBACK)
+    // Since PlayingIndicator adapter relies on an item value, we cannot use it for this
+    // adapter, as one item can appear at several points in the UI. Use a similar implementation
+    // with an index value instead.
     private var currentIndex = 0
     private var isPlaying = false
 
@@ -59,68 +67,124 @@ class QueueAdapter(private val listener: QueueItemListener) :
             viewHolder.bind(differ.currentList[position], listener)
         }
 
-        viewHolder.isEnabled = position > currentIndex
+        viewHolder.isFuture = position > currentIndex
         viewHolder.updatePlayingIndicator(position == currentIndex, isPlaying)
     }
 
+    /**
+     * Synchronously update the list with new items. This is exceedingly slow for large diffs,
+     * so only use it for trivial updates.
+     * @param newList The new [Song]s for the adapter to display.
+     */
     fun submitList(newList: List<Song>) {
         differ.submitList(newList)
     }
 
+    /**
+     * Replace the list with a new list. This is exceedingly slow for large diffs,
+     * so only use it for trivial updates.
+     * @param newList The new [Song]s for the adapter to display.
+     */
     fun replaceList(newList: List<Song>) {
         differ.replaceList(newList)
     }
 
-    fun updateIndicator(index: Int, isPlaying: Boolean) {
+    /**
+     * Set the position of the currently playing item in the queue. This will mark the item
+     * as playing and any previous items as played.
+     * @param index The position of the currently playing item in the queue.
+     * @param isPlaying Whether playback is ongoing or paused.
+     */
+    fun setPosition(index: Int, isPlaying: Boolean) {
         var updatedIndex = false
 
         if (index != currentIndex) {
-            when {
-                index < currentIndex -> {
-                    val lastIndex = currentIndex
-                    currentIndex = index
-                    notifyItemRangeChanged(0, lastIndex + 1, PAYLOAD_UPDATE_INDEX)
-                }
-                else -> {
-                    currentIndex = index
-                    notifyItemRangeChanged(0, currentIndex + 1, PAYLOAD_UPDATE_INDEX)
-                }
-            }
-
+            val lastIndex = currentIndex
+            currentIndex = index
             updatedIndex = true
+
+            // Have to update not only the currently playing item, but also all items marked
+            // as playing.
+            if (currentIndex < lastIndex) {
+                notifyItemRangeChanged(0, lastIndex + 1, PAYLOAD_UPDATE_POSITION)
+            } else {
+                notifyItemRangeChanged(0, currentIndex + 1, PAYLOAD_UPDATE_POSITION)
+            }
         }
 
         if (this.isPlaying != isPlaying) {
             this.isPlaying = isPlaying
-
+            // Don't need to do anything if we've already sent an update from changing the
+            // index.
             if (!updatedIndex) {
-                notifyItemChanged(index, PAYLOAD_UPDATE_INDEX)
+                notifyItemChanged(index, PAYLOAD_UPDATE_POSITION)
             }
         }
     }
 
+    /**
+     * A listener for queue list events.
+     */
+    interface Listener {
+        /**
+         * Called when a [RecyclerView.ViewHolder] in the list as clicked.
+         * @param viewHolder The [RecyclerView.ViewHolder] that was clicked.
+         */
+        fun onClick(viewHolder: RecyclerView.ViewHolder)
+
+        /**
+         * Called when the drag handle on a [RecyclerView.ViewHolder] is clicked, requesting that a
+         * drag should be started.
+         * @param viewHolder The [RecyclerView.ViewHolder] to start dragging.
+         */
+        fun onPickUp(viewHolder: RecyclerView.ViewHolder)
+    }
+
     companion object {
-        val PAYLOAD_UPDATE_INDEX = Any()
+        private val PAYLOAD_UPDATE_POSITION = Any()
     }
 }
 
-interface QueueItemListener {
-    fun onClick(viewHolder: RecyclerView.ViewHolder)
-    fun onPickUp(viewHolder: RecyclerView.ViewHolder)
-}
-
+/**
+ * A [PlayingIndicatorAdapter.ViewHolder] that displays a queue [Song]. Use [new] to create an
+ * instance.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class QueueSongViewHolder private constructor(private val binding: ItemQueueSongBinding) :
     PlayingIndicatorAdapter.ViewHolder(binding.root) {
+    /**
+     * The "body" view of this [QueueSongViewHolder] that shows the [Song] information.
+     */
     val bodyView: View
         get() = binding.body
+
+    /**
+     * The background view of this [QueueSongViewHolder] that shows the delete icon.
+     */
     val backgroundView: View
         get() = binding.background
 
+    /**
+     * The actual background drawable of this [QueueSongViewHolder] that can be manipulated.
+     */
     val backgroundDrawable =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
             fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
             elevation = binding.context.getDimen(R.dimen.elevation_normal) * 5
             alpha = 0
+        }
+
+    /**
+     * If this queue item is considered "in the future" (i.e has not played yet).
+     */
+    var isFuture: Boolean
+        get() = binding.songAlbumCover.isEnabled
+        set(value) {
+            // Don't want to disable clicking, just indicate the body and handle is disabled
+            binding.songAlbumCover.isEnabled = value
+            binding.songName.isEnabled = value
+            binding.songInfo.isEnabled = value
+            binding.songDragHandle.isEnabled = value
         }
 
     init {
@@ -134,17 +198,24 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
                     backgroundDrawable))
     }
 
+    /**
+     * Bind new data to this instance.
+     * @param song The new [Song] to bind.
+     * @param listener A [QueueAdapter.Listener] to bind interactions to.
+     */
     @SuppressLint("ClickableViewAccessibility")
-    fun bind(item: Song, listener: QueueItemListener) {
-        binding.songAlbumCover.bind(item)
-        binding.songName.text = item.resolveName(binding.context)
-        binding.songInfo.text = item.resolveArtistContents(binding.context)
+    fun bind(song: Song, listener: QueueAdapter.Listener) {
+        binding.body.setOnClickListener {
+            listener.onClick(this)
+        }
 
+        binding.songAlbumCover.bind(song)
+        binding.songName.text = song.resolveName(binding.context)
+        binding.songInfo.text = song.resolveArtistContents(binding.context)
+        // TODO: Why is this here?
         binding.background.isInvisible = true
 
-        binding.body.setOnClickListener { listener.onClick(this) }
-
-        // Roll our own drag handlers as the default ones suck
+        // Set up the drag handle to start a drag whenever it is touched.
         binding.songDragHandle.setOnTouchListener { _, motionEvent ->
             binding.songDragHandle.performClick()
             if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
@@ -154,25 +225,21 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
         }
     }
 
-    var isEnabled: Boolean
-        get() = binding.songAlbumCover.isEnabled
-        set(value) {
-            // Don't want to disable clicking, just indicate the body and handle is disabled
-            binding.songAlbumCover.isEnabled = value
-            binding.songName.isEnabled = value
-            binding.songInfo.isEnabled = value
-            binding.songDragHandle.isEnabled = value
-        }
-
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.interactBody.isSelected = isActive
         binding.songAlbumCover.isPlaying = isPlaying
     }
 
     companion object {
+        /**
+         * Create a new instance.
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
         fun new(parent: View) =
             QueueSongViewHolder(ItemQueueSongBinding.inflate(parent.context.inflater))
 
+        /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK = SongViewHolder.DIFF_CALLBACK
     }
 }

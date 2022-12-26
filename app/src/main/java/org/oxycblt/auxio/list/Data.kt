@@ -2,7 +2,6 @@ package org.oxycblt.auxio.list
 
 import androidx.annotation.StringRes
 
-
 /**
  * A marker for something that is a RecyclerView item. Has no functionality on it's own.
  */

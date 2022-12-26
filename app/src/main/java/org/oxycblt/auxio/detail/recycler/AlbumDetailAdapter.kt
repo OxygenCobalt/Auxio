@@ -27,7 +27,7 @@ import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
 import org.oxycblt.auxio.detail.DiscHeader
-import org.oxycblt.auxio.list.ExtendedListListener
+import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SimpleItemCallback
@@ -224,10 +224,10 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
     /**
      * Bind new data to this instance.
      * @param song The new [Song] to bind.
-     * @param listener A [ExtendedListListener] to bind interactions to.
+     * @param listener A [SelectableListListener] to bind interactions to.
      */
-    fun bind(song: Song, listener: ExtendedListListener) {
-        listener.bind(song, binding.root, binding.songMenu)
+    fun bind(song: Song, listener: SelectableListListener) {
+        listener.bind(this, song, binding.songMenu)
 
         binding.songTrack.apply {
             if (song.track != null) {

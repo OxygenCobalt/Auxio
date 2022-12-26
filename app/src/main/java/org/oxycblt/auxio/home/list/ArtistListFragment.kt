@@ -114,9 +114,9 @@ class ArtistListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRe
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Artist]s using [ArtistViewHolder].
-     * @param listener An [ExtendedListListener] to bind interactions to.
+     * @param listener An [SelectableListListener] to bind interactions to.
      */
-    private class ArtistAdapter(private val listener: ExtendedListListener) :
+    private class ArtistAdapter(private val listener: SelectableListListener) :
         SelectionIndicatorAdapter<ArtistViewHolder>() {
         private val differ = SyncListDiffer(this, ArtistViewHolder.DIFF_CALLBACK)
 

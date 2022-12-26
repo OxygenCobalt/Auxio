@@ -1,12 +1,17 @@
 package org.oxycblt.auxio.list
 
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * A basic listener for list interactions.
+ * TODO: Supply a ViewHolder on clicks (allows editable lists to be standardized into a listener.)
+ * @author Alexander Capehart (OxygenCobalt)
  */
-interface BasicListListener {
+interface ClickableListListener {
     /**
      * Called when an [Item] in the list is clicked.
      * @param item The [Item] that was clicked.
@@ -15,9 +20,10 @@ interface BasicListListener {
 }
 
 /**
- * An extension of [BasicListListener] that enables menu and selection functionality.
+ * An extension of [ClickableListListener] that enables menu and selection functionality.
+ * @author Alexander Capehart (OxygenCobalt)
  */
-interface ExtendedListListener : BasicListListener {
+interface SelectableListListener : ClickableListListener {
     /**
      * Called when an [Item] in the list requests that a menu related to it should be opened.
      * @param item The [Item] to show a menu for.
@@ -33,12 +39,12 @@ interface ExtendedListListener : BasicListListener {
 
     /**
      * Binds this instance to a list item.
+     * @param viewHolder The [RecyclerView.ViewHolder] to bind.
      * @param item The [Item] that this list entry is bound to.
-     * @param root The root of the list [View].
      * @param menuButton A [Button] that opens a menu.
      */
-    fun bind(item: Item, root: View, menuButton: Button) {
-        root.apply {
+    fun bind(viewHolder: RecyclerView.ViewHolder, item: Item, menuButton: Button) {
+        viewHolder.itemView.apply {
             // Map clicks to the click callback.
             setOnClickListener { onClick(item) }
             // Map long clicks to the selection callback.
@@ -47,7 +53,6 @@ interface ExtendedListListener : BasicListListener {
                 true
             }
         }
-
         // Map the menu button to the menu opening callback.
         menuButton.setOnClickListener { onOpenMenu(item, it) }
     }

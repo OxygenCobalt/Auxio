@@ -29,10 +29,10 @@ import org.oxycblt.auxio.music.Song
 
 /**
  * An adapter that displays search results.
- * @param listener An [ExtendedListListener] to bind interactions to.
+ * @param listener An [SelectableListListener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SearchAdapter(private val listener: ExtendedListListener) :
+class SearchAdapter(private val listener: SelectableListListener) :
     SelectionIndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
     private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
 

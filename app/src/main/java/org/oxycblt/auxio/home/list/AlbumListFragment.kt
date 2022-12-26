@@ -139,9 +139,9 @@ class AlbumListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRec
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Album]s using [AlbumViewHolder].
-     * @param listener An [ExtendedListListener] to bind interactions to.
+     * @param listener An [SelectableListListener] to bind interactions to.
      */
-    private class AlbumAdapter(private val listener: ExtendedListListener) :
+    private class AlbumAdapter(private val listener: SelectableListListener) :
         SelectionIndicatorAdapter<AlbumViewHolder>() {
         private val differ = SyncListDiffer(this, AlbumViewHolder.DIFF_CALLBACK)
 
