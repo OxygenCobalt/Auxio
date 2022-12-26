@@ -60,7 +60,7 @@ class SearchAdapter(private val listener: SelectableListListener) :
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-       when (val item = differ.currentList[position]) {
+        when (val item = differ.currentList[position]) {
             is Song -> (holder as SongViewHolder).bind(item, listener)
             is Album -> (holder as AlbumViewHolder).bind(item, listener)
             is Artist -> (holder as ArtistViewHolder).bind(item, listener)
@@ -72,8 +72,8 @@ class SearchAdapter(private val listener: SelectableListListener) :
     override fun isItemFullWidth(position: Int) = differ.currentList[position] is Header
 
     /**
-     * Asynchronously update the list with new items. Assumes that the list only contains
-     * supported data..
+     * Asynchronously update the list with new items. Assumes that the list only contains supported
+     * data..
      * @param newList The new [Item]s for the adapter to display.
      * @param callback A block called when the asynchronous update is completed.
      */

@@ -21,7 +21,6 @@ import android.content.Context
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.util.logD
 

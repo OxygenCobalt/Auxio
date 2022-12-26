@@ -21,7 +21,6 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewModel] that manages the current selection.
@@ -31,10 +30,7 @@ class SelectionViewModel : ViewModel(), MusicStore.Callback {
     private val musicStore = MusicStore.getInstance()
 
     private val _selected = MutableStateFlow(listOf<Music>())
-    /**
-     * the currently selected items. These are ordered in earliest selected
-     * and latest selected.
-     */
+    /** the currently selected items. These are ordered in earliest selected and latest selected. */
     val selected: StateFlow<List<Music>>
         get() = _selected
 
@@ -49,14 +45,15 @@ class SelectionViewModel : ViewModel(), MusicStore.Callback {
 
         // Sanitize the selection to remove items that no longer exist and thus
         // won't appear in any list.
-        _selected.value = _selected.value.mapNotNull {
-            when (it) {
-                is Song -> library.sanitize(it)
-                is Album -> library.sanitize(it)
-                is Artist -> library.sanitize(it)
-                is Genre -> library.sanitize(it)
+        _selected.value =
+            _selected.value.mapNotNull {
+                when (it) {
+                    is Song -> library.sanitize(it)
+                    is Album -> library.sanitize(it)
+                    is Artist -> library.sanitize(it)
+                    is Genre -> library.sanitize(it)
+                }
             }
-        }
     }
 
     override fun onCleared() {
@@ -65,8 +62,8 @@ class SelectionViewModel : ViewModel(), MusicStore.Callback {
     }
 
     /**
-     * Select a new [Music] item. If this item is already within the selected items, the item will be
-     * removed. Otherwise, it will be added.
+     * Select a new [Music] item. If this item is already within the selected items, the item will
+     * be removed. Otherwise, it will be added.
      * @param music The [Music] item to select.
      */
     fun select(music: Music) {
@@ -81,6 +78,5 @@ class SelectionViewModel : ViewModel(), MusicStore.Callback {
      * Consume the current selection. This will clear any items that were selected prior.
      * @return The list of selected items before it was cleared.
      */
-    fun consume() =
-        _selected.value.also { _selected.value = listOf() }
+    fun consume() = _selected.value.also { _selected.value = listOf() }
 }

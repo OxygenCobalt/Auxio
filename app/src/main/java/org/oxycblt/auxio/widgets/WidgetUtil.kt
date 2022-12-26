@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2022 Auxio Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.widgets
 
 import android.appwidget.AppWidgetManager
@@ -9,14 +26,14 @@ import android.widget.RemoteViews
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
+import kotlin.math.sqrt
 import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
-import kotlin.math.sqrt
 
 /**
- * Create a [RemoteViews] instance with the specified layout and an automatic click handler
- * to open the Auxio activity.
+ * Create a [RemoteViews] instance with the specified layout and an automatic click handler to open
+ * the Auxio activity.
  * @param context [Context] required to create [RemoteViews].
  * @param layoutRes Resource ID of the layout to use. Must be compatible with [RemoteViews].
  * @return A new [RemoteViews] instance with the specified configuration.
@@ -28,8 +45,8 @@ fun newRemoteViews(context: Context, @LayoutRes layoutRes: Int): RemoteViews {
 }
 
 /**
- * Get an image size guaranteed to not exceed the [RemoteViews] bitmap memory limit, assuming
- * that there is only one image.
+ * Get an image size guaranteed to not exceed the [RemoteViews] bitmap memory limit, assuming that
+ * there is only one image.
  * @param context [Context] required to perform calculation.
  * @param reduce Optional multiplier to reduce the image size. Recommended value is 2 to avoid
  * device-specific variations in memory limit.
@@ -63,8 +80,8 @@ fun RemoteViews.setLayoutDirection(@IdRes viewId: Int, layoutDirection: Int) {
 }
 
 /**
- * Update the app widget layouts corresponding to the given [AppWidgetProvider] [ComponentName]
- * with an adaptive layout, in a version-compatible manner.
+ * Update the app widget layouts corresponding to the given [AppWidgetProvider] [ComponentName] with
+ * an adaptive layout, in a version-compatible manner.
  * @param context [Context] required to backport adaptive layout behavior.
  * @param component [ComponentName] of the app widget layout to update.
  * @param views Mapping between different size classes and [RemoteViews] instances.
@@ -104,9 +121,11 @@ fun AppWidgetManager.updateAppWidgetCompat(
             // Find the layout with the greatest area that fits entirely within
             // the app widget. This is what we will use. Fall back to the smallest layout
             // otherwise.
-            val layout = views.keys.filter { it.width <= width && it.height <= height }
-                .maxByOrNull { it.height * it.width } ?:
-                views.minBy { it.key.width * it.key.height }.key
+            val layout =
+                views.keys
+                    .filter { it.width <= width && it.height <= height }
+                    .maxByOrNull { it.height * it.width }
+                    ?: views.minBy { it.key.width * it.key.height }.key
             logD("Using layout $layout ${views.contains(layout)}")
 
             updateAppWidget(id, views[layout])

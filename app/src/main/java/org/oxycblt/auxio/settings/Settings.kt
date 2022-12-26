@@ -35,13 +35,13 @@ import org.oxycblt.auxio.music.storage.MusicDirectories
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
-import org.oxycblt.auxio.settings.accent.Accent
+import org.oxycblt.auxio.ui.accent.Accent
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A [SharedPreferences] wrapper providing type-safe interfaces to all of the app's settings.
- * Object mutability
+ * A [SharedPreferences] wrapper providing type-safe interfaces to all of the app's settings. Object
+ * mutability
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Settings(private val context: Context, private val callback: Callback? = null) :
@@ -55,8 +55,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     }
 
     /**
-     * Migrate any settings from an old version into their modern counterparts. This can cause
-     * data loss depending on the feasibility of a migration.
+     * Migrate any settings from an old version into their modern counterparts. This can cause data
+     * loss depending on the feasibility of a migration.
      */
     fun migrate() {
         if (inner.contains(OldKeys.KEY_ACCENT3)) {
@@ -153,8 +153,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     }
 
     /**
-     * Release this instance and any callbacks held by it. This is not needed if no [Callback]
-     * was originally attached.
+     * Release this instance and any callbacks held by it. This is not needed if no [Callback] was
+     * originally attached.
      */
     fun release() {
         inner.unregisterOnSharedPreferenceChangeListener(this)
@@ -164,9 +164,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
         unlikelyToBeNull(callback).onSettingChanged(key)
     }
 
-    /**
-     * TODO: Remove this
-     */
+    /** TODO: Remove this */
     interface Callback {
         fun onSettingChanged(key: String)
     }
@@ -264,8 +262,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
                 ?: MusicMode.SONGS
 
     /**
-     * What MusicParent item to play from when a Song is played from the detail view.
-     * Will be null if configured to play from the currently shown item.
+     * What MusicParent item to play from when a Song is played from the detail view. Will be null
+     * if configured to play from the currently shown item.
      */
     val detailPlaybackMode: MusicMode?
         get() =
@@ -329,8 +327,8 @@ class Settings(private val context: Context, private val callback: Callback? = n
     }
 
     /**
-     * A string of characters representing the desired separator characters to denote
-     * multi-value tags.
+     * A string of characters representing the desired separator characters to denote multi-value
+     * tags.
      */
     var musicSeparators: String?
         // Differ from convention and store a string of separator characters instead of an int
@@ -358,7 +356,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The Song [Sort] mode used in the Home UI.  */
+    /** The Song [Sort] mode used in the Home UI. */
     var libSongSort: Sort
         get() =
             Sort.fromIntCode(
@@ -371,7 +369,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The Album [Sort] mode used in the Home UI.  */
+    /** The Album [Sort] mode used in the Home UI. */
     var libAlbumSort: Sort
         get() =
             Sort.fromIntCode(
@@ -384,7 +382,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The Artist [Sort] mode used in the Home UI.  */
+    /** The Artist [Sort] mode used in the Home UI. */
     var libArtistSort: Sort
         get() =
             Sort.fromIntCode(
@@ -397,7 +395,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The Genre [Sort] mode used in the Home UI.  */
+    /** The Genre [Sort] mode used in the Home UI. */
     var libGenreSort: Sort
         get() =
             Sort.fromIntCode(
@@ -410,7 +408,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The [Sort] mode used in the Album Detail UI.  */
+    /** The [Sort] mode used in the Album Detail UI. */
     var detailAlbumSort: Sort
         get() {
             var sort =
@@ -433,7 +431,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The [Sort] mode used in the Artist Detail UI.  */
+    /** The [Sort] mode used in the Artist Detail UI. */
     var detailArtistSort: Sort
         get() =
             Sort.fromIntCode(
@@ -446,7 +444,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** The [Sort] mode used in the Genre Detail UI.  */
+    /** The [Sort] mode used in the Genre Detail UI. */
     var detailGenreSort: Sort
         get() =
             Sort.fromIntCode(

@@ -115,13 +115,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         if (selectionVisible) {
             targetInnerAlpha = 0f
             targetSelectionAlpha = 1f
-            targetDuration =
-                context.getInteger(R.integer.anim_fade_enter_duration).toLong()
+            targetDuration = context.getInteger(R.integer.anim_fade_enter_duration).toLong()
         } else {
             targetInnerAlpha = 1f
             targetSelectionAlpha = 0f
-            targetDuration =
-                context.getInteger(R.integer.anim_fade_exit_duration).toLong()
+            targetDuration = context.getInteger(R.integer.anim_fade_exit_duration).toLong()
         }
 
         if (innerToolbar.alpha == targetInnerAlpha &&
@@ -154,8 +152,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     /**
      * Update the alpha of the inner and selection [MaterialToolbar]s.
-     * @param innerAlpha The opacity of the inner [MaterialToolbar]. This will map to the
-     * inverse opacity of the selection [MaterialToolbar].
+     * @param innerAlpha The opacity of the inner [MaterialToolbar]. This will map to the inverse
+     * opacity of the selection [MaterialToolbar].
      */
     private fun setToolbarsAlpha(innerAlpha: Float) {
         innerToolbar.apply {

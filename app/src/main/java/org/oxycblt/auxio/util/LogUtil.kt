@@ -52,15 +52,15 @@ fun Any.logW(msg: String) = Log.w(autoTag, msg)
 fun Any.logE(msg: String) = Log.e(autoTag, msg)
 
 /**
- * The LogCat-suitable tag for this string. Consists of the object's name, or "Anonymous Object"
- * if the object does not exist.
+ * The LogCat-suitable tag for this string. Consists of the object's name, or "Anonymous Object" if
+ * the object does not exist.
  */
 private val Any.autoTag: String
     get() = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"
 
 /**
- * Please don't plagiarize Auxio!
- * You are free to remove this as long as you continue to keep your source open.
+ * Please don't plagiarize Auxio! You are free to remove this as long as you continue to keep your
+ * source open.
  */
 @Suppress("KotlinConstantConditions")
 private fun copyleftNotice(): Boolean {

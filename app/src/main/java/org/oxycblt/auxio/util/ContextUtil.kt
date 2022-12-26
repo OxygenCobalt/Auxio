@@ -47,17 +47,13 @@ import org.oxycblt.auxio.MainActivity
 val Context.inflater: LayoutInflater
     get() = LayoutInflater.from(this)
 
-/**
- * Whether the device is in night mode or not.
- */
+/** Whether the device is in night mode or not. */
 val Context.isNight
     get() =
         resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
             Configuration.UI_MODE_NIGHT_YES
 
-/**
- * Whether the device is in landscape mode or not.
- */
+/** Whether the device is in landscape mode or not. */
 val Context.isLandscape
     get() = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -152,9 +148,7 @@ fun Context.showToast(@StringRes stringRes: Int) {
     Toast.makeText(applicationContext, getString(stringRes), Toast.LENGTH_SHORT).show()
 }
 
-/**
- * Create a [PendingIntent] that will launch the app activity when launched.
- */
+/** Create a [PendingIntent] that will launch the app activity when launched. */
 fun Context.newMainPendingIntent(): PendingIntent =
     PendingIntent.getActivity(
         this,

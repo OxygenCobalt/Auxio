@@ -28,8 +28,8 @@ import org.oxycblt.auxio.util.getInteger
 import org.oxycblt.auxio.util.logD
 
 /**
- * A highly customized [ItemTouchHelper.Callback] that enables some extra eye candy in the queue
- * UI, such as an animation when lifting items.
+ * A highly customized [ItemTouchHelper.Callback] that enables some extra eye candy in the queue UI,
+ * such as an animation when lifting items.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHelper.Callback() {
@@ -73,7 +73,8 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
             holder.itemView
                 .animate()
                 .translationZ(elevation)
-                .setDuration(recyclerView.context.getInteger(R.integer.anim_fade_exit_duration).toLong())
+                .setDuration(
+                    recyclerView.context.getInteger(R.integer.anim_fade_exit_duration).toLong())
                 .setUpdateListener {
                     bg.alpha = ((holder.itemView.translationZ / elevation) * 255).toInt()
                 }
@@ -114,7 +115,8 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
             holder.itemView
                 .animate()
                 .translationZ(0f)
-                .setDuration(recyclerView.context.getInteger(R.integer.anim_fade_exit_duration).toLong())
+                .setDuration(
+                    recyclerView.context.getInteger(R.integer.anim_fade_exit_duration).toLong())
                 .setUpdateListener {
                     bg.alpha = ((holder.itemView.translationZ / elevation) * 255).toInt()
                 }

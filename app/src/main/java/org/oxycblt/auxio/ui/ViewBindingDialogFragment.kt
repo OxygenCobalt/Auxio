@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.shared
+package org.oxycblt.auxio.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -86,8 +86,8 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
     }
 
     /**
-     * Delegate to automatically create and destroy an object derived from the [ViewBinding].
-     * TODO: Phase this out, it's really dumb
+     * Delegate to automatically create and destroy an object derived from the [ViewBinding]. TODO:
+     * Phase this out, it's really dumb
      * @param create Block to create the object from the [ViewBinding].
      */
     fun <T> lifecycleObject(create: (VB) -> T): ReadOnlyProperty<Fragment, T> {
@@ -140,9 +140,7 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
         logD("Fragment destroyed")
     }
 
-    /**
-     * Internal implementation of [lifecycleObject].
-     */
+    /** Internal implementation of [lifecycleObject]. */
     private data class LifecycleObject<VB, T>(var data: T?, val create: (VB) -> T) {
         fun populate(binding: VB) {
             data = create(binding)

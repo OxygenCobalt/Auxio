@@ -44,9 +44,9 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.*
 
 /**
- * [AndroidViewModel] that manages the Song, Album, Artist, and Genre detail views.
- * Keeps track of the current item they are showing, sub-data to display, and configuration.
- * Since this ViewModel requires a context, it must be instantiated [AndroidViewModel]'s Factory.
+ * [AndroidViewModel] that manages the Song, Album, Artist, and Genre detail views. Keeps track of
+ * the current item they are showing, sub-data to display, and configuration. Since this ViewModel
+ * requires a context, it must be instantiated [AndroidViewModel]'s Factory.
  * @param application [Application] context required to initialize certain information.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -61,8 +61,8 @@ class DetailViewModel(application: Application) :
 
     private val _currentSong = MutableStateFlow<DetailSong?>(null)
     /**
-     * The current [DetailSong] to display. Null if there is nothing to show.
-     * TODO: De-couple Song and Properties?
+     * The current [DetailSong] to display. Null if there is nothing to show. TODO: De-couple Song
+     * and Properties?
      */
     val currentSong: StateFlow<DetailSong?>
         get() = _currentSong
@@ -224,7 +224,7 @@ class DetailViewModel(application: Application) :
      * @param uid The [Music.UID] of the [Genre] to update [currentGenre] to. Must be valid.
      */
     fun setGenreUid(uid: Music.UID) {
-        if (_currentGenre.value?.uid == uid)  {
+        if (_currentGenre.value?.uid == uid) {
             // Nothing to do.
             return
         }
@@ -232,7 +232,7 @@ class DetailViewModel(application: Application) :
         _currentGenre.value = requireMusic<Genre>(uid).also { refreshGenreList(it) }
     }
 
-    private fun <T: Music> requireMusic(uid: Music.UID): T =
+    private fun <T : Music> requireMusic(uid: Music.UID): T =
         requireNotNull(unlikelyToBeNull(musicStore.library).find(uid)) { "Invalid id provided" }
 
     /**
@@ -392,8 +392,8 @@ class DetailViewModel(application: Application) :
 
     /**
      * A simpler mapping of [Album.Type] used for grouping and sorting songs.
-     * @param headerTitleRes The title string resource to use for a header created
-     * out of an instance of this enum.
+     * @param headerTitleRes The title string resource to use for a header created out of an
+     * instance of this enum.
      */
     private enum class AlbumGrouping(@StringRes val headerTitleRes: Int) {
         ALBUMS(R.string.lbl_albums),

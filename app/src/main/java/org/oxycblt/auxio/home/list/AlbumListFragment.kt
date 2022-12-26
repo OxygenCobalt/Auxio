@@ -46,7 +46,10 @@ import org.oxycblt.auxio.util.collectImmediately
  * A [ListFragment] that shows a list of [Album]s.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AlbumListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRecyclerView.Listener, FastScrollRecyclerView.PopupProvider {
+class AlbumListFragment :
+    ListFragment<FragmentHomeListBinding>(),
+    FastScrollRecyclerView.Listener,
+    FastScrollRecyclerView.PopupProvider {
     private val homeModel: HomeViewModel by activityViewModels()
     private val albumAdapter = AlbumAdapter(this)
     // Save memory by re-using the same formatter and string builder when creating popup text

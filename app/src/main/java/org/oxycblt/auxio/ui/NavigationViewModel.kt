@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.shared
+package org.oxycblt.auxio.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavDirections
@@ -25,14 +25,11 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.logD
 
-/**
- * A [ViewModel] that handles complicated navigation functionality.
- */
+/** A [ViewModel] that handles complicated navigation functionality. */
 class NavigationViewModel : ViewModel() {
     private val _mainNavigationAction = MutableStateFlow<MainNavigationAction?>(null)
     /**
-     * Flag for navigation within the main navigation graph. Only intended for use by
-     * MainFragment.
+     * Flag for navigation within the main navigation graph. Only intended for use by MainFragment.
      */
     val mainNavigationAction: StateFlow<MainNavigationAction?>
         get() = _mainNavigationAction
@@ -47,17 +44,17 @@ class NavigationViewModel : ViewModel() {
 
     private val _exploreNavigationArtists = MutableStateFlow<List<Artist>?>(null)
     /**
-     * Variation of [exploreNavigationItem] for situations where the choice of [Artist]
-     * to navigate to is ambiguous. Only intended for use by MainFragment, as the resolved
-     * choice will eventually be assigned to [exploreNavigationItem].
+     * Variation of [exploreNavigationItem] for situations where the choice of [Artist] to navigate
+     * to is ambiguous. Only intended for use by MainFragment, as the resolved choice will
+     * eventually be assigned to [exploreNavigationItem].
      */
     val exploreNavigationArtists: StateFlow<List<Artist>?>
         get() = _exploreNavigationArtists
 
     /**
      * Navigate to something in the main navigation graph. This can be used by UIs in the explore
-     * navigation graph to trigger navigation in the higher-level main navigation graph.
-     * Will do nothing if already navigating.
+     * navigation graph to trigger navigation in the higher-level main navigation graph. Will do
+     * nothing if already navigating.
      * @param action The [MainNavigationAction] to perform.
      */
     fun mainNavigateTo(action: MainNavigationAction) {
@@ -81,8 +78,7 @@ class NavigationViewModel : ViewModel() {
 
     /**
      * Navigate to a given [Music] item. Will do nothing if already navigating.
-     * @param item The [Music] to navigate to.
-     * TODO: Extend to song properties???
+     * @param item The [Music] to navigate to. TODO: Extend to song properties???
      */
     fun exploreNavigateTo(item: Music) {
         if (_exploreNavigationItem.value != null) {
@@ -96,8 +92,8 @@ class NavigationViewModel : ViewModel() {
 
     /**
      * Navigate to an [Artist] out of a list of [Artist]s, like [exploreNavigateTo].
-     * @param artists The [Artist]s to navigate to. In the case of multiple artists, the
-     * user will be prompted with a choice on which [Artist] to navigate to.
+     * @param artists The [Artist]s to navigate to. In the case of multiple artists, the user will
+     * be prompted with a choice on which [Artist] to navigate to.
      */
     fun exploreNavigateTo(artists: List<Artist>) {
         if (_exploreNavigationArtists.value != null) {
@@ -114,7 +110,7 @@ class NavigationViewModel : ViewModel() {
     }
 
     /**
-     *  Mark that the navigation process within the explore navigation graph (initiated by
+     * Mark that the navigation process within the explore navigation graph (initiated by
      * [exploreNavigateTo]) was completed.
      */
     fun finishExploreNavigation() {
@@ -126,8 +122,8 @@ class NavigationViewModel : ViewModel() {
 
 /**
  * Represents the possible actions within the main navigation graph. This can be used with
- * [NavigationViewModel] to initiate navigation in the main navigation graph from anywhere
- * in the app, including outside the main navigation graph.
+ * [NavigationViewModel] to initiate navigation in the main navigation graph from anywhere in the
+ * app, including outside the main navigation graph.
  * @author Alexander Capehart (OxygenCobalt)
  */
 sealed class MainNavigationAction {

@@ -208,9 +208,7 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
         }
     }
 
-    /**
-     * Safely hide the keyboard from this view.
-     */
+    /** Safely hide the keyboard from this view. */
     private fun InputMethodManager.hide() {
         hideSoftInputFromWindow(requireView().windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }

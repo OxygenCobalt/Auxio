@@ -35,8 +35,8 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.*
 
 /**
- * The [AppWidgetProvider] for the "Now Playing" widget. This widget shows the current
- * playback state alongside actions to control it.
+ * The [AppWidgetProvider] for the "Now Playing" widget. This widget shows the current playback
+ * state alongside actions to control it.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class WidgetProvider : AppWidgetProvider() {
@@ -69,8 +69,7 @@ class WidgetProvider : AppWidgetProvider() {
     /**
      * Update the currently shown layout based on the given [WidgetComponent.PlaybackState]
      * @param context [Context] required to update the widget layout.
-     * @param state [WidgetComponent.PlaybackState] to show, or null if no playback is going
-     * on.
+     * @param state [WidgetComponent.PlaybackState] to show, or null if no playback is going on.
      */
     fun update(context: Context, state: WidgetComponent.PlaybackState?) {
         if (state == null) {
@@ -135,8 +134,8 @@ class WidgetProvider : AppWidgetProvider() {
         newRemoteViews(context, R.layout.widget_default)
 
     /**
-     * Create and configure a  [RemoteViews] for [R.layout.widget_thin], intended for extremely
-     * small grid sizes on phones in landscape mode.
+     * Create and configure a [RemoteViews] for [R.layout.widget_thin], intended for extremely small
+     * grid sizes on phones in landscape mode.
      * @param context [Context] required to create the [RemoteViews].
      */
     private fun newThinLayout(context: Context, state: WidgetComponent.PlaybackState) =
@@ -157,8 +156,8 @@ class WidgetProvider : AppWidgetProvider() {
             .setupTimelineControls(context, state)
 
     /**
-     * Create and configure a [RemoteViews] for [R.layout.widget_medium], intended to be
-     * a taller widget that shows more information about the currently playing song.
+     * Create and configure a [RemoteViews] for [R.layout.widget_medium], intended to be a taller
+     * widget that shows more information about the currently playing song.
      * @param context [Context] required to create the [RemoteViews].
      */
     private fun newMediumLayout(context: Context, state: WidgetComponent.PlaybackState) =
@@ -168,8 +167,8 @@ class WidgetProvider : AppWidgetProvider() {
             .setupTimelineControls(context, state)
 
     /**
-     * Create and configure a [RemoteViews] for [R.layout.widget_wide], intended to be
-     * a wider version of [R.layout.widget_small] that shows additional controls.
+     * Create and configure a [RemoteViews] for [R.layout.widget_wide], intended to be a wider
+     * version of [R.layout.widget_small] that shows additional controls.
      * @param context [Context] required to create the [RemoteViews].
      */
     private fun newWideLayout(context: Context, state: WidgetComponent.PlaybackState) =
@@ -179,8 +178,8 @@ class WidgetProvider : AppWidgetProvider() {
             .setupFullControls(context, state)
 
     /**
-     * Create and configure a [RemoteViews] for [R.layout.widget_large], intended to be
-     * a wider version of [R.layout.widget_medium] that shows additional controls.
+     * Create and configure a [RemoteViews] for [R.layout.widget_large], intended to be a wider
+     * version of [R.layout.widget_medium] that shows additional controls.
      * @param context [Context] required to create the [RemoteViews].
      */
     private fun newLargeLayout(context: Context, state: WidgetComponent.PlaybackState) =
@@ -197,12 +196,12 @@ class WidgetProvider : AppWidgetProvider() {
     private fun RemoteViews.setupBar(context: Context): RemoteViews {
         // Below API 31, enable a rounded bar only if round mode is enabled.
         // On API 31+, the bar should always be round in order to fit in with other widgets.
-        val background = if (Settings(context).roundMode &&
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            R.drawable.ui_widget_bar_round
-        } else {
-            R.drawable.ui_widget_bar_system
-        }
+        val background =
+            if (Settings(context).roundMode && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                R.drawable.ui_widget_bar_round
+            } else {
+                R.drawable.ui_widget_bar_system
+            }
         setBackgroundResource(R.id.widget_controls, background)
         return this
     }
@@ -216,12 +215,12 @@ class WidgetProvider : AppWidgetProvider() {
         // Below API 31, enable a rounded background only if round mode is enabled.
         // On API 31+, the background should always be round in order to fit in with other
         // widgets.
-        val background = if (Settings(context).roundMode &&
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            R.drawable.ui_widget_bar_round
-        } else {
-            R.drawable.ui_widget_bar_system
-        }
+        val background =
+            if (Settings(context).roundMode && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                R.drawable.ui_widget_bar_round
+            } else {
+                R.drawable.ui_widget_bar_system
+            }
         setBackgroundResource(android.R.id.background, background)
         return this
     }
@@ -252,8 +251,8 @@ class WidgetProvider : AppWidgetProvider() {
     }
 
     /**
-     * Set up the album cover, song title, and artist name in a [RemoteViews] layout that
-     * contains them.
+     * Set up the album cover, song title, and artist name in a [RemoteViews] layout that contains
+     * them.
      * @param context [Context] required to set up the view.
      * @param state Current [WidgetComponent.PlaybackState] to display.
      */
@@ -303,8 +302,8 @@ class WidgetProvider : AppWidgetProvider() {
     }
 
     /**
-     * Set up the play/pause and skip previous/next button in a [RemoteViews] layout that
-     * contains them.
+     * Set up the play/pause and skip previous/next button in a [RemoteViews] layout that contains
+     * them.
      * @param context [Context] required to set up the view.
      * @param state Current [WidgetComponent.PlaybackState] to display.
      */
@@ -319,15 +318,17 @@ class WidgetProvider : AppWidgetProvider() {
         // Hook the skip buttons to the respective broadcasts that can be recognized
         // by PlaybackService.
         setOnClickPendingIntent(
-            R.id.widget_skip_prev, context.newBroadcastPendingIntent(PlaybackService.ACTION_SKIP_PREV))
+            R.id.widget_skip_prev,
+            context.newBroadcastPendingIntent(PlaybackService.ACTION_SKIP_PREV))
         setOnClickPendingIntent(
-            R.id.widget_skip_next, context.newBroadcastPendingIntent(PlaybackService.ACTION_SKIP_NEXT))
+            R.id.widget_skip_next,
+            context.newBroadcastPendingIntent(PlaybackService.ACTION_SKIP_NEXT))
         return this
     }
 
     /**
-     * Set up the play/pause, skip previous/next, and repeat/shuffle buttons in a [RemoteViews]
-     * that contains them.
+     * Set up the play/pause, skip previous/next, and repeat/shuffle buttons in a [RemoteViews] that
+     * contains them.
      * @param context [Context] required to set up the view.
      * @param state Current [WidgetComponent.PlaybackState] to display.
      */
@@ -370,9 +371,9 @@ class WidgetProvider : AppWidgetProvider() {
 
     companion object {
         /**
-         * Broadcast when [WidgetProvider] desires to update it's widget with new
-         * information. Responsible background tasks should intercept this and relay
-         * the message to [WidgetComponent].
+         * Broadcast when [WidgetProvider] desires to update it's widget with new information.
+         * Responsible background tasks should intercept this and relay the message to
+         * [WidgetComponent].
          */
         const val ACTION_WIDGET_UPDATE = BuildConfig.APPLICATION_ID + ".action.WIDGET_UPDATE"
     }

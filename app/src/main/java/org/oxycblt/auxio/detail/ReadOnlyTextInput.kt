@@ -25,8 +25,8 @@ import com.google.android.material.textfield.TextInputEditText
 import org.oxycblt.auxio.R
 
 /**
- * A [TextInputEditText] that deliberately restricts all input except for selection. This will
- * work just like a normal block of selectable/copyable text, but with nicer aesthetics.
+ * A [TextInputEditText] that deliberately restricts all input except for selection. This will work
+ * just like a normal block of selectable/copyable text, but with nicer aesthetics.
  *
  * Adapted from Material Files: https://github.com/zhanghai/MaterialFiles
  *

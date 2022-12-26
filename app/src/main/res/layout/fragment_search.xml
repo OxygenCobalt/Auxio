@@ -7,7 +7,7 @@
     android:background="?attr/colorSurface"
     android:transitionGroup="true">
 
-    <org.oxycblt.auxio.shared.AuxioAppBarLayout
+    <org.oxycblt.auxio.ui.AuxioAppBarLayout
         style="@style/Widget.Auxio.AppBarLayout"
         app:liftOnScroll="true"
         app:liftOnScrollTargetViewId="@id/search_recycler">
@@ -51,7 +51,7 @@
 
         </org.oxycblt.auxio.list.selection.SelectionToolbarOverlay>
 
-    </org.oxycblt.auxio.shared.AuxioAppBarLayout>
+    </org.oxycblt.auxio.ui.AuxioAppBarLayout>
 
     <org.oxycblt.auxio.list.recycler.AuxioRecyclerView
         android:id="@+id/search_recycler"

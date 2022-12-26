@@ -8,7 +8,7 @@
     android:background="?attr/colorSurface"
     android:transitionGroup="true">
 
-    <org.oxycblt.auxio.shared.AuxioAppBarLayout
+    <org.oxycblt.auxio.ui.AuxioAppBarLayout
         android:id="@+id/home_appbar"
         style="@style/Widget.Auxio.AppBarLayout"
         android:fitsSystemWindows="true">
@@ -37,7 +37,7 @@
             app:tabGravity="start"
             app:tabMode="scrollable" />
 
-    </org.oxycblt.auxio.shared.AuxioAppBarLayout>
+    </org.oxycblt.auxio.ui.AuxioAppBarLayout>
 
 
     <FrameLayout

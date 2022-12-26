@@ -78,8 +78,8 @@ class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewH
     /** A listener for interactions specific to tab configuration. */
     interface Listener {
         /**
-         * Called when a tab is clicked, requesting that the visibility should be inverted
-         * (i.e Visible -> Invisible and vice versa).
+         * Called when a tab is clicked, requesting that the visibility should be inverted (i.e
+         * Visible -> Invisible and vice versa).
          * @param tabMode The [MusicMode] of the tab clicked.
          */
         fun onToggleVisibility(tabMode: MusicMode)

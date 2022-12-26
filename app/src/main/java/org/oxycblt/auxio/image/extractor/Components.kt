@@ -52,8 +52,8 @@ class MusicKeyer : Keyer<Music> {
 }
 
 /**
- * Generic [Fetcher] for [Album] covers. Works with both [Album] and [Song].
- * Use [SongFactory] or [AlbumFactory] for instantiation.
+ * Generic [Fetcher] for [Album] covers. Works with both [Album] and [Song]. Use [SongFactory] or
+ * [AlbumFactory] for instantiation.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumCoverFetcher
@@ -66,7 +66,7 @@ private constructor(private val context: Context, private val album: Album) : Fe
                 dataSource = DataSource.DISK)
         }
 
-    /** A [Fetcher.Factory] implementation that works with [Song]s.*/
+    /** A [Fetcher.Factory] implementation that works with [Song]s. */
     class SongFactory : Fetcher.Factory<Song> {
         override fun create(data: Song, options: Options, imageLoader: ImageLoader) =
             AlbumCoverFetcher(options.context, data.album)
@@ -129,8 +129,8 @@ private constructor(
  * Map at most N [T] items a collection into a collection of [R], ignoring [T] that cannot be
  * transformed into [R].
  * @param n The maximum amount of items to map.
- * @param transform The function that transforms data [T] from the original list into
- * data [R] in the new list. Can return null if the [T] cannot be transformed into an [R].
+ * @param transform The function that transforms data [T] from the original list into data [R] in
+ * the new list. Can return null if the [T] cannot be transformed into an [R].
  * @return A new list of at most N non-null [R] items.
  */
 private inline fun <T : Any, R : Any> Collection<T>.mapAtMostNotNull(

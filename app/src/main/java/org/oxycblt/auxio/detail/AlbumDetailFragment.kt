@@ -174,7 +174,6 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
         navModel.exploreNavigateTo(unlikelyToBeNull(detailModel.currentAlbum.value).artists)
     }
 
-
     private fun updateAlbum(album: Album?) {
         if (album == null) {
             // Album we were showing no longer exists.

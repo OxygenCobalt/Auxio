@@ -39,8 +39,8 @@ import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.getInteger
 
 /**
- * A super-charged [StyledImageView]. This class enables the following features in addition
- * to [StyledImageView]:
+ * A super-charged [StyledImageView]. This class enables the following features in addition to
+ * [StyledImageView]:
  * - A selection indicator
  * - An activation (playback) indicator
  * - Support for ONE custom view
@@ -174,9 +174,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     /**
      * Whether this view should be indicated to have ongoing playback or not. See
-     * PlaybackIndicatorView for more information on what occurs here.
-     * Note: It's expected for this view to already be marked as playing with setSelected
-     * (not the same thing) before this is set to true.
+     * PlaybackIndicatorView for more information on what occurs here. Note: It's expected for this
+     * view to already be marked as playing with setSelected (not the same thing) before this is set
+     * to true.
      */
     var isPlaying: Boolean
         get() = playbackIndicatorView.isPlaying
@@ -214,13 +214,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         if (isActivated) {
             // View is "activated" (i.e marked as selected), so show the selection indicator.
             targetAlpha = 1f
-            targetDuration =
-                context.getInteger(R.integer.anim_fade_enter_duration).toLong()
+            targetDuration = context.getInteger(R.integer.anim_fade_enter_duration).toLong()
         } else {
             // View is not "activated", hide the selection indicator.
             targetAlpha = 0f
-            targetDuration =
-                context.getInteger(R.integer.anim_fade_exit_duration).toLong()
+            targetDuration = context.getInteger(R.integer.anim_fade_exit_duration).toLong()
         }
 
         if (selectionIndicatorView.alpha == targetAlpha) {

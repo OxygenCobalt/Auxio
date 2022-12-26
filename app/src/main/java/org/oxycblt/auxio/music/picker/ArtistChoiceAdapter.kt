@@ -57,8 +57,8 @@ class ArtistChoiceAdapter(private val listener: ClickableListListener) :
 }
 
 /**
- * A [DialogRecyclerView.ViewHolder] that displays a smaller variant of a typical
- * [Artist] item, for use with [ArtistChoiceAdapter]. Use [new] to create an instance.
+ * A [DialogRecyclerView.ViewHolder] that displays a smaller variant of a typical [Artist] item, for
+ * use with [ArtistChoiceAdapter]. Use [new] to create an instance.
  */
 class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {

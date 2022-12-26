@@ -32,8 +32,8 @@ import org.oxycblt.auxio.util.logW
 
 /**
  * The extractor that leverages ExoPlayer's [MetadataRetriever] API to parse metadata. This is the
- * last step in the music extraction process and is mostly responsible for papering over the
- * bad metadata that [MediaStoreExtractor] produces.
+ * last step in the music extraction process and is mostly responsible for papering over the bad
+ * metadata that [MediaStoreExtractor] produces.
  *
  * @param context [Context] required for reading audio files.
  * @param mediaStoreExtractor [MediaStoreExtractor] implementation for cache optimizations and
@@ -56,17 +56,17 @@ class MetadataExtractor(
     fun init() = mediaStoreExtractor.init().count
 
     /**
-     * Finalize the Extractor by writing the newly-loaded [Song.Raw]s back into the cache,
-     * alongside freeing up memory.
+     * Finalize the Extractor by writing the newly-loaded [Song.Raw]s back into the cache, alongside
+     * freeing up memory.
      * @param rawSongs The songs to write into the cache.
      */
     fun finalize(rawSongs: List<Song.Raw>) = mediaStoreExtractor.finalize(rawSongs)
 
     /**
-     * Parse all [Song.Raw] instances queued by the sub-extractors. This will first delegate
-     * to the sub-extractors before parsing the metadata itself.
-     * @param emit A callback that will be invoked with every new [Song.Raw] instance when
-     * they are successfully loaded.
+     * Parse all [Song.Raw] instances queued by the sub-extractors. This will first delegate to the
+     * sub-extractors before parsing the metadata itself.
+     * @param emit A callback that will be invoked with every new [Song.Raw] instance when they are
+     * successfully loaded.
      */
     suspend fun parse(emit: suspend (Song.Raw) -> Unit) {
         while (true) {
@@ -122,8 +122,8 @@ class MetadataExtractor(
 }
 
 /**
- * Wraps a [MetadataExtractor] future and processes it into a [Song.Raw] when completed.
- * TODO: Re-unify with MetadataExtractor.
+ * Wraps a [MetadataExtractor] future and processes it into a [Song.Raw] when completed. TODO:
+ * Re-unify with MetadataExtractor.
  * @param context [Context] required to open the audio file.
  * @param raw [Song.Raw] to process.
  * @author Alexander Capehart (OxygenCobalt)
@@ -135,7 +135,8 @@ class Task(context: Context, private val raw: Song.Raw) {
     private val future =
         MetadataRetriever.retrieveMetadata(
             context,
-            MediaItem.fromUri(requireNotNull(raw.mediaStoreId) { "Invalid raw: No id" }.toAudioUri()))
+            MediaItem.fromUri(
+                requireNotNull(raw.mediaStoreId) { "Invalid raw: No id" }.toAudioUri()))
 
     /**
      * Try to get a completed song from this [Task], if it has finished processing.
@@ -246,14 +247,17 @@ class Task(context: Context, private val raw: Song.Raw) {
         // 5. ID3v2.3 Release Year, as it is the most common date type
         (textFrames["TDOR"]?.run { get(0).parseTimestamp() }
                 ?: textFrames["TDRC"]?.run { get(0).parseTimestamp() }
-                    ?: textFrames["TDRL"]?.run { get(0).parseTimestamp() } ?: parseId3v23Date(textFrames))
+                    ?: textFrames["TDRL"]?.run { get(0).parseTimestamp() }
+                    ?: parseId3v23Date(textFrames))
             ?.let { raw.date = it }
 
         // Album
         textFrames["TXXX:MusicBrainz Album Id"]?.let { raw.albumMusicBrainzId = it[0] }
         textFrames["TALB"]?.let { raw.albumName = it[0] }
         textFrames["TSOA"]?.let { raw.albumSortName = it[0] }
-        (textFrames["TXXX:MusicBrainz Album Type"] ?: textFrames["GRP1"])?.let { raw.albumTypes = it }
+        (textFrames["TXXX:MusicBrainz Album Type"] ?: textFrames["GRP1"])?.let {
+            raw.albumTypes = it
+        }
 
         // Artist
         textFrames["TXXX:MusicBrainz Artist Id"]?.let { raw.artistMusicBrainzIds = it }
@@ -274,9 +278,9 @@ class Task(context: Context, private val raw: Song.Raw) {
      * Frames.
      * @param textFrames A mapping between ID3v2 Text Identification Frame IDs and one or more
      * values.
-     * @retrn A [Date]  of a year value from TORY/TYER, a month and day value from TDAT,
-     * and a hour/minute value from TIME. No second value is included. The latter two fields may
-     * not be included in they cannot be parsed. Will be null if a year value could not be parsed.
+     * @retrn A [Date] of a year value from TORY/TYER, a month and day value from TDAT, and a
+     * hour/minute value from TIME. No second value is included. The latter two fields may not be
+     * included in they cannot be parsed. Will be null if a year value could not be parsed.
      */
     private fun parseId3v23Date(textFrames: Map<String, List<String>>): Date? {
         // Assume that TDAT/TIME can refer to TYER or TORY depending on if TORY
@@ -313,8 +317,7 @@ class Task(context: Context, private val raw: Song.Raw) {
 
     /**
      * Complete this instance's [Song.Raw] with Vorbis comments.
-     * @param comments A mapping between vorbis comment names and one or more vorbis comment
-     * values.
+     * @param comments A mapping between vorbis comment names and one or more vorbis comment values.
      */
     private fun populateWithVorbis(comments: Map<String, List<String>>) {
         // Song
@@ -363,8 +366,8 @@ class Task(context: Context, private val raw: Song.Raw) {
 
     /**
      * Copies and sanitizes a possibly native/non-UTF-8 string.
-     * @return A new string allocated in a memory-safe manner with any UTF-8 errors
-     * replaced with the Unicode replacement byte sequence.
+     * @return A new string allocated in a memory-safe manner with any UTF-8 errors replaced with
+     * the Unicode replacement byte sequence.
      */
     private fun String.sanitize() = String(encodeToByteArray())
 }

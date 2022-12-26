@@ -48,8 +48,8 @@ import org.oxycblt.auxio.util.getDrawableCompat
  *
  * - Tonal background
  * - Rounded corners based on user preferences
- * - Built-in support for binding image data or using a static icon with the same
- * styling as placeholder drawables.
+ * - Built-in support for binding image data or using a static icon with the same styling as
+ * placeholder drawables.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -116,8 +116,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * Internally bind a [Music]'s image to this view.
      * @param music The music to find.
      * @param errorRes The error drawable resource to use if the music cannot be loaded.
-     * @param descRes The content description string resource to use. The resource must have
-     * one field for the name of the [Music].
+     * @param descRes The content description string resource to use. The resource must have one
+     * field for the name of the [Music].
      */
     private fun bindImpl(music: Music, @DrawableRes errorRes: Int, @StringRes descRes: Int) {
         // Dispose of any previous image request and load a new image.
@@ -132,8 +132,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     /**
-     * A [Drawable] wrapper that re-styles the drawable to better align with the style
-     * of [StyledImageView].
+     * A [Drawable] wrapper that re-styles the drawable to better align with the style of
+     * [StyledImageView].
      * @param context [Context] required for initialization.
      * @param inner The [Drawable] to wrap.
      */

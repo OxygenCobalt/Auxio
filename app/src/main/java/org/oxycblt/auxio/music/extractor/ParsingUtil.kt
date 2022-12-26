@@ -24,27 +24,25 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
- * Unpack the track number from a combined track + disc [Int] field.
- * These fields appear within MediaStore's TRACK column, and combine the track and disc value
- * into a single field where the disc number is the 4th+ digit.
- * @return The track number extracted from the combined integer value, or null if the value
- * was zero.
+ * Unpack the track number from a combined track + disc [Int] field. These fields appear within
+ * MediaStore's TRACK column, and combine the track and disc value into a single field where the
+ * disc number is the 4th+ digit.
+ * @return The track number extracted from the combined integer value, or null if the value was
+ * zero.
  */
 fun Int.unpackTrackNo() = mod(1000).nonZeroOrNull()
 
 /**
- * Unpack the disc number from a combined track + disc [Int] field.
- * These fields appear within MediaStore's TRACK column, and combine the track and disc value
- * into a single field where the disc number is the 4th+ digit.
- * @return The disc number extracted from the combined integer field, or null if the value
- * was zero.
+ * Unpack the disc number from a combined track + disc [Int] field. These fields appear within
+ * MediaStore's TRACK column, and combine the track and disc value into a single field where the
+ * disc number is the 4th+ digit.
+ * @return The disc number extracted from the combined integer field, or null if the value was zero.
  */
 fun Int.unpackDiscNo() = div(1000).nonZeroOrNull()
 
 /**
- * Parse the number out of a combined number + total position [String] field.
- * These fields often appear in ID3v2 files, and consist of a number and an (optional) total
- * value delimited by a /.
+ * Parse the number out of a combined number + total position [String] field. These fields often
+ * appear in ID3v2 files, and consist of a number and an (optional) total value delimited by a /.
  * @return The number value extracted from the string field, or null if the value could not be
  * parsed or if the value was zero.
  */
@@ -59,24 +57,23 @@ fun Int.toDate() = Date.from(this)
 
 /**
  * Parse an integer year field from a [String] and transform it into a [Date].
- * @return A [Date] consisting of the year value, or null if the value could not
- * be parsed or if the value was zero.
+ * @return A [Date] consisting of the year value, or null if the value could not be parsed or if the
+ * value was zero.
  * @see Date.from
  */
 fun String.parseYear() = toIntOrNull()?.toDate()
 
 /**
  * Parse an ISO-8601 timestamp [String] into a [Date].
- * @return A [Date] consisting of the year value plus one or more refinement values
- * (ex. month, day), or null if the timestamp was not valid.
+ * @return A [Date] consisting of the year value plus one or more refinement values (ex. month,
+ * day), or null if the timestamp was not valid.
  */
 fun String.parseTimestamp() = Date.from(this)
 
 /**
- * Split a [String] by the given selector, automatically handling escaped characters
- * that satisfy the selector.
- * @param selector A block that determines if the string should be split at a given
- * character.
+ * Split a [String] by the given selector, automatically handling escaped characters that satisfy
+ * the selector.
+ * @param selector A block that determines if the string should be split at a given character.
  * @return One or more [String]s split by the selector.
  */
 inline fun String.splitEscaped(selector: (Char) -> Boolean): MutableList<String> {
@@ -118,9 +115,9 @@ inline fun String.splitEscaped(selector: (Char) -> Boolean): MutableList<String>
 }
 
 /**
- * Parse a multi-value tag based on the user configuration. If the value is already composed of
- * more than one value, nothing is done. Otherwise, this function will attempt to split it based
- * on the user's separator preferences.
+ * Parse a multi-value tag based on the user configuration. If the value is already composed of more
+ * than one value, nothing is done. Otherwise, this function will attempt to split it based on the
+ * user's separator preferences.
  * @param settings [Settings] required to obtain user separator configuration.
  * @return A new list of one or more [String]s.
  */
@@ -157,8 +154,8 @@ fun String.toUuidOrNull(): UUID? =
 
 /**
  * Parse a multi-value genre name using ID3 rules. This will convert any ID3v1 integer
- * representations of genre fields into their named counterparts, and split up singular
- * ID3v2-style integer genre fields into one or more genres.
+ * representations of genre fields into their named counterparts, and split up singular ID3v2-style
+ * integer genre fields into one or more genres.
  * @param settings [Settings] required to obtain user separator configuration.
  * @return A list of one or more genre names..
  */
@@ -197,16 +194,15 @@ private fun String.parseId3v1Genre(): String? =
     }
 
 /**
- * A [Regex] that implements parsing for ID3v2's genre format.
- * Derived from mutagen: https://github.com/quodlibet/mutagen
+ * A [Regex] that implements parsing for ID3v2's genre format. Derived from mutagen:
+ * https://github.com/quodlibet/mutagen
  */
 private val ID3V2_GENRE_RE = Regex("((?:\\((\\d+|RX|CR)\\))*)(.+)?")
 
 /**
- * Parse an ID3v2 integer genre field, which has support for multiple genre values and
- * combined named/integer genres.
- * @return A list of one or more genres, or null if the field is not a valid ID3v2
- * integer genre.
+ * Parse an ID3v2 integer genre field, which has support for multiple genre values and combined
+ * named/integer genres.
+ * @return A list of one or more genres, or null if the field is not a valid ID3v2 integer genre.
  */
 private fun String.parseId3v2Genre(): List<String>? {
     val groups = (ID3V2_GENRE_RE.matchEntire(this) ?: return null).groupValues

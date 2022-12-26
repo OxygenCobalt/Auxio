@@ -33,8 +33,8 @@ import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.getDrawableCompat
 
 /**
- * A view that displays an activation (i.e playback) indicator, with an accented styling and
- * an animated equalizer icon.
+ * A view that displays an activation (i.e playback) indicator, with an accented styling and an
+ * animated equalizer icon.
  *
  * This is only meant for use with [ImageGroup]. Due to limitations with [AnimationDrawable]
  * instances within custom views, this cannot be merged with [ImageGroup].
@@ -55,8 +55,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private val settings = Settings(context)
 
     /**
-     * The corner radius of this view. This allows the outer ImageGroup to apply it's
-     * corner radius to this view without any attribute hacks.
+     * The corner radius of this view. This allows the outer ImageGroup to apply it's corner radius
+     * to this view without any attribute hacks.
      */
     var cornerRadius = 0f
         set(value) {
@@ -71,8 +71,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
     /**
-     * Whether this view should be indicated to have ongoing playback or not. If true,
-     * the animated playing icon will be shown. If false, the static paused icon will be shown.
+     * Whether this view should be indicated to have ongoing playback or not. If true, the animated
+     * playing icon will be shown. If false, the static paused icon will be shown.
      */
     var isPlaying: Boolean
         get() = drawable == playingIndicatorDrawable

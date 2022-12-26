@@ -54,8 +54,7 @@ class ArtistDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapte
     // Information about what artist to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an artist.
     private val args: ArtistDetailFragmentArgs by navArgs()
-    private val detailAdapter =
-        ArtistDetailAdapter(this)
+    private val detailAdapter = ArtistDetailAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

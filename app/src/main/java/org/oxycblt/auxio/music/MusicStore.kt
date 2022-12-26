@@ -20,15 +20,15 @@ package org.oxycblt.auxio.music
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
-import org.oxycblt.auxio.music.storage.useQuery
 import org.oxycblt.auxio.music.storage.contentResolverSafe
+import org.oxycblt.auxio.music.storage.useQuery
 
 /**
  * A repository granting access to the music library..
  *
- * This can be used to obtain certain music items, or await changes to the music library.
- * It is generally recommended to use this over Indexer to keep track of the library state,
- * as the interface will be less volatile.
+ * This can be used to obtain certain music items, or await changes to the music library. It is
+ * generally recommended to use this over Indexer to keep track of the library state, as the
+ * interface will be less volatile.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -36,9 +36,9 @@ class MusicStore private constructor() {
     private val callbacks = mutableListOf<Callback>()
 
     /**
-     * The current [Library]. May be null if a [Library] has not been successfully loaded yet.
-     * This can change, so it's highly recommended to not access this directly and instead
-     * rely on [Callback].
+     * The current [Library]. May be null if a [Library] has not been successfully loaded yet. This
+     * can change, so it's highly recommended to not access this directly and instead rely on
+     * [Callback].
      */
     var library: Library? = null
         set(value) {
@@ -49,9 +49,8 @@ class MusicStore private constructor() {
         }
 
     /**
-     * Add a [Callback] to this instance. This can be used to receive changes in the music
-     * library. Will invoke all [Callback] methods to initialize the instance with the
-     * current state.
+     * Add a [Callback] to this instance. This can be used to receive changes in the music library.
+     * Will invoke all [Callback] methods to initialize the instance with the current state.
      * @param callback The [Callback] to add.
      * @see Callback
      */
@@ -62,10 +61,9 @@ class MusicStore private constructor() {
     }
 
     /**
-     * Remove a [Callback] from this instance, preventing it from recieving any further
-     * updates.
-     * @param callback The [Callback] to remove. Does nothing if the [Callback] was never
-     * added in the first place.
+     * Remove a [Callback] from this instance, preventing it from recieving any further updates.
+     * @param callback The [Callback] to remove. Does nothing if the [Callback] was never added in
+     * the first place.
      * @see Callback
      */
     @Synchronized
@@ -116,8 +114,8 @@ class MusicStore private constructor() {
         /**
          * Finds a [Music] item [T] in the library by it's [Music.UID].
          * @param uid The [Music.UID] to search for.
-         * @return The [T] corresponding to the given [Music.UID], or null if nothing could be
-         * found or the [Music.UID] did not correspond to a [T].
+         * @return The [T] corresponding to the given [Music.UID], or null if nothing could be found
+         * or the [Music.UID] did not correspond to a [T].
          */
         @Suppress("UNCHECKED_CAST") fun <T : Music> find(uid: Music.UID) = uidMap[uid] as? T
 

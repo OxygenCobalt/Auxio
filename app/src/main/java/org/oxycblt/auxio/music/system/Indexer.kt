@@ -43,10 +43,10 @@ import org.oxycblt.auxio.util.logW
 /**
  * Core music loading state class.
  *
- * This class provides low-level access into the exact state of the music loading process.
- * **This class should not be used in most cases.** It is highly volatile and provides far
- * more information than is usually needed. Use [MusicStore] instead if you do not need to
- * work with the exact music loading state.
+ * This class provides low-level access into the exact state of the music loading process. **This
+ * class should not be used in most cases.** It is highly volatile and provides far more information
+ * than is usually needed. Use [MusicStore] instead if you do not need to work with the exact music
+ * loading state.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -61,9 +61,9 @@ class Indexer private constructor() {
         get() = indexingState != null
 
     /**
-     * Whether this instance has not completed a loading process and is not currently
-     * loading music. This often occurs early in an app's lifecycle, and consumers should
-     * try to avoid showing any state when this flag is true.
+     * Whether this instance has not completed a loading process and is not currently loading music.
+     * This often occurs early in an app's lifecycle, and consumers should try to avoid showing any
+     * state when this flag is true.
      */
     val isIndeterminate: Boolean
         get() = lastResponse == null && indexingState == null
@@ -105,9 +105,9 @@ class Indexer private constructor() {
     }
 
     /**
-     * Register the [Callback] for this instance. This can be used to receive rapid-fire updates
-     * to the current music loading state. There can be only one [Callback] at a time.
-     * Will invoke all [Callback] methods to initialize the instance with the current state.
+     * Register the [Callback] for this instance. This can be used to receive rapid-fire updates to
+     * the current music loading state. There can be only one [Callback] at a time. Will invoke all
+     * [Callback] methods to initialize the instance with the current state.
      * @param callback The [Callback] to add.
      */
     @Synchronized
@@ -125,10 +125,9 @@ class Indexer private constructor() {
     }
 
     /**
-     * Unregister a [Callback] from this instance, preventing it from recieving any further
-     * updates.
-     * @param callback The [Callback] to unregister. Must be the current [Callback]. Does
-     * nothing if invoked by another [Callback] implementation.
+     * Unregister a [Callback] from this instance, preventing it from recieving any further updates.
+     * @param callback The [Callback] to unregister. Must be the current [Callback]. Does nothing if
+     * invoked by another [Callback] implementation.
      * @see Callback
      */
     @Synchronized
@@ -145,12 +144,12 @@ class Indexer private constructor() {
      * Start the indexing process. This should be done from in the background from [Controller]'s
      * context after a command has been received to start the process.
      * @param context [Context] required to load music.
-     * @param withCache Whether to use the cache or not when loading. If false, the cache will
-     * still be written, but no cache entries will be loaded into the new library.
+     * @param withCache Whether to use the cache or not when loading. If false, the cache will still
+     * be written, but no cache entries will be loaded into the new library.
      */
     suspend fun index(context: Context, withCache: Boolean) {
         if (ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
-                PackageManager.PERMISSION_DENIED) {
+            PackageManager.PERMISSION_DENIED) {
             // No permissions, signal that we can't do anything.
             emitCompletion(Response.NoPerms)
             return
@@ -186,9 +185,9 @@ class Indexer private constructor() {
     }
 
     /**
-     * Request that the music library should be reloaded. This should be used by components that
-     * do not manage the indexing process in order to signal that the [Controller] should call
-     * [index] eventually.
+     * Request that the music library should be reloaded. This should be used by components that do
+     * not manage the indexing process in order to signal that the [Controller] should call [index]
+     * eventually.
      * @param withCache Whether to use the cache when loading music. Does nothing if there is no
      * [Controller].
      */
@@ -199,8 +198,8 @@ class Indexer private constructor() {
     }
 
     /**
-     * Reset the current loading state to signal that the instance is not loading. This should
-     * be called by [Controller] after it's indexing co-routine was cancelled.
+     * Reset the current loading state to signal that the instance is not loading. This should be
+     * called by [Controller] after it's indexing co-routine was cancelled.
      */
     @Synchronized
     fun reset() {
@@ -211,19 +210,20 @@ class Indexer private constructor() {
     /**
      * Internal implementation of the music loading process.
      * @param context [Context] required to load music.
-     * @param withCache Whether to use the cache or not when loading. If false, the cache will
-     * still be written, but no cache entries will be loaded into the new library.
+     * @param withCache Whether to use the cache or not when loading. If false, the cache will still
+     * be written, but no cache entries will be loaded into the new library.
      * @return A newly-loaded [MusicStore.Library], or null if nothing was loaded.
      */
     private suspend fun indexImpl(context: Context, withCache: Boolean): MusicStore.Library? {
         // Create the chain of extractors. Each extractor builds on the previous and
         // enables version-specific features in order to create the best possible music
         // experience.
-        val cacheDatabase = if (withCache) {
-            ReadWriteCacheExtractor(context)
-        } else {
-            WriteOnlyCacheExtractor(context)
-        }
+        val cacheDatabase =
+            if (withCache) {
+                ReadWriteCacheExtractor(context)
+            } else {
+                WriteOnlyCacheExtractor(context)
+            }
 
         val mediaStoreExtractor =
             when {
@@ -255,11 +255,11 @@ class Indexer private constructor() {
 
     /**
      * Load a list of [Song]s from the device.
-     * @param metadataExtractor The completed [MetadataExtractor] instance to use to load
-     * [Song.Raw] instances.
+     * @param metadataExtractor The completed [MetadataExtractor] instance to use to load [Song.Raw]
+     * instances.
      * @param settings [Settings] required to create [Song] instances.
-     * @return A possibly empty list of [Song]s. These [Song]s will be incomplete and
-     * must be linked with parent [Album], [Artist], and [Genre] items in order to be usable.
+     * @return A possibly empty list of [Song]s. These [Song]s will be incomplete and must be linked
+     * with parent [Album], [Artist], and [Genre] items in order to be usable.
      */
     private suspend fun buildSongs(
         metadataExtractor: MetadataExtractor,
@@ -301,10 +301,10 @@ class Indexer private constructor() {
 
     /**
      * Build a list of [Album]s from the given [Song]s.
-     * @param songs The [Song]s to build [Album]s from. These will be linked with their
-     * respective [Album]s when created.
-     * @return A non-empty list of [Album]s. These [Album]s will be incomplete and
-     * must be linked with parent [Artist] instances in order to be usable.
+     * @param songs The [Song]s to build [Album]s from. These will be linked with their respective
+     * [Album]s when created.
+     * @return A non-empty list of [Album]s. These [Album]s will be incomplete and must be linked
+     * with parent [Artist] instances in order to be usable.
      */
     private fun buildAlbums(songs: List<Song>): List<Album> {
         // Group songs by their singular raw album, then map the raw instances and their
@@ -316,17 +316,17 @@ class Indexer private constructor() {
     }
 
     /**
-     * Group up [Song]s and [Album]s into [Artist] instances. Both of these items are required
-     * as they group into [Artist] instances much differently, with [Song]s being grouped
-     * primarily by artist names, and [Album]s being grouped primarily by album artist names.
-     * @param songs The [Song]s to build [Artist]s from. One [Song] can result in
-     * the creation of one or more [Artist] instances. These will be linked with their
-     * respective [Artist]s when created.
-     * @param albums The [Album]s to build [Artist]s from. One [Album] can result in
-     * the creation of one or more [Artist] instances. These will be linked with their
-     * respective [Artist]s when created.
-     * @return A non-empty list of [Artist]s. These [Artist]s will consist of the combined
-     * groupings of [Song]s and [Album]s.
+     * Group up [Song]s and [Album]s into [Artist] instances. Both of these items are required as
+     * they group into [Artist] instances much differently, with [Song]s being grouped primarily by
+     * artist names, and [Album]s being grouped primarily by album artist names.
+     * @param songs The [Song]s to build [Artist]s from. One [Song] can result in the creation of
+     * one or more [Artist] instances. These will be linked with their respective [Artist]s when
+     * created.
+     * @param albums The [Album]s to build [Artist]s from. One [Album] can result in the creation of
+     * one or more [Artist] instances. These will be linked with their respective [Artist]s when
+     * created.
+     * @return A non-empty list of [Artist]s. These [Artist]s will consist of the combined groupings
+     * of [Song]s and [Album]s.
      */
     private fun buildArtists(songs: List<Song>, albums: List<Album>): List<Artist> {
         // Add every raw artist credited to each Song/Album to the grouping. This way,
@@ -353,9 +353,9 @@ class Indexer private constructor() {
 
     /**
      * Group up [Song]s into [Genre] instances.
-     * @param [songs] The [Song]s to build [Genre]s from. One [Song] can result in
-     * the creation of one or more [Genre] instances. These will be linked with their
-     * respective [Genre]s when created.
+     * @param [songs] The [Song]s to build [Genre]s from. One [Song] can result in the creation of
+     * one or more [Genre] instances. These will be linked with their respective [Genre]s when
+     * created.
      * @return A non-empty list of [Genre]s.
      */
     private fun buildGenres(songs: List<Song>): List<Genre> {
@@ -376,8 +376,8 @@ class Indexer private constructor() {
 
     /**
      * Emit a new [State.Indexing] state. This can be used to signal the current state of the music
-     * loading process to external code. Assumes that the callee has already checked if they
-     * have not been canceled and thus have the ability to emit a new state.
+     * loading process to external code. Assumes that the callee has already checked if they have
+     * not been canceled and thus have the ability to emit a new state.
      * @param indexing The new [Indexing] state to emit, or null if no loading process is occurring.
      */
     @Synchronized
@@ -393,8 +393,8 @@ class Indexer private constructor() {
 
     /**
      * Emit a new [State.Complete] state. This can be used to signal the completion of the music
-     * loading process to external code. Will check if the callee has not been canceled and thus
-     * has the ability to emit a new state
+     * loading process to external code. Will check if the callee has not been canceled and thus has
+     * the ability to emit a new state
      * @param response The new [Response] to emit, representing the outcome of the music loading
      * process.
      */
@@ -439,8 +439,7 @@ class Indexer private constructor() {
      */
     sealed class Indexing {
         /**
-         * Music loading is occurring, but no definite estimate can be put on the current
-         * progress.
+         * Music loading is occurring, but no definite estimate can be put on the current progress.
          */
         object Indeterminate : Indexing()
 
@@ -477,8 +476,8 @@ class Indexer private constructor() {
      * A callback for rapid-fire changes in the music loading state.
      *
      * This is only useful for code that absolutely must show the current loading process.
-     * Otherwise, [MusicStore.Callback] is highly recommended due to it's updates only
-     * consisting of the [MusicStore.Library].
+     * Otherwise, [MusicStore.Callback] is highly recommended due to it's updates only consisting of
+     * the [MusicStore.Library].
      */
     interface Callback {
         /**
@@ -493,13 +492,13 @@ class Indexer private constructor() {
     }
 
     /**
-     * Context that runs the music loading process. Implementations should be capable of
-     * running the background for long periods of time without android killing the process.
+     * Context that runs the music loading process. Implementations should be capable of running the
+     * background for long periods of time without android killing the process.
      */
     interface Controller : Callback {
         /**
-         * Called when a new music loading process was requested. Implementations should
-         * forward this to [index].
+         * Called when a new music loading process was requested. Implementations should forward
+         * this to [index].
          * @param withCache Whether to use the cache or not when loading. If false, the cache should
          * still be written, but no cache entries will be loaded into the new library.
          * @see index
@@ -511,9 +510,8 @@ class Indexer private constructor() {
         @Volatile private var INSTANCE: Indexer? = null
 
         /**
-         * A version-compatible identifier for the read external storage permission required
-         * by the system to load audio.
-         * TODO: Move elsewhere.
+         * A version-compatible identifier for the read external storage permission required by the
+         * system to load audio. TODO: Move elsewhere.
          */
         val PERMISSION_READ_AUDIO =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

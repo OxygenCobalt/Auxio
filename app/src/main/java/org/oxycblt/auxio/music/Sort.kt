@@ -149,7 +149,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
         }
 
         /**
-         * Get  a [Comparator] that sorts [Album]s according to this [Mode].
+         * Get a [Comparator] that sorts [Album]s according to this [Mode].
          * @param isAscending Whether to sort in ascending or descending order.
          * @return A [Comparator] that can be used to sort a [Album] list according to this [Mode].
          */
@@ -281,11 +281,13 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
 
             override fun getSongComparator(isAscending: Boolean): Comparator<Song> =
                 MultiComparator(
-                    compareByDynamic(isAscending) { it.durationMs }, compareBy(BasicComparator.SONG))
+                    compareByDynamic(isAscending) { it.durationMs },
+                    compareBy(BasicComparator.SONG))
 
             override fun getAlbumComparator(isAscending: Boolean): Comparator<Album> =
                 MultiComparator(
-                    compareByDynamic(isAscending) { it.durationMs }, compareBy(BasicComparator.ALBUM))
+                    compareByDynamic(isAscending) { it.durationMs },
+                    compareBy(BasicComparator.ALBUM))
 
             override fun getArtistComparator(isAscending: Boolean): Comparator<Artist> =
                 MultiComparator(
@@ -294,7 +296,8 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
 
             override fun getGenreComparator(isAscending: Boolean): Comparator<Genre> =
                 MultiComparator(
-                    compareByDynamic(isAscending) { it.durationMs }, compareBy(BasicComparator.GENRE))
+                    compareByDynamic(isAscending) { it.durationMs },
+                    compareBy(BasicComparator.GENRE))
         }
 
         /**
@@ -310,7 +313,8 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
 
             override fun getAlbumComparator(isAscending: Boolean): Comparator<Album> =
                 MultiComparator(
-                    compareByDynamic(isAscending) { it.songs.size }, compareBy(BasicComparator.ALBUM))
+                    compareByDynamic(isAscending) { it.songs.size },
+                    compareBy(BasicComparator.ALBUM))
 
             override fun getArtistComparator(isAscending: Boolean): Comparator<Artist> =
                 MultiComparator(
@@ -319,7 +323,8 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
 
             override fun getGenreComparator(isAscending: Boolean): Comparator<Genre> =
                 MultiComparator(
-                    compareByDynamic(isAscending) { it.songs.size }, compareBy(BasicComparator.GENRE))
+                    compareByDynamic(isAscending) { it.songs.size },
+                    compareBy(BasicComparator.GENRE))
         }
 
         /**
@@ -430,8 +435,8 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             }
 
         /**
-         * Utility function to create a [Comparator] that sorts in ascending order based on
-         * the given [Comparator], with a selector based on the item itself.
+         * Utility function to create a [Comparator] that sorts in ascending order based on the
+         * given [Comparator], with a selector based on the item itself.
          * @param comparator The [Comparator] to wrap.
          * @return A new [Comparator] with the specified configuration.
          * @see compareBy
@@ -440,11 +445,9 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             compareBy(comparator) { it }
 
         /**
-         * A [Comparator] that chains several other [Comparator]s together to form one
-         * comparison.
-         * @param comparators The [Comparator]s to chain. These will be iterated through
-         * in order during a comparison, with the first non-equal result becoming the
-         * result.
+         * A [Comparator] that chains several other [Comparator]s together to form one comparison.
+         * @param comparators The [Comparator]s to chain. These will be iterated through in order
+         * during a comparison, with the first non-equal result becoming the result.
          */
         private class MultiComparator<T>(vararg comparators: Comparator<T>) : Comparator<T> {
             private val _comparators = comparators
@@ -493,8 +496,8 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
         }
 
         /**
-         * A [Comparator] that compares abstract [Music] values. Internally, this is similar
-         * to [NullableComparator], however comparing [Music.collationKey] instead of [Comparable].
+         * A [Comparator] that compares abstract [Music] values. Internally, this is similar to
+         * [NullableComparator], however comparing [Music.collationKey] instead of [Comparable].
          * @see NullableComparator
          * @see Music.collationKey
          */
@@ -511,7 +514,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
             }
 
             companion object {
-                /** A re-usable  instance configured for [Song]s. */
+                /** A re-usable instance configured for [Song]s. */
                 val SONG: Comparator<Song> = BasicComparator()
                 /** A re-usable instance configured for [Album]s. */
                 val ALBUM: Comparator<Album> = BasicComparator()
@@ -523,8 +526,8 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
         }
 
         /**
-         * A [Comparator] that compares two possibly null values. Values will be considered
-         * lesser if they are null, and greater if they are non-null.
+         * A [Comparator] that compares two possibly null values. Values will be considered lesser
+         * if they are null, and greater if they are non-null.
          */
         private class NullableComparator<T : Comparable<T>> private constructor() : Comparator<T?> {
             override fun compare(a: T?, b: T?) =

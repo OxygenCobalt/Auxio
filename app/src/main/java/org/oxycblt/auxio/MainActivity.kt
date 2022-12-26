@@ -113,10 +113,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Transform an [Intent] given to [MainActivity] into a [InternalPlayer.Action]
-     * that can be used in the playback system.
-     * @param intent The (new) [Intent] given to this [MainActivity], or null if there
-     * is no intent.
+     * Transform an [Intent] given to [MainActivity] into a [InternalPlayer.Action] that can be used
+     * in the playback system.
+     * @param intent The (new) [Intent] given to this [MainActivity], or null if there is no intent.
      * @return true If the analogous [InternalPlayer.Action] to the given [Intent] was started,
      * false otherwise.
      */

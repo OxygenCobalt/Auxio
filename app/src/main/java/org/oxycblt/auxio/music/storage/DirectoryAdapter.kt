@@ -30,7 +30,8 @@ import org.oxycblt.auxio.util.inflater
  * @param listener A [DirectoryAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class DirectoryAdapter(private val listener: Listener) : RecyclerView.Adapter<MusicDirViewHolder>() {
+class DirectoryAdapter(private val listener: Listener) :
+    RecyclerView.Adapter<MusicDirViewHolder>() {
     private val _dirs = mutableListOf<Directory>()
     /**
      * The current list of [Directory]s, may not line up with [MusicDirectories] due to removals.

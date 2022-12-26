@@ -31,25 +31,26 @@ import org.oxycblt.auxio.music.Song
  * A utility to provide bitmaps in a race-less manner.
  *
  * When it comes to components that load images manually as [Bitmap] instances, queued
- * [ImageRequest]s may cause a race condition that results in the incorrect image being
- * drawn. This utility resolves this by keeping track of the current request, and disposing
- * it as soon as a new request is queued or if another, competing request is newer.
+ * [ImageRequest]s may cause a race condition that results in the incorrect image being drawn. This
+ * utility resolves this by keeping track of the current request, and disposing it as soon as a new
+ * request is queued or if another, competing request is newer.
  *
  * @param context [Context] required to load images.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class BitmapProvider(private val context: Context) {
-    /** An extension of [Disposable] with an additional [Target] to deliver the final [Bitmap] to. */
+    /**
+     * An extension of [Disposable] with an additional [Target] to deliver the final [Bitmap] to.
+     */
     private data class Request(val disposable: Disposable, val callback: Target)
 
     /** The target that will receive the requested [Bitmap]. */
     interface Target {
         /**
          * Configure the [ImageRequest.Builder] to enable [Target]-specific configuration.
-         * @param builder The [ImageRequest.Builder] that will be used to request the
-         * desired [Bitmap].
-         * @return The same [ImageRequest.Builder] in order to easily chain configuration
-         * methods.
+         * @param builder The [ImageRequest.Builder] that will be used to request the desired
+         * [Bitmap].
+         * @return The same [ImageRequest.Builder] in order to easily chain configuration methods.
          */
         fun onConfigRequest(builder: ImageRequest.Builder): ImageRequest.Builder = builder
 
@@ -80,39 +81,38 @@ class BitmapProvider(private val context: Context) {
         currentRequest = null
 
         val imageRequest =
-            target.onConfigRequest(
-                ImageRequest.Builder(context)
-                    .data(song)
-                    // Use ORIGINAL sizing, as we are not loading into any View-like component.
-                    .size(Size.ORIGINAL)
-                    .transformations(SquareFrameTransform.INSTANCE))
-                    // Override the target in order to deliver the bitmap to the given
-                    // callback.
-                    .target(
-                        onSuccess = {
-                            synchronized(this) {
-                                if (currentHandle == handle) {
-                                    // Has not been superceded by a new request, can deliver
-                                    // this result.
-                                    target.onCompleted(it.toBitmap())
-                                }
+            target
+                .onConfigRequest(
+                    ImageRequest.Builder(context)
+                        .data(song)
+                        // Use ORIGINAL sizing, as we are not loading into any View-like component.
+                        .size(Size.ORIGINAL)
+                        .transformations(SquareFrameTransform.INSTANCE))
+                // Override the target in order to deliver the bitmap to the given
+                // callback.
+                .target(
+                    onSuccess = {
+                        synchronized(this) {
+                            if (currentHandle == handle) {
+                                // Has not been superceded by a new request, can deliver
+                                // this result.
+                                target.onCompleted(it.toBitmap())
                             }
-                        },
-                        onError = {
-                            synchronized(this) {
-                                if (currentHandle == handle) {
-                                    // Has not been superceded by a new request, can deliver
-                                    // this result.
-                                    target.onCompleted(null)
-                                }
+                        }
+                    },
+                    onError = {
+                        synchronized(this) {
+                            if (currentHandle == handle) {
+                                // Has not been superceded by a new request, can deliver
+                                // this result.
+                                target.onCompleted(null)
                             }
-                        })
+                        }
+                    })
         currentRequest = Request(context.imageLoader.enqueue(imageRequest.build()), target)
     }
 
-    /**
-     * Release this instance, cancelling any currently running operations.
-     */
+    /** Release this instance, cancelling any currently running operations. */
     @Synchronized
     fun release() {
         ++currentHandle

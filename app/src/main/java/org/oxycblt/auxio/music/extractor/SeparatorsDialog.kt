@@ -25,13 +25,12 @@ import com.google.android.material.checkbox.MaterialCheckBox
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSeparatorsBinding
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.shared.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
 
 /**
- * A [ViewBindingDialogFragment] that allows the user to configure the separator characters
- * used to split tags with multiple values.
- * TODO: Add saved state for pending configurations.
+ * A [ViewBindingDialogFragment] that allows the user to configure the separator characters used to
+ * split tags with multiple values. TODO: Add saved state for pending configurations.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {

@@ -35,20 +35,20 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.storage.contentResolverSafe
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.service.ForegroundManager
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.shared.ForegroundManager
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 
 /**
  * A [Service] that manages the background music loading process.
  *
- * Loading music is a time-consuming process that would likely be killed by the system before
- * it could complete if ran anywhere else. So, this [Service] manages the music loading process
- * as an instance of [Indexer.Controller].
+ * Loading music is a time-consuming process that would likely be killed by the system before it
+ * could complete if ran anywhere else. So, this [Service] manages the music loading process as an
+ * instance of [Indexer.Controller].
  *
- * This [Service] also handles automatic rescanning, as that is a similarly long-running
- * background operation that would be unsuitable elsewhere in the app.
+ * This [Service] also handles automatic rescanning, as that is a similarly long-running background
+ * operation that would be unsuitable elsewhere in the app.
  *
  * TODO: Unify with PlaybackService as part of the service independence project
  *
@@ -121,8 +121,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
             indexer.reset()
         }
         // Start a new music loading job on a co-routine.
-        currentIndexJob = indexScope.launch {
-            indexer.index(this@IndexerService, withCache) }
+        currentIndexJob = indexScope.launch { indexer.index(this@IndexerService, withCache) }
     }
 
     override fun onIndexerStateChanged(state: Indexer.State?) {
@@ -165,8 +164,8 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     // --- INTERNAL ---
 
     /**
-     * Update the current state to "Active", in which the service signals that music
-     * loading is on-going.
+     * Update the current state to "Active", in which the service signals that music loading is
+     * on-going.
      * @param state The current music loading state.
      */
     private fun updateActiveSession(state: Indexer.Indexing) {
@@ -184,8 +183,8 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     }
 
     /**
-     * Update the current state to "Idle", in which it either does nothing or signals
-     * that it's currently monitoring the music library for changes.
+     * Update the current state to "Idle", in which it either does nothing or signals that it's
+     * currently monitoring the music library for changes.
      */
     private fun updateIdleSession() {
         if (settings.shouldBeObserving) {
@@ -208,9 +207,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         wakeLock.releaseSafe()
     }
 
-    /**
-     * Utility to safely acquire a [PowerManager.WakeLock] without crashes/inefficiency.
-     */
+    /** Utility to safely acquire a [PowerManager.WakeLock] without crashes/inefficiency. */
     private fun PowerManager.WakeLock.acquireSafe() {
         // Avoid unnecessary acquire calls.
         if (!wakeLock.isHeld) {
@@ -222,9 +219,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         }
     }
 
-    /**
-     * Utility to safely release a [PowerManager.WakeLock] without crashes/inefficiency.
-     */
+    /** Utility to safely release a [PowerManager.WakeLock] without crashes/inefficiency. */
     private fun PowerManager.WakeLock.releaseSafe() {
         // Avoid unnecessary release calls.
         if (wakeLock.isHeld) {
@@ -259,7 +254,8 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
      * known to the user as automatic rescanning. The active (and not passive) nature of observing
      * the database is what requires [IndexerService] to stay foreground when this is enabled.
      */
-    private inner class SystemContentObserver : ContentObserver(Handler(Looper.getMainLooper())), Runnable {
+    private inner class SystemContentObserver :
+        ContentObserver(Handler(Looper.getMainLooper())), Runnable {
         private val handler = Handler(Looper.getMainLooper())
 
         init {

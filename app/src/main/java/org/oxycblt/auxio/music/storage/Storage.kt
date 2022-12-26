@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2022 Auxio Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.music.storage
 
 import android.content.Context
@@ -5,13 +22,12 @@ import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.webkit.MimeTypeMap
 import com.google.android.exoplayer2.util.MimeTypes
-import org.oxycblt.auxio.R
 import java.io.File
-
+import org.oxycblt.auxio.R
 
 /**
- * A full absolute path to a file. Only intended for display purposes. For accessing files,
- * URIs are preferred in all cases due to scoped storage limitations.
+ * A full absolute path to a file. Only intended for display purposes. For accessing files, URIs are
+ * preferred in all cases due to scoped storage limitations.
  * @param name The name of the file.
  * @param parent The parent [Directory] of the file.
  * @author Alexander Capehart (OxygenCobalt)
@@ -35,12 +51,12 @@ class Directory private constructor(val volume: StorageVolume, val relativePath:
         context.getString(R.string.fmt_path, volume.getDescriptionCompat(context), relativePath)
 
     /**
-     * Converts this [Directory] instance into an opaque document tree path.
-     * This is a huge violation of the document tree URI contract, but it's also the only
-     * one can sensibly work with these uris in the UI, and it doesn't exactly matter since
-     * we never write or read directory.
-     * @return A URI [String] abiding by the document tree specification, or null
-     * if the [Directory] is not valid.
+     * Converts this [Directory] instance into an opaque document tree path. This is a huge
+     * violation of the document tree URI contract, but it's also the only one can sensibly work
+     * with these uris in the UI, and it doesn't exactly matter since we never write or read
+     * directory.
+     * @return A URI [String] abiding by the document tree specification, or null if the [Directory]
+     * is not valid.
      */
     fun toDocumentTreeUri() =
         // Document tree URIs consist of a prefixed volume name followed by a relative path.
@@ -63,9 +79,7 @@ class Directory private constructor(val volume: StorageVolume, val relativePath:
         other is Directory && other.volume == volume && other.relativePath == relativePath
 
     companion object {
-        /**
-         * The name given to the internal volume when in a document tree URI.
-         */
+        /** The name given to the internal volume when in a document tree URI. */
         private const val DOCUMENT_URI_PRIMARY_NAME = "primary"
 
         /**
@@ -80,10 +94,9 @@ class Directory private constructor(val volume: StorageVolume, val relativePath:
                 volume, relativePath.removePrefix(File.separator).removeSuffix(File.separator))
 
         /**
-         * Create a new directory from a document tree URI.
-         * This is a huge violation of the document tree URI contract, but it's also the only
-         * one can sensibly work with these uris in the UI, and it doesn't exactly matter since
-         * we never write or read directory.
+         * Create a new directory from a document tree URI. This is a huge violation of the document
+         * tree URI contract, but it's also the only one can sensibly work with these uris in the
+         * UI, and it doesn't exactly matter since we never write or read directory.
          * @param storageManager [StorageManager] in order to obtain the [StorageVolume] specified
          * in the given URI.
          * @param uri The URI string to parse into a [Directory].
@@ -109,12 +122,12 @@ class Directory private constructor(val volume: StorageVolume, val relativePath:
 }
 
 /**
- * Represents the configuration for specific directories to filter to/from when loading music.
- * TODO: Migrate to a combined "Include + Exclude" system that is more sensible.
- * @param dirs A list of [Directory] instances. How these are interpreted depends on
- * [shouldInclude].
- * @param shouldInclude True if the library should only load from the [Directory] instances,
- * false if the library should not load from the [Directory] instances.
+ * Represents the configuration for specific directories to filter to/from when loading music. TODO:
+ * Migrate to a combined "Include + Exclude" system that is more sensible.
+ * @param dirs A list of [Directory] instances. How these are interpreted depends on [shouldInclude]
+ * .
+ * @param shouldInclude True if the library should only load from the [Directory] instances, false
+ * if the library should not load from the [Directory] instances.
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class MusicDirectories(val dirs: List<Directory>, val shouldInclude: Boolean)
@@ -122,17 +135,17 @@ data class MusicDirectories(val dirs: List<Directory>, val shouldInclude: Boolea
 /**
  * A mime type of a file. Only intended for display.
  * @param fromExtension The mime type obtained by analyzing the file extension.
- * @param fromFormat The mime type obtained by analyzing the file format. Null if could
- * not be obtained.
+ * @param fromFormat The mime type obtained by analyzing the file format. Null if could not be
+ * obtained.
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class MimeType(val fromExtension: String, val fromFormat: String?) {
     /**
      * Resolve the mime type into a human-readable format name, such as "Ogg Vorbis".
      * @param context [Context] required to obtain human-readable strings.
-     * @return A human-readable name for this mime type. Will first try [fromFormat],
-     * then falling back to [fromExtension], then falling back to the extension name,
-     * and then finally a placeholder "No Format" string.
+     * @return A human-readable name for this mime type. Will first try [fromFormat], then falling
+     * back to [fromExtension], then falling back to the extension name, and then finally a
+     * placeholder "No Format" string.
      */
     fun resolveName(context: Context): String {
         // We try our best to produce a more readable name for the common audio formats.
@@ -193,8 +206,8 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
         } else {
             // Fall back to the extension if we can't find a special name for this format.
             MimeTypeMap.getSingleton().getExtensionFromMimeType(fromExtension)?.uppercase()
-                // Fall back to a placeholder if even that fails.
-                ?: context.getString(R.string.def_codec)
+            // Fall back to a placeholder if even that fails.
+            ?: context.getString(R.string.def_codec)
         }
     }
 }

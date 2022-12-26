@@ -18,16 +18,14 @@
 package org.oxycblt.auxio.list.selection
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.shared.ViewBindingFragment
+import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -40,10 +38,10 @@ abstract class SelectionFragment<VB : ViewBinding> :
     protected val playbackModel: PlaybackViewModel by androidActivityViewModels()
 
     /**
-     * Get the [SelectionToolbarOverlay] of the concrete Fragment to be automatically managed
-     * by [SelectionFragment].
-     * @return The [SelectionToolbarOverlay] of the concrete [SelectionFragment]'s [VB], or
-     * null if there is not one.
+     * Get the [SelectionToolbarOverlay] of the concrete Fragment to be automatically managed by
+     * [SelectionFragment].
+     * @return The [SelectionToolbarOverlay] of the concrete [SelectionFragment]'s [VB], or null if
+     * there is not one.
      */
     open fun getSelectionToolbar(binding: VB): SelectionToolbarOverlay? = null
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.shared
+package org.oxycblt.auxio.ui
 
 import android.content.Context
 import android.util.AttributeSet
@@ -35,8 +35,8 @@ import org.oxycblt.auxio.util.coordinatorLayoutBehavior
  * 1. Lift state failing to update when list data changes.
  * 2. Expansion causing jumping in [RecyclerView] instances.
  *
- * Note: This layout relies on [AppBarLayout.liftOnScrollTargetViewId] to figure out what
- * scrolling view to use. Failure to specify this will result in the layout not working.
+ * Note: This layout relies on [AppBarLayout.liftOnScrollTargetViewId] to figure out what scrolling
+ * view to use. Failure to specify this will result in the layout not working.
  *
  * Derived from Material Files: https://github.com/zhanghai/MaterialFiles
  *
@@ -70,8 +70,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     /**
      * Expand this [AppBarLayout] with respect to the given [RecyclerView], preventing it from
      * jumping around.
-     * @param recycler [RecyclerView] to expand with, or null if one is currently unavailable.
-     * TODO: Is it possible to use liftOnScrollTargetViewId to avoid the [RecyclerView] argument?
+     * @param recycler [RecyclerView] to expand with, or null if one is currently unavailable. TODO:
+     * Is it possible to use liftOnScrollTargetViewId to avoid the [RecyclerView] argument?
      */
     fun expandWithRecycler(recycler: RecyclerView?) {
         setExpanded(true)
@@ -108,13 +108,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     /**
      * An [AppBarLayout.OnOffsetChangedListener] that will automatically move the given
-     * [RecyclerView] as the [AppBarLayout] expands. Should be added right when the view
-     * is expanding. Will be removed automatically.
+     * [RecyclerView] as the [AppBarLayout] expands. Should be added right when the view is
+     * expanding. Will be removed automatically.
      * @param recycler [RecyclerView] to scroll with the [AppBarLayout].
      */
     private class ExpansionHackListener(private val recycler: RecyclerView) :
         OnOffsetChangedListener {
-        private val offsetAnimationMaxEndTime = (AnimationUtils.currentAnimationTimeMillis() +
+        private val offsetAnimationMaxEndTime =
+            (AnimationUtils.currentAnimationTimeMillis() +
                 APP_BAR_LAYOUT_MAX_OFFSET_ANIMATION_DURATION)
         private var currentVerticalOffset: Int? = null
 
@@ -123,8 +124,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 AnimationUtils.currentAnimationTimeMillis() > offsetAnimationMaxEndTime) {
                 // AppBarLayout crashes with IndexOutOfBoundsException when a non-last listener
                 // removes itself, so we have to do the removal asynchronously.
-                appBarLayout.postOnAnimation {
-                    appBarLayout.removeOnOffsetChangedListener(this) }
+                appBarLayout.postOnAnimation { appBarLayout.removeOnOffsetChangedListener(this) }
             }
 
             // If possible, scroll by the offset delta between this update and the last update.
@@ -137,9 +137,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     companion object {
-        /**
-         * @see AppBarLayout.BaseBehavior.MAX_OFFSET_ANIMATION_DURATION
-         */
+        /** @see AppBarLayout.BaseBehavior.MAX_OFFSET_ANIMATION_DURATION */
         private const val APP_BAR_LAYOUT_MAX_OFFSET_ANIMATION_DURATION = 600
     }
 }

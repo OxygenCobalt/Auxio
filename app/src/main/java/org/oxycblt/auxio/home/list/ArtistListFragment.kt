@@ -44,7 +44,10 @@ import org.oxycblt.auxio.util.nonZeroOrNull
  * A [ListFragment] that shows a list of [Artist]s.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRecyclerView.PopupProvider, FastScrollRecyclerView.Listener {
+class ArtistListFragment :
+    ListFragment<FragmentHomeListBinding>(),
+    FastScrollRecyclerView.PopupProvider,
+    FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
     private val homeAdapter = ArtistAdapter(this)
 

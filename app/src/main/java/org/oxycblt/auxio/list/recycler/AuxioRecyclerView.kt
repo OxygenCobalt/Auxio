@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.list.recycler
 
 import android.content.Context
-import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.WindowInsets
 import androidx.annotation.AttrRes
@@ -56,8 +55,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         // Update the RecyclerView's padding such that the bottom insets are applied
         // while still preserving bottom padding.
-        updatePadding(
-            bottom = initialPaddingBottom + insets.systemBarInsetsCompat.bottom)
+        updatePadding(bottom = initialPaddingBottom + insets.systemBarInsetsCompat.bottom)
         return insets
     }
 

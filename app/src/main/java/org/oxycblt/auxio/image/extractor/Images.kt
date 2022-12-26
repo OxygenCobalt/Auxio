@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2022 Auxio Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.image.extractor
 
 import android.content.Context
@@ -14,9 +31,9 @@ import coil.fetch.SourceResult
 import coil.size.Dimension
 import coil.size.Size
 import coil.size.pxOrElse
+import java.io.InputStream
 import okio.buffer
 import okio.source
-import java.io.InputStream
 
 /**
  * Utilities for constructing Artist and Genre images.
@@ -24,8 +41,8 @@ import java.io.InputStream
  */
 object Images {
     /**
-     * Create a mosaic image from the given image [InputStream]s.
-     * Derived from phonograph: https://github.com/kabouzeid/Phonograph
+     * Create a mosaic image from the given image [InputStream]s. Derived from phonograph:
+     * https://github.com/kabouzeid/Phonograph
      * @param context [Context] required to generate the mosaic.
      * @param streams [InputStream]s of image data to create the mosaic out of.
      * @param size [Size] of the Mosaic to generate.

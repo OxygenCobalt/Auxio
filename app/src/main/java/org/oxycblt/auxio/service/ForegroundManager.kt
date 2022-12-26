@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.shared
+package org.oxycblt.auxio.service
 
 import android.app.Service
 import androidx.core.app.ServiceCompat
@@ -31,17 +31,15 @@ import org.oxycblt.auxio.util.logD
 class ForegroundManager(private val service: Service) {
     private var isForeground = false
 
-    /**
-     * Release this instance.
-     */
+    /** Release this instance. */
     fun release() {
         tryStopForeground()
     }
 
     /**
      * Try to enter a foreground state.
-     * @param notification The [ForegroundServiceNotification] to show in order to signal the foreground
-     * state.
+     * @param notification The [ForegroundServiceNotification] to show in order to signal the
+     * foreground state.
      * @return true if the state was changed, false otherwise
      * @see Service.startForeground
      */

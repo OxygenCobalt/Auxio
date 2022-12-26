@@ -38,22 +38,20 @@ import org.oxycblt.auxio.util.requireBackgroundThread
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface CacheExtractor {
-    /**
-     * Initialize the Extractor by reading the cache data into memory.
-     */
+    /** Initialize the Extractor by reading the cache data into memory. */
     fun init()
 
     /**
-     * Finalize the Extractor by writing the newly-loaded [Song.Raw]s back into the cache,
-     * alongside freeing up memory.
+     * Finalize the Extractor by writing the newly-loaded [Song.Raw]s back into the cache, alongside
+     * freeing up memory.
      * @param rawSongs The songs to write into the cache.
      */
     fun finalize(rawSongs: List<Song.Raw>)
 
     /**
      * Use the cache to populate the given [Song.Raw].
-     * @param rawSong The [Song.Raw] to attempt to populate. Note that this [Song.Raw] will
-     * only contain the bare minimum information required to load a cache entry.
+     * @param rawSong The [Song.Raw] to attempt to populate. Note that this [Song.Raw] will only
+     * contain the bare minimum information required to load a cache entry.
      * @return An [ExtractionResult] representing the result of the operation.
      * [ExtractionResult.PARSED] is not returned.
      */
@@ -61,8 +59,8 @@ interface CacheExtractor {
 }
 
 /**
- * A [CacheExtractor] only capable of writing to the cache. This can be used to load music
- * with without the cache if the user desires.
+ * A [CacheExtractor] only capable of writing to the cache. This can be used to load music with
+ * without the cache if the user desires.
  * @param context [Context] required to read the cache database.
  * @see CacheExtractor
  * @author Alexander Capehart (OxygenCobalt)
@@ -120,9 +118,10 @@ class ReadWriteCacheExtractor(private val context: Context) : WriteOnlyCacheExtr
     }
 
     override fun populate(rawSong: Song.Raw): ExtractionResult {
-        val map = requireNotNull(cacheMap) {
-            "Must initialize this extractor before populating a raw song."
-        }
+        val map =
+            requireNotNull(cacheMap) {
+                "Must initialize this extractor before populating a raw song."
+            }
 
         // For a cached raw song to be used, it must exist within the cache and have matching
         // addition and modification timestamps. Technically the addition timestamp doesn't
@@ -228,8 +227,8 @@ private class CacheDatabase(context: Context) :
     /**
      * Read out this database into memory.
      * @return A mapping between the MediaStore IDs of the cache entries and a [Song.Raw] containing
-     * the cacheable data for the entry. Note that any filesystem-dependent information
-     * (excluding IDs and timestamps) is not cached.
+     * the cacheable data for the entry. Note that any filesystem-dependent information (excluding
+     * IDs and timestamps) is not cached.
      */
     fun read(): Map<Long, Song.Raw> {
         requireBackgroundThread()
@@ -323,7 +322,9 @@ private class CacheDatabase(context: Context) :
                     raw.albumArtistSortNames = it.parseSQLMultiValue()
                 }
 
-                cursor.getStringOrNull(genresIndex)?.let { raw.genreNames = it.parseSQLMultiValue() }
+                cursor.getStringOrNull(genresIndex)?.let {
+                    raw.genreNames = it.parseSQLMultiValue()
+                }
 
                 map[id] = raw
             }
@@ -376,20 +377,22 @@ private class CacheDatabase(context: Context) :
                             put(Columns.ALBUM_MUSIC_BRAINZ_ID, rawSong.albumMusicBrainzId)
                             put(Columns.ALBUM_NAME, rawSong.albumName)
                             put(Columns.ALBUM_SORT_NAME, rawSong.albumSortName)
-                            put(
-                                Columns.ALBUM_TYPES,
-                                rawSong.albumTypes.toSQLMultiValue())
+                            put(Columns.ALBUM_TYPES, rawSong.albumTypes.toSQLMultiValue())
 
                             put(
                                 Columns.ARTIST_MUSIC_BRAINZ_IDS,
                                 rawSong.artistMusicBrainzIds.toSQLMultiValue())
                             put(Columns.ARTIST_NAMES, rawSong.artistNames.toSQLMultiValue())
-                            put(Columns.ARTIST_SORT_NAMES, rawSong.artistSortNames.toSQLMultiValue())
+                            put(
+                                Columns.ARTIST_SORT_NAMES,
+                                rawSong.artistSortNames.toSQLMultiValue())
 
                             put(
                                 Columns.ALBUM_ARTIST_MUSIC_BRAINZ_IDS,
                                 rawSong.albumArtistMusicBrainzIds.toSQLMultiValue())
-                            put(Columns.ALBUM_ARTIST_NAMES, rawSong.albumArtistNames.toSQLMultiValue())
+                            put(
+                                Columns.ALBUM_ARTIST_NAMES,
+                                rawSong.albumArtistNames.toSQLMultiValue())
                             put(
                                 Columns.ALBUM_ARTIST_SORT_NAMES,
                                 rawSong.albumArtistSortNames.toSQLMultiValue())
@@ -416,8 +419,8 @@ private class CacheDatabase(context: Context) :
 
     /**
      * Transforms the multi-string list into a SQL-safe multi-string value.
-     * @return A single string containing all values within the multi-string list, delimited
-     * by a ";". Pre-existing ";" characters will be escaped.
+     * @return A single string containing all values within the multi-string list, delimited by a
+     * ";". Pre-existing ";" characters will be escaped.
      */
     private fun List<String>.toSQLMultiValue() =
         if (isNotEmpty()) {
@@ -428,14 +431,12 @@ private class CacheDatabase(context: Context) :
 
     /**
      * Transforms the SQL-safe multi-string value into a multi-string list.
-     * @return A list of strings corresponding to the delimited values present within the
-     * original string. Escaped delimiters are converted back into their normal forms.
+     * @return A list of strings corresponding to the delimited values present within the original
+     * string. Escaped delimiters are converted back into their normal forms.
      */
     private fun String.parseSQLMultiValue() = splitEscaped { it == ';' }
 
-    /**
-     * Defines the columns used in this database.
-     */
+    /** Defines the columns used in this database. */
     private object Columns {
         /** @see Song.Raw.mediaStoreId */
         const val MEDIA_STORE_ID = "msid"

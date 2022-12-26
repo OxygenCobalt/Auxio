@@ -19,7 +19,6 @@ package org.oxycblt.auxio.home.fastscroll
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.PointF
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.Gravity
@@ -72,22 +71,18 @@ class FastScrollRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AuxioRecyclerView(context, attrs, defStyleAttr) {
-    /**
-     * An interface to provide text to use in the popup when fast-scrolling.
-     */
+    /** An interface to provide text to use in the popup when fast-scrolling. */
     interface PopupProvider {
         /**
          * Get text to use in the popup at the specified position.
          * @param pos The position in the list.
-         * @return A [String] to use in the popup. Null if there is no applicable text for
-         * the popup at [pos].
+         * @return A [String] to use in the popup. Null if there is no applicable text for the popup
+         * at [pos].
          */
         fun getPopup(pos: Int): String?
     }
 
-    /**
-     * A listener for fast scroller interactions.
-     */
+    /** A listener for fast scroller interactions. */
     interface Listener {
         /**
          * Called when the fast scrolling state changes.

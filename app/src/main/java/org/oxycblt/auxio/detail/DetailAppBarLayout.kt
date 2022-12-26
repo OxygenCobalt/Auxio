@@ -31,7 +31,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import java.lang.reflect.Field
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.shared.AuxioAppBarLayout
+import org.oxycblt.auxio.ui.AuxioAppBarLayout
 import org.oxycblt.auxio.util.getInteger
 import org.oxycblt.auxio.util.lazyReflectedField
 
@@ -75,12 +75,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         // The Toolbar's title view is actually hidden. To avoid having to create our own
         // title view, we just reflect into Toolbar and grab the hidden field.
-        val newTitleView = (TOOLBAR_TITLE_TEXT_FIELD.get(toolbar) as TextView).apply {
-            // We can never properly initialize the title view's state before draw time,
-            // so we just set it's alpha to 0f to produce a less jarring initialization
-            // animation..
-            alpha = 0f
-        }
+        val newTitleView =
+            (TOOLBAR_TITLE_TEXT_FIELD.get(toolbar) as TextView).apply {
+                // We can never properly initialize the title view's state before draw time,
+                // so we just set it's alpha to 0f to produce a less jarring initialization
+                // animation..
+                alpha = 0f
+            }
 
         this.titleView = newTitleView
         return newTitleView
@@ -161,8 +162,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             // Title should be visible if we are no longer showing the top item
             // (i.e the header)
             appBarLayout.setTitleVisibility(
-                (recycler.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() > 0
-            )
+                (recycler.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() > 0)
         }
     }
 

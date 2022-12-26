@@ -30,13 +30,9 @@ import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.context
@@ -129,10 +125,12 @@ class SearchViewModel(application: Application) :
         }
 
         if (filterMode == null || filterMode == MusicMode.SONGS) {
-            library.songs.searchListImpl(query) { q, song -> song.path.name.contains(q) }?.let {
-                results.add(Header(R.string.lbl_songs))
-                results.addAll(sort.songs(it))
-            }
+            library.songs
+                .searchListImpl(query) { q, song -> song.path.name.contains(q) }
+                ?.let {
+                    results.add(Header(R.string.lbl_songs))
+                    results.addAll(sort.songs(it))
+                }
         }
 
         // Handle if we were canceled while searching.
@@ -141,41 +139,43 @@ class SearchViewModel(application: Application) :
 
     /**
      * Search a given [Music] list.
-     * @param query The query to search for. The routine will compare this query to the names
-     * of each object in the list and
+     * @param query The query to search for. The routine will compare this query to the names of
+     * each object in the list and
      * @param fallback Additional comparison code to run if the item does not match the query
-     * initially. This can be used to compare against additional attributes to improve search
-     * result quality.
+     * initially. This can be used to compare against additional attributes to improve search result
+     * quality.
      */
     private inline fun <T : Music> List<T>.searchListImpl(
         query: String,
         fallback: (String, T) -> Boolean = { _, _ -> false }
-    ) = filter {
-            // See if the plain resolved name matches the query. This works for most situations.
-            val name = it.resolveName(context)
-            if (name.contains(query, ignoreCase = true)) {
-                return@filter true
-            }
+    ) =
+        filter {
+                // See if the plain resolved name matches the query. This works for most situations.
+                val name = it.resolveName(context)
+                if (name.contains(query, ignoreCase = true)) {
+                    return@filter true
+                }
 
-            // See if the sort name matches. This can sometimes be helpful as certain libraries
-            // will tag sort names to have a alphabetized version of the title.
-            val sortName = it.rawSortName
-            if (sortName != null && sortName.contains(query, ignoreCase = true)) {
-                return@filter true
-            }
+                // See if the sort name matches. This can sometimes be helpful as certain libraries
+                // will tag sort names to have a alphabetized version of the title.
+                val sortName = it.rawSortName
+                if (sortName != null && sortName.contains(query, ignoreCase = true)) {
+                    return@filter true
+                }
 
-            // As a last-ditch effort, see if the normalized name matches. This will replace
-            // any non-alphabetical characters with their alphabetical representations, which
-            // could make it match the query.
-            val normalizedName = NORMALIZATION_SANITIZE_REGEX.replace(
-                Normalizer.normalize(name, Normalizer.Form.NFKD), "")
-            if (normalizedName.contains(query, ignoreCase = true)) {
-                return@filter true
-            }
+                // As a last-ditch effort, see if the normalized name matches. This will replace
+                // any non-alphabetical characters with their alphabetical representations, which
+                // could make it match the query.
+                val normalizedName =
+                    NORMALIZATION_SANITIZE_REGEX.replace(
+                        Normalizer.normalize(name, Normalizer.Form.NFKD), "")
+                if (normalizedName.contains(query, ignoreCase = true)) {
+                    return@filter true
+                }
 
-            fallback(query, it)
-        }
-        .ifEmpty { null }
+                fallback(query, it)
+            }
+            .ifEmpty { null }
 
     /**
      * Returns the ID of the filter option to currently highlight.
@@ -211,7 +211,6 @@ class SearchViewModel(application: Application) :
         settings.searchFilterMode = newFilterMode
         search(lastQuery)
     }
-
 
     companion object {
         /**

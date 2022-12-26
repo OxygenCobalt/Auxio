@@ -58,8 +58,8 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.system.Indexer
-import org.oxycblt.auxio.shared.MainNavigationAction
-import org.oxycblt.auxio.shared.NavigationViewModel
+import org.oxycblt.auxio.ui.MainNavigationAction
+import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.*
 
 /**
@@ -100,8 +100,7 @@ class HomeFragment :
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentHomeBinding.inflate(inflater)
 
-    override fun getSelectionToolbar(binding: FragmentHomeBinding) =
-        binding.homeSelectionToolbar
+    override fun getSelectionToolbar(binding: FragmentHomeBinding) = binding.homeSelectionToolbar
 
     override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
@@ -239,7 +238,8 @@ class HomeFragment :
     }
 
     private fun setupPager(binding: FragmentHomeBinding) {
-        binding.homePager.adapter = HomePagerAdapter(homeModel.currentTabModes, childFragmentManager, viewLifecycleOwner)
+        binding.homePager.adapter =
+            HomePagerAdapter(homeModel.currentTabModes, childFragmentManager, viewLifecycleOwner)
 
         val toolbarParams = binding.homeSelectionToolbar.layoutParams as AppBarLayout.LayoutParams
         if (homeModel.currentTabModes.size == 1) {
@@ -256,32 +256,36 @@ class HomeFragment :
         }
 
         // Set up the mapping between the ViewPager and TabLayout.
-        TabLayoutMediator(binding.homeTabs, binding.homePager,
-            AdaptiveTabStrategy(requireContext(), homeModel.currentTabModes)).attach()
+        TabLayoutMediator(
+                binding.homeTabs,
+                binding.homePager,
+                AdaptiveTabStrategy(requireContext(), homeModel.currentTabModes))
+            .attach()
     }
 
     private fun updateCurrentTab(tabMode: MusicMode) {
         // Update the sort options to align with those allowed by the tab
-         val isVisible: (Int) -> Boolean = when (tabMode) {
-            // Disallow sorting by count for songs
-            MusicMode.SONGS -> { id -> id != R.id.option_sort_count }
-            // Disallow sorting by album for albums
-            MusicMode.ALBUMS -> { id -> id != R.id.option_sort_album }
-            // Only allow sorting by name, count, and duration for artists
-            MusicMode.ARTISTS -> { id ->
-                id == R.id.option_sort_asc ||
-                    id == R.id.option_sort_name ||
-                    id == R.id.option_sort_count ||
-                    id == R.id.option_sort_duration
+        val isVisible: (Int) -> Boolean =
+            when (tabMode) {
+                // Disallow sorting by count for songs
+                MusicMode.SONGS -> { id -> id != R.id.option_sort_count }
+                // Disallow sorting by album for albums
+                MusicMode.ALBUMS -> { id -> id != R.id.option_sort_album }
+                // Only allow sorting by name, count, and duration for artists
+                MusicMode.ARTISTS -> { id ->
+                        id == R.id.option_sort_asc ||
+                            id == R.id.option_sort_name ||
+                            id == R.id.option_sort_count ||
+                            id == R.id.option_sort_duration
+                    }
+                // Only allow sorting by name, count, and duration for genres
+                MusicMode.GENRES -> { id ->
+                        id == R.id.option_sort_asc ||
+                            id == R.id.option_sort_name ||
+                            id == R.id.option_sort_count ||
+                            id == R.id.option_sort_duration
+                    }
             }
-            // Only allow sorting by name, count, and duration for genres
-            MusicMode.GENRES -> { id ->
-                id == R.id.option_sort_asc ||
-                    id == R.id.option_sort_name ||
-                    id == R.id.option_sort_count ||
-                    id == R.id.option_sort_duration
-            }
-        }
 
         val sortMenu = requireNotNull(sortItem.subMenu)
         val toHighlight = homeModel.getSortForTab(tabMode)
@@ -289,8 +293,9 @@ class HomeFragment :
         for (option in sortMenu) {
             // Check the ascending option and corresponding sort option to align with
             // the current sort of the tab.
-            option.isChecked = option.itemId == toHighlight.mode.itemId
-                    || (option.itemId == R.id.option_sort_asc && toHighlight.isAscending)
+            option.isChecked =
+                option.itemId == toHighlight.mode.itemId ||
+                    (option.itemId == R.id.option_sort_asc && toHighlight.isAscending)
 
             // Disable options that are not allowed by the isVisible lambda
             option.isVisible = isVisible(option.itemId)
@@ -454,8 +459,8 @@ class HomeFragment :
     }
 
     /**
-     * Get the ID of the RecyclerView contained by [ViewPager2] tab represented with
-     * the given [MusicMode].
+     * Get the ID of the RecyclerView contained by [ViewPager2] tab represented with the given
+     * [MusicMode].
      * @param tabMode The [MusicMode] of the tab.
      * @return The ID of the RecyclerView contained by the given tab.
      */
@@ -478,8 +483,7 @@ class HomeFragment :
         private val tabs: List<MusicMode>,
         fragmentManager: FragmentManager,
         lifecycleOwner: LifecycleOwner
-    ) :
-        FragmentStateAdapter(fragmentManager, lifecycleOwner.lifecycle ) {
+    ) : FragmentStateAdapter(fragmentManager, lifecycleOwner.lifecycle) {
 
         override fun getItemCount() = tabs.size
 

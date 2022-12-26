@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.settings.accent
+package org.oxycblt.auxio.ui.accent
 
 import android.os.Build
 import org.oxycblt.auxio.R
@@ -120,8 +120,7 @@ class Accent private constructor(val index: Int) : Item {
     val theme: Int
         get() = ACCENT_THEMES[index]
     /**
-     * The black theme resource for this accent. Identical to [theme], but with a black
-     * background.
+     * The black theme resource for this accent. Identical to [theme], but with a black background.
      */
     val blackTheme: Int
         get() = ACCENT_BLACK_THEMES[index]
@@ -137,20 +136,18 @@ class Accent private constructor(val index: Int) : Item {
         /**
          * Create a new instance.
          * @param index The unique number for this particular accent.
-         * @return A new [Accent] with the specified [index]. If [index] is not within the
-         * range of valid accents, [index] will be [DEFAULT] instead.
+         * @return A new [Accent] with the specified [index]. If [index] is not within the range of
+         * valid accents, [index] will be [DEFAULT] instead.
          */
         fun from(index: Int): Accent {
-            if (index !in 0 until MAX ) {
+            if (index !in 0 until MAX) {
                 logW("Accent is out of bounds [idx: $index]")
                 return Accent(DEFAULT)
             }
             return Accent(index)
         }
 
-        /**
-         * The default accent.
-         */
+        /** The default accent. */
         val DEFAULT =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 // Use dynamic coloring on devices that support it.
@@ -160,9 +157,7 @@ class Accent private constructor(val index: Int) : Item {
                 5
             }
 
-        /**
-         * The amount of valid accents.
-         */
+        /** The amount of valid accents. */
         val MAX =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 ACCENT_THEMES.size

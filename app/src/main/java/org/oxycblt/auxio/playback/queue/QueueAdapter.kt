@@ -41,8 +41,7 @@ import org.oxycblt.auxio.util.inflater
  * @param listener A [Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class QueueAdapter(private val listener: Listener) :
-    RecyclerView.Adapter<QueueSongViewHolder>() {
+class QueueAdapter(private val listener: Listener) : RecyclerView.Adapter<QueueSongViewHolder>() {
     private var differ = SyncListDiffer(this, QueueSongViewHolder.DIFF_CALLBACK)
     // Since PlayingIndicator adapter relies on an item value, we cannot use it for this
     // adapter, as one item can appear at several points in the UI. Use a similar implementation
@@ -72,8 +71,8 @@ class QueueAdapter(private val listener: Listener) :
     }
 
     /**
-     * Synchronously update the list with new items. This is exceedingly slow for large diffs,
-     * so only use it for trivial updates.
+     * Synchronously update the list with new items. This is exceedingly slow for large diffs, so
+     * only use it for trivial updates.
      * @param newList The new [Song]s for the adapter to display.
      */
     fun submitList(newList: List<Song>) {
@@ -81,8 +80,8 @@ class QueueAdapter(private val listener: Listener) :
     }
 
     /**
-     * Replace the list with a new list. This is exceedingly slow for large diffs,
-     * so only use it for trivial updates.
+     * Replace the list with a new list. This is exceedingly slow for large diffs, so only use it
+     * for trivial updates.
      * @param newList The new [Song]s for the adapter to display.
      */
     fun replaceList(newList: List<Song>) {
@@ -90,8 +89,8 @@ class QueueAdapter(private val listener: Listener) :
     }
 
     /**
-     * Set the position of the currently playing item in the queue. This will mark the item
-     * as playing and any previous items as played.
+     * Set the position of the currently playing item in the queue. This will mark the item as
+     * playing and any previous items as played.
      * @param index The position of the currently playing item in the queue.
      * @param isPlaying Whether playback is ongoing or paused.
      */
@@ -122,9 +121,7 @@ class QueueAdapter(private val listener: Listener) :
         }
     }
 
-    /**
-     * A listener for queue list events.
-     */
+    /** A listener for queue list events. */
     interface Listener {
         /**
          * Called when a [RecyclerView.ViewHolder] in the list as clicked.
@@ -152,21 +149,15 @@ class QueueAdapter(private val listener: Listener) :
  */
 class QueueSongViewHolder private constructor(private val binding: ItemQueueSongBinding) :
     PlayingIndicatorAdapter.ViewHolder(binding.root) {
-    /**
-     * The "body" view of this [QueueSongViewHolder] that shows the [Song] information.
-     */
+    /** The "body" view of this [QueueSongViewHolder] that shows the [Song] information. */
     val bodyView: View
         get() = binding.body
 
-    /**
-     * The background view of this [QueueSongViewHolder] that shows the delete icon.
-     */
+    /** The background view of this [QueueSongViewHolder] that shows the delete icon. */
     val backgroundView: View
         get() = binding.background
 
-    /**
-     * The actual background drawable of this [QueueSongViewHolder] that can be manipulated.
-     */
+    /** The actual background drawable of this [QueueSongViewHolder] that can be manipulated. */
     val backgroundDrawable =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
             fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
@@ -174,9 +165,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
             alpha = 0
         }
 
-    /**
-     * If this queue item is considered "in the future" (i.e has not played yet).
-     */
+    /** If this queue item is considered "in the future" (i.e has not played yet). */
     var isFuture: Boolean
         get() = binding.songAlbumCover.isEnabled
         set(value) {
@@ -205,9 +194,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
      */
     @SuppressLint("ClickableViewAccessibility")
     fun bind(song: Song, listener: QueueAdapter.Listener) {
-        binding.body.setOnClickListener {
-            listener.onClick(this)
-        }
+        binding.body.setOnClickListener { listener.onClick(this) }
 
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.resolveName(binding.context)

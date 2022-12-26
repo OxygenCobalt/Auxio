@@ -100,17 +100,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             lmm.findLastCompletelyVisibleItemPosition() == (lmm.itemCount - 1)
     }
 
-    /**
-     * A [RecyclerView.ViewHolder] that implements dialog-specific fixes.
-     */
+    /** A [RecyclerView.ViewHolder] that implements dialog-specific fixes. */
     abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         init {
             // ViewHolders are not automatically full-width in dialogs, manually resize
             // them to be as such.
-            root.layoutParams =
-                LayoutParams(
-                    LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            root.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         }
     }
 }
-

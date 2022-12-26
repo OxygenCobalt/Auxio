@@ -30,7 +30,7 @@ class TabDragCallback(private val adapter: TabAdapter) : ItemTouchHelper.Callbac
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ) = // Allow dragging up and down only
-        makeFlag(ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN)
+    makeFlag(ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN)
 
     override fun onChildDraw(
         c: Canvas,

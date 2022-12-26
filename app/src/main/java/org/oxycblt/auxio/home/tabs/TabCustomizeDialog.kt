@@ -27,7 +27,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogTabsBinding
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.shared.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
 

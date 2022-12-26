@@ -68,9 +68,7 @@ abstract class SelectionIndicatorAdapter<VH : RecyclerView.ViewHolder> :
         }
     }
 
-    /**
-     * A [PlayingIndicatorAdapter.ViewHolder] that can display a selection indicator.
-     */
+    /** A [PlayingIndicatorAdapter.ViewHolder] that can display a selection indicator. */
     abstract class ViewHolder(root: View) : PlayingIndicatorAdapter.ViewHolder(root) {
         /**
          * Update the selection indicator within this [PlayingIndicatorAdapter.ViewHolder].

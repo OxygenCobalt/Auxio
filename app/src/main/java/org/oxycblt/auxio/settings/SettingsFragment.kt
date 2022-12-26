@@ -23,7 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialFadeThrough
 import org.oxycblt.auxio.databinding.FragmentSettingsBinding
-import org.oxycblt.auxio.shared.ViewBindingFragment
+import org.oxycblt.auxio.ui.ViewBindingFragment
 
 /**
  * A [Fragment] wrapper containing the preference fragment and a companion Toolbar.

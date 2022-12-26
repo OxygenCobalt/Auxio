@@ -29,7 +29,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.shared.ForegroundServiceNotification
+import org.oxycblt.auxio.service.ForegroundServiceNotification
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 

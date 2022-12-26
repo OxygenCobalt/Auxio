@@ -27,8 +27,8 @@ import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.selection.SelectionFragment
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.shared.MainNavigationAction
-import org.oxycblt.auxio.shared.NavigationViewModel
+import org.oxycblt.auxio.ui.MainNavigationAction
+import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 
@@ -47,8 +47,8 @@ abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), Selecta
     }
 
     /**
-     * Called when [onClick] is called, but does not result in the item being selected. This
-     * more or less corresponds to an [onClick] implementation in a non-[ListFragment].
+     * Called when [onClick] is called, but does not result in the item being selected. This more or
+     * less corresponds to an [onClick] implementation in a non-[ListFragment].
      * @param music The [Music] item that was clicked.
      */
     abstract fun onRealClick(music: Music)
@@ -70,8 +70,8 @@ abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), Selecta
     }
 
     /**
-     * Opens a menu in the context of a [Song]. This menu will be managed by the Fragment and
-     * closed when the view is destroyed. If a menu is already opened, this call is ignored.
+     * Opens a menu in the context of a [Song]. This menu will be managed by the Fragment and closed
+     * when the view is destroyed. If a menu is already opened, this call is ignored.
      * @param anchor The [View] to anchor the menu to.
      * @param menuRes The resource of the menu to load.
      * @param song The [Song] to create the menu for.
@@ -223,8 +223,8 @@ abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), Selecta
     }
 
     /**
-     * Open a menu. This menu will be managed by the Fragment and closed when the view is
-     * destroyed. If a menu is already opened, this call is ignored.
+     * Open a menu. This menu will be managed by the Fragment and closed when the view is destroyed.
+     * If a menu is already opened, this call is ignored.
      * @param anchor The [View] to anchor the menu to.
      * @param menuRes The resource of the menu to load.
      * @param block A block that is ran within [PopupMenu] that allows further configuration.

@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2022 Auxio Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.image.extractor
 
 import android.content.Context
@@ -7,6 +24,8 @@ import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.MetadataRetriever
 import com.google.android.exoplayer2.metadata.flac.PictureFrame
 import com.google.android.exoplayer2.metadata.id3.ApicFrame
+import java.io.ByteArrayInputStream
+import java.io.InputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.image.CoverMode
@@ -14,8 +33,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
-import java.io.ByteArrayInputStream
-import java.io.InputStream
 
 /**
  * Internal utilities for loading album covers.
@@ -26,8 +43,8 @@ object Covers {
      * Fetch an album cover, respecting the current cover configuration.
      * @param context [Context] required to load the image.
      * @param album [Album] to load the cover from.
-     * @return An [InputStream] of image data if the cover loading was successful, null if the
-     * cover loading failed or should not occur.
+     * @return An [InputStream] of image data if the cover loading was successful, null if the cover
+     * loading failed or should not occur.
      */
     suspend fun fetch(context: Context, album: Album): InputStream? {
         val settings = Settings(context)
@@ -45,8 +62,8 @@ object Covers {
     }
 
     /**
-     * Load an [Album] cover directly from one of it's Song files. This attempts
-     * the following in order:
+     * Load an [Album] cover directly from one of it's Song files. This attempts the following in
+     * order:
      * - [MediaMetadataRetriever], as it has the best support and speed.
      * - ExoPlayer's [MetadataRetriever], as some devices (notably Samsung) can have broken
      * [MediaMetadataRetriever] implementations.

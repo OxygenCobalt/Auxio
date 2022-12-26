@@ -37,7 +37,7 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
     val queue: StateFlow<List<Song>> = _queue
 
     private val _index = MutableStateFlow(playbackManager.index)
-    /** The index of the currently playing song in the queue.  */
+    /** The index of the currently playing song in the queue. */
     val index: StateFlow<Int>
         get() = _index
 
@@ -52,8 +52,8 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     /**
      * Start playing the the queue item at the given index.
-     * @param adapterIndex The index of the queue item to play. Does nothing if the index is out
-     * of range.
+     * @param adapterIndex The index of the queue item to play. Does nothing if the index is out of
+     * range.
      */
     fun goto(adapterIndex: Int) {
         if (adapterIndex !in playbackManager.queue.indices) {
@@ -65,8 +65,8 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     /**
      * Remove a queue item at the given index.
-     * @param adapterIndex The index of the queue item to play. Does nothing if the index is
-     * out of range.
+     * @param adapterIndex The index of the queue item to play. Does nothing if the index is out of
+     * range.
      */
     fun removeQueueDataItem(adapterIndex: Int) {
         if (adapterIndex <= playbackManager.index ||
@@ -93,16 +93,12 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
         return true
     }
 
-    /**
-     * Finish a replace flag specified by [replaceQueue].
-     */
+    /** Finish a replace flag specified by [replaceQueue]. */
     fun finishReplace() {
         replaceQueue = null
     }
 
-    /**
-     * Finish a scroll operation started by [scrollTo].
-     */
+    /** Finish a scroll operation started by [scrollTo]. */
     fun finishScrollTo() {
         scrollTo = null
     }

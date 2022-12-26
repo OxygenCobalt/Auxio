@@ -74,14 +74,10 @@ class AuxioApp : Application(), ImageLoaderFactory {
             .build()
 
     companion object {
-        /**
-         * The ID of the "Shuffle All" shortcut.
-         */
+        /** The ID of the "Shuffle All" shortcut. */
         const val SHORTCUT_SHUFFLE_ID = "shortcut_shuffle"
 
-        /**
-         * The [Intent] name for the "Shuffle All" shortcut.
-         */
+        /** The [Intent] name for the "Shuffle All" shortcut. */
         const val INTENT_KEY_SHORTCUT_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE_ALL"
     }
 }

@@ -23,7 +23,7 @@ import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.shared.NavigationViewModel
+import org.oxycblt.auxio.ui.NavigationViewModel
 
 /**
  * An [ArtistPickerDialog] intended for when [Artist] navigation is ambiguous.

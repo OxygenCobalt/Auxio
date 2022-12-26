@@ -53,8 +53,8 @@ fun Long.nonZeroOrNull() = if (this > 0) this else null
 fun Int.inRangeOrNull(range: IntRange) = if (range.contains(this)) this else null
 
 /**
- * Lazily set up a reflected field. Automatically handles visibility changes.
- * Adapted from Material Files: https://github.com/zhanghai/MaterialFiles
+ * Lazily set up a reflected field. Automatically handles visibility changes. Adapted from Material
+ * Files: https://github.com/zhanghai/MaterialFiles
  * @param clazz The [KClass] to reflect into.
  * @param field The name of the field to obtain.
  */
@@ -62,8 +62,8 @@ fun lazyReflectedField(clazz: KClass<*>, field: String) = lazy {
     clazz.java.getDeclaredField(field).also { it.isAccessible = true }
 }
 /**
- * Lazily set up a reflected method. Automatically handles visibility changes.
- * Adapted from Material Files: https://github.com/zhanghai/MaterialFiles
+ * Lazily set up a reflected method. Automatically handles visibility changes. Adapted from Material
+ * Files: https://github.com/zhanghai/MaterialFiles
  * @param clazz The [KClass] to reflect into.
  * @param field The name of the method to obtain.
  */
@@ -72,9 +72,9 @@ fun lazyReflectedMethod(clazz: KClass<*>, method: String) = lazy {
 }
 
 /**
- * Assert that the execution is currently on a background thread. This is helpful for
- * functions that don't necessarily require suspend, but still want to ensure that they
- * are being called with a co-routine.
+ * Assert that the execution is currently on a background thread. This is helpful for functions that
+ * don't necessarily require suspend, but still want to ensure that they are being called with a
+ * co-routine.
  * @throws IllegalStateException If the execution is not on a background thread.
  */
 fun requireBackgroundThread() {

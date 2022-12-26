@@ -26,9 +26,9 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemSortHeaderBinding
 import org.oxycblt.auxio.detail.SortHeader
-import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.recycler.*
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater

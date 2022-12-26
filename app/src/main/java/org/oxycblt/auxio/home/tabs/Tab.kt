@@ -33,8 +33,7 @@ sealed class Tab(open val mode: MusicMode) {
     data class Visible(override val mode: MusicMode) : Tab(mode)
 
     /**
-     * A visible tab. This will be visible in the tab configuration view, but not in the
-     * home view.
+     * A visible tab. This will be visible in the tab configuration view, but not in the home view.
      * @param mode The type of list in the home view this instance corresponds to.
      */
     data class Invisible(override val mode: MusicMode) : Tab(mode)
@@ -58,9 +57,8 @@ sealed class Tab(open val mode: MusicMode) {
         private const val SEQUENCE_LEN = 4
 
         /**
-         * The default tab sequence, in integer form.
-         * This represents a set of four visible tabs ordered as "Song", "Album", "Artist", and
-         * "Genre".
+         * The default tab sequence, in integer form. This represents a set of four visible tabs
+         * ordered as "Song", "Album", "Artist", and "Genre".
          */
         const val SEQUENCE_DEFAULT = 0b1000_1001_1010_1011_0100
 

@@ -27,10 +27,9 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * a [ViewModel] that manages the current music picker state.
- * TODO: This really shouldn't exist. Make it so that the dialogs just contain the music
- * themselves and then exit if the library changes.
- * TODO: While we are at it, let's go and add ClickableSpan too to reduce the extent of
+ * a [ViewModel] that manages the current music picker state. TODO: This really shouldn't exist.
+ * Make it so that the dialogs just contain the music themselves and then exit if the library
+ * changes. TODO: While we are at it, let's go and add ClickableSpan too to reduce the extent of
  * this dialog.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -46,7 +45,8 @@ class PickerViewModel : ViewModel(), MusicStore.Callback {
 
     private val _currentArtists = MutableStateFlow<List<Artist>?>(null)
     /**
-     * The current [Artist] whose choices are being shown in the picker. Null/Empty if there is none.
+     * The current [Artist] whose choices are being shown in the picker. Null/Empty if there is
+     * none.
      */
     val currentArtists: StateFlow<List<Artist>?>
         get() = _currentArtists
@@ -90,5 +90,4 @@ class PickerViewModel : ViewModel(), MusicStore.Callback {
         // Map the UIDs to artist instances and filter out the ones that can't be found.
         _currentArtists.value = uids.mapNotNull { library.find<Artist>(it) }.ifEmpty { null }
     }
-
 }

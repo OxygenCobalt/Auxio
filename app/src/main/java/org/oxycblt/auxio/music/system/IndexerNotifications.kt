@@ -23,7 +23,7 @@ import androidx.core.app.NotificationCompat
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.shared.ForegroundServiceNotification
+import org.oxycblt.auxio.service.ForegroundServiceNotification
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newMainPendingIntent
 
@@ -89,11 +89,12 @@ class IndexingNotification(private val context: Context) :
 }
 
 /**
- * A static [ForegroundServiceNotification] that signals to the user that the app is currently monitoring
- * the music library for changes.
+ * A static [ForegroundServiceNotification] that signals to the user that the app is currently
+ * monitoring the music library for changes.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ObservingNotification(context: Context) : ForegroundServiceNotification(context, INDEXER_CHANNEL) {
+class ObservingNotification(context: Context) :
+    ForegroundServiceNotification(context, INDEXER_CHANNEL) {
     init {
         setSmallIcon(R.drawable.ic_indexer_24)
         setCategory(NotificationCompat.CATEGORY_SERVICE)

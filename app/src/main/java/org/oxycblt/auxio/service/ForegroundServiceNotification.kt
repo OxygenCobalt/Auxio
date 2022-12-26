@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.shared
+package org.oxycblt.auxio.service
 
 import android.content.Context
 import androidx.annotation.StringRes
@@ -51,14 +51,11 @@ abstract class ForegroundServiceNotification(context: Context, info: ChannelInfo
      */
     abstract val code: Int
 
-    /**
-     * Post this notification using [NotificationManagerCompat].
-     */
+    /** Post this notification using [NotificationManagerCompat]. */
     fun post() {
         // This is safe to call without the POST_NOTIFICATIONS permission, as it's a foreground
         // notification.
-        @Suppress("MissingPermission")
-        notificationManager.notify(code, build())
+        @Suppress("MissingPermission") notificationManager.notify(code, build())
     }
 
     /**

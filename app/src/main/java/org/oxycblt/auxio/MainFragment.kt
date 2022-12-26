@@ -40,9 +40,9 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior
-import org.oxycblt.auxio.shared.MainNavigationAction
-import org.oxycblt.auxio.shared.NavigationViewModel
-import org.oxycblt.auxio.shared.ViewBindingFragment
+import org.oxycblt.auxio.ui.MainNavigationAction
+import org.oxycblt.auxio.ui.NavigationViewModel
+import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.*
 
 /**
@@ -348,8 +348,8 @@ class MainFragment :
     }
 
     /**
-     * A [OnBackPressedCallback] that overrides the back button to first navigate out of
-     * internal app components, such as the Bottom Sheets or Explore Navigation.
+     * A [OnBackPressedCallback] that overrides the back button to first navigate out of internal
+     * app components, such as the Bottom Sheets or Explore Navigation.
      */
     private inner class DynamicBackPressedCallback : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
@@ -379,13 +379,13 @@ class MainFragment :
         }
 
         /**
-         * Force this instance to update whether it's enabled or not. If there are no app
-         * components that the back button should close first, the instance is disabled and
-         * back navigation is delegated to the system.
+         * Force this instance to update whether it's enabled or not. If there are no app components
+         * that the back button should close first, the instance is disabled and back navigation is
+         * delegated to the system.
          *
-         * Normally, this callback would have just called the [MainActivity.onBackPressed]
-         * if there were no components to close, but that prevents adaptive back navigation
-         * from working on Android 14+, so we must do it this way.
+         * Normally, this callback would have just called the [MainActivity.onBackPressed] if there
+         * were no components to close, but that prevents adaptive back navigation from working on
+         * Android 14+, so we must do it this way.
          */
         fun invalidateEnabled() {
             val binding = requireBinding()
@@ -397,7 +397,7 @@ class MainFragment :
 
             isEnabled =
                 queueSheetBehavior?.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
-                playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
+                    playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
                     exploreNavController.currentDestination?.id !=
                         exploreNavController.graph.startDestinationId
         }

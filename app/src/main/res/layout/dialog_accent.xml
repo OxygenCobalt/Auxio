@@ -7,6 +7,6 @@
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/spacing_medium"
     android:paddingEnd="@dimen/spacing_medium"
-    app:layoutManager="org.oxycblt.auxio.settings.accent.AccentGridLayoutManager"
+    app:layoutManager=".ui.accent.AccentGridLayoutManager"
     tools:itemCount="16"
     tools:listitem="@layout/item_accent" />

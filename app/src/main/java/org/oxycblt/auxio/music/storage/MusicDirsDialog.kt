@@ -29,7 +29,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.shared.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
@@ -58,8 +58,7 @@ class MusicDirsDialog :
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
                 val dirs = settings.getMusicDirs(storageManager)
-                val newDirs =
-                    MusicDirectories(dirAdapter.dirs, isUiModeInclude(requireBinding()))
+                val newDirs = MusicDirectories(dirAdapter.dirs, isUiModeInclude(requireBinding()))
                 if (dirs != newDirs) {
                     logD("Committing changes")
                     settings.setMusicDirs(newDirs)
@@ -69,7 +68,8 @@ class MusicDirsDialog :
 
     override fun onBindingCreated(binding: DialogMusicDirsBinding, savedInstanceState: Bundle?) {
         val launcher =
-            registerForActivityResult(ActivityResultContracts.OpenDocumentTree(), ::addDocumentTreeUriToDirs)
+            registerForActivityResult(
+                ActivityResultContracts.OpenDocumentTree(), ::addDocumentTreeUriToDirs)
 
         // Now that the dialog exists, we get the view manually when the dialog is shown
         // and override its click listener so that the dialog does not auto-dismiss when we
@@ -95,7 +95,9 @@ class MusicDirsDialog :
             if (pendingDirs != null) {
                 dirs =
                     MusicDirectories(
-                        pendingDirs.mapNotNull { Directory.fromDocumentTreeUri(storageManager, it) },
+                        pendingDirs.mapNotNull {
+                            Directory.fromDocumentTreeUri(storageManager, it)
+                        },
                         savedInstanceState.getBoolean(KEY_PENDING_MODE))
             }
         }
@@ -170,9 +172,7 @@ class MusicDirsDialog :
         }
     }
 
-    /**
-     * Get if the UI has currently configured [MusicDirectories.shouldInclude] to be true.
-     */
+    /** Get if the UI has currently configured [MusicDirectories.shouldInclude] to be true. */
     private fun isUiModeInclude(binding: DialogMusicDirsBinding) =
         binding.folderModeGroup.checkedButtonId == R.id.dirs_mode_include
 

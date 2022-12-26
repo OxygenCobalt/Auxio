@@ -23,8 +23,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 /**
  * A list differ that operates synchronously. This can help resolve some shortcomings with
- * AsyncListDiffer, at the cost of performance.
- * Derived from Material Files: https://github.com/zhanghai/MaterialFiles
+ * AsyncListDiffer, at the cost of performance. Derived from Material Files:
+ * https://github.com/zhanghai/MaterialFiles
  * @author Hai Zhang, Alexander Capehart (OxygenCobalt)
  */
 class SyncListDiffer<T>(
@@ -111,8 +111,8 @@ class SyncListDiffer<T>(
         }
 
     /**
-     * Submit a list like AsyncListDiffer. This is exceedingly slow for large diffs, so only
-     * use it if the changes are trivial.
+     * Submit a list like AsyncListDiffer. This is exceedingly slow for large diffs, so only use it
+     * if the changes are trivial.
      * @param newList The list to update to.
      */
     fun submitList(newList: List<T>) {
@@ -125,8 +125,8 @@ class SyncListDiffer<T>(
     }
 
     /**
-     * Replace this list with a new list. This is good for large diffs that are too slow to
-     * update synchronously, but too chaotic to update asynchronously.
+     * Replace this list with a new list. This is good for large diffs that are too slow to update
+     * synchronously, but too chaotic to update asynchronously.
      * @param newList The list to update to.
      */
     fun replaceList(newList: List<T>) {

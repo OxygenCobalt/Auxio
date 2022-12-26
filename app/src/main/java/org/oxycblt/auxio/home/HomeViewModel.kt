@@ -44,60 +44,50 @@ class HomeViewModel(application: Application) :
     private val settings = Settings(application, this)
 
     private val _songsList = MutableStateFlow(listOf<Song>())
-    /**
-     * A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view.
-     */
+    /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
     val songLists: StateFlow<List<Song>>
         get() = _songsList
 
     private val _albumsLists = MutableStateFlow(listOf<Album>())
-    /**
-     * A list of [Album]s, sorted by the preferred [Sort], to be shown in the home view.
-     */
+    /** A list of [Album]s, sorted by the preferred [Sort], to be shown in the home view. */
     val albumsList: StateFlow<List<Album>>
         get() = _albumsLists
 
     private val _artistsList = MutableStateFlow(listOf<Artist>())
     /**
-     * A list of [Artist]s, sorted by the preferred [Sort], to be shown in the home view.
-     * Note that if "Hide collaborators" is on, this list will not include [Artist]s
-     * where [Artist.isCollaborator] is true.
+     * A list of [Artist]s, sorted by the preferred [Sort], to be shown in the home view. Note that
+     * if "Hide collaborators" is on, this list will not include [Artist]s where
+     * [Artist.isCollaborator] is true.
      */
     val artistsList: MutableStateFlow<List<Artist>>
         get() = _artistsList
 
     private val _genresList = MutableStateFlow(listOf<Genre>())
-    /**
-     * A list of [Genre]s, sorted by the preferred [Sort], to be shown in the home view.
-     */
+    /** A list of [Genre]s, sorted by the preferred [Sort], to be shown in the home view. */
     val genresList: StateFlow<List<Genre>>
         get() = _genresList
 
     /**
-     * A list of [MusicMode] corresponding to the current [Tab] configuration, excluding
-     * invisible [Tab]s.
+     * A list of [MusicMode] corresponding to the current [Tab] configuration, excluding invisible
+     * [Tab]s.
      */
     var currentTabModes: List<MusicMode> = makeTabModes()
         private set
 
     private val _currentTabMode = MutableStateFlow(currentTabModes[0])
-    /**
-     * The [MusicMode] of the currently shown [Tab].
-     */
+    /** The [MusicMode] of the currently shown [Tab]. */
     val currentTabMode: StateFlow<MusicMode> = _currentTabMode
 
     private val _shouldRecreate = MutableStateFlow(false)
     /**
-     * A marker to re-create all library tabs, usually initiated by a settings change.
-     * When this flag is true, all tabs (and their respective ViewPager2 fragments) will be
-     * re-created from scratch.
+     * A marker to re-create all library tabs, usually initiated by a settings change. When this
+     * flag is true, all tabs (and their respective ViewPager2 fragments) will be re-created from
+     * scratch.
      */
     val shouldRecreate: StateFlow<Boolean> = _shouldRecreate
 
     private val _isFastScrolling = MutableStateFlow(false)
-    /**
-     * A marker for whether the user is fast-scrolling in the home view or not.
-     */
+    /** A marker for whether the user is fast-scrolling in the home view or not. */
     val isFastScrolling: StateFlow<Boolean> = _isFastScrolling
 
     init {
@@ -136,7 +126,6 @@ class HomeViewModel(application: Application) :
                 currentTabModes = makeTabModes()
                 _shouldRecreate.value = true
             }
-
             context.getString(R.string.set_key_hide_collaborators) -> {
                 // Changes in the hide collaborator setting will change the artist contents
                 // of the library, consider it a library update.
@@ -213,9 +202,8 @@ class HomeViewModel(application: Application) :
 
     /**
      * Create a list of [MusicMode]s representing a simpler version of the [Tab] configuration.
-     * @return A list of the [MusicMode]s for each visible [Tab] in the configuration,
-     * ordered in the same way as the configuration.
+     * @return A list of the [MusicMode]s for each visible [Tab] in the configuration, ordered in
+     * the same way as the configuration.
      */
-    private fun makeTabModes() =
-         settings.libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
+    private fun makeTabModes() = settings.libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
 }

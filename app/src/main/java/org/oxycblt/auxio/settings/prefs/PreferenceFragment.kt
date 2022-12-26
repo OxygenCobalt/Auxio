@@ -124,8 +124,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             context.getString(R.string.set_key_wipe_state) -> {
                 playbackModel.wipePlaybackState { wiped ->
                     if (wiped) {
-                    // Use the nullable context, as we could try to show a toast when this
-                    // fragment is no longer attached.
+                        // Use the nullable context, as we could try to show a toast when this
+                        // fragment is no longer attached.
                         this.context?.showToast(R.string.lbl_state_wiped)
                     } else {
                         this.context?.showToast(R.string.err_did_not_wipe)
@@ -135,8 +135,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             context.getString(R.string.set_key_restore_state) ->
                 playbackModel.tryRestorePlaybackState { restored ->
                     if (restored) {
-                    // Use the nullable context, as we could try to show a toast when this
-                    // fragment is no longer attached.
+                        // Use the nullable context, as we could try to show a toast when this
+                        // fragment is no longer attached.
                         this.context?.showToast(R.string.lbl_state_restored)
                     } else {
                         this.context?.showToast(R.string.err_did_not_restore)

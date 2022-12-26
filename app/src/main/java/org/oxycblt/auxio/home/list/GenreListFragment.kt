@@ -43,7 +43,10 @@ import org.oxycblt.auxio.util.collectImmediately
  * A [ListFragment] that shows a list of [Genre]s.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreListFragment : ListFragment<FragmentHomeListBinding>(), FastScrollRecyclerView.PopupProvider, FastScrollRecyclerView.Listener{
+class GenreListFragment :
+    ListFragment<FragmentHomeListBinding>(),
+    FastScrollRecyclerView.PopupProvider,
+    FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
     private val homeAdapter = GenreAdapter(this)
 

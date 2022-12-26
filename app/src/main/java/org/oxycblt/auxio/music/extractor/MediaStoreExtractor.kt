@@ -29,21 +29,21 @@ import androidx.core.database.getStringOrNull
 import java.io.File
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.storage.Directory
+import org.oxycblt.auxio.music.storage.contentResolverSafe
 import org.oxycblt.auxio.music.storage.directoryCompat
 import org.oxycblt.auxio.music.storage.mediaStoreVolumeNameCompat
 import org.oxycblt.auxio.music.storage.safeQuery
 import org.oxycblt.auxio.music.storage.storageVolumesCompat
 import org.oxycblt.auxio.music.storage.useQuery
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.music.storage.contentResolverSafe
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 
 /**
  * The layer that loads music from the [MediaStore] database. This is an intermediate step in the
- * music extraction process and primarily intended for redundancy for files not natively
- * supported by [MetadataExtractor]. Solely relying on this is not recommended, as it often
- * produces bad metadata.
+ * music extraction process and primarily intended for redundancy for files not natively supported
+ * by [MetadataExtractor]. Solely relying on this is not recommended, as it often produces bad
+ * metadata.
  * @param context [Context] required to query the media database.
  * @param cacheExtractor [CacheExtractor] implementation for cache optimizations.
  * @author Alexander Capehart (OxygenCobalt)
@@ -69,15 +69,15 @@ abstract class MediaStoreExtractor(
     private val genreNamesMap = mutableMapOf<Long, String>()
 
     /**
-     * The [StorageVolume]s currently scanned by [MediaStore]. This should be used to transform
-     * path information from the database into volume-aware paths.
+     * The [StorageVolume]s currently scanned by [MediaStore]. This should be used to transform path
+     * information from the database into volume-aware paths.
      */
     protected var volumes = listOf<StorageVolume>()
         private set
 
     /**
-     * Initialize this instance. This involves setting up the required sub-extractors and
-     * querying the media database for music files.
+     * Initialize this instance. This involves setting up the required sub-extractors and querying
+     * the media database for music files.
      * @return A [Cursor] of the music data returned from the database.
      */
     open fun init(): Cursor {
@@ -124,11 +124,14 @@ abstract class MediaStoreExtractor(
 
         // Now we can actually query MediaStore.
         logD("Starting song query [proj: ${projection.toList()}, selector: $selector, args: $args]")
-        val cursor = context.contentResolverSafe.safeQuery(
-                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                        projection,
-                        selector,
-                        args.toTypedArray()).also { cursor = it }
+        val cursor =
+            context.contentResolverSafe
+                .safeQuery(
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    projection,
+                    selector,
+                    args.toTypedArray())
+                .also { cursor = it }
         logD("Song query succeeded [Projected total: ${cursor.count}]")
 
         // Set up cursor indices for later use.
@@ -184,8 +187,8 @@ abstract class MediaStoreExtractor(
     }
 
     /**
-     * Finalize the Extractor by writing the newly-loaded [Song.Raw]s back into the cache,
-     * alongside freeing up memory.
+     * Finalize the Extractor by writing the newly-loaded [Song.Raw]s back into the cache, alongside
+     * freeing up memory.
      * @param rawSongs The songs to write into the cache.
      */
     fun finalize(rawSongs: List<Song.Raw>) {
@@ -222,8 +225,8 @@ abstract class MediaStoreExtractor(
     }
 
     /**
-     * The database columns available to all android versions supported by Auxio.
-     * Concrete implementations can extend this projection to add version-specific columns.
+     * The database columns available to all android versions supported by Auxio. Concrete
+     * implementations can extend this projection to add version-specific columns.
      */
     protected open val projection: Array<String>
         get() =
@@ -244,8 +247,8 @@ abstract class MediaStoreExtractor(
                 AUDIO_COLUMN_ALBUM_ARTIST)
 
     /**
-     * The companion template to add to the projection's selector whenever arguments are added
-     * by [addDirToSelector].
+     * The companion template to add to the projection's selector whenever arguments are added by
+     * [addDirToSelector].
      * @see addDirToSelector
      */
     protected abstract val dirSelectorTemplate: String
@@ -253,8 +256,8 @@ abstract class MediaStoreExtractor(
     /**
      * Add a [Directory] to the given list of projection selector arguments.
      * @param dir The [Directory] to add.
-     * @param args The destination list to append selector arguments to that are analogous
-     * to the given [Directory].
+     * @param args The destination list to append selector arguments to that are analogous to the
+     * given [Directory].
      * @return true if the [Directory] was added, false otherwise.
      * @see dirSelectorTemplate
      */
@@ -263,8 +266,8 @@ abstract class MediaStoreExtractor(
     /**
      * Populate a [Song.Raw] with the "File Data" of the given [MediaStore] [Cursor], which is the
      * data that cannot be cached. This includes any information not intrinsic to the file and
-     * instead dependent on the file-system, which could change without invalidating the cache
-     * due to volume additions or removals.
+     * instead dependent on the file-system, which could change without invalidating the cache due
+     * to volume additions or removals.
      * @param cursor The [Cursor] to read from.
      * @param raw The [Song.Raw] to populate.
      * @see populateMetadata
@@ -281,9 +284,9 @@ abstract class MediaStoreExtractor(
     }
 
     /**
-     * Populate a [Song.Raw] with the Metadata of the given [MediaStore] [Cursor], which is the
-     * data about a [Song.Raw] that can be cached. This includes any information intrinsic to
-     * the file or it's file format, such as music tags.
+     * Populate a [Song.Raw] with the Metadata of the given [MediaStore] [Cursor], which is the data
+     * about a [Song.Raw] that can be cached. This includes any information intrinsic to the file or
+     * it's file format, such as music tags.
      * @param cursor The [Cursor] to read from.
      * @param raw The [Song.Raw] to populate.
      * @see populateFileData
@@ -334,8 +337,8 @@ abstract class MediaStoreExtractor(
         private const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
 
         /**
-         * The external volume. This naming has existed since API 21, but no constant existed
-         * for it until API 29. This will work on all versions that Auxio supports.
+         * The external volume. This naming has existed since API 21, but no constant existed for it
+         * until API 29. This will work on all versions that Auxio supports.
          */
         @Suppress("InlinedApi") private const val VOLUME_EXTERNAL = MediaStore.VOLUME_EXTERNAL
     }
@@ -367,7 +370,8 @@ class Api21MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor)
     override val projection: Array<String>
         get() =
             super.projection +
-                arrayOf(MediaStore.Audio.AudioColumns.TRACK,
+                arrayOf(
+                    MediaStore.Audio.AudioColumns.TRACK,
                     // Below API 29, we are restricted to the absolute path (Called DATA by
                     // MedaStore) when working with audio files.
                     MediaStore.Audio.AudioColumns.DATA)
@@ -486,8 +490,8 @@ open class BaseApi29MediaStoreExtractor(context: Context, cacheExtractor: CacheE
 }
 
 /**
- * A [MediaStoreExtractor] that completes the music loading process in a way compatible with at
- * API 29.
+ * A [MediaStoreExtractor] that completes the music loading process in a way compatible with at API
+ * 29.
  * @param context [Context] required to query the media database.
  * @param cacheExtractor [CacheExtractor] implementation for cache functionality.
  * @author Alexander Capehart (OxygenCobalt)
@@ -521,8 +525,8 @@ open class Api29MediaStoreExtractor(context: Context, cacheExtractor: CacheExtra
 }
 
 /**
- * A [MediaStoreExtractor] that completes the music loading process in a way compatible from
- * API 30 onwards.
+ * A [MediaStoreExtractor] that completes the music loading process in a way compatible from API 30
+ * onwards.
  * @param context [Context] required to query the media database.
  * @param cacheExtractor [CacheExtractor] implementation for cache optimizations.
  * @author Alexander Capehart (OxygenCobalt)

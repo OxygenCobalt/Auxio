@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.settings.accent
+package org.oxycblt.auxio.ui.accent
 
 import android.content.Context
 import android.util.AttributeSet
@@ -27,8 +27,8 @@ import org.oxycblt.auxio.util.getDimenPixels
 
 /**
  * A [GridLayoutManager] that automatically sets the span size in order to use the most possible
- * space in the [RecyclerView].
- * Derived from this StackOverflow answer: https://stackoverflow.com/a/30256880/14143986
+ * space in the [RecyclerView]. Derived from this StackOverflow answer:
+ * https://stackoverflow.com/a/30256880/14143986
  */
 class AccentGridLayoutManager(
     context: Context,

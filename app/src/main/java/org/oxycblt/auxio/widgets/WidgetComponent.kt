@@ -35,9 +35,8 @@ import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.logD
 
 /**
- * A component that manages the "Now Playing" state.
- * This is kept separate from the [WidgetProvider] itself to prevent possible memory
- * leaks and enable extension to more widgets in the future.
+ * A component that manages the "Now Playing" state. This is kept separate from the [WidgetProvider]
+ * itself to prevent possible memory leaks and enable extension to more widgets in the future.
  * @param context [Context] required to manage AppWidgetProviders.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -52,9 +51,7 @@ class WidgetComponent(private val context: Context) :
         playbackManager.addCallback(this)
     }
 
-    /**
-     * Update [WidgetProvider] with the current playback state.
-     */
+    /** Update [WidgetProvider] with the current playback state. */
     fun update() {
         val song = playbackManager.song
         if (song == null) {
@@ -104,9 +101,7 @@ class WidgetComponent(private val context: Context) :
             })
     }
 
-    /**
-     * Release this instance, preventing any further events from updating the widget instances.
-     */
+    /** Release this instance, preventing any further events from updating the widget instances. */
     fun release() {
         provider.release()
         settings.release()

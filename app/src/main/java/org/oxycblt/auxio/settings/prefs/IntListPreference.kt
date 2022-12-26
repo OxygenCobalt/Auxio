@@ -114,8 +114,8 @@ constructor(
 
     /**
      * Get the index of the current value.
-     * @return The index of the current value within [values], or -1 if the [IntListPreference]
-     * is not set.
+     * @return The index of the current value within [values], or -1 if the [IntListPreference] is
+     * not set.
      */
     fun getValueIndex(): Int {
         val curValue = currentValue
@@ -148,9 +148,7 @@ constructor(
         }
     }
 
-    /**
-     * Copy of ListPreference's [Preference.SummaryProvider] for this [IntListPreference].
-     */
+    /** Copy of ListPreference's [Preference.SummaryProvider] for this [IntListPreference]. */
     private inner class IntListSummaryProvider : SummaryProvider<IntListPreference> {
         override fun provideSummary(preference: IntListPreference): CharSequence {
             val index = getValueIndex()

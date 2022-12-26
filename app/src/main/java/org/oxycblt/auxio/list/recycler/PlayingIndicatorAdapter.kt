@@ -21,7 +21,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 
 /**
  * A [RecyclerView.Adapter] that supports indicating the playback status of a particular item.
@@ -36,8 +35,7 @@ abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerV
     private var isPlaying = false
 
     /**
-     * The current list of the adapter. This is used to update items if the indicator
-     * state changes.
+     * The current list of the adapter. This is used to update items if the indicator state changes.
      */
     abstract val currentList: List<Item>
 
@@ -106,15 +104,13 @@ abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerV
         }
     }
 
-    /**
-     * A [RecyclerView.ViewHolder] that can display a playing indicator.
-     */
+    /** A [RecyclerView.ViewHolder] that can display a playing indicator. */
     abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         /**
          * Update the playing indicator within this [RecyclerView.ViewHolder].
          * @param isActive True if this item is playing, false otherwise.
-         * @param isPlaying True if playback is ongoing, false if paused. If this
-         * is true, [isActive] will also be true.
+         * @param isPlaying True if playback is ongoing, false if paused. If this is true,
+         * [isActive] will also be true.
          */
         abstract fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean)
     }

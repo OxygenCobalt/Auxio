@@ -21,7 +21,6 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.system.Indexer
-import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewModel] providing data specific to the music loading process.

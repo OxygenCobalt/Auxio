@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.settings.accent
+package org.oxycblt.auxio.ui.accent
 
 import android.view.View
 import android.view.ViewGroup
