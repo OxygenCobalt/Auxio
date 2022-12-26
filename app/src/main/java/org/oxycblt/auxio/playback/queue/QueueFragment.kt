@@ -90,9 +90,8 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueAdapter.
         // If requested, scroll to a new item (occurs when the index moves)
         val scrollTo = queueModel.scrollTo
         if (scrollTo != null) {
-            // Do not scroll to indices that are not in the currently visible range.
-            // This prevents the queue from jumping around when the user is trying to
-            // navigate the queue.
+            // Do not scroll to indices that are in the currently visible range. As that would
+            // lead to the queue jumping around every time goto is called.
             val lmm = binding.queueRecycler.layoutManager as LinearLayoutManager
             val start = lmm.findFirstCompletelyVisibleItemPosition()
             val end = lmm.findLastCompletelyVisibleItemPosition()

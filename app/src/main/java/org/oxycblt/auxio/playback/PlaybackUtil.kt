@@ -20,52 +20,65 @@ package org.oxycblt.auxio.playback
 import android.text.format.DateUtils
 import org.oxycblt.auxio.util.logD
 
-/** Converts a long in milliseconds to a long in deci-seconds */
+/**
+ * Convert milliseconds into deci-seconds (1/10th of a second).
+ * @return A converted deci-second value.
+ */
 fun Long.msToDs() = floorDiv(100)
 
-/** Converts a long in milliseconds to a long in seconds */
+/**
+ * Convert milliseconds into seconds.
+ * @return A converted second value.
+ */
 fun Long.msToSecs() = floorDiv(1000)
 
-/** Converts a long in deci-seconds to a long in milliseconds. */
+/**
+ * Convert deci-seconds (1/10th of a second) into milliseconds.
+ * @return A converted millisecond value.
+ */
 fun Long.dsToMs() = times(100)
 
-/** Converts a long in deci-seconds to a long in seconds. */
+/**
+ * Convert deci-seconds (1/10th of a second) into seconds.
+ * @return A converted second value.
+ */
 fun Long.dsToSecs() = floorDiv(10)
 
-/** Converts a long in seconds to a long in milliseconds. */
+/**
+ * Convert seconds into milliseconds.
+ * @return A converted millisecond value.
+ */
 fun Long.secsToMs() = times(1000)
 
 /**
- * Convert a [Long] of milliseconds into a string duration.
+ * Convert a millisecond value into a string duration.
  * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
  * will be returned if the second value is 0.
  */
 fun Long.formatDurationMs(isElapsed: Boolean) = msToSecs().formatDurationSecs(isElapsed)
 
 /**
- * Convert a [Long] of deci-seconds into a string duration.
+// * Format a deci-second value (1/10th of a second) into a string duration.
  * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
  * will be returned if the second value is 0.
  */
 fun Long.formatDurationDs(isElapsed: Boolean) = dsToSecs().formatDurationSecs(isElapsed)
 
 /**
- * Convert a [Long] of seconds into a string duration.
+ * Convert a second value into a string duration.
  * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
  * will be returned if the second value is 0.
  */
 fun Long.formatDurationSecs(isElapsed: Boolean): String {
     if (!isElapsed && this == 0L) {
-        logD("Non-elapsed duration is zero, using --:--")
+        // Non-elapsed duration is zero, return default value.
         return "--:--"
     }
 
     var durationString = DateUtils.formatElapsedTime(this)
-
-    // If the duration begins with a excess zero [e.g 01:42], then cut it off.
+    // Remove trailing zero values [i.e 01:42]. This is primarily for aesthetics.
     if (durationString[0] == '0') {
         durationString = durationString.slice(1 until durationString.length)
     }
-
     return durationString
 }

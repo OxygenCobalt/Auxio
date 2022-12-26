@@ -19,12 +19,23 @@ package org.oxycblt.auxio.playback
 
 import org.oxycblt.auxio.IntegerTable
 
-/** Represents custom actions available in certain areas of the playback UI. */
+/**
+ * Represents a configuration option for what kind of "secondary" action to show in a particular
+ * context.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 enum class ActionMode {
+    /** Use a "Skip next" button for the secondary action. */
     NEXT,
+    /** Use a repeat mode button for the secondary action. */
     REPEAT,
+    /** Use a shuffle mode button for the secondary action. */
     SHUFFLE;
 
+    /**
+     * The integer representation of this instance.
+     * @see fromIntCode
+     */
     val intCode: Int
         get() =
             when (this) {
@@ -34,9 +45,14 @@ enum class ActionMode {
             }
 
     companion object {
-        /** Convert an int [code] into an instance, or null if it isn't valid. */
-        fun fromIntCode(code: Int) =
-            when (code) {
+        /**
+         * Convert a [ActionMode] integer representation into an instance.
+         * @param intCode An integer representation of a [ActionMode]
+         * @return The corresponding [ActionMode], or null if the [ActionMode] is invalid.
+         * @see ActionMode.intCode
+         */
+        fun fromIntCode(intCode: Int) =
+            when (intCode) {
                 IntegerTable.ACTION_MODE_NEXT -> NEXT
                 IntegerTable.ACTION_MODE_REPEAT -> REPEAT
                 IntegerTable.ACTION_MODE_SHUFFLE -> SHUFFLE

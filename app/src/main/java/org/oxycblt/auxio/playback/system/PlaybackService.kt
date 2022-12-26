@@ -39,8 +39,6 @@ import com.google.android.exoplayer2.ext.flac.LibflacAudioRenderer
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.mediacodec.MediaCodecSelector
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
-import kotlin.math.max
-import kotlin.math.min
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -113,8 +111,10 @@ class PlaybackService :
     override fun onCreate() {
         super.onCreate()
 
+        // Initialize the player component.
         replayGainProcessor = ReplayGainAudioProcessor(this)
-
+        // Enable constant bitrate seeking so that certain MP3s/AACs are seekable
+        val extractorsFactory = DefaultExtractorsFactory().setConstantBitrateSeekingEnabled(true)
         // Since Auxio is a music player, only specify an audio renderer to save
         // battery/apk size/cache size
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
@@ -129,62 +129,54 @@ class PlaybackService :
                 LibflacAudioRenderer(handler, audioListener, replayGainProcessor))
         }
 
-        // Enable constant bitrate seeking so that certain MP3s/AACs are seekable
-        val extractorsFactory = DefaultExtractorsFactory().setConstantBitrateSeekingEnabled(true)
-
         player =
             ExoPlayer.Builder(this, audioRenderer)
                 .setMediaSourceFactory(DefaultMediaSourceFactory(this, extractorsFactory))
+                // Enable automatic WakeLock support
                 .setWakeMode(C.WAKE_MODE_LOCAL)
                 .setAudioAttributes(
+                    // Signal that we are a music player.
                     AudioAttributes.Builder()
                         .setUsage(C.USAGE_MEDIA)
                         .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                         .build(),
                     true)
-                .build()
-
-        player.addListener(this)
-
+                .build().also { it.addListener(this) }
+        // Initialize the core service components
         settings = Settings(this, this)
         foregroundManager = ForegroundManager(this)
-
+        // Initialize any listener-dependent components last as we wouldn't want a listener race
+        // condition to cause us to load music before we were fully initialize.
         playbackManager.registerInternalPlayer(this)
         musicStore.addCallback(this)
-
         widgetComponent = WidgetComponent(this)
         mediaSessionComponent = MediaSessionComponent(this, this)
-
-        IntentFilter().apply {
-            addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
-            addAction(AudioManager.ACTION_HEADSET_PLUG)
-
-            addAction(ACTION_INC_REPEAT_MODE)
-            addAction(ACTION_INVERT_SHUFFLE)
-            addAction(ACTION_SKIP_PREV)
-            addAction(ACTION_PLAY_PAUSE)
-            addAction(ACTION_SKIP_NEXT)
-            addAction(ACTION_EXIT)
-            addAction(WidgetProvider.ACTION_WIDGET_UPDATE)
-
-            registerReceiver(systemReceiver, this)
-        }
-
-        // --- PLAYBACKSTATEMANAGER SETUP ---
+        registerReceiver(
+            systemReceiver,
+            IntentFilter().apply {
+                addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+                addAction(AudioManager.ACTION_HEADSET_PLUG)
+                addAction(ACTION_INC_REPEAT_MODE)
+                addAction(ACTION_INVERT_SHUFFLE)
+                addAction(ACTION_SKIP_PREV)
+                addAction(ACTION_PLAY_PAUSE)
+                addAction(ACTION_SKIP_NEXT)
+                addAction(ACTION_EXIT)
+                addAction(WidgetProvider.ACTION_WIDGET_UPDATE)
+            }
+        )
 
         logD("Service created")
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        // Forward system media button sent by MediaButtonReciever to MediaSessionComponent
         if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
             mediaSessionComponent.handleMediaButtonIntent(intent)
         }
-
         return START_NOT_STICKY
     }
 
-    // No binding, service is headless
-    // Communicate using PlaybackStateManager, SettingsManager, or Broadcasts instead.
     override fun onBind(intent: Intent): IBinder? = null
 
     // TODO: Implement task removal (Have to radically alter state saving to occur at runtime)
@@ -193,13 +185,13 @@ class PlaybackService :
         super.onDestroy()
 
         foregroundManager.release()
+        settings.release()
 
         // Pause just in case this destruction was unexpected.
-        playbackManager.changePlaying(false)
-
+        playbackManager.setPlaying(false)
         playbackManager.unregisterInternalPlayer(this)
         musicStore.removeCallback(this)
-        settings.release()
+
         unregisterReceiver(systemReceiver)
         serviceJob.cancel()
 
@@ -224,13 +216,16 @@ class PlaybackService :
     override val shouldRewindWithPrev: Boolean
         get() = settings.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
 
-    override fun makeState(durationMs: Long) =
+    override fun getState(durationMs: Long) =
         InternalPlayer.State.new(
-            player.playWhenReady, player.isPlaying, max(min(player.currentPosition, durationMs), 0))
+            player.playWhenReady, player.isPlaying,
+            // The position value can be below zero or past the expected duration, make
+            // sure we handle that.
+            player.currentPosition.coerceAtLeast(0).coerceAtMost(durationMs))
 
     override fun loadSong(song: Song?, play: Boolean) {
         if (song == null) {
-            // Stop the foreground state if there's nothing to play.
+            // No song, stop playback and foreground state.
             logD("Nothing playing, stopping playback")
             player.stop()
             if (openAudioEffectSession) {
@@ -238,7 +233,6 @@ class PlaybackService :
                 broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
                 openAudioEffectSession = false
             }
-
             stopAndSave()
             return
         }
@@ -263,7 +257,7 @@ class PlaybackService :
         player.seekTo(positionMs)
     }
 
-    override fun changePlaying(isPlaying: Boolean) {
+    override fun setPlaying(isPlaying: Boolean) {
         player.playWhenReady = isPlaying
     }
 
@@ -271,28 +265,29 @@ class PlaybackService :
 
     override fun onEvents(player: Player, events: Player.Events) {
         super.onEvents(player, events)
-
-        var needToSynchronize =
-            events.containsAny(Player.EVENT_IS_PLAYING_CHANGED, Player.EVENT_POSITION_DISCONTINUITY)
-
-        if (events.contains(Player.EVENT_PLAY_WHEN_READY_CHANGED)) {
-            needToSynchronize = true
-            if (player.playWhenReady) {
-                hasPlayed = true
-            }
+        if (events.contains(Player.EVENT_PLAY_WHEN_READY_CHANGED) && player.playWhenReady) {
+            // Mark that we have started playing so that the notification can now be posted.
+            hasPlayed = true
         }
 
-        if (needToSynchronize) {
+        // Any change to the analogous isPlaying, isAdvancing, or positionMs values require
+        // us to synchronize with a new state.
+        if (events.containsAny(
+                Player.EVENT_PLAY_WHEN_READY_CHANGED,
+                Player.EVENT_IS_PLAYING_CHANGED,
+                Player.EVENT_POSITION_DISCONTINUITY)) {
             playbackManager.synchronizeState(this)
         }
     }
 
     override fun onPlaybackStateChanged(state: Int) {
         if (state == Player.STATE_ENDED) {
+            // Player ended, repeat the current track if we are configured to.
             if (playbackManager.repeatMode == RepeatMode.TRACK) {
                 playbackManager.rewind()
+                // May be configured to pause when we repeat a track.
                 if (settings.pauseOnRepeat) {
-                    playbackManager.changePlaying(false)
+                    playbackManager.setPlaying(false)
                 }
             } else {
                 playbackManager.next()
@@ -308,7 +303,8 @@ class PlaybackService :
 
     override fun onTracksChanged(tracks: Tracks) {
         super.onTracksChanged(tracks)
-
+        // Try to find the currently playing track so we can update ReplayGainAudioProcessor
+        // with it.
         for (group in tracks.groups) {
             if (group.isSelected) {
                 for (i in 0 until group.length) {
@@ -327,6 +323,7 @@ class PlaybackService :
 
     override fun onLibraryChanged(library: MusicStore.Library?) {
         if (library != null) {
+            // We now have a library, see if we have anything we need to do.
             playbackManager.requestAction(this)
         }
     }
@@ -351,11 +348,13 @@ class PlaybackService :
                 .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC))
     }
 
-    /** Stop the foreground state and hide the notification */
     private fun stopAndSave() {
+        // This session has ended, so we need to reset this flag for when the next session starts.
         hasPlayed = false
-
         if (foregroundManager.tryStopForeground()) {
+            // Now that we have ended the foreground state (and thus music playback), we'll need
+            // to save the current state as it's not long until this service (and likely the whole
+            // app) is killed.
             logD("Saving playback state")
             saveScope.launch {
                 playbackManager.saveState(PlaybackStateDatabase.getInstance(this@PlaybackService))
@@ -363,56 +362,54 @@ class PlaybackService :
         }
     }
 
-    override fun onAction(action: InternalPlayer.Action): Boolean {
+    override fun performAction(action: InternalPlayer.Action): Boolean {
         val library = musicStore.library
-        if (library != null) {
-            logD("Performing action: $action")
+            // No library, cannot do anything.
+            ?: return false
 
-            when (action) {
-                is InternalPlayer.Action.RestoreState -> {
-                    restoreScope.launch {
-                        playbackManager.restoreState(
-                            PlaybackStateDatabase.getInstance(this@PlaybackService), false)
-                    }
-                }
-                is InternalPlayer.Action.ShuffleAll -> {
-                    playbackManager.play(null, null, settings, true)
-                }
-                is InternalPlayer.Action.Open -> {
-                    library.findSongForUri(application, action.uri)?.let { song ->
-                        playbackManager.play(song, null, settings)
-                    }
+        logD("Performing action: $action")
+
+        when (action) {
+            // Restore state -> Start a new restoreState job
+            is InternalPlayer.Action.RestoreState -> {
+                restoreScope.launch {
+                    playbackManager.restoreState(
+                        PlaybackStateDatabase.getInstance(this@PlaybackService), false)
                 }
             }
-
-            return true
+            // Shuffle all -> Start new playback from all songs
+            is InternalPlayer.Action.ShuffleAll -> {
+                playbackManager.play(null, null, settings, true)
+            }
+            // Open -> Try to find the Song for the given file and then play it from all songs
+            is InternalPlayer.Action.Open -> {
+                library.findSongForUri(application, action.uri)?.let { song ->
+                    playbackManager.play(song, null, settings)
+                }
+            }
         }
 
-        return false
+        return true
     }
 
     // --- MEDIASESSIONCOMPONENT OVERRIDES ---
 
-    override fun onPostNotification(
-        notification: NotificationComponent?,
-        reason: MediaSessionComponent.PostingReason
-    ) {
-        if (notification == null) {
-            // This case is only here if I ever need to move foreground stopping from
-            // the player code to the notification code.
-            logD("No notification, ignoring")
-            return
-        }
-
+    override fun onPostNotification(notification: NotificationComponent) {
+        // Do not post the notification if playback hasn't started yet. This prevents errors
+        // where changing a setting would cause the notification to appear in an unfriendly
+        // manner.
         if (hasPlayed) {
-            logD("Updating notification [Reason: $reason]")
+            logD("Updating notification")
             if (!foregroundManager.tryStartForeground(notification)) {
                 notification.post()
             }
         }
     }
 
-    /** A [BroadcastReceiver] for receiving general playback events from the system. */
+    /**
+     * A [BroadcastReceiver] for receiving playback-specific [Intent]s from the system that require
+     * an active [IntentFilter] to be registered.
+     */
     private inner class PlaybackReceiver : BroadcastReceiver() {
         private var initialHeadsetPlugEventHandled = false
 
@@ -425,22 +422,21 @@ class PlaybackService :
                 // 2. ACTION_ACL_CONNECTED, which allows headset autoplay but also requires
                 // granting the BLUETOOTH/BLUETOOTH_CONNECT permissions, which is more or less
                 // a non-starter since both require me to display a permission prompt
-                // 3. Some weird internal framework thing that also handles bluetooth headsets???
-                //
-                // They should have just stopped at ACTION_HEADSET_PLUG.
+                // 3. Some internal framework thing that also handles bluetooth headsets
+                // Just use ACTION_HEADSET_PLUG.
                 AudioManager.ACTION_HEADSET_PLUG -> {
                     when (intent.getIntExtra("state", -1)) {
-                        0 -> pauseFromPlug()
-                        1 -> maybeResumeFromPlug()
+                        0 -> pauseFromHeadsetPlug()
+                        1 -> playFromHeadsetPlug()
                     }
 
                     initialHeadsetPlugEventHandled = true
                 }
-                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
+                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromHeadsetPlug()
 
                 // --- AUXIO EVENTS ---
                 ACTION_PLAY_PAUSE ->
-                    playbackManager.changePlaying(!playbackManager.playerState.isPlaying)
+                    playbackManager.setPlaying(!playbackManager.playerState.isPlaying)
                 ACTION_INC_REPEAT_MODE ->
                     playbackManager.repeatMode = playbackManager.repeatMode.increment()
                 ACTION_INVERT_SHUFFLE ->
@@ -448,48 +444,40 @@ class PlaybackService :
                 ACTION_SKIP_PREV -> playbackManager.prev()
                 ACTION_SKIP_NEXT -> playbackManager.next()
                 ACTION_EXIT -> {
-                    playbackManager.changePlaying(false)
+                    playbackManager.setPlaying(false)
                     stopAndSave()
                 }
                 WidgetProvider.ACTION_WIDGET_UPDATE -> widgetComponent.update()
             }
         }
 
-        /**
-         * Resume from a headset plug event in the case that the quirk is enabled. This
-         * functionality remains a quirk for two reasons:
-         * 1. Automatically resuming more or less overrides all other audio streams, which is not
-         * that friendly
-         * 2. There is a bug where playback will always start when this service starts, mostly due
-         * to AudioManager.ACTION_HEADSET_PLUG always firing on startup. This is fixed, but I fear
-         * that it may not work on OEM skins that for whatever reason don't make this action fire.
-         */
-        private fun maybeResumeFromPlug() {
-            if (playbackManager.song != null &&
-                settings.headsetAutoplay &&
+        private fun playFromHeadsetPlug() {
+            // ACTION_HEADSET_PLUG will fire when this BroadcastReciever is initially attached,
+            // which would result in unexpected playback. Work around it by dropping the first
+            // call to this function, which should come from that Intent.
+            if (settings.headsetAutoplay &&
+                playbackManager.song != null &&
                 initialHeadsetPlugEventHandled) {
                 logD("Device connected, resuming")
-                playbackManager.changePlaying(true)
+                playbackManager.setPlaying(true)
             }
         }
 
-        /** Pause from a headset plug. */
-        private fun pauseFromPlug() {
+        private fun pauseFromHeadsetPlug() {
             if (playbackManager.song != null) {
                 logD("Device disconnected, pausing")
-                playbackManager.changePlaying(false)
+                playbackManager.setPlaying(false)
             }
         }
     }
 
     companion object {
-        private const val REWIND_THRESHOLD = 3000L
-
         const val ACTION_INC_REPEAT_MODE = BuildConfig.APPLICATION_ID + ".action.LOOP"
         const val ACTION_INVERT_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE"
         const val ACTION_SKIP_PREV = BuildConfig.APPLICATION_ID + ".action.PREV"
         const val ACTION_PLAY_PAUSE = BuildConfig.APPLICATION_ID + ".action.PLAY_PAUSE"
         const val ACTION_SKIP_NEXT = BuildConfig.APPLICATION_ID + ".action.NEXT"
         const val ACTION_EXIT = BuildConfig.APPLICATION_ID + ".action.EXIT"
+        private const val REWIND_THRESHOLD = 3000L
     }
 }

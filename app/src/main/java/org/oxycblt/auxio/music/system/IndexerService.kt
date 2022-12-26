@@ -78,7 +78,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
             getSystemServiceCompat(PowerManager::class)
                 .newWakeLock(
                     PowerManager.PARTIAL_WAKE_LOCK, BuildConfig.APPLICATION_ID + ":IndexerService")
-        // Initialize any callback-dependent components last as we wouldn't want a callback race
+        // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
         indexerContentObserver = SystemContentObserver()
         settings = Settings(this, this)
@@ -102,7 +102,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         // De-initialize core service components first.
         foregroundManager.release()
         wakeLock.releaseSafe()
-        // Then cancel the callback-dependent components to ensure that stray reloading
+        // Then cancel the listener-dependent components to ensure that stray reloading
         // events will not occur.
         indexerContentObserver.release()
         settings.release()
@@ -137,8 +137,8 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
                         // Wipe possibly-invalidated outdated covers
                         imageLoader.memoryCache?.clear()
                         // Clear invalid models from PlaybackStateManager. This is not connected
-                        // to a callback as it is bad practice for a shared object to attach to
-                        // the callback system of another.
+                        // to a listener as it is bad practice for a shared object to attach to
+                        // the listener system of another.
                         playbackManager.sanitize(newLibrary)
                     }
                     // Forward the new library to MusicStore to continue the update process.

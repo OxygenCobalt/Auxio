@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.util
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
@@ -29,6 +30,7 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.database.sqlite.transaction
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
@@ -226,16 +228,6 @@ inline fun <reified T : AndroidViewModel> Fragment.androidActivityViewModels() =
 /** The [Context] provided to an [AndroidViewModel]. */
 inline val AndroidViewModel.context: Context
     get() = getApplication()
-
-/**
- * Query all columns in the given [SQLiteDatabase] table, running the block when the [Cursor] is
- * loaded. The block will be called with [use], allowing for automatic cleanup of [Cursor]
- * resources.
- * @param tableName The name of the table to query all columns in.
- * @param block The code block to run with the loaded [Cursor].
- */
-inline fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
-    query(tableName, null, null, null, null, null, null)?.use(block)
 
 /**
  * Get the "System Bar" [Insets] in this [WindowInsets] instance in a version-compatible manner This

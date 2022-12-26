@@ -22,51 +22,88 @@ import android.os.SystemClock
 import android.support.v4.media.session.PlaybackStateCompat
 import org.oxycblt.auxio.music.Song
 
-/** Represents a class capable of managing the internal player. */
+/**
+ * An interface for internal audio playback. This can be used to coordinate what occurs in the
+ * background playback task.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 interface InternalPlayer {
-    /** The audio session ID of the player instance. */
+    /** The ID of the audio session started by this instance. */
     val audioSessionId: Int
 
-    /** Whether the player should rewind instead of going to the previous song. */
+    /** Whether the player should rewind before skipping back. */
     val shouldRewindWithPrev: Boolean
 
-    fun makeState(durationMs: Long): State
-
-    /** Called when a new song should be loaded into the player. */
+    /**
+     * Load a new [Song] into the internal player.
+     * @param song The [Song] to load, or null if playback should stop entirely.
+     * @param play Whether to start playing when the [Song] is loaded.
+     */
     fun loadSong(song: Song?, play: Boolean)
 
-    /** Seek to [positionMs] in the player. */
-    fun seekTo(positionMs: Long)
-
-    /** Called when the playing state needs to be changed. */
-    fun changePlaying(isPlaying: Boolean)
+    /**
+     * Called when an [Action] has been queued and this [InternalPlayer] is available to handle it.
+     * @param action The [Action] to perform.
+     * @return true if the action was handled, false otherwise.
+     */
+    fun performAction(action: Action): Boolean
 
     /**
-     * Called when [PlaybackStateManager] desires some [Action] to be completed. Returns true if the
-     * action was consumed, false otherwise.
+     * Get a [State] corresponding to the current player state.
+     * @param durationMs The duration of the currently playing track, in milliseconds.
+     * Required since the internal player cannot obtain an accurate duration itself.
      */
-    fun onAction(action: Action): Boolean
+    fun getState(durationMs: Long): State
+
+    /**
+     * Seek to a given position in the internal player.
+     * @param positionMs The position to seek to, in milliseconds.
+     */
+    fun seekTo(positionMs: Long)
+
+    /**
+     * Set whether the player should play or not.
+     * @param isPlaying Whether to play or pause the current playback.
+     */
+    fun setPlaying(isPlaying: Boolean)
+
+    /**
+     * Possible long-running background tasks handled by the background playback task.
+     */
+    sealed class Action {
+        /** Restore the previously saved playback state. */
+        object RestoreState : Action()
+
+        /**
+         * Start shuffled playback of the entire music library.
+         * Analogous to the "Shuffle All" shortcut.
+         */
+        object ShuffleAll : Action()
+
+        /**
+         * Start playing an audio file at the given [Uri].
+         * @param uri The [Uri] of the audio file to start playing.
+         */
+        data class Open(val uri: Uri) : Action()
+    }
 
     class State
     private constructor(
-        /**
-         * Whether the user has actually chosen to play this audio. The player might not actually be
-         * playing at this time.
-         */
+        /** Whether the player is actively playing audio or set to play audio in the future. */
         val isPlaying: Boolean,
-        /** Whether the player is actually advancing through the audio. */
+        /** Whether the player is actively playing audio in this moment. */
         private val isAdvancing: Boolean,
-        /** The initial position at update time. */
+        /** The position when this instance was created, in milliseconds.  */
         private val initPositionMs: Long,
-        /** The time this instance was created. */
+        /** The time this instance was created, as a unix epoch timestamp. */
         private val creationTime: Long
     ) {
         /**
-         * Calculate the estimated position that the player is now at. If the player's position is
-         * not advancing, this will be the initial position. Otherwise, this will be the position
-         * plus the elapsed time since this state was uploaded.
+         * Calculate the "real" playback position this instance contains, in milliseconds.
+         * @return If paused, the original position will be returned. Otherwise, it will be
+         * the original position plus the time elapsed since this state was created.
          */
-        fun calculateElapsedPosition() =
+        fun calculateElapsedPositionMs() =
             if (isAdvancing) {
                 initPositionMs + (SystemClock.elapsedRealtime() - creationTime)
             } else {
@@ -75,7 +112,11 @@ interface InternalPlayer {
                 initPositionMs
             }
 
-        /** Load this state into the analogous [PlaybackStateCompat.Builder]. */
+        /**
+         * Load this instance into a [PlaybackStateCompat].
+         * @param builder The [PlaybackStateCompat.Builder] to mutate.
+         * @return The same [PlaybackStateCompat.Builder] for easy chaining.
+         */
         fun intoPlaybackState(builder: PlaybackStateCompat.Builder): PlaybackStateCompat.Builder =
             builder.setState(
                 // State represents the user's preference, not the actual player state.
@@ -94,8 +135,8 @@ interface InternalPlayer {
                 },
                 creationTime)
 
-        // Equality ignores the creation time to prevent functionally
-        // identical states from being equal.
+        // Equality ignores the creation time to prevent functionally identical states
+        // from being non-equal.
 
         override fun equals(other: Any?) =
             other is State &&
@@ -111,21 +152,20 @@ interface InternalPlayer {
         }
 
         companion object {
-            /** Create a new instance of this state. */
+            /**
+             * Create a new instance.
+             * @param isPlaying Whether the player is actively playing audio or set to play audio
+             * in the future.
+             * @param isAdvancing Whether the player is actively playing audio in this moment.
+             * @param positionMs The current position of the player.
+             */
             fun new(isPlaying: Boolean, isAdvancing: Boolean, positionMs: Long) =
                 State(
                     isPlaying,
-                    // Minor sanity check: Make sure that advancing can't occur if the
-                    // main playing value is paused.
+                    // Minor sanity check: Make sure that advancing can't occur if already paused.
                     isPlaying && isAdvancing,
                     positionMs,
                     SystemClock.elapsedRealtime())
         }
-    }
-
-    sealed class Action {
-        object RestoreState : Action()
-        object ShuffleAll : Action()
-        data class Open(val uri: Uri) : Action()
     }
 }

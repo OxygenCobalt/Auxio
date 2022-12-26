@@ -113,11 +113,11 @@ class Indexer private constructor() {
     @Synchronized
     fun registerCallback(callback: Callback) {
         if (BuildConfig.DEBUG && this.callback != null) {
-            logW("Callback is already registered")
+            logW("Listener is already registered")
             return
         }
 
-        // Initialize the callback with the current state.
+        // Initialize the listener with the current state.
         val currentState =
             indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
         callback.onIndexerStateChanged(currentState)
@@ -473,7 +473,7 @@ class Indexer private constructor() {
     }
 
     /**
-     * A callback for rapid-fire changes in the music loading state.
+     * A listener for rapid-fire changes in the music loading state.
      *
      * This is only useful for code that absolutely must show the current loading process.
      * Otherwise, [MusicStore.Callback] is highly recommended due to it's updates only consisting of

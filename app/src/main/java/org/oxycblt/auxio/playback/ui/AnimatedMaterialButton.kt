@@ -25,8 +25,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getInteger
 
 /**
- * A [MaterialButton] that automatically morphs from a circle to a squircle shape appearance when it
- * is activated.
+ * A [MaterialButton] that automatically morphs from a circle to a squircle shape appearance when
+ * [isActivated] changes.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AnimatedMaterialButton
@@ -39,15 +39,17 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     override fun setActivated(activated: Boolean) {
         super.setActivated(activated)
 
-        val target = if (activated) 0.3f else 0.5f
+        // Activated -> Squircle (30% Radius), Inactive -> Circle (50% Radius)
+        val targetRadius = if (activated) 0.3f else 0.5f
         if (!isLaidOut) {
-            updateCornerRadiusRatio(target)
+            // Not laid out, initialize it without animation before drawing.
+            updateCornerRadiusRatio(targetRadius)
             return
         }
 
         animator?.cancel()
         animator =
-            ValueAnimator.ofFloat(currentCornerRadiusRatio, target).apply {
+            ValueAnimator.ofFloat(currentCornerRadiusRatio, targetRadius).apply {
                 duration = context.getInteger(R.integer.anim_fade_enter_duration).toLong()
                 addUpdateListener { updateCornerRadiusRatio(animatedValue as Float) }
                 start()
@@ -56,6 +58,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
     private fun updateCornerRadiusRatio(ratio: Float) {
         currentCornerRadiusRatio = ratio
+        // Can't reproduce the intrinsic ratio corner radius, just manually implement it with
+        // a dimension value.
         shapeAppearanceModel = shapeAppearanceModel.withCornerSize { it.width() * ratio }
     }
 }

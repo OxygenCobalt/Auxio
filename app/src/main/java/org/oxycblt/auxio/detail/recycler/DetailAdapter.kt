@@ -44,7 +44,7 @@ abstract class DetailAdapter(
     private val listener: Listener,
     itemCallback: DiffUtil.ItemCallback<Item>
 ) : SelectionIndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
-    // Safe to leak this since the callback will not fire during initialization
+    // Safe to leak this since the listener will not fire during initialization
     @Suppress("LeakingThis") protected val differ = AsyncListDiffer(this, itemCallback)
 
     override fun getItemViewType(position: Int) =

@@ -86,8 +86,7 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
     }
 
     /**
-     * Delegate to automatically create and destroy an object derived from the [ViewBinding]. TODO:
-     * Phase this out, it's really dumb
+     * Delegate to automatically create and destroy an object derived from the [ViewBinding].
      * @param create Block to create the object from the [ViewBinding].
      */
     fun <T> lifecycleObject(create: (VB) -> T): ReadOnlyProperty<Fragment, T> {

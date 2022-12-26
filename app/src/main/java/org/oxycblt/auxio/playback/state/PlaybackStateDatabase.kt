@@ -21,26 +21,39 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.provider.BaseColumns
 import androidx.core.database.sqlite.transaction
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.queryAll
-import org.oxycblt.auxio.util.requireBackgroundThread
+import org.oxycblt.auxio.util.*
 
 /**
- * A SQLite database for managing the persistent playback state and queue. Yes. I know Room exists.
- * But that would needlessly bloat my app and has crippling bugs.
+ * A [SQLiteDatabase] that persists the current playback state for future app lifecycles.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PlaybackStateDatabase private constructor(context: Context) :
     SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
-        createTable(db, TABLE_STATE)
-        createTable(db, TABLE_QUEUE)
+        // Here, we have to split the database into two tables. One contains the queue with
+        // an indefinite amount of items, and the other contains only one entry consisting
+        // of the non-queue parts of the state, such as the playback position.
+        db.createTable(TABLE_STATE) {
+            append("${BaseColumns._ID} INTEGER PRIMARY KEY,")
+            append("${StateColumns.INDEX} INTEGER NOT NULL,")
+            append("${StateColumns.POSITION} LONG NOT NULL,")
+            append("${StateColumns.REPEAT_MODE} INTEGER NOT NULL,")
+            append("${StateColumns.IS_SHUFFLED} BOOLEAN NOT NULL,")
+            append("${StateColumns.SONG_UID} STRING,")
+            append("${StateColumns.PARENT_UID} STRING")
+        }
+
+        db.createTable(TABLE_QUEUE) {
+            append("${BaseColumns._ID} INTEGER PRIMARY KEY,")
+            append("${QueueColumns.SONG_UID} STRING NOT NULL")
+        }
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) = nuke(db)
@@ -55,55 +68,28 @@ class PlaybackStateDatabase private constructor(context: Context) :
         }
     }
 
-    // --- DATABASE CONSTRUCTION FUNCTIONS ---
-
-    /** Create a table for this database. */
-    private fun createTable(db: SQLiteDatabase, name: String) {
-        val command = StringBuilder()
-        command.append("CREATE TABLE IF NOT EXISTS $name(")
-
-        if (name == TABLE_STATE) {
-            constructStateTable(command)
-        } else if (name == TABLE_QUEUE) {
-            constructQueueTable(command)
-        }
-
-        db.execSQL(command.toString())
-    }
-
-    /** Construct a [StateColumns] table */
-    private fun constructStateTable(command: StringBuilder) =
-        command
-            .append("${StateColumns.ID} LONG PRIMARY KEY,")
-            .append("${StateColumns.SONG_UID} STRING,")
-            .append("${StateColumns.POSITION} LONG NOT NULL,")
-            .append("${StateColumns.PARENT_UID} STRING,")
-            .append("${StateColumns.INDEX} INTEGER NOT NULL,")
-            .append("${StateColumns.IS_SHUFFLED} BOOLEAN NOT NULL,")
-            .append("${StateColumns.REPEAT_MODE} INTEGER NOT NULL)")
-
-    /** Construct a [QueueColumns] table */
-    private fun constructQueueTable(command: StringBuilder) =
-        command
-            .append("${QueueColumns.ID} LONG PRIMARY KEY,")
-            .append("${QueueColumns.SONG_UID} STRING NOT NULL)")
-
     // --- INTERFACE FUNCTIONS ---
 
+    /**
+     * Read a persisted [SavedState] from the database.
+     * @param library [MusicStore.Library] required to restore [SavedState].
+     * @return A persisted [SavedState], or null if one could not be found.
+     */
     fun read(library: MusicStore.Library): SavedState? {
         requireBackgroundThread()
-
+        // Read the saved state and queue. If the state is non-null, that must imply an
+        // existent, albeit possibly empty, queue.
         val rawState = readRawState() ?: return null
         val queue = readQueue(library)
-
-        // Correct the index to match up with a possibly shortened queue (file removals/changes)
+        // Correct the index to match up with a queue that has possibly been shortened due to
+        // song removals.
         var actualIndex = rawState.index
         while (queue.getOrNull(actualIndex)?.uid != rawState.songUid && actualIndex > -1) {
             actualIndex--
         }
-
+        // Restore parent item from the music library. If this fails, then the playback mode
+        // reverts to "All Songs", which is considered okay.
         val parent = rawState.parentUid?.let { library.find<MusicParent>(it) }
-
         return SavedState(
             index = actualIndex,
             parent = parent,
@@ -113,22 +99,19 @@ class PlaybackStateDatabase private constructor(context: Context) :
             isShuffled = rawState.isShuffled)
     }
 
-    private fun readRawState(): RawState? {
-        return readableDatabase.queryAll(TABLE_STATE) { cursor ->
-            if (cursor.count == 0) {
+    private fun readRawState() =
+        readableDatabase.queryAll(TABLE_STATE) { cursor ->
+            if (!cursor.moveToFirst()) {
+                // Empty, nothing to do.
                 return@queryAll null
             }
 
             val indexIndex = cursor.getColumnIndexOrThrow(StateColumns.INDEX)
-
             val posIndex = cursor.getColumnIndexOrThrow(StateColumns.POSITION)
             val repeatModeIndex = cursor.getColumnIndexOrThrow(StateColumns.REPEAT_MODE)
             val shuffleIndex = cursor.getColumnIndexOrThrow(StateColumns.IS_SHUFFLED)
             val songUidIndex = cursor.getColumnIndexOrThrow(StateColumns.SONG_UID)
             val parentUidIndex = cursor.getColumnIndexOrThrow(StateColumns.PARENT_UID)
-
-            cursor.moveToFirst()
-
             RawState(
                 index = cursor.getInt(indexIndex),
                 positionMs = cursor.getLong(posIndex),
@@ -139,15 +122,10 @@ class PlaybackStateDatabase private constructor(context: Context) :
                         ?: return@queryAll null,
                 parentUid = cursor.getString(parentUidIndex)?.let(Music.UID::fromString))
         }
-    }
 
-    private fun readQueue(library: MusicStore.Library): MutableList<Song> {
-        requireBackgroundThread()
-
+    private fun readQueue(library: MusicStore.Library): List<Song> {
         val queue = mutableListOf<Song>()
-
         readableDatabase.queryAll(TABLE_QUEUE) { cursor ->
-            if (cursor.count == 0) return@queryAll
             val songIndex = cursor.getColumnIndexOrThrow(QueueColumns.SONG_UID)
             while (cursor.moveToNext()) {
                 val uid = Music.UID.fromString(cursor.getString(songIndex)) ?: continue
@@ -157,15 +135,19 @@ class PlaybackStateDatabase private constructor(context: Context) :
         }
 
         logD("Successfully read queue of ${queue.size} songs")
-
         return queue
     }
 
-    /** Clear the previously written [SavedState] and write a new one. */
+    /**
+     * Clear the previous [SavedState] and write a new one.
+     * @param state The new [SavedState] to write, or null to clear the database entirely.
+     */
     fun write(state: SavedState?) {
         requireBackgroundThread()
-
+        // Only bother saving a state if a song is actively playing from one.
+        // This is not the case with a null state or a state with an out-of-bounds index.
         if (state != null && state.index in state.queue.indices) {
+            // Transform saved state into raw state, which can then be written to the database.
             val rawState =
                 RawState(
                     index = state.index,
@@ -174,15 +156,14 @@ class PlaybackStateDatabase private constructor(context: Context) :
                     isShuffled = state.isShuffled,
                     songUid = state.queue[state.index].uid,
                     parentUid = state.parent?.uid)
-
             writeRawState(rawState)
             writeQueue(state.queue)
+            logD("Wrote state")
         } else {
             writeRawState(null)
             writeQueue(null)
+            logD("Cleared state")
         }
-
-        logD("Wrote state to database")
     }
 
     private fun writeRawState(rawState: RawState?) {
@@ -192,7 +173,7 @@ class PlaybackStateDatabase private constructor(context: Context) :
             if (rawState != null) {
                 val stateData =
                     ContentValues(7).apply {
-                        put(StateColumns.ID, 0)
+                        put(BaseColumns._ID, 0)
                         put(StateColumns.SONG_UID, rawState.songUid.toString())
                         put(StateColumns.POSITION, rawState.positionMs)
                         put(StateColumns.PARENT_UID, rawState.parentUid?.toString())
@@ -206,45 +187,25 @@ class PlaybackStateDatabase private constructor(context: Context) :
         }
     }
 
-    /** Write a queue to the database. */
     private fun writeQueue(queue: List<Song>?) {
-        val database = writableDatabase
-        database.transaction { delete(TABLE_QUEUE, null, null) }
-
-        logD("Wiped queue db")
-
-        if (queue != null) {
-            val idStart = queue.size
-            logD("Beginning queue write [start: $idStart]")
-            var position = 0
-
-            while (position < queue.size) {
-                var i = position
-
-                database.transaction {
-                    while (i < queue.size) {
-                        val song = queue[i]
-                        i++
-
-                        val itemData =
-                            ContentValues(2).apply {
-                                put(QueueColumns.ID, idStart + i)
-                                put(QueueColumns.SONG_UID, song.uid.toString())
-                            }
-
-                        insert(TABLE_QUEUE, null, itemData)
-                    }
-                }
-
-                // Update the position at the end, if an insert failed at any point, then
-                // the next iteration should skip it.
-                position = i
-
-                logD("Wrote batch of songs. Position is now at $position")
+        writableDatabase.writeList(queue ?: listOf(), TABLE_QUEUE) { i, song ->
+            ContentValues(2).apply {
+                put(BaseColumns._ID, i)
+                put(QueueColumns.SONG_UID, song.uid.toString())
             }
         }
     }
 
+    /**
+     * A condensed representation of the playback state that can be persisted.
+     * @param index The position of the currently playing item in the queue. Can be -1 if the
+     * persisted index no longer exists.
+     * @param queue The [Song] queue.
+     * @param parent The [MusicParent] item currently being played from
+     * @param positionMs The current position in the currently played song, in ms
+     * @param repeatMode The current [RepeatMode].
+     * @param isShuffled Whether the queue is shuffled or not.
+     */
     data class SavedState(
         val index: Int,
         val queue: List<Song>,
@@ -254,40 +215,63 @@ class PlaybackStateDatabase private constructor(context: Context) :
         val isShuffled: Boolean
     )
 
+    /**
+     * A lower-level form of [SavedState] that contains additional information to create
+     * a more reliable restoration process.
+     */
     private data class RawState(
+        /** @see SavedState.index */
         val index: Int,
+        /** @see SavedState.positionMs */
         val positionMs: Long,
+        /** @see SavedState.repeatMode */
         val repeatMode: RepeatMode,
+        /** @see SavedState.isShuffled */
         val isShuffled: Boolean,
+        /**
+         * The [Music.UID] of the [Song] that was originally in the queue at [index].
+         * This can be used to restore the currently playing item in the queue if
+         * the index mapping changed.
+         */
         val songUid: Music.UID,
+        /** @see SavedState.parent */
         val parentUid: Music.UID?
     )
 
+    /** Defines the columns used in the playback state table. */
     private object StateColumns {
-        const val ID = "id"
-        const val SONG_UID = "song_uid"
-        const val POSITION = "position"
-        const val PARENT_UID = "parent"
+        /** @see RawState.index */
         const val INDEX = "queue_index"
+        /** @see RawState.positionMs */
+        const val POSITION = "position"
+        /** @see RawState.isShuffled */
         const val IS_SHUFFLED = "is_shuffling"
+        /** @see RawState.repeatMode */
         const val REPEAT_MODE = "repeat_mode"
+        /** @see RawState.songUid */
+        const val SONG_UID = "song_uid"
+        /** @see RawState.parentUid */
+        const val PARENT_UID = "parent"
     }
 
+    /** Defines the columns used in the queue table. */
     private object QueueColumns {
-        const val ID = "id"
+        /** @see Music.UID */
         const val SONG_UID = "song_uid"
     }
 
     companion object {
-        const val DB_NAME = "auxio_playback_state.db"
-        const val DB_VERSION = 8
-
-        const val TABLE_STATE = "playback_state"
-        const val TABLE_QUEUE = "queue"
+        private const val DB_NAME = "auxio_playback_state.db"
+        private const val DB_VERSION = 8
+        private const val TABLE_STATE = "playback_state"
+        private const val TABLE_QUEUE = "queue"
 
         @Volatile private var INSTANCE: PlaybackStateDatabase? = null
 
-        /** Get/Instantiate the single instance of [PlaybackStateDatabase]. */
+        /**
+         * Get a singleton instance.
+         * @return The (possibly newly-created) singleton instance.
+         */
         fun getInstance(context: Context): PlaybackStateDatabase {
             val currentInstance = INSTANCE
 

@@ -24,8 +24,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
@@ -33,6 +33,7 @@ import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
@@ -42,18 +43,16 @@ import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
- * A [Fragment] that displays more information about the song, along with more media controls.
+ * A [ViewBindingFragment] more information about the currently playing song, alongside all
+ * available controls.
  * @author Alexander Capehart (OxygenCobalt)
- *
- * TODO: Make seek thumb grow when selected
  */
-class PlaybackPanelFragment : ViewBindingFragment<FragmentPlaybackPanelBinding>() {
+class PlaybackPanelFragment : ViewBindingFragment<FragmentPlaybackPanelBinding>(), Toolbar.OnMenuItemClickListener, StyledSeekBar.Listener {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
-
-    // AudioEffect expects you to use startActivityForResult with the panel intent. Use
-    // the contract analogue for this since there is no built-in contract for AudioEffect.
-    private val activityLauncher by lifecycleObject {
+    // AudioEffect expects you to use startActivityForResult with the panel intent. There is no
+    // contract analogue for this intent, so the generic contract is used instead.
+    private val equalizerLauncher by lifecycleObject {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             // Nothing to do
         }
@@ -66,8 +65,9 @@ class PlaybackPanelFragment : ViewBindingFragment<FragmentPlaybackPanelBinding>(
         binding: FragmentPlaybackPanelBinding,
         savedInstanceState: Bundle?
     ) {
-        // --- UI SETUP ---
+        super.onBindingCreated(binding, savedInstanceState)
 
+        // --- UI SETUP ---
         binding.root.setOnApplyWindowInsetsListener { view, insets ->
             val bars = insets.systemBarInsetsCompat
             view.updatePadding(top = bars.top, bottom = bars.bottom)
@@ -76,39 +76,34 @@ class PlaybackPanelFragment : ViewBindingFragment<FragmentPlaybackPanelBinding>(
 
         binding.playbackToolbar.apply {
             setNavigationOnClickListener { navModel.mainNavigateTo(MainNavigationAction.Collapse) }
-            setOnMenuItemClickListener {
-                handleMenuItem(it)
-                true
-            }
+            setOnMenuItemClickListener(this@PlaybackPanelFragment)
         }
 
-        // Make sure we enable marquee on the song info
-
+        // Set up marquee on song information, alongside click handlers that navigate to each
+        // respective item.
         binding.playbackSong.apply {
             isSelected = true
             setOnClickListener { playbackModel.song.value?.let(navModel::exploreNavigateTo) }
         }
-
         binding.playbackArtist.apply {
             isSelected = true
-            setOnClickListener { playbackModel.song.value?.let { showCurrentArtist() } }
+            setOnClickListener { navigateToCurrentArtist() }
         }
-
         binding.playbackAlbum.apply {
             isSelected = true
-            setOnClickListener { playbackModel.song.value?.let { showCurrentAlbum() } }
+            setOnClickListener { navigateToCurrentAlbum() }
         }
 
-        binding.playbackSeekBar.onSeekConfirmed = playbackModel::seekTo
+        binding.playbackSeekBar.listener = this
 
-        binding.playbackRepeat.setOnClickListener { playbackModel.incrementRepeatMode() }
+        // Set up actions
+        binding.playbackRepeat.setOnClickListener { playbackModel.toggleRepeatMode() }
         binding.playbackSkipPrev.setOnClickListener { playbackModel.prev() }
-        binding.playbackPlayPause.setOnClickListener { playbackModel.invertPlaying() }
+        binding.playbackPlayPause.setOnClickListener { playbackModel.toggleIsPlaying() }
         binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
         binding.playbackShuffle.setOnClickListener { playbackModel.invertShuffled() }
 
         // --- VIEWMODEL SETUP --
-
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.parent, ::updateParent)
         collectImmediately(playbackModel.positionDs, ::updatePosition)
@@ -118,32 +113,40 @@ class PlaybackPanelFragment : ViewBindingFragment<FragmentPlaybackPanelBinding>(
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
-        // Leaving marquee on will cause a leak
+        binding.playbackToolbar.setOnMenuItemClickListener(null)
+        // Marquee elements leak if they are not disabled when the views are destroyed.
         binding.playbackSong.isSelected = false
         binding.playbackArtist.isSelected = false
         binding.playbackAlbum.isSelected = false
     }
 
-    private fun handleMenuItem(item: MenuItem) {
+    override fun onMenuItemClick(item: MenuItem) =
         when (item.itemId) {
             R.id.action_open_equalizer -> {
+                // Launch the system equalizer app, if possible.
                 val equalizerIntent =
                     Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+                        // Provide audio session ID so equalizer can show options for this app
+                        // in particular.
                         .putExtra(
                             AudioEffect.EXTRA_AUDIO_SESSION, playbackModel.currentAudioSessionId)
+                        // Signal music type so that the equalizer settings are appropriate for
+                        // music playback.
                         .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-
                 try {
-                    activityLauncher.launch(equalizerIntent)
+                    equalizerLauncher.launch(equalizerIntent)
                 } catch (e: ActivityNotFoundException) {
                     requireContext().showToast(R.string.err_no_app)
                 }
+                true
             }
             R.id.action_go_artist -> {
-                showCurrentArtist()
+                navigateToCurrentArtist()
+                true
             }
             R.id.action_go_album -> {
-                showCurrentAlbum()
+                navigateToCurrentAlbum()
+                true
             }
             R.id.action_song_detail -> {
                 playbackModel.song.value?.let { song ->
@@ -151,8 +154,13 @@ class PlaybackPanelFragment : ViewBindingFragment<FragmentPlaybackPanelBinding>(
                         MainNavigationAction.Directions(
                             MainFragmentDirections.actionShowDetails(song.uid)))
                 }
+                true
             }
+            else -> false
         }
+
+    override fun onSeekConfirmed(positionDs: Long) {
+        playbackModel.seekTo(positionDs)
     }
 
     private fun updateSong(song: Song?) {
@@ -192,12 +200,14 @@ class PlaybackPanelFragment : ViewBindingFragment<FragmentPlaybackPanelBinding>(
         requireBinding().playbackShuffle.isActivated = isShuffled
     }
 
-    private fun showCurrentArtist() {
+    /** Navigate to one of the currently playing [Song]'s Artists. */
+    private fun navigateToCurrentArtist() {
         val song = playbackModel.song.value ?: return
         navModel.exploreNavigateTo(song.artists)
     }
 
-    private fun showCurrentAlbum() {
+    /** Navigate to the currently playing [Song]'s albums. */
+    private fun navigateToCurrentAlbum() {
         val song = playbackModel.song.value ?: return
         navModel.exploreNavigateTo(song.album)
     }

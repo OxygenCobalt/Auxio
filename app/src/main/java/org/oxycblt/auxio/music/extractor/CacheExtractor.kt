@@ -26,10 +26,7 @@ import androidx.core.database.getStringOrNull
 import androidx.core.database.sqlite.transaction
 import java.io.File
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.queryAll
-import org.oxycblt.auxio.util.requireBackgroundThread
+import org.oxycblt.auxio.util.*
 
 /**
  * Defines an Extractor that can load cached music. This is the first step in the music extraction
@@ -118,10 +115,7 @@ class ReadWriteCacheExtractor(private val context: Context) : WriteOnlyCacheExtr
     }
 
     override fun populate(rawSong: Song.Raw): ExtractionResult {
-        val map =
-            requireNotNull(cacheMap) {
-                "Must initialize this extractor before populating a raw song."
-            }
+        val map = cacheMap ?: return ExtractionResult.NONE
 
         // For a cached raw song to be used, it must exist within the cache and have matching
         // addition and modification timestamps. Technically the addition timestamp doesn't
@@ -181,34 +175,31 @@ private class CacheDatabase(context: Context) :
         // Map the cacheable raw song fields to database fields. Cache-able in this context
         // means information independent of the file-system, excluding IDs and timestamps required
         // to retrieve items from the cache.
-        val command =
-            StringBuilder()
-                .append("CREATE TABLE IF NOT EXISTS $TABLE_RAW_SONGS(")
-                .append("${Columns.MEDIA_STORE_ID} LONG PRIMARY KEY,")
-                .append("${Columns.DATE_ADDED} LONG NOT NULL,")
-                .append("${Columns.DATE_MODIFIED} LONG NOT NULL,")
-                .append("${Columns.SIZE} LONG NOT NULL,")
-                .append("${Columns.DURATION} LONG NOT NULL,")
-                .append("${Columns.FORMAT_MIME_TYPE} STRING,")
-                .append("${Columns.MUSIC_BRAINZ_ID} STRING,")
-                .append("${Columns.NAME} STRING NOT NULL,")
-                .append("${Columns.SORT_NAME} STRING,")
-                .append("${Columns.TRACK} INT,")
-                .append("${Columns.DISC} INT,")
-                .append("${Columns.DATE} STRING,")
-                .append("${Columns.ALBUM_MUSIC_BRAINZ_ID} STRING,")
-                .append("${Columns.ALBUM_NAME} STRING NOT NULL,")
-                .append("${Columns.ALBUM_SORT_NAME} STRING,")
-                .append("${Columns.ALBUM_TYPES} STRING,")
-                .append("${Columns.ARTIST_MUSIC_BRAINZ_IDS} STRING,")
-                .append("${Columns.ARTIST_NAMES} STRING,")
-                .append("${Columns.ARTIST_SORT_NAMES} STRING,")
-                .append("${Columns.ALBUM_ARTIST_MUSIC_BRAINZ_IDS} STRING,")
-                .append("${Columns.ALBUM_ARTIST_NAMES} STRING,")
-                .append("${Columns.ALBUM_ARTIST_SORT_NAMES} STRING,")
-                .append("${Columns.GENRE_NAMES} STRING)")
-
-        db.execSQL(command.toString())
+        db.createTable(TABLE_RAW_SONGS) {
+            append("${Columns.MEDIA_STORE_ID} LONG PRIMARY KEY,")
+            append("${Columns.DATE_ADDED} LONG NOT NULL,")
+            append("${Columns.DATE_MODIFIED} LONG NOT NULL,")
+            append("${Columns.SIZE} LONG NOT NULL,")
+            append("${Columns.DURATION} LONG NOT NULL,")
+            append("${Columns.FORMAT_MIME_TYPE} STRING,")
+            append("${Columns.MUSIC_BRAINZ_ID} STRING,")
+            append("${Columns.NAME} STRING NOT NULL,")
+            append("${Columns.SORT_NAME} STRING,")
+            append("${Columns.TRACK} INT,")
+            append("${Columns.DISC} INT,")
+            append("${Columns.DATE} STRING,")
+            append("${Columns.ALBUM_MUSIC_BRAINZ_ID} STRING,")
+            append("${Columns.ALBUM_NAME} STRING NOT NULL,")
+            append("${Columns.ALBUM_SORT_NAME} STRING,")
+            append("${Columns.ALBUM_TYPES} STRING,")
+            append("${Columns.ARTIST_MUSIC_BRAINZ_IDS} STRING,")
+            append("${Columns.ARTIST_NAMES} STRING,")
+            append("${Columns.ARTIST_SORT_NAMES} STRING,")
+            append("${Columns.ALBUM_ARTIST_MUSIC_BRAINZ_IDS} STRING,")
+            append("${Columns.ALBUM_ARTIST_NAMES} STRING,")
+            append("${Columns.ALBUM_ARTIST_SORT_NAMES} STRING,")
+            append("${Columns.GENRE_NAMES} STRING")
+        }
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) = nuke(db)
@@ -342,73 +333,50 @@ private class CacheDatabase(context: Context) :
      */
     fun write(rawSongs: List<Song.Raw>) {
         val start = System.currentTimeMillis()
-        var position = 0
-        val database = writableDatabase
-        database.transaction { delete(TABLE_RAW_SONGS, null, null) }
 
-        logD("Cleared raw songs database")
+        writableDatabase.writeList(rawSongs, TABLE_RAW_SONGS) { _, rawSong ->
+            ContentValues(22).apply {
+                put(Columns.MEDIA_STORE_ID, rawSong.mediaStoreId)
+                put(Columns.DATE_ADDED, rawSong.dateAdded)
+                put(Columns.DATE_MODIFIED, rawSong.dateModified)
 
-        while (position < rawSongs.size) {
-            var i = position
+                put(Columns.SIZE, rawSong.size)
+                put(Columns.DURATION, rawSong.durationMs)
+                put(Columns.FORMAT_MIME_TYPE, rawSong.formatMimeType)
 
-            database.transaction {
-                while (i < rawSongs.size) {
-                    val rawSong = rawSongs[i]
-                    i++
+                put(Columns.MUSIC_BRAINZ_ID, rawSong.name)
+                put(Columns.NAME, rawSong.name)
+                put(Columns.SORT_NAME, rawSong.sortName)
 
-                    val itemData =
-                        ContentValues(22).apply {
-                            put(Columns.MEDIA_STORE_ID, rawSong.mediaStoreId)
-                            put(Columns.DATE_ADDED, rawSong.dateAdded)
-                            put(Columns.DATE_MODIFIED, rawSong.dateModified)
+                put(Columns.TRACK, rawSong.track)
+                put(Columns.DISC, rawSong.disc)
+                put(Columns.DATE, rawSong.date?.toString())
 
-                            put(Columns.SIZE, rawSong.size)
-                            put(Columns.DURATION, rawSong.durationMs)
-                            put(Columns.FORMAT_MIME_TYPE, rawSong.formatMimeType)
+                put(Columns.ALBUM_MUSIC_BRAINZ_ID, rawSong.albumMusicBrainzId)
+                put(Columns.ALBUM_NAME, rawSong.albumName)
+                put(Columns.ALBUM_SORT_NAME, rawSong.albumSortName)
+                put(Columns.ALBUM_TYPES, rawSong.albumTypes.toSQLMultiValue())
 
-                            put(Columns.MUSIC_BRAINZ_ID, rawSong.name)
-                            put(Columns.NAME, rawSong.name)
-                            put(Columns.SORT_NAME, rawSong.sortName)
+                put(
+                    Columns.ARTIST_MUSIC_BRAINZ_IDS,
+                    rawSong.artistMusicBrainzIds.toSQLMultiValue())
+                put(Columns.ARTIST_NAMES, rawSong.artistNames.toSQLMultiValue())
+                put(
+                    Columns.ARTIST_SORT_NAMES,
+                    rawSong.artistSortNames.toSQLMultiValue())
 
-                            put(Columns.TRACK, rawSong.track)
-                            put(Columns.DISC, rawSong.disc)
-                            put(Columns.DATE, rawSong.date?.toString())
+                put(
+                    Columns.ALBUM_ARTIST_MUSIC_BRAINZ_IDS,
+                    rawSong.albumArtistMusicBrainzIds.toSQLMultiValue())
+                put(
+                    Columns.ALBUM_ARTIST_NAMES,
+                    rawSong.albumArtistNames.toSQLMultiValue())
+                put(
+                    Columns.ALBUM_ARTIST_SORT_NAMES,
+                    rawSong.albumArtistSortNames.toSQLMultiValue())
 
-                            put(Columns.ALBUM_MUSIC_BRAINZ_ID, rawSong.albumMusicBrainzId)
-                            put(Columns.ALBUM_NAME, rawSong.albumName)
-                            put(Columns.ALBUM_SORT_NAME, rawSong.albumSortName)
-                            put(Columns.ALBUM_TYPES, rawSong.albumTypes.toSQLMultiValue())
-
-                            put(
-                                Columns.ARTIST_MUSIC_BRAINZ_IDS,
-                                rawSong.artistMusicBrainzIds.toSQLMultiValue())
-                            put(Columns.ARTIST_NAMES, rawSong.artistNames.toSQLMultiValue())
-                            put(
-                                Columns.ARTIST_SORT_NAMES,
-                                rawSong.artistSortNames.toSQLMultiValue())
-
-                            put(
-                                Columns.ALBUM_ARTIST_MUSIC_BRAINZ_IDS,
-                                rawSong.albumArtistMusicBrainzIds.toSQLMultiValue())
-                            put(
-                                Columns.ALBUM_ARTIST_NAMES,
-                                rawSong.albumArtistNames.toSQLMultiValue())
-                            put(
-                                Columns.ALBUM_ARTIST_SORT_NAMES,
-                                rawSong.albumArtistSortNames.toSQLMultiValue())
-
-                            put(Columns.GENRE_NAMES, rawSong.genreNames.toSQLMultiValue())
-                        }
-
-                    insert(TABLE_RAW_SONGS, null, itemData)
-                }
+                put(Columns.GENRE_NAMES, rawSong.genreNames.toSQLMultiValue())
             }
-
-            // Update the position at the end, if an insert failed at any point, then
-            // the next iteration should skip it.
-            position = i
-
-            logD("Wrote batch of raw songs. Position is now at $position")
         }
 
         logD("Wrote cache in ${System.currentTimeMillis() - start}ms")

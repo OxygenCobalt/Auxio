@@ -73,7 +73,7 @@ class MainFragment :
 
         // --- UI SETUP ---
         val context = requireActivity()
-        // Override the back pressed callback so we can map back navigation to collapsing
+        // Override the back pressed listener so we can map back navigation to collapsing
         // navigation, navigation out of detail views, etc.
         context.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
@@ -128,7 +128,7 @@ class MainFragment :
 
     override fun onStart() {
         super.onStart()
-        // Callback could still reasonably fire even if we clear the binding, attach/detach
+        // Listener could still reasonably fire even if we clear the binding, attach/detach
         // our pre-draw listener our listener in onStart/onStop respectively.
         requireBinding().playbackSheet.viewTreeObserver.addOnPreDrawListener(this)
     }
@@ -140,7 +140,7 @@ class MainFragment :
 
     override fun onPreDraw(): Boolean {
         // We overload CoordinatorLayout far too much to rely on any of it's typical
-        // callback functionality. Just update all transitions before every draw. Should
+        // listener functionality. Just update all transitions before every draw. Should
         // probably be cheap enough.
         val binding = requireBinding()
         val playbackSheetBehavior =
@@ -221,7 +221,7 @@ class MainFragment :
             tryHideAllSheets()
         }
 
-        // Since the callback is also reliant on the bottom sheets, we must also update it
+        // Since the listener is also reliant on the bottom sheets, we must also update it
         // every frame.
         callback.invalidateEnabled()
 
@@ -383,7 +383,7 @@ class MainFragment :
          * that the back button should close first, the instance is disabled and back navigation is
          * delegated to the system.
          *
-         * Normally, this callback would have just called the [MainActivity.onBackPressed] if there
+         * Normally, this listener would have just called the [MainActivity.onBackPressed] if there
          * were no components to close, but that prevents adaptive back navigation from working on
          * Android 14+, so we must do it this way.
          */

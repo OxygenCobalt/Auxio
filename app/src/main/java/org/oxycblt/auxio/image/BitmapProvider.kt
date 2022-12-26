@@ -89,7 +89,7 @@ class BitmapProvider(private val context: Context) {
                         .size(Size.ORIGINAL)
                         .transformations(SquareFrameTransform.INSTANCE))
                 // Override the target in order to deliver the bitmap to the given
-                // callback.
+                // listener.
                 .target(
                     onSuccess = {
                         synchronized(this) {

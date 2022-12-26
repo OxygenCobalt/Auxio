@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.ui
+package org.oxycblt.auxio.ui
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -31,7 +31,10 @@ import org.oxycblt.auxio.util.systemGestureInsetsCompat
 
 /**
  * A BottomSheetBehavior that resolves several issues with the default implementation, including:
- * 1.
+ * 1. No reasonable edge-to-edge support.
+ * 2. Strange corner radius behaviors.
+ * 3. Inability to skip half-expanded state when full-screen.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
     NeoBottomSheetBehavior<V>(context, attributeSet) {
@@ -73,7 +76,6 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
 
     override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
         val layout = super.onLayoutChild(parent, child, layoutDirection)
-
         // Don't repeat redundant initialization.
         if (!initalized) {
             child.apply {
@@ -83,14 +85,11 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
                 background = createBackground(context)
                 setOnApplyWindowInsetsListener(::applyWindowInsets)
             }
-
             initalized = true
         }
-
         // Sometimes CoordinatorLayout doesn't dispatch window insets to us, likely due to how
         // much we overload it. Ensure that we get them.
         child.requestApplyInsets()
-
         return layout
     }
 }

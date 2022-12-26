@@ -62,7 +62,6 @@ class NavigationViewModel : ViewModel() {
             logD("Already navigating, not doing main action")
             return
         }
-
         logD("Navigating with action $action")
         _mainNavigationAction.value = action
     }
@@ -78,14 +77,13 @@ class NavigationViewModel : ViewModel() {
 
     /**
      * Navigate to a given [Music] item. Will do nothing if already navigating.
-     * @param item The [Music] to navigate to. TODO: Extend to song properties???
+     * @param item The [Music] to navigate to.
      */
     fun exploreNavigateTo(item: Music) {
         if (_exploreNavigationItem.value != null) {
             logD("Already navigating, not doing explore action")
             return
         }
-
         logD("Navigating to ${item.rawName}")
         _exploreNavigationItem.value = item
     }

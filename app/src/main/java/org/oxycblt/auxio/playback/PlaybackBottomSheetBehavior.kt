@@ -25,13 +25,12 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.playback.ui.BaseBottomSheetBehavior
+import org.oxycblt.auxio.ui.BaseBottomSheetBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 
 /**
- * The coordinator layout behavior used for the playback sheet, hacking in the many fixes required
- * to make bottom sheets like this work.
+ * The [BaseBottomSheetBehavior] for the playback bottom sheet. This bottom sheet
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
@@ -57,6 +56,8 @@ class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: Attr
     override fun createBackground(context: Context) =
         LayerDrawable(
             arrayOf(
+                // Add another colored background so that there is always an obscuring
+                // element even as the actual "background" element is faded out.
                 MaterialShapeDrawable(sheetBackgroundDrawable.shapeAppearanceModel).apply {
                     fillColor = sheetBackgroundDrawable.fillColor
                 },

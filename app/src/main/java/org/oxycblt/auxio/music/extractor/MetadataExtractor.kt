@@ -65,7 +65,7 @@ class MetadataExtractor(
     /**
      * Parse all [Song.Raw] instances queued by the sub-extractors. This will first delegate to the
      * sub-extractors before parsing the metadata itself.
-     * @param emit A callback that will be invoked with every new [Song.Raw] instance when they are
+     * @param emit A listener that will be invoked with every new [Song.Raw] instance when they are
      * successfully loaded.
      */
     suspend fun parse(emit: suspend (Song.Raw) -> Unit) {
@@ -131,7 +131,7 @@ class MetadataExtractor(
 class Task(context: Context, private val raw: Song.Raw) {
     // Note that we do not leverage future callbacks. This is because errors in the
     // (highly fallible) extraction process will not bubble up to Indexer when a
-    // callback is used, instead crashing the app entirely.
+    // listener is used, instead crashing the app entirely.
     private val future =
         MetadataRetriever.retrieveMetadata(
             context,

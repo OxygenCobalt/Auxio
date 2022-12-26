@@ -127,7 +127,7 @@ class HomeFragment :
 
             // ViewPager2 will nominally consume window insets, which will then break the window
             // insets applied to the indexing view before API 30. Fix this by overriding the
-            // callback with a non-consuming listener.
+            // listener with a non-consuming listener.
             setOnApplyWindowInsetsListener { _, insets -> insets }
 
             // We know that there will only be a fixed amount of tabs, so we manually set this

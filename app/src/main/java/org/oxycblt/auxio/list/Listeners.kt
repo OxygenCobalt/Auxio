@@ -22,11 +22,12 @@ import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- * A basic listener for list interactions. TODO: Supply a ViewHolder on clicks (allows editable
- * lists to be standardized into a listener.)
+ * A basic listener for list interactions.
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface ClickableListListener {
+    // TODO: Supply a ViewHolder on clicks
+    //  (allows editable lists to be standardized into a listener.)
     /**
      * Called when an [Item] in the list is clicked.
      * @param item The [Item] that was clicked.
@@ -60,15 +61,15 @@ interface SelectableListListener : ClickableListListener {
      */
     fun bind(viewHolder: RecyclerView.ViewHolder, item: Item, menuButton: Button) {
         viewHolder.itemView.apply {
-            // Map clicks to the click callback.
+            // Map clicks to the click listener.
             setOnClickListener { onClick(item) }
-            // Map long clicks to the selection callback.
+            // Map long clicks to the selection listener.
             setOnLongClickListener {
                 onSelect(item)
                 true
             }
         }
-        // Map the menu button to the menu opening callback.
+        // Map the menu button to the menu opening listener.
         menuButton.setOnClickListener { onOpenMenu(item, it) }
     }
 }

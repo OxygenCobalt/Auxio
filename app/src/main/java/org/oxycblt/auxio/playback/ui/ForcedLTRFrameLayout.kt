@@ -23,16 +23,10 @@ import android.view.View
 import android.widget.FrameLayout
 
 /**
- * A class that programmatically overrides the child layout to a left-to-right (LTR) layout
- * direction.
- *
- * The Material Design guidelines state that any components that represent a "Timeline" should
- * always be LTR. In Auxio, this applies to most of the playback components. This layout in
- * particular overrides the layout direction in a way that will not disrupt how other views are laid
- * out.
- *
- * This layout can only contain one child.
- *
+ * A [FrameLayout] that programmatically overrides the child layout to a left-to-right (LTR) layout
+ * direction. This is useful for "Timeline" elements that Material Design recommends be LTR in all
+ * cases. This layout can only contain one child, to prevent conflicts with other layout
+ * components.
  * @author Alexander Capehart (OxygenCobalt)
  */
 open class ForcedLTRFrameLayout

@@ -166,7 +166,7 @@ class MusicStore private constructor() {
             }
     }
 
-    /** A callback for changes in the music library. */
+    /** A listener for changes in the music library. */
     interface Callback {
         /**
          * Called when the current [Library] has changed.

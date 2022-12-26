@@ -91,6 +91,7 @@ abstract class MediaStoreExtractor(
 
         // Filter out music that is not music, if enabled.
         if (settings.excludeNonMusic) {
+            logD("Excluding non-music")
             selector += " AND ${MediaStore.Audio.AudioColumns.IS_MUSIC}=1"
         }
 

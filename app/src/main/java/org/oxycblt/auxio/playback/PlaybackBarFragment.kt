@@ -34,8 +34,7 @@ import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
 
 /**
- * A fragment showing the current playback state in a compact manner. Used as the bar for the
- * playback sheet.
+ * A [ViewBindingFragment] that shows the current playback state in a compact manner.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
@@ -49,30 +48,32 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         binding: FragmentPlaybackBarBinding,
         savedInstanceState: Bundle?
     ) {
+        super.onBindingCreated(binding, savedInstanceState)
         val context = requireContext()
 
+        // --- UI SETUP ---
         binding.root.apply {
             setOnClickListener { navModel.mainNavigateTo(MainNavigationAction.Expand) }
-
             setOnLongClickListener {
                 playbackModel.song.value?.let(navModel::exploreNavigateTo)
                 true
             }
         }
 
+        // Set up marquee on song information
         binding.playbackSong.isSelected = true
         binding.playbackInfo.isSelected = true
 
-        binding.playbackPlayPause.setOnClickListener { playbackModel.invertPlaying() }
+        // Set up actions
+        binding.playbackPlayPause.setOnClickListener { playbackModel.toggleIsPlaying() }
         setupSecondaryActions(binding, Settings(context))
 
         // Load the track color in manually as it's unclear whether the track actually supports
-        // using a ColorStateList in the resources
+        // using a ColorStateList in the resources.
         binding.playbackProgressBar.trackColor =
             context.getColorCompat(R.color.sel_track).defaultColor
 
         // -- VIEWMODEL SETUP ---
-
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.positionDs, ::updatePosition)
@@ -80,6 +81,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
     override fun onDestroyBinding(binding: FragmentPlaybackBarBinding) {
         super.onDestroyBinding(binding)
+        // Marquee elements leak if they are not disabled when the views are destroyed.
         binding.playbackSong.isSelected = false
         binding.playbackInfo.isSelected = false
     }
@@ -98,7 +100,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 binding.playbackSecondaryAction.apply {
                     contentDescription = getString(R.string.desc_change_repeat)
                     iconTint = context.getColorCompat(R.color.sel_activatable_icon)
-                    setOnClickListener { playbackModel.incrementRepeatMode() }
+                    setOnClickListener { playbackModel.toggleRepeatMode() }
                     collectImmediately(playbackModel.repeatMode, ::updateRepeat)
                 }
             }
@@ -132,6 +134,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     private fun updateRepeat(repeatMode: RepeatMode) {
         requireBinding().playbackSecondaryAction.apply {
             setIconResource(repeatMode.icon)
+            // Icon tinting is controlled through isActivated, so update that flag as well.
             isActivated = repeatMode != RepeatMode.NONE
         }
     }

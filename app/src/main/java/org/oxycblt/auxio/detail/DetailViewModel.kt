@@ -187,7 +187,7 @@ class DetailViewModel(application: Application) :
             // Nothing to do.
             return
         }
-
+        logD("Opening Song [uid: $uid]")
         loadDetailSong(requireMusic(uid))
     }
 
@@ -201,7 +201,7 @@ class DetailViewModel(application: Application) :
             // Nothing to do.
             return
         }
-
+        logD("Opening Album [uid: $uid]")
         _currentAlbum.value = requireMusic<Album>(uid).also { refreshAlbumList(it) }
     }
 
@@ -215,7 +215,7 @@ class DetailViewModel(application: Application) :
             // Nothing to do.
             return
         }
-
+        logD("Opening Artist [uid: $uid]")
         _currentArtist.value = requireMusic<Artist>(uid).also { refreshArtistList(it) }
     }
 
@@ -229,7 +229,7 @@ class DetailViewModel(application: Application) :
             // Nothing to do.
             return
         }
-
+        logD("Opening Genre [uid: $uid]")
         _currentGenre.value = requireMusic<Genre>(uid).also { refreshGenreList(it) }
     }
 

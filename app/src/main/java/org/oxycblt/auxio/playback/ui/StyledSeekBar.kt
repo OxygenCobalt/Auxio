@@ -27,9 +27,8 @@ import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logD
 
 /**
- * A wrapper around [Slider] that shows not only position and duration values, but also hacks in
- * bounds checking to avoid app crashes if bad position input comes in.
- *
+ * A wrapper around [Slider] that shows position and duration values and sanitizes input to reduce
+ * crashes from invalid values.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class StyledSeekBar
@@ -45,11 +44,12 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         binding.seekBarSlider.addOnChangeListener(this)
     }
 
-    var onSeekConfirmed: ((Long) -> Unit)? = null
+    /** The current [Listener] attached to this instance. */
+    var listener: Listener? = null
 
     /**
-     * The current position, in seconds. This is the current value of the SeekBar and is indicated
-     * by the start TextView in the layout.
+     * The current position, in deci-seconds(1/10th of a second). This is the current value of the
+     * SeekBar and is indicated by the start TextView in the layout.
      */
     var positionDs: Long
         get() = binding.seekBarSlider.value.toLong()
@@ -57,22 +57,20 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             // Sanity check 1: Ensure that no negative values are sneaking their way into
             // this component.
             val from = max(value, 0)
-
             // Sanity check 2: Ensure that this value is within the duration and will not crash
             // the app, and that the user is not currently seeking (which would cause the SeekBar
             // to jump around).
             if (from <= durationDs && !isActivated) {
                 binding.seekBarSlider.value = from.toFloat()
-
-                // We would want to keep this in the callback, but the callback only fires when
+                // We would want to keep this in the listener, but the listener only fires when
                 // a value changes completely, and sometimes that does not happen with this view.
                 binding.seekBarPosition.text = from.formatDurationDs(true)
             }
         }
 
     /**
-     * The current duration, in seconds. This is the end value of the SeekBar and is indicated by
-     * the end TextView in the layout.
+     * The current duration, in deci-seconds (1/10th of a second). This is the end value of the
+     * SeekBar and is indicated by the end TextView in the layout.
      */
     var durationDs: Long
         get() = binding.seekBarSlider.valueTo.toLong()
@@ -81,14 +79,12 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             // zero, use 1 instead and disable the SeekBar.
             val to = max(value, 1)
             isEnabled = value > 0
-
             // Sanity check 2: If the current value exceeds the new duration value, clamp it
             // down so that we don't crash and instead have an annoying visual flicker.
             if (positionDs > to) {
                 logD("Clamping invalid position [current: $positionDs new max: $to]")
                 binding.seekBarSlider.value = to.toFloat()
             }
-
             binding.seekBarSlider.valueTo = to.toFloat()
             binding.seekBarDuration.text = value.formatDurationDs(false)
         }
@@ -102,12 +98,22 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
     override fun onStopTrackingTouch(slider: Slider) {
         logD("Confirming seek")
-        // End of seek event, send off new value to callback.
+        // End of seek event, send off new value to listener.
         isActivated = false
-        onSeekConfirmed?.invoke(slider.value.toLong())
+        listener?.onSeekConfirmed(slider.value.toLong())
     }
 
     override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
         binding.seekBarPosition.text = value.toLong().formatDurationDs(true)
+    }
+
+    /** A listener for SeekBar interactions. */
+    interface Listener {
+        /**
+         * Called when the internal [Slider] was scrubbed to a new position, requesting that
+         * a seek be performed.
+         * @param positionDs The position to seek to, in deci-seconds (1/10th of a second).
+         */
+        fun onSeekConfirmed(positionDs: Long)
     }
 }

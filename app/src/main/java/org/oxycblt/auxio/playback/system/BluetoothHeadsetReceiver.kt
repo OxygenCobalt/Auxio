@@ -23,8 +23,7 @@ import android.content.Context
 import android.content.Intent
 
 /**
- * A [BroadcastReceiver] that handles connections from bluetooth headsets, starting playback if they
- * occur.
+ * A [BroadcastReceiver] that starts music playback when a bluetooth headset is connected.
  * @author seijikun, OxygenCobalt
  */
 class BluetoothHeadsetReceiver : BroadcastReceiver() {
