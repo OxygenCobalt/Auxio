@@ -51,7 +51,7 @@ enum class MusicMode {
          * Convert a [MusicMode] integer representation into an instance.
          * @param intCode An integer representation of a [MusicMode]
          * @return The corresponding [MusicMode], or null if the [MusicMode] is invalid.
-         * @see intCode
+         * @see MusicMode.intCode
          */
         fun fromIntCode(intCode: Int) =
             when (intCode) {

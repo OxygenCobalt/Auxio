@@ -29,7 +29,7 @@ import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
 
 /**
- * The dialog for customizing the ReplayGain pre-amp values.
+ * aa [ViewBindingDialogFragment] that allows user configuration of the current [ReplayGainPreAmp].
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PreAmpCustomizeDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {

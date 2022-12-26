@@ -48,7 +48,7 @@ enum class CoverMode {
          * Convert a [CoverMode] integer representation into an instance.
          * @param intCode An integer representation of a [CoverMode]
          * @return The corresponding [CoverMode], or null if the [CoverMode] is invalid.
-         * @see intCode
+         * @see CoverMode.intCode
          */
         fun fromIntCode(intCode: Int) =
             when (intCode) {

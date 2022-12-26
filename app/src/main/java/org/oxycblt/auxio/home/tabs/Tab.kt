@@ -93,16 +93,16 @@ sealed class Tab(open val mode: MusicMode) {
 
         /**
          * Convert a [Tab] integer representation into it's corresponding array of [Tab]s.
-         * @param sequence The integer representation of the [Tab]s.
+         * @param intCode The integer representation of the [Tab]s.
          * @return An array of [Tab]s corresponding to the sequence.
          */
-        fun fromIntCode(sequence: Int): Array<Tab>? {
+        fun fromIntCode(intCode: Int): Array<Tab>? {
             val tabs = mutableListOf<Tab>()
 
             // Try to parse a mode for each chunk in the sequence.
             // If we can't parse one, just skip it.
             for (shift in (0..4 * SEQUENCE_LEN).reversed() step 4) {
-                val chunk = sequence.shr(shift) and 0b1111
+                val chunk = intCode.shr(shift) and 0b1111
 
                 val mode = MODE_TABLE.getOrNull(chunk and 7) ?: continue
 
