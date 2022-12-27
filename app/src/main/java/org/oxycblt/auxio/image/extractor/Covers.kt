@@ -175,10 +175,8 @@ object Covers {
      * @return An [InputStream] of image data if the cover loading was successful, null otherwise.
      */
     @Suppress("BlockingMethodInNonBlockingContext")
-    private suspend fun fetchMediaStoreCovers(context: Context, data: Album): InputStream? {
-        val uri = data.coverUri
-
+    private suspend fun fetchMediaStoreCovers(context: Context, album: Album): InputStream? {
         // Eliminate any chance that this blocking call might mess up the loading process
-        return withContext(Dispatchers.IO) { context.contentResolver.openInputStream(uri) }
+        return withContext(Dispatchers.IO) { context.contentResolver.openInputStream(album.coverUri) }
     }
 }

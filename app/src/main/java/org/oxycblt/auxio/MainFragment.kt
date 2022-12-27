@@ -54,7 +54,9 @@ import org.oxycblt.auxio.util.*
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MainFragment :
-    ViewBindingFragment<FragmentMainBinding>(), ViewTreeObserver.OnPreDrawListener, NavController.OnDestinationChangedListener {
+    ViewBindingFragment<FragmentMainBinding>(),
+    ViewTreeObserver.OnPreDrawListener,
+    NavController.OnDestinationChangedListener {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private val selectionModel: SelectionViewModel by activityViewModels()

@@ -17,10 +17,7 @@
  
 package org.oxycblt.auxio.util
 
-import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import android.graphics.PointF
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -30,7 +27,6 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.database.sqlite.transaction
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment

@@ -426,7 +426,7 @@ class HomeFragment :
             when (item) {
                 is Song -> HomeFragmentDirections.actionShowAlbum(item.album.uid)
                 is Album -> HomeFragmentDirections.actionShowAlbum(item.uid)
-                is Artist -> HomeFragmentDirections.actionShowArtist(item.uid.also { logD(it) })
+                is Artist -> HomeFragmentDirections.actionShowArtist(item.uid)
                 is Genre -> HomeFragmentDirections.actionShowGenre(item.uid)
                 else -> return
             }

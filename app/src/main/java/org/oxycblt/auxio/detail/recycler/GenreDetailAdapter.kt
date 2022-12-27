@@ -105,18 +105,18 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
      * @param genre The new [Song] to bind.
      * @param listener A [DetailAdapter.Listener] to bind interactions to.
      */
-    fun bind(item: Genre, listener: DetailAdapter.Listener) {
-        binding.detailCover.bind(item)
+    fun bind(genre: Genre, listener: DetailAdapter.Listener) {
+        binding.detailCover.bind(genre)
         binding.detailType.text = binding.context.getString(R.string.lbl_genre)
-        binding.detailName.text = item.resolveName(binding.context)
+        binding.detailName.text = genre.resolveName(binding.context)
         // Nothing about a genre is applicable to the sub-head text.
         binding.detailSubhead.isVisible = false
         // The song count of the genre maps to the info text.
         binding.detailInfo.text =
             binding.context.getString(
                 R.string.fmt_two,
-                binding.context.getPlural(R.plurals.fmt_artist_count, item.artists.size),
-                binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size))
+                binding.context.getPlural(R.plurals.fmt_artist_count, genre.artists.size),
+                binding.context.getPlural(R.plurals.fmt_song_count, genre.songs.size))
         binding.detailPlayButton.setOnClickListener { listener.onPlay() }
         binding.detailShuffleButton.setOnClickListener { listener.onShuffle() }
     }

@@ -27,9 +27,8 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * a [ViewModel] that manages the current music picker state.
- * Make it so that the dialogs just contain the music themselves and then exit if the library
- * changes.
+ * a [ViewModel] that manages the current music picker state. Make it so that the dialogs just
+ * contain the music themselves and then exit if the library changes.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PickerViewModel : ViewModel(), MusicStore.Callback {

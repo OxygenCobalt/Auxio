@@ -217,9 +217,9 @@ class WidgetProvider : AppWidgetProvider() {
         // widgets.
         val background =
             if (Settings(context).roundMode && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-                R.drawable.ui_widget_bar_round
+                R.drawable.ui_widget_bg_round
             } else {
-                R.drawable.ui_widget_bar_system
+                R.drawable.ui_widget_bg_system
             }
         setBackgroundResource(android.R.id.background, background)
         return this

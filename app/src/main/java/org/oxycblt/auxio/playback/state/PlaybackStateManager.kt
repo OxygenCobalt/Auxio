@@ -57,6 +57,7 @@ class PlaybackStateManager private constructor() {
     private val callbacks = mutableListOf<Callback>()
     private var internalPlayer: InternalPlayer? = null
     private var pendingAction: InternalPlayer.Action? = null
+    private var isInitialized = false
 
     /** The currently playing [Song]. Null if nothing is playing. */
     val song
@@ -84,9 +85,6 @@ class PlaybackStateManager private constructor() {
     /** Whether the queue is shuffled. */
     var isShuffled = false
         private set
-    /** Whether this instance has played something. */
-    var isInitialized = false
-        private set
     /**
      * The current audio session ID of the internal player. Null if no [InternalPlayer] is
      * available.
@@ -94,11 +92,9 @@ class PlaybackStateManager private constructor() {
     val currentAudioSessionId: Int?
         get() = internalPlayer?.audioSessionId
 
-
     /**
-     * Add a [Callback] to this instance. This can be used to receive changes in the playback
-     * state. Will immediately invoke [Callback] methods to initialize the instance with the
-     * current state.
+     * Add a [Callback] to this instance. This can be used to receive changes in the playback state.
+     * Will immediately invoke [Callback] methods to initialize the instance with the current state.
      * @param callback The [Callback] to add.
      * @see Callback
      */
@@ -129,7 +125,8 @@ class PlaybackStateManager private constructor() {
      * Register an [InternalPlayer] for this instance. This instance will handle translating the
      * current playback state into audio playback. There can be only one [InternalPlayer] at a time.
      * Will invoke [InternalPlayer] methods to initialize the instance with the current state.
-     * @param internalPlayer The [InternalPlayer] to register. Will do nothing if already registered.
+     * @param internalPlayer The [InternalPlayer] to register. Will do nothing if already
+     * registered.
      */
     @Synchronized
     fun registerInternalPlayer(internalPlayer: InternalPlayer) {
@@ -201,8 +198,8 @@ class PlaybackStateManager private constructor() {
     // --- QUEUE FUNCTIONS ---
 
     /**
-     * Go to the next [Song] in the queue. Will go to the first [Song] in the queue if there
-     * is no [Song] ahead to skip to.
+     * Go to the next [Song] in the queue. Will go to the first [Song] in the queue if there is no
+     * [Song] ahead to skip to.
      */
     @Synchronized
     fun next() {
@@ -217,8 +214,8 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Go to the previous [Song] in the queue. Will rewind if there are no previous [Song]s
-     * to skip to, or if configured to do so.
+     * Go to the previous [Song] in the queue. Will rewind if there are no previous [Song]s to skip
+     * to, or if configured to do so.
      */
     @Synchronized
     fun prev() {
@@ -367,7 +364,7 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Synchronize the state of this instance with the current [InternalPlayer].
-     * @param internalPlayer The [InternalPlayer] to synchronize with.  Must be the current
+     * @param internalPlayer The [InternalPlayer] to synchronize with. Must be the current
      * [InternalPlayer]. Does nothing if invoked by another [InternalPlayer] implementation.
      */
     @Synchronized
@@ -400,7 +397,7 @@ class PlaybackStateManager private constructor() {
     /**
      * Request that the pending [InternalPlayer.Action] (if any) be passed to the given
      * [InternalPlayer].
-     * @param internalPlayer The [InternalPlayer] to synchronize with.  Must be the current
+     * @param internalPlayer The [InternalPlayer] to synchronize with. Must be the current
      * [InternalPlayer]. Does nothing if invoked by another [InternalPlayer] implementation.
      */
     @Synchronized
@@ -433,9 +430,7 @@ class PlaybackStateManager private constructor() {
         internalPlayer?.seekTo(positionMs)
     }
 
-    /**
-     * Rewind to the beginning of the currently playing [Song].
-     */
+    /** Rewind to the beginning of the currently playing [Song]. */
     fun rewind() = seekTo(0)
 
     // --- PERSISTENCE FUNCTIONS ---
@@ -501,14 +496,16 @@ class PlaybackStateManager private constructor() {
         logD("Saving state to DB")
 
         // Create the saved state from the current playback state.
-        val state = synchronized(this) {
-        PlaybackStateDatabase.SavedState(
-            index = index,
-            parent = parent,
-            queue = _queue,
-            positionMs = playerState.calculateElapsedPositionMs(),
-            isShuffled = isShuffled,
-            repeatMode = repeatMode) }
+        val state =
+            synchronized(this) {
+                PlaybackStateDatabase.SavedState(
+                    index = index,
+                    parent = parent,
+                    queue = _queue,
+                    positionMs = playerState.calculateElapsedPositionMs(),
+                    isShuffled = isShuffled,
+                    repeatMode = repeatMode)
+            }
         return try {
             withContext(Dispatchers.IO) { database.write(state) }
             true
@@ -636,8 +633,8 @@ class PlaybackStateManager private constructor() {
      */
     interface Callback {
         /**
-         * Called when the position of the currently playing item has changed, changing the
-         * current [Song], but no other queue attribute has changed.
+         * Called when the position of the currently playing item has changed, changing the current
+         * [Song], but no other queue attribute has changed.
          * @param index The new position in the queue.
          */
         fun onIndexMoved(index: Int) {}
@@ -649,8 +646,8 @@ class PlaybackStateManager private constructor() {
         fun onQueueChanged(queue: List<Song>) {}
 
         /**
-         * Called when the queue has changed in a non-trivial manner (such as re-shuffling),
-         * but the currently playing [Song] has not.
+         * Called when the queue has changed in a non-trivial manner (such as re-shuffling), but the
+         * currently playing [Song] has not.
          * @param index The new position in the queue.
          */
         fun onQueueReworked(index: Int, queue: List<Song>) {}
@@ -659,8 +656,7 @@ class PlaybackStateManager private constructor() {
          * Called when a new playback configuration was created.
          * @param index The new position in the queue.
          * @param queue The new queue.
-         * @param parent The new [MusicParent] being played from, or null if playing from all
-         * songs.
+         * @param parent The new [MusicParent] being played from, or null if playing from all songs.
          */
         fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {}
 
@@ -677,8 +673,8 @@ class PlaybackStateManager private constructor() {
         fun onRepeatChanged(repeatMode: RepeatMode) {}
 
         /**
-         * Called when the queue's shuffle state changes. Handling the queue change itself
-         * should occur in [onQueueReworked],
+         * Called when the queue's shuffle state changes. Handling the queue change itself should
+         * occur in [onQueueReworked],
          * @param isShuffled Whether the queue is shuffled.
          */
         fun onShuffledChanged(isShuffled: Boolean) {}

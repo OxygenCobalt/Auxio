@@ -65,7 +65,7 @@ fun lazyReflectedField(clazz: KClass<*>, field: String) = lazy {
  * Lazily set up a reflected method. Automatically handles visibility changes. Adapted from Material
  * Files: https://github.com/zhanghai/MaterialFiles
  * @param clazz The [KClass] to reflect into.
- * @param field The name of the method to obtain.
+ * @param method The name of the method to obtain.
  */
 fun lazyReflectedMethod(clazz: KClass<*>, method: String) = lazy {
     clazz.java.getDeclaredMethod(method).also { it.isAccessible = true }

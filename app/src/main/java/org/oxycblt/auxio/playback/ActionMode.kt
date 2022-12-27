@@ -20,7 +20,7 @@ package org.oxycblt.auxio.playback
 import org.oxycblt.auxio.IntegerTable
 
 /**
- * Represents a configuration option for what kind of "secondary" action to show in a particular
+ * Represents a configuration option for what kind of "secondary" action to show in a particular UI
  * context.
  * @author Alexander Capehart (OxygenCobalt)
  */

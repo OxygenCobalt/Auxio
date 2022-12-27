@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.playback
 
 import android.text.format.DateUtils
-import org.oxycblt.auxio.util.logD
 
 /**
  * Convert milliseconds into deci-seconds (1/10th of a second).
@@ -58,7 +57,7 @@ fun Long.secsToMs() = times(1000)
 fun Long.formatDurationMs(isElapsed: Boolean) = msToSecs().formatDurationSecs(isElapsed)
 
 /**
-// * Format a deci-second value (1/10th of a second) into a string duration.
+ * // * Format a deci-second value (1/10th of a second) into a string duration.
  * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
  * will be returned if the second value is 0.
  */

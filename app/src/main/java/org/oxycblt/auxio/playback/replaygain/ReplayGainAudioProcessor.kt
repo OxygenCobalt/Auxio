@@ -57,8 +57,8 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
 
     /**
      * Updates the volume adjustment based on the given [Metadata].
-     * @param metadata The [Metadata] of the currently playing track, or null if the track
-     * has no [Metadata].
+     * @param metadata The [Metadata] of the currently playing track, or null if the track has no
+     * [Metadata].
      */
     fun applyReplayGain(metadata: Metadata?) {
         // TODO: Allow this to automatically obtain it's own [Metadata].
@@ -155,11 +155,12 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
                 // Grok a float from a ReplayGain tag by removing everything that is not 0-9, ,
                 // or -.
                 // Derived from vanilla music: https://github.com/vanilla-music/vanilla
-                val gainValue = try {
-                    value.replace(Regex("[^\\d.-]"), "").toFloat()
-                } catch (e: Exception) {
-                    0f
-                }
+                val gainValue =
+                    try {
+                        value.replace(Regex("[^\\d.-]"), "").toFloat()
+                    } catch (e: Exception) {
+                        0f
+                    }
 
                 tags.add(GainTag(unlikelyToBeNull(key), gainValue))
             }
@@ -250,7 +251,7 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
     }
 
     /**
-     * Always read  a little-endian [Short] from the [ByteBuffer] at the given index.
+     * Always read a little-endian [Short] from the [ByteBuffer] at the given index.
      * @param at The index to read the [Short] from.
      */
     private fun ByteBuffer.getLeShort(at: Int) =
@@ -275,8 +276,7 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
     /**
      * A raw ReplayGain adjustment.
      * @param key The tag's key.
-     * @param value The tag's adjustment, in dB.
-     * TODO: Try to phasse this out.
+     * @param value The tag's adjustment, in dB. TODO: Try to phasse this out.
      */
     private data class GainTag(val key: String, val value: Float)
 

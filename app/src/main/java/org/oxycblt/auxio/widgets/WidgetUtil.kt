@@ -80,7 +80,7 @@ fun RemoteViews.setLayoutDirection(@IdRes viewId: Int, layoutDirection: Int) {
 }
 
 /**
- * Update the app widget layouts corresponding to the given [AppWidgetProvider] [ComponentName] with
+ * Update the app widget layouts corresponding to the given [WidgetProvider] [ComponentName] with
  * an adaptive layout, in a version-compatible manner.
  * @param context [Context] required to backport adaptive layout behavior.
  * @param component [ComponentName] of the app widget layout to update.

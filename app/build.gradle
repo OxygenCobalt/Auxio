@@ -24,7 +24,6 @@ android {
     }
 
     // ExoPlayer, AndroidX, and Material Components all need Java 8 to compile.
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -108,6 +107,7 @@ dependencies {
     implementation "io.coil-kt:coil:2.1.0"
 
     // Material
+    // Locked below 1.7.0-alpha03 to avoid the same ripple bug
     implementation "com.google.android.material:material:1.7.0-alpha02"
 
     // LeakCanary

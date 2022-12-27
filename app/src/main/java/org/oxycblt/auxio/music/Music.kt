@@ -178,7 +178,7 @@ sealed class Music : Item {
 
         companion object {
             /**
-             * Creates an auxio-style [UID] with a [UUID] composed of a hash of the non-subjective,
+             * Creates an Auxio-style [UID] with a [UUID] composed of a hash of the non-subjective,
              * unlikely-to-change metadata of the music.
              * @param mode The analogous [MusicMode] of the item that created this [UID].
              * @param updates Block to update the [MessageDigest] hash with the metadata of the
@@ -194,27 +194,28 @@ sealed class Music : Item {
                     }
                 // Convert the digest to a UUID. This does cleave off some of the hash, but this
                 // is considered okay.
-                val uuid =  UUID(
-                    digest[0]
-                        .toLong()
-                        .shl(56)
-                        .or(digest[1].toLong().and(0xFF).shl(48))
-                        .or(digest[2].toLong().and(0xFF).shl(40))
-                        .or(digest[3].toLong().and(0xFF).shl(32))
-                        .or(digest[4].toLong().and(0xFF).shl(24))
-                        .or(digest[5].toLong().and(0xFF).shl(16))
-                        .or(digest[6].toLong().and(0xFF).shl(8))
-                        .or(digest[7].toLong().and(0xFF)),
-                    digest[8]
-                        .toLong()
-                        .shl(56)
-                        .or(digest[9].toLong().and(0xFF).shl(48))
-                        .or(digest[10].toLong().and(0xFF).shl(40))
-                        .or(digest[11].toLong().and(0xFF).shl(32))
-                        .or(digest[12].toLong().and(0xFF).shl(24))
-                        .or(digest[13].toLong().and(0xFF).shl(16))
-                        .or(digest[14].toLong().and(0xFF).shl(8))
-                        .or(digest[15].toLong().and(0xFF)))
+                val uuid =
+                    UUID(
+                        digest[0]
+                            .toLong()
+                            .shl(56)
+                            .or(digest[1].toLong().and(0xFF).shl(48))
+                            .or(digest[2].toLong().and(0xFF).shl(40))
+                            .or(digest[3].toLong().and(0xFF).shl(32))
+                            .or(digest[4].toLong().and(0xFF).shl(24))
+                            .or(digest[5].toLong().and(0xFF).shl(16))
+                            .or(digest[6].toLong().and(0xFF).shl(8))
+                            .or(digest[7].toLong().and(0xFF)),
+                        digest[8]
+                            .toLong()
+                            .shl(56)
+                            .or(digest[9].toLong().and(0xFF).shl(48))
+                            .or(digest[10].toLong().and(0xFF).shl(40))
+                            .or(digest[11].toLong().and(0xFF).shl(32))
+                            .or(digest[12].toLong().and(0xFF).shl(24))
+                            .or(digest[13].toLong().and(0xFF).shl(16))
+                            .or(digest[14].toLong().and(0xFF).shl(8))
+                            .or(digest[15].toLong().and(0xFF)))
                 return UID(Format.AUXIO, mode, uuid)
             }
 
@@ -224,7 +225,7 @@ sealed class Music : Item {
              * @param mode The analogous [MusicMode] of the item that created this [UID].
              * @param mbid The analogous MusicBrainz ID for this item that was extracted from a
              * file.
-             * @return A new MusicBrainz-style [UID]
+             * @return A new MusicBrainz-style [UID].
              */
             fun musicBrainz(mode: MusicMode, mbid: UUID): UID = UID(Format.MUSICBRAINZ, mode, mbid)
 
@@ -396,8 +397,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
 
     /**
      * Resolves one or more [Artist]s into a single piece of human-readable names.
-     * @param context [Context] required for [resolveName].
-     * formatter.
+     * @param context [Context] required for [resolveName]. formatter.
      */
     fun resolveArtistContents(context: Context) =
         // TODO Internationalize the list
@@ -1408,7 +1408,7 @@ private fun MessageDigest.update(string: String?) {
 private fun MessageDigest.update(date: Date?) {
     if (date != null) {
         update(date.toString().toByteArray())
-    }else {
+    } else {
         update(0)
     }
 }
@@ -1428,7 +1428,7 @@ private fun MessageDigest.update(strings: List<String?>) {
 private fun MessageDigest.update(n: Int?) {
     if (n != null) {
         update(byteArrayOf(n.toByte(), n.shr(8).toByte(), n.shr(16).toByte(), n.shr(24).toByte()))
-    }else {
+    } else {
         update(0)
     }
 }

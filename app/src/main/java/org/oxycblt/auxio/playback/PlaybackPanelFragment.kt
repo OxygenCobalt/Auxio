@@ -47,7 +47,10 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * available controls.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class PlaybackPanelFragment : ViewBindingFragment<FragmentPlaybackPanelBinding>(), Toolbar.OnMenuItemClickListener, StyledSeekBar.Listener {
+class PlaybackPanelFragment :
+    ViewBindingFragment<FragmentPlaybackPanelBinding>(),
+    Toolbar.OnMenuItemClickListener,
+    StyledSeekBar.Listener {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     // AudioEffect expects you to use startActivityForResult with the panel intent. There is no

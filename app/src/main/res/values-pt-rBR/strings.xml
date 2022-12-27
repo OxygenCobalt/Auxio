@@ -63,12 +63,10 @@
     <string name="fmt_lib_song_count">Músicas carregadas: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d música</item>
-        <item quantity="many">%d músicas</item>
         <item quantity="other">%d músicas</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d álbum</item>
-        <item quantity="many">%d álbuns</item>
         <item quantity="other">%d álbuns</item>
     </plurals>
     <string name="lbl_sort_asc">Crescente</string>

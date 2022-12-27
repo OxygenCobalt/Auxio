@@ -23,7 +23,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
-import androidx.core.database.sqlite.transaction
 import java.io.File
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.*
@@ -357,23 +356,15 @@ private class CacheDatabase(context: Context) :
                 put(Columns.ALBUM_SORT_NAME, rawSong.albumSortName)
                 put(Columns.ALBUM_TYPES, rawSong.albumTypes.toSQLMultiValue())
 
-                put(
-                    Columns.ARTIST_MUSIC_BRAINZ_IDS,
-                    rawSong.artistMusicBrainzIds.toSQLMultiValue())
+                put(Columns.ARTIST_MUSIC_BRAINZ_IDS, rawSong.artistMusicBrainzIds.toSQLMultiValue())
                 put(Columns.ARTIST_NAMES, rawSong.artistNames.toSQLMultiValue())
-                put(
-                    Columns.ARTIST_SORT_NAMES,
-                    rawSong.artistSortNames.toSQLMultiValue())
+                put(Columns.ARTIST_SORT_NAMES, rawSong.artistSortNames.toSQLMultiValue())
 
                 put(
                     Columns.ALBUM_ARTIST_MUSIC_BRAINZ_IDS,
                     rawSong.albumArtistMusicBrainzIds.toSQLMultiValue())
-                put(
-                    Columns.ALBUM_ARTIST_NAMES,
-                    rawSong.albumArtistNames.toSQLMultiValue())
-                put(
-                    Columns.ALBUM_ARTIST_SORT_NAMES,
-                    rawSong.albumArtistSortNames.toSQLMultiValue())
+                put(Columns.ALBUM_ARTIST_NAMES, rawSong.albumArtistNames.toSQLMultiValue())
+                put(Columns.ALBUM_ARTIST_SORT_NAMES, rawSong.albumArtistSortNames.toSQLMultiValue())
 
                 put(Columns.GENRE_NAMES, rawSong.genreNames.toSQLMultiValue())
             }

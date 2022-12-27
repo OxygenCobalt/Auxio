@@ -141,7 +141,8 @@ class PlaybackService :
                         .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                         .build(),
                     true)
-                .build().also { it.addListener(this) }
+                .build()
+                .also { it.addListener(this) }
         // Initialize the core service components
         settings = Settings(this, this)
         foregroundManager = ForegroundManager(this)
@@ -163,8 +164,7 @@ class PlaybackService :
                 addAction(ACTION_SKIP_NEXT)
                 addAction(ACTION_EXIT)
                 addAction(WidgetProvider.ACTION_WIDGET_UPDATE)
-            }
-        )
+            })
 
         logD("Service created")
     }
@@ -218,7 +218,8 @@ class PlaybackService :
 
     override fun getState(durationMs: Long) =
         InternalPlayer.State.new(
-            player.playWhenReady, player.isPlaying,
+            player.playWhenReady,
+            player.isPlaying,
             // The position value can be below zero or past the expected duration, make
             // sure we handle that.
             player.currentPosition.coerceAtLeast(0).coerceAtMost(durationMs))
@@ -273,9 +274,9 @@ class PlaybackService :
         // Any change to the analogous isPlaying, isAdvancing, or positionMs values require
         // us to synchronize with a new state.
         if (events.containsAny(
-                Player.EVENT_PLAY_WHEN_READY_CHANGED,
-                Player.EVENT_IS_PLAYING_CHANGED,
-                Player.EVENT_POSITION_DISCONTINUITY)) {
+            Player.EVENT_PLAY_WHEN_READY_CHANGED,
+            Player.EVENT_IS_PLAYING_CHANGED,
+            Player.EVENT_POSITION_DISCONTINUITY)) {
             playbackManager.synchronizeState(this)
         }
     }
@@ -363,7 +364,8 @@ class PlaybackService :
     }
 
     override fun performAction(action: InternalPlayer.Action): Boolean {
-        val library = musicStore.library
+        val library =
+            musicStore.library
             // No library, cannot do anything.
             ?: return false
 

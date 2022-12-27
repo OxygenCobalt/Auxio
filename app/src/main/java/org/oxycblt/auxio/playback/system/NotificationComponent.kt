@@ -34,9 +34,8 @@ import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 
 /**
- * The playback notification component. Due to race conditions regarding notification
- * updates, this component is not self-sufficient. [MediaSessionComponent] should be used
- * instead of manage it.
+ * The playback notification component. Due to race conditions regarding notification updates, this
+ * component is not self-sufficient. [MediaSessionComponent] should be used instead of manage it.
  * @author Alexander Capehart (OxygenCobalt)
  */
 @SuppressLint("RestrictedApi")
@@ -115,11 +114,12 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
         context: Context,
         isPlaying: Boolean
     ): NotificationCompat.Action {
-        val drawableRes = if (isPlaying) {
-            R.drawable.ic_pause_24
-        } else {
-            R.drawable.ic_play_24
-        }
+        val drawableRes =
+            if (isPlaying) {
+                R.drawable.ic_pause_24
+            } else {
+                R.drawable.ic_play_24
+            }
         return buildAction(context, PlaybackService.ACTION_PLAY_PAUSE, drawableRes)
     }
 
@@ -134,21 +134,19 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
         context: Context,
         isShuffled: Boolean
     ): NotificationCompat.Action {
-        val drawableRes = if (isShuffled) {
-            R.drawable.ic_shuffle_on_24
-        } else {
-            R.drawable.ic_shuffle_off_24
-        }
+        val drawableRes =
+            if (isShuffled) {
+                R.drawable.ic_shuffle_on_24
+            } else {
+                R.drawable.ic_shuffle_off_24
+            }
         return buildAction(context, PlaybackService.ACTION_INVERT_SHUFFLE, drawableRes)
     }
 
-    private fun buildAction(
-        context: Context,
-        actionName: String,
-        @DrawableRes iconRes: Int
-    ) =
+    private fun buildAction(context: Context, actionName: String, @DrawableRes iconRes: Int) =
         NotificationCompat.Action.Builder(
-                iconRes, actionName, context.newBroadcastPendingIntent(actionName)).build()
+                iconRes, actionName, context.newBroadcastPendingIntent(actionName))
+            .build()
 
     companion object {
         /** Notification channel used by solely the playback notification. */

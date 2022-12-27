@@ -64,7 +64,7 @@ class PlaybackViewModel(application: Application) :
     val repeatMode: StateFlow<RepeatMode>
         get() = _repeatMode
     private val _isShuffled = MutableStateFlow(false)
-    /** Whether the queue is shuffled or not.  */
+    /** Whether the queue is shuffled or not. */
     val isShuffled: StateFlow<Boolean>
         get() = _isShuffled
 
@@ -152,8 +152,8 @@ class PlaybackViewModel(application: Application) :
     /**
      * Play a [Song] from one of it's [Artist]s.
      * @param song The [Song] to play.
-     * @param artist The [Artist] to play from. Must be linked to the [Song]. If null, the user
-     * will be prompted on what artist to play. Defaults to null.
+     * @param artist The [Artist] to play from. Must be linked to the [Song]. If null, the user will
+     * be prompted on what artist to play. Defaults to null.
      */
     fun playFromArtist(song: Song, artist: Artist? = null) {
         if (artist != null) {
@@ -234,8 +234,8 @@ class PlaybackViewModel(application: Application) :
     }
 
     /**
-     * Start the given [InternalPlayer.Action] to be completed eventually. This can be used
-     * to enqueue a playback action at startup to then occur when the music library is fully loaded.
+     * Start the given [InternalPlayer.Action] to be completed eventually. This can be used to
+     * enqueue a playback action at startup to then occur when the music library is fully loaded.
      * @param action The [InternalPlayer.Action] to perform eventually.
      */
     fun startAction(action: InternalPlayer.Action) {

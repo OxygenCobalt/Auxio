@@ -216,8 +216,8 @@ class PlaybackStateDatabase private constructor(context: Context) :
     )
 
     /**
-     * A lower-level form of [SavedState] that contains additional information to create
-     * a more reliable restoration process.
+     * A lower-level form of [SavedState] that contains additional information to create a more
+     * reliable restoration process.
      */
     private data class RawState(
         /** @see SavedState.index */
@@ -229,9 +229,8 @@ class PlaybackStateDatabase private constructor(context: Context) :
         /** @see SavedState.isShuffled */
         val isShuffled: Boolean,
         /**
-         * The [Music.UID] of the [Song] that was originally in the queue at [index].
-         * This can be used to restore the currently playing item in the queue if
-         * the index mapping changed.
+         * The [Music.UID] of the [Song] that was originally in the queue at [index]. This can be
+         * used to restore the currently playing item in the queue if the index mapping changed.
          */
         val songUid: Music.UID,
         /** @see SavedState.parent */

@@ -50,8 +50,8 @@ interface InternalPlayer {
 
     /**
      * Get a [State] corresponding to the current player state.
-     * @param durationMs The duration of the currently playing track, in milliseconds.
-     * Required since the internal player cannot obtain an accurate duration itself.
+     * @param durationMs The duration of the currently playing track, in milliseconds. Required
+     * since the internal player cannot obtain an accurate duration itself.
      */
     fun getState(durationMs: Long): State
 
@@ -67,16 +67,14 @@ interface InternalPlayer {
      */
     fun setPlaying(isPlaying: Boolean)
 
-    /**
-     * Possible long-running background tasks handled by the background playback task.
-     */
+    /** Possible long-running background tasks handled by the background playback task. */
     sealed class Action {
         /** Restore the previously saved playback state. */
         object RestoreState : Action()
 
         /**
-         * Start shuffled playback of the entire music library.
-         * Analogous to the "Shuffle All" shortcut.
+         * Start shuffled playback of the entire music library. Analogous to the "Shuffle All"
+         * shortcut.
          */
         object ShuffleAll : Action()
 
@@ -93,15 +91,15 @@ interface InternalPlayer {
         val isPlaying: Boolean,
         /** Whether the player is actively playing audio in this moment. */
         private val isAdvancing: Boolean,
-        /** The position when this instance was created, in milliseconds.  */
+        /** The position when this instance was created, in milliseconds. */
         private val initPositionMs: Long,
         /** The time this instance was created, as a unix epoch timestamp. */
         private val creationTime: Long
     ) {
         /**
          * Calculate the "real" playback position this instance contains, in milliseconds.
-         * @return If paused, the original position will be returned. Otherwise, it will be
-         * the original position plus the time elapsed since this state was created.
+         * @return If paused, the original position will be returned. Otherwise, it will be the
+         * original position plus the time elapsed since this state was created.
          */
         fun calculateElapsedPositionMs() =
             if (isAdvancing) {
@@ -154,8 +152,8 @@ interface InternalPlayer {
         companion object {
             /**
              * Create a new instance.
-             * @param isPlaying Whether the player is actively playing audio or set to play audio
-             * in the future.
+             * @param isPlaying Whether the player is actively playing audio or set to play audio in
+             * the future.
              * @param isAdvancing Whether the player is actively playing audio in this moment.
              * @param positionMs The current position of the player.
              */

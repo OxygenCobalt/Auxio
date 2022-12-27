@@ -155,7 +155,7 @@ class DetailViewModel(application: Application) :
             } else {
                 _currentSong.value = null
             }
-            logD("Updated song to ${newSong}")
+            logD("Updated song to $newSong")
         }
 
         val album = currentAlbum.value

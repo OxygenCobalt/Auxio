@@ -74,8 +74,8 @@ class MediaSessionComponent(private val context: Context, private val callback: 
     }
 
     /**
-     * Release this instance, closing the [MediaSessionCompat] and preventing any
-     * further updates to the [NotificationComponent].
+     * Release this instance, closing the [MediaSessionCompat] and preventing any further updates to
+     * the [NotificationComponent].
      */
     fun release() {
         provider.release()
@@ -246,10 +246,10 @@ class MediaSessionComponent(private val context: Context, private val callback: 
     /**
      * Upload a new [MediaMetadataCompat] based on the current playback state to the
      * [MediaSessionCompat] and [NotificationComponent].
-     * @param song The current [Song] to create the [MediaMetadataCompat] from, or null if no
-     * [Song] is currently playing.
-     * @param parent The current [MusicParent] to create the [MediaMetadataCompat] from, or null
-     * if playback is currently occuring from all songs.
+     * @param song The current [Song] to create the [MediaMetadataCompat] from, or null if no [Song]
+     * is currently playing.
+     * @param parent The current [MusicParent] to create the [MediaMetadataCompat] from, or null if
+     * playback is currently occuring from all songs.
      */
     private fun updateMediaMetadata(song: Song?, parent: MusicParent?) {
         if (song == null) {
@@ -342,8 +342,9 @@ class MediaSessionComponent(private val context: Context, private val callback: 
         logD("Updating media session playback state")
 
         val state =
-            // InternalPlayer.State handles position/state information.
-            playbackManager.playerState.intoPlaybackState(PlaybackStateCompat.Builder())
+        // InternalPlayer.State handles position/state information.
+        playbackManager.playerState
+                .intoPlaybackState(PlaybackStateCompat.Builder())
                 .setActions(ACTIONS)
                 // Active queue ID corresponds to the indices we populated prior, use them here.
                 .setActiveQueueItemId(playbackManager.index.toLong())
@@ -396,9 +397,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
         }
     }
 
-    /**
-     * An interface for handling changes in the notification configuration.
-     */
+    /** An interface for handling changes in the notification configuration. */
     interface Callback {
         /**
          * Called when the [NotificationComponent] changes, requiring it to be re-posed.

@@ -31,8 +31,8 @@ enum class RepeatMode {
     NONE,
 
     /**
-     * Repeat the whole queue. Songs are played immediately, and playback continues when the
-     * queue repeats.
+     * Repeat the whole queue. Songs are played immediately, and playback continues when the queue
+     * repeats.
      */
     ALL,
 

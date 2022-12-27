@@ -110,8 +110,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     /** A listener for SeekBar interactions. */
     interface Listener {
         /**
-         * Called when the internal [Slider] was scrubbed to a new position, requesting that
-         * a seek be performed.
+         * Called when the internal [Slider] was scrubbed to a new position, requesting that a seek
+         * be performed.
          * @param positionDs The position to seek to, in deci-seconds (1/10th of a second).
          */
         fun onSeekConfirmed(positionDs: Long)

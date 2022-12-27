@@ -121,6 +121,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun startIntentAction(intent: Intent?): Boolean {
         if (intent == null) {
+            // Nothing to do.
             return false
         }
 
