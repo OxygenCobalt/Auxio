@@ -137,11 +137,11 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
     override fun onRealClick(music: Music) {
         when (music) {
             is Song ->
-                when (val mode = Settings(requireContext()).libPlaybackMode) {
+                when (Settings(requireContext()).libPlaybackMode) {
                     MusicMode.SONGS -> playbackModel.playFromAll(music)
                     MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
                     MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-                    else -> error("Unexpected playback mode: $mode")
+                    MusicMode.GENRES -> playbackModel.playFromGenre(music)
                 }
             is MusicParent -> navModel.exploreNavigateTo(music)
         }

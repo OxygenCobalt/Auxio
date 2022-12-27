@@ -23,7 +23,7 @@
     <string name="lbl_playback">يعمل الآن</string>
     <string name="lbl_play">تشغيل</string>
     <string name="lbl_shuffle">خلط</string>
-    <string name="set_playback_mode_all">تشغيل من جميع الاغاني</string>
+    <string name="set_playback_mode_songs">تشغيل من جميع الاغاني</string>
     <string name="set_playback_mode_album">تشغيل من البوم</string>
     <string name="set_playback_mode_artist">تشغيل من فنان</string>
     <string name="lbl_queue">طابور</string>

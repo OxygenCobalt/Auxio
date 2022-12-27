@@ -124,16 +124,16 @@ class ArtistDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapte
     override fun onRealClick(music: Music) {
         when (music) {
             is Song -> {
-                when (val mode = Settings(requireContext()).detailPlaybackMode) {
-                    // "Play from selected item" and "Play from artist" differ, as the latter
-                    // actually should show a picker choice in the case of multiple artists.
+                when (Settings(requireContext()).detailPlaybackMode) {
+                    // When configured to play from the selected item, we already have an Artist
+                    // to play from.
                     null ->
                         playbackModel.playFromArtist(
                             music, unlikelyToBeNull(detailModel.currentArtist.value))
                     MusicMode.SONGS -> playbackModel.playFromAll(music)
                     MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
                     MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-                    else -> error("Unexpected playback mode: $mode")
+                    MusicMode.GENRES -> playbackModel.playFromGenre(music)
                 }
             }
             is Album -> navModel.exploreNavigateTo(music)

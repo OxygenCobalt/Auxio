@@ -29,7 +29,7 @@
     <string name="lbl_playback">Právě hraje</string>
     <string name="lbl_play">Přehrát</string>
     <string name="lbl_shuffle">Náhodně</string>
-    <string name="set_playback_mode_all">Přehrát ze všech skladeb</string>
+    <string name="set_playback_mode_songs">Přehrát ze všech skladeb</string>
     <string name="set_playback_mode_album">Přehrát z alba</string>
     <string name="set_playback_mode_artist">Přehrát od umělce</string>
     <string name="lbl_queue">Fronta</string>

@@ -23,7 +23,7 @@
     <string name="lbl_playback">En reproducción</string>
     <string name="lbl_play">Reproducir</string>
     <string name="lbl_shuffle">Mezcla</string>
-    <string name="set_playback_mode_all">Reproducir todo</string>
+    <string name="set_playback_mode_songs">Reproducir todo</string>
     <string name="set_playback_mode_album">Reproducir por álbum</string>
     <string name="set_playback_mode_artist">Reproducir por artista</string>
     <string name="lbl_queue">Cola</string>

@@ -176,7 +176,7 @@
     <string name="set_dirs_mode_exclude_desc">Muzika <b>nebus</b> įkeliama iš pridėtų aplankų jūs pridėsite.</string>
     <string name="set_dirs_mode_include">Įtraukti</string>
     <string name="desc_clear_queue_item">Pašalinti šią eilės dainą</string>
-    <string name="set_playback_mode_all">Groti iš visų dainų</string>
+    <string name="set_playback_mode_songs">Groti iš visų dainų</string>
     <string name="set_playback_mode_none">Groti iš parodyto elemento</string>
     <string name="set_playback_mode_album">Groti iš albumo</string>
     <string name="set_playback_mode_artist">Groti iš atlikėjo</string>

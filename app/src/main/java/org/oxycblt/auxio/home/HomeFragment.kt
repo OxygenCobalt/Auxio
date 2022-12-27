@@ -155,9 +155,7 @@ class HomeFragment :
         collect(homeModel.shouldRecreate, ::handleRecreate)
         collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
         collectImmediately(homeModel.songLists, homeModel.isFastScrolling, ::updateFab)
-
         collectImmediately(musicModel.indexerState, ::updateIndexerState)
-
         collect(navModel.exploreNavigationItem, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
@@ -484,9 +482,7 @@ class HomeFragment :
         fragmentManager: FragmentManager,
         lifecycleOwner: LifecycleOwner
     ) : FragmentStateAdapter(fragmentManager, lifecycleOwner.lifecycle) {
-
         override fun getItemCount() = tabs.size
-
         override fun createFragment(position: Int): Fragment =
             when (tabs[position]) {
                 MusicMode.SONGS -> SongListFragment()

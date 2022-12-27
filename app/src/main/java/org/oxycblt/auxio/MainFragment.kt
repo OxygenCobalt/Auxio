@@ -128,9 +128,10 @@ class MainFragment :
         // --- VIEWMODEL SETUP ---
         collect(navModel.mainNavigationAction, ::handleMainNavigation)
         collect(navModel.exploreNavigationItem, ::handleExploreNavigation)
-        collect(navModel.exploreNavigationArtists, ::handleExplorePicker)
+        collect(navModel.exploreArtistNavigationItem, ::handleArtistNavigationPicker)
         collectImmediately(playbackModel.song, ::updateSong)
-        collect(playbackModel.artistPlaybackPickerSong, ::handlePlaybackArtistPicker)
+        collect(playbackModel.artistPickerSong, ::handlePlaybackArtistPicker)
+        collect(playbackModel.genrePickerSong, ::handlePlaybackGenrePicker)
     }
 
     override fun onStart() {
@@ -278,13 +279,11 @@ class MainFragment :
         }
     }
 
-    private fun handleExplorePicker(items: List<Artist>?) {
-        if (items != null) {
-            // Navigate to the analogous artist picker dialog.
+    private fun handleArtistNavigationPicker(item: Music?) {
+        if (item != null) {
             navModel.mainNavigateTo(
                 MainNavigationAction.Directions(
-                    MainFragmentDirections.actionPickNavigationArtist(
-                        items.map { it.uid }.toTypedArray())))
+                    MainFragmentDirections.actionPickNavigationArtist(item.uid)))
             navModel.finishExploreNavigation()
         }
     }
@@ -299,10 +298,18 @@ class MainFragment :
 
     private fun handlePlaybackArtistPicker(song: Song?) {
         if (song != null) {
-            // Navigate to the analogous artist picker dialog.
             navModel.mainNavigateTo(
                 MainNavigationAction.Directions(
                     MainFragmentDirections.actionPickPlaybackArtist(song.uid)))
+            playbackModel.finishPlaybackArtistPicker()
+        }
+    }
+
+    private fun handlePlaybackGenrePicker(song: Song?) {
+        if (song != null) {
+            navModel.mainNavigateTo(
+                MainNavigationAction.Directions(
+                    MainFragmentDirections.actionPickPlaybackGenre(song.uid)))
             playbackModel.finishPlaybackArtistPicker()
         }
     }

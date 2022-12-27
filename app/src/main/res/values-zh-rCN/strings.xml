@@ -23,7 +23,7 @@
     <string name="lbl_playback">正在播放</string>
     <string name="lbl_play">播放</string>
     <string name="lbl_shuffle">随机</string>
-    <string name="set_playback_mode_all">从全部歌曲开始播放</string>
+    <string name="set_playback_mode_songs">从全部歌曲开始播放</string>
     <string name="set_playback_mode_album">从专辑开始播放</string>
     <string name="set_playback_mode_artist">从艺术家播放</string>
     <string name="lbl_queue">播放队列</string>

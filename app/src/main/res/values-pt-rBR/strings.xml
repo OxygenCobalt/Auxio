@@ -166,7 +166,7 @@
     <string name="set_round_mode_desc">Ativar cantos arredondados em elementos adicionais da interface do usuário (requer que as capas dos álbuns sejam arredondadas)</string>
     <string name="set_replay_gain">Modo de normalização de volume (ReplayGain)</string>
     <string name="set_playback_mode_none">Reproduzir a partir do item mostrado</string>
-    <string name="set_playback_mode_all">Reproduzir de todas as músicas</string>
+    <string name="set_playback_mode_songs">Reproduzir de todas as músicas</string>
     <string name="set_replay_gain_album">Preferir álbum</string>
     <string name="set_replay_gain_dynamic">Prefira o álbum se estiver tocando</string>
     <string name="set_observing">Recarregamento automático</string>

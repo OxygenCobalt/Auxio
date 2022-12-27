@@ -99,22 +99,25 @@
     </integer-array>
 
     <string-array name="entries_library_song_playback_mode">
-        <item>@string/set_playback_mode_all</item>
+        <item>@string/set_playback_mode_songs</item>
         <item>@string/set_playback_mode_artist</item>
         <item>@string/set_playback_mode_album</item>
+        <item>@string/set_playback_mode_genre</item>
     </string-array>
 
     <integer-array name="values_library_song_playback_mode">
         <item>@integer/music_mode_songs</item>
         <item>@integer/music_mode_artist</item>
         <item>@integer/music_mode_album</item>
+        <item>@integer/music_mode_genre</item>
     </integer-array>
 
     <string-array name="entries_detail_song_playback_mode">
         <item>@string/set_playback_mode_none</item>
-        <item>@string/set_playback_mode_all</item>
+        <item>@string/set_playback_mode_songs</item>
         <item>@string/set_playback_mode_artist</item>
         <item>@string/set_playback_mode_album</item>
+        <item>@string/set_playback_mode_genre</item>
     </string-array>
 
     <integer-array name="values_detail_song_playback_mode">
@@ -122,6 +125,7 @@
         <item>@integer/music_mode_songs</item>
         <item>@integer/music_mode_artist</item>
         <item>@integer/music_mode_album</item>
+        <item>@integer/music_mode_genre</item>
     </integer-array>
 
     <string-array name="entries_replay_gain">
@@ -141,6 +145,7 @@
     <integer name="theme_dark">2</integer>
 
     <integer name="music_mode_none">-2147483648</integer>
+    <integer name="music_mode_genre">0xA108</integer>
     <integer name="music_mode_artist">0xA109</integer>
     <integer name="music_mode_album">0xA10A</integer>
     <integer name="music_mode_songs">0xA10B</integer>

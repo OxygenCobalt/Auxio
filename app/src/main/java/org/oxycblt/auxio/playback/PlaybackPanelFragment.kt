@@ -210,7 +210,7 @@ class PlaybackPanelFragment :
     /** Navigate to one of the currently playing [Song]'s Artists. */
     private fun navigateToCurrentArtist() {
         val song = playbackModel.song.value ?: return
-        navModel.exploreNavigateTo(song.artists)
+        navModel.exploreNavigateToParentArtist(song)
     }
 
     /** Navigate to the currently playing [Song]'s albums. */

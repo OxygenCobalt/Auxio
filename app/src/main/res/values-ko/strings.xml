@@ -27,7 +27,7 @@
     <string name="lbl_playback">지금 재생 중</string>
     <string name="lbl_play">재생</string>
     <string name="lbl_shuffle">셔플</string>
-    <string name="set_playback_mode_all">모든 곡에서 재생</string>
+    <string name="set_playback_mode_songs">모든 곡에서 재생</string>
     <string name="set_playback_mode_album">앨범에서 재생</string>
     <string name="set_playback_mode_artist">아티스트에서 재생</string>
     <string name="lbl_queue">대기열</string>

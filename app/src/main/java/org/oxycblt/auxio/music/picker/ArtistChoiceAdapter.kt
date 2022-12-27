@@ -28,7 +28,7 @@ import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
 /**
- * An adapter responsible for showing a list of [Artist] choices in [ArtistPickerDialog].
+ * An [RecyclerView.Adapter] that displays a list of [Artist] choices.
  * @param listener A [ClickableListListener] to bind interactions to.
  * @author OxygenCobalt.
  */

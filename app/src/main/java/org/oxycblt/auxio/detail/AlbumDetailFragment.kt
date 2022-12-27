@@ -128,14 +128,14 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
 
     override fun onRealClick(music: Music) {
         check(music is Song) { "Unexpected datatype: ${music::class.java}" }
-        when (val mode = Settings(requireContext()).detailPlaybackMode) {
+        when (Settings(requireContext()).detailPlaybackMode) {
             // "Play from shown item" and "Play from album" functionally have the same
             // behavior since a song can only have one album.
             null,
             MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
             MusicMode.SONGS -> playbackModel.playFromAll(music)
             MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-            else -> error("Unexpected playback mode: $mode")
+            MusicMode.GENRES -> playbackModel.playFromGenre(music)
         }
     }
 
@@ -171,7 +171,7 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
     }
 
     override fun onNavigateToParentArtist() {
-        navModel.exploreNavigateTo(unlikelyToBeNull(detailModel.currentAlbum.value).artists)
+        navModel.exploreNavigateToParentArtist(unlikelyToBeNull(detailModel.currentAlbum.value))
     }
 
     private fun updateAlbum(album: Album?) {
@@ -180,7 +180,6 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
             findNavController().navigateUp()
             return
         }
-
         requireBinding().detailToolbar.title = album.resolveName(requireContext())
     }
 

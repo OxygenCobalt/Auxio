@@ -136,7 +136,7 @@
     <string name="lbl_equalizer">Equalizer</string>
     <string name="lbl_size">Rozmiar</string>
     <string name="err_no_dirs">Brak folderów</string>
-    <string name="set_playback_mode_all">Odtwórz wszystkie utwory</string>
+    <string name="set_playback_mode_songs">Odtwórz wszystkie utwory</string>
     <string name="set_playback_mode_album">Odtwórz album</string>
     <string name="set_headset_autoplay_desc">Zacznij odtawrzanie po podłączeniu słuchawek (może nie działać na wszystkich urządzeniach)</string>
     <string name="set_reindex">Załaduj ponownie bibliotekę</string>

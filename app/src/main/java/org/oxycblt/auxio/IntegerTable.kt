@@ -61,6 +61,8 @@ object IntegerTable {
     const val REPEAT_MODE_ALL = 0xA101
     /** RepeatMode.TRACK */
     const val REPEAT_MODE_TRACK = 0xA102
+    /** PlaybackMode.IN_GENRE */
+    const val PLAYBACK_MODE_IN_GENRE = 0xA103
     /** PlaybackMode.IN_ARTIST */
     const val PLAYBACK_MODE_IN_ARTIST = 0xA104
     /** PlaybackMode.IN_ALBUM */

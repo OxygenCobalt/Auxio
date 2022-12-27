@@ -23,7 +23,7 @@
     <string name="lbl_playback">Сейчас играет</string>
     <string name="lbl_play">Играть</string>
     <string name="lbl_shuffle">Перемешать</string>
-    <string name="set_playback_mode_all">Играть все треки</string>
+    <string name="set_playback_mode_songs">Играть все треки</string>
     <string name="set_playback_mode_album">Играть альбом</string>
     <string name="set_playback_mode_artist">Играть исполнителя</string>
     <string name="lbl_queue">Очередь</string>

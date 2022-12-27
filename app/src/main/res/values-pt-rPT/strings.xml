@@ -189,7 +189,7 @@
     <string name="set_replay_gain">Estratégia do ganho de repetição</string>
     <string name="set_replay_gain_album">Preferir álbum</string>
     <string name="set_pre_amp_desc">O pré-amplificador é aplicado ao ajuste existente durante a reprodução</string>
-    <string name="set_playback_mode_all">Reproduzir de todas as músicas</string>
+    <string name="set_playback_mode_songs">Reproduzir de todas as músicas</string>
     <string name="set_repeat_pause_desc">Pausa quando uma música se repete</string>
     <string name="set_wipe_desc">Limpe o estado de reprodução salvo anteriormente (se houver)</string>
     <string name="set_restore_state">Restaurar o estado de reprodução</string>

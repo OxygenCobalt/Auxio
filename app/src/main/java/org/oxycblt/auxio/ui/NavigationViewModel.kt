@@ -21,8 +21,10 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavDirections
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logD
 
 /** A [ViewModel] that handles complicated navigation functionality. */
@@ -42,14 +44,14 @@ class NavigationViewModel : ViewModel() {
     val exploreNavigationItem: StateFlow<Music?>
         get() = _exploreNavigationItem
 
-    private val _exploreNavigationArtists = MutableStateFlow<List<Artist>?>(null)
+    private val _exploreArtistNavigationItem = MutableStateFlow<Music?>(null)
     /**
-     * Variation of [exploreNavigationItem] for situations where the choice of [Artist] to navigate
-     * to is ambiguous. Only intended for use by MainFragment, as the resolved choice will
+     * Variation of [exploreNavigationItem] for situations where the choice of parent [Artist] to
+     * navigate to is ambiguous. Only intended for use by MainFragment, as the resolved choice will
      * eventually be assigned to [exploreNavigationItem].
      */
-    val exploreNavigationArtists: StateFlow<List<Artist>?>
-        get() = _exploreNavigationArtists
+    val exploreArtistNavigationItem: StateFlow<Music?>
+        get() = _exploreArtistNavigationItem
 
     /**
      * Navigate to something in the main navigation graph. This can be used by UIs in the explore
@@ -89,12 +91,25 @@ class NavigationViewModel : ViewModel() {
     }
 
     /**
-     * Navigate to an [Artist] out of a list of [Artist]s, like [exploreNavigateTo].
-     * @param artists The [Artist]s to navigate to. In the case of multiple artists, the user will
-     * be prompted with a choice on which [Artist] to navigate to.
+     * Navigate to one of the parent [Artist]'s of the given [Song].
+     * @param song The [Song] to navigate with. If there are multiple parent [Artist]s,
+     * a picker dialog will be shown.
      */
-    fun exploreNavigateTo(artists: List<Artist>) {
-        if (_exploreNavigationArtists.value != null) {
+    fun exploreNavigateToParentArtist(song: Song) {
+        exploreNavigateToParentArtistImpl(song, song.artists)
+    }
+
+    /**
+     * Navigate to one of the parent [Artist]'s of the given [Album].
+     * @param album The [Album] to navigate with. If there are multiple parent [Artist]s,
+     * a picker dialog will be shown.
+     */
+    fun exploreNavigateToParentArtist(album: Album) {
+        exploreNavigateToParentArtistImpl(album, album.artists)
+    }
+
+    private fun exploreNavigateToParentArtistImpl(item: Music, artists: List<Artist>) {
+        if (_exploreArtistNavigationItem.value != null) {
             logD("Already navigating, not doing explore action")
             return
         }
@@ -103,7 +118,7 @@ class NavigationViewModel : ViewModel() {
             exploreNavigateTo(artists[0])
         } else {
             logD("Navigating to a choice of ${artists.map { it.rawName }}")
-            _exploreNavigationArtists.value = artists
+            _exploreArtistNavigationItem.value = item
         }
     }
 
@@ -114,7 +129,7 @@ class NavigationViewModel : ViewModel() {
     fun finishExploreNavigation() {
         logD("Finishing explore navigation process")
         _exploreNavigationItem.value = null
-        _exploreNavigationArtists.value = null
+        _exploreArtistNavigationItem.value = null
     }
 }
 

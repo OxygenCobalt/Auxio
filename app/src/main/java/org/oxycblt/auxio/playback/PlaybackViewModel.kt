@@ -70,12 +70,20 @@ class PlaybackViewModel(application: Application) :
 
     private val _artistPlaybackPickerSong = MutableStateFlow<Song?>(null)
     /**
-     * Flag signaling to open a picker dialog in order to resolve an ambiguous [Artist] choice when
+     * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when
      * playing a [Song] from one of it's [Artist]s.
      * @see playFromArtist
      */
-    val artistPlaybackPickerSong: StateFlow<Song?>
+    val artistPickerSong: StateFlow<Song?>
         get() = _artistPlaybackPickerSong
+
+    private val _genrePlaybackPickerSong = MutableStateFlow<Song?>(null)
+    /**
+     * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing
+     * a [Song] from one of it's [Genre]s.
+     */
+    val genrePickerSong: StateFlow<Song?>
+        get() = _genrePlaybackPickerSong
 
     /**
      * The current audio session ID of the internal player. Null if no [InternalPlayer] is
@@ -178,11 +186,18 @@ class PlaybackViewModel(application: Application) :
     /**
      * PLay a [Song] from one of it's [Genre]s.
      * @param song The [Song] to play.
-     * @param genre The [Genre] to play from. Must be linked to the [Song].
+     * @param genre The [Genre] to play from. Must be linked to the [Song]. If null, the user will
+     * be prompted on what artist to play. Defaults to null.
      */
-    fun playFromGenre(song: Song, genre: Genre) {
-        check(genre.songs.contains(song)) { "Invalid input: Genre is not linked to song" }
-        playbackManager.play(song, genre, settings)
+    fun playFromGenre(song: Song, genre: Genre? = null) {
+        if (genre != null) {
+            check(genre.songs.contains(song)) { "Invalid input: Genre is not linked to song" }
+            playbackManager.play(song, genre, settings)
+        } else if (song.genres.size == 1) {
+            playbackManager.play(song, song.genres[0], settings)
+        } else {
+            _genrePlaybackPickerSong.value = song
+        }
     }
 
     /**

@@ -113,10 +113,11 @@ class Settings(private val context: Context, private val callback: Callback? = n
 
         fun Int.migratePlaybackMode() =
             when (this) {
-                // Genre playback mode was removed in 3.0.0
+                // Convert PlaybackMode into MusicMode
                 IntegerTable.PLAYBACK_MODE_ALL_SONGS -> MusicMode.SONGS
                 IntegerTable.PLAYBACK_MODE_IN_ARTIST -> MusicMode.ARTISTS
                 IntegerTable.PLAYBACK_MODE_IN_ALBUM -> MusicMode.ALBUMS
+                IntegerTable.PLAYBACK_MODE_IN_GENRE -> MusicMode.GENRES
                 else -> null
             }
 

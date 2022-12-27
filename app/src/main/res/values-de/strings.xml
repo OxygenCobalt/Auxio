@@ -15,7 +15,7 @@
     <string name="lbl_sort_asc">Aufsteigend</string>
     <string name="lbl_play">Abspielen</string>
     <string name="lbl_shuffle">Zufällig</string>
-    <string name="set_playback_mode_all">Von allen Lieder abspielen</string>
+    <string name="set_playback_mode_songs">Von allen Lieder abspielen</string>
     <string name="set_playback_mode_album">Von Album abspielen</string>
     <string name="lbl_playback">Aktuelle Wiedergabe</string>
     <string name="lbl_queue">Warteschlange</string>

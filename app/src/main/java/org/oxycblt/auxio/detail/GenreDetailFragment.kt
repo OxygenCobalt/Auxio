@@ -124,15 +124,16 @@ class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter
         when (music) {
             is Artist -> navModel.exploreNavigateTo(music)
             is Song ->
-                when (val mode = Settings(requireContext()).detailPlaybackMode) {
-                    // Only way to play from the genre is through "Play from selected item".
+                when (Settings(requireContext()).detailPlaybackMode) {
+                    // When configured to play from the selected item, we already have a Genre
+                    // to play from.
                     null ->
                         playbackModel.playFromGenre(
                             music, unlikelyToBeNull(detailModel.currentGenre.value))
                     MusicMode.SONGS -> playbackModel.playFromAll(music)
                     MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
                     MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-                    else -> error("Unexpected playback mode: $mode")
+                    MusicMode.GENRES -> playbackModel.playFromGenre(music)
                 }
             else -> error("Unexpected datatype: ${music::class.simpleName}")
         }

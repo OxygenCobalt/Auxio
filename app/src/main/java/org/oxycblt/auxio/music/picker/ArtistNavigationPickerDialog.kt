@@ -31,12 +31,12 @@ import org.oxycblt.auxio.ui.NavigationViewModel
  */
 class ArtistNavigationPickerDialog : ArtistPickerDialog() {
     private val navModel: NavigationViewModel by activityViewModels()
-    // Information about what artists to display is initially within the navigation arguments
-    // as a list of UIDs, as that is the only safe way to parcel an artist.
+    // Information about what Song to show choices for is initially within the navigation arguments
+    // as UIDs, as that is the only safe way to parcel a Song.
     private val args: ArtistNavigationPickerDialogArgs by navArgs()
 
     override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {
-        pickerModel.setArtistUids(args.artistUids)
+        pickerModel.setItemUid(args.itemUid)
         super.onBindingCreated(binding, savedInstanceState)
     }
 

@@ -90,7 +90,7 @@ abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), Selecta
                     requireContext().showToast(R.string.lng_queue_added)
                 }
                 R.id.action_go_artist -> {
-                    navModel.exploreNavigateTo(song.artists)
+                    navModel.exploreNavigateToParentArtist(song)
                 }
                 R.id.action_go_album -> {
                     navModel.exploreNavigateTo(song.album)
@@ -134,7 +134,7 @@ abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), Selecta
                     requireContext().showToast(R.string.lng_queue_added)
                 }
                 R.id.action_go_artist -> {
-                    navModel.exploreNavigateTo(album.artists)
+                    navModel.exploreNavigateToParentArtist(album)
                 }
                 else -> {
                     error("Unexpected menu item selected")

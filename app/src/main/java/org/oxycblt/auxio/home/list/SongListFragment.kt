@@ -132,11 +132,11 @@ class SongListFragment :
 
     override fun onRealClick(music: Music) {
         check(music is Song) { "Unexpected datatype: ${music::class.java}" }
-        when (val mode = Settings(requireContext()).libPlaybackMode) {
+        when (Settings(requireContext()).libPlaybackMode) {
             MusicMode.SONGS -> playbackModel.playFromAll(music)
             MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
             MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-            else -> error("Unexpected playback mode: $mode")
+            MusicMode.GENRES -> playbackModel.playFromGenre(music)
         }
     }
 

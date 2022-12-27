@@ -52,11 +52,9 @@ abstract class ArtistPickerDialog :
     override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {
         binding.pickerRecycler.adapter = artistAdapter
 
-        collectImmediately(pickerModel.currentArtists) { artists ->
-            if (!artists.isNullOrEmpty()) {
+        collectImmediately(pickerModel.artistChoices) { artists ->
+            if (artists.isNotEmpty()) {
                 // Make sure the artist choices align with any changes in the music library.
-                // TODO: I really don't think it makes sense to do this. I'd imagine it would
-                //  be more productive to just exit this dialog rather than try to update it.
                 artistAdapter.submitList(artists)
             } else {
                 // Not showing any choices, navigate up.

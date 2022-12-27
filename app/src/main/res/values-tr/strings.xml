@@ -94,7 +94,7 @@
     <string name="set_pre_amp_with">Etiket ile ayarla</string>
     <string name="set_pre_amp_warning">Uyarı: Ön amfinin yüksek bir pozitif değere değiştirilmesi bazı ses parçalarında pik yapmaya neden olabilir.</string>
     <string name="set_playback_mode_none">Gösterilen öğeden çal</string>
-    <string name="set_playback_mode_all">Tüm şarkılardan çal</string>
+    <string name="set_playback_mode_songs">Tüm şarkılardan çal</string>
     <string name="set_playback_mode_album">Albümden çal</string>
     <string name="set_dirs">Müzik klasörleri</string>
     <string name="set_dirs_mode_include_desc">Müzik <b>yalnızca</b> eklediğiniz klasörlerden yüklenecektir.</string>

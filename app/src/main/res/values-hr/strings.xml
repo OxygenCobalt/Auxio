@@ -85,7 +85,7 @@
     <string name="set_pre_amp_warning">Upozorenje: Postavljanje pretpojačala na visoke razine može uzrokovati vrhunce tonova u nekim zvučnim zapisima.</string>
     <string name="set_library_song_playback_mode">Kada se reproducira iz zbirke</string>
     <string name="set_detail_song_playback_mode">Kada se reproducira iz detalja o predmetu</string>
-    <string name="set_playback_mode_all">Reproduciraj od svih pjesama</string>
+    <string name="set_playback_mode_songs">Reproduciraj od svih pjesama</string>
     <string name="set_reindex">Aktualiziraj glazbu</string>
     <string name="set_reindex_desc">Ponovo učitaj glazbenu biblioteku, koristeći predmemorirane oznake kada je to moguće</string>
     <string name="set_dirs">Mape glazbe</string>

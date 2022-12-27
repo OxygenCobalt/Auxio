@@ -17,7 +17,7 @@
     <string name="lbl_sort_asc">Oplopend</string>
     <string name="lbl_play">Afspelen</string>
     <string name="lbl_shuffle">Shuffle</string>
-    <string name="set_playback_mode_all">Speel van alle nummers </string>
+    <string name="set_playback_mode_songs">Speel van alle nummers </string>
     <string name="set_playback_mode_album">Speel af van album </string>
     <string name="set_playback_mode_artist">Speel van artiest </string>
     <string name="lbl_playback">Afspeelscherm</string>
