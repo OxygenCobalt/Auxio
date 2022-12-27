@@ -511,9 +511,10 @@ class Indexer private constructor() {
 
         /**
          * A version-compatible identifier for the read external storage permission required by the
-         * system to load audio. TODO: Move elsewhere.
+         * system to load audio.
          */
         val PERMISSION_READ_AUDIO =
+            // TODO: Move elsewhere.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 // READ_EXTERNAL_STORAGE was superseded by READ_MEDIA_AUDIO in Android 13
                 Manifest.permission.READ_MEDIA_AUDIO

@@ -30,10 +30,11 @@ import org.oxycblt.auxio.util.context
 
 /**
  * A [ViewBindingDialogFragment] that allows the user to configure the separator characters used to
- * split tags with multiple values. TODO: Add saved state for pending configurations.
+ * split tags with multiple values.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
+    // TODO: Add saved state for pending configurations.
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
 
     override fun onCreateBinding(inflater: LayoutInflater) =

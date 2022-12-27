@@ -34,7 +34,7 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.context
 
 /**
- * The ViewModel that provides a safe UI frontend for [PlaybackStateManager].
+ * An [AndroidViewModel] that provides a safe UI frontend for the current playback state.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PlaybackViewModel(application: Application) :
@@ -51,7 +51,7 @@ class PlaybackViewModel(application: Application) :
     /** The [MusicParent] currently being played. Null if playback is occurring from all songs. */
     val parent: StateFlow<MusicParent?> = _parent
     private val _isPlaying = MutableStateFlow(false)
-    /** Whether playback is ongoing or paused.*/
+    /** Whether playback is ongoing or paused. */
     val isPlaying: StateFlow<Boolean>
         get() = _isPlaying
     private val _positionDs = MutableStateFlow(0L)
@@ -103,10 +103,10 @@ class PlaybackViewModel(application: Application) :
 
     override fun onStateChanged(state: InternalPlayer.State) {
         _isPlaying.value = state.isPlaying
+        // Still need to update the position now due to co-routine launch delays
         _positionDs.value = state.calculateElapsedPositionMs().msToDs()
-
-        // Cancel the previous position job relying on old state information and create
-        // a new one.
+        // Replace the previous position co-routine with a new one that uses the new
+        // state information.
         lastPositionJob?.cancel()
         lastPositionJob =
             viewModelScope.launch {
@@ -143,6 +143,7 @@ class PlaybackViewModel(application: Application) :
 
     /**
      * Play a [Song] from it's [Album].
+     * @param song The [Song] to play.
      */
     fun playFromAlbum(song: Song) {
         playbackManager.play(song, song.album, settings)

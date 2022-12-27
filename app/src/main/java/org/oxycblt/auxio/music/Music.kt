@@ -396,10 +396,12 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
 
     /**
      * Resolves one or more [Artist]s into a single piece of human-readable names.
-     * @param context [Context] required for [resolveName]. TODO Internationalize the list
+     * @param context [Context] required for [resolveName].
      * formatter.
      */
-    fun resolveArtistContents(context: Context) = artists.joinToString { it.resolveName(context) }
+    fun resolveArtistContents(context: Context) =
+        // TODO Internationalize the list
+        artists.joinToString { it.resolveName(context) }
 
     /**
      * Checks if the [Artist] *display* of this [Song] and another [Song] are equal. This will only
@@ -612,9 +614,9 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
 
     /**
      * The earliest [Date] this album was released. Will be null if no valid date was present in the
-     * metadata of any [Song]. TODO: Date ranges?
+     * metadata of any [Song]
      */
-    val date: Date?
+    val date: Date? // TODO: Date ranges?
 
     /**
      * The [Type] of this album, signifying the type of release it actually is. Defaults to

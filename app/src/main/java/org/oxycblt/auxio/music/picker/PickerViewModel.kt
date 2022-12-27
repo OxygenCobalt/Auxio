@@ -27,13 +27,14 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * a [ViewModel] that manages the current music picker state. TODO: This really shouldn't exist.
+ * a [ViewModel] that manages the current music picker state.
  * Make it so that the dialogs just contain the music themselves and then exit if the library
- * changes. TODO: While we are at it, let's go and add ClickableSpan too to reduce the extent of
- * this dialog.
+ * changes.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PickerViewModel : ViewModel(), MusicStore.Callback {
+    // TODO: Refactor
+
     private val musicStore = MusicStore.getInstance()
 
     private val _currentSong = MutableStateFlow<Song?>(null)

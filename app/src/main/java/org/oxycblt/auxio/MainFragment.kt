@@ -26,6 +26,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
@@ -34,6 +36,7 @@ import com.google.android.material.transition.MaterialFadeThrough
 import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
+import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
@@ -51,11 +54,13 @@ import org.oxycblt.auxio.util.*
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MainFragment :
-    ViewBindingFragment<FragmentMainBinding>(), ViewTreeObserver.OnPreDrawListener {
+    ViewBindingFragment<FragmentMainBinding>(), ViewTreeObserver.OnPreDrawListener, NavController.OnDestinationChangedListener {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
+    private val selectionModel: SelectionViewModel by activityViewModels()
     private val callback = DynamicBackPressedCallback()
     private var lastInsets: WindowInsets? = null
+    private var initialNavDestinationChange = true
     private val elevationNormal: Float by lifecycleObject { binding ->
         binding.context.getDimen(R.dimen.elevation_normal)
     }
@@ -128,14 +133,21 @@ class MainFragment :
 
     override fun onStart() {
         super.onStart()
+        val binding = requireBinding()
+        // Once we add the destination change callback, we will receive another initialization call,
+        // so handle that by resetting the flag.
+        initialNavDestinationChange = false
+        binding.exploreNavHost.findNavController().addOnDestinationChangedListener(this)
         // Listener could still reasonably fire even if we clear the binding, attach/detach
         // our pre-draw listener our listener in onStart/onStop respectively.
-        requireBinding().playbackSheet.viewTreeObserver.addOnPreDrawListener(this)
+        binding.playbackSheet.viewTreeObserver.addOnPreDrawListener(this@MainFragment)
     }
 
     override fun onStop() {
         super.onStop()
-        requireBinding().playbackSheet.viewTreeObserver.removeOnPreDrawListener(this)
+        val binding = requireBinding()
+        binding.exploreNavHost.findNavController().removeOnDestinationChangedListener(this)
+        binding.playbackSheet.viewTreeObserver.removeOnPreDrawListener(this)
     }
 
     override fun onPreDraw(): Boolean {
@@ -228,6 +240,21 @@ class MainFragment :
         return true
     }
 
+    override fun onDestinationChanged(
+        controller: NavController,
+        destination: NavDestination,
+        arguments: Bundle?
+    ) {
+        // Drop the initial call by NavController that simply provides us with the current
+        // destination. This would cause the selection state to be lost every time the device
+        // rotates.
+        if (!initialNavDestinationChange) {
+            initialNavDestinationChange = true
+            return
+        }
+        selectionModel.consume()
+    }
+
     private fun handleMainNavigation(action: MainNavigationAction?) {
         if (action == null) {
             // Nothing to do.
@@ -237,7 +264,6 @@ class MainFragment :
         when (action) {
             is MainNavigationAction.Expand -> tryExpandSheets()
             is MainNavigationAction.Collapse -> tryCollapseSheets()
-            // TODO: Figure out how to clear out the selections as one moves between screens.
             is MainNavigationAction.Directions -> findNavController().navigate(action.directions)
         }
 
@@ -283,7 +309,6 @@ class MainFragment :
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
-
         if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_COLLAPSED) {
             // Playback sheet is not expanded and not hidden, we can expand it.
             playbackSheetBehavior.state = NeoBottomSheetBehavior.STATE_EXPANDED
@@ -294,7 +319,6 @@ class MainFragment :
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
-
         if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED) {
             // Make sure the queue is also collapsed here.
             val queueSheetBehavior =
@@ -308,7 +332,6 @@ class MainFragment :
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
-
         if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_HIDDEN) {
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
@@ -328,13 +351,11 @@ class MainFragment :
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
-
         if (playbackSheetBehavior.state != NeoBottomSheetBehavior.STATE_HIDDEN) {
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
-            // Make these views non-draggable so the user can't halt the hiding event.
-
+            // Make both bottom sheets non-draggable so the user can't halt the hiding event.
             queueSheetBehavior?.apply {
                 isDraggable = false
                 state = NeoBottomSheetBehavior.STATE_COLLAPSED

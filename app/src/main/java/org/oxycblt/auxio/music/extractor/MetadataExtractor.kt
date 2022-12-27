@@ -122,13 +122,13 @@ class MetadataExtractor(
 }
 
 /**
- * Wraps a [MetadataExtractor] future and processes it into a [Song.Raw] when completed. TODO:
- * Re-unify with MetadataExtractor.
+ * Wraps a [MetadataExtractor] future and processes it into a [Song.Raw] when completed.
  * @param context [Context] required to open the audio file.
  * @param raw [Song.Raw] to process.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Task(context: Context, private val raw: Song.Raw) {
+    // TODO: Unify with MetadataExtractor
     // Note that we do not leverage future callbacks. This is because errors in the
     // (highly fallible) extraction process will not bubble up to Indexer when a
     // listener is used, instead crashing the app entirely.

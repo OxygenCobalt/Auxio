@@ -122,15 +122,14 @@ class Directory private constructor(val volume: StorageVolume, val relativePath:
 }
 
 /**
- * Represents the configuration for specific directories to filter to/from when loading music. TODO:
- * Migrate to a combined "Include + Exclude" system that is more sensible.
+ * Represents the configuration for specific directories to filter to/from when loading music.
  * @param dirs A list of [Directory] instances. How these are interpreted depends on [shouldInclude]
- * .
  * @param shouldInclude True if the library should only load from the [Directory] instances, false
  * if the library should not load from the [Directory] instances.
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class MusicDirectories(val dirs: List<Directory>, val shouldInclude: Boolean)
+// TODO: Unify include + exclude
 
 /**
  * A mime type of a file. Only intended for display.

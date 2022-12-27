@@ -164,7 +164,11 @@ class PlaybackPanelFragment : ViewBindingFragment<FragmentPlaybackPanelBinding>(
     }
 
     private fun updateSong(song: Song?) {
-        if (song == null) return
+        if (song == null) {
+            // Nothing to do.
+            return
+        }
+
         val binding = requireBinding()
         val context = requireContext()
         binding.playbackCover.bind(song)
