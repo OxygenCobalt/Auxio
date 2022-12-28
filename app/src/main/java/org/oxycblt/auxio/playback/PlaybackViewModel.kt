@@ -284,7 +284,7 @@ class PlaybackViewModel(application: Application) :
      * @param song The [Song] to add.
      */
     fun playNext(song: Song) {
-        // TODO: Queue additions without a playing song should map to queued items
+        // TODO: Queue additions without a playing song should map to playing items
         //  (impossible until queue rework)
         playbackManager.playNext(song)
     }

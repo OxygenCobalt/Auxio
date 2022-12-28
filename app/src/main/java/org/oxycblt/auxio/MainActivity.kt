@@ -54,6 +54,8 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Standardize companion object usage
  *
+ * TODO: Standardize callback/listener naming.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MainActivity : AppCompatActivity() {

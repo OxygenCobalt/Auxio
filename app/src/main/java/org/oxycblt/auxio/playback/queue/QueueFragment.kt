@@ -88,6 +88,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueAdapter.
         queueModel.finishReplace()
 
         // If requested, scroll to a new item (occurs when the index moves)
+        // TODO: Scroll to center/top instead of bottom
         val scrollTo = queueModel.scrollTo
         if (scrollTo != null) {
             // Do not scroll to indices that are in the currently visible range. As that would
@@ -102,7 +103,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueAdapter.
         }
         queueModel.finishScrollTo()
 
-        // Update currently playing item
+        // Update position in list (and thus past/future items)
         queueAdapter.setPosition(index, isPlaying)
     }
 }

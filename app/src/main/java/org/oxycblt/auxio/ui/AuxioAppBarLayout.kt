@@ -73,8 +73,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param recycler [RecyclerView] to expand with, or null if one is currently unavailable.
      */
     fun expandWithRecycler(recycler: RecyclerView?) {
-        // TODO: Is it possible to use liftOnScrollTargetViewId to avoid the [RecyclerView]
-        // argument?
+        // TODO: Is it possible to use liftOnScrollTargetViewId to avoid the RecyclerView arg?
         setExpanded(true)
         recycler?.let { addOnOffsetChangedListener(ExpansionHackListener(it)) }
     }

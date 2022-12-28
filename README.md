@@ -13,7 +13,7 @@
     </a>
     <img alt="Minimum SDK Version" src="https://img.shields.io/badge/API-21%2B-32B5ED">
 </p>
-<h4 align="center"><a href="/CHANGELOG.md">Changelog</a> | <a href="/info/FAQ.md">FAQ</a> |  <a href="/info/LICENSES.md">Licenses</a> | <a href="/.github/CONTRIBUTING.md">Contributing</a> | <a href="/info/ARCHITECTURE.md">Architecture</a></h4>
+<h4 align="center"><a href="/CHANGELOG.md">Changelog</a> | <a href="https://github.com/OxygenCobalt/Auxio/wiki">Wiki</a>
 <p align="center">
     <a href="https://f-droid.org/app/org.oxycblt.auxio"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" width="170"></a>
     <a href="https://hosted.weblate.org/engage/auxio/"><img src="https://hosted.weblate.org/widgets/auxio/-/strings/287x66-grey.png" alt="Translation status" /></a>

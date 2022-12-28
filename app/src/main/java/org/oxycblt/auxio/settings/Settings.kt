@@ -165,7 +165,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
         unlikelyToBeNull(callback).onSettingChanged(key)
     }
 
-    /** TODO: Remove this */
+    /** TODO: Rework this */
     interface Callback {
         fun onSettingChanged(key: String)
     }

@@ -244,7 +244,6 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
             binding.detailRecycler.post {
                 // Use a custom smooth scroller that will settle the item in the middle of
                 // the screen rather than the end.
-                // TODO: Can I apply this to the queue view?
                 val centerSmoothScroller =
                     object : LinearSmoothScroller(context) {
                         init {
