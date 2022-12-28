@@ -160,10 +160,6 @@ class Task(context: Context, private val raw: Song.Raw) {
             return raw
         }
 
-        // Populate the format mime type if we have one.
-        // TODO: Check if this is even useful or not.
-        format.sampleMimeType?.let { raw.formatMimeType = it }
-
         val metadata = format.metadata
         if (metadata != null) {
             populateWithMetadata(metadata)

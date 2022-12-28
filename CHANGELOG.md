@@ -45,6 +45,7 @@ audio focus was lost
 - "Show covers" and "Ignore MediaStore covers" have been unified into "Album covers"
 
 #### Dev/Meta
+- Created new wiki with more information about app functionality
 - Completed migration to reactive playback system
 - Refactor music backends into a unified chain of extractors
 - Add bluetooth connection reciever (No functionality in app yet)

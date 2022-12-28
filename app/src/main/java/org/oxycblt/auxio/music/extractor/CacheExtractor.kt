@@ -132,7 +132,6 @@ class ReadWriteCacheExtractor(private val context: Context) : WriteOnlyCacheExtr
 
             rawSong.size = cachedRawSong.size
             rawSong.durationMs = cachedRawSong.durationMs
-            rawSong.formatMimeType = cachedRawSong.formatMimeType
 
             rawSong.track = cachedRawSong.track
             rawSong.disc = cachedRawSong.disc
@@ -180,7 +179,6 @@ private class CacheDatabase(context: Context) :
             append("${Columns.DATE_MODIFIED} LONG NOT NULL,")
             append("${Columns.SIZE} LONG NOT NULL,")
             append("${Columns.DURATION} LONG NOT NULL,")
-            append("${Columns.FORMAT_MIME_TYPE} STRING,")
             append("${Columns.MUSIC_BRAINZ_ID} STRING,")
             append("${Columns.NAME} STRING NOT NULL,")
             append("${Columns.SORT_NAME} STRING,")
@@ -236,7 +234,6 @@ private class CacheDatabase(context: Context) :
 
             val sizeIndex = cursor.getColumnIndexOrThrow(Columns.SIZE)
             val durationIndex = cursor.getColumnIndexOrThrow(Columns.DURATION)
-            val formatMimeTypeIndex = cursor.getColumnIndexOrThrow(Columns.FORMAT_MIME_TYPE)
 
             val musicBrainzIdIndex = cursor.getColumnIndexOrThrow(Columns.MUSIC_BRAINZ_ID)
             val nameIndex = cursor.getColumnIndexOrThrow(Columns.NAME)
@@ -275,7 +272,6 @@ private class CacheDatabase(context: Context) :
 
                 raw.size = cursor.getLong(sizeIndex)
                 raw.durationMs = cursor.getLong(durationIndex)
-                raw.formatMimeType = cursor.getStringOrNull(formatMimeTypeIndex)
 
                 raw.musicBrainzId = cursor.getStringOrNull(musicBrainzIdIndex)
                 raw.name = cursor.getString(nameIndex)
@@ -341,7 +337,6 @@ private class CacheDatabase(context: Context) :
 
                 put(Columns.SIZE, rawSong.size)
                 put(Columns.DURATION, rawSong.durationMs)
-                put(Columns.FORMAT_MIME_TYPE, rawSong.formatMimeType)
 
                 put(Columns.MUSIC_BRAINZ_ID, rawSong.name)
                 put(Columns.NAME, rawSong.name)
@@ -407,8 +402,6 @@ private class CacheDatabase(context: Context) :
         const val SIZE = "size"
         /** @see Song.Raw.durationMs */
         const val DURATION = "duration"
-        /** @see Song.Raw.formatMimeType */
-        const val FORMAT_MIME_TYPE = "fmt_mime"
         /** @see Song.Raw.musicBrainzId */
         const val MUSIC_BRAINZ_ID = "mbid"
         /** @see Song.Raw.name */

@@ -276,9 +276,10 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
     /**
      * A raw ReplayGain adjustment.
      * @param key The tag's key.
-     * @param value The tag's adjustment, in dB. TODO: Try to phasse this out.
+     * @param value The tag's adjustment, in dB.
      */
     private data class GainTag(val key: String, val value: Float)
+    // TODO: Try to phase this out
 
     companion object {
         private const val TAG_RG_TRACK = "replaygain_track_gain"

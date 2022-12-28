@@ -345,7 +345,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     val mimeType =
         MimeType(
             fromExtension = requireNotNull(raw.extensionMimeType) { "Invalid raw: No mime type" },
-            fromFormat = raw.formatMimeType)
+            fromFormat = null)
 
     /** The size of the audio file, in bytes. */
     val size = requireNotNull(raw.size) { "Invalid raw: No size" }
@@ -547,8 +547,6 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         var durationMs: Long? = null,
         /** @see Song.mimeType */
         var extensionMimeType: String? = null,
-        /** @see Song.mimeType */
-        var formatMimeType: String? = null,
         /** @see Music.UID */
         var musicBrainzId: String? = null,
         /** @see Music.rawName */

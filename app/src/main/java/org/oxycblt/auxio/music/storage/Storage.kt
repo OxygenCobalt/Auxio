@@ -18,6 +18,8 @@
 package org.oxycblt.auxio.music.storage
 
 import android.content.Context
+import android.media.MediaExtractor
+import android.media.MediaFormat
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.webkit.MimeTypeMap
@@ -153,17 +155,12 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
                 // We start with the extracted mime types, as they are more consistent. Note that
                 // we do not include container formats at all with these names. It is only the
                 // inner codec that we bother with.
-                MimeTypes.AUDIO_MPEG,
-                MimeTypes.AUDIO_MPEG_L1,
-                MimeTypes.AUDIO_MPEG_L2 -> R.string.cdc_mp3
-                MimeTypes.AUDIO_AAC -> R.string.cdc_aac
-                MimeTypes.AUDIO_VORBIS -> R.string.cdc_vorbis
-                MimeTypes.AUDIO_OPUS -> R.string.cdc_opus
-                MimeTypes.AUDIO_FLAC -> R.string.cdc_flac
-                MimeTypes.AUDIO_WAV -> R.string.cdc_wav
-
+                MediaFormat.MIMETYPE_AUDIO_MPEG -> R.string.cdc_mp3
+                MediaFormat.MIMETYPE_AUDIO_AAC -> R.string.cdc_aac
+                MediaFormat.MIMETYPE_AUDIO_VORBIS -> R.string.cdc_vorbis
+                MediaFormat.MIMETYPE_AUDIO_OPUS -> R.string.cdc_opus
+                MediaFormat.MIMETYPE_AUDIO_FLAC -> R.string.cdc_flac
                 // We don't give a name to more unpopular formats.
-
                 else -> -1
             }
 

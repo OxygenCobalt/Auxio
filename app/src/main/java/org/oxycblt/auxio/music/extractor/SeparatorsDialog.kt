@@ -22,6 +22,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import com.google.android.material.checkbox.MaterialCheckBox
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSeparatorsBinding
 import org.oxycblt.auxio.settings.Settings
@@ -34,7 +35,6 @@ import org.oxycblt.auxio.util.context
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
-    // TODO: Add saved state for pending configurations.
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -45,17 +45,7 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
             .setTitle(R.string.set_separators)
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
-                // Create the separator list based on the checked configuration of each
-                // view element. It's generally more stable to duplicate this code instead
-                // of use a mapping that could feasibly drift from the actual layout.
-                var separators = ""
-                val binding = requireBinding()
-                if (binding.separatorComma.isChecked) separators += SEPARATOR_COMMA
-                if (binding.separatorSemicolon.isChecked) separators += SEPARATOR_SEMICOLON
-                if (binding.separatorSlash.isChecked) separators += SEPARATOR_SLASH
-                if (binding.separatorPlus.isChecked) separators += SEPARATOR_PLUS
-                if (binding.separatorAnd.isChecked) separators += SEPARATOR_AND
-                settings.musicSeparators = separators
+                settings.musicSeparators = getCurrentSeparators()
             }
     }
 
@@ -71,7 +61,7 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
         // More efficient to do one iteration through the separator list and initialize
         // the corresponding CheckBox for each character instead of doing an iteration
         // through the separator list for each CheckBox.
-        settings.musicSeparators?.forEach {
+        (savedInstanceState?.getString(KEY_PENDING_SEPARATORS) ?: settings.musicSeparators)?.forEach {
             when (it) {
                 SEPARATOR_COMMA -> binding.separatorComma.isChecked = true
                 SEPARATOR_SEMICOLON -> binding.separatorSemicolon.isChecked = true
@@ -83,7 +73,28 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_PENDING_SEPARATORS, getCurrentSeparators())
+    }
+
+    /** Get the current separator string configuration from the UI. */
+    private fun getCurrentSeparators(): String {
+        // Create the separator list based on the checked configuration of each
+        // view element. It's generally more stable to duplicate this code instead
+        // of use a mapping that could feasibly drift from the actual layout.
+        var separators = ""
+        val binding = requireBinding()
+        if (binding.separatorComma.isChecked) separators += SEPARATOR_COMMA
+        if (binding.separatorSemicolon.isChecked) separators += SEPARATOR_SEMICOLON
+        if (binding.separatorSlash.isChecked) separators += SEPARATOR_SLASH
+        if (binding.separatorPlus.isChecked) separators += SEPARATOR_PLUS
+        if (binding.separatorAnd.isChecked) separators += SEPARATOR_AND
+        return separators
+    }
+
     companion object {
+        private val KEY_PENDING_SEPARATORS = BuildConfig.APPLICATION_ID + ".key.PENDING_SEPARATORS"
         // TODO: Move these to a more "Correct" location?
         private const val SEPARATOR_COMMA = ','
         private const val SEPARATOR_SEMICOLON = ';'
