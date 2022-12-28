@@ -258,4 +258,5 @@
     <string name="lbl_play_selected">Ausgewählte abspielen</string>
     <string name="lbl_shuffle_selected">Ausgewählte zufällig abspielen</string>
     <string name="fmt_selected">%d ausgewählt</string>
+    <string name="set_playback_mode_genre">Vom Genre abspielen</string>
 </resources>
