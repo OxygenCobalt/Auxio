@@ -267,4 +267,5 @@
     <string name="lbl_play_selected">Přehrát vybrané</string>
     <string name="fmt_selected">Vybráno %d</string>
     <string name="lbl_shuffle_selected">Náhodně přehrát vybrané</string>
+    <string name="set_playback_mode_genre">Přehrát z žánru</string>
 </resources>
