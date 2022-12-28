@@ -24,7 +24,6 @@
     <string name="lbl_about">Sobre</string>
     <string name="lbl_version">Versão</string>
     <string name="lbl_code">Código-fonte</string>
-    <string name="lbl_faq">Perguntas frequentes</string>
     <string name="lbl_licenses">Licenças</string>
     <string name="lng_author">Desenvolvido por OxygenCobalt</string>
     <!-- Settings namespace | Settings-related labels -->

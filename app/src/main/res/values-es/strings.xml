@@ -39,7 +39,6 @@
     <string name="lbl_about">Acerca de</string>
     <string name="lbl_version">Versión</string>
     <string name="lbl_code">Código fuente</string>
-    <string name="lbl_faq">Preguntas frecuentes</string>
     <string name="lbl_licenses">Licencias</string>
     <string name="lng_author">Desarrollado por Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->

@@ -24,7 +24,6 @@
     <string name="lbl_about">Про програму</string>
     <string name="lbl_version">Версія</string>
     <string name="lbl_code">Переглянути на GitHub</string>
-    <string name="lbl_faq">ЧаП</string>
     <string name="lbl_licenses">Ліцензії</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Налаштування</string>

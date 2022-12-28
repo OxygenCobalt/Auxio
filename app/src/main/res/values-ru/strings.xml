@@ -39,7 +39,6 @@
     <string name="lbl_about">О программе</string>
     <string name="lbl_version">Версия</string>
     <string name="lbl_code">Исходный код</string>
-    <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Лицензии</string>
     <string name="lng_author">Разработано Александром Кейпхартом</string>
     <!-- Settings namespace | Settings-related labels -->
