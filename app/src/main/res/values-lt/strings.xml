@@ -256,4 +256,5 @@
     <string name="fmt_selected">%d Pasirinkta</string>
     <string name="lbl_play_selected">Groti pasirinktą</string>
     <string name="lbl_shuffle_selected">Pasirinktas maišymas</string>
+    <string name="set_playback_mode_genre">Groti iš žanro</string>
 </resources>
