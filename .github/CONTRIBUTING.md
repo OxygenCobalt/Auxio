@@ -21,7 +21,7 @@ These should also be logged in the [Issues](https://github.com/OxygenCobalt/Auxi
 Please keep in mind when requesting a feature:
 - **Has it already been requested?** Make sure request for this feature is not already here.
 - **Has it been already added?** Make sure this feature has not already been added in the most recent release.
-- **Will it be accepted?** Read the [Accepted Additions and Requests](../info/ADDITIONS.md) in order to see the likelihood that your request will be implemented.
+- **Will it be accepted?** Read the [Why Are These Features Missing?](https://github.com/OxygenCobalt/Auxio/wiki/Why-Are-These-Features-Missing%3F) in order to see the likelihood that your request will be implemented.
 
 If you do make a request, provide the following:
 - What is it that you want?
@@ -29,7 +29,7 @@ If you do make a request, provide the following:
 - Why do you think it will benefit everyone's usage of the app?
 
 If you have the knowledge, you can also implement the feature yourself and create a [Pull Request](https://github.com/OxygenCobalt/Auxio/pulls), but its recommended that **you create an issue beforehand to give me a heads up.**
-Its also recommended that you read about [Auxio's Architecture](../info/ARCHITECTURE.md) as well to make changes better and more efficient.
+Its also recommended that you read about [Auxio's Architecture](https://github.com/OxygenCobalt/Auxio/wiki/Architecture) as well to make changes better and more efficient.
 
 ## Translations
 Go to Auxio's weblate project [here](https://hosted.weblate.org/engage/auxio/).
@@ -44,4 +44,3 @@ If you have knowledge of Android/Kotlin, feel free to to contribute to the proje
 - Please ***FULLY TEST*** your changes before creating a PR. Untested code will not be merged.
 - Java code will **NOT** be accepted. Kotlin only.
 - Keep your code up the date with the upstream and continue to maintain it after you create the PR. This makes it less of a hassle to merge.
-- Make sure you have read about the [Accepted Additions and Requests](../info/ADDITIONS.md) before working on your addition.
