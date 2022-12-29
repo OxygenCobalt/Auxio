@@ -10,9 +10,8 @@
         android:translateX="19.98"
         android:translateY="19.98">
         <path
-            android:name="note"
             android:fillColor="@android:color/transparent"
-            android:pathData="M 13,4.0000207 17,8 M 12.999969,4.0004121 V 17.000315 m 0,-0.0002940 -3.0000004,3 -2.9999997,-3 2.9999997,-3 M 7.021336,16.939069"
+            android:pathData="M13 4l4 4m-4-4v13m0 0l-3 3-3-3 3-3"
             android:strokeWidth="2"
             android:strokeColor="@android:color/white"
             android:strokeLineCap="round"
