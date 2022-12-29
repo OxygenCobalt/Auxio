@@ -25,7 +25,6 @@
     <string name="lbl_about">Tentang</string>
     <string name="lbl_version">Versi</string>
     <string name="lbl_code">Lihat di GitHub</string>
-    <string name="lbl_faq">Tanya-Jawab</string>
     <string name="lbl_licenses">Lisensi</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Setelan</string>

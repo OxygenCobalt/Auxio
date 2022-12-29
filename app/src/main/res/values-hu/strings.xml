@@ -25,7 +25,6 @@
     <string name="lbl_about">Névjegy</string>
     <string name="lbl_version">Verzió</string>
     <string name="lbl_code">Megtekintés GitHubon</string>
-    <string name="lbl_faq">GYIK</string>
     <string name="lbl_licenses">Engedélyek</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Beállítások</string>

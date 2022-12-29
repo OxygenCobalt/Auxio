@@ -39,7 +39,6 @@
     <string name="lbl_about">حول</string>
     <string name="lbl_version">الإصدار</string>
     <string name="lbl_code">عرض على جيتهاب</string>
-    <string name="lbl_faq">اسئلة وأجوبة</string>
     <string name="lbl_licenses">التراخيص</string>
     <string name="lng_author">تمت برمجة التطبيق من قبل OxygenCobalt</string>
     <!-- Settings namespace | Settings-related labels -->

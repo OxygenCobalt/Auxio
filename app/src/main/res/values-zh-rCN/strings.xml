@@ -39,7 +39,6 @@
     <string name="lbl_about">关于</string>
     <string name="lbl_version">版本</string>
     <string name="lbl_code">源代码</string>
-    <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">许可证</string>
     <string name="lng_author">由 Alexander Capehart 开发</string>
     <!-- Settings namespace | Settings-related labels -->
@@ -256,4 +255,6 @@
     <string name="lbl_shuffle_selected">随机播放所选</string>
     <string name="lbl_play_selected">播放所选</string>
     <string name="fmt_selected">选中了 %d 首</string>
+    <string name="set_playback_mode_genre">按流派播放</string>
+    <string name="lbl_wiki">Wiki</string>
 </resources>

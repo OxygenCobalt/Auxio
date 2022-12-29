@@ -24,7 +24,6 @@
     <string name="lbl_about">Σχετικά με</string>
     <string name="lbl_version">Έκδοση</string>
     <string name="lbl_code">Πηγαίος κώδικας</string>
-    <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Άδειες</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Ρυθμίσεις</string>

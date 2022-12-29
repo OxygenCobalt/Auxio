@@ -34,7 +34,6 @@
     <string name="lbl_about">Over</string>
     <string name="lbl_version">Versie</string>
     <string name="lbl_code">Bekijken op GitHub</string>
-    <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licenties</string>
     <string name="lng_author">Ontwikkeld door OxygenCobalt</string>
     <!-- Settings namespace | Settings-related labels -->

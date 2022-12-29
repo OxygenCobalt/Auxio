@@ -25,7 +25,6 @@
     <string name="lbl_about">Hakkında</string>
     <string name="lbl_version">Sürüm</string>
     <string name="lbl_code">GitHub\'da görüntüle</string>
-    <string name="lbl_faq">SSS</string>
     <string name="lbl_licenses">Lisanslar</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Ayarlar</string>

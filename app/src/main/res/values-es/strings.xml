@@ -39,7 +39,6 @@
     <string name="lbl_about">Acerca de</string>
     <string name="lbl_version">Versión</string>
     <string name="lbl_code">Código fuente</string>
-    <string name="lbl_faq">Preguntas frecuentes</string>
     <string name="lbl_licenses">Licencias</string>
     <string name="lng_author">Desarrollado por Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
@@ -129,10 +128,12 @@
     <string name="fmt_lib_song_count">Canciones cargadas: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d canción</item>
+        <item quantity="many">%d canciones</item>
         <item quantity="other">%d canciones</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d álbum</item>
+        <item quantity="many">%d álbumes</item>
         <item quantity="other">%d álbumes</item>
     </plurals>
     <string name="lbl_size">Tamaño</string>
@@ -238,7 +239,7 @@
     <string name="set_cover_mode_off">Apagado</string>
     <string name="set_bar_action_repeat">Modo de repetición</string>
     <string name="set_separators_plus">Más (+)</string>
-    <string name="set_separators_and">Ampersand (&amp;)</string>
+    <string name="set_separators_and">Y comercial (&amp;)</string>
     <string name="desc_exit">Detener la reproducción</string>
     <string name="set_exclude_non_music_desc">Ignorar archivos de audio que no sean música, como podcasts</string>
     <string name="set_separators_warning">Advertencia: El uso de esta configuración puede dar lugar a que algunas etiquetas se interpreten incorrectamente como si tuvieran varios valores. Puede resolverlo anteponiendo a los caracteres separadores no deseados una barra invertida (\\).</string>
@@ -260,4 +261,6 @@
     <string name="lbl_shuffle_selected">Nodo aleatorio seleccionado</string>
     <string name="fmt_selected">%d seleccionado</string>
     <string name="lbl_play_selected">Reproducir los seleccionados</string>
+    <string name="set_playback_mode_genre">Reproducir desde el género</string>
+    <string name="lbl_wiki">Wiki</string>
 </resources>

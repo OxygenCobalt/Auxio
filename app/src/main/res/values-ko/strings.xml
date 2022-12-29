@@ -46,9 +46,8 @@
     <string name="lbl_about">정보</string>
     <string name="lbl_version">버전</string>
     <string name="lbl_code">소스 코드</string>
-    <string name="lbl_faq">자주하는 질문</string>
     <string name="lbl_licenses">라이센스</string>
-    <string name="lng_author">OxygenCobalt 개발</string>
+    <string name="lng_author">Alexander Capehart가 개발</string>
     <string name="lbl_library_counts">라이브러리 통계</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">설정</string>
@@ -255,4 +254,7 @@
         <item quantity="other">%d 아티스트</item>
     </plurals>
     <string name="set_rescan_desc">태그 정보를 지우고 음악 라이브러리를 재생성함(느림, 더 완전함)</string>
+    <string name="lbl_play_selected">선택한 재생</string>
+    <string name="lbl_shuffle_selected">선택한 셔플</string>
+    <string name="fmt_selected">%d 선택됨</string>
 </resources>

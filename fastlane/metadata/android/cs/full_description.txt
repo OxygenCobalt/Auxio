@@ -1,4 +1,4 @@
-Auxio je lokální hudební přehrávač s rychlým a spolehlivým UI/UX bez spousty zbytečných funkcí, které mají ostatní hudební přehrávače. Díky postavení na systému <a href="https://exoplayer.dev/">Exoplayer</a> má Auxio mnohem lepší zážitek z poslechu v porovnání s ostatními aplikacemi, které používají nativní API MediaPlayer. Ve zkratce prostě <b>přehrává hudbu</b>.
+Auxio je lokální hudební přehrávač s rychlým a spolehlivým UI/UX bez spousty zbytečných funkcí, které mají ostatní hudební přehrávače. Díky postavení na systému <a href="https://exoplayer.dev/">Exoplayer</a> má Auxio lepší podporu knihovny a kvalitu poslechu v porovnání s ostatními aplikacemi, které používají zastaralou funkci systému Android. Ve zkratce prostě přehrává hudbu.
 
 <b>Funkce</b>
 
@@ -6,12 +6,13 @@ Auxio je lokální hudební přehrávač s rychlým a spolehlivým UI/UX bez spo
 - Responzivní UI podle nejnovějších pokynů Material Design
 - Příjemné UX, které upřednostňuje snadné používání před okrajovými případy
 - Přizpůsobitelné chování
-- Pokročilé indexování médií, které upřednostňuje správná metadata
-- Podpora přesných/původních dat, třídicích značek a typů vydání (experimentální)
+- Podpora čísel disků, více interpretů, typů vydání,
+přesná/původní data, štítky pro řazení a další
+- Pokročilý systém umělců spojující interprety a interprety alb
 - Správa složek podporující SD karty
 - Spolehlivé uchovávání stavu přehrávání
-- Plná podpora ReplayGain (na MP3, MP4, FLAC, OGG, a OPUS)
-- Podpora externích přehrávačů (v aplikacích jako Wavelet)
+- Plná podpora ReplayGain (u souborů MP3, FLAC, OGG, OPUS a MP4)
+- Podpora externích přehrávačů (např. Wavelet)
 - Edge-to-edge
 - Podpora vložených obalů
 - Funkce hledání
