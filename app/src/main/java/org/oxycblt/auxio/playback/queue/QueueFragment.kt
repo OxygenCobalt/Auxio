@@ -19,6 +19,7 @@ package org.oxycblt.auxio.playback.queue
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.core.view.isInvisible
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,6 +55,18 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueAdapter.
             touchHelper.attachToRecyclerView(this)
         }
 
+        // Sometimes the scroll can change without the listener being updated, so we also
+        // check for relayout events.
+        binding.queueRecycler.apply {
+            addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> updateDivider() }
+            addOnScrollListener(
+                object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        updateDivider()
+                    }
+                })
+        }
+
         // --- VIEWMODEL SETUP ----
         collectImmediately(
             queueModel.queue, queueModel.index, playbackModel.isPlaying, ::updateQueue)
@@ -71,6 +84,13 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueAdapter.
 
     override fun onPickUp(viewHolder: RecyclerView.ViewHolder) {
         touchHelper.startDrag(viewHolder)
+    }
+
+    private fun updateDivider() {
+        val binding = requireBinding()
+        binding.queueDivider.isInvisible =
+            (binding.queueRecycler.layoutManager as LinearLayoutManager)
+                .findFirstCompletelyVisibleItemPosition() < 1
     }
 
     private fun updateQueue(queue: List<Song>, index: Int, isPlaying: Boolean) {
