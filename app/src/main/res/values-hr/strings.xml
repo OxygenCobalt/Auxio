@@ -79,12 +79,12 @@
     <string name="set_replay_gain_dynamic">Ako se reproducira album, preferiraj album</string>
     <string name="set_pre_amp">Pretpojačalo pojačanja</string>
     <string name="set_pre_amp_desc">Pretpojačalo je tijekom reprodukcije primijenjeno postojećoj prilagodbi</string>
-    <string name="set_pre_amp_with">Prilagođavanje pomoću metaoznaka</string>
-    <string name="set_pre_amp_without">Prilagođavanje bez metaoznaka</string>
+    <string name="set_pre_amp_with">Prilagođavanje s oznakama</string>
+    <string name="set_pre_amp_without">Prilagođavanje bez oznaka</string>
     <string name="set_pre_amp_warning">Upozorenje: Postavljanje pretpojačala na visoke razine može uzrokovati vrhunce tonova u nekim zvučnim zapisima.</string>
     <string name="set_library_song_playback_mode">Kada se reproducira iz zbirke</string>
-    <string name="set_detail_song_playback_mode">Kada se reproducira iz detalja o predmetu</string>
-    <string name="set_playback_mode_songs">Reproduciraj od svih pjesama</string>
+    <string name="set_detail_song_playback_mode">Kada se reproducira iz detalja predmeta</string>
+    <string name="set_playback_mode_songs">Reproduciraj iz svih pjesama</string>
     <string name="set_reindex">Aktualiziraj glazbu</string>
     <string name="set_reindex_desc">Ponovo učitaj glazbenu biblioteku, koristeći predmemorirane oznake kada je to moguće</string>
     <string name="set_dirs">Mape glazbe</string>
@@ -197,7 +197,7 @@
     <string name="set_playback_mode_none">Reproduciraj iz prikazanog predmeta</string>
     <string name="set_keep_shuffle">Zapamti miješanje glazbe</string>
     <string name="set_restore_desc">Vrati prethodno spremljeno stanje reprodukcije (ako postoji)</string>
-    <string name="set_playback_mode_album">Reproduciraj od albuma</string>
+    <string name="set_playback_mode_album">Reproduciraj iz albuma</string>
     <string name="set_repeat_pause_desc">Pauziraj čim se pjesma ponovi</string>
     <string name="set_rewind_prev_desc">Premotaj prije vraćanja na prethodnu pjesmu</string>
     <string name="desc_play_pause">Reproduciraj ili pauziraj</string>
@@ -233,7 +233,7 @@
     <string name="set_hide_collaborators">Sakrij suradnike</string>
     <string name="set_cover_mode_off">Isključeno</string>
     <string name="set_exclude_non_music">Isključi sve što nije glazba</string>
-    <string name="set_playback_mode_artist">Reproduciraj glazbu izvođača</string>
+    <string name="set_playback_mode_artist">Reproduciraj iz izvođača</string>
     <string name="set_cover_mode_quality">Visoka kvaliteta</string>
     <string name="set_cover_mode_media_store">Brzo</string>
     <string name="set_exclude_non_music_desc">Zanemari sve audio datoteke koje nisu glazba, npr. podcast datoteke</string>
@@ -252,4 +252,6 @@
     <string name="fmt_selected">Odabrano: %d</string>
     <string name="lbl_shuffle_selected">Promiješaj odabrane</string>
     <string name="lbl_play_selected">Reproduciraj odabrane</string>
+    <string name="set_playback_mode_genre">Reproduciraj iz žanra</string>
+    <string name="lbl_wiki">Wiki</string>
 </resources>
