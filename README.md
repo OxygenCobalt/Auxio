@@ -13,7 +13,7 @@
     </a>
     <img alt="Minimum SDK Version" src="https://img.shields.io/badge/API-21%2B-32B5ED">
 </p>
-<h4 align="center"><a href="/CHANGELOG.md">Changelog</a> | <a href="https://github.com/OxygenCobalt/Auxio/wiki">Wiki</a>
+<h4 align="center"><a href="/CHANGELOG.md">Changelog</a> | <a href="https://github.com/OxygenCobalt/Auxio/wiki">Wiki</a></h4>
 <p align="center">
     <a href="https://f-droid.org/app/org.oxycblt.auxio"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" width="170"></a>
     <a href="https://hosted.weblate.org/engage/auxio/"><img src="https://hosted.weblate.org/widgets/auxio/-/strings/287x66-grey.png" alt="Translation status" /></a>
@@ -49,7 +49,6 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Support for disc numbers, multiple artists, release types,
 precise/original dates, sort tags, and more
 - Advanced artist system that unifies artists and album artists
-into a single entry
 - SD Card-aware folder management
 - Reliable playback state persistence
 - Full ReplayGain support (On MP3, FLAC, OGG, OPUS, and MP4 files)

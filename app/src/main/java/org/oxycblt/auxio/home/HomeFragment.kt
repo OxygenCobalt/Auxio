@@ -291,9 +291,10 @@ class HomeFragment :
         for (option in sortMenu) {
             // Check the ascending option and corresponding sort option to align with
             // the current sort of the tab.
-            option.isChecked =
-                option.itemId == toHighlight.mode.itemId ||
-                    (option.itemId == R.id.option_sort_asc && toHighlight.isAscending)
+            if (option.itemId == toHighlight.mode.itemId ||
+                    (option.itemId == R.id.option_sort_asc && toHighlight.isAscending)) {
+                option.isChecked = true
+            }
 
             // Disable options that are not allowed by the isVisible lambda
             option.isVisible = isVisible(option.itemId)
