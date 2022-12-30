@@ -30,9 +30,9 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build Debug APK with Gradle
-      run: ./gradlew buildDebug
+      run: ./gradlew app:packageDebug
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.1
       with:
-        name: Auxio_Canary.apk
-        path: ./app/build/intermediates/apk/debug/app-debug.apk
+        name: Auxio_Canary
+        path: ./app/build/outputs/apk/debug/app-debug.apk
