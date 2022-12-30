@@ -283,8 +283,8 @@ private class CacheDatabase(context: Context) :
                 raw.albumMusicBrainzId = cursor.getStringOrNull(albumMusicBrainzIdIndex)
                 raw.albumName = cursor.getString(albumNameIndex)
                 raw.albumSortName = cursor.getStringOrNull(albumSortNameIndex)
-                cursor.getStringOrNull(albumTypesIndex)?.parseSQLMultiValue()?.let {
-                    raw.albumTypes = it
+                cursor.getStringOrNull(albumTypesIndex)?.let {
+                    raw.albumTypes = it.parseSQLMultiValue()
                 }
 
                 cursor.getStringOrNull(artistMusicBrainzIdsIndex)?.let {
@@ -387,7 +387,8 @@ private class CacheDatabase(context: Context) :
      * @return A list of strings corresponding to the delimited values present within the original
      * string. Escaped delimiters are converted back into their normal forms.
      */
-    private fun String.parseSQLMultiValue() = splitEscaped { it == ';' }
+    private fun String.parseSQLMultiValue() =
+        splitEscaped { it == ';' }
 
     /** Defines the columns used in this database. */
     private object Columns {

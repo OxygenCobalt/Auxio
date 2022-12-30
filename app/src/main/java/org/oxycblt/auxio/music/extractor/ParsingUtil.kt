@@ -21,6 +21,7 @@ import androidx.core.text.isDigitsOnly
 import java.util.UUID
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
@@ -88,7 +89,7 @@ inline fun String.splitEscaped(selector: (Char) -> Boolean): List<String> {
         if (selector(a)) {
             // Non-escaped separator, split the string here, making sure any stray whitespace
             // is removed.
-            split.add(currentString.trim())
+            split.add(currentString)
             currentString = ""
             i++
             continue
@@ -107,8 +108,8 @@ inline fun String.splitEscaped(selector: (Char) -> Boolean): List<String> {
     }
 
     if (currentString.isNotEmpty()) {
-        // Had an in-progress split string that is now terminated, add it..
-        split.add(currentString.trim())
+        // Had an in-progress split string that is now terminated, add it.
+        split.add(currentString)
     }
 
     return split
@@ -126,7 +127,7 @@ fun List<String>.parseMultiValue(settings: Settings) =
         get(0).maybeParseSeparators(settings)
     } else {
         // Nothing to do.
-        this
+        this.map { it.trim() }
     }
 
 /**
@@ -137,7 +138,7 @@ fun List<String>.parseMultiValue(settings: Settings) =
 fun String.maybeParseSeparators(settings: Settings): List<String> {
     // Get the separators the user desires. If null, there's nothing to do.
     val separators = settings.musicSeparators ?: return listOf(this)
-    return splitEscaped { separators.contains(it) }
+    return splitEscaped { separators.contains(it) }.map { it.trim() }
 }
 
 /**
@@ -179,19 +180,19 @@ fun String.parseId3GenreNames(settings: Settings) =
  * @return A named genre if the field is a valid integer, "Cover" or "Remix" if the field is
  * "CR"/"RX" respectively, and nothing if the field is not a valid ID3v1 integer genre.
  */
-private fun String.parseId3v1Genre(): String? =
-    when {
-        // ID3v1 genres are a plain integer value without formatting, so in that case
-        // try to index the genre table with such.
-        isDigitsOnly() -> GENRE_TABLE.getOrNull(toInt())
-
+private fun String.parseId3v1Genre(): String? {
+    // ID3v1 genres are a plain integer value without formatting, so in that case
+    // try to index the genre table with such. If this fails, then try to compare it
+    // to some other hard-coded values.
+    val numeric = toIntOrNull() ?: return when (this) {
         // CR and RX are not technically ID3v1, but are formatted similarly to a plain number.
-        this == "CR" -> "Cover"
-        this == "RX" -> "Remix"
-
-        // Current name is fine.
+        "CR" -> "Cover"
+        "RX" -> "Remix"
         else -> null
     }
+
+    return GENRE_TABLE.getOrNull(numeric)
+}
 
 /**
  * A [Regex] that implements parsing for ID3v2's genre format. Derived from mutagen:

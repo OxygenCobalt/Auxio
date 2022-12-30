@@ -51,7 +51,7 @@ audio focus was lost
 - Switched to issue forms
 - Completed migration to reactive playback system
 - Refactor music backends into a unified chain of extractors
-- Add bluetooth connection reciever (No functionality in app yet)
+- Add bluetooth connection receiver (No functionality in app yet)
 
 ## 2.6.4
 

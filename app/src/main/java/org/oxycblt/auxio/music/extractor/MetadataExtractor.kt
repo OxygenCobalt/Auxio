@@ -187,8 +187,8 @@ class Task(context: Context, private val raw: Song.Raw) {
                     // Map TXXX frames differently so we can specifically index by their
                     // descriptions.
                     val id = tag.description?.let { "TXXX:${it.sanitize()}" } ?: tag.id.sanitize()
-                    val values = tag.values.map { it.sanitize() }
-                    if (values.isNotEmpty() && values.all { it.isNotEmpty() }) {
+                    val values = tag.values.map { it.sanitize() }.filter { it.isNotEmpty() }
+                    if (values.isNotEmpty()) {
                         id3v2Tags[id] = values
                     }
                 }
