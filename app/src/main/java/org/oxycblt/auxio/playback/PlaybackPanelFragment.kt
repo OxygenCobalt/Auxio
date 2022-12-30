@@ -127,6 +127,7 @@ class PlaybackPanelFragment :
         when (item.itemId) {
             R.id.action_open_equalizer -> {
                 // Launch the system equalizer app, if possible.
+                // TODO: Move this to a utility
                 val equalizerIntent =
                     Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
                         // Provide audio session ID so equalizer can show options for this app

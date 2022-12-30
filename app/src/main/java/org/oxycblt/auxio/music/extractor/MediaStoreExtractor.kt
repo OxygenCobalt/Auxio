@@ -89,7 +89,7 @@ abstract class MediaStoreExtractor(
         val args = mutableListOf<String>()
         var selector = BASE_SELECTOR
 
-        // Filter out music that is not music, if enabled.
+        // Filter out audio that is not music, if enabled.
         if (settings.excludeNonMusic) {
             logD("Excluding non-music")
             selector += " AND ${MediaStore.Audio.AudioColumns.IS_MUSIC}=1"
@@ -514,7 +514,7 @@ open class Api29MediaStoreExtractor(context: Context, cacheExtractor: CacheExtra
 
     override fun populateMetadata(cursor: Cursor, raw: Song.Raw) {
         super.populateMetadata(cursor, raw)
-        // This backend is volume-aware, but does not support the modern track columns.
+        // This extractor is volume-aware, but does not support the modern track columns.
         // Use the old column instead. See unpackTrackNo/unpackDiscNo for an explanation
         // of how this column is set up.
         val rawTrack = cursor.getIntOrNull(trackIndex)

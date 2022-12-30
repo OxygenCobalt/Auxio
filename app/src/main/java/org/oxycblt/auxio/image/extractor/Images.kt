@@ -54,7 +54,7 @@ object Images {
     ): FetchResult? {
         if (streams.size < 4) {
             return streams.firstOrNull()?.let { stream ->
-                return SourceResult(
+                SourceResult(
                     source = ImageSource(stream.source().buffer(), context),
                     mimeType = null,
                     dataSource = DataSource.DISK)

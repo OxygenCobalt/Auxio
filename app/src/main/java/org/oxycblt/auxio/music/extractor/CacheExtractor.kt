@@ -168,7 +168,7 @@ class ReadWriteCacheExtractor(private val context: Context) : WriteOnlyCacheExtr
  * @see [CacheExtractor]
  */
 private class CacheDatabase(context: Context) :
-    SQLiteOpenHelper(context, File(context.cacheDir, DB_NAME).absolutePath, null, DB_VERSION) {
+    SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
         // Map the cacheable raw song fields to database fields. Cache-able in this context
         // means information independent of the file-system, excluding IDs and timestamps required
