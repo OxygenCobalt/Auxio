@@ -76,7 +76,7 @@ fun String.parseTimestamp() = Date.from(this)
  * @param selector A block that determines if the string should be split at a given character.
  * @return One or more [String]s split by the selector.
  */
-inline fun String.splitEscaped(selector: (Char) -> Boolean): MutableList<String> {
+inline fun String.splitEscaped(selector: (Char) -> Boolean): List<String> {
     val split = mutableListOf<String>()
     var currentString = ""
     var i = 0

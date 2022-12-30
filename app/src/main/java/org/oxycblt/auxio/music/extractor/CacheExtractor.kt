@@ -23,7 +23,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
-import java.io.File
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.*
 
@@ -247,7 +246,7 @@ private class CacheDatabase(context: Context) :
                 cursor.getColumnIndexOrThrow(Columns.ALBUM_MUSIC_BRAINZ_ID)
             val albumNameIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_NAME)
             val albumSortNameIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_SORT_NAME)
-            val albumReleaseTypesIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_TYPES)
+            val albumTypesIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_TYPES)
 
             val artistMusicBrainzIdsIndex =
                 cursor.getColumnIndexOrThrow(Columns.ARTIST_MUSIC_BRAINZ_IDS)
@@ -284,7 +283,7 @@ private class CacheDatabase(context: Context) :
                 raw.albumMusicBrainzId = cursor.getStringOrNull(albumMusicBrainzIdIndex)
                 raw.albumName = cursor.getString(albumNameIndex)
                 raw.albumSortName = cursor.getStringOrNull(albumSortNameIndex)
-                cursor.getStringOrNull(albumReleaseTypesIndex)?.parseSQLMultiValue()?.let {
+                cursor.getStringOrNull(albumTypesIndex)?.parseSQLMultiValue()?.let {
                     raw.albumTypes = it
                 }
 
@@ -338,7 +337,7 @@ private class CacheDatabase(context: Context) :
                 put(Columns.SIZE, rawSong.size)
                 put(Columns.DURATION, rawSong.durationMs)
 
-                put(Columns.MUSIC_BRAINZ_ID, rawSong.name)
+                put(Columns.MUSIC_BRAINZ_ID, rawSong.musicBrainzId)
                 put(Columns.NAME, rawSong.name)
                 put(Columns.SORT_NAME, rawSong.sortName)
 
