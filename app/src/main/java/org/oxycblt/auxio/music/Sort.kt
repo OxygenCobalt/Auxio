@@ -543,10 +543,8 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
                 val INT = NullableComparator<Int>()
                 /** A re-usable instance configured for [Long]s. */
                 val LONG = NullableComparator<Long>()
-                /** A re-usable instance configured for [Date]s. */
-                val DATE = NullableComparator<Date>()
-                /** A re-usable instance configured for [DateRange]s. */
-                val DATE_RANGE = NullableComparator<DateRange>()
+                /** A re-usable instance configured for [Date.Range]s. */
+                val DATE_RANGE = NullableComparator<Date.Range>()
             }
         }
 
