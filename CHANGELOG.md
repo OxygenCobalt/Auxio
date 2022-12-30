@@ -2,6 +2,9 @@
 
 ## dev
 
+#### What's Improved
+- Formalized whitespace handling
+
 ## 3.0.0
 
 #### What's New

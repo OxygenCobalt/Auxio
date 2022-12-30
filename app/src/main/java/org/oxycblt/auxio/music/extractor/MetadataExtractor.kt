@@ -187,7 +187,7 @@ class Task(context: Context, private val raw: Song.Raw) {
                     // Map TXXX frames differently so we can specifically index by their
                     // descriptions.
                     val id = tag.description?.let { "TXXX:${it.sanitize()}" } ?: tag.id.sanitize()
-                    val values = tag.values.map { it.sanitize() }.filter { it.isNotEmpty() }
+                    val values = tag.values.map { it.sanitize() }.correctWhitespace()
                     if (values.isNotEmpty()) {
                         id3v2Tags[id] = values
                     }
@@ -195,8 +195,8 @@ class Task(context: Context, private val raw: Song.Raw) {
                 is VorbisComment -> {
                     // Vorbis comment keys can be in any case, make them uppercase for simplicity.
                     val id = tag.key.sanitize().uppercase()
-                    val value = tag.value.sanitize()
-                    if (value.isNotEmpty()) {
+                    val value = tag.value.sanitize().correctWhitespace()
+                    if (value != null) {
                         vorbisTags.getOrPut(id) { mutableListOf() }.add(value)
                     }
                 }

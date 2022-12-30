@@ -116,6 +116,19 @@ inline fun String.splitEscaped(selector: (Char) -> Boolean): List<String> {
 }
 
 /**
+ * Fix trailing whitespace or blank contents in a [String].
+ * @return A string with trailing whitespace remove,d or null if the [String] was all whitespace
+ * or empty.
+ */
+fun String.correctWhitespace() = trim().ifBlank { null }
+
+/**
+ * Fix trailing whitespace or blank contents within a list of [String]s.
+ * @return A list of non-blank strings with trailing whitespace removed.
+ */
+fun List<String>.correctWhitespace() = mapNotNull { it.correctWhitespace() }
+
+/**
  * Parse a multi-value tag based on the user configuration. If the value is already composed of more
  * than one value, nothing is done. Otherwise, this function will attempt to split it based on the
  * user's separator preferences.
@@ -127,7 +140,7 @@ fun List<String>.parseMultiValue(settings: Settings) =
         get(0).maybeParseSeparators(settings)
     } else {
         // Nothing to do.
-        this.map { it.trim() }
+        this
     }
 
 /**
@@ -138,7 +151,7 @@ fun List<String>.parseMultiValue(settings: Settings) =
 fun String.maybeParseSeparators(settings: Settings): List<String> {
     // Get the separators the user desires. If null, there's nothing to do.
     val separators = settings.musicSeparators ?: return listOf(this)
-    return splitEscaped { separators.contains(it) }.map { it.trim() }
+    return splitEscaped { separators.contains(it) }.correctWhitespace()
 }
 
 /**
