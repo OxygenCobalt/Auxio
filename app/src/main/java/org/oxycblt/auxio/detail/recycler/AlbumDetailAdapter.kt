@@ -142,7 +142,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
         // Date, song count, and duration map to the info text
         binding.detailInfo.apply {
             // Fall back to a friendlier "No date" text if the album doesn't have date information
-            val date = album.date?.resolveDate(context) ?: context.getString(R.string.def_date)
+            val date = album.dates?.resolveDate(context) ?: context.getString(R.string.def_date)
             val songCount = context.getPlural(R.plurals.fmt_song_count, album.songs.size)
             val duration = album.durationMs.formatDurationMs(true)
             text = context.getString(R.string.fmt_three, date, songCount, duration)
@@ -170,7 +170,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.areArtistContentsTheSame(newItem) &&
-                        oldItem.date == newItem.date &&
+                        oldItem.dates == newItem.dates &&
                         oldItem.songs.size == newItem.songs.size &&
                         oldItem.durationMs == newItem.durationMs &&
                         oldItem.type == newItem.type

@@ -2,6 +2,9 @@
 
 ## dev
 
+#### What's New
+- Added support for album date ranges (ex. 2010 - 2013)
+
 #### What's Improved
 - Formalized whitespace handling
 

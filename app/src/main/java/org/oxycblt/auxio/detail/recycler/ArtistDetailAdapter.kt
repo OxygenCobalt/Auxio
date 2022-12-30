@@ -189,7 +189,8 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
         binding.parentName.text = album.resolveName(binding.context)
         binding.parentInfo.text =
             // Fall back to a friendlier "No date" text if the album doesn't have date information
-            album.date?.resolveDate(binding.context) ?: binding.context.getString(R.string.def_date)
+            album.dates?.resolveDate(binding.context)
+                ?: binding.context.getString(R.string.def_date)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -217,7 +218,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
         val DIFF_CALLBACK =
             object : SimpleItemCallback<Album>() {
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
-                    oldItem.rawName == newItem.rawName && oldItem.date == newItem.date
+                    oldItem.rawName == newItem.rawName && oldItem.dates == newItem.dates
             }
     }
 }

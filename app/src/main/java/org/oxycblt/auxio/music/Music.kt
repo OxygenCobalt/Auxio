@@ -610,11 +610,8 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     override val collationKey = makeCollationKeyImpl()
     override fun resolveName(context: Context) = rawName
 
-    /**
-     * The earliest [Date] this album was released. Will be null if no valid date was present in the
-     * metadata of any [Song]
-     */
-    val date: Date? // TODO: Date ranges?
+    /** The [DateRange] that [Song]s in the [Album] were released. */
+    val dates: DateRange? = DateRange.from(songs.mapNotNull { it.date })
 
     /**
      * The [Type] of this album, signifying the type of release it actually is. Defaults to
@@ -634,31 +631,18 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     val dateAdded: Long
 
     init {
-        var earliestDate: Date? = null
         var totalDuration: Long = 0
         var earliestDateAdded: Long = Long.MAX_VALUE
 
         // Do linking and value generation in the same loop for efficiency.
         for (song in songs) {
             song._link(this)
-
-            if (song.date != null) {
-                // Since we can't really assign a maximum value for dates, we instead
-                // just check if the current earliest date doesn't exist and fill it
-                // in with the current song if that's the case.
-                if (earliestDate == null || song.date < earliestDate) {
-                    earliestDate = song.date
-                }
-            }
-
             if (song.dateAdded < earliestDateAdded) {
                 earliestDateAdded = song.dateAdded
             }
-
             totalDuration += song.durationMs
         }
 
-        date = earliestDate
         durationMs = totalDuration
         dateAdded = earliestDateAdded
     }
@@ -1381,6 +1365,63 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
             dst.add(src.getOrNull(3)?.inRangeOrNull(0..23) ?: return)
             dst.add(src.getOrNull(4)?.inRangeOrNull(0..59) ?: return)
             dst.add(src.getOrNull(5)?.inRangeOrNull(0..59) ?: return)
+        }
+    }
+}
+
+/**
+ * A range of [Date]s. This is used in contexts where the [Date] of an item is derived from several
+ * sub-items and thus can have a "range" of release dates.
+ * @param min The earliest [Date] in the range.
+ * @param max The latest [Date] in the range. May be the same as [min].
+ * @author Alexander Capehart
+ */
+class DateRange private constructor(val min: Date, val max: Date) : Comparable<DateRange> {
+
+    /**
+     * Resolve this instance into a human-readable date range.
+     * @param context [Context] required to get human-readable names.
+     * @return If the date has a maximum value, then a `min - max` formatted string will be returned
+     * with the formatted [Date]s of the minimum and maximum dates respectively. Otherwise, the
+     * formatted name of the minimum [Date] will be returned.
+     */
+    fun resolveDate(context: Context) =
+        if (min != max) {
+            context.getString(
+                R.string.fmt_date_range, min.resolveDate(context), max.resolveDate(context))
+        } else {
+            min.resolveDate(context)
+        }
+
+    override fun compareTo(other: DateRange): Int {
+        return min.compareTo(other.min)
+    }
+
+    companion object {
+        /**
+         * Create a [DateRange] from the given list of [Date]s.
+         * @param dates The [Date]s to use.
+         * @return A [DateRange] based on the minimum and maximum [Date]s from [dates], or a
+         * [DateRange] with a single minimum. If no [Date]s were given, null is returned.
+         */
+        fun from(dates: List<Date>): DateRange? {
+            if (dates.isEmpty()) {
+                // Nothing to do.
+                return null
+            }
+            // Simultaneously find the minimum and maximum values in the given range.
+            // If this list has only one item, then that one date is the minimum and maximum.
+            var min = dates.first()
+            var max = min
+            for (i in 1..dates.lastIndex) {
+                if (dates[i] < min) {
+                    min = dates[i]
+                }
+                if (dates[i] > max) {
+                    max = dates[i]
+                }
+            }
+            return DateRange(min, max)
         }
     }
 }
