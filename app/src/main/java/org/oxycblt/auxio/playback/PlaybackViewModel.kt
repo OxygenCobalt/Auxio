@@ -70,8 +70,8 @@ class PlaybackViewModel(application: Application) :
 
     private val _artistPlaybackPickerSong = MutableStateFlow<Song?>(null)
     /**
-     * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when
-     * playing a [Song] from one of it's [Artist]s.
+     * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing a
+     * [Song] from one of it's [Artist]s.
      * @see playFromArtist
      */
     val artistPickerSong: StateFlow<Song?>
@@ -79,8 +79,8 @@ class PlaybackViewModel(application: Application) :
 
     private val _genrePlaybackPickerSong = MutableStateFlow<Song?>(null)
     /**
-     * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing
-     * a [Song] from one of it's [Genre]s.
+     * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing a
+     * [Song] from one of it's [Genre]s.
      */
     val genrePickerSong: StateFlow<Song?>
         get() = _genrePlaybackPickerSong

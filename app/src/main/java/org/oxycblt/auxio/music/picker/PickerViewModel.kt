@@ -33,7 +33,8 @@ class PickerViewModel : ViewModel(), MusicStore.Callback {
 
     private val _currentItem = MutableStateFlow<Music?>(null)
     /** The current item whose artists should be shown in the picker. Null if there is no item. */
-    val currentItem: StateFlow<Music?> get() = _currentItem
+    val currentItem: StateFlow<Music?>
+        get() = _currentItem
 
     private val _artistChoices = MutableStateFlow<List<Artist>>(listOf())
     /** The current [Artist] choices. Empty if no item is shown in the picker. */
@@ -75,5 +76,4 @@ class PickerViewModel : ViewModel(), MusicStore.Callback {
             else -> {}
         }
     }
-
 }

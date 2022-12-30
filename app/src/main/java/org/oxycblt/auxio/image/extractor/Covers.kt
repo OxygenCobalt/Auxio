@@ -177,6 +177,8 @@ object Covers {
     @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun fetchMediaStoreCovers(context: Context, album: Album): InputStream? {
         // Eliminate any chance that this blocking call might mess up the loading process
-        return withContext(Dispatchers.IO) { context.contentResolver.openInputStream(album.coverUri) }
+        return withContext(Dispatchers.IO) {
+            context.contentResolver.openInputStream(album.coverUri)
+        }
     }
 }

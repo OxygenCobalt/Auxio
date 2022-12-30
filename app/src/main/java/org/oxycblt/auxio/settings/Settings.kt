@@ -165,9 +165,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
         unlikelyToBeNull(callback).onSettingChanged(key)
     }
 
-    /**
-     * Simplified callback for settings changes.
-     */
+    /** Simplified callback for settings changes. */
     interface Callback {
         // TODO: Refactor this lifecycle
         /**

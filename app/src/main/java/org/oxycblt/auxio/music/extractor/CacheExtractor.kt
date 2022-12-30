@@ -387,8 +387,7 @@ private class CacheDatabase(context: Context) :
      * @return A list of strings corresponding to the delimited values present within the original
      * string. Escaped delimiters are converted back into their normal forms.
      */
-    private fun String.parseSQLMultiValue() =
-        splitEscaped { it == ';' }.correctWhitespace()
+    private fun String.parseSQLMultiValue() = splitEscaped { it == ';' }.correctWhitespace()
 
     /** Defines the columns used in this database. */
     private object Columns {

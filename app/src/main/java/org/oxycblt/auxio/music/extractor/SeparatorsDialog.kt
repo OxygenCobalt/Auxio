@@ -61,16 +61,17 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
         // More efficient to do one iteration through the separator list and initialize
         // the corresponding CheckBox for each character instead of doing an iteration
         // through the separator list for each CheckBox.
-        (savedInstanceState?.getString(KEY_PENDING_SEPARATORS) ?: settings.musicSeparators)?.forEach {
-            when (it) {
-                SEPARATOR_COMMA -> binding.separatorComma.isChecked = true
-                SEPARATOR_SEMICOLON -> binding.separatorSemicolon.isChecked = true
-                SEPARATOR_SLASH -> binding.separatorSlash.isChecked = true
-                SEPARATOR_PLUS -> binding.separatorPlus.isChecked = true
-                SEPARATOR_AND -> binding.separatorAnd.isChecked = true
-                else -> error("Unexpected separator in settings data")
+        (savedInstanceState?.getString(KEY_PENDING_SEPARATORS) ?: settings.musicSeparators)
+            ?.forEach {
+                when (it) {
+                    SEPARATOR_COMMA -> binding.separatorComma.isChecked = true
+                    SEPARATOR_SEMICOLON -> binding.separatorSemicolon.isChecked = true
+                    SEPARATOR_SLASH -> binding.separatorSlash.isChecked = true
+                    SEPARATOR_PLUS -> binding.separatorPlus.isChecked = true
+                    SEPARATOR_AND -> binding.separatorAnd.isChecked = true
+                    else -> error("Unexpected separator in settings data")
+                }
             }
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

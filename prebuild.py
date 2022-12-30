@@ -60,7 +60,7 @@ if os.getenv("ANDROID_HOME") is None and os.getenv("ANDROID_SDK_ROOT") is None:
         "ANDROID_HOME/ANDROID_SDK_ROOT before continuing.")
     sys.exit(1)
 
-ndk_path = os.getenv("NDK_PATH")
+ndk_path = os.getenv("ANDROID_NDK_HOME")
 if ndk_path is None or not os.path.isfile(os.path.join(ndk_path, "ndk-build")):
     # We don't have a proper path. Do some digging on the Android SDK directory
     # to see if we can find it.

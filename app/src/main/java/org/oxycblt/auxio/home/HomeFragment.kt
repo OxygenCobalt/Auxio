@@ -292,7 +292,7 @@ class HomeFragment :
             // Check the ascending option and corresponding sort option to align with
             // the current sort of the tab.
             if (option.itemId == toHighlight.mode.itemId ||
-                    (option.itemId == R.id.option_sort_asc && toHighlight.isAscending)) {
+                (option.itemId == R.id.option_sort_asc && toHighlight.isAscending)) {
                 option.isChecked = true
             }
 

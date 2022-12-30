@@ -17,11 +17,9 @@
  
 package org.oxycblt.auxio.music.extractor
 
-import androidx.core.text.isDigitsOnly
 import java.util.UUID
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
@@ -117,8 +115,8 @@ inline fun String.splitEscaped(selector: (Char) -> Boolean): List<String> {
 
 /**
  * Fix trailing whitespace or blank contents in a [String].
- * @return A string with trailing whitespace remove,d or null if the [String] was all whitespace
- * or empty.
+ * @return A string with trailing whitespace remove,d or null if the [String] was all whitespace or
+ * empty.
  */
 fun String.correctWhitespace() = trim().ifBlank { null }
 
@@ -197,12 +195,15 @@ private fun String.parseId3v1Genre(): String? {
     // ID3v1 genres are a plain integer value without formatting, so in that case
     // try to index the genre table with such. If this fails, then try to compare it
     // to some other hard-coded values.
-    val numeric = toIntOrNull() ?: return when (this) {
-        // CR and RX are not technically ID3v1, but are formatted similarly to a plain number.
-        "CR" -> "Cover"
-        "RX" -> "Remix"
-        else -> null
-    }
+    val numeric =
+        toIntOrNull()
+            ?: return when (this) {
+                // CR and RX are not technically ID3v1, but are formatted similarly to a plain
+                // number.
+                "CR" -> "Cover"
+                "RX" -> "Remix"
+                else -> null
+            }
 
     return GENRE_TABLE.getOrNull(numeric)
 }
