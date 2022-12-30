@@ -111,6 +111,27 @@ sealed class Music : Item {
         return COLLATOR.getCollationKey(sortName)
     }
 
+    /**
+     * Join a list of [Music]'s resolved names into a string in a localized manner, using
+     * [R.string.fmt_list].
+     * @param context [Context] required to obtain localized formatting.
+     * @param values The list of [Music] to format.
+     * @return A single string consisting of the values delimited by a localized separator.
+     */
+    protected fun resolveNames(context: Context, values: List<Music>): String {
+        if (values.isEmpty()) {
+            // Nothing to do.
+            return ""
+        }
+
+        var joined = values.first().resolveName(context)
+        for (i in 1..values.lastIndex) {
+            // Chain all previous values with the next value in the list with another delimiter.
+            joined = context.getString(R.string.fmt_list, joined, values[i].resolveName(context))
+        }
+        return joined
+    }
+
     // Note: We solely use the UID in comparisons so that certain items that differ in all
     // but UID are treated differently.
 
@@ -396,9 +417,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
      * Resolves one or more [Artist]s into a single piece of human-readable names.
      * @param context [Context] required for [resolveName]. formatter.
      */
-    fun resolveArtistContents(context: Context) =
-        // TODO Internationalize the list
-        artists.joinToString { it.resolveName(context) }
+    fun resolveArtistContents(context: Context) = resolveNames(context, artists)
 
     /**
      * Checks if the [Artist] *display* of this [Song] and another [Song] are equal. This will only
@@ -430,7 +449,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
      * Resolves one or more [Genre]s into a single piece human-readable names.
      * @param context [Context] required for [resolveName].
      */
-    fun resolveGenreContents(context: Context) = genres.joinToString { it.resolveName(context) }
+    fun resolveGenreContents(context: Context) = resolveNames(context, genres)
 
     // --- INTERNAL FIELDS ---
 
@@ -657,7 +676,7 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
      * Resolves one or more [Artist]s into a single piece of human-readable names.
      * @param context [Context] required for [resolveName].
      */
-    fun resolveArtistContents(context: Context) = artists.joinToString { it.resolveName(context) }
+    fun resolveArtistContents(context: Context) = resolveNames(context, artists)
 
     /**
      * Checks if the [Artist] *display* of this [Album] and another [Album] are equal. This will
@@ -1024,7 +1043,7 @@ class Artist constructor(private val raw: Raw, songAlbums: List<Music>) : MusicP
      * Resolves one or more [Genre]s into a single piece of human-readable names.
      * @param context [Context] required for [resolveName].
      */
-    fun resolveGenreContents(context: Context) = genres.joinToString { it.resolveName(context) }
+    fun resolveGenreContents(context: Context) = resolveNames(context, genres)
 
     /**
      * Checks if the [Genre] *display* of this [Artist] and another [Artist] are equal. This will

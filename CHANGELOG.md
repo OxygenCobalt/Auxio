@@ -7,6 +7,7 @@
 
 #### What's Improved
 - Formalized whitespace handling
+- Value lists are now properly localized
 
 ## 3.0.0
 
