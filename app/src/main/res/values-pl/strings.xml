@@ -3,92 +3,248 @@
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Ponów</string>
     <string name="lbl_grant">Przyznaj</string>
-
     <string name="lbl_genres">Gatunki</string>
     <string name="lbl_artists">Wykonawcy</string>
     <string name="lbl_albums">Albumy</string>
     <string name="lbl_songs">Utwory</string>
-    <string name="lbl_all_songs">Wszystkie Utwory</string>
-
+    <string name="lbl_all_songs">Wszystkie utwory</string>
     <string name="lbl_search">Szukaj</string>
     <string name="lbl_filter">Filtry</string>
     <string name="lbl_filter_all">Wszystkie</string>
-
     <string name="lbl_sort">Sortowanie</string>
     <string name="lbl_sort_asc">Rosnąco</string>
-
-    <string name="lbl_play">Graj</string>
+    <string name="lbl_play">Odtwórz</string>
     <string name="lbl_shuffle">Losowo</string>
-    <string name="lbl_playback">Obecnie Grane</string>
-
+    <string name="lbl_playback">Obecnie odtwarzane</string>
     <string name="lbl_queue">Kolejka</string>
     <string name="lbl_play_next">Odtwarzaj następny</string>
     <string name="lbl_queue_add">Dodaj do kolejki</string>
     <string name="lng_queue_added">Dodany do kolejki</string>
-
     <string name="lbl_go_artist">Przejdź do wykonawcy</string>
     <string name="lbl_go_album">Przejdź do albumu</string>
-
     <string name="lbl_about">O aplikacji</string>
     <string name="lbl_version">Wersja</string>
-    <string name="lbl_code">Zobacz na GitHubie</string>
-    <string name="lbl_faq">FAQ</string>
+    <string name="lbl_code">Kod źródłowy</string>
     <string name="lbl_licenses">Licencje</string>
-
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Ustawienia</string>
-
     <string name="set_ui">Wygląd</string>
     <string name="set_theme">Motyw</string>
     <string name="set_theme_auto">Automatyczny</string>
     <string name="set_theme_day">Jasny</string>
     <string name="set_theme_night">Ciemny</string>
     <string name="set_accent">Odcień koloru</string>
-
-    <string name="set_quality_covers">Ignoruj okładki z Media Store</string>
-
     <string name="set_audio">Dźwięk</string>
-
     <string name="set_behavior">Zachowanie</string>
-
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nie znaleziono muzyki</string>
-
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Ścieżka %d</string>
-
-    <string name="desc_play_pause">Odtwarzanie/Pauza</string>
-
+    <string name="desc_play_pause">Odtwórz bądź zapauzuj</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Szukaj w bibliotece…</string>
-
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Czerwony</string>
     <string name="clr_pink">Różowy</string>
-    <string name="clr_purple">Purpura</string>
-    <string name="clr_indigo">Błękit Indygowy</string>
+    <string name="clr_purple">Fiolet</string>
+    <string name="clr_indigo">Indygo</string>
     <string name="clr_blue">Błękit</string>
-    <string name="clr_deep_blue">Jasnobłękit</string>
+    <string name="clr_deep_blue">Ciemny błękit</string>
     <string name="clr_green">Zielony</string>
-    <string name="clr_deep_green">Jasnozielony</string>
-    <string name="clr_lime">Żółtyzielony</string>
+    <string name="clr_deep_green">Ciemnozielony</string>
+    <string name="clr_lime">Żółtozielony</string>
     <string name="clr_yellow">Żółty</string>
     <string name="clr_orange">Pomarańczowy</string>
     <string name="clr_brown">Brązowy</string>
     <string name="clr_grey">Szary</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_lib_song_count">Utwory uruchamia się: %d</string>
-
     <plurals name="fmt_song_count">
         <item quantity="one">%d Utwór</item>
         <item quantity="few">%d Utwory</item>
-        <item quantity="many">%d Piosenek</item>
+        <item quantity="many">%d Utworów</item>
+        <item quantity="other">%d Utworów</item>
     </plurals>
-
     <plurals name="fmt_album_count">
-        <item quantity="one">%d Album</item>
-        <item quantity="few">%d Albumy</item>
-        <item quantity="many">%d Albumów</item>
+        <item quantity="one">%d album</item>
+        <item quantity="few">%d albumy</item>
+        <item quantity="many">%d albumów</item>
+        <item quantity="other">%d albumów</item>
     </plurals>
+    <string name="lbl_album_live">Album koncertowy</string>
+    <string name="lbl_album_remix">Remix album</string>
+    <string name="lbl_album">Album</string>
+    <string name="lbl_eps">Minialbumy</string>
+    <string name="lbl_ep">Minialbum</string>
+    <string name="lbl_ok">Ok</string>
+    <string name="lbl_cancel">Anuluj</string>
+    <string name="set_content">Zawartość</string>
+    <string name="desc_no_cover">Okładka albumu</string>
+    <string name="def_genre">Nieznany gatunek</string>
+    <string name="def_date">Nieznana data</string>
+    <string name="def_sample_rate">Nieznana częstotliwość próbkowania</string>
+    <string name="cdc_mp3">MPEG-1 audio</string>
+    <string name="lbl_sort_track">Utwór</string>
+    <string name="lbl_song_detail">Wyświetl szczegóły</string>
+    <string name="lbl_props">Szczegóły utworu</string>
+    <string name="lbl_sample_rate">Częstotliwość próbkowania</string>
+    <string name="lbl_shuffle_shortcut_short">Losowo</string>
+    <string name="set_headset_autoplay">Autoodtwarzanie w słuchawkach</string>
+    <string name="def_codec">Nieznany format</string>
+    <string name="def_bitrate">Nieznany bitrate</string>
+    <string name="clr_teal">Morski</string>
+    <string name="fmt_db_pos">+%.1f dB</string>
+    <string name="lbl_file_name">Nazwa pliku</string>
+    <string name="lbl_relative_path">Ścieżka katalogu</string>
+    <string name="lbl_format">Format</string>
+    <string name="clr_cyan">Niebieskozielony</string>
+    <string name="fmt_disc_no">Płyta %d</string>
+    <string name="lbl_sort_date_added">Data dodania</string>
+    <string name="desc_album_cover">Okładka albumu %s</string>
+    <string name="desc_auxio_icon">Ikona Auxio</string>
+    <string name="desc_shuffle">Włącz lub wyłącz odtwarzanie losowe</string>
+    <string name="lbl_ep_live">Minialbum koncertowy</string>
+    <string name="lbl_ep_remix">Minialbum z remiksami</string>
+    <string name="lbl_single_live">Koncertowy singiel</string>
+    <string name="lbl_single_remix">Remix</string>
+    <string name="lbl_compilations">Kompilacje</string>
+    <string name="lbl_compilation">Kompilacja</string>
+    <string name="lbl_soundtracks">Ścieżki dźwiękowe</string>
+    <string name="lbl_soundtrack">Ścieżka dźwiękowa</string>
+    <string name="lbl_genre">Gatunek</string>
+    <string name="lbl_shuffle_shortcut_long">Wszystkie losowo</string>
+    <string name="fmt_sample_rate">%d Hz</string>
+    <string name="lbl_add">Dodaj</string>
+    <string name="set_black_mode">Czarny motyw</string>
+    <string name="clr_deep_purple">Ciemny fiolet</string>
+    <string name="fmt_db_neg">-%.1f dB</string>
+    <string name="lbl_sort_name">Nazwa</string>
+    <string name="lbl_sort_date">Rok</string>
+    <string name="lbl_single">Singiel</string>
+    <string name="lbl_singles">Single</string>
+    <string name="lbl_sort_duration">Czas trwania</string>
+    <string name="lbl_mixtape">Składanka</string>
+    <string name="lbl_sort_count">Liczba utworów</string>
+    <string name="lbl_sort_disc">Płyta</string>
+    <string name="lbl_artist">Wykonawca</string>
+    <string name="lbl_save">Zapisz</string>
+    <string name="lbl_mixtapes">Składanki</string>
+    <string name="lbl_remix_group">Remixy</string>
+    <string name="def_artist">Nieznany wykonawca</string>
+    <string name="lbl_bitrate">Bitrate</string>
+    <string name="def_track">Nieznany numer</string>
+    <string name="lbl_equalizer">Equalizer</string>
+    <string name="lbl_size">Rozmiar</string>
+    <string name="err_no_dirs">Brak folderów</string>
+    <string name="set_playback_mode_songs">Odtwórz wszystkie utwory</string>
+    <string name="set_playback_mode_album">Odtwórz album</string>
+    <string name="set_headset_autoplay_desc">Zacznij odtawrzanie po podłączeniu słuchawek (może nie działać na wszystkich urządzeniach)</string>
+    <string name="set_reindex">Załaduj ponownie bibliotekę</string>
+    <string name="set_reindex_desc">Może wyczyścić stan odtwarzania</string>
+    <string name="desc_clear_queue_item">Usuń utwór z kolejki</string>
+    <string name="set_replay_gain_album">Preferuj album</string>
+    <string name="set_observing">Automatyczne ponowne załadowanie</string>
+    <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
+    <string name="set_separators_and">Et (&amp;)</string>
+    <string name="err_index_failed">Nie udało się załadować muzyki</string>
+    <string name="lbl_compilation_remix">Kompilacja remiksów</string>
+    <string name="lbl_compilation_live">Kompilacja koncertowa</string>
+    <string name="lbl_mixes">Mixy</string>
+    <string name="lbl_mix">Mix</string>
+    <string name="desc_skip_prev">Przejdź do ostatniego utworu</string>
+    <string name="desc_skip_next">Przejdź do następnego utworu</string>
+    <string name="lng_author">Autorstwa OxygenCobalt</string>
+    <string name="set_round_mode">Zaokrąglone okładki</string>
+    <string name="set_round_mode_desc">Zaokrąglone rogi okładek</string>
+    <string name="set_bar_action">Akcja na pasku odtwarzania</string>
+    <string name="set_bar_action_next">Następny utwór</string>
+    <string name="set_bar_action_repeat">Powtórz</string>
+    <string name="set_replay_gain">Ustawienie ReplayGain</string>
+    <string name="set_replay_gain_dynamic">Preferuj album, jeśli takowy jest odtwarzany</string>
+    <string name="set_library_song_playback_mode">Odtwarzając utwór z widoku biblioteki</string>
+    <string name="set_save_state">Zapisz stan odtwarzania</string>
+    <string name="set_separators_comma">Przecinek (,)</string>
+    <string name="set_separators_semicolon">Średnik (;)</string>
+    <string name="set_separators_slash">Ukośnik (/)</string>
+    <string name="set_separators_plus">Plus (+)</string>
+    <string name="desc_exit">Zatrzymaj odtwarzanie</string>
+    <string name="cdc_mp4">MPEG-4 audio</string>
+    <string name="cdc_ogg">Ogg audio</string>
+    <string name="info_app_desc">Prosty i rozsądny odtwarzacz muzyki na Androida.</string>
+    <string name="desc_music_dir_delete">Usuń folder</string>
+    <string name="desc_queue_bar">Pokaż kolejkę</string>
+    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
+    <string name="set_observing_desc">Automatycznie załaduj ponownie bibliotekę po wykryciu zmian (wymaga stałego powiadomienia)</string>
+    <string name="set_dirs_mode_exclude">Wyklucz</string>
+    <string name="set_dirs_mode_include">Uwzględnij</string>
+    <string name="desc_queue_handle">Zmień pozycję utworu w kolejce</string>
+    <string name="desc_tab_handle">Przesuń kartę</string>
+    <string name="desc_artist_image">Wizerunek wykonawcy dla %s</string>
+    <string name="lng_indexing">Ładuję bibliotekę muzyczną…</string>
+    <string name="set_replay_gain_track">Preferuj utwór</string>
+    <string name="lbl_state_restored">Przywrócono stan odtwarzania</string>
+    <string name="lbl_state_wiped">Wyczyszczono stan odtwarzania</string>
+    <string name="lbl_state_saved">Zapisano stan odtwarzania</string>
+    <string name="set_lib_tabs">Karty w bibliotece</string>
+    <string name="set_lib_tabs_desc">Zmień widoczność i kolejność kart w bibliotece</string>
+    <string name="set_black_mode_desc">Użyj czarnego motywu</string>
+    <string name="set_display">Wyświetlanie</string>
+    <string name="clr_dynamic">Dynamiczny</string>
+    <string name="fmt_bitrate">%d kb/s</string>
+    <string name="set_save_desc">Zapisz obecny stan odtwarzania</string>
+    <string name="set_wipe_state">Wyczyść stan odtwarzania</string>
+    <string name="cdc_mka">Matroska audio</string>
+    <string name="set_wipe_desc">Wyczyść poprzedni stan odtwarzania (jeśli istnieje)</string>
+    <string name="set_restore_state">Przywróć stan odtwarzania</string>
+    <string name="set_restore_desc">Przywróć poprzedni stan odtwarzania (jeśli istnieje)</string>
+    <string name="set_dirs">Foldery z muzyką</string>
+    <string name="set_dirs_desc">Wybierz z których folderów aplikacja ma ładować utwory</string>
+    <string name="set_dirs_mode">Tryb</string>
+    <string name="set_rewind_prev">Przewiń przed odtworzeniem poprzedniego utworu</string>
+    <string name="set_rewind_prev_desc">Przewiń do początku utworu przed odtworzeniem poprzedniego</string>
+    <string name="set_pre_amp">Preamplifier ReplayGain</string>
+    <string name="lbl_live_group">Na żywo</string>
+    <string name="lbl_indexing">Ładowanie utworów</string>
+    <string name="set_pre_amp_warning">Uwaga: Ustawienie wysokich pozytywnych wartości preamplifiera może skutkować przycinaniem dźwięku w niektórych utworach.</string>
+    <string name="set_keep_shuffle">Zapamiętaj losowe odtwarzanie</string>
+    <string name="err_no_app">Nie znaleziono aplikacji mogącej wykonać to zadanie</string>
+    <string name="lbl_library_counts">Statystyki biblioteki</string>
+    <string name="fmt_lib_artist_count">Załadowani artyści: %d</string>
+    <string name="set_notif_action">Użyj alternatywnej akcji w powiadomieniu</string>
+    <string name="set_repeat_pause">Zatrzymaj odtwarzanie przy powtórzeniu</string>
+    <string name="desc_clear_search">Wyczyść zapytanie wyszukiwania</string>
+    <string name="err_did_not_restore">Nie można przywrócić stanu odtwarzania</string>
+    <string name="desc_genre_image">Okładka gatunku %s</string>
+    <string name="lng_widget">Wyświetlanie oraz kontrolowanie odtwarzania muzyki</string>
+    <string name="set_pre_amp_with">Regulacja w oparciu o tagi</string>
+    <string name="set_pre_amp_without">Regulacja bez tagów</string>
+    <string name="set_pre_amp_desc">Wzmocnienie dźwięku przez preamplifier jest nakładane na wcześniej ustawione wzmocnienie podczas odtwarzania</string>
+    <string name="set_detail_song_playback_mode">Odtwarzając utwór ze szczegółów elementu</string>
+    <string name="set_playback_mode_none">Odtwarzaj tylko z elementu</string>
+    <string name="set_repeat_pause_desc">Zatrzymaj odtwarzanie kiedy utwór zostanie ponownie odtworzony</string>
+    <string name="set_dirs_mode_include_desc">Muzyka zostanie załadowana <b>tylko</b> z wybranych folderów.</string>
+    <string name="set_separators">Znaki oddzielające wartości</string>
+    <string name="set_separators_desc">Wybierz znaki oddzielające poszczególne wartości w metadanych</string>
+    <string name="err_no_perms">Auxio wymaga zgody na dostęp do twojej biblioteki muzycznej</string>
+    <string name="err_bad_dir">Ten folder nie jest wspierany</string>
+    <string name="def_playback">Utwory nie są odtwarzane</string>
+    <string name="fmt_indexing">Ładuję twoją bibliotekę muzyczną… (%1$d/%2$d)</string>
+    <string name="fmt_lib_album_count">Załadowane albumy: %d</string>
+    <string name="fmt_lib_genre_count">Załadowane gatunki: %d</string>
+    <string name="fmt_lib_total_duration">Łączny czas trwania: %s</string>
+    <string name="set_dirs_mode_exclude_desc">Muzyka <b>nie</b> zostanie załadowana z wybranych folderów.</string>
+    <string name="desc_change_repeat">Zmień tryb powtarzania</string>
+    <string name="desc_shuffle_all">Odtwarzaj losowo wszystkie utwory</string>
+    <string name="lng_observing">Monitoruję zmiany w bibliotece muzycznej…</string>
+    <string name="lbl_indexer">Ładowanie muzyki</string>
+    <string name="lbl_observing">Monitoruję bibliotekę muzyczną</string>
+    <string name="set_keep_shuffle_desc">Kontynuuj odtwarzanie losowe po wybraniu nowego utworu</string>
+    <string name="fmt_lib_song_count">Załadowane utwory: %d</string>
+    <string name="set_exclude_non_music_desc">Ignoruj pliki audio które nie są utworami muzycznymi, np. podcasty</string>
+    <string name="set_playback_mode_artist">Odtwórz od wykonawcy</string>
+    <string name="set_exclude_non_music">Wyklucz inne pliki dźwiękowe</string>
+    <string name="set_cover_mode">Okładki albumów</string>
+    <string name="set_cover_mode_off">Wyłączone</string>
+    <string name="set_cover_mode_media_store">Szybkie</string>
+    <string name="set_cover_mode_quality">Wysoka jakość</string>
+    <string name="set_separators_warning">Uwaga: To ustawienie może powodować nieprawidłowe przetwarzenie tagów jako posiadających wiele wartości. Problem ten należy rozwiązać stawiając ukośnik wsteczny (\\) przed niepożądanymi znakami rozdzielającymi.</string>
 </resources>

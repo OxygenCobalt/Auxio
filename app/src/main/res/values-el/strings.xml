@@ -24,7 +24,6 @@
     <string name="lbl_about">Σχετικά με</string>
     <string name="lbl_version">Έκδοση</string>
     <string name="lbl_code">Πηγαίος κώδικας</string>
-    <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Άδειες</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Ρυθμίσεις</string>
@@ -34,7 +33,6 @@
     <string name="set_theme_day">Φωτεινό</string>
     <string name="set_theme_night">Σκοτεινό</string>
     <string name="set_accent">Χρώματα</string>
-    <string name="set_quality_covers">Παράληψη των Media Store εξωφύλλων</string>
     <string name="set_audio">Ήχος</string>
     <string name="set_behavior">Συμπεριφορά</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -75,7 +73,7 @@
     <string name="fmt_disc_no">Δίσκος %d</string>
     <string name="fmt_lib_album_count">Album που φορτώθηκαν: %d</string>
     <string name="fmt_lib_artist_count">Καλλιτέχνες που φορτώθηκαν: %d</string>
-    <string name="lbl_sort_year">Έτος</string>
+    <string name="lbl_sort_date">Έτος</string>
     <string name="lbl_sort_disc">Δίσκος</string>
     <string name="err_no_music">Δεν βρέθηκε καθόλου μουσική</string>
     <string name="err_index_failed">Η φόρτωση μουσικής απέτυχε</string>
@@ -101,7 +99,7 @@
     <string name="err_no_dirs">Καθόλου φάκελοι</string>
     <string name="info_app_desc">Μιά απλή, λογική εφαρμογή αναπαραγωγής μουσικής για Android.</string>
     <string name="lbl_indexer">Φόρτωση μουσικής</string>
-    <string name="lng_playback">Προβολή και έλεγχος αναπαραγωγής μουσικής</string>
+    <string name="lng_widget">Προβολή και έλεγχος αναπαραγωγής μουσικής</string>
     <string name="lbl_album">Album</string>
     <string name="lbl_eps">EP</string>
     <string name="lbl_ep">EP</string>
@@ -112,11 +110,9 @@
     <string name="lbl_shuffle_shortcut_long">Tυχαία αναπαραγωγή όλων</string>
     <string name="lbl_shuffle_shortcut_short">Tυχαία αναπαραγωγή</string>
     <string name="lbl_ok">Οκ</string>
-    <string name="set_show_covers">Έμφανιση εξώφυλλου άλμπουμ</string>
     <string name="set_display">Προβολή</string>
     <string name="lbl_save">Αποθήκευση</string>
     <string name="lbl_bitrate">Pυθμός μεταβίβασης δεδομένων</string>
-    <string name="set_alt_shuffle">Προτίμηση τυχαίας αναπαραγωγής</string>
     <string name="set_black_mode">Μάυρο θέμα</string>
     <string name="set_black_mode_desc">Χρησιμοποίηση ενός καθαρά μαύρο σκοτεινό θέμα</string>
     <string name="lbl_cancel">Ακύρωση</string>

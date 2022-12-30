@@ -25,12 +25,8 @@ import androidx.core.content.ContextCompat
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 /**
- * Some apps like to party like it's 2011 and just blindly query for the ACTION_MEDIA_BUTTON intent
- * to determine the media apps on a system. *Auxio does not expose this.* Auxio exposes a
- * MediaSession that an app should control instead through the much better MediaController API. But
- * who cares about that, we need to make sure the 3% of barely functioning TouchWiz devices running
- * KitKat don't break! To prevent Auxio from not showing up at all in these apps, we declare a
- * BroadcastReceiver in the manifest that hacks in this functionality.
+ * A [BroadcastReceiver] that forwards [Intent.ACTION_MEDIA_BUTTON] [Intent]s to [PlaybackService].
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class MediaButtonReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

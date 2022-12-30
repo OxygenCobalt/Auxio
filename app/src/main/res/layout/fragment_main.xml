@@ -22,7 +22,7 @@
         style="@style/Widget.Auxio.DisableDropShadows"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="org.oxycblt.auxio.playback.PlaybackSheetBehavior">
+        app:layout_behavior="org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/playback_bar_fragment"
@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_behavior="org.oxycblt.auxio.playback.queue.QueueSheetBehavior">
+            app:layout_behavior="org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/handle_wrapper"

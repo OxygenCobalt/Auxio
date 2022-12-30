@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Auxio.Dialog.NestedScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/separator_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/separator_comma"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_medium"
+            android:paddingStart="@dimen/spacing_medium"
+            android:text="@string/set_separators_comma"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+            tools:ignore="RtlSymmetry" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/separator_semicolon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_medium"
+            android:paddingStart="@dimen/spacing_medium"
+            android:text="@string/set_separators_semicolon"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+            tools:ignore="RtlSymmetry" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/separator_slash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_medium"
+            android:paddingStart="@dimen/spacing_medium"
+            android:text="@string/set_separators_slash"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+            tools:ignore="RtlSymmetry" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/separator_plus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_medium"
+            android:paddingStart="@dimen/spacing_medium"
+            android:text="@string/set_separators_plus"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+            tools:ignore="RtlSymmetry" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/separator_and"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_medium"
+            android:paddingStart="@dimen/spacing_medium"
+            android:text="@string/set_separators_and"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+            tools:ignore="RtlSymmetry" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_mid_large"
+            android:layout_marginTop="@dimen/spacing_mid_large"
+            android:layout_marginEnd="@dimen/spacing_mid_large"
+            android:text="@string/set_separators_warning"
+            android:textAppearance="@style/TextAppearance.Auxio.BodySmall" />
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>

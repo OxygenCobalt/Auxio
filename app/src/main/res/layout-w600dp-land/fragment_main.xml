@@ -20,7 +20,7 @@
         android:id="@+id/playback_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="org.oxycblt.auxio.playback.PlaybackSheetBehavior">
+        app:layout_behavior="org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/playback_bar_fragment"

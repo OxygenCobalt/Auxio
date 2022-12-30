@@ -25,7 +25,6 @@
     <string name="lbl_about">Hakkında</string>
     <string name="lbl_version">Sürüm</string>
     <string name="lbl_code">GitHub\'da görüntüle</string>
-    <string name="lbl_faq">SSS</string>
     <string name="lbl_licenses">Lisanslar</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Ayarlar</string>
@@ -35,7 +34,6 @@
     <string name="set_theme_day">Açık</string>
     <string name="set_theme_night">Koyu</string>
     <string name="set_accent">Ana Renk</string>
-    <string name="set_quality_covers">Medya Deposu albüm kapağını yoksay</string>
     <string name="set_audio">Ses</string>
     <string name="set_behavior">Tercihler</string>
     <!-- Error Namespace | Error Labels -->
@@ -72,14 +70,14 @@
     <string name="lbl_size">Boyut</string>
     <string name="lbl_bitrate">Bit hızı</string>
     <string name="lbl_sample_rate">Örnek hızı</string>
-    <string name="lng_playback">Müzik çalmayı görüntüle ve kontrol et</string>
+    <string name="lng_widget">Müzik çalmayı görüntüle ve kontrol et</string>
     <string name="info_app_desc">Android için basit, rasyonel bir müzik çalar.</string>
     <string name="lbl_indexer">Müzik Yükleniyor</string>
     <string name="lng_indexing">Müzik kitaplığınız yükleniyor…</string>
     <string name="lbl_sort_name">İsim</string>
     <string name="lbl_artist">Sanatçı</string>
     <string name="lbl_album">Albüm</string>
-    <string name="lbl_sort_year">Yıl</string>
+    <string name="lbl_sort_date">Yıl</string>
     <string name="lbl_sort_duration">Süre</string>
     <string name="lbl_state_saved">Durum kaydedildi</string>
     <string name="lng_author">OxygenCobalt tarafından geliştirildi</string>
@@ -88,7 +86,6 @@
     <string name="set_black_mode_desc">Saf siyah koyu tema kullan</string>
     <string name="set_display">Görüntü</string>
     <string name="set_lib_tabs">Kitaplık sekmeleri</string>
-    <string name="set_show_covers">Albüm kapaklarını göster</string>
     <string name="set_lib_tabs_desc">Kitaplık sekmelerinin görünürlüğünü ve sırasını değiştirin</string>
     <string name="set_pre_amp_desc">Ön amfi, oynatma sırasında mevcut ayara uygulanır</string>
     <string name="set_pre_amp">ReplayGain ön amfi</string>
@@ -96,7 +93,7 @@
     <string name="set_pre_amp_with">Etiket ile ayarla</string>
     <string name="set_pre_amp_warning">Uyarı: Ön amfinin yüksek bir pozitif değere değiştirilmesi bazı ses parçalarında pik yapmaya neden olabilir.</string>
     <string name="set_playback_mode_none">Gösterilen öğeden çal</string>
-    <string name="set_playback_mode_all">Tüm şarkılardan çal</string>
+    <string name="set_playback_mode_songs">Tüm şarkılardan çal</string>
     <string name="set_playback_mode_album">Albümden çal</string>
     <string name="set_dirs">Müzik klasörleri</string>
     <string name="set_dirs_mode_include_desc">Müzik <b>yalnızca</b> eklediğiniz klasörlerden yüklenecektir.</string>
@@ -118,10 +115,7 @@
     <string name="clr_lime">Kireç</string>
     <string name="clr_yellow">Sarı</string>
     <string name="clr_orange">Turuncu</string>
-    <string name="set_show_covers_desc">Bellek kullanımından tasarruf etmek için kapatın</string>
-    <string name="set_quality_covers_desc">Albüm kapağı kalitesini artırır, ancak daha uzun yükleme sürelerine ve daha yüksek bellek kullanımına neden olur</string>
     <string name="set_library_song_playback_mode">Kitaplıktan çalarken</string>
-    <string name="set_playback_mode_genre">Türden çal</string>
     <string name="set_detail_song_playback_mode">Öğe ayrıntılarından çalarken</string>
     <string name="set_playback_mode_artist">Sanatçıdan çal</string>
     <string name="fmt_lib_artist_count">Yüklenen sanatçılar: %d</string>
@@ -146,10 +140,8 @@
     <string name="fmt_indexing">Müzik kitaplığınız yükleniyor… (%1$d/%2$d)</string>
     <string name="fmt_lib_song_count">Yüklenen şarkılar: %d</string>
     <string name="fmt_lib_album_count">Yüklenen albümler: %d</string>
-    <string name="set_alt_action">Alternatif bildirim eylemi kullan</string>
+    <string name="set_notif_action">Alternatif bildirim eylemi kullan</string>
     <string name="set_replay_gain_dynamic">Çalan bir albüm varsa tercih et</string>
-    <string name="set_alt_repeat">Tekrar modu eylemini tercih et</string>
-    <string name="set_alt_shuffle">Karıştırma eylemini tercih et</string>
     <string name="set_headset_autoplay">Kulaklıkta otomatik oynatma</string>
     <string name="set_headset_autoplay_desc">Bir kulaklık takıldığında müzik çalmaya başlar (tüm cihazlarda çalışmayabilir)</string>
     <string name="set_replay_gain_track">Parçayı tercih et</string>
@@ -193,8 +185,6 @@
     <string name="set_restore_desc">Önceden kaydedilmiş oynatma durumunu geri getirir (varsa)</string>
     <string name="set_round_mode">Yuvarlak mod</string>
     <string name="set_restore_state">Oynatma durumunu eski haline getir</string>
-    <string name="set_quality_tags">MediaStore etiketlerini yoksay</string>
-    <string name="set_quality_tags_desc">Etiket kalitesini artırır, ancak daha uzun yükleme süreleri gerektirir</string>
     <string name="err_did_not_restore">Hiçbir durum geri getirelemedi</string>
     <string name="set_repeat_pause">Tekrarda duraklat</string>
     <string name="lbl_indexing">Müzik yükleniyor</string>
@@ -203,4 +193,9 @@
     <string name="set_observing">Otomatik yeniden yükleme</string>
     <string name="set_observing_desc">Müzik kitaplığınız her değiştiğinde yeniden yükler (Deneysel)</string>
     <string name="lbl_sort_date_added">Eklendiği tarih</string>
+    <string name="lbl_album_remix">Remix albüm</string>
+    <string name="lbl_album_live">Canlı albüm</string>
+    <string name="desc_clear_queue_item">Kuyruktan bu şarkıyı kaldır</string>
+    <string name="lbl_singles">Parçalar</string>
+    <string name="lbl_single">Parça</string>
 </resources>

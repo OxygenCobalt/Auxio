@@ -17,10 +17,9 @@
     <string name="lbl_sort_asc">Oplopend</string>
     <string name="lbl_play">Afspelen</string>
     <string name="lbl_shuffle">Shuffle</string>
-    <string name="set_playback_mode_all">Speel van alle nummers </string>
+    <string name="set_playback_mode_songs">Speel van alle nummers </string>
     <string name="set_playback_mode_album">Speel af van album </string>
     <string name="set_playback_mode_artist">Speel van artiest </string>
-    <string name="set_playback_mode_genre">Speel vanuit genre </string>
     <string name="lbl_playback">Afspeelscherm</string>
     <string name="lbl_queue">Wachtrij</string>
     <string name="lbl_play_next">Afspelen als volgende</string>
@@ -35,7 +34,6 @@
     <string name="lbl_about">Over</string>
     <string name="lbl_version">Versie</string>
     <string name="lbl_code">Bekijken op GitHub</string>
-    <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licenties</string>
     <string name="lng_author">Ontwikkeld door OxygenCobalt</string>
     <!-- Settings namespace | Settings-related labels -->
@@ -47,13 +45,7 @@
     <string name="set_theme_night">Donker</string>
     <string name="set_accent">Accent</string>
     <string name="set_display">Scherm</string>
-    <string name="set_show_covers">Toon albumhoezen</string>
-    <string name="set_show_covers_desc">Schakel uit om geheugengebruik te besparen</string>
-    <string name="set_quality_covers">Negeer Mediaopslag illustraties</string>
-    <string name="set_quality_covers_desc">Verhoogt de kwaliteit van de albumhoezen, maar resulteert in langere laadtijden en hoger geheugengebruik </string>
-    <string name="set_alt_action">Gebruikt een afternatief notification action</string>
-    <string name="set_alt_repeat">Voorkeur aan herhaalde actie</string>
-    <string name="set_alt_shuffle">Voorkeur aan shuffle actie</string>
+    <string name="set_notif_action">Gebruikt een afternatief notification action</string>
     <string name="set_audio">Audio</string>
     <string name="set_behavior">Gedrag</string>
     <string name="set_library_song_playback_mode">Bij het afspelen vanuit de bibliotheek</string>
@@ -121,14 +113,14 @@
     <string name="fmt_disc_no">Schijf %d</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="fmt_db_pos">+%.1f dB</string>
-    <string name="lng_playback">Muziekweergave bekijken en regelen</string>
+    <string name="lng_widget">Muziekweergave bekijken en regelen</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="lbl_song_detail">Bekijk eigenschappen</string>
     <string name="lbl_sort_name">Naam</string>
     <string name="lbl_artist">Artiest</string>
     <string name="lbl_cancel">@android:string/cancel</string>
     <string name="set_lib_tabs">Bibliotheek tabbladen</string>
-    <string name="lbl_sort_year">Jaar</string>
+    <string name="lbl_sort_date">Jaar</string>
     <string name="lbl_relative_path">Ouderpad</string>
     <string name="lbl_props">Lied eigenschappen</string>
     <string name="lbl_file_name">Bestandsnaam</string>
@@ -170,8 +162,6 @@
     <string name="set_playback_mode_none">Afspelen vanaf getoond item</string>
     <string name="set_restore_state">Afspeelstatus herstellen</string>
     <string name="set_restore_desc">Herstel de eerder opgeslagen afspeelstatus (indien aanwezig)</string>
-    <string name="set_quality_tags">MediaStore tags negeren</string>
-    <string name="set_quality_tags_desc">Verhoogt tag-kwaliteit, maar vereist langere laadtijden</string>
     <string name="err_did_not_restore">Geen staat kan hersteld worden</string>
     <string name="desc_clear_queue_item">Verwijder dit wachtrij liedje</string>
     <string name="desc_queue_handle">Verplaats dit wachtrij liedje</string>

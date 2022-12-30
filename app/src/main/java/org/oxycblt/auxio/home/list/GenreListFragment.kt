@@ -18,49 +18,71 @@
 package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
+import org.oxycblt.auxio.home.HomeViewModel
+import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
+import org.oxycblt.auxio.list.*
+import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.recycler.GenreViewHolder
+import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.recycler.SyncListDiffer
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.Sort
-import org.oxycblt.auxio.ui.recycler.GenreViewHolder
-import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
-import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.ui.recycler.MenuItemListener
-import org.oxycblt.auxio.ui.recycler.SyncListDiffer
+import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.formatDurationMs
 
 /**
- * A [HomeListFragment] for showing a list of [Genre]s.
- * @author OxygenCobalt
+ * A [ListFragment] that shows a list of [Genre]s.
+ * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreListFragment : HomeListFragment<Genre>() {
+class GenreListFragment :
+    ListFragment<FragmentHomeListBinding>(),
+    FastScrollRecyclerView.PopupProvider,
+    FastScrollRecyclerView.Listener {
+    private val homeModel: HomeViewModel by activityViewModels()
     private val homeAdapter = GenreAdapter(this)
+
+    override fun onCreateBinding(inflater: LayoutInflater) =
+        FragmentHomeListBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
         binding.homeRecycler.apply {
-            id = R.id.home_genre_list
+            id = R.id.home_genre_recycler
             adapter = homeAdapter
+            popupProvider = this@GenreListFragment
+            listener = this@GenreListFragment
         }
 
-        collectImmediately(homeModel.genres, homeAdapter::replaceList)
-        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::handlePlayback)
+        collectImmediately(homeModel.genresList, homeAdapter::replaceList)
+        collectImmediately(selectionModel.selected, homeAdapter::setSelectedItems)
+        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+    }
+
+    override fun onDestroyBinding(binding: FragmentHomeListBinding) {
+        super.onDestroyBinding(binding)
+        binding.homeRecycler.apply {
+            adapter = null
+            popupProvider = null
+            listener = null
+        }
     }
 
     override fun getPopup(pos: Int): String? {
-        val genre = homeModel.genres.value[pos]
-
-        // Change how we display the popup depending on the mode.
-        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_GENRES).mode) {
+        val genre = homeModel.genresList.value[pos]
+        // Change how we display the popup depending on the current sort mode.
+        return when (homeModel.getSortForTab(MusicMode.GENRES).mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> genre.sortName?.run { first().uppercase() }
+            is Sort.Mode.ByName -> genre.collationKey?.run { sourceString.first().uppercase() }
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> genre.durationMs.formatDurationMs(false)
@@ -73,47 +95,47 @@ class GenreListFragment : HomeListFragment<Genre>() {
         }
     }
 
-    override fun onItemClick(item: Item) {
-        check(item is Music)
-        navModel.exploreNavigateTo(item)
+    override fun onFastScrollingChanged(isFastScrolling: Boolean) {
+        homeModel.setFastScrolling(isFastScrolling)
+    }
+
+    override fun onRealClick(music: Music) {
+        check(music is Genre) { "Unexpected datatype: ${music::class.java}" }
+        navModel.exploreNavigateTo(music)
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {
-        when (item) {
-            is Genre -> musicMenu(anchor, R.menu.menu_genre_artist_actions, item)
-            else -> error("Unexpected datatype when opening menu: ${item::class.java}")
-        }
+        check(item is Genre) { "Unexpected datatype: ${item::class.java}" }
+        openMusicMenu(anchor, R.menu.menu_artist_actions, item)
     }
 
-    private fun handlePlayback(parent: MusicParent?, isPlaying: Boolean) {
-        if (parent is Genre) {
-            homeAdapter.updateIndicator(parent, isPlaying)
-        } else {
-            // Ignore playback not from genres
-            homeAdapter.updateIndicator(null, isPlaying)
-        }
+    private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
+        // If a genre is playing, highlight it within this adapter.
+        homeAdapter.setPlayingItem(parent as? Genre, isPlaying)
     }
 
-    private class GenreAdapter(private val listener: MenuItemListener) :
-        IndicatorAdapter<GenreViewHolder>() {
-        private val differ = SyncListDiffer(this, GenreViewHolder.DIFFER)
+    /**
+     * A [SelectionIndicatorAdapter] that shows a list of [Genre]s using [GenreViewHolder].
+     * @param listener An [SelectableListListener] to bind interactions to.
+     */
+    private class GenreAdapter(private val listener: SelectableListListener) :
+        SelectionIndicatorAdapter<GenreViewHolder>() {
+        private val differ = SyncListDiffer(this, GenreViewHolder.DIFF_CALLBACK)
 
         override val currentList: List<Item>
             get() = differ.currentList
 
-        override fun getItemCount() = differ.currentList.size
-
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             GenreViewHolder.new(parent)
 
-        override fun onBindViewHolder(holder: GenreViewHolder, position: Int, payloads: List<Any>) {
-            super.onBindViewHolder(holder, position, payloads)
-
-            if (payloads.isEmpty()) {
-                holder.bind(differ.currentList[position], listener)
-            }
+        override fun onBindViewHolder(holder: GenreViewHolder, position: Int) {
+            holder.bind(differ.currentList[position], listener)
         }
 
+        /**
+         * Asynchronously update the list with new [Genre]s.
+         * @param newList The new [Genre]s for the adapter to display.
+         */
         fun replaceList(newList: List<Genre>) {
             differ.replaceList(newList)
         }

@@ -1,93 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Label Namespace | Static Labels -->
-    <string name="lbl_retry">Reîncearcă</string>
+    <string name="lbl_retry">Reîncercați</string>
     <string name="lbl_grant">Permiteți</string>
-
     <string name="lbl_genres">Genuri</string>
     <string name="lbl_artists">Artiști</string>
     <string name="lbl_albums">Albume</string>
-    <string name="lbl_songs">Cântece</string>
-    <string name="lbl_all_songs">Toate Cântece</string>
-
+    <string name="lbl_songs">Melodii</string>
+    <string name="lbl_all_songs">Toate melodiile</string>
     <string name="lbl_search">Căutare</string>
     <string name="lbl_filter">Filtru</string>
-    <string name="lbl_filter_all">Tot</string>
-
-    <string name="lbl_sort">Sortare</string>
+    <string name="lbl_filter_all">Toate</string>
+    <string name="lbl_sort">Sortează</string>
     <string name="lbl_sort_asc">Crescător</string>
-
     <string name="lbl_play">Redă</string>
     <string name="lbl_shuffle">Amestecare</string>
-    <string name="lbl_playback">Redare Acum</string>
-
-    <string name="lbl_queue">Fila de așteptare</string>
-    <string name="lbl_play_next">Redaţi următoarea</string>
+    <string name="lbl_playback">În curs de redare</string>
+    <string name="lbl_queue">Lista de așteptare</string>
+    <string name="lbl_play_next">Redă următoarea</string>
     <string name="lbl_queue_add">Adăugați la lista de așteptare</string>
-    <string name="lng_queue_added">A fost adăugat la liste de așteptare</string>
-
-    <string name="lbl_go_artist">Accesaţi artistul</string>
+    <string name="lng_queue_added">A fost adăugat la lista de așteptare</string>
+    <string name="lbl_go_artist">Mergi la artist</string>
     <string name="lbl_go_album">Accesaţi albumul</string>
-
     <string name="lbl_about">Despre</string>
     <string name="lbl_version">Versiune</string>
-    <string name="lbl_code">Vedeți pe GitHub</string>
-    <string name="lbl_faq">FAQ</string>
+    <string name="lbl_code">Cod sursă</string>
     <string name="lbl_licenses">Licențe</string>
     <string name="lng_author">Dezvoltat de OxygenCobalt</string>
-
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Setări</string>
-
     <string name="set_ui">Aspect</string>
     <string name="set_theme">Temă</string>
-    <string name="set_theme_auto">Automatică</string>
-    <string name="set_theme_day">Clar</string>
+    <string name="set_theme_auto">Automat</string>
+    <string name="set_theme_day">Luminos</string>
     <string name="set_theme_night">Întunecat</string>
-    <string name="set_accent">Culoare accentuată</string>
-
-    <string name="set_quality_covers">Ignoră coperțile Media Store</string>
-
+    <string name="set_accent">Paletă de culori</string>
     <string name="set_audio">Audio</string>
-
     <string name="set_behavior">Comportament</string>
-
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Nu s-a găsit nici o muzică</string>
-
+    <string name="err_no_music">Nu a fost găsită muzică</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Căutați în bibliotecă…</string>
-
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Melodie %d</string>
-
-    <string name="desc_play_pause">Redă/Pauză</string>
-
+    <string name="desc_play_pause">Start sau pauză</string>
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Roșu</string>
     <string name="clr_pink">Roz</string>
-    <string name="clr_purple">Violet</string>
+    <string name="clr_purple">Purpuriu</string>
     <string name="clr_blue">Albastru</string>
-    <string name="clr_deep_blue">Albastru Deschis</string>
-    <string name="clr_teal">Albastru Verde</string>
+    <string name="clr_deep_blue">Albastru închis</string>
+    <string name="clr_teal">Turcoaz</string>
     <string name="clr_green">Verde</string>
-    <string name="clr_deep_green">Verde Deschis</string>
-    <string name="clr_lime">Verde Galben</string>
+    <string name="clr_deep_green">Verde închis</string>
+    <string name="clr_lime">Lime</string>
     <string name="clr_yellow">Galben</string>
     <string name="clr_orange">Portocaliu</string>
-    <string name="clr_brown">Brun</string>
+    <string name="clr_brown">Maro</string>
     <string name="clr_grey">Gri</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
     <plurals name="fmt_song_count">
-        <item quantity="one">%d Cântec</item>
-        <item quantity="few">%d Melodii</item>
-        <item quantity="other">%d Cântece</item>
+        <item quantity="one">%d melodie</item>
+        <item quantity="few">%d melodii</item>
+        <item quantity="other">%d de melodii</item>
     </plurals>
-
     <plurals name="fmt_album_count">
-        <item quantity="one">%d Album</item>
-        <item quantity="few">%d Albume</item>
-        <item quantity="other">%d Albume</item>
+        <item quantity="one">%d album</item>
+        <item quantity="few">%d albume</item>
+        <item quantity="other">%d de albume</item>
     </plurals>
+    <string name="fmt_lib_total_duration">Durată totală: %s</string>
+    <string name="info_app_desc">Un player de muzică simplu și rațional pentru android.</string>
+    <string name="lbl_album_live">Album live</string>
+    <string name="lbl_album_remix">Album cu remixuri</string>
+    <string name="lbl_single_live">Single live</string>
+    <string name="lbl_ep_live">EP live</string>
+    <string name="lbl_ep_remix">EP cu remixuri</string>
+    <string name="lbl_single_remix">Single remixat</string>
+    <string name="lbl_compilations">Compilații</string>
+    <string name="lbl_indexer">Se încarcă muzica</string>
+    <string name="lbl_indexing">Muzica se încarcă</string>
+    <string name="lbl_observing">Se monitorizează librăria muzicală</string>
+    <string name="lbl_album">Album</string>
+    <string name="lbl_singles">Single-uri</string>
+    <string name="lbl_single">Single</string>
+    <string name="lbl_ep">EP</string>
+    <string name="lbl_compilation_live">Compilare Live</string>
+    <string name="lbl_compilation">Compilare</string>
+    <string name="lbl_compilation_remix">Compilații de remixuri</string>
+    <string name="lbl_eps">EP-uri</string>
+    <string name="lbl_shuffle_shortcut_long">Amestecă-le pe toate</string>
+    <string name="lbl_ok">Bine</string>
+    <string name="lbl_cancel">Anulează</string>
+    <string name="lbl_sort_disc">Disc</string>
+    <string name="lbl_song_detail">Vezi proprietăți</string>
+    <string name="lbl_sort_date">Data</string>
+    <string name="lbl_mix">Mix</string>
+    <string name="lbl_mixes">Mixuri</string>
+    <string name="lbl_sort_track">Piesă</string>
+    <string name="lbl_sort_duration">Durată</string>
+    <string name="lbl_sort_count">Număr de melodii</string>
+    <string name="lbl_equalizer">Egalizator</string>
+    <string name="lbl_bitrate">Bit rate</string>
+    <string name="lbl_sort_date_added">Data adăugării</string>
+    <string name="lbl_relative_path">Calea principală</string>
+    <string name="lbl_format">Format</string>
+    <string name="lbl_props">Proprietățile cântecului</string>
+    <string name="lbl_file_name">Numele fișierului</string>
+    <string name="lbl_shuffle_shortcut_short">Amestecare</string>
+    <string name="lbl_add">Adaugă</string>
+    <string name="lbl_sample_rate">Frecvența de eșantionare</string>
+    <string name="lbl_save">Salvează</string>
+    <string name="lbl_state_restored">Stat restabilit</string>
+    <string name="lbl_state_saved">Stat salvat</string>
+    <string name="lbl_state_wiped">Statul a fost autorizat</string>
+    <string name="lbl_genre">Gen</string>
+    <string name="lbl_library_counts">Statisticile bibliotecii</string>
+    <string name="lbl_size">Mărime</string>
+    <string name="lbl_mixtapes">Mixtape-uri</string>
+    <string name="lbl_mixtape">Mixtape</string>
+    <string name="lbl_live_group">În direct</string>
+    <string name="lbl_remix_group">Remixuri</string>
+    <string name="lbl_artist">Artist</string>
+    <string name="lbl_soundtracks">Coloane sonore</string>
+    <string name="lbl_soundtrack">Coloană sonoră</string>
+    <string name="lbl_sort_name">Nume</string>
 </resources>

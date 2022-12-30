@@ -10,129 +10,143 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/detail_container"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingStart="@dimen/spacing_large"
-            android:paddingEnd="@dimen/spacing_large"
-            android:showDividers="middle"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:animateLayoutChanges="true">
 
-            <com.google.android.material.textfield.TextInputLayout
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/detail_loading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/lbl_file_name"
-                app:expandedHintEnabled="false">
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:paddingStart="@dimen/spacing_large"
+                android:paddingEnd="@dimen/spacing_large"
+                app:indeterminateAnimationType="disjoint" />
 
-                <org.oxycblt.auxio.detail.ReadOnlyTextInput
-                    android:id="@+id/detail_file_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="viewStart"
-                    tools:text="file.mp3" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
+            <LinearLayout
+                android:id="@+id/detail_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:hint="@string/lbl_relative_path"
-                app:expandedHintEnabled="false">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/spacing_large"
+                android:paddingEnd="@dimen/spacing_large">
 
-                <org.oxycblt.auxio.detail.ReadOnlyTextInput
-                    android:id="@+id/detail_relative_dir"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="viewStart"
-                    tools:text="/path/to" />
+                    android:hint="@string/lbl_file_name"
+                    app:expandedHintEnabled="false">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <org.oxycblt.auxio.detail.ReadOnlyTextInput
+                        android:id="@+id/detail_file_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewStart"
+                        tools:text="file.mp3" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:hint="@string/lbl_format"
-                app:expandedHintEnabled="false">
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <org.oxycblt.auxio.detail.ReadOnlyTextInput
-                    android:id="@+id/detail_format"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="viewStart"
-                    tools:text="MP3" />
+                    android:layout_marginTop="@dimen/spacing_mid_medium"
+                    android:hint="@string/lbl_relative_path"
+                    app:expandedHintEnabled="false">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <org.oxycblt.auxio.detail.ReadOnlyTextInput
+                        android:id="@+id/detail_relative_dir"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewStart"
+                        tools:text="/path/to" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:hint="@string/lbl_size"
-                app:expandedHintEnabled="false">
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <org.oxycblt.auxio.detail.ReadOnlyTextInput
-                    android:id="@+id/detail_size"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="viewStart"
-                    tools:text="16 MB" />
+                    android:layout_marginTop="@dimen/spacing_mid_medium"
+                    android:hint="@string/lbl_format"
+                    app:expandedHintEnabled="false">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <org.oxycblt.auxio.detail.ReadOnlyTextInput
+                        android:id="@+id/detail_format"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewStart"
+                        tools:text="MP3" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:hint="@string/lbl_sort_duration"
-                app:expandedHintEnabled="false">
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <org.oxycblt.auxio.detail.ReadOnlyTextInput
-                    android:id="@+id/detail_duration"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="viewStart"
-                    tools:text="3:20" />
+                    android:layout_marginTop="@dimen/spacing_mid_medium"
+                    android:hint="@string/lbl_size"
+                    app:expandedHintEnabled="false">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <org.oxycblt.auxio.detail.ReadOnlyTextInput
+                        android:id="@+id/detail_size"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewStart"
+                        tools:text="16 MB" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:hint="@string/lbl_bitrate"
-                app:expandedHintEnabled="false">
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <org.oxycblt.auxio.detail.ReadOnlyTextInput
-                    android:id="@+id/detail_bitrate"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="viewStart"
-                    tools:text="320 kb/s" />
+                    android:layout_marginTop="@dimen/spacing_mid_medium"
+                    android:hint="@string/lbl_sort_duration"
+                    app:expandedHintEnabled="false">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <org.oxycblt.auxio.detail.ReadOnlyTextInput
+                        android:id="@+id/detail_duration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewStart"
+                        tools:text="3:20" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:hint="@string/lbl_sample_rate"
-                app:expandedHintEnabled="false">
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <org.oxycblt.auxio.detail.ReadOnlyTextInput
-                    android:id="@+id/detail_sample_rate"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="viewStart"
-                    tools:text="44100 Hz" />
+                    android:layout_marginTop="@dimen/spacing_mid_medium"
+                    android:hint="@string/lbl_bitrate"
+                    app:expandedHintEnabled="false">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <org.oxycblt.auxio.detail.ReadOnlyTextInput
+                        android:id="@+id/detail_bitrate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewStart"
+                        tools:text="320 kb/s" />
 
-        </LinearLayout>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_mid_medium"
+                    android:hint="@string/lbl_sample_rate"
+                    app:expandedHintEnabled="false">
+
+                    <org.oxycblt.auxio.detail.ReadOnlyTextInput
+                        android:id="@+id/detail_sample_rate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewStart"
+                        tools:text="44100 Hz" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+        </FrameLayout>
+
     </androidx.core.widget.NestedScrollView>
 
 

@@ -4,21 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:startDestination="@id/home_fragment">
 
-    <!--
-    Now, it would be quite cool if we could implement shared element transitions
-    between elements in this navigation web. Sadly though, the shared element transition
-    system is filled with so many bugs and visual errors to make this a terrible idea.
-    Just use the boring, yet sane and functional fade transitions.
-    -->
-
     <fragment
         android:id="@+id/artist_detail_fragment"
         android:name="org.oxycblt.auxio.detail.ArtistDetailFragment"
         android:label="ArtistDetailFragment"
         tools:layout="@layout/fragment_detail">
         <argument
-            android:name="artistId"
-            app:argType="long" />
+            android:name="artistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
         <action
             android:id="@+id/action_show_artist"
             app:destination="@id/artist_detail_fragment" />
@@ -32,8 +25,8 @@
         android:label="AlbumDetailFragment"
         tools:layout="@layout/fragment_detail">
         <argument
-            android:name="albumId"
-            app:argType="long" />
+            android:name="albumUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
         <action
             android:id="@+id/action_show_artist"
             app:destination="@id/artist_detail_fragment" />
@@ -47,8 +40,8 @@
         android:label="GenreDetailFragment"
         tools:layout="@layout/fragment_detail">
         <argument
-            android:name="genreId"
-            app:argType="long" />
+            android:name="genreUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
         <action
             android:id="@+id/action_show_artist"
             app:destination="@id/artist_detail_fragment" />

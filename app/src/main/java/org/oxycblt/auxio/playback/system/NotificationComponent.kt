@@ -29,19 +29,18 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.ui.system.ServiceNotification
+import org.oxycblt.auxio.service.ForegroundServiceNotification
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 
 /**
- * The unified notification for [PlaybackService]. Due to the nature of how this notification is
- * used, it is *not self-sufficient*. Updates have to be delivered manually, as to prevent state
- * inconsistency derived from callback order.
- * @author OxygenCobalt
+ * The playback notification component. Due to race conditions regarding notification updates, this
+ * component is not self-sufficient. [MediaSessionComponent] should be used instead of manage it.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 @SuppressLint("RestrictedApi")
 class NotificationComponent(private val context: Context, sessionToken: MediaSessionCompat.Token) :
-    ServiceNotification(context, CHANNEL_INFO) {
+    ForegroundServiceNotification(context, CHANNEL_INFO) {
     init {
         setSmallIcon(R.drawable.ic_auxio_24)
         setCategory(NotificationCompat.CATEGORY_TRANSPORT)
@@ -66,32 +65,45 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
 
     // --- STATE FUNCTIONS ---
 
+    /**
+     * Update the currently shown metadata in this notification.
+     * @param metadata The [MediaMetadataCompat] to display in this notification.
+     */
     fun updateMetadata(metadata: MediaMetadataCompat) {
+        setLargeIcon(metadata.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART))
         setContentTitle(metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
         setContentText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ARTIST))
 
         // Starting in API 24, the subtext field changed semantics from being below the
-        // content text to being above the title.
+        // content text to being above the title. Use an appropriate field for both.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            setSubText(metadata.getText(MediaSessionComponent.METADATA_KEY_PARENT))
+            // Display description -> Parent in which playback is occurring
+            setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION))
         } else {
             setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ALBUM))
         }
-
-        setLargeIcon(metadata.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART))
     }
 
-    /** Set the playing icon on the notification */
+    /**
+     * Update the playing state shown in this notification.
+     * @param isPlaying Whether playback should be indicated as ongoing or paused.
+     */
     fun updatePlaying(isPlaying: Boolean) {
         mActions[2] = buildPlayPauseAction(context, isPlaying)
     }
 
-    /** Update the first action to reflect the [repeatMode] given. */
+    /**
+     * Update the secondary action in this notification to show the current [RepeatMode].
+     * @param repeatMode The current [RepeatMode].
+     */
     fun updateRepeatMode(repeatMode: RepeatMode) {
         mActions[0] = buildRepeatAction(context, repeatMode)
     }
 
-    /** Update the first action to reflect whether the queue is shuffled or not */
+    /**
+     * Update the secondary action in this notification to show the current shuffle state.
+     * @param isShuffled Whether the queue is currently shuffled or not.
+     */
     fun updateShuffled(isShuffled: Boolean) {
         mActions[0] = buildShuffleAction(context, isShuffled)
     }
@@ -102,8 +114,12 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
         context: Context,
         isPlaying: Boolean
     ): NotificationCompat.Action {
-        val drawableRes = if (isPlaying) R.drawable.ic_pause_24 else R.drawable.ic_play_24
-
+        val drawableRes =
+            if (isPlaying) {
+                R.drawable.ic_pause_24
+            } else {
+                R.drawable.ic_play_24
+            }
         return buildAction(context, PlaybackService.ACTION_PLAY_PAUSE, drawableRes)
     }
 
@@ -119,25 +135,22 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
         isShuffled: Boolean
     ): NotificationCompat.Action {
         val drawableRes =
-            if (isShuffled) R.drawable.ic_shuffle_on_24 else R.drawable.ic_shuffle_off_24
-
+            if (isShuffled) {
+                R.drawable.ic_shuffle_on_24
+            } else {
+                R.drawable.ic_shuffle_off_24
+            }
         return buildAction(context, PlaybackService.ACTION_INVERT_SHUFFLE, drawableRes)
     }
 
-    private fun buildAction(
-        context: Context,
-        actionName: String,
-        @DrawableRes iconRes: Int
-    ): NotificationCompat.Action {
-        val action =
-            NotificationCompat.Action.Builder(
+    private fun buildAction(context: Context, actionName: String, @DrawableRes iconRes: Int) =
+        NotificationCompat.Action.Builder(
                 iconRes, actionName, context.newBroadcastPendingIntent(actionName))
-
-        return action.build()
-    }
+            .build()
 
     companion object {
-        val CHANNEL_INFO =
+        /** Notification channel used by solely the playback notification. */
+        private val CHANNEL_INFO =
             ChannelInfo(
                 id = BuildConfig.APPLICATION_ID + ".channel.PLAYBACK",
                 nameRes = R.string.lbl_playback)

@@ -25,11 +25,12 @@ import com.google.android.material.textfield.TextInputEditText
 import org.oxycblt.auxio.R
 
 /**
- * A [TextInputEditText] that deliberately restricts all input except for selection. Yes, this is a
- * blatant abuse of Material Design Guidelines, but I also don't want to figure out how to plain
- * text selectable.
+ * A [TextInputEditText] that deliberately restricts all input except for selection. This will work
+ * just like a normal block of selectable/copyable text, but with nicer aesthetics.
  *
- * @author OxygenCobalt
+ * Adapted from Material Files: https://github.com/zhanghai/MaterialFiles
+ *
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class ReadOnlyTextInput
 @JvmOverloads
@@ -38,17 +39,18 @@ constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = R.attr.editTextStyle
 ) : TextInputEditText(context, attrs, defStyleAttr) {
-
     init {
+        // Enable selection, but still disable focus (i.e Keyboard opening)
         setTextIsSelectable(true)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             focusable = View.FOCUSABLE_AUTO
         }
     }
 
+    // Make text immutable
     override fun getFreezesText() = false
-
+    // Prevent editing by default
     override fun getDefaultEditable() = false
-
+    // Remove the movement method that allows cursor scrolling
     override fun getDefaultMovementMethod() = null
 }

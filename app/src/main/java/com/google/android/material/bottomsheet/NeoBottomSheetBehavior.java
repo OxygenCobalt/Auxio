@@ -83,11 +83,11 @@ import java.util.Map;
  * window-like. For BottomSheetDialog use {@link BottomSheetDialog#setTitle(int)}, and for
  * BottomSheetDialogFragment use {@link ViewCompat#setAccessibilityPaneTitle(View, CharSequence)}.
  *
- * Modified at several points by OxygenCobalt to work around miscellaneous insanity.
+ * Modified at several points by Alexander Capehart to work around miscellaneous issues.
  */
 public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
 
-  /** Callback for monitoring events about bottom sheets. */
+  /** Listener for monitoring events about bottom sheets. */
   public abstract static class BottomSheetCallback {
 
     /**
@@ -1205,9 +1205,9 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
   }
 
   /**
-   * Sets a callback to be notified of bottom sheet events.
+   * Sets a listener to be notified of bottom sheet events.
    *
-   * @param callback The callback to notify when bottom sheet events occur.
+   * @param callback The listener to notify when bottom sheet events occur.
    * @deprecated use {@link #addBottomSheetCallback(BottomSheetCallback)} and {@link
    *     #removeBottomSheetCallback(BottomSheetCallback)} instead
    */
@@ -1227,9 +1227,9 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
   }
 
   /**
-   * Adds a callback to be notified of bottom sheet events.
+   * Adds a listener to be notified of bottom sheet events.
    *
-   * @param callback The callback to notify when bottom sheet events occur.
+   * @param callback The listener to notify when bottom sheet events occur.
    */
   public void addBottomSheetCallback(@NonNull BottomSheetCallback callback) {
     if (!callbacks.contains(callback)) {
@@ -1238,9 +1238,9 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
   }
 
   /**
-   * Removes a previously added callback.
+   * Removes a previously added listener.
    *
-   * @param callback The callback to remove.
+   * @param callback The listener to remove.
    */
   public void removeBottomSheetCallback(@NonNull BottomSheetCallback callback) {
     callbacks.remove(callback);

@@ -25,19 +25,20 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogTabsBinding
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
 
 /**
- * The dialog for customizing library tabs.
- * @author OxygenCobalt
+ * A [ViewBindingDialogFragment] that allows the user to modify the home [Tab] configuration.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAdapter.Listener {
-    private val tabAdapter = TabAdapter(this)
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
+
+    private val tabAdapter = TabAdapter(this)
     private val touchHelper: ItemTouchHelper by lifecycleObject {
         ItemTouchHelper(TabDragCallback(tabAdapter))
     }
@@ -55,14 +56,17 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
     }
 
     override fun onBindingCreated(binding: DialogTabsBinding, savedInstanceState: Bundle?) {
-        val savedTabs = findSavedTabState(savedInstanceState)
-        if (savedTabs != null) {
-            logD("Found saved tab state")
-            tabAdapter.submitTabs(savedTabs)
-        } else {
-            tabAdapter.submitTabs(settings.libTabs)
+        var tabs = settings.libTabs
+        // Try to restore a pending tab configuration that was saved prior.
+        if (savedInstanceState != null) {
+            val savedTabs = Tab.fromIntCode(savedInstanceState.getInt(KEY_TABS))
+            if (savedTabs != null) {
+                tabs = savedTabs
+            }
         }
 
+        // Set up the tab RecyclerView
+        tabAdapter.submitTabs(tabs)
         binding.tabRecycler.apply {
             adapter = tabAdapter
             touchHelper.attachToRecyclerView(this)
@@ -71,7 +75,8 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(KEY_TABS, Tab.toSequence(tabAdapter.tabs))
+        // Save any pending tab configurations to restore if this dialog is re-created.
+        outState.putInt(KEY_TABS, Tab.toIntCode(tabAdapter.tabs))
     }
 
     override fun onDestroyBinding(binding: DialogTabsBinding) {
@@ -79,40 +84,31 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
         binding.tabRecycler.adapter = null
     }
 
-    override fun onVisibilityToggled(displayMode: DisplayMode) {
-        // Tab viewholders bind with the initial tab state, which will drift from the actual
-        // state of the tabs over editing. So, this callback simply provides the displayMode
-        // for us to locate within the data and then update.
-        val index = tabAdapter.tabs.indexOfFirst { it.mode == displayMode }
-        if (index > -1) {
-            val tab = tabAdapter.tabs[index]
-            tabAdapter.setTab(
-                index,
-                when (tab) {
-                    is Tab.Visible -> Tab.Invisible(tab.mode)
-                    is Tab.Invisible -> Tab.Visible(tab.mode)
-                })
-        }
+    override fun onToggleVisibility(tabMode: MusicMode) {
+        logD("Toggling tab $tabMode")
 
+        // We will need the exact index of the tab to update on in order to
+        // notify the adapter of the change.
+        val index = tabAdapter.tabs.indexOfFirst { it.mode == tabMode }
+        val tab = tabAdapter.tabs[index]
+        tabAdapter.setTab(
+            index,
+            when (tab) {
+                // Invert the visibility of the tab
+                is Tab.Visible -> Tab.Invisible(tab.mode)
+                is Tab.Invisible -> Tab.Visible(tab.mode)
+            })
+
+        // Prevent the user from saving if all the tabs are Invisible, as that's an invalid state.
         (requireDialog() as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
             tabAdapter.tabs.filterIsInstance<Tab.Visible>().isNotEmpty()
     }
 
-    override fun onPickUpTab(viewHolder: RecyclerView.ViewHolder) {
+    override fun onPickUp(viewHolder: RecyclerView.ViewHolder) {
         touchHelper.startDrag(viewHolder)
     }
 
-    private fun findSavedTabState(savedInstanceState: Bundle?): Array<Tab>? {
-        if (savedInstanceState != null) {
-            // Restore any pending tab configurations
-            return Tab.fromSequence(savedInstanceState.getInt(KEY_TABS))
-        }
-
-        return null
-    }
-
     companion object {
-        const val TAG = BuildConfig.APPLICATION_ID + ".tag.TAB_CUSTOMIZE"
-        const val KEY_TABS = BuildConfig.APPLICATION_ID + ".key.PENDING_TABS"
+        private const val KEY_TABS = BuildConfig.APPLICATION_ID + ".key.PENDING_TABS"
     }
 }

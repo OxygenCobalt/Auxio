@@ -26,7 +26,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A [FrameLayout] that automatically applies bottom insets.
- * @author OxygenCobalt
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class EdgeFrameLayout
 @JvmOverloads
@@ -37,7 +37,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
-        // Save a layout by simply moving the view bounds upwards
+        // Prevent excessive layouts by using translation instead of padding.
         translationY = -insets.systemBarInsetsCompat.bottom.toFloat()
         return insets
     }

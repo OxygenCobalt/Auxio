@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">一款简洁、克制的 Android 音乐播放器。</string>
-    <string name="lng_playback">查看并控制音乐播放</string>
+    <string name="lng_widget">查看并控制音乐播放</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">重试</string>
     <string name="lbl_grant">授予</string>
@@ -18,15 +18,14 @@
     <string name="lbl_sort_name">名称</string>
     <string name="lbl_artist">艺术家</string>
     <string name="lbl_album">专辑</string>
-    <string name="lbl_sort_year">年份</string>
+    <string name="lbl_sort_date">年份</string>
     <string name="lbl_sort_asc">首字符（正序）</string>
     <string name="lbl_playback">正在播放</string>
     <string name="lbl_play">播放</string>
     <string name="lbl_shuffle">随机</string>
-    <string name="set_playback_mode_all">从全部歌曲开始播放</string>
+    <string name="set_playback_mode_songs">从全部歌曲开始播放</string>
     <string name="set_playback_mode_album">从专辑开始播放</string>
-    <string name="set_playback_mode_artist">从艺术家开始播放</string>
-    <string name="set_playback_mode_genre">从流派开始播放</string>
+    <string name="set_playback_mode_artist">从艺术家播放</string>
     <string name="lbl_queue">播放队列</string>
     <string name="lbl_play_next">作为下一首播放</string>
     <string name="lbl_queue_add">加入播放队列</string>
@@ -40,9 +39,8 @@
     <string name="lbl_about">关于</string>
     <string name="lbl_version">版本</string>
     <string name="lbl_code">源代码</string>
-    <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">许可证</string>
-    <string name="lng_author">由 OxygenCobalt 开发</string>
+    <string name="lng_author">由 Alexander Capehart 开发</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">设置</string>
     <string name="set_ui">外观</string>
@@ -56,15 +54,9 @@
     <string name="set_display">显示</string>
     <string name="set_lib_tabs">媒体库标签</string>
     <string name="set_lib_tabs_desc">更改媒体库标签页面的可见性和顺序</string>
-    <string name="set_show_covers">显示专辑封面</string>
-    <string name="set_show_covers_desc">关闭以节省内存使用</string>
-    <string name="set_quality_covers">忽略 MediaStore 封面</string>
-    <string name="set_quality_covers_desc">提升专辑封面质量，但需要更长的加载时间并消耗更多内存</string>
     <string name="set_round_mode">专辑封面圆角</string>
-    <string name="set_round_mode_desc">使用圆角设计的专辑封面</string>
-    <string name="set_alt_action">使用替代通知操作方案</string>
-    <string name="set_alt_repeat">偏好重复播放操作</string>
-    <string name="set_alt_shuffle">偏好随机播放操作</string>
+    <string name="set_round_mode_desc">在其他 UI 元素上启用圆角（需要圆角专辑封面）</string>
+    <string name="set_notif_action">使用替代通知操作方案</string>
     <string name="set_audio">音频</string>
     <string name="set_headset_autoplay">自动播放</string>
     <string name="set_headset_autoplay_desc">连接至耳机时总是自动播放（并非在所有设备上都有用）</string>
@@ -83,8 +75,8 @@
     <string name="set_content">内容</string>
     <string name="set_save_state">保存播放状态</string>
     <string name="set_save_desc">立即保存当前播放状态</string>
-    <string name="set_reindex">重新加载音乐</string>
-    <string name="set_reindex_desc">可能会抹除播放状态</string>
+    <string name="set_reindex">刷新音乐</string>
+    <string name="set_reindex_desc">重新加载音乐库，如有可能使用缓存的标签</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">没有找到音乐</string>
     <string name="err_index_failed">加载音乐失败</string>
@@ -197,19 +189,17 @@
     <string name="lbl_cancel">取消</string>
     <string name="set_wipe_state">清除播放状态</string>
     <string name="set_wipe_desc">清除此前保存的播放状态（如果有）</string>
-    <string name="err_did_not_restore">没有可以恢复的状态</string>
+    <string name="err_did_not_restore">无法恢复状态</string>
     <string name="set_restore_state">恢复播放状态</string>
     <string name="set_restore_desc">恢复此前保存的播放状态（如果有）</string>
-    <string name="set_quality_tags_desc">提高标签质量，但会导致加载时间变长（实验性）</string>
-    <string name="set_observing">自动重载中</string>
-    <string name="set_observing_desc">发生更改时自动重新加载您的曲库（实验性）</string>
+    <string name="set_observing">自动重载</string>
+    <string name="set_observing_desc">只要发生更改就重新加载曲库（需要持久性通知）</string>
     <string name="desc_queue_bar">打开队列</string>
     <string name="lbl_indexing">正在加载音乐</string>
     <string name="lbl_observing">正在监测曲库</string>
     <string name="lng_observing">正在监测您的曲库以查找更改…</string>
     <string name="lbl_state_wiped">已清除状态</string>
     <string name="lbl_state_restored">已恢复状态</string>
-    <string name="set_quality_tags">忽略 MediaStore 标签</string>
     <string name="lbl_eps">EP 专辑</string>
     <string name="lbl_ep">EP 专辑</string>
     <string name="lbl_singles">单曲</string>
@@ -233,7 +223,38 @@
     <string name="set_bar_action">自定义播放栏动作</string>
     <string name="set_bar_action_repeat">重复模式</string>
     <string name="set_bar_action_next">跳到下一首</string>
-    <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
     <string name="lbl_equalizer">均衡器</string>
     <string name="desc_exit">停止播放</string>
+    <string name="set_separators_and">与号 (&amp;)</string>
+    <string name="set_separators_slash">斜线 (/)</string>
+    <string name="set_separators">多值分隔符</string>
+    <string name="set_separators_desc">配置表示多个标签值的字符</string>
+    <string name="set_separators_plus">加号 (+)</string>
+    <string name="set_separators_comma">逗号 (,)</string>
+    <string name="set_separators_semicolon">分号 (;)</string>
+    <string name="lbl_compilation_remix">重混集</string>
+    <string name="lbl_compilation_live">实况音乐集</string>
+    <string name="lbl_mixes">混音</string>
+    <string name="lbl_mix">混音</string>
+    <string name="set_separators_warning">警告：使用此设置可能会导致某些标签被错误地阐释为具有多个值。要解决这个问题，你可以在不想要的分隔符前加上反斜杠 (\\)。</string>
+    <string name="set_exclude_non_music_desc">忽略不是音乐的音频文件，例如播客</string>
+    <string name="set_exclude_non_music">排除非音乐</string>
+    <string name="set_cover_mode_quality">高质量</string>
+    <string name="set_cover_mode">专辑封面</string>
+    <string name="set_cover_mode_off">关</string>
+    <string name="set_cover_mode_media_store">快速</string>
+    <string name="set_hide_collaborators">隐藏协作者</string>
+    <string name="set_hide_collaborators_desc">在库中仅显示在出现在“专辑艺术家”标签中的艺术家（在标记良好的库上效果最好）</string>
+    <plurals name="fmt_artist_count">
+        <item quantity="other">%d 位艺术家</item>
+    </plurals>
+    <string name="err_did_not_save">无法保存状态</string>
+    <string name="err_did_not_wipe">无法清除状态</string>
+    <string name="set_rescan">重新扫描音乐</string>
+    <string name="set_rescan_desc">清除标签缓存并完全重新加载音乐库（更慢，但更完整）</string>
+    <string name="lbl_shuffle_selected">随机播放所选</string>
+    <string name="lbl_play_selected">播放所选</string>
+    <string name="fmt_selected">选中了 %d 首</string>
+    <string name="set_playback_mode_genre">按流派播放</string>
+    <string name="lbl_wiki">Wiki</string>
 </resources>

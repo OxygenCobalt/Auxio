@@ -18,79 +18,138 @@
 package org.oxycblt.auxio.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavDirections
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logD
 
-/**
- * A ViewModel that handles complicated navigation situations.
- * @author OxygenCobalt
- */
+/** A [ViewModel] that handles complicated navigation functionality. */
 class NavigationViewModel : ViewModel() {
     private val _mainNavigationAction = MutableStateFlow<MainNavigationAction?>(null)
-    /** Flag for main fragment navigation. Intended for MainFragment use only. */
+    /**
+     * Flag for navigation within the main navigation graph. Only intended for use by MainFragment.
+     */
     val mainNavigationAction: StateFlow<MainNavigationAction?>
         get() = _mainNavigationAction
 
     private val _exploreNavigationItem = MutableStateFlow<Music?>(null)
     /**
-     * Flag for navigation within the explore fragments. Observe this to coordinate navigation to an
-     * item's UI.
+     * Flag for navigation within the explore navigation graph. Observe this to coordinate
+     * navigation to a specific [Music] item.
      */
     val exploreNavigationItem: StateFlow<Music?>
         get() = _exploreNavigationItem
 
-    /** Notify MainFragment to navigate to the location outlined in [MainNavigationAction]. */
+    private val _exploreArtistNavigationItem = MutableStateFlow<Music?>(null)
+    /**
+     * Variation of [exploreNavigationItem] for situations where the choice of parent [Artist] to
+     * navigate to is ambiguous. Only intended for use by MainFragment, as the resolved choice will
+     * eventually be assigned to [exploreNavigationItem].
+     */
+    val exploreArtistNavigationItem: StateFlow<Music?>
+        get() = _exploreArtistNavigationItem
+
+    /**
+     * Navigate to something in the main navigation graph. This can be used by UIs in the explore
+     * navigation graph to trigger navigation in the higher-level main navigation graph. Will do
+     * nothing if already navigating.
+     * @param action The [MainNavigationAction] to perform.
+     */
     fun mainNavigateTo(action: MainNavigationAction) {
         if (_mainNavigationAction.value != null) {
             logD("Already navigating, not doing main action")
             return
         }
-
         logD("Navigating with action $action")
         _mainNavigationAction.value = action
     }
 
-    /** Mark that the main navigation process is done. */
+    /**
+     * Mark that the navigation process within the main navigation graph (initiated by
+     * [mainNavigateTo]) was completed.
+     */
     fun finishMainNavigation() {
         logD("Finishing main navigation process")
         _mainNavigationAction.value = null
     }
 
-    /** Navigate to an item's detail menu, whether a song/album/artist */
+    /**
+     * Navigate to a given [Music] item. Will do nothing if already navigating.
+     * @param item The [Music] to navigate to.
+     */
     fun exploreNavigateTo(item: Music) {
         if (_exploreNavigationItem.value != null) {
-            logD("Already navigation, not doing explore action")
+            logD("Already navigating, not doing explore action")
             return
         }
-
         logD("Navigating to ${item.rawName}")
         _exploreNavigationItem.value = item
     }
 
-    /** Mark that the item navigation process is done. */
+    /**
+     * Navigate to one of the parent [Artist]'s of the given [Song].
+     * @param song The [Song] to navigate with. If there are multiple parent [Artist]s,
+     * a picker dialog will be shown.
+     */
+    fun exploreNavigateToParentArtist(song: Song) {
+        exploreNavigateToParentArtistImpl(song, song.artists)
+    }
+
+    /**
+     * Navigate to one of the parent [Artist]'s of the given [Album].
+     * @param album The [Album] to navigate with. If there are multiple parent [Artist]s,
+     * a picker dialog will be shown.
+     */
+    fun exploreNavigateToParentArtist(album: Album) {
+        exploreNavigateToParentArtistImpl(album, album.artists)
+    }
+
+    private fun exploreNavigateToParentArtistImpl(item: Music, artists: List<Artist>) {
+        if (_exploreArtistNavigationItem.value != null) {
+            logD("Already navigating, not doing explore action")
+            return
+        }
+
+        if (artists.size == 1) {
+            exploreNavigateTo(artists[0])
+        } else {
+            logD("Navigating to a choice of ${artists.map { it.rawName }}")
+            _exploreArtistNavigationItem.value = item
+        }
+    }
+
+    /**
+     * Mark that the navigation process within the explore navigation graph (initiated by
+     * [exploreNavigateTo]) was completed.
+     */
     fun finishExploreNavigation() {
         logD("Finishing explore navigation process")
         _exploreNavigationItem.value = null
+        _exploreArtistNavigationItem.value = null
     }
 }
 
 /**
- * Represents the navigation options for the Main Fragment, which tends to be multiple layers above
- * normal fragments. This can be passed to [NavigationViewModel.mainNavigateTo] in order to
- * facilitate navigation without stupid fragment hacks.
+ * Represents the possible actions within the main navigation graph. This can be used with
+ * [NavigationViewModel] to initiate navigation in the main navigation graph from anywhere in the
+ * app, including outside the main navigation graph.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 sealed class MainNavigationAction {
     /** Expand the playback panel. */
     object Expand : MainNavigationAction()
-    /** Collapse the playback panel. */
+
+    /** Collapse the playback bottom sheet. */
     object Collapse : MainNavigationAction()
-    /** Go to settings. */
-    object Settings : MainNavigationAction()
-    /** Go to the about page. */
-    object About : MainNavigationAction()
-    /** Show song details. */
-    data class SongDetails(val song: Song) : MainNavigationAction()
+
+    /**
+     * Navigate to the given [NavDirections].
+     * @param directions The [NavDirections] to navigate to. Assumed to be part of the main
+     * navigation graph.
+     */
+    data class Directions(val directions: NavDirections) : MainNavigationAction()
 }

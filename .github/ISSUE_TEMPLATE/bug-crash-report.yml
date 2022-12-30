@@ -1,0 +1,88 @@
+name: Bug/Crash Report
+description: Report a problem
+labels: ["bug"]
+assignees:
+  - OxygenCobalt
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Welcome to Auxio's bug report form.
+        Please note that not every reported issue can be fixed. Well-written bug reports are more likely to be resolved.
+  - type: textarea
+    id: desc
+    attributes:
+      label: Describe the Bug/Crash
+      description: Provide a clear and concise description of the issue alongside steps to reproduce it.
+      placeholder: |
+        1. Go to X
+        2. Click on Y
+        3. Scroll down to Z
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: intended
+    attributes:
+      label: Describe the intended behavior
+      description: Provide a clear and concise descripton of the correct behavior. Include examples from other music players if applicable.
+      placeholder: Should do X.
+    validations:
+      required: true
+  - type: dropdown
+    id: android-version
+    attributes:
+      label: What android version do you use?
+      options:
+        - Android 13
+        - Android 12L
+        - Android 12
+        - Android 11
+        - Android 10
+        - Android 9 (Pie)
+        - Android 8.1 (Oreo)
+        - Android 8 (Oreo)
+        - Android 7 (Nougat)
+        - Android 6 (Marshmallow)
+        - Android 5.1 (Lollipop)
+        - Android 5 (Lollipop)
+    validations:
+      required: true
+  - type: textarea
+    id: devide-model
+    attributes:
+      label: What device model do you use?
+      description: Include details on OEM Skin or Custom ROM if possible.
+      placeholder: OnePlus 7T (LineageOS)
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: |
+        If possible, provide a stack trace or a Logcat. This can help identify the issue. 
+        To take a logcat, you must do the following:
+        1. Use a desktop/laptop to download the android platform tools from [here](https://developer.android.com/studio/releases/platform-tools).
+        2. Extract the downloaded file to a folder.
+        3. Enable USB debugging on your phone [Instructions](https://developer.android.com/studio/command-line/adb#Enabling), and then connect your
+        phone to a laptop. You will get a prompt to "Allow USB debugging" when you run the logcat command. Accept this.
+        4. Open up a terminal/command prompt in that folder and run:
+            - `./adb -d logcat | grep -i "[DWE] Auxio"` in the case of a bug (may require some changes on windows)
+            - `./adb -d logcat AndroidRuntime:E *:S` in the case of a crash
+        5. Copy and paste the output to this area of the issue.
+      render: shell
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Duplicates
+      description: By submitting this issue, you aknowledge the following
+      options:
+        - label: I have checked the [Troubleshooting](https://github.com/OxygenCobalt/Auxio/wiki/Troubleshooting) page.
+          required: true
+        - label: I have checked this issue for duplicates.
+          required: true
+        - label: I have checked that this issue occurs on the [lastest version](https://github.com/OxygenCobalt/Auxio/releases).
+          required: true
+        - label: I agree to the [Contribution Guidelines](https://github.com/OxygenCobalt/Auxio/blob/dev/.github/CONTRIBUTING.md).
+          required: true          

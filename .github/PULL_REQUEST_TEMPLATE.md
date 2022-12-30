@@ -3,7 +3,6 @@
 #### What is it?
 - [ ] Bugfix (user facing)
 - [ ] Feature (user facing)
-- [ ] Translation to: <!-- Include the language here. Note if this translation is for a regional dialect. --> (user facing)
 - [ ] Codebase improvement (dev facing)
 - [ ] Meta improvement to the project (dev facing)
 
@@ -25,4 +24,4 @@ debug.zip
 
 #### Due Diligence
 - [ ] I have read the [Contribution Guidelines](https://github.com/OxygenCobalt/Auxio/blob/dev/.github/CONTRIBUTING.md).
-- [ ] I have read the [Accepted additions & Requests](https://github.com/OxygenCobalt/Auxio/blob/dev/info/ADDITIONS.md) document.
+- [ ] I have read the [Why Are These Features Missing?](https://github.com/OxygenCobalt/Auxio/wiki/Why-Are-These-Features-Missing%3F) page.

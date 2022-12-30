@@ -3,6 +3,7 @@ plugins {
     id "kotlin-android"
     id "androidx.navigation.safeargs.kotlin"
     id "com.diffplug.spotless"
+    id "kotlin-parcelize"
 }
 
 android {
@@ -11,8 +12,8 @@ android {
 
     defaultConfig {
         applicationId namespace
-        versionName "2.6.4"
-        versionCode 23
+        versionName "3.0.0"
+        versionCode 24
 
         minSdk 21
         targetSdk 33
@@ -23,7 +24,6 @@ android {
     }
 
     // ExoPlayer, AndroidX, and Material Components all need Java 8 to compile.
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -53,10 +53,6 @@ android {
     }
 }
 
-afterEvaluate {
-    preDebugBuild.dependsOn spotlessApply
-}
-
 dependencies {
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -69,9 +65,9 @@ dependencies {
     // General
     // 1.4.0 is used in order to avoid a ripple bug in material components
     implementation "androidx.appcompat:appcompat:1.4.0"
-    implementation "androidx.core:core-ktx:1.8.0"
-    implementation "androidx.activity:activity-ktx:1.6.0-rc01"
-    implementation "androidx.fragment:fragment-ktx:1.5.2"
+    implementation "androidx.core:core-ktx:1.9.0"
+    implementation "androidx.activity:activity-ktx:1.6.1"
+    implementation "androidx.fragment:fragment-ktx:1.5.5"
 
     // UI
     implementation "androidx.recyclerview:recyclerview:1.2.1"
@@ -100,14 +96,18 @@ dependencies {
     // Exoplayer
     // WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE PRE-BUILD SCRIPT.
     // IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
-    implementation "com.google.android.exoplayer:exoplayer-core:2.18.1"
+    implementation("com.google.android.exoplayer:exoplayer-core:2.18.2") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
+    }
 
+    implementation fileTree(dir: "libs", include: ["library-*.aar"])
     implementation fileTree(dir: "libs", include: ["extension-*.aar"])
 
     // Image loading
     implementation "io.coil-kt:coil:2.1.0"
 
     // Material
+    // Locked below 1.7.0-alpha03 to avoid the same ripple bug
     implementation "com.google.android.material:material:1.7.0-alpha02"
 
     // LeakCanary
@@ -117,7 +117,7 @@ dependencies {
 spotless {
     kotlin {
         target "src/**/*.kt"
-        ktfmt("0.37").dropboxStyle()
+        ktfmt().dropboxStyle()
         licenseHeaderFile("NOTICE")
     }
 }

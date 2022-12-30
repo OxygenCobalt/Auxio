@@ -3,72 +3,51 @@
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Повторити спробу</string>
     <string name="lbl_grant">Надати</string>
-
     <string name="lbl_genres">Жанри</string>
     <string name="lbl_artists">Виконавці</string>
     <string name="lbl_albums">Альбоми</string>
     <string name="lbl_songs">Треки</string>
     <string name="lbl_all_songs">Треки</string>
-
     <string name="lbl_search">Шукати</string>
     <string name="lbl_filter">Фільтр</string>
     <string name="lbl_filter_all">Усе</string>
-
     <string name="lbl_sort">Сортування</string>
-
     <string name="lbl_play">Відтворити</string>
     <string name="lbl_shuffle">Перемішати</string>
     <string name="lbl_playback">Відтворюється</string>
-
     <string name="lbl_queue">Черга</string>
     <string name="lbl_play_next">Відтворити наступною</string>
     <string name="lbl_queue_add">Додати в чергу</string>
     <string name="lng_queue_added">Додана в чергу</string>
-
     <string name="lbl_go_artist">Перейти до виконавця</string>
     <string name="lbl_go_album">Перейти до альбому</string>
-
     <string name="lbl_about">Про програму</string>
     <string name="lbl_version">Версія</string>
     <string name="lbl_code">Переглянути на GitHub</string>
-    <string name="lbl_faq">ЧаП</string>
     <string name="lbl_licenses">Ліцензії</string>
-
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Налаштування</string>
-
     <string name="set_ui">Вигляд</string>
     <string name="set_theme">Тема</string>
     <string name="set_theme_day">Світла</string>
     <string name="set_theme_night">Темна</string>
-
-    <string name="set_quality_covers">Ігнорувати обкладинки з Медіасховища</string>
-
     <string name="set_audio">Аудіо</string>
-
     <string name="set_behavior">Поведінка</string>
-
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Музику не знайдено</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Пошук бібліотеки…</string>
-
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Доріжка %d</string>
-
     <string name="desc_play_pause">Відтворити/Зупинити</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_lib_song_count">Пісні завантажено: %d</string>
-
     <plurals name="fmt_song_count">
         <item quantity="one">%d Пісня</item>
         <item quantity="other">%d Пісні</item>
         <item quantity="few">%d Пісень</item>
         <item quantity="many">%d Пісень</item>
     </plurals>
-
     <plurals name="fmt_album_count">
         <item quantity="one">%d Альбом</item>
         <item quantity="other">%d Альбоми</item>

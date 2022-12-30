@@ -23,11 +23,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialFadeThrough
 import org.oxycblt.auxio.databinding.FragmentSettingsBinding
-import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
+import org.oxycblt.auxio.ui.ViewBindingFragment
 
 /**
- * A container [Fragment] for the settings menu.
- * @author OxygenCobalt
+ * A [Fragment] wrapper containing the preference fragment and a companion Toolbar.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class SettingsFragment : ViewBindingFragment<FragmentSettingsBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +40,7 @@ class SettingsFragment : ViewBindingFragment<FragmentSettingsBinding>() {
         FragmentSettingsBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentSettingsBinding, savedInstanceState: Bundle?) {
+        // Point AppBarLayout to the preference fragment's RecyclerView.
         binding.settingsAppbar.liftOnScrollTargetViewId = androidx.preference.R.id.recycler_view
         binding.settingsToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
     }

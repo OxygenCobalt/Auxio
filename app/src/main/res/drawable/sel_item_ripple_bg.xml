@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-selector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:enterFadeDuration="@integer/anim_fade_enter_duration"
+    android:exitFadeDuration="@integer/anim_fade_exit_duration">
+
+    <item
+        android:id="@+id/pressed"
+        android:state_activated="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/sel_item_activated_bg" />
+        </shape>
+    </item>
+    <item android:id="@+id/def">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+</animated-selector>

@@ -24,79 +24,99 @@ import coil.imageLoader
 import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.size.Size
+import org.oxycblt.auxio.image.extractor.SquareFrameTransform
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.TaskGuard
 
 /**
- * A utility to provide bitmaps in a manner less prone to race conditions.
+ * A utility to provide bitmaps in a race-less manner.
  *
- * Pretty much each service component needs to load bitmaps of some kind, but doing a blind image
- * request with some target callbacks could result in overlapping requests causing incorrect
- * updates. This class (to an extent) resolves this by adding several guards
+ * When it comes to components that load images manually as [Bitmap] instances, queued
+ * [ImageRequest]s may cause a race condition that results in the incorrect image being drawn. This
+ * utility resolves this by keeping track of the current request, and disposing it as soon as a new
+ * request is queued or if another, competing request is newer.
  *
- * @author OxygenCobalt
+ * @param context [Context] required to load images.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class BitmapProvider(private val context: Context) {
+    /**
+     * An extension of [Disposable] with an additional [Target] to deliver the final [Bitmap] to.
+     */
+    private data class Request(val disposable: Disposable, val callback: Target)
+
+    /** The target that will receive the requested [Bitmap]. */
+    interface Target {
+        /**
+         * Configure the [ImageRequest.Builder] to enable [Target]-specific configuration.
+         * @param builder The [ImageRequest.Builder] that will be used to request the desired
+         * [Bitmap].
+         * @return The same [ImageRequest.Builder] in order to easily chain configuration methods.
+         */
+        fun onConfigRequest(builder: ImageRequest.Builder): ImageRequest.Builder = builder
+
+        /**
+         * Called when the loading process is completed.
+         * @param bitmap The loaded bitmap, or null if the bitmap could not be loaded.
+         */
+        fun onCompleted(bitmap: Bitmap?)
+    }
+
     private var currentRequest: Request? = null
-    private var guard = TaskGuard()
+    private var currentHandle = 0L
 
     /** If this provider is currently attempting to load something. */
     val isBusy: Boolean
         get() = currentRequest?.run { !disposable.isDisposed } ?: false
 
     /**
-     * Load a bitmap from [song]. [target] should be a new object, not a reference to an existing
-     * callback.
+     * Load the Album cover [Bitmap] from a [Song].
+     * @param song The song to load a [Bitmap] of it's album cover from.
+     * @param target The [Target] to deliver the [Bitmap] to asynchronously.
      */
     @Synchronized
     fun load(song: Song, target: Target) {
-        val handle = guard.newHandle()
-
+        // Increment the handle, indicating a newer request has been created
+        val handle = ++currentHandle
         currentRequest?.run { disposable.dispose() }
         currentRequest = null
 
-        val request =
-            target.onConfigRequest(
-                ImageRequest.Builder(context)
-                    .data(song)
-                    .size(Size.ORIGINAL)
-                    .target(
-                        onSuccess = {
-                            if (guard.check(handle)) {
+        val imageRequest =
+            target
+                .onConfigRequest(
+                    ImageRequest.Builder(context)
+                        .data(song)
+                        // Use ORIGINAL sizing, as we are not loading into any View-like component.
+                        .size(Size.ORIGINAL)
+                        .transformations(SquareFrameTransform.INSTANCE))
+                // Override the target in order to deliver the bitmap to the given
+                // listener.
+                .target(
+                    onSuccess = {
+                        synchronized(this) {
+                            if (currentHandle == handle) {
+                                // Has not been superceded by a new request, can deliver
+                                // this result.
                                 target.onCompleted(it.toBitmap())
                             }
-                        },
-                        onError = {
-                            if (guard.check(handle)) {
+                        }
+                    },
+                    onError = {
+                        synchronized(this) {
+                            if (currentHandle == handle) {
+                                // Has not been superceded by a new request, can deliver
+                                // this result.
                                 target.onCompleted(null)
                             }
-                        })
-                    .transformations(SquareFrameTransform.INSTANCE))
-
-        currentRequest = Request(context.imageLoader.enqueue(request.build()), target)
+                        }
+                    })
+        currentRequest = Request(context.imageLoader.enqueue(imageRequest.build()), target)
     }
 
-    /**
-     * Release this instance, canceling all image load jobs. This should be ran when the object is
-     * no longer used.
-     */
+    /** Release this instance, cancelling any currently running operations. */
     @Synchronized
     fun release() {
+        ++currentHandle
         currentRequest?.run { disposable.dispose() }
         currentRequest = null
-    }
-
-    private data class Request(val disposable: Disposable, val callback: Target)
-
-    /** Represents the target for a request. */
-    interface Target {
-        /** Modify the default request with custom attributes. */
-        fun onConfigRequest(builder: ImageRequest.Builder): ImageRequest.Builder = builder
-
-        /**
-         * Called when the loading process is completed. [bitmap] will be null if there was an
-         * error.
-         */
-        fun onCompleted(bitmap: Bitmap?)
     }
 }

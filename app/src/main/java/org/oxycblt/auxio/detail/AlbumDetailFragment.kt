@@ -17,13 +17,10 @@
  
 package org.oxycblt.auxio.detail
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.widget.Toolbar
-import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -32,40 +29,38 @@ import com.google.android.material.transition.MaterialSharedAxis
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
+import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.PlaybackMode
+import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.Sort
-import org.oxycblt.auxio.ui.fragment.MenuFragment
-import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.canScroll
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A fragment that shows information for a particular [Album].
- * @author OxygenCobalt
+ * A [ListFragment] that shows information about an [Album].
+ * @author Alexander Capehart (OxygenCobalt)
  */
-class AlbumDetailFragment :
-    MenuFragment<FragmentDetailBinding>(),
-    Toolbar.OnMenuItemClickListener,
-    AlbumDetailAdapter.Listener {
+class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
-
+    // Information about what album to display is initially within the navigation arguments
+    // as a UID, as that is the only safe way to parcel an album.
     private val args: AlbumDetailFragmentArgs by navArgs()
     private val detailAdapter = AlbumDetailAdapter(this)
-    private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Detail transitions are always on the X axis. Shared element transitions are more
+        // semantically correct, but are also too buggy to be sensible.
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
         returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
         exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
@@ -74,9 +69,13 @@ class AlbumDetailFragment :
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
 
-    override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
-        detailModel.setAlbumId(args.albumId)
+    override fun getSelectionToolbar(binding: FragmentDetailBinding) =
+        binding.detailSelectionToolbar
 
+    override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
+        super.onBindingCreated(binding, savedInstanceState)
+
+        // --- UI SETUP --
         binding.detailToolbar.apply {
             inflateMenu(R.menu.menu_album_detail)
             setNavigationOnClickListener { findNavController().navigateUp() }
@@ -86,12 +85,14 @@ class AlbumDetailFragment :
         binding.detailRecycler.adapter = detailAdapter
 
         // -- VIEWMODEL SETUP ---
-
-        collectImmediately(detailModel.currentAlbum, ::handleItemChange)
-        collectImmediately(detailModel.albumData, detailAdapter::submitList)
+        // DetailViewModel handles most initialization from the navigation argument.
+        detailModel.setAlbumUid(args.albumUid)
+        collectImmediately(detailModel.currentAlbum, ::updateAlbum)
+        collectImmediately(detailModel.albumList, detailAdapter::submitList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
+        collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
@@ -101,50 +102,58 @@ class AlbumDetailFragment :
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
+        if (super.onMenuItemClick(item)) {
+            return true
+        }
+
+        val currentAlbum = unlikelyToBeNull(detailModel.currentAlbum.value)
         return when (item.itemId) {
             R.id.action_play_next -> {
-                playbackModel.playNext(unlikelyToBeNull(detailModel.currentAlbum.value))
+                playbackModel.playNext(currentAlbum)
                 requireContext().showToast(R.string.lng_queue_added)
                 true
             }
             R.id.action_queue_add -> {
-                playbackModel.addToQueue(unlikelyToBeNull(detailModel.currentAlbum.value))
+                playbackModel.addToQueue(currentAlbum)
                 requireContext().showToast(R.string.lng_queue_added)
                 true
             }
             R.id.action_go_artist -> {
-                navModel.exploreNavigateTo(unlikelyToBeNull(detailModel.currentAlbum.value).artist)
+                onNavigateToParentArtist()
                 true
             }
             else -> false
         }
     }
 
-    override fun onItemClick(item: Item) {
-        if (item is Song) {
-            playbackModel.play(item, settings.detailPlaybackMode ?: PlaybackMode.IN_ALBUM)
+    override fun onRealClick(music: Music) {
+        check(music is Song) { "Unexpected datatype: ${music::class.java}" }
+        when (Settings(requireContext()).detailPlaybackMode) {
+            // "Play from shown item" and "Play from album" functionally have the same
+            // behavior since a song can only have one album.
+            null,
+            MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
+            MusicMode.SONGS -> playbackModel.playFromAll(music)
+            MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
+            MusicMode.GENRES -> playbackModel.playFromGenre(music)
         }
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {
-        if (item is Song) {
-            musicMenu(anchor, R.menu.menu_album_song_actions, item)
-            return
-        }
-
-        error("Unexpected datatype when opening menu: ${item::class.java}")
+        check(item is Song) { "Unexpected datatype: ${item::class.simpleName}" }
+        openMusicMenu(anchor, R.menu.menu_album_song_actions, item)
     }
 
-    override fun onPlayParent() {
-        playbackModel.play(unlikelyToBeNull(detailModel.currentAlbum.value), false)
+    override fun onPlay() {
+        playbackModel.play(unlikelyToBeNull(detailModel.currentAlbum.value))
     }
 
-    override fun onShuffleParent() {
-        playbackModel.play(unlikelyToBeNull(detailModel.currentAlbum.value), true)
+    override fun onShuffle() {
+        playbackModel.shuffle(unlikelyToBeNull(detailModel.currentAlbum.value))
     }
 
-    override fun onShowSortMenu(anchor: View) {
-        menu(anchor, R.menu.menu_album_sort) {
+    override fun onOpenSortMenu(anchor: View) {
+        openMenu(anchor, R.menu.menu_album_sort) {
             val sort = detailModel.albumSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
             unlikelyToBeNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
@@ -161,20 +170,26 @@ class AlbumDetailFragment :
         }
     }
 
-    override fun onNavigateToArtist() {
-        findNavController()
-            .navigate(
-                AlbumDetailFragmentDirections.actionShowArtist(
-                    unlikelyToBeNull(detailModel.currentAlbum.value).artist.id))
+    override fun onNavigateToParentArtist() {
+        navModel.exploreNavigateToParentArtist(unlikelyToBeNull(detailModel.currentAlbum.value))
     }
 
-    private fun handleItemChange(album: Album?) {
+    private fun updateAlbum(album: Album?) {
         if (album == null) {
+            // Album we were showing no longer exists.
             findNavController().navigateUp()
             return
         }
-
         requireBinding().detailToolbar.title = album.resolveName(requireContext())
+    }
+
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        if (parent is Album && parent == unlikelyToBeNull(detailModel.currentAlbum.value)) {
+            detailAdapter.setPlayingItem(song, isPlaying)
+        } else {
+            // Clear the ViewHolders if the mode isn't ALL_SONGS
+            detailAdapter.setPlayingItem(null, isPlaying)
+        }
     }
 
     private fun handleNavigation(item: Music?) {
@@ -183,28 +198,28 @@ class AlbumDetailFragment :
             // Songs should be scrolled to if the album matches, or a new detail
             // fragment should be launched otherwise.
             is Song -> {
-                if (unlikelyToBeNull(detailModel.currentAlbum.value).id == item.album.id) {
+                if (unlikelyToBeNull(detailModel.currentAlbum.value) == item.album) {
                     logD("Navigating to a song in this album")
-                    scrollToItem(item.id)
+                    scrollToAlbumSong(item)
                     navModel.finishExploreNavigation()
                 } else {
                     logD("Navigating to another album")
                     findNavController()
-                        .navigate(AlbumDetailFragmentDirections.actionShowAlbum(item.album.id))
+                        .navigate(AlbumDetailFragmentDirections.actionShowAlbum(item.album.uid))
                 }
             }
 
             // If the album matches, no need to do anything. Otherwise launch a new
             // detail fragment.
             is Album -> {
-                if (unlikelyToBeNull(detailModel.currentAlbum.value).id == item.id) {
+                if (unlikelyToBeNull(detailModel.currentAlbum.value) == item) {
                     logD("Navigating to the top of this album")
                     binding.detailRecycler.scrollToPosition(0)
                     navModel.finishExploreNavigation()
                 } else {
                     logD("Navigating to another album")
                     findNavController()
-                        .navigate(AlbumDetailFragmentDirections.actionShowAlbum(item.id))
+                        .navigate(AlbumDetailFragmentDirections.actionShowAlbum(item.uid))
                 }
             }
 
@@ -212,24 +227,42 @@ class AlbumDetailFragment :
             is Artist -> {
                 logD("Navigating to another artist")
                 findNavController()
-                    .navigate(AlbumDetailFragmentDirections.actionShowArtist(item.id))
+                    .navigate(AlbumDetailFragmentDirections.actionShowArtist(item.uid))
             }
             null -> {}
-            else -> error("Unexpected navigation item ${item::class.java}")
+            else -> error("Unexpected datatype: ${item::class.java}")
         }
     }
 
-    /** Scroll to an song using its [id]. */
-    private fun scrollToItem(id: Long) {
+    private fun scrollToAlbumSong(song: Song) {
         // Calculate where the item for the currently played song is
-        val pos = detailModel.albumData.value.indexOfFirst { it.id == id && it is Song }
+        val pos = detailModel.albumList.value.indexOf(song)
 
         if (pos != -1) {
+            // Only scroll if the song is within this album.
             val binding = requireBinding()
             binding.detailRecycler.post {
+                // Use a custom smooth scroller that will settle the item in the middle of
+                // the screen rather than the end.
+                val centerSmoothScroller =
+                    object : LinearSmoothScroller(context) {
+                        init {
+                            targetPosition = pos
+                        }
+
+                        override fun calculateDtToFit(
+                            viewStart: Int,
+                            viewEnd: Int,
+                            boxStart: Int,
+                            boxEnd: Int,
+                            snapPreference: Int
+                        ): Int =
+                            (boxStart + (boxEnd - boxStart) / 2) -
+                                (viewStart + (viewEnd - viewStart) / 2)
+                    }
+
                 // Make sure to increment the position to make up for the detail header
-                binding.detailRecycler.layoutManager?.startSmoothScroll(
-                    CenterSmoothScroller(requireContext(), pos))
+                binding.detailRecycler.layoutManager?.startSmoothScroll(centerSmoothScroller)
 
                 // If the recyclerview can scroll, its certain that it will have to scroll to
                 // correctly center the playing item, so make sure that the Toolbar is lifted in
@@ -239,44 +272,8 @@ class AlbumDetailFragment :
         }
     }
 
-    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        val binding = requireBinding()
-
-        for (item in binding.detailToolbar.menu.children) {
-            // If there is no playback going in, any queue additions will be wiped as soon as
-            // something is played. Disable these actions when playback is going on so that
-            // it isn't possible to add anything during that time.
-            if (item.itemId == R.id.action_play_next || item.itemId == R.id.action_queue_add) {
-                item.isEnabled = song != null
-            }
-        }
-
-        if (parent is Album && parent.id == unlikelyToBeNull(detailModel.currentAlbum.value).id) {
-            detailAdapter.updateIndicator(song, isPlaying)
-        } else {
-            // Clear the ViewHolders if the mode isn't ALL_SONGS
-            detailAdapter.updateIndicator(null, isPlaying)
-        }
-    }
-
-    /**
-     * [LinearSmoothScroller] subclass that centers the item on the screen instead of snapping to
-     * the top or bottom.
-     */
-    private class CenterSmoothScroller(context: Context, target: Int) :
-        LinearSmoothScroller(context) {
-        init {
-            targetPosition = target
-        }
-
-        override fun calculateDtToFit(
-            viewStart: Int,
-            viewEnd: Int,
-            boxStart: Int,
-            boxEnd: Int,
-            snapPreference: Int
-        ): Int {
-            return (boxStart + (boxEnd - boxStart) / 2) - (viewStart + (viewEnd - viewStart) / 2)
-        }
+    private fun updateSelection(selected: List<Music>) {
+        detailAdapter.setSelectedItems(selected)
+        requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
     }
 }

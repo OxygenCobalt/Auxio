@@ -1,0 +1,21 @@
+„Auxio“ yra vietinis muzikos grotuvas su greita, patikima UI/UX be daugybės nenaudingų funkcijų, esančių kituose muzikos grotuvuose. „Auxio“ sukurta remiantis <a href="https://exoplayer.dev/">„Exoplayer“</a>, todėl, palyginti su kitomis programomis, naudojančiomis „MediaPlayer“ API, „Auxio“ turi daug geresnę klausymo patirtį. Trumpai tariant, <b>Jame groja muziką</b>.
+
+<b>Funkcijos</b>
+
+- „ExoPlayer“ pagrįstas grojimas
+- Sparti UI, sukurta pagal naujausias „Material Design“ gaires
+- Nuomonę atitinkanti UX, kurioje pirmenybė teikiama naudojimo paprastumui, o ne kraštutiniams atvejams
+- Tinkinama elgsena
+- Išplėstinis medijos indeksuotojas, kuris teikia pirmenybę teisingiems metaduomenims
+- Tikslių / Originalių datų, Rūšiavimo žymų ir Išleidimo Tipo palaikymas (Eksperimentinis)
+- SD kortelių aplankų valdymas
+- Patikimas grojimo būsenos išsaugojimas
+- Visiškas „ReplayGain“ palaikymas (MP3, MP4, FLAC, OGG ir OPUS)
+- Išorinio ekvalaizerio funkcija (tokiose programose kaip „Wavelet“)
+- Krašto iki krašto
+- Įterptųjų viršelių palaikymas
+- Paieškos Funkcija
+- Automatinis ausinių grojimas
+- Stilingi valdikliai, kurie automatiškai prisitaiko prie savo dydžio
+- Visiškai privatus ir neprisijungęs
+- Jokių suapvalintų albumų viršelių (Nebent norite. Tada galite.)

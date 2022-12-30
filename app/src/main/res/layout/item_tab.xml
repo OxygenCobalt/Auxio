@@ -8,15 +8,15 @@
     android:clickable="true"
     android:focusable="true"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/spacing_small"
-    android:paddingBottom="@dimen/spacing_small">
+    android:paddingTop="@dimen/spacing_tiny"
+    android:paddingBottom="@dimen/spacing_tiny">
 
     <com.google.android.material.checkbox.MaterialCheckBox
-        android:id="@+id/tab_icon"
+        android:id="@+id/tab_check_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"
-        android:layout_marginEnd="@dimen/spacing_tiny"
+        android:layout_marginEnd="@dimen/spacing_mid_medium"
         android:layout_weight="1"
         android:clickable="false"
         android:focusable="false"
@@ -31,7 +31,7 @@
         style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_mid_medium"
+        android:layout_marginEnd="@dimen/spacing_mid_large"
         android:contentDescription="@string/desc_tab_handle"
         app:icon="@drawable/ic_handle_24" />
 

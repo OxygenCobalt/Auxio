@@ -13,15 +13,23 @@
         app:liftOnScroll="true"
         app:liftOnScrollTargetViewId="@id/detail_recycler">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/detail_toolbar"
+        <org.oxycblt.auxio.list.selection.SelectionToolbarOverlay
+            android:id="@+id/detail_selection_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:navigationIcon="@drawable/ic_back_24" />
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/detail_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/ic_back_24" />
+
+        </org.oxycblt.auxio.list.selection.SelectionToolbarOverlay>
+
 
     </org.oxycblt.auxio.detail.DetailAppBarLayout>
 
-    <org.oxycblt.auxio.ui.recycler.AuxioRecyclerView
+    <org.oxycblt.auxio.list.recycler.AuxioRecyclerView
         android:id="@+id/detail_recycler"
         style="@style/Widget.Auxio.RecyclerView.Grid"
         android:layout_width="match_parent"

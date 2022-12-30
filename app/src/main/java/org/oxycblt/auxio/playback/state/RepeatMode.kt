@@ -21,15 +21,31 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 
 /**
- * Enum that determines the playback repeat mode.
- * @author OxygenCobalt
+ * Represents the current repeat mode of the player.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 enum class RepeatMode {
+    /**
+     * Do not repeat. Songs are played immediately, and playback is paused when the queue repeats.
+     */
     NONE,
+
+    /**
+     * Repeat the whole queue. Songs are played immediately, and playback continues when the queue
+     * repeats.
+     */
     ALL,
+
+    /**
+     * Repeat the current song. A Song will be continuously played until skipped. If configured,
+     * playback may pause when a Song repeats.
+     */
     TRACK;
 
-    /** Increment the mode, e.g from [NONE] to [ALL] */
+    /**
+     * Increment the mode.
+     * @return If [NONE], [ALL]. If [ALL], [TRACK]. If [TRACK], [NONE].
+     */
     fun increment() =
         when (this) {
             NONE -> ALL
@@ -37,7 +53,10 @@ enum class RepeatMode {
             TRACK -> NONE
         }
 
-    /** The icon representing this particular mode. */
+    /**
+     * The integer representation of this instance.
+     * @see fromIntCode
+     */
     val icon: Int
         get() =
             when (this) {
@@ -56,9 +75,14 @@ enum class RepeatMode {
             }
 
     companion object {
-        /** Convert an int [code] into an instance, or null if it isn't valid. */
-        fun fromIntCode(code: Int) =
-            when (code) {
+        /**
+         * Convert a [RepeatMode] integer representation into an instance.
+         * @param intCode An integer representation of a [RepeatMode]
+         * @return The corresponding [RepeatMode], or null if the [RepeatMode] is invalid.
+         * @see RepeatMode.intCode
+         */
+        fun fromIntCode(intCode: Int) =
+            when (intCode) {
                 IntegerTable.REPEAT_MODE_NONE -> NONE
                 IntegerTable.REPEAT_MODE_ALL -> ALL
                 IntegerTable.REPEAT_MODE_TRACK -> TRACK

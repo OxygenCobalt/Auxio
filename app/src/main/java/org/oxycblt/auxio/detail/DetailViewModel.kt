@@ -24,168 +24,272 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.list.Header
+import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.music.storage.MimeType
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.Sort
-import org.oxycblt.auxio.ui.recycler.Header
-import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.util.TaskGuard
-import org.oxycblt.auxio.util.application
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
-import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.auxio.util.*
 
 /**
- * ViewModel that stores data for the detail fragments. This includes:
- * - What item the fragment should be showing
- * - The RecyclerView data for each fragment
- * - The sorts for each type of data
- * @author OxygenCobalt
- *
- * TODO: Unify how detail items are indicated [When playlists are implemented]
+ * [AndroidViewModel] that manages the Song, Album, Artist, and Genre detail views. Keeps track of
+ * the current item they are showing, sub-data to display, and configuration. Since this ViewModel
+ * requires a context, it must be instantiated [AndroidViewModel]'s Factory.
+ * @param application [Application] context required to initialize certain information.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class DetailViewModel(application: Application) :
     AndroidViewModel(application), MusicStore.Callback {
-    data class DetailSong(val song: Song, val info: SongInfo?)
-
-    data class SongInfo(
-        val bitrateKbps: Int?,
-        val sampleRate: Int?,
-        val resolvedMimeType: MimeType
-    )
-
     private val musicStore = MusicStore.getInstance()
     private val settings = Settings(application)
 
+    private var currentSongJob: Job? = null
+
+    // --- SONG ---
+
     private val _currentSong = MutableStateFlow<DetailSong?>(null)
+    /**
+     * The current [DetailSong] to display. Null if there is nothing to show.
+     *
+     * TODO: De-couple Song and Properties?
+     */
     val currentSong: StateFlow<DetailSong?>
         get() = _currentSong
 
+    // --- ALBUM ---
+
     private val _currentAlbum = MutableStateFlow<Album?>(null)
+    /** The current [Album] to display. Null if there is nothing to show. */
     val currentAlbum: StateFlow<Album?>
         get() = _currentAlbum
 
-    private val _albumData = MutableStateFlow(listOf<Item>())
-    val albumData: StateFlow<List<Item>>
-        get() = _albumData
+    private val _albumList = MutableStateFlow(listOf<Item>())
+    /** The current list data derived from [currentAlbum]. */
+    val albumList: StateFlow<List<Item>>
+        get() = _albumList
 
+    /** The current [Sort] used for [Song]s in [albumList]. */
     var albumSort: Sort
         get() = settings.detailAlbumSort
         set(value) {
             settings.detailAlbumSort = value
-            currentAlbum.value?.let(::refreshAlbumData)
+            // Refresh the album list to reflect the new sort.
+            currentAlbum.value?.let(::refreshAlbumList)
         }
 
+    // --- ARTIST ---
+
     private val _currentArtist = MutableStateFlow<Artist?>(null)
+    /** The current [Artist] to display. Null if there is nothing to show. */
     val currentArtist: StateFlow<Artist?>
         get() = _currentArtist
 
-    private val _artistData = MutableStateFlow(listOf<Item>())
-    val artistData: StateFlow<List<Item>> = _artistData
+    private val _artistList = MutableStateFlow(listOf<Item>())
+    /** The current list derived from [currentArtist]. */
+    val artistList: StateFlow<List<Item>> = _artistList
 
+    /** The current [Sort] used for [Song]s in [artistList]. */
     var artistSort: Sort
         get() = settings.detailArtistSort
         set(value) {
-            logD(value)
             settings.detailArtistSort = value
-            currentArtist.value?.let(::refreshArtistData)
+            // Refresh the artist list to reflect the new sort.
+            currentArtist.value?.let(::refreshArtistList)
         }
 
+    // --- GENRE ---
+
     private val _currentGenre = MutableStateFlow<Genre?>(null)
+    /** The current [Genre] to display. Null if there is nothing to show. */
     val currentGenre: StateFlow<Genre?>
         get() = _currentGenre
 
-    private val _genreData = MutableStateFlow(listOf<Item>())
-    val genreData: StateFlow<List<Item>> = _genreData
+    private val _genreList = MutableStateFlow(listOf<Item>())
+    /** The current list data derived from [currentGenre]. */
+    val genreList: StateFlow<List<Item>> = _genreList
 
+    /** The current [Sort] used for [Song]s in [genreList]. */
     var genreSort: Sort
         get() = settings.detailGenreSort
         set(value) {
             settings.detailGenreSort = value
-            currentGenre.value?.let(::refreshGenreData)
+            // Refresh the genre list to reflect the new sort.
+            currentGenre.value?.let(::refreshGenreList)
         }
-
-    private val songGuard = TaskGuard()
-
-    fun setSongId(id: Long) {
-        if (_currentSong.value?.run { song.id } == id) return
-        val library = unlikelyToBeNull(musicStore.library)
-        val song = requireNotNull(library.findSongById(id)) { "Invalid song id provided" }
-        generateDetailSong(song)
-    }
-
-    fun clearSong() {
-        songGuard.newHandle()
-        _currentSong.value = null
-    }
-
-    fun setAlbumId(id: Long) {
-        if (_currentAlbum.value?.id == id) return
-        val library = unlikelyToBeNull(musicStore.library)
-        val album = requireNotNull(library.findAlbumById(id)) { "Invalid album id provided " }
-
-        _currentAlbum.value = album
-        refreshAlbumData(album)
-    }
-
-    fun setArtistId(id: Long) {
-        if (_currentArtist.value?.id == id) return
-        val library = unlikelyToBeNull(musicStore.library)
-        val artist = requireNotNull(library.findArtistById(id)) { "Invalid artist id provided" }
-        _currentArtist.value = artist
-        refreshArtistData(artist)
-    }
-
-    fun setGenreId(id: Long) {
-        if (_currentGenre.value?.id == id) return
-        val library = unlikelyToBeNull(musicStore.library)
-        val genre = requireNotNull(library.findGenreById(id)) { "Invalid genre id provided" }
-        _currentGenre.value = genre
-        refreshGenreData(genre)
-    }
 
     init {
         musicStore.addCallback(this)
     }
 
-    private fun generateDetailSong(song: Song) {
-        _currentSong.value = DetailSong(song, null)
-        viewModelScope.launch(Dispatchers.IO) {
-            val handle = songGuard.newHandle()
-            val info = generateDetailSongInfo(song)
-            songGuard.yield(handle)
-            _currentSong.value = DetailSong(song, info)
+    override fun onCleared() {
+        musicStore.removeCallback(this)
+    }
+
+    override fun onLibraryChanged(library: MusicStore.Library?) {
+        if (library == null) {
+            // Nothing to do.
+            return
+        }
+
+        // If we are showing any item right now, we will need to refresh it (and any information
+        // related to it) with the new library in order to prevent stale items from showing up
+        // in the UI.
+
+        val song = currentSong.value
+        if (song != null) {
+            val newSong = library.sanitize(song.song)
+            if (newSong != null) {
+                loadDetailSong(newSong)
+            } else {
+                _currentSong.value = null
+            }
+            logD("Updated song to $newSong")
+        }
+
+        val album = currentAlbum.value
+        if (album != null) {
+            _currentAlbum.value = library.sanitize(album)?.also(::refreshAlbumList)
+            logD("Updated genre to ${currentAlbum.value}")
+        }
+
+        val artist = currentArtist.value
+        if (artist != null) {
+            _currentArtist.value = library.sanitize(artist)?.also(::refreshArtistList)
+            logD("Updated genre to ${currentArtist.value}")
+        }
+
+        val genre = currentGenre.value
+        if (genre != null) {
+            _currentGenre.value = library.sanitize(genre)?.also(::refreshGenreList)
+            logD("Updated genre to ${currentGenre.value}")
         }
     }
 
-    private fun generateDetailSongInfo(song: Song): SongInfo {
+    /**
+     * Set a new [currentSong] from it's [Music.UID]. If the [Music.UID] differs, a new loading
+     * process will begin and the newly-loaded [DetailSong] will be set to [currentSong].
+     * @param uid The UID of the [Song] to load. Must be valid.
+     */
+    fun setSongUid(uid: Music.UID) {
+        if (_currentSong.value?.run { song.uid } == uid) {
+            // Nothing to do.
+            return
+        }
+        logD("Opening Song [uid: $uid]")
+        loadDetailSong(requireMusic(uid))
+    }
+
+    /**
+     * Set a new [currentAlbum] from it's [Music.UID]. If the [Music.UID] differs, [currentAlbum]
+     * and [albumList] will be updated to align with the new [Album].
+     * @param uid The [Music.UID] of the [Album] to update [currentAlbum] to. Must be valid.
+     */
+    fun setAlbumUid(uid: Music.UID) {
+        if (_currentAlbum.value?.uid == uid) {
+            // Nothing to do.
+            return
+        }
+        logD("Opening Album [uid: $uid]")
+        _currentAlbum.value = requireMusic<Album>(uid).also { refreshAlbumList(it) }
+    }
+
+    /**
+     * Set a new [currentArtist] from it's [Music.UID]. If the [Music.UID] differs, [currentArtist]
+     * and [artistList] will be updated to align with the new [Artist].
+     * @param uid The [Music.UID] of the [Artist] to update [currentArtist] to. Must be valid.
+     */
+    fun setArtistUid(uid: Music.UID) {
+        if (_currentArtist.value?.uid == uid) {
+            // Nothing to do.
+            return
+        }
+        logD("Opening Artist [uid: $uid]")
+        _currentArtist.value = requireMusic<Artist>(uid).also { refreshArtistList(it) }
+    }
+
+    /**
+     * Set a new [currentGenre] from it's [Music.UID]. If the [Music.UID] differs, [currentGenre]
+     * and [genreList] will be updated to align with the new album.
+     * @param uid The [Music.UID] of the [Genre] to update [currentGenre] to. Must be valid.
+     */
+    fun setGenreUid(uid: Music.UID) {
+        if (_currentGenre.value?.uid == uid) {
+            // Nothing to do.
+            return
+        }
+        logD("Opening Genre [uid: $uid]")
+        _currentGenre.value = requireMusic<Genre>(uid).also { refreshGenreList(it) }
+    }
+
+    private fun <T : Music> requireMusic(uid: Music.UID): T =
+        requireNotNull(unlikelyToBeNull(musicStore.library).find(uid)) { "Invalid id provided" }
+
+    /**
+     * Start a new job to load a [DetailSong] based on the properties of the given [Song]'s file.
+     * @param song The song to load.
+     */
+    private fun loadDetailSong(song: Song) {
+        // Clear any previous job in order to avoid stale data from appearing in the UI.
+        currentSongJob?.cancel()
+        _currentSong.value = DetailSong(song, null)
+        currentSongJob =
+            viewModelScope.launch(Dispatchers.IO) {
+                val info = loadProperties(song)
+                yield()
+                _currentSong.value = DetailSong(song, info)
+            }
+    }
+
+    private fun loadProperties(song: Song): DetailSong.Properties {
+        // While we would use ExoPlayer to extract this information, it doesn't support
+        // common data like bit rate in progressive data sources due to there being no
+        // demand. Thus, we are stuck with the inferior OS-provided MediaExtractor.
         val extractor = MediaExtractor()
 
         try {
-            extractor.setDataSource(application, song.uri, emptyMap())
+            extractor.setDataSource(context, song.uri, emptyMap())
         } catch (e: Exception) {
+            // Can feasibly fail with invalid file formats. Note that this isn't considered
+            // an error condition in the UI, as there is still plenty of other song information
+            // that we can show.
             logW("Unable to extract song attributes.")
             logW(e.stackTraceToString())
-            return SongInfo(null, null, song.mimeType)
+            return DetailSong.Properties(null, null, song.mimeType)
         }
 
+        // Get the first track from the extractor (This is basically always the only
+        // track we need to analyze).
         val format = extractor.getTrackFormat(0)
 
+        // Accessing fields can throw an exception if the fields are not present, and
+        // the new method for using default values is not available on lower API levels.
+        // So, we are forced to handle the exception and map it to a saner null value.
         val bitrate =
             try {
-                format.getInteger(MediaFormat.KEY_BIT_RATE) / 1000 // bps -> kbps
-            } catch (e: Exception) {
+                // Convert bytes-per-second to kilobytes-per-second.
+                format.getInteger(MediaFormat.KEY_BIT_RATE) / 1000
+            } catch (e: NullPointerException) {
+                logD("Unable to extract bit rate field")
                 null
             }
 
         val sampleRate =
             try {
                 format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
-            } catch (e: Exception) {
+            } catch (e: NullPointerException) {
+                logE("Unable to extract sample rate field")
                 null
             }
 
@@ -194,138 +298,113 @@ class DetailViewModel(application: Application) :
                 // ExoPlayer was already able to populate the format.
                 song.mimeType
             } else {
+                // ExoPlayer couldn't populate the format somehow, populate it here.
                 val formatMimeType =
                     try {
                         format.getString(MediaFormat.KEY_MIME)
-                    } catch (e: Exception) {
+                    } catch (e: NullPointerException) {
+                        logE("Unable to extract mime type field")
                         null
                     }
 
                 MimeType(song.mimeType.fromExtension, formatMimeType)
             }
 
-        return SongInfo(bitrate, sampleRate, resolvedMimeType)
+        return DetailSong.Properties(bitrate, sampleRate, resolvedMimeType)
     }
 
-    private fun refreshAlbumData(album: Album) {
+    private fun refreshAlbumList(album: Album) {
         logD("Refreshing album data")
         val data = mutableListOf<Item>(album)
         data.add(SortHeader(R.string.lbl_songs))
 
-        // To create a good user experience regarding disc numbers, we intersperse
-        // items that show the disc number throughout the album's songs. In the case
-        // that the album does not have distinct disc numbers, we omit such a header.
+        // To create a good user experience regarding disc numbers, we group the album's
+        // songs up by disc and then delimit the groups by a disc header.
         val songs = albumSort.songs(album.songs)
+        // Songs without disc tags become part of Disc 1.
         val byDisc = songs.groupBy { it.disc ?: 1 }
         if (byDisc.size > 1) {
+            logD("Album has more than one disc, interspersing headers")
             for (entry in byDisc.entries) {
-                val disc = entry.key
-                val discSongs = entry.value
-                data.add(DiscHeader(disc)) // Ensure ID uniqueness
-                data.addAll(discSongs)
+                data.add(DiscHeader(entry.key))
+                data.addAll(entry.value)
             }
         } else {
+            // Album only has one disc, don't add any redundant headers
             data.addAll(songs)
         }
 
-        _albumData.value = data
+        _albumList.value = data
     }
 
-    private fun refreshArtistData(artist: Artist) {
+    private fun refreshArtistList(artist: Artist) {
         logD("Refreshing artist data")
         val data = mutableListOf<Item>(artist)
-        val albums = Sort(Sort.Mode.ByYear, false).albums(artist.albums)
+        val albums = Sort(Sort.Mode.ByDate, false).albums(artist.albums)
 
         val byReleaseGroup =
             albums.groupBy {
-                when (it.releaseType.refinement) {
-                    ReleaseType.Refinement.LIVE -> R.string.lbl_live_group
-                    ReleaseType.Refinement.REMIX -> R.string.lbl_remix_group
+                // Remap the complicated Album.Type data structure into an easier
+                // "AlbumGrouping" enum that will automatically group and sort
+                // the artist's albums.
+                when (it.type.refinement) {
+                    Album.Type.Refinement.LIVE -> AlbumGrouping.LIVE
+                    Album.Type.Refinement.REMIX -> AlbumGrouping.REMIXES
                     null ->
-                        when (it.releaseType) {
-                            is ReleaseType.Album -> R.string.lbl_albums
-                            is ReleaseType.EP -> R.string.lbl_eps
-                            is ReleaseType.Single -> R.string.lbl_singles
-                            is ReleaseType.Compilation -> R.string.lbl_compilations
-                            is ReleaseType.Soundtrack -> R.string.lbl_soundtracks
-                            is ReleaseType.Mixtape -> R.string.lbl_mixtapes
+                        when (it.type) {
+                            is Album.Type.Album -> AlbumGrouping.ALBUMS
+                            is Album.Type.EP -> AlbumGrouping.EPS
+                            is Album.Type.Single -> AlbumGrouping.SINGLES
+                            is Album.Type.Compilation -> AlbumGrouping.COMPILATIONS
+                            is Album.Type.Soundtrack -> AlbumGrouping.SOUNDTRACKS
+                            is Album.Type.Mix -> AlbumGrouping.MIXES
+                            is Album.Type.Mixtape -> AlbumGrouping.MIXTAPES
                         }
                 }
             }
 
+        logD("Release groups for this artist: ${byReleaseGroup.keys}")
+
         for (entry in byReleaseGroup.entries.sortedBy { it.key }) {
-            data.add(Header(entry.key))
+            data.add(Header(entry.key.headerTitleRes))
             data.addAll(entry.value)
         }
 
-        data.add(SortHeader(R.string.lbl_songs))
-        data.addAll(artistSort.songs(artist.songs))
-        _artistData.value = data.toList()
+        // Artists may not be linked to any songs, only include a header entry if we have any.
+        if (artist.songs.isNotEmpty()) {
+            logD("Songs present in this artist, adding header")
+            data.add(SortHeader(R.string.lbl_songs))
+            data.addAll(artistSort.songs(artist.songs))
+        }
+
+        _artistList.value = data.toList()
     }
 
-    private fun refreshGenreData(genre: Genre) {
+    private fun refreshGenreList(genre: Genre) {
         logD("Refreshing genre data")
         val data = mutableListOf<Item>(genre)
+        // Genre is guaranteed to always have artists and songs.
+        data.add(Header(R.string.lbl_artists))
+        data.addAll(genre.artists)
         data.add(SortHeader(R.string.lbl_songs))
         data.addAll(genreSort.songs(genre.songs))
-        _genreData.value = data
+        _genreList.value = data
     }
 
-    // --- CALLBACKS ---
-
-    override fun onLibraryChanged(library: MusicStore.Library?) {
-        if (library != null) {
-            val song = currentSong.value
-            if (song != null) {
-                logD("Song changed, refreshing data")
-                val newSong = library.sanitize(song.song)
-                if (newSong != null) {
-                    generateDetailSong(newSong)
-                } else {
-                    _currentSong.value = null
-                }
-            }
-
-            val album = currentAlbum.value
-            if (album != null) {
-                logD("Album changed, refreshing data")
-                val newAlbum = library.sanitize(album).also { _currentAlbum.value = it }
-                if (newAlbum != null) {
-                    refreshAlbumData(newAlbum)
-                }
-            }
-
-            val artist = currentArtist.value
-            if (artist != null) {
-                logD("Artist changed, refreshing data")
-                val newArtist = library.sanitize(artist).also { _currentArtist.value = it }
-                if (newArtist != null) {
-                    refreshArtistData(newArtist)
-                }
-            }
-
-            val genre = currentGenre.value
-            if (genre != null) {
-                logD("Genre changed, refreshing data")
-                val newGenre = library.sanitize(genre).also { _currentGenre.value = it }
-                if (newGenre != null) {
-                    refreshGenreData(newGenre)
-                }
-            }
-        }
+    /**
+     * A simpler mapping of [Album.Type] used for grouping and sorting songs.
+     * @param headerTitleRes The title string resource to use for a header created out of an
+     * instance of this enum.
+     */
+    private enum class AlbumGrouping(@StringRes val headerTitleRes: Int) {
+        ALBUMS(R.string.lbl_albums),
+        EPS(R.string.lbl_eps),
+        SINGLES(R.string.lbl_singles),
+        COMPILATIONS(R.string.lbl_compilations),
+        SOUNDTRACKS(R.string.lbl_soundtracks),
+        MIXES(R.string.lbl_mixes),
+        MIXTAPES(R.string.lbl_mixtapes),
+        LIVE(R.string.lbl_live_group),
+        REMIXES(R.string.lbl_remix_group),
     }
-
-    override fun onCleared() {
-        musicStore.removeCallback(this)
-    }
-}
-
-data class SortHeader(@StringRes val string: Int) : Item() {
-    override val id: Long
-        get() = string.toLong()
-}
-
-data class DiscHeader(val disc: Int) : Item() {
-    override val id: Long
-        get() = disc.toLong()
 }

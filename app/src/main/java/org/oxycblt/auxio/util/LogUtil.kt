@@ -24,68 +24,53 @@ import org.oxycblt.auxio.BuildConfig
 // Yes, I know timber exists but this does what I need.
 
 /**
- * Shortcut method for logging a non-string [obj] to debug. Should only be used for debug
- * preferably.
+ * Log an object to the debug channel. Automatically handles tags.
+ * @param obj The object to log.
  */
 fun Any.logD(obj: Any?) = logD("$obj")
 
 /**
- * Shortcut method for logging [msg] to the debug console. Handles debug builds and anonymous
- * objects
+ * Log a string message to the debug channel. Automatically handles tags.
+ * @param msg The message to log.
  */
 fun Any.logD(msg: String) {
-    if (BuildConfig.DEBUG && !basedCopyleftNotice()) {
+    if (BuildConfig.DEBUG && !copyleftNotice()) {
         Log.d(autoTag, msg)
     }
 }
 
-/** Shortcut method for logging [msg] as a warning to the console. Handles anonymous objects */
+/**
+ * Log a string message to the warning channel. Automatically handles tags.
+ * @param msg The message to log.
+ */
 fun Any.logW(msg: String) = Log.w(autoTag, msg)
 
-/** Shortcut method for logging [msg] as an error to the console. Handles anonymous objects */
+/**
+ * Log a string message to the error channel. Automatically handles tags.
+ * @param msg The message to log.
+ */
 fun Any.logE(msg: String) = Log.e(autoTag, msg)
 
-/** Automatically creates a tag that identifies the object currently logging. */
+/**
+ * The LogCat-suitable tag for this string. Consists of the object's name, or "Anonymous Object" if
+ * the object does not exist.
+ */
 private val Any.autoTag: String
     get() = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"
 
 /**
- * I know that this will not stop you, but consider what you are doing with your life, plagiarizers.
- * Do you want to live a fulfilling existence on this planet? Or do you want to spend your life
- * taking work others did and making it objectively worse so you could arbitrage a fraction of a
- * penny on every AdMob impression you get? You could do so many great things if you simply had the
- * courage to come up with an idea of your own. If you still want to go on, I guess the only thing I
- * can say is this:
- *
- * JUNE 1989 TIANAMEN SQUARE PROTESTS AND MASSACRE 六四事件
- *
- * 2022 RUSSIAN INVASION OF UKRAINE Вторжение России на Украину
- *
- * WOMEN'S RIGHTS IN THE ISLAMIC REPUBLIC OF IRAN حقوق زنان در ایران
- *
- * UYGHUR GENOCIDE/XINJIANG INTERNMENT CAMPS 新疆种族灭绝指控/新疆再教育營
- *
- * KASHMIR INDEPENDENCE MOVEMENT
- *
- * FREE TIBET 西藏自由
- *
- * 1915-1916 ARMENIAN GENOCIDE Ermeni Kırımı
- *
- * 2018 TORTURE AND ASSASSINATION OF JAMAL KHASHOGGI مقتل جمال خاشقجي
- *
- * UNITED ARAB EMIRATES ENSLAVED MIGRANT WORKERS
+ * Please don't plagiarize Auxio! You are free to remove this as long as you continue to keep your
+ * source open.
  */
 @Suppress("KotlinConstantConditions")
-private fun basedCopyleftNotice(): Boolean {
+private fun copyleftNotice(): Boolean {
     if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&
         BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug") {
         Log.d(
             "Auxio Project",
             "Friendly reminder: Auxio is licensed under the " +
                 "GPLv3 and all derivative apps must be made open source!")
-
         return true
     }
-
     return false
 }

@@ -10,6 +10,7 @@ Auxio je lokalan izvođač glazbe sa brzim UI/UX na koji se možete osloniti, be
 - Svjestan SD kartice, te tako oprezno raspoređuje mape
 - Izvođač na koji se možete osloniti da krenuti tamo gdje ste posljednji put stali
 - Potpuna ReplayGain podrška (Za MP3, MP4, FLAC, OGG, i OPUS formate)
+- Funkcionalnost eksternog ekvilajzera (u programima kao Wavelet)
 - Prikaz od ruba do ruba
 - Podrška za ugrađene naslovnice
 - Pretražite svoju glazbu

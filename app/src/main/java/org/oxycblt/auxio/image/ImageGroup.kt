@@ -17,63 +17,85 @@
  
 package org.oxycblt.auxio.image
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.annotation.AttrRes
+import androidx.core.view.updateMarginsRelative
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
+import org.oxycblt.auxio.util.getDimenPixels
+import org.oxycblt.auxio.util.getInteger
 
 /**
- * Effectively a super-charged [StyledImageView].
- *
- * This class enables the following features alongside the base features pf [StyledImageView]:
- * - Activation indicator
- * - (Eventually) selection indicator
+ * A super-charged [StyledImageView]. This class enables the following features in addition to
+ * [StyledImageView]:
+ * - A selection indicator
+ * - An activation (playback) indicator
  * - Support for ONE custom view
  *
- * This class is primarily intended for list items. For most uses, the simpler [StyledImageView] is
- * more efficient and suitable.
+ * This class is primarily intended for list items. For other uses, [StyledImageView] is more
+ * suitable.
  *
- * @author OxygenCobalt
+ * TODO: Rework content descriptions here
+ *
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class ImageGroup
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     FrameLayout(context, attrs, defStyleAttr) {
-    private val cornerRadius: Float
-    private val inner: StyledImageView
+    private val innerImageView: StyledImageView
     private var customView: View? = null
-    private val indicator: IndicatorView
+    private val playbackIndicatorView: PlaybackIndicatorView
+    private val selectionIndicatorView: ImageView
+
+    private var fadeAnimator: ValueAnimator? = null
+    private val cornerRadius: Float
 
     init {
-        // Android wants you to make separate attributes for each view type, but will
-        // then throw an error if you do because of duplicate attribute names.
+        // Obtain some StyledImageView attributes to use later when theming the cusotm view.
         @SuppressLint("CustomViewStyleable")
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.StyledImageView)
+        // Keep track of our corner radius so that we can apply the same attributes to the custom
+        // view.
         cornerRadius = styledAttrs.getDimension(R.styleable.StyledImageView_cornerRadius, 0f)
         styledAttrs.recycle()
 
-        inner = StyledImageView(context, attrs)
-        indicator = IndicatorView(context).apply { cornerRadius = this@ImageGroup.cornerRadius }
+        // Initialize what views we can here.
+        innerImageView = StyledImageView(context, attrs)
+        playbackIndicatorView =
+            PlaybackIndicatorView(context).apply { cornerRadius = this@ImageGroup.cornerRadius }
+        selectionIndicatorView =
+            ImageView(context).apply {
+                imageTintList = context.getAttrColorCompat(R.attr.colorOnPrimary)
+                setImageResource(R.drawable.ic_check_20)
+                setBackgroundResource(R.drawable.ui_selection_badge_bg)
+            }
 
-        addView(inner)
+        // The inner StyledImageView should be at the bottom and hidden by any other elements
+        // if they become visible.
+        addView(innerImageView)
     }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
+        // Due to innerImageView, the max child count is actually 2 and not 1.
+        check(childCount < 3) { "Only one custom view is allowed" }
 
-        if (childCount > 2) {
-            error("Only one custom view is allowed")
-        }
-
+        // Get the second inflated child, making sure we customize it to align with
+        // the rest of this view.
         customView =
             getChildAt(1)?.apply {
                 background =
@@ -83,65 +105,144 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     }
             }
 
-        addView(indicator)
+        // Playback indicator should sit above the inner StyledImageView and custom view/
+        addView(playbackIndicatorView)
+        // Selction indicator should never be obscured, so place it at the top.
+        addView(
+            selectionIndicatorView,
+            LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
+                // Override the layout params of the indicator so that it's in the
+                // bottom left corner.
+                gravity = Gravity.BOTTOM or Gravity.END
+                val spacing = context.getDimenPixels(R.dimen.spacing_tiny)
+                updateMarginsRelative(bottom = spacing, end = spacing)
+            })
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        invalidateIndicator()
+        // Initialize each component before this view is drawn.
+        invalidateImageAlpha()
+        invalidatePlayingIndicator()
+        invalidateSelectionIndicator()
     }
 
     override fun setActivated(activated: Boolean) {
         super.setActivated(activated)
-        invalidateIndicator()
+        invalidateSelectionIndicator()
     }
 
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
-        invalidateIndicator()
+        invalidateImageAlpha()
+        invalidatePlayingIndicator()
     }
 
+    override fun setSelected(selected: Boolean) {
+        super.setSelected(selected)
+        invalidateImageAlpha()
+        invalidatePlayingIndicator()
+    }
+
+    /**
+     * Bind a [Song] to the internal [StyledImageView].
+     * @param song The [Song] to bind to the view.
+     * @see StyledImageView.bind
+     */
+    fun bind(song: Song) = innerImageView.bind(song)
+
+    /**
+     * Bind a [Album] to the internal [StyledImageView].
+     * @param album The [Album] to bind to the view.
+     * @see StyledImageView.bind
+     */
+    fun bind(album: Album) = innerImageView.bind(album)
+
+    /**
+     * Bind a [Genre] to the internal [StyledImageView].
+     * @param artist The [Artist] to bind to the view.
+     * @see StyledImageView.bind
+     */
+    fun bind(artist: Artist) = innerImageView.bind(artist)
+
+    /**
+     * Bind a [Genre] to the internal [StyledImageView].
+     * @param genre The [Genre] to bind to the view.
+     * @see StyledImageView.bind
+     */
+    fun bind(genre: Genre) = innerImageView.bind(genre)
+
+    /**
+     * Whether this view should be indicated to have ongoing playback or not. See
+     * PlaybackIndicatorView for more information on what occurs here. Note: It's expected for this
+     * view to already be marked as playing with setSelected (not the same thing) before this is set
+     * to true.
+     */
     var isPlaying: Boolean
-        get() = indicator.isPlaying
+        get() = playbackIndicatorView.isPlaying
         set(value) {
-            indicator.isPlaying = value
+            playbackIndicatorView.isPlaying = value
         }
 
-    private fun invalidateIndicator() {
-        if (isActivated) {
-            alpha = 1f
+    private fun invalidateImageAlpha() {
+        // If this view is disabled, show it at half-opacity, *unless* it is also marked
+        // as playing, in which we still want to show it at full-opacity.
+        alpha = if (isSelected || isEnabled) 1f else 0.5f
+    }
+
+    private fun invalidatePlayingIndicator() {
+        if (isSelected) {
+            // View is "selected" (actually marked as playing), so show the playing indicator
+            // and hide all other elements except for the selection indicator.
+            // TODO: Animate the other indicators?
             customView?.alpha = 0f
-            inner.alpha = 0f
-            indicator.alpha = 1f
+            innerImageView.alpha = 0f
+            playbackIndicatorView.alpha = 1f
         } else {
-            alpha = if (isEnabled) 1f else 0.5f
+            // View is not "selected", hide the playing indicator.
             customView?.alpha = 1f
-            inner.alpha = 1f
-            indicator.alpha = 0f
+            innerImageView.alpha = 1f
+            playbackIndicatorView.alpha = 0f
         }
     }
 
-    fun bind(song: Song) {
-        inner.bind(song)
-        contentDescription =
-            context.getString(R.string.desc_album_cover, song.album.resolveName(context))
-    }
+    private fun invalidateSelectionIndicator() {
+        // Set up a target transition for the selection indicator.
+        val targetAlpha: Float
+        val targetDuration: Long
 
-    fun bind(album: Album) {
-        inner.bind(album)
-        contentDescription =
-            context.getString(R.string.desc_album_cover, album.resolveName(context))
-    }
+        if (isActivated) {
+            // View is "activated" (i.e marked as selected), so show the selection indicator.
+            targetAlpha = 1f
+            targetDuration = context.getInteger(R.integer.anim_fade_enter_duration).toLong()
+        } else {
+            // View is not "activated", hide the selection indicator.
+            targetAlpha = 0f
+            targetDuration = context.getInteger(R.integer.anim_fade_exit_duration).toLong()
+        }
 
-    fun bind(artist: Artist) {
-        inner.bind(artist)
-        contentDescription =
-            context.getString(R.string.desc_artist_image, artist.resolveName(context))
-    }
+        if (selectionIndicatorView.alpha == targetAlpha) {
+            // Nothing to do.
+            return
+        }
 
-    fun bind(genre: Genre) {
-        inner.bind(genre)
-        contentDescription =
-            context.getString(R.string.desc_genre_image, genre.resolveName(context))
+        if (!isLaidOut) {
+            // Not laid out, initialize it without animation before drawing.
+            selectionIndicatorView.alpha = targetAlpha
+            return
+        }
+
+        if (fadeAnimator != null) {
+            // Cancel any previous animation.
+            fadeAnimator?.cancel()
+            fadeAnimator = null
+        }
+
+        fadeAnimator =
+            ValueAnimator.ofFloat(selectionIndicatorView.alpha, targetAlpha).apply {
+                duration = targetDuration
+                addUpdateListener { selectionIndicatorView.alpha = it.animatedValue as Float }
+                start()
+            }
     }
 }

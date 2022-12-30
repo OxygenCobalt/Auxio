@@ -2,6 +2,57 @@
 
 ## dev
 
+## 3.0.0
+
+#### What's New
+- Added multi-value tags support
+	- Added support for multiple artists
+	- Added support for multiple genres
+- Artists and album artists are now both given UI entires
+	- Added setting to hide "collaborator" artists
+- Upgraded music ID management:
+	- Added support for MusicBrainz IDs (MBIDs)
+	- Use the more unique MD5 hash of metadata when MBIDs can't be used
+- Genres now display a list of artists
+- Added toggle to load non-music (Such as podcasts)
+- Music loader now caches parsed metadata for faster load times
+- Redesigned icon
+	- Added animated splash screen on Android 12+
+- Added support for MP4 ReplayGain (`----`) atoms
+
+#### What's Improved
+- Sorting now takes accented characters into account
+- Added support for compilation sub-release-types like (DJ) Mix
+- Album dates now start from the earliest date instead of latest date
+- Reshuffling the queue will no longer drop any songs you have added/removed
+- Allowed light/dark theme to be customized on Android 12+
+- All information now scrolls in the playback view
+- A month is now shown for song/album dates when available
+- Added loading indicator to song properties view
+- List items have been made more compact
+
+#### What's Fixed
+- Fixed issue where the scroll popup would not display correctly in landscape mode [#230]
+- Fixed issue where the playback progress would continue in the notification when
+audio focus was lost
+- Fixed issue where the artist name would not be shown in the OS audio switcher menu
+- Fixed issue where the search view would not update if the library changed
+- Fixed visual bug with transitions in the black theme
+- Fixed toolbar flickering when fast-scrolling in the home UI
+
+#### What's Changed
+- Ignore MediaStore tags is now Auxio's default and unchangeable behavior. The option has been removed.
+- Removed the "Play from genre" option in the library/detail playback mode settings+
+- "Use alternate notification action" is now "Custom notification action"
+- "Show covers" and "Ignore MediaStore covers" have been unified into "Album covers"
+
+#### Dev/Meta
+- Created new wiki with more information about app functionality
+- Switched to issue forms
+- Completed migration to reactive playback system
+- Refactor music backends into a unified chain of extractors
+- Add bluetooth connection receiver (No functionality in app yet)
+
 ## 2.6.4
 
 #### What's Fixed

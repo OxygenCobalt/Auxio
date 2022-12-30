@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- This is for HomeFragment's AppBarLayout. Explanations for these can be found there. -->
-    <item name="home_song_list" type="id" />
-    <item name="home_album_list" type="id" />
-    <item name="home_artist_list" type="id" />
-    <item name="home_genre_list" type="id" />
+    <item name="home_song_recycler" type="id" />
+    <item name="home_album_recycler" type="id" />
+    <item name="home_artist_recycler" type="id" />
+    <item name="home_genre_recycler" type="id" />
+
+    <integer name="anim_fade_enter_duration">200</integer>
+    <integer name="anim_fade_exit_duration">100</integer>
 
     <declare-styleable name="StyledImageView">
         <attr name="cornerRadius" format="dimension" />

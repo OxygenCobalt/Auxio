@@ -2,8 +2,8 @@
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
-    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v2.6.4">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v2.6.4&color=0D5AF5">
+    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.0.0">
+        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.0.0&color=0D5AF5">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg">
@@ -13,7 +13,7 @@
     </a>
     <img alt="Minimum SDK Version" src="https://img.shields.io/badge/API-21%2B-32B5ED">
 </p>
-<h4 align="center"><a href="/CHANGELOG.md">Changelog</a> | <a href="/info/FAQ.md">FAQ</a> |  <a href="/info/LICENSES.md">Licenses</a> | <a href="/.github/CONTRIBUTING.md">Contributing</a> | <a href="/info/ARCHITECTURE.md">Architecture</a></h4>
+<h4 align="center"><a href="/CHANGELOG.md">Changelog</a> | <a href="https://github.com/OxygenCobalt/Auxio/wiki">Wiki</a></h4>
 <p align="center">
     <a href="https://f-droid.org/app/org.oxycblt.auxio"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" width="170"></a>
     <a href="https://hosted.weblate.org/engage/auxio/"><img src="https://hosted.weblate.org/widgets/auxio/-/strings/287x66-grey.png" alt="Translation status" /></a>
@@ -21,7 +21,7 @@
 
 ## About
 
-Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of <a href="https://exoplayer.dev/">Exoplayer</a>, Auxio has a much better listening experience compared to other apps that use the native MediaPlayer API. In short, **It plays music.**
+Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of <a href="https://exoplayer.dev/">Exoplayer</a>, Auxio has superior library support and listening quality compared to other apps that use outdated android functionality. In short, **It plays music.**
 
 I primarily built Auxio for myself, but you can use it too, I guess.
 
@@ -46,32 +46,25 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Snappy UI derived from the latest Material Design guidelines
 - Opinionated UX that prioritizes ease of use over edge cases
 - Customizable behavior
-- Advanced media indexer that prioritizes correct metadata
-- Precise/Original Dates, Sort Tags, and Release Type support (Experimental)
+- Support for disc numbers, multiple artists, release types,
+precise/original dates, sort tags, and more
+- Advanced artist system that unifies artists and album artists
 - SD Card-aware folder management
 - Reliable playback state persistence
-- Full ReplayGain support (On MP3, MP4, FLAC, OGG, and OPUS)
+- Full ReplayGain support (On MP3, FLAC, OGG, OPUS, and MP4 files)
 - External equalizer support (ex. Wavelet)
 - Edge-to-edge
 - Embedded covers support
-- Search Functionality
+- Search functionality
 - Headset autoplay
 - Stylish widgets that automatically adapt to their size
 - Completely private and offline
 - No rounded album covers (Unless you want them. Then you can.)
 
-## To come in the future:
-
-- Playlists
-- Liked songs
-- Artist Images
-- More customization options
-- Other things, probably
-
 ## Permissions
 
-- Storage (`READ_EXTERNAL_STORAGE`): to read and play your media files
-- Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`): to keep the music playing even if the app itself is in background
+- Storage (`READ_MEDIA_AUDIO`, `READ_EXTERNAL_STORAGE`) to read and play your media files
+- Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`) to keep the music playing even if the app itself is in background
 
 ## Building
 
@@ -97,3 +90,5 @@ will. Specifically you can redistribute and/or modify it under the terms of the
 [GNU General Public License](https://www.gnu.org/licenses/gpl.html) as
 published by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
+
+More information can be found [here](https://github.com/OxygenCobalt/Auxio/wiki/Licenses).

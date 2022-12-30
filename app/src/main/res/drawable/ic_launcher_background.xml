@@ -4,8 +4,10 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <path
-        android:fillColor="@color/fill_icon_bg"
-        android:pathData="M0 0h108v108H0z"
-        android:strokeColor="#00000000" />
+    <group android:name="bg">
+        <path
+            android:fillColor="@color/fill_icon_bg"
+            android:pathData="M0 0h108v108H0z"
+            android:strokeColor="#00000000" />
+    </group>
 </vector>

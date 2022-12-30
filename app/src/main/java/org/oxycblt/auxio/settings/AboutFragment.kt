@@ -25,31 +25,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.net.toUri
 import androidx.core.view.updatePadding
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.transition.MaterialFadeThrough
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
-import org.oxycblt.auxio.home.HomeViewModel
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
+import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.playback.formatDurationMs
+import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.formatDurationMs
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
- * A [BottomSheetDialogFragment] that shows Auxio's about screen.
- * @author OxygenCobalt
+ * A [ViewBindingFragment] that displays information about the app and the current music library.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
-    private val homeModel: HomeViewModel by androidActivityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,54 +55,49 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentAboutBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentAboutBinding, savedInstanceState: Bundle?) {
+        super.onBindingCreated(binding, savedInstanceState)
+
+        // --- UI SETUP ---
+        binding.aboutToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
         binding.aboutContents.setOnApplyWindowInsetsListener { view, insets ->
             view.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
             insets
         }
 
-        binding.aboutToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
-
         binding.aboutVersion.text = BuildConfig.VERSION_NAME
-        binding.aboutCode.setOnClickListener { openLinkInBrowser(LINK_CODEBASE) }
-        binding.aboutFaq.setOnClickListener { openLinkInBrowser(LINK_FAQ) }
+        binding.aboutCode.setOnClickListener { openLinkInBrowser(LINK_SOURCE) }
+        binding.aboutWiki.setOnClickListener { openLinkInBrowser(LINK_WIKI) }
         binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }
+        binding.aboutAuthor.setOnClickListener { openLinkInBrowser(LINK_AUTHOR) }
 
-        collectImmediately(homeModel.songs, ::updateSongCount)
-        collectImmediately(homeModel.albums, ::updateAlbumCount)
-        collectImmediately(homeModel.artists, ::updateArtistCount)
-        collectImmediately(homeModel.genres, ::updateGenreCount)
+        // VIEWMODEL SETUP
+        collectImmediately(musicModel.statistics, ::updateStatistics)
     }
 
-    private fun updateSongCount(songs: List<Song>) {
+    private fun updateStatistics(statistics: MusicViewModel.Statistics?) {
         val binding = requireBinding()
-        binding.aboutSongCount.text = getString(R.string.fmt_lib_song_count, songs.size)
+        binding.aboutSongCount.text = getString(R.string.fmt_lib_song_count, statistics?.songs ?: 0)
+        requireBinding().aboutAlbumCount.text =
+            getString(R.string.fmt_lib_album_count, statistics?.albums ?: 0)
+        requireBinding().aboutArtistCount.text =
+            getString(R.string.fmt_lib_artist_count, statistics?.artists ?: 0)
+        requireBinding().aboutGenreCount.text =
+            getString(R.string.fmt_lib_genre_count, statistics?.genres ?: 0)
         binding.aboutTotalDuration.text =
             getString(
                 R.string.fmt_lib_total_duration,
-                songs.sumOf { it.durationMs }.formatDurationMs(false))
+                (statistics?.durationMs ?: 0).formatDurationMs(false))
     }
 
-    private fun updateAlbumCount(albums: List<Album>) {
-        requireBinding().aboutAlbumCount.text = getString(R.string.fmt_lib_album_count, albums.size)
-    }
-
-    private fun updateArtistCount(artists: List<Artist>) {
-        requireBinding().aboutArtistCount.text =
-            getString(R.string.fmt_lib_artist_count, artists.size)
-    }
-
-    private fun updateGenreCount(genres: List<Genre>) {
-        requireBinding().aboutGenreCount.text = getString(R.string.fmt_lib_genre_count, genres.size)
-    }
-
-    /** Go through the process of opening a [link] in a browser. */
-    private fun openLinkInBrowser(link: String) {
-        logD("Opening $link")
-
+    /**
+     * Open the given URI in a web browser.
+     * @param uri The URL to open.
+     */
+    private fun openLinkInBrowser(uri: String) {
+        logD("Opening $uri")
         val context = requireContext()
-
         val browserIntent =
-            Intent(Intent.ACTION_VIEW, link.toUri()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            Intent(Intent.ACTION_VIEW, uri.toUri()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Android 11 seems to now handle the app chooser situations on its own now
@@ -138,7 +128,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
                         browserIntent.setPackage(pkgName)
                         startActivity(browserIntent)
                     } catch (e: ActivityNotFoundException) {
-                        // Not browser but an app chooser due to OEM garbage
+                        // Not a browser but an app chooser
                         browserIntent.setPackage(null)
                         openAppChooser(browserIntent)
                     }
@@ -150,18 +140,26 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         }
     }
 
+    /**
+     * Open an app chooser for a given [Intent].
+     * @param intent The [Intent] to show an app chooser for.
+     */
     private fun openAppChooser(intent: Intent) {
         val chooserIntent =
             Intent(Intent.ACTION_CHOOSER)
                 .putExtra(Intent.EXTRA_INTENT, intent)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
         startActivity(chooserIntent)
     }
 
     companion object {
-        private const val LINK_CODEBASE = "https://github.com/oxygencobalt/Auxio"
-        private const val LINK_FAQ = "$LINK_CODEBASE/blob/master/info/FAQ.md"
-        private const val LINK_LICENSES = "$LINK_CODEBASE/blob/master/info/LICENSES.md"
+        /** The URL to the source code. */
+        private const val LINK_SOURCE = "https://github.com/OxygenCobalt/Auxio"
+        /** The URL to the app wiki. */
+        private const val LINK_WIKI = "$LINK_SOURCE/wiki"
+        /** The URL to the licenses wiki page. */
+        private const val LINK_LICENSES = "$LINK_WIKI/Licenses"
+        /** The URL to the app author. */
+        private const val LINK_AUTHOR = "https://github.com/OxygenCobalt"
     }
 }

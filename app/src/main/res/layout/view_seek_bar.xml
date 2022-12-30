@@ -20,7 +20,7 @@
         android:layout_marginStart="@dimen/spacing_medium"
         android:layout_marginBottom="@dimen/spacing_tiny"
         android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
-        android:textColor="@color/sel_accented_secondary"
+        android:textColor="@color/sel_activatable_text_secondary"
         tools:text="11:38" />
 
     <TextView

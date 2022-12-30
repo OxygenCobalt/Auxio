@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/spacing_medium">
-
+    android:paddingTop="@dimen/spacing_medium"
+    android:paddingStart="@dimen/spacing_medium"
+    android:paddingEnd="@dimen/spacing_medium"
+    android:paddingBottom="@dimen/spacing_mid_medium">
     <org.oxycblt.auxio.image.StyledImageView
         android:id="@+id/detail_cover"
         style="@style/Widget.Auxio.Image.Huge"
@@ -40,7 +42,7 @@
 
     <TextView
         android:id="@+id/detail_subhead"
-        style="@style/Widget.Auxio.TextView.Secondary"
+        style="@style/Widget.Auxio.TextView.Secondary.Ellipsize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="?android:attr/textColorSecondary"
@@ -50,7 +52,7 @@
 
     <TextView
         android:id="@+id/detail_info"
-        style="@style/Widget.Auxio.TextView.Secondary"
+        style="@style/Widget.Auxio.TextView.Secondary.Ellipsize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="?android:attr/textColorSecondary"
@@ -63,7 +65,7 @@
         style="@style/Widget.Auxio.Button.Secondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_marginTop="@dimen/spacing_mid_medium"
         android:layout_marginEnd="@dimen/spacing_small"
         android:text="@string/lbl_play"
         app:layout_constraintEnd_toStartOf="@+id/detail_shuffle_button"

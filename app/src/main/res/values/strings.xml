@@ -51,12 +51,19 @@
     <string name="lbl_compilations">Compilations</string>
     <!-- As in a compilation of music -->
     <string name="lbl_compilation">Compilation</string>
+    <!-- As in a compilation of live music -->
+    <string name="lbl_compilation_live">Live compilation</string>
+    <string name="lbl_compilation_remix">Remix compilations</string>
     <string name="lbl_soundtracks">Soundtracks</string>
     <string name="lbl_soundtrack">Soundtrack</string>
     <!-- As in the collection of music -->
     <string name="lbl_mixtapes">Mixtapes</string>
     <!-- As in the collection of music -->
     <string name="lbl_mixtape">Mixtape</string>
+    <!-- As in a compilation of several performances that blend into a single continuous flow of music -->
+    <string name="lbl_mixes">Mixes</string>
+    <!-- As in a compilation of several performances that blend into a single continuous flow of music -->
+    <string name="lbl_mix">Mix</string>
 
     <!-- As in music that was performed live -->
     <string name="lbl_live_group">Live</string>
@@ -78,7 +85,7 @@
 
     <string name="lbl_sort">Sort</string>
     <string name="lbl_sort_name">Name</string>
-    <string name="lbl_sort_year">Year</string>
+    <string name="lbl_sort_date">Date</string>
     <string name="lbl_sort_duration">Duration</string>
     <string name="lbl_sort_count">Song count</string>
     <string name="lbl_sort_disc">Disc</string>
@@ -89,7 +96,9 @@
     <string name="lbl_playback">Now playing</string>
     <string name="lbl_equalizer">Equalizer</string>
     <string name="lbl_play">Play</string>
+    <string name="lbl_play_selected">Play selected</string>
     <string name="lbl_shuffle">Shuffle</string>
+    <string name="lbl_shuffle_selected">Shuffle selected</string>
 
     <string name="lbl_queue">Queue</string>
     <string name="lbl_play_next">Play next</string>
@@ -131,18 +140,18 @@
     <string name="lbl_about">About</string>
     <string name="lbl_version">Version</string>
     <string name="lbl_code">Source code</string>
-    <string name="lbl_faq">FAQ</string>
+    <string name="lbl_wiki">Wiki</string>
     <string name="lbl_licenses">Licenses</string>
     <string name="lbl_library_counts">Library statistics</string>
 
     <!-- Long Namespace | Longer Descriptions -->
     <eat-comment />
 
-    <string name="lng_playback">View and control music playback</string>
+    <string name="lng_widget">View and control music playback</string>
     <string name="lng_indexing">Loading your music library…</string>
     <string name="lng_observing">Monitoring your music library for changes…</string>
     <string name="lng_queue_added">Added to queue</string>
-    <string name="lng_author">Developed by OxygenCobalt</string>
+    <string name="lng_author">Developed by Alexander Capehart</string>
     <!-- As in music library -->
     <string name="lng_search_library">Search your library…</string>
 
@@ -162,20 +171,19 @@
     <string name="set_display">Display</string>
     <string name="set_lib_tabs">Library tabs</string>
     <string name="set_lib_tabs_desc">Change visibility and order of library tabs</string>
-    <string name="set_show_covers">Show album covers</string>
-    <string name="set_show_covers_desc">Turn off to save memory usage</string>
-    <string name="set_quality_covers">Ignore MediaStore covers</string>
-    <string name="set_quality_covers_desc">Increases album cover quality, but results in longer loading times and higher memory usage</string>
+    <string name="set_hide_collaborators">Hide collaborators</string>
+    <string name="set_hide_collaborators_desc">Only show artists that are directly credited on an album (works best on well-tagged libraries)</string>
+    <string name="set_cover_mode">Album covers</string>
+    <string name="set_cover_mode_off">Off</string>
+    <string name="set_cover_mode_media_store">Fast</string>
+    <string name="set_cover_mode_quality">High quality</string>
     <string name="set_round_mode">Round mode</string>
-    <string name="set_round_mode_desc">Enable rounded corners on additional UI elements (Requires album covers to be rounded)</string>
+    <string name="set_round_mode_desc">Enable rounded corners on additional UI elements (requires album covers to be rounded)</string>
     <string name="set_bar_action">Custom playback bar action</string>
     <!-- Skip to next (song) -->
     <string name="set_bar_action_next">Skip to next</string>
     <string name="set_bar_action_repeat">Repeat mode</string>
-    <string name="set_bar_action_shuffle">@string/lbl_shuffle</string>
-    <string name="set_alt_action">Use alternate notification action</string>
-    <string name="set_alt_repeat">Prefer repeat mode action</string>
-    <string name="set_alt_shuffle">Prefer shuffle action</string>
+    <string name="set_notif_action">Custom notification action</string>
 
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Headset autoplay</string>
@@ -194,7 +202,7 @@
     <string name="set_library_song_playback_mode">When playing from the library</string>
     <string name="set_detail_song_playback_mode">When playing from item details</string>
     <string name="set_playback_mode_none">Play from shown item</string>
-    <string name="set_playback_mode_all">Play from all songs</string>
+    <string name="set_playback_mode_songs">Play from all songs</string>
     <string name="set_playback_mode_album">Play from album</string>
     <string name="set_playback_mode_artist">Play from artist</string>
     <string name="set_playback_mode_genre">Play from genre</string>
@@ -204,16 +212,21 @@
     <string name="set_rewind_prev_desc">Rewind before skipping to the previous song</string>
     <string name="set_repeat_pause">Pause on repeat</string>
     <string name="set_repeat_pause_desc">Pause when a song repeats</string>
-
-    <string name="set_content">Content</string>
     <string name="set_save_state">Save playback state</string>
     <string name="set_save_desc">Save the current playback state now</string>
     <string name="set_wipe_state">Clear playback state</string>
     <string name="set_wipe_desc">Clear the previously saved playback state (if any)</string>
     <string name="set_restore_state">Restore playback state</string>
     <string name="set_restore_desc">Restore the previously saved playback state (if any)</string>
-    <string name="set_reindex">Reload music</string>
-    <string name="set_reindex_desc">May wipe playback state</string>
+
+    <string name="set_content">Content</string>
+    <string name="set_reindex">Refresh music</string>
+    <string name="set_reindex_desc">Reload the music library, using cached tags when possible</string>
+    <!-- Different from "Reload music" -->
+    <string name="set_rescan">Rescan music</string>
+    <string name="set_rescan_desc">Clear the tag cache and fully reload the music library (slower, but more complete)</string>
+    <string name="set_observing">Automatic reloading</string>
+    <string name="set_observing_desc">Reload the music library whenever it changes (requires persistent notification)</string>
     <string name="set_dirs">Music folders</string>
     <string name="set_dirs_desc">Manage where music should be loaded from</string>
     <!-- As in the mode to be used with the music folders setting -->
@@ -224,10 +237,16 @@
     <!-- Restrict music loading to selected folders -->
     <string name="set_dirs_mode_include">Include</string>
     <string name="set_dirs_mode_include_desc">Music will <b>only</b> be loaded from the folders you add.</string>
-    <string name="set_quality_tags">Ignore MediaStore tags</string>
-    <string name="set_quality_tags_desc">Increases tag quality, but results in longer loading times (Experimental)</string>
-    <string name="set_observing">Automatic reloading</string>
-    <string name="set_observing_desc">Reload your music library whenever it changes (Experimental)</string>
+    <string name="set_exclude_non_music">Exclude non-music</string>
+    <string name="set_exclude_non_music_desc">Ignore audio files that are not music, such as podcasts</string>
+    <string name="set_separators">Multi-value separators</string>
+    <string name="set_separators_desc">Configure characters that denote multiple tag values</string>
+    <string name="set_separators_warning">Warning: Using this setting may result in some tags being incorrectly interpreted as having multiple values. You can resolve this by prefixing unwanted separator characters with a backslash (\\).</string>
+    <string name="set_separators_comma">Comma (,)</string>
+    <string name="set_separators_semicolon">Semicolon (;)</string>
+    <string name="set_separators_slash">Slash (/)</string>
+    <string name="set_separators_plus">Plus (+)</string>
+    <string name="set_separators_and">Ampersand (&amp;)</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">No music found</string>
@@ -238,7 +257,11 @@
     <string name="err_no_dirs">No folders</string>
     <string name="err_bad_dir">This folder is not supported</string>
     <!-- Referring to playback state -->
-    <string name="err_did_not_restore">No state could be restored</string>
+    <string name="err_did_not_restore">Unable to restore state</string>
+    <!-- Referring to playback state -->
+    <string name="err_did_not_wipe">Unable to clear state</string>
+    <!-- Referring to playback state -->
+    <string name="err_did_not_save">Unable to save state</string>
 
     <!-- Description Namespace | Accessibility Strings -->
 
@@ -318,6 +341,9 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <eat-comment />
 
+    <!-- As in an amount of items that are selected -->
+    <string name="fmt_selected">%d Selected</string>
+
     <!-- As in "Disc 1", "Disc 2", etc. in a set -->
     <string name="fmt_disc_no">Disc %d</string>
 
@@ -347,5 +373,10 @@
     <plurals name="fmt_album_count">
         <item quantity="one">%d album</item>
         <item quantity="other">%d albums</item>
+    </plurals>
+
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d artist</item>
+        <item quantity="other">%d artists</item>
     </plurals>
 </resources>

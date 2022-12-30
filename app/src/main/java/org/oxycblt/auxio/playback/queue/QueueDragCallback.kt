@@ -24,13 +24,13 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.getInteger
 import org.oxycblt.auxio.util.logD
 
 /**
- * A highly customized [ItemTouchHelper.Callback] that handles the queue system while basically
- * rebuilding most the "Material-y" aspects of an editable list because Google's implementations are
- * hot garbage. This shouldn't have *too many* UI bugs. I hope.
- * @author OxygenCobalt
+ * A highly customized [ItemTouchHelper.Callback] that enables some extra eye candy in the queue UI,
+ * such as an animation when lifting items.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHelper.Callback() {
     private var shouldLift = true
@@ -40,11 +40,13 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
         viewHolder: RecyclerView.ViewHolder
     ): Int {
         val queueHolder = viewHolder as QueueSongViewHolder
-        return if (queueHolder.isEnabled) {
+        return if (queueHolder.isFuture) {
             makeFlag(
                 ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN) or
                 makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)
         } else {
+            // Avoid allowing any touch actions for already-played queue items, as the playback
+            // system does not currently allow for this.
             0
         }
     }
@@ -58,12 +60,11 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
         actionState: Int,
         isCurrentlyActive: Boolean
     ) {
-        // The material design page on elevation has a cool example of draggable items elevating
-        // themselves when being dragged. Too bad google's implementation of this doesn't even
-        // work! To emulate it on my own, I check if this child is in a drag state and then animate
-        // an elevation change.
         val holder = viewHolder as QueueSongViewHolder
 
+        // Hook drag events to "lifting" the queue item (i.e raising it's elevation). Make sure
+        // this is only done once when the item is initially picked up.
+        // TODO: I think this is possible to improve with a raw ValueAnimator.
         if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
             logD("Lifting queue item")
 
@@ -72,7 +73,8 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
             holder.itemView
                 .animate()
                 .translationZ(elevation)
-                .setDuration(100)
+                .setDuration(
+                    recyclerView.context.getInteger(R.integer.anim_fade_exit_duration).toLong())
                 .setUpdateListener {
                     bg.alpha = ((holder.itemView.translationZ / elevation) * 255).toInt()
                 }
@@ -82,20 +84,19 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
             shouldLift = false
         }
 
-        // We show a background with a clear icon behind the queue song each time one is swiped
-        // away. To avoid any canvas shenanigans, we just place a custom background view behind the
-        // main "body" layout of the queue item and then translate that.
-        //
+        // We show a background with a delete icon behind the queue song each time one is swiped
+        // away. To avoid working with canvas, this is simply placed behind the queue body.
         // That comes with a couple of problems, however. For one, the background view will always
         // lag behind the body view, resulting in a noticeable pixel offset when dragging. To fix
         // this, we make this a separate view and make this view invisible whenever the item is
-        // not being swiped. We cannot merge this view with the FrameLayout, as that will cause
-        // another weird pixel desynchronization issue that is less visible but still incredibly
-        // annoying.
+        // not being swiped. This issue is also the reason why the background is not merged with
+        // the FrameLayout within the queue item.
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
             holder.backgroundView.isInvisible = dX == 0f
         }
 
+        // Update other translations. We do not call the default implementation, so we must do
+        // this ourselves.
         holder.bodyView.translationX = dX
         holder.itemView.translationY = dY
     }
@@ -104,6 +105,8 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
         // When an elevated item is cleared, we reset the elevation using another animation.
         val holder = viewHolder as QueueSongViewHolder
 
+        // This function can be called multiple times, so only start the animation when the view's
+        // translationZ is already non-zero.
         if (holder.itemView.translationZ != 0f) {
             logD("Dropping queue item")
 
@@ -112,7 +115,8 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
             holder.itemView
                 .animate()
                 .translationZ(0f)
-                .setDuration(100)
+                .setDuration(
+                    recyclerView.context.getInteger(R.integer.anim_fade_exit_duration).toLong())
                 .setUpdateListener {
                     bg.alpha = ((holder.itemView.translationZ / elevation) * 255).toInt()
                 }
@@ -122,6 +126,8 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
 
         shouldLift = true
 
+        // Reset translations. We do not call the default implementation, so we must do
+        // this ourselves.
         holder.bodyView.translationX = 0f
         holder.itemView.translationY = 0f
     }
@@ -138,5 +144,6 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
         playbackModel.removeQueueDataItem(viewHolder.bindingAdapterPosition)
     }
 
+    // Long-press events are too buggy, only allow dragging with the handle.
     override fun isLongPressDragEnabled() = false
 }

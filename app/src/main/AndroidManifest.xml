@@ -8,6 +8,11 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <!-- Bluetooth auto-connect functionality (Disabled until permission workflow can be made) -->
+<!--    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />-->
+<!--    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" android:minSdkVersion="31" />-->
+<!--    <uses-feature android:name="android.hardware.bluetooth" android:required="false"/>-->
+
     <!-- Work around ExoPlayer requiring network permissions we do not use -->
     <uses-permission
         android:name="android.permission.ACCESS_NETWORK_STATE"
@@ -70,8 +75,8 @@
         </activity>
 
         <!--
-        IndexerService handles querying the media database,
-        extracting metadata, and constructing the music library.
+        Service handling querying the media database,  extracting metadata, and constructing
+        the music library.
         -->
         <service
             android:name=".music.system.IndexerService"
@@ -81,7 +86,7 @@
             android:roundIcon="@mipmap/ic_launcher" />
 
         <!--
-        PlaybackService handles music playback, system components, and state saving.
+        Service handling music playback, system components, and state saving.
         -->
         <service
             android:name=".playback.system.PlaybackService"
@@ -102,7 +107,16 @@
             </intent-filter>
         </receiver>
 
-        <!-- Auxio's one and only AppWidget. -->
+        <!-- Receiver for bluetooth headset events -->
+<!--        <receiver-->
+<!--            android:name=".playback.system.BluetoothConnectReceiver"-->
+<!--            android:exported="true">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED" />-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
+
+        <!-- "Now Playing" widget.. -->
         <receiver
             android:name=".widgets.WidgetProvider"
             android:exported="false"

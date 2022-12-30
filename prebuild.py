@@ -19,7 +19,7 @@ import re
 
 # WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE FLAC EXTENSION AND 
 # THE GRADLE DEPENDENCY. IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
-EXO_VERSION = "2.18.1"
+# EXO_VERSION = "2.18.1"
 FLAC_VERSION = "1.3.2"
 
 FATAL="\033[1;31m"
@@ -29,6 +29,7 @@ OK="\033[1;92m"
 NC="\033[0m"
 
 # We do some shell scripting later on, so we can't support windows.
+# TODO: Support windows
 system = platform.system()
 if system not in ["Linux", "Darwin"]:
     print("fatal: unsupported platform " + system)
@@ -95,9 +96,9 @@ sh("rm -rf " + exoplayer_path)
 sh("rm -rf " + libs_path)
 
 print(INFO + "info:" + NC + " cloning exoplayer...")
-sh("git clone https://github.com/google/ExoPlayer.git " + exoplayer_path)
+sh("git clone https://github.com/OxygenCobalt/ExoPlayer.git " + exoplayer_path)
 os.chdir(exoplayer_path)
-sh("git checkout r" + EXO_VERSION)
+sh("git checkout auxio")
 
 print(INFO + "info:" + NC + " assembling flac extension...")
 flac_ext_aar_path = os.path.join(exoplayer_path, "extensions", "flac", 
@@ -111,9 +112,17 @@ sh(ndk_build_path + " APP_ABI=all -j4")
 
 os.chdir(exoplayer_path)
 sh("./gradlew extension-flac:bundleReleaseAar")
+ 
+print(INFO + "info:" + NC + " assembling extractor component...")
+
+extractor_aar_path = os.path.join(exoplayer_path, "library", "extractor", 
+    "buildout", "outputs", "aar", "library-extractor-release.aar")
+
+sh("./gradlew library-extractor:bundleReleaseAar")
 
 os.chdir(start_path)
 sh("mkdir " + libs_path)
 sh("cp " + flac_ext_aar_path + " " + libs_path)
-
+sh("cp " + extractor_aar_path + " " + libs_path)
+ 
 print(OK + "success:" + NC + " completed pre-build")

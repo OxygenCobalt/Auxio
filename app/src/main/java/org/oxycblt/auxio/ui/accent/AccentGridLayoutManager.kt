@@ -23,11 +23,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.max
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.getDimenSize
+import org.oxycblt.auxio.util.getDimenPixels
 
 /**
- * A sub-class of [GridLayoutManager] that automatically sets the spans so that they fit the width
- * of the RecyclerView. Adapted from this StackOverflow answer:
+ * A [GridLayoutManager] that automatically sets the span size in order to use the most possible
+ * space in the [RecyclerView]. Derived from this StackOverflow answer:
  * https://stackoverflow.com/a/30256880/14143986
  */
 class AccentGridLayoutManager(
@@ -38,8 +38,7 @@ class AccentGridLayoutManager(
 ) : GridLayoutManager(context, attrs, defStyleAttr, defStyleRes) {
     // We use 56dp here since that's the rough size of the accent item.
     // This will need to be modified if this is used beyond the accent dialog.
-    private var columnWidth = context.getDimenSize(R.dimen.size_accent_item)
-
+    private var columnWidth = context.getDimenPixels(R.dimen.size_accent_item)
     private var lastWidth = -1
     private var lastHeight = -1
 
@@ -48,10 +47,8 @@ class AccentGridLayoutManager(
             val totalSpace = width - paddingRight - paddingLeft
             spanCount = max(1, totalSpace / columnWidth)
         }
-
         lastWidth = width
         lastHeight = height
-
         super.onLayoutChildren(recycler, state)
     }
 }

@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center"
-        android:background="@drawable/ui_widget_bar"
+        android:background="@drawable/ui_widget_bar_system"
         android:backgroundTint="?attr/colorSurface"
         android:orientation="horizontal"
         android:padding="@dimen/spacing_mid_medium">

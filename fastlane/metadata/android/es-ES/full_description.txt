@@ -1,19 +1,22 @@
-Auxio es un reproductor de música local con una interfaz rápida y fiable, sin muchas de las opciones inútiles presentes en otros reproductores. Construido sobre <a href="https://exoplayer.dev/">Exoplayer</a>, Auxio ofrece una mejor experiencia auditiva en comparación con otras aplicaciones que usan la API nativa MediaPlayer. En resumen, <b>reproduce música.</b>
+Auxio es un reproductor de música local con una UI/UX rápida y confiable, pero sin las muchas funciones innecesarias que tienen otros reproductores. Auxio se basa en <a href="https://exoplayer.dev/">Exoplayer</a> y, por lo tanto, tiene una mejor calidad y compatibilidad con la biblioteca de música que otros reproductores que utilizan funciones heredadas de Android. En resumen, Auxio reproduce música.
 
-<b>Características</b>
+<b>Funciones</b>
 
-- Reproducción basada en ExoPlayer
--Interfaz rápida derivada de las últimas directrices de Diseño Material
-- Experiencia de usuario opinionada que prioriza la facilidad de uso sobre casos límite
+- basado en ExoPlayer
+- interfaz de usuario simple, orientada al diseño de materiales
+- UX prefiere la simplicidad a los casos específicos
 - Comportamiento personalizable
-- Indexador personalizable que prioriza los metadatos correctos
-- Gestión de carpetas consciente de tarjetas SD
-- Persistencia de estado de reproducción fisble
-- Soporte completo para ReplayGain (En MP3, MP4, FLAC, OGG y OPUS)
-- Borde-a-borde
-- Soporte para carátulas embebidas
-- Funcionalidad de búsqueda
-- Reproducción automática con auriculares
-- Widgets estilizados que se adaptan automáticamente a su tamaño
-- Completamente privado y sin conexión
-- Sin carátulas de álbumes redondeadas (A menos que lo desees. Entonces puedes.)
+- Indexador de medios avanzado que favorece los metadatos correctos
+- Se admite el número de CD, varios artistas, tipos de publicación, fecha precisa/original, clasificación de etiquetas y tipo de publicación (Experimental)
+- sistema de artista avanzado que admite artistas y artistas de álbumes
+- admite tarjetas SD
+- Almacenamiento confiable del estado de reproducción
+- Compatibilidad total con ReplayGain (para archivos MP3, FLAC, OGG, OPUS y MP4)
+- Soporte de ecualizador externo (por ejemplo, Wavelet)
+- Borde a borde
+- Soporte para tapas incrustadas
+- Buscar
+- Reproducción automática en auriculares
+- Widgets con estilo que ajustan su tamaño
+- completamente privado y fuera de línea
+- no hay portadas de álbumes redondeadas (a menos que las quieras. Entonces funciona)

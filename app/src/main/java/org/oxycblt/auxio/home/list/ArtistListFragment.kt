@@ -18,106 +18,125 @@
 package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
+import org.oxycblt.auxio.home.HomeViewModel
+import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
+import org.oxycblt.auxio.list.*
+import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.recycler.ArtistViewHolder
+import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.recycler.SyncListDiffer
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.Sort
-import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
-import org.oxycblt.auxio.ui.recycler.IndicatorAdapter
-import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.ui.recycler.MenuItemListener
-import org.oxycblt.auxio.ui.recycler.SyncListDiffer
+import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.formatDurationMs
+import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
- * A [HomeListFragment] for showing a list of [Artist]s.
- * @author OxygenCobalt
+ * A [ListFragment] that shows a list of [Artist]s.
+ * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistListFragment : HomeListFragment<Artist>() {
+class ArtistListFragment :
+    ListFragment<FragmentHomeListBinding>(),
+    FastScrollRecyclerView.PopupProvider,
+    FastScrollRecyclerView.Listener {
+    private val homeModel: HomeViewModel by activityViewModels()
     private val homeAdapter = ArtistAdapter(this)
+
+    override fun onCreateBinding(inflater: LayoutInflater) =
+        FragmentHomeListBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
         binding.homeRecycler.apply {
-            id = R.id.home_artist_list
+            id = R.id.home_artist_recycler
             adapter = homeAdapter
+            popupProvider = this@ArtistListFragment
+            listener = this@ArtistListFragment
         }
 
-        collectImmediately(homeModel.artists, homeAdapter::replaceList)
-        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::handleParent)
+        collectImmediately(homeModel.artistsList, homeAdapter::replaceList)
+        collectImmediately(selectionModel.selected, homeAdapter::setSelectedItems)
+        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+    }
+
+    override fun onDestroyBinding(binding: FragmentHomeListBinding) {
+        super.onDestroyBinding(binding)
+        binding.homeRecycler.apply {
+            adapter = null
+            popupProvider = null
+            listener = null
+        }
     }
 
     override fun getPopup(pos: Int): String? {
-        val artist = homeModel.artists.value[pos]
-
-        // Change how we display the popup depending on the mode.
-        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_ARTISTS).mode) {
+        val artist = homeModel.artistsList.value[pos]
+        // Change how we display the popup depending on the current sort mode.
+        return when (homeModel.getSortForTab(MusicMode.ARTISTS).mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> artist.sortName?.run { first().uppercase() }
+            is Sort.Mode.ByName -> artist.collationKey?.run { sourceString.first().uppercase() }
 
             // Duration -> Use formatted duration
-            is Sort.Mode.ByDuration -> artist.durationMs.formatDurationMs(false)
+            is Sort.Mode.ByDuration -> artist.durationMs?.formatDurationMs(false)
 
             // Count -> Use song count
-            is Sort.Mode.ByCount -> artist.songs.size.toString()
+            is Sort.Mode.ByCount -> artist.songs.size.nonZeroOrNull()?.toString()
 
             // Unsupported sort, error gracefully
             else -> null
         }
     }
 
-    override fun onItemClick(item: Item) {
-        check(item is Music)
-        navModel.exploreNavigateTo(item)
+    override fun onFastScrollingChanged(isFastScrolling: Boolean) {
+        homeModel.setFastScrolling(isFastScrolling)
+    }
+
+    override fun onRealClick(music: Music) {
+        check(music is Artist) { "Unexpected datatype: ${music::class.java}" }
+        navModel.exploreNavigateTo(music)
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {
-        when (item) {
-            is Artist -> musicMenu(anchor, R.menu.menu_genre_artist_actions, item)
-            else -> error("Unexpected datatype when opening menu: ${item::class.java}")
-        }
+        check(item is Artist) { "Unexpected datatype: ${item::class.java}" }
+        openMusicMenu(anchor, R.menu.menu_artist_actions, item)
     }
 
-    private fun handleParent(parent: MusicParent?, isPlaying: Boolean) {
-        if (parent is Artist) {
-            homeAdapter.updateIndicator(parent, isPlaying)
-        } else {
-            // Ignore playback not from artists
-            homeAdapter.updateIndicator(null, isPlaying)
-        }
+    private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
+        // If an artist is playing, highlight it within this adapter.
+        homeAdapter.setPlayingItem(parent as? Artist, isPlaying)
     }
 
-    private class ArtistAdapter(private val listener: MenuItemListener) :
-        IndicatorAdapter<ArtistViewHolder>() {
-        private val differ = SyncListDiffer(this, ArtistViewHolder.DIFFER)
+    /**
+     * A [SelectionIndicatorAdapter] that shows a list of [Artist]s using [ArtistViewHolder].
+     * @param listener An [SelectableListListener] to bind interactions to.
+     */
+    private class ArtistAdapter(private val listener: SelectableListListener) :
+        SelectionIndicatorAdapter<ArtistViewHolder>() {
+        private val differ = SyncListDiffer(this, ArtistViewHolder.DIFF_CALLBACK)
 
         override val currentList: List<Item>
             get() = differ.currentList
 
-        override fun getItemCount() = differ.currentList.size
-
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ArtistViewHolder.new(parent)
 
-        override fun onBindViewHolder(
-            holder: ArtistViewHolder,
-            position: Int,
-            payloads: List<Any>
-        ) {
-            super.onBindViewHolder(holder, position, payloads)
-
-            if (payloads.isEmpty()) {
-                holder.bind(differ.currentList[position], listener)
-            }
+        override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
+            holder.bind(differ.currentList[position], listener)
         }
 
+        /**
+         * Asynchronously update the list with new [Artist]s.
+         * @param newList The new [Artist]s for the adapter to display.
+         */
         fun replaceList(newList: List<Artist>) {
             differ.replaceList(newList)
         }

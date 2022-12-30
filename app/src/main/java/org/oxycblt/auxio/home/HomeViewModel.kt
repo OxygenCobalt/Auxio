@@ -26,130 +26,72 @@ import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.Sort
-import org.oxycblt.auxio.util.application
+import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
 
 /**
- * The ViewModel for managing [HomeFragment]'s data, sorting modes, and tab state.
- * @author OxygenCobalt
+ * The ViewModel for managing the tab data and lists of the home view.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class HomeViewModel(application: Application) :
     AndroidViewModel(application), Settings.Callback, MusicStore.Callback {
     private val musicStore = MusicStore.getInstance()
     private val settings = Settings(application, this)
 
-    private val _songs = MutableStateFlow(listOf<Song>())
-    val songs: StateFlow<List<Song>>
-        get() = _songs
+    private val _songsList = MutableStateFlow(listOf<Song>())
+    /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
+    val songLists: StateFlow<List<Song>>
+        get() = _songsList
 
-    private val _albums = MutableStateFlow(listOf<Album>())
-    val albums: StateFlow<List<Album>>
-        get() = _albums
+    private val _albumsLists = MutableStateFlow(listOf<Album>())
+    /** A list of [Album]s, sorted by the preferred [Sort], to be shown in the home view. */
+    val albumsList: StateFlow<List<Album>>
+        get() = _albumsLists
 
-    private val _artists = MutableStateFlow(listOf<Artist>())
-    val artists: MutableStateFlow<List<Artist>>
-        get() = _artists
+    private val _artistsList = MutableStateFlow(listOf<Artist>())
+    /**
+     * A list of [Artist]s, sorted by the preferred [Sort], to be shown in the home view. Note that
+     * if "Hide collaborators" is on, this list will not include [Artist]s where
+     * [Artist.isCollaborator] is true.
+     */
+    val artistsList: MutableStateFlow<List<Artist>>
+        get() = _artistsList
 
-    private val _genres = MutableStateFlow(listOf<Genre>())
-    val genres: StateFlow<List<Genre>>
-        get() = _genres
-
-    var tabs: List<DisplayMode> = visibleTabs
-        private set
-
-    /** Internal getter for getting the visible library tabs */
-    private val visibleTabs: List<DisplayMode>
-        get() = settings.libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
-
-    private val _currentTab = MutableStateFlow(tabs[0])
-    val currentTab: StateFlow<DisplayMode> = _currentTab
+    private val _genresList = MutableStateFlow(listOf<Genre>())
+    /** A list of [Genre]s, sorted by the preferred [Sort], to be shown in the home view. */
+    val genresList: StateFlow<List<Genre>>
+        get() = _genresList
 
     /**
-     * Marker to recreate all library tabs, usually initiated by a settings change. When this flag
-     * is set, all tabs (and their respective viewpager fragments) will be recreated from scratch.
+     * A list of [MusicMode] corresponding to the current [Tab] configuration, excluding invisible
+     * [Tab]s.
      */
-    private val _shouldRecreateTabs = MutableStateFlow(false)
-    val recreateTabs: StateFlow<Boolean> = _shouldRecreateTabs
+    var currentTabModes: List<MusicMode> = makeTabModes()
+        private set
+
+    private val _currentTabMode = MutableStateFlow(currentTabModes[0])
+    /** The [MusicMode] of the currently shown [Tab]. */
+    val currentTabMode: StateFlow<MusicMode> = _currentTabMode
+
+    private val _shouldRecreate = MutableStateFlow(false)
+    /**
+     * A marker to re-create all library tabs, usually initiated by a settings change. When this
+     * flag is true, all tabs (and their respective ViewPager2 fragments) will be re-created from
+     * scratch.
+     */
+    val shouldRecreate: StateFlow<Boolean> = _shouldRecreate
 
     private val _isFastScrolling = MutableStateFlow(false)
+    /** A marker for whether the user is fast-scrolling in the home view or not. */
     val isFastScrolling: StateFlow<Boolean> = _isFastScrolling
 
     init {
         musicStore.addCallback(this)
-    }
-
-    /** Update the current tab based off of the new ViewPager position. */
-    fun updateCurrentTab(pos: Int) {
-        logD("Updating current tab to ${tabs[pos]}")
-        _currentTab.value = tabs[pos]
-    }
-
-    fun finishRecreateTabs() {
-        _shouldRecreateTabs.value = false
-    }
-
-    /** Get the specific sort for the given [DisplayMode]. */
-    fun getSortForDisplay(displayMode: DisplayMode) =
-        when (displayMode) {
-            DisplayMode.SHOW_SONGS -> settings.libSongSort
-            DisplayMode.SHOW_ALBUMS -> settings.libAlbumSort
-            DisplayMode.SHOW_ARTISTS -> settings.libArtistSort
-            DisplayMode.SHOW_GENRES -> settings.libGenreSort
-        }
-
-    /** Update the currently displayed item's [Sort]. */
-    fun updateCurrentSort(sort: Sort) {
-        logD("Updating ${_currentTab.value} sort to $sort")
-        when (_currentTab.value) {
-            DisplayMode.SHOW_SONGS -> {
-                settings.libSongSort = sort
-                _songs.value = sort.songs(_songs.value)
-            }
-            DisplayMode.SHOW_ALBUMS -> {
-                settings.libAlbumSort = sort
-                _albums.value = sort.albums(_albums.value)
-            }
-            DisplayMode.SHOW_ARTISTS -> {
-                settings.libArtistSort = sort
-                _artists.value = sort.artists(_artists.value)
-            }
-            DisplayMode.SHOW_GENRES -> {
-                settings.libGenreSort = sort
-                _genres.value = sort.genres(_genres.value)
-            }
-        }
-    }
-
-    /**
-     * Update the fast scroll state. This is used to control the FAB visibility whenever the user
-     * begins to fast scroll.
-     */
-    fun updateFastScrolling(scrolling: Boolean) {
-        logD("Updating fast scrolling state: $scrolling")
-        _isFastScrolling.value = scrolling
-    }
-
-    // --- OVERRIDES ---
-
-    override fun onLibraryChanged(library: MusicStore.Library?) {
-        if (library != null) {
-            _songs.value = settings.libSongSort.songs(library.songs)
-            _albums.value = settings.libAlbumSort.albums(library.albums)
-            _artists.value = settings.libArtistSort.artists(library.artists)
-            _genres.value = settings.libGenreSort.genres(library.genres)
-        }
-    }
-
-    override fun onSettingChanged(key: String) {
-        if (key == application.getString(R.string.set_key_lib_tabs)) {
-            tabs = visibleTabs
-            _shouldRecreateTabs.value = true
-        }
     }
 
     override fun onCleared() {
@@ -157,4 +99,111 @@ class HomeViewModel(application: Application) :
         musicStore.removeCallback(this)
         settings.release()
     }
+
+    override fun onLibraryChanged(library: MusicStore.Library?) {
+        if (library != null) {
+            logD("Library changed, refreshing library")
+            // Get the each list of items in the library to use as our list data.
+            // Applying the preferred sorting to them.
+            _songsList.value = settings.libSongSort.songs(library.songs)
+            _albumsLists.value = settings.libAlbumSort.albums(library.albums)
+            _artistsList.value =
+                settings.libArtistSort.artists(
+                    if (settings.shouldHideCollaborators) {
+                        // Hide Collaborators is enabled, filter out collaborators.
+                        library.artists.filter { !it.isCollaborator }
+                    } else {
+                        library.artists
+                    })
+            _genresList.value = settings.libGenreSort.genres(library.genres)
+        }
+    }
+
+    override fun onSettingChanged(key: String) {
+        when (key) {
+            context.getString(R.string.set_key_lib_tabs) -> {
+                // Tabs changed, update  the current tabs and set up a re-create event.
+                currentTabModes = makeTabModes()
+                _shouldRecreate.value = true
+            }
+            context.getString(R.string.set_key_hide_collaborators) -> {
+                // Changes in the hide collaborator setting will change the artist contents
+                // of the library, consider it a library update.
+                onLibraryChanged(musicStore.library)
+            }
+        }
+    }
+
+    /**
+     * Update [currentTabMode] to reflect a new ViewPager2 position
+     * @param pagerPos The new position of the ViewPager2 instance.
+     */
+    fun synchronizeTabPosition(pagerPos: Int) {
+        logD("Updating current tab to ${currentTabModes[pagerPos]}")
+        _currentTabMode.value = currentTabModes[pagerPos]
+    }
+
+    /**
+     * Mark the recreation process as complete.
+     * @see shouldRecreate
+     */
+    fun finishRecreate() {
+        _shouldRecreate.value = false
+    }
+
+    /**
+     * Get the preferred [Sort] for a given [Tab].
+     * @param tabMode The [MusicMode] of the [Tab] desired.
+     * @return The [Sort] preferred for that [Tab]
+     */
+    fun getSortForTab(tabMode: MusicMode) =
+        when (tabMode) {
+            MusicMode.SONGS -> settings.libSongSort
+            MusicMode.ALBUMS -> settings.libAlbumSort
+            MusicMode.ARTISTS -> settings.libArtistSort
+            MusicMode.GENRES -> settings.libGenreSort
+        }
+
+    /**
+     * Update the preferred [Sort] for the current [Tab]. Will update corresponding list.
+     * @param sort The new [Sort] to apply. Assumed to be an allowed sort for the current [Tab].
+     */
+    fun setSortForCurrentTab(sort: Sort) {
+        logD("Updating ${_currentTabMode.value} sort to $sort")
+        // Can simply re-sort the current list of items without having to access the library.
+        when (_currentTabMode.value) {
+            MusicMode.SONGS -> {
+                settings.libSongSort = sort
+                _songsList.value = sort.songs(_songsList.value)
+            }
+            MusicMode.ALBUMS -> {
+                settings.libAlbumSort = sort
+                _albumsLists.value = sort.albums(_albumsLists.value)
+            }
+            MusicMode.ARTISTS -> {
+                settings.libArtistSort = sort
+                _artistsList.value = sort.artists(_artistsList.value)
+            }
+            MusicMode.GENRES -> {
+                settings.libGenreSort = sort
+                _genresList.value = sort.genres(_genresList.value)
+            }
+        }
+    }
+
+    /**
+     * Update whether the user is fast scrolling or not in the home view.
+     * @param isFastScrolling true if the user is currently fast scrolling, false otherwise.
+     */
+    fun setFastScrolling(isFastScrolling: Boolean) {
+        logD("Updating fast scrolling state: $isFastScrolling")
+        _isFastScrolling.value = isFastScrolling
+    }
+
+    /**
+     * Create a list of [MusicMode]s representing a simpler version of the [Tab] configuration.
+     * @return A list of the [MusicMode]s for each visible [Tab] in the configuration, ordered in
+     * the same way as the configuration.
+     */
+    private fun makeTabModes() = settings.libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
 }

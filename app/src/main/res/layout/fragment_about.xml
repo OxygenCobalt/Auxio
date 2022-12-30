@@ -42,6 +42,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
+                    android:paddingBottom="@dimen/spacing_tiny"
                     android:layout_height="match_parent">
 
                     <ImageView
@@ -98,7 +99,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_medium"
-                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:layout_marginTop="@dimen/spacing_mid_medium"
                         android:text="@string/lbl_version"
                         android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
                         app:layout_constraintBottom_toTopOf="@+id/about_version"
@@ -115,26 +116,25 @@
                         app:layout_constraintTop_toBottomOf="@+id/about_version_title"
                         tools:text="16.16.16" />
 
-
                     <TextView
                         android:id="@+id/about_code"
                         style="@style/Widget.Auxio.TextView.Icon.Clickable"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:layout_marginTop="@dimen/spacing_mid_medium"
                         android:text="@string/lbl_code"
                         app:drawableStartCompat="@drawable/ic_code_24"
-                        app:layout_constraintBottom_toTopOf="@+id/about_faq"
+                        app:layout_constraintBottom_toTopOf="@+id/about_wiki"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/about_version" />
 
                     <TextView
-                        android:id="@+id/about_faq"
+                        android:id="@+id/about_wiki"
                         style="@style/Widget.Auxio.TextView.Icon.Clickable"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/lbl_faq"
+                        android:text="@string/lbl_wiki"
                         app:drawableStartCompat="@drawable/ic_help_24"
                         app:layout_constraintBottom_toTopOf="@+id/about_licenses"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -150,10 +150,11 @@
                         app:drawableStartCompat="@drawable/ic_license_24"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/about_faq" />
+                        app:layout_constraintTop_toBottomOf="@+id/about_wiki" />
 
                     <TextView
-                        style="@style/Widget.Auxio.TextView.Icon"
+                        android:id="@+id/about_author"
+                        style="@style/Widget.Auxio.TextView.Icon.Clickable"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/lng_author"
@@ -174,6 +175,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                android:paddingBottom="@dimen/spacing_tiny"
                     android:orientation="vertical">
 
                     <TextView

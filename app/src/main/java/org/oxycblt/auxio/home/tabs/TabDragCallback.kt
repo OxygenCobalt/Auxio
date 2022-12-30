@@ -22,14 +22,15 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- * A simple [ItemTouchHelper.Callback] that handles dragging items in the tab customization menu.
- * Unlike QueueAdapter's ItemTouchHelper, this one is bare and simple.
+ * An [ItemTouchHelper.Callback] that implements dragging in the [TabAdapter].
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class TabDragCallback(private val adapter: TabAdapter) : ItemTouchHelper.Callback() {
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
-    ): Int = makeFlag(ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN)
+    ) = // Allow dragging up and down only
+    makeFlag(ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN)
 
     override fun onChildDraw(
         c: Canvas,
@@ -40,8 +41,6 @@ class TabDragCallback(private val adapter: TabAdapter) : ItemTouchHelper.Callbac
         actionState: Int,
         isCurrentlyActive: Boolean
     ) {
-        // No fancy UI magic here. This is a dialog, we don't need to give it as much attention.
-        // Just make sure the built-in androidx code doesn't get in our way.
         viewHolder.itemView.translationX = dX
         viewHolder.itemView.translationY = dY
     }
@@ -56,12 +55,14 @@ class TabDragCallback(private val adapter: TabAdapter) : ItemTouchHelper.Callbac
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        adapter.moveItems(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
+        // I don't think it's possible to jump more than one position at a time, so a swap
+        // will work just fine.
+        adapter.swapTabs(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
         return true
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
 
     // We use a custom drag handle, so disable the long press action.
-    override fun isLongPressDragEnabled(): Boolean = false
+    override fun isLongPressDragEnabled() = false
 }

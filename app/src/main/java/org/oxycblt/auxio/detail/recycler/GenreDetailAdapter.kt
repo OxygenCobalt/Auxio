@@ -19,32 +19,35 @@ package org.oxycblt.auxio.detail.recycler
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemDetailBinding
+import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.recycler.ArtistViewHolder
+import org.oxycblt.auxio.list.recycler.SimpleItemCallback
+import org.oxycblt.auxio.list.recycler.SongViewHolder
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.recycler.Item
-import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
-import org.oxycblt.auxio.ui.recycler.SongViewHolder
 import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.formatDurationMs
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
 /**
- * An adapter for displaying genre information and it's children.
- * @author OxygenCobalt
+ * An [DetailAdapter] implementing the header and sub-items for the [Genre] detail view.
+ * @param listener A [DetailAdapter.Listener] to bind interactions to.
+ * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreDetailAdapter(private val listener: Listener) :
-    DetailAdapter<DetailAdapter.Listener>(listener, DIFFER) {
-    private var currentSong: Song? = null
-    private var isPlaying = false
-
+class GenreDetailAdapter(private val listener: Listener) : DetailAdapter(listener, DIFF_CALLBACK) {
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
+            // Support the Genre header and generic Artist/Song items. There's nothing about
+            // a genre that will make the artists/songs homogeneous, so it doesn't matter what we
+            // use for their ViewHolders.
             is Genre -> GenreDetailViewHolder.VIEW_TYPE
+            is Artist -> ArtistViewHolder.VIEW_TYPE
             is Song -> SongViewHolder.VIEW_TYPE
             else -> super.getItemViewType(position)
         }
@@ -52,68 +55,88 @@ class GenreDetailAdapter(private val listener: Listener) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
             GenreDetailViewHolder.VIEW_TYPE -> GenreDetailViewHolder.new(parent)
+            ArtistViewHolder.VIEW_TYPE -> ArtistViewHolder.new(parent)
             SongViewHolder.VIEW_TYPE -> SongViewHolder.new(parent)
             else -> super.onCreateViewHolder(parent, viewType)
         }
 
-    override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder,
-        position: Int,
-        payloads: List<Any>
-    ) {
-        super.onBindViewHolder(holder, position, payloads)
-
-        if (payloads.isEmpty()) {
-            when (val item = differ.currentList[position]) {
-                is Genre -> (holder as GenreDetailViewHolder).bind(item, listener)
-                is Song -> (holder as SongViewHolder).bind(item, listener)
-            }
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        super.onBindViewHolder(holder, position)
+        when (val item = differ.currentList[position]) {
+            is Genre -> (holder as GenreDetailViewHolder).bind(item, listener)
+            is Artist -> (holder as ArtistViewHolder).bind(item, listener)
+            is Song -> (holder as SongViewHolder).bind(item, listener)
         }
     }
 
     override fun isItemFullWidth(position: Int): Boolean {
+        // Genre headers should be full-width in all configurations
         val item = differ.currentList[position]
         return super.isItemFullWidth(position) || item is Genre
     }
 
     companion object {
-        val DIFFER =
+        val DIFF_CALLBACK =
             object : SimpleItemCallback<Item>() {
-                override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
+                override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Genre && newItem is Genre ->
-                            GenreDetailViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                            GenreDetailViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
+                        oldItem is Artist && newItem is Artist ->
+                            ArtistViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is Song && newItem is Song ->
-                            SongViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
-                        else -> DetailAdapter.DIFFER.areContentsTheSame(oldItem, newItem)
+                            SongViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
+                        else -> DetailAdapter.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                     }
                 }
             }
     }
 }
 
+/**
+ * A [RecyclerView.ViewHolder] that displays the [Genre] header in the detail view. Use [new] to
+ * create an instance.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 private class GenreDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: Genre, listener: DetailAdapter.Listener) {
-        binding.detailCover.bind(item)
+    /**
+     * Bind new data to this instance.
+     * @param genre The new [Song] to bind.
+     * @param listener A [DetailAdapter.Listener] to bind interactions to.
+     */
+    fun bind(genre: Genre, listener: DetailAdapter.Listener) {
+        binding.detailCover.bind(genre)
         binding.detailType.text = binding.context.getString(R.string.lbl_genre)
-        binding.detailName.text = item.resolveName(binding.context)
-        binding.detailSubhead.text =
-            binding.context.getPlural(R.plurals.fmt_song_count, item.songs.size)
-        binding.detailInfo.text = item.durationMs.formatDurationMs(false)
-        binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }
-        binding.detailShuffleButton.setOnClickListener { listener.onShuffleParent() }
+        binding.detailName.text = genre.resolveName(binding.context)
+        // Nothing about a genre is applicable to the sub-head text.
+        binding.detailSubhead.isVisible = false
+        // The song count of the genre maps to the info text.
+        binding.detailInfo.text =
+            binding.context.getString(
+                R.string.fmt_two,
+                binding.context.getPlural(R.plurals.fmt_artist_count, genre.artists.size),
+                binding.context.getPlural(R.plurals.fmt_song_count, genre.songs.size))
+        binding.detailPlayButton.setOnClickListener { listener.onPlay() }
+        binding.detailShuffleButton.setOnClickListener { listener.onShuffle() }
     }
 
     companion object {
+        /** A unique ID for this [RecyclerView.ViewHolder] type. */
         const val VIEW_TYPE = IntegerTable.VIEW_TYPE_GENRE_DETAIL
 
+        /**
+         * Create a new instance.
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
         fun new(parent: View) =
             GenreDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
 
-        val DIFFER =
+        /** A comparator that can be used with DiffUtil. */
+        val DIFF_CALLBACK =
             object : SimpleItemCallback<Genre>() {
-                override fun areItemsTheSame(oldItem: Genre, newItem: Genre) =
+                override fun areContentsTheSame(oldItem: Genre, newItem: Genre) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.songs.size == newItem.songs.size &&
                         oldItem.durationMs == newItem.durationMs

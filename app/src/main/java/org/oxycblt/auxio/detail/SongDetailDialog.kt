@@ -21,23 +21,24 @@ import android.os.Bundle
 import android.text.format.Formatter
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isGone
+import androidx.core.view.isInvisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSongDetailBinding
-import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
+import org.oxycblt.auxio.playback.formatDurationMs
+import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.formatDurationMs
 
 /**
- * A dialog displayed when "View properties" is selected on a song, showing more information about
- * the properties of the audio file itself.
- * @author OxygenCobalt
+ * A [ViewBindingDialogFragment] that shows information about a Song.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
     private val detailModel: DetailViewModel by androidActivityViewModels()
+    // Information about what song to display is initially within the navigation arguments
+    // as a UID, as that is the only safe way to parcel an song.
     private val args: SongDetailDialogArgs by navArgs()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -50,46 +51,48 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
     override fun onBindingCreated(binding: DialogSongDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
-        detailModel.setSongId(args.songId)
+        // DetailViewModel handles most initialization from the navigation argument.
+        detailModel.setSongUid(args.itemUid)
         collectImmediately(detailModel.currentSong, ::updateSong)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        detailModel.clearSong()
-    }
+    private fun updateSong(song: DetailSong?) {
+        if (song == null) {
+            // Song we were showing no longer exists.
+            findNavController().navigateUp()
+            return
+        }
 
-    private fun updateSong(song: DetailViewModel.DetailSong?) {
         val binding = requireBinding()
+        if (song.properties != null) {
+            // Finished loading Song properties, populate and show the list of Song information.
+            binding.detailLoading.isInvisible = true
+            binding.detailContainer.isInvisible = false
 
-        if (song != null) {
-            if (song.info != null) {
-                val context = requireContext()
-                binding.detailContainer.isGone = false
-                binding.detailFileName.setText(song.song.path.name)
-                binding.detailRelativeDir.setText(song.song.path.parent.resolveName(context))
-                binding.detailFormat.setText(song.info.resolvedMimeType.resolveName(context))
-                binding.detailSize.setText(Formatter.formatFileSize(context, song.song.size))
-                binding.detailDuration.setText(song.song.durationMs.formatDurationMs(true))
+            val context = requireContext()
+            binding.detailFileName.setText(song.song.path.name)
+            binding.detailRelativeDir.setText(song.song.path.parent.resolveName(context))
+            binding.detailFormat.setText(song.properties.resolvedMimeType.resolveName(context))
+            binding.detailSize.setText(Formatter.formatFileSize(context, song.song.size))
+            binding.detailDuration.setText(song.song.durationMs.formatDurationMs(true))
 
-                if (song.info.bitrateKbps != null) {
-                    binding.detailBitrate.setText(
-                        getString(R.string.fmt_bitrate, song.info.bitrateKbps))
-                } else {
-                    binding.detailBitrate.setText(R.string.def_bitrate)
-                }
-
-                if (song.info.sampleRate != null) {
-                    binding.detailSampleRate.setText(
-                        getString(R.string.fmt_sample_rate, song.info.sampleRate))
-                } else {
-                    binding.detailSampleRate.setText(R.string.def_sample_rate)
-                }
+            if (song.properties.bitrateKbps != null) {
+                binding.detailBitrate.setText(
+                    getString(R.string.fmt_bitrate, song.properties.bitrateKbps))
             } else {
-                binding.detailContainer.isGone = true
+                binding.detailBitrate.setText(R.string.def_bitrate)
+            }
+
+            if (song.properties.sampleRateHz != null) {
+                binding.detailSampleRate.setText(
+                    getString(R.string.fmt_sample_rate, song.properties.sampleRateHz))
+            } else {
+                binding.detailSampleRate.setText(R.string.def_sample_rate)
             }
         } else {
-            findNavController().navigateUp()
+            // Loading is still on-going, don't show anything yet.
+            binding.detailLoading.isInvisible = false
+            binding.detailContainer.isInvisible = true
         }
     }
 }

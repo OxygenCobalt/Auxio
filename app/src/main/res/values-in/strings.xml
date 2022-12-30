@@ -25,7 +25,6 @@
     <string name="lbl_about">Tentang</string>
     <string name="lbl_version">Versi</string>
     <string name="lbl_code">Lihat di GitHub</string>
-    <string name="lbl_faq">Tanya-Jawab</string>
     <string name="lbl_licenses">Lisensi</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Setelan</string>
@@ -35,7 +34,6 @@
     <string name="set_theme_day">Terang</string>
     <string name="set_theme_night">Gelap</string>
     <string name="set_accent">Aksen</string>
-    <string name="set_quality_covers">Abaikan sampul-sampul pada Media Penyimpanan</string>
     <string name="set_audio">Audio</string>
     <string name="set_behavior">Perilaku</string>
     <string name="set_keep_shuffle">Ingat putar acak</string>
@@ -64,7 +62,6 @@
     <string name="set_black_mode_desc">Gunakan tema gelap hitam murni</string>
     <string name="set_display">Tampilan</string>
     <string name="set_lib_tabs_desc">Mengubah visibilitas dan urutan tab pustaka</string>
-    <string name="set_show_covers">Tampilkan sampul album</string>
     <string name="set_headset_autoplay">Putar otomatis headset</string>
     <string name="set_headset_autoplay_desc">Selalu mulai bermain ketika headset tersambung (mungkin tidak berfungsi pada semua perangkat)</string>
     <string name="set_replay_gain">ReplayGain</string>
@@ -78,19 +75,15 @@
     <string name="lbl_album">Album</string>
     <string name="info_app_desc">Pemutar musik yang simpel dan rasional untuk android.</string>
     <string name="lbl_indexer">Pemuatan Musik</string>
-    <string name="lng_playback">Lihat dan kontrol pemutaran musik</string>
-    <string name="lbl_sort_year">Tahun</string>
+    <string name="lng_widget">Lihat dan kontrol pemutaran musik</string>
+    <string name="lbl_sort_date">Tahun</string>
     <string name="lbl_sort_duration">Durasi</string>
     <string name="lbl_sort_disc">Disk</string>
     <string name="lbl_song_detail">Lihat properti</string>
     <string name="lbl_format">Format</string>
     <string name="lng_author">Dikembangkan oleh OxygenCobalt</string>
     <string name="lbl_library_counts">Statistik perpustakaan</string>
-    <string name="set_show_covers_desc">Matikan untuk menghemat penggunaan memori</string>
-    <string name="set_quality_covers_desc">Meningkatkan kualitas sampul album, tetapi menghasilkan waktu pemuatan yang lebih lama dan penggunaan memori yang lebih tinggi</string>
-    <string name="set_alt_action">Gunakan tindakan pemberitahuan alternatif</string>
-    <string name="set_alt_repeat">Lebih suka tindakan mode pengulangan</string>
-    <string name="set_alt_shuffle">Lebih suka tindakan mengacak</string>
+    <string name="set_notif_action">Gunakan tindakan pemberitahuan alternatif</string>
     <string name="lbl_shuffle_shortcut_short">Acak</string>
     <string name="lbl_shuffle_shortcut_long">Acak Semua</string>
     <string name="lbl_state_saved">Status disimpan</string>
@@ -101,8 +94,7 @@
     <string name="set_pre_amp_with">Penyesuaian dengan tag</string>
     <string name="set_pre_amp_warning">Peringatan: Mengubah pre-amp ke nilai positif yang tinggi dapat mengakibatkan puncak pada beberapa trek audio.</string>
     <string name="set_playback_mode_none">Putar dari item yang ditampilkan</string>
-    <string name="set_playback_mode_all">Putar dari semua lagu</string>
-    <string name="set_playback_mode_genre">Mainkan dari genre</string>
+    <string name="set_playback_mode_songs">Putar dari semua lagu</string>
     <string name="set_keep_shuffle_desc">Tetap mengacak saat memutar lagu baru</string>
     <string name="set_repeat_pause">Jeda pada pengulangan</string>
     <string name="set_rewind_prev">Putar balik sebelum melompat ke belakang</string>

@@ -19,7 +19,10 @@ package org.oxycblt.auxio.playback.replaygain
 
 import org.oxycblt.auxio.IntegerTable
 
-/** Represents the current setting for ReplayGain. */
+/**
+ * The current ReplayGain configuration.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 enum class ReplayGainMode {
     /** Apply the track gain, falling back to the album gain if the track gain is not found. */
     TRACK,
@@ -29,22 +32,25 @@ enum class ReplayGainMode {
     DYNAMIC;
 
     companion object {
-        /** Convert an int [code] into an instance, or null if it isn't valid. */
-        fun fromIntCode(code: Int): ReplayGainMode? {
-            return when (code) {
+        /**
+         * Convert a [ReplayGainMode] integer representation into an instance.
+         * @param intCode An integer representation of a [ReplayGainMode]
+         * @return The corresponding [ReplayGainMode], or null if the [ReplayGainMode] is invalid.
+         */
+        fun fromIntCode(intCode: Int) =
+            when (intCode) {
                 IntegerTable.REPLAY_GAIN_MODE_TRACK -> TRACK
                 IntegerTable.REPLAY_GAIN_MODE_ALBUM -> ALBUM
                 IntegerTable.REPLAY_GAIN_MODE_DYNAMIC -> DYNAMIC
                 else -> null
             }
-        }
     }
 }
 
-/** Represents the ReplayGain pre-amp values. */
-data class ReplayGainPreAmp(
-    /** The value to use when ReplayGain tags are present. */
-    val with: Float,
-    /** The value to use when ReplayGain tags are not present. */
-    val without: Float,
-)
+/**
+ * The current ReplayGain pre-amp configuration.
+ * @param with The pre-amp (in dB) to use when ReplayGain tags are present.
+ * @param without The pre-amp (in dB) to use when ReplayGain tags are not present.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+data class ReplayGainPreAmp(val with: Float, val without: Float)

@@ -54,7 +54,7 @@
 
     <TextView
         android:id="@+id/playback_artist"
-        style="@style/Widget.Auxio.TextView.Secondary"
+        style="@style/Widget.Auxio.TextView.Secondary.Marquee"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"
@@ -67,7 +67,7 @@
 
     <TextView
         android:id="@+id/playback_album"
-        style="@style/Widget.Auxio.TextView.Secondary"
+        style="@style/Widget.Auxio.TextView.Secondary.Marquee"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"
@@ -78,7 +78,7 @@
         app:layout_constraintTop_toBottomOf="@+id/playback_artist"
         tools:text="Album Name" />
 
-    <org.oxycblt.auxio.playback.StyledSeekBar
+    <org.oxycblt.auxio.playback.ui.StyledSeekBar
         android:id="@+id/playback_seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <org.oxycblt.auxio.playback.ForcedLTRFrameLayout
+    <org.oxycblt.auxio.playback.ui.ForcedLTRFrameLayout
         android:id="@+id/playback_controls_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_change_repeat"
                 app:icon="@drawable/ic_repeat_off_24"
-                app:iconTint="@color/sel_accented"
+                app:iconTint="@color/sel_activatable_icon"
                 app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/playback_skip_prev" />
@@ -126,7 +126,7 @@
                 app:layout_constraintStart_toEndOf="@+id/playback_repeat"
                 app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
-            <org.oxycblt.auxio.playback.AnimatedMaterialButton
+            <org.oxycblt.auxio.playback.ui.AnimatedMaterialButton
                 android:id="@+id/playback_play_pause"
                 style="@style/Widget.Auxio.Button.PlayPause"
                 android:layout_width="wrap_content"
@@ -158,15 +158,15 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_shuffle"
                 app:icon="@drawable/sel_shuffle_state_24"
-                app:iconTint="@color/sel_accented"
+                app:iconTint="@color/sel_activatable_icon"
                 app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/playback_skip_next"
-                app:tint="@color/sel_accented" />
+                app:tint="@color/sel_activatable_icon" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </org.oxycblt.auxio.playback.ForcedLTRFrameLayout>
+    </org.oxycblt.auxio.playback.ui.ForcedLTRFrameLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

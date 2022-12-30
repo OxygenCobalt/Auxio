@@ -15,10 +15,8 @@
     <string name="lbl_sort_asc">Aufsteigend</string>
     <string name="lbl_play">Abspielen</string>
     <string name="lbl_shuffle">Zufällig</string>
-    <string name="set_playback_mode_all">Von allen Lieder abspielen</string>
+    <string name="set_playback_mode_songs">Von allen Lieder abspielen</string>
     <string name="set_playback_mode_album">Von Album abspielen</string>
-    <string name="set_playback_mode_artist">Von Künstler abspielen</string>
-    <string name="set_playback_mode_genre">Von Genre abspielen</string>
     <string name="lbl_playback">Aktuelle Wiedergabe</string>
     <string name="lbl_queue">Warteschlange</string>
     <string name="lbl_play_next">Spiele als Nächstes</string>
@@ -33,9 +31,8 @@
     <string name="lbl_about">Über</string>
     <string name="lbl_version">Version</string>
     <string name="lbl_code">Quellcode</string>
-    <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Lizenzen</string>
-    <string name="lng_author">Entwickelt von OxygenCobalt</string>
+    <string name="lng_author">Entwickelt von Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Einstellungen</string>
     <string name="set_ui">Aussehen</string>
@@ -45,15 +42,9 @@
     <string name="set_theme_night">Dunkel</string>
     <string name="set_accent">Farbgestaltung</string>
     <string name="set_display">Anzeige</string>
-    <string name="set_show_covers">Albumcover anzeigen</string>
-    <string name="set_show_covers_desc">Ausschalten um Speicherplatz zu sparen</string>
-    <string name="set_quality_covers">MediaStore-Cover ignorieren</string>
-    <string name="set_quality_covers_desc">Verbesst die Albumcoverqualität, führt jedoch zu längeren Ladezeiten und höherem Speicherverbrauch</string>
     <string name="set_round_mode">Abgerundete Cover</string>
-    <string name="set_round_mode_desc">Rundet Ecken der Cover ab</string>
-    <string name="set_alt_action">Alternative Aktionstaste verwenden</string>
-    <string name="set_alt_repeat">Wiederholen-Aktionstaste bevorzugen</string>
-    <string name="set_alt_shuffle">Zufällig-Aktionstaste bevorzugen</string>
+    <string name="set_round_mode_desc">Abgerundete Ecken für weitere UI-Elemente aktivieren (benötigt abgerundete Album-Cover)</string>
+    <string name="set_notif_action">Alternative Aktionstaste verwenden</string>
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Kopfhörer: automatische Wiedergabe</string>
     <string name="set_headset_autoplay_desc">Beginne die Wiedergabe immer, wenn Kopfhörer verbunden sind (funktioniert nicht auf allen Geräten)</string>
@@ -74,7 +65,7 @@
     <string name="set_save_state">Wiedergabezustand speichern</string>
     <string name="set_save_desc">Den aktuellen Wiedergabezustand speichern</string>
     <string name="set_reindex">Musik neu laden</string>
-    <string name="set_reindex_desc">Könnte den Wiedergabezustand löschen</string>
+    <string name="set_reindex_desc">Musikbibliothek neu laden, verwendet gecachte Tags wenn möglich</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Keine Musik gefunden</string>
     <string name="err_index_failed">Laden der Musik fehlgeschlagen</string>
@@ -125,10 +116,10 @@
         <item quantity="other">%d Alben</item>
     </plurals>
     <string name="info_app_desc">Ein einfacher, rationaler Musikplayer für Android.</string>
-    <string name="lng_playback">Musikwiedergabe anzeigen und kontrollieren</string>
+    <string name="lng_widget">Musikwiedergabe anzeigen und kontrollieren</string>
     <string name="lbl_artist">Künstler</string>
     <string name="lbl_album">Album</string>
-    <string name="lbl_sort_year">Jahr</string>
+    <string name="lbl_sort_date">Jahr</string>
     <string name="set_black_mode">Schwarzes Farbschema</string>
     <string name="set_black_mode_desc">Ein rein schwarzes dunkles Farbschema verwenden</string>
     <string name="set_repeat_pause">Pause bei Wiederholung</string>
@@ -161,7 +152,7 @@
     <string name="fmt_lib_genre_count">Geladene Genres: %d</string>
     <string name="fmt_lib_total_duration">Gesamtdauer: %s</string>
     <string name="lbl_cancel">Abbrechen</string>
-    <string name="set_pre_amp_warning">Warnung: Das erhöhen der Vorverstärkung zu einem hohen positiven Wert könnte zu einer Übersteuerung bei einigen Audiospuren führen.</string>
+    <string name="set_pre_amp_warning">Warnung: Das Erhöhen der Vorverstärkung zu einem hohen positiven Wert könnte zu einer Übersteuerung bei einigen Audiospuren führen.</string>
     <string name="set_detail_song_playback_mode">Wenn ein Lied aus den Elementdetails abgespielt wird</string>
     <string name="set_playback_mode_none">Vom dargestellten Element abspielen</string>
     <string name="set_dirs">Musikordner</string>
@@ -196,17 +187,15 @@
     <string name="lbl_format">Format</string>
     <string name="lbl_size">Größe</string>
     <string name="lbl_bitrate">Bitrate</string>
-    <string name="set_quality_tags">MediaStore-Tags ignorieren</string>
-    <string name="set_quality_tags_desc">Erhöht Tag-Qualität, benötigt aber längere Ladezeiten (Experimentell)</string>
     <string name="lbl_observing">Überwachen der Musikbibliothek</string>
     <string name="lbl_indexing">Musik wird geladen</string>
     <string name="lng_observing">Musikbibliothek wird auf Änderungen überwacht…</string>
     <string name="lbl_sort_date_added">Hinzugefügt am</string>
-    <string name="set_observing_desc">Musikbibliothek neuladen, sobald es Änderungen gibt (Experimentell)</string>
+    <string name="set_observing_desc">Musikbibliothek neu laden, sobald es Änderungen gibt (erfordert persistente Benachrichtigung)</string>
     <string name="set_observing">Automatisch neuladen</string>
     <string name="lbl_state_restored">Zustand wiederhergestellt</string>
     <string name="set_restore_desc">Den vorher gespeicherten Wiedergabezustand wiederherstellen (wenn verfügbar)</string>
-    <string name="err_did_not_restore">Kein Zustand konnte wiederhergestellt werden</string>
+    <string name="err_did_not_restore">Zustand konnte nicht wiederhergestellt werden</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_eps">EPs</string>
     <string name="lbl_single">Single</string>
@@ -235,5 +224,39 @@
     <string name="set_bar_action">Angepasste Wiedergabeaktionstaste</string>
     <string name="set_bar_action_next">Zum nächsten Song gehen</string>
     <string name="set_bar_action_repeat">Wiederholungsmodus</string>
-    <string name="set_bar_action_shuffle">\@string/lbl_shuffle</string>
+    <string name="desc_exit">Wiedergabe anhalten</string>
+    <string name="lbl_compilation_live">Live-Kompilation</string>
+    <string name="lbl_compilation_remix">Remix-Kompilation</string>
+    <string name="lbl_mixes">Mischungen</string>
+    <string name="lbl_mix">Mischung</string>
+    <string name="set_separators">Mehrfachwert-Trenner</string>
+    <string name="set_separators_desc">Zeichen ändern, welche mehrere Tag-Werte trennt</string>
+    <string name="set_separators_and">Und-Zeichen (&amp;)</string>
+    <string name="set_separators_semicolon">Semikolon (;)</string>
+    <string name="set_separators_comma">Komma (,)</string>
+    <string name="set_separators_slash">Schrägstrich (/)</string>
+    <string name="set_separators_plus">Plus (+)</string>
+    <string name="set_playback_mode_artist">Vom Künstler abspielen</string>
+    <string name="set_separators_warning">Achtung: Verwenden dieser Einstellung könnte dazu führen, dass einige Tags fälschlicherweise interpretiert werden, als hätten sie mehrere Werte. Das kann gelöst werden, in dem vor ungewollte Trenner ein Backslash (\\) eingefügt wird.</string>
+    <string name="set_exclude_non_music">Nicht-Musik ausschließen</string>
+    <string name="set_exclude_non_music_desc">Audio-Dateien, die keine Musik sind (wie Podcasts), ignorieren</string>
+    <string name="set_cover_mode">Album-Cover</string>
+    <string name="set_cover_mode_off">Aus</string>
+    <string name="set_cover_mode_media_store">Schnell</string>
+    <string name="set_cover_mode_quality">Hohe Qualität</string>
+    <string name="set_hide_collaborators">Mitarbeiter ausblenden</string>
+    <string name="set_hide_collaborators_desc">Nur Künstler anzeigen, die direkt auf einem Album erwähnt werden (funktioniert am besten mit gut getaggten Bibliotheken)</string>
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d Künstler</item>
+        <item quantity="other">%d Künstler</item>
+    </plurals>
+    <string name="err_did_not_wipe">Zustand konnte nicht gelöscht werden</string>
+    <string name="err_did_not_save">Zustand konnte nicht gespeichert werden</string>
+    <string name="set_rescan">Music neu scannen</string>
+    <string name="set_rescan_desc">Tag-Cache vollständig löschen und die Musik-Bibliothek vollständig neu laden (langsamer, aber vollständiger)</string>
+    <string name="lbl_play_selected">Ausgewählte abspielen</string>
+    <string name="lbl_shuffle_selected">Ausgewählte zufällig abspielen</string>
+    <string name="fmt_selected">%d ausgewählt</string>
+    <string name="set_playback_mode_genre">Vom Genre abspielen</string>
+    <string name="lbl_wiki">Wiki</string>
 </resources>
