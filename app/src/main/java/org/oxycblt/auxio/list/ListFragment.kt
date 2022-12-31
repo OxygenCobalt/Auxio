@@ -22,6 +22,7 @@ import android.view.View
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
@@ -53,7 +54,7 @@ abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), Selecta
      */
     abstract fun onRealClick(music: Music)
 
-    override fun onClick(item: Item) {
+    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
         check(item is Music) { "Unexpected datatype: ${item::class.simpleName}" }
         if (selectionModel.selected.value.isNotEmpty()) {
             // Map clicking an item to selecting an item when items are already selected.

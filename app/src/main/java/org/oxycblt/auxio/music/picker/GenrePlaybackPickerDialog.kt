@@ -23,6 +23,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.list.ClickableListListener
@@ -74,7 +75,7 @@ class GenrePlaybackPickerDialog :
         binding.pickerRecycler.adapter = null
     }
 
-    override fun onClick(item: Item) {
+    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
         // User made a choice, play the given song from that genre.
         check(item is Genre) { "Unexpected datatype: ${item::class.simpleName}" }
         val song = pickerModel.currentItem.value

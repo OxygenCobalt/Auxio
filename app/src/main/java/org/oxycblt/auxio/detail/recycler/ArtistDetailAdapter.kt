@@ -184,7 +184,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     fun bind(album: Album, listener: SelectableListListener) {
-        listener.bind(this, album, binding.parentMenu)
+        listener.bind(album, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(album)
         binding.parentName.text = album.resolveName(binding.context)
         binding.parentInfo.text =
@@ -236,7 +236,7 @@ private class ArtistSongViewHolder private constructor(private val binding: Item
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     fun bind(song: Song, listener: SelectableListListener) {
-        listener.bind(this, song, binding.songMenu)
+        listener.bind(song, this, menuButton = binding.songMenu)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.resolveName(binding.context)
         binding.songInfo.text = song.album.resolveName(binding.context)

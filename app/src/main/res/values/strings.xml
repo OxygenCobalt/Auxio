@@ -60,9 +60,9 @@
     <string name="lbl_mixtapes">Mixtapes</string>
     <!-- As in the collection of music -->
     <string name="lbl_mixtape">Mixtape</string>
-    <!-- As in a compilation of several performances that blend into a single continuous flow of music -->
+    <!-- As in a compilation of several performances that blend into a single continuous flow of music (Also known as DJ Mixes) -->
     <string name="lbl_mixes">Mixes</string>
-    <!-- As in a compilation of several performances that blend into a single continuous flow of music -->
+    <!-- As in a compilation of several performances that blend into a single continuous flow of music (Also known as DJ Mixes) -->
     <string name="lbl_mix">Mix</string>
 
     <!-- As in music that was performed live -->
@@ -341,7 +341,10 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <eat-comment />
 
-    <!-- Comma (,) separator should be localized (For example, "、" in japanese) -->
+    <!--
+    Comma (,) separator should be localized (For example, "、" in japanese).
+    Do not use "and" or equivalents.
+    -->
     <string name="fmt_list">%1$s, %2$s</string>
 
     <!-- As in an amount of items that are selected -->
@@ -365,7 +368,7 @@
     <string name="fmt_lib_album_count">Albums loaded: %d</string>
     <string name="fmt_lib_artist_count">Artists loaded: %d</string>
     <string name="fmt_lib_genre_count">Genres loaded: %d</string>
-    <!-- AS in the total duration of all songs in the music library -->
+    <!-- As in the total duration of all songs in the music library -->
     <string name="fmt_lib_total_duration">Total duration: %s</string>
 
     <plurals name="fmt_song_count">

@@ -46,7 +46,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     fun bind(song: Song, listener: SelectableListListener) {
-        listener.bind(this, song, binding.songMenu)
+        listener.bind(song, this, menuButton = binding.songMenu)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.resolveName(binding.context)
         binding.songInfo.text = song.resolveArtistContents(binding.context)
@@ -93,7 +93,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     fun bind(album: Album, listener: SelectableListListener) {
-        listener.bind(this, album, binding.parentMenu)
+        listener.bind(album, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(album)
         binding.parentName.text = album.resolveName(binding.context)
         binding.parentInfo.text = album.resolveArtistContents(binding.context)
@@ -142,7 +142,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     fun bind(artist: Artist, listener: SelectableListListener) {
-        listener.bind(this, artist, binding.parentMenu)
+        listener.bind(artist, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(artist)
         binding.parentName.text = artist.resolveName(binding.context)
         binding.parentInfo.text =
@@ -201,7 +201,7 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     fun bind(genre: Genre, listener: SelectableListListener) {
-        listener.bind(this, genre, binding.parentMenu)
+        listener.bind(genre, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(genre)
         binding.parentName.text = genre.resolveName(binding.context)
         binding.parentInfo.text =

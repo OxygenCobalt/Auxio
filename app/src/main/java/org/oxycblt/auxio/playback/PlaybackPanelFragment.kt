@@ -102,6 +102,7 @@ class PlaybackPanelFragment :
         binding.playbackSeekBar.listener = this
 
         // Set up actions
+        // TODO: Add better playback button accessibility
         binding.playbackRepeat.setOnClickListener { playbackModel.toggleRepeatMode() }
         binding.playbackSkipPrev.setOnClickListener { playbackModel.prev() }
         binding.playbackPlayPause.setOnClickListener { playbackModel.toggleIsPlaying() }

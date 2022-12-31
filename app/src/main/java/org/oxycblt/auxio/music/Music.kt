@@ -282,7 +282,7 @@ sealed class Music : Item {
 
     private companion object {
         /** Cached collator instance re-used with [makeCollationKeyImpl]. */
-        val COLLATOR = Collator.getInstance().apply { strength = Collator.PRIMARY }
+        val COLLATOR: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
     }
 }
 

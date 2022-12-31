@@ -19,6 +19,7 @@ package org.oxycblt.auxio.music.picker
 
 import android.os.Bundle
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.Artist
@@ -41,8 +42,8 @@ class ArtistPlaybackPickerDialog : ArtistPickerDialog() {
         super.onBindingCreated(binding, savedInstanceState)
     }
 
-    override fun onClick(item: Item) {
-        super.onClick(item)
+    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
+        super.onClick(item, viewHolder)
         // User made a choice, play the given song from that artist.
         check(item is Artist) { "Unexpected datatype: ${item::class.simpleName}" }
         val song = pickerModel.currentItem.value

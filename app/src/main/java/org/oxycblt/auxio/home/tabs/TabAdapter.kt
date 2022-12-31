@@ -18,21 +18,22 @@
 package org.oxycblt.auxio.home.tabs
 
 import android.annotation.SuppressLint
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemTabBinding
+import org.oxycblt.auxio.list.EditableListListener
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.util.inflater
 
 /**
  * A [RecyclerView.Adapter] that displays an array of [Tab]s open for configuration.
- * @param listener A [Listener] for tab interactions.
+ * @param listener A [EditableListListener] for tab interactions.
  */
-class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewHolder>() {
+class TabAdapter(private val listener: EditableListListener) :
+    RecyclerView.Adapter<TabViewHolder>() {
     /** The current array of [Tab]s. */
     var tabs = arrayOf<Tab>()
         private set
@@ -75,23 +76,6 @@ class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewH
         notifyItemMoved(a, b)
     }
 
-    /** A listener for interactions specific to tab configuration. */
-    interface Listener {
-        /**
-         * Called when a tab is clicked, requesting that the visibility should be inverted (i.e
-         * Visible -> Invisible and vice versa).
-         * @param tabMode The [MusicMode] of the tab clicked.
-         */
-        fun onToggleVisibility(tabMode: MusicMode)
-
-        /**
-         * Called when the drag handle on a [RecyclerView.ViewHolder] is clicked, requesting that a
-         * drag should be started.
-         * @param viewHolder The [RecyclerView.ViewHolder] to start dragging.
-         */
-        fun onPickUp(viewHolder: RecyclerView.ViewHolder)
-    }
-
     private companion object {
         val PAYLOAD_TAB_CHANGED = Any()
     }
@@ -106,12 +90,11 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
     /**
      * Bind new data to this instance.
      * @param tab The new [Tab] to bind.
-     * @param listener A [TabAdapter.Listener] to bind interactions to.
+     * @param listener A [EditableListListener] to bind interactions to.
      */
     @SuppressLint("ClickableViewAccessibility")
-    fun bind(tab: Tab, listener: TabAdapter.Listener) {
-        binding.root.setOnClickListener { listener.onToggleVisibility(tab.mode) }
-
+    fun bind(tab: Tab, listener: EditableListListener) {
+        listener.bind(tab, this, dragHandle = binding.tabDragHandle)
         binding.tabCheckBox.apply {
             // Update the CheckBox name to align with the mode
             setText(
@@ -125,15 +108,6 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
             // Unlike in other adapters, we update the checked state alongside
             // the tab data since they are in the same data structure (Tab)
             isChecked = tab is Tab.Visible
-        }
-
-        // Set up the drag handle to start a drag whenever it is touched.
-        binding.tabDragHandle.setOnTouchListener { _, motionEvent ->
-            binding.tabDragHandle.performClick()
-            if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
-                listener.onPickUp(this)
-                true
-            } else false
         }
     }
 

@@ -68,7 +68,7 @@ class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
      * @param listener A [ClickableListListener] to bind interactions to.
      */
     fun bind(artist: Artist, listener: ClickableListListener) {
-        binding.root.setOnClickListener { listener.onClick(artist) }
+        listener.bind(artist, this)
         binding.pickerImage.bind(artist)
         binding.pickerName.text = artist.resolveName(binding.context)
     }

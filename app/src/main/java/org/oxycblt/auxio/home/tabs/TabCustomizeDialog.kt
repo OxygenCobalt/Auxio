@@ -25,7 +25,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogTabsBinding
-import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.list.EditableListListener
+import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.logD
@@ -34,7 +35,7 @@ import org.oxycblt.auxio.util.logD
  * A [ViewBindingDialogFragment] that allows the user to modify the home [Tab] configuration.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAdapter.Listener {
+class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), EditableListListener {
     private val tabAdapter = TabAdapter(this)
     private var touchHelper: ItemTouchHelper? = null
 
@@ -80,12 +81,11 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
         binding.tabRecycler.adapter = null
     }
 
-    override fun onToggleVisibility(tabMode: MusicMode) {
-        logD("Toggling tab $tabMode")
-
+    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
+        check(item is Tab) { "Unexpected datatype: ${item::class.java}" }
         // We will need the exact index of the tab to update on in order to
         // notify the adapter of the change.
-        val index = tabAdapter.tabs.indexOfFirst { it.mode == tabMode }
+        val index = tabAdapter.tabs.indexOfFirst { it.mode == item.mode }
         val tab = tabAdapter.tabs[index]
         tabAdapter.setTab(
             index,

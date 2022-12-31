@@ -354,6 +354,7 @@ class HomeFragment :
                     }
                 }
                 is Indexer.Response.NoMusic -> {
+                    // TODO: Move this state to the list fragments (makes life easier)
                     logD("Updating UI to Response.NoMusic state")
                     binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
 

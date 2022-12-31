@@ -94,13 +94,13 @@ class AccentViewHolder private constructor(private val binding: ItemAccentBindin
      * @param listener A [ClickableListListener] to bind interactions to.
      */
     fun bind(accent: Accent, listener: ClickableListListener) {
+        listener.bind(accent, this, binding.accent)
         binding.accent.apply {
-            setOnClickListener { listener.onClick(accent) }
-            backgroundTintList = context.getColorCompat(accent.primary)
             // Add a Tooltip based on the content description so that the purpose of this
             // button can be clear.
             contentDescription = context.getString(accent.name)
             TooltipCompat.setTooltipText(this, contentDescription)
+            backgroundTintList = context.getColorCompat(accent.primary)
         }
     }
 

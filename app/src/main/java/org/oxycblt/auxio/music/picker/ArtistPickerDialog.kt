@@ -22,6 +22,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.list.ClickableListListener
@@ -67,7 +68,7 @@ abstract class ArtistPickerDialog :
         binding.pickerRecycler.adapter = null
     }
 
-    override fun onClick(item: Item) {
+    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
         findNavController().navigateUp()
     }
 }

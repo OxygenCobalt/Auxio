@@ -107,7 +107,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         // Playback indicator should sit above the inner StyledImageView and custom view/
         addView(playbackIndicatorView)
-        // Selction indicator should never be obscured, so place it at the top.
+        // Selection indicator should never be obscured, so place it at the top.
         addView(
             selectionIndicatorView,
             LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {

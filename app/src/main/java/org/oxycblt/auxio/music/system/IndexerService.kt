@@ -198,7 +198,7 @@ class IndexerService :
             // 2. If a non-foreground service is killed, the app will probably still be alive,
             // and thus the music library will not be updated at all.
             // TODO: Assuming I unify this with PlaybackService, it's possible that I won't need
-            //  this anymore.
+            //  this anymore, or at least I only have to use it when the app task is not removed.
             if (!foregroundManager.tryStartForeground(observingNotification)) {
                 observingNotification.post()
             }

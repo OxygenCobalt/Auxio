@@ -72,7 +72,6 @@ class IndexingNotification(private val context: Context) :
                 // Determinate state, show an active progress meter. Since these updates arrive
                 // highly rapidly, only update every 1.5 seconds to prevent notification rate
                 // limiting.
-                // TODO: Can I port this to the playback notification somehow?
                 val now = SystemClock.elapsedRealtime()
                 if (lastUpdateTime > -1 && (now - lastUpdateTime) < 1500) {
                     return false

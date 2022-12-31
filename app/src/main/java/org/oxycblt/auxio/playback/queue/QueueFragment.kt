@@ -26,6 +26,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
+import org.oxycblt.auxio.list.EditableListListener
+import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
@@ -37,7 +39,7 @@ import org.oxycblt.auxio.util.logD
  * A [ViewBindingFragment] that displays an editable queue.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueAdapter.Listener {
+class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListListener {
     private val queueModel: QueueViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val queueAdapter = QueueAdapter(this)
@@ -79,8 +81,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueAdapter.
         binding.queueRecycler.adapter = null
     }
 
-    override fun onClick(viewHolder: RecyclerView.ViewHolder) {
-        // Clicking on a queue item should start playing it.
+    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
         queueModel.goto(viewHolder.bindingAdapterPosition)
     }
 

@@ -20,6 +20,7 @@ package org.oxycblt.auxio.ui.accent
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
@@ -79,7 +80,7 @@ class AccentCustomizeDialog :
         binding.accentRecycler.adapter = null
     }
 
-    override fun onClick(item: Item) {
+    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
         check(item is Accent) { "Unexpected datatype: ${item::class.java}" }
         accentAdapter.setSelectedAccent(item)
     }

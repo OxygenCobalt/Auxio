@@ -10,6 +10,9 @@
 - Value lists are now properly localized
 - Queue no longer primarily shows previous songs when opened
 
+#### What's Fixed
+- Fixed mangled multi-value ID3v2 tags when UTF-16 is used
+
 ## 3.0.0
 
 #### What's New

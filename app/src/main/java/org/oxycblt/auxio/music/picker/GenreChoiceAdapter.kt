@@ -68,7 +68,7 @@ class GenreChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
      * @param listener A [ClickableListListener] to bind interactions to.
      */
     fun bind(genre: Genre, listener: ClickableListListener) {
-        binding.root.setOnClickListener { listener.onClick(genre) }
+        listener.bind(genre, this)
         binding.pickerImage.bind(genre)
         binding.pickerName.text = genre.resolveName(binding.context)
     }

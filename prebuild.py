@@ -19,13 +19,14 @@ import re
 
 # WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE FLAC EXTENSION AND 
 # THE GRADLE DEPENDENCY. IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
-# EXO_VERSION = "2.18.1"
+# EXO_VERSION = "2.18.2"
 FLAC_VERSION = "1.3.2"
 
-FATAL="\033[1;31m"
-WARN="\033[1;91m"
-INFO="\033[1;94m"
-OK="\033[1;92m"
+OK="\033[1;32m" # Bold green
+FATAL="\033[1;31m" # Bold red
+WARN="\033[1;33m" # Bold yellow
+RUN="\033[1;34m" # Bold blue
+INFO="\033[1m" # Bold white
 NC="\033[0m"
 
 # We do some shell scripting later on, so we can't support windows.
@@ -36,7 +37,7 @@ if system not in ["Linux", "Darwin"]:
     sys.exit(1)
 
 def sh(cmd):
-    print(INFO + "execute: " + NC + cmd)
+    print(RUN + "execute: " + NC + cmd)
     code = subprocess.call(["sh", "-c", "set -e; " + cmd])
     if code != 0:
         print(FATAL + "fatal:" + NC + " command failed with exit code " + str(code))
@@ -79,11 +80,11 @@ if ndk_path is None or not os.path.isfile(os.path.join(ndk_path, "ndk-build")):
             "candidates were found however:")
         for i, candidate in enumerate(candidates):
             print("[" + str(i) + "] " + candidate)
-        print(WARN + "info:" + NC + " NDK r21e is recommended for this script. Other " +
+        print(INFO + "info:" + NC + " NDK r21e is recommended for this script. Other " +
             "NDKs may result in unexpected behavior.")
         try:
             ndk_path = candidates[int(input("enter the ndk to use [default 0]: "))]
-        except:
+        except ValueError:
             ndk_path = candidates[0]
     else:
         print(FATAL + "fatal:" + NC + " the android ndk was not installed at a " + 
