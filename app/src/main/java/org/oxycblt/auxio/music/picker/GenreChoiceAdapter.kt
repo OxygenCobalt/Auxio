@@ -39,7 +39,7 @@ class GenreChoiceAdapter(private val listener: ClickableListListener) :
     override fun getItemCount() = genres.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        GenreChoiceViewHolder.new(parent)
+        GenreChoiceViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: GenreChoiceViewHolder, position: Int) =
         holder.bind(genres[position], listener)
@@ -58,7 +58,7 @@ class GenreChoiceAdapter(private val listener: ClickableListListener) :
 
 /**
  * A [DialogRecyclerView.ViewHolder] that displays a smaller variant of a typical [Genre] item, for
- * use with [GenreChoiceAdapter]. Use [new] to create an instance.
+ * use with [GenreChoiceAdapter]. Use [from] to create an instance.
  */
 class GenreChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
@@ -79,7 +79,7 @@ class GenreChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) =
+        fun from(parent: View) =
             GenreChoiceViewHolder(ItemPickerChoiceBinding.inflate(parent.context.inflater))
     }
 }

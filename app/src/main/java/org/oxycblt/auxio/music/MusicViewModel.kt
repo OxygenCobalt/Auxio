@@ -26,7 +26,7 @@ import org.oxycblt.auxio.music.system.Indexer
  * A [ViewModel] providing data specific to the music loading process.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MusicViewModel : ViewModel(), Indexer.Callback {
+class MusicViewModel : ViewModel(), Indexer.Listener {
     private val indexer = Indexer.getInstance()
 
     private val _indexerState = MutableStateFlow<Indexer.State?>(null)

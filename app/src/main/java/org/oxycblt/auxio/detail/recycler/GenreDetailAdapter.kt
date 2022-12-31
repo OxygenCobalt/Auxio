@@ -54,9 +54,9 @@ class GenreDetailAdapter(private val listener: Listener) : DetailAdapter(listene
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
-            GenreDetailViewHolder.VIEW_TYPE -> GenreDetailViewHolder.new(parent)
-            ArtistViewHolder.VIEW_TYPE -> ArtistViewHolder.new(parent)
-            SongViewHolder.VIEW_TYPE -> SongViewHolder.new(parent)
+            GenreDetailViewHolder.VIEW_TYPE -> GenreDetailViewHolder.from(parent)
+            ArtistViewHolder.VIEW_TYPE -> ArtistViewHolder.from(parent)
+            SongViewHolder.VIEW_TYPE -> SongViewHolder.from(parent)
             else -> super.onCreateViewHolder(parent, viewType)
         }
 
@@ -75,7 +75,7 @@ class GenreDetailAdapter(private val listener: Listener) : DetailAdapter(listene
         return super.isItemFullWidth(position) || item is Genre
     }
 
-    companion object {
+    private companion object {
         val DIFF_CALLBACK =
             object : SimpleItemCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
@@ -94,7 +94,7 @@ class GenreDetailAdapter(private val listener: Listener) : DetailAdapter(listene
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays the [Genre] header in the detail view. Use [new] to
+ * A [RecyclerView.ViewHolder] that displays the [Genre] header in the detail view. Use [from] to
  * create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -130,7 +130,7 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) =
+        fun from(parent: View) =
             GenreDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */

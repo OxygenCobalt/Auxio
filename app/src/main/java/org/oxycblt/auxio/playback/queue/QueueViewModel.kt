@@ -29,7 +29,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
+class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
     private val playbackManager = PlaybackStateManager.getInstance()
 
     private val _queue = MutableStateFlow(listOf<Song>())

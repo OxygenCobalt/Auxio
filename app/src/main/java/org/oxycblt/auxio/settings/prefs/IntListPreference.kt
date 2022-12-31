@@ -162,8 +162,8 @@ constructor(
         }
     }
 
-    companion object {
-        private val PREFERENCE_DEFAULT_VALUE_FIELD: Field by
+    private companion object {
+        val PREFERENCE_DEFAULT_VALUE_FIELD: Field by
             lazyReflectedField(Preference::class, "mDefaultValue")
     }
 }

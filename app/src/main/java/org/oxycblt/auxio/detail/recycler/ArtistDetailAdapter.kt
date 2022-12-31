@@ -54,9 +54,9 @@ class ArtistDetailAdapter(private val listener: Listener) : DetailAdapter(listen
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
-            ArtistDetailViewHolder.VIEW_TYPE -> ArtistDetailViewHolder.new(parent)
-            ArtistAlbumViewHolder.VIEW_TYPE -> ArtistAlbumViewHolder.new(parent)
-            ArtistSongViewHolder.VIEW_TYPE -> ArtistSongViewHolder.new(parent)
+            ArtistDetailViewHolder.VIEW_TYPE -> ArtistDetailViewHolder.from(parent)
+            ArtistAlbumViewHolder.VIEW_TYPE -> ArtistAlbumViewHolder.from(parent)
+            ArtistSongViewHolder.VIEW_TYPE -> ArtistSongViewHolder.from(parent)
             else -> super.onCreateViewHolder(parent, viewType)
         }
 
@@ -76,9 +76,9 @@ class ArtistDetailAdapter(private val listener: Listener) : DetailAdapter(listen
         return super.isItemFullWidth(position) || item is Artist
     }
 
-    companion object {
+    private companion object {
         /** A comparator that can be used with DiffUtil. */
-        private val DIFF_CALLBACK =
+        val DIFF_CALLBACK =
             object : SimpleItemCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
@@ -97,7 +97,7 @@ class ArtistDetailAdapter(private val listener: Listener) : DetailAdapter(listen
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays the [Artist] header in the detail view. Use [new] to
+ * A [RecyclerView.ViewHolder] that displays the [Artist] header in the detail view. Use [from] to
  * create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -156,7 +156,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) =
+        fun from(parent: View) =
             ArtistDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
@@ -172,7 +172,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays an [Album] in the context of an [Artist]. Use [new] to
+ * A [RecyclerView.ViewHolder] that displays an [Album] in the context of an [Artist]. Use [from] to
  * create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -211,7 +211,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) =
+        fun from(parent: View) =
             ArtistAlbumViewHolder(ItemParentBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
@@ -224,7 +224,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [Song] in the context of an [Artist]. Use [new] to
+ * A [RecyclerView.ViewHolder] that displays a [Song] in the context of an [Artist]. Use [from] to
  * create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -260,7 +260,7 @@ private class ArtistSongViewHolder private constructor(private val binding: Item
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) =
+        fun from(parent: View) =
             ArtistSongViewHolder(ItemSongBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */

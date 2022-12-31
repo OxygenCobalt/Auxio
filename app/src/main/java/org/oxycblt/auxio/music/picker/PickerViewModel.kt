@@ -28,7 +28,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * contain the music themselves and then exit if the library changes.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class PickerViewModel : ViewModel(), MusicStore.Callback {
+class PickerViewModel : ViewModel(), MusicStore.Listener {
     private val musicStore = MusicStore.getInstance()
 
     private val _currentItem = MutableStateFlow<Music?>(null)

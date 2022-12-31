@@ -493,12 +493,10 @@ class HomeFragment :
             }
     }
 
-    companion object {
-        private val VP_RECYCLER_FIELD: Field by
-            lazyReflectedField(ViewPager2::class, "mRecyclerView")
-        private val RV_TOUCH_SLOP_FIELD: Field by
-            lazyReflectedField(RecyclerView::class, "mTouchSlop")
-        private const val KEY_LAST_TRANSITION_AXIS =
+    private companion object {
+        val VP_RECYCLER_FIELD: Field by lazyReflectedField(ViewPager2::class, "mRecyclerView")
+        val RV_TOUCH_SLOP_FIELD: Field by lazyReflectedField(RecyclerView::class, "mTouchSlop")
+        const val KEY_LAST_TRANSITION_AXIS =
             BuildConfig.APPLICATION_ID + ".key.LAST_TRANSITION_AXIS"
     }
 }

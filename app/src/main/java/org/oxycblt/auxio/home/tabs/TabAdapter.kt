@@ -38,7 +38,7 @@ class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewH
         private set
 
     override fun getItemCount() = tabs.size
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TabViewHolder.new(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TabViewHolder.from(parent)
     override fun onBindViewHolder(holder: TabViewHolder, position: Int) {
         holder.bind(tabs[position], listener)
     }
@@ -92,13 +92,13 @@ class TabAdapter(private val listener: Listener) : RecyclerView.Adapter<TabViewH
         fun onPickUp(viewHolder: RecyclerView.ViewHolder)
     }
 
-    companion object {
-        private val PAYLOAD_TAB_CHANGED = Any()
+    private companion object {
+        val PAYLOAD_TAB_CHANGED = Any()
     }
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [Tab]. Use [new] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [Tab]. Use [from] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class TabViewHolder private constructor(private val binding: ItemTabBinding) :
@@ -143,6 +143,6 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) = TabViewHolder(ItemTabBinding.inflate(parent.context.inflater))
+        fun from(parent: View) = TabViewHolder(ItemTabBinding.inflate(parent.context.inflater))
     }
 }

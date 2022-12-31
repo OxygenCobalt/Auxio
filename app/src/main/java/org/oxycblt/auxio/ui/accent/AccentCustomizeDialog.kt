@@ -85,7 +85,7 @@ class AccentCustomizeDialog :
         accentAdapter.setSelectedAccent(item)
     }
 
-    companion object {
-        private const val KEY_PENDING_ACCENT = BuildConfig.APPLICATION_ID + ".key.PENDING_ACCENT"
+    private companion object {
+        const val KEY_PENDING_ACCENT = BuildConfig.APPLICATION_ID + ".key.PENDING_ACCENT"
     }
 }

@@ -148,9 +148,9 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
                 iconRes, actionName, context.newBroadcastPendingIntent(actionName))
             .build()
 
-    companion object {
+    private companion object {
         /** Notification channel used by solely the playback notification. */
-        private val CHANNEL_INFO =
+        val CHANNEL_INFO =
             ChannelInfo(
                 id = BuildConfig.APPLICATION_ID + ".channel.PLAYBACK",
                 nameRes = R.string.lbl_playback)

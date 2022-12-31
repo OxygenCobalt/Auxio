@@ -54,7 +54,7 @@ class Indexer private constructor() {
     private var lastResponse: Response? = null
     private var indexingState: Indexing? = null
     private var controller: Controller? = null
-    private var callback: Callback? = null
+    private var listener: Listener? = null
 
     /** Whether music loading is occurring or not. */
     val isIndexing: Boolean
@@ -71,7 +71,7 @@ class Indexer private constructor() {
     /**
      * Register a [Controller] for this instance. This instance will handle any commands to start
      * the music loading process. There can be only one [Controller] at a time. Will invoke all
-     * [Callback] methods to initialize the instance with the current state.
+     * [Listener] methods to initialize the instance with the current state.
      * @param controller The [Controller] to register. Will do nothing if already registered.
      */
     @Synchronized
@@ -105,14 +105,14 @@ class Indexer private constructor() {
     }
 
     /**
-     * Register the [Callback] for this instance. This can be used to receive rapid-fire updates to
-     * the current music loading state. There can be only one [Callback] at a time. Will invoke all
-     * [Callback] methods to initialize the instance with the current state.
-     * @param callback The [Callback] to add.
+     * Register the [Listener] for this instance. This can be used to receive rapid-fire updates to
+     * the current music loading state. There can be only one [Listener] at a time. Will invoke all
+     * [Listener] methods to initialize the instance with the current state.
+     * @param listener The [Listener] to add.
      */
     @Synchronized
-    fun registerCallback(callback: Callback) {
-        if (BuildConfig.DEBUG && this.callback != null) {
+    fun registerCallback(listener: Listener) {
+        if (BuildConfig.DEBUG && this.listener != null) {
             logW("Listener is already registered")
             return
         }
@@ -120,24 +120,24 @@ class Indexer private constructor() {
         // Initialize the listener with the current state.
         val currentState =
             indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
-        callback.onIndexerStateChanged(currentState)
-        this.callback = callback
+        listener.onIndexerStateChanged(currentState)
+        this.listener = listener
     }
 
     /**
-     * Unregister a [Callback] from this instance, preventing it from recieving any further updates.
-     * @param callback The [Callback] to unregister. Must be the current [Callback]. Does nothing if
-     * invoked by another [Callback] implementation.
-     * @see Callback
+     * Unregister a [Listener] from this instance, preventing it from recieving any further updates.
+     * @param listener The [Listener] to unregister. Must be the current [Listener]. Does nothing if
+     * invoked by another [Listener] implementation.
+     * @see Listener
      */
     @Synchronized
-    fun unregisterCallback(callback: Callback) {
-        if (BuildConfig.DEBUG && this.callback !== callback) {
+    fun unregisterCallback(listener: Listener) {
+        if (BuildConfig.DEBUG && this.listener !== listener) {
             logW("Given controller did not match current controller")
             return
         }
 
-        this.callback = null
+        this.listener = null
     }
 
     /**
@@ -388,7 +388,7 @@ class Indexer private constructor() {
         val state =
             indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
         controller?.onIndexerStateChanged(state)
-        callback?.onIndexerStateChanged(state)
+        listener?.onIndexerStateChanged(state)
     }
 
     /**
@@ -411,7 +411,7 @@ class Indexer private constructor() {
                 // Signal that the music loading process has been completed.
                 val state = State.Complete(response)
                 controller?.onIndexerStateChanged(state)
-                callback?.onIndexerStateChanged(state)
+                listener?.onIndexerStateChanged(state)
             }
         }
     }
@@ -476,10 +476,10 @@ class Indexer private constructor() {
      * A listener for rapid-fire changes in the music loading state.
      *
      * This is only useful for code that absolutely must show the current loading process.
-     * Otherwise, [MusicStore.Callback] is highly recommended due to it's updates only consisting of
+     * Otherwise, [MusicStore.Listener] is highly recommended due to it's updates only consisting of
      * the [MusicStore.Library].
      */
-    interface Callback {
+    interface Listener {
         /**
          * Called when the current state of the Indexer changed.
          *
@@ -495,7 +495,7 @@ class Indexer private constructor() {
      * Context that runs the music loading process. Implementations should be capable of running the
      * background for long periods of time without android killing the process.
      */
-    interface Controller : Callback {
+    interface Controller : Listener {
         /**
          * Called when a new music loading process was requested. Implementations should forward
          * this to [index].

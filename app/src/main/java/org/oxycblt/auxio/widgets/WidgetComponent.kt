@@ -41,7 +41,7 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class WidgetComponent(private val context: Context) :
-    PlaybackStateManager.Callback, Settings.Callback {
+    PlaybackStateManager.Listener, Settings.Listener {
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settings = Settings(context, this)
     private val widgetProvider = WidgetProvider()

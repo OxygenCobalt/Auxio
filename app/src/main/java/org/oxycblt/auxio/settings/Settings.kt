@@ -44,12 +44,12 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * mutability
  * @author Alexander Capehart (OxygenCobalt)
  */
-class Settings(private val context: Context, private val callback: Callback? = null) :
+class Settings(private val context: Context, private val listener: Listener? = null) :
     SharedPreferences.OnSharedPreferenceChangeListener {
     private val inner = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
 
     init {
-        if (callback != null) {
+        if (listener != null) {
             inner.registerOnSharedPreferenceChangeListener(this)
         }
     }
@@ -154,7 +154,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
     }
 
     /**
-     * Release this instance and any callbacks held by it. This is not needed if no [Callback] was
+     * Release this instance and any callbacks held by it. This is not needed if no [Listener] was
      * originally attached.
      */
     fun release() {
@@ -162,11 +162,11 @@ class Settings(private val context: Context, private val callback: Callback? = n
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        unlikelyToBeNull(callback).onSettingChanged(key)
+        unlikelyToBeNull(listener).onSettingChanged(key)
     }
 
-    /** Simplified callback for settings changes. */
-    interface Callback {
+    /** Simplified listener for settings changes. */
+    interface Listener {
         // TODO: Refactor this lifecycle
         /**
          * Called when a setting has changed.

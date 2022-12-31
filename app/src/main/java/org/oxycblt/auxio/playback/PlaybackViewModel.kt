@@ -38,7 +38,7 @@ import org.oxycblt.auxio.util.context
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PlaybackViewModel(application: Application) :
-    AndroidViewModel(application), PlaybackStateManager.Callback {
+    AndroidViewModel(application), PlaybackStateManager.Listener {
     private val settings = Settings(application)
     private val playbackManager = PlaybackStateManager.getInstance()
     private var lastPositionJob: Job? = null

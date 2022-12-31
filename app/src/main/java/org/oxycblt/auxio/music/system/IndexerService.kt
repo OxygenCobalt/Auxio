@@ -54,7 +54,7 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class IndexerService : Service(), Indexer.Controller, Settings.Callback {
+class IndexerService : Service(), Indexer.Controller, Settings.Listener {
     private val indexer = Indexer.getInstance()
     private val musicStore = MusicStore.getInstance()
     private val playbackManager = PlaybackStateManager.getInstance()
@@ -287,8 +287,8 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         }
     }
 
-    companion object {
-        private const val WAKELOCK_TIMEOUT_MS = 60 * 1000L
-        private const val REINDEX_DELAY_MS = 500L
+    private companion object {
+        const val WAKELOCK_TIMEOUT_MS = 60 * 1000L
+        const val REINDEX_DELAY_MS = 500L
     }
 }

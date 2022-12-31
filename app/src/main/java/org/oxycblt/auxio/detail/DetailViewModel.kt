@@ -51,7 +51,7 @@ import org.oxycblt.auxio.util.*
  * @author Alexander Capehart (OxygenCobalt)
  */
 class DetailViewModel(application: Application) :
-    AndroidViewModel(application), MusicStore.Callback {
+    AndroidViewModel(application), MusicStore.Listener {
     private val musicStore = MusicStore.getInstance()
     private val settings = Settings(application)
 

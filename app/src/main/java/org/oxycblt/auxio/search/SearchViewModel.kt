@@ -43,7 +43,7 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SearchViewModel(application: Application) :
-    AndroidViewModel(application), MusicStore.Callback {
+    AndroidViewModel(application), MusicStore.Listener {
     private val musicStore = MusicStore.getInstance()
     private val settings = Settings(context)
     private var lastQuery: String? = null
@@ -212,11 +212,11 @@ class SearchViewModel(application: Application) :
         search(lastQuery)
     }
 
-    companion object {
+    private companion object {
         /**
          * Converts the output of [Normalizer] to remove any junk characters added by it's
          * replacements.
          */
-        private val NORMALIZATION_SANITIZE_REGEX = Regex("\\p{InCombiningDiacriticalMarks}+")
+        val NORMALIZATION_SANITIZE_REGEX = Regex("\\p{InCombiningDiacriticalMarks}+")
     }
 }

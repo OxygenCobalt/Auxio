@@ -114,7 +114,8 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueAdapter.
             val lmm = binding.queueRecycler.layoutManager as LinearLayoutManager
             val start = lmm.findFirstCompletelyVisibleItemPosition()
             val end = lmm.findLastCompletelyVisibleItemPosition()
-            val notInitialized = start == RecyclerView.NO_POSITION || end == RecyclerView.NO_POSITION
+            val notInitialized =
+                start == RecyclerView.NO_POSITION || end == RecyclerView.NO_POSITION
             // When we scroll, we want to scroll to the almost-top so the user can see
             // future songs instead of past songs. The way we have to do this however is
             // dependent on where we have to scroll to get to the currently playing song.

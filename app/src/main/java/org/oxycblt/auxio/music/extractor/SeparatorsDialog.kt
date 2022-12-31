@@ -94,13 +94,13 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
         return separators
     }
 
-    companion object {
-        private val KEY_PENDING_SEPARATORS = BuildConfig.APPLICATION_ID + ".key.PENDING_SEPARATORS"
+    private companion object {
+        val KEY_PENDING_SEPARATORS = BuildConfig.APPLICATION_ID + ".key.PENDING_SEPARATORS"
         // TODO: Move these to a more "Correct" location?
-        private const val SEPARATOR_COMMA = ','
-        private const val SEPARATOR_SEMICOLON = ';'
-        private const val SEPARATOR_SLASH = '/'
-        private const val SEPARATOR_PLUS = '+'
-        private const val SEPARATOR_AND = '&'
+        const val SEPARATOR_COMMA = ','
+        const val SEPARATOR_SEMICOLON = ';'
+        const val SEPARATOR_SLASH = '/'
+        const val SEPARATOR_PLUS = '+'
+        const val SEPARATOR_AND = '&'
     }
 }

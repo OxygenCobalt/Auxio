@@ -77,7 +77,7 @@ abstract class SelectionIndicatorAdapter<VH : RecyclerView.ViewHolder> :
         abstract fun updateSelectionIndicator(isSelected: Boolean)
     }
 
-    companion object {
-        private val PAYLOAD_SELECTION_INDICATOR_CHANGED = Any()
+    private companion object {
+        val PAYLOAD_SELECTION_INDICATOR_CHANGED = Any()
     }
 }

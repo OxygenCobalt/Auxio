@@ -322,12 +322,12 @@ abstract class MediaStoreExtractor(
         genreNamesMap[raw.mediaStoreId]?.let { raw.genreNames = listOf(it) }
     }
 
-    companion object {
+    private companion object {
         /**
          * The base selector that works across all versions of android. Does not exclude
          * directories.
          */
-        private const val BASE_SELECTOR = "NOT ${MediaStore.Audio.Media.SIZE}=0"
+        const val BASE_SELECTOR = "NOT ${MediaStore.Audio.Media.SIZE}=0"
 
         /**
          * The album artist of a song. This column has existed since at least API 21, but until API
@@ -335,13 +335,13 @@ abstract class MediaStoreExtractor(
          * versions that Auxio supports.
          */
         @Suppress("InlinedApi")
-        private const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
+        const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
 
         /**
          * The external volume. This naming has existed since API 21, but no constant existed for it
          * until API 29. This will work on all versions that Auxio supports.
          */
-        @Suppress("InlinedApi") private const val VOLUME_EXTERNAL = MediaStore.VOLUME_EXTERNAL
+        @Suppress("InlinedApi") const val VOLUME_EXTERNAL = MediaStore.VOLUME_EXTERNAL
     }
 }
 

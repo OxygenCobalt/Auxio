@@ -76,7 +76,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             is IntListPreference -> {
                 // Copy the built-in preference dialog launching code into our project so
                 // we can automatically use the provided preference class.
-                val dialog = IntListPreferenceDialog.new(preference)
+                val dialog = IntListPreferenceDialog.from(preference)
                 dialog.setTargetFragment(this, 0)
                 dialog.show(parentFragmentManager, IntListPreferenceDialog.TAG)
             }

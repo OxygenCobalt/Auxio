@@ -126,7 +126,7 @@ class GenreListFragment :
             get() = differ.currentList
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            GenreViewHolder.new(parent)
+            GenreViewHolder.from(parent)
 
         override fun onBindViewHolder(holder: GenreViewHolder, position: Int) {
             holder.bind(differ.currentList[position], listener)

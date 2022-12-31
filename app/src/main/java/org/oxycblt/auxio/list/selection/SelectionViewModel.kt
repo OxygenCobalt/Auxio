@@ -26,7 +26,7 @@ import org.oxycblt.auxio.music.*
  * A [ViewModel] that manages the current selection.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SelectionViewModel : ViewModel(), MusicStore.Callback {
+class SelectionViewModel : ViewModel(), MusicStore.Listener {
     private val musicStore = MusicStore.getInstance()
 
     private val _selected = MutableStateFlow(listOf<Music>())

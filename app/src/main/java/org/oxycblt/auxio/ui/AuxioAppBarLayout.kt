@@ -136,8 +136,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
     }
 
-    companion object {
+    private companion object {
         /** @see AppBarLayout.BaseBehavior.MAX_OFFSET_ANIMATION_DURATION */
-        private const val APP_BAR_LAYOUT_MAX_OFFSET_ANIMATION_DURATION = 600
+        const val APP_BAR_LAYOUT_MAX_OFFSET_ANIMATION_DURATION = 600
     }
 }

@@ -169,8 +169,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0)
         }
     }
 
-    companion object {
+    private companion object {
         // Pre-calculate sqrt(2)
-        private const val SQRT2 = 1.4142135f
+        const val SQRT2 = 1.4142135f
     }
 }

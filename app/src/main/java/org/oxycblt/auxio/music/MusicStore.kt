@@ -33,42 +33,42 @@ import org.oxycblt.auxio.music.storage.useQuery
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MusicStore private constructor() {
-    private val callbacks = mutableListOf<Callback>()
+    private val listeners = mutableListOf<Listener>()
 
     /**
      * The current [Library]. May be null if a [Library] has not been successfully loaded yet. This
      * can change, so it's highly recommended to not access this directly and instead rely on
-     * [Callback].
+     * [Listener].
      */
     var library: Library? = null
         set(value) {
             field = value
-            for (callback in callbacks) {
+            for (callback in listeners) {
                 callback.onLibraryChanged(library)
             }
         }
 
     /**
-     * Add a [Callback] to this instance. This can be used to receive changes in the music library.
-     * Will invoke all [Callback] methods to initialize the instance with the current state.
-     * @param callback The [Callback] to add.
-     * @see Callback
+     * Add a [Listener] to this instance. This can be used to receive changes in the music library.
+     * Will invoke all [Listener] methods to initialize the instance with the current state.
+     * @param listener The [Listener] to add.
+     * @see Listener
      */
     @Synchronized
-    fun addCallback(callback: Callback) {
-        callback.onLibraryChanged(library)
-        callbacks.add(callback)
+    fun addCallback(listener: Listener) {
+        listener.onLibraryChanged(library)
+        listeners.add(listener)
     }
 
     /**
-     * Remove a [Callback] from this instance, preventing it from recieving any further updates.
-     * @param callback The [Callback] to remove. Does nothing if the [Callback] was never added in
+     * Remove a [Listener] from this instance, preventing it from recieving any further updates.
+     * @param listener The [Listener] to remove. Does nothing if the [Listener] was never added in
      * the first place.
-     * @see Callback
+     * @see Listener
      */
     @Synchronized
-    fun removeCallback(callback: Callback) {
-        callbacks.remove(callback)
+    fun removeCallback(listener: Listener) {
+        listeners.remove(listener)
     }
 
     /**
@@ -167,7 +167,7 @@ class MusicStore private constructor() {
     }
 
     /** A listener for changes in the music library. */
-    interface Callback {
+    interface Listener {
         /**
          * Called when the current [Library] has changed.
          * @param library The new [Library], or null if no [Library] has been loaded yet.

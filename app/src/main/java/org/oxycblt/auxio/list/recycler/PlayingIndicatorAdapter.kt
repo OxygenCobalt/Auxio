@@ -115,7 +115,7 @@ abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerV
         abstract fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean)
     }
 
-    companion object {
-        private val PAYLOAD_PLAYING_INDICATOR_CHANGED = Any()
+    private companion object {
+        val PAYLOAD_PLAYING_INDICATOR_CHANGED = Any()
     }
 }

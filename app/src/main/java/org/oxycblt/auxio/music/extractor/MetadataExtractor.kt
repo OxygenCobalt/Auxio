@@ -116,8 +116,8 @@ class MetadataExtractor(
         }
     }
 
-    companion object {
-        private const val TASK_CAPACITY = 8
+    private companion object {
+        const val TASK_CAPACITY = 8
     }
 }
 

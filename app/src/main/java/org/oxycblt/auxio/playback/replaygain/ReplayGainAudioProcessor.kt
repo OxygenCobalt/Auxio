@@ -281,12 +281,11 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
     private data class GainTag(val key: String, val value: Float)
     // TODO: Try to phase this out
 
-    companion object {
-        private const val TAG_RG_TRACK = "replaygain_track_gain"
-        private const val TAG_RG_ALBUM = "replaygain_album_gain"
-        private const val R128_TRACK = "r128_track_gain"
-        private const val R128_ALBUM = "r128_album_gain"
-
-        private val REPLAY_GAIN_TAGS = arrayOf(TAG_RG_TRACK, TAG_RG_ALBUM, R128_ALBUM, R128_TRACK)
+    private companion object {
+        const val TAG_RG_TRACK = "replaygain_track_gain"
+        const val TAG_RG_ALBUM = "replaygain_album_gain"
+        const val R128_TRACK = "r128_track_gain"
+        const val R128_ALBUM = "r128_album_gain"
+        val REPLAY_GAIN_TAGS = arrayOf(TAG_RG_TRACK, TAG_RG_ALBUM, R128_ALBUM, R128_TRACK)
     }
 }

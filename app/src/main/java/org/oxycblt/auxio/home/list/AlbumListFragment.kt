@@ -152,7 +152,7 @@ class AlbumListFragment :
             get() = differ.currentList
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            AlbumViewHolder.new(parent)
+            AlbumViewHolder.from(parent)
 
         override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
             holder.bind(differ.currentList[position], listener)

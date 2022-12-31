@@ -29,7 +29,8 @@ import org.oxycblt.auxio.util.nonZeroOrNull
  * An ISO-8601/RFC 3339 Date.
  *
  * This class only encodes the timestamp spec and it's conversion to a human-readable date, without
- * any other time management or validation. In general, this should only be used for display.
+ * any other time management or validation. In general, this should only be used for display. Use
+ * [from] to create an instance.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -112,12 +113,17 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
     /**
      * A range of [Date]s. This is used in contexts where the [Date] of an item is derived from
-     * several sub-items and thus can have a "range" of release dates.
-     * @param min The earliest [Date] in the range.
-     * @param max The latest [Date] in the range. May be the same as [min].
+     * several sub-items and thus can have a "range" of release dates. Use [from] to create an
+     * instance.
      * @author Alexander Capehart
      */
-    class Range private constructor(val min: Date, val max: Date) : Comparable<Range> {
+    class Range
+    private constructor(
+        /** The earliest [Date] in the range. */
+        val min: Date,
+        /** the latest [Date] in the range. May be the same as [min]. ] */
+        val max: Date
+    ) : Comparable<Range> {
 
         /**
          * Resolve this instance into a human-readable date range.

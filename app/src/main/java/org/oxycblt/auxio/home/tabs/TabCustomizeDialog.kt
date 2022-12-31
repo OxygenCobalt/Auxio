@@ -108,7 +108,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
         touchHelper.startDrag(viewHolder)
     }
 
-    companion object {
-        private const val KEY_TABS = BuildConfig.APPLICATION_ID + ".key.PENDING_TABS"
+    private companion object {
+        const val KEY_TABS = BuildConfig.APPLICATION_ID + ".key.PENDING_TABS"
     }
 }

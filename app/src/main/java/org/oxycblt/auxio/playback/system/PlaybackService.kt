@@ -79,9 +79,9 @@ class PlaybackService :
     Service(),
     Player.Listener,
     InternalPlayer,
-    MediaSessionComponent.Callback,
-    Settings.Callback,
-    MusicStore.Callback {
+    MediaSessionComponent.Listener,
+    Settings.Listener,
+    MusicStore.Listener {
     // Player components
     private lateinit var player: ExoPlayer
     private lateinit var replayGainProcessor: ReplayGainAudioProcessor
@@ -217,7 +217,7 @@ class PlaybackService :
         get() = settings.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
 
     override fun getState(durationMs: Long) =
-        InternalPlayer.State.new(
+        InternalPlayer.State.from(
             player.playWhenReady,
             player.isPlaying,
             // The position value can be below zero or past the expected duration, make

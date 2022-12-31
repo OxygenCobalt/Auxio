@@ -39,7 +39,7 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class HomeViewModel(application: Application) :
-    AndroidViewModel(application), Settings.Callback, MusicStore.Callback {
+    AndroidViewModel(application), Settings.Listener, MusicStore.Listener {
     private val musicStore = MusicStore.getInstance()
     private val settings = Settings(application, this)
 

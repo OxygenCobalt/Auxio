@@ -176,7 +176,7 @@ class MusicDirsDialog :
     private fun isUiModeInclude(binding: DialogMusicDirsBinding) =
         binding.folderModeGroup.checkedButtonId == R.id.dirs_mode_include
 
-    companion object {
+    private companion object {
         const val KEY_PENDING_DIRS = BuildConfig.APPLICATION_ID + ".key.PENDING_DIRS"
         const val KEY_PENDING_MODE = BuildConfig.APPLICATION_ID + ".key.SHOULD_INCLUDE"
     }

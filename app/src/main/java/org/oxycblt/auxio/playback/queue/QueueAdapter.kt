@@ -52,7 +52,7 @@ class QueueAdapter(private val listener: Listener) : RecyclerView.Adapter<QueueS
     override fun getItemCount() = differ.currentList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        QueueSongViewHolder.new(parent)
+        QueueSongViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: QueueSongViewHolder, position: Int) =
         throw IllegalStateException()
@@ -137,13 +137,13 @@ class QueueAdapter(private val listener: Listener) : RecyclerView.Adapter<QueueS
         fun onPickUp(viewHolder: RecyclerView.ViewHolder)
     }
 
-    companion object {
-        private val PAYLOAD_UPDATE_POSITION = Any()
+    private companion object {
+        val PAYLOAD_UPDATE_POSITION = Any()
     }
 }
 
 /**
- * A [PlayingIndicatorAdapter.ViewHolder] that displays a queue [Song]. Use [new] to create an
+ * A [PlayingIndicatorAdapter.ViewHolder] that displays a queue [Song]. Use [from] to create an
  * instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -224,7 +224,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) =
+        fun from(parent: View) =
             QueueSongViewHolder(ItemQueueSongBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */

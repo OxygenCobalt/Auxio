@@ -127,7 +127,7 @@ class ArtistListFragment :
             get() = differ.currentList
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            ArtistViewHolder.new(parent)
+            ArtistViewHolder.from(parent)
 
         override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
             holder.bind(differ.currentList[position], listener)

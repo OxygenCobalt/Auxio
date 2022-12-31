@@ -27,7 +27,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.PlaybackStateManager.Callback
+import org.oxycblt.auxio.playback.state.PlaybackStateManager.Listener
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -45,7 +45,7 @@ import org.oxycblt.auxio.util.logW
  * - If you want to use the playback state with the ExoPlayer instance or system-side things, use
  * [org.oxycblt.auxio.playback.system.PlaybackService].
  *
- * Internal consumers should usually use [Callback], however the component that manages the player
+ * Internal consumers should usually use [Listener], however the component that manages the player
  * itself should instead use [InternalPlayer].
  *
  * All access should be done with [PlaybackStateManager.getInstance].
@@ -54,7 +54,7 @@ import org.oxycblt.auxio.util.logW
  */
 class PlaybackStateManager private constructor() {
     private val musicStore = MusicStore.getInstance()
-    private val callbacks = mutableListOf<Callback>()
+    private val listeners = mutableListOf<Listener>()
     private var internalPlayer: InternalPlayer? = null
     private var pendingAction: InternalPlayer.Action? = null
     private var isInitialized = false
@@ -74,7 +74,7 @@ class PlaybackStateManager private constructor() {
     var index = -1
         private set
     /** The current [InternalPlayer] state. */
-    var playerState = InternalPlayer.State.new(isPlaying = false, isAdvancing = false, 0)
+    var playerState = InternalPlayer.State.from(isPlaying = false, isAdvancing = false, 0)
         private set
     /** The current [RepeatMode] */
     var repeatMode = RepeatMode.NONE
@@ -93,32 +93,32 @@ class PlaybackStateManager private constructor() {
         get() = internalPlayer?.audioSessionId
 
     /**
-     * Add a [Callback] to this instance. This can be used to receive changes in the playback state.
-     * Will immediately invoke [Callback] methods to initialize the instance with the current state.
-     * @param callback The [Callback] to add.
-     * @see Callback
+     * Add a [Listener] to this instance. This can be used to receive changes in the playback state.
+     * Will immediately invoke [Listener] methods to initialize the instance with the current state.
+     * @param listener The [Listener] to add.
+     * @see Listener
      */
     @Synchronized
-    fun addCallback(callback: Callback) {
+    fun addCallback(listener: Listener) {
         if (isInitialized) {
-            callback.onNewPlayback(index, queue, parent)
-            callback.onRepeatChanged(repeatMode)
-            callback.onShuffledChanged(isShuffled)
-            callback.onStateChanged(playerState)
+            listener.onNewPlayback(index, queue, parent)
+            listener.onRepeatChanged(repeatMode)
+            listener.onShuffledChanged(isShuffled)
+            listener.onStateChanged(playerState)
         }
 
-        callbacks.add(callback)
+        listeners.add(listener)
     }
 
     /**
-     * Remove a [Callback] from this instance, preventing it from recieving any further updates.
-     * @param callback The [Callback] to remove. Does nothing if the [Callback] was never added in
+     * Remove a [Listener] from this instance, preventing it from recieving any further updates.
+     * @param listener The [Listener] to remove. Does nothing if the [Listener] was never added in
      * the first place.
-     * @see Callback
+     * @see Listener
      */
     @Synchronized
-    fun removeCallback(callback: Callback) {
-        callbacks.remove(callback)
+    fun removeCallback(listener: Listener) {
+        listeners.remove(listener)
     }
 
     /**
@@ -586,43 +586,43 @@ class PlaybackStateManager private constructor() {
     // --- CALLBACKS ---
 
     private fun notifyIndexMoved() {
-        for (callback in callbacks) {
+        for (callback in listeners) {
             callback.onIndexMoved(index)
         }
     }
 
     private fun notifyQueueChanged() {
-        for (callback in callbacks) {
+        for (callback in listeners) {
             callback.onQueueChanged(queue)
         }
     }
 
     private fun notifyQueueReworked() {
-        for (callback in callbacks) {
+        for (callback in listeners) {
             callback.onQueueReworked(index, queue)
         }
     }
 
     private fun notifyNewPlayback() {
-        for (callback in callbacks) {
+        for (callback in listeners) {
             callback.onNewPlayback(index, queue, parent)
         }
     }
 
     private fun notifyStateChanged() {
-        for (callback in callbacks) {
+        for (callback in listeners) {
             callback.onStateChanged(playerState)
         }
     }
 
     private fun notifyRepeatModeChanged() {
-        for (callback in callbacks) {
+        for (callback in listeners) {
             callback.onRepeatChanged(repeatMode)
         }
     }
 
     private fun notifyShuffledChanged() {
-        for (callback in callbacks) {
+        for (callback in listeners) {
             callback.onShuffledChanged(isShuffled)
         }
     }
@@ -631,7 +631,7 @@ class PlaybackStateManager private constructor() {
      * The interface for receiving updates from [PlaybackStateManager]. Add the listener to
      * [PlaybackStateManager] using [addCallback], remove them on destruction with [removeCallback].
      */
-    interface Callback {
+    interface Listener {
         /**
          * Called when the position of the currently playing item has changed, changing the current
          * [Song], but no other queue attribute has changed.

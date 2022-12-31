@@ -24,7 +24,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 
 /**
- * The companion dialog to [IntListPreference]. Use [new] to create an instance.
+ * The companion dialog to [IntListPreference]. Use [from] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
@@ -62,11 +62,10 @@ class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
          * @param preference The [IntListPreference] to display.
          * @return A new instance.
          */
-        fun new(preference: IntListPreference): IntListPreferenceDialog {
-            return IntListPreferenceDialog().apply {
+        fun from(preference: IntListPreference) =
+            IntListPreferenceDialog().apply {
                 // Populate the key field required by PreferenceDialogFragmentCompat.
                 arguments = Bundle().apply { putString(ARG_KEY, preference.key) }
             }
-        }
     }
 }
