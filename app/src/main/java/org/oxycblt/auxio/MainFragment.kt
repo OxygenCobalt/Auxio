@@ -74,7 +74,7 @@ class MainFragment :
 
     override fun onBindingCreated(binding: FragmentMainBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
-        
+
         elevationNormal = binding.context.getDimen(R.dimen.elevation_normal)
 
         // --- UI SETUP ---
