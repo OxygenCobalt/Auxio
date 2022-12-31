@@ -258,4 +258,7 @@
     <string name="lbl_shuffle_selected">Mescola selezionati</string>
     <string name="lbl_play_selected">Riproduci selezionati</string>
     <string name="fmt_selected">%d Selezionati</string>
+    <string name="set_playback_mode_genre">Riproduci dal genere</string>
+    <string name="lbl_wiki">Wiki</string>
+    <string name="fmt_list">%1$s, %2$s</string>
 </resources>
