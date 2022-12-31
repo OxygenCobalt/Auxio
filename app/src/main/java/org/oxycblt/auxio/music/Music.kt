@@ -520,7 +520,6 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         for (i in _artists.indices) {
             // Non-destructively reorder the linked artists so that they align with
             // the artist ordering within the song metadata.
-            // TODO: Make sure this works for artists only derived from album artists.
             val newIdx = _artists[i]._getOriginalPositionIn(_rawArtists)
             val other = _artists[newIdx]
             _artists[newIdx] = _artists[i]

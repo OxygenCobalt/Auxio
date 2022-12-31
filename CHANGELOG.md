@@ -8,6 +8,7 @@
 #### What's Improved
 - Formalized whitespace handling
 - Value lists are now properly localized
+- Queue no longer primarily shows previous songs when opened
 
 ## 3.0.0
 
