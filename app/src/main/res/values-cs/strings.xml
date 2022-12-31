@@ -268,4 +268,5 @@
     <string name="lbl_shuffle_selected">Náhodně přehrát vybrané</string>
     <string name="set_playback_mode_genre">Přehrát z žánru</string>
     <string name="lbl_wiki">Wiki</string>
+    <string name="fmt_list">%1$s, %2$s</string>
 </resources>
