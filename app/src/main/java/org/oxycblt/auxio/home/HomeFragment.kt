@@ -72,17 +72,7 @@ class HomeFragment :
     private val homeModel: HomeViewModel by androidActivityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
-
-    // lifecycleObject builds this in the creation step, so doing this is okay.
-    private val storagePermissionLauncher: ActivityResultLauncher<String> by lifecycleObject {
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            musicModel.refresh()
-        }
-    }
-
-    private val sortItem: MenuItem by lifecycleObject { binding ->
-        binding.homeToolbar.menu.findItem(R.id.submenu_sorting)
-    }
+    private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,6 +94,12 @@ class HomeFragment :
 
     override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
+
+        // Have to set up the permission launcher before the view is shown
+        storagePermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+                musicModel.refresh()
+            }
 
         // --- UI SETUP ---
         binding.homeAppbar.addOnOffsetChangedListener(this)
@@ -171,6 +167,7 @@ class HomeFragment :
 
     override fun onDestroyBinding(binding: FragmentHomeBinding) {
         super.onDestroyBinding(binding)
+        storagePermissionLauncher = null
         binding.homeAppbar.removeOnOffsetChangedListener(this)
         binding.homeToolbar.setOnMenuItemClickListener(null)
     }
@@ -285,7 +282,9 @@ class HomeFragment :
                     }
             }
 
-        val sortMenu = requireNotNull(sortItem.subMenu)
+        val sortMenu =
+            unlikelyToBeNull(
+                requireBinding().homeToolbar.menu.findItem(R.id.submenu_sorting).subMenu)
         val toHighlight = homeModel.getSortForTab(tabMode)
 
         for (option in sortMenu) {
@@ -374,7 +373,10 @@ class HomeFragment :
                         visibility = View.VISIBLE
                         text = context.getString(R.string.lbl_grant)
                         setOnClickListener {
-                            storagePermissionLauncher.launch(Indexer.PERMISSION_READ_AUDIO)
+                            requireNotNull(storagePermissionLauncher) {
+                                    "Permission launcher was not available"
+                                }
+                                .launch(Indexer.PERMISSION_READ_AUDIO)
                         }
                     }
                 }

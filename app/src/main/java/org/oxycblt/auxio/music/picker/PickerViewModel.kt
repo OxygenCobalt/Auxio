@@ -47,7 +47,7 @@ class PickerViewModel : ViewModel(), MusicStore.Listener {
         get() = _genreChoices
 
     override fun onCleared() {
-        musicStore.removeCallback(this)
+        musicStore.removeListener(this)
     }
 
     override fun onLibraryChanged(library: MusicStore.Library?) {

@@ -99,7 +99,7 @@ class PlaybackStateManager private constructor() {
      * @see Listener
      */
     @Synchronized
-    fun addCallback(listener: Listener) {
+    fun addListener(listener: Listener) {
         if (isInitialized) {
             listener.onNewPlayback(index, queue, parent)
             listener.onRepeatChanged(repeatMode)
@@ -117,7 +117,7 @@ class PlaybackStateManager private constructor() {
      * @see Listener
      */
     @Synchronized
-    fun removeCallback(listener: Listener) {
+    fun removeListener(listener: Listener) {
         listeners.remove(listener)
     }
 
@@ -629,7 +629,7 @@ class PlaybackStateManager private constructor() {
 
     /**
      * The interface for receiving updates from [PlaybackStateManager]. Add the listener to
-     * [PlaybackStateManager] using [addCallback], remove them on destruction with [removeCallback].
+     * [PlaybackStateManager] using [addListener], remove them on destruction with [removeListener].
      */
     interface Listener {
         /**

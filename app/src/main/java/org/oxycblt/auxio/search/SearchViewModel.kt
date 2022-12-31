@@ -55,12 +55,12 @@ class SearchViewModel(application: Application) :
         get() = _searchResults
 
     init {
-        musicStore.addCallback(this)
+        musicStore.addListener(this)
     }
 
     override fun onCleared() {
         super.onCleared()
-        musicStore.removeCallback(this)
+        musicStore.removeListener(this)
     }
 
     override fun onLibraryChanged(library: MusicStore.Library?) {

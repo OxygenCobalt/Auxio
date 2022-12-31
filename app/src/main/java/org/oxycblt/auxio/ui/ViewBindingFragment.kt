@@ -23,8 +23,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -34,7 +32,6 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 abstract class ViewBindingFragment<VB : ViewBinding> : Fragment() {
     private var _binding: VB? = null
-    private var lifecycleObjects = mutableListOf<LifecycleObject<VB, *>>()
 
     /**
      * Inflate the [ViewBinding] during [onCreateView].
@@ -75,26 +72,6 @@ abstract class ViewBindingFragment<VB : ViewBinding> : Fragment() {
         }
     }
 
-    /**
-     * Delegate to automatically create and destroy an object derived from the [ViewBinding].
-     * @param create Block to create the object from the [ViewBinding].
-     */
-    fun <T> lifecycleObject(create: (VB) -> T): ReadOnlyProperty<Fragment, T> {
-        // TODO: Phase this out.
-        lifecycleObjects.add(LifecycleObject(null, create))
-
-        return object : ReadOnlyProperty<Fragment, T> {
-            private val objIdx = lifecycleObjects.lastIndex
-
-            @Suppress("UNCHECKED_CAST")
-            override fun getValue(thisRef: Fragment, property: KProperty<*>) =
-                requireNotNull(lifecycleObjects[objIdx].data) {
-                    "Cannot access lifecycle object when view does not exist"
-                }
-                    as T
-        }
-    }
-
     final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -103,9 +80,6 @@ abstract class ViewBindingFragment<VB : ViewBinding> : Fragment() {
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = unlikelyToBeNull(_binding)
-        // Populate lifecycle-dependent objects
-        lifecycleObjects.forEach { it.populate(binding) }
         // Configure binding
         onBindingCreated(requireBinding(), savedInstanceState)
         logD("Fragment created")
@@ -114,21 +88,8 @@ abstract class ViewBindingFragment<VB : ViewBinding> : Fragment() {
     final override fun onDestroyView() {
         super.onDestroyView()
         onDestroyBinding(unlikelyToBeNull(_binding))
-        // Clear the lifecycle-dependent objects
-        lifecycleObjects.forEach { it.clear() }
         // Clear binding
         _binding = null
         logD("Fragment destroyed")
-    }
-
-    /** Internal implementation of [lifecycleObject]. */
-    private data class LifecycleObject<VB, T>(var data: T?, val create: (VB) -> T) {
-        fun populate(binding: VB) {
-            data = create(binding)
-        }
-
-        fun clear() {
-            data = null
-        }
     }
 }

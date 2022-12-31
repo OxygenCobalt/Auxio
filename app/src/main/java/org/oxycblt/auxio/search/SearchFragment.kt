@@ -53,10 +53,8 @@ import org.oxycblt.auxio.util.*
 class SearchFragment : ListFragment<FragmentSearchBinding>() {
     private val searchModel: SearchViewModel by androidViewModels()
     private val searchAdapter = SearchAdapter(this)
+    private var imm: InputMethodManager? = null
     private var launchedKeyboard = false
-    private val imm: InputMethodManager by lifecycleObject { binding ->
-        binding.context.getSystemServiceCompat(InputMethodManager::class)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,13 +72,15 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
     override fun onBindingCreated(binding: FragmentSearchBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
+        imm = binding.context.getSystemServiceCompat(InputMethodManager::class)
+
         binding.searchToolbar.apply {
             // Initialize the current filtering mode.
             menu.findItem(searchModel.getFilterOptionId()).isChecked = true
 
             setNavigationOnClickListener {
                 // Keyboard is no longer needed.
-                imm.hide()
+                hideKeyboard()
                 findNavController().navigateUp()
             }
 
@@ -95,7 +95,7 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
 
             if (!launchedKeyboard) {
                 // Auto-open the keyboard when this view is shown
-                imm.show(this)
+                showKeyboard(this)
                 launchedKeyboard = true
             }
         }
@@ -184,7 +184,7 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
                 else -> return
             }
         // Keyboard is no longer needed.
-        imm.hide()
+        hideKeyboard()
         findNavController().navigate(action)
     }
 
@@ -193,7 +193,7 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
         if (requireBinding().searchSelectionToolbar.updateSelectionAmount(selected.size) &&
             selected.isNotEmpty()) {
             // Make selection of obscured items easier by hiding the keyboard.
-            imm.hide()
+            hideKeyboard()
         }
     }
 
@@ -201,15 +201,19 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
      * Safely focus the keyboard on a particular [View].
      * @param view The [View] to focus the keyboard on.
      */
-    private fun InputMethodManager.show(view: View) {
+    private fun showKeyboard(view: View) {
         view.apply {
             requestFocus()
-            postDelayed(200) { showSoftInput(view, InputMethodManager.SHOW_IMPLICIT) }
+            postDelayed(200) {
+                requireNotNull(imm) { "InputMethodManager was not available" }
+                    .showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+            }
         }
     }
 
     /** Safely hide the keyboard from this view. */
-    private fun InputMethodManager.hide() {
-        hideSoftInputFromWindow(requireView().windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+    private fun hideKeyboard() {
+        requireNotNull(imm) { "InputMethodManager was not available" }
+            .hideSoftInputFromWindow(requireView().windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 }

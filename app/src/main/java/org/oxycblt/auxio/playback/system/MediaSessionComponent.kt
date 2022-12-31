@@ -19,6 +19,7 @@ package org.oxycblt.auxio.playback.system
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -47,7 +48,9 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MediaSessionComponent(private val context: Context, private val listener: Listener) :
-    MediaSessionCompat.Callback(), PlaybackStateManager.Listener, Settings.Listener {
+    MediaSessionCompat.Callback(),
+    PlaybackStateManager.Listener,
+    SharedPreferences.OnSharedPreferenceChangeListener {
     private val mediaSession =
         MediaSessionCompat(context, context.packageName).apply {
             isActive = true
@@ -55,13 +58,13 @@ class MediaSessionComponent(private val context: Context, private val listener: 
         }
 
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settings = Settings(context, this)
+    private val settings = Settings(context)
 
     private val notification = NotificationComponent(context, mediaSession.sessionToken)
     private val provider = BitmapProvider(context)
 
     init {
-        playbackManager.addCallback(this)
+        playbackManager.addListener(this)
         mediaSession.setCallback(this)
     }
 
@@ -79,15 +82,15 @@ class MediaSessionComponent(private val context: Context, private val listener: 
      */
     fun release() {
         provider.release()
-        settings.release()
-        playbackManager.removeCallback(this)
+        settings.removeListener(this)
+        playbackManager.removeListener(this)
         mediaSession.apply {
             isActive = false
             release()
         }
     }
 
-    // --- PLAYBACKSTATEMANAGER CALLBACKS ---
+    // --- PLAYBACKSTATEMANAGER OVERRIDES ---
 
     override fun onIndexMoved(index: Int) {
         updateMediaMetadata(playbackManager.song, playbackManager.parent)
@@ -139,9 +142,9 @@ class MediaSessionComponent(private val context: Context, private val listener: 
         invalidateSecondaryAction()
     }
 
-    // --- SETTINGSMANAGER CALLBACKS ---
+    // --- SETTINGS OVERRIDES ---
 
-    override fun onSettingChanged(key: String) {
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
             context.getString(R.string.set_key_cover_mode) ->
                 updateMediaMetadata(playbackManager.song, playbackManager.parent)
@@ -149,7 +152,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
         }
     }
 
-    // --- MEDIASESSION CALLBACKS ---
+    // --- MEDIASESSION OVERRIDES ---
 
     override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
         super.onPlayFromMediaId(mediaId, extras)

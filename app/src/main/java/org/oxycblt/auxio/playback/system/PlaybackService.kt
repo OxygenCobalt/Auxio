@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.os.IBinder
@@ -80,8 +81,8 @@ class PlaybackService :
     Player.Listener,
     InternalPlayer,
     MediaSessionComponent.Listener,
-    Settings.Listener,
-    MusicStore.Listener {
+    MusicStore.Listener,
+    SharedPreferences.OnSharedPreferenceChangeListener {
     // Player components
     private lateinit var player: ExoPlayer
     private lateinit var replayGainProcessor: ReplayGainAudioProcessor
@@ -144,12 +145,13 @@ class PlaybackService :
                 .build()
                 .also { it.addListener(this) }
         // Initialize the core service components
-        settings = Settings(this, this)
+        settings = Settings(this)
+        settings.addListener(this)
         foregroundManager = ForegroundManager(this)
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
         playbackManager.registerInternalPlayer(this)
-        musicStore.addCallback(this)
+        musicStore.addListener(this)
         widgetComponent = WidgetComponent(this)
         mediaSessionComponent = MediaSessionComponent(this, this)
         registerReceiver(
@@ -185,12 +187,12 @@ class PlaybackService :
         super.onDestroy()
 
         foregroundManager.release()
-        settings.release()
+        settings.removeListener(this)
 
         // Pause just in case this destruction was unexpected.
         playbackManager.setPlaying(false)
         playbackManager.unregisterInternalPlayer(this)
-        musicStore.removeCallback(this)
+        musicStore.removeListener(this)
 
         unregisterReceiver(systemReceiver)
         serviceJob.cancel()
@@ -329,12 +331,13 @@ class PlaybackService :
         }
     }
 
-    // --- SETTINGSMANAGER OVERRIDES ---
+    // --- SETTINGS OVERRIDES ---
 
-    override fun onSettingChanged(key: String) {
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         if (key == getString(R.string.set_key_replay_gain) ||
             key == getString(R.string.set_key_pre_amp_with) ||
             key == getString(R.string.set_key_pre_amp_without)) {
+            // ReplayGain changed, we need to set it up again.
             onTracksChanged(player.currentTracks)
         }
     }

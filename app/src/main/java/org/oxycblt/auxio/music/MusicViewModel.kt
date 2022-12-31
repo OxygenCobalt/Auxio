@@ -39,11 +39,11 @@ class MusicViewModel : ViewModel(), Indexer.Listener {
         get() = _statistics
 
     init {
-        indexer.registerCallback(this)
+        indexer.registerListener(this)
     }
 
     override fun onCleared() {
-        indexer.unregisterCallback(this)
+        indexer.unregisterListener(this)
     }
 
     override fun onIndexerStateChanged(state: Indexer.State?) {

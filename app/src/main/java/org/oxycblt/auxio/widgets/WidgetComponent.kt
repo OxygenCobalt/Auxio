@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.widgets
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.Build
 import coil.request.ImageRequest
@@ -41,14 +42,15 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class WidgetComponent(private val context: Context) :
-    PlaybackStateManager.Listener, Settings.Listener {
+    PlaybackStateManager.Listener, SharedPreferences.OnSharedPreferenceChangeListener {
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settings = Settings(context, this)
+    private val settings = Settings(context)
     private val widgetProvider = WidgetProvider()
     private val provider = BitmapProvider(context)
 
     init {
-        playbackManager.addCallback(this)
+        playbackManager.addListener(this)
+        settings.addListener(this)
     }
 
     /** Update [WidgetProvider] with the current playback state. */
@@ -104,9 +106,9 @@ class WidgetComponent(private val context: Context) :
     /** Release this instance, preventing any further events from updating the widget instances. */
     fun release() {
         provider.release()
-        settings.release()
+        settings.removeListener(this)
         widgetProvider.reset(context)
-        playbackManager.removeCallback(this)
+        playbackManager.removeListener(this)
     }
 
     // --- CALLBACKS ---
@@ -118,7 +120,8 @@ class WidgetComponent(private val context: Context) :
     override fun onStateChanged(state: InternalPlayer.State) = update()
     override fun onShuffledChanged(isShuffled: Boolean) = update()
     override fun onRepeatChanged(repeatMode: RepeatMode) = update()
-    override fun onSettingChanged(key: String) {
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         if (key == context.getString(R.string.set_key_cover_mode) ||
             key == context.getString(R.string.set_key_round_mode)) {
             update()

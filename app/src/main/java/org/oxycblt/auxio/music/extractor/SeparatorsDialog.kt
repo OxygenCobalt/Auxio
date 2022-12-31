@@ -27,7 +27,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSeparatorsBinding
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
-import org.oxycblt.auxio.util.context
 
 /**
  * A [ViewBindingDialogFragment] that allows the user to configure the separator characters used to
@@ -35,8 +34,6 @@ import org.oxycblt.auxio.util.context
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
-    private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
-
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogSeparatorsBinding.inflate(inflater)
 
@@ -45,7 +42,7 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
             .setTitle(R.string.set_separators)
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
-                settings.musicSeparators = getCurrentSeparators()
+                Settings(requireContext()).musicSeparators = getCurrentSeparators()
             }
     }
 
@@ -61,7 +58,8 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
         // More efficient to do one iteration through the separator list and initialize
         // the corresponding CheckBox for each character instead of doing an iteration
         // through the separator list for each CheckBox.
-        (savedInstanceState?.getString(KEY_PENDING_SEPARATORS) ?: settings.musicSeparators)
+        (savedInstanceState?.getString(KEY_PENDING_SEPARATORS)
+                ?: Settings(requireContext()).musicSeparators)
             ?.forEach {
                 when (it) {
                     SEPARATOR_COMMA -> binding.separatorComma.isChecked = true

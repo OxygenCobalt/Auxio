@@ -23,6 +23,7 @@ import android.media.audiofx.AudioEffect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
@@ -53,13 +54,7 @@ class PlaybackPanelFragment :
     StyledSeekBar.Listener {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
-    // AudioEffect expects you to use startActivityForResult with the panel intent. There is no
-    // contract analogue for this intent, so the generic contract is used instead.
-    private val equalizerLauncher by lifecycleObject {
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            // Nothing to do
-        }
-    }
+    private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackPanelBinding.inflate(inflater)
@@ -69,6 +64,13 @@ class PlaybackPanelFragment :
         savedInstanceState: Bundle?
     ) {
         super.onBindingCreated(binding, savedInstanceState)
+
+        // AudioEffect expects you to use startActivityForResult with the panel intent. There is no
+        // contract analogue for this intent, so the generic contract is used instead.
+        equalizerLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                // Nothing to do
+            }
 
         // --- UI SETUP ---
         binding.root.setOnApplyWindowInsetsListener { view, insets ->
@@ -116,6 +118,7 @@ class PlaybackPanelFragment :
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
+        equalizerLauncher = null
         binding.playbackToolbar.setOnMenuItemClickListener(null)
         // Marquee elements leak if they are not disabled when the views are destroyed.
         binding.playbackSong.isSelected = false
@@ -137,7 +140,10 @@ class PlaybackPanelFragment :
                         // music playback.
                         .putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
                 try {
-                    equalizerLauncher.launch(equalizerIntent)
+                    requireNotNull(equalizerLauncher) {
+                            "Equalizer panel launcher was not available"
+                        }
+                        .launch(equalizerIntent)
                 } catch (e: ActivityNotFoundException) {
                     requireContext().showToast(R.string.err_no_app)
                 }

@@ -111,7 +111,7 @@ class Indexer private constructor() {
      * @param listener The [Listener] to add.
      */
     @Synchronized
-    fun registerCallback(listener: Listener) {
+    fun registerListener(listener: Listener) {
         if (BuildConfig.DEBUG && this.listener != null) {
             logW("Listener is already registered")
             return
@@ -131,7 +131,7 @@ class Indexer private constructor() {
      * @see Listener
      */
     @Synchronized
-    fun unregisterCallback(listener: Listener) {
+    fun unregisterListener(listener: Listener) {
         if (BuildConfig.DEBUG && this.listener !== listener) {
             logW("Given controller did not match current controller")
             return

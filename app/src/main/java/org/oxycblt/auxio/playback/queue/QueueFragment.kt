@@ -41,9 +41,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueAdapter.
     private val queueModel: QueueViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val queueAdapter = QueueAdapter(this)
-    private val touchHelper: ItemTouchHelper by lifecycleObject {
-        ItemTouchHelper(QueueDragCallback(queueModel))
-    }
+    private var touchHelper: ItemTouchHelper? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentQueueBinding.inflate(inflater)
 
@@ -53,7 +51,10 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueAdapter.
         // --- UI SETUP ---
         binding.queueRecycler.apply {
             adapter = queueAdapter
-            touchHelper.attachToRecyclerView(this)
+            touchHelper =
+                ItemTouchHelper(QueueDragCallback(queueModel)).also {
+                    it.attachToRecyclerView(this)
+                }
         }
 
         // Sometimes the scroll can change without the listener being updated, so we also
@@ -84,7 +85,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueAdapter.
     }
 
     override fun onPickUp(viewHolder: RecyclerView.ViewHolder) {
-        touchHelper.startDrag(viewHolder)
+        requireNotNull(touchHelper) { "ItemTouchHelper was not available" }.startDrag(viewHolder)
     }
 
     private fun updateDivider() {

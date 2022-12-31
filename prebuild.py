@@ -75,11 +75,12 @@ if ndk_path is None or not os.path.isfile(os.path.join(ndk_path, "ndk-build")):
             candidates.append(entry.path)
 
     if len(candidates) > 0:
-        print(WARN + "warn:" + NC + " NDK_PATH was not set or invalid. multiple " + 
+        print(WARN + "warn:" + NC + " ANDROID_NDK_HOME was not set or invalid. multiple " + 
             "candidates were found however:")
         for i, candidate in enumerate(candidates):
             print("[" + str(i) + "] " + candidate)
-
+        print(WARN + "info:" + NC + " NDK r21e is recommended for this script. Other " +
+            "NDKs may result in unexpected behavior.")
         try:
             ndk_path = candidates[int(input("enter the ndk to use [default 0]: "))]
         except:

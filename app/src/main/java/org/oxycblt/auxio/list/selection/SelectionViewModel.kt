@@ -35,7 +35,7 @@ class SelectionViewModel : ViewModel(), MusicStore.Listener {
         get() = _selected
 
     init {
-        musicStore.addCallback(this)
+        musicStore.addListener(this)
     }
 
     override fun onLibraryChanged(library: MusicStore.Library?) {
@@ -58,7 +58,7 @@ class SelectionViewModel : ViewModel(), MusicStore.Listener {
 
     override fun onCleared() {
         super.onCleared()
-        musicStore.removeCallback(this)
+        musicStore.removeListener(this)
     }
 
     /**

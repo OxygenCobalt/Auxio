@@ -93,11 +93,11 @@ class PlaybackViewModel(application: Application) :
         get() = playbackManager.currentAudioSessionId
 
     init {
-        playbackManager.addCallback(this)
+        playbackManager.addListener(this)
     }
 
     override fun onCleared() {
-        playbackManager.removeCallback(this)
+        playbackManager.removeListener(this)
     }
 
     override fun onIndexMoved(index: Int) {

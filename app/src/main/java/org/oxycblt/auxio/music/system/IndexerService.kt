@@ -19,6 +19,7 @@ package org.oxycblt.auxio.music.system
 
 import android.app.Service
 import android.content.Intent
+import android.content.SharedPreferences
 import android.database.ContentObserver
 import android.os.Handler
 import android.os.IBinder
@@ -54,7 +55,8 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class IndexerService : Service(), Indexer.Controller, Settings.Listener {
+class IndexerService :
+    Service(), Indexer.Controller, SharedPreferences.OnSharedPreferenceChangeListener {
     private val indexer = Indexer.getInstance()
     private val musicStore = MusicStore.getInstance()
     private val playbackManager = PlaybackStateManager.getInstance()
@@ -81,7 +83,8 @@ class IndexerService : Service(), Indexer.Controller, Settings.Listener {
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
         indexerContentObserver = SystemContentObserver()
-        settings = Settings(this, this)
+        settings = Settings(this)
+        settings.addListener(this)
         indexer.registerController(this)
         // An indeterminate indexer and a missing library implies we are extremely early
         // in app initialization so start loading music.
@@ -105,7 +108,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Listener {
         // Then cancel the listener-dependent components to ensure that stray reloading
         // events will not occur.
         indexerContentObserver.release()
-        settings.release()
+        settings.removeListener(this)
         indexer.unregisterController(this)
         // Then cancel any remaining music loading jobs.
         serviceJob.cancel()
@@ -230,7 +233,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Listener {
 
     // --- SETTING CALLBACKS ---
 
-    override fun onSettingChanged(key: String) {
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
             // Hook changes in music settings to a new music loading event.
             getString(R.string.set_key_exclude_non_music),

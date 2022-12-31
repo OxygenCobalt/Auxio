@@ -130,11 +130,11 @@ class DetailViewModel(application: Application) :
         }
 
     init {
-        musicStore.addCallback(this)
+        musicStore.addListener(this)
     }
 
     override fun onCleared() {
-        musicStore.removeCallback(this)
+        musicStore.removeListener(this)
     }
 
     override fun onLibraryChanged(library: MusicStore.Library?) {

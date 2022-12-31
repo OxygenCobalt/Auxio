@@ -55,7 +55,7 @@ class MusicStore private constructor() {
      * @see Listener
      */
     @Synchronized
-    fun addCallback(listener: Listener) {
+    fun addListener(listener: Listener) {
         listener.onLibraryChanged(library)
         listeners.add(listener)
     }
@@ -67,7 +67,7 @@ class MusicStore private constructor() {
      * @see Listener
      */
     @Synchronized
-    fun removeCallback(listener: Listener) {
+    fun removeListener(listener: Listener) {
         listeners.remove(listener)
     }
 

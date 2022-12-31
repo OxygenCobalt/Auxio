@@ -50,7 +50,6 @@ audio focus was lost
 
 #### What's Changed
 - Ignore MediaStore tags is now Auxio's default and unchangeable behavior. The option has been removed.
-- Removed the "Play from genre" option in the library/detail playback mode settings+
 - "Use alternate notification action" is now "Custom notification action"
 - "Show covers" and "Ignore MediaStore covers" have been unified into "Album covers"
 

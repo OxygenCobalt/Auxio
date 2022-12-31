@@ -47,7 +47,7 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
     var scrollTo: Int? = null
 
     init {
-        playbackManager.addCallback(this)
+        playbackManager.addListener(this)
     }
 
     /**
@@ -135,6 +135,6 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
 
     override fun onCleared() {
         super.onCleared()
-        playbackManager.removeCallback(this)
+        playbackManager.removeListener(this)
     }
 }

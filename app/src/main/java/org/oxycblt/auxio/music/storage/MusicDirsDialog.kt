@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.os.storage.StorageManager
 import android.provider.DocumentsContract
 import android.view.LayoutInflater
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
@@ -42,10 +43,8 @@ import org.oxycblt.auxio.util.showToast
 class MusicDirsDialog :
     ViewBindingDialogFragment<DialogMusicDirsBinding>(), DirectoryAdapter.Listener {
     private val dirAdapter = DirectoryAdapter(this)
-    private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
-    private val storageManager: StorageManager by lifecycleObject { binding ->
-        binding.context.getSystemServiceCompat(StorageManager::class)
-    }
+    private var openDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
+    private var storageManager: StorageManager? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogMusicDirsBinding.inflate(inflater)
@@ -57,7 +56,10 @@ class MusicDirsDialog :
             .setNeutralButton(R.string.lbl_add, null)
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
-                val dirs = settings.getMusicDirs(storageManager)
+                val settings = Settings(requireContext())
+                val dirs =
+                    settings.getMusicDirs(
+                        requireNotNull(storageManager) { "StorageManager was not available" })
                 val newDirs = MusicDirectories(dirAdapter.dirs, isUiModeInclude(requireBinding()))
                 if (dirs != newDirs) {
                     logD("Committing changes")
@@ -67,7 +69,11 @@ class MusicDirsDialog :
     }
 
     override fun onBindingCreated(binding: DialogMusicDirsBinding, savedInstanceState: Bundle?) {
-        val launcher =
+        val context = requireContext()
+        val storageManager =
+            context.getSystemServiceCompat(StorageManager::class).also { storageManager = it }
+
+        openDocumentTreeLauncher =
             registerForActivityResult(
                 ActivityResultContracts.OpenDocumentTree(), ::addDocumentTreeUriToDirs)
 
@@ -79,7 +85,10 @@ class MusicDirsDialog :
             val dialog = it as AlertDialog
             dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setOnClickListener {
                 logD("Opening launcher")
-                launcher.launch(null)
+                requireNotNull(openDocumentTreeLauncher) {
+                        "Document tree launcher was not available"
+                    }
+                    .launch(null)
             }
         }
 
@@ -88,7 +97,7 @@ class MusicDirsDialog :
             itemAnimator = null
         }
 
-        var dirs = settings.getMusicDirs(storageManager)
+        var dirs = Settings(context).getMusicDirs(storageManager)
 
         if (savedInstanceState != null) {
             val pendingDirs = savedInstanceState.getStringArrayList(KEY_PENDING_DIRS)
@@ -127,6 +136,8 @@ class MusicDirsDialog :
 
     override fun onDestroyBinding(binding: DialogMusicDirsBinding) {
         super.onDestroyBinding(binding)
+        storageManager = null
+        openDocumentTreeLauncher = null
         binding.dirsRecycler.adapter = null
     }
 
@@ -153,7 +164,9 @@ class MusicDirsDialog :
             DocumentsContract.buildDocumentUriUsingTree(
                 uri, DocumentsContract.getTreeDocumentId(uri))
         val treeUri = DocumentsContract.getTreeDocumentId(docUri)
-        val dir = Directory.fromDocumentTreeUri(storageManager, treeUri)
+        val dir =
+            Directory.fromDocumentTreeUri(
+                requireNotNull(storageManager) { "StorageManager was not available" }, treeUri)
 
         if (dir != null) {
             dirAdapter.add(dir)
