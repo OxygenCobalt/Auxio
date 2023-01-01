@@ -133,7 +133,7 @@ class PlaybackPanelFragment :
                 // Launch the system equalizer app, if possible.
                 val equalizerIntent =
                     Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-                        // Provide audio session ID so equalizer can show options for this app
+                        // Provide audio session ID so the equalizer can show options for this app
                         // in particular.
                         .putExtra(
                             AudioEffect.EXTRA_AUDIO_SESSION, playbackModel.currentAudioSessionId)

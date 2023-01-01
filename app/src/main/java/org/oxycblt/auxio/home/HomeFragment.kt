@@ -345,7 +345,6 @@ class HomeFragment :
                 is Indexer.Response.Err -> {
                     logD("Updating UI to Response.Err state")
                     binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
-
                     // Configure the action to act as a reload trigger.
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
@@ -354,10 +353,9 @@ class HomeFragment :
                     }
                 }
                 is Indexer.Response.NoMusic -> {
-                    // TODO: Move this state to the list fragments (makes life easier)
+                    // TODO: Move this state to the list fragments (quality of life)
                     logD("Updating UI to Response.NoMusic state")
                     binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
-
                     // Configure the action to act as a reload trigger.
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
@@ -368,7 +366,6 @@ class HomeFragment :
                 is Indexer.Response.NoPerms -> {
                     logD("Updating UI to Response.NoPerms state")
                     binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
-
                     // Configure the action to act as a permission launcher.
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE

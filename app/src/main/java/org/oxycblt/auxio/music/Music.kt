@@ -30,9 +30,8 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.music.extractor.parseId3GenreNames
-import org.oxycblt.auxio.music.extractor.parseMultiValue
-import org.oxycblt.auxio.music.extractor.toUuidOrNull
+import org.oxycblt.auxio.music.parsing.parseId3GenreNames
+import org.oxycblt.auxio.music.parsing.parseMultiValue
 import org.oxycblt.auxio.music.storage.*
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.nonZeroOrNull
@@ -1212,6 +1211,18 @@ class Genre constructor(private val raw: Raw, override val songs: List<Song>) : 
 }
 
 // --- MUSIC UID CREATION UTILITIES ---
+
+/**
+ * Convert a [String] to a [UUID].
+ * @return A [UUID] converted from the [String] value, or null if the value was not valid.
+ * @see UUID.fromString
+ */
+fun String.toUuidOrNull(): UUID? =
+    try {
+        UUID.fromString(this)
+    } catch (e: IllegalArgumentException) {
+        null
+    }
 
 /**
  * Update a [MessageDigest] with a lowercase [String].

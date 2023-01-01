@@ -42,7 +42,7 @@ import org.oxycblt.auxio.util.coordinatorLayoutBehavior
  *
  * @author Hai Zhang, Alexander Capehart (OxygenCobalt)
  */
-open class AuxioAppBarLayout
+open class CoordinatorAppBarLayout
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AppBarLayout(context, attrs, defStyleAttr) {

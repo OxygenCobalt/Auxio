@@ -15,59 +15,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.extractor
+package org.oxycblt.auxio.music.parsing
 
-import java.util.UUID
-import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.nonZeroOrNull
 
-/**
- * Unpack the track number from a combined track + disc [Int] field. These fields appear within
- * MediaStore's TRACK column, and combine the track and disc value into a single field where the
- * disc number is the 4th+ digit.
- * @return The track number extracted from the combined integer value, or null if the value was
- * zero.
- */
-fun Int.unpackTrackNo() = mod(1000).nonZeroOrNull()
+/// --- GENERIC PARSING ---
 
 /**
- * Unpack the disc number from a combined track + disc [Int] field. These fields appear within
- * MediaStore's TRACK column, and combine the track and disc value into a single field where the
- * disc number is the 4th+ digit.
- * @return The disc number extracted from the combined integer field, or null if the value was zero.
+ * Parse a multi-value tag based on the user configuration. If the value is already composed of more
+ * than one value, nothing is done. Otherwise, this function will attempt to split it based on the
+ * user's separator preferences.
+ * @param settings [Settings] required to obtain user separator configuration.
+ * @return A new list of one or more [String]s.
  */
-fun Int.unpackDiscNo() = div(1000).nonZeroOrNull()
-
-/**
- * Parse the number out of a combined number + total position [String] field. These fields often
- * appear in ID3v2 files, and consist of a number and an (optional) total value delimited by a /.
- * @return The number value extracted from the string field, or null if the value could not be
- * parsed or if the value was zero.
- */
-fun String.parsePositionNum() = split('/', limit = 2)[0].toIntOrNull()?.nonZeroOrNull()
-
-/**
- * Transform an [Int] year field into a [Date].
- * @return A [Date] consisting of the year value, or null if the value was zero.
- * @see Date.from
- */
-fun Int.toDate() = Date.from(this)
-
-/**
- * Parse an integer year field from a [String] and transform it into a [Date].
- * @return A [Date] consisting of the year value, or null if the value could not be parsed or if the
- * value was zero.
- * @see Date.from
- */
-fun String.parseYear() = toIntOrNull()?.toDate()
-
-/**
- * Parse an ISO-8601 timestamp [String] into a [Date].
- * @return A [Date] consisting of the year value plus one or more refinement values (ex. month,
- * day), or null if the timestamp was not valid.
- */
-fun String.parseTimestamp() = Date.from(this)
+fun List<String>.parseMultiValue(settings: Settings) =
+    if (size == 1) {
+        get(0).maybeParseBySeparators(settings)
+    } else {
+        // Nothing to do.
+        this
+    }
 
 /**
  * Split a [String] by the given selector, automatically handling escaped characters that satisfy
@@ -127,42 +95,25 @@ fun String.correctWhitespace() = trim().ifBlank { null }
 fun List<String>.correctWhitespace() = mapNotNull { it.correctWhitespace() }
 
 /**
- * Parse a multi-value tag based on the user configuration. If the value is already composed of more
- * than one value, nothing is done. Otherwise, this function will attempt to split it based on the
- * user's separator preferences.
- * @param settings [Settings] required to obtain user separator configuration.
- * @return A new list of one or more [String]s.
- */
-fun List<String>.parseMultiValue(settings: Settings) =
-    if (size == 1) {
-        get(0).maybeParseSeparators(settings)
-    } else {
-        // Nothing to do.
-        this
-    }
-
-/**
  * Attempt to parse a string by the user's separator preferences.
  * @param settings [Settings] required to obtain user separator configuration.
  * @return A list of one or more [String]s that were split up by the user-defined separators.
  */
-fun String.maybeParseSeparators(settings: Settings): List<String> {
+private fun String.maybeParseBySeparators(settings: Settings): List<String> {
     // Get the separators the user desires. If null, there's nothing to do.
     val separators = settings.musicSeparators ?: return listOf(this)
     return splitEscaped { separators.contains(it) }.correctWhitespace()
 }
 
+/// --- ID3v2 PARSING ---
+
 /**
- * Convert a [String] to a [UUID].
- * @return A [UUID] converted from the [String] value, or null if the value was not valid.
- * @see UUID.fromString
+ * Parse the number out of a ID3v2-style number + total position [String] field. These fields
+ * consist of a number and an (optional) total value delimited by a /.
+ * @return The number value extracted from the string field, or null if the value could not be
+ * parsed or if the value was zero.
  */
-fun String.toUuidOrNull(): UUID? =
-    try {
-        UUID.fromString(this)
-    } catch (e: IllegalArgumentException) {
-        null
-    }
+fun String.parseId3v2Position() = split('/', limit = 2)[0].toIntOrNull()?.nonZeroOrNull()
 
 /**
  * Parse a multi-value genre name using ID3 rules. This will convert any ID3v1 integer
@@ -173,7 +124,7 @@ fun String.toUuidOrNull(): UUID? =
  */
 fun List<String>.parseId3GenreNames(settings: Settings) =
     if (size == 1) {
-        get(0).parseId3GenreNames(settings)
+        get(0).parseId3MultiValueGenre(settings)
     } else {
         // Nothing to split, just map any ID3v1 genres to their name counterparts.
         map { it.parseId3v1Genre() ?: it }
@@ -183,8 +134,8 @@ fun List<String>.parseId3GenreNames(settings: Settings) =
  * Parse a single ID3v1/ID3v2 integer genre field into their named representations.
  * @return A list of one or more genre names.
  */
-fun String.parseId3GenreNames(settings: Settings) =
-    parseId3v1Genre()?.let { listOf(it) } ?: parseId3v2Genre() ?: maybeParseSeparators(settings)
+private fun String.parseId3MultiValueGenre(settings: Settings) =
+    parseId3v1Genre()?.let { listOf(it) } ?: parseId3v2Genre() ?: maybeParseBySeparators(settings)
 
 /**
  * Parse an ID3v1 integer genre field.
@@ -193,10 +144,10 @@ fun String.parseId3GenreNames(settings: Settings) =
  */
 private fun String.parseId3v1Genre(): String? {
     // ID3v1 genres are a plain integer value without formatting, so in that case
-    // try to index the genre table with such. If this fails, then try to compare it
-    // to some other hard-coded values.
+    // try to index the genre table with such.
     val numeric =
         toIntOrNull()
+            // Not a numeric value, try some other fixed values.
             ?: return when (this) {
                 // CR and RX are not technically ID3v1, but are formatted similarly to a plain
                 // number.
@@ -204,7 +155,6 @@ private fun String.parseId3v1Genre(): String? {
                 "RX" -> "Remix"
                 else -> null
             }
-
     return GENRE_TABLE.getOrNull(numeric)
 }
 

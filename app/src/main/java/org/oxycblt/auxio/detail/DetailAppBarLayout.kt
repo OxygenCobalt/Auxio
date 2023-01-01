@@ -31,12 +31,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import java.lang.reflect.Field
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.AuxioAppBarLayout
+import org.oxycblt.auxio.ui.CoordinatorAppBarLayout
 import org.oxycblt.auxio.util.getInteger
 import org.oxycblt.auxio.util.lazyReflectedField
 
 /**
- * An [AuxioAppBarLayout] that displays the title of a hidden [Toolbar] when the scrolling view goes
+ * An [CoordinatorAppBarLayout] that displays the title of a hidden [Toolbar] when the scrolling view goes
  * beyond it's first item.
  *
  * This is intended for the detail views, in which the first item is the album/artist/genre header,
@@ -51,7 +51,7 @@ import org.oxycblt.auxio.util.lazyReflectedField
 class DetailAppBarLayout
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
-    AuxioAppBarLayout(context, attrs, defStyleAttr) {
+    CoordinatorAppBarLayout(context, attrs, defStyleAttr) {
     private var titleView: TextView? = null
     private var recycler: RecyclerView? = null
 

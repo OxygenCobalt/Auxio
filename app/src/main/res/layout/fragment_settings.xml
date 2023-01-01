@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:transitionGroup="true">
 
-    <org.oxycblt.auxio.ui.AuxioAppBarLayout
+    <org.oxycblt.auxio.ui.CoordinatorAppBarLayout
         android:id="@+id/settings_appbar"
         style="@style/Widget.Auxio.AppBarLayout"
         android:clickable="true"
@@ -22,7 +22,7 @@
             app:navigationIcon="@drawable/ic_back_24"
             app:title="@string/set_title" />
 
-    </org.oxycblt.auxio.ui.AuxioAppBarLayout>
+    </org.oxycblt.auxio.ui.CoordinatorAppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/settings_list_fragment"

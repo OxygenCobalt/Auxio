@@ -216,7 +216,7 @@ class MainFragment :
             lastInsets?.let { translationY = it.systemBarInsetsCompat.top * halfOutRatio }
         }
 
-        // Prevent interactions when the playback panell fully fades out.
+        // Prevent interactions when the playback panel fully fades out.
         binding.playbackPanelFragment.isInvisible = binding.playbackPanelFragment.alpha == 0f
 
         binding.queueSheet.apply {

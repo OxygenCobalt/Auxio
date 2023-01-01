@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.extractor
+package org.oxycblt.auxio.music.parsing
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -62,11 +62,11 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
                 ?: Settings(requireContext()).musicSeparators)
             ?.forEach {
                 when (it) {
-                    SEPARATOR_COMMA -> binding.separatorComma.isChecked = true
-                    SEPARATOR_SEMICOLON -> binding.separatorSemicolon.isChecked = true
-                    SEPARATOR_SLASH -> binding.separatorSlash.isChecked = true
-                    SEPARATOR_PLUS -> binding.separatorPlus.isChecked = true
-                    SEPARATOR_AND -> binding.separatorAnd.isChecked = true
+                    Separators.COMMA -> binding.separatorComma.isChecked = true
+                    Separators.SEMICOLON -> binding.separatorSemicolon.isChecked = true
+                    Separators.SLASH -> binding.separatorSlash.isChecked = true
+                    Separators.PLUS -> binding.separatorPlus.isChecked = true
+                    Separators.AND -> binding.separatorAnd.isChecked = true
                     else -> error("Unexpected separator in settings data")
                 }
             }
@@ -84,21 +84,15 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
         // of use a mapping that could feasibly drift from the actual layout.
         var separators = ""
         val binding = requireBinding()
-        if (binding.separatorComma.isChecked) separators += SEPARATOR_COMMA
-        if (binding.separatorSemicolon.isChecked) separators += SEPARATOR_SEMICOLON
-        if (binding.separatorSlash.isChecked) separators += SEPARATOR_SLASH
-        if (binding.separatorPlus.isChecked) separators += SEPARATOR_PLUS
-        if (binding.separatorAnd.isChecked) separators += SEPARATOR_AND
+        if (binding.separatorComma.isChecked) separators += Separators.COMMA
+        if (binding.separatorSemicolon.isChecked) separators += Separators.SEMICOLON
+        if (binding.separatorSlash.isChecked) separators += Separators.SLASH
+        if (binding.separatorPlus.isChecked) separators += Separators.PLUS
+        if (binding.separatorAnd.isChecked) separators += Separators.AND
         return separators
     }
 
     private companion object {
-        val KEY_PENDING_SEPARATORS = BuildConfig.APPLICATION_ID + ".key.PENDING_SEPARATORS"
-        // TODO: Move these to a more "Correct" location?
-        const val SEPARATOR_COMMA = ','
-        const val SEPARATOR_SEMICOLON = ';'
-        const val SEPARATOR_SLASH = '/'
-        const val SEPARATOR_PLUS = '+'
-        const val SEPARATOR_AND = '&'
+        const val KEY_PENDING_SEPARATORS = BuildConfig.APPLICATION_ID + ".key.PENDING_SEPARATORS"
     }
 }

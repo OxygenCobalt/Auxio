@@ -26,8 +26,10 @@ import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
+import org.oxycblt.auxio.music.Date
 import java.io.File
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.parsing.parseId3v2Position
 import org.oxycblt.auxio.music.storage.Directory
 import org.oxycblt.auxio.music.storage.contentResolverSafe
 import org.oxycblt.auxio.music.storage.directoryCompat
@@ -38,6 +40,7 @@ import org.oxycblt.auxio.music.storage.useQuery
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
  * The layer that loads music from the [MediaStore] database. This is an intermediate step in the
@@ -302,7 +305,7 @@ abstract class MediaStoreExtractor(
         // MediaStore only exposes the year value of a file. This is actually worse than it
         // seems, as it means that it will not read ID3v2 TDRC tags or Vorbis DATE comments.
         // This is one of the major weaknesses of using MediaStore, hence the redundancy layers.
-        raw.date = cursor.getIntOrNull(yearIndex)?.toDate()
+        raw.date = cursor.getIntOrNull(yearIndex)?.let(Date::from)
         // A non-existent album name should theoretically be the name of the folder it contained
         // in, but in practice it is more often "0" (as in /storage/emulated/0), even when it the
         // file is not actually in the root internal storage directory. We can't do anything to
@@ -561,7 +564,24 @@ class Api30MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor)
         // the tag itself, which is to say that it is formatted as NN/TT tracks, where
         // N is the number and T is the total. Parse the number while ignoring the
         // total, as we have no use for it.
-        cursor.getStringOrNull(trackIndex)?.parsePositionNum()?.let { raw.track = it }
-        cursor.getStringOrNull(discIndex)?.parsePositionNum()?.let { raw.disc = it }
+        cursor.getStringOrNull(trackIndex)?.parseId3v2Position()?.let { raw.track = it }
+        cursor.getStringOrNull(discIndex)?.parseId3v2Position()?.let { raw.disc = it }
     }
 }
+
+/**
+ * Unpack the track number from a combined track + disc [Int] field. These fields appear within
+ * MediaStore's TRACK column, and combine the track and disc value into a single field where the
+ * disc number is the 4th+ digit.
+ * @return The track number extracted from the combined integer value, or null if the value was
+ * zero.
+ */
+private fun Int.unpackTrackNo() = mod(1000).nonZeroOrNull()
+
+/**
+ * Unpack the disc number from a combined track + disc [Int] field. These fields appear within
+ * MediaStore's TRACK column, and combine the track and disc value into a single field where the
+ * disc number is the 4th+ digit.
+ * @return The disc number extracted from the combined integer field, or null if the value was zero.
+ */
+private fun Int.unpackDiscNo() = div(1000).nonZeroOrNull()

@@ -26,6 +26,8 @@ import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.parsing.correctWhitespace
+import org.oxycblt.auxio.music.parsing.parseId3v2Position
 import org.oxycblt.auxio.music.storage.toAudioUri
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
@@ -128,7 +130,6 @@ class MetadataExtractor(
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Task(context: Context, private val raw: Song.Raw) {
-    // TODO: Unify with MetadataExtractor
     // Note that we do not leverage future callbacks. This is because errors in the
     // (highly fallible) extraction process will not bubble up to Indexer when a
     // listener is used, instead crashing the app entirely.
@@ -144,6 +145,7 @@ class Task(context: Context, private val raw: Song.Raw) {
      */
     fun get(): Song.Raw? {
         if (!future.isDone) {
+            // Not done yet, nothing to do.
             return null
         }
 
@@ -227,10 +229,10 @@ class Task(context: Context, private val raw: Song.Raw) {
         textFrames["TSOT"]?.let { raw.sortName = it[0] }
 
         // Track. Only parse out the track number and ignore the total tracks value.
-        textFrames["TRCK"]?.run { get(0).parsePositionNum() }?.let { raw.track = it }
+        textFrames["TRCK"]?.run { get(0).parseId3v2Position() }?.let { raw.track = it }
 
         // Disc. Only parse out the disc number and ignore the total discs value.
-        textFrames["TPOS"]?.run { get(0).parsePositionNum() }?.let { raw.disc = it }
+        textFrames["TPOS"]?.run { get(0).parseId3v2Position() }?.let { raw.disc = it }
 
         // Dates are somewhat complicated, as not only did their semantics change from a flat year
         // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
@@ -241,9 +243,9 @@ class Task(context: Context, private val raw: Song.Raw) {
         // 3. ID3v2.4 Release Date, as it is the second most common date type
         // 4. ID3v2.3 Original Date, as it is like #1
         // 5. ID3v2.3 Release Year, as it is the most common date type
-        (textFrames["TDOR"]?.run { get(0).parseTimestamp() }
-                ?: textFrames["TDRC"]?.run { get(0).parseTimestamp() }
-                    ?: textFrames["TDRL"]?.run { get(0).parseTimestamp() }
+        (textFrames["TDOR"]?.run { Date.from(get(0)) }
+                ?: textFrames["TDRC"]?.run { Date.from(get(0)) }
+                    ?: textFrames["TDRL"]?.run { Date.from(get(0)) }
                     ?: parseId3v23Date(textFrames))
             ?.let { raw.date = it }
 
@@ -335,9 +337,9 @@ class Task(context: Context, private val raw: Song.Raw) {
         // 2. Date, as it is the most common date type
         // 3. Year, as old vorbis tags tended to use this (I know this because it's the only
         // date tag that android supports, so it must be 15 years old or more!)
-        (comments["ORIGINALDATE"]?.run { get(0).parseTimestamp() }
-                ?: comments["DATE"]?.run { get(0).parseTimestamp() }
-                    ?: comments["YEAR"]?.run { get(0).parseYear() })
+        (comments["ORIGINALDATE"]?.run { Date.from(get(0)) }
+                ?: comments["DATE"]?.run { Date.from(get(0)) }
+                    ?: comments["YEAR"]?.run { get(0).toIntOrNull()?.let(Date::from) })
             ?.let { raw.date = it }
 
         // Album
