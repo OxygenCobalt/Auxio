@@ -42,6 +42,9 @@ class PreAmpCustomizeDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
                 Settings(requireContext()).replayGainPreAmp =
                     ReplayGainPreAmp(binding.withTagsSlider.value, binding.withoutTagsSlider.value)
             }
+            .setNeutralButton(R.string.lbl_reset) { _, _ ->
+                Settings(requireContext()).replayGainPreAmp = ReplayGainPreAmp(0f, 0f)
+            }
             .setNegativeButton(R.string.lbl_cancel, null)
     }
 

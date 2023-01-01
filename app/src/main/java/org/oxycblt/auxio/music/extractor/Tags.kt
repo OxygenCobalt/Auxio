@@ -24,7 +24,7 @@ import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import org.oxycblt.auxio.music.parsing.correctWhitespace
 
 /**
- * Processing wrapper for [Metadata] that allows access to more organized metadata.
+ * Processing wrapper for [Metadata] that allows access to more organized music tags.
  * @param metadata The [Metadata] to wrap.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -40,9 +40,6 @@ class Tags(metadata: Metadata) {
         get() = _vorbis
 
     init {
-        // ExoPlayer only exposes ID3v2 and Vorbis metadata, which constitutes the vast majority
-        // of audio formats. Load both of these types of tags into separate maps, letting the
-        // "source of truth" be the last of a particular tag in a file.
         for (i in 0 until metadata.length()) {
             when (val tag = metadata[i]) {
                 is TextInformationFrame -> {

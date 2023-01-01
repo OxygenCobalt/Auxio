@@ -9,6 +9,7 @@
 - Formalized whitespace handling
 - Value lists are now properly localized
 - Queue no longer primarily shows previous songs when opened
+- Added reset button to ReplayGain pre-amp configuration dialog 
 
 #### What's Changed
 - R128 Gain tags are now only used when playing OPUS files
