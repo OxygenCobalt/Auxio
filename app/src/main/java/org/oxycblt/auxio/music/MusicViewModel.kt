@@ -48,9 +48,9 @@ class MusicViewModel : ViewModel(), Indexer.Listener {
 
     override fun onIndexerStateChanged(state: Indexer.State?) {
         _indexerState.value = state
-        if (state is Indexer.State.Complete && state.response is Indexer.Response.Ok) {
+        if (state is Indexer.State.Complete) {
             // New state is a completed library, update the statistics values.
-            val library = state.response.library
+            val library = state.result.getOrNull() ?: return
             _statistics.value =
                 Statistics(
                     library.songs.size,

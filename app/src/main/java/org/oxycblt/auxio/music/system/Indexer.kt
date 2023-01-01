@@ -51,7 +51,7 @@ import org.oxycblt.auxio.util.logW
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Indexer private constructor() {
-    private var lastResponse: Response? = null
+    private var lastResponse: Result<MusicStore.Library>? = null
     private var indexingState: Indexing? = null
     private var controller: Controller? = null
     private var listener: Listener? = null
@@ -148,28 +148,14 @@ class Indexer private constructor() {
      * be written, but no cache entries will be loaded into the new library.
      */
     suspend fun index(context: Context, withCache: Boolean) {
-        if (ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
-            PackageManager.PERMISSION_DENIED) {
-            // No permissions, signal that we can't do anything.
-            emitCompletion(Response.NoPerms)
-            return
-        }
-
-        val response =
+        val result =
             try {
                 val start = System.currentTimeMillis()
                 val library = indexImpl(context, withCache)
-                if (library != null) {
-                    // Successfully loaded a library.
-                    logD(
-                        "Music indexing completed successfully in " +
-                            "${System.currentTimeMillis() - start}ms")
-                    Response.Ok(library)
-                } else {
-                    // Loaded a library, but it contained no music.
-                    logE("No music found")
-                    Response.NoMusic
-                }
+                logD(
+                    "Music indexing completed successfully in " +
+                        "${System.currentTimeMillis() - start}ms")
+                Result.success(library)
             } catch (e: CancellationException) {
                 // Got cancelled, propagate upwards to top-level co-routine.
                 logD("Loading routine was cancelled")
@@ -178,10 +164,9 @@ class Indexer private constructor() {
                 // Music loading process failed due to something we have not handled.
                 logE("Music indexing failed")
                 logE(e.stackTraceToString())
-                Response.Err(e)
+                Result.failure(e)
             }
-
-        emitCompletion(response)
+        emitCompletion(result)
     }
 
     /**
@@ -212,9 +197,15 @@ class Indexer private constructor() {
      * @param context [Context] required to load music.
      * @param withCache Whether to use the cache or not when loading. If false, the cache will still
      * be written, but no cache entries will be loaded into the new library.
-     * @return A newly-loaded [MusicStore.Library], or null if nothing was loaded.
+     * @return A newly-loaded [MusicStore.Library]. May be empty.
      */
-    private suspend fun indexImpl(context: Context, withCache: Boolean): MusicStore.Library? {
+    private suspend fun indexImpl(context: Context, withCache: Boolean): MusicStore.Library {
+        if (ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
+            PackageManager.PERMISSION_DENIED) {
+            // No permissions, signal that we can't do anything.
+            throw NoPermissionException()
+        }
+
         // Create the chain of extractors. Each extractor builds on the previous and
         // enables version-specific features in order to create the best possible music
         // experience.
@@ -237,11 +228,6 @@ class Indexer private constructor() {
         val metadataExtractor = MetadataExtractor(context, mediaStoreExtractor)
 
         val songs = buildSongs(metadataExtractor, Settings(context))
-        if (songs.isEmpty()) {
-            // No songs, nothing else to do.
-            return null
-        }
-
         // Build the rest of the music library from the song list. This is much more powerful
         // and reliable compared to using MediaStore to obtain grouping information.
         val buildStart = System.currentTimeMillis()
@@ -249,7 +235,6 @@ class Indexer private constructor() {
         val artists = buildArtists(songs, albums)
         val genres = buildGenres(songs)
         logD("Successfully built library in ${System.currentTimeMillis() - buildStart}ms")
-
         return MusicStore.Library(songs, albums, artists, genres)
     }
 
@@ -395,10 +380,10 @@ class Indexer private constructor() {
      * Emit a new [State.Complete] state. This can be used to signal the completion of the music
      * loading process to external code. Will check if the callee has not been canceled and thus has
      * the ability to emit a new state
-     * @param response The new [Response] to emit, representing the outcome of the music loading
+     * @param result The new [Response] to emit, representing the outcome of the music loading
      * process.
      */
-    private suspend fun emitCompletion(response: Response) {
+    private suspend fun emitCompletion(result: Result<MusicStore.Library>) {
         yield()
         // Swap to the Main thread so that downstream callbacks don't crash from being on
         // a background thread. Does not occur in emitIndexing due to efficiency reasons.
@@ -406,10 +391,10 @@ class Indexer private constructor() {
             synchronized(this) {
                 // Do not check for redundancy here, as we actually need to notify a switch
                 // from Indexing -> Complete and not Indexing -> Indexing or Complete -> Complete.
-                lastResponse = response
+                lastResponse = result
                 indexingState = null
                 // Signal that the music loading process has been completed.
-                val state = State.Complete(response)
+                val state = State.Complete(result)
                 controller?.onIndexerStateChanged(state)
                 listener?.onIndexerStateChanged(state)
             }
@@ -427,10 +412,10 @@ class Indexer private constructor() {
 
         /**
          * Music loading has completed.
-         * @param response The outcome of the music loading process.
+         * @param result The outcome of the music loading process.
          * @see Response
          */
-        data class Complete(val response: Response) : State()
+        data class Complete(val result: Result<MusicStore.Library>) : State()
     }
 
     /**
@@ -451,25 +436,10 @@ class Indexer private constructor() {
         class Songs(val current: Int, val total: Int) : Indexing()
     }
 
-    /** Represents the possible outcomes of the music loading process. */
-    sealed class Response {
-        /**
-         * Music load was successful and produced a [MusicStore.Library].
-         * @param library The loaded [MusicStore.Library].
-         */
-        data class Ok(val library: MusicStore.Library) : Response()
-
-        /**
-         * Music loading encountered an unexpected error.
-         * @param throwable The error thrown.
-         */
-        data class Err(val throwable: Throwable) : Response()
-
-        /** Music loading occurred, but resulted in no music. */
-        object NoMusic : Response()
-
-        /** Music loading could not occur due to a lack of storage permissions. */
-        object NoPerms : Response()
+    /** Thrown when the required permissions to load the music library have not been granted yet. */
+    class NoPermissionException : Exception() {
+        override val message: String
+            get() = "Not granted permissions to load music library"
     }
 
     /**

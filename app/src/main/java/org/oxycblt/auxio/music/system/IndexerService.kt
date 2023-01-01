@@ -129,11 +129,11 @@ class IndexerService :
 
     override fun onIndexerStateChanged(state: Indexer.State?) {
         when (state) {
+            is Indexer.State.Indexing -> updateActiveSession(state.indexing)
             is Indexer.State.Complete -> {
-                if (state.response is Indexer.Response.Ok &&
-                    state.response.library != musicStore.library) {
+                val newLibrary = state.result.getOrNull()
+                if (newLibrary != null && newLibrary != musicStore.library) {
                     logD("Applying new library")
-                    val newLibrary = state.response.library
                     // We only care if the newly-loaded library is going to replace a previously
                     // loaded library.
                     if (musicStore.library != null) {
@@ -151,9 +151,6 @@ class IndexerService :
                 // error, that requires the Android 13 notification permission, which is not
                 // handled right now.
                 updateIdleSession()
-            }
-            is Indexer.State.Indexing -> {
-                updateActiveSession(state.indexing)
             }
             null -> {
                 // Null is the indeterminate state that occurs on app startup or after

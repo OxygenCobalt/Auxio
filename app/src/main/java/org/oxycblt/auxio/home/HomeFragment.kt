@@ -49,14 +49,7 @@ import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
 import org.oxycblt.auxio.list.selection.SelectionFragment
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
-import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
@@ -322,7 +315,7 @@ class HomeFragment :
     private fun updateIndexerState(state: Indexer.State?) {
         val binding = requireBinding()
         when (state) {
-            is Indexer.State.Complete -> setupCompleteState(binding, state.response)
+            is Indexer.State.Complete -> setupCompleteState(binding, state.result)
             is Indexer.State.Indexing -> setupIndexingState(binding, state.indexing)
             null -> {
                 logD("Indexer is in indeterminate state")
@@ -331,54 +324,43 @@ class HomeFragment :
         }
     }
 
-    private fun setupCompleteState(binding: FragmentHomeBinding, response: Indexer.Response) {
-        if (response is Indexer.Response.Ok) {
+    private fun setupCompleteState(
+        binding: FragmentHomeBinding,
+        result: Result<MusicStore.Library>
+    ) {
+        if (result.isSuccess) {
             logD("Received ok response")
             binding.homeFab.show()
             binding.homeIndexingContainer.visibility = View.INVISIBLE
         } else {
             logD("Received non-ok response")
             val context = requireContext()
+            val throwable = unlikelyToBeNull(result.exceptionOrNull())
             binding.homeIndexingContainer.visibility = View.VISIBLE
             binding.homeIndexingProgress.visibility = View.INVISIBLE
-            when (response) {
-                is Indexer.Response.Err -> {
-                    logD("Updating UI to Response.Err state")
-                    binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
-                    // Configure the action to act as a reload trigger.
-                    binding.homeIndexingAction.apply {
-                        visibility = View.VISIBLE
-                        text = context.getString(R.string.lbl_retry)
-                        setOnClickListener { musicModel.refresh() }
+            if (throwable is Indexer.NoPermissionException) {
+                logD("Updating UI to permission request state")
+                binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
+                // Configure the action to act as a permission launcher.
+                binding.homeIndexingAction.apply {
+                    visibility = View.VISIBLE
+                    text = context.getString(R.string.lbl_grant)
+                    setOnClickListener {
+                        requireNotNull(storagePermissionLauncher) {
+                                "Permission launcher was not available"
+                            }
+                            .launch(Indexer.PERMISSION_READ_AUDIO)
                     }
                 }
-                is Indexer.Response.NoMusic -> {
-                    // TODO: Move this state to the list fragments (quality of life)
-                    logD("Updating UI to Response.NoMusic state")
-                    binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
-                    // Configure the action to act as a reload trigger.
-                    binding.homeIndexingAction.apply {
-                        visibility = View.VISIBLE
-                        text = context.getString(R.string.lbl_retry)
-                        setOnClickListener { musicModel.refresh() }
-                    }
+            } else {
+                logD("Updating UI to error state")
+                binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
+                // Configure the action to act as a reload trigger.
+                binding.homeIndexingAction.apply {
+                    visibility = View.VISIBLE
+                    text = context.getString(R.string.lbl_retry)
+                    setOnClickListener { musicModel.refresh() }
                 }
-                is Indexer.Response.NoPerms -> {
-                    logD("Updating UI to Response.NoPerms state")
-                    binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
-                    // Configure the action to act as a permission launcher.
-                    binding.homeIndexingAction.apply {
-                        visibility = View.VISIBLE
-                        text = context.getString(R.string.lbl_grant)
-                        setOnClickListener {
-                            requireNotNull(storagePermissionLauncher) {
-                                    "Permission launcher was not available"
-                                }
-                                .launch(Indexer.PERMISSION_READ_AUDIO)
-                        }
-                    }
-                }
-                else -> {}
             }
         }
     }
