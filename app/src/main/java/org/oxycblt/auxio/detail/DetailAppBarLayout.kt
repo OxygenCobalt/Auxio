@@ -36,8 +36,8 @@ import org.oxycblt.auxio.util.getInteger
 import org.oxycblt.auxio.util.lazyReflectedField
 
 /**
- * An [CoordinatorAppBarLayout] that displays the title of a hidden [Toolbar] when the scrolling view goes
- * beyond it's first item.
+ * An [CoordinatorAppBarLayout] that displays the title of a hidden [Toolbar] when the scrolling
+ * view goes beyond it's first item.
  *
  * This is intended for the detail views, in which the first item is the album/artist/genre header,
  * and thus scrolling past them should make the toolbar show the name in order to give context on

@@ -24,10 +24,8 @@ package org.oxycblt.auxio.music.extractor
 enum class ExtractionResult {
     /** A raw song was successfully extracted from the cache. */
     CACHED,
-
     /** A raw song was successfully extracted from parsing it's file. */
     PARSED,
-
     /** A raw song could not be parsed. */
     NONE
 }

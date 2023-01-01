@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.storage.contentResolverSafe
+import org.oxycblt.auxio.music.filesystem.contentResolverSafe
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.service.ForegroundManager
 import org.oxycblt.auxio.settings.Settings

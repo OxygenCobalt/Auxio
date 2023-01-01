@@ -10,6 +10,9 @@
 - Value lists are now properly localized
 - Queue no longer primarily shows previous songs when opened
 
+#### What's Changed
+- R128 Gain tags are now only used when playing OPUS files
+
 #### What's Fixed
 - Fixed mangled multi-value ID3v2 tags when UTF-16 is used
 

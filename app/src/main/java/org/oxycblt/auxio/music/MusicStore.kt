@@ -20,8 +20,8 @@ package org.oxycblt.auxio.music
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
-import org.oxycblt.auxio.music.storage.contentResolverSafe
-import org.oxycblt.auxio.music.storage.useQuery
+import org.oxycblt.auxio.music.filesystem.contentResolverSafe
+import org.oxycblt.auxio.music.filesystem.useQuery
 
 /**
  * A repository granting access to the music library..

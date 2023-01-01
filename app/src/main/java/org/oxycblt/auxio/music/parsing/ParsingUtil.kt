@@ -31,7 +31,7 @@ import org.oxycblt.auxio.util.nonZeroOrNull
  */
 fun List<String>.parseMultiValue(settings: Settings) =
     if (size == 1) {
-        get(0).maybeParseBySeparators(settings)
+        first().maybeParseBySeparators(settings)
     } else {
         // Nothing to do.
         this
@@ -124,7 +124,7 @@ fun String.parseId3v2Position() = split('/', limit = 2)[0].toIntOrNull()?.nonZer
  */
 fun List<String>.parseId3GenreNames(settings: Settings) =
     if (size == 1) {
-        get(0).parseId3MultiValueGenre(settings)
+        first().parseId3MultiValueGenre(settings)
     } else {
         // Nothing to split, just map any ID3v1 genres to their name counterparts.
         map { it.parseId3v1Genre() ?: it }
@@ -147,8 +147,8 @@ private fun String.parseId3v1Genre(): String? {
     // try to index the genre table with such.
     val numeric =
         toIntOrNull()
-            // Not a numeric value, try some other fixed values.
-            ?: return when (this) {
+        // Not a numeric value, try some other fixed values.
+        ?: return when (this) {
                 // CR and RX are not technically ID3v1, but are formatted similarly to a plain
                 // number.
                 "CR" -> "Cover"

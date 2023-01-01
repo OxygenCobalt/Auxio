@@ -22,7 +22,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.os.IBinder
@@ -32,7 +31,6 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.RenderersFactory
-import com.google.android.exoplayer2.Tracks
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.audio.AudioCapabilities
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer
@@ -45,7 +43,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
@@ -81,8 +78,7 @@ class PlaybackService :
     Player.Listener,
     InternalPlayer,
     MediaSessionComponent.Listener,
-    MusicStore.Listener,
-    SharedPreferences.OnSharedPreferenceChangeListener {
+    MusicStore.Listener {
     // Player components
     private lateinit var player: ExoPlayer
     private lateinit var replayGainProcessor: ReplayGainAudioProcessor
@@ -144,9 +140,9 @@ class PlaybackService :
                     true)
                 .build()
                 .also { it.addListener(this) }
+        replayGainProcessor.addToListeners(player)
         // Initialize the core service components
         settings = Settings(this)
-        settings.addListener(this)
         foregroundManager = ForegroundManager(this)
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
@@ -187,7 +183,6 @@ class PlaybackService :
         super.onDestroy()
 
         foregroundManager.release()
-        settings.removeListener(this)
 
         // Pause just in case this destruction was unexpected.
         playbackManager.setPlaying(false)
@@ -200,6 +195,7 @@ class PlaybackService :
         widgetComponent.release()
         mediaSessionComponent.release()
 
+        replayGainProcessor.releaseFromListeners(player)
         player.release()
         if (openAudioEffectSession) {
             // Make sure to close the audio session when we release the player.
@@ -304,41 +300,12 @@ class PlaybackService :
         playbackManager.next()
     }
 
-    override fun onTracksChanged(tracks: Tracks) {
-        super.onTracksChanged(tracks)
-        // Try to find the currently playing track so we can update ReplayGainAudioProcessor
-        // with it.
-        for (group in tracks.groups) {
-            if (group.isSelected) {
-                for (i in 0 until group.length) {
-                    if (group.isTrackSelected(i)) {
-                        replayGainProcessor.applyReplayGain(group.getTrackFormat(i).metadata)
-                        break
-                    }
-                }
-
-                break
-            }
-        }
-    }
-
     // --- MUSICSTORE OVERRIDES ---
 
     override fun onLibraryChanged(library: MusicStore.Library?) {
         if (library != null) {
             // We now have a library, see if we have anything we need to do.
             playbackManager.requestAction(this)
-        }
-    }
-
-    // --- SETTINGS OVERRIDES ---
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        if (key == getString(R.string.set_key_replay_gain) ||
-            key == getString(R.string.set_key_pre_amp_with) ||
-            key == getString(R.string.set_key_pre_amp_without)) {
-            // ReplayGain changed, we need to set it up again.
-            onTracksChanged(player.currentTracks)
         }
     }
 

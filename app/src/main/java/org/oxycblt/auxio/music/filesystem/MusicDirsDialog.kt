@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.storage
+package org.oxycblt.auxio.music.filesystem
 
 import android.net.Uri
 import android.os.Bundle
@@ -31,7 +31,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
-import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast

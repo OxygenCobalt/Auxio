@@ -31,8 +31,8 @@ import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.music.storage.Directory
-import org.oxycblt.auxio.music.storage.MusicDirectories
+import org.oxycblt.auxio.music.filesystem.Directory
+import org.oxycblt.auxio.music.filesystem.MusicDirectories
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
