@@ -197,7 +197,9 @@ class Indexer private constructor() {
      * @param context [Context] required to load music.
      * @param withCache Whether to use the cache or not when loading. If false, the cache will still
      * be written, but no cache entries will be loaded into the new library.
-     * @return A newly-loaded [MusicStore.Library]. May be empty.
+     * @return A newly-loaded [MusicStore.Library].
+     * @throws NoPermissionException If [PERMISSION_READ_AUDIO] was not granted.
+     * @throws NoMusicException If no music was found on the device.
      */
     private suspend fun indexImpl(context: Context, withCache: Boolean): MusicStore.Library {
         if (ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
@@ -227,7 +229,8 @@ class Indexer private constructor() {
 
         val metadataExtractor = MetadataExtractor(context, mediaStoreExtractor)
 
-        val songs = buildSongs(metadataExtractor, Settings(context))
+        val songs =
+            buildSongs(metadataExtractor, Settings(context)).ifEmpty { throw NoMusicException() }
         // Build the rest of the music library from the song list. This is much more powerful
         // and reliable compared to using MediaStore to obtain grouping information.
         val buildStart = System.currentTimeMillis()
@@ -380,7 +383,7 @@ class Indexer private constructor() {
      * Emit a new [State.Complete] state. This can be used to signal the completion of the music
      * loading process to external code. Will check if the callee has not been canceled and thus has
      * the ability to emit a new state
-     * @param result The new [Response] to emit, representing the outcome of the music loading
+     * @param result The new [Result] to emit, representing the outcome of the music loading
      * process.
      */
     private suspend fun emitCompletion(result: Result<MusicStore.Library>) {
@@ -440,6 +443,12 @@ class Indexer private constructor() {
     class NoPermissionException : Exception() {
         override val message: String
             get() = "Not granted permissions to load music library"
+    }
+
+    /** Thrown when no music was found on the device. */
+    class NoMusicException : Exception() {
+        override val message: String
+            get() = "Unable to find any music"
     }
 
     /**

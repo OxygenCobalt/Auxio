@@ -68,14 +68,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     /**
-     * Expand this [AppBarLayout] with respect to the given [RecyclerView], preventing it from
-     * jumping around.
-     * @param recycler [RecyclerView] to expand with, or null if one is currently unavailable.
+     * Expand this [AppBarLayout] with respect to the current [RecyclerView] at
+     * [liftOnScrollTargetViewId], preventing it from jumping around.
      */
-    fun expandWithRecycler(recycler: RecyclerView?) {
-        // TODO: Is it possible to use liftOnScrollTargetViewId to avoid the RecyclerView arg?
+    fun expandWithScrollingRecycler() {
         setExpanded(true)
-        recycler?.let { addOnOffsetChangedListener(ExpansionHackListener(it)) }
+        (findScrollingChild() as? RecyclerView)?.let {
+            addOnOffsetChangedListener(ExpansionHackListener(it))
+        }
     }
 
     override fun onDetachedFromWindow() {

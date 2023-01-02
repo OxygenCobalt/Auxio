@@ -338,28 +338,43 @@ class HomeFragment :
             val throwable = unlikelyToBeNull(result.exceptionOrNull())
             binding.homeIndexingContainer.visibility = View.VISIBLE
             binding.homeIndexingProgress.visibility = View.INVISIBLE
-            if (throwable is Indexer.NoPermissionException) {
-                logD("Updating UI to permission request state")
-                binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
-                // Configure the action to act as a permission launcher.
-                binding.homeIndexingAction.apply {
-                    visibility = View.VISIBLE
-                    text = context.getString(R.string.lbl_grant)
-                    setOnClickListener {
-                        requireNotNull(storagePermissionLauncher) {
-                                "Permission launcher was not available"
-                            }
-                            .launch(Indexer.PERMISSION_READ_AUDIO)
+            when (throwable) {
+                is Indexer.NoPermissionException -> {
+                    logD("Updating UI to permission request state")
+                    binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
+                    // Configure the action to act as a permission launcher.
+                    binding.homeIndexingAction.apply {
+                        visibility = View.VISIBLE
+                        text = context.getString(R.string.lbl_grant)
+                        setOnClickListener {
+                            requireNotNull(storagePermissionLauncher) {
+                                    "Permission launcher was not available"
+                                }
+                                .launch(Indexer.PERMISSION_READ_AUDIO)
+                        }
                     }
                 }
-            } else {
-                logD("Updating UI to error state")
-                binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
-                // Configure the action to act as a reload trigger.
-                binding.homeIndexingAction.apply {
-                    visibility = View.VISIBLE
-                    text = context.getString(R.string.lbl_retry)
-                    setOnClickListener { musicModel.refresh() }
+                is Indexer.NoMusicException -> {
+                    logD("Updating UI to no music state")
+                    // TODO: Rework how empty libraries are treated to feel less jarring if
+                    //  there was a previously loaded library
+                    binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
+                    // Configure the action to act as a reload trigger.
+                    binding.homeIndexingAction.apply {
+                        visibility = View.VISIBLE
+                        text = context.getString(R.string.lbl_retry)
+                        setOnClickListener { musicModel.refresh() }
+                    }
+                }
+                else -> {
+                    logD("Updating UI to error state")
+                    binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
+                    // Configure the action to act as a reload trigger.
+                    binding.homeIndexingAction.apply {
+                        visibility = View.VISIBLE
+                        text = context.getString(R.string.lbl_retry)
+                        setOnClickListener { musicModel.rescan() }
+                    }
                 }
             }
         }
@@ -420,10 +435,9 @@ class HomeFragment :
         val binding = requireBinding()
         if (binding.homeSelectionToolbar.updateSelectionAmount(selected.size) &&
             selected.isNotEmpty()) {
+            // New selection started, show the AppBarLayout to indicate the new state.
             logD("Significant selection occurred, expanding AppBar")
-            // Significant enough change where we want to expand the RecyclerView
-            binding.homeAppbar.expandWithRecycler(
-                binding.homePager.findViewById(getTabRecyclerId(homeModel.currentTabMode.value)))
+            binding.homeAppbar.expandWithScrollingRecycler()
         }
     }
 
