@@ -259,4 +259,5 @@
     <string name="fmt_selected">%d ausgewählt</string>
     <string name="set_playback_mode_genre">Vom Genre abspielen</string>
     <string name="lbl_wiki">Wiki</string>
+    <string name="fmt_list">%1$s, %2$s</string>
 </resources>
