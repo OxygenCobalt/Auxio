@@ -54,13 +54,13 @@
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Nastavení</string>
     <string name="set_ui">Vzhled</string>
-    <string name="set_theme">Téma</string>
+    <string name="set_theme">Motiv</string>
     <string name="set_theme_auto">Automatické</string>
     <string name="set_theme_day">Světlé</string>
     <string name="set_theme_night">Tmavé</string>
     <string name="set_accent">Barevné schéma</string>
-    <string name="set_black_mode">Černé téma</string>
-    <string name="set_black_mode_desc">Použít kompletně černé tmavé téma</string>
+    <string name="set_black_mode">Černý motiv</string>
+    <string name="set_black_mode_desc">Použít kompletně černý tmavý motiv</string>
     <string name="set_display">Zobrazení</string>
     <string name="set_lib_tabs">Karty knihovny</string>
     <string name="set_lib_tabs_desc">Změnit viditelnost a pořadí karet knihovny</string>
