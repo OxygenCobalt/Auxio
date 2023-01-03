@@ -1,22 +1,22 @@
-Auxio es un reproductor de música local con una UI/UX rápida y confiable sin muchas funciones innecesarias que tienen otros reproductores de música. Basado en <a href="https://exoplayer.dev/">Exoplayer</a>, Auxio tiene un mejor soporte para la biblioteca y una excelente calidad de sonido en comparación con otras aplicaciones que usan una función de Android obsoleta. En resumen, solo <b>reproduce música</b>.
+Auxio es un reproductor de música nativo con una UI/UX rápida y sólida sin las muchas características inútiles que se encuentran en otros reproductores de música. En comparación con otras aplicaciones que utilizan la API nativa de MediaPlayer, Auxio se basa en Exoplayer, con una mejor experiencia auditiva y una mejor compatibilidad con la biblioteca de música, <b>exactamente como debería ser un reproductor de música</b>.
 
-<b>Funciones</b>
+<b>Características</b>
 
-- Reproductor basado en el sistema ExoPlayer
-- Interfaz de usuario receptiva de acuerdo con las últimas pautas de Diseño de materiales
-- UX agradable que prioriza la facilidad de uso sobre los casos extremos
-- Comportamiento personalizable
-- Admite números de disco, múltiples artistas, tipos de lanzamiento,
-datos exactos/originales, clasificación de etiquetas y más
-- Sistema de artista avanzado que conecta artistas y artistas de álbumes
-- Gestión de carpetas compatible con tarjetas SD
-- Almacenamiento confiable del estado de reproducción
-- Compatibilidad total con ReplayGain (para archivos MP3, FLAC, OGG, OPUS y MP4)
-- Soporte para reproductores externos (por ejemplo, Wavelet)
-- Borde a borde
-- Soporte para empaquetado integrado
-- Buscando función
+- Reproducción basada en ExoPlayer
+- Interfaz inteligente derivada de las últimas especificaciones de diseño de Material You
+- Una experiencia de usuario única que prioriza la facilidad de uso
+- Comportamiento del jugador personalizable
+- Admite número de disco, varios artistas, tipo de lanzamiento, fecha exacta/original,
+Clasificación de pestañas y más
+- Sistema avanzado de "Artista" que unifica "Artista" y "Artista del álbum"
+- La función de gestión de carpetas es consciente de la tarjeta SD
+- Diseño persistente confiable del progreso de la reproducción
+- Compatibilidad completa con ReplayGain (incluidos archivos MP3, FLAC, OGG, OPUS y MP4)
+- Soporte para ecualizadores externos (aplicaciones como Wavelet)
+- Diseño de borde a borde
+- Soporte de cubierta integrado
+- buscando función
 - Reproducción automática cuando los auriculares están conectados
-- Widgets con estilo que se adaptan automáticamente a su tamaño
-- Totalmente privado y fuera de línea
-- No hay portadas de álbumes redondeadas (a menos que las quieras. De lo contrario, están disponibles)
+- Widgets estilizados que se adaptan al tamaño del escritorio
+- Completamente fuera de línea y privado
+- Carátula del álbum sin esquinas redondeadas (también puedes tener eso si quieres)
