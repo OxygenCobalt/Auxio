@@ -183,7 +183,7 @@ class DetailViewModel(application: Application) :
             return
         }
         logD("Opening Song [uid: $uid]")
-        _currentSong.value = requireMusic<Song>(uid).also(::loadProperties)
+        _currentSong.value = requireMusic<Song>(uid)?.also(::loadProperties)
     }
 
     /**
@@ -197,7 +197,7 @@ class DetailViewModel(application: Application) :
             return
         }
         logD("Opening Album [uid: $uid]")
-        _currentAlbum.value = requireMusic<Album>(uid).also(::refreshAlbumList)
+        _currentAlbum.value = requireMusic<Album>(uid)?.also(::refreshAlbumList)
     }
 
     /**
@@ -211,7 +211,7 @@ class DetailViewModel(application: Application) :
             return
         }
         logD("Opening Artist [uid: $uid]")
-        _currentArtist.value = requireMusic<Artist>(uid).also(::refreshArtistList)
+        _currentArtist.value = requireMusic<Artist>(uid)?.also(::refreshArtistList)
     }
 
     /**
@@ -225,11 +225,10 @@ class DetailViewModel(application: Application) :
             return
         }
         logD("Opening Genre [uid: $uid]")
-        _currentGenre.value = requireMusic<Genre>(uid).also(::refreshGenreList)
+        _currentGenre.value = requireMusic<Genre>(uid)?.also(::refreshGenreList)
     }
 
-    private fun <T : Music> requireMusic(uid: Music.UID): T =
-        requireNotNull(unlikelyToBeNull(musicStore.library).find(uid)) { "Invalid id provided" }
+    private fun <T : Music> requireMusic(uid: Music.UID) = musicStore.library?.find<T>(uid)
 
     /**
      * Start a new job to load a [DetailSong] based on the properties of the given [Song]'s file.
