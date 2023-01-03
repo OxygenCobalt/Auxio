@@ -51,10 +51,10 @@ import org.oxycblt.auxio.util.logW
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Indexer private constructor() {
-    private var lastResponse: Result<MusicStore.Library>? = null
-    private var indexingState: Indexing? = null
-    private var controller: Controller? = null
-    private var listener: Listener? = null
+    @Volatile private var lastResponse: Result<MusicStore.Library>? = null
+    @Volatile private var indexingState: Indexing? = null
+    @Volatile private var controller: Controller? = null
+    @Volatile private var listener: Listener? = null
 
     /** Whether music loading is occurring or not. */
     val isIndexing: Boolean

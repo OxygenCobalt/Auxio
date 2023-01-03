@@ -30,8 +30,6 @@ import org.oxycblt.auxio.music.filesystem.useQuery
  * generally recommended to use this over Indexer to keep track of the library state, as the
  * interface will be less volatile.
  *
- * TODO: Use volatile on individual fields
- *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MusicStore private constructor() {
@@ -42,6 +40,7 @@ class MusicStore private constructor() {
      * can change, so it's highly recommended to not access this directly and instead rely on
      * [Listener].
      */
+    @Volatile
     var library: Library? = null
         set(value) {
             field = value

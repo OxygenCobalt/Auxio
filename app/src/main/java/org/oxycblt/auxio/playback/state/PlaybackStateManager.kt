@@ -55,18 +55,19 @@ import org.oxycblt.auxio.util.logW
 class PlaybackStateManager private constructor() {
     private val musicStore = MusicStore.getInstance()
     private val listeners = mutableListOf<Listener>()
-    private var internalPlayer: InternalPlayer? = null
-    private var pendingAction: InternalPlayer.Action? = null
-    private var isInitialized = false
+    @Volatile private var internalPlayer: InternalPlayer? = null
+    @Volatile private var pendingAction: InternalPlayer.Action? = null
+    @Volatile private var isInitialized = false
 
     /** The currently playing [Song]. Null if nothing is playing. */
     val song
         get() = queue.getOrNull(index)
     /** The [MusicParent] currently being played. Null if playback is occurring from all songs. */
+    @Volatile
     var parent: MusicParent? = null
         private set
 
-    private var _queue = mutableListOf<Song>()
+    @Volatile private var _queue = mutableListOf<Song>()
     /** The current queue. */
     val queue
         get() = _queue
@@ -74,15 +75,18 @@ class PlaybackStateManager private constructor() {
     var index = -1
         private set
     /** The current [InternalPlayer] state. */
+    @Volatile
     var playerState = InternalPlayer.State.from(isPlaying = false, isAdvancing = false, 0)
         private set
     /** The current [RepeatMode] */
+    @Volatile
     var repeatMode = RepeatMode.NONE
         set(value) {
             field = value
             notifyRepeatModeChanged()
         }
     /** Whether the queue is shuffled. */
+    @Volatile
     var isShuffled = false
         private set
     /**
