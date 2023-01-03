@@ -295,7 +295,13 @@ class HomeFragment :
         // Update the scrolling view in AppBarLayout to align with the current tab's
         // scrolling state. This prevents the lift state from being confused as one
         // goes between different tabs.
-        requireBinding().homeAppbar.liftOnScrollTargetViewId = getTabRecyclerId(tabMode)
+        requireBinding().homeAppbar.liftOnScrollTargetViewId =
+            when (tabMode) {
+                MusicMode.SONGS -> R.id.home_song_recycler
+                MusicMode.ALBUMS -> R.id.home_album_recycler
+                MusicMode.ARTISTS -> R.id.home_artist_recycler
+                MusicMode.GENRES -> R.id.home_genre_recycler
+            }
     }
 
     private fun handleRecreate(recreate: Boolean) {
@@ -313,6 +319,9 @@ class HomeFragment :
     }
 
     private fun updateIndexerState(state: Indexer.State?) {
+        // TODO: Make music loading experience a bit more pleasant
+        //  1. Loading placeholder for item lists
+        //  2. Rework the "No Music" case to not be an error and instead result in a placeholder
         val binding = requireBinding()
         when (state) {
             is Indexer.State.Complete -> setupCompleteState(binding, state.result)
@@ -356,8 +365,6 @@ class HomeFragment :
                 }
                 is Indexer.NoMusicException -> {
                     logD("Updating UI to no music state")
-                    // TODO: Rework how empty libraries are treated to feel less jarring if
-                    //  there was a previously loaded library
                     binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
                     // Configure the action to act as a reload trigger.
                     binding.homeIndexingAction.apply {
@@ -452,20 +459,6 @@ class HomeFragment :
         exitTransition = MaterialSharedAxis(axis, true)
         reenterTransition = MaterialSharedAxis(axis, false)
     }
-
-    /**
-     * Get the ID of the RecyclerView contained by [ViewPager2] tab represented with the given
-     * [MusicMode].
-     * @param tabMode The [MusicMode] of the tab.
-     * @return The ID of the RecyclerView contained by the given tab.
-     */
-    private fun getTabRecyclerId(tabMode: MusicMode) =
-        when (tabMode) {
-            MusicMode.SONGS -> R.id.home_song_recycler
-            MusicMode.ALBUMS -> R.id.home_album_recycler
-            MusicMode.ARTISTS -> R.id.home_artist_recycler
-            MusicMode.GENRES -> R.id.home_genre_recycler
-        }
 
     /**
      * [FragmentStateAdapter] implementation for the [HomeFragment]'s [ViewPager2] instance.

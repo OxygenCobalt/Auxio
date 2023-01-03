@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## 3.0.1
 
 #### What's New
 - Added support for album date ranges (ex. 2010 - 2013)
@@ -12,10 +12,11 @@
 - Added reset button to ReplayGain pre-amp configuration dialog 
 
 #### What's Changed
-- R128 Gain tags are now only used when playing OPUS files
+- R128 ReplayGain tags are now only used when playing OPUS files
 
 #### What's Fixed
 - Fixed mangled multi-value ID3v2 tags when UTF-16 is used
+- Fixed crash when playing certain MP3 files
 
 ## 3.0.0
 

@@ -2,8 +2,8 @@
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
-    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.0.0">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.0.0&color=0D5AF5">
+    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.0.1">
+        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.0.1&color=0D5AF5">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg">
@@ -79,7 +79,9 @@ Auxio relies on a custom version of ExoPlayer that enables some extra features. 
 
 Auxio accepts most contributions as long as they follow the [Contribution Guidelines](/.github/CONTRIBUTING.md).
 
-However, feature additions and major UI changes are less likely to be accepted. See [Accepted Additions](/info/ADDITIONS.md) for more information.
+However, feature additions and major UI changes are less likely to be accepted. See
+[Why Are These Features Missing?](https://github.com/OxygenCobalt/Auxio/wiki/Why-Are-These-Features-Missing%3F)
+for more information.
 
 ## License
 

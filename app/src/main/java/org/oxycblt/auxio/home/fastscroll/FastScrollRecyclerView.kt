@@ -71,26 +71,6 @@ class FastScrollRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AuxioRecyclerView(context, attrs, defStyleAttr) {
-    /** An interface to provide text to use in the popup when fast-scrolling. */
-    interface PopupProvider {
-        /**
-         * Get text to use in the popup at the specified position.
-         * @param pos The position in the list.
-         * @return A [String] to use in the popup. Null if there is no applicable text for the popup
-         * at [pos].
-         */
-        fun getPopup(pos: Int): String?
-    }
-
-    /** A listener for fast scroller interactions. */
-    interface Listener {
-        /**
-         * Called when the fast scrolling state changes.
-         * @param isFastScrolling true if the user is currently fast scrolling, false otherwise.
-         */
-        fun onFastScrollingChanged(isFastScrolling: Boolean)
-    }
-
     // Thumb
     private val thumbView =
         View(context).apply {
@@ -523,6 +503,26 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 is LinearLayoutManager -> mgr.itemCount
                 else -> 0
             }
+
+    /** An interface to provide text to use in the popup when fast-scrolling. */
+    interface PopupProvider {
+        /**
+         * Get text to use in the popup at the specified position.
+         * @param pos The position in the list.
+         * @return A [String] to use in the popup. Null if there is no applicable text for the popup
+         * at [pos].
+         */
+        fun getPopup(pos: Int): String?
+    }
+
+    /** A listener for fast scroller interactions. */
+    interface Listener {
+        /**
+         * Called when the fast scrolling state changes.
+         * @param isFastScrolling true if the user is currently fast scrolling, false otherwise.
+         */
+        fun onFastScrollingChanged(isFastScrolling: Boolean)
+    }
 
     private companion object {
         const val AUTO_HIDE_SCROLLBAR_DELAY_MILLIS = 1500
