@@ -10,7 +10,7 @@
     <string name="lbl_all_songs">Всі пісні</string>
     <string name="lbl_search">Пошук</string>
     <string name="lbl_filter">Фільтр</string>
-    <string name="lbl_filter_all">Усе</string>
+    <string name="lbl_filter_all">Все</string>
     <string name="lbl_sort">Сортування</string>
     <string name="lbl_play">Відтворити</string>
     <string name="lbl_shuffle">Перемішати</string>
@@ -18,12 +18,12 @@
     <string name="lbl_queue">Черга</string>
     <string name="lbl_play_next">Відтворити наступною</string>
     <string name="lbl_queue_add">Додати в чергу</string>
-    <string name="lng_queue_added">Додана в чергу</string>
+    <string name="lng_queue_added">Додано в чергу</string>
     <string name="lbl_go_artist">Перейти до виконавця</string>
     <string name="lbl_go_album">Перейти до альбому</string>
     <string name="lbl_about">Про програму</string>
     <string name="lbl_version">Версія</string>
-    <string name="lbl_code">Переглянути на GitHub</string>
+    <string name="lbl_code">Вихідний код</string>
     <string name="lbl_licenses">Ліцензії</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Налаштування</string>
@@ -36,7 +36,7 @@
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Музику не знайдено</string>
     <!-- Hint Namespace | EditText Hints -->
-    <string name="lng_search_library">Пошук бібліотеки…</string>
+    <string name="lng_search_library">Пошук в бібліотеці…</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Доріжка %d</string>
     <string name="desc_play_pause">Відтворити/Зупинити</string>
@@ -88,7 +88,7 @@
     <string name="set_hide_collaborators">Приховати співавторів</string>
     <string name="set_cover_mode_off">Вимкнено</string>
     <string name="set_bar_action_next">Перейти до наступної</string>
-    <string name="set_cover_mode_media_store">Швидко</string>
+    <string name="set_cover_mode_media_store">Швидкі</string>
     <string name="set_dirs_desc">Вкажіть теки, з яких програма має завантажувати пісні</string>
     <string name="set_dirs_mode_exclude">Виключити</string>
     <string name="fmt_lib_total_duration">Загальна тривалість: %s</string>
@@ -112,14 +112,14 @@
     <string name="lbl_reset">Скинути</string>
     <string name="set_black_mode">Чорна тема</string>
     <string name="set_lib_tabs_desc">Зміна видимості та порядку вкладок бібліотеки</string>
-    <string name="set_keep_shuffle">Пам\'ятати перемішування</string>
+    <string name="set_keep_shuffle">Запам\'ятати перемішування</string>
     <string name="set_repeat_pause">Пауза при повторенні</string>
     <string name="lbl_genre">Жанр</string>
     <string name="lbl_sort_disc">Диск</string>
     <string name="lbl_sort_asc">По зростанню</string>
     <string name="lbl_sort_name">Назва</string>
     <string name="lbl_song_detail">Переглянути властивості</string>
-    <string name="set_exclude_non_music_desc">Ігнорувати аудіо файли, які не являються музикою, наприклад, подкасти</string>
+    <string name="set_exclude_non_music_desc">Ігнорувати аудіо файли які не являються музикою, наприклад, подкасти</string>
     <string name="set_exclude_non_music">Виключити інші звукові файли</string>
     <string name="set_dirs_mode_include">Включити</string>
     <string name="fmt_lib_album_count">Завантажено альбомів: %d</string>
@@ -134,7 +134,7 @@
     <string name="lbl_ep_live">Концертний мініальбом</string>
     <string name="lbl_library_counts">Статистика бібліотеки</string>
     <string name="lng_indexing">Завантаження музичної бібліотеки…</string>
-    <string name="lng_author">Розроблено Олександром Капехартом</string>
+    <string name="lng_author">Розроблено Олександром Кейпхартом</string>
     <string name="fmt_lib_artist_count">Завантажено виконавців: %d</string>
     <string name="set_theme_auto">Автоматично</string>
     <string name="set_accent">Кольоровий акцент</string>
@@ -142,4 +142,51 @@
     <string name="set_headset_autoplay">Автовідтворення в навушниках</string>
     <string name="set_bar_action_repeat">Режим повторення</string>
     <string name="set_dirs_mode">Режим</string>
+    <string name="set_pre_amp">Попередній підсилювач ReplayGain</string>
+    <string name="set_playback_mode_album">Відтворити альбом</string>
+    <string name="set_library_song_playback_mode">При відтворенні з бібліотеки</string>
+    <string name="set_replay_gain_dynamic">Віддавати перевагу альбому, якщо він відтворюється</string>
+    <string name="lbl_state_wiped">Стан відтворення очищено</string>
+    <string name="set_black_mode_desc">Використовувати повністю чорну тему</string>
+    <string name="set_hide_collaborators_desc">Показувати лише тих виконавців, які безпосередньо зазначені в альбомі (найкраще працює в добре позначених бібліотеках)</string>
+    <string name="set_pre_amp_warning">Увага: Встановлення високих позитивних значень попереднього підсилювача може призвести до обрізки звуку в деяких піснях.</string>
+    <string name="set_detail_song_playback_mode">При відтворенні з деталей предмета</string>
+    <string name="set_rescan_desc">Очистити кеш тегів і повністю перезавантажити музичну бібліотеку (повільніше, але ефективніше)</string>
+    <string name="set_observing">Автоматичне перезавантаження</string>
+    <string name="set_observing_desc">Перезавантажувати бібліотеку при виявленні змін (потрібне постійне сповіщення)</string>
+    <string name="set_dirs_mode_exclude_desc">Музика <b>не</b> буде завантажена з вибраних папок.</string>
+    <string name="set_separators_desc">Налаштуйте символи, які позначають кілька значень тегів</string>
+    <string name="lbl_state_saved">Стан відтворення збережено</string>
+    <string name="set_replay_gain_album">За альбомом</string>
+    <string name="set_replay_gain_track">За піснею</string>
+    <string name="set_content">Зміст</string>
+    <string name="set_wipe_desc">Очистити раніше збережений стан відтворення (якщо є)</string>
+    <string name="lng_observing">Відстеження змін в музичній бібліотеці…</string>
+    <string name="set_bar_action">Власна дія для панелі відтворення</string>
+    <string name="set_pre_amp_without">Регулювання без тегів</string>
+    <string name="set_playback_mode_none">Відтворення з показаного елемента</string>
+    <string name="set_keep_shuffle_desc">Продовжити перемішування після вибору нової пісні</string>
+    <string name="set_playback_mode_artist">Відтворити виконавця</string>
+    <string name="set_playback_mode_genre">Відтворити жанр</string>
+    <string name="set_rewind_prev">Перемотати назад перед відтворенням попередньої пісні</string>
+    <string name="set_save_desc">Зберегти поточний стан відтворення</string>
+    <string name="set_rescan">Пересканувати музику</string>
+    <string name="set_separators_warning">Попередження: Використання цього параметра може призвести до того, що деякі теги будуть неправильно інтерпретовані як такі, що мають кілька значень. Ви можете вирішити це, додавши перед небажаними символами-роздільниками зворотну скісну риску (\\).</string>
+    <string name="set_notif_action">Кнопка в сповіщенні</string>
+    <string name="set_separators">Багатозначні роздільники</string>
+    <string name="set_dirs_mode_include_desc">Музика буде завантажена <b>тільки</b> з вибраних папок.</string>
+    <string name="set_restore_desc">Відновити раніше збережений стан відтворення (якщо є)</string>
+    <string name="set_pre_amp_with">Регулювання на основі тегів</string>
+    <string name="set_replay_gain">Вирівнювання гучності (ReplayGain)</string>
+    <string name="set_save_state">Зберегти стан відтворення</string>
+    <string name="set_wipe_state">Очистити стан відтворення</string>
+    <string name="set_restore_state">Відновити стан відтворення</string>
+    <string name="lbl_sort_track">Пісня</string>
+    <string name="lbl_state_restored">Стан відтворення відновлено</string>
+    <string name="lng_widget">Перегляд і керування відтворенням музики</string>
+    <string name="set_rewind_prev_desc">Перемотайте на початок пісні перед відтворенням попередньої</string>
+    <string name="set_round_mode_desc">Увімкнути закруглені кути на додаткових елементах інтерфейсу (потрібно заокруглення обкладинок альбомів)</string>
+    <string name="set_pre_amp_desc">Попередній підсилювач застосовується до наявних налаштувань під час відтворення</string>
+    <string name="set_playback_mode_songs">Відтворити всі пісні</string>
+    <string name="set_reindex_desc">Перезавантажити музичну бібліотеку, використовуючи кешовані теги, коли це можливо</string>
 </resources>
