@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.music.filesystem
 
+import android.content.ActivityNotFoundException
 import android.net.Uri
 import android.os.Bundle
 import android.os.storage.StorageManager
@@ -84,10 +85,16 @@ class MusicDirsDialog :
             val dialog = it as AlertDialog
             dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setOnClickListener {
                 logD("Opening launcher")
-                requireNotNull(openDocumentTreeLauncher) {
-                        "Document tree launcher was not available"
-                    }
-                    .launch(null)
+                val launcher = requireNotNull(openDocumentTreeLauncher) {
+                    "Document tree launcher was not available"
+                }
+
+                try {
+                    launcher.launch(null)
+                } catch (e: ActivityNotFoundException) {
+                    // User doesn't have a capable file manager.
+                    requireContext().showToast(R.string.err_no_app)
+                }
             }
         }
 
@@ -97,7 +104,6 @@ class MusicDirsDialog :
         }
 
         var dirs = Settings(context).getMusicDirs(storageManager)
-
         if (savedInstanceState != null) {
             val pendingDirs = savedInstanceState.getStringArrayList(KEY_PENDING_DIRS)
             if (pendingDirs != null) {

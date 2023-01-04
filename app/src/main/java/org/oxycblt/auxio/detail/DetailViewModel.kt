@@ -173,8 +173,8 @@ class DetailViewModel(application: Application) :
     }
 
     /**
-     * Set a new [currentSong] from it's [Music.UID]. If the [Music.UID] differs, [currentSong]
-     * and [songProperties] will be updated to align with the new [Song].
+     * Set a new [currentSong] from it's [Music.UID]. If the [Music.UID] differs, [currentSong] and
+     * [songProperties] will be updated to align with the new [Song].
      * @param uid The UID of the [Song] to load. Must be valid.
      */
     fun setSongUid(uid: Music.UID) {

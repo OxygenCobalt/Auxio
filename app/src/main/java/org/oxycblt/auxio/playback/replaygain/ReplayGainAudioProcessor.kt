@@ -191,7 +191,7 @@ class ReplayGainAudioProcessor(private val context: Context) :
             // Opus has it's own "r128_*_gain" ReplayGain specification, which requires dividing the
             // adjustment by 256 to get the gain. This is used alongside the base adjustment
             // intrinsic to the format to create the normalized adjustment. That base adjustment
-            // is already handled by the media  framework, so we just need to apply the more
+            // is already handled by the media framework, so we just need to apply the more
             // specific adjustments.
             tags.vorbis[TAG_R128_TRACK_GAIN]
                 ?.run { first().parseReplayGainAdjustment() }

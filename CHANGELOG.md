@@ -1,5 +1,11 @@
 # Changelog
 
+## dev
+
+#### What's Fixed
+- Fixed crash that would occur in music folders dialog when user does not have a working
+file manager
+
 ## 3.0.1
 
 #### What's New
