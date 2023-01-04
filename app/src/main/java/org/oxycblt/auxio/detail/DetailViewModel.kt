@@ -173,8 +173,8 @@ class DetailViewModel(application: Application) :
     }
 
     /**
-     * Set a new [currentSong] from it's [Music.UID]. If the [Music.UID] differs, a new loading
-     * process will begin and the newly-loaded [DetailSong] will be set to [currentSong].
+     * Set a new [currentSong] from it's [Music.UID]. If the [Music.UID] differs, [currentSong]
+     * and [songProperties] will be updated to align with the new [Song].
      * @param uid The UID of the [Song] to load. Must be valid.
      */
     fun setSongUid(uid: Music.UID) {
@@ -231,7 +231,8 @@ class DetailViewModel(application: Application) :
     private fun <T : Music> requireMusic(uid: Music.UID) = musicStore.library?.find<T>(uid)
 
     /**
-     * Start a new job to load a [DetailSong] based on the properties of the given [Song]'s file.
+     * Start a new job to load a given [Song]'s [SongProperties]. Result is pushed to
+     * [songProperties].
      * @param song The song to load.
      */
     private fun loadProperties(song: Song) {

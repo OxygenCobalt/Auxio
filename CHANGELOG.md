@@ -17,6 +17,10 @@
 #### What's Fixed
 - Fixed mangled multi-value ID3v2 tags when UTF-16 is used
 - Fixed crash when playing certain MP3 files
+- Detail UI will no longer crash if the music library is unavailable
+
+#### Dev/Meta
+- Add CI workflow
 
 ## 3.0.0
 

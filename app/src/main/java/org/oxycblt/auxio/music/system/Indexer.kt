@@ -416,7 +416,6 @@ class Indexer private constructor() {
         /**
          * Music loading has completed.
          * @param result The outcome of the music loading process.
-         * @see Response
          */
         data class Complete(val result: Result<MusicStore.Library>) : State()
     }

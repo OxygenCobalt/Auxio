@@ -140,9 +140,12 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
                 min.resolveDate(context)
             }
 
-        override fun compareTo(other: Range): Int {
-            return min.compareTo(other.min)
-        }
+        override fun equals(other: Any?) =
+            other is Range && min == other.min && max == other.max
+
+        override fun hashCode() = 31 * max.hashCode() + min.hashCode()
+
+        override fun compareTo(other: Range) = min.compareTo(other.min)
 
         companion object {
             /**

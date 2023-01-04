@@ -21,5 +21,5 @@
 #-renamesourcefileattribute SourceFile
 
 # Obsfucation is what proprietary software does to keep the user unaware of it's abuses.
-# Also it's easier to debug if the class names remain unmangled.
+# Also it's easier to fix issues if the stack trace symbols remain unmangled.
 -dontobfuscate

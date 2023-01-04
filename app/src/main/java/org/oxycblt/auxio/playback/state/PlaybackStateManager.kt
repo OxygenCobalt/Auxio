@@ -72,6 +72,7 @@ class PlaybackStateManager private constructor() {
     val queue
         get() = _queue
     /** The position of the currently playing item in the queue. */
+    @Volatile
     var index = -1
         private set
     /** The current [InternalPlayer] state. */
@@ -525,10 +526,9 @@ class PlaybackStateManager private constructor() {
      * @param database The [PlaybackStateDatabase] to clear te state from
      * @return If the state was cleared, false otherwise.
      */
-    suspend fun wipeState(database: PlaybackStateDatabase): Boolean {
-        logD("Wiping state")
-
-        return try {
+    suspend fun wipeState(database: PlaybackStateDatabase) =
+        try {
+            logD("Wiping state")
             withContext(Dispatchers.IO) { database.write(null) }
             true
         } catch (e: Exception) {
@@ -536,7 +536,6 @@ class PlaybackStateManager private constructor() {
             logE(e.stackTraceToString())
             false
         }
-    }
 
     /**
      * Update the playback state to align with a new [MusicStore.Library].
