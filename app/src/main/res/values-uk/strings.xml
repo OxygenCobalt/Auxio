@@ -189,4 +189,8 @@
     <string name="set_pre_amp_desc">Попередній підсилювач застосовується до наявних налаштувань під час відтворення</string>
     <string name="set_playback_mode_songs">Відтворити всі пісні</string>
     <string name="set_reindex_desc">Перезавантажити музичну бібліотеку, використовуючи кешовані теги, коли це можливо</string>
+    <string name="set_separators_slash">Скісна риска (/)</string>
+    <string name="set_separators_plus">Плюс (+)</string>
+    <string name="set_separators_comma">Кома (,)</string>
+    <string name="set_separators_semicolon">Крапка з комою (;)</string>
 </resources>
