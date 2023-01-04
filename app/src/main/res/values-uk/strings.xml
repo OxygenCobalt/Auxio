@@ -7,7 +7,7 @@
     <string name="lbl_artists">Виконавці</string>
     <string name="lbl_albums">Альбоми</string>
     <string name="lbl_songs">Треки</string>
-    <string name="lbl_all_songs">Треки</string>
+    <string name="lbl_all_songs">Всі пісні</string>
     <string name="lbl_search">Шукати</string>
     <string name="lbl_filter">Фільтр</string>
     <string name="lbl_filter_all">Усе</string>
@@ -54,4 +54,30 @@
         <item quantity="few">%d Альбомів</item>
         <item quantity="many">%d Альбомів</item>
     </plurals>
+    <string name="lbl_shuffle_selected">Перемішати вибране</string>
+    <string name="lbl_file_name">Ім\'я файлу</string>
+    <string name="lbl_format">Формат</string>
+    <string name="lbl_ok">OK</string>
+    <string name="lbl_cancel">Відміна</string>
+    <string name="lbl_save">Зберегти</string>
+    <string name="lbl_shuffle_shortcut_short">Перемішати</string>
+    <string name="lbl_shuffle_shortcut_long">Перемішати все</string>
+    <string name="lbl_soundtracks">Саундтреки</string>
+    <string name="lbl_soundtrack">Саундтрек</string>
+    <string name="lbl_equalizer">Еквалайзер</string>
+    <string name="lbl_size">Розмір</string>
+    <string name="lbl_indexer">Завантаження музики</string>
+    <string name="lbl_compilation_remix">Збірки реміксів</string>
+    <string name="lbl_bitrate">Бітрейт</string>
+    <string name="lbl_observing">Моніторинг музичної бібліотеки</string>
+    <string name="info_app_desc">Простий, раціональний музичний плеєр на Android.</string>
+    <string name="lbl_indexing">Завантаження музики</string>
+    <string name="lbl_album">Альбом</string>
+    <string name="lbl_singles">Сингли</string>
+    <string name="lbl_single">Сингл</string>
+    <string name="lbl_album_remix">Альбом реміксів</string>
+    <string name="lbl_single_remix">Сингл ремікс</string>
+    <string name="lbl_compilations">Збірки</string>
+    <string name="lbl_compilation">Збірка</string>
+    <string name="lbl_album_live">Концертний альбом</string>
 </resources>
