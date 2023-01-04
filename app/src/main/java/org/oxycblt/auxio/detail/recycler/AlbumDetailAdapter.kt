@@ -226,7 +226,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
      * @param song The new [Song] to bind.
      * @param listener A [SelectableListListener] to bind interactions to.
      */
-    fun bind(song: Song, listener: SelectableListListener) {
+    fun bind(song: Song, listener: SelectableListListener<Song>) {
         listener.bind(song, this, menuButton = binding.songMenu)
 
         binding.songTrack.apply {

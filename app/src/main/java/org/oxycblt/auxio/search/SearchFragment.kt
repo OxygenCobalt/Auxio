@@ -50,7 +50,7 @@ import org.oxycblt.auxio.util.*
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SearchFragment : ListFragment<FragmentSearchBinding>() {
+class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
     private val searchModel: SearchViewModel by androidViewModels()
     private val searchAdapter = SearchAdapter(this)
     private var imm: InputMethodManager? = null
@@ -134,26 +134,25 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
         return false
     }
 
-    override fun onRealClick(music: Music) {
-        when (music) {
+    override fun onRealClick(item: Music) {
+        when (item) {
             is Song ->
                 when (Settings(requireContext()).libPlaybackMode) {
-                    MusicMode.SONGS -> playbackModel.playFromAll(music)
-                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
-                    MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-                    MusicMode.GENRES -> playbackModel.playFromGenre(music)
+                    MusicMode.SONGS -> playbackModel.playFromAll(item)
+                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
+                    MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
+                    MusicMode.GENRES -> playbackModel.playFromGenre(item)
                 }
-            is MusicParent -> navModel.exploreNavigateTo(music)
+            is MusicParent -> navModel.exploreNavigateTo(item)
         }
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
+    override fun onOpenMenu(item: Music, anchor: View) {
         when (item) {
             is Song -> openMusicMenu(anchor, R.menu.menu_song_actions, item)
             is Album -> openMusicMenu(anchor, R.menu.menu_album_actions, item)
             is Artist -> openMusicMenu(anchor, R.menu.menu_artist_actions, item)
             is Genre -> openMusicMenu(anchor, R.menu.menu_artist_actions, item)
-            else -> logW("Unexpected datatype when opening menu: ${item::class.java}")
         }
     }
 

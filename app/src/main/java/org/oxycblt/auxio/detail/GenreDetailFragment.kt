@@ -29,7 +29,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.DetailAdapter
 import org.oxycblt.auxio.detail.recycler.GenreDetailAdapter
-import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -50,7 +49,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A [ListFragment] that shows information for a particular [Genre].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter.Listener {
+class GenreDetailFragment : ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
     // Information about what genre to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an genre.
@@ -120,26 +119,26 @@ class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter
         }
     }
 
-    override fun onRealClick(music: Music) {
-        when (music) {
-            is Artist -> navModel.exploreNavigateTo(music)
+    override fun onRealClick(item: Music) {
+        when (item) {
+            is Artist -> navModel.exploreNavigateTo(item)
             is Song ->
                 when (Settings(requireContext()).detailPlaybackMode) {
                     // When configured to play from the selected item, we already have a Genre
                     // to play from.
                     null ->
                         playbackModel.playFromGenre(
-                            music, unlikelyToBeNull(detailModel.currentGenre.value))
-                    MusicMode.SONGS -> playbackModel.playFromAll(music)
-                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
-                    MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-                    MusicMode.GENRES -> playbackModel.playFromGenre(music)
+                            item, unlikelyToBeNull(detailModel.currentGenre.value))
+                    MusicMode.SONGS -> playbackModel.playFromAll(item)
+                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
+                    MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
+                    MusicMode.GENRES -> playbackModel.playFromGenre(item)
                 }
-            else -> error("Unexpected datatype: ${music::class.simpleName}")
+            else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
+    override fun onOpenMenu(item: Music, anchor: View) {
         when (item) {
             is Artist -> openMusicMenu(anchor, R.menu.menu_artist_actions, item)
             is Song -> openMusicMenu(anchor, R.menu.menu_song_actions, item)
@@ -184,17 +183,15 @@ class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        var item: Item? = null
-
+        var playingMusic: Music? = null
         if (parent is Artist) {
-            item = parent
+            playingMusic = parent
         }
-
+        // Prefer songs that might be playing from this genre.
         if (parent is Genre && parent.uid == unlikelyToBeNull(detailModel.currentGenre.value).uid) {
-            item = song
+            playingMusic = song
         }
-
-        detailAdapter.setPlayingItem(item, isPlaying)
+        detailAdapter.setPlayingItem(playingMusic, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {

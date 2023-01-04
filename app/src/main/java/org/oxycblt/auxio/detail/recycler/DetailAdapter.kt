@@ -30,6 +30,7 @@ import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.recycler.*
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
@@ -88,7 +89,7 @@ abstract class DetailAdapter(
     }
 
     /** An extended [SelectableListListener] for [DetailAdapter] implementations. */
-    interface Listener : SelectableListListener {
+    interface Listener : SelectableListListener<Music> {
         // TODO: Split off into sub-listeners if a collapsing toolbar is implemented.
         /**
          * Called when the play button in a detail header is pressed, requesting that the current

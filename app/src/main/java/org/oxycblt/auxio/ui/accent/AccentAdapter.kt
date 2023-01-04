@@ -33,7 +33,7 @@ import org.oxycblt.auxio.util.inflater
  * @param listener A [ClickableListListener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AccentAdapter(private val listener: ClickableListListener) :
+class AccentAdapter(private val listener: ClickableListListener<Accent>) :
     RecyclerView.Adapter<AccentViewHolder>() {
     /** The currently selected [Accent]. */
     var selectedAccent: Accent? = null
@@ -93,7 +93,7 @@ class AccentViewHolder private constructor(private val binding: ItemAccentBindin
      * @param accent The new [Accent] to bind.
      * @param listener A [ClickableListListener] to bind interactions to.
      */
-    fun bind(accent: Accent, listener: ClickableListListener) {
+    fun bind(accent: Accent, listener: ClickableListListener<Accent>) {
         listener.bind(accent, this, binding.accent)
         binding.accent.apply {
             // Add a Tooltip based on the content description so that the purpose of this

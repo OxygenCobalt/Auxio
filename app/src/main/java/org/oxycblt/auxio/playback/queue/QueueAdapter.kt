@@ -41,7 +41,7 @@ import org.oxycblt.auxio.util.inflater
  * @param listener A [EditableListListener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class QueueAdapter(private val listener: EditableListListener) :
+class QueueAdapter(private val listener: EditableListListener<Song>) :
     RecyclerView.Adapter<QueueSongViewHolder>() {
     private var differ = SyncListDiffer(this, QueueSongViewHolder.DIFF_CALLBACK)
     // Since PlayingIndicator adapter relies on an item value, we cannot use it for this
@@ -178,7 +178,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
      * @param listener A [EditableListListener] to bind interactions to.
      */
     @SuppressLint("ClickableViewAccessibility")
-    fun bind(song: Song, listener: EditableListListener) {
+    fun bind(song: Song, listener: EditableListListener<Song>) {
         listener.bind(song, this, bodyView, binding.songDragHandle)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.resolveName(binding.context)

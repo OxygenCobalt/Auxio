@@ -32,7 +32,6 @@ import org.oxycblt.auxio.list.recycler.GenreViewHolder
 import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SyncListDiffer
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Sort
@@ -44,7 +43,7 @@ import org.oxycblt.auxio.util.collectImmediately
  * @author Alexander Capehart (OxygenCobalt)
  */
 class GenreListFragment :
-    ListFragment<FragmentHomeListBinding>(),
+    ListFragment<Genre, FragmentHomeListBinding>(),
     FastScrollRecyclerView.PopupProvider,
     FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
@@ -99,13 +98,11 @@ class GenreListFragment :
         homeModel.setFastScrolling(isFastScrolling)
     }
 
-    override fun onRealClick(music: Music) {
-        check(music is Genre) { "Unexpected datatype: ${music::class.java}" }
-        navModel.exploreNavigateTo(music)
+    override fun onRealClick(item: Genre) {
+        navModel.exploreNavigateTo(item)
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
-        check(item is Genre) { "Unexpected datatype: ${item::class.java}" }
+    override fun onOpenMenu(item: Genre, anchor: View) {
         openMusicMenu(anchor, R.menu.menu_artist_actions, item)
     }
 
@@ -118,7 +115,7 @@ class GenreListFragment :
      * A [SelectionIndicatorAdapter] that shows a list of [Genre]s using [GenreViewHolder].
      * @param listener An [SelectableListListener] to bind interactions to.
      */
-    private class GenreAdapter(private val listener: SelectableListListener) :
+    private class GenreAdapter(private val listener: SelectableListListener<Genre>) :
         SelectionIndicatorAdapter<GenreViewHolder>() {
         private val differ = SyncListDiffer(this, GenreViewHolder.DIFF_CALLBACK)
 

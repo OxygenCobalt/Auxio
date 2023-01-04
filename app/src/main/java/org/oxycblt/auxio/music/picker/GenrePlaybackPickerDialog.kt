@@ -27,20 +27,21 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.list.ClickableListListener
-import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.requireIs
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A picker [ViewBindingDialogFragment] intended for when [Genre] playback is ambiguous.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class GenrePlaybackPickerDialog :
-    ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener {
+    ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<Genre> {
     private val pickerModel: PickerViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     // Information about what Song to show choices for is initially within the navigation arguments
@@ -75,11 +76,9 @@ class GenrePlaybackPickerDialog :
         binding.pickerRecycler.adapter = null
     }
 
-    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
+    override fun onClick(item: Genre, viewHolder: RecyclerView.ViewHolder) {
         // User made a choice, play the given song from that genre.
-        check(item is Genre) { "Unexpected datatype: ${item::class.simpleName}" }
-        val song = pickerModel.currentItem.value
-        check(song is Song) { "Unexpected datatype: ${item::class.simpleName}" }
+        val song = requireIs<Song>(unlikelyToBeNull(pickerModel.currentItem.value))
         playbackModel.playFromGenre(song, item)
     }
 }

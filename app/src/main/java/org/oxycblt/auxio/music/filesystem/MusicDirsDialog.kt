@@ -85,9 +85,10 @@ class MusicDirsDialog :
             val dialog = it as AlertDialog
             dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setOnClickListener {
                 logD("Opening launcher")
-                val launcher = requireNotNull(openDocumentTreeLauncher) {
-                    "Document tree launcher was not available"
-                }
+                val launcher =
+                    requireNotNull(openDocumentTreeLauncher) {
+                        "Document tree launcher was not available"
+                    }
 
                 try {
                     launcher.launch(null)

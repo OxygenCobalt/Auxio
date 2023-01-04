@@ -33,7 +33,6 @@ import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.list.recycler.SyncListDiffer
-import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
@@ -48,7 +47,7 @@ import org.oxycblt.auxio.util.collectImmediately
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SongListFragment :
-    ListFragment<FragmentHomeListBinding>(),
+    ListFragment<Song, FragmentHomeListBinding>(),
     FastScrollRecyclerView.PopupProvider,
     FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
@@ -130,18 +129,16 @@ class SongListFragment :
         homeModel.setFastScrolling(isFastScrolling)
     }
 
-    override fun onRealClick(music: Music) {
-        check(music is Song) { "Unexpected datatype: ${music::class.java}" }
+    override fun onRealClick(item: Song) {
         when (Settings(requireContext()).libPlaybackMode) {
-            MusicMode.SONGS -> playbackModel.playFromAll(music)
-            MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
-            MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-            MusicMode.GENRES -> playbackModel.playFromGenre(music)
+            MusicMode.SONGS -> playbackModel.playFromAll(item)
+            MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
+            MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
+            MusicMode.GENRES -> playbackModel.playFromGenre(item)
         }
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
-        check(item is Song) { "Unexpected datatype: ${item::class.java}" }
+    override fun onOpenMenu(item: Song, anchor: View) {
         openMusicMenu(anchor, R.menu.menu_song_actions, item)
     }
 
@@ -158,7 +155,7 @@ class SongListFragment :
      * A [SelectionIndicatorAdapter] that shows a list of [Song]s using [SongViewHolder].
      * @param listener An [SelectableListListener] to bind interactions to.
      */
-    private class SongAdapter(private val listener: SelectableListListener) :
+    private class SongAdapter(private val listener: SelectableListListener<Song>) :
         SelectionIndicatorAdapter<SongViewHolder>() {
         private val differ = SyncListDiffer(this, SongViewHolder.DIFF_CALLBACK)
 

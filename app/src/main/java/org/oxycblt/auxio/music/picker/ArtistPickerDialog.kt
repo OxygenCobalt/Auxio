@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.list.ClickableListListener
-import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
@@ -38,7 +37,7 @@ import org.oxycblt.auxio.util.collectImmediately
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class ArtistPickerDialog :
-    ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener {
+    ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<Artist> {
     protected val pickerModel: PickerViewModel by viewModels()
     // Okay to leak this since the Listener will not be called until after initialization.
     private val artistAdapter = ArtistChoiceAdapter(@Suppress("LeakingThis") this)
@@ -68,7 +67,7 @@ abstract class ArtistPickerDialog :
         binding.pickerRecycler.adapter = null
     }
 
-    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
+    override fun onClick(item: Artist, viewHolder: RecyclerView.ViewHolder) {
         findNavController().navigateUp()
     }
 }

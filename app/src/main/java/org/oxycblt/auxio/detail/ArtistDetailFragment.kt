@@ -29,7 +29,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
 import org.oxycblt.auxio.detail.recycler.DetailAdapter
-import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -49,7 +48,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A [ListFragment] that shows information about an [Artist].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter.Listener {
+class ArtistDetailFragment : ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
     // Information about what artist to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an artist.
@@ -121,27 +120,27 @@ class ArtistDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapte
         }
     }
 
-    override fun onRealClick(music: Music) {
-        when (music) {
+    override fun onRealClick(item: Music) {
+        when (item) {
             is Song -> {
                 when (Settings(requireContext()).detailPlaybackMode) {
                     // When configured to play from the selected item, we already have an Artist
                     // to play from.
                     null ->
                         playbackModel.playFromArtist(
-                            music, unlikelyToBeNull(detailModel.currentArtist.value))
-                    MusicMode.SONGS -> playbackModel.playFromAll(music)
-                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
-                    MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-                    MusicMode.GENRES -> playbackModel.playFromGenre(music)
+                            item, unlikelyToBeNull(detailModel.currentArtist.value))
+                    MusicMode.SONGS -> playbackModel.playFromAll(item)
+                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
+                    MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
+                    MusicMode.GENRES -> playbackModel.playFromGenre(item)
                 }
             }
-            is Album -> navModel.exploreNavigateTo(music)
-            else -> error("Unexpected datatype: ${music::class.simpleName}")
+            is Album -> navModel.exploreNavigateTo(item)
+            else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
+    override fun onOpenMenu(item: Music, anchor: View) {
         when (item) {
             is Song -> openMusicMenu(anchor, R.menu.menu_artist_song_actions, item)
             is Album -> openMusicMenu(anchor, R.menu.menu_artist_album_actions, item)

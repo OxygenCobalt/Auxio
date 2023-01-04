@@ -20,6 +20,7 @@ package org.oxycblt.auxio.list.recycler
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -31,7 +32,7 @@ abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerV
     // - The currently playing item, which is usually marked as "selected" and becomes accented.
     // - Whether playback is ongoing, which corresponds to whether the item's ImageGroup is
     // marked as "playing" or not.
-    private var currentItem: Item? = null
+    private var currentMusic: Music? = null
     private var isPlaying = false
 
     /**
@@ -44,7 +45,7 @@ abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerV
     override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
         // Only try to update the playing indicator if the ViewHolder supports it
         if (holder is ViewHolder) {
-            holder.updatePlayingIndicator(currentList[position] == currentItem, isPlaying)
+            holder.updatePlayingIndicator(currentList[position] == currentMusic, isPlaying)
         }
 
         if (payloads.isEmpty()) {
@@ -55,14 +56,14 @@ abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerV
     }
     /**
      * Update the currently playing item in the list.
-     * @param item The item currently being played, or null if it is not being played.
+     * @param music The [Music] currently being played, or null if it is not being played.
      * @param isPlaying Whether playback is ongoing or paused.
      */
-    fun setPlayingItem(item: Item?, isPlaying: Boolean) {
+    fun setPlayingItem(music: Music?, isPlaying: Boolean) {
         var updatedItem = false
-        if (currentItem != item) {
-            val oldItem = currentItem
-            currentItem = item
+        if (currentMusic != music) {
+            val oldItem = currentMusic
+            currentMusic = music
 
             // Remove the playing indicator from the old item
             if (oldItem != null) {
@@ -75,8 +76,8 @@ abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerV
             }
 
             // Enable the playing indicator on the new item
-            if (item != null) {
-                val pos = currentList.indexOfFirst { it == item }
+            if (music != null) {
+                val pos = currentList.indexOfFirst { it == music }
                 if (pos > -1) {
                     notifyItemChanged(pos, PAYLOAD_PLAYING_INDICATOR_CHANGED)
                 } else {
@@ -93,8 +94,8 @@ abstract class PlayingIndicatorAdapter<VH : RecyclerView.ViewHolder> : RecyclerV
             // We may have already called notifyItemChanged before when checking
             // if the item was being played, so in that case we don't need to
             // update again here.
-            if (!updatedItem && item != null) {
-                val pos = currentList.indexOfFirst { it == item }
+            if (!updatedItem && music != null) {
+                val pos = currentList.indexOfFirst { it == music }
                 if (pos > -1) {
                     notifyItemChanged(pos, PAYLOAD_PLAYING_INDICATOR_CHANGED)
                 } else {

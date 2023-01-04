@@ -127,11 +127,9 @@ class ReplayGainAudioProcessor(private val context: Context) :
                         // User wants track gain to be preferred. Default to album gain only if
                         // there is no track gain.
                         ReplayGainMode.TRACK -> gain.track == 0f
-
                         // User wants album gain to be preferred. Default to track gain only if
                         // here is no album gain.
                         ReplayGainMode.ALBUM -> gain.album != 0f
-
                         // User wants album gain to be used when in an album, track gain otherwise.
                         ReplayGainMode.DYNAMIC ->
                             playbackManager.parent is Album &&

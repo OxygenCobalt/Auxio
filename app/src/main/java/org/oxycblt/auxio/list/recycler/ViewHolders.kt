@@ -26,10 +26,7 @@ import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.SelectableListListener
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
@@ -45,7 +42,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
      * @param song The new [Song] to bind.
      * @param listener An [SelectableListListener] to bind interactions to.
      */
-    fun bind(song: Song, listener: SelectableListListener) {
+    fun bind(song: Song, listener: SelectableListListener<Song>) {
         listener.bind(song, this, menuButton = binding.songMenu)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.resolveName(binding.context)
@@ -92,7 +89,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
      * @param album The new [Album] to bind.
      * @param listener An [SelectableListListener] to bind interactions to.
      */
-    fun bind(album: Album, listener: SelectableListListener) {
+    fun bind(album: Album, listener: SelectableListListener<Album>) {
         listener.bind(album, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(album)
         binding.parentName.text = album.resolveName(binding.context)
@@ -141,7 +138,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
      * @param artist The new [Artist] to bind.
      * @param listener An [SelectableListListener] to bind interactions to.
      */
-    fun bind(artist: Artist, listener: SelectableListListener) {
+    fun bind(artist: Artist, listener: SelectableListListener<Artist>) {
         listener.bind(artist, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(artist)
         binding.parentName.text = artist.resolveName(binding.context)
@@ -200,7 +197,7 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
      * @param genre The new [Genre] to bind.
      * @param listener An [SelectableListListener] to bind interactions to.
      */
-    fun bind(genre: Genre, listener: SelectableListListener) {
+    fun bind(genre: Genre, listener: SelectableListListener<Genre>) {
         listener.bind(genre, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(genre)
         binding.parentName.text = genre.resolveName(binding.context)

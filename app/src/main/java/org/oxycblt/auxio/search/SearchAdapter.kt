@@ -22,17 +22,14 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.recycler.*
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
 
 /**
  * An adapter that displays search results.
  * @param listener An [SelectableListListener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SearchAdapter(private val listener: SelectableListListener) :
+class SearchAdapter(private val listener: SelectableListListener<Music>) :
     SelectionIndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
     private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
 
