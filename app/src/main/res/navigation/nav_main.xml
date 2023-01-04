@@ -106,7 +106,7 @@
         tools:layout="@layout/dialog_pre_amp" />
     <dialog
         android:id="@+id/music_dirs_dialog"
-        android:name="org.oxycblt.auxio.music.filesystem.MusicDirsDialog"
+        android:name="org.oxycblt.auxio.music.storage.MusicDirsDialog"
         android:label="music_dirs_dialog"
         tools:layout="@layout/dialog_music_dirs" />
     <dialog

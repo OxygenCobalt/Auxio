@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.filesystem
+package org.oxycblt.auxio.music.storage
 
 import android.content.ActivityNotFoundException
 import android.net.Uri

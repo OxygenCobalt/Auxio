@@ -20,7 +20,7 @@ package org.oxycblt.auxio.detail
 import androidx.annotation.StringRes
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.filesystem.MimeType
+import org.oxycblt.auxio.music.storage.MimeType
 
 /**
  * A header variation that displays a button to open a sort menu.

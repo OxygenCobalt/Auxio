@@ -39,7 +39,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.music.filesystem.MimeType
+import org.oxycblt.auxio.music.storage.MimeType
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.*
 
