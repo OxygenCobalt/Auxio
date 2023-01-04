@@ -147,7 +147,7 @@
     <string name="cdc_ogg">Áudio Ogg</string>
     <string name="cdc_mka">Áudio Matroska</string>
     <string name="cdc_aac">Codificação de Audio Avançada (AAC)</string>
-    <string name="cdc_flac">Codec gratuito de áudio sem perdas (FLAC)</string>
+    <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="desc_queue_handle">Mover esta música da fila</string>
     <string name="clr_dynamic">Dinâmico</string>
     <string name="fmt_lib_total_duration">Duração total: %s</string>
