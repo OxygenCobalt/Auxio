@@ -37,7 +37,6 @@ import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
@@ -62,10 +61,8 @@ class MainFragment :
     private val selectionModel: SelectionViewModel by activityViewModels()
     private val callback = DynamicBackPressedCallback()
     private var lastInsets: WindowInsets? = null
+    private var elevationNormal = 0f
     private var initialNavDestinationChange = true
-    private val elevationNormal: Float by lifecycleObject { binding ->
-        binding.context.getDimen(R.dimen.elevation_normal)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +74,8 @@ class MainFragment :
 
     override fun onBindingCreated(binding: FragmentMainBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
+
+        elevationNormal = binding.context.getDimen(R.dimen.elevation_normal)
 
         // --- UI SETUP ---
         val context = requireActivity()
@@ -217,7 +216,7 @@ class MainFragment :
             lastInsets?.let { translationY = it.systemBarInsetsCompat.top * halfOutRatio }
         }
 
-        // Prevent interactions when the playback panell fully fades out.
+        // Prevent interactions when the playback panel fully fades out.
         binding.playbackPanelFragment.isInvisible = binding.playbackPanelFragment.alpha == 0f
 
         binding.queueSheet.apply {

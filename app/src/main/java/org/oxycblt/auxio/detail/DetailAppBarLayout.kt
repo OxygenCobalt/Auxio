@@ -31,13 +31,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import java.lang.reflect.Field
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.AuxioAppBarLayout
+import org.oxycblt.auxio.ui.CoordinatorAppBarLayout
 import org.oxycblt.auxio.util.getInteger
 import org.oxycblt.auxio.util.lazyReflectedField
 
 /**
- * An [AuxioAppBarLayout] that displays the title of a hidden [Toolbar] when the scrolling view goes
- * beyond it's first item.
+ * An [CoordinatorAppBarLayout] that displays the title of a hidden [Toolbar] when the scrolling
+ * view goes beyond it's first item.
  *
  * This is intended for the detail views, in which the first item is the album/artist/genre header,
  * and thus scrolling past them should make the toolbar show the name in order to give context on
@@ -51,7 +51,7 @@ import org.oxycblt.auxio.util.lazyReflectedField
 class DetailAppBarLayout
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
-    AuxioAppBarLayout(context, attrs, defStyleAttr) {
+    CoordinatorAppBarLayout(context, attrs, defStyleAttr) {
     private var titleView: TextView? = null
     private var recycler: RecyclerView? = null
 
@@ -166,8 +166,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
     }
 
-    companion object {
-        private val TOOLBAR_TITLE_TEXT_FIELD: Field by
-            lazyReflectedField(Toolbar::class, "mTitleTextView")
+    private companion object {
+        val TOOLBAR_TITLE_TEXT_FIELD: Field by lazyReflectedField(Toolbar::class, "mTitleTextView")
     }
 }

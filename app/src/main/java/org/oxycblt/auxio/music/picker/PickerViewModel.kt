@@ -28,12 +28,13 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * contain the music themselves and then exit if the library changes.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class PickerViewModel : ViewModel(), MusicStore.Callback {
+class PickerViewModel : ViewModel(), MusicStore.Listener {
     private val musicStore = MusicStore.getInstance()
 
     private val _currentItem = MutableStateFlow<Music?>(null)
     /** The current item whose artists should be shown in the picker. Null if there is no item. */
-    val currentItem: StateFlow<Music?> get() = _currentItem
+    val currentItem: StateFlow<Music?>
+        get() = _currentItem
 
     private val _artistChoices = MutableStateFlow<List<Artist>>(listOf())
     /** The current [Artist] choices. Empty if no item is shown in the picker. */
@@ -46,7 +47,7 @@ class PickerViewModel : ViewModel(), MusicStore.Callback {
         get() = _genreChoices
 
     override fun onCleared() {
-        musicStore.removeCallback(this)
+        musicStore.removeListener(this)
     }
 
     override fun onLibraryChanged(library: MusicStore.Library?) {
@@ -75,5 +76,4 @@ class PickerViewModel : ViewModel(), MusicStore.Callback {
             else -> {}
         }
     }
-
 }

@@ -35,7 +35,7 @@ import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [Song]. Use [new] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [Song]. Use [from] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SongViewHolder private constructor(private val binding: ItemSongBinding) :
@@ -46,7 +46,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     fun bind(song: Song, listener: SelectableListListener) {
-        listener.bind(this, song, binding.songMenu)
+        listener.bind(song, this, menuButton = binding.songMenu)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.resolveName(binding.context)
         binding.songInfo.text = song.resolveArtistContents(binding.context)
@@ -70,7 +70,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) = SongViewHolder(ItemSongBinding.inflate(parent.context.inflater))
+        fun from(parent: View) = SongViewHolder(ItemSongBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
@@ -82,7 +82,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [Album]. Use [new] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [Album]. Use [from] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumViewHolder private constructor(private val binding: ItemParentBinding) :
@@ -93,7 +93,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     fun bind(album: Album, listener: SelectableListListener) {
-        listener.bind(this, album, binding.parentMenu)
+        listener.bind(album, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(album)
         binding.parentName.text = album.resolveName(binding.context)
         binding.parentInfo.text = album.resolveArtistContents(binding.context)
@@ -117,7 +117,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) = AlbumViewHolder(ItemParentBinding.inflate(parent.context.inflater))
+        fun from(parent: View) = AlbumViewHolder(ItemParentBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
@@ -131,7 +131,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [Artist]. Use [new] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [Artist]. Use [from] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class ArtistViewHolder private constructor(private val binding: ItemParentBinding) :
@@ -142,7 +142,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     fun bind(artist: Artist, listener: SelectableListListener) {
-        listener.bind(this, artist, binding.parentMenu)
+        listener.bind(artist, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(artist)
         binding.parentName.text = artist.resolveName(binding.context)
         binding.parentInfo.text =
@@ -175,7 +175,8 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) = ArtistViewHolder(ItemParentBinding.inflate(parent.context.inflater))
+        fun from(parent: View) =
+            ArtistViewHolder(ItemParentBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
@@ -189,7 +190,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [Genre]. Use [new] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [Genre]. Use [from] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class GenreViewHolder private constructor(private val binding: ItemParentBinding) :
@@ -200,7 +201,7 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     fun bind(genre: Genre, listener: SelectableListListener) {
-        listener.bind(this, genre, binding.parentMenu)
+        listener.bind(genre, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(genre)
         binding.parentName.text = genre.resolveName(binding.context)
         binding.parentInfo.text =
@@ -228,7 +229,7 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) = GenreViewHolder(ItemParentBinding.inflate(parent.context.inflater))
+        fun from(parent: View) = GenreViewHolder(ItemParentBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
@@ -240,7 +241,7 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [Header]. Use [new] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [Header]. Use [from] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class HeaderViewHolder private constructor(private val binding: ItemHeaderBinding) :
@@ -262,7 +263,8 @@ class HeaderViewHolder private constructor(private val binding: ItemHeaderBindin
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) = HeaderViewHolder(ItemHeaderBinding.inflate(parent.context.inflater))
+        fun from(parent: View) =
+            HeaderViewHolder(ItemHeaderBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =

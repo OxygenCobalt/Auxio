@@ -26,6 +26,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSongDetailBinding
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
@@ -53,10 +54,10 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
         super.onBindingCreated(binding, savedInstanceState)
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setSongUid(args.itemUid)
-        collectImmediately(detailModel.currentSong, ::updateSong)
+        collectImmediately(detailModel.currentSong, detailModel.songProperties, ::updateSong)
     }
 
-    private fun updateSong(song: DetailSong?) {
+    private fun updateSong(song: Song?, properties: SongProperties?) {
         if (song == null) {
             // Song we were showing no longer exists.
             findNavController().navigateUp()
@@ -64,28 +65,28 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
         }
 
         val binding = requireBinding()
-        if (song.properties != null) {
+        if (properties != null) {
             // Finished loading Song properties, populate and show the list of Song information.
             binding.detailLoading.isInvisible = true
             binding.detailContainer.isInvisible = false
 
             val context = requireContext()
-            binding.detailFileName.setText(song.song.path.name)
-            binding.detailRelativeDir.setText(song.song.path.parent.resolveName(context))
-            binding.detailFormat.setText(song.properties.resolvedMimeType.resolveName(context))
-            binding.detailSize.setText(Formatter.formatFileSize(context, song.song.size))
-            binding.detailDuration.setText(song.song.durationMs.formatDurationMs(true))
+            binding.detailFileName.setText(song.path.name)
+            binding.detailRelativeDir.setText(song.path.parent.resolveName(context))
+            binding.detailFormat.setText(properties.resolvedMimeType.resolveName(context))
+            binding.detailSize.setText(Formatter.formatFileSize(context, song.size))
+            binding.detailDuration.setText(song.durationMs.formatDurationMs(true))
 
-            if (song.properties.bitrateKbps != null) {
+            if (properties.bitrateKbps != null) {
                 binding.detailBitrate.setText(
-                    getString(R.string.fmt_bitrate, song.properties.bitrateKbps))
+                    getString(R.string.fmt_bitrate, properties.bitrateKbps))
             } else {
                 binding.detailBitrate.setText(R.string.def_bitrate)
             }
 
-            if (song.properties.sampleRateHz != null) {
+            if (properties.sampleRateHz != null) {
                 binding.detailSampleRate.setText(
-                    getString(R.string.fmt_sample_rate, song.properties.sampleRateHz))
+                    getString(R.string.fmt_sample_rate, properties.sampleRateHz))
             } else {
                 binding.detailSampleRate.setText(R.string.def_sample_rate)
             }

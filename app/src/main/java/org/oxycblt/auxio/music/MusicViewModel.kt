@@ -26,7 +26,7 @@ import org.oxycblt.auxio.music.system.Indexer
  * A [ViewModel] providing data specific to the music loading process.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MusicViewModel : ViewModel(), Indexer.Callback {
+class MusicViewModel : ViewModel(), Indexer.Listener {
     private val indexer = Indexer.getInstance()
 
     private val _indexerState = MutableStateFlow<Indexer.State?>(null)
@@ -39,18 +39,18 @@ class MusicViewModel : ViewModel(), Indexer.Callback {
         get() = _statistics
 
     init {
-        indexer.registerCallback(this)
+        indexer.registerListener(this)
     }
 
     override fun onCleared() {
-        indexer.unregisterCallback(this)
+        indexer.unregisterListener(this)
     }
 
     override fun onIndexerStateChanged(state: Indexer.State?) {
         _indexerState.value = state
-        if (state is Indexer.State.Complete && state.response is Indexer.Response.Ok) {
+        if (state is Indexer.State.Complete) {
             // New state is a completed library, update the statistics values.
-            val library = state.response.library
+            val library = state.result.getOrNull() ?: return
             _statistics.value =
                 Statistics(
                     library.songs.size,

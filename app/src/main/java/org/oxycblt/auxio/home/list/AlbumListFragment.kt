@@ -94,8 +94,8 @@ class AlbumListFragment :
             is Sort.Mode.ByArtist ->
                 album.artists[0].collationKey?.run { sourceString.first().uppercase() }
 
-            // Year -> Use Full Year
-            is Sort.Mode.ByDate -> album.date?.resolveDate(requireContext())
+            // Date -> Use minimum date (Maximum dates are not sorted by, so showing them is odd)
+            is Sort.Mode.ByDate -> album.dates?.run { min.resolveDate(requireContext()) }
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> album.durationMs.formatDurationMs(false)
@@ -152,7 +152,7 @@ class AlbumListFragment :
             get() = differ.currentList
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            AlbumViewHolder.new(parent)
+            AlbumViewHolder.from(parent)
 
         override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
             holder.bind(differ.currentList[position], listener)

@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.home.tabs
 
+import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.util.logE
 
@@ -25,7 +26,7 @@ import org.oxycblt.auxio.util.logE
  * @param mode The type of list in the home view this instance corresponds to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-sealed class Tab(open val mode: MusicMode) {
+sealed class Tab(open val mode: MusicMode) : Item {
     /**
      * A visible tab. This will be visible in the home and tab configuration views.
      * @param mode The type of list in the home view this instance corresponds to.

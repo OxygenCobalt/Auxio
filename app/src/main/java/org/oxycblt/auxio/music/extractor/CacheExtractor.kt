@@ -23,7 +23,10 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
+import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.parsing.correctWhitespace
+import org.oxycblt.auxio.music.parsing.splitEscaped
 import org.oxycblt.auxio.util.*
 
 /**
@@ -278,7 +281,7 @@ private class CacheDatabase(context: Context) :
 
                 raw.track = cursor.getIntOrNull(trackIndex)
                 raw.disc = cursor.getIntOrNull(discIndex)
-                raw.date = cursor.getStringOrNull(dateIndex)?.parseTimestamp()
+                raw.date = cursor.getStringOrNull(dateIndex)?.let(Date::from)
 
                 raw.albumMusicBrainzId = cursor.getStringOrNull(albumMusicBrainzIdIndex)
                 raw.albumName = cursor.getString(albumNameIndex)
@@ -387,8 +390,7 @@ private class CacheDatabase(context: Context) :
      * @return A list of strings corresponding to the delimited values present within the original
      * string. Escaped delimiters are converted back into their normal forms.
      */
-    private fun String.parseSQLMultiValue() =
-        splitEscaped { it == ';' }
+    private fun String.parseSQLMultiValue() = splitEscaped { it == ';' }.correctWhitespace()
 
     /** Defines the columns used in this database. */
     private object Columns {

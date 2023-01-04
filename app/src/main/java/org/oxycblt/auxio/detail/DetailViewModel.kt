@@ -39,7 +39,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.music.storage.MimeType
+import org.oxycblt.auxio.music.filesystem.MimeType
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.*
 
@@ -51,7 +51,7 @@ import org.oxycblt.auxio.util.*
  * @author Alexander Capehart (OxygenCobalt)
  */
 class DetailViewModel(application: Application) :
-    AndroidViewModel(application), MusicStore.Callback {
+    AndroidViewModel(application), MusicStore.Listener {
     private val musicStore = MusicStore.getInstance()
     private val settings = Settings(application)
 
@@ -59,14 +59,14 @@ class DetailViewModel(application: Application) :
 
     // --- SONG ---
 
-    private val _currentSong = MutableStateFlow<DetailSong?>(null)
-    /**
-     * The current [DetailSong] to display. Null if there is nothing to show.
-     *
-     * TODO: De-couple Song and Properties?
-     */
-    val currentSong: StateFlow<DetailSong?>
+    private val _currentSong = MutableStateFlow<Song?>(null)
+    /** The current [Song] to display. Null if there is nothing to show. */
+    val currentSong: StateFlow<Song?>
         get() = _currentSong
+
+    private val _songProperties = MutableStateFlow<SongProperties?>(null)
+    /** The [SongProperties] of the currently shown [Song]. Null if not loaded yet. */
+    val songProperties: StateFlow<SongProperties?> = _songProperties
 
     // --- ALBUM ---
 
@@ -130,11 +130,11 @@ class DetailViewModel(application: Application) :
         }
 
     init {
-        musicStore.addCallback(this)
+        musicStore.addListener(this)
     }
 
     override fun onCleared() {
-        musicStore.removeCallback(this)
+        musicStore.removeListener(this)
     }
 
     override fun onLibraryChanged(library: MusicStore.Library?) {
@@ -149,13 +149,8 @@ class DetailViewModel(application: Application) :
 
         val song = currentSong.value
         if (song != null) {
-            val newSong = library.sanitize(song.song)
-            if (newSong != null) {
-                loadDetailSong(newSong)
-            } else {
-                _currentSong.value = null
-            }
-            logD("Updated song to $newSong")
+            _currentSong.value = library.sanitize(song)?.also(::loadProperties)
+            logD("Updated song to ${currentSong.value}")
         }
 
         val album = currentAlbum.value
@@ -178,17 +173,17 @@ class DetailViewModel(application: Application) :
     }
 
     /**
-     * Set a new [currentSong] from it's [Music.UID]. If the [Music.UID] differs, a new loading
-     * process will begin and the newly-loaded [DetailSong] will be set to [currentSong].
+     * Set a new [currentSong] from it's [Music.UID]. If the [Music.UID] differs, [currentSong]
+     * and [songProperties] will be updated to align with the new [Song].
      * @param uid The UID of the [Song] to load. Must be valid.
      */
     fun setSongUid(uid: Music.UID) {
-        if (_currentSong.value?.run { song.uid } == uid) {
+        if (_currentSong.value?.uid == uid) {
             // Nothing to do.
             return
         }
         logD("Opening Song [uid: $uid]")
-        loadDetailSong(requireMusic(uid))
+        _currentSong.value = requireMusic<Song>(uid)?.also(::loadProperties)
     }
 
     /**
@@ -202,7 +197,7 @@ class DetailViewModel(application: Application) :
             return
         }
         logD("Opening Album [uid: $uid]")
-        _currentAlbum.value = requireMusic<Album>(uid).also { refreshAlbumList(it) }
+        _currentAlbum.value = requireMusic<Album>(uid)?.also(::refreshAlbumList)
     }
 
     /**
@@ -216,7 +211,7 @@ class DetailViewModel(application: Application) :
             return
         }
         logD("Opening Artist [uid: $uid]")
-        _currentArtist.value = requireMusic<Artist>(uid).also { refreshArtistList(it) }
+        _currentArtist.value = requireMusic<Artist>(uid)?.also(::refreshArtistList)
     }
 
     /**
@@ -230,29 +225,29 @@ class DetailViewModel(application: Application) :
             return
         }
         logD("Opening Genre [uid: $uid]")
-        _currentGenre.value = requireMusic<Genre>(uid).also { refreshGenreList(it) }
+        _currentGenre.value = requireMusic<Genre>(uid)?.also(::refreshGenreList)
     }
 
-    private fun <T : Music> requireMusic(uid: Music.UID): T =
-        requireNotNull(unlikelyToBeNull(musicStore.library).find(uid)) { "Invalid id provided" }
+    private fun <T : Music> requireMusic(uid: Music.UID) = musicStore.library?.find<T>(uid)
 
     /**
-     * Start a new job to load a [DetailSong] based on the properties of the given [Song]'s file.
+     * Start a new job to load a given [Song]'s [SongProperties]. Result is pushed to
+     * [songProperties].
      * @param song The song to load.
      */
-    private fun loadDetailSong(song: Song) {
+    private fun loadProperties(song: Song) {
         // Clear any previous job in order to avoid stale data from appearing in the UI.
         currentSongJob?.cancel()
-        _currentSong.value = DetailSong(song, null)
+        _songProperties.value = null
         currentSongJob =
             viewModelScope.launch(Dispatchers.IO) {
-                val info = loadProperties(song)
+                val properties = this@DetailViewModel.loadPropertiesImpl(song)
                 yield()
-                _currentSong.value = DetailSong(song, info)
+                _songProperties.value = properties
             }
     }
 
-    private fun loadProperties(song: Song): DetailSong.Properties {
+    private fun loadPropertiesImpl(song: Song): SongProperties {
         // While we would use ExoPlayer to extract this information, it doesn't support
         // common data like bit rate in progressive data sources due to there being no
         // demand. Thus, we are stuck with the inferior OS-provided MediaExtractor.
@@ -266,7 +261,7 @@ class DetailViewModel(application: Application) :
             // that we can show.
             logW("Unable to extract song attributes.")
             logW(e.stackTraceToString())
-            return DetailSong.Properties(null, null, song.mimeType)
+            return SongProperties(null, null, song.mimeType)
         }
 
         // Get the first track from the extractor (This is basically always the only
@@ -310,7 +305,7 @@ class DetailViewModel(application: Application) :
                 MimeType(song.mimeType.fromExtension, formatMimeType)
             }
 
-        return DetailSong.Properties(bitrate, sampleRate, resolvedMimeType)
+        return SongProperties(bitrate, sampleRate, resolvedMimeType)
     }
 
     private fun refreshAlbumList(album: Album) {

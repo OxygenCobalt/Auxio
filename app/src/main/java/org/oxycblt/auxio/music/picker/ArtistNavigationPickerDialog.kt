@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music.picker
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.Artist
@@ -40,8 +41,8 @@ class ArtistNavigationPickerDialog : ArtistPickerDialog() {
         super.onBindingCreated(binding, savedInstanceState)
     }
 
-    override fun onClick(item: Item) {
-        super.onClick(item)
+    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
+        super.onClick(item, viewHolder)
         check(item is Artist) { "Unexpected datatype: ${item::class.simpleName}" }
         // User made a choice, navigate to it.
         navModel.exploreNavigateTo(item)

@@ -41,7 +41,8 @@ class AccentAdapter(private val listener: ClickableListListener) :
 
     override fun getItemCount() = Accent.MAX
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = AccentViewHolder.new(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        AccentViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: AccentViewHolder, position: Int) =
         throw NotImplementedError()
@@ -75,13 +76,13 @@ class AccentAdapter(private val listener: ClickableListListener) :
         notifyItemChanged(accent.index, PAYLOAD_SELECTION_CHANGED)
     }
 
-    companion object {
-        private val PAYLOAD_SELECTION_CHANGED = Any()
+    private companion object {
+        val PAYLOAD_SELECTION_CHANGED = Any()
     }
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays an [Accent] choice. Use [new] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays an [Accent] choice. Use [from] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AccentViewHolder private constructor(private val binding: ItemAccentBinding) :
@@ -93,13 +94,13 @@ class AccentViewHolder private constructor(private val binding: ItemAccentBindin
      * @param listener A [ClickableListListener] to bind interactions to.
      */
     fun bind(accent: Accent, listener: ClickableListListener) {
+        listener.bind(accent, this, binding.accent)
         binding.accent.apply {
-            setOnClickListener { listener.onClick(accent) }
-            backgroundTintList = context.getColorCompat(accent.primary)
             // Add a Tooltip based on the content description so that the purpose of this
             // button can be clear.
             contentDescription = context.getString(accent.name)
             TooltipCompat.setTooltipText(this, contentDescription)
+            backgroundTintList = context.getColorCompat(accent.primary)
         }
     }
 
@@ -124,6 +125,7 @@ class AccentViewHolder private constructor(private val binding: ItemAccentBindin
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) = AccentViewHolder(ItemAccentBinding.inflate(parent.context.inflater))
+        fun from(parent: View) =
+            AccentViewHolder(ItemAccentBinding.inflate(parent.context.inflater))
     }
 }

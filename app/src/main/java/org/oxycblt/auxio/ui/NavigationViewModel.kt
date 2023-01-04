@@ -92,8 +92,8 @@ class NavigationViewModel : ViewModel() {
 
     /**
      * Navigate to one of the parent [Artist]'s of the given [Song].
-     * @param song The [Song] to navigate with. If there are multiple parent [Artist]s,
-     * a picker dialog will be shown.
+     * @param song The [Song] to navigate with. If there are multiple parent [Artist]s, a picker
+     * dialog will be shown.
      */
     fun exploreNavigateToParentArtist(song: Song) {
         exploreNavigateToParentArtistImpl(song, song.artists)
@@ -101,8 +101,8 @@ class NavigationViewModel : ViewModel() {
 
     /**
      * Navigate to one of the parent [Artist]'s of the given [Album].
-     * @param album The [Album] to navigate with. If there are multiple parent [Artist]s,
-     * a picker dialog will be shown.
+     * @param album The [Album] to navigate with. If there are multiple parent [Artist]s, a picker
+     * dialog will be shown.
      */
     fun exploreNavigateToParentArtist(album: Album) {
         exploreNavigateToParentArtistImpl(album, album.artists)

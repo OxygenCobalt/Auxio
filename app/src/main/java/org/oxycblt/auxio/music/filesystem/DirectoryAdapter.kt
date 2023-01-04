@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.storage
+package org.oxycblt.auxio.music.filesystem
 
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +41,7 @@ class DirectoryAdapter(private val listener: Listener) :
     override fun getItemCount() = dirs.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        MusicDirViewHolder.new(parent)
+        MusicDirViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: MusicDirViewHolder, position: Int) =
         holder.bind(dirs[position], listener)
@@ -86,7 +86,7 @@ class DirectoryAdapter(private val listener: Listener) :
 }
 
 /**
- * A [RecyclerView.Recycler] that displays a [Directory]. Use [new] to create an instance.
+ * A [RecyclerView.Recycler] that displays a [Directory]. Use [from] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MusicDirViewHolder private constructor(private val binding: ItemMusicDirBinding) :
@@ -107,7 +107,7 @@ class MusicDirViewHolder private constructor(private val binding: ItemMusicDirBi
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) =
+        fun from(parent: View) =
             MusicDirViewHolder(ItemMusicDirBinding.inflate(parent.context.inflater))
     }
 }

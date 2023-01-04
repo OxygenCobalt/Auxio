@@ -72,6 +72,8 @@ body:
             - `./adb -d logcat AndroidRuntime:E *:S` in the case of a crash
         5. Copy and paste the output to this area of the issue.
       render: shell
+    validations:
+      required: true
   - type: checkboxes
     id: terms
     attributes:

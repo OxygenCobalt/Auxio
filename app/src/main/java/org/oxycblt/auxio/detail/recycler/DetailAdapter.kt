@@ -57,8 +57,8 @@ abstract class DetailAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
-            HeaderViewHolder.VIEW_TYPE -> HeaderViewHolder.new(parent)
-            SortHeaderViewHolder.VIEW_TYPE -> SortHeaderViewHolder.new(parent)
+            HeaderViewHolder.VIEW_TYPE -> HeaderViewHolder.from(parent)
+            SortHeaderViewHolder.VIEW_TYPE -> SortHeaderViewHolder.from(parent)
             else -> error("Invalid item type $viewType")
         }
 
@@ -109,7 +109,7 @@ abstract class DetailAdapter(
         fun onOpenSortMenu(anchor: View)
     }
 
-    companion object {
+    protected companion object {
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
             object : SimpleItemCallback<Item>() {
@@ -128,7 +128,7 @@ abstract class DetailAdapter(
 
 /**
  * A [RecyclerView.ViewHolder] that displays a [SortHeader], a variation on [Header] that adds a
- * button opening a menu for sorting. Use [new] to create an instance.
+ * button opening a menu for sorting. Use [from] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
@@ -157,7 +157,7 @@ private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) =
+        fun from(parent: View) =
             SortHeaderViewHolder(ItemSortHeaderBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */

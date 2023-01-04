@@ -19,6 +19,7 @@ package org.oxycblt.auxio.settings
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Build
 import android.os.storage.StorageManager
 import androidx.appcompat.app.AppCompatDelegate
@@ -30,8 +31,8 @@ import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.music.storage.Directory
-import org.oxycblt.auxio.music.storage.MusicDirectories
+import org.oxycblt.auxio.music.filesystem.Directory
+import org.oxycblt.auxio.music.filesystem.MusicDirectories
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
@@ -40,19 +41,13 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A [SharedPreferences] wrapper providing type-safe interfaces to all of the app's settings. Object
- * mutability
+ * A [SharedPreferences] wrapper providing type-safe interfaces to all of the app's settings. Member
+ * mutability is dependent on how they are used in app. Immutable members are often only modified by
+ * the preferences view, while mutable members are modified elsewhere.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class Settings(private val context: Context, private val callback: Callback? = null) :
-    SharedPreferences.OnSharedPreferenceChangeListener {
+class Settings(private val context: Context) {
     private val inner = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
-
-    init {
-        if (callback != null) {
-            inner.registerOnSharedPreferenceChangeListener(this)
-        }
-    }
 
     /**
      * Migrate any settings from an old version into their modern counterparts. This can cause data
@@ -154,27 +149,19 @@ class Settings(private val context: Context, private val callback: Callback? = n
     }
 
     /**
-     * Release this instance and any callbacks held by it. This is not needed if no [Callback] was
-     * originally attached.
+     * Add a [SharedPreferences.OnSharedPreferenceChangeListener] to monitor for settings updates.
+     * @param listener The [SharedPreferences.OnSharedPreferenceChangeListener] to add.
      */
-    fun release() {
-        inner.unregisterOnSharedPreferenceChangeListener(this)
-    }
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        unlikelyToBeNull(callback).onSettingChanged(key)
+    fun addListener(listener: OnSharedPreferenceChangeListener) {
+        inner.registerOnSharedPreferenceChangeListener(listener)
     }
 
     /**
-     * Simplified callback for settings changes.
+     * Unregister a [SharedPreferences.OnSharedPreferenceChangeListener], preventing any further
+     * settings updates from being sent to ti.t
      */
-    interface Callback {
-        // TODO: Refactor this lifecycle
-        /**
-         * Called when a setting has changed.
-         * @param key The key of the setting that changed.
-         */
-        fun onSettingChanged(key: String)
+    fun removeListener(listener: OnSharedPreferenceChangeListener) {
+        inner.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
     // --- VALUES ---

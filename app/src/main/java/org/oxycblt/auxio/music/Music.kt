@@ -24,20 +24,16 @@ import android.os.Parcelable
 import java.security.MessageDigest
 import java.text.CollationKey
 import java.text.Collator
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.UUID
 import kotlin.math.max
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.music.extractor.parseId3GenreNames
-import org.oxycblt.auxio.music.extractor.parseMultiValue
-import org.oxycblt.auxio.music.extractor.toUuidOrNull
-import org.oxycblt.auxio.music.storage.*
+import org.oxycblt.auxio.music.filesystem.*
+import org.oxycblt.auxio.music.parsing.parseId3GenreNames
+import org.oxycblt.auxio.music.parsing.parseMultiValue
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.inRangeOrNull
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -112,6 +108,27 @@ sealed class Music : Item {
             }
 
         return COLLATOR.getCollationKey(sortName)
+    }
+
+    /**
+     * Join a list of [Music]'s resolved names into a string in a localized manner, using
+     * [R.string.fmt_list].
+     * @param context [Context] required to obtain localized formatting.
+     * @param values The list of [Music] to format.
+     * @return A single string consisting of the values delimited by a localized separator.
+     */
+    protected fun resolveNames(context: Context, values: List<Music>): String {
+        if (values.isEmpty()) {
+            // Nothing to do.
+            return ""
+        }
+
+        var joined = values.first().resolveName(context)
+        for (i in 1..values.lastIndex) {
+            // Chain all previous values with the next value in the list with another delimiter.
+            joined = context.getString(R.string.fmt_list, joined, values[i].resolveName(context))
+        }
+        return joined
     }
 
     // Note: We solely use the UID in comparisons so that certain items that differ in all
@@ -262,9 +279,9 @@ sealed class Music : Item {
         }
     }
 
-    companion object {
+    private companion object {
         /** Cached collator instance re-used with [makeCollationKeyImpl]. */
-        private val COLLATOR = Collator.getInstance().apply { strength = Collator.PRIMARY }
+        val COLLATOR: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
     }
 }
 
@@ -399,9 +416,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
      * Resolves one or more [Artist]s into a single piece of human-readable names.
      * @param context [Context] required for [resolveName]. formatter.
      */
-    fun resolveArtistContents(context: Context) =
-        // TODO Internationalize the list
-        artists.joinToString { it.resolveName(context) }
+    fun resolveArtistContents(context: Context) = resolveNames(context, artists)
 
     /**
      * Checks if the [Artist] *display* of this [Song] and another [Song] are equal. This will only
@@ -433,7 +448,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
      * Resolves one or more [Genre]s into a single piece human-readable names.
      * @param context [Context] required for [resolveName].
      */
-    fun resolveGenreContents(context: Context) = genres.joinToString { it.resolveName(context) }
+    fun resolveGenreContents(context: Context) = resolveNames(context, genres)
 
     // --- INTERNAL FIELDS ---
 
@@ -504,7 +519,6 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         for (i in _artists.indices) {
             // Non-destructively reorder the linked artists so that they align with
             // the artist ordering within the song metadata.
-            // TODO: Make sure this works for artists only derived from album artists.
             val newIdx = _artists[i]._getOriginalPositionIn(_rawArtists)
             val other = _artists[newIdx]
             _artists[newIdx] = _artists[i]
@@ -610,11 +624,8 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     override val collationKey = makeCollationKeyImpl()
     override fun resolveName(context: Context) = rawName
 
-    /**
-     * The earliest [Date] this album was released. Will be null if no valid date was present in the
-     * metadata of any [Song]
-     */
-    val date: Date? // TODO: Date ranges?
+    /** The [Date.Range] that [Song]s in the [Album] were released. */
+    val dates = Date.Range.from(songs.mapNotNull { it.date })
 
     /**
      * The [Type] of this album, signifying the type of release it actually is. Defaults to
@@ -634,31 +645,18 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     val dateAdded: Long
 
     init {
-        var earliestDate: Date? = null
         var totalDuration: Long = 0
         var earliestDateAdded: Long = Long.MAX_VALUE
 
         // Do linking and value generation in the same loop for efficiency.
         for (song in songs) {
             song._link(this)
-
-            if (song.date != null) {
-                // Since we can't really assign a maximum value for dates, we instead
-                // just check if the current earliest date doesn't exist and fill it
-                // in with the current song if that's the case.
-                if (earliestDate == null || song.date < earliestDate) {
-                    earliestDate = song.date
-                }
-            }
-
             if (song.dateAdded < earliestDateAdded) {
                 earliestDateAdded = song.dateAdded
             }
-
             totalDuration += song.durationMs
         }
 
-        date = earliestDate
         durationMs = totalDuration
         dateAdded = earliestDateAdded
     }
@@ -676,7 +674,7 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
      * Resolves one or more [Artist]s into a single piece of human-readable names.
      * @param context [Context] required for [resolveName].
      */
-    fun resolveArtistContents(context: Context) = artists.joinToString { it.resolveName(context) }
+    fun resolveArtistContents(context: Context) = resolveNames(context, artists)
 
     /**
      * Checks if the [Artist] *display* of this [Album] and another [Album] are equal. This will
@@ -1043,7 +1041,7 @@ class Artist constructor(private val raw: Raw, songAlbums: List<Music>) : MusicP
      * Resolves one or more [Genre]s into a single piece of human-readable names.
      * @param context [Context] required for [resolveName].
      */
-    fun resolveGenreContents(context: Context) = genres.joinToString { it.resolveName(context) }
+    fun resolveGenreContents(context: Context) = resolveNames(context, genres)
 
     /**
      * Checks if the [Genre] *display* of this [Artist] and another [Artist] are equal. This will
@@ -1212,180 +1210,19 @@ class Genre constructor(private val raw: Raw, override val songs: List<Song>) : 
     }
 }
 
-/**
- * An ISO-8601/RFC 3339 Date.
- *
- * This class only encodes the timestamp spec and it's conversion to a human-readable date, without
- * any other time management or validation. In general, this should only be used for display.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-class Date private constructor(private val tokens: List<Int>) : Comparable<Date> {
-    private val year = tokens[0]
-    private val month = tokens.getOrNull(1)
-    private val day = tokens.getOrNull(2)
-    private val hour = tokens.getOrNull(3)
-    private val minute = tokens.getOrNull(4)
-    private val second = tokens.getOrNull(5)
-
-    /**
-     * Resolve this instance into a human-readable date.
-     * @param context [Context] required to get human-readable names.
-     * @return If the [Date] has a valid month and year value, a more fine-grained date (ex. "Jan
-     * 2020") will be returned. Otherwise, a plain year value (ex. "2020") is returned. Dates will
-     * be properly localized.
-     */
-    fun resolveDate(context: Context): String {
-        if (month != null) {
-            // Parse a date format from an ISO-ish format
-            val format = (SimpleDateFormat.getDateInstance() as SimpleDateFormat)
-            format.applyPattern("yyyy-MM")
-            val date =
-                try {
-                    format.parse("$year-$month")
-                } catch (e: ParseException) {
-                    null
-                }
-
-            if (date != null) {
-                // Reformat as a readable month and year
-                format.applyPattern("MMM yyyy")
-                return format.format(date)
-            }
-        }
-
-        // Unable to create fine-grained date, just format as a year.
-        return context.getString(R.string.fmt_number, year)
-    }
-
-    override fun hashCode() = tokens.hashCode()
-
-    override fun equals(other: Any?) = other is Date && tokens == other.tokens
-
-    override fun compareTo(other: Date): Int {
-        for (i in 0 until max(tokens.size, other.tokens.size)) {
-            val ai = tokens.getOrNull(i)
-            val bi = other.tokens.getOrNull(i)
-            when {
-                ai != null && bi != null -> {
-                    val result = ai.compareTo(bi)
-                    if (result != 0) {
-                        return result
-                    }
-                }
-                ai == null && bi != null -> return -1 // a < b
-                ai == null && bi == null -> return 0 // a = b
-                else -> return 1 // a < b
-            }
-        }
-
-        return 0
-    }
-
-    override fun toString() = StringBuilder().appendDate().toString()
-
-    private fun StringBuilder.appendDate(): StringBuilder {
-        // Construct an ISO-8601 date, dropping precision that doesn't exist.
-        append(year.toStringFixed(4))
-        append("-${(month ?: return this).toStringFixed(2)}")
-        append("-${(day ?: return this).toStringFixed(2)}")
-        append("T${(hour ?: return this).toStringFixed(2)}")
-        append(":${(minute ?: return this.append('Z')).toStringFixed(2)}")
-        append(":${(second ?: return this.append('Z')).toStringFixed(2)}")
-        return this.append('Z')
-    }
-
-    private fun Int.toStringFixed(len: Int) = toString().padStart(len, '0').substring(0 until len)
-
-    companion object {
-        /**
-         * A [Regex] that can parse a variable-precision ISO-8601 timestamp. Derived from
-         * https://github.com/quodlibet/mutagen
-         */
-        private val ISO8601_REGEX =
-            Regex(
-                """^(\d{4,})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2})(Z)?)?)?)?)?)?$""")
-
-        /**
-         * Create a [Date] from a year component.
-         * @param year The year component.
-         * @return A new [Date] of the given component, or null if the component is invalid.
-         */
-        fun from(year: Int) = fromTokens(listOf(year))
-
-        /**
-         * Create a [Date] from a date component.
-         * @param year The year component.
-         * @param month The month component.
-         * @param day The day component.
-         * @return A new [Date] consisting of the given components. May have reduced precision if
-         * the components were partially invalid, and will be null if all components are invalid.
-         */
-        fun from(year: Int, month: Int, day: Int) = fromTokens(listOf(year, month, day))
-
-        /**
-         * Create [Date] from a datetime component.
-         * @param year The year component.
-         * @param month The month component.
-         * @param day The day component.
-         * @param hour The hour component
-         * @return A new [Date] consisting of the given components. May have reduced precision if
-         * the components were partially invalid, and will be null if all components are invalid.
-         */
-        fun from(year: Int, month: Int, day: Int, hour: Int, minute: Int) =
-            fromTokens(listOf(year, month, day, hour, minute))
-
-        /**
-         * Create a [Date] from a [String] timestamp.
-         * @param timestamp The ISO-8601 timestamp to parse. Can have reduced precision.
-         * @return A new [Date] consisting of the given components. May have reduced precision if
-         * the components were partially invalid, and will be null if all components are invalid or
-         * if the timestamp is invalid.
-         */
-        fun from(timestamp: String): Date? {
-            val tokens =
-            // Match the input with the timestamp regex
-            (ISO8601_REGEX.matchEntire(timestamp) ?: return null)
-                    .groupValues
-                    // Filter to the specific tokens we want and convert them to integer tokens.
-                    .mapIndexedNotNull { index, s -> if (index % 2 != 0) s.toIntOrNull() else null }
-            return fromTokens(tokens)
-        }
-
-        /**
-         * Create a [Date] from the given non-validated tokens.
-         * @param tokens The tokens to use for each date component, in order of precision.
-         * @return A new [Date] consisting of the given components. May have reduced precision if
-         * the components were partially invalid, and will be null if all components are invalid.
-         */
-        private fun fromTokens(tokens: List<Int>): Date? {
-            val validated = mutableListOf<Int>()
-            validateTokens(tokens, validated)
-            if (validated.isEmpty()) {
-                // No token was valid, return null.
-                return null
-            }
-            return Date(validated)
-        }
-
-        /**
-         * Validate a list of tokens provided by [src], and add the valid ones to [dst]. Will stop
-         * as soon as an invalid token is found.
-         * @param src The input tokens to validate.
-         * @param dst The destination list to add valid tokens to.
-         */
-        private fun validateTokens(src: List<Int>, dst: MutableList<Int>) {
-            dst.add(src.getOrNull(0)?.nonZeroOrNull() ?: return)
-            dst.add(src.getOrNull(1)?.inRangeOrNull(1..12) ?: return)
-            dst.add(src.getOrNull(2)?.inRangeOrNull(1..31) ?: return)
-            dst.add(src.getOrNull(3)?.inRangeOrNull(0..23) ?: return)
-            dst.add(src.getOrNull(4)?.inRangeOrNull(0..59) ?: return)
-            dst.add(src.getOrNull(5)?.inRangeOrNull(0..59) ?: return)
-        }
-    }
-}
-
 // --- MUSIC UID CREATION UTILITIES ---
+
+/**
+ * Convert a [String] to a [UUID].
+ * @return A [UUID] converted from the [String] value, or null if the value was not valid.
+ * @see UUID.fromString
+ */
+fun String.toUuidOrNull(): UUID? =
+    try {
+        UUID.fromString(this)
+    } catch (e: IllegalArgumentException) {
+        null
+    }
 
 /**
  * Update a [MessageDigest] with a lowercase [String].

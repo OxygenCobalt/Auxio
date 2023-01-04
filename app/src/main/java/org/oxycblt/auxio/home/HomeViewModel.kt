@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.home
 
 import android.app.Application
+import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,9 +40,11 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class HomeViewModel(application: Application) :
-    AndroidViewModel(application), Settings.Callback, MusicStore.Callback {
+    AndroidViewModel(application),
+    MusicStore.Listener,
+    SharedPreferences.OnSharedPreferenceChangeListener {
     private val musicStore = MusicStore.getInstance()
-    private val settings = Settings(application, this)
+    private val settings = Settings(application)
 
     private val _songsList = MutableStateFlow(listOf<Song>())
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
@@ -91,13 +94,14 @@ class HomeViewModel(application: Application) :
     val isFastScrolling: StateFlow<Boolean> = _isFastScrolling
 
     init {
-        musicStore.addCallback(this)
+        musicStore.addListener(this)
+        settings.addListener(this)
     }
 
     override fun onCleared() {
         super.onCleared()
-        musicStore.removeCallback(this)
-        settings.release()
+        musicStore.removeListener(this)
+        settings.removeListener(this)
     }
 
     override fun onLibraryChanged(library: MusicStore.Library?) {
@@ -119,7 +123,7 @@ class HomeViewModel(application: Application) :
         }
     }
 
-    override fun onSettingChanged(key: String) {
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
             context.getString(R.string.set_key_lib_tabs) -> {
                 // Tabs changed, update  the current tabs and set up a re-create event.

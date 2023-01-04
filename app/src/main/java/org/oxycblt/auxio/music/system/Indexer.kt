@@ -51,10 +51,10 @@ import org.oxycblt.auxio.util.logW
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Indexer private constructor() {
-    private var lastResponse: Response? = null
-    private var indexingState: Indexing? = null
-    private var controller: Controller? = null
-    private var callback: Callback? = null
+    @Volatile private var lastResponse: Result<MusicStore.Library>? = null
+    @Volatile private var indexingState: Indexing? = null
+    @Volatile private var controller: Controller? = null
+    @Volatile private var listener: Listener? = null
 
     /** Whether music loading is occurring or not. */
     val isIndexing: Boolean
@@ -71,7 +71,7 @@ class Indexer private constructor() {
     /**
      * Register a [Controller] for this instance. This instance will handle any commands to start
      * the music loading process. There can be only one [Controller] at a time. Will invoke all
-     * [Callback] methods to initialize the instance with the current state.
+     * [Listener] methods to initialize the instance with the current state.
      * @param controller The [Controller] to register. Will do nothing if already registered.
      */
     @Synchronized
@@ -105,14 +105,14 @@ class Indexer private constructor() {
     }
 
     /**
-     * Register the [Callback] for this instance. This can be used to receive rapid-fire updates to
-     * the current music loading state. There can be only one [Callback] at a time. Will invoke all
-     * [Callback] methods to initialize the instance with the current state.
-     * @param callback The [Callback] to add.
+     * Register the [Listener] for this instance. This can be used to receive rapid-fire updates to
+     * the current music loading state. There can be only one [Listener] at a time. Will invoke all
+     * [Listener] methods to initialize the instance with the current state.
+     * @param listener The [Listener] to add.
      */
     @Synchronized
-    fun registerCallback(callback: Callback) {
-        if (BuildConfig.DEBUG && this.callback != null) {
+    fun registerListener(listener: Listener) {
+        if (BuildConfig.DEBUG && this.listener != null) {
             logW("Listener is already registered")
             return
         }
@@ -120,24 +120,24 @@ class Indexer private constructor() {
         // Initialize the listener with the current state.
         val currentState =
             indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
-        callback.onIndexerStateChanged(currentState)
-        this.callback = callback
+        listener.onIndexerStateChanged(currentState)
+        this.listener = listener
     }
 
     /**
-     * Unregister a [Callback] from this instance, preventing it from recieving any further updates.
-     * @param callback The [Callback] to unregister. Must be the current [Callback]. Does nothing if
-     * invoked by another [Callback] implementation.
-     * @see Callback
+     * Unregister a [Listener] from this instance, preventing it from recieving any further updates.
+     * @param listener The [Listener] to unregister. Must be the current [Listener]. Does nothing if
+     * invoked by another [Listener] implementation.
+     * @see Listener
      */
     @Synchronized
-    fun unregisterCallback(callback: Callback) {
-        if (BuildConfig.DEBUG && this.callback !== callback) {
+    fun unregisterListener(listener: Listener) {
+        if (BuildConfig.DEBUG && this.listener !== listener) {
             logW("Given controller did not match current controller")
             return
         }
 
-        this.callback = null
+        this.listener = null
     }
 
     /**
@@ -148,28 +148,14 @@ class Indexer private constructor() {
      * be written, but no cache entries will be loaded into the new library.
      */
     suspend fun index(context: Context, withCache: Boolean) {
-        if (ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
-            PackageManager.PERMISSION_DENIED) {
-            // No permissions, signal that we can't do anything.
-            emitCompletion(Response.NoPerms)
-            return
-        }
-
-        val response =
+        val result =
             try {
                 val start = System.currentTimeMillis()
                 val library = indexImpl(context, withCache)
-                if (library != null) {
-                    // Successfully loaded a library.
-                    logD(
-                        "Music indexing completed successfully in " +
-                            "${System.currentTimeMillis() - start}ms")
-                    Response.Ok(library)
-                } else {
-                    // Loaded a library, but it contained no music.
-                    logE("No music found")
-                    Response.NoMusic
-                }
+                logD(
+                    "Music indexing completed successfully in " +
+                        "${System.currentTimeMillis() - start}ms")
+                Result.success(library)
             } catch (e: CancellationException) {
                 // Got cancelled, propagate upwards to top-level co-routine.
                 logD("Loading routine was cancelled")
@@ -178,10 +164,9 @@ class Indexer private constructor() {
                 // Music loading process failed due to something we have not handled.
                 logE("Music indexing failed")
                 logE(e.stackTraceToString())
-                Response.Err(e)
+                Result.failure(e)
             }
-
-        emitCompletion(response)
+        emitCompletion(result)
     }
 
     /**
@@ -212,9 +197,17 @@ class Indexer private constructor() {
      * @param context [Context] required to load music.
      * @param withCache Whether to use the cache or not when loading. If false, the cache will still
      * be written, but no cache entries will be loaded into the new library.
-     * @return A newly-loaded [MusicStore.Library], or null if nothing was loaded.
+     * @return A newly-loaded [MusicStore.Library].
+     * @throws NoPermissionException If [PERMISSION_READ_AUDIO] was not granted.
+     * @throws NoMusicException If no music was found on the device.
      */
-    private suspend fun indexImpl(context: Context, withCache: Boolean): MusicStore.Library? {
+    private suspend fun indexImpl(context: Context, withCache: Boolean): MusicStore.Library {
+        if (ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
+            PackageManager.PERMISSION_DENIED) {
+            // No permissions, signal that we can't do anything.
+            throw NoPermissionException()
+        }
+
         // Create the chain of extractors. Each extractor builds on the previous and
         // enables version-specific features in order to create the best possible music
         // experience.
@@ -236,12 +229,8 @@ class Indexer private constructor() {
 
         val metadataExtractor = MetadataExtractor(context, mediaStoreExtractor)
 
-        val songs = buildSongs(metadataExtractor, Settings(context))
-        if (songs.isEmpty()) {
-            // No songs, nothing else to do.
-            return null
-        }
-
+        val songs =
+            buildSongs(metadataExtractor, Settings(context)).ifEmpty { throw NoMusicException() }
         // Build the rest of the music library from the song list. This is much more powerful
         // and reliable compared to using MediaStore to obtain grouping information.
         val buildStart = System.currentTimeMillis()
@@ -249,7 +238,6 @@ class Indexer private constructor() {
         val artists = buildArtists(songs, albums)
         val genres = buildGenres(songs)
         logD("Successfully built library in ${System.currentTimeMillis() - buildStart}ms")
-
         return MusicStore.Library(songs, albums, artists, genres)
     }
 
@@ -388,17 +376,17 @@ class Indexer private constructor() {
         val state =
             indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
         controller?.onIndexerStateChanged(state)
-        callback?.onIndexerStateChanged(state)
+        listener?.onIndexerStateChanged(state)
     }
 
     /**
      * Emit a new [State.Complete] state. This can be used to signal the completion of the music
      * loading process to external code. Will check if the callee has not been canceled and thus has
      * the ability to emit a new state
-     * @param response The new [Response] to emit, representing the outcome of the music loading
+     * @param result The new [Result] to emit, representing the outcome of the music loading
      * process.
      */
-    private suspend fun emitCompletion(response: Response) {
+    private suspend fun emitCompletion(result: Result<MusicStore.Library>) {
         yield()
         // Swap to the Main thread so that downstream callbacks don't crash from being on
         // a background thread. Does not occur in emitIndexing due to efficiency reasons.
@@ -406,12 +394,12 @@ class Indexer private constructor() {
             synchronized(this) {
                 // Do not check for redundancy here, as we actually need to notify a switch
                 // from Indexing -> Complete and not Indexing -> Indexing or Complete -> Complete.
-                lastResponse = response
+                lastResponse = result
                 indexingState = null
                 // Signal that the music loading process has been completed.
-                val state = State.Complete(response)
+                val state = State.Complete(result)
                 controller?.onIndexerStateChanged(state)
-                callback?.onIndexerStateChanged(state)
+                listener?.onIndexerStateChanged(state)
             }
         }
     }
@@ -427,10 +415,9 @@ class Indexer private constructor() {
 
         /**
          * Music loading has completed.
-         * @param response The outcome of the music loading process.
-         * @see Response
+         * @param result The outcome of the music loading process.
          */
-        data class Complete(val response: Response) : State()
+        data class Complete(val result: Result<MusicStore.Library>) : State()
     }
 
     /**
@@ -451,35 +438,26 @@ class Indexer private constructor() {
         class Songs(val current: Int, val total: Int) : Indexing()
     }
 
-    /** Represents the possible outcomes of the music loading process. */
-    sealed class Response {
-        /**
-         * Music load was successful and produced a [MusicStore.Library].
-         * @param library The loaded [MusicStore.Library].
-         */
-        data class Ok(val library: MusicStore.Library) : Response()
+    /** Thrown when the required permissions to load the music library have not been granted yet. */
+    class NoPermissionException : Exception() {
+        override val message: String
+            get() = "Not granted permissions to load music library"
+    }
 
-        /**
-         * Music loading encountered an unexpected error.
-         * @param throwable The error thrown.
-         */
-        data class Err(val throwable: Throwable) : Response()
-
-        /** Music loading occurred, but resulted in no music. */
-        object NoMusic : Response()
-
-        /** Music loading could not occur due to a lack of storage permissions. */
-        object NoPerms : Response()
+    /** Thrown when no music was found on the device. */
+    class NoMusicException : Exception() {
+        override val message: String
+            get() = "Unable to find any music"
     }
 
     /**
      * A listener for rapid-fire changes in the music loading state.
      *
      * This is only useful for code that absolutely must show the current loading process.
-     * Otherwise, [MusicStore.Callback] is highly recommended due to it's updates only consisting of
+     * Otherwise, [MusicStore.Listener] is highly recommended due to it's updates only consisting of
      * the [MusicStore.Library].
      */
-    interface Callback {
+    interface Listener {
         /**
          * Called when the current state of the Indexer changed.
          *
@@ -495,7 +473,7 @@ class Indexer private constructor() {
      * Context that runs the music loading process. Implementations should be capable of running the
      * background for long periods of time without android killing the process.
      */
-    interface Controller : Callback {
+    interface Controller : Listener {
         /**
          * Called when a new music loading process was requested. Implementations should forward
          * this to [index].
@@ -514,8 +492,7 @@ class Indexer private constructor() {
          * system to load audio.
          */
         val PERMISSION_READ_AUDIO =
-        // TODO: Move elsewhere.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 // READ_EXTERNAL_STORAGE was superseded by READ_MEDIA_AUDIO in Android 13
                 Manifest.permission.READ_MEDIA_AUDIO
             } else {

@@ -20,6 +20,7 @@ package org.oxycblt.auxio.ui.accent
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
@@ -27,7 +28,6 @@ import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
-import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -38,7 +38,6 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 class AccentCustomizeDialog :
     ViewBindingDialogFragment<DialogAccentBinding>(), ClickableListListener {
     private var accentAdapter = AccentAdapter(this)
-    private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogAccentBinding.inflate(inflater)
 
@@ -46,6 +45,7 @@ class AccentCustomizeDialog :
         builder
             .setTitle(R.string.set_accent)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
+                val settings = Settings(requireContext())
                 if (accentAdapter.selectedAccent == settings.accent) {
                     // Nothing to do.
                     return@setPositiveButton
@@ -66,7 +66,7 @@ class AccentCustomizeDialog :
             if (savedInstanceState != null) {
                 Accent.from(savedInstanceState.getInt(KEY_PENDING_ACCENT))
             } else {
-                settings.accent
+                Settings(requireContext()).accent
             })
     }
 
@@ -80,12 +80,12 @@ class AccentCustomizeDialog :
         binding.accentRecycler.adapter = null
     }
 
-    override fun onClick(item: Item) {
+    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
         check(item is Accent) { "Unexpected datatype: ${item::class.java}" }
         accentAdapter.setSelectedAccent(item)
     }
 
-    companion object {
-        private const val KEY_PENDING_ACCENT = BuildConfig.APPLICATION_ID + ".key.PENDING_ACCENT"
+    private companion object {
+        const val KEY_PENDING_ACCENT = BuildConfig.APPLICATION_ID + ".key.PENDING_ACCENT"
     }
 }

@@ -42,19 +42,11 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Custom language support
  *
- * TODO: Add multi-select
- *
  * TODO: Use proper material attributes (Not the weird dimen attributes I currently have)
  *
  * TODO: Migrate to material animation system
  *
  * TODO: Unit testing
- *
- * TODO: Standardize from/new usage
- *
- * TODO: Standardize companion object usage
- *
- * TODO: Standardize callback/listener naming.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -146,7 +138,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    companion object {
-        private const val KEY_INTENT_USED = BuildConfig.APPLICATION_ID + ".key.FILE_INTENT_USED"
+    private companion object {
+        const val KEY_INTENT_USED = BuildConfig.APPLICATION_ID + ".key.FILE_INTENT_USED"
     }
 }

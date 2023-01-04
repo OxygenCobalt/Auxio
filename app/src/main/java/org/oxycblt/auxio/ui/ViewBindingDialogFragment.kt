@@ -23,11 +23,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -37,7 +34,6 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
     private var _binding: VB? = null
-    private var lifecycleObjects = mutableListOf<LifecycleObject<VB, *>>()
 
     /**
      * Configure the [AlertDialog.Builder] during [onCreateDialog].
@@ -85,25 +81,6 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
         }
     }
 
-    /**
-     * Delegate to automatically create and destroy an object derived from the [ViewBinding].
-     * @param create Block to create the object from the [ViewBinding].
-     */
-    fun <T> lifecycleObject(create: (VB) -> T): ReadOnlyProperty<Fragment, T> {
-        lifecycleObjects.add(LifecycleObject(null, create))
-
-        return object : ReadOnlyProperty<Fragment, T> {
-            private val objIdx = lifecycleObjects.lastIndex
-
-            @Suppress("UNCHECKED_CAST")
-            override fun getValue(thisRef: Fragment, property: KProperty<*>) =
-                requireNotNull(lifecycleObjects[objIdx].data) {
-                    "Cannot access lifecycle object when view does not exist"
-                }
-                    as T
-        }
-    }
-
     final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -119,9 +96,6 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = unlikelyToBeNull(_binding)
-        // Populate lifecycle-dependent objects
-        lifecycleObjects.forEach { it.populate(binding) }
         // Configure binding
         onBindingCreated(requireBinding(), savedInstanceState)
         // Apply the newly-configured view to the dialog.
@@ -132,21 +106,8 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
     final override fun onDestroyView() {
         super.onDestroyView()
         onDestroyBinding(unlikelyToBeNull(_binding))
-        // Clear the lifecycle-dependent objects
-        lifecycleObjects.forEach { it.clear() }
         // Clear binding
         _binding = null
         logD("Fragment destroyed")
-    }
-
-    /** Internal implementation of [lifecycleObject]. */
-    private data class LifecycleObject<VB, T>(var data: T?, val create: (VB) -> T) {
-        fun populate(binding: VB) {
-            data = create(binding)
-        }
-
-        fun clear() {
-            data = null
-        }
     }
 }

@@ -25,23 +25,19 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogTabsBinding
-import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.list.EditableListListener
+import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
-import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewBindingDialogFragment] that allows the user to modify the home [Tab] configuration.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAdapter.Listener {
-    private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
-
+class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), EditableListListener {
     private val tabAdapter = TabAdapter(this)
-    private val touchHelper: ItemTouchHelper by lifecycleObject {
-        ItemTouchHelper(TabDragCallback(tabAdapter))
-    }
+    private var touchHelper: ItemTouchHelper? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogTabsBinding.inflate(inflater)
 
@@ -50,13 +46,13 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
             .setTitle(R.string.set_lib_tabs)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
                 logD("Committing tab changes")
-                settings.libTabs = tabAdapter.tabs
+                Settings(requireContext()).libTabs = tabAdapter.tabs
             }
             .setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onBindingCreated(binding: DialogTabsBinding, savedInstanceState: Bundle?) {
-        var tabs = settings.libTabs
+        var tabs = Settings(requireContext()).libTabs
         // Try to restore a pending tab configuration that was saved prior.
         if (savedInstanceState != null) {
             val savedTabs = Tab.fromIntCode(savedInstanceState.getInt(KEY_TABS))
@@ -69,7 +65,8 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
         tabAdapter.submitTabs(tabs)
         binding.tabRecycler.apply {
             adapter = tabAdapter
-            touchHelper.attachToRecyclerView(this)
+            touchHelper =
+                ItemTouchHelper(TabDragCallback(tabAdapter)).also { it.attachToRecyclerView(this) }
         }
     }
 
@@ -84,12 +81,11 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
         binding.tabRecycler.adapter = null
     }
 
-    override fun onToggleVisibility(tabMode: MusicMode) {
-        logD("Toggling tab $tabMode")
-
+    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
+        check(item is Tab) { "Unexpected datatype: ${item::class.java}" }
         // We will need the exact index of the tab to update on in order to
         // notify the adapter of the change.
-        val index = tabAdapter.tabs.indexOfFirst { it.mode == tabMode }
+        val index = tabAdapter.tabs.indexOfFirst { it.mode == item.mode }
         val tab = tabAdapter.tabs[index]
         tabAdapter.setTab(
             index,
@@ -105,10 +101,10 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
     }
 
     override fun onPickUp(viewHolder: RecyclerView.ViewHolder) {
-        touchHelper.startDrag(viewHolder)
+        requireNotNull(touchHelper) { "ItemTouchHelper was not available" }.startDrag(viewHolder)
     }
 
-    companion object {
-        private const val KEY_TABS = BuildConfig.APPLICATION_ID + ".key.PENDING_TABS"
+    private companion object {
+        const val KEY_TABS = BuildConfig.APPLICATION_ID + ".key.PENDING_TABS"
     }
 }

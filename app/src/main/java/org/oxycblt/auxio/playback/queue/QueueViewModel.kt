@@ -29,7 +29,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
+class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
     private val playbackManager = PlaybackStateManager.getInstance()
 
     private val _queue = MutableStateFlow(listOf<Song>())
@@ -47,7 +47,7 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
     var scrollTo: Int? = null
 
     init {
-        playbackManager.addCallback(this)
+        playbackManager.addListener(this)
     }
 
     /**
@@ -135,6 +135,6 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     override fun onCleared() {
         super.onCleared()
-        playbackManager.removeCallback(this)
+        playbackManager.removeListener(this)
     }
 }

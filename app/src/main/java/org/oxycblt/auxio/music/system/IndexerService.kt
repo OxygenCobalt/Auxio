@@ -19,6 +19,7 @@ package org.oxycblt.auxio.music.system
 
 import android.app.Service
 import android.content.Intent
+import android.content.SharedPreferences
 import android.database.ContentObserver
 import android.os.Handler
 import android.os.IBinder
@@ -33,7 +34,7 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.storage.contentResolverSafe
+import org.oxycblt.auxio.music.filesystem.contentResolverSafe
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.service.ForegroundManager
 import org.oxycblt.auxio.settings.Settings
@@ -54,7 +55,8 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class IndexerService : Service(), Indexer.Controller, Settings.Callback {
+class IndexerService :
+    Service(), Indexer.Controller, SharedPreferences.OnSharedPreferenceChangeListener {
     private val indexer = Indexer.getInstance()
     private val musicStore = MusicStore.getInstance()
     private val playbackManager = PlaybackStateManager.getInstance()
@@ -81,7 +83,8 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
         indexerContentObserver = SystemContentObserver()
-        settings = Settings(this, this)
+        settings = Settings(this)
+        settings.addListener(this)
         indexer.registerController(this)
         // An indeterminate indexer and a missing library implies we are extremely early
         // in app initialization so start loading music.
@@ -105,7 +108,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         // Then cancel the listener-dependent components to ensure that stray reloading
         // events will not occur.
         indexerContentObserver.release()
-        settings.release()
+        settings.removeListener(this)
         indexer.unregisterController(this)
         // Then cancel any remaining music loading jobs.
         serviceJob.cancel()
@@ -126,11 +129,11 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
 
     override fun onIndexerStateChanged(state: Indexer.State?) {
         when (state) {
+            is Indexer.State.Indexing -> updateActiveSession(state.indexing)
             is Indexer.State.Complete -> {
-                if (state.response is Indexer.Response.Ok &&
-                    state.response.library != musicStore.library) {
+                val newLibrary = state.result.getOrNull()
+                if (newLibrary != null && newLibrary != musicStore.library) {
                     logD("Applying new library")
-                    val newLibrary = state.response.library
                     // We only care if the newly-loaded library is going to replace a previously
                     // loaded library.
                     if (musicStore.library != null) {
@@ -148,9 +151,6 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
                 // error, that requires the Android 13 notification permission, which is not
                 // handled right now.
                 updateIdleSession()
-            }
-            is Indexer.State.Indexing -> {
-                updateActiveSession(state.indexing)
             }
             null -> {
                 // Null is the indeterminate state that occurs on app startup or after
@@ -195,7 +195,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
             // 2. If a non-foreground service is killed, the app will probably still be alive,
             // and thus the music library will not be updated at all.
             // TODO: Assuming I unify this with PlaybackService, it's possible that I won't need
-            //  this anymore.
+            //  this anymore, or at least I only have to use it when the app task is not removed.
             if (!foregroundManager.tryStartForeground(observingNotification)) {
                 observingNotification.post()
             }
@@ -230,7 +230,7 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
 
     // --- SETTING CALLBACKS ---
 
-    override fun onSettingChanged(key: String) {
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
             // Hook changes in music settings to a new music loading event.
             getString(R.string.set_key_exclude_non_music),
@@ -287,8 +287,8 @@ class IndexerService : Service(), Indexer.Controller, Settings.Callback {
         }
     }
 
-    companion object {
-        private const val WAKELOCK_TIMEOUT_MS = 60 * 1000L
-        private const val REINDEX_DELAY_MS = 500L
+    private companion object {
+        const val WAKELOCK_TIMEOUT_MS = 60 * 1000L
+        const val REINDEX_DELAY_MS = 500L
     }
 }

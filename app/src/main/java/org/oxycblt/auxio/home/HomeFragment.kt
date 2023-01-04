@@ -49,14 +49,7 @@ import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
 import org.oxycblt.auxio.list.selection.SelectionFragment
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
-import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
@@ -72,17 +65,7 @@ class HomeFragment :
     private val homeModel: HomeViewModel by androidActivityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
-
-    // lifecycleObject builds this in the creation step, so doing this is okay.
-    private val storagePermissionLauncher: ActivityResultLauncher<String> by lifecycleObject {
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            musicModel.refresh()
-        }
-    }
-
-    private val sortItem: MenuItem by lifecycleObject { binding ->
-        binding.homeToolbar.menu.findItem(R.id.submenu_sorting)
-    }
+    private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,6 +87,12 @@ class HomeFragment :
 
     override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
+
+        // Have to set up the permission launcher before the view is shown
+        storagePermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+                musicModel.refresh()
+            }
 
         // --- UI SETUP ---
         binding.homeAppbar.addOnOffsetChangedListener(this)
@@ -171,6 +160,7 @@ class HomeFragment :
 
     override fun onDestroyBinding(binding: FragmentHomeBinding) {
         super.onDestroyBinding(binding)
+        storagePermissionLauncher = null
         binding.homeAppbar.removeOnOffsetChangedListener(this)
         binding.homeToolbar.setOnMenuItemClickListener(null)
     }
@@ -285,14 +275,16 @@ class HomeFragment :
                     }
             }
 
-        val sortMenu = requireNotNull(sortItem.subMenu)
+        val sortMenu =
+            unlikelyToBeNull(
+                requireBinding().homeToolbar.menu.findItem(R.id.submenu_sorting).subMenu)
         val toHighlight = homeModel.getSortForTab(tabMode)
 
         for (option in sortMenu) {
             // Check the ascending option and corresponding sort option to align with
             // the current sort of the tab.
             if (option.itemId == toHighlight.mode.itemId ||
-                    (option.itemId == R.id.option_sort_asc && toHighlight.isAscending)) {
+                (option.itemId == R.id.option_sort_asc && toHighlight.isAscending)) {
                 option.isChecked = true
             }
 
@@ -303,7 +295,13 @@ class HomeFragment :
         // Update the scrolling view in AppBarLayout to align with the current tab's
         // scrolling state. This prevents the lift state from being confused as one
         // goes between different tabs.
-        requireBinding().homeAppbar.liftOnScrollTargetViewId = getTabRecyclerId(tabMode)
+        requireBinding().homeAppbar.liftOnScrollTargetViewId =
+            when (tabMode) {
+                MusicMode.SONGS -> R.id.home_song_recycler
+                MusicMode.ALBUMS -> R.id.home_album_recycler
+                MusicMode.ARTISTS -> R.id.home_artist_recycler
+                MusicMode.GENRES -> R.id.home_genre_recycler
+            }
     }
 
     private fun handleRecreate(recreate: Boolean) {
@@ -321,9 +319,12 @@ class HomeFragment :
     }
 
     private fun updateIndexerState(state: Indexer.State?) {
+        // TODO: Make music loading experience a bit more pleasant
+        //  1. Loading placeholder for item lists
+        //  2. Rework the "No Music" case to not be an error and instead result in a placeholder
         val binding = requireBinding()
         when (state) {
-            is Indexer.State.Complete -> setupCompleteState(binding, state.response)
+            is Indexer.State.Complete -> setupCompleteState(binding, state.result)
             is Indexer.State.Indexing -> setupIndexingState(binding, state.indexing)
             null -> {
                 logD("Indexer is in indeterminate state")
@@ -332,53 +333,56 @@ class HomeFragment :
         }
     }
 
-    private fun setupCompleteState(binding: FragmentHomeBinding, response: Indexer.Response) {
-        if (response is Indexer.Response.Ok) {
+    private fun setupCompleteState(
+        binding: FragmentHomeBinding,
+        result: Result<MusicStore.Library>
+    ) {
+        if (result.isSuccess) {
             logD("Received ok response")
             binding.homeFab.show()
             binding.homeIndexingContainer.visibility = View.INVISIBLE
         } else {
             logD("Received non-ok response")
             val context = requireContext()
+            val throwable = unlikelyToBeNull(result.exceptionOrNull())
             binding.homeIndexingContainer.visibility = View.VISIBLE
             binding.homeIndexingProgress.visibility = View.INVISIBLE
-            when (response) {
-                is Indexer.Response.Err -> {
-                    logD("Updating UI to Response.Err state")
-                    binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
-
-                    // Configure the action to act as a reload trigger.
-                    binding.homeIndexingAction.apply {
-                        visibility = View.VISIBLE
-                        text = context.getString(R.string.lbl_retry)
-                        setOnClickListener { musicModel.refresh() }
-                    }
-                }
-                is Indexer.Response.NoMusic -> {
-                    logD("Updating UI to Response.NoMusic state")
-                    binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
-
-                    // Configure the action to act as a reload trigger.
-                    binding.homeIndexingAction.apply {
-                        visibility = View.VISIBLE
-                        text = context.getString(R.string.lbl_retry)
-                        setOnClickListener { musicModel.refresh() }
-                    }
-                }
-                is Indexer.Response.NoPerms -> {
-                    logD("Updating UI to Response.NoPerms state")
+            when (throwable) {
+                is Indexer.NoPermissionException -> {
+                    logD("Updating UI to permission request state")
                     binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
-
                     // Configure the action to act as a permission launcher.
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = context.getString(R.string.lbl_grant)
                         setOnClickListener {
-                            storagePermissionLauncher.launch(Indexer.PERMISSION_READ_AUDIO)
+                            requireNotNull(storagePermissionLauncher) {
+                                    "Permission launcher was not available"
+                                }
+                                .launch(Indexer.PERMISSION_READ_AUDIO)
                         }
                     }
                 }
-                else -> {}
+                is Indexer.NoMusicException -> {
+                    logD("Updating UI to no music state")
+                    binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
+                    // Configure the action to act as a reload trigger.
+                    binding.homeIndexingAction.apply {
+                        visibility = View.VISIBLE
+                        text = context.getString(R.string.lbl_retry)
+                        setOnClickListener { musicModel.refresh() }
+                    }
+                }
+                else -> {
+                    logD("Updating UI to error state")
+                    binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
+                    // Configure the action to act as a reload trigger.
+                    binding.homeIndexingAction.apply {
+                        visibility = View.VISIBLE
+                        text = context.getString(R.string.lbl_retry)
+                        setOnClickListener { musicModel.rescan() }
+                    }
+                }
             }
         }
     }
@@ -438,10 +442,9 @@ class HomeFragment :
         val binding = requireBinding()
         if (binding.homeSelectionToolbar.updateSelectionAmount(selected.size) &&
             selected.isNotEmpty()) {
+            // New selection started, show the AppBarLayout to indicate the new state.
             logD("Significant selection occurred, expanding AppBar")
-            // Significant enough change where we want to expand the RecyclerView
-            binding.homeAppbar.expandWithRecycler(
-                binding.homePager.findViewById(getTabRecyclerId(homeModel.currentTabMode.value)))
+            binding.homeAppbar.expandWithScrollingRecycler()
         }
     }
 
@@ -456,20 +459,6 @@ class HomeFragment :
         exitTransition = MaterialSharedAxis(axis, true)
         reenterTransition = MaterialSharedAxis(axis, false)
     }
-
-    /**
-     * Get the ID of the RecyclerView contained by [ViewPager2] tab represented with the given
-     * [MusicMode].
-     * @param tabMode The [MusicMode] of the tab.
-     * @return The ID of the RecyclerView contained by the given tab.
-     */
-    private fun getTabRecyclerId(tabMode: MusicMode) =
-        when (tabMode) {
-            MusicMode.SONGS -> R.id.home_song_recycler
-            MusicMode.ALBUMS -> R.id.home_album_recycler
-            MusicMode.ARTISTS -> R.id.home_artist_recycler
-            MusicMode.GENRES -> R.id.home_genre_recycler
-        }
 
     /**
      * [FragmentStateAdapter] implementation for the [HomeFragment]'s [ViewPager2] instance.
@@ -493,12 +482,10 @@ class HomeFragment :
             }
     }
 
-    companion object {
-        private val VP_RECYCLER_FIELD: Field by
-            lazyReflectedField(ViewPager2::class, "mRecyclerView")
-        private val RV_TOUCH_SLOP_FIELD: Field by
-            lazyReflectedField(RecyclerView::class, "mTouchSlop")
-        private const val KEY_LAST_TRANSITION_AXIS =
+    private companion object {
+        val VP_RECYCLER_FIELD: Field by lazyReflectedField(ViewPager2::class, "mRecyclerView")
+        val RV_TOUCH_SLOP_FIELD: Field by lazyReflectedField(RecyclerView::class, "mTouchSlop")
+        const val KEY_LAST_TRANSITION_AXIS =
             BuildConfig.APPLICATION_ID + ".key.LAST_TRANSITION_AXIS"
     }
 }

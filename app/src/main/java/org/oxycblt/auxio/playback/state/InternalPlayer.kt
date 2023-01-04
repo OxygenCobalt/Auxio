@@ -85,6 +85,9 @@ interface InternalPlayer {
         data class Open(val uri: Uri) : Action()
     }
 
+    /**
+     * A representation of the current state of audio playback. Use [from] to create an instance.
+     */
     class State
     private constructor(
         /** Whether the player is actively playing audio or set to play audio in the future. */
@@ -157,7 +160,7 @@ interface InternalPlayer {
              * @param isAdvancing Whether the player is actively playing audio in this moment.
              * @param positionMs The current position of the player.
              */
-            fun new(isPlaying: Boolean, isAdvancing: Boolean, positionMs: Long) =
+            fun from(isPlaying: Boolean, isAdvancing: Boolean, positionMs: Long) =
                 State(
                     isPlaying,
                     // Minor sanity check: Make sure that advancing can't occur if already paused.

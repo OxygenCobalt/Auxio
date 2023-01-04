@@ -1,6 +1,26 @@
 # Changelog
 
-## dev
+## 3.0.1
+
+#### What's New
+- Added support for album date ranges (ex. 2010 - 2013)
+
+#### What's Improved
+- Formalized whitespace handling
+- Value lists are now properly localized
+- Queue no longer primarily shows previous songs when opened
+- Added reset button to ReplayGain pre-amp configuration dialog 
+
+#### What's Changed
+- R128 ReplayGain tags are now only used when playing OPUS files
+
+#### What's Fixed
+- Fixed mangled multi-value ID3v2 tags when UTF-16 is used
+- Fixed crash when playing certain MP3 files
+- Detail UI will no longer crash if the music library is unavailable
+
+#### Dev/Meta
+- Add CI workflow
 
 ## 3.0.0
 
@@ -12,7 +32,7 @@
 	- Added setting to hide "collaborator" artists
 - Upgraded music ID management:
 	- Added support for MusicBrainz IDs (MBIDs)
-	- Use the more unique MD5 hash of metadata when MBIDs can't be used
+	- Use a more unique hash of metadata when MBIDs can't be used
 - Genres now display a list of artists
 - Added toggle to load non-music (Such as podcasts)
 - Music loader now caches parsed metadata for faster load times
@@ -42,7 +62,6 @@ audio focus was lost
 
 #### What's Changed
 - Ignore MediaStore tags is now Auxio's default and unchangeable behavior. The option has been removed.
-- Removed the "Play from genre" option in the library/detail playback mode settings+
 - "Use alternate notification action" is now "Custom notification action"
 - "Show covers" and "Ignore MediaStore covers" have been unified into "Album covers"
 

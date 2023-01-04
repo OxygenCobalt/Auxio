@@ -39,7 +39,7 @@ class ArtistChoiceAdapter(private val listener: ClickableListListener) :
     override fun getItemCount() = artists.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        ArtistChoiceViewHolder.new(parent)
+        ArtistChoiceViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: ArtistChoiceViewHolder, position: Int) =
         holder.bind(artists[position], listener)
@@ -58,7 +58,7 @@ class ArtistChoiceAdapter(private val listener: ClickableListListener) :
 
 /**
  * A [DialogRecyclerView.ViewHolder] that displays a smaller variant of a typical [Artist] item, for
- * use with [ArtistChoiceAdapter]. Use [new] to create an instance.
+ * use with [ArtistChoiceAdapter]. Use [from] to create an instance.
  */
 class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
@@ -68,7 +68,7 @@ class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
      * @param listener A [ClickableListListener] to bind interactions to.
      */
     fun bind(artist: Artist, listener: ClickableListListener) {
-        binding.root.setOnClickListener { listener.onClick(artist) }
+        listener.bind(artist, this)
         binding.pickerImage.bind(artist)
         binding.pickerName.text = artist.resolveName(binding.context)
     }
@@ -79,7 +79,7 @@ class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) =
+        fun from(parent: View) =
             ArtistChoiceViewHolder(ItemPickerChoiceBinding.inflate(parent.context.inflater))
     }
 }

@@ -19,6 +19,7 @@ package org.oxycblt.auxio.playback.system
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -43,11 +44,13 @@ import org.oxycblt.auxio.util.logD
  * A component that mirrors the current playback state into the [MediaSessionCompat] and
  * [NotificationComponent].
  * @param context [Context] required to initialize components.
- * @param callback [Callback] to forward notification updates to.
+ * @param listener [Listener] to forward notification updates to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MediaSessionComponent(private val context: Context, private val callback: Callback) :
-    MediaSessionCompat.Callback(), PlaybackStateManager.Callback, Settings.Callback {
+class MediaSessionComponent(private val context: Context, private val listener: Listener) :
+    MediaSessionCompat.Callback(),
+    PlaybackStateManager.Listener,
+    SharedPreferences.OnSharedPreferenceChangeListener {
     private val mediaSession =
         MediaSessionCompat(context, context.packageName).apply {
             isActive = true
@@ -55,13 +58,13 @@ class MediaSessionComponent(private val context: Context, private val callback: 
         }
 
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settings = Settings(context, this)
+    private val settings = Settings(context)
 
     private val notification = NotificationComponent(context, mediaSession.sessionToken)
     private val provider = BitmapProvider(context)
 
     init {
-        playbackManager.addCallback(this)
+        playbackManager.addListener(this)
         mediaSession.setCallback(this)
     }
 
@@ -79,15 +82,15 @@ class MediaSessionComponent(private val context: Context, private val callback: 
      */
     fun release() {
         provider.release()
-        settings.release()
-        playbackManager.removeCallback(this)
+        settings.removeListener(this)
+        playbackManager.removeListener(this)
         mediaSession.apply {
             isActive = false
             release()
         }
     }
 
-    // --- PLAYBACKSTATEMANAGER CALLBACKS ---
+    // --- PLAYBACKSTATEMANAGER OVERRIDES ---
 
     override fun onIndexMoved(index: Int) {
         updateMediaMetadata(playbackManager.song, playbackManager.parent)
@@ -113,7 +116,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
         invalidateSessionState()
         notification.updatePlaying(playbackManager.playerState.isPlaying)
         if (!provider.isBusy) {
-            callback.onPostNotification(notification)
+            listener.onPostNotification(notification)
         }
     }
 
@@ -139,9 +142,9 @@ class MediaSessionComponent(private val context: Context, private val callback: 
         invalidateSecondaryAction()
     }
 
-    // --- SETTINGSMANAGER CALLBACKS ---
+    // --- SETTINGS OVERRIDES ---
 
-    override fun onSettingChanged(key: String) {
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
             context.getString(R.string.set_key_cover_mode) ->
                 updateMediaMetadata(playbackManager.song, playbackManager.parent)
@@ -149,7 +152,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
         }
     }
 
-    // --- MEDIASESSION CALLBACKS ---
+    // --- MEDIASESSION OVERRIDES ---
 
     override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
         super.onPlayFromMediaId(mediaId, extras)
@@ -306,7 +309,7 @@ class MediaSessionComponent(private val context: Context, private val callback: 
                     val metadata = builder.build()
                     mediaSession.setMetadata(metadata)
                     notification.updateMetadata(metadata)
-                    callback.onPostNotification(notification)
+                    listener.onPostNotification(notification)
                 }
             })
     }
@@ -393,12 +396,12 @@ class MediaSessionComponent(private val context: Context, private val callback: 
         }
 
         if (!provider.isBusy) {
-            callback.onPostNotification(notification)
+            listener.onPostNotification(notification)
         }
     }
 
     /** An interface for handling changes in the notification configuration. */
-    interface Callback {
+    interface Listener {
         /**
          * Called when the [NotificationComponent] changes, requiring it to be re-posed.
          * @param notification The new [NotificationComponent].

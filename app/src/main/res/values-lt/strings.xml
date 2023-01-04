@@ -256,4 +256,6 @@
     <string name="lbl_play_selected">Groti pasirinktą</string>
     <string name="lbl_shuffle_selected">Pasirinktas maišymas</string>
     <string name="set_playback_mode_genre">Groti iš žanro</string>
+    <string name="lbl_wiki">Viki</string>
+    <string name="fmt_list">%1$s, %2$s</string>
 </resources>

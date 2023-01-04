@@ -21,12 +21,10 @@ import android.content.Context
 import androidx.core.text.isDigitsOnly
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
-import com.google.android.exoplayer2.metadata.Metadata
-import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
-import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.storage.toAudioUri
+import org.oxycblt.auxio.music.filesystem.toAudioUri
+import org.oxycblt.auxio.music.parsing.parseId3v2Position
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -116,8 +114,8 @@ class MetadataExtractor(
         }
     }
 
-    companion object {
-        private const val TASK_CAPACITY = 8
+    private companion object {
+        const val TASK_CAPACITY = 8
     }
 }
 
@@ -128,7 +126,6 @@ class MetadataExtractor(
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Task(context: Context, private val raw: Song.Raw) {
-    // TODO: Unify with MetadataExtractor
     // Note that we do not leverage future callbacks. This is because errors in the
     // (highly fallible) extraction process will not bubble up to Indexer when a
     // listener is used, instead crashing the app entirely.
@@ -144,6 +141,7 @@ class Task(context: Context, private val raw: Song.Raw) {
      */
     fun get(): Song.Raw? {
         if (!future.isDone) {
+            // Not done yet, nothing to do.
             return null
         }
 
@@ -162,57 +160,14 @@ class Task(context: Context, private val raw: Song.Raw) {
 
         val metadata = format.metadata
         if (metadata != null) {
-            populateWithMetadata(metadata)
+            val tags = Tags(metadata)
+            populateWithId3v2(tags.id3v2)
+            populateWithVorbis(tags.vorbis)
         } else {
             logD("No metadata could be extracted for ${raw.name}")
         }
 
         return raw
-    }
-
-    /**
-     * Complete this instance's [Song.Raw] with the newly extracted [Metadata].
-     * @param metadata The [Metadata] to complete the [Song.Raw] with.
-     */
-    private fun populateWithMetadata(metadata: Metadata) {
-        val id3v2Tags = mutableMapOf<String, List<String>>()
-        val vorbisTags = mutableMapOf<String, MutableList<String>>()
-
-        // ExoPlayer only exposes ID3v2 and Vorbis metadata, which constitutes the vast majority
-        // of audio formats. Load both of these types of tags into separate maps, letting the
-        // "source of truth" be the last of a particular tag in a file.
-        for (i in 0 until metadata.length()) {
-            when (val tag = metadata[i]) {
-                is TextInformationFrame -> {
-                    // Map TXXX frames differently so we can specifically index by their
-                    // descriptions.
-                    val id = tag.description?.let { "TXXX:${it.sanitize()}" } ?: tag.id.sanitize()
-                    val values = tag.values.map { it.sanitize() }.filter { it.isNotEmpty() }
-                    if (values.isNotEmpty()) {
-                        id3v2Tags[id] = values
-                    }
-                }
-                is VorbisComment -> {
-                    // Vorbis comment keys can be in any case, make them uppercase for simplicity.
-                    val id = tag.key.sanitize().uppercase()
-                    val value = tag.value.sanitize()
-                    if (value.isNotEmpty()) {
-                        vorbisTags.getOrPut(id) { mutableListOf() }.add(value)
-                    }
-                }
-            }
-        }
-
-        when {
-            vorbisTags.isEmpty() -> populateWithId3v2(id3v2Tags)
-            id3v2Tags.isEmpty() -> populateWithVorbis(vorbisTags)
-            else -> {
-                // Some formats (like FLAC) can contain both ID3v2 and Vorbis, so we apply
-                // them both with priority given to vorbis.
-                populateWithId3v2(id3v2Tags)
-                populateWithVorbis(vorbisTags)
-            }
-        }
     }
 
     /**
@@ -222,15 +177,15 @@ class Task(context: Context, private val raw: Song.Raw) {
      */
     private fun populateWithId3v2(textFrames: Map<String, List<String>>) {
         // Song
-        textFrames["TXXX:MusicBrainz Release Track Id"]?.let { raw.musicBrainzId = it[0] }
+        textFrames["TXXX:musicbrainz release track id"]?.let { raw.musicBrainzId = it[0] }
         textFrames["TIT2"]?.let { raw.name = it[0] }
         textFrames["TSOT"]?.let { raw.sortName = it[0] }
 
         // Track. Only parse out the track number and ignore the total tracks value.
-        textFrames["TRCK"]?.run { get(0).parsePositionNum() }?.let { raw.track = it }
+        textFrames["TRCK"]?.run { first().parseId3v2Position() }?.let { raw.track = it }
 
         // Disc. Only parse out the disc number and ignore the total discs value.
-        textFrames["TPOS"]?.run { get(0).parsePositionNum() }?.let { raw.disc = it }
+        textFrames["TPOS"]?.run { first().parseId3v2Position() }?.let { raw.disc = it }
 
         // Dates are somewhat complicated, as not only did their semantics change from a flat year
         // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
@@ -241,27 +196,27 @@ class Task(context: Context, private val raw: Song.Raw) {
         // 3. ID3v2.4 Release Date, as it is the second most common date type
         // 4. ID3v2.3 Original Date, as it is like #1
         // 5. ID3v2.3 Release Year, as it is the most common date type
-        (textFrames["TDOR"]?.run { get(0).parseTimestamp() }
-                ?: textFrames["TDRC"]?.run { get(0).parseTimestamp() }
-                    ?: textFrames["TDRL"]?.run { get(0).parseTimestamp() }
+        (textFrames["TDOR"]?.run { Date.from(first()) }
+                ?: textFrames["TDRC"]?.run { Date.from(first()) }
+                    ?: textFrames["TDRL"]?.run { Date.from(first()) }
                     ?: parseId3v23Date(textFrames))
             ?.let { raw.date = it }
 
         // Album
-        textFrames["TXXX:MusicBrainz Album Id"]?.let { raw.albumMusicBrainzId = it[0] }
+        textFrames["TXXX:musicbrainz album id"]?.let { raw.albumMusicBrainzId = it[0] }
         textFrames["TALB"]?.let { raw.albumName = it[0] }
         textFrames["TSOA"]?.let { raw.albumSortName = it[0] }
-        (textFrames["TXXX:MusicBrainz Album Type"] ?: textFrames["GRP1"])?.let {
+        (textFrames["TXXX:musicbrainz album type"] ?: textFrames["GRP1"])?.let {
             raw.albumTypes = it
         }
 
         // Artist
-        textFrames["TXXX:MusicBrainz Artist Id"]?.let { raw.artistMusicBrainzIds = it }
+        textFrames["TXXX:musicbrainz artist id"]?.let { raw.artistMusicBrainzIds = it }
         textFrames["TPE1"]?.let { raw.artistNames = it }
         textFrames["TSOP"]?.let { raw.artistSortNames = it }
 
         // Album artist
-        textFrames["TXXX:MusicBrainz Album Artist Id"]?.let { raw.albumArtistMusicBrainzIds = it }
+        textFrames["TXXX:musicbrainz album artist id"]?.let { raw.albumArtistMusicBrainzIds = it }
         textFrames["TPE2"]?.let { raw.albumArtistNames = it }
         textFrames["TSO2"]?.let { raw.albumArtistSortNames = it }
 
@@ -282,8 +237,8 @@ class Task(context: Context, private val raw: Song.Raw) {
         // Assume that TDAT/TIME can refer to TYER or TORY depending on if TORY
         // is present.
         val year =
-            textFrames["TORY"]?.run { get(0).toIntOrNull() }
-                ?: textFrames["TYER"]?.run { get(0).toIntOrNull() } ?: return null
+            textFrames["TORY"]?.run { first().toIntOrNull() }
+                ?: textFrames["TYER"]?.run { first().toIntOrNull() } ?: return null
 
         val tdat = textFrames["TDAT"]
         return if (tdat != null && tdat[0].length == 4 && tdat[0].isDigitsOnly()) {
@@ -317,17 +272,17 @@ class Task(context: Context, private val raw: Song.Raw) {
      */
     private fun populateWithVorbis(comments: Map<String, List<String>>) {
         // Song
-        comments["MUSICBRAINZ_RELEASETRACKID"]?.let { raw.musicBrainzId = it[0] }
-        comments["TITLE"]?.let { raw.name = it[0] }
-        comments["TITLESORT"]?.let { raw.sortName = it[0] }
+        comments["musicbrainz_releasetrackid"]?.let { raw.musicBrainzId = it[0] }
+        comments["title"]?.let { raw.name = it[0] }
+        comments["titlesort"]?.let { raw.sortName = it[0] }
 
         // Track. The total tracks value is in a different comment, so we can just
         // convert the entirety of this comment into a number.
-        comments["TRACKNUMBER"]?.run { get(0).toIntOrNull() }?.let { raw.track = it }
+        comments["tracknumber"]?.run { first().toIntOrNull() }?.let { raw.track = it }
 
         // Disc. The total discs value is in a different comment, so we can just
         // convert the entirety of this comment into a number.
-        comments["DISCNUMBER"]?.run { get(0).toIntOrNull() }?.let { raw.disc = it }
+        comments["discnumber"]?.run { first().toIntOrNull() }?.let { raw.disc = it }
 
         // Vorbis dates are less complicated, but there are still several types
         // Our hierarchy for dates is as such:
@@ -335,35 +290,28 @@ class Task(context: Context, private val raw: Song.Raw) {
         // 2. Date, as it is the most common date type
         // 3. Year, as old vorbis tags tended to use this (I know this because it's the only
         // date tag that android supports, so it must be 15 years old or more!)
-        (comments["ORIGINALDATE"]?.run { get(0).parseTimestamp() }
-                ?: comments["DATE"]?.run { get(0).parseTimestamp() }
-                    ?: comments["YEAR"]?.run { get(0).parseYear() })
+        (comments["originaldate"]?.run { Date.from(first()) }
+                ?: comments["date"]?.run { Date.from(first()) }
+                    ?: comments["year"]?.run { first().toIntOrNull()?.let(Date::from) })
             ?.let { raw.date = it }
 
         // Album
-        comments["MUSICBRAINZ_ALBUMID"]?.let { raw.albumMusicBrainzId = it[0] }
-        comments["ALBUM"]?.let { raw.albumName = it[0] }
-        comments["ALBUMSORT"]?.let { raw.albumSortName = it[0] }
-        comments["RELEASETYPE"]?.let { raw.albumTypes = it }
+        comments["musicbrainz_albumid"]?.let { raw.albumMusicBrainzId = it[0] }
+        comments["album"]?.let { raw.albumName = it[0] }
+        comments["albumsort"]?.let { raw.albumSortName = it[0] }
+        comments["releasetype"]?.let { raw.albumTypes = it }
 
         // Artist
-        comments["MUSICBRAINZ_ARTISTID"]?.let { raw.artistMusicBrainzIds = it }
-        comments["ARTIST"]?.let { raw.artistNames = it }
-        comments["ARTISTSORT"]?.let { raw.artistSortNames = it }
+        comments["musicbrainz_artistid"]?.let { raw.artistMusicBrainzIds = it }
+        comments["artist"]?.let { raw.artistNames = it }
+        comments["artistsort"]?.let { raw.artistSortNames = it }
 
         // Album artist
-        comments["MUSICBRAINZ_ALBUMARTISTID"]?.let { raw.albumArtistMusicBrainzIds = it }
-        comments["ALBUMARTIST"]?.let { raw.albumArtistNames = it }
-        comments["ALBUMARTISTSORT"]?.let { raw.albumArtistSortNames = it }
+        comments["musicbrainz_albumartistid"]?.let { raw.albumArtistMusicBrainzIds = it }
+        comments["albumartist"]?.let { raw.albumArtistNames = it }
+        comments["albumartistsort"]?.let { raw.albumArtistSortNames = it }
 
         // Genre
         comments["GENRE"]?.let { raw.genreNames = it }
     }
-
-    /**
-     * Copies and sanitizes a possibly native/non-UTF-8 string.
-     * @return A new string allocated in a memory-safe manner with any UTF-8 errors replaced with
-     * the Unicode replacement byte sequence.
-     */
-    private fun String.sanitize() = String(encodeToByteArray())
 }

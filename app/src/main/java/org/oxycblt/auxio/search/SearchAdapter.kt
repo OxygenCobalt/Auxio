@@ -51,11 +51,11 @@ class SearchAdapter(private val listener: SelectableListListener) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
-            SongViewHolder.VIEW_TYPE -> SongViewHolder.new(parent)
-            AlbumViewHolder.VIEW_TYPE -> AlbumViewHolder.new(parent)
-            ArtistViewHolder.VIEW_TYPE -> ArtistViewHolder.new(parent)
-            GenreViewHolder.VIEW_TYPE -> GenreViewHolder.new(parent)
-            HeaderViewHolder.VIEW_TYPE -> HeaderViewHolder.new(parent)
+            SongViewHolder.VIEW_TYPE -> SongViewHolder.from(parent)
+            AlbumViewHolder.VIEW_TYPE -> AlbumViewHolder.from(parent)
+            ArtistViewHolder.VIEW_TYPE -> ArtistViewHolder.from(parent)
+            GenreViewHolder.VIEW_TYPE -> GenreViewHolder.from(parent)
+            HeaderViewHolder.VIEW_TYPE -> HeaderViewHolder.from(parent)
             else -> error("Invalid item type $viewType")
         }
 
@@ -81,9 +81,9 @@ class SearchAdapter(private val listener: SelectableListListener) :
         differ.submitList(newList, callback)
     }
 
-    companion object {
+    private companion object {
         /** A comparator that can be used with DiffUtil. */
-        private val DIFF_CALLBACK =
+        val DIFF_CALLBACK =
             object : SimpleItemCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item) =
                     when {

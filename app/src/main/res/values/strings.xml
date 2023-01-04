@@ -60,9 +60,9 @@
     <string name="lbl_mixtapes">Mixtapes</string>
     <!-- As in the collection of music -->
     <string name="lbl_mixtape">Mixtape</string>
-    <!-- As in a compilation of several performances that blend into a single continuous flow of music -->
+    <!-- As in a compilation of several performances that blend into a single continuous flow of music (Also known as DJ Mixes) -->
     <string name="lbl_mixes">Mixes</string>
-    <!-- As in a compilation of several performances that blend into a single continuous flow of music -->
+    <!-- As in a compilation of several performances that blend into a single continuous flow of music (Also known as DJ Mixes) -->
     <string name="lbl_mix">Mix</string>
 
     <!-- As in music that was performed live -->
@@ -125,10 +125,12 @@
 
     <string name="lbl_ok">OK</string>
     <string name="lbl_cancel">Cancel</string>
+    <!-- As in to save a setting -->
+    <string name="lbl_save">Save</string>
+    <!-- as in to reset to a default setting -->
+    <string name="lbl_reset">Reset</string>
     <!-- As in to add a new folder in the "Music folders" setting -->
     <string name="lbl_add">Add</string>
-    <!-- As in to save the "Music folders" setting -->
-    <string name="lbl_save">Save</string>
 
     <!-- Referring to playback state -->
     <string name="lbl_state_saved">State saved</string>
@@ -341,6 +343,12 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <eat-comment />
 
+    <!--
+    Comma (,) separator should be localized (For example, "、" in japanese).
+    Do not use "and" or equivalents.
+    -->
+    <string name="fmt_list">%1$s, %2$s</string>
+
     <!-- As in an amount of items that are selected -->
     <string name="fmt_selected">%d Selected</string>
 
@@ -362,7 +370,7 @@
     <string name="fmt_lib_album_count">Albums loaded: %d</string>
     <string name="fmt_lib_artist_count">Artists loaded: %d</string>
     <string name="fmt_lib_genre_count">Genres loaded: %d</string>
-    <!-- AS in the total duration of all songs in the music library -->
+    <!-- As in the total duration of all songs in the music library -->
     <string name="fmt_lib_total_duration">Total duration: %s</string>
 
     <plurals name="fmt_song_count">

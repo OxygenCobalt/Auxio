@@ -116,7 +116,7 @@
 <!--            </intent-filter>-->
 <!--        </receiver>-->
 
-        <!-- "Now Playing" widget.. -->
+        <!-- "Now Playing" widget. -->
         <receiver
             android:name=".widgets.WidgetProvider"
             android:exported="false"

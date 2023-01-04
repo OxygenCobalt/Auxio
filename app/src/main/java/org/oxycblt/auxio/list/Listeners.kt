@@ -17,8 +17,8 @@
  
 package org.oxycblt.auxio.list
 
+import android.view.MotionEvent
 import android.view.View
-import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 
 /**
@@ -26,13 +26,63 @@ import androidx.recyclerview.widget.RecyclerView
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface ClickableListListener {
-    // TODO: Supply a ViewHolder on clicks
-    //  (allows editable lists to be standardized into a listener.)
     /**
      * Called when an [Item] in the list is clicked.
      * @param item The [Item] that was clicked.
+     * @param viewHolder The [RecyclerView.ViewHolder] of the item that was clicked.
      */
-    fun onClick(item: Item)
+    fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder)
+
+    /**
+     * Binds this instance to a list item.
+     * @param item The [Item] that this list entry is bound to.
+     * @param viewHolder The [RecyclerView.ViewHolder] of the item that was clicked.
+     * @param bodyView The [View] containing the main body of the list item. Any click events on
+     * this [View] are routed to the listener. Defaults to the root view.
+     */
+    fun bind(
+        item: Item,
+        viewHolder: RecyclerView.ViewHolder,
+        bodyView: View = viewHolder.itemView
+    ) {
+        bodyView.setOnClickListener { onClick(item, viewHolder) }
+    }
+}
+
+/**
+ * An extension of [ClickableListListener] that enables list editing functionality.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+interface EditableListListener : ClickableListListener {
+    /**
+     * Called when a [RecyclerView.ViewHolder] requests that it should be dragged.
+     * @param viewHolder The [RecyclerView.ViewHolder] that should start being dragged.
+     */
+    fun onPickUp(viewHolder: RecyclerView.ViewHolder)
+
+    /**
+     * Binds this instance to a list item.
+     * @param item The [Item] that this list entry is bound to.
+     * @param viewHolder The [RecyclerView.ViewHolder] to bind.
+     * @param bodyView The [View] containing the main body of the list item. Any click events on
+     * this [View] are routed to the listener. Defaults to the root view.
+     * @param dragHandle A touchable [View]. Any drag on this view will start a drag event.
+     */
+    fun bind(
+        item: Item,
+        viewHolder: RecyclerView.ViewHolder,
+        bodyView: View = viewHolder.itemView,
+        dragHandle: View
+    ) {
+        bind(item, viewHolder, bodyView)
+        dragHandle.setOnTouchListener { _, motionEvent ->
+            dragHandle.performClick()
+            if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
+                onPickUp(viewHolder)
+                true
+            } else false
+        }
+    }
 }
 
 /**
@@ -55,19 +105,23 @@ interface SelectableListListener : ClickableListListener {
 
     /**
      * Binds this instance to a list item.
-     * @param viewHolder The [RecyclerView.ViewHolder] to bind.
      * @param item The [Item] that this list entry is bound to.
-     * @param menuButton A [Button] that opens a menu.
+     * @param viewHolder The [RecyclerView.ViewHolder] to bind.
+     * @param bodyView The [View] containing the main body of the list item. Any click events on
+     * this [View] are routed to the listener. Defaults to the root view.
+     * @param menuButton A clickable [View]. Any click events on this [View] will open a menu.
      */
-    fun bind(viewHolder: RecyclerView.ViewHolder, item: Item, menuButton: Button) {
-        viewHolder.itemView.apply {
-            // Map clicks to the click listener.
-            setOnClickListener { onClick(item) }
-            // Map long clicks to the selection listener.
-            setOnLongClickListener {
-                onSelect(item)
-                true
-            }
+    fun bind(
+        item: Item,
+        viewHolder: RecyclerView.ViewHolder,
+        bodyView: View = viewHolder.itemView,
+        menuButton: View
+    ) {
+        bind(item, viewHolder, bodyView)
+        // Map long clicks to the selection listener.
+        bodyView.setOnLongClickListener {
+            onSelect(item)
+            true
         }
         // Map the menu button to the menu opening listener.
         menuButton.setOnClickListener { onOpenMenu(item, it) }

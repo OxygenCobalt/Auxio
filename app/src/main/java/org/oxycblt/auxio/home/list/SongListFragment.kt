@@ -103,7 +103,7 @@ class SongListFragment :
                 song.album.collationKey?.run { sourceString.first().uppercase() }
 
             // Year -> Use Full Year
-            is Sort.Mode.ByDate -> song.album.date?.resolveDate(requireContext())
+            is Sort.Mode.ByDate -> song.album.dates?.resolveDate(requireContext())
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> song.durationMs.formatDurationMs(false)
@@ -166,7 +166,7 @@ class SongListFragment :
             get() = differ.currentList
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            SongViewHolder.new(parent)
+            SongViewHolder.from(parent)
 
         override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
             holder.bind(differ.currentList[position], listener)

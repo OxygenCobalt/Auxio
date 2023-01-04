@@ -19,7 +19,6 @@ package org.oxycblt.auxio.playback.queue
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.LayerDrawable
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
@@ -27,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
+import org.oxycblt.auxio.list.EditableListListener
 import org.oxycblt.auxio.list.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.list.recycler.SyncListDiffer
@@ -38,10 +38,11 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * A [RecyclerView.Adapter] that shows an editable list of queue items.
- * @param listener A [Listener] to bind interactions to.
+ * @param listener A [EditableListListener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class QueueAdapter(private val listener: Listener) : RecyclerView.Adapter<QueueSongViewHolder>() {
+class QueueAdapter(private val listener: EditableListListener) :
+    RecyclerView.Adapter<QueueSongViewHolder>() {
     private var differ = SyncListDiffer(this, QueueSongViewHolder.DIFF_CALLBACK)
     // Since PlayingIndicator adapter relies on an item value, we cannot use it for this
     // adapter, as one item can appear at several points in the UI. Use a similar implementation
@@ -52,7 +53,7 @@ class QueueAdapter(private val listener: Listener) : RecyclerView.Adapter<QueueS
     override fun getItemCount() = differ.currentList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        QueueSongViewHolder.new(parent)
+        QueueSongViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: QueueSongViewHolder, position: Int) =
         throw IllegalStateException()
@@ -121,29 +122,13 @@ class QueueAdapter(private val listener: Listener) : RecyclerView.Adapter<QueueS
         }
     }
 
-    /** A listener for queue list events. */
-    interface Listener {
-        /**
-         * Called when a [RecyclerView.ViewHolder] in the list as clicked.
-         * @param viewHolder The [RecyclerView.ViewHolder] that was clicked.
-         */
-        fun onClick(viewHolder: RecyclerView.ViewHolder)
-
-        /**
-         * Called when the drag handle on a [RecyclerView.ViewHolder] is clicked, requesting that a
-         * drag should be started.
-         * @param viewHolder The [RecyclerView.ViewHolder] to start dragging.
-         */
-        fun onPickUp(viewHolder: RecyclerView.ViewHolder)
-    }
-
-    companion object {
-        private val PAYLOAD_UPDATE_POSITION = Any()
+    private companion object {
+        val PAYLOAD_UPDATE_POSITION = Any()
     }
 }
 
 /**
- * A [PlayingIndicatorAdapter.ViewHolder] that displays a queue [Song]. Use [new] to create an
+ * A [PlayingIndicatorAdapter.ViewHolder] that displays a queue [Song]. Use [from] to create an
  * instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -190,26 +175,17 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
     /**
      * Bind new data to this instance.
      * @param song The new [Song] to bind.
-     * @param listener A [QueueAdapter.Listener] to bind interactions to.
+     * @param listener A [EditableListListener] to bind interactions to.
      */
     @SuppressLint("ClickableViewAccessibility")
-    fun bind(song: Song, listener: QueueAdapter.Listener) {
-        binding.body.setOnClickListener { listener.onClick(this) }
-
+    fun bind(song: Song, listener: EditableListListener) {
+        listener.bind(song, this, bodyView, binding.songDragHandle)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.resolveName(binding.context)
         binding.songInfo.text = song.resolveArtistContents(binding.context)
-        // TODO: Why is this here?
+        // Not swiping this ViewHolder if it's being re-bound, ensure that the background is
+        // not visible. See QueueDragCallback for why this is done.
         binding.background.isInvisible = true
-
-        // Set up the drag handle to start a drag whenever it is touched.
-        binding.songDragHandle.setOnTouchListener { _, motionEvent ->
-            binding.songDragHandle.performClick()
-            if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
-                listener.onPickUp(this)
-                true
-            } else false
-        }
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -223,7 +199,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) =
+        fun from(parent: View) =
             QueueSongViewHolder(ItemQueueSongBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */

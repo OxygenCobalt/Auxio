@@ -152,14 +152,14 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         startActivity(chooserIntent)
     }
 
-    companion object {
+    private companion object {
         /** The URL to the source code. */
-        private const val LINK_SOURCE = "https://github.com/OxygenCobalt/Auxio"
+        const val LINK_SOURCE = "https://github.com/OxygenCobalt/Auxio"
         /** The URL to the app wiki. */
-        private const val LINK_WIKI = "$LINK_SOURCE/wiki"
+        const val LINK_WIKI = "$LINK_SOURCE/wiki"
         /** The URL to the licenses wiki page. */
-        private const val LINK_LICENSES = "$LINK_WIKI/Licenses"
+        const val LINK_LICENSES = "$LINK_WIKI/Licenses"
         /** The URL to the app author. */
-        private const val LINK_AUTHOR = "https://github.com/OxygenCobalt"
+        const val LINK_AUTHOR = "https://github.com/OxygenCobalt"
     }
 }

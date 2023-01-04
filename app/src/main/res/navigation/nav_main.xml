@@ -106,12 +106,12 @@
         tools:layout="@layout/dialog_pre_amp" />
     <dialog
         android:id="@+id/music_dirs_dialog"
-        android:name="org.oxycblt.auxio.music.storage.MusicDirsDialog"
+        android:name="org.oxycblt.auxio.music.filesystem.MusicDirsDialog"
         android:label="music_dirs_dialog"
         tools:layout="@layout/dialog_music_dirs" />
     <dialog
         android:id="@+id/separators_dialog"
-        android:name="org.oxycblt.auxio.music.extractor.SeparatorsDialog"
+        android:name="org.oxycblt.auxio.music.parsing.SeparatorsDialog"
         android:label="music_dirs_dialog"
         tools:layout="@layout/dialog_separators" />
 

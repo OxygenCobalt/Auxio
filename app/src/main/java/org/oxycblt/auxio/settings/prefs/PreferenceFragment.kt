@@ -76,7 +76,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             is IntListPreference -> {
                 // Copy the built-in preference dialog launching code into our project so
                 // we can automatically use the provided preference class.
-                val dialog = IntListPreferenceDialog.new(preference)
+                val dialog = IntListPreferenceDialog.from(preference)
                 dialog.setTargetFragment(this, 0)
                 dialog.show(parentFragmentManager, IntListPreferenceDialog.TAG)
             }
@@ -104,46 +104,44 @@ class PreferenceFragment : PreferenceFragmentCompat() {
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
-        val context = requireContext()
-
         // Hook generic preferences to their specified preferences
         // TODO: These seem like good things to put into a side navigation view, if I choose to
         //  do one.
         when (preference.key) {
-            context.getString(R.string.set_key_save_state) -> {
+            getString(R.string.set_key_save_state) -> {
                 playbackModel.savePlaybackState { saved ->
                     // Use the nullable context, as we could try to show a toast when this
                     // fragment is no longer attached.
                     if (saved) {
-                        this.context?.showToast(R.string.lbl_state_saved)
+                        context?.showToast(R.string.lbl_state_saved)
                     } else {
-                        this.context?.showToast(R.string.err_did_not_save)
+                        context?.showToast(R.string.err_did_not_save)
                     }
                 }
             }
-            context.getString(R.string.set_key_wipe_state) -> {
+            getString(R.string.set_key_wipe_state) -> {
                 playbackModel.wipePlaybackState { wiped ->
                     if (wiped) {
                         // Use the nullable context, as we could try to show a toast when this
                         // fragment is no longer attached.
-                        this.context?.showToast(R.string.lbl_state_wiped)
+                        context?.showToast(R.string.lbl_state_wiped)
                     } else {
-                        this.context?.showToast(R.string.err_did_not_wipe)
+                        context?.showToast(R.string.err_did_not_wipe)
                     }
                 }
             }
-            context.getString(R.string.set_key_restore_state) ->
+            getString(R.string.set_key_restore_state) ->
                 playbackModel.tryRestorePlaybackState { restored ->
                     if (restored) {
                         // Use the nullable context, as we could try to show a toast when this
                         // fragment is no longer attached.
-                        this.context?.showToast(R.string.lbl_state_restored)
+                        context?.showToast(R.string.lbl_state_restored)
                     } else {
-                        this.context?.showToast(R.string.err_did_not_restore)
+                        context?.showToast(R.string.err_did_not_restore)
                     }
                 }
-            context.getString(R.string.set_key_reindex) -> musicModel.refresh()
-            context.getString(R.string.set_key_rescan) -> musicModel.rescan()
+            getString(R.string.set_key_reindex) -> musicModel.refresh()
+            getString(R.string.set_key_rescan) -> musicModel.rescan()
             else -> return super.onPreferenceTreeClick(preference)
         }
 
@@ -151,8 +149,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupPreference(preference: Preference) {
-        val context = requireActivity()
-        val settings = Settings(context)
+        val settings = Settings(requireContext())
 
         if (!preference.isVisible) {
             // Nothing to do.
@@ -165,30 +162,31 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         }
 
         when (preference.key) {
-            context.getString(R.string.set_key_theme) -> {
+            getString(R.string.set_key_theme) -> {
                 preference.onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { _, value ->
                         AppCompatDelegate.setDefaultNightMode(value as Int)
                         true
                     }
             }
-            context.getString(R.string.set_key_accent) -> {
-                preference.summary = context.getString(settings.accent.name)
+            getString(R.string.set_key_accent) -> {
+                preference.summary = getString(settings.accent.name)
             }
-            context.getString(R.string.set_key_black_theme) -> {
+            getString(R.string.set_key_black_theme) -> {
                 preference.onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { _, _ ->
-                        if (context.isNight) {
-                            context.recreate()
+                        val activity = requireActivity()
+                        if (activity.isNight) {
+                            activity.recreate()
                         }
 
                         true
                     }
             }
-            context.getString(R.string.set_key_cover_mode) -> {
+            getString(R.string.set_key_cover_mode) -> {
                 preference.onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { _, _ ->
-                        Coil.imageLoader(context).memoryCache?.clear()
+                        Coil.imageLoader(requireContext()).memoryCache?.clear()
                         true
                     }
             }

@@ -25,6 +25,7 @@
         style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginEnd="@dimen/spacing_mid_large"
         android:contentDescription="@string/desc_music_dir_delete"
         app:icon="@drawable/ic_delete_24"

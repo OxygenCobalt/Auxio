@@ -15,15 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.storage
+package org.oxycblt.auxio.music.filesystem
 
 import android.content.Context
-import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.webkit.MimeTypeMap
-import com.google.android.exoplayer2.util.MimeTypes
 import java.io.File
 import org.oxycblt.auxio.R
 

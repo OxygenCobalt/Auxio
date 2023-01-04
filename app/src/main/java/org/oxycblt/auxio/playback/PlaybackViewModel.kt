@@ -38,7 +38,7 @@ import org.oxycblt.auxio.util.context
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PlaybackViewModel(application: Application) :
-    AndroidViewModel(application), PlaybackStateManager.Callback {
+    AndroidViewModel(application), PlaybackStateManager.Listener {
     private val settings = Settings(application)
     private val playbackManager = PlaybackStateManager.getInstance()
     private var lastPositionJob: Job? = null
@@ -70,8 +70,8 @@ class PlaybackViewModel(application: Application) :
 
     private val _artistPlaybackPickerSong = MutableStateFlow<Song?>(null)
     /**
-     * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when
-     * playing a [Song] from one of it's [Artist]s.
+     * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing a
+     * [Song] from one of it's [Artist]s.
      * @see playFromArtist
      */
     val artistPickerSong: StateFlow<Song?>
@@ -79,8 +79,8 @@ class PlaybackViewModel(application: Application) :
 
     private val _genrePlaybackPickerSong = MutableStateFlow<Song?>(null)
     /**
-     * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing
-     * a [Song] from one of it's [Genre]s.
+     * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing a
+     * [Song] from one of it's [Genre]s.
      */
     val genrePickerSong: StateFlow<Song?>
         get() = _genrePlaybackPickerSong
@@ -93,11 +93,11 @@ class PlaybackViewModel(application: Application) :
         get() = playbackManager.currentAudioSessionId
 
     init {
-        playbackManager.addCallback(this)
+        playbackManager.addListener(this)
     }
 
     override fun onCleared() {
-        playbackManager.removeCallback(this)
+        playbackManager.removeListener(this)
     }
 
     override fun onIndexMoved(index: Int) {

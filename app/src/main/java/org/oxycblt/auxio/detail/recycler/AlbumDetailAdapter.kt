@@ -67,9 +67,9 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
-            AlbumDetailViewHolder.VIEW_TYPE -> AlbumDetailViewHolder.new(parent)
-            DiscHeaderViewHolder.VIEW_TYPE -> DiscHeaderViewHolder.new(parent)
-            AlbumSongViewHolder.VIEW_TYPE -> AlbumSongViewHolder.new(parent)
+            AlbumDetailViewHolder.VIEW_TYPE -> AlbumDetailViewHolder.from(parent)
+            DiscHeaderViewHolder.VIEW_TYPE -> DiscHeaderViewHolder.from(parent)
+            AlbumSongViewHolder.VIEW_TYPE -> AlbumSongViewHolder.from(parent)
             else -> super.onCreateViewHolder(parent, viewType)
         }
 
@@ -88,9 +88,9 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
         return super.isItemFullWidth(position) || item is Album || item is DiscHeader
     }
 
-    companion object {
+    private companion object {
         /** A comparator that can be used with DiffUtil. */
-        private val DIFF_CALLBACK =
+        val DIFF_CALLBACK =
             object : SimpleItemCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
@@ -110,7 +110,7 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays the [Album] header in the detail view. Use [new] to
+ * A [RecyclerView.ViewHolder] that displays the [Album] header in the detail view. Use [from] to
  * create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -142,7 +142,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
         // Date, song count, and duration map to the info text
         binding.detailInfo.apply {
             // Fall back to a friendlier "No date" text if the album doesn't have date information
-            val date = album.date?.resolveDate(context) ?: context.getString(R.string.def_date)
+            val date = album.dates?.resolveDate(context) ?: context.getString(R.string.def_date)
             val songCount = context.getPlural(R.plurals.fmt_song_count, album.songs.size)
             val duration = album.durationMs.formatDurationMs(true)
             text = context.getString(R.string.fmt_three, date, songCount, duration)
@@ -161,7 +161,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) =
+        fun from(parent: View) =
             AlbumDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
@@ -170,7 +170,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.areArtistContentsTheSame(newItem) &&
-                        oldItem.date == newItem.date &&
+                        oldItem.dates == newItem.dates &&
                         oldItem.songs.size == newItem.songs.size &&
                         oldItem.durationMs == newItem.durationMs &&
                         oldItem.type == newItem.type
@@ -180,7 +180,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
 /**
  * A [RecyclerView.ViewHolder] that displays a [DiscHeader] to delimit different disc groups. Use
- * [new] to create an instance.
+ * [from] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
@@ -202,7 +202,7 @@ private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) =
+        fun from(parent: View) =
             DiscHeaderViewHolder(ItemDiscHeaderBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
@@ -215,7 +215,7 @@ private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [Song] in the context of an [Album]. Use [new] to
+ * A [RecyclerView.ViewHolder] that displays a [Song] in the context of an [Album]. Use [from] to
  * create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -227,7 +227,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
      * @param listener A [SelectableListListener] to bind interactions to.
      */
     fun bind(song: Song, listener: SelectableListListener) {
-        listener.bind(this, song, binding.songMenu)
+        listener.bind(song, this, menuButton = binding.songMenu)
 
         binding.songTrack.apply {
             if (song.track != null) {
@@ -269,7 +269,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun new(parent: View) =
+        fun from(parent: View) =
             AlbumSongViewHolder(ItemAlbumSongBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */

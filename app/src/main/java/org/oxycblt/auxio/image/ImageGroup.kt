@@ -65,7 +65,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private val cornerRadius: Float
 
     init {
-        // Obtain some StyledImageView attributes to use later when theming the cusotm view.
+        // Obtain some StyledImageView attributes to use later when theming the custom view.
         @SuppressLint("CustomViewStyleable")
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.StyledImageView)
         // Keep track of our corner radius so that we can apply the same attributes to the custom
@@ -107,7 +107,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         // Playback indicator should sit above the inner StyledImageView and custom view/
         addView(playbackIndicatorView)
-        // Selction indicator should never be obscured, so place it at the top.
+        // Selection indicator should never be obscured, so place it at the top.
         addView(
             selectionIndicatorView,
             LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
