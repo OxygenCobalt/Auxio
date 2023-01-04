@@ -128,10 +128,12 @@
     <string name="fmt_lib_song_count">Canciones cargadas: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d canción</item>
+        <item quantity="many">%d canciones</item>
         <item quantity="other">%d canciones</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d álbum</item>
+        <item quantity="many">%d álbumes</item>
         <item quantity="other">%d álbumes</item>
     </plurals>
     <string name="lbl_size">Tamaño</string>
