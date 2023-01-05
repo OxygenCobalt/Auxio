@@ -18,9 +18,7 @@ android {
         minSdk 21
         targetSdk 33
 
-        buildFeatures {
-            viewBinding true
-        }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     // ExoPlayer, AndroidX, and Material Components all need Java 8 to compile.
@@ -45,6 +43,10 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     dependenciesInfo {
@@ -110,8 +112,11 @@ dependencies {
     // Locked below 1.7.0-alpha03 to avoid the same ripple bug
     implementation "com.google.android.material:material:1.7.0-alpha02"
 
-    // LeakCanary
+    // Development
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.9.1"
+    testImplementation "junit:junit:4.13.2"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 }
 
 spotless {
