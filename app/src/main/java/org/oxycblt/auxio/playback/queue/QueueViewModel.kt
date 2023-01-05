@@ -110,7 +110,6 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
         scrollTo = null
         _queue.value = queue.resolve()
         if (change != Queue.ChangeResult.MAPPING) {
-            logD("Update the index you retard. Do basics.")
             // Index changed, make sure it remains updated without actually scrolling to it.
             _index.value = queue.index
         }
