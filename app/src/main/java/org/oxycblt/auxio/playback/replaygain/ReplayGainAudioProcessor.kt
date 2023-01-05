@@ -229,47 +229,42 @@ class ReplayGainAudioProcessor(private val context: Context) :
         throw AudioProcessor.UnhandledAudioFormatException(inputAudioFormat)
     }
 
-    override fun isActive() = super.isActive() && volume != 1f
-
     override fun queueInput(inputBuffer: ByteBuffer) {
-        val position = inputBuffer.position()
+        val pos = inputBuffer.position()
         val limit = inputBuffer.limit()
-        val size = limit - position
-        val buffer = replaceOutputBuffer(size)
+        val buffer = replaceOutputBuffer(limit - pos)
 
-        for (i in position until limit step 2) {
-            // Ensure we clamp the values to the minimum and maximum values possible
-            // for the encoding. This prevents issues where samples amplified beyond
-            // 1 << 16 will end up becoming truncated during the conversion to a short,
-            // resulting in popping.
-            var sample = inputBuffer.getLeShort(i)
-            sample =
-                (sample * volume)
-                    .toInt()
-                    .coerceAtLeast(Short.MIN_VALUE.toInt())
-                    .coerceAtMost(Short.MAX_VALUE.toInt())
-                    .toShort()
-            buffer.putLeShort(sample)
+        if (volume == 1f) {
+            // Nothing to adjust, just copy the audio data.
+            // isActive is technically a much better way of doing a no-op like this, but since
+            // the adjustment can change during playback I'm largely forced to do this.
+            buffer.put(inputBuffer.slice())
+        } else {
+            for (i in pos until limit step 2) {
+                // 16-bit PCM audio, deserialize a little-endian short.
+                var sample =
+                    inputBuffer
+                        .get(i + 1)
+                        .toInt()
+                        .shl(8)
+                        .or(inputBuffer.get(i).toInt().and(0xFF))
+                        .toShort()
+                // Ensure we clamp the values to the minimum and maximum values possible
+                // for the encoding. This prevents issues where samples amplified beyond
+                // 1 << 16 will end up becoming truncated during the conversion to a short,
+                // resulting in popping.
+                sample =
+                    (sample * volume)
+                        .toInt()
+                        .coerceAtLeast(Short.MIN_VALUE.toInt())
+                        .coerceAtMost(Short.MAX_VALUE.toInt())
+                        .toShort()
+                buffer.put(sample.toByte()).put(sample.toInt().shr(8).toByte())
+            }
         }
 
         inputBuffer.position(limit)
         buffer.flip()
-    }
-
-    /**
-     * Always read a little-endian [Short] from the [ByteBuffer] at the given index.
-     * @param at The index to read the [Short] from.
-     */
-    private fun ByteBuffer.getLeShort(at: Int) =
-        get(at + 1).toInt().shl(8).or(get(at).toInt().and(0xFF)).toShort()
-
-    /**
-     * Always write a little-endian [Short] at the end of the [ByteBuffer].
-     * @param short The [Short] to write.
-     */
-    private fun ByteBuffer.putLeShort(short: Short) {
-        put(short.toByte())
-        put(short.toInt().shr(8).toByte())
     }
 
     /**

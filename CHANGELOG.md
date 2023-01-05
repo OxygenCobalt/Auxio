@@ -6,6 +6,7 @@
 - Added ability to edit previously played or currently playing items in the queue
 
 #### What's Fixed
+- Fixed unreliable ReplayGain adjustment application in certain situations
 - Fixed crash that would occur in music folders dialog when user does not have a working
 file manager
 

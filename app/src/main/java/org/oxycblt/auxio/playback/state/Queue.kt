@@ -170,7 +170,6 @@ class Queue {
      * mutated.
      */
     fun move(src: Int, dst: Int): ChangeResult {
-
         if (shuffledMapping.isNotEmpty()) {
             // Move songs only in the shuffled mapping. There is no sane analogous form of
             // this for the ordered mapping.
