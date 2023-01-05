@@ -254,4 +254,6 @@
     <string name="lbl_play_selected">Reproduciraj odabrane</string>
     <string name="set_playback_mode_genre">Reproduciraj iz žanra</string>
     <string name="lbl_wiki">Wiki</string>
+    <string name="fmt_list">%1$s, %2$s</string>
+    <string name="lbl_reset">Resetiraj</string>
 </resources>

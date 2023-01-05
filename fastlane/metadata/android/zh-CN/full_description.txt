@@ -1,4 +1,4 @@
-Auxio 是一款本地音乐播放器，它拥有快速、可靠的 UI/UX，没有其他音乐播放器中的诸多无用功能。和其他使用原生 MediaPlayer API 的应用相比，Auxio 基于 <a href="https://exoplayer.dev/">Exoplayer</a> 进行构建，聆听体验更佳，有更好的音乐库支持，<b>正是一款音乐播放器应有的样子</b>。
+Auxio 是一款本地音乐播放器，它拥有快速、可靠的 UI/UX，没有其他音乐播放器中的诸多无用功能。和其他使用原生 MediaPlayer API 的应用相比，Auxio 基于 Exoplayer 进行构建，聆听体验更佳，有更好的音乐库支持，<b>正是一款音乐播放器应有的样子</b>。
 
 <b>功能特性</b>
 

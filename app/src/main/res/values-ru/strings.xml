@@ -264,4 +264,7 @@
     <string name="lbl_play_selected">Воспроизвести выбранное</string>
     <string name="lbl_shuffle_selected">Перемешать выбранное</string>
     <string name="fmt_selected">%d Выбрано</string>
+    <string name="lbl_wiki">Вики</string>
+    <string name="lbl_reset">Сбросить</string>
+    <string name="fmt_list">%1$s,%2$s</string>
 </resources>

@@ -25,7 +25,7 @@
     <string name="lbl_version">Versão</string>
     <string name="lbl_code">Código-fonte</string>
     <string name="lbl_licenses">Licenças</string>
-    <string name="lng_author">Desenvolvido por OxygenCobalt</string>
+    <string name="lng_author">Desenvolvido por Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Configurações</string>
     <string name="set_ui">Aparência</string>
@@ -62,10 +62,12 @@
     <string name="fmt_lib_song_count">Músicas carregadas: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d música</item>
+        <item quantity="many">%d músicas</item>
         <item quantity="other">%d músicas</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d álbum</item>
+        <item quantity="many">%d álbuns</item>
         <item quantity="other">%d álbuns</item>
     </plurals>
     <string name="lbl_sort_asc">Crescente</string>
@@ -91,7 +93,7 @@
     <string name="set_rewind_prev_desc">Retrocede a música antes de voltar para a anterior</string>
     <string name="set_dirs_mode_include_desc">‘As músicas serão carregadas <b>somente</b> das pastas que você adicionar.</string>
     <string name="set_dirs_mode_exclude">Excluir</string>
-    <string name="set_dirs_mode_exclude_desc">As músicas <b>não</b> serão carregadas das pastas que você adicionar</string>
+    <string name="set_dirs_mode_exclude_desc">As músicas <b>não</b> serão carregadas das pastas que você adicionar.</string>
     <string name="set_dirs_mode">Modo</string>
     <string name="err_no_perms">O Auxio precisa de permissão para ler sua biblioteca de músicas</string>
     <string name="info_app_desc">Um reprodutor de música simples e racional para android.</string>
@@ -147,7 +149,7 @@
     <string name="cdc_ogg">Áudio Ogg</string>
     <string name="cdc_mka">Áudio Matroska</string>
     <string name="cdc_aac">Codificação de Audio Avançada (AAC)</string>
-    <string name="cdc_flac">Codec gratuito de áudio sem perdas (FLAC)</string>
+    <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="desc_queue_handle">Mover esta música da fila</string>
     <string name="clr_dynamic">Dinâmico</string>
     <string name="fmt_lib_total_duration">Duração total: %s</string>
@@ -169,7 +171,7 @@
     <string name="set_replay_gain_album">Preferir álbum</string>
     <string name="set_replay_gain_dynamic">Prefira o álbum se estiver tocando</string>
     <string name="set_observing">Recarregamento automático</string>
-    <string name="set_observing_desc">Recarrega a biblioteca de músicas sempre que ela mudar (requer notificação persistente)</string>
+    <string name="set_observing_desc">Recarrega a biblioteca de músicas sempre que ela mudar (requer notificação fixa)</string>
     <string name="lbl_sort_date_added">Data adicionada</string>
     <string name="lbl_cancel">Cancelar</string>
     <string name="set_replay_gain_track">Preferir faixa</string>
@@ -245,12 +247,20 @@
     <string name="lbl_mix">Mix</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d artista</item>
+        <item quantity="many">%d artistas</item>
         <item quantity="other">%d artistas</item>
     </plurals>
     <string name="set_rescan">Re-escanear músicas</string>
-    <string name="set_rescan_desc">Limpa os metadados em cache e recarrega totalmente a biblioteca de músicas (mais lento, porém mais completo)</string>
+    <string name="set_rescan_desc">Limpa os metadados em cache e recarrega totalmente a biblioteca de música (lento, porém mais completo)</string>
     <string name="err_did_not_wipe">Não foi possível limpar a lista</string>
     <string name="err_did_not_save">Não foi possível salvar a lista</string>
     <string name="set_hide_collaborators">Ocultar artistas colaboradores</string>
     <string name="set_hide_collaborators_desc">Mostrar apenas artistas que foram creditados diretamente no álbum (funciona melhor em músicas com metadados completos)</string>
+    <string name="lbl_play_selected">Tocar selecionada(s)</string>
+    <string name="lbl_shuffle_selected">Aleatorizar selecionadas</string>
+    <string name="fmt_selected">%d Selecionadas</string>
+    <string name="lbl_wiki">Wiki</string>
+    <string name="lbl_reset">Redefinir</string>
+    <string name="fmt_list">%1$s, %2$s</string>
+    <string name="set_playback_mode_genre">Tocar a partir do gênero</string>
 </resources>

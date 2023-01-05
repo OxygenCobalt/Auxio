@@ -1,4 +1,4 @@
-Auxio ist ein lokaler Musik-Player mit einer schnellen, verlässlichen UI/UX, aber ohne die vielen unnötigen Funktionen, die andere Player haben. Auxio basiert auf <a href="https://exoplayer.dev/">Exoplayer</a> und hat deshalb eine bessere Musik-Bibliotheks-Unterstützung und Qualität als andere Player, die die veralteten Android-Funktionen nutzen. Kurz gesagt, <b>Auxio spielt Musik</b>.
+Auxio ist ein lokaler Musik-Player mit einer schnellen, verlässlichen UI/UX, aber ohne die vielen unnötigen Funktionen, die andere Player haben. Auxio basiert auf Exoplayer und hat deshalb eine bessere Musik-Bibliotheks-Unterstützung und Qualität als andere Player, die die veralteten Android-Funktionen nutzen. Kurz gesagt, <b>Auxio spielt Musik</b>.
 
 <b>Funktionen</b>
 

@@ -1,16 +1,16 @@
-O Auxio é um reprodutor de música local com UI/UX rápido e confiável, sem os muitos recursos inúteis presentes em outros reprodutores de música. Construído a partir do <a href="https://exoplayer.dev/">Exoplayer</a>, o Auxio tem uma experiência de audição muito melhor em comparação com outros aplicativos que usam a API MediaPlayer nativa. Resumindo, <b>Toca música.</b>
+O Auxio é um reprodutor de música local com UI/UX rápido e confiável, sem os muitos recursos inúteis presentes em outros reprodutores de música. Construído a partir do Exoplayer, o Auxio tem uma experiência de audição muito melhor em comparação com outros aplicativos que usam a API MediaPlayer nativa. Resumindo, <b>Toca música.</b>
 
 <b>Recursos</b>
 
 - Reprodução baseada em ExoPlayer
 - Snappy UI derivada das diretrizes mais recentes do Material Design
-- UX opinativo que prioriza a facilidade de uso em relação aos casos extremos
+- UX opinativo que prioriza a facilidade de uso
 - Comportamento personalizável
-- Indexador de mídia avançado que prioriza metadados corretos
-- Suporte à Datas Precisas/Originais, Classificação de Metadados e Tipos de Lançamento (experimental)
+- Suporte à numeração de músicas nos discos, múltiplos artistas, tipos de lançamento, datas precisas/originais, ordenar tags, e mais
+- Sistema de artistas avançado que unifica artistas e seus álbuns
 - Gerenciamento de pastas com reconhecimento de cartão SD
 - Persistência confiável da lista de reprodução
-- Suporte completo ao ReplayGain (em MP3, MP4, FLAC, OGG e OPUS)
+- Suporte completo ao ReplayGain (MP3, MP4, FLAC, OGG e OPUS)
 - Funcionalidade de equalizador externo (como o Wavelet)
 - De ponta a ponta
 - Suporte para capas embutidas
@@ -18,4 +18,4 @@ O Auxio é um reprodutor de música local com UI/UX rápido e confiável, sem os
 - Reprodução automática em fones de ouvido
 - Widgets elegantes que se adaptam automaticamente ao seu tamanho
 - Completamente privado e offline
-- Sem capas de álbuns arredondadas (a menos que você as queira. Então você pode.)
+- Sem capas de álbuns arredondadas (a menos que você as queira. Daí pode.)

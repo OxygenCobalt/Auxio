@@ -1,4 +1,4 @@
-„Auxio“ yra vietinis muzikos grotuvas su greita, patikima UI/UX be daugybės nenaudingų funkcijų, esančių kituose muzikos grotuvuose. Sukurta remiantis <a href="https://exoplayer.dev/">„Exoplayer“</a>, „Auxio“ turi geresnį bibliotekos palaikymą ir klausymo kokybę, palyginti su kitomis programomis, kurios naudoja pasenusias „Android“ funkcijas. Trumpai tariant, <b>Jame groja muziką</b>.
+„Auxio“ yra vietinis muzikos grotuvas su greita, patikima UI/UX be daugybės nenaudingų funkcijų, esančių kituose muzikos grotuvuose. Sukurta remiantis „Exoplayer“, „Auxio“ turi geresnį bibliotekos palaikymą ir klausymo kokybę, palyginti su kitomis programomis, kurios naudoja pasenusias „Android“ funkcijas. Trumpai tariant, <b>Jame groja muziką</b>.
 
 <b>Funkcijos</b>
 
