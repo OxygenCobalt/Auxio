@@ -242,13 +242,7 @@ class ReplayGainAudioProcessor(private val context: Context) :
         } else {
             for (i in pos until limit step 2) {
                 // 16-bit PCM audio, deserialize a little-endian short.
-                var sample =
-                    inputBuffer
-                        .get(i + 1)
-                        .toInt()
-                        .shl(8)
-                        .or(inputBuffer.get(i).toInt().and(0xFF))
-                        .toShort()
+                var sample = inputBuffer.getLeShort(i)
                 // Ensure we clamp the values to the minimum and maximum values possible
                 // for the encoding. This prevents issues where samples amplified beyond
                 // 1 << 16 will end up becoming truncated during the conversion to a short,
@@ -259,12 +253,28 @@ class ReplayGainAudioProcessor(private val context: Context) :
                         .coerceAtLeast(Short.MIN_VALUE.toInt())
                         .coerceAtMost(Short.MAX_VALUE.toInt())
                         .toShort()
-                buffer.put(sample.toByte()).put(sample.toInt().shr(8).toByte())
+                buffer.putLeShort(sample)
             }
         }
 
         inputBuffer.position(limit)
         buffer.flip()
+    }
+
+    /**
+     * Always read a little-endian [Short] from the [ByteBuffer] at the given index.
+     * @param at The index to read the [Short] from.
+     */
+    private fun ByteBuffer.getLeShort(at: Int) =
+        get(at + 1).toInt().shl(8).or(get(at).toInt().and(0xFF)).toShort()
+
+    /**
+     * Always write a little-endian [Short] at the end of the [ByteBuffer].
+     * @param short The [Short] to write.
+     */
+    private fun ByteBuffer.putLeShort(short: Short) {
+        put(short.toByte())
+        put(short.toInt().shr(8).toByte())
     }
 
     /**

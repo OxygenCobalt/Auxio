@@ -238,6 +238,8 @@ class PlaybackStateManager private constructor() {
         when (queue.playNext(songs)) {
             Queue.ChangeResult.MAPPING -> notifyQueueChanged(Queue.ChangeResult.MAPPING)
             Queue.ChangeResult.SONG -> {
+                // Enqueueing actually started a new playback session from all songs.
+                parent = null
                 internalPlayer.loadSong(queue.currentSong, true)
                 notifyNewPlayback()
             }
@@ -261,6 +263,8 @@ class PlaybackStateManager private constructor() {
         when (queue.addToQueue(songs)) {
             Queue.ChangeResult.MAPPING -> notifyQueueChanged(Queue.ChangeResult.MAPPING)
             Queue.ChangeResult.SONG -> {
+                // Enqueueing actually started a new playback session from all songs.
+                parent = null
                 internalPlayer.loadSong(queue.currentSong, true)
                 notifyNewPlayback()
             }

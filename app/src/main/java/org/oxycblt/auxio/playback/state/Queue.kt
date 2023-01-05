@@ -102,7 +102,7 @@ class Queue {
 
             // Since we are re-shuffling existing songs, we use the previous mapping size
             // instead of the total queue size.
-            shuffledMapping = MutableList(orderedMapping.size) { it }.apply { shuffle() }
+            shuffledMapping = orderedMapping.shuffled().toMutableList()
             shuffledMapping.add(0, shuffledMapping.removeAt(shuffledMapping.indexOf(trueIndex)))
             index = 0
         } else if (shuffledMapping.isNotEmpty()) {
@@ -130,11 +130,11 @@ class Queue {
             // Add the new songs in front of the current index in the shuffled mapping and in front
             // of the analogous list song in the ordered mapping.
             val orderedIndex = orderedMapping.indexOf(shuffledMapping[index])
-            orderedMapping.addAll(orderedIndex, heapIndices)
-            shuffledMapping.addAll(index, heapIndices)
+            orderedMapping.addAll(orderedIndex + 1, heapIndices)
+            shuffledMapping.addAll(index + 1, heapIndices)
         } else {
             // Add the new song in front of the current index in the ordered mapping.
-            orderedMapping.addAll(index, heapIndices)
+            orderedMapping.addAll(index + 1, heapIndices)
         }
         return ChangeResult.MAPPING
     }
@@ -207,7 +207,7 @@ class Queue {
             orderedMapping.removeAt(orderedMapping.indexOf(shuffledMapping[at]))
             shuffledMapping.removeAt(at)
         } else {
-            // Remove the spe
+            // Remove the specified index in the shuffled mapping
             orderedMapping.removeAt(at)
         }
 
