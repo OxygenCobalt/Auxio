@@ -24,6 +24,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Queue
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewModel] that manages the current queue state and allows navigation through the queue.
@@ -79,9 +80,7 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
      * @return true if the items were moved, false otherwise.
      */
     fun moveQueueDataItems(adapterFrom: Int, adapterTo: Int): Boolean {
-        if (adapterFrom <= playbackManager.queue.index ||
-            adapterTo <= playbackManager.queue.index) {
-            // Invalid input. Nothing to do.
+        if (adapterFrom !in queue.value.indices || adapterTo !in queue.value.indices) {
             return false
         }
         playbackManager.moveQueueItem(adapterFrom, adapterTo)
@@ -105,14 +104,18 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
         _index.value = queue.index
     }
 
-    override fun onQueueChanged(queue: Queue) {
-        // Queue changed trivially due to item move -> Diff queue, stay at current index.
+    override fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {
+        // Queue changed trivially due to item mo -> Diff queue, stay at current index.
         replaceQueue = false
         scrollTo = null
         _queue.value = queue.resolve()
+        if (change != Queue.ChangeResult.MAPPING) {
+            // Index changed, make sure it remains updated without actually scrolling to it.
+            _index.value = queue.index
+        }
     }
 
-    override fun onQueueReworked(queue: Queue) {
+    override fun onQueueReordered(queue: Queue) {
         // Queue changed completely -> Replace queue, update index
         replaceQueue = true
         scrollTo = queue.index

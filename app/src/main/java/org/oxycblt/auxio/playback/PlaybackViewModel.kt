@@ -98,16 +98,23 @@ class PlaybackViewModel(application: Application) :
     }
 
     override fun onIndexMoved(queue: Queue) {
-        _song.value = playbackManager.queue.currentSong
+        _song.value = queue.currentSong
     }
 
-    override fun onQueueReworked(queue: Queue) {
+    override fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {
+        // Other types of queue changes preserve the current song.
+        if (change == Queue.ChangeResult.SONG) {
+            _song.value = queue.currentSong
+        }
+    }
+
+    override fun onQueueReordered(queue: Queue) {
         _isShuffled.value = queue.isShuffled
     }
 
     override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
-        _song.value = playbackManager.queue.currentSong
-        _parent.value = playbackManager.parent
+        _song.value = queue.currentSong
+        _parent.value = parent
         _isShuffled.value = queue.isShuffled
     }
 

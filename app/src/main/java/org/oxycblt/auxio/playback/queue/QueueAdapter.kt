@@ -31,10 +31,7 @@ import org.oxycblt.auxio.list.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.list.recycler.SyncListDiffer
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.getAttrColorCompat
-import org.oxycblt.auxio.util.getDimen
-import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.*
 
 /**
  * A [RecyclerView.Adapter] that shows an editable list of queue items.
@@ -96,30 +93,19 @@ class QueueAdapter(private val listener: EditableListListener<Song>) :
      * @param isPlaying Whether playback is ongoing or paused.
      */
     fun setPosition(index: Int, isPlaying: Boolean) {
-        var updatedIndex = false
+        logD("Updating index")
+        val lastIndex = currentIndex
+        currentIndex = index
 
-        if (index != currentIndex) {
-            val lastIndex = currentIndex
-            currentIndex = index
-            updatedIndex = true
-
-            // Have to update not only the currently playing item, but also all items marked
-            // as playing.
-            if (currentIndex < lastIndex) {
-                notifyItemRangeChanged(0, lastIndex + 1, PAYLOAD_UPDATE_POSITION)
-            } else {
-                notifyItemRangeChanged(0, currentIndex + 1, PAYLOAD_UPDATE_POSITION)
-            }
+        // Have to update not only the currently playing item, but also all items marked
+        // as playing.
+        if (currentIndex < lastIndex) {
+            notifyItemRangeChanged(0, lastIndex + 1, PAYLOAD_UPDATE_POSITION)
+        } else {
+            notifyItemRangeChanged(0, currentIndex + 1, PAYLOAD_UPDATE_POSITION)
         }
 
-        if (this.isPlaying != isPlaying) {
-            this.isPlaying = isPlaying
-            // Don't need to do anything if we've already sent an update from changing the
-            // index.
-            if (!updatedIndex) {
-                notifyItemChanged(index, PAYLOAD_UPDATE_POSITION)
-            }
-        }
+        this.isPlaying = isPlaying
     }
 
     private companion object {
@@ -158,7 +144,6 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
             binding.songAlbumCover.isEnabled = value
             binding.songName.isEnabled = value
             binding.songInfo.isEnabled = value
-            binding.songDragHandle.isEnabled = value
         }
 
     init {
