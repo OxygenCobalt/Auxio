@@ -24,7 +24,6 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Queue
-import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewModel] that manages the current queue state and allows navigation through the queue.

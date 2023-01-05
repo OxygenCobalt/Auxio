@@ -170,6 +170,7 @@ class Queue {
      * mutated.
      */
     fun move(src: Int, dst: Int): ChangeResult {
+
         if (shuffledMapping.isNotEmpty()) {
             // Move songs only in the shuffled mapping. There is no sane analogous form of
             // this for the ordered mapping.
@@ -179,19 +180,16 @@ class Queue {
             orderedMapping.add(dst, orderedMapping.removeAt(src))
         }
 
+        // TODO: I really need to figure out how to get non-swap moves working.
         return when (index) {
-            // Moving the currently playing song.
             src -> {
                 index = dst
                 ChangeResult.INDEX
             }
-            // Index was ahead of moved song but not ahead of it's destination position.
-            // This makes it functionally a removal, so update the index to preserve consistency.
-            in (src + 1)..dst -> {
-                index -= 1
+            dst -> {
+                index = src
                 ChangeResult.INDEX
             }
-            // Nothing to do.
             else -> ChangeResult.MAPPING
         }
     }
