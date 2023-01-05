@@ -226,11 +226,7 @@ class PlaybackStateManager private constructor() {
      * Add a [Song] to the top of the queue.
      * @param song The [Song] to add.
      */
-    @Synchronized
-    fun playNext(song: Song) {
-        queue.playNext(listOf(song))
-        notifyQueueChanged()
-    }
+    @Synchronized fun playNext(song: Song) = playNext(listOf(song))
 
     /**
      * Add [Song]s to the top of the queue.
@@ -238,19 +234,22 @@ class PlaybackStateManager private constructor() {
      */
     @Synchronized
     fun playNext(songs: List<Song>) {
-        queue.playNext(songs)
-        notifyQueueChanged()
+        val internalPlayer = internalPlayer ?: return
+        when (queue.playNext(songs)) {
+            Queue.ChangeResult.MAPPING -> notifyQueueChanged(Queue.ChangeResult.MAPPING)
+            Queue.ChangeResult.SONG -> {
+                internalPlayer.loadSong(queue.currentSong, true)
+                notifyNewPlayback()
+            }
+            Queue.ChangeResult.INDEX -> error("Unreachable")
+        }
     }
 
     /**
      * Add a [Song] to the end of the queue.
      * @param song The [Song] to add.
      */
-    @Synchronized
-    fun addToQueue(song: Song) {
-        queue.addToQueue(listOf(song))
-        notifyQueueChanged()
-    }
+    @Synchronized fun addToQueue(song: Song) = addToQueue(listOf(song))
 
     /**
      * Add [Song]s to the end of the queue.
@@ -258,8 +257,15 @@ class PlaybackStateManager private constructor() {
      */
     @Synchronized
     fun addToQueue(songs: List<Song>) {
-        queue.addToQueue(songs)
-        notifyQueueChanged()
+        val internalPlayer = internalPlayer ?: return
+        when (queue.addToQueue(songs)) {
+            Queue.ChangeResult.MAPPING -> notifyQueueChanged(Queue.ChangeResult.MAPPING)
+            Queue.ChangeResult.SONG -> {
+                internalPlayer.loadSong(queue.currentSong, true)
+                notifyNewPlayback()
+            }
+            Queue.ChangeResult.INDEX -> error("Unreachable")
+        }
     }
 
     /**
@@ -270,8 +276,7 @@ class PlaybackStateManager private constructor() {
     @Synchronized
     fun moveQueueItem(src: Int, dst: Int) {
         logD("Moving item $src to position $dst")
-        queue.move(src, dst)
-        notifyQueueChanged()
+        notifyQueueChanged(queue.move(src, dst))
     }
 
     /**
@@ -280,9 +285,13 @@ class PlaybackStateManager private constructor() {
      */
     @Synchronized
     fun removeQueueItem(at: Int) {
+        val internalPlayer = internalPlayer ?: return
         logD("Removing item at $at")
-        queue.remove(at)
-        notifyQueueChanged()
+        val change = queue.remove(at)
+        if (change == Queue.ChangeResult.SONG) {
+            internalPlayer.loadSong(queue.currentSong, playerState.isPlaying)
+        }
+        notifyQueueChanged(change)
     }
 
     /**
@@ -292,7 +301,7 @@ class PlaybackStateManager private constructor() {
     @Synchronized
     fun reorder(shuffled: Boolean) {
         queue.reorder(shuffled)
-        notifyQueueReworked()
+        notifyQueueReordered()
     }
 
     // --- INTERNAL PLAYER FUNCTIONS ---
@@ -532,15 +541,15 @@ class PlaybackStateManager private constructor() {
         }
     }
 
-    private fun notifyQueueChanged() {
+    private fun notifyQueueChanged(change: Queue.ChangeResult) {
         for (callback in listeners) {
-            callback.onQueueChanged(queue)
+            callback.onQueueChanged(queue, change)
         }
     }
 
-    private fun notifyQueueReworked() {
+    private fun notifyQueueReordered() {
         for (callback in listeners) {
-            callback.onQueueReworked(queue)
+            callback.onQueueReordered(queue)
         }
     }
 
@@ -575,17 +584,18 @@ class PlaybackStateManager private constructor() {
         fun onIndexMoved(queue: Queue) {}
 
         /**
-         * Called when the [Queue] changed in a trivial manner, such as a move.
+         * Called when the [Queue] changed in a manner outlined by the given [Queue.ChangeResult].
          * @param queue The new [Queue].
+         * @param change The type of [Queue.ChangeResult] that occurred.
          */
-        fun onQueueChanged(queue: Queue) {}
+        fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {}
 
         /**
          * Called when the [Queue] has changed in a non-trivial manner (such as re-shuffling), but
          * the currently playing [Song] has not.
          * @param queue The new [Queue].
          */
-        fun onQueueReworked(queue: Queue) {}
+        fun onQueueReordered(queue: Queue) {}
 
         /**
          * Called when a new playback configuration was created.

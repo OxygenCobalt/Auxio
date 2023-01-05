@@ -2,9 +2,15 @@
 
 ## dev
 
+#### What's Improved
+- Added ability to edit previously played or currently playing items in the queue
+
 #### What's Fixed
 - Fixed crash that would occur in music folders dialog when user does not have a working
 file manager
+
+#### What's Changed
+- Implemented new queue system
 
 ## 3.0.1
 

@@ -117,7 +117,7 @@ class WidgetComponent(private val context: Context) :
     // Hook all the major song-changing updates + the major player state updates
     // to updating the "Now Playing" widget.
     override fun onIndexMoved(queue: Queue) = update()
-    override fun onQueueReworked(queue: Queue) = update()
+    override fun onQueueReordered(queue: Queue) = update()
     override fun onNewPlayback(queue: Queue, parent: MusicParent?) = update()
     override fun onStateChanged(state: InternalPlayer.State) = update()
     override fun onRepeatChanged(repeatMode: RepeatMode) = update()

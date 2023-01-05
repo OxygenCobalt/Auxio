@@ -115,12 +115,14 @@ class Queue {
     /**
      * Add [Song]s to the top of the queue. Will start playback if nothing is playing.
      * @param songs The [Song]s to add.
+     * @return [ChangeResult.MAPPING] if added to an existing queue, or [ChangeResult.SONG] if there
+     * was no prior playback and these enqueued [Song]s start new playback.
      */
-    fun playNext(songs: List<Song>) {
+    fun playNext(songs: List<Song>): ChangeResult {
         if (orderedMapping.isEmpty()) {
             // No playback, start playing these songs.
             start(songs[0], songs, false)
-            return
+            return ChangeResult.SONG
         }
 
         val heapIndices = songs.map(::addSongToHeap)
@@ -134,17 +136,20 @@ class Queue {
             // Add the new song in front of the current index in the ordered mapping.
             orderedMapping.addAll(index, heapIndices)
         }
+        return ChangeResult.MAPPING
     }
 
     /**
      * Add [Song]s to the end of the queue. Will start playback if nothing is playing.
      * @param songs The [Song]s to add.
+     * @return [ChangeResult.MAPPING] if added to an existing queue, or [ChangeResult.SONG] if there
+     * was no prior playback and these enqueued [Song]s start new playback.
      */
-    fun addToQueue(songs: List<Song>) {
+    fun addToQueue(songs: List<Song>): ChangeResult {
         if (orderedMapping.isEmpty()) {
             // No playback, start playing these songs.
             start(songs[0], songs, false)
-            return
+            return ChangeResult.SONG
         }
 
         val heapIndices = songs.map(::addSongToHeap)
@@ -153,14 +158,18 @@ class Queue {
         if (shuffledMapping.isNotEmpty()) {
             shuffledMapping.addAll(heapIndices)
         }
+        return ChangeResult.MAPPING
     }
 
     /**
      * Move a [Song] at the given position to a new position.
      * @param src The position of the [Song] to move.
      * @param dst The destination position of the [Song].
+     * @return [ChangeResult.MAPPING] if the move occurred after the current index,
+     * [ChangeResult.INDEX] if the move occurred before or at the current index, requiring it to be
+     * mutated.
      */
-    fun move(src: Int, dst: Int) {
+    fun move(src: Int, dst: Int): ChangeResult {
         if (shuffledMapping.isNotEmpty()) {
             // Move songs only in the shuffled mapping. There is no sane analogous form of
             // this for the ordered mapping.
@@ -170,21 +179,31 @@ class Queue {
             orderedMapping.add(dst, orderedMapping.removeAt(src))
         }
 
-        if (index in (src + 1) until dst) {
+        return when (index) {
+            // Moving the currently playing song.
+            src -> {
+                index = dst
+                ChangeResult.INDEX
+            }
             // Index was ahead of moved song but not ahead of it's destination position.
             // This makes it functionally a removal, so update the index to preserve consistency.
-            index -= 1
-        } else if (index == src) {
-            // Moving the currently playing song.
-            index = dst
+            in (src + 1)..dst -> {
+                index -= 1
+                ChangeResult.INDEX
+            }
+            // Nothing to do.
+            else -> ChangeResult.MAPPING
         }
     }
 
     /**
      * Remove a [Song] at the given position.
      * @param at The position of the [Song] to remove.
+     * @return [ChangeResult.MAPPING] if the removed [Song] was after the current index,
+     * [ChangeResult.INDEX] if the removed [Song] was before the current index, and
+     * [ChangeResult.SONG] if the currently playing [Song] was removed.
      */
-    fun remove(at: Int) {
+    fun remove(at: Int): ChangeResult {
         if (shuffledMapping.isNotEmpty()) {
             // Remove the specified index in the shuffled mapping and the analogous song in the
             // ordered mapping.
@@ -199,9 +218,16 @@ class Queue {
         // of the player to be completely invalidated. It's generally easier to not remove the
         // song and retain player state consistency.
 
-        if (index > at) {
+        return when {
+            // We just removed the currently playing song.
+            index == at -> ChangeResult.SONG
             // Index was ahead of removed song, shift back to preserve consistency.
-            index -= 1
+            index > at -> {
+                index -= 1
+                ChangeResult.INDEX
+            }
+            // Nothing to do
+            else -> ChangeResult.MAPPING
         }
     }
 
@@ -231,5 +257,21 @@ class Queue {
         // Nothing to re-use, add this song to the queue
         heap.add(song)
         return heap.lastIndex
+    }
+
+    /**
+     * Represents the possible changes that can occur during certain queue mutation events. The
+     * precise meanings of these differ somewhat depending on the type of mutation done.
+     */
+    enum class ChangeResult {
+        /** Only the mapping has changed. */
+        MAPPING,
+        /** The mapping has changed, and the index also changed to align with it. */
+        INDEX,
+        /**
+         * The current song has changed, possibly alongside the mapping and index depending on the
+         * context.
+         */
+        SONG
     }
 }

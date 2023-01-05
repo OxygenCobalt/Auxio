@@ -94,15 +94,24 @@ class MediaSessionComponent(private val context: Context, private val listener: 
     // --- PLAYBACKSTATEMANAGER OVERRIDES ---
 
     override fun onIndexMoved(queue: Queue) {
-        updateMediaMetadata(playbackManager.queue.currentSong, playbackManager.parent)
+        updateMediaMetadata(queue.currentSong, playbackManager.parent)
         invalidateSessionState()
     }
 
-    override fun onQueueChanged(queue: Queue) {
+    override fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {
         updateQueue(queue)
+        when (change) {
+            // Nothing special to do with mapping changes.
+            Queue.ChangeResult.MAPPING -> {}
+            // Index changed, ensure playback state's index changes.
+            Queue.ChangeResult.INDEX -> invalidateSessionState()
+            // Song changed, ensure metadata changes.
+            Queue.ChangeResult.SONG ->
+                updateMediaMetadata(queue.currentSong, playbackManager.parent)
+        }
     }
 
-    override fun onQueueReworked(queue: Queue) {
+    override fun onQueueReordered(queue: Queue) {
         updateQueue(queue)
         invalidateSessionState()
         mediaSession.setShuffleMode(
@@ -115,7 +124,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
     }
 
     override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
-        updateMediaMetadata(playbackManager.queue.currentSong, parent)
+        updateMediaMetadata(queue.currentSong, parent)
         updateQueue(queue)
         invalidateSessionState()
     }
