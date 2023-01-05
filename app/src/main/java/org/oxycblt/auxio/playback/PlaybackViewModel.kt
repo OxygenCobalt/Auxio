@@ -26,10 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.playback.state.InternalPlayer
-import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
-import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.state.*
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.context
 
@@ -100,13 +97,18 @@ class PlaybackViewModel(application: Application) :
         playbackManager.removeListener(this)
     }
 
-    override fun onIndexMoved(index: Int) {
-        _song.value = playbackManager.song
+    override fun onIndexMoved(queue: Queue) {
+        _song.value = playbackManager.queue.currentSong
     }
 
-    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        _song.value = playbackManager.song
+    override fun onQueueReworked(queue: Queue) {
+        _isShuffled.value = queue.isShuffled
+    }
+
+    override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
+        _song.value = playbackManager.queue.currentSong
         _parent.value = playbackManager.parent
+        _isShuffled.value = queue.isShuffled
     }
 
     override fun onStateChanged(state: InternalPlayer.State) {
@@ -126,10 +128,6 @@ class PlaybackViewModel(application: Application) :
             }
     }
 
-    override fun onShuffledChanged(isShuffled: Boolean) {
-        _isShuffled.value = isShuffled
-    }
-
     override fun onRepeatChanged(repeatMode: RepeatMode) {
         _repeatMode.value = repeatMode
     }
@@ -141,21 +139,19 @@ class PlaybackViewModel(application: Application) :
      * @param song The [Song] to play.
      */
     fun playFromAll(song: Song) {
-        playbackManager.play(song, null, settings)
+        playImpl(song, null)
     }
 
     /** Shuffle all songs in the music library. */
     fun shuffleAll() {
-        playbackManager.play(null, null, settings, true)
+        playImpl(null, null, true)
     }
 
     /**
      * Play a [Song] from it's [Album].
      * @param song The [Song] to play.
      */
-    fun playFromAlbum(song: Song) {
-        playbackManager.play(song, song.album, settings)
-    }
+    fun playFromAlbum(song: Song) = playImpl(song, song.album)
 
     /**
      * Play a [Song] from one of it's [Artist]s.
@@ -165,10 +161,9 @@ class PlaybackViewModel(application: Application) :
      */
     fun playFromArtist(song: Song, artist: Artist? = null) {
         if (artist != null) {
-            check(artist in song.artists) { "Artist not in song artists" }
-            playbackManager.play(song, artist, settings)
+            playImpl(song, artist)
         } else if (song.artists.size == 1) {
-            playbackManager.play(song, song.artists[0], settings)
+            playImpl(song, song.artists[0])
         } else {
             _artistPlaybackPickerSong.value = song
         }
@@ -191,10 +186,9 @@ class PlaybackViewModel(application: Application) :
      */
     fun playFromGenre(song: Song, genre: Genre? = null) {
         if (genre != null) {
-            check(genre.songs.contains(song)) { "Invalid input: Genre is not linked to song" }
-            playbackManager.play(song, genre, settings)
+            playImpl(song, genre)
         } else if (song.genres.size == 1) {
-            playbackManager.play(song, song.genres[0], settings)
+            playImpl(song, song.genres[0])
         } else {
             _genrePlaybackPickerSong.value = song
         }
@@ -204,49 +198,37 @@ class PlaybackViewModel(application: Application) :
      * Play an [Album].
      * @param album The [Album] to play.
      */
-    fun play(album: Album) {
-        playbackManager.play(null, album, settings, false)
-    }
+    fun play(album: Album) = playImpl(null, album, false)
 
     /**
      * Play an [Artist].
      * @param artist The [Artist] to play.
      */
-    fun play(artist: Artist) {
-        playbackManager.play(null, artist, settings, false)
-    }
+    fun play(artist: Artist) = playImpl(null, artist, false)
 
     /**
      * Play a [Genre].
      * @param genre The [Genre] to play.
      */
-    fun play(genre: Genre) {
-        playbackManager.play(null, genre, settings, false)
-    }
+    fun play(genre: Genre) = playImpl(null, genre, false)
 
     /**
      * Shuffle an [Album].
      * @param album The [Album] to shuffle.
      */
-    fun shuffle(album: Album) {
-        playbackManager.play(null, album, settings, true)
-    }
+    fun shuffle(album: Album) = playImpl(null, album, true)
 
     /**
      * Shuffle an [Artist].
      * @param artist The [Artist] to shuffle.
      */
-    fun shuffle(artist: Artist) {
-        playbackManager.play(null, artist, settings, true)
-    }
+    fun shuffle(artist: Artist) = playImpl(null, artist, true)
 
     /**
      * Shuffle an [Genre].
      * @param genre The [Genre] to shuffle.
      */
-    fun shuffle(genre: Genre) {
-        playbackManager.play(null, genre, settings, true)
-    }
+    fun shuffle(genre: Genre) = playImpl(null, genre, true)
 
     /**
      * Start the given [InternalPlayer.Action] to be completed eventually. This can be used to
@@ -255,6 +237,24 @@ class PlaybackViewModel(application: Application) :
      */
     fun startAction(action: InternalPlayer.Action) {
         playbackManager.startAction(action)
+    }
+
+    private fun playImpl(
+        song: Song?,
+        parent: MusicParent?,
+        shuffled: Boolean = playbackManager.queue.isShuffled && settings.keepShuffle
+    ) {
+        check(song == null || parent == null || parent.songs.contains(song)) {
+            "Song to play not in parent"
+        }
+        val sort =
+            when (parent) {
+                is Genre -> settings.detailGenreSort
+                is Artist -> settings.detailArtistSort
+                is Album -> settings.detailAlbumSort
+                null -> settings.libSongSort
+            }
+        playbackManager.play(song, parent, sort, shuffled)
     }
 
     // --- PLAYER FUNCTIONS ---
@@ -370,7 +370,7 @@ class PlaybackViewModel(application: Application) :
 
     /** Toggle [isShuffled] (ex. from on to off) */
     fun invertShuffled() {
-        playbackManager.reshuffle(!playbackManager.isShuffled, settings)
+        playbackManager.reorder(!playbackManager.queue.isShuffled)
     }
 
     /**

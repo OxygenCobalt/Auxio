@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.Queue
 
 /**
  * A [ViewModel] that manages the current queue state and allows navigation through the queue.
@@ -36,7 +37,7 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
     /** The current queue. */
     val queue: StateFlow<List<Song>> = _queue
 
-    private val _index = MutableStateFlow(playbackManager.index)
+    private val _index = MutableStateFlow(playbackManager.queue.index)
     /** The index of the currently playing song in the queue. */
     val index: StateFlow<Int>
         get() = _index
@@ -56,10 +57,6 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
      * range.
      */
     fun goto(adapterIndex: Int) {
-        if (adapterIndex !in playbackManager.queue.indices) {
-            // Invalid input. Nothing to do.
-            return
-        }
         playbackManager.goto(adapterIndex)
     }
 
@@ -69,10 +66,7 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
      * range.
      */
     fun removeQueueDataItem(adapterIndex: Int) {
-        if (adapterIndex <= playbackManager.index ||
-            adapterIndex !in playbackManager.queue.indices) {
-            // Invalid input. Nothing to do.
-            // TODO: Allow editing played queue items.
+        if (adapterIndex !in queue.value.indices) {
             return
         }
         playbackManager.removeQueueItem(adapterIndex)
@@ -85,7 +79,8 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
      * @return true if the items were moved, false otherwise.
      */
     fun moveQueueDataItems(adapterFrom: Int, adapterTo: Int): Boolean {
-        if (adapterFrom <= playbackManager.index || adapterTo <= playbackManager.index) {
+        if (adapterFrom <= playbackManager.queue.index ||
+            adapterTo <= playbackManager.queue.index) {
             // Invalid input. Nothing to do.
             return false
         }
@@ -103,34 +98,34 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
         scrollTo = null
     }
 
-    override fun onIndexMoved(index: Int) {
+    override fun onIndexMoved(queue: Queue) {
         // Index moved -> Scroll to new index
         replaceQueue = null
-        scrollTo = index
-        _index.value = index
+        scrollTo = queue.index
+        _index.value = queue.index
     }
 
-    override fun onQueueChanged(queue: List<Song>) {
+    override fun onQueueChanged(queue: Queue) {
         // Queue changed trivially due to item move -> Diff queue, stay at current index.
         replaceQueue = false
         scrollTo = null
-        _queue.value = playbackManager.queue.toMutableList()
+        _queue.value = queue.resolve()
     }
 
-    override fun onQueueReworked(index: Int, queue: List<Song>) {
+    override fun onQueueReworked(queue: Queue) {
         // Queue changed completely -> Replace queue, update index
         replaceQueue = true
-        scrollTo = index
-        _queue.value = playbackManager.queue.toMutableList()
-        _index.value = index
+        scrollTo = queue.index
+        _queue.value = queue.resolve()
+        _index.value = queue.index
     }
 
-    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
+    override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
         // Entirely new queue -> Replace queue, update index
         replaceQueue = true
-        scrollTo = index
-        _queue.value = playbackManager.queue.toMutableList()
-        _index.value = index
+        scrollTo = queue.index
+        _queue.value = queue.resolve()
+        _index.value = queue.index
     }
 
     override fun onCleared() {

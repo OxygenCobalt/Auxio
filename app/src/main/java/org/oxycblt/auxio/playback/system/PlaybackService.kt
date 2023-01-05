@@ -351,12 +351,16 @@ class PlaybackService :
             }
             // Shuffle all -> Start new playback from all songs
             is InternalPlayer.Action.ShuffleAll -> {
-                playbackManager.play(null, null, settings, true)
+                playbackManager.play(null, null, settings.libSongSort, true)
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
             is InternalPlayer.Action.Open -> {
                 library.findSongForUri(application, action.uri)?.let { song ->
-                    playbackManager.play(song, null, settings)
+                    playbackManager.play(
+                        song,
+                        null,
+                        settings.libSongSort,
+                        playbackManager.queue.isShuffled && settings.keepShuffle)
                 }
             }
         }
@@ -411,8 +415,7 @@ class PlaybackService :
                     playbackManager.setPlaying(!playbackManager.playerState.isPlaying)
                 ACTION_INC_REPEAT_MODE ->
                     playbackManager.repeatMode = playbackManager.repeatMode.increment()
-                ACTION_INVERT_SHUFFLE ->
-                    playbackManager.reshuffle(!playbackManager.isShuffled, settings)
+                ACTION_INVERT_SHUFFLE -> playbackManager.reorder(!playbackManager.queue.isShuffled)
                 ACTION_SKIP_PREV -> playbackManager.prev()
                 ACTION_SKIP_NEXT -> playbackManager.next()
                 ACTION_EXIT -> {
@@ -428,7 +431,7 @@ class PlaybackService :
             // which would result in unexpected playback. Work around it by dropping the first
             // call to this function, which should come from that Intent.
             if (settings.headsetAutoplay &&
-                playbackManager.song != null &&
+                playbackManager.queue.currentSong != null &&
                 initialHeadsetPlugEventHandled) {
                 logD("Device connected, resuming")
                 playbackManager.setPlaying(true)
@@ -436,7 +439,7 @@ class PlaybackService :
         }
 
         private fun pauseFromHeadsetPlug() {
-            if (playbackManager.song != null) {
+            if (playbackManager.queue.currentSong != null) {
                 logD("Device disconnected, pausing")
                 playbackManager.setPlaying(false)
             }

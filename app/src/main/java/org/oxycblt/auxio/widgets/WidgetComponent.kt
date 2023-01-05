@@ -30,6 +30,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.Queue
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.getDimenPixels
@@ -55,7 +56,7 @@ class WidgetComponent(private val context: Context) :
 
     /** Update [WidgetProvider] with the current playback state. */
     fun update() {
-        val song = playbackManager.song
+        val song = playbackManager.queue.currentSong
         if (song == null) {
             logD("No song, resetting widget")
             widgetProvider.update(context, null)
@@ -65,7 +66,7 @@ class WidgetComponent(private val context: Context) :
         // Note: Store these values here so they remain consistent once the bitmap is loaded.
         val isPlaying = playbackManager.playerState.isPlaying
         val repeatMode = playbackManager.repeatMode
-        val isShuffled = playbackManager.isShuffled
+        val isShuffled = playbackManager.queue.isShuffled
 
         provider.load(
             song,
@@ -115,10 +116,10 @@ class WidgetComponent(private val context: Context) :
 
     // Hook all the major song-changing updates + the major player state updates
     // to updating the "Now Playing" widget.
-    override fun onIndexMoved(index: Int) = update()
-    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) = update()
+    override fun onIndexMoved(queue: Queue) = update()
+    override fun onQueueReworked(queue: Queue) = update()
+    override fun onNewPlayback(queue: Queue, parent: MusicParent?) = update()
     override fun onStateChanged(state: InternalPlayer.State) = update()
-    override fun onShuffledChanged(isShuffled: Boolean) = update()
     override fun onRepeatChanged(repeatMode: RepeatMode) = update()
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {

@@ -36,6 +36,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.Queue
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
@@ -92,22 +93,29 @@ class MediaSessionComponent(private val context: Context, private val listener: 
 
     // --- PLAYBACKSTATEMANAGER OVERRIDES ---
 
-    override fun onIndexMoved(index: Int) {
-        updateMediaMetadata(playbackManager.song, playbackManager.parent)
+    override fun onIndexMoved(queue: Queue) {
+        updateMediaMetadata(playbackManager.queue.currentSong, playbackManager.parent)
         invalidateSessionState()
     }
 
-    override fun onQueueChanged(queue: List<Song>) {
+    override fun onQueueChanged(queue: Queue) {
         updateQueue(queue)
     }
 
-    override fun onQueueReworked(index: Int, queue: List<Song>) {
+    override fun onQueueReworked(queue: Queue) {
         updateQueue(queue)
         invalidateSessionState()
+        mediaSession.setShuffleMode(
+            if (queue.isShuffled) {
+                PlaybackStateCompat.SHUFFLE_MODE_ALL
+            } else {
+                PlaybackStateCompat.SHUFFLE_MODE_NONE
+            })
+        invalidateSecondaryAction()
     }
 
-    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        updateMediaMetadata(playbackManager.song, parent)
+    override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
+        updateMediaMetadata(playbackManager.queue.currentSong, parent)
         updateQueue(queue)
         invalidateSessionState()
     }
@@ -131,23 +139,12 @@ class MediaSessionComponent(private val context: Context, private val listener: 
         invalidateSecondaryAction()
     }
 
-    override fun onShuffledChanged(isShuffled: Boolean) {
-        mediaSession.setShuffleMode(
-            if (isShuffled) {
-                PlaybackStateCompat.SHUFFLE_MODE_ALL
-            } else {
-                PlaybackStateCompat.SHUFFLE_MODE_NONE
-            })
-
-        invalidateSecondaryAction()
-    }
-
     // --- SETTINGS OVERRIDES ---
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
             context.getString(R.string.set_key_cover_mode) ->
-                updateMediaMetadata(playbackManager.song, playbackManager.parent)
+                updateMediaMetadata(playbackManager.queue.currentSong, playbackManager.parent)
             context.getString(R.string.set_key_notif_action) -> invalidateSecondaryAction()
         }
     }
@@ -219,16 +216,13 @@ class MediaSessionComponent(private val context: Context, private val listener: 
     }
 
     override fun onSetShuffleMode(shuffleMode: Int) {
-        playbackManager.reshuffle(
+        playbackManager.reorder(
             shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ||
-                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP,
-            settings)
+                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP)
     }
 
     override fun onSkipToQueueItem(id: Long) {
-        if (id in playbackManager.queue.indices) {
-            playbackManager.goto(id.toInt())
-        }
+        playbackManager.goto(id.toInt())
     }
 
     override fun onCustomAction(action: String?, extras: Bundle?) {
@@ -318,9 +312,9 @@ class MediaSessionComponent(private val context: Context, private val listener: 
      * Upload a new queue to the [MediaSessionCompat].
      * @param queue The current queue to upload.
      */
-    private fun updateQueue(queue: List<Song>) {
+    private fun updateQueue(queue: Queue) {
         val queueItems =
-            queue.mapIndexed { i, song ->
+            queue.resolve().mapIndexed { i, song ->
                 val description =
                     MediaDescriptionCompat.Builder()
                         // Media ID should not be the item index but rather the UID,
@@ -350,7 +344,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
                 .intoPlaybackState(PlaybackStateCompat.Builder())
                 .setActions(ACTIONS)
                 // Active queue ID corresponds to the indices we populated prior, use them here.
-                .setActiveQueueItemId(playbackManager.index.toLong())
+                .setActiveQueueItemId(playbackManager.queue.index.toLong())
 
         // Android 13+ relies on custom actions in the notification.
 
@@ -361,7 +355,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
                     PlaybackStateCompat.CustomAction.Builder(
                         PlaybackService.ACTION_INVERT_SHUFFLE,
                         context.getString(R.string.desc_shuffle),
-                        if (playbackManager.isShuffled) {
+                        if (playbackManager.queue.isShuffled) {
                             R.drawable.ic_shuffle_on_24
                         } else {
                             R.drawable.ic_shuffle_off_24
@@ -391,7 +385,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
         invalidateSessionState()
 
         when (settings.playbackNotificationAction) {
-            ActionMode.SHUFFLE -> notification.updateShuffled(playbackManager.isShuffled)
+            ActionMode.SHUFFLE -> notification.updateShuffled(playbackManager.queue.isShuffled)
             else -> notification.updateRepeatMode(playbackManager.repeatMode)
         }
 

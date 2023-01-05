@@ -133,7 +133,7 @@ class ReplayGainAudioProcessor(private val context: Context) :
                         // User wants album gain to be used when in an album, track gain otherwise.
                         ReplayGainMode.DYNAMIC ->
                             playbackManager.parent is Album &&
-                                playbackManager.song?.album == playbackManager.parent
+                                playbackManager.queue.currentSong?.album == playbackManager.parent
                     }
 
                 val resolvedGain =

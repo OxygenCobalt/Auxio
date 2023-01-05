@@ -29,6 +29,7 @@ import androidx.core.database.getStringOrNull
 import java.io.File
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.parsing.parseId3v2Position
 import org.oxycblt.auxio.music.storage.Directory
 import org.oxycblt.auxio.music.storage.contentResolverSafe
 import org.oxycblt.auxio.music.storage.directoryCompat
@@ -36,7 +37,6 @@ import org.oxycblt.auxio.music.storage.mediaStoreVolumeNameCompat
 import org.oxycblt.auxio.music.storage.safeQuery
 import org.oxycblt.auxio.music.storage.storageVolumesCompat
 import org.oxycblt.auxio.music.storage.useQuery
-import org.oxycblt.auxio.music.parsing.parseId3v2Position
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
