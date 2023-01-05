@@ -21,63 +21,69 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ParsingUtilTest {
+    // TODO: Incomplete
+
     @Test
     fun splitEscaped_correct() {
-        assertEquals("a,b,c".splitEscaped { it == ',' }, listOf("a", "b", "c"))
+        assertEquals(listOf("a", "b", "c"), "a,b,c".splitEscaped { it == ',' })
     }
 
     @Test
     fun splitEscaped_escaped() {
-        assertEquals("a\\,b,c".splitEscaped { it == ',' }, listOf("a,b", "c"))
+        assertEquals(listOf("a,b", "c"), "a\\,b,c".splitEscaped { it == ',' })
     }
 
     @Test
     fun splitEscaped_whitespace() {
-        assertEquals("a , b, c ,  ".splitEscaped { it == ',' }, listOf("a ", " b", " c ", "  "))
+        assertEquals(listOf("a ", " b", " c ", "  "), "a , b, c ,  ".splitEscaped { it == ',' })
     }
 
     @Test
     fun splitEscaped_escapedWhitespace() {
-        assertEquals("a \\, b, c ,  ".splitEscaped { it == ',' }, listOf("a , b", " c ", "  "))
+        assertEquals(listOf("a , b", " c ", "  "), ("a \\, b, c ,  ".splitEscaped { it == ',' }))
     }
 
     @Test
     fun correctWhitespace_stringCorrect() {
         assertEquals(
-            " asymptotic self-improvement  ".correctWhitespace(), "asymptotic self-improvement")
+            "asymptotic self-improvement",
+            " asymptotic self-improvement  ".correctWhitespace(),
+        )
     }
 
     @Test
     fun correctWhitespace_stringOopsAllWhitespace() {
-        assertEquals("      ".correctWhitespace(), null)
+        assertEquals(null, "".correctWhitespace())
+        assertEquals(null, "      ".correctWhitespace())
     }
 
     @Test
     fun correctWhitespace_listCorrect() {
         assertEquals(
+            listOf("asymptotic self-improvement", "daemons never stop", "tcp phagocyte"),
             listOf(" asymptotic self-improvement  ", "  daemons never stop", "tcp phagocyte")
                 .correctWhitespace(),
-            listOf("asymptotic self-improvement", "daemons never stop", "tcp phagocyte"))
+        )
     }
 
     @Test
     fun correctWhitespace_listOopsAllWhitespacE() {
         assertEquals(
-            listOf("      ", "", "  tcp phagocyte").correctWhitespace(), listOf("tcp phagocyte"))
+            listOf("tcp phagocyte"), listOf("      ", "", "  tcp phagocyte").correctWhitespace())
     }
 
     @Test
     fun parseId3v2Position_correct() {
-        assertEquals("16/32".parseId3v2Position(), 16)
+        assertEquals(16, "16/32".parseId3v2Position())
     }
 
     @Test
     fun parseId3v2Position_noTotal() {
-        assertEquals("16".parseId3v2Position(), 16)
+        assertEquals(16, "16".parseId3v2Position())
     }
 
     @Test
     fun parseId3v2Position_wack() {
-        assertEquals("16/".parseId3v2Position(), 16)
+        assertEquals(16, "16/".parseId3v2Position())
     }
 }

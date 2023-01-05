@@ -74,7 +74,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
     override fun hashCode() = tokens.hashCode()
 
-    override fun equals(other: Any?) = other is Date && other.compareTo(this) == 0
+    override fun equals(other: Any?) = other is Date && compareTo(other) == 0
 
     override fun compareTo(other: Date): Int {
         for (i in 0 until max(tokens.size, other.tokens.size)) {

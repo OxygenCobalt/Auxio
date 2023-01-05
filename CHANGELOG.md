@@ -13,6 +13,9 @@ file manager
 #### What's Changed
 - Implemented new queue system
 
+#### Dev/Meta
+- Added unit testing framework
+
 ## 3.0.1
 
 #### What's New
