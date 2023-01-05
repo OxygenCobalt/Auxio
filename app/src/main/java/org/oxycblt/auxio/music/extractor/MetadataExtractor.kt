@@ -160,9 +160,9 @@ class Task(context: Context, private val raw: Song.Raw) {
 
         val metadata = format.metadata
         if (metadata != null) {
-            val tags = Tags(metadata)
-            populateWithId3v2(tags.id3v2)
-            populateWithVorbis(tags.vorbis)
+            val textTags = TextTags(metadata)
+            populateWithId3v2(textTags.id3v2)
+            populateWithVorbis(textTags.vorbis)
         } else {
             logD("No metadata could be extracted for ${raw.name}")
         }

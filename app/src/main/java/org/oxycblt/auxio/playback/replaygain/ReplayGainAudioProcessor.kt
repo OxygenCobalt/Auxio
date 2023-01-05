@@ -30,7 +30,7 @@ import java.nio.ByteBuffer
 import kotlin.math.pow
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.extractor.Tags
+import org.oxycblt.auxio.music.extractor.TextTags
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
@@ -166,23 +166,23 @@ class ReplayGainAudioProcessor(private val context: Context) :
      * @return A [Adjustment] adjustment, or null if there were no valid adjustments.
      */
     private fun parseReplayGain(format: Format): Adjustment? {
-        val tags = Tags(format.metadata ?: return null)
+        val textTags = TextTags(format.metadata ?: return null)
         var trackGain = 0f
         var albumGain = 0f
 
         // Most ReplayGain tags are formatted as a simple decibel adjustment in a custom
         // replaygain_*_gain tag.
         if (format.sampleMimeType != MimeTypes.AUDIO_OPUS) {
-            tags.id3v2["TXXX:$TAG_RG_TRACK_GAIN"]
+            textTags.id3v2["TXXX:$TAG_RG_TRACK_GAIN"]
                 ?.run { first().parseReplayGainAdjustment() }
                 ?.let { trackGain = it }
-            tags.id3v2["TXXX:$TAG_RG_ALBUM_GAIN"]
+            textTags.id3v2["TXXX:$TAG_RG_ALBUM_GAIN"]
                 ?.run { first().parseReplayGainAdjustment() }
                 ?.let { albumGain = it }
-            tags.vorbis[TAG_RG_ALBUM_GAIN]
+            textTags.vorbis[TAG_RG_ALBUM_GAIN]
                 ?.run { first().parseReplayGainAdjustment() }
                 ?.let { trackGain = it }
-            tags.vorbis[TAG_RG_TRACK_GAIN]
+            textTags.vorbis[TAG_RG_TRACK_GAIN]
                 ?.run { first().parseReplayGainAdjustment() }
                 ?.let { albumGain = it }
         } else {
@@ -191,10 +191,10 @@ class ReplayGainAudioProcessor(private val context: Context) :
             // intrinsic to the format to create the normalized adjustment. That base adjustment
             // is already handled by the media framework, so we just need to apply the more
             // specific adjustments.
-            tags.vorbis[TAG_R128_TRACK_GAIN]
+            textTags.vorbis[TAG_R128_TRACK_GAIN]
                 ?.run { first().parseReplayGainAdjustment() }
                 ?.let { trackGain = it / 256f }
-            tags.vorbis[TAG_R128_ALBUM_GAIN]
+            textTags.vorbis[TAG_R128_ALBUM_GAIN]
                 ?.run { first().parseReplayGainAdjustment() }
                 ?.let { albumGain = it / 256f }
         }

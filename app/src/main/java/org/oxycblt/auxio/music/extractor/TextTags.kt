@@ -24,11 +24,11 @@ import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import org.oxycblt.auxio.music.parsing.correctWhitespace
 
 /**
- * Processing wrapper for [Metadata] that allows access to more organized music tags.
+ * Processing wrapper for [Metadata] that allows organized access to text-based audio tags.
  * @param metadata The [Metadata] to wrap.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class Tags(metadata: Metadata) {
+class TextTags(metadata: Metadata) {
     private val _id3v2 = mutableMapOf<String, List<String>>()
     /** The ID3v2 text identification frames found in the file. Can have more than one value. */
     val id3v2: Map<String, List<String>>
@@ -65,6 +65,10 @@ class Tags(metadata: Metadata) {
                 is VorbisComment -> {
                     // Vorbis comment keys can be in any case, make them uppercase for simplicity.
                     val id = tag.key.sanitize().lowercase()
+                    if (id == "metadata_block_picture") {
+                        // Picture, we don't care about these
+                        continue
+                    }
                     val value = tag.value.sanitize().correctWhitespace()
                     if (value != null) {
                         _vorbis.getOrPut(id) { mutableListOf() }.add(value)
