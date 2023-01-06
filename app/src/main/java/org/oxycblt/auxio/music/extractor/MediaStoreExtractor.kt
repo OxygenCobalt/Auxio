@@ -305,7 +305,7 @@ abstract class MediaStoreExtractor(
         // MediaStore only exposes the year value of a file. This is actually worse than it
         // seems, as it means that it will not read ID3v2 TDRC tags or Vorbis DATE comments.
         // This is one of the major weaknesses of using MediaStore, hence the redundancy layers.
-        raw.date = cursor.getIntOrNull(yearIndex)?.let(Date::from)
+        raw.date = cursor.getStringOrNull(yearIndex)?.let(Date::from)
         // A non-existent album name should theoretically be the name of the folder it contained
         // in, but in practice it is more often "0" (as in /storage/emulated/0), even when it the
         // file is not actually in the root internal storage directory. We can't do anything to

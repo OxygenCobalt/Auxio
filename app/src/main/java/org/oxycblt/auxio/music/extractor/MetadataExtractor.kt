@@ -293,7 +293,7 @@ class Task(context: Context, private val raw: Song.Raw) {
         // date tag that android supports, so it must be 15 years old or more!)
         (comments["originaldate"]?.run { Date.from(first()) }
                 ?: comments["date"]?.run { Date.from(first()) }
-                    ?: comments["year"]?.run { first().toIntOrNull()?.let(Date::from) })
+                    ?: comments["year"]?.run { Date.from(first()) })
             ?.let { raw.date = it }
 
         // Album

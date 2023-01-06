@@ -182,14 +182,25 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
          */
         private val ISO8601_REGEX =
             Regex(
-                """^(\d{4,})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2})(Z)?)?)?)?)?)?$""")
+                """^(\d{4})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2})(Z)?)?)?)?)?)?$""")
 
         /**
          * Create a [Date] from a year component.
          * @param year The year component.
          * @return A new [Date] of the given component, or null if the component is invalid.
          */
-        fun from(year: Int) = fromTokens(listOf(year))
+        fun from(year: Int) =
+            if (year in 10000000..100000000) {
+                // Year is actually more likely to be a separated date timestamp. Interpret
+                // it as such.
+                val stringYear = year.toString()
+                from(
+                    stringYear.substring(0..3).toInt(),
+                    stringYear.substring(4..5).toInt(),
+                    stringYear.substring(6..7).toInt())
+            } else {
+                fromTokens(listOf(year))
+            }
 
         /**
          * Create a [Date] from a date component.
@@ -222,8 +233,9 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
          */
         fun from(timestamp: String): Date? {
             val tokens =
-            // Match the input with the timestamp regex
-            (ISO8601_REGEX.matchEntire(timestamp) ?: return null)
+            // Match the input with the timestamp regex. If there is no match, see if we can
+            // fall back to some kind of year value.
+            (ISO8601_REGEX.matchEntire(timestamp) ?: return timestamp.toIntOrNull()?.let(::from))
                     .groupValues
                     // Filter to the specific tokens we want and convert them to integer tokens.
                     .mapIndexedNotNull { index, s -> if (index % 2 != 0) s.toIntOrNull() else null }
@@ -238,7 +250,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
          */
         private fun fromTokens(tokens: List<Int>): Date? {
             val validated = mutableListOf<Int>()
-            validateTokens(tokens, validated)
+            transformTokens(tokens, validated)
             if (validated.isEmpty()) {
                 // No token was valid, return null.
                 return null
@@ -252,7 +264,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
          * @param src The input tokens to validate.
          * @param dst The destination list to add valid tokens to.
          */
-        private fun validateTokens(src: List<Int>, dst: MutableList<Int>) {
+        private fun transformTokens(src: List<Int>, dst: MutableList<Int>) {
             dst.add(src.getOrNull(0)?.nonZeroOrNull() ?: return)
             dst.add(src.getOrNull(1)?.inRangeOrNull(1..12) ?: return)
             dst.add(src.getOrNull(2)?.inRangeOrNull(1..31) ?: return)
@@ -260,5 +272,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
             dst.add(src.getOrNull(4)?.inRangeOrNull(0..59) ?: return)
             dst.add(src.getOrNull(5)?.inRangeOrNull(0..59) ?: return)
         }
+
+        private fun transformYearToken(src: List<Int>, dst: MutableList<Int>) {}
     }
 }
