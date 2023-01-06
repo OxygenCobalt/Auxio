@@ -203,7 +203,7 @@
     <string name="desc_skip_next">Перейти до наступної пісні</string>
     <string name="desc_shuffle">Ввімкніть або вимкніть перемішування</string>
     <string name="desc_exit">Зупинити відтворення</string>
-    <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
+    <string name="cdc_flac">Вільний аудіокодек без втрат (FLAC)</string>
     <string name="clr_deep_purple">Темно-фіолетовий</string>
     <string name="fmt_selected">%d Вибрано</string>
     <string name="fmt_indexing">Завантаження музичної бібліотеки… (%1$d/%2$d)</string>
@@ -242,7 +242,7 @@
     <string name="desc_artist_image">Фото виконавця %s</string>
     <string name="def_codec">Невідомий формат</string>
     <string name="desc_genre_image">Зображення жанру %s</string>
-    <string name="cdc_mp3">MPEG-1 audio</string>
+    <string name="cdc_mp3">Звук MPEG-1</string>
     <string name="err_no_app">Не знайдено жодної програми, яка б могла впоратися з цим завданням</string>
     <string name="def_date">Дата відсутня</string>
     <string name="def_track">Номер пісні невідомий</string>
@@ -251,7 +251,7 @@
     <string name="err_did_not_save">Не вдалось зберегти статус відтворення</string>
     <string name="desc_skip_prev">Перейти до попередньої пісні</string>
     <string name="clr_red">Червоний</string>
-    <string name="cdc_mp4">MPEG-4 audio</string>
+    <string name="cdc_mp4">Звук MPEG-4</string>
     <string name="desc_shuffle_all">Перемішати всі пісні</string>
     <string name="desc_auxio_icon">Іконка Auxio</string>
     <string name="clr_pink">Рожевий</string>
@@ -261,8 +261,8 @@
     <string name="fmt_disc_no">Диск %d</string>
     <string name="err_index_failed">Не вдалося завантажити музику</string>
     <string name="desc_music_dir_delete">Видалити папку</string>
-    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
-    <string name="cdc_mka">Matroska audio</string>
+    <string name="cdc_aac">Розширене кодування звуку (AAC)</string>
+    <string name="cdc_mka">Звук Matroska</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="err_no_perms">Auxio потрібен дозвіл на читання вашої музичної бібліотеки</string>
 </resources>
