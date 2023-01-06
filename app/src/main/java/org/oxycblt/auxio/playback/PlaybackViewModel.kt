@@ -25,9 +25,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.oxycblt.auxio.home.HomeSettings
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.playback.state.*
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.context
 
 /**
@@ -36,7 +36,9 @@ import org.oxycblt.auxio.util.context
  */
 class PlaybackViewModel(application: Application) :
     AndroidViewModel(application), PlaybackStateManager.Listener {
-    private val settings = Settings(application)
+    private val homeSettings = HomeSettings.from(application)
+    private val musicSettings = MusicSettings.from(application)
+    private val playbackSettings = PlaybackSettings.from(application)
     private val playbackManager = PlaybackStateManager.getInstance()
     private var lastPositionJob: Job? = null
 
@@ -249,17 +251,17 @@ class PlaybackViewModel(application: Application) :
     private fun playImpl(
         song: Song?,
         parent: MusicParent?,
-        shuffled: Boolean = playbackManager.queue.isShuffled && settings.keepShuffle
+        shuffled: Boolean = playbackManager.queue.isShuffled && playbackSettings.keepShuffle
     ) {
         check(song == null || parent == null || parent.songs.contains(song)) {
             "Song to play not in parent"
         }
         val sort =
             when (parent) {
-                is Genre -> settings.detailGenreSort
-                is Artist -> settings.detailArtistSort
-                is Album -> settings.detailAlbumSort
-                null -> settings.libSongSort
+                is Genre -> musicSettings.genreSongSort
+                is Artist -> musicSettings.artistSongSort
+                is Album -> musicSettings.albumSongSort
+                null -> musicSettings.songSort
             }
         playbackManager.play(song, parent, sort, shuffled)
     }
@@ -301,7 +303,7 @@ class PlaybackViewModel(application: Application) :
      * @param album The [Album] to add.
      */
     fun playNext(album: Album) {
-        playbackManager.playNext(settings.detailAlbumSort.songs(album.songs))
+        playbackManager.playNext(musicSettings.albumSongSort.songs(album.songs))
     }
 
     /**
@@ -309,7 +311,7 @@ class PlaybackViewModel(application: Application) :
      * @param artist The [Artist] to add.
      */
     fun playNext(artist: Artist) {
-        playbackManager.playNext(settings.detailArtistSort.songs(artist.songs))
+        playbackManager.playNext(musicSettings.artistSongSort.songs(artist.songs))
     }
 
     /**
@@ -317,7 +319,7 @@ class PlaybackViewModel(application: Application) :
      * @param genre The [Genre] to add.
      */
     fun playNext(genre: Genre) {
-        playbackManager.playNext(settings.detailGenreSort.songs(genre.songs))
+        playbackManager.playNext(musicSettings.genreSongSort.songs(genre.songs))
     }
 
     /**
@@ -341,7 +343,7 @@ class PlaybackViewModel(application: Application) :
      * @param album The [Album] to add.
      */
     fun addToQueue(album: Album) {
-        playbackManager.addToQueue(settings.detailAlbumSort.songs(album.songs))
+        playbackManager.addToQueue(musicSettings.albumSongSort.songs(album.songs))
     }
 
     /**
@@ -349,7 +351,7 @@ class PlaybackViewModel(application: Application) :
      * @param artist The [Artist] to add.
      */
     fun addToQueue(artist: Artist) {
-        playbackManager.addToQueue(settings.detailArtistSort.songs(artist.songs))
+        playbackManager.addToQueue(musicSettings.artistSongSort.songs(artist.songs))
     }
 
     /**
@@ -357,7 +359,7 @@ class PlaybackViewModel(application: Application) :
      * @param genre The [Genre] to add.
      */
     fun addToQueue(genre: Genre) {
-        playbackManager.addToQueue(settings.detailGenreSort.songs(genre.songs))
+        playbackManager.addToQueue(musicSettings.genreSongSort.songs(genre.songs))
     }
 
     /**
@@ -434,9 +436,9 @@ class PlaybackViewModel(application: Application) :
     private fun selectionToSongs(selection: List<Music>): List<Song> {
         return selection.flatMap {
             when (it) {
-                is Album -> settings.detailAlbumSort.songs(it.songs)
-                is Artist -> settings.detailArtistSort.songs(it.songs)
-                is Genre -> settings.detailGenreSort.songs(it.songs)
+                is Album -> musicSettings.albumSongSort.songs(it.songs)
+                is Artist -> musicSettings.artistSongSort.songs(it.songs)
+                is Genre -> musicSettings.genreSongSort.songs(it.songs)
                 is Song -> listOf(it)
             }
         }

@@ -33,11 +33,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.storage.contentResolverSafe
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.service.ForegroundManager
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 
@@ -68,7 +68,7 @@ class IndexerService :
     private lateinit var observingNotification: ObservingNotification
     private lateinit var wakeLock: PowerManager.WakeLock
     private lateinit var indexerContentObserver: SystemContentObserver
-    private lateinit var settings: Settings
+    private lateinit var settings: MusicSettings
 
     override fun onCreate() {
         super.onCreate()
@@ -83,7 +83,7 @@ class IndexerService :
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
         indexerContentObserver = SystemContentObserver()
-        settings = Settings(this)
+        settings = MusicSettings.from(this)
         settings.addListener(this)
         indexer.registerController(this)
         // An indeterminate indexer and a missing library implies we are extremely early

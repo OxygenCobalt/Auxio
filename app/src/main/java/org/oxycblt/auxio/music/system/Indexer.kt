@@ -28,8 +28,8 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Library
 import org.oxycblt.auxio.music.extractor.*
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
@@ -224,7 +224,7 @@ class Indexer private constructor() {
         // Build the rest of the music library from the song list. This is much more powerful
         // and reliable compared to using MediaStore to obtain grouping information.
         val buildStart = System.currentTimeMillis()
-        val library = Library(rawSongs, Settings(context))
+        val library = Library(rawSongs, MusicSettings.from(context))
         logD("Successfully built library in ${System.currentTimeMillis() - buildStart}ms")
         return library
     }

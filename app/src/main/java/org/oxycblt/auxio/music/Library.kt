@@ -20,9 +20,9 @@ package org.oxycblt.auxio.music
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.storage.contentResolverSafe
 import org.oxycblt.auxio.music.storage.useQuery
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -33,7 +33,7 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart
  */
-class Library(rawSongs: List<Song.Raw>, settings: Settings) {
+class Library(rawSongs: List<Song.Raw>, settings: MusicSettings) {
     /** All [Song]s that were detected on the device. */
     val songs = Sort(Sort.Mode.ByName, true).songs(rawSongs.map { Song(it, settings) })
     /** All [Album]s found on the device. */

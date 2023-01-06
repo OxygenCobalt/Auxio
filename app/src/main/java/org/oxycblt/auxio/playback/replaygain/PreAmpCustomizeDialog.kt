@@ -24,7 +24,7 @@ import androidx.appcompat.app.AlertDialog
 import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPreAmpBinding
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 
 /**
@@ -39,11 +39,11 @@ class PreAmpCustomizeDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
             .setTitle(R.string.set_pre_amp)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
                 val binding = requireBinding()
-                Settings(requireContext()).replayGainPreAmp =
+                PlaybackSettings.from(requireContext()).replayGainPreAmp =
                     ReplayGainPreAmp(binding.withTagsSlider.value, binding.withoutTagsSlider.value)
             }
             .setNeutralButton(R.string.lbl_reset) { _, _ ->
-                Settings(requireContext()).replayGainPreAmp = ReplayGainPreAmp(0f, 0f)
+                PlaybackSettings.from(requireContext()).replayGainPreAmp = ReplayGainPreAmp(0f, 0f)
             }
             .setNegativeButton(R.string.lbl_cancel, null)
     }
@@ -53,7 +53,7 @@ class PreAmpCustomizeDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
             // First initialization, we need to supply the sliders with the values from
             // settings. After this, the sliders save their own state, so we do not need to
             // do any restore behavior.
-            val preAmp = Settings(requireContext()).replayGainPreAmp
+            val preAmp = PlaybackSettings.from(requireContext()).replayGainPreAmp
             binding.withTagsSlider.value = preAmp.with
             binding.withoutTagsSlider.value = preAmp.without
         }

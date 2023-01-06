@@ -25,7 +25,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
 import org.oxycblt.auxio.list.ClickableListListener
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -44,7 +44,7 @@ class AccentCustomizeDialog :
         builder
             .setTitle(R.string.set_accent)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
-                val settings = Settings(requireContext())
+                val settings = UISettings.from(requireContext())
                 if (accentAdapter.selectedAccent == settings.accent) {
                     // Nothing to do.
                     return@setPositiveButton
@@ -65,7 +65,7 @@ class AccentCustomizeDialog :
             if (savedInstanceState != null) {
                 Accent.from(savedInstanceState.getInt(KEY_PENDING_ACCENT))
             } else {
-                Settings(requireContext()).accent
+                UISettings.from(requireContext()).accent
             })
     }
 

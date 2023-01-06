@@ -38,7 +38,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.*
 
 /**
@@ -137,7 +137,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
     override fun onRealClick(item: Music) {
         when (item) {
             is Song ->
-                when (Settings(requireContext()).libPlaybackMode) {
+                when (PlaybackSettings.from(requireContext()).inListPlaybackMode) {
                     MusicMode.SONGS -> playbackModel.playFromAll(item)
                     MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
                     MusicMode.ARTISTS -> playbackModel.playFromArtist(item)

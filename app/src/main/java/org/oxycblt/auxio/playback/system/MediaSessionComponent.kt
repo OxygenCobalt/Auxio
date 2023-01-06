@@ -34,11 +34,11 @@ import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.ActionMode
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Queue
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -59,7 +59,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
         }
 
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settings = Settings(context)
+    private val settings = PlaybackSettings.from(context)
 
     private val notification = NotificationComponent(context, mediaSession.sessionToken)
     private val provider = BitmapProvider(context)

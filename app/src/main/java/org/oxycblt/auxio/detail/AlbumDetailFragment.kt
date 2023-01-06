@@ -37,7 +37,7 @@ import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.*
 
 /**
@@ -123,7 +123,7 @@ class AlbumDetailFragment :
 
     override fun onRealClick(item: Music) {
         val song = requireIs<Song>(item)
-        when (Settings(requireContext()).detailPlaybackMode) {
+        when (PlaybackSettings.from(requireContext()).inParentPlaybackMode) {
             // "Play from shown item" and "Play from album" functionally have the same
             // behavior since a song can only have one album.
             null,
@@ -149,12 +149,12 @@ class AlbumDetailFragment :
 
     override fun onOpenSortMenu(anchor: View) {
         openMenu(anchor, R.menu.menu_album_sort) {
-            val sort = detailModel.albumSort
+            val sort = detailModel.albumSortSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
             unlikelyToBeNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
             setOnMenuItemClickListener { item ->
                 item.isChecked = !item.isChecked
-                detailModel.albumSort =
+                detailModel.albumSortSort =
                     if (item.itemId == R.id.option_sort_asc) {
                         sort.withAscending(item.isChecked)
                     } else {

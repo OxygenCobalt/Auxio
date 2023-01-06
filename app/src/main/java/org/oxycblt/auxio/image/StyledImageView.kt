@@ -39,7 +39,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.getDrawableCompat
 
@@ -81,7 +81,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         background =
             MaterialShapeDrawable().apply {
                 fillColor = context.getColorCompat(R.color.sel_cover_bg)
-                if (Settings(context).roundMode) {
+                if (UISettings.from(context).roundMode) {
                     // Only use the specified corner radius when round mode is enabled.
                     setCornerSize(cornerRadius)
                 }

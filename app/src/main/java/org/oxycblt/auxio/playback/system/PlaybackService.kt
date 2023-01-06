@@ -44,15 +44,16 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.Library
+import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.service.ForegroundManager
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
@@ -92,7 +93,8 @@ class PlaybackService :
     // Managers
     private val playbackManager = PlaybackStateManager.getInstance()
     private val musicStore = MusicStore.getInstance()
-    private lateinit var settings: Settings
+    private lateinit var musicSettings: MusicSettings
+    private lateinit var playbackSettings: PlaybackSettings
 
     // State
     private lateinit var foregroundManager: ForegroundManager
@@ -143,7 +145,8 @@ class PlaybackService :
                 .also { it.addListener(this) }
         replayGainProcessor.addToListeners(player)
         // Initialize the core service components
-        settings = Settings(this)
+        musicSettings = MusicSettings.from(this)
+        playbackSettings = PlaybackSettings.from(this)
         foregroundManager = ForegroundManager(this)
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
@@ -213,7 +216,7 @@ class PlaybackService :
         get() = player.audioSessionId
 
     override val shouldRewindWithPrev: Boolean
-        get() = settings.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
+        get() = playbackSettings.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
 
     override fun getState(durationMs: Long) =
         InternalPlayer.State.from(
@@ -286,7 +289,7 @@ class PlaybackService :
             if (playbackManager.repeatMode == RepeatMode.TRACK) {
                 playbackManager.rewind()
                 // May be configured to pause when we repeat a track.
-                if (settings.pauseOnRepeat) {
+                if (playbackSettings.pauseOnRepeat) {
                     playbackManager.setPlaying(false)
                 }
             } else {
@@ -352,7 +355,7 @@ class PlaybackService :
             }
             // Shuffle all -> Start new playback from all songs
             is InternalPlayer.Action.ShuffleAll -> {
-                playbackManager.play(null, null, settings.libSongSort, true)
+                playbackManager.play(null, null, musicSettings.songSort, true)
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
             is InternalPlayer.Action.Open -> {
@@ -360,8 +363,8 @@ class PlaybackService :
                     playbackManager.play(
                         song,
                         null,
-                        settings.libSongSort,
-                        playbackManager.queue.isShuffled && settings.keepShuffle)
+                        musicSettings.songSort,
+                        playbackManager.queue.isShuffled && playbackSettings.keepShuffle)
                 }
             }
         }
@@ -431,7 +434,7 @@ class PlaybackService :
             // ACTION_HEADSET_PLUG will fire when this BroadcastReciever is initially attached,
             // which would result in unexpected playback. Work around it by dropping the first
             // call to this function, which should come from that Intent.
-            if (settings.headsetAutoplay &&
+            if (playbackSettings.headsetAutoplay &&
                 playbackManager.queue.currentSong != null &&
                 initialHeadsetPlugEventHandled) {
                 logD("Device connected, resuming")

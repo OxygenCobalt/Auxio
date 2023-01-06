@@ -126,8 +126,8 @@ class DateTest {
 
     @Test
     fun date_fromYearDate() {
-        assertEquals("2016", Date.from(2016).toString())
-        assertEquals("2016", Date.from("2016").toString())
+        assertEquals("2016-08-16", Date.from(20160816).toString())
+        assertEquals("2016-08-16", Date.from("20160816").toString())
     }
 
     @Test

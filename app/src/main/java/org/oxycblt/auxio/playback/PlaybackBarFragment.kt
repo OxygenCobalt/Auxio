@@ -24,7 +24,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
@@ -66,7 +65,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         // Set up actions
         binding.playbackPlayPause.setOnClickListener { playbackModel.toggleIsPlaying() }
-        setupSecondaryActions(binding, Settings(context))
+        setupSecondaryActions(binding, PlaybackSettings.from(context).playbackBarAction)
 
         // Load the track color in manually as it's unclear whether the track actually supports
         // using a ColorStateList in the resources.
@@ -86,8 +85,8 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         binding.playbackInfo.isSelected = false
     }
 
-    private fun setupSecondaryActions(binding: FragmentPlaybackBarBinding, settings: Settings) {
-        when (settings.playbackBarAction) {
+    private fun setupSecondaryActions(binding: FragmentPlaybackBarBinding, actionMode: ActionMode) {
+        when (actionMode) {
             ActionMode.NEXT -> {
                 binding.playbackSecondaryAction.apply {
                     setIconResource(R.drawable.ic_skip_next_24)

@@ -25,8 +25,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogTabsBinding
+import org.oxycblt.auxio.home.HomeSettings
 import org.oxycblt.auxio.list.EditableListListener
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.logD
 
@@ -46,13 +46,13 @@ class TabCustomizeDialog :
             .setTitle(R.string.set_lib_tabs)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
                 logD("Committing tab changes")
-                Settings(requireContext()).libTabs = tabAdapter.tabs
+                HomeSettings.from(requireContext()).homeTabs = tabAdapter.tabs
             }
             .setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onBindingCreated(binding: DialogTabsBinding, savedInstanceState: Bundle?) {
-        var tabs = Settings(requireContext()).libTabs
+        var tabs = HomeSettings.from(requireContext()).homeTabs
         // Try to restore a pending tab configuration that was saved prior.
         if (savedInstanceState != null) {
             val savedTabs = Tab.fromIntCode(savedInstanceState.getInt(KEY_TABS))

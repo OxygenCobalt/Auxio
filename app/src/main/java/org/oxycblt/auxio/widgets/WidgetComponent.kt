@@ -32,7 +32,7 @@ import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.Queue
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.logD
 
@@ -45,7 +45,7 @@ import org.oxycblt.auxio.util.logD
 class WidgetComponent(private val context: Context) :
     PlaybackStateManager.Listener, SharedPreferences.OnSharedPreferenceChangeListener {
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settings = Settings(context)
+    private val settings = UISettings.from(context)
     private val widgetProvider = WidgetProvider()
     private val provider = BitmapProvider(context)
 

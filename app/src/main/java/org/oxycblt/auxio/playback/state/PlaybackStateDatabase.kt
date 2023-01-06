@@ -24,6 +24,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
 import androidx.core.database.sqlite.transaction
 import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Library
 import org.oxycblt.auxio.util.*
 
 /**

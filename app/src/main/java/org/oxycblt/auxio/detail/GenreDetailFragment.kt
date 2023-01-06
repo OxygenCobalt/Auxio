@@ -38,7 +38,7 @@ import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
@@ -123,7 +123,7 @@ class GenreDetailFragment : ListFragment<Music, FragmentDetailBinding>(), Detail
         when (item) {
             is Artist -> navModel.exploreNavigateTo(item)
             is Song ->
-                when (Settings(requireContext()).detailPlaybackMode) {
+                when (PlaybackSettings.from(requireContext()).inParentPlaybackMode) {
                     // When configured to play from the selected item, we already have a Genre
                     // to play from.
                     null ->
@@ -156,12 +156,12 @@ class GenreDetailFragment : ListFragment<Music, FragmentDetailBinding>(), Detail
 
     override fun onOpenSortMenu(anchor: View) {
         openMenu(anchor, R.menu.menu_genre_sort) {
-            val sort = detailModel.genreSort
+            val sort = detailModel.genreSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
             unlikelyToBeNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
             setOnMenuItemClickListener { item ->
                 item.isChecked = !item.isChecked
-                detailModel.genreSort =
+                detailModel.genreSongSort =
                     if (item.itemId == R.id.option_sort_asc) {
                         sort.withAscending(item.isChecked)
                     } else {

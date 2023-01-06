@@ -28,7 +28,7 @@ import androidx.core.widget.ImageViewCompat
 import com.google.android.material.shape.MaterialShapeDrawable
 import kotlin.math.max
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.getDrawableCompat
 
@@ -52,7 +52,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private val indicatorMatrix = Matrix()
     private val indicatorMatrixSrc = RectF()
     private val indicatorMatrixDst = RectF()
-    private val settings = Settings(context)
 
     /**
      * The corner radius of this view. This allows the outer ImageGroup to apply it's corner radius
@@ -62,7 +61,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         set(value) {
             field = value
             (background as? MaterialShapeDrawable)?.let { bg ->
-                if (settings.roundMode) {
+                if (UISettings.from(context).roundMode) {
                     bg.setCornerSize(value)
                 } else {
                     bg.setCornerSize(0f)

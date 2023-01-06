@@ -31,8 +31,8 @@ import kotlin.math.pow
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.extractor.TextTags
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -48,7 +48,7 @@ import org.oxycblt.auxio.util.logD
 class ReplayGainAudioProcessor(private val context: Context) :
     BaseAudioProcessor(), Player.Listener, SharedPreferences.OnSharedPreferenceChangeListener {
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settings = Settings(context)
+    private val settings = PlaybackSettings.from(context)
     private var lastFormat: Format? = null
 
     private var volume = 1f

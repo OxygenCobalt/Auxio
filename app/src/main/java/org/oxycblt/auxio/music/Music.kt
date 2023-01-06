@@ -33,7 +33,6 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.parsing.parseId3GenreNames
 import org.oxycblt.auxio.music.parsing.parseMultiValue
 import org.oxycblt.auxio.music.storage.*
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -308,10 +307,10 @@ sealed class MusicParent : Music() {
 /**
  * A song. Perhaps the foundation of the entirety of Auxio.
  * @param raw The [Song.Raw] to derive the member data from.
- * @param settings [Settings] to determine the artist configuration.
+ * @param musicSettings [MusicSettings] to perform further user-configured parsing.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class Song constructor(raw: Raw, settings: Settings) : Music() {
+class Song constructor(raw: Raw, musicSettings: MusicSettings) : Music() {
     override val uid =
     // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
     raw.musicBrainzId?.toUuidOrNull()?.let { UID.musicBrainz(MusicMode.SONGS, it) }
@@ -381,10 +380,9 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     val album: Album
         get() = unlikelyToBeNull(_album)
 
-    private val artistMusicBrainzIds =
-        raw.artistMusicBrainzIds.parseMultiValue(settings.musicSeparators)
-    private val artistNames = raw.artistNames.parseMultiValue(settings.musicSeparators)
-    private val artistSortNames = raw.artistSortNames.parseMultiValue(settings.musicSeparators)
+    private val artistMusicBrainzIds = raw.artistMusicBrainzIds.parseMultiValue(musicSettings)
+    private val artistNames = raw.artistNames.parseMultiValue(musicSettings)
+    private val artistSortNames = raw.artistSortNames.parseMultiValue(musicSettings)
     private val rawArtists =
         artistNames.mapIndexed { i, name ->
             Artist.Raw(
@@ -394,10 +392,9 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         }
 
     private val albumArtistMusicBrainzIds =
-        raw.albumArtistMusicBrainzIds.parseMultiValue(settings.musicSeparators)
-    private val albumArtistNames = raw.albumArtistNames.parseMultiValue(settings.musicSeparators)
-    private val albumArtistSortNames =
-        raw.albumArtistSortNames.parseMultiValue(settings.musicSeparators)
+        raw.albumArtistMusicBrainzIds.parseMultiValue(musicSettings)
+    private val albumArtistNames = raw.albumArtistNames.parseMultiValue(musicSettings)
+    private val albumArtistSortNames = raw.albumArtistSortNames.parseMultiValue(musicSettings)
     private val rawAlbumArtists =
         albumArtistNames.mapIndexed { i, name ->
             Artist.Raw(
@@ -465,7 +462,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
             musicBrainzId = raw.albumMusicBrainzId?.toUuidOrNull(),
             name = requireNotNull(raw.albumName) { "Invalid raw: No album name" },
             sortName = raw.albumSortName,
-            type = Album.Type.parse(raw.albumTypes.parseMultiValue(settings.musicSeparators)),
+            type = Album.Type.parse(raw.albumTypes.parseMultiValue(musicSettings)),
             rawArtists =
                 rawAlbumArtists.ifEmpty { rawArtists }.ifEmpty { listOf(Artist.Raw(null, null)) })
 
@@ -484,7 +481,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
      */
     val _rawGenres =
         raw.genreNames
-            .parseId3GenreNames(settings.musicSeparators)
+            .parseId3GenreNames(musicSettings)
             .map { Genre.Raw(it) }
             .ifEmpty { listOf(Genre.Raw()) }
 

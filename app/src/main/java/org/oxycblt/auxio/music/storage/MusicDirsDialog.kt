@@ -30,7 +30,7 @@ import androidx.core.view.isVisible
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
@@ -56,14 +56,11 @@ class MusicDirsDialog :
             .setNeutralButton(R.string.lbl_add, null)
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
-                val settings = Settings(requireContext())
-                val dirs =
-                    settings.getMusicDirs(
-                        requireNotNull(storageManager) { "StorageManager was not available" })
+                val settings = MusicSettings.from(requireContext())
                 val newDirs = MusicDirectories(dirAdapter.dirs, isUiModeInclude(requireBinding()))
-                if (dirs != newDirs) {
+                if (settings.musicDirs != newDirs) {
                     logD("Committing changes")
-                    settings.setMusicDirs(newDirs)
+                    settings.musicDirs = newDirs
                 }
             }
     }
@@ -104,7 +101,7 @@ class MusicDirsDialog :
             itemAnimator = null
         }
 
-        var dirs = Settings(context).getMusicDirs(storageManager)
+        var dirs = MusicSettings.from(context).musicDirs
         if (savedInstanceState != null) {
             val pendingDirs = savedInstanceState.getStringArrayList(KEY_PENDING_DIRS)
             if (pendingDirs != null) {

@@ -25,7 +25,7 @@ import com.google.android.material.checkbox.MaterialCheckBox
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSeparatorsBinding
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 
 /**
@@ -42,7 +42,7 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
             .setTitle(R.string.set_separators)
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
-                Settings(requireContext()).musicSeparators = getCurrentSeparators()
+                MusicSettings.from(requireContext()).multiValueSeparators = getCurrentSeparators()
             }
     }
 
@@ -59,8 +59,8 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
         // the corresponding CheckBox for each character instead of doing an iteration
         // through the separator list for each CheckBox.
         (savedInstanceState?.getString(KEY_PENDING_SEPARATORS)
-                ?: Settings(requireContext()).musicSeparators)
-            ?.forEach {
+                ?: MusicSettings.from(requireContext()).multiValueSeparators)
+            .forEach {
                 when (it) {
                     Separators.COMMA -> binding.separatorComma.isChecked = true
                     Separators.SEMICOLON -> binding.separatorSemicolon.isChecked = true

@@ -31,7 +31,9 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.music.Library
+import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
 
@@ -42,7 +44,7 @@ import org.oxycblt.auxio.util.logD
 class SearchViewModel(application: Application) :
     AndroidViewModel(application), MusicStore.Listener {
     private val musicStore = MusicStore.getInstance()
-    private val settings = Settings(context)
+    private val settings = SearchSettings.from(application)
     private var lastQuery: String? = null
     private var currentSearchJob: Job? = null
 

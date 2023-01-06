@@ -37,7 +37,7 @@ import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
@@ -123,7 +123,7 @@ class ArtistDetailFragment : ListFragment<Music, FragmentDetailBinding>(), Detai
     override fun onRealClick(item: Music) {
         when (item) {
             is Song -> {
-                when (Settings(requireContext()).detailPlaybackMode) {
+                when (PlaybackSettings.from(requireContext()).inParentPlaybackMode) {
                     // When configured to play from the selected item, we already have an Artist
                     // to play from.
                     null ->
@@ -158,13 +158,13 @@ class ArtistDetailFragment : ListFragment<Music, FragmentDetailBinding>(), Detai
 
     override fun onOpenSortMenu(anchor: View) {
         openMenu(anchor, R.menu.menu_artist_sort) {
-            val sort = detailModel.artistSort
+            val sort = detailModel.artistSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
             unlikelyToBeNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
             setOnMenuItemClickListener { item ->
                 item.isChecked = !item.isChecked
 
-                detailModel.artistSort =
+                detailModel.artistSongSort =
                     if (item.itemId == R.id.option_sort_asc) {
                         sort.withAscending(item.isChecked)
                     } else {

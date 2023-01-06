@@ -33,8 +33,10 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Library
+import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.storage.MimeType
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.*
 
 /**
@@ -47,7 +49,7 @@ import org.oxycblt.auxio.util.*
 class DetailViewModel(application: Application) :
     AndroidViewModel(application), MusicStore.Listener {
     private val musicStore = MusicStore.getInstance()
-    private val settings = Settings(application)
+    private val musicSettings = MusicSettings.from(application)
 
     private var currentSongJob: Job? = null
 
@@ -75,10 +77,10 @@ class DetailViewModel(application: Application) :
         get() = _albumList
 
     /** The current [Sort] used for [Song]s in [albumList]. */
-    var albumSort: Sort
-        get() = settings.detailAlbumSort
+    var albumSortSort: Sort
+        get() = musicSettings.albumSongSort
         set(value) {
-            settings.detailAlbumSort = value
+            musicSettings.albumSongSort = value
             // Refresh the album list to reflect the new sort.
             currentAlbum.value?.let(::refreshAlbumList)
         }
@@ -95,10 +97,10 @@ class DetailViewModel(application: Application) :
     val artistList: StateFlow<List<Item>> = _artistList
 
     /** The current [Sort] used for [Song]s in [artistList]. */
-    var artistSort: Sort
-        get() = settings.detailArtistSort
+    var artistSongSort: Sort
+        get() = musicSettings.artistSongSort
         set(value) {
-            settings.detailArtistSort = value
+            musicSettings.artistSongSort = value
             // Refresh the artist list to reflect the new sort.
             currentArtist.value?.let(::refreshArtistList)
         }
@@ -115,10 +117,10 @@ class DetailViewModel(application: Application) :
     val genreList: StateFlow<List<Item>> = _genreList
 
     /** The current [Sort] used for [Song]s in [genreList]. */
-    var genreSort: Sort
-        get() = settings.detailGenreSort
+    var genreSongSort: Sort
+        get() = musicSettings.genreSongSort
         set(value) {
-            settings.detailGenreSort = value
+            musicSettings.genreSongSort = value
             // Refresh the genre list to reflect the new sort.
             currentGenre.value?.let(::refreshGenreList)
         }
@@ -309,7 +311,7 @@ class DetailViewModel(application: Application) :
 
         // To create a good user experience regarding disc numbers, we group the album's
         // songs up by disc and then delimit the groups by a disc header.
-        val songs = albumSort.songs(album.songs)
+        val songs = albumSortSort.songs(album.songs)
         // Songs without disc tags become part of Disc 1.
         val byDisc = songs.groupBy { it.disc ?: 1 }
         if (byDisc.size > 1) {
@@ -363,7 +365,7 @@ class DetailViewModel(application: Application) :
         if (artist.songs.isNotEmpty()) {
             logD("Songs present in this artist, adding header")
             data.add(SortHeader(R.string.lbl_songs))
-            data.addAll(artistSort.songs(artist.songs))
+            data.addAll(artistSongSort.songs(artist.songs))
         }
 
         _artistList.value = data.toList()
@@ -376,7 +378,7 @@ class DetailViewModel(application: Application) :
         data.add(Header(R.string.lbl_artists))
         data.addAll(genre.artists)
         data.add(SortHeader(R.string.lbl_songs))
-        data.addAll(genreSort.songs(genre.songs))
+        data.addAll(genreSongSort.songs(genre.songs))
         _genreList.value = data
     }
 

@@ -32,8 +32,8 @@ import coil.Coil
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.settings.SettingsFragmentDirections
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
@@ -149,8 +149,6 @@ class PreferenceFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupPreference(preference: Preference) {
-        val settings = Settings(requireContext())
-
         if (!preference.isVisible) {
             // Nothing to do.
             return
@@ -170,7 +168,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                     }
             }
             getString(R.string.set_key_accent) -> {
-                preference.summary = getString(settings.accent.name)
+                preference.summary = getString(UISettings.from(requireContext()).accent.name)
             }
             getString(R.string.set_key_black_theme) -> {
                 preference.onPreferenceChangeListener =

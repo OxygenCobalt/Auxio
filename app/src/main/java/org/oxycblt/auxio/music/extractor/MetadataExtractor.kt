@@ -230,7 +230,7 @@ class Task(context: Context, private val raw: Song.Raw) {
      * Frames.
      * @param textFrames A mapping between ID3v2 Text Identification Frame IDs and one or more
      * values.
-     * @retrn A [Date] of a year value from TORY/TYER, a month and day value from TDAT, and a
+     * @return A [Date] of a year value from TORY/TYER, a month and day value from TDAT, and a
      * hour/minute value from TIME. No second value is included. The latter two fields may not be
      * included in they cannot be parsed. Will be null if a year value could not be parsed.
      */
