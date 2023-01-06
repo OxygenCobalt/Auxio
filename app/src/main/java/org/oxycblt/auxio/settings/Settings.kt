@@ -325,14 +325,13 @@ class Settings(private val context: Context) {
      * A string of characters representing the desired separator characters to denote multi-value
      * tags.
      */
-    var musicSeparators: String?
+    var musicSeparators: String
         // Differ from convention and store a string of separator characters instead of an int
         // code. This makes it easier to use in Regexes and makes it more extendable.
-        get() =
-            inner.getString(context.getString(R.string.set_key_separators), null)?.ifEmpty { null }
+        get() = inner.getString(context.getString(R.string.set_key_separators), "") ?: ""
         set(value) {
             inner.edit {
-                putString(context.getString(R.string.set_key_separators), value?.ifEmpty { null })
+                putString(context.getString(R.string.set_key_separators), value)
                 apply()
             }
         }

@@ -21,6 +21,7 @@ import android.content.Context
 import androidx.core.text.isDigitsOnly
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
+import kotlinx.coroutines.flow.flow
 import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.parsing.parseId3v2Position
@@ -61,12 +62,12 @@ class MetadataExtractor(
     fun finalize(rawSongs: List<Song.Raw>) = mediaStoreExtractor.finalize(rawSongs)
 
     /**
-     * Parse all [Song.Raw] instances queued by the sub-extractors. This will first delegate to the
-     * sub-extractors before parsing the metadata itself.
+     * Returns a flow that parses all [Song.Raw] instances queued by the sub-extractors. This will
+     * first delegate to the sub-extractors before parsing the metadata itself.
      * @param emit A listener that will be invoked with every new [Song.Raw] instance when they are
      * successfully loaded.
      */
-    suspend fun parse(emit: suspend (Song.Raw) -> Unit) {
+    fun extract() = flow {
         while (true) {
             val raw = Song.Raw()
             when (mediaStoreExtractor.populate(raw)) {

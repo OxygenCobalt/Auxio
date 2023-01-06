@@ -381,9 +381,10 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     val album: Album
         get() = unlikelyToBeNull(_album)
 
-    private val artistMusicBrainzIds = raw.artistMusicBrainzIds.parseMultiValue(settings)
-    private val artistNames = raw.artistNames.parseMultiValue(settings)
-    private val artistSortNames = raw.artistSortNames.parseMultiValue(settings)
+    private val artistMusicBrainzIds =
+        raw.artistMusicBrainzIds.parseMultiValue(settings.musicSeparators)
+    private val artistNames = raw.artistNames.parseMultiValue(settings.musicSeparators)
+    private val artistSortNames = raw.artistSortNames.parseMultiValue(settings.musicSeparators)
     private val rawArtists =
         artistNames.mapIndexed { i, name ->
             Artist.Raw(
@@ -392,9 +393,11 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
                 artistSortNames.getOrNull(i))
         }
 
-    private val albumArtistMusicBrainzIds = raw.albumArtistMusicBrainzIds.parseMultiValue(settings)
-    private val albumArtistNames = raw.albumArtistNames.parseMultiValue(settings)
-    private val albumArtistSortNames = raw.albumArtistSortNames.parseMultiValue(settings)
+    private val albumArtistMusicBrainzIds =
+        raw.albumArtistMusicBrainzIds.parseMultiValue(settings.musicSeparators)
+    private val albumArtistNames = raw.albumArtistNames.parseMultiValue(settings.musicSeparators)
+    private val albumArtistSortNames =
+        raw.albumArtistSortNames.parseMultiValue(settings.musicSeparators)
     private val rawAlbumArtists =
         albumArtistNames.mapIndexed { i, name ->
             Artist.Raw(
@@ -462,7 +465,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
             musicBrainzId = raw.albumMusicBrainzId?.toUuidOrNull(),
             name = requireNotNull(raw.albumName) { "Invalid raw: No album name" },
             sortName = raw.albumSortName,
-            type = Album.Type.parse(raw.albumTypes.parseMultiValue(settings)),
+            type = Album.Type.parse(raw.albumTypes.parseMultiValue(settings.musicSeparators)),
             rawArtists =
                 rawAlbumArtists.ifEmpty { rawArtists }.ifEmpty { listOf(Artist.Raw(null, null)) })
 
@@ -481,7 +484,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
      */
     val _rawGenres =
         raw.genreNames
-            .parseId3GenreNames(settings)
+            .parseId3GenreNames(settings.musicSeparators)
             .map { Genre.Raw(it) }
             .ifEmpty { listOf(Genre.Raw()) }
 

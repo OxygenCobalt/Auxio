@@ -24,6 +24,7 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.BuildConfig
@@ -264,7 +265,7 @@ class Indexer private constructor() {
         // Note: We use a set here so we can eliminate song duplicates.
         val songs = mutableSetOf<Song>()
         val rawSongs = mutableListOf<Song.Raw>()
-        metadataExtractor.parse { rawSong ->
+        metadataExtractor.extract().collect { rawSong ->
             songs.add(Song(rawSong, settings))
             rawSongs.add(rawSong)
 

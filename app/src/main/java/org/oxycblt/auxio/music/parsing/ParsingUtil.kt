@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.music.parsing
 
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 /// --- GENERIC PARSING ---
@@ -26,12 +25,12 @@ import org.oxycblt.auxio.util.nonZeroOrNull
  * Parse a multi-value tag based on the user configuration. If the value is already composed of more
  * than one value, nothing is done. Otherwise, this function will attempt to split it based on the
  * user's separator preferences.
- * @param settings [Settings] required to obtain user separator configuration.
+ * @param separators A string of characters to split by. Can be empty.
  * @return A new list of one or more [String]s.
  */
-fun List<String>.parseMultiValue(settings: Settings) =
+fun List<String>.parseMultiValue(separators: String) =
     if (size == 1) {
-        first().maybeParseBySeparators(settings)
+        first().maybeParseBySeparators(separators)
     } else {
         // Nothing to do.
         this
@@ -83,7 +82,7 @@ inline fun String.splitEscaped(selector: (Char) -> Boolean): List<String> {
 
 /**
  * Fix trailing whitespace or blank contents in a [String].
- * @return A string with trailing whitespace remove,d or null if the [String] was all whitespace or
+ * @return A string with trailing whitespace removed or null if the [String] was all whitespace or
  * empty.
  */
 fun String.correctWhitespace() = trim().ifBlank { null }
@@ -96,14 +95,15 @@ fun List<String>.correctWhitespace() = mapNotNull { it.correctWhitespace() }
 
 /**
  * Attempt to parse a string by the user's separator preferences.
- * @param settings [Settings] required to obtain user separator configuration.
- * @return A list of one or more [String]s that were split up by the user-defined separators.
+ * @param separators A string of characters to split by. Can be empty.
+ * @return A list of one or more [String]s that were split up by the given separators.
  */
-private fun String.maybeParseBySeparators(settings: Settings): List<String> {
-    // Get the separators the user desires. If null, there's nothing to do.
-    val separators = settings.musicSeparators ?: return listOf(this)
-    return splitEscaped { separators.contains(it) }.correctWhitespace()
-}
+private fun String.maybeParseBySeparators(separators: String) =
+    if (separators.isNotEmpty()) {
+        splitEscaped { separators.contains(it) }.correctWhitespace()
+    } else {
+        listOf(this)
+    }
 
 /// --- ID3v2 PARSING ---
 
@@ -119,29 +119,20 @@ fun String.parseId3v2Position() = split('/', limit = 2)[0].toIntOrNull()?.nonZer
  * Parse a multi-value genre name using ID3 rules. This will convert any ID3v1 integer
  * representations of genre fields into their named counterparts, and split up singular ID3v2-style
  * integer genre fields into one or more genres.
- * @param settings [Settings] required to obtain user separator configuration.
- * @return A list of one or more genre names..
+ * @param separators A string of characters to split by. Can be empty.
+ * @return A list of one or more genre names.
  */
-fun List<String>.parseId3GenreNames(settings: Settings) =
+fun List<String>.parseId3GenreNames(separators: String) =
     if (size == 1) {
-        first().parseId3MultiValueGenre(settings)
+        first().parseId3MultiValueGenre(separators)
     } else {
         // Nothing to split, just map any ID3v1 genres to their name counterparts.
         map { it.parseId3v1Genre() ?: it }
     }
 
-/**
- * Parse a single ID3v1/ID3v2 integer genre field into their named representations.
- * @return A list of one or more genre names.
- */
-private fun String.parseId3MultiValueGenre(settings: Settings) =
-    parseId3v1Genre()?.let { listOf(it) } ?: parseId3v2Genre() ?: maybeParseBySeparators(settings)
+private fun String.parseId3MultiValueGenre(separators: String) =
+    parseId3v1Genre()?.let { listOf(it) } ?: parseId3v2Genre() ?: maybeParseBySeparators(separators)
 
-/**
- * Parse an ID3v1 integer genre field.
- * @return A named genre if the field is a valid integer, "Cover" or "Remix" if the field is
- * "CR"/"RX" respectively, and nothing if the field is not a valid ID3v1 integer genre.
- */
 private fun String.parseId3v1Genre(): String? {
     // ID3v1 genres are a plain integer value without formatting, so in that case
     // try to index the genre table with such.
@@ -164,11 +155,6 @@ private fun String.parseId3v1Genre(): String? {
  */
 private val ID3V2_GENRE_RE = Regex("((?:\\((\\d+|RX|CR)\\))*)(.+)?")
 
-/**
- * Parse an ID3v2 integer genre field, which has support for multiple genre values and combined
- * named/integer genres.
- * @return A list of one or more genres, or null if the field is not a valid ID3v2 integer genre.
- */
 private fun String.parseId3v2Genre(): List<String>? {
     val groups = (ID3V2_GENRE_RE.matchEntire(this) ?: return null).groupValues
     val genres = mutableSetOf<String>()
