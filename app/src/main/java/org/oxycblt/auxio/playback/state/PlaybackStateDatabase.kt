@@ -23,10 +23,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
 import androidx.core.database.sqlite.transaction
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.util.*
 
 /**
@@ -72,10 +69,10 @@ class PlaybackStateDatabase private constructor(context: Context) :
 
     /**
      * Read a persisted [SavedState] from the database.
-     * @param library [MusicStore.Library] required to restore [SavedState].
+     * @param library [Library] required to restore [SavedState].
      * @return A persisted [SavedState], or null if one could not be found.
      */
-    fun read(library: MusicStore.Library): SavedState? {
+    fun read(library: Library): SavedState? {
         requireBackgroundThread()
         // Read the saved state and queue. If the state is non-null, that must imply an
         // existent, albeit possibly empty, queue.
@@ -123,7 +120,7 @@ class PlaybackStateDatabase private constructor(context: Context) :
                 parentUid = cursor.getString(parentUidIndex)?.let(Music.UID::fromString))
         }
 
-    private fun readQueue(library: MusicStore.Library): List<Song> {
+    private fun readQueue(library: Library): List<Song> {
         val queue = mutableListOf<Song>()
         readableDatabase.queryAll(TABLE_QUEUE) { cursor ->
             val songIndex = cursor.getColumnIndexOrThrow(QueueColumns.SONG_UID)

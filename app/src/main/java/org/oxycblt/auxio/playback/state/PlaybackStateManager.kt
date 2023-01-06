@@ -486,11 +486,11 @@ class PlaybackStateManager private constructor() {
         }
 
     /**
-     * Update the playback state to align with a new [MusicStore.Library].
-     * @param newLibrary The new [MusicStore.Library] that was recently loaded.
+     * Update the playback state to align with a new [Library].
+     * @param newLibrary The new [Library] that was recently loaded.
      */
     @Synchronized
-    fun sanitize(newLibrary: MusicStore.Library) {
+    fun sanitize(newLibrary: Library) {
         //        if (!isInitialized) {
         //            // Nothing playing, nothing to do.
         //            logD("Not initialized, no need to sanitize")

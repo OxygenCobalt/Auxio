@@ -43,6 +43,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.music.Library
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
@@ -302,7 +303,7 @@ class PlaybackService :
 
     // --- MUSICSTORE OVERRIDES ---
 
-    override fun onLibraryChanged(library: MusicStore.Library?) {
+    override fun onLibraryChanged(library: Library?) {
         if (library != null) {
             // We now have a library, see if we have anything we need to do.
             playbackManager.requestAction(this)

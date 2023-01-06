@@ -50,7 +50,7 @@ class PickerViewModel : ViewModel(), MusicStore.Listener {
         musicStore.removeListener(this)
     }
 
-    override fun onLibraryChanged(library: MusicStore.Library?) {
+    override fun onLibraryChanged(library: Library?) {
         if (library != null) {
             refreshChoices()
         }

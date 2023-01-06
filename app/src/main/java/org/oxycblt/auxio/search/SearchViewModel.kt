@@ -30,10 +30,7 @@ import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
-import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
@@ -63,7 +60,7 @@ class SearchViewModel(application: Application) :
         musicStore.removeListener(this)
     }
 
-    override fun onLibraryChanged(library: MusicStore.Library?) {
+    override fun onLibraryChanged(library: Library?) {
         if (library != null) {
             // Make sure our query is up to date with the music library.
             search(lastQuery)
@@ -96,7 +93,7 @@ class SearchViewModel(application: Application) :
             }
     }
 
-    private fun searchImpl(library: MusicStore.Library, query: String): List<Item> {
+    private fun searchImpl(library: Library, query: String): List<Item> {
         val sort = Sort(Sort.Mode.ByName, true)
         val filterMode = settings.searchFilterMode
         val results = mutableListOf<Item>()

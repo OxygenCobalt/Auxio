@@ -24,13 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicMode
-import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
@@ -104,7 +98,7 @@ class HomeViewModel(application: Application) :
         settings.removeListener(this)
     }
 
-    override fun onLibraryChanged(library: MusicStore.Library?) {
+    override fun onLibraryChanged(library: Library?) {
         if (library != null) {
             logD("Library changed, refreshing library")
             // Get the each list of items in the library to use as our list data.

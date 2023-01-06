@@ -333,10 +333,7 @@ class HomeFragment :
         }
     }
 
-    private fun setupCompleteState(
-        binding: FragmentHomeBinding,
-        result: Result<MusicStore.Library>
-    ) {
+    private fun setupCompleteState(binding: FragmentHomeBinding, result: Result<Library>) {
         if (result.isSuccess) {
             logD("Received ok response")
             binding.homeFab.show()

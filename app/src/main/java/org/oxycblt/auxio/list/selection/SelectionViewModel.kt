@@ -38,7 +38,7 @@ class SelectionViewModel : ViewModel(), MusicStore.Listener {
         musicStore.addListener(this)
     }
 
-    override fun onLibraryChanged(library: MusicStore.Library?) {
+    override fun onLibraryChanged(library: Library?) {
         if (library == null) {
             return
         }
