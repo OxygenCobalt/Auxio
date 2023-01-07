@@ -34,11 +34,9 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
@@ -49,7 +47,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A [ListFragment] that shows information for a particular [Genre].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreDetailFragment : ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener<Music> {
+class GenreDetailFragment :
+    ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener<Music> {
     private val detailModel: DetailViewModel by activityViewModels()
     // Information about what genre to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an genre.
@@ -129,8 +128,8 @@ class GenreDetailFragment : ListFragment<Music, FragmentDetailBinding>(), Detail
                 } else {
                     // When configured to play from the selected item, we already have an Artist
                     // to play from.
-                    playbackModel.playFromArtist(item,
-                        unlikelyToBeNull(detailModel.currentArtist.value))
+                    playbackModel.playFromArtist(
+                        item, unlikelyToBeNull(detailModel.currentArtist.value))
                 }
             }
             else -> error("Unexpected datatype: ${item::class.simpleName}")

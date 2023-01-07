@@ -56,7 +56,8 @@ class SearchViewModel(application: Application) :
         get() = _searchResults
 
     /** The [MusicMode] to use when playing a [Song] from the UI. */
-    val playbackMode: MusicMode get() = playbackSettings.inListPlaybackMode
+    val playbackMode: MusicMode
+        get() = playbackSettings.inListPlaybackMode
 
     init {
         musicStore.addListener(this)

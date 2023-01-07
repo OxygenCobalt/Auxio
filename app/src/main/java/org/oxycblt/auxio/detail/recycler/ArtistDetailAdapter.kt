@@ -43,7 +43,8 @@ import org.oxycblt.auxio.util.inflater
  * @param listener A [DetailAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistDetailAdapter(private val listener: Listener<Music>) : DetailAdapter(listener, DIFF_CALLBACK) {
+class ArtistDetailAdapter(private val listener: Listener<Music>) :
+    DetailAdapter(listener, DIFF_CALLBACK) {
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
             // Support an artist header, and special artist albums/songs.

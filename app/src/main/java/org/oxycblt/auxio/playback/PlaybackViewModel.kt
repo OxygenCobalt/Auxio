@@ -25,7 +25,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.oxycblt.auxio.home.HomeSettings
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.playback.state.*
 import org.oxycblt.auxio.util.context
@@ -84,7 +83,8 @@ class PlaybackViewModel(application: Application) :
         get() = _genrePlaybackPickerSong
 
     /** The current action to show on the playback bar. */
-    val currentBarAction: ActionMode get() = playbackSettings.barAction
+    val currentBarAction: ActionMode
+        get() = playbackSettings.barAction
 
     /**
      * The current audio session ID of the internal player. Null if no [InternalPlayer] is

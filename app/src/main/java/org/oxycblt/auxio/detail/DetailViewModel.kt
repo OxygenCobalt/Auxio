@@ -131,7 +131,8 @@ class DetailViewModel(application: Application) :
      * The [MusicMode] to use when playing a [Song] from the UI, or null to play from the currently
      * shown item.
      */
-    val playbackMode: MusicMode? get() = playbackSettings.inParentPlaybackMode
+    val playbackMode: MusicMode?
+        get() = playbackSettings.inParentPlaybackMode
 
     init {
         musicStore.addListener(this)

@@ -37,7 +37,6 @@ import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.*
 
 /**

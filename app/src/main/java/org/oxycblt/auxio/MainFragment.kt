@@ -403,6 +403,11 @@ class MainFragment :
                 return
             }
 
+            // Clear out any prior selections.
+            if (selectionModel.consume().isNotEmpty()) {
+                return
+            }
+
             // Then try to navigate out of the explore navigation fragments (i.e Detail Views)
             binding.exploreNavHost.findNavController().navigateUp()
         }
@@ -427,6 +432,7 @@ class MainFragment :
             isEnabled =
                 queueSheetBehavior?.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
                     playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_EXPANDED ||
+                    selectionModel.selected.value.isNotEmpty() ||
                     exploreNavController.currentDestination?.id !=
                         exploreNavController.graph.startDestinationId
         }

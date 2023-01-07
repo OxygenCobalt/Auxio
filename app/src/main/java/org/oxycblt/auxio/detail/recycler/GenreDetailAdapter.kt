@@ -41,7 +41,8 @@ import org.oxycblt.auxio.util.inflater
  * @param listener A [DetailAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreDetailAdapter(private val listener: Listener<Music>) : DetailAdapter(listener, DIFF_CALLBACK) {
+class GenreDetailAdapter(private val listener: Listener<Music>) :
+    DetailAdapter(listener, DIFF_CALLBACK) {
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
             // Support the Genre header and generic Artist/Song items. There's nothing about

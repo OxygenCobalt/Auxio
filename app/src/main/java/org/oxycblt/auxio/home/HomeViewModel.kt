@@ -65,7 +65,8 @@ class HomeViewModel(application: Application) :
         get() = _genresList
 
     /** The [MusicMode] to use when playing a [Song] from the UI. */
-    val playbackMode: MusicMode get() = playbackSettings.inListPlaybackMode
+    val playbackMode: MusicMode
+        get() = playbackSettings.inListPlaybackMode
 
     /**
      * A list of [MusicMode] corresponding to the current [Tab] configuration, excluding invisible
