@@ -18,17 +18,14 @@
 package org.oxycblt.auxio.home
 
 import android.app.Application
-import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.Library
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -36,9 +33,7 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class HomeViewModel(application: Application) :
-    AndroidViewModel(application),
-    MusicStore.Listener,
-    SharedPreferences.OnSharedPreferenceChangeListener {
+    AndroidViewModel(application), MusicStore.Listener, HomeSettings.Listener {
     private val musicStore = MusicStore.getInstance()
     private val homeSettings = HomeSettings.from(application)
     private val musicSettings = MusicSettings.from(application)
@@ -92,13 +87,13 @@ class HomeViewModel(application: Application) :
 
     init {
         musicStore.addListener(this)
-        homeSettings.addListener(this)
+        homeSettings.registerListener(this)
     }
 
     override fun onCleared() {
         super.onCleared()
         musicStore.removeListener(this)
-        homeSettings.removeListener(this)
+        homeSettings.unregisterListener(this)
     }
 
     override fun onLibraryChanged(library: Library?) {
@@ -120,19 +115,16 @@ class HomeViewModel(application: Application) :
         }
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        when (key) {
-            context.getString(R.string.set_key_lib_tabs) -> {
-                // Tabs changed, update  the current tabs and set up a re-create event.
-                currentTabModes = makeTabModes()
-                _shouldRecreate.value = true
-            }
-            context.getString(R.string.set_key_hide_collaborators) -> {
-                // Changes in the hide collaborator setting will change the artist contents
-                // of the library, consider it a library update.
-                onLibraryChanged(musicStore.library)
-            }
-        }
+    override fun onTabsChanged() {
+        // Tabs changed, update  the current tabs and set up a re-create event.
+        currentTabModes = makeTabModes()
+        _shouldRecreate.value = true
+    }
+
+    override fun onHideCollaboratorsChanged() {
+        // Changes in the hide collaborator setting will change the artist contents
+        // of the library, consider it a library update.
+        onLibraryChanged(musicStore.library)
     }
 
     /**

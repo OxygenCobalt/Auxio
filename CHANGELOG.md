@@ -4,11 +4,13 @@
 
 #### What's Improved
 - Added ability to edit previously played or currently playing items in the queue
+- Added support for date values formatted as "YYYYMMDD"
 
 #### What's Fixed
 - Fixed unreliable ReplayGain adjustment application in certain situations
 - Fixed crash that would occur in music folders dialog when user does not have a working
 file manager
+- Fixed notification not updating due to settings changes
 
 #### What's Changed
 - Implemented new queue system

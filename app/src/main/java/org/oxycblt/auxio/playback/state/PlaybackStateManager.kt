@@ -116,7 +116,7 @@ class PlaybackStateManager private constructor() {
      */
     @Synchronized
     fun registerInternalPlayer(internalPlayer: InternalPlayer) {
-        if (BuildConfig.DEBUG && this.internalPlayer != null) {
+        if (this.internalPlayer != null) {
             logW("Internal player is already registered")
             return
         }
@@ -141,7 +141,7 @@ class PlaybackStateManager private constructor() {
      */
     @Synchronized
     fun unregisterInternalPlayer(internalPlayer: InternalPlayer) {
-        if (BuildConfig.DEBUG && this.internalPlayer !== internalPlayer) {
+        if (this.internalPlayer !== internalPlayer) {
             logW("Given internal player did not match current internal player")
             return
         }

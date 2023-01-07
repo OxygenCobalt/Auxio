@@ -26,7 +26,11 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.accent.Accent
 import org.oxycblt.auxio.util.logD
 
-interface UISettings : Settings {
+/**
+ * User configuration for the general app UI.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+interface UISettings : Settings<UISettings.Listener> {
     /** The current theme. Represented by the AppCompatDelegate constants. */
     val theme: Int
     /** Whether to use a black background when a dark theme is currently used. */
@@ -36,32 +40,33 @@ interface UISettings : Settings {
     /** Whether to round additional UI elements that require album covers to be rounded. */
     val roundMode: Boolean
 
-    private class Real(context: Context) : Settings.Real(context), UISettings {
+    interface Listener {
+        /** Called when [roundMode] changes. */
+        fun onRoundModeChanged()
+    }
+
+    private class Real(context: Context) : Settings.Real<Listener>(context), UISettings {
         override val theme: Int
             get() =
                 sharedPreferences.getInt(
-                    context.getString(R.string.set_key_theme),
-                    AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    getString(R.string.set_key_theme), AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
         override val useBlackTheme: Boolean
-            get() =
-                sharedPreferences.getBoolean(context.getString(R.string.set_key_black_theme), false)
+            get() = sharedPreferences.getBoolean(getString(R.string.set_key_black_theme), false)
 
         override var accent: Accent
             get() =
                 Accent.from(
-                    sharedPreferences.getInt(
-                        context.getString(R.string.set_key_accent), Accent.DEFAULT))
+                    sharedPreferences.getInt(getString(R.string.set_key_accent), Accent.DEFAULT))
             set(value) {
                 sharedPreferences.edit {
-                    putInt(context.getString(R.string.set_key_accent), value.index)
+                    putInt(getString(R.string.set_key_accent), value.index)
                     apply()
                 }
             }
 
         override val roundMode: Boolean
-            get() =
-                sharedPreferences.getBoolean(context.getString(R.string.set_key_round_mode), false)
+            get() = sharedPreferences.getBoolean(getString(R.string.set_key_round_mode), false)
 
         override fun migrate() {
             if (sharedPreferences.contains(OLD_KEY_ACCENT3)) {
@@ -78,10 +83,16 @@ interface UISettings : Settings {
                 }
 
                 sharedPreferences.edit {
-                    putInt(context.getString(R.string.set_key_accent), accent)
+                    putInt(getString(R.string.set_key_accent), accent)
                     remove(OLD_KEY_ACCENT3)
                     apply()
                 }
+            }
+        }
+
+        override fun onSettingChanged(key: String, listener: Listener) {
+            if (key == getString(R.string.set_key_round_mode)) {
+                listener.onRoundModeChanged()
             }
         }
 

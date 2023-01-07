@@ -87,7 +87,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                     when (preference.key) {
                         getString(R.string.set_key_accent) ->
                             SettingsFragmentDirections.goToAccentDialog()
-                        getString(R.string.set_key_lib_tabs) ->
+                        getString(R.string.set_key_home_tabs) ->
                             SettingsFragmentDirections.goToTabDialog()
                         getString(R.string.set_key_pre_amp) ->
                             SettingsFragmentDirections.goToPreAmpDialog()

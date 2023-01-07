@@ -19,7 +19,6 @@ package org.oxycblt.auxio.music.system
 
 import android.app.Service
 import android.content.Intent
-import android.content.SharedPreferences
 import android.database.ContentObserver
 import android.os.Handler
 import android.os.IBinder
@@ -32,7 +31,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.storage.contentResolverSafe
@@ -55,8 +53,7 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class IndexerService :
-    Service(), Indexer.Controller, SharedPreferences.OnSharedPreferenceChangeListener {
+class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
     private val indexer = Indexer.getInstance()
     private val musicStore = MusicStore.getInstance()
     private val playbackManager = PlaybackStateManager.getInstance()
@@ -84,7 +81,7 @@ class IndexerService :
         // condition to cause us to load music before we were fully initialize.
         indexerContentObserver = SystemContentObserver()
         settings = MusicSettings.from(this)
-        settings.addListener(this)
+        settings.registerListener(this)
         indexer.registerController(this)
         // An indeterminate indexer and a missing library implies we are extremely early
         // in app initialization so start loading music.
@@ -108,7 +105,7 @@ class IndexerService :
         // Then cancel the listener-dependent components to ensure that stray reloading
         // events will not occur.
         indexerContentObserver.release()
-        settings.removeListener(this)
+        settings.unregisterListener(this)
         indexer.unregisterController(this)
         // Then cancel any remaining music loading jobs.
         serviceJob.cancel()
@@ -230,22 +227,18 @@ class IndexerService :
 
     // --- SETTING CALLBACKS ---
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        when (key) {
-            // Hook changes in music settings to a new music loading event.
-            getString(R.string.set_key_exclude_non_music),
-            getString(R.string.set_key_music_dirs),
-            getString(R.string.set_key_music_dirs_include),
-            getString(R.string.set_key_separators) -> onStartIndexing(true)
-            getString(R.string.set_key_observing) -> {
-                // Make sure we don't override the service state with the observing
-                // notification if we were actively loading when the automatic rescanning
-                // setting changed. In such a case, the state will still be updated when
-                // the music loading process ends.
-                if (!indexer.isIndexing) {
-                    updateIdleSession()
-                }
-            }
+    override fun onIndexingSettingChanged() {
+        // Music loading configuration changed, need to reload music.
+        onStartIndexing(true)
+    }
+
+    override fun onObservingChanged() {
+        // Make sure we don't override the service state with the observing
+        // notification if we were actively loading when the automatic rescanning
+        // setting changed. In such a case, the state will still be updated when
+        // the music loading process ends.
+        if (!indexer.isIndexing) {
+            updateIdleSession()
         }
     }
 

@@ -20,6 +20,8 @@ package org.oxycblt.auxio.music
 import org.oxycblt.auxio.music.storage.MusicDirectories
 
 interface FakeMusicSettings : MusicSettings {
+    override fun registerListener(listener: MusicSettings.Listener) = throw NotImplementedError()
+    override fun unregisterListener(listener: MusicSettings.Listener) = throw NotImplementedError()
     override var musicDirs: MusicDirectories
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()

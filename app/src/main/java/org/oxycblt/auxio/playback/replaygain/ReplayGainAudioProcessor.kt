@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.playback.replaygain
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.Player
@@ -28,7 +27,6 @@ import com.google.android.exoplayer2.audio.BaseAudioProcessor
 import com.google.android.exoplayer2.util.MimeTypes
 import java.nio.ByteBuffer
 import kotlin.math.pow
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.extractor.TextTags
 import org.oxycblt.auxio.playback.PlaybackSettings
@@ -45,10 +43,10 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ReplayGainAudioProcessor(private val context: Context) :
-    BaseAudioProcessor(), Player.Listener, SharedPreferences.OnSharedPreferenceChangeListener {
+class ReplayGainAudioProcessor(context: Context) :
+    BaseAudioProcessor(), Player.Listener, PlaybackSettings.Listener {
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settings = PlaybackSettings.from(context)
+    private val playbackSettings = PlaybackSettings.from(context)
     private var lastFormat: Format? = null
 
     private var volume = 1f
@@ -65,7 +63,7 @@ class ReplayGainAudioProcessor(private val context: Context) :
      */
     fun addToListeners(player: Player) {
         player.addListener(this)
-        settings.addListener(this)
+        playbackSettings.registerListener(this)
     }
 
     /**
@@ -75,7 +73,7 @@ class ReplayGainAudioProcessor(private val context: Context) :
      */
     fun releaseFromListeners(player: Player) {
         player.removeListener(this)
-        settings.removeListener(this)
+        playbackSettings.unregisterListener(this)
     }
 
     // --- OVERRIDES ---
@@ -98,13 +96,9 @@ class ReplayGainAudioProcessor(private val context: Context) :
         applyReplayGain(null)
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (key == context.getString(R.string.set_key_replay_gain) ||
-            key == context.getString(R.string.set_key_pre_amp_with) ||
-            key == context.getString(R.string.set_key_pre_amp_without)) {
-            // ReplayGain changed, we need to set it up again.
-            applyReplayGain(lastFormat)
-        }
+    override fun onReplayGainSettingsChanged() {
+        // ReplayGain config changed, we need to set it up again.
+        applyReplayGain(lastFormat)
     }
 
     // --- REPLAYGAIN PARSING ---
@@ -116,14 +110,14 @@ class ReplayGainAudioProcessor(private val context: Context) :
     private fun applyReplayGain(format: Format?) {
         lastFormat = format
         val gain = parseReplayGain(format ?: return)
-        val preAmp = settings.replayGainPreAmp
+        val preAmp = playbackSettings.replayGainPreAmp
 
         val adjust =
             if (gain != null) {
                 logD("Found ReplayGain adjustment $gain")
                 // ReplayGain is configurable, so determine what to do based off of the mode.
                 val useAlbumGain =
-                    when (settings.replayGainMode) {
+                    when (playbackSettings.replayGainMode) {
                         // User wants track gain to be preferred. Default to album gain only if
                         // there is no track gain.
                         ReplayGainMode.TRACK -> gain.track == 0f

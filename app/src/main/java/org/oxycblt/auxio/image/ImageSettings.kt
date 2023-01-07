@@ -27,16 +27,20 @@ import org.oxycblt.auxio.util.logD
  * User configuration specific to image loading.
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface ImageSettings : Settings {
+interface ImageSettings : Settings<ImageSettings.Listener> {
     /** The strategy to use when loading album covers. */
     val coverMode: CoverMode
 
-    private class Real(context: Context) : Settings.Real(context), ImageSettings {
+    interface Listener {
+        /** Called when [coverMode] changes. */
+        fun onCoverModeChanged() {}
+    }
+
+    private class Real(context: Context) : Settings.Real<Listener>(context), ImageSettings {
         override val coverMode: CoverMode
             get() =
                 CoverMode.fromIntCode(
-                    sharedPreferences.getInt(
-                        context.getString(R.string.set_key_cover_mode), Int.MIN_VALUE))
+                    sharedPreferences.getInt(getString(R.string.set_key_cover_mode), Int.MIN_VALUE))
                     ?: CoverMode.MEDIA_STORE
 
         override fun migrate() {
@@ -54,10 +58,16 @@ interface ImageSettings : Settings {
                     }
 
                 sharedPreferences.edit {
-                    putInt(context.getString(R.string.set_key_cover_mode), mode.intCode)
+                    putInt(getString(R.string.set_key_cover_mode), mode.intCode)
                     remove(OLD_KEY_SHOW_COVERS)
                     remove(OLD_KEY_QUALITY_COVERS)
                 }
+            }
+        }
+
+        override fun onSettingChanged(key: String, listener: Listener) {
+            if (key == getString(R.string.set_key_cover_mode)) {
+                listOf(key, listener)
             }
         }
 

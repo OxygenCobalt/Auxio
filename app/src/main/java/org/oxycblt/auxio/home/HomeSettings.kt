@@ -28,30 +28,44 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * User configuration specific to the home UI.
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface HomeSettings : Settings {
+interface HomeSettings : Settings<HomeSettings.Listener> {
     /** The tabs to show in the home UI. */
     var homeTabs: Array<Tab>
     /** Whether to hide artists considered "collaborators" from the home UI. */
     val shouldHideCollaborators: Boolean
 
-    private class Real(context: Context) : Settings.Real(context), HomeSettings {
+    interface Listener {
+        /** Called when the [homeTabs] configuration changes. */
+        fun onTabsChanged()
+        /** Called when the [shouldHideCollaborators] configuration changes. */
+        fun onHideCollaboratorsChanged()
+    }
+
+    private class Real(context: Context) : Settings.Real<Listener>(context), HomeSettings {
         override var homeTabs: Array<Tab>
             get() =
                 Tab.fromIntCode(
                     sharedPreferences.getInt(
-                        context.getString(R.string.set_key_lib_tabs), Tab.SEQUENCE_DEFAULT))
+                        getString(R.string.set_key_home_tabs), Tab.SEQUENCE_DEFAULT))
                     ?: unlikelyToBeNull(Tab.fromIntCode(Tab.SEQUENCE_DEFAULT))
             set(value) {
                 sharedPreferences.edit {
-                    putInt(context.getString(R.string.set_key_lib_tabs), Tab.toIntCode(value))
+                    putInt(getString(R.string.set_key_home_tabs), Tab.toIntCode(value))
                     apply()
                 }
             }
 
         override val shouldHideCollaborators: Boolean
             get() =
-                sharedPreferences.getBoolean(
-                    context.getString(R.string.set_key_hide_collaborators), false)
+                sharedPreferences.getBoolean(getString(R.string.set_key_hide_collaborators), false)
+
+        override fun onSettingChanged(key: String, listener: Listener) {
+            when (key) {
+                getString(R.string.set_key_home_tabs) -> listener.onTabsChanged()
+                getString(R.string.set_key_hide_collaborators) ->
+                    listener.onHideCollaboratorsChanged()
+            }
+        }
     }
 
     companion object {

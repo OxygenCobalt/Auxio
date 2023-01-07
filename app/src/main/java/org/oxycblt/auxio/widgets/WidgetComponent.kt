@@ -18,13 +18,13 @@
 package org.oxycblt.auxio.widgets
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.Build
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
+import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.image.extractor.SquareFrameTransform
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
@@ -43,15 +43,17 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class WidgetComponent(private val context: Context) :
-    PlaybackStateManager.Listener, SharedPreferences.OnSharedPreferenceChangeListener {
+    PlaybackStateManager.Listener, UISettings.Listener, ImageSettings.Listener {
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settings = UISettings.from(context)
+    private val uiSettings = UISettings.from(context)
+    private val imageSettings = ImageSettings.from(context)
     private val widgetProvider = WidgetProvider()
     private val provider = BitmapProvider(context)
 
     init {
         playbackManager.addListener(this)
-        settings.addListener(this)
+        uiSettings.registerListener(this)
+        imageSettings.registerListener(this)
     }
 
     /** Update [WidgetProvider] with the current playback state. */
@@ -76,7 +78,7 @@ class WidgetComponent(private val context: Context) :
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                             // Android 12, always round the cover with the widget's inner radius
                             context.getDimenPixels(android.R.dimen.system_app_widget_inner_radius)
-                        } else if (settings.roundMode) {
+                        } else if (uiSettings.roundMode) {
                             // < Android 12, but the user still enabled round mode.
                             context.getDimenPixels(R.dimen.size_corners_medium)
                         } else {
@@ -107,27 +109,23 @@ class WidgetComponent(private val context: Context) :
     /** Release this instance, preventing any further events from updating the widget instances. */
     fun release() {
         provider.release()
-        settings.removeListener(this)
+        uiSettings.unregisterListener(this)
         widgetProvider.reset(context)
         playbackManager.removeListener(this)
     }
 
     // --- CALLBACKS ---
 
-    // Hook all the major song-changing updates + the major player state updates
-    // to updating the "Now Playing" widget.
+    // Respond to all major song or player changes that will affect the widget
     override fun onIndexMoved(queue: Queue) = update()
     override fun onQueueReordered(queue: Queue) = update()
     override fun onNewPlayback(queue: Queue, parent: MusicParent?) = update()
     override fun onStateChanged(state: InternalPlayer.State) = update()
     override fun onRepeatChanged(repeatMode: RepeatMode) = update()
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        if (key == context.getString(R.string.set_key_cover_mode) ||
-            key == context.getString(R.string.set_key_round_mode)) {
-            update()
-        }
-    }
+    // Respond to settings changes that will affect the widget
+    override fun onRoundModeChanged() = update()
+    override fun onCoverModeChanged() = update()
 
     /**
      * A condensed form of the playback state that is safe to use in AppWidgets.

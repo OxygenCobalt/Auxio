@@ -27,21 +27,20 @@ import org.oxycblt.auxio.settings.Settings
  * User configuration specific to the search UI.
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface SearchSettings : Settings {
+interface SearchSettings : Settings<Nothing> {
     /** The type of Music the search view is currently filtering to. */
     var searchFilterMode: MusicMode?
 
-    private class Real(context: Context) : Settings.Real(context), SearchSettings {
+    private class Real(context: Context) : Settings.Real<Nothing>(context), SearchSettings {
         override var searchFilterMode: MusicMode?
             get() =
                 MusicMode.fromIntCode(
                     sharedPreferences.getInt(
-                        context.getString(R.string.set_key_search_filter), Int.MIN_VALUE))
+                        getString(R.string.set_key_search_filter), Int.MIN_VALUE))
             set(value) {
                 sharedPreferences.edit {
                     putInt(
-                        context.getString(R.string.set_key_search_filter),
-                        value?.intCode ?: Int.MIN_VALUE)
+                        getString(R.string.set_key_search_filter), value?.intCode ?: Int.MIN_VALUE)
                     apply()
                 }
             }

@@ -19,7 +19,6 @@ package org.oxycblt.auxio.playback.system
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -31,6 +30,7 @@ import androidx.media.session.MediaButtonReceiver
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
+import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.ActionMode
@@ -51,7 +51,8 @@ import org.oxycblt.auxio.util.logD
 class MediaSessionComponent(private val context: Context, private val listener: Listener) :
     MediaSessionCompat.Callback(),
     PlaybackStateManager.Listener,
-    SharedPreferences.OnSharedPreferenceChangeListener {
+    ImageSettings.Listener,
+    PlaybackSettings.Listener {
     private val mediaSession =
         MediaSessionCompat(context, context.packageName).apply {
             isActive = true
@@ -59,13 +60,14 @@ class MediaSessionComponent(private val context: Context, private val listener: 
         }
 
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settings = PlaybackSettings.from(context)
+    private val playbackSettings = PlaybackSettings.from(context)
 
     private val notification = NotificationComponent(context, mediaSession.sessionToken)
     private val provider = BitmapProvider(context)
 
     init {
         playbackManager.addListener(this)
+        playbackSettings.registerListener(this)
         mediaSession.setCallback(this)
     }
 
@@ -83,7 +85,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
      */
     fun release() {
         provider.release()
-        settings.removeListener(this)
+        playbackSettings.unregisterListener(this)
         playbackManager.removeListener(this)
         mediaSession.apply {
             isActive = false
@@ -150,12 +152,14 @@ class MediaSessionComponent(private val context: Context, private val listener: 
 
     // --- SETTINGS OVERRIDES ---
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        when (key) {
-            context.getString(R.string.set_key_cover_mode) ->
-                updateMediaMetadata(playbackManager.queue.currentSong, playbackManager.parent)
-            context.getString(R.string.set_key_notif_action) -> invalidateSecondaryAction()
-        }
+    override fun onCoverModeChanged() {
+        // Need to reload the metadata cover.
+        updateMediaMetadata(playbackManager.queue.currentSong, playbackManager.parent)
+    }
+
+    override fun onNotificationActionChanged() {
+        // Need to re-load the action shown in the notification.
+        invalidateSecondaryAction()
     }
 
     // --- MEDIASESSION OVERRIDES ---
@@ -359,7 +363,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
 
         // Add the secondary action (either repeat/shuffle depending on the configuration)
         val secondaryAction =
-            when (settings.playbackNotificationAction) {
+            when (playbackSettings.notificationAction) {
                 ActionMode.SHUFFLE ->
                     PlaybackStateCompat.CustomAction.Builder(
                         PlaybackService.ACTION_INVERT_SHUFFLE,
@@ -393,7 +397,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
     private fun invalidateSecondaryAction() {
         invalidateSessionState()
 
-        when (settings.playbackNotificationAction) {
+        when (playbackSettings.notificationAction) {
             ActionMode.SHUFFLE -> notification.updateShuffled(playbackManager.queue.isShuffled)
             else -> notification.updateRepeatMode(playbackManager.repeatMode)
         }
