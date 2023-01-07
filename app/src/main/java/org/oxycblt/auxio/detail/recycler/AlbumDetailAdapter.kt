@@ -126,7 +126,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
         binding.detailCover.bind(album)
 
         // The type text depends on the release type (Album, EP, Single, etc.)
-        binding.detailType.text = binding.context.getString(album.type.stringRes)
+        binding.detailType.text = binding.context.getString(album.releaseType.stringRes)
 
         binding.detailName.text = album.resolveName(binding.context)
 
@@ -173,7 +173,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
                         oldItem.dates == newItem.dates &&
                         oldItem.songs.size == newItem.songs.size &&
                         oldItem.durationMs == newItem.durationMs &&
-                        oldItem.type == newItem.type
+                        oldItem.releaseType == newItem.releaseType
             }
     }
 }

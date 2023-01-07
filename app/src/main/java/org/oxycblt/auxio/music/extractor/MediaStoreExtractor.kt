@@ -27,7 +27,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import java.io.File
-import org.oxycblt.auxio.music.Date
+import org.oxycblt.auxio.music.tags.Date
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.parsing.parseId3v2Position

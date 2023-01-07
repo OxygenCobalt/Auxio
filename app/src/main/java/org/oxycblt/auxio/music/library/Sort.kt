@@ -23,6 +23,7 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.library.Sort.Mode
+import org.oxycblt.auxio.music.tags.Date
 
 /**
  * A sorting method.

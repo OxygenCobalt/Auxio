@@ -37,6 +37,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.music.storage.MimeType
+import org.oxycblt.auxio.music.tags.ReleaseType
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.*
 
@@ -344,21 +345,21 @@ class DetailViewModel(application: Application) :
 
         val byReleaseGroup =
             albums.groupBy {
-                // Remap the complicated Album.Type data structure into an easier
+                // Remap the complicated ReleaseType data structure into an easier
                 // "AlbumGrouping" enum that will automatically group and sort
                 // the artist's albums.
-                when (it.type.refinement) {
-                    Album.Type.Refinement.LIVE -> AlbumGrouping.LIVE
-                    Album.Type.Refinement.REMIX -> AlbumGrouping.REMIXES
+                when (it.releaseType.refinement) {
+                    ReleaseType.Refinement.LIVE -> AlbumGrouping.LIVE
+                    ReleaseType.Refinement.REMIX -> AlbumGrouping.REMIXES
                     null ->
-                        when (it.type) {
-                            is Album.Type.Album -> AlbumGrouping.ALBUMS
-                            is Album.Type.EP -> AlbumGrouping.EPS
-                            is Album.Type.Single -> AlbumGrouping.SINGLES
-                            is Album.Type.Compilation -> AlbumGrouping.COMPILATIONS
-                            is Album.Type.Soundtrack -> AlbumGrouping.SOUNDTRACKS
-                            is Album.Type.Mix -> AlbumGrouping.MIXES
-                            is Album.Type.Mixtape -> AlbumGrouping.MIXTAPES
+                        when (it.releaseType) {
+                            is ReleaseType.Album -> AlbumGrouping.ALBUMS
+                            is ReleaseType.EP -> AlbumGrouping.EPS
+                            is ReleaseType.Single -> AlbumGrouping.SINGLES
+                            is ReleaseType.Compilation -> AlbumGrouping.COMPILATIONS
+                            is ReleaseType.Soundtrack -> AlbumGrouping.SOUNDTRACKS
+                            is ReleaseType.Mix -> AlbumGrouping.MIXES
+                            is ReleaseType.Mixtape -> AlbumGrouping.MIXTAPES
                         }
                 }
             }
@@ -392,7 +393,7 @@ class DetailViewModel(application: Application) :
     }
 
     /**
-     * A simpler mapping of [Album.Type] used for grouping and sorting songs.
+     * A simpler mapping of [ReleaseType] used for grouping and sorting songs.
      * @param headerTitleRes The title string resource to use for a header created out of an
      * instance of this enum.
      */

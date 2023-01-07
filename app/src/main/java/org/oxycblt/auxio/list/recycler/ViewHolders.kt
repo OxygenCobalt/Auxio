@@ -122,7 +122,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.areArtistContentsTheSame(newItem) &&
-                        oldItem.type == newItem.type
+                        oldItem.releaseType == newItem.releaseType
             }
     }
 }

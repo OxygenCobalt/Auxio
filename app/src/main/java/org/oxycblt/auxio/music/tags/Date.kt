@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.tags
 
 import android.content.Context
 import java.text.ParseException
@@ -235,7 +235,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
             val tokens =
             // Match the input with the timestamp regex. If there is no match, see if we can
             // fall back to some kind of year value.
-            (ISO8601_REGEX.matchEntire(timestamp) ?: return timestamp.toIntOrNull()?.let(::from))
+            (ISO8601_REGEX.matchEntire(timestamp) ?: return timestamp.toIntOrNull()?.let(Companion::from))
                     .groupValues
                     // Filter to the specific tokens we want and convert them to integer tokens.
                     .mapIndexedNotNull { index, s -> if (index % 2 != 0) s.toIntOrNull() else null }
