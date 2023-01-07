@@ -216,4 +216,8 @@
     <string name="lbl_eps">EP\'ler</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_mixtapes">Karışık kasetler</string>
+    <string name="lbl_state_wiped">Durum temizlendi</string>
+    <string name="lbl_remix_group">Remixler</string>
+    <string name="lbl_soundtracks">Film Müzikleri</string>
+    <string name="lbl_soundtrack">Film Müziği</string>
 </resources>
