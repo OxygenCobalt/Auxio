@@ -21,8 +21,8 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.Library
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.library.Library
 
 /**
  * A [ViewModel] that manages the current selection.

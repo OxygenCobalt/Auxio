@@ -31,9 +31,9 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.Library
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.music.library.Library
+import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD

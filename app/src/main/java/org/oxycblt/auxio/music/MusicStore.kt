@@ -17,6 +17,8 @@
  
 package org.oxycblt.auxio.music
 
+import org.oxycblt.auxio.music.library.Library
+
 /**
  * A repository granting access to the music library.
  *

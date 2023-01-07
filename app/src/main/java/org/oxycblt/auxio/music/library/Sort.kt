@@ -15,13 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.library
 
 import androidx.annotation.IdRes
 import kotlin.math.max
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.Sort.Mode
+import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.library.Sort.Mode
 
 /**
  * A sorting method.

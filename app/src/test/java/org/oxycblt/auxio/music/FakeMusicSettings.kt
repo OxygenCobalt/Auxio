@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.music
 
+import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.music.storage.MusicDirectories
 
 interface FakeMusicSettings : MusicSettings {

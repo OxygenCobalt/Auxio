@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.library
 
 import android.content.Context
 import android.net.Uri
@@ -43,10 +43,10 @@ class Library(rawSongs: List<Song.Raw>, settings: MusicSettings) {
     /** All [Genre]s found on the device. */
     val genres = buildGenres(songs)
 
+    // Use a mapping to make finding information based on it's UID much faster.
     private val uidMap = buildMap {
-        // We need to finalize the newly-created music and also add it to a mapping to make
-        // de-serializing music from UIDs much faster. Do these in the same loop for efficiency.
         for (music in (songs + albums + artists + genres)) {
+            // Finalize all music in the same mapping creation loop for efficiency.
             music._finalize()
             this[music.uid] = music
         }
