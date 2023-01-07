@@ -23,10 +23,10 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
-import org.oxycblt.auxio.music.tags.Date
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.parsing.correctWhitespace
 import org.oxycblt.auxio.music.parsing.splitEscaped
+import org.oxycblt.auxio.music.tags.Date
 import org.oxycblt.auxio.util.*
 
 /**

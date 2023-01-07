@@ -113,6 +113,21 @@ class Queue {
     }
 
     /**
+     * Reformat the queue's internal representation to align with the given values. This is not
+     * useful in most circumstances.
+     * @param
+     */
+    fun rework(heap: List<Song?>, orderedMapping: IntArray, shuffledMapping: IntArray) {
+        //        val instructions = mutableListOf<Int?>()
+        //        val currentBackshift = 0
+        //        for (song in heap) {
+        //            if (song == null) {
+        //                instructions.add(0, )
+        //            }
+        //        }
+    }
+
+    /**
      * Add [Song]s to the top of the queue. Will start playback if nothing is playing.
      * @param songs The [Song]s to add.
      * @return [ChangeResult.MAPPING] if added to an existing queue, or [ChangeResult.SONG] if there
@@ -179,18 +194,17 @@ class Queue {
             orderedMapping.add(dst, orderedMapping.removeAt(src))
         }
 
-        // TODO: I really need to figure out how to get non-swap moves working.
-        return when (index) {
-            src -> {
-                index = dst
-                ChangeResult.INDEX
-            }
-            dst -> {
-                index = src
-                ChangeResult.INDEX
-            }
+        when (index) {
+            // We are moving the currently playing song, correct the index to it's new position.
+            src -> index = dst
+            // We have moved an song from behind the playing song to in front, shift back.
+            in (src + 1)..dst -> index -= 1
+            // We have moved an song from in front of the playing song to behind, shift forward.
+            in dst until src -> index += 1
             else -> ChangeResult.MAPPING
         }
+
+        return ChangeResult.INDEX
     }
 
     /**
