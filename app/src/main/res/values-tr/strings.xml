@@ -15,7 +15,7 @@
     <string name="lbl_sort_asc">Artan</string>
     <string name="lbl_play">Başlat</string>
     <string name="lbl_shuffle">Karıştır</string>
-    <string name="lbl_playback">Şuan çalınan</string>
+    <string name="lbl_playback">Şuan çalan</string>
     <string name="lbl_queue">Kuyruk</string>
     <string name="lbl_play_next">Sonraki şarkı</string>
     <string name="lbl_queue_add">Kuyruğa ekle</string>
@@ -198,4 +198,22 @@
     <string name="desc_clear_queue_item">Kuyruktan bu şarkıyı kaldır</string>
     <string name="lbl_singles">Parçalar</string>
     <string name="lbl_single">Parça</string>
+    <string name="lbl_mixtape">Karışık kaset</string>
+    <string name="lbl_play_selected">Seçileni çal</string>
+    <string name="lbl_shuffle_selected">Karışık seçildi</string>
+    <string name="lbl_compilation_live">Canlı derleme</string>
+    <string name="lbl_compilation_remix">Derlemeleri yeniden düzenle</string>
+    <string name="lbl_equalizer">Ekolayzır</string>
+    <string name="lbl_ep_live">Canlı EP</string>
+    <string name="lbl_ep_remix">EP\'yi yeniden düzenle</string>
+    <string name="lbl_single_live">Canlı müzikler</string>
+    <string name="lbl_single_remix">Şarkıyı düzenle</string>
+    <string name="lbl_compilations">Derlemeler</string>
+    <string name="lbl_compilation">Derleme</string>
+    <string name="lbl_live_group">Canlı</string>
+    <string name="lbl_reset">Sıfırla</string>
+    <string name="lbl_genre">Tür</string>
+    <string name="lbl_eps">EP\'ler</string>
+    <string name="lbl_ep">EP</string>
+    <string name="lbl_mixtapes">Karışık kasetler</string>
 </resources>
