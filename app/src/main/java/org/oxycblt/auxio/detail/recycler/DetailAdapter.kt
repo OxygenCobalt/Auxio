@@ -42,7 +42,7 @@ import org.oxycblt.auxio.util.inflater
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class DetailAdapter(
-    private val listener: Listener,
+    private val listener: Listener<*>,
     itemCallback: DiffUtil.ItemCallback<Item>
 ) : SelectionIndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
     // Safe to leak this since the listener will not fire during initialization
@@ -89,7 +89,7 @@ abstract class DetailAdapter(
     }
 
     /** An extended [SelectableListListener] for [DetailAdapter] implementations. */
-    interface Listener : SelectableListListener<Music> {
+    interface Listener<in T : Music> : SelectableListListener<T> {
         // TODO: Split off into sub-listeners if a collapsing toolbar is implemented.
         /**
          * Called when the play button in a detail header is pressed, requesting that the current
@@ -139,7 +139,7 @@ private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
      * @param sortHeader The new [SortHeader] to bind.
      * @param listener An [DetailAdapter.Listener] to bind interactions to.
      */
-    fun bind(sortHeader: SortHeader, listener: DetailAdapter.Listener) {
+    fun bind(sortHeader: SortHeader, listener: DetailAdapter.Listener<*>) {
         binding.headerTitle.text = binding.context.getString(sortHeader.titleRes)
         binding.headerButton.apply {
             // Add a Tooltip based on the content description so that the purpose of this

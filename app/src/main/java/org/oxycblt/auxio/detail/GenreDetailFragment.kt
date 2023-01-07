@@ -49,7 +49,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A [ListFragment] that shows information for a particular [Genre].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreDetailFragment : ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener {
+class GenreDetailFragment : ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener<Music> {
     private val detailModel: DetailViewModel by activityViewModels()
     // Information about what genre to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an genre.
@@ -122,18 +122,17 @@ class GenreDetailFragment : ListFragment<Music, FragmentDetailBinding>(), Detail
     override fun onRealClick(item: Music) {
         when (item) {
             is Artist -> navModel.exploreNavigateTo(item)
-            is Song ->
-                when (PlaybackSettings.from(requireContext()).inParentPlaybackMode) {
-                    // When configured to play from the selected item, we already have a Genre
+            is Song -> {
+                val playbackMode = detailModel.playbackMode
+                if (playbackMode != null) {
+                    playbackModel.playFrom(item, playbackMode)
+                } else {
+                    // When configured to play from the selected item, we already have an Artist
                     // to play from.
-                    null ->
-                        playbackModel.playFromGenre(
-                            item, unlikelyToBeNull(detailModel.currentGenre.value))
-                    MusicMode.SONGS -> playbackModel.playFromAll(item)
-                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-                    MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
-                    MusicMode.GENRES -> playbackModel.playFromGenre(item)
+                    playbackModel.playFromArtist(item,
+                        unlikelyToBeNull(detailModel.currentArtist.value))
                 }
+            }
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }

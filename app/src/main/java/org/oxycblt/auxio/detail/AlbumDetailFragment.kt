@@ -45,7 +45,7 @@ import org.oxycblt.auxio.util.*
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumDetailFragment :
-    ListFragment<Music, FragmentDetailBinding>(), AlbumDetailAdapter.Listener {
+    ListFragment<Song, FragmentDetailBinding>(), AlbumDetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
     // Information about what album to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an album.
@@ -121,21 +121,12 @@ class AlbumDetailFragment :
         }
     }
 
-    override fun onRealClick(item: Music) {
-        val song = requireIs<Song>(item)
-        when (PlaybackSettings.from(requireContext()).inParentPlaybackMode) {
-            // "Play from shown item" and "Play from album" functionally have the same
-            // behavior since a song can only have one album.
-            null,
-            MusicMode.ALBUMS -> playbackModel.playFromAlbum(song)
-            MusicMode.SONGS -> playbackModel.playFromAll(song)
-            MusicMode.ARTISTS -> playbackModel.playFromArtist(song)
-            MusicMode.GENRES -> playbackModel.playFromGenre(song)
-        }
+    override fun onRealClick(item: Song) {
+        // There can only be one album, so a null mode and an ALBUMS mode will function the same.
+        playbackModel.playFrom(item, detailModel.playbackMode ?: MusicMode.ALBUMS)
     }
 
-    override fun onOpenMenu(item: Music, anchor: View) {
-        check(item is Song) { "Unexpected datatype: ${item::class.simpleName}" }
+    override fun onOpenMenu(item: Song, anchor: View) {
         openMusicMenu(anchor, R.menu.menu_album_song_actions, item)
     }
 

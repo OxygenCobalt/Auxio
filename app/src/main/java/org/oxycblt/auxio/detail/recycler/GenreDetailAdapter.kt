@@ -30,6 +30,7 @@ import org.oxycblt.auxio.list.recycler.SimpleItemCallback
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
@@ -40,7 +41,7 @@ import org.oxycblt.auxio.util.inflater
  * @param listener A [DetailAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreDetailAdapter(private val listener: Listener) : DetailAdapter(listener, DIFF_CALLBACK) {
+class GenreDetailAdapter(private val listener: Listener<Music>) : DetailAdapter(listener, DIFF_CALLBACK) {
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
             // Support the Genre header and generic Artist/Song items. There's nothing about
@@ -105,7 +106,7 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
      * @param genre The new [Song] to bind.
      * @param listener A [DetailAdapter.Listener] to bind interactions to.
      */
-    fun bind(genre: Genre, listener: DetailAdapter.Listener) {
+    fun bind(genre: Genre, listener: DetailAdapter.Listener<*>) {
         binding.detailCover.bind(genre)
         binding.detailType.text = binding.context.getString(R.string.lbl_genre)
         binding.detailName.text = genre.resolveName(binding.context)

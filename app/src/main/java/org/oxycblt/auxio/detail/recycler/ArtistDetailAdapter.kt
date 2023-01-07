@@ -32,6 +32,7 @@ import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SimpleItemCallback
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
@@ -42,7 +43,7 @@ import org.oxycblt.auxio.util.inflater
  * @param listener A [DetailAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistDetailAdapter(private val listener: Listener) : DetailAdapter(listener, DIFF_CALLBACK) {
+class ArtistDetailAdapter(private val listener: Listener<Music>) : DetailAdapter(listener, DIFF_CALLBACK) {
     override fun getItemViewType(position: Int) =
         when (differ.currentList[position]) {
             // Support an artist header, and special artist albums/songs.
@@ -109,7 +110,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
      * @param artist The new [Artist] to bind.
      * @param listener A [DetailAdapter.Listener] to bind interactions to.
      */
-    fun bind(artist: Artist, listener: DetailAdapter.Listener) {
+    fun bind(artist: Artist, listener: DetailAdapter.Listener<*>) {
         binding.detailCover.bind(artist)
         binding.detailType.text = binding.context.getString(R.string.lbl_artist)
         binding.detailName.text = artist.resolveName(binding.context)

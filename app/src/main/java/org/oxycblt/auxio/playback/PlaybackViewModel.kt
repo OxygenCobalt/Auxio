@@ -36,7 +36,6 @@ import org.oxycblt.auxio.util.context
  */
 class PlaybackViewModel(application: Application) :
     AndroidViewModel(application), PlaybackStateManager.Listener {
-    private val homeSettings = HomeSettings.from(application)
     private val musicSettings = MusicSettings.from(application)
     private val playbackSettings = PlaybackSettings.from(application)
     private val playbackManager = PlaybackStateManager.getInstance()
@@ -83,6 +82,9 @@ class PlaybackViewModel(application: Application) :
      */
     val genrePickerSong: StateFlow<Song?>
         get() = _genrePlaybackPickerSong
+
+    /** The current action to show on the playback bar. */
+    val currentBarAction: ActionMode get() = playbackSettings.barAction
 
     /**
      * The current audio session ID of the internal player. Null if no [InternalPlayer] is
@@ -143,17 +145,35 @@ class PlaybackViewModel(application: Application) :
 
     // --- PLAYING FUNCTIONS ---
 
+    /** Shuffle all songs in the music library. */
+    fun shuffleAll() {
+        playImpl(null, null, true)
+    }
+
+    /**
+     * Play a [Song] from the [MusicParent] outlined by the given [MusicMode].
+     * - If [MusicMode.SONGS], the [Song] is played from all songs.
+     * - If [MusicMode.ALBUMS], the [Song] is played from it's [Album].
+     * - If [MusicMode.ARTISTS], the [Song] is played from one of it's [Artist]s.
+     * - If [MusicMode.GENRES], the [Song] is played from one of it's [Genre]s.
+     * @param song The [Song] to play.
+     * @param playbackMode The [MusicMode] to play from.
+     */
+    fun playFrom(song: Song, playbackMode: MusicMode) {
+        when (playbackMode) {
+            MusicMode.SONGS -> playFromAll(song)
+            MusicMode.ALBUMS -> playFromAlbum(song)
+            MusicMode.ARTISTS -> playFromArtist(song)
+            MusicMode.GENRES -> playFromGenre(song)
+        }
+    }
+
     /**
      * Play the given [Song] from all songs in the music library.
      * @param song The [Song] to play.
      */
     fun playFromAll(song: Song) {
         playImpl(song, null)
-    }
-
-    /** Shuffle all songs in the music library. */
-    fun shuffleAll() {
-        playImpl(null, null, true)
     }
 
     /**
@@ -201,6 +221,15 @@ class PlaybackViewModel(application: Application) :
         } else {
             _genrePlaybackPickerSong.value = song
         }
+    }
+
+    /**
+     * Mark the [Genre] playback choice process as complete. This should occur when the [Genre]
+     * choice dialog is opened after this flag is detected.
+     * @see playFromGenre
+     */
+    fun finishPlaybackGenrePicker() {
+        _genrePlaybackPickerSong.value = null
     }
 
     /**

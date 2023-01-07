@@ -48,7 +48,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A [ListFragment] that shows information about an [Artist].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistDetailFragment : ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener {
+class ArtistDetailFragment : ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener<Music> {
     private val detailModel: DetailViewModel by activityViewModels()
     // Information about what artist to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an artist.
@@ -122,20 +122,18 @@ class ArtistDetailFragment : ListFragment<Music, FragmentDetailBinding>(), Detai
 
     override fun onRealClick(item: Music) {
         when (item) {
+            is Album -> navModel.exploreNavigateTo(item)
             is Song -> {
-                when (PlaybackSettings.from(requireContext()).inParentPlaybackMode) {
+                val playbackMode = detailModel.playbackMode
+                if (playbackMode != null) {
+                    playbackModel.playFrom(item, playbackMode)
+                } else {
                     // When configured to play from the selected item, we already have an Artist
                     // to play from.
-                    null ->
-                        playbackModel.playFromArtist(
-                            item, unlikelyToBeNull(detailModel.currentArtist.value))
-                    MusicMode.SONGS -> playbackModel.playFromAll(item)
-                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-                    MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
-                    MusicMode.GENRES -> playbackModel.playFromGenre(item)
+                    playbackModel.playFromArtist(item,
+                        unlikelyToBeNull(detailModel.currentArtist.value))
                 }
             }
-            is Album -> navModel.exploreNavigateTo(item)
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }

@@ -136,14 +136,8 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     override fun onRealClick(item: Music) {
         when (item) {
-            is Song ->
-                when (PlaybackSettings.from(requireContext()).inListPlaybackMode) {
-                    MusicMode.SONGS -> playbackModel.playFromAll(item)
-                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-                    MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
-                    MusicMode.GENRES -> playbackModel.playFromGenre(item)
-                }
             is MusicParent -> navModel.exploreNavigateTo(item)
+            is Song -> playbackModel.playFrom(item, searchModel.playbackMode)
         }
     }
 

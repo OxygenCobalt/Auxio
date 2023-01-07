@@ -11,6 +11,7 @@
 - Fixed crash that would occur in music folders dialog when user does not have a working
 file manager
 - Fixed notification not updating due to settings changes
+- Fixed genre picker from repeatedly showing up when device rotates
 
 #### What's Changed
 - Implemented new queue system

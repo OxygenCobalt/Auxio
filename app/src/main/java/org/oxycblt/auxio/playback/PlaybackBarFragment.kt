@@ -65,7 +65,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         // Set up actions
         binding.playbackPlayPause.setOnClickListener { playbackModel.toggleIsPlaying() }
-        setupSecondaryActions(binding, PlaybackSettings.from(context).barAction)
+        setupSecondaryActions(binding, playbackModel.currentBarAction)
 
         // Load the track color in manually as it's unclear whether the track actually supports
         // using a ColorStateList in the resources.

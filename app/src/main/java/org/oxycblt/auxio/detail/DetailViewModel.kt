@@ -37,6 +37,7 @@ import org.oxycblt.auxio.music.Library
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Sort
 import org.oxycblt.auxio.music.storage.MimeType
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.*
 
 /**
@@ -50,6 +51,7 @@ class DetailViewModel(application: Application) :
     AndroidViewModel(application), MusicStore.Listener {
     private val musicStore = MusicStore.getInstance()
     private val musicSettings = MusicSettings.from(application)
+    private val playbackSettings = PlaybackSettings.from(application)
 
     private var currentSongJob: Job? = null
 
@@ -124,6 +126,12 @@ class DetailViewModel(application: Application) :
             // Refresh the genre list to reflect the new sort.
             currentGenre.value?.let(::refreshGenreList)
         }
+
+    /**
+     * The [MusicMode] to use when playing a [Song] from the UI, or null to play from the currently
+     * shown item.
+     */
+    val playbackMode: MusicMode? get() = playbackSettings.inParentPlaybackMode
 
     init {
         musicStore.addListener(this)

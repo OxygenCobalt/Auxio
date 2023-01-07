@@ -130,12 +130,7 @@ class SongListFragment :
     }
 
     override fun onRealClick(item: Song) {
-        when (PlaybackSettings.from(requireContext()).inListPlaybackMode) {
-            MusicMode.SONGS -> playbackModel.playFromAll(item)
-            MusicMode.ALBUMS -> playbackModel.playFromAlbum(item)
-            MusicMode.ARTISTS -> playbackModel.playFromArtist(item)
-            MusicMode.GENRES -> playbackModel.playFromGenre(item)
-        }
+        playbackModel.playFrom(item, homeModel.playbackMode)
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {

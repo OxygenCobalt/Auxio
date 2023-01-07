@@ -48,7 +48,7 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
      * An extension to [DetailAdapter.Listener] that enables interactions specific to the album
      * detail view.
      */
-    interface Listener : DetailAdapter.Listener {
+    interface Listener : DetailAdapter.Listener<Song> {
         /**
          * Called when the artist name in the [Album] header was clicked, requesting navigation to
          * it's parent artist.

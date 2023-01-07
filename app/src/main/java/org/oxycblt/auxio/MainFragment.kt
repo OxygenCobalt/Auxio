@@ -309,7 +309,7 @@ class MainFragment :
             navModel.mainNavigateTo(
                 MainNavigationAction.Directions(
                     MainFragmentDirections.actionPickPlaybackGenre(song.uid)))
-            playbackModel.finishPlaybackArtistPicker()
+            playbackModel.finishPlaybackGenrePicker()
         }
     }
 

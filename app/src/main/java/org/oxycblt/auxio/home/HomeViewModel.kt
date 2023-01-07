@@ -26,6 +26,7 @@ import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.Library
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -37,6 +38,7 @@ class HomeViewModel(application: Application) :
     private val musicStore = MusicStore.getInstance()
     private val homeSettings = HomeSettings.from(application)
     private val musicSettings = MusicSettings.from(application)
+    private val playbackSettings = PlaybackSettings.from(application)
 
     private val _songsList = MutableStateFlow(listOf<Song>())
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
@@ -62,11 +64,14 @@ class HomeViewModel(application: Application) :
     val genresList: StateFlow<List<Genre>>
         get() = _genresList
 
+    /** The [MusicMode] to use when playing a [Song] from the UI. */
+    val playbackMode: MusicMode get() = playbackSettings.inListPlaybackMode
+
     /**
      * A list of [MusicMode] corresponding to the current [Tab] configuration, excluding invisible
      * [Tab]s.
      */
-    var currentTabModes: List<MusicMode> = makeTabModes()
+    var currentTabModes = makeTabModes()
         private set
 
     private val _currentTabMode = MutableStateFlow(currentTabModes[0])
