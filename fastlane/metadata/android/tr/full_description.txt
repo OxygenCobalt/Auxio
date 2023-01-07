@@ -1,4 +1,4 @@
-Auxio, diğer müzik oynatıcılarda bulunan birçok gereksiz özellik olmadan hızlı, güvenilir bir kullanıcı arayüzüne ve deneyimine sahip yerel bir müzik çalardır. <a href="https://exoplayer.dev/">Exoplayer</a> üzerine inşa edilen Auxio, yerel MediaPlayer API'sini kullanan diğer uygulamalara kıyasla çok daha iyi bir dinleme deneyimine sahiptir. Kısaca, <b>Müzik çalar.</b>
+Auxio, diğer müzik oynatıcılarda bulunan birçok gereksiz özellik olmadan hızlı, güvenilir bir kullanıcı arayüzüne ve deneyimine sahip yerel bir müzik çalardır. &lt;a href="https://exoplayer.dev/"&gt;Exoplayer&lt;/a&gt; üzerine inşa edilen Auxio, yerel MediaPlayer API'sini kullanan diğer uygulamalara kıyasla çok daha iyi bir dinleme deneyimine sahiptir. Kısaca, <b>Müzik çalar.</b>
 
 <b>Özellikler</b>
 
@@ -16,4 +16,4 @@ Auxio, diğer müzik oynatıcılarda bulunan birçok gereksiz özellik olmadan h
 - Kulaklık otomatik oynatma
 - Boyutlarına otomatik olarak uyum sağlayan şık widget'lar
 - Tamamen özel ve çevrimdışı
-- Yuvarlak albüm kapakları yok (İstemediğiniz sürece. İstediğiniz zaman yapabilirsiniz.)
+- Yuvarlak albüm kapakları yok (İstediğiniz zaman açıp kapatabilirsiniz.)
