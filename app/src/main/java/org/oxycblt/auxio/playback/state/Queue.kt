@@ -29,8 +29,9 @@ import org.oxycblt.auxio.music.Song
  * implementation is instead based around an unorganized "heap" of [Song] instances, that are then
  * interpreted into different queues depending on the current playback configuration.
  *
- * In general, the implementation details don't need ot be known for this data structure to be used.
- * The functions exposed should be familiar for any typical play queue.
+ * In general, the implementation details don't need to be known for this data structure to be used,
+ * except in special circumstances like [remap]. The functions exposed should be familiar for any
+ * typical play queue.
  *
  * @author OxygenCobalt
  */
@@ -40,11 +41,15 @@ class Queue {
     @Volatile private var shuffledMapping = mutableListOf<Int>()
     /** The index of the currently playing [Song] in the current mapping. */
     @Volatile
-    var index = 0
+    var index = -1
         private set
     /** The currently playing [Song]. */
     val currentSong: Song?
-        get() = shuffledMapping.ifEmpty { orderedMapping.ifEmpty { null } }?.let { heap[it[index]] }
+        get() =
+            shuffledMapping
+                .ifEmpty { orderedMapping.ifEmpty { null } }
+                ?.getOrNull(index)
+                ?.let(heap::get)
     /** Whether this queue is shuffled. */
     val isShuffled: Boolean
         get() = shuffledMapping.isNotEmpty()
@@ -70,19 +75,20 @@ class Queue {
 
     /**
      * Start a new queue configuration.
-     * @param song The [Song] to play, or null to start from a random position.
-     * @param queue The queue of [Song]s to play. Must contain [song]. This list will become the
+     * @param play The [Song] to play, or null to start from a random position.
+     * @param queue The queue of [Song]s to play. Must contain [play]. This list will become the
      * heap internally.
      * @param shuffled Whether to shuffle the queue or not. This changes the interpretation of
      * [queue].
      */
-    fun start(song: Song?, queue: List<Song>, shuffled: Boolean) {
+    fun start(play: Song?, queue: List<Song>, shuffled: Boolean) {
         heap = queue.toMutableList()
         orderedMapping = MutableList(queue.size) { it }
         shuffledMapping = mutableListOf()
         index =
-            song?.let(queue::indexOf) ?: if (shuffled) Random.Default.nextInt(queue.indices) else 0
+            play?.let(queue::indexOf) ?: if (shuffled) Random.Default.nextInt(queue.indices) else 0
         reorder(shuffled)
+        check()
     }
 
     /**
@@ -90,6 +96,11 @@ class Queue {
      * @param shuffled Whether the queue should be shuffled or not.
      */
     fun reorder(shuffled: Boolean) {
+        if (orderedMapping.isEmpty()) {
+            // Nothing to do.
+            return
+        }
+
         if (shuffled) {
             val trueIndex =
                 if (shuffledMapping.isNotEmpty()) {
@@ -110,21 +121,47 @@ class Queue {
             index = orderedMapping.indexOf(shuffledMapping[index])
             shuffledMapping = mutableListOf()
         }
+        check()
     }
 
     /**
-     * Reformat the queue's internal representation to align with the given values. This is not
-     * useful in most circumstances.
-     * @param
+     * Replace the given heap with a new
+     * @param map Code to remap the existing [Song] heap into a new [Song] heap. This **MUST** be
+     * the same size as the original heap. [Song] instances that could not be converted should be
+     * replaced with null in the new heap.
+     * @throws IllegalStateException If the given invariants regarding [map] were violated.
      */
-    fun rework(heap: List<Song?>, orderedMapping: IntArray, shuffledMapping: IntArray) {
-        //        val instructions = mutableListOf<Int?>()
-        //        val currentBackshift = 0
-        //        for (song in heap) {
-        //            if (song == null) {
-        //                instructions.add(0, )
-        //            }
-        //        }
+    fun remap(map: (List<Song>) -> List<Song?>) {
+        val newHeap = map(heap)
+        val oldSong = currentSong
+        check(newHeap.size == heap.size) { "New heap must be the same size as original heap" }
+
+        val adjustments = mutableListOf<Int?>()
+        var currentShift = 0
+        for (song in newHeap) {
+            if (song != null) {
+                adjustments.add(currentShift)
+            } else {
+                adjustments.add(null)
+                currentShift -= 1
+            }
+        }
+
+        heap = newHeap.filterNotNull().toMutableList()
+        orderedMapping =
+            orderedMapping.mapNotNullTo(mutableListOf()) { heapIndex ->
+                adjustments[heapIndex]?.let { heapIndex + it }
+            }
+        shuffledMapping =
+            shuffledMapping.mapNotNullTo(mutableListOf()) { heapIndex ->
+                adjustments[heapIndex]?.let { heapIndex + it }
+            }
+
+        // Make sure we re-align the index to point to the previously playing song.
+        while (currentSong != oldSong && index > -1) {
+            index--
+        }
+        check()
     }
 
     /**
@@ -151,6 +188,7 @@ class Queue {
             // Add the new song in front of the current index in the ordered mapping.
             orderedMapping.addAll(index + 1, heapIndices)
         }
+        check()
         return ChangeResult.MAPPING
     }
 
@@ -173,6 +211,7 @@ class Queue {
         if (shuffledMapping.isNotEmpty()) {
             shuffledMapping.addAll(heapIndices)
         }
+        check()
         return ChangeResult.MAPPING
     }
 
@@ -201,9 +240,12 @@ class Queue {
             in (src + 1)..dst -> index -= 1
             // We have moved an song from in front of the playing song to behind, shift forward.
             in dst until src -> index += 1
-            else -> ChangeResult.MAPPING
+            else -> {
+                check()
+                ChangeResult.MAPPING
+            }
         }
-
+        check()
         return ChangeResult.INDEX
     }
 
@@ -229,17 +271,20 @@ class Queue {
         // of the player to be completely invalidated. It's generally easier to not remove the
         // song and retain player state consistency.
 
-        return when {
-            // We just removed the currently playing song.
-            index == at -> ChangeResult.SONG
-            // Index was ahead of removed song, shift back to preserve consistency.
-            index > at -> {
-                index -= 1
-                ChangeResult.INDEX
+        val result =
+            when {
+                // We just removed the currently playing song.
+                index == at -> ChangeResult.SONG
+                // Index was ahead of removed song, shift back to preserve consistency.
+                index > at -> {
+                    index -= 1
+                    ChangeResult.INDEX
+                }
+                // Nothing to do
+                else -> ChangeResult.MAPPING
             }
-            // Nothing to do
-            else -> ChangeResult.MAPPING
-        }
+        check()
+        return result
     }
 
     private fun addSongToHeap(song: Song): Int {
@@ -264,10 +309,29 @@ class Queue {
                 return orphanCandidates.first()
             }
         }
-
         // Nothing to re-use, add this song to the queue
         heap.add(song)
         return heap.lastIndex
+    }
+
+    private fun check() {
+        check(!(heap.isEmpty() && (orderedMapping.isNotEmpty() || shuffledMapping.isNotEmpty()))) {
+            "Queue inconsistency detected: Empty heap with non-empty mappings" +
+                "[ordered: ${orderedMapping.size}, shuffled: ${shuffledMapping.size}]"
+        }
+
+        check(shuffledMapping.isEmpty() || orderedMapping.size == shuffledMapping.size) {
+            "Queue inconsistency detected: Ordered mapping size ${orderedMapping.size} " +
+                "!= Shuffled mapping size ${shuffledMapping.size}"
+        }
+
+        check(orderedMapping.all { it in heap.indices }) {
+            "Queue inconsistency detected: Ordered mapping indices out of heap bounds"
+        }
+
+        check(shuffledMapping.all { it in heap.indices }) {
+            "Queue inconsistency detected: Shuffled mapping indices out of heap bounds"
+        }
     }
 
     /**

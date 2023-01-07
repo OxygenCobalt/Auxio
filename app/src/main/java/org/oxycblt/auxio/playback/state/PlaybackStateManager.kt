@@ -494,50 +494,42 @@ class PlaybackStateManager private constructor() {
      */
     @Synchronized
     fun sanitize(newLibrary: Library) {
-        //        if (!isInitialized) {
-        //            // Nothing playing, nothing to do.
-        //            logD("Not initialized, no need to sanitize")
-        //            return
-        //        }
-        //
-        //        val internalPlayer = internalPlayer ?: return
-        //
-        //        logD("Sanitizing state")
-        //
-        //        // While we could just save and reload the state, we instead sanitize the state
-        //        // at runtime for better performance (and to sidestep a co-routine on behalf of
-        // the caller).
-        //
-        //        // Sanitize parent
-        //        parent =
-        //            parent?.let {
-        //                when (it) {
-        //                    is Album -> newLibrary.sanitize(it)
-        //                    is Artist -> newLibrary.sanitize(it)
-        //                    is Genre -> newLibrary.sanitize(it)
-        //                }
-        //            }
-        //
-        //        // Sanitize queue. Make sure we re-align the index to point to the previously
-        // playing
-        //        // Song in the queue queue.
-        //        val oldSongUid = song?.uid
-        //        _queue = _queue.mapNotNullTo(mutableListOf()) { newLibrary.sanitize(it) }
-        //        while (song?.uid != oldSongUid && index > -1) {
-        //            index--
-        //        }
-        //
-        //        notifyNewPlayback()
-        //
-        //        val oldPosition = playerState.calculateElapsedPositionMs()
-        //        // Continuing playback while also possibly doing drastic state updates is
-        //        // a bad idea, so pause.
-        //        internalPlayer.loadSong(song, false)
-        //        if (index > -1) {
-        //            // Internal player may have reloaded the media item, re-seek to the previous
-        // position
-        //            seekTo(oldPosition)
-        //        }
+        if (!isInitialized) {
+            // Nothing playing, nothing to do.
+            logD("Not initialized, no need to sanitize")
+            return
+        }
+
+        val internalPlayer = internalPlayer ?: return
+
+        logD("Sanitizing state")
+
+        // While we could just save and reload the state, we instead sanitize the state
+        // at runtime for better performance (and to sidestep a co-routine on behalf of the caller).
+
+        // Sanitize parent
+        parent =
+            parent?.let {
+                when (it) {
+                    is Album -> newLibrary.sanitize(it)
+                    is Artist -> newLibrary.sanitize(it)
+                    is Genre -> newLibrary.sanitize(it)
+                }
+            }
+
+        // Sanitize the queue.
+        queue.remap { it.map(newLibrary::sanitize) }
+
+        notifyNewPlayback()
+
+        val oldPosition = playerState.calculateElapsedPositionMs()
+        // Continuing playback while also possibly doing drastic state updates is
+        // a bad idea, so pause.
+        internalPlayer.loadSong(queue.currentSong, false)
+        if (queue.currentSong != null) {
+            // Internal player may have reloaded the media item, re-seek to the previous position
+            seekTo(oldPosition)
+        }
     }
 
     // --- CALLBACKS ---
