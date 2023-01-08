@@ -273,7 +273,5 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
             dst.add(src.getOrNull(4)?.inRangeOrNull(0..59) ?: return)
             dst.add(src.getOrNull(5)?.inRangeOrNull(0..59) ?: return)
         }
-
-        private fun transformYearToken(src: List<Int>, dst: MutableList<Int>) {}
     }
 }

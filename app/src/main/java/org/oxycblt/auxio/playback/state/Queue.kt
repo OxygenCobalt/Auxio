@@ -19,6 +19,7 @@ package org.oxycblt.auxio.playback.state
 
 import kotlin.random.Random
 import kotlin.random.nextInt
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 
 /**
@@ -30,8 +31,8 @@ import org.oxycblt.auxio.music.Song
  * interpreted into different queues depending on the current playback configuration.
  *
  * In general, the implementation details don't need to be known for this data structure to be used,
- * except in special circumstances like [remap]. The functions exposed should be familiar for any
- * typical play queue.
+ * except in special circumstances like [SavedState]. The functions exposed should be familiar for
+ * any typical play queue.
  *
  * @author OxygenCobalt
  */
@@ -120,46 +121,6 @@ class Queue {
             // Un-shuffling, song to preserve is in the shuffled mapping.
             index = orderedMapping.indexOf(shuffledMapping[index])
             shuffledMapping = mutableListOf()
-        }
-        check()
-    }
-
-    /**
-     * Replace the given heap with a new
-     * @param map Code to remap the existing [Song] heap into a new [Song] heap. This **MUST** be
-     * the same size as the original heap. [Song] instances that could not be converted should be
-     * replaced with null in the new heap.
-     * @throws IllegalStateException If the given invariants regarding [map] were violated.
-     */
-    fun remap(map: (List<Song>) -> List<Song?>) {
-        val newHeap = map(heap)
-        val oldSong = currentSong
-        check(newHeap.size == heap.size) { "New heap must be the same size as original heap" }
-
-        val adjustments = mutableListOf<Int?>()
-        var currentShift = 0
-        for (song in newHeap) {
-            if (song != null) {
-                adjustments.add(currentShift)
-            } else {
-                adjustments.add(null)
-                currentShift -= 1
-            }
-        }
-
-        heap = newHeap.filterNotNull().toMutableList()
-        orderedMapping =
-            orderedMapping.mapNotNullTo(mutableListOf()) { heapIndex ->
-                adjustments[heapIndex]?.let { heapIndex + it }
-            }
-        shuffledMapping =
-            shuffledMapping.mapNotNullTo(mutableListOf()) { heapIndex ->
-                adjustments[heapIndex]?.let { heapIndex + it }
-            }
-
-        // Make sure we re-align the index to point to the previously playing song.
-        while (currentSong != oldSong && index > -1) {
-            index--
         }
         check()
     }
@@ -287,6 +248,52 @@ class Queue {
         return result
     }
 
+    /**
+     * Convert the current state of this instance into a [SavedState].
+     * @return A new [SavedState] reflecting the exact state of the queue when called.
+     */
+    fun toSavedState() =
+        SavedState(
+            heap.toList(),
+            orderedMapping.toList(),
+            shuffledMapping.toList(),
+            index,
+            currentSong?.uid)
+
+    /**
+     * Update this instance from the given [SavedState].
+     * @param savedState A [SavedState] with a valid queue representation.
+     */
+    fun applySavedState(savedState: SavedState) {
+        val adjustments = mutableListOf<Int?>()
+        var currentShift = 0
+        for (song in savedState.heap) {
+            if (song != null) {
+                adjustments.add(currentShift)
+            } else {
+                adjustments.add(null)
+                currentShift -= 1
+            }
+        }
+
+        heap = savedState.heap.filterNotNull().toMutableList()
+        orderedMapping =
+            savedState.orderedMapping.mapNotNullTo(mutableListOf()) { heapIndex ->
+                adjustments[heapIndex]?.let { heapIndex + it }
+            }
+        shuffledMapping =
+            savedState.shuffledMapping.mapNotNullTo(mutableListOf()) { heapIndex ->
+                adjustments[heapIndex]?.let { heapIndex + it }
+            }
+
+        // Make sure we re-align the index to point to the previously playing song.
+        index = savedState.currentIndex
+        while (currentSong?.uid != savedState.currentSongUid && index > -1) {
+            index--
+        }
+        check()
+    }
+
     private fun addSongToHeap(song: Song): Int {
         // We want to first try to see if there are any "orphaned" songs in the queue
         // that we can re-use. This way, we can reduce the memory used up by songs that
@@ -332,6 +339,36 @@ class Queue {
         check(shuffledMapping.all { it in heap.indices }) {
             "Queue inconsistency detected: Shuffled mapping indices out of heap bounds"
         }
+    }
+
+    /**
+     * An immutable representation of the queue state.
+     * @param heap The heap of [Song]s that are/were used in the queue. This can be modified with
+     * null values to represent [Song]s that were "lost" from the heap without having to change
+     * other values.
+     * @param orderedMapping The mapping of the [heap] to an ordered queue.
+     * @param shuffledMapping The mapping of the [heap] to a shuffled queue.
+     * @param currentIndex The index of the currently playing [Song] at the time of serialization.
+     * @param currentSongUid The [Music.UID] of the [Song] that was originally at [currentIndex].
+     */
+    class SavedState(
+        val heap: List<Song?>,
+        val orderedMapping: List<Int>,
+        val shuffledMapping: List<Int>,
+        val currentIndex: Int,
+        val currentSongUid: Music.UID?,
+    ) {
+        /**
+         * Remaps the [heap] of this instance based on the given mapping function and copies it into
+         * a new [SavedState].
+         * @param transform Code to remap the existing [Song] heap into a new [Song] heap. This
+         * **MUST** be the same size as the original heap. [Song] instances that could not be
+         * converted should be replaced with null in the new heap.
+         * @throws IllegalStateException If the invariant specified by [transform] is violated.
+         */
+        inline fun remap(transform: (Song?) -> Song?) =
+            SavedState(
+                heap.map(transform), orderedMapping, shuffledMapping, currentIndex, currentSongUid)
     }
 
     /**

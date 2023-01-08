@@ -17,11 +17,14 @@
  
 package org.oxycblt.auxio.music.library
 
-import org.oxycblt.auxio.music.Song
-
 class LibraryTest {
+    fun library_common() {}
 
-    companion object {
-        val LIBRARY = listOf(Song.Raw())
-    }
+    fun library_sparse() {}
+
+    fun library_multiArtist() {}
+
+    fun library_multiGenre() {}
+
+    fun library_musicBrainz() {}
 }

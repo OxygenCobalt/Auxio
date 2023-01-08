@@ -28,6 +28,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager.Listener
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * Core playback state controller class.
@@ -518,7 +519,8 @@ class PlaybackStateManager private constructor() {
             }
 
         // Sanitize the queue.
-        queue.remap { it.map(newLibrary::sanitize) }
+        queue.applySavedState(
+            queue.toSavedState().remap { newLibrary.sanitize(unlikelyToBeNull(it)) })
 
         notifyNewPlayback()
 
