@@ -21,6 +21,7 @@ package org.oxycblt.auxio.music
 
 import android.content.Context
 import android.os.Parcelable
+import androidx.annotation.VisibleForTesting
 import java.security.MessageDigest
 import java.text.CollationKey
 import java.text.Collator
@@ -763,16 +764,15 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
 
         override fun hashCode() = hashCode
 
-        override fun equals(other: Any?): Boolean {
-            if (other !is Raw) return false
-            if (musicBrainzId != null &&
-                other.musicBrainzId != null &&
-                musicBrainzId == other.musicBrainzId) {
-                return true
-            }
-
-            return name.equals(other.name, true) && rawArtists == other.rawArtists
-        }
+        override fun equals(other: Any?) =
+            other is Raw &&
+                when {
+                    musicBrainzId != null && other.musicBrainzId != null ->
+                        musicBrainzId == other.musicBrainzId
+                    musicBrainzId == null && other.musicBrainzId == null ->
+                        name.equals(other.name, true) && rawArtists == other.rawArtists
+                    else -> false
+                }
     }
 }
 
@@ -916,21 +916,19 @@ class Artist constructor(private val raw: Raw, songAlbums: List<Music>) : MusicP
 
         override fun hashCode() = hashCode
 
-        override fun equals(other: Any?): Boolean {
-            if (other !is Raw) return false
-
-            if (musicBrainzId != null &&
-                other.musicBrainzId != null &&
-                musicBrainzId == other.musicBrainzId) {
-                return true
-            }
-
-            return when {
-                name != null && other.name != null -> name.equals(other.name, true)
-                name == null && other.name == null -> true
-                else -> false
-            }
-        }
+        override fun equals(other: Any?) =
+            other is Raw &&
+                when {
+                    musicBrainzId != null && other.musicBrainzId != null ->
+                        musicBrainzId == other.musicBrainzId
+                    musicBrainzId == null && other.musicBrainzId == null ->
+                        when {
+                            name != null && other.name != null -> name.equals(other.name, true)
+                            name == null && other.name == null -> true
+                            else -> false
+                        }
+                    else -> false
+                }
     }
 }
 
@@ -1025,7 +1023,7 @@ class Genre constructor(private val raw: Raw, override val songs: List<Song>) : 
  * @return A [UUID] converted from the [String] value, or null if the value was not valid.
  * @see UUID.fromString
  */
-fun String.toUuidOrNull(): UUID? =
+private fun String.toUuidOrNull(): UUID? =
     try {
         UUID.fromString(this)
     } catch (e: IllegalArgumentException) {
@@ -1036,7 +1034,8 @@ fun String.toUuidOrNull(): UUID? =
  * Update a [MessageDigest] with a lowercase [String].
  * @param string The [String] to hash. If null, it will not be hashed.
  */
-private fun MessageDigest.update(string: String?) {
+@VisibleForTesting
+fun MessageDigest.update(string: String?) {
     if (string != null) {
         update(string.lowercase().toByteArray())
     } else {
@@ -1048,7 +1047,8 @@ private fun MessageDigest.update(string: String?) {
  * Update a [MessageDigest] with the string representation of a [Date].
  * @param date The [Date] to hash. If null, nothing will be done.
  */
-private fun MessageDigest.update(date: Date?) {
+@VisibleForTesting
+fun MessageDigest.update(date: Date?) {
     if (date != null) {
         update(date.toString().toByteArray())
     } else {
@@ -1060,7 +1060,8 @@ private fun MessageDigest.update(date: Date?) {
  * Update a [MessageDigest] with the lowercase versions of all of the input [String]s.
  * @param strings The [String]s to hash. If a [String] is null, it will not be hashed.
  */
-private fun MessageDigest.update(strings: List<String?>) {
+@VisibleForTesting
+fun MessageDigest.update(strings: List<String?>) {
     strings.forEach(::update)
 }
 
@@ -1068,7 +1069,8 @@ private fun MessageDigest.update(strings: List<String?>) {
  * Update a [MessageDigest] with the little-endian bytes of a [Int].
  * @param n The [Int] to write. If null, nothing will be done.
  */
-private fun MessageDigest.update(n: Int?) {
+@VisibleForTesting
+fun MessageDigest.update(n: Int?) {
     if (n != null) {
         update(byteArrayOf(n.toByte(), n.shr(8).toByte(), n.shr(16).toByte(), n.shr(24).toByte()))
     } else {
