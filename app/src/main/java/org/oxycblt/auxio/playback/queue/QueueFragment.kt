@@ -77,6 +77,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
 
     override fun onDestroyBinding(binding: FragmentQueueBinding) {
         super.onDestroyBinding(binding)
+        touchHelper = null
         binding.queueRecycler.adapter = null
     }
 

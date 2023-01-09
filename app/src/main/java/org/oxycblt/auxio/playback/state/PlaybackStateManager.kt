@@ -155,8 +155,7 @@ class PlaybackStateManager private constructor() {
     /**
      * Start new playback.
      * @param song A particular [Song] to play, or null to play the first [Song] in the new queue.
-     * @param parent The [MusicParent] to play from, or null if to play from the entire
-     * [MusicStore.Library].
+     * @param parent The [MusicParent] to play from, or null if to play from the entire [Library].
      * @param sort [Sort] to initially sort an ordered queue with.
      * @param shuffled Whether to shuffle or not.
      */
@@ -390,7 +389,7 @@ class PlaybackStateManager private constructor() {
     /**
      * Restore the previously saved state (if any) and apply it to the playback state.
      * @param database The [PlaybackStateDatabase] to load from.
-     * @param force Whether to force a restore regardless of the current state.
+     * @param force Whether to do a restore regardless of any prior playback state.
      * @return If the state was restored, false otherwise.
      */
     suspend fun restoreState(database: PlaybackStateDatabase, force: Boolean): Boolean {
@@ -399,49 +398,37 @@ class PlaybackStateManager private constructor() {
             return false
         }
 
-        // TODO: Re-implement with new queue
-        return false
+        val library = musicStore.library ?: return false
+        val internalPlayer = internalPlayer ?: return false
+        val state =
+            try {
+                withContext(Dispatchers.IO) { database.read(library) }
+            } catch (e: Exception) {
+                logE("Unable to restore playback state.")
+                logE(e.stackTraceToString())
+                return false
+            }
 
-        //        val library = musicStore.library ?: return false
-        //        val internalPlayer = internalPlayer ?: return false
-        //        val state =
-        //            try {
-        //                withContext(Dispatchers.IO) { database.read(library) }
-        //            } catch (e: Exception) {
-        //                logE("Unable to restore playback state.")
-        //                logE(e.stackTraceToString())
-        //                return false
-        //            }
-        //
-        //        // Translate the state we have just read into a usable playback state for this
-        //        // instance.
-        //        return synchronized(this) {
-        //            // State could have changed while we were loading, so check if we were
-        // initialized
-        //            // now before applying the state.
-        //            if (state != null && (!isInitialized || force)) {
-        //                index = state.index
-        //                parent = state.parent
-        //                _queue = state.queue.toMutableList()
-        //                repeatMode = state.repeatMode
-        //                isShuffled = state.isShuffled
-        //
-        //                notifyNewPlayback()
-        //                notifyRepeatModeChanged()
-        //                notifyShuffledChanged()
-        //
-        //                // Continuing playback after drastic state updates is a bad idea, so
-        // pause.
-        //                internalPlayer.loadSong(song, false)
-        //                internalPlayer.seekTo(state.positionMs)
-        //
-        //                isInitialized = true
-        //
-        //                true
-        //            } else {
-        //                false
-        //            }
-        //        }
+        // Translate the state we have just read into a usable playback state for this
+        // instance.
+        return synchronized(this) {
+            // State could have changed while we were loading, so check if we were initialized
+            // now before applying the state.
+            if (state != null && (!isInitialized || force)) {
+                parent = state.parent
+                queue.applySavedState(state.queueState)
+                repeatMode = state.repeatMode
+                notifyNewPlayback()
+                notifyRepeatModeChanged()
+                // Continuing playback after drastic state updates is a bad idea, so pause.
+                internalPlayer.loadSong(queue.currentSong, false)
+                internalPlayer.seekTo(state.positionMs)
+                isInitialized = true
+                true
+            } else {
+                false
+            }
+        }
     }
 
     /**
@@ -451,26 +438,25 @@ class PlaybackStateManager private constructor() {
      */
     suspend fun saveState(database: PlaybackStateDatabase): Boolean {
         logD("Saving state to DB")
-        return false
-        //        // Create the saved state from the current playback state.
-        //        val state =
-        //            synchronized(this) {
-        //                PlaybackStateDatabase.SavedState(
-        //                    index = index,
-        //                    parent = parent,
-        //                    queue = _queue,
-        //                    positionMs = playerState.calculateElapsedPositionMs(),
-        //                    isShuffled = isShuffled,
-        //                    repeatMode = repeatMode)
-        //            }
-        //        return try {
-        //            withContext(Dispatchers.IO) { database.write(state) }
-        //            true
-        //        } catch (e: Exception) {
-        //            logE("Unable to save playback state.")
-        //            logE(e.stackTraceToString())
-        //            false
-        //        }
+        // Create the saved state from the current playback state.
+        val state =
+            synchronized(this) {
+                queue.toSavedState()?.let {
+                    PlaybackStateDatabase.SavedState(
+                        parent = parent,
+                        queueState = it,
+                        positionMs = playerState.calculateElapsedPositionMs(),
+                        repeatMode = repeatMode)
+                }
+            }
+        return try {
+            withContext(Dispatchers.IO) { database.write(state) }
+            true
+        } catch (e: Exception) {
+            logE("Unable to save playback state.")
+            logE(e.stackTraceToString())
+            false
+        }
     }
 
     /**
@@ -519,8 +505,9 @@ class PlaybackStateManager private constructor() {
             }
 
         // Sanitize the queue.
-        queue.applySavedState(
-            queue.toSavedState().remap { newLibrary.sanitize(unlikelyToBeNull(it)) })
+        queue.toSavedState()?.let { state ->
+            queue.applySavedState(state.remap { newLibrary.sanitize(unlikelyToBeNull(it)) })
+        }
 
         notifyNewPlayback()
 

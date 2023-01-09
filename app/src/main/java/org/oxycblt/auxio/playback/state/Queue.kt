@@ -59,7 +59,13 @@ class Queue {
      * Resolve this queue into a more conventional list of [Song]s.
      * @return A list of [Song] corresponding to the current queue mapping.
      */
-    fun resolve() = shuffledMapping.map { heap[it] }.ifEmpty { orderedMapping.map { heap[it] } }
+    fun resolve() =
+        if (currentSong != null) {
+            shuffledMapping.map { heap[it] }.ifEmpty { orderedMapping.map { heap[it] } }
+        } else {
+            // Queue doesn't exist, return saner data.
+            listOf()
+        }
 
     /**
      * Go to a particular index in the queue.
@@ -253,12 +259,10 @@ class Queue {
      * @return A new [SavedState] reflecting the exact state of the queue when called.
      */
     fun toSavedState() =
-        SavedState(
-            heap.toList(),
-            orderedMapping.toList(),
-            shuffledMapping.toList(),
-            index,
-            currentSong?.uid)
+        currentSong?.let { song ->
+            SavedState(
+                heap.toList(), orderedMapping.toList(), shuffledMapping.toList(), index, song.uid)
+        }
 
     /**
      * Update this instance from the given [SavedState].
@@ -287,8 +291,8 @@ class Queue {
             }
 
         // Make sure we re-align the index to point to the previously playing song.
-        index = savedState.currentIndex
-        while (currentSong?.uid != savedState.currentSongUid && index > -1) {
+        index = savedState.index
+        while (currentSong?.uid != savedState.songUid && index > -1) {
             index--
         }
         check()
@@ -348,15 +352,15 @@ class Queue {
      * other values.
      * @param orderedMapping The mapping of the [heap] to an ordered queue.
      * @param shuffledMapping The mapping of the [heap] to a shuffled queue.
-     * @param currentIndex The index of the currently playing [Song] at the time of serialization.
-     * @param currentSongUid The [Music.UID] of the [Song] that was originally at [currentIndex].
+     * @param index The index of the currently playing [Song] at the time of serialization.
+     * @param songUid The [Music.UID] of the [Song] that was originally at [index].
      */
     class SavedState(
         val heap: List<Song?>,
         val orderedMapping: List<Int>,
         val shuffledMapping: List<Int>,
-        val currentIndex: Int,
-        val currentSongUid: Music.UID?,
+        val index: Int,
+        val songUid: Music.UID,
     ) {
         /**
          * Remaps the [heap] of this instance based on the given mapping function and copies it into
@@ -367,8 +371,7 @@ class Queue {
          * @throws IllegalStateException If the invariant specified by [transform] is violated.
          */
         inline fun remap(transform: (Song?) -> Song?) =
-            SavedState(
-                heap.map(transform), orderedMapping, shuffledMapping, currentIndex, currentSongUid)
+            SavedState(heap.map(transform), orderedMapping, shuffledMapping, index, songUid)
     }
 
     /**
