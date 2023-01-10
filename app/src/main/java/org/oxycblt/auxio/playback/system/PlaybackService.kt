@@ -355,15 +355,14 @@ class PlaybackService :
             }
             // Shuffle all -> Start new playback from all songs
             is InternalPlayer.Action.ShuffleAll -> {
-                playbackManager.play(null, null, musicSettings.songSort, true)
+                playbackManager.play(null, musicSettings.songSort.songs(library.songs), true)
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
             is InternalPlayer.Action.Open -> {
                 library.findSongForUri(application, action.uri)?.let { song ->
                     playbackManager.play(
                         song,
-                        null,
-                        musicSettings.songSort,
+                        musicSettings.songSort.songs(library.songs),
                         playbackManager.queue.isShuffled && playbackSettings.keepShuffle)
                 }
             }

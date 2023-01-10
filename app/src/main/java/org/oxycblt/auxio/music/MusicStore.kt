@@ -58,7 +58,7 @@ class MusicStore private constructor() {
     }
 
     /**
-     * Remove a [Listener] from this instance, preventing it from recieving any further updates.
+     * Remove a [Listener] from this instance, preventing it from receiving any further updates.
      * @param listener The [Listener] to remove. Does nothing if the [Listener] was never added in
      * the first place.
      * @see Listener

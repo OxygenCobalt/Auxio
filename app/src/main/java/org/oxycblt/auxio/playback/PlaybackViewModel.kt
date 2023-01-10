@@ -38,6 +38,7 @@ class PlaybackViewModel(application: Application) :
     private val musicSettings = MusicSettings.from(application)
     private val playbackSettings = PlaybackSettings.from(application)
     private val playbackManager = PlaybackStateManager.getInstance()
+    private val musicStore = MusicStore.getInstance()
     private var lastPositionJob: Job? = null
 
     private val _song = MutableStateFlow<Song?>(null)
@@ -161,26 +162,12 @@ class PlaybackViewModel(application: Application) :
      */
     fun playFrom(song: Song, playbackMode: MusicMode) {
         when (playbackMode) {
-            MusicMode.SONGS -> playFromAll(song)
-            MusicMode.ALBUMS -> playFromAlbum(song)
+            MusicMode.SONGS -> playImpl(song, null)
+            MusicMode.ALBUMS -> playImpl(song, song.album)
             MusicMode.ARTISTS -> playFromArtist(song)
             MusicMode.GENRES -> playFromGenre(song)
         }
     }
-
-    /**
-     * Play the given [Song] from all songs in the music library.
-     * @param song The [Song] to play.
-     */
-    fun playFromAll(song: Song) {
-        playImpl(song, null)
-    }
-
-    /**
-     * Play a [Song] from it's [Album].
-     * @param song The [Song] to play.
-     */
-    fun playFromAlbum(song: Song) = playImpl(song, song.album)
 
     /**
      * Play a [Song] from one of it's [Artist]s.
@@ -251,6 +238,13 @@ class PlaybackViewModel(application: Application) :
     fun play(genre: Genre) = playImpl(null, genre, false)
 
     /**
+     * Play a [Music] selection.
+     * @param selection The selection to play.
+     */
+    fun play(selection: List<Music>) =
+        playbackManager.play(null, selectionToSongs(selection), false)
+
+    /**
      * Shuffle an [Album].
      * @param album The [Album] to shuffle.
      */
@@ -269,13 +263,11 @@ class PlaybackViewModel(application: Application) :
     fun shuffle(genre: Genre) = playImpl(null, genre, true)
 
     /**
-     * Start the given [InternalPlayer.Action] to be completed eventually. This can be used to
-     * enqueue a playback action at startup to then occur when the music library is fully loaded.
-     * @param action The [InternalPlayer.Action] to perform eventually.
+     * Shuffle a [Music] selection.
+     * @param selection The selection to shuffle.
      */
-    fun startAction(action: InternalPlayer.Action) {
-        playbackManager.startAction(action)
-    }
+    fun shuffle(selection: List<Music>) =
+        playbackManager.play(null, selectionToSongs(selection), true)
 
     private fun playImpl(
         song: Song?,
@@ -285,6 +277,7 @@ class PlaybackViewModel(application: Application) :
         check(song == null || parent == null || parent.songs.contains(song)) {
             "Song to play not in parent"
         }
+        val library = musicStore.library ?: return
         val sort =
             when (parent) {
                 is Genre -> musicSettings.genreSongSort
@@ -292,7 +285,17 @@ class PlaybackViewModel(application: Application) :
                 is Album -> musicSettings.albumSongSort
                 null -> musicSettings.songSort
             }
-        playbackManager.play(song, parent, sort, shuffled)
+        val queue = sort.songs(parent?.songs ?: library.songs)
+        playbackManager.play(song, queue, shuffled)
+    }
+
+    /**
+     * Start the given [InternalPlayer.Action] to be completed eventually. This can be used to
+     * enqueue a playback action at startup to then occur when the music library is fully loaded.
+     * @param action The [InternalPlayer.Action] to perform eventually.
+     */
+    fun startAction(action: InternalPlayer.Action) {
+        playbackManager.startAction(action)
     }
 
     // --- PLAYER FUNCTIONS ---

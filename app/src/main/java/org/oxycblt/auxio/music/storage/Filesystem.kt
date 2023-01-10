@@ -129,7 +129,6 @@ class Directory private constructor(val volume: StorageVolume, val relativePath:
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class MusicDirectories(val dirs: List<Directory>, val shouldInclude: Boolean)
-// TODO: Unify include + exclude
 
 /**
  * A mime type of a file. Only intended for display.

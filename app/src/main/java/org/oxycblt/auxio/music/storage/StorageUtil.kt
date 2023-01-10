@@ -196,7 +196,7 @@ val StorageVolume.isInternalCompat: Boolean
     get() = isPrimaryCompat && isEmulatedCompat
 
 /**
- * The unique identifier for this [StorageVolume], obtained in a version compatible manner Can be
+ * The unique identifier for this [StorageVolume], obtained in a version compatible manner. Can be
  * null.
  * @see StorageVolume.getUuid
  */

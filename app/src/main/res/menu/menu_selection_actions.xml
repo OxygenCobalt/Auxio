@@ -8,16 +8,14 @@
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_selection_queue_add"
-        android:icon="@drawable/ic_play_next"
         android:title="@string/lbl_queue_add"
         app:showAsAction="never" />
-    <!-- TOOD: Disabled until able to get queue system into shape -->
-<!--    <item-->
-<!--        android:id="@+id/action_play_selection"-->
-<!--        android:title="@string/lbl_play_selected"-->
-<!--        app:showAsAction="never"/>-->
-<!--    <item-->
-<!--        android:id="@+id/action_shuffle_selection"-->
-<!--        android:title="@string/lbl_shuffle_selected"-->
-<!--        app:showAsAction="never"/>-->
+    <item
+        android:id="@+id/action_selection_play"
+        android:title="@string/lbl_play_selected"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_selection_shuffle"
+        android:title="@string/lbl_shuffle_selected"
+        app:showAsAction="never"/>
 </menu>

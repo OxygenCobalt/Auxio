@@ -155,20 +155,21 @@ class PlaybackStateManager private constructor() {
     /**
      * Start new playback.
      * @param song A particular [Song] to play, or null to play the first [Song] in the new queue.
+     * @param queue The queue of [Song]s to play from.
      * @param parent The [MusicParent] to play from, or null if to play from the entire [Library].
      * @param sort [Sort] to initially sort an ordered queue with.
      * @param shuffled Whether to shuffle or not.
      */
     @Synchronized
-    fun play(song: Song?, parent: MusicParent?, sort: Sort, shuffled: Boolean) {
+    fun play(song: Song?, queue: List<Song>, shuffled: Boolean) {
         val internalPlayer = internalPlayer ?: return
         val library = musicStore.library ?: return
         // Set up parent and queue
         this.parent = parent
-        queue.start(song, sort.songs(parent?.songs ?: library.songs), shuffled)
+        this.queue.start(song, queue, shuffled)
         // Notify components of changes
         notifyNewPlayback()
-        internalPlayer.loadSong(queue.currentSong, true)
+        internalPlayer.loadSong(this.queue.currentSong, true)
         // Played something, so we are initialized now
         isInitialized = true
     }
