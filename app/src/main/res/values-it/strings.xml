@@ -261,4 +261,5 @@
     <string name="set_playback_mode_genre">Riproduci dal genere</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
+    <string name="lbl_reset">Ripristina</string>
 </resources>
