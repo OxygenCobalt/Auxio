@@ -213,7 +213,7 @@ class Task(context: Context, private val raw: Song.Raw) {
 
         // Artist
         textFrames["TXXX:musicbrainz artist id"]?.let { raw.artistMusicBrainzIds = it }
-        textFrames["TPE1"]?.let { raw.artistNames = it }
+        (textFrames["TXXX:artists"] ?: textFrames["TPE1"])?.let { raw.artistNames = it }
         textFrames["TSOP"]?.let { raw.artistSortNames = it }
 
         // Album artist
@@ -304,15 +304,16 @@ class Task(context: Context, private val raw: Song.Raw) {
 
         // Artist
         comments["musicbrainz_artistid"]?.let { raw.artistMusicBrainzIds = it }
-        comments["artist"]?.let { raw.artistNames = it }
-        comments["artistsort"]?.let { raw.artistSortNames = it }
+        (comments["artists"] ?: comments["artist"])?.let { raw.artistNames = it }
+        (comments["artists_sort"] ?: comments["artistsort"])?.let { raw.artistSortNames = it }
 
         // Album artist
         comments["musicbrainz_albumartistid"]?.let { raw.albumArtistMusicBrainzIds = it }
-        comments["albumartist"]?.let { raw.albumArtistNames = it }
-        comments["albumartistsort"]?.let { raw.albumArtistSortNames = it }
+        (comments["albumartists"] ?: comments["albumartist"])?.let { raw.albumArtistNames = it }
+        (comments["albumartists_sort"] ?: comments["albumartistsort"])
+            ?.let { raw.albumArtistSortNames = it }
 
         // Genre
-        comments["GENRE"]?.let { raw.genreNames = it }
+        comments["genre"]?.let { raw.genreNames = it }
     }
 }

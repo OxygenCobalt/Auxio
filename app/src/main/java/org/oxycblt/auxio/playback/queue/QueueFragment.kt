@@ -128,8 +128,8 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
                 binding.queueRecycler.scrollToPosition(scrollTo)
             } else if (scrollTo > end) {
                 // We need to scroll downwards, we need to offset by a screen of songs.
-                // This does have some error due to what the layout manager returns being
-                // somewhat mutable. This is considered okay.
+                // This does have some error due to how many completely visible items on-screen
+                // can vary. This is considered okay.
                 binding.queueRecycler.scrollToPosition(
                     min(queue.lastIndex, scrollTo + (end - start)))
             }
