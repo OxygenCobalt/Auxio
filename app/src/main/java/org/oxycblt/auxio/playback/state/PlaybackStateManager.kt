@@ -23,7 +23,6 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.library.Library
-import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.playback.state.PlaybackStateManager.Listener
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -60,7 +59,7 @@ class PlaybackStateManager private constructor() {
     val queue = Queue()
     /** The [MusicParent] currently being played. Null if playback is occurring from all songs. */
     @Volatile
-    var parent: MusicParent? = null
+    var parent: MusicParent? = null // TODO: Parent is interpreted wrong when nothing is playing.
         private set
 
     /** The current [InternalPlayer] state. */
@@ -98,7 +97,7 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Remove a [Listener] from this instance, preventing it from recieving any further updates.
+     * Remove a [Listener] from this instance, preventing it from receiving any further updates.
      * @param listener The [Listener] to remove. Does nothing if the [Listener] was never added in
      * the first place.
      * @see Listener
@@ -156,14 +155,13 @@ class PlaybackStateManager private constructor() {
      * Start new playback.
      * @param song A particular [Song] to play, or null to play the first [Song] in the new queue.
      * @param queue The queue of [Song]s to play from.
-     * @param parent The [MusicParent] to play from, or null if to play from the entire [Library].
-     * @param sort [Sort] to initially sort an ordered queue with.
+     * @param parent The [MusicParent] to play from, or null if to play from an non-specific
+     * collection of "All [Song]s".
      * @param shuffled Whether to shuffle or not.
      */
     @Synchronized
-    fun play(song: Song?, queue: List<Song>, shuffled: Boolean) {
+    fun play(song: Song?, parent: MusicParent?, queue: List<Song>, shuffled: Boolean) {
         val internalPlayer = internalPlayer ?: return
-        val library = musicStore.library ?: return
         // Set up parent and queue
         this.parent = parent
         this.queue.start(song, queue, shuffled)

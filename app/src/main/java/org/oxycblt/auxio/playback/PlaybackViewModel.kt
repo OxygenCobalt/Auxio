@@ -242,7 +242,7 @@ class PlaybackViewModel(application: Application) :
      * @param selection The selection to play.
      */
     fun play(selection: List<Music>) =
-        playbackManager.play(null, selectionToSongs(selection), false)
+        playbackManager.play(null, null, selectionToSongs(selection), false)
 
     /**
      * Shuffle an [Album].
@@ -267,7 +267,7 @@ class PlaybackViewModel(application: Application) :
      * @param selection The selection to shuffle.
      */
     fun shuffle(selection: List<Music>) =
-        playbackManager.play(null, selectionToSongs(selection), true)
+        playbackManager.play(null, null, selectionToSongs(selection), true)
 
     private fun playImpl(
         song: Song?,
@@ -286,7 +286,7 @@ class PlaybackViewModel(application: Application) :
                 null -> musicSettings.songSort
             }
         val queue = sort.songs(parent?.songs ?: library.songs)
-        playbackManager.play(song, queue, shuffled)
+        playbackManager.play(song, parent, queue, shuffled)
     }
 
     /**

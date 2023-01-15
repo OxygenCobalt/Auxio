@@ -2,6 +2,9 @@
 
 ## dev
 
+#### What's New
+- Added ability to play/shuffle selections
+
 #### What's Improved
 - Added ability to edit previously played or currently playing items in the queue
 - Added support for date values formatted as "YYYYMMDD"

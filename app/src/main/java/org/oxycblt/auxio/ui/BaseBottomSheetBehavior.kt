@@ -56,7 +56,7 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
     /**
      * Called when window insets are being applied to the [View] this [BaseBottomSheetBehavior] is
      * linked to.
-     * @param child The child view recieving the [WindowInsets].
+     * @param child The child view receiving the [WindowInsets].
      * @param insets The [WindowInsets] to apply.
      * @return The (possibly modified) [WindowInsets].
      * @see View.onApplyWindowInsets

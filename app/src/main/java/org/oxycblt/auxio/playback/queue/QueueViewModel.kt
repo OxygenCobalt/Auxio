@@ -20,6 +20,7 @@ package org.oxycblt.auxio.playback.queue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.oxycblt.auxio.list.UpdateInstructions
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -42,13 +43,45 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
     val index: StateFlow<Int>
         get() = _index
 
-    /** Whether to replace or diff the queue list when updating it. Is null if not specified. */
-    var replaceQueue: Boolean? = null
-    /** Flag to scroll to a particular queue item. Is null if no command has been specified. */
-    var scrollTo: Int? = null
+    /** Specifies how to update the list when the queue changes. */
+    var instructions: Instructions? = null
 
     init {
         playbackManager.addListener(this)
+    }
+
+    override fun onIndexMoved(queue: Queue) {
+        instructions = Instructions(null, queue.index)
+        _index.value = queue.index
+    }
+
+    override fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {
+        // Queue changed trivially due to item mo -> Diff queue, stay at current index.
+        instructions = Instructions(UpdateInstructions.DIFF, null)
+        _queue.value = queue.resolve()
+        if (change != Queue.ChangeResult.MAPPING) {
+            // Index changed, make sure it remains updated without actually scrolling to it.
+            _index.value = queue.index
+        }
+    }
+
+    override fun onQueueReordered(queue: Queue) {
+        // Queue changed completely -> Replace queue, update index
+        instructions = Instructions(UpdateInstructions.REPLACE, null)
+        _queue.value = queue.resolve()
+        _index.value = queue.index
+    }
+
+    override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
+        // Entirely new queue -> Replace queue, update index
+        instructions = Instructions(UpdateInstructions.REPLACE, null)
+        _queue.value = queue.resolve()
+        _index.value = queue.index
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        playbackManager.removeListener(this)
     }
 
     /**
@@ -86,52 +119,10 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
         return true
     }
 
-    /** Finish a replace flag specified by [replaceQueue]. */
-    fun finishReplace() {
-        replaceQueue = null
+    /** Signal that the specified [Instructions] in [instructions] were performed. */
+    fun finishInstructions() {
+        instructions = null
     }
 
-    /** Finish a scroll operation started by [scrollTo]. */
-    fun finishScrollTo() {
-        scrollTo = null
-    }
-
-    override fun onIndexMoved(queue: Queue) {
-        // Index moved -> Scroll to new index
-        replaceQueue = null
-        scrollTo = queue.index
-        _index.value = queue.index
-    }
-
-    override fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {
-        // Queue changed trivially due to item mo -> Diff queue, stay at current index.
-        replaceQueue = false
-        scrollTo = null
-        _queue.value = queue.resolve()
-        if (change != Queue.ChangeResult.MAPPING) {
-            // Index changed, make sure it remains updated without actually scrolling to it.
-            _index.value = queue.index
-        }
-    }
-
-    override fun onQueueReordered(queue: Queue) {
-        // Queue changed completely -> Replace queue, update index
-        replaceQueue = true
-        scrollTo = queue.index
-        _queue.value = queue.resolve()
-        _index.value = queue.index
-    }
-
-    override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
-        // Entirely new queue -> Replace queue, update index
-        replaceQueue = true
-        scrollTo = queue.index
-        _queue.value = queue.resolve()
-        _index.value = queue.index
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        playbackManager.removeListener(this)
-    }
+    class Instructions(val update: UpdateInstructions?, val scrollTo: Int?)
 }

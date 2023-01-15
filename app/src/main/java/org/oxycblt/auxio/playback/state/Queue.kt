@@ -208,8 +208,9 @@ class Queue {
             // We have moved an song from in front of the playing song to behind, shift forward.
             in dst until src -> index += 1
             else -> {
+                // Nothing to do.
                 check()
-                ChangeResult.MAPPING
+                return ChangeResult.MAPPING
             }
         }
         check()

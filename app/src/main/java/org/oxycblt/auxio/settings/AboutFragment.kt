@@ -123,15 +123,13 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
                 if (pkgName == "android") {
                     // No default browser [Must open app chooser, may not be supported]
                     openAppChooser(browserIntent)
-                } else {
-                    try {
-                        browserIntent.setPackage(pkgName)
-                        startActivity(browserIntent)
-                    } catch (e: ActivityNotFoundException) {
-                        // Not a browser but an app chooser
-                        browserIntent.setPackage(null)
-                        openAppChooser(browserIntent)
-                    }
+                } else try {
+                    browserIntent.setPackage(pkgName)
+                    startActivity(browserIntent)
+                } catch (e: ActivityNotFoundException) {
+                    // Not a browser but an app chooser
+                    browserIntent.setPackage(null)
+                    openAppChooser(browserIntent)
                 }
             } else {
                 // No app installed to open the link

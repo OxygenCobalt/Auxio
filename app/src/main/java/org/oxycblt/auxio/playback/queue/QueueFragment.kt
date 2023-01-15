@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.list.EditableListListener
+import org.oxycblt.auxio.list.UpdateInstructions
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
@@ -100,18 +101,19 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
         val binding = requireBinding()
 
         // Replace or diff the queue depending on the type of change it is.
-        // TODO: Extend this to the whole app.
-        if (queueModel.replaceQueue == true) {
+        val instructions = queueModel.instructions
+        if (instructions?.update == UpdateInstructions.REPLACE) {
             logD("Replacing queue")
             queueAdapter.replaceList(queue)
         } else {
             logD("Diffing queue")
             queueAdapter.submitList(queue)
         }
-        queueModel.finishReplace()
+        // Update position in list (and thus past/future items)
+        queueAdapter.setPosition(index, isPlaying)
 
         // If requested, scroll to a new item (occurs when the index moves)
-        val scrollTo = queueModel.scrollTo
+        val scrollTo = instructions?.scrollTo
         if (scrollTo != null) {
             val lmm = binding.queueRecycler.layoutManager as LinearLayoutManager
             val start = lmm.findFirstCompletelyVisibleItemPosition()
@@ -132,9 +134,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
                     min(queue.lastIndex, scrollTo + (end - start)))
             }
         }
-        queueModel.finishScrollTo()
 
-        // Update position in list (and thus past/future items)
-        queueAdapter.setPosition(index, isPlaying)
+        queueModel.finishInstructions()
     }
 }

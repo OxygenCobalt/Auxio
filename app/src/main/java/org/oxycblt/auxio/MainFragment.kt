@@ -343,10 +343,8 @@ class MainFragment :
         if (playbackSheetBehavior.state == NeoBottomSheetBehavior.STATE_HIDDEN) {
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
-
             // Queue sheet behavior is either collapsed or expanded, no hiding needed
             queueSheetBehavior?.isDraggable = true
-
             playbackSheetBehavior.apply {
                 // Make sure the view is draggable, at least until the draw checks kick in.
                 isDraggable = true

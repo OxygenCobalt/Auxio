@@ -88,6 +88,11 @@ interface Settings<L> {
             onSettingChanged(key, unlikelyToBeNull(listener))
         }
 
-        open fun onSettingChanged(key: String, listener: L) {}
+        /**
+         * Called when a setting entry with the given [key] has changed.
+         * @param key The key of the changed setting.
+         * @param listener The implementation's listener that updates should be applied to.
+         */
+        protected open fun onSettingChanged(key: String, listener: L) {}
     }
 }
