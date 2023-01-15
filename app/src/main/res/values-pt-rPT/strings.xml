@@ -26,7 +26,7 @@
     <string name="lbl_version">Versão</string>
     <string name="lbl_code">Código fonte</string>
     <string name="lbl_licenses">Licenças</string>
-    <string name="lng_author">Desenvolvido por OxygenCobalt</string>
+    <string name="lng_author">Desenvolvido por Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Definições</string>
     <string name="set_ui">Aparência</string>
@@ -216,4 +216,48 @@
     <string name="fmt_bitrate">%d kbps</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="fmt_indexing">A carregar a sua biblioteca de músicas… (%1$d/%2$d)</string>
+    <string name="set_rewind_prev">Retroceder antes de voltar</string>
+    <string name="desc_exit">Parar reprodução</string>
+    <string name="lbl_play_selected">Reproduzir selecionada(s)</string>
+    <string name="lbl_shuffle_selected">Aleatorizar selecionadas</string>
+    <string name="lbl_relative_path">Caminho principal</string>
+    <string name="set_round_mode_desc">Ativar cantos arredondados em elementos adicionais da interface do utilizador (requer que as capas dos álbuns sejam arredondadas)</string>
+    <string name="fmt_selected">%d Selecionadas</string>
+    <string name="lbl_mixes">Mixes</string>
+    <string name="lbl_mix">Mix</string>
+    <string name="lbl_shuffle_shortcut_short">Aleatório</string>
+    <string name="set_hide_collaborators">Ocultar artistas colaboradores</string>
+    <string name="set_rescan_desc">Limpa os metadados em cache e recarrega totalmente a biblioteca de música (lento, porém mais completo)</string>
+    <string name="lbl_ep_remix">Álbum de Remix</string>
+    <string name="lbl_single_live">Single ao vivo</string>
+    <string name="lbl_single_remix">Single remix</string>
+    <string name="lng_observing">Monitorando alterações na sua biblioteca de músicas…</string>
+    <string name="set_observing_desc">Recarrega a biblioteca de músicas sempre que ela mudar (requer notificação fixa)</string>
+    <string name="lbl_reset">Redefinir</string>
+    <string name="lbl_wiki">Wiki</string>
+    <string name="lng_widget">Visualize e controle a reprodução de música</string>
+    <string name="set_black_mode_desc">Use um tema preto</string>
+    <string name="set_hide_collaborators_desc">Mostrar apenas artistas que foram creditados diretamente no álbum (funciona melhor em músicas com metadados completos)</string>
+    <string name="set_replay_gain_track">Preferir faixa</string>
+    <string name="set_pre_amp">Pré-amplificação da normalização de volume</string>
+    <string name="set_detail_song_playback_mode">Ao tocar a partir dos detalhes do item</string>
+    <string name="set_playback_mode_genre">Tocar a partir do gênero</string>
+    <string name="set_rewind_prev_desc">Retrocede a música antes de voltar para a anterior</string>
+    <string name="set_reindex">Recarregar música</string>
+    <string name="fmt_list">%1$s, %2$s</string>
+    <string name="err_did_not_wipe">Não foi possível limpar a lista</string>
+    <string name="err_did_not_save">Não foi possível gravar a lista</string>
+    <string name="set_rescan">Re-escanear músicas</string>
+    <string name="err_did_not_restore">Nenhuma lista pode ser restaurada</string>
+    <string name="desc_auxio_icon">Ícone do Auxio</string>
+    <string name="lbl_shuffle_shortcut_long">Aleatorizar tudo</string>
+    <string name="set_library_song_playback_mode">Ao tocar da biblioteca</string>
+    <string name="lbl_singles">Singles</string>
+    <string name="lbl_single">Single</string>
+    <string name="set_reindex_desc">Recarrega a biblioteca de músicas usando metadados salvos em cache quando possível</string>
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d artista</item>
+        <item quantity="many">%d artistas</item>
+        <item quantity="other">%d artistas</item>
+    </plurals>
 </resources>
