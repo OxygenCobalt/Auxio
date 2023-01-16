@@ -26,6 +26,7 @@ import android.view.LayoutInflater
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
@@ -50,10 +51,8 @@ class MusicDirsDialog :
         DialogMusicDirsBinding.inflate(inflater)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
-        // Don't set the click listener here, we do some custom magic in onCreateView instead.
         builder
             .setTitle(R.string.set_dirs)
-            .setNeutralButton(R.string.lbl_add, null)
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
                 val settings = MusicSettings.from(requireContext())
@@ -74,13 +73,9 @@ class MusicDirsDialog :
             registerForActivityResult(
                 ActivityResultContracts.OpenDocumentTree(), ::addDocumentTreeUriToDirs)
 
-        // Now that the dialog exists, we get the view manually when the dialog is shown
-        // and override its click listener so that the dialog does not auto-dismiss when we
-        // click the "Add"/"Save" buttons. This prevents the dialog from disappearing in the former
-        // and the app from crashing in the latter.
-        requireDialog().setOnShowListener {
-            val dialog = it as AlertDialog
-            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setOnClickListener {
+        binding.dirsAdd.apply {
+            ViewCompat.setTooltipText(this, contentDescription)
+            setOnClickListener {
                 logD("Opening launcher")
                 val launcher =
                     requireNotNull(openDocumentTreeLauncher) {
@@ -182,8 +177,12 @@ class MusicDirsDialog :
     private fun updateMode() {
         val binding = requireBinding()
         if (isUiModeInclude(binding)) {
+            binding.dirsModeExclude.icon = null
+            binding.dirsModeInclude.setIconResource(R.drawable.ic_check_24)
             binding.dirsModeDesc.setText(R.string.set_dirs_mode_include_desc)
         } else {
+            binding.dirsModeExclude.setIconResource(R.drawable.ic_check_24)
+            binding.dirsModeInclude.icon = null
             binding.dirsModeDesc.setText(R.string.set_dirs_mode_exclude_desc)
         }
     }

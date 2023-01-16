@@ -10,6 +10,7 @@
 - Added support for date values formatted as "YYYYMMDD"
 - Pressing the button will now clear the current selection before navigating back
 - Added support for non-standard `ARTISTS` tags
+- Reworked music folders dialog to be more coherent
 
 #### What's Fixed
 - Fixed unreliable ReplayGain adjustment application in certain situations
