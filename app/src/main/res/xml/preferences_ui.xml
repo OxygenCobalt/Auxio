@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:title="@string/set_ui">
+
+    <org.oxycblt.auxio.settings.ui.IntListPreference
+        app:defaultValue="@integer/theme_auto"
+        app:entries="@array/entries_theme"
+        app:entryIcons="@array/icons_theme"
+        app:entryValues="@array/values_theme"
+        app:icon="@drawable/ic_light_24"
+        app:key="@string/set_key_theme"
+        app:title="@string/set_theme" />
+
+    <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+        app:icon="@drawable/ic_accent_dynamic_24"
+        app:key="@string/set_key_accent"
+        app:title="@string/set_accent" />
+
+    <SwitchPreferenceCompat
+        app:defaultValue="false"
+        app:key="@string/set_key_black_theme"
+        app:summary="@string/set_black_mode_desc"
+        app:title="@string/set_black_mode" />
+
+    <SwitchPreferenceCompat
+        app:defaultValue="false"
+        app:key="@string/set_key_round_mode"
+        app:summary="@string/set_round_mode_desc"
+        app:title="@string/set_round_mode" />
+
+</PreferenceScreen>

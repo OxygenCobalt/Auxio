@@ -77,8 +77,8 @@
     </integer-array>
 
     <string-array name="entries_bar_action">
-        <item>@string/set_bar_action_next</item>
-        <item>@string/set_bar_action_repeat</item>
+        <item>@string/set_action_mode_next</item>
+        <item>@string/set_action_mode_repeat</item>
         <item>@string/lbl_shuffle</item>
     </string-array>
 
@@ -89,7 +89,7 @@
     </integer-array>
 
     <integer-array name="entries_notif_action">
-        <item>@string/set_bar_action_repeat</item>
+        <item>@string/set_action_mode_repeat</item>
         <item>@string/lbl_shuffle</item>
     </integer-array>
 
@@ -129,9 +129,9 @@
     </integer-array>
 
     <string-array name="entries_replay_gain">
-        <item>@string/set_replay_gain_track</item>
-        <item>@string/set_replay_gain_album</item>
-        <item>@string/set_replay_gain_dynamic</item>
+        <item>@string/set_replay_gain_mode_track</item>
+        <item>@string/set_replay_gain_mode_album</item>
+        <item>@string/set_replay_gain_mode_dynamic</item>
     </string-array>
 
     <integer-array name="values_replay_gain">

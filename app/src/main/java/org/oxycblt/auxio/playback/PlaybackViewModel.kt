@@ -325,8 +325,6 @@ class PlaybackViewModel(application: Application) :
      * @param song The [Song] to add.
      */
     fun playNext(song: Song) {
-        // TODO: Queue additions without a playing song should map to playing items
-        //  (impossible until queue rework)
         playbackManager.playNext(song)
     }
 
@@ -405,12 +403,12 @@ class PlaybackViewModel(application: Application) :
     // --- STATUS FUNCTIONS ---
 
     /** Toggle [isPlaying] (i.e from playing to paused) */
-    fun toggleIsPlaying() {
+    fun togglePlaying() {
         playbackManager.setPlaying(!playbackManager.playerState.isPlaying)
     }
 
     /** Toggle [isShuffled] (ex. from on to off) */
-    fun invertShuffled() {
+    fun toggleShuffled() {
         playbackManager.reorder(!playbackManager.queue.isShuffled)
     }
 

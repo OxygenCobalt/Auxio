@@ -27,7 +27,7 @@
     <string name="lbl_code">在 GitHub 上檢視</string>
     <string name="lbl_licenses">授權條款</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">設定</string>
+    <string name="set_root_title">設定</string>
     <string name="set_ui">外觀</string>
     <string name="set_theme">主題色調</string>
     <string name="set_theme_auto">強調色</string>
@@ -35,7 +35,7 @@
     <string name="set_theme_night">深色</string>
     <string name="set_accent">色彩樣式</string>
     <string name="set_audio">音訊</string>
-    <string name="set_behavior">行為</string>
+    <string name="set_personalize">行為</string>
     <string name="set_keep_shuffle">記住隨機播放</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">找不到音樂</string>

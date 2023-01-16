@@ -105,9 +105,9 @@ class PlaybackPanelFragment :
         // TODO: Add better playback button accessibility
         binding.playbackRepeat.setOnClickListener { playbackModel.toggleRepeatMode() }
         binding.playbackSkipPrev.setOnClickListener { playbackModel.prev() }
-        binding.playbackPlayPause.setOnClickListener { playbackModel.toggleIsPlaying() }
+        binding.playbackPlayPause.setOnClickListener { playbackModel.togglePlaying() }
         binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
-        binding.playbackShuffle.setOnClickListener { playbackModel.invertShuffled() }
+        binding.playbackShuffle.setOnClickListener { playbackModel.toggleShuffled() }
 
         // --- VIEWMODEL SETUP --
         collectImmediately(playbackModel.song, ::updateSong)

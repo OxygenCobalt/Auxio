@@ -28,7 +28,7 @@
     <string name="lbl_licenses">Licences</string>
     <string name="lng_author">Développé par OxygenCobalt</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Paramètres</string>
+    <string name="set_root_title">Paramètres</string>
     <string name="set_ui">Apparence</string>
     <string name="set_theme">Thème</string>
     <string name="set_theme_auto">Automatique</string>
@@ -36,7 +36,7 @@
     <string name="set_theme_night">Sombre</string>
     <string name="set_accent">Couleur d\'accentuation</string>
     <string name="set_audio">Audio</string>
-    <string name="set_behavior">Comportement</string>
+    <string name="set_personalize">Comportement</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Pas de musique trouvée</string>
     <!-- Description Namespace | Accessibility Strings -->

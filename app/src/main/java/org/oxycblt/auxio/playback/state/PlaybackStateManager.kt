@@ -59,7 +59,7 @@ class PlaybackStateManager private constructor() {
     val queue = Queue()
     /** The [MusicParent] currently being played. Null if playback is occurring from all songs. */
     @Volatile
-    var parent: MusicParent? = null // TODO: Parent is interpreted wrong when nothing is playing.
+    var parent: MusicParent? = null // FIXME: Parent is interpreted wrong when nothing is playing.
         private set
 
     /** The current [InternalPlayer] state. */

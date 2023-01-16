@@ -27,7 +27,7 @@
     <string name="lbl_code">Megtekintés GitHubon</string>
     <string name="lbl_licenses">Engedélyek</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Beállítások</string>
+    <string name="set_root_title">Beállítások</string>
     <string name="set_ui">Megjelenés</string>
     <string name="set_theme">Téma</string>
     <string name="set_theme_auto">Automatikus</string>
@@ -35,7 +35,7 @@
     <string name="set_theme_night">Sötét</string>
     <string name="set_accent">Kiemelés</string>
     <string name="set_audio">Hang</string>
-    <string name="set_behavior">Működés</string>
+    <string name="set_personalize">Működés</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nem található zene</string>
     <!-- Hint Namespace | EditText Hints -->

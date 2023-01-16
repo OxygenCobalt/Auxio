@@ -28,7 +28,7 @@
     <string name="lbl_licenses">Licenças</string>
     <string name="lng_author">Desenvolvido por Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Definições</string>
+    <string name="set_root_title">Definições</string>
     <string name="set_ui">Aparência</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_day">Claro</string>
@@ -36,7 +36,7 @@
     <string name="set_theme_auto">Automático</string>
     <string name="set_accent">Cor de realce</string>
     <string name="set_audio">Áudio</string>
-    <string name="set_behavior">Comportamento</string>
+    <string name="set_personalize">Comportamento</string>
     <string name="set_keep_shuffle">Memorizar aleatorização</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nenhuma música encontrada</string>
@@ -79,7 +79,7 @@
     <string name="fmt_lib_total_duration">Duração total: %s</string>
     <string name="err_index_failed">Falha no carregamento da música</string>
     <string name="lbl_sort_name">Nome</string>
-    <string name="set_replay_gain_dynamic">Prefira o álbum se estiver tocando</string>
+    <string name="set_replay_gain_mode_dynamic">Prefira o álbum se estiver tocando</string>
     <string name="err_no_app">Nenhuma aplicação encontrada que possa lidar com esta tarefa</string>
     <string name="clr_cyan">Ciano</string>
     <string name="lbl_sort_count">Contagem de músicas</string>
@@ -90,7 +90,7 @@
     <string name="set_cover_mode_media_store">Rápido</string>
     <string name="set_cover_mode_quality">Qualidade alta</string>
     <string name="set_bar_action">Ação da barra de reprodução personalizada</string>
-    <string name="set_bar_action_repeat">Modo de repetição</string>
+    <string name="set_action_mode_repeat">Modo de repetição</string>
     <string name="set_playback_mode_artist">Reproduzir do artista</string>
     <string name="set_repeat_pause">Pausar na repetição</string>
     <string name="err_no_perms">O Auxio precisa de permissão para ler a sua biblioteca de músicas</string>
@@ -103,7 +103,7 @@
     <string name="lbl_sort_disc">Disco</string>
     <string name="lbl_sort_track">Faixa</string>
     <string name="lbl_bitrate">Taxa de bits</string>
-    <string name="set_bar_action_next">Pular para o próximo</string>
+    <string name="set_action_mode_next">Pular para o próximo</string>
     <string name="set_pre_amp_warning">Aviso: Alterar o pré-amplificador para um valor positivo alto pode resultar em picos em algumas faixas de áudio.</string>
     <string name="set_pre_amp_with">Ajuste com etiquetas</string>
     <string name="set_separators_slash">Barra (/)</string>
@@ -185,8 +185,8 @@
     <string name="set_notif_action">Usar ação de notificação alternativa</string>
     <string name="set_headset_autoplay">Reprodução automática do fone de ouvido</string>
     <string name="set_headset_autoplay_desc">Sempre comece a tocar quando um fone de ouvido estiver conectado (pode não funcionar em todos os aparelhos)</string>
-    <string name="set_replay_gain">Estratégia do ganho de repetição</string>
-    <string name="set_replay_gain_album">Preferir álbum</string>
+    <string name="set_replay_gain_mode">Estratégia do ganho de repetição</string>
+    <string name="set_replay_gain_mode_album">Preferir álbum</string>
     <string name="set_pre_amp_desc">O pré-amplificador é aplicado ao ajuste existente durante a reprodução</string>
     <string name="set_playback_mode_songs">Reproduzir de todas as músicas</string>
     <string name="set_repeat_pause_desc">Pausa quando uma música se repete</string>
@@ -238,7 +238,7 @@
     <string name="lng_widget">Visualize e controle a reprodução de música</string>
     <string name="set_black_mode_desc">Use um tema preto</string>
     <string name="set_hide_collaborators_desc">Mostrar apenas artistas que foram creditados diretamente no álbum (funciona melhor em músicas com metadados completos)</string>
-    <string name="set_replay_gain_track">Preferir faixa</string>
+    <string name="set_replay_gain_mode_track">Preferir faixa</string>
     <string name="set_pre_amp">Pré-amplificação da normalização de volume</string>
     <string name="set_detail_song_playback_mode">Ao tocar a partir dos detalhes do item</string>
     <string name="set_playback_mode_genre">Tocar a partir do gênero</string>

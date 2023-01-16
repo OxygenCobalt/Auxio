@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Auxio Project
+ * Copyright (c) 2023 Auxio Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,22 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.settings.prefs
+package org.oxycblt.auxio.settings.ui
 
-import android.content.Context
-import android.util.AttributeSet
-import androidx.preference.DialogPreference
+import androidx.navigation.fragment.findNavController
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.settings.SettingsFragmentDirections
 
-/**
- * Wraps a [DialogPreference] to be instantiatable. This has no purpose other to ensure that custom
- * dialog preferences are handled.
- * @author Alexander Capehart (OxygenCobalt)
- */
-class WrappedDialogPreference
-@JvmOverloads
-constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = androidx.preference.R.attr.dialogPreferenceStyle,
-    defStyleRes: Int = 0
-) : DialogPreference(context, attrs, defStyleAttr, defStyleRes)
+class PersonalizePreferenceFragment : BasePreferenceFragment(R.xml.preferences_personalize) {
+    override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
+        if (preference.key == getString(R.string.set_key_home_tabs)) {
+            findNavController().navigate(SettingsFragmentDirections.goToTabDialog())
+        }
+    }
+}

@@ -52,7 +52,7 @@
     <string name="lng_author">Vytvořil Alexander Capehart</string>
     <string name="lbl_library_counts">Statistiky knihovny</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Nastavení</string>
+    <string name="set_root_title">Nastavení</string>
     <string name="set_ui">Vzhled</string>
     <string name="set_theme">Motiv</string>
     <string name="set_theme_auto">Automatické</string>
@@ -70,16 +70,16 @@
     <string name="set_audio">Zvuk</string>
     <string name="set_headset_autoplay">Automatické přehrávání se sluchátky</string>
     <string name="set_headset_autoplay_desc">Při připojení sluchátek vždy spustit přehrávání (nemusí fungovat na všech zařízeních)</string>
-    <string name="set_replay_gain">Strategie ReplayGain</string>
-    <string name="set_replay_gain_track">Preferovat stopu</string>
-    <string name="set_replay_gain_album">Preferovat album</string>
-    <string name="set_replay_gain_dynamic">Preferovat album, pokud se právě přehrává</string>
+    <string name="set_replay_gain_mode">Strategie ReplayGain</string>
+    <string name="set_replay_gain_mode_track">Preferovat stopu</string>
+    <string name="set_replay_gain_mode_album">Preferovat album</string>
+    <string name="set_replay_gain_mode_dynamic">Preferovat album, pokud se právě přehrává</string>
     <string name="set_pre_amp">Předzesilovač ReplayGain</string>
     <string name="set_pre_amp_desc">Předzesilovač bude použit na existující přizpůsobení při přehrávání</string>
     <string name="set_pre_amp_with">Přizpůsobení se štítky</string>
     <string name="set_pre_amp_without">Přizpůsobení bez štítků</string>
     <string name="set_pre_amp_warning">Varování: Změna předzesilovače na vysokou kladnou hodnotu může u některých zvukových stop vést k příliš vysokým hlasitostem.</string>
-    <string name="set_behavior">Chování</string>
+    <string name="set_personalize">Chování</string>
     <string name="set_library_song_playback_mode">Při přehrávání z knihovny</string>
     <string name="set_keep_shuffle">Zapamatovat si náhodné přehrávání</string>
     <string name="set_keep_shuffle_desc">Ponechat náhodné přehrávání při přehrávání nové skladby</string>
@@ -229,8 +229,8 @@
     <string name="desc_queue_bar">Otevřít frontu</string>
     <string name="lbl_genre">Žánr</string>
     <string name="set_bar_action">Vlastní akce lišty přehrávání</string>
-    <string name="set_bar_action_next">Přeskočit na další</string>
-    <string name="set_bar_action_repeat">Režim opakování</string>
+    <string name="set_action_mode_next">Přeskočit na další</string>
+    <string name="set_action_mode_repeat">Režim opakování</string>
     <string name="lbl_equalizer">Ekvalizér</string>
     <string name="desc_exit">Zastavit přehrávání</string>
     <string name="set_separators_and">Ampersand (&amp;)</string>

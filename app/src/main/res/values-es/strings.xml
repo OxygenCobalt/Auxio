@@ -42,7 +42,7 @@
     <string name="lbl_licenses">Licencias</string>
     <string name="lng_author">Desarrollado por Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Ajustes</string>
+    <string name="set_root_title">Ajustes</string>
     <string name="set_ui">Apariencia</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Automático</string>
@@ -58,11 +58,11 @@
     <string name="set_round_mode_desc">Habilite las esquinas redondeadas en los elementos adicionales de la interfaz del usuario (requiere que las portadas de los álbumes estén redondeadas)</string>
     <string name="set_notif_action">Usar acciones de notificación alternativas</string>
     <string name="set_audio">Sonido</string>
-    <string name="set_replay_gain">Estrategia de la ganancia de la repetición</string>
-    <string name="set_replay_gain_track">Por pista</string>
-    <string name="set_replay_gain_album">Por álbum</string>
-    <string name="set_replay_gain_dynamic">Preferir el álbum si se está en reproducción</string>
-    <string name="set_behavior">Comportamiento</string>
+    <string name="set_replay_gain_mode">Estrategia de la ganancia de la repetición</string>
+    <string name="set_replay_gain_mode_track">Por pista</string>
+    <string name="set_replay_gain_mode_album">Por álbum</string>
+    <string name="set_replay_gain_mode_dynamic">Preferir el álbum si se está en reproducción</string>
+    <string name="set_personalize">Comportamiento</string>
     <string name="set_library_song_playback_mode">Cuando se está reproduciendo de la biblioteca</string>
     <string name="set_keep_shuffle">Recordar mezcla</string>
     <string name="set_keep_shuffle_desc">Mantener mezcla cuando se reproduce una nueva canción</string>
@@ -237,7 +237,7 @@
     <string name="lbl_equalizer">Ecualizador</string>
     <string name="set_cover_mode">Portadas de álbumes</string>
     <string name="set_cover_mode_off">Apagado</string>
-    <string name="set_bar_action_repeat">Modo de repetición</string>
+    <string name="set_action_mode_repeat">Modo de repetición</string>
     <string name="set_separators_plus">Más (+)</string>
     <string name="set_separators_and">Y (&amp;)</string>
     <string name="desc_exit">Detener la reproducción</string>
@@ -246,7 +246,7 @@
     <string name="set_cover_mode_quality">Alta calidad</string>
     <string name="set_cover_mode_media_store">Rápido</string>
     <string name="set_bar_action">Acción personalizada de la barra de reproducción</string>
-    <string name="set_bar_action_next">Saltar al siguiente</string>
+    <string name="set_action_mode_next">Saltar al siguiente</string>
     <string name="set_hide_collaborators_desc">Mostrar solo artistas que estén acreditados directamente en un álbum (funciona mejor en bibliotecas bien etiquetadas)</string>
     <string name="set_hide_collaborators">Ocultar colaboradores</string>
     <plurals name="fmt_artist_count">

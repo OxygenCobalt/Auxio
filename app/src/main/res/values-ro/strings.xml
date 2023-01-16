@@ -28,7 +28,7 @@
     <string name="lbl_licenses">Licențe</string>
     <string name="lng_author">Dezvoltat de OxygenCobalt</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Setări</string>
+    <string name="set_root_title">Setări</string>
     <string name="set_ui">Aspect</string>
     <string name="set_theme">Temă</string>
     <string name="set_theme_auto">Automat</string>
@@ -36,7 +36,7 @@
     <string name="set_theme_night">Întunecat</string>
     <string name="set_accent">Paletă de culori</string>
     <string name="set_audio">Audio</string>
-    <string name="set_behavior">Comportament</string>
+    <string name="set_personalize">Comportament</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nu a fost găsită muzică</string>
     <!-- Hint Namespace | EditText Hints -->

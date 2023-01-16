@@ -64,7 +64,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         binding.playbackInfo.isSelected = true
 
         // Set up actions
-        binding.playbackPlayPause.setOnClickListener { playbackModel.toggleIsPlaying() }
+        binding.playbackPlayPause.setOnClickListener { playbackModel.togglePlaying() }
         setupSecondaryActions(binding, playbackModel.currentBarAction)
 
         // Load the track color in manually as it's unclear whether the track actually supports
@@ -108,7 +108,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                     setIconResource(R.drawable.sel_shuffle_state_24)
                     contentDescription = getString(R.string.desc_shuffle)
                     iconTint = context.getColorCompat(R.color.sel_activatable_icon)
-                    setOnClickListener { playbackModel.invertShuffled() }
+                    setOnClickListener { playbackModel.toggleShuffled() }
                     collectImmediately(playbackModel.isShuffled, ::updateShuffled)
                 }
             }

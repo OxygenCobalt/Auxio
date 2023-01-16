@@ -42,7 +42,7 @@
     <string name="lbl_licenses">التراخيص</string>
     <string name="lng_author">تمت برمجة التطبيق من قبل OxygenCobalt</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">الإعدادات</string>
+    <string name="set_root_title">الإعدادات</string>
     <string name="set_ui">المظهر</string>
     <string name="set_theme">السمة</string>
     <string name="set_theme_auto">تلقائي</string>
@@ -58,11 +58,11 @@
     <string name="set_round_mode_desc">جعل اغلفة الابومات ذات زوايا مدورة</string>
     <string name="set_notif_action">استخدام نشاط بديل للإشعار</string>
     <string name="set_audio">صوتيات</string>
-    <string name="set_replay_gain">صخب الصوت</string>
-    <string name="set_replay_gain_track">تفضيل المقطع</string>
-    <string name="set_replay_gain_album">تفضيل الالبوم</string>
-    <string name="set_replay_gain_dynamic">ديناميكي</string>
-    <string name="set_behavior">سلوك</string>
+    <string name="set_replay_gain_mode">صخب الصوت</string>
+    <string name="set_replay_gain_mode_track">تفضيل المقطع</string>
+    <string name="set_replay_gain_mode_album">تفضيل الالبوم</string>
+    <string name="set_replay_gain_mode_dynamic">ديناميكي</string>
+    <string name="set_personalize">سلوك</string>
     <string name="set_library_song_playback_mode">عند اختيار اغنية</string>
     <string name="set_keep_shuffle">تذكر الخلط</string>
     <string name="set_keep_shuffle_desc">إبقاء وضع الخلط عند تشغيل اغنية جديدة</string>

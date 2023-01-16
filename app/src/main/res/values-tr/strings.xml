@@ -27,7 +27,7 @@
     <string name="lbl_code">Kaynak kodu</string>
     <string name="lbl_licenses">Lisanslar</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Ayarlar</string>
+    <string name="set_root_title">Ayarlar</string>
     <string name="set_ui">Görünüm</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Otomatik</string>
@@ -35,7 +35,7 @@
     <string name="set_theme_night">Koyu</string>
     <string name="set_accent">Ana Renk</string>
     <string name="set_audio">Ses</string>
-    <string name="set_behavior">Tercihler</string>
+    <string name="set_personalize">Tercihler</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Müzik bulunamadı</string>
     <!-- Hint Namespace | EditText Hints -->
@@ -141,11 +141,11 @@
     <string name="fmt_lib_song_count">Yüklenen şarkılar: %d</string>
     <string name="fmt_lib_album_count">Yüklenen albümler: %d</string>
     <string name="set_notif_action">Özel bildirim eylemi</string>
-    <string name="set_replay_gain_dynamic">Çalan bir albüm varsa tercih et</string>
+    <string name="set_replay_gain_mode_dynamic">Çalan bir albüm varsa tercih et</string>
     <string name="set_headset_autoplay">Kulaklıkta otomatik çalma</string>
     <string name="set_headset_autoplay_desc">Bir kulaklık takıldığında müzik çalmaya başlar (bütün cihazlarda çalışmayabilir)</string>
-    <string name="set_replay_gain_track">Parçayı tercih et</string>
-    <string name="set_replay_gain_album">Albümü tercih et</string>
+    <string name="set_replay_gain_mode_track">Parçayı tercih et</string>
+    <string name="set_replay_gain_mode_album">Albümü tercih et</string>
     <string name="set_rewind_prev">Geri atlamadan önce geriye sar</string>
     <string name="set_rewind_prev_desc">Önceki şarkıya atlamadan önce geri sar</string>
     <string name="set_repeat_pause_desc">Bir şarkı tekrarlandığında duraklat</string>
@@ -247,16 +247,16 @@
     <string name="lbl_wiki">Viki</string>
     <string name="set_rescan">Müzikleri yeniden tara</string>
     <string name="set_bar_action">Özel çalma çubuğu eylemi</string>
-    <string name="set_bar_action_next">Sonrakine geç</string>
+    <string name="set_action_mode_next">Sonrakine geç</string>
     <string name="set_separators_slash">Eğik çizgi (/)</string>
     <string name="desc_queue_bar">Kuyruğu aç</string>
-    <string name="set_bar_action_repeat">Tekrar kipi</string>
+    <string name="set_action_mode_repeat">Tekrar kipi</string>
     <string name="set_playback_mode_genre">Türden çal</string>
     <string name="set_exclude_non_music_desc">Podcast\'ler gibi müzik olmayan ses dosyalarını yok say</string>
     <string name="set_separators_warning">Uyarı: Bu ayarın kullanılması bazı etiketlerin yanlışlıkla birden fazla değere sahip olarak yorumlanmasına neden olabilir. Bunu, istenmeyen ayırıcı karakterlerin önüne ters eğik çizgi (\\) koyarak çözebilirsiniz.</string>
     <string name="set_exclude_non_music">Müzik olmayanları hariç tut</string>
     <string name="err_did_not_wipe">Durum temizlenemedi</string>
-    <string name="set_replay_gain">ReplayGain stratejisi</string>
+    <string name="set_replay_gain_mode">ReplayGain stratejisi</string>
     <string name="desc_queue_handle">Bu şarkıyı kuyrukta taşı</string>
     <string name="fmt_list">%1$s, %2$s</string>
 </resources>

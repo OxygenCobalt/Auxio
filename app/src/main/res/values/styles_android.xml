@@ -39,9 +39,14 @@
         <item name="android:scrollIndicators" tools:ignore="NewApi">top|bottom</item>
     </style>
 
+    <style name="PreferenceTheme.Auxio" parent="@style/PreferenceThemeOverlay">
+        <item name="android:layout">@layout/fragment_preferences</item>
+    </style>
+
     <style name="Preference.Auxio" parent="Preference.Material">
         <item name="allowDividerBelow">false</item>
         <item name="iconSpaceReserved">false</item>
+        <item name="android:background">@android:color/black</item>
     </style>
 
     <style name="Preference.Auxio.DialogPreference" parent="Preference.DialogPreference.Material">

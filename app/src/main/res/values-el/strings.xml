@@ -26,7 +26,7 @@
     <string name="lbl_code">Πηγαίος κώδικας</string>
     <string name="lbl_licenses">Άδειες</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Ρυθμίσεις</string>
+    <string name="set_root_title">Ρυθμίσεις</string>
     <string name="set_ui">Εμφάνιση</string>
     <string name="set_theme">Θέμα</string>
     <string name="set_theme_auto">Αυτόματο</string>
@@ -34,7 +34,7 @@
     <string name="set_theme_night">Σκοτεινό</string>
     <string name="set_accent">Χρώματα</string>
     <string name="set_audio">Ήχος</string>
-    <string name="set_behavior">Συμπεριφορά</string>
+    <string name="set_personalize">Συμπεριφορά</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Κομμάτι %d</string>
     <string name="desc_play_pause">Αναπαραγωγή/παύση</string>
