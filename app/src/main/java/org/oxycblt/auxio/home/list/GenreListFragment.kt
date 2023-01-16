@@ -63,7 +63,7 @@ class GenreListFragment :
             listener = this@GenreListFragment
         }
 
-        collectImmediately(homeModel.genresList, genreAdapter::replaceList)
+        collectImmediately(homeModel.genresList, ::updateList)
         collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
@@ -105,6 +105,12 @@ class GenreListFragment :
 
     override fun onOpenMenu(item: Genre, anchor: View) {
         openMusicMenu(anchor, R.menu.menu_artist_actions, item)
+    }
+
+    private fun updateList(artists: List<Genre>) {
+        genreAdapter.submitList(
+            artists, homeModel.genresListInstructions ?: UpdateInstructions.DIFF)
+        homeModel.finishGenresListInstructions()
     }
 
     private fun updateSelection(selection: List<Music>) {

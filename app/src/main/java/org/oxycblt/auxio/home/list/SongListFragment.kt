@@ -69,7 +69,7 @@ class SongListFragment :
             listener = this@SongListFragment
         }
 
-        collectImmediately(homeModel.songLists, songAdapter::replaceList)
+        collectImmediately(homeModel.songsList, ::updateList)
         collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -85,7 +85,7 @@ class SongListFragment :
     }
 
     override fun getPopup(pos: Int): String? {
-        val song = homeModel.songLists.value[pos]
+        val song = homeModel.songsList.value[pos]
         // Change how we display the popup depending on the current sort mode.
         // Note: We don't use the more correct individual artist name here, as sorts are largely
         // based off the names of the parent objects and not the child objects.
@@ -135,6 +135,11 @@ class SongListFragment :
 
     override fun onOpenMenu(item: Song, anchor: View) {
         openMusicMenu(anchor, R.menu.menu_song_actions, item)
+    }
+
+    private fun updateList(songs: List<Song>) {
+        songAdapter.submitList(songs, homeModel.songsListInstructions ?: UpdateInstructions.DIFF)
+        homeModel.finishSongsListInstructions()
     }
 
     private fun updateSelection(selection: List<Music>) {

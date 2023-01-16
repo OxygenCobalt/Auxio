@@ -66,7 +66,7 @@ class AlbumListFragment :
             listener = this@AlbumListFragment
         }
 
-        collectImmediately(homeModel.albumsList, albumAdapter::replaceList)
+        collectImmediately(homeModel.albumsList, ::updateList)
         collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
@@ -128,6 +128,11 @@ class AlbumListFragment :
 
     override fun onOpenMenu(item: Album, anchor: View) {
         openMusicMenu(anchor, R.menu.menu_album_actions, item)
+    }
+
+    private fun updateList(albums: List<Album>) {
+        albumAdapter.submitList(albums, homeModel.albumsListInstructions ?: UpdateInstructions.DIFF)
+        homeModel.finishAlbumsListInstructions()
     }
 
     private fun updateSelection(selection: List<Music>) {

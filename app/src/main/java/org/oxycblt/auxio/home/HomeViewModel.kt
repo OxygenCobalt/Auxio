@@ -22,6 +22,7 @@ import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.home.tabs.Tab
+import org.oxycblt.auxio.list.UpdateInstructions
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.library.Library
@@ -42,13 +43,19 @@ class HomeViewModel(application: Application) :
 
     private val _songsList = MutableStateFlow(listOf<Song>())
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
-    val songLists: StateFlow<List<Song>>
+    val songsList: StateFlow<List<Song>>
         get() = _songsList
+    /** Specifies how to update [songsList] when it changes. */
+    var songsListInstructions: UpdateInstructions? = null
+        private set
 
     private val _albumsLists = MutableStateFlow(listOf<Album>())
     /** A list of [Album]s, sorted by the preferred [Sort], to be shown in the home view. */
     val albumsList: StateFlow<List<Album>>
         get() = _albumsLists
+    /** Specifies how to update [albumsList] when it changes. */
+    var albumsListInstructions: UpdateInstructions? = null
+        private set
 
     private val _artistsList = MutableStateFlow(listOf<Artist>())
     /**
@@ -58,11 +65,17 @@ class HomeViewModel(application: Application) :
      */
     val artistsList: MutableStateFlow<List<Artist>>
         get() = _artistsList
+    /** Specifies how to update [artistsList] when it changes. */
+    var artistsListInstructions: UpdateInstructions? = null
+        private set
 
     private val _genresList = MutableStateFlow(listOf<Genre>())
     /** A list of [Genre]s, sorted by the preferred [Sort], to be shown in the home view. */
     val genresList: StateFlow<List<Genre>>
         get() = _genresList
+    /** Specifies how to update [genresList] when it changes. */
+    var genresListInstructions: UpdateInstructions? = null
+        private set
 
     /** The [MusicMode] to use when playing a [Song] from the UI. */
     val playbackMode: MusicMode
@@ -107,8 +120,11 @@ class HomeViewModel(application: Application) :
             logD("Library changed, refreshing library")
             // Get the each list of items in the library to use as our list data.
             // Applying the preferred sorting to them.
+            songsListInstructions = UpdateInstructions.DIFF
             _songsList.value = musicSettings.songSort.songs(library.songs)
+            albumsListInstructions = UpdateInstructions.DIFF
             _albumsLists.value = musicSettings.albumSort.albums(library.albums)
+            artistsListInstructions = UpdateInstructions.DIFF
             _artistsList.value =
                 musicSettings.artistSort.artists(
                     if (homeSettings.shouldHideCollaborators) {
@@ -117,6 +133,7 @@ class HomeViewModel(application: Application) :
                     } else {
                         library.artists
                     })
+            genresListInstructions = UpdateInstructions.DIFF
             _genresList.value = musicSettings.genreSort.genres(library.genres)
         }
     }
@@ -131,23 +148,6 @@ class HomeViewModel(application: Application) :
         // Changes in the hide collaborator setting will change the artist contents
         // of the library, consider it a library update.
         onLibraryChanged(musicStore.library)
-    }
-
-    /**
-     * Update [currentTabMode] to reflect a new ViewPager2 position
-     * @param pagerPos The new position of the ViewPager2 instance.
-     */
-    fun synchronizeTabPosition(pagerPos: Int) {
-        logD("Updating current tab to ${currentTabModes[pagerPos]}")
-        _currentTabMode.value = currentTabModes[pagerPos]
-    }
-
-    /**
-     * Mark the recreation process as complete.
-     * @see shouldRecreate
-     */
-    fun finishRecreate() {
-        _shouldRecreate.value = false
     }
 
     /**
@@ -173,21 +173,68 @@ class HomeViewModel(application: Application) :
         when (_currentTabMode.value) {
             MusicMode.SONGS -> {
                 musicSettings.songSort = sort
+                songsListInstructions = UpdateInstructions.REPLACE
                 _songsList.value = sort.songs(_songsList.value)
             }
             MusicMode.ALBUMS -> {
                 musicSettings.albumSort = sort
+                albumsListInstructions = UpdateInstructions.REPLACE
                 _albumsLists.value = sort.albums(_albumsLists.value)
             }
             MusicMode.ARTISTS -> {
                 musicSettings.artistSort = sort
+                artistsListInstructions = UpdateInstructions.REPLACE
                 _artistsList.value = sort.artists(_artistsList.value)
             }
             MusicMode.GENRES -> {
                 musicSettings.genreSort = sort
+                genresListInstructions = UpdateInstructions.REPLACE
                 _genresList.value = sort.genres(_genresList.value)
             }
         }
+    }
+
+    /** Signal that the specified [UpdateInstructions] in [songsListInstructions] were performed. */
+    fun finishSongsListInstructions() {
+        songsListInstructions = null
+    }
+
+    /**
+     * Signal that the specified [UpdateInstructions] in [albumsListInstructions] were performed.
+     */
+    fun finishAlbumsListInstructions() {
+        albumsListInstructions = null
+    }
+
+    /**
+     * Signal that the specified [UpdateInstructions] in [artistsListInstructions] were performed.
+     */
+    fun finishArtistsListInstructions() {
+        artistsListInstructions = null
+    }
+
+    /**
+     * Signal that the specified [UpdateInstructions] in [genresListInstructions] were performed.
+     */
+    fun finishGenresListInstructions() {
+        genresListInstructions = null
+    }
+
+    /**
+     * Update [currentTabMode] to reflect a new ViewPager2 position
+     * @param pagerPos The new position of the ViewPager2 instance.
+     */
+    fun synchronizeTabPosition(pagerPos: Int) {
+        logD("Updating current tab to ${currentTabModes[pagerPos]}")
+        _currentTabMode.value = currentTabModes[pagerPos]
+    }
+
+    /**
+     * Mark the recreation process as complete.
+     * @see shouldRecreate
+     */
+    fun finishRecreate() {
+        _shouldRecreate.value = false
     }
 
     /**

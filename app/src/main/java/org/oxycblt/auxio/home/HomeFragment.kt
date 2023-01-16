@@ -145,7 +145,7 @@ class HomeFragment :
         // --- VIEWMODEL SETUP ---
         collect(homeModel.shouldRecreate, ::handleRecreate)
         collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
-        collectImmediately(homeModel.songLists, homeModel.isFastScrolling, ::updateFab)
+        collectImmediately(homeModel.songsList, homeModel.isFastScrolling, ::updateFab)
         collectImmediately(musicModel.indexerState, ::updateIndexerState)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
