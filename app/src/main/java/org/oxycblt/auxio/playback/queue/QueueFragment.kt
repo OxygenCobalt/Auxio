@@ -33,7 +33,6 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewBindingFragment] that displays an editable queue.
@@ -102,13 +101,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
 
         // Replace or diff the queue depending on the type of change it is.
         val instructions = queueModel.instructions
-        if (instructions?.update == UpdateInstructions.REPLACE) {
-            logD("Replacing queue")
-            queueAdapter.replaceList(queue)
-        } else {
-            logD("Diffing queue")
-            queueAdapter.submitList(queue)
-        }
+        queueAdapter.submitList(queue, instructions?.update ?: UpdateInstructions.DIFF)
         // Update position in list (and thus past/future items)
         queueAdapter.setPosition(index, isPlaying)
 

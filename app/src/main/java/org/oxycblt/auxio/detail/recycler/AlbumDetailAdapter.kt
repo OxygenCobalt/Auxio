@@ -57,7 +57,7 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
     }
 
     override fun getItemViewType(position: Int) =
-        when (differ.currentList[position]) {
+        when (getItem(position)) {
             // Support the Album header, sub-headers for each disc, and special album songs.
             is Album -> AlbumDetailViewHolder.VIEW_TYPE
             is DiscHeader -> DiscHeaderViewHolder.VIEW_TYPE
@@ -75,7 +75,7 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        when (val item = differ.currentList[position]) {
+        when (val item = getItem(position)) {
             is Album -> (holder as AlbumDetailViewHolder).bind(item, listener)
             is DiscHeader -> (holder as DiscHeaderViewHolder).bind(item)
             is Song -> (holder as AlbumSongViewHolder).bind(item, listener)
@@ -83,9 +83,12 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
     }
 
     override fun isItemFullWidth(position: Int): Boolean {
+        if (super.isItemFullWidth(position)) {
+            return true
+        }
         // The album and disc headers should be full-width in all configurations.
-        val item = differ.currentList[position]
-        return super.isItemFullWidth(position) || item is Album || item is DiscHeader
+        val item = getItem(position)
+        return item is Album || item is DiscHeader
     }
 
     private companion object {

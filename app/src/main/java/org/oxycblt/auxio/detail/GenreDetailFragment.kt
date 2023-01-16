@@ -84,7 +84,7 @@ class GenreDetailFragment :
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setGenreUid(args.genreUid)
         collectImmediately(detailModel.currentGenre, ::updateItem)
-        collectImmediately(detailModel.genreList, detailAdapter::submitList)
+        collectImmediately(detailModel.genreList, detailAdapter::diffList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
@@ -189,7 +189,7 @@ class GenreDetailFragment :
         if (parent is Genre && parent.uid == unlikelyToBeNull(detailModel.currentGenre.value).uid) {
             playingMusic = song
         }
-        detailAdapter.setPlayingItem(playingMusic, isPlaying)
+        detailAdapter.setPlaying(playingMusic, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {
@@ -217,7 +217,7 @@ class GenreDetailFragment :
     }
 
     private fun updateSelection(selected: List<Music>) {
-        detailAdapter.setSelectedItems(selected)
+        detailAdapter.setSelected(selected.toSet())
         requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
     }
 }

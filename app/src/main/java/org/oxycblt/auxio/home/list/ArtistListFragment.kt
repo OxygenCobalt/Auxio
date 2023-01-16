@@ -29,9 +29,10 @@ import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.recycler.ArtistViewHolder
+import org.oxycblt.auxio.list.recycler.ListDiffer
 import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
-import org.oxycblt.auxio.list.recycler.SyncListDiffer
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.library.Sort
@@ -48,7 +49,7 @@ class ArtistListFragment :
     FastScrollRecyclerView.PopupProvider,
     FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
-    private val homeAdapter = ArtistAdapter(this)
+    private val artistAdapter = ArtistAdapter(this)
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentHomeListBinding.inflate(inflater)
@@ -58,13 +59,13 @@ class ArtistListFragment :
 
         binding.homeRecycler.apply {
             id = R.id.home_artist_recycler
-            adapter = homeAdapter
+            adapter = artistAdapter
             popupProvider = this@ArtistListFragment
             listener = this@ArtistListFragment
         }
 
-        collectImmediately(homeModel.artistsList, homeAdapter::replaceList)
-        collectImmediately(selectionModel.selected, homeAdapter::setSelectedItems)
+        collectImmediately(homeModel.artistsList, artistAdapter::replaceList)
+        collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
@@ -107,9 +108,13 @@ class ArtistListFragment :
         openMusicMenu(anchor, R.menu.menu_artist_actions, item)
     }
 
+    private fun updateSelection(selection: List<Music>) {
+        artistAdapter.setSelected(selection.filterIsInstanceTo(mutableSetOf()))
+    }
+
     private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
         // If an artist is playing, highlight it within this adapter.
-        homeAdapter.setPlayingItem(parent as? Artist, isPlaying)
+        artistAdapter.setPlaying(parent as? Artist, isPlaying)
     }
 
     /**
@@ -117,25 +122,14 @@ class ArtistListFragment :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class ArtistAdapter(private val listener: SelectableListListener<Artist>) :
-        SelectionIndicatorAdapter<ArtistViewHolder>() {
-        private val differ = SyncListDiffer(this, ArtistViewHolder.DIFF_CALLBACK)
-
-        override val currentList: List<Item>
-            get() = differ.currentList
+        SelectionIndicatorAdapter<Artist, ArtistViewHolder>(
+            ListDiffer.Async(ArtistViewHolder.DIFF_CALLBACK)) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ArtistViewHolder.from(parent)
 
         override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
-            holder.bind(differ.currentList[position], listener)
-        }
-
-        /**
-         * Asynchronously update the list with new [Artist]s.
-         * @param newList The new [Artist]s for the adapter to display.
-         */
-        fun replaceList(newList: List<Artist>) {
-            differ.replaceList(newList)
+            holder.bind(getItem(position), listener)
         }
     }
 }

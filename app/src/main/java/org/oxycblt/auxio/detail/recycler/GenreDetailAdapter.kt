@@ -44,7 +44,7 @@ import org.oxycblt.auxio.util.inflater
 class GenreDetailAdapter(private val listener: Listener<Music>) :
     DetailAdapter(listener, DIFF_CALLBACK) {
     override fun getItemViewType(position: Int) =
-        when (differ.currentList[position]) {
+        when (getItem(position)) {
             // Support the Genre header and generic Artist/Song items. There's nothing about
             // a genre that will make the artists/songs homogeneous, so it doesn't matter what we
             // use for their ViewHolders.
@@ -64,7 +64,7 @@ class GenreDetailAdapter(private val listener: Listener<Music>) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        when (val item = differ.currentList[position]) {
+        when (val item = getItem(position)) {
             is Genre -> (holder as GenreDetailViewHolder).bind(item, listener)
             is Artist -> (holder as ArtistViewHolder).bind(item, listener)
             is Song -> (holder as SongViewHolder).bind(item, listener)
@@ -72,9 +72,11 @@ class GenreDetailAdapter(private val listener: Listener<Music>) :
     }
 
     override fun isItemFullWidth(position: Int): Boolean {
+        if (super.isItemFullWidth(position)) {
+            return true
+        }
         // Genre headers should be full-width in all configurations
-        val item = differ.currentList[position]
-        return super.isItemFullWidth(position) || item is Genre
+        return getItem(position) is Genre
     }
 
     private companion object {

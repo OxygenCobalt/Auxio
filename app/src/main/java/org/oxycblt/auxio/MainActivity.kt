@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
         val action =
             when (intent.action) {
                 Intent.ACTION_VIEW -> InternalPlayer.Action.Open(intent.data ?: return false)
-                AuxioApp.INTENT_KEY_SHORTCUT_SHUFFLE -> InternalPlayer.Action.ShuffleAll
+                Auxio.INTENT_KEY_SHORTCUT_SHUFFLE -> InternalPlayer.Action.ShuffleAll
                 else -> return false
             }
         playbackModel.startAction(action)

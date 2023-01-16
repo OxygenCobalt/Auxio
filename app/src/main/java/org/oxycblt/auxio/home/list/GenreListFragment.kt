@@ -29,9 +29,10 @@ import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.recycler.GenreViewHolder
+import org.oxycblt.auxio.list.recycler.ListDiffer
 import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
-import org.oxycblt.auxio.list.recycler.SyncListDiffer
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.library.Sort
@@ -47,7 +48,7 @@ class GenreListFragment :
     FastScrollRecyclerView.PopupProvider,
     FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
-    private val homeAdapter = GenreAdapter(this)
+    private val genreAdapter = GenreAdapter(this)
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentHomeListBinding.inflate(inflater)
@@ -57,13 +58,13 @@ class GenreListFragment :
 
         binding.homeRecycler.apply {
             id = R.id.home_genre_recycler
-            adapter = homeAdapter
+            adapter = genreAdapter
             popupProvider = this@GenreListFragment
             listener = this@GenreListFragment
         }
 
-        collectImmediately(homeModel.genresList, homeAdapter::replaceList)
-        collectImmediately(selectionModel.selected, homeAdapter::setSelectedItems)
+        collectImmediately(homeModel.genresList, genreAdapter::replaceList)
+        collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
@@ -106,9 +107,13 @@ class GenreListFragment :
         openMusicMenu(anchor, R.menu.menu_artist_actions, item)
     }
 
+    private fun updateSelection(selection: List<Music>) {
+        genreAdapter.setSelected(selection.filterIsInstanceTo(mutableSetOf()))
+    }
+
     private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
         // If a genre is playing, highlight it within this adapter.
-        homeAdapter.setPlayingItem(parent as? Genre, isPlaying)
+        genreAdapter.setPlaying(parent as? Genre, isPlaying)
     }
 
     /**
@@ -116,25 +121,13 @@ class GenreListFragment :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class GenreAdapter(private val listener: SelectableListListener<Genre>) :
-        SelectionIndicatorAdapter<GenreViewHolder>() {
-        private val differ = SyncListDiffer(this, GenreViewHolder.DIFF_CALLBACK)
-
-        override val currentList: List<Item>
-            get() = differ.currentList
-
+        SelectionIndicatorAdapter<Genre, GenreViewHolder>(
+            ListDiffer.Async(GenreViewHolder.DIFF_CALLBACK)) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             GenreViewHolder.from(parent)
 
         override fun onBindViewHolder(holder: GenreViewHolder, position: Int) {
-            holder.bind(differ.currentList[position], listener)
-        }
-
-        /**
-         * Asynchronously update the list with new [Genre]s.
-         * @param newList The new [Genre]s for the adapter to display.
-         */
-        fun replaceList(newList: List<Genre>) {
-            differ.replaceList(newList)
+            holder.bind(getItem(position), listener)
         }
     }
 }

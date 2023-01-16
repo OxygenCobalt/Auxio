@@ -75,10 +75,8 @@ interface UISettings : Settings<UISettings.Listener> {
                 var accent = sharedPreferences.getInt(OLD_KEY_ACCENT3, 5)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     // Accents were previously frozen as soon as the OS was updated to android
-                    // twelve,
-                    // as dynamic colors were enabled by default. This is no longer the case, so we
-                    // need
-                    // to re-update the setting to dynamic colors here.
+                    // twelve, as dynamic colors were enabled by default. This is no longer the
+                    // case, so we need to re-update the setting to dynamic colors here.
                     accent = 16
                 }
 
@@ -96,7 +94,7 @@ interface UISettings : Settings<UISettings.Listener> {
             }
         }
 
-        companion object {
+        private companion object {
             const val OLD_KEY_ACCENT3 = "auxio_accent"
         }
     }

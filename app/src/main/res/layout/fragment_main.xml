@@ -8,6 +8,8 @@
     android:background="?attr/colorSurface"
     android:transitionGroup="true">
 
+    <!-- TODO: Try to align the queue bar with the playback bar. -->
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/explore_nav_host"
         android:name="androidx.navigation.fragment.NavHostFragment"

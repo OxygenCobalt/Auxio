@@ -153,7 +153,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         // Don't show the RecyclerView (and it's stray overscroll effects) when there
         // are no results.
         binding.searchRecycler.isInvisible = results.isEmpty()
-        searchAdapter.submitList(results.toMutableList()) {
+        searchAdapter.diffList(results.toMutableList()) {
             // I would make it so that the position is only scrolled back to the top when
             // the query actually changes instead of once every re-creation event, but sadly
             // that doesn't seem possible.
@@ -162,7 +162,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        searchAdapter.setPlayingItem(parent ?: song, isPlaying)
+        searchAdapter.setPlaying(parent ?: song, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {
@@ -180,7 +180,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
     }
 
     private fun updateSelection(selected: List<Music>) {
-        searchAdapter.setSelectedItems(selected)
+        searchAdapter.setSelected(selected.toSet())
         if (requireBinding().searchSelectionToolbar.updateSelectionAmount(selected.size) &&
             selected.isNotEmpty()) {
             // Make selection of obscured items easier by hiding the keyboard.

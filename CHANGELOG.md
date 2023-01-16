@@ -9,6 +9,7 @@
 - Added ability to edit previously played or currently playing items in the queue
 - Added support for date values formatted as "YYYYMMDD"
 - Pressing the button will now clear the current selection before navigating back
+- Added support for non-standard `ARTISTS` tags
 
 #### What's Fixed
 - Fixed unreliable ReplayGain adjustment application in certain situations

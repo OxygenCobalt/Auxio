@@ -38,7 +38,7 @@ import org.oxycblt.auxio.ui.UISettings
  * Auxio: A simple, rational music player for android.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AuxioApp : Application(), ImageLoaderFactory {
+class Auxio : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
         // Migrate any settings that may have changed in an app update.

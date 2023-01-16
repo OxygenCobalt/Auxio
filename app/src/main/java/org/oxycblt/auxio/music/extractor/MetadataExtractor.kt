@@ -64,8 +64,7 @@ class MetadataExtractor(
     /**
      * Returns a flow that parses all [Song.Raw] instances queued by the sub-extractors. This will
      * first delegate to the sub-extractors before parsing the metadata itself.
-     * @param emit A listener that will be invoked with every new [Song.Raw] instance when they are
-     * successfully loaded.
+     * @return A flow of [Song.Raw] instances.
      */
     fun extract() = flow {
         while (true) {
@@ -310,8 +309,9 @@ class Task(context: Context, private val raw: Song.Raw) {
         // Album artist
         comments["musicbrainz_albumartistid"]?.let { raw.albumArtistMusicBrainzIds = it }
         (comments["albumartists"] ?: comments["albumartist"])?.let { raw.albumArtistNames = it }
-        (comments["albumartists_sort"] ?: comments["albumartistsort"])
-            ?.let { raw.albumArtistSortNames = it }
+        (comments["albumartists_sort"] ?: comments["albumartistsort"])?.let {
+            raw.albumArtistSortNames = it
+        }
 
         // Genre
         comments["genre"]?.let { raw.genreNames = it }

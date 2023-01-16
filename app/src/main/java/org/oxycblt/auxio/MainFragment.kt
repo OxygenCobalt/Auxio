@@ -235,8 +235,8 @@ class MainFragment :
             tryHideAllSheets()
         }
 
-        // Since the listener is also reliant on the bottom sheets, we must also update it
-        // every frame.
+        // Since the navigation listener is also reliant on the bottom sheets, we must also update
+        // it every frame.
         callback.invalidateEnabled()
 
         return true

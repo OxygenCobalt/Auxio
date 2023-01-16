@@ -46,7 +46,7 @@ import org.oxycblt.auxio.util.inflater
 class ArtistDetailAdapter(private val listener: Listener<Music>) :
     DetailAdapter(listener, DIFF_CALLBACK) {
     override fun getItemViewType(position: Int) =
-        when (differ.currentList[position]) {
+        when (getItem(position)) {
             // Support an artist header, and special artist albums/songs.
             is Artist -> ArtistDetailViewHolder.VIEW_TYPE
             is Album -> ArtistAlbumViewHolder.VIEW_TYPE
@@ -65,7 +65,7 @@ class ArtistDetailAdapter(private val listener: Listener<Music>) :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
         // Re-binding an item with new data and not just a changed selection/playing state.
-        when (val item = differ.currentList[position]) {
+        when (val item = getItem(position)) {
             is Artist -> (holder as ArtistDetailViewHolder).bind(item, listener)
             is Album -> (holder as ArtistAlbumViewHolder).bind(item, listener)
             is Song -> (holder as ArtistSongViewHolder).bind(item, listener)
@@ -73,9 +73,11 @@ class ArtistDetailAdapter(private val listener: Listener<Music>) :
     }
 
     override fun isItemFullWidth(position: Int): Boolean {
+        if (super.isItemFullWidth(position)) {
+            return true
+        }
         // Artist headers should be full-width in all configurations.
-        val item = differ.currentList[position]
-        return super.isItemFullWidth(position) || item is Artist
+        return getItem(position) is Artist
     }
 
     private companion object {

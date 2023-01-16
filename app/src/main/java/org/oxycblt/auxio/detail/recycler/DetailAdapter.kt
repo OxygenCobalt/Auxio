@@ -20,7 +20,6 @@ package org.oxycblt.auxio.detail.recycler
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.TooltipCompat
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
@@ -37,19 +36,19 @@ import org.oxycblt.auxio.util.inflater
 /**
  * A [RecyclerView.Adapter] that implements behavior shared across each detail view's adapters.
  * @param listener A [Listener] to bind interactions to.
- * @param itemCallback A [DiffUtil.ItemCallback] to use with [AsyncListDiffer] when updating the
+ * @param diffCallback A [DiffUtil.ItemCallback] to use for item comparison when diffing the
  * internal list.
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class DetailAdapter(
     private val listener: Listener<*>,
-    itemCallback: DiffUtil.ItemCallback<Item>
-) : SelectionIndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
-    // Safe to leak this since the listener will not fire during initialization
-    @Suppress("LeakingThis") protected val differ = AsyncListDiffer(this, itemCallback)
+    diffCallback: DiffUtil.ItemCallback<Item>
+) :
+    SelectionIndicatorAdapter<Item, RecyclerView.ViewHolder>(ListDiffer.Async(diffCallback)),
+    AuxioRecyclerView.SpanSizeLookup {
 
     override fun getItemViewType(position: Int) =
-        when (differ.currentList[position]) {
+        when (getItem(position)) {
             // Implement support for headers and sort headers
             is Header -> HeaderViewHolder.VIEW_TYPE
             is SortHeader -> SortHeaderViewHolder.VIEW_TYPE
@@ -64,7 +63,7 @@ abstract class DetailAdapter(
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val item = differ.currentList[position]) {
+        when (val item = getItem(position)) {
             is Header -> (holder as HeaderViewHolder).bind(item)
             is SortHeader -> (holder as SortHeaderViewHolder).bind(item, listener)
         }
@@ -72,20 +71,8 @@ abstract class DetailAdapter(
 
     override fun isItemFullWidth(position: Int): Boolean {
         // Headers should be full-width in all configurations.
-        val item = differ.currentList[position]
+        val item = getItem(position)
         return item is Header || item is SortHeader
-    }
-
-    override val currentList: List<Item>
-        get() = differ.currentList
-
-    /**
-     * Asynchronously update the list with new items. Assumes that the list only contains data
-     * supported by the concrete [DetailAdapter] implementation.
-     * @param newList The new [Item]s for the adapter to display.
-     */
-    fun submitList(newList: List<Item>) {
-        differ.submitList(newList)
     }
 
     /** An extended [SelectableListListener] for [DetailAdapter] implementations. */

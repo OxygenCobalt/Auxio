@@ -85,7 +85,7 @@ class ArtistDetailFragment :
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setArtistUid(args.artistUid)
         collectImmediately(detailModel.currentArtist, ::updateItem)
-        collectImmediately(detailModel.artistList, detailAdapter::submitList)
+        collectImmediately(detailModel.artistList, detailAdapter::diffList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
@@ -195,7 +195,7 @@ class ArtistDetailFragment :
                 else -> null
             }
 
-        detailAdapter.setPlayingItem(playingItem, isPlaying)
+        detailAdapter.setPlaying(playingItem, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {
@@ -234,7 +234,7 @@ class ArtistDetailFragment :
     }
 
     private fun updateSelection(selected: List<Music>) {
-        detailAdapter.setSelectedItems(selected)
+        detailAdapter.setSelected(selected.toSet())
         requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
     }
 }

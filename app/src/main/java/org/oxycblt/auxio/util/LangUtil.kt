@@ -39,7 +39,8 @@ fun <T> unlikelyToBeNull(value: T?) =
  * @return A data casted to [T].
  * @throws IllegalStateException If the data cannot be casted to [T].
  */
-inline fun <reified T> requireIs(data: Any): T {
+inline fun <reified T> requireIs(data: Any?): T {
+    requireNotNull(data) { "Unexpected datatype: null" }
     check(data is T) { "Unexpected datatype: ${data::class.simpleName}" }
     return data
 }

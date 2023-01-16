@@ -199,7 +199,7 @@ interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
             }
         }
 
-        companion object {
+        private companion object {
             const val OLD_KEY_ALT_NOTIF_ACTION = "KEY_ALT_NOTIF_ACTION"
             const val OLD_KEY_LIB_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE2"
             const val OLD_KEY_DETAIL_PLAYBACK_MODE = "auxio_detail_song_play_mode"

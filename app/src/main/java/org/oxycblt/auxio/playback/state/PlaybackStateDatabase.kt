@@ -165,7 +165,7 @@ class PlaybackStateDatabase private constructor(context: Context) :
     fun write(state: SavedState?) {
         requireBackgroundThread()
         // Only bother saving a state if a song is actively playing from one.
-        // This is not the case with a null state or a state with an out-of-bounds index.
+        // This is not the case with a null state.
         if (state != null) {
             // Transform saved state into raw state, which can then be written to the database.
             val rawPlaybackState =

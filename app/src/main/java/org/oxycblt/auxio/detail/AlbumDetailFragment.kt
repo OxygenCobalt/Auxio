@@ -82,7 +82,7 @@ class AlbumDetailFragment :
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setAlbumUid(args.albumUid)
         collectImmediately(detailModel.currentAlbum, ::updateAlbum)
-        collectImmediately(detailModel.albumList, detailAdapter::submitList)
+        collectImmediately(detailModel.albumList, detailAdapter::diffList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
@@ -170,10 +170,10 @@ class AlbumDetailFragment :
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         if (parent is Album && parent == unlikelyToBeNull(detailModel.currentAlbum.value)) {
-            detailAdapter.setPlayingItem(song, isPlaying)
+            detailAdapter.setPlaying(song, isPlaying)
         } else {
             // Clear the ViewHolders if the mode isn't ALL_SONGS
-            detailAdapter.setPlayingItem(null, isPlaying)
+            detailAdapter.setPlaying(null, isPlaying)
         }
     }
 
@@ -258,7 +258,7 @@ class AlbumDetailFragment :
     }
 
     private fun updateSelection(selected: List<Music>) {
-        detailAdapter.setSelectedItems(selected)
+        detailAdapter.setSelected(selected.toSet())
         requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
     }
 }

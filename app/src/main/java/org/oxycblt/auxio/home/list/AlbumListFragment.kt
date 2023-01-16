@@ -31,8 +31,8 @@ import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.recycler.AlbumViewHolder
+import org.oxycblt.auxio.list.recycler.ListDiffer
 import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
-import org.oxycblt.auxio.list.recycler.SyncListDiffer
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.playback.formatDurationMs
@@ -67,7 +67,7 @@ class AlbumListFragment :
         }
 
         collectImmediately(homeModel.albumsList, albumAdapter::replaceList)
-        collectImmediately(selectionModel.selected, albumAdapter::setSelectedItems)
+        collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
@@ -130,9 +130,13 @@ class AlbumListFragment :
         openMusicMenu(anchor, R.menu.menu_album_actions, item)
     }
 
+    private fun updateSelection(selection: List<Music>) {
+        albumAdapter.setSelected(selection.filterIsInstanceTo(mutableSetOf()))
+    }
+
     private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
         // If an album is playing, highlight it within this adapter.
-        albumAdapter.setPlayingItem(parent as? Album, isPlaying)
+        albumAdapter.setPlaying(parent as? Album, isPlaying)
     }
 
     /**
@@ -140,25 +144,14 @@ class AlbumListFragment :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class AlbumAdapter(private val listener: SelectableListListener<Album>) :
-        SelectionIndicatorAdapter<AlbumViewHolder>() {
-        private val differ = SyncListDiffer(this, AlbumViewHolder.DIFF_CALLBACK)
-
-        override val currentList: List<Item>
-            get() = differ.currentList
+        SelectionIndicatorAdapter<Album, AlbumViewHolder>(
+            ListDiffer.Async(AlbumViewHolder.DIFF_CALLBACK)) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             AlbumViewHolder.from(parent)
 
         override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
-            holder.bind(differ.currentList[position], listener)
-        }
-
-        /**
-         * Asynchronously update the list with new [Album]s.
-         * @param newList The new [Album]s for the adapter to display.
-         */
-        fun replaceList(newList: List<Album>) {
-            differ.replaceList(newList)
+            holder.bind(getItem(position), listener)
         }
     }
 }

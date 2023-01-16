@@ -27,9 +27,10 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.list.EditableListListener
+import org.oxycblt.auxio.list.recycler.DiffAdapter
+import org.oxycblt.auxio.list.recycler.ListDiffer
 import org.oxycblt.auxio.list.recycler.PlayingIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SongViewHolder
-import org.oxycblt.auxio.list.recycler.SyncListDiffer
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.*
 
@@ -39,15 +40,12 @@ import org.oxycblt.auxio.util.*
  * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueAdapter(private val listener: EditableListListener<Song>) :
-    RecyclerView.Adapter<QueueSongViewHolder>() {
-    private var differ = SyncListDiffer(this, QueueSongViewHolder.DIFF_CALLBACK)
+    DiffAdapter<Song, QueueSongViewHolder>(ListDiffer.Blocking(QueueSongViewHolder.DIFF_CALLBACK)) {
     // Since PlayingIndicator adapter relies on an item value, we cannot use it for this
     // adapter, as one item can appear at several points in the UI. Use a similar implementation
     // with an index value instead.
     private var currentIndex = 0
     private var isPlaying = false
-
-    override fun getItemCount() = differ.currentList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         QueueSongViewHolder.from(parent)
@@ -61,29 +59,11 @@ class QueueAdapter(private val listener: EditableListListener<Song>) :
         payload: List<Any>
     ) {
         if (payload.isEmpty()) {
-            viewHolder.bind(differ.currentList[position], listener)
+            viewHolder.bind(getItem(position), listener)
         }
 
         viewHolder.isFuture = position > currentIndex
         viewHolder.updatePlayingIndicator(position == currentIndex, isPlaying)
-    }
-
-    /**
-     * Synchronously update the list with new items. This is exceedingly slow for large diffs, so
-     * only use it for trivial updates.
-     * @param newList The new [Song]s for the adapter to display.
-     */
-    fun submitList(newList: List<Song>) {
-        differ.submitList(newList)
-    }
-
-    /**
-     * Replace the list with a new list. This is exceedingly slow for large diffs, so only use it
-     * for trivial updates.
-     * @param newList The new [Song]s for the adapter to display.
-     */
-    fun replaceList(newList: List<Song>) {
-        differ.replaceList(newList)
     }
 
     /**
