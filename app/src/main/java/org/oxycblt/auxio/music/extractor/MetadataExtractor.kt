@@ -213,12 +213,12 @@ class Task(context: Context, private val raw: Song.Raw) {
         // Artist
         textFrames["TXXX:musicbrainz artist id"]?.let { raw.artistMusicBrainzIds = it }
         (textFrames["TXXX:artists"] ?: textFrames["TPE1"])?.let { raw.artistNames = it }
-        textFrames["TSOP"]?.let { raw.artistSortNames = it }
+        (textFrames["TXXX:artists_sort"] ?: textFrames["TSOP"])?.let { raw.artistSortNames = it }
 
         // Album artist
         textFrames["TXXX:musicbrainz album artist id"]?.let { raw.albumArtistMusicBrainzIds = it }
-        textFrames["TPE2"]?.let { raw.albumArtistNames = it }
-        textFrames["TSO2"]?.let { raw.albumArtistSortNames = it }
+        (textFrames["TXXX:albumartists"] ?: textFrames["TPE2"])?.let { raw.albumArtistNames = it }
+        (textFrames["TXXX:albumartists_sort"] ?: textFrames["TSO2"])?.let { raw.albumArtistSortNames = it }
 
         // Genre
         textFrames["TCON"]?.let { raw.genreNames = it }

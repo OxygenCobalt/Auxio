@@ -231,6 +231,7 @@
     <string name="set_observing_desc">Reload the music library whenever it changes (requires persistent notification)</string>
     <string name="set_dirs">Music folders</string>
     <string name="set_dirs_desc">Manage where music should be loaded from</string>
+    <string name="set_dirs_list">Folders</string>
     <!-- As in the mode to be used with the music folders setting -->
     <string name="set_dirs_mode">Mode</string>
     <!-- Exclude folders from music loading -->
