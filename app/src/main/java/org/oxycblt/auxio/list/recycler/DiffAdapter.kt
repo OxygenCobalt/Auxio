@@ -54,7 +54,7 @@ abstract class DiffAdapter<T, VH : RecyclerView.ViewHolder>(differFactory: ListD
     }
 
     /**
-     * Update this list using [DiffUtil]. This can simplify the work of updating the list, but can
+     * Update this list using DiffUtil. This can simplify the work of updating the list, but can
      * also cause erratic behavior.
      * @param newList The new list of [T] items to show.
      * @param onDone Callback that will be invoked when the update is completed, allowing means to
