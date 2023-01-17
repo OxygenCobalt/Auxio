@@ -35,6 +35,10 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
+/**
+ * Shared [PreferenceFragmentCompat] used across all preference screens.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 abstract class BasePreferenceFragment(@XmlRes private val screen: Int) :
     PreferenceFragmentCompat() {
     /**
@@ -65,7 +69,7 @@ abstract class BasePreferenceFragment(@XmlRes private val screen: Int) :
         view.findViewById<Toolbar>(R.id.preferences_toolbar).apply {
             title = preferenceScreen.title
             setNavigationOnClickListener {
-                val fragmentManager = fragmentManager
+                val fragmentManager = @Suppress("Deprecation") fragmentManager
                 if (fragmentManager == null || fragmentManager.backStackEntryCount == 0) {
                     findNavController().navigateUp()
                 } else {
@@ -98,14 +102,13 @@ abstract class BasePreferenceFragment(@XmlRes private val screen: Int) :
         setPreferencesFromResource(screen, rootKey)
     }
 
-    @Suppress("Deprecation")
     override fun onDisplayPreferenceDialog(preference: Preference) {
         when (preference) {
             is IntListPreference -> {
                 // Copy the built-in preference dialog launching code into our project so
                 // we can automatically use the provided preference class.
                 val dialog = IntListPreferenceDialog.from(preference)
-                dialog.setTargetFragment(this, 0)
+                @Suppress("Deprecation") dialog.setTargetFragment(this, 0)
                 dialog.show(parentFragmentManager, IntListPreferenceDialog.TAG)
             }
             is WrappedDialogPreference -> {

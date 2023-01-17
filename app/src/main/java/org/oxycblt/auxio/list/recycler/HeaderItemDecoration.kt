@@ -25,6 +25,11 @@ import com.google.android.material.divider.BackportMaterialDividerItemDecoration
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Header
 
+/**
+ * A [BackportMaterialDividerItemDecoration] that sets up the divider configuration to correctly
+ * separate content with headers.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class HeaderItemDecoration
 @JvmOverloads
 constructor(
@@ -35,6 +40,9 @@ constructor(
 ) : BackportMaterialDividerItemDecoration(context, attributeSet, defStyleAttr, orientation) {
     override fun shouldDrawDivider(position: Int, adapter: RecyclerView.Adapter<*>?) =
         try {
+            // Add a divider if the next item is a header. This organizes the divider to separate
+            // the ends of content rather than the beginning of content, alongside an added benefit
+            // of preventing top headers from having a divider applied.
             (adapter as DiffAdapter<*, *, *>).getItem(position + 1) is Header
         } catch (e: ClassCastException) {
             false

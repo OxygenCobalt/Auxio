@@ -25,8 +25,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.BackportMaterialDividerItemDecoration
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.logD
 
+/**
+ * A [BackportMaterialDividerItemDecoration] that sets up the divider configuration to correctly
+ * separate preference categories.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class PreferenceHeaderItemDecoration
 @JvmOverloads
 constructor(
@@ -37,7 +41,10 @@ constructor(
 ) : BackportMaterialDividerItemDecoration(context, attributeSet, defStyleAttr, orientation) {
     override fun shouldDrawDivider(position: Int, adapter: RecyclerView.Adapter<*>?) =
         try {
-            logD(position)
+            // Add a divider if the next item is a header (in this case a preference category
+            // that corresponds to a header viewholder). This organizes the divider to separate
+            // the ends of content rather than the beginning of content, alongside an added benefit
+            // of preventing top headers from having a divider applied.
             (adapter as PreferenceGroupAdapter).getItem(position + 1) is PreferenceCategory
         } catch (e: ClassCastException) {
             false

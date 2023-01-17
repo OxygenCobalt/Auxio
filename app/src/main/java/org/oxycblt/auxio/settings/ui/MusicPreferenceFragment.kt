@@ -23,6 +23,10 @@ import coil.Coil
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.SettingsFragmentDirections
 
+/**
+ * "Content" settings.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class MusicPreferenceFragment : BasePreferenceFragment(R.xml.preferences_music) {
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_separators)) {

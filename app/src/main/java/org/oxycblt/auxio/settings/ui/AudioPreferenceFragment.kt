@@ -21,6 +21,10 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.SettingsFragmentDirections
 
+/**
+ * Audio settings interface.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class AudioPreferenceFragment : BasePreferenceFragment(R.xml.preferences_audio) {
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {

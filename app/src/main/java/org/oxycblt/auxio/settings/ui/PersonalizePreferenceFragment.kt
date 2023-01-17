@@ -21,6 +21,10 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.SettingsFragmentDirections
 
+/**
+ * Personalization settings interface.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class PersonalizePreferenceFragment : BasePreferenceFragment(R.xml.preferences_personalize) {
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_home_tabs)) {
