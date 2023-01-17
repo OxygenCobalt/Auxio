@@ -141,4 +141,4 @@ fun AppWidgetManager.updateAppWidgetCompat(
  * @return true if to use round mode, false otherwise.
  */
 fun useRoundedRemoteViews(context: Context) =
-    UISettings.from(context).roundMode && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    UISettings.from(context).roundMode || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
