@@ -27,7 +27,7 @@
     <string name="lbl_licenses">Ліцензії</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Налаштування</string>
-    <string name="set_ui">Вигляд</string>
+    <string name="set_ui">Вигляд і поведінка</string>
     <string name="set_theme">Тема</string>
     <string name="set_theme_day">Світла</string>
     <string name="set_theme_night">Темна</string>
@@ -265,4 +265,16 @@
     <string name="cdc_mka">Звук Matroska</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="err_no_perms">Auxio потрібен дозвіл на читання вашої музичної бібліотеки</string>
+    <string name="set_behavior">Поведінка</string>
+    <string name="set_ui_desc">Змініть тему та кольори додатку</string>
+    <string name="set_personalize_desc">Налаштуйте елементи керування та поведінку інтерфейсу користувача</string>
+    <string name="set_content_desc">Керування завантаженням музики та зображень</string>
+    <string name="set_music">Музика</string>
+    <string name="set_images">Зображення</string>
+    <string name="set_playback">Відтворення</string>
+    <string name="set_replay_gain">Вирівнювання гучності (ReplayGain)</string>
+    <string name="set_library">Бібліотека</string>
+    <string name="set_state">Наполегливість</string>
+    <string name="set_audio_desc">Налаштування звуку і поведінки відтворення</string>
+    <string name="set_dirs_list">Папки</string>
 </resources>
