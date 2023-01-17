@@ -20,7 +20,7 @@ package org.oxycblt.auxio.playback.queue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.oxycblt.auxio.list.UpdateInstructions
+import org.oxycblt.auxio.list.recycler.BasicInstructions
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -57,7 +57,7 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
 
     override fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {
         // Queue changed trivially due to item mo -> Diff queue, stay at current index.
-        instructions = Instructions(UpdateInstructions.DIFF, null)
+        instructions = Instructions(BasicInstructions.DIFF, null)
         _queue.value = queue.resolve()
         if (change != Queue.ChangeResult.MAPPING) {
             // Index changed, make sure it remains updated without actually scrolling to it.
@@ -67,14 +67,14 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
 
     override fun onQueueReordered(queue: Queue) {
         // Queue changed completely -> Replace queue, update index
-        instructions = Instructions(UpdateInstructions.REPLACE, queue.index)
+        instructions = Instructions(BasicInstructions.REPLACE, queue.index)
         _queue.value = queue.resolve()
         _index.value = queue.index
     }
 
     override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
         // Entirely new queue -> Replace queue, update index
-        instructions = Instructions(UpdateInstructions.REPLACE, queue.index)
+        instructions = Instructions(BasicInstructions.REPLACE, queue.index)
         _queue.value = queue.resolve()
         _index.value = queue.index
     }
@@ -124,5 +124,5 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
         instructions = null
     }
 
-    class Instructions(val update: UpdateInstructions?, val scrollTo: Int?)
+    class Instructions(val update: BasicInstructions?, val scrollTo: Int?)
 }

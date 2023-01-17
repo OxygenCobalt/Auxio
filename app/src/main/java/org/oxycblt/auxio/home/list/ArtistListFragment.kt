@@ -31,6 +31,7 @@ import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.recycler.ArtistViewHolder
 import org.oxycblt.auxio.list.recycler.ListDiffer
 import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.recycler.BasicInstructions
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
@@ -110,7 +111,7 @@ class ArtistListFragment :
 
     private fun updateList(artists: List<Artist>) {
         artistAdapter.submitList(
-            artists, homeModel.artistsListInstructions ?: UpdateInstructions.DIFF)
+            artists, homeModel.artistsListInstructions ?: BasicInstructions.DIFF)
         homeModel.finishArtistsListInstructions()
     }
 
@@ -128,7 +129,7 @@ class ArtistListFragment :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class ArtistAdapter(private val listener: SelectableListListener<Artist>) :
-        SelectionIndicatorAdapter<Artist, UpdateInstructions, ArtistViewHolder>(
+        SelectionIndicatorAdapter<Artist, BasicInstructions, ArtistViewHolder>(
             ListDiffer.Async(ArtistViewHolder.DIFF_CALLBACK)) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =

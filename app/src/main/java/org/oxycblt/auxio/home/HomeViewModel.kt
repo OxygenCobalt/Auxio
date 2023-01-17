@@ -22,7 +22,7 @@ import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.home.tabs.Tab
-import org.oxycblt.auxio.list.UpdateInstructions
+import org.oxycblt.auxio.list.recycler.BasicInstructions
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.library.Library
@@ -46,7 +46,7 @@ class HomeViewModel(application: Application) :
     val songsList: StateFlow<List<Song>>
         get() = _songsList
     /** Specifies how to update [songsList] when it changes. */
-    var songsListInstructions: UpdateInstructions? = null
+    var songsListInstructions: BasicInstructions? = null
         private set
 
     private val _albumsLists = MutableStateFlow(listOf<Album>())
@@ -54,7 +54,7 @@ class HomeViewModel(application: Application) :
     val albumsList: StateFlow<List<Album>>
         get() = _albumsLists
     /** Specifies how to update [albumsList] when it changes. */
-    var albumsListInstructions: UpdateInstructions? = null
+    var albumsListInstructions: BasicInstructions? = null
         private set
 
     private val _artistsList = MutableStateFlow(listOf<Artist>())
@@ -66,7 +66,7 @@ class HomeViewModel(application: Application) :
     val artistsList: MutableStateFlow<List<Artist>>
         get() = _artistsList
     /** Specifies how to update [artistsList] when it changes. */
-    var artistsListInstructions: UpdateInstructions? = null
+    var artistsListInstructions: BasicInstructions? = null
         private set
 
     private val _genresList = MutableStateFlow(listOf<Genre>())
@@ -74,7 +74,7 @@ class HomeViewModel(application: Application) :
     val genresList: StateFlow<List<Genre>>
         get() = _genresList
     /** Specifies how to update [genresList] when it changes. */
-    var genresListInstructions: UpdateInstructions? = null
+    var genresListInstructions: BasicInstructions? = null
         private set
 
     /** The [MusicMode] to use when playing a [Song] from the UI. */
@@ -120,11 +120,11 @@ class HomeViewModel(application: Application) :
             logD("Library changed, refreshing library")
             // Get the each list of items in the library to use as our list data.
             // Applying the preferred sorting to them.
-            songsListInstructions = UpdateInstructions.DIFF
+            songsListInstructions = BasicInstructions.DIFF
             _songsList.value = musicSettings.songSort.songs(library.songs)
-            albumsListInstructions = UpdateInstructions.DIFF
+            albumsListInstructions = BasicInstructions.DIFF
             _albumsLists.value = musicSettings.albumSort.albums(library.albums)
-            artistsListInstructions = UpdateInstructions.DIFF
+            artistsListInstructions = BasicInstructions.DIFF
             _artistsList.value =
                 musicSettings.artistSort.artists(
                     if (homeSettings.shouldHideCollaborators) {
@@ -133,7 +133,7 @@ class HomeViewModel(application: Application) :
                     } else {
                         library.artists
                     })
-            genresListInstructions = UpdateInstructions.DIFF
+            genresListInstructions = BasicInstructions.DIFF
             _genresList.value = musicSettings.genreSort.genres(library.genres)
         }
     }
@@ -173,48 +173,48 @@ class HomeViewModel(application: Application) :
         when (_currentTabMode.value) {
             MusicMode.SONGS -> {
                 musicSettings.songSort = sort
-                songsListInstructions = UpdateInstructions.REPLACE
+                songsListInstructions = BasicInstructions.REPLACE
                 _songsList.value = sort.songs(_songsList.value)
             }
             MusicMode.ALBUMS -> {
                 musicSettings.albumSort = sort
-                albumsListInstructions = UpdateInstructions.REPLACE
+                albumsListInstructions = BasicInstructions.REPLACE
                 _albumsLists.value = sort.albums(_albumsLists.value)
             }
             MusicMode.ARTISTS -> {
                 musicSettings.artistSort = sort
-                artistsListInstructions = UpdateInstructions.REPLACE
+                artistsListInstructions = BasicInstructions.REPLACE
                 _artistsList.value = sort.artists(_artistsList.value)
             }
             MusicMode.GENRES -> {
                 musicSettings.genreSort = sort
-                genresListInstructions = UpdateInstructions.REPLACE
+                genresListInstructions = BasicInstructions.REPLACE
                 _genresList.value = sort.genres(_genresList.value)
             }
         }
     }
 
-    /** Signal that the specified [UpdateInstructions] in [songsListInstructions] were performed. */
+    /** Signal that the specified [BasicInstructions] in [songsListInstructions] were performed. */
     fun finishSongsListInstructions() {
         songsListInstructions = null
     }
 
     /**
-     * Signal that the specified [UpdateInstructions] in [albumsListInstructions] were performed.
+     * Signal that the specified [BasicInstructions] in [albumsListInstructions] were performed.
      */
     fun finishAlbumsListInstructions() {
         albumsListInstructions = null
     }
 
     /**
-     * Signal that the specified [UpdateInstructions] in [artistsListInstructions] were performed.
+     * Signal that the specified [BasicInstructions] in [artistsListInstructions] were performed.
      */
     fun finishArtistsListInstructions() {
         artistsListInstructions = null
     }
 
     /**
-     * Signal that the specified [UpdateInstructions] in [genresListInstructions] were performed.
+     * Signal that the specified [BasicInstructions] in [genresListInstructions] were performed.
      */
     fun finishGenresListInstructions() {
         genresListInstructions = null

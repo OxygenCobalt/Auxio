@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
 import java.lang.reflect.Field
-import org.oxycblt.auxio.list.UpdateInstructions
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.requireIs
 
@@ -39,7 +38,7 @@ interface ListDiffer<T, I> {
     /**
      * Dynamically determine how to update the list based on the given instructions.
      * @param newList The new list of [T] items to show.
-     * @param instructions The [UpdateInstructions] specifying how to update the list.
+     * @param instructions The [BasicInstructions] specifying how to update the list.
      * @param onDone Called when the update process is completed.
      */
     fun submitList(newList: List<T>, instructions: I, onDone: () -> Unit)
@@ -63,8 +62,8 @@ interface ListDiffer<T, I> {
      * internal list.
      */
     class Async<T>(private val diffCallback: DiffUtil.ItemCallback<T>) :
-        Factory<T, UpdateInstructions>() {
-        override fun new(adapter: RecyclerView.Adapter<*>): ListDiffer<T, UpdateInstructions> =
+        Factory<T, BasicInstructions>() {
+        override fun new(adapter: RecyclerView.Adapter<*>): ListDiffer<T, BasicInstructions> =
             RealAsyncListDiffer(AdapterListUpdateCallback(adapter), diffCallback)
     }
 
@@ -75,21 +74,39 @@ interface ListDiffer<T, I> {
      * internal list.
      */
     class Blocking<T>(private val diffCallback: DiffUtil.ItemCallback<T>) :
-        Factory<T, UpdateInstructions>() {
-        override fun new(adapter: RecyclerView.Adapter<*>): ListDiffer<T, UpdateInstructions> =
+        Factory<T, BasicInstructions>() {
+        override fun new(adapter: RecyclerView.Adapter<*>): ListDiffer<T, BasicInstructions> =
             RealBlockingListDiffer(AdapterListUpdateCallback(adapter), diffCallback)
     }
 }
 
-private abstract class RealListDiffer<T>() : ListDiffer<T, UpdateInstructions> {
+/**
+ * Represents the specific way to update a list of items.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+enum class BasicInstructions {
+    /**
+     * (A)synchronously diff the list. This should be used for small diffs with little item
+     * movement.
+     */
+    DIFF,
+
+    /**
+     * Synchronously remove the current list and replace it with a new one. This should be used for
+     * large diffs with that would cause erratic scroll behavior or in-efficiency.
+     */
+    REPLACE
+}
+
+private abstract class RealListDiffer<T>() : ListDiffer<T, BasicInstructions> {
     override fun submitList(
         newList: List<T>,
-        instructions: UpdateInstructions,
+        instructions: BasicInstructions,
         onDone: () -> Unit
     ) {
         when (instructions) {
-            UpdateInstructions.DIFF -> diffList(newList, onDone)
-            UpdateInstructions.REPLACE -> replaceList(newList, onDone)
+            BasicInstructions.DIFF -> diffList(newList, onDone)
+            BasicInstructions.REPLACE -> replaceList(newList, onDone)
         }
     }
 

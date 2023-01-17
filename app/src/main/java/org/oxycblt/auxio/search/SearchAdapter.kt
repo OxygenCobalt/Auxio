@@ -29,7 +29,7 @@ import org.oxycblt.auxio.music.*
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SearchAdapter(private val listener: SelectableListListener<Music>) :
-    SelectionIndicatorAdapter<Item, UpdateInstructions, RecyclerView.ViewHolder>(
+    SelectionIndicatorAdapter<Item, BasicInstructions, RecyclerView.ViewHolder>(
         ListDiffer.Async(DIFF_CALLBACK)),
     AuxioRecyclerView.SpanSizeLookup {
 

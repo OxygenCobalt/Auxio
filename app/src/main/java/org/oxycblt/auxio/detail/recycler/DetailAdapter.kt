@@ -28,7 +28,7 @@ import org.oxycblt.auxio.detail.SortHeader
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
-import org.oxycblt.auxio.list.UpdateInstructions
+import org.oxycblt.auxio.list.recycler.BasicInstructions
 import org.oxycblt.auxio.list.recycler.*
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.context
@@ -45,7 +45,7 @@ abstract class DetailAdapter(
     private val listener: Listener<*>,
     diffCallback: DiffUtil.ItemCallback<Item>
 ) :
-    SelectionIndicatorAdapter<Item, UpdateInstructions, RecyclerView.ViewHolder>(
+    SelectionIndicatorAdapter<Item, BasicInstructions, RecyclerView.ViewHolder>(
         ListDiffer.Async(diffCallback)),
     AuxioRecyclerView.SpanSizeLookup {
 
