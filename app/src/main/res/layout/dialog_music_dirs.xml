@@ -11,6 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/dirs_mode_header_divider"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent" />
+
         <TextView
             style="@style/Widget.Auxio.TextView.Header"
             android:id="@+id/dirs_mode_header"
@@ -19,13 +25,8 @@
             android:paddingStart="@dimen/spacing_large"
             android:paddingEnd="@dimen/spacing_large"
             android:text="@string/set_dirs_mode"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/dirs_mode_header_divider"  />
 
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/dirs_mode_header_divider"
-            android:layout_width="match_parent"
-            app:layout_constraintTop_toBottomOf="@+id/dirs_mode_header"
-            android:layout_height="wrap_content" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/folder_mode_group"
@@ -35,7 +36,7 @@
             android:layout_marginTop="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_large"
             android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@+id/dirs_mode_header_divider"
+            app:layout_constraintTop_toBottomOf="@+id/dirs_mode_header"
             app:checkedButton="@+id/dirs_mode_exclude"
             app:selectionRequired="true"
             app:singleSelection="true">
@@ -70,6 +71,13 @@
             app:layout_constraintTop_toBottomOf="@+id/folder_mode_group"
             tools:text="Mode description" />
 
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/dirs_list_header_divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            app:layout_constraintTop_toBottomOf="@+id/dirs_mode_desc"/>
+
         <TextView
             android:id="@+id/dirs_list_header"
             style="@style/Widget.Auxio.TextView.Header"
@@ -78,9 +86,7 @@
             android:paddingStart="@dimen/spacing_large"
             android:paddingEnd="@dimen/spacing_large"
             android:text="@string/set_dirs_list"
-            android:layout_marginTop="@dimen/spacing_medium"
-            app:layout_constraintTop_toBottomOf="@+id/dirs_mode_desc"
-            app:layout_constraintBottom_toTopOf="@+id/dirs_list_header_divider" />
+            app:layout_constraintTop_toBottomOf="@+id/dirs_list_header_divider" />
 
         <Button
             style="@style/Widget.Auxio.Button.Icon.Small"
@@ -90,14 +96,10 @@
             app:icon="@drawable/ic_add_24"
             android:contentDescription="@string/lbl_add"
             android:layout_marginEnd="@dimen/spacing_mid_large"
-            app:layout_constraintBottom_toTopOf="@+id/dirs_list_header_divider"
+            app:layout_constraintTop_toBottomOf="@+id/dirs_list_header_divider"
             app:layout_constraintEnd_toEndOf="@+id/dirs_list_header" />
 
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/dirs_list_header_divider"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/dirs_recycler"/>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dirs_recycler"
@@ -109,7 +111,7 @@
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:paddingTop="@dimen/spacing_small"
-            app:layout_constraintTop_toTopOf="@+id/dirs_list_header_divider"
+            app:layout_constraintTop_toBottomOf="@+id/dirs_list_header"
             tools:listitem="@layout/item_music_dir" />
 
         <TextView

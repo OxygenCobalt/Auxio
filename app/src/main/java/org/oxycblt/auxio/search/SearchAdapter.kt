@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.recycler.*
 import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.util.logD
 
 /**
  * An adapter that displays search results.
@@ -54,6 +55,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        logD(position)
         when (val item = getItem(position)) {
             is Song -> (holder as SongViewHolder).bind(item, listener)
             is Album -> (holder as AlbumViewHolder).bind(item, listener)
@@ -65,7 +67,16 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
 
     override fun isItemFullWidth(position: Int) = getItem(position) is Header
 
+    /**
+     * Make sure that the top header has a correctly configured divider visibility. This would
+     * normally be automatically done by the differ, but that results in a strange animation.
+     */
+    fun pokeDividers() {
+        notifyItemChanged(0, PAYLOAD_UPDATE_DIVIDER)
+    }
+
     private companion object {
+        val PAYLOAD_UPDATE_DIVIDER = 102249124
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
             object : SimpleItemCallback<Item>() {

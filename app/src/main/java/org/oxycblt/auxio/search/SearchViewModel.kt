@@ -110,21 +110,21 @@ class SearchViewModel(application: Application) :
 
         if (filterMode == null || filterMode == MusicMode.ARTISTS) {
             library.artists.searchListImpl(query)?.let {
-                results.add(Header(R.string.lbl_artists, withDivider = results.isNotEmpty()))
+                results.add(Header(R.string.lbl_artists))
                 results.addAll(sort.artists(it))
             }
         }
 
         if (filterMode == null || filterMode == MusicMode.ALBUMS) {
             library.albums.searchListImpl(query)?.let {
-                results.add(Header(R.string.lbl_albums, withDivider = results.isNotEmpty()))
+                results.add(Header(R.string.lbl_albums))
                 results.addAll(sort.albums(it))
             }
         }
 
         if (filterMode == null || filterMode == MusicMode.GENRES) {
             library.genres.searchListImpl(query)?.let {
-                results.add(Header(R.string.lbl_genres, withDivider = results.isNotEmpty()))
+                results.add(Header(R.string.lbl_genres))
                 results.addAll(sort.genres(it))
             }
         }
@@ -133,7 +133,7 @@ class SearchViewModel(application: Application) :
             library.songs
                 .searchListImpl(query) { q, song -> song.path.name.contains(q) }
                 ?.let {
-                    results.add(Header(R.string.lbl_songs, withDivider = results.isNotEmpty()))
+                    results.add(Header(R.string.lbl_songs))
                     results.addAll(sort.songs(it))
                 }
         }

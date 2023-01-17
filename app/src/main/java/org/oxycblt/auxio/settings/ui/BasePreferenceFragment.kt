@@ -87,6 +87,7 @@ abstract class BasePreferenceFragment(@XmlRes private val screen: Int) :
     ) =
         super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
             clipToPadding = false
+            addItemDecoration(PreferenceHeaderItemDecoration(context))
             setOnApplyWindowInsetsListener { _, insets ->
                 updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
                 insets

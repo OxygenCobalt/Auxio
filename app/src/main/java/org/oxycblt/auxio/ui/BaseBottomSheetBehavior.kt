@@ -24,7 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
+import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.systemGestureInsetsCompat
@@ -37,7 +37,7 @@ import org.oxycblt.auxio.util.systemGestureInsetsCompat
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
-    NeoBottomSheetBehavior<V>(context, attributeSet) {
+    BackportBottomSheetBehavior<V>(context, attributeSet) {
     private var initalized = false
 
     init {

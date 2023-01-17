@@ -2,8 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:title="@string/set_audio">
-    <PreferenceCategory android:title="@string/set_playback"
-        app:layout="@layout/item_bare_header">
+    <PreferenceCategory android:title="@string/set_playback">
 
         <SwitchPreferenceCompat
             app:key="@string/set_key_headset_autoplay"

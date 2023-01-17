@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     app:title="@string/set_content">
-    <PreferenceCategory app:title="@string/set_music"
-        app:layout="@layout/item_bare_header">
+    <PreferenceCategory app:title="@string/set_music">
 
         <SwitchPreferenceCompat
             app:defaultValue="false"

@@ -27,4 +27,4 @@ interface Item
  * @param titleRes The string resource used for the header's title.
  * @param withDivider Whether to show a divider on the item.
  */
-data class Header(@StringRes val titleRes: Int, val withDivider: Boolean = true) : Item
+data class Header(@StringRes val titleRes: Int) : Item

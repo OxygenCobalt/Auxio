@@ -45,11 +45,16 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // Auxio's non-dialog RecyclerViews never change their size based on adapter contents,
         // so we can enable fixed-size optimizations.
         setHasFixedSize(true)
+        addItemDecoration(HeaderItemDecoration(context))
     }
 
     final override fun setHasFixedSize(hasFixedSize: Boolean) {
         // Prevent a this leak by marking setHasFixedSize as final.
         super.setHasFixedSize(hasFixedSize)
+    }
+
+    final override fun addItemDecoration(decor: ItemDecoration) {
+        super.addItemDecoration(decor)
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
@@ -77,6 +82,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 }
         }
     }
+
+    /** A [RecyclerView.Adapter]-specific hook to control divider decoration visibility. */
 
     /** An [RecyclerView.Adapter]-specific hook to [GridLayoutManager.SpanSizeLookup]. */
     interface SpanSizeLookup {

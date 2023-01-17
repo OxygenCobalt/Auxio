@@ -83,9 +83,10 @@ import java.util.Map;
  * window-like. For BottomSheetDialog use {@link BottomSheetDialog#setTitle(int)}, and for
  * BottomSheetDialogFragment use {@link ViewCompat#setAccessibilityPaneTitle(View, CharSequence)}.
  *
- * Modified at several points by Alexander Capehart to work around miscellaneous issues.
+ * Modified at several points by Alexander Capehart backport miscellaneous fixes not currently
+ * obtainable in the currently used MDC library.
  */
-public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
+public class BackportBottomSheetBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
 
   /** Listener for monitoring events about bottom sheets. */
   public abstract static class BottomSheetCallback {
@@ -318,9 +319,9 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
 
   private int expandHalfwayActionId = View.NO_ID;
 
-  public NeoBottomSheetBehavior() {}
+  public BackportBottomSheetBehavior() {}
 
-  public NeoBottomSheetBehavior(@NonNull Context context, @Nullable AttributeSet attrs) {
+  public BackportBottomSheetBehavior(@NonNull Context context, @Nullable AttributeSet attrs) {
     super(context, attrs);
 
     peekHeightGestureInsetBuffer =
@@ -1980,7 +1981,7 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
       skipCollapsed = source.readInt() == 1;
     }
 
-    public SavedState(Parcelable superState, @NonNull NeoBottomSheetBehavior<?> behavior) {
+    public SavedState(Parcelable superState, @NonNull BackportBottomSheetBehavior<?> behavior) {
       super(superState);
       this.state = behavior.state;
       this.peekHeight = behavior.peekHeight;
@@ -1990,12 +1991,12 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
     }
 
     /**
-     * This constructor does not respect flags: {@link NeoBottomSheetBehavior#SAVE_PEEK_HEIGHT}, {@link
-     * NeoBottomSheetBehavior#SAVE_FIT_TO_CONTENTS}, {@link NeoBottomSheetBehavior#SAVE_HIDEABLE}, {@link
-     * NeoBottomSheetBehavior#SAVE_SKIP_COLLAPSED}. It is as if {@link NeoBottomSheetBehavior#SAVE_NONE}
+     * This constructor does not respect flags: {@link BackportBottomSheetBehavior#SAVE_PEEK_HEIGHT}, {@link
+     * BackportBottomSheetBehavior#SAVE_FIT_TO_CONTENTS}, {@link BackportBottomSheetBehavior#SAVE_HIDEABLE}, {@link
+     * BackportBottomSheetBehavior#SAVE_SKIP_COLLAPSED}. It is as if {@link BackportBottomSheetBehavior#SAVE_NONE}
      * were set.
      *
-     * @deprecated Use {@link #SavedState(Parcelable, NeoBottomSheetBehavior)} instead.
+     * @deprecated Use {@link #SavedState(Parcelable, BackportBottomSheetBehavior)} instead.
      */
     @Deprecated
     public SavedState(Parcelable superstate, @State int state) {
@@ -2036,24 +2037,24 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
   }
 
   /**
-   * A utility function to get the {@link NeoBottomSheetBehavior} associated with the {@code view}.
+   * A utility function to get the {@link BackportBottomSheetBehavior} associated with the {@code view}.
    *
-   * @param view The {@link View} with {@link NeoBottomSheetBehavior}.
-   * @return The {@link NeoBottomSheetBehavior} associated with the {@code view}.
+   * @param view The {@link View} with {@link BackportBottomSheetBehavior}.
+   * @return The {@link BackportBottomSheetBehavior} associated with the {@code view}.
    */
   @NonNull
   @SuppressWarnings("unchecked")
-  public static <V extends View> NeoBottomSheetBehavior<V> from(@NonNull V view) {
+  public static <V extends View> BackportBottomSheetBehavior<V> from(@NonNull V view) {
     ViewGroup.LayoutParams params = view.getLayoutParams();
     if (!(params instanceof CoordinatorLayout.LayoutParams)) {
       throw new IllegalArgumentException("The view is not a child of CoordinatorLayout");
     }
     CoordinatorLayout.Behavior<?> behavior =
         ((CoordinatorLayout.LayoutParams) params).getBehavior();
-    if (!(behavior instanceof NeoBottomSheetBehavior)) {
+    if (!(behavior instanceof BackportBottomSheetBehavior)) {
       throw new IllegalArgumentException("The view is not associated with BottomSheetBehavior");
     }
-    return (NeoBottomSheetBehavior<V>) behavior;
+    return (BackportBottomSheetBehavior<V>) behavior;
   }
 
   /**
@@ -2200,3 +2201,4 @@ public class NeoBottomSheetBehavior<V extends View> extends CoordinatorLayout.Be
     };
   }
 }
+

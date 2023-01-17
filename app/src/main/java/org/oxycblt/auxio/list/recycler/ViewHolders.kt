@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.list.recycler
 
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -31,6 +30,7 @@ import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [RecyclerView.ViewHolder] that displays a [Song]. Use [from] to create an instance.
@@ -249,8 +249,8 @@ class HeaderViewHolder private constructor(private val binding: ItemHeaderBindin
      * @param header The new [Header] to bind.
      */
     fun bind(header: Header) {
+        logD(binding.context.getString(header.titleRes))
         binding.title.text = binding.context.getString(header.titleRes)
-        binding.headerDivider.isVisible = header.withDivider
     }
 
     companion object {
