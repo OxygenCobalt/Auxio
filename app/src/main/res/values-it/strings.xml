@@ -262,4 +262,11 @@
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Ripristina</string>
+    <string name="set_behavior">Comportamento</string>
+    <string name="set_dirs_list">Cartelle</string>
+    <string name="set_music">Musica</string>
+    <string name="set_images">Immagini</string>
+    <string name="set_library">Collezione</string>
+    <string name="set_ui_desc">Cambia il tema e i colori dell\'app</string>
+    <string name="set_content_desc">Controlla come vengono caricate musica e immagini</string>
 </resources>
