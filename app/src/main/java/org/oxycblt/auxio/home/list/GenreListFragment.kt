@@ -127,7 +127,7 @@ class GenreListFragment :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class GenreAdapter(private val listener: SelectableListListener<Genre>) :
-        SelectionIndicatorAdapter<Genre, GenreViewHolder>(
+        SelectionIndicatorAdapter<Genre, UpdateInstructions, GenreViewHolder>(
             ListDiffer.Async(GenreViewHolder.DIFF_CALLBACK)) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             GenreViewHolder.from(parent)

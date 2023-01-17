@@ -27,6 +27,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.list.EditableListListener
+import org.oxycblt.auxio.list.UpdateInstructions
 import org.oxycblt.auxio.list.recycler.DiffAdapter
 import org.oxycblt.auxio.list.recycler.ListDiffer
 import org.oxycblt.auxio.list.recycler.PlayingIndicatorAdapter
@@ -40,7 +41,8 @@ import org.oxycblt.auxio.util.*
  * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueAdapter(private val listener: EditableListListener<Song>) :
-    DiffAdapter<Song, QueueSongViewHolder>(ListDiffer.Blocking(QueueSongViewHolder.DIFF_CALLBACK)) {
+    DiffAdapter<Song, UpdateInstructions, QueueSongViewHolder>(
+        ListDiffer.Blocking(QueueSongViewHolder.DIFF_CALLBACK)) {
     // Since PlayingIndicator adapter relies on an item value, we cannot use it for this
     // adapter, as one item can appear at several points in the UI. Use a similar implementation
     // with an index value instead.

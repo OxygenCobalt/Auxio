@@ -29,7 +29,9 @@ import com.google.android.material.transition.MaterialSharedAxis
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
+import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.UpdateInstructions
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
@@ -82,7 +84,7 @@ class AlbumDetailFragment :
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setAlbumUid(args.albumUid)
         collectImmediately(detailModel.currentAlbum, ::updateAlbum)
-        collectImmediately(detailModel.albumList, detailAdapter::diffList)
+        collectImmediately(detailModel.albumList, ::updateList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
@@ -255,6 +257,10 @@ class AlbumDetailFragment :
                 binding.detailAppbar.isLifted = binding.detailRecycler.canScroll()
             }
         }
+    }
+
+    private fun updateList(items: List<Item>) {
+        detailAdapter.submitList(items, UpdateInstructions.DIFF)
     }
 
     private fun updateSelection(selected: List<Music>) {

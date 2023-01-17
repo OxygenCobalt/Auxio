@@ -29,7 +29,9 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.DetailAdapter
 import org.oxycblt.auxio.detail.recycler.GenreDetailAdapter
+import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.UpdateInstructions
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -84,7 +86,7 @@ class GenreDetailFragment :
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setGenreUid(args.genreUid)
         collectImmediately(detailModel.currentGenre, ::updateItem)
-        collectImmediately(detailModel.genreList, detailAdapter::diffList)
+        collectImmediately(detailModel.genreList, ::updateList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
@@ -214,6 +216,10 @@ class GenreDetailFragment :
             }
             null -> {}
         }
+    }
+
+    private fun updateList(items: List<Item>) {
+        detailAdapter.submitList(items, UpdateInstructions.DIFF)
     }
 
     private fun updateSelection(selected: List<Music>) {

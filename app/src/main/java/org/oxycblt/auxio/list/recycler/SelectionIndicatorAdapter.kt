@@ -27,9 +27,9 @@ import org.oxycblt.auxio.music.Music
  * @param differFactory The [ListDiffer.Factory] that defines the type of [ListDiffer] to use.
  * @author Alexander Capehart (OxygenCobalt)
  */
-abstract class SelectionIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
-    differFactory: ListDiffer.Factory<T>
-) : PlayingIndicatorAdapter<T, VH>(differFactory) {
+abstract class SelectionIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
+    differFactory: ListDiffer.Factory<T, I>
+) : PlayingIndicatorAdapter<T, I, VH>(differFactory) {
     private var selectedItems = setOf<T>()
 
     override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {

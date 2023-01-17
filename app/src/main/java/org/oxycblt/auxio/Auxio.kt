@@ -35,7 +35,7 @@ import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.ui.UISettings
 
 /**
- * Auxio: A simple, rational music player for android.
+ * A simple, rational music player for android.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Auxio : Application(), ImageLoaderFactory {

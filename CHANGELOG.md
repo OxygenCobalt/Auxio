@@ -4,13 +4,13 @@
 
 #### What's New
 - Added ability to play/shuffle selections
+- Settings UI has been visually refreshed
 
 #### What's Improved
 - Added ability to edit previously played or currently playing items in the queue
 - Added support for date values formatted as "YYYYMMDD"
 - Pressing the button will now clear the current selection before navigating back
 - Added support for non-standard `ARTISTS` tags
-- Reworked music folders dialog to be more visually straightforward
 - Play Next and Add To Queue now start playback if there is no queue to add
 
 #### What's Fixed

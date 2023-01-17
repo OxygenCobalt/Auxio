@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
 import java.lang.reflect.Field
+import org.oxycblt.auxio.list.UpdateInstructions
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.requireIs
 
@@ -31,36 +32,28 @@ import org.oxycblt.auxio.util.requireIs
  * List differ wrapper that provides more flexibility regarding the way lists are updated.
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface ListDiffer<T> {
+interface ListDiffer<T, I> {
     /** The current list of [T] items. */
     val currentList: List<T>
 
     /**
-     * Update this list using [DiffUtil]. This can simplify the work of updating the list, but can
-     * also cause erratic behavior.
+     * Dynamically determine how to update the list based on the given instructions.
      * @param newList The new list of [T] items to show.
-     * @param onDone Callback that will be invoked when the update is completed, allowing means to
-     * reset the state.
+     * @param instructions The [UpdateInstructions] specifying how to update the list.
+     * @param onDone Called when the update process is completed.
      */
-    fun diffList(newList: List<T>, onDone: () -> Unit = {})
-
-    /**
-     * Visually replace the previous list with a new list. This is useful for large diffs that are
-     * too erratic for [diffList].
-     * @param newList The new list of [T] items to show.
-     */
-    fun replaceList(newList: List<T>)
+    fun submitList(newList: List<T>, instructions: I, onDone: () -> Unit)
 
     /**
      * Defines the creation of new [ListDiffer] instances. Allows such [ListDiffer]s to be passed as
      * arguments without reliance on a `this` [RecyclerView.Adapter].
      */
-    abstract class Factory<T> {
+    abstract class Factory<T, I> {
         /**
          * Create a new [ListDiffer] bound to the given [RecyclerView.Adapter].
          * @param adapter The [RecyclerView.Adapter] to bind to.
          */
-        abstract fun new(adapter: RecyclerView.Adapter<*>): ListDiffer<T>
+        abstract fun new(adapter: RecyclerView.Adapter<*>): ListDiffer<T, I>
     }
 
     /**
@@ -69,8 +62,9 @@ interface ListDiffer<T> {
      * @param diffCallback A [DiffUtil.ItemCallback] to use for item comparison when diffing the
      * internal list.
      */
-    class Async<T>(private val diffCallback: DiffUtil.ItemCallback<T>) : Factory<T>() {
-        override fun new(adapter: RecyclerView.Adapter<*>): ListDiffer<T> =
+    class Async<T>(private val diffCallback: DiffUtil.ItemCallback<T>) :
+        Factory<T, UpdateInstructions>() {
+        override fun new(adapter: RecyclerView.Adapter<*>): ListDiffer<T, UpdateInstructions> =
             RealAsyncListDiffer(AdapterListUpdateCallback(adapter), diffCallback)
     }
 
@@ -80,16 +74,33 @@ interface ListDiffer<T> {
      * @param diffCallback A [DiffUtil.ItemCallback] to use for item comparison when diffing the
      * internal list.
      */
-    class Blocking<T>(private val diffCallback: DiffUtil.ItemCallback<T>) : Factory<T>() {
-        override fun new(adapter: RecyclerView.Adapter<*>): ListDiffer<T> =
+    class Blocking<T>(private val diffCallback: DiffUtil.ItemCallback<T>) :
+        Factory<T, UpdateInstructions>() {
+        override fun new(adapter: RecyclerView.Adapter<*>): ListDiffer<T, UpdateInstructions> =
             RealBlockingListDiffer(AdapterListUpdateCallback(adapter), diffCallback)
     }
+}
+
+private abstract class RealListDiffer<T>() : ListDiffer<T, UpdateInstructions> {
+    override fun submitList(
+        newList: List<T>,
+        instructions: UpdateInstructions,
+        onDone: () -> Unit
+    ) {
+        when (instructions) {
+            UpdateInstructions.DIFF -> diffList(newList, onDone)
+            UpdateInstructions.REPLACE -> replaceList(newList, onDone)
+        }
+    }
+
+    protected abstract fun diffList(newList: List<T>, onDone: () -> Unit)
+    protected abstract fun replaceList(newList: List<T>, onDone: () -> Unit)
 }
 
 private class RealAsyncListDiffer<T>(
     private val updateCallback: ListUpdateCallback,
     diffCallback: DiffUtil.ItemCallback<T>
-) : ListDiffer<T> {
+) : RealListDiffer<T>() {
     private val inner =
         AsyncListDiffer(updateCallback, AsyncDifferConfig.Builder(diffCallback).build())
 
@@ -100,21 +111,21 @@ private class RealAsyncListDiffer<T>(
         inner.submitList(newList, onDone)
     }
 
-    override fun replaceList(newList: List<T>) {
-        if (inner.currentList == newList) {
-            // Nothing to do.
-            return
+    override fun replaceList(newList: List<T>, onDone: () -> Unit) {
+        if (inner.currentList != newList) {
+            // Do possibly the most idiotic thing possible and mutate the internal differ state
+            // so we don't have to deal with any disjoint list garbage. This should cancel any prior
+            // updates and correctly set up the list values while still allowing for the same
+            // visual animation as the blocking replaceList.
+            val oldListSize = inner.currentList.size
+            ASD_MAX_GENERATION_FIELD.set(
+                inner, requireIs<Int>(ASD_MAX_GENERATION_FIELD.get(inner)) + 1)
+            ASD_MUTABLE_LIST_FIELD.set(inner, newList.ifEmpty { null })
+            ASD_READ_ONLY_LIST_FIELD.set(inner, newList)
+            updateCallback.onRemoved(0, oldListSize)
+            updateCallback.onInserted(0, newList.size)
         }
-        // Do possibly the most idiotic thing possible and mutate the internal differ state
-        // so we don't have to deal with any disjoint list garbage. This should cancel any prior
-        // updates and correctly set up the list values while still allowing for the same
-        // visual animation as the blocking replaceList.
-        val oldListSize = inner.currentList.size
-        ASD_MAX_GENERATION_FIELD.set(inner, requireIs<Int>(ASD_MAX_GENERATION_FIELD.get(inner)) + 1)
-        ASD_MUTABLE_LIST_FIELD.set(inner, newList.ifEmpty { null })
-        ASD_READ_ONLY_LIST_FIELD.set(inner, newList)
-        updateCallback.onRemoved(0, oldListSize)
-        updateCallback.onInserted(0, newList.size)
+        onDone()
     }
 
     private companion object {
@@ -129,7 +140,7 @@ private class RealAsyncListDiffer<T>(
 private class RealBlockingListDiffer<T>(
     private val updateCallback: ListUpdateCallback,
     private val diffCallback: DiffUtil.ItemCallback<T>
-) : ListDiffer<T> {
+) : RealListDiffer<T>() {
     override var currentList = listOf<T>()
 
     override fun diffList(newList: List<T>, onDone: () -> Unit) {
@@ -212,13 +223,9 @@ private class RealBlockingListDiffer<T>(
         onDone()
     }
 
-    override fun replaceList(newList: List<T>) {
-        if (currentList == newList) {
-            // Nothing to do.
-            return
+    override fun replaceList(newList: List<T>, onDone: () -> Unit) {
+        if (currentList != newList) {
+            diffList(listOf()) { diffList(newList, onDone) }
         }
-
-        diffList(listOf())
-        diffList(newList)
     }
 }

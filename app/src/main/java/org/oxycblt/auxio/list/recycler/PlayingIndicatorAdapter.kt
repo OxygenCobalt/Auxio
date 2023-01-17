@@ -26,9 +26,9 @@ import org.oxycblt.auxio.util.logD
  * @param differFactory The [ListDiffer.Factory] that defines the type of [ListDiffer] to use.
  * @author Alexander Capehart (OxygenCobalt)
  */
-abstract class PlayingIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
-    differFactory: ListDiffer.Factory<T>
-) : DiffAdapter<T, VH>(differFactory) {
+abstract class PlayingIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
+    differFactory: ListDiffer.Factory<T, I>
+) : DiffAdapter<T, I, VH>(differFactory) {
     // There are actually two states for this adapter:
     // - The currently playing item, which is usually marked as "selected" and becomes accented.
     // - Whether playback is ongoing, which corresponds to whether the item's ImageGroup is

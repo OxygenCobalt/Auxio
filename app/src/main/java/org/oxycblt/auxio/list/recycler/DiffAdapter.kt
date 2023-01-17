@@ -18,14 +18,14 @@
 package org.oxycblt.auxio.list.recycler
 
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.list.UpdateInstructions
 
 /**
  * A [RecyclerView.Adapter] with [ListDiffer] integration.
  * @param differFactory The [ListDiffer.Factory] that defines the type of [ListDiffer] to use.
  */
-abstract class DiffAdapter<T, VH : RecyclerView.ViewHolder>(differFactory: ListDiffer.Factory<T>) :
-    RecyclerView.Adapter<VH>() {
+abstract class DiffAdapter<T, I, VH : RecyclerView.ViewHolder>(
+    differFactory: ListDiffer.Factory<T, I>
+) : RecyclerView.Adapter<VH>() {
     private val differ = differFactory.new(@Suppress("LeakingThis") this)
 
     final override fun getItemCount() = differ.currentList.size
@@ -42,30 +42,12 @@ abstract class DiffAdapter<T, VH : RecyclerView.ViewHolder>(differFactory: ListD
     fun getItem(at: Int) = differ.currentList[at]
 
     /**
-     * Dynamically determine how to update the list based on the given [UpdateInstructions].
+     * Dynamically determine how to update the list based on the given instructions.
      * @param newList The new list of [T] items to show.
-     * @param instructions The [UpdateInstructions] specifying how to update the list.
+     * @param instructions The instructions specifying how to update the list.
+     * @param onDone Called when the update process is completed. Defaults to a no-op.
      */
-    fun submitList(newList: List<T>, instructions: UpdateInstructions) {
-        when (instructions) {
-            UpdateInstructions.DIFF -> diffList(newList)
-            UpdateInstructions.REPLACE -> replaceList(newList)
-        }
+    fun submitList(newList: List<T>, instructions: I, onDone: () -> Unit = {}) {
+        differ.submitList(newList, instructions, onDone)
     }
-
-    /**
-     * Update this list using DiffUtil. This can simplify the work of updating the list, but can
-     * also cause erratic behavior.
-     * @param newList The new list of [T] items to show.
-     * @param onDone Callback that will be invoked when the update is completed, allowing means to
-     * reset the state.
-     */
-    fun diffList(newList: List<T>, onDone: () -> Unit = {}) = differ.diffList(newList, onDone)
-
-    /**
-     * Visually replace the previous list with a new list. This is useful for large diffs that are
-     * too erratic for [diffList].
-     * @param newList The new list of [T] items to show.
-     */
-    fun replaceList(newList: List<T>) = differ.replaceList(newList)
 }

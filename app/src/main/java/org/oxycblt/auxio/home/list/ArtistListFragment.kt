@@ -128,7 +128,7 @@ class ArtistListFragment :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class ArtistAdapter(private val listener: SelectableListListener<Artist>) :
-        SelectionIndicatorAdapter<Artist, ArtistViewHolder>(
+        SelectionIndicatorAdapter<Artist, UpdateInstructions, ArtistViewHolder>(
             ListDiffer.Async(ArtistViewHolder.DIFF_CALLBACK)) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =

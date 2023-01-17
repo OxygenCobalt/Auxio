@@ -67,14 +67,14 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
 
     override fun onQueueReordered(queue: Queue) {
         // Queue changed completely -> Replace queue, update index
-        instructions = Instructions(UpdateInstructions.REPLACE, null)
+        instructions = Instructions(UpdateInstructions.REPLACE, queue.index)
         _queue.value = queue.resolve()
         _index.value = queue.index
     }
 
     override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
         // Entirely new queue -> Replace queue, update index
-        instructions = Instructions(UpdateInstructions.REPLACE, null)
+        instructions = Instructions(UpdateInstructions.REPLACE, queue.index)
         _queue.value = queue.resolve()
         _index.value = queue.index
     }

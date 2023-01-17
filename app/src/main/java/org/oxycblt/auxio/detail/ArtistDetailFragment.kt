@@ -29,7 +29,9 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
 import org.oxycblt.auxio.detail.recycler.DetailAdapter
+import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.UpdateInstructions
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
@@ -85,7 +87,7 @@ class ArtistDetailFragment :
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setArtistUid(args.artistUid)
         collectImmediately(detailModel.currentArtist, ::updateItem)
-        collectImmediately(detailModel.artistList, detailAdapter::diffList)
+        collectImmediately(detailModel.artistList, ::updateList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
@@ -231,6 +233,10 @@ class ArtistDetailFragment :
             null -> {}
             else -> error("Unexpected datatype: ${item::class.java}")
         }
+    }
+
+    private fun updateList(items: List<Item>) {
+        detailAdapter.submitList(items, UpdateInstructions.DIFF)
     }
 
     private fun updateSelection(selected: List<Music>) {

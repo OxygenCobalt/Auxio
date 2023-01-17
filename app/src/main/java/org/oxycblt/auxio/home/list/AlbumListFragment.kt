@@ -149,7 +149,7 @@ class AlbumListFragment :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class AlbumAdapter(private val listener: SelectableListListener<Album>) :
-        SelectionIndicatorAdapter<Album, AlbumViewHolder>(
+        SelectionIndicatorAdapter<Album, UpdateInstructions, AlbumViewHolder>(
             ListDiffer.Async(AlbumViewHolder.DIFF_CALLBACK)) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =

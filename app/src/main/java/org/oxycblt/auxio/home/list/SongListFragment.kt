@@ -160,7 +160,7 @@ class SongListFragment :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class SongAdapter(private val listener: SelectableListListener<Song>) :
-        SelectionIndicatorAdapter<Song, SongViewHolder>(
+        SelectionIndicatorAdapter<Song, UpdateInstructions, SongViewHolder>(
             ListDiffer.Async(SongViewHolder.DIFF_CALLBACK)) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
