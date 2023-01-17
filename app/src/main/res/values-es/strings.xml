@@ -43,7 +43,7 @@
     <string name="lng_author">Desarrollado por Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Ajustes</string>
-    <string name="set_ui">Apariencia</string>
+    <string name="set_ui">Aspecto y sensación</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Automático</string>
     <string name="set_theme_day">Claro</string>
@@ -265,4 +265,16 @@
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Restablecer</string>
+    <string name="set_behavior">Comportamiento</string>
+    <string name="set_replay_gain">Ganancia de la reproducción</string>
+    <string name="set_content_desc">Controla cómo se cargan la música y las imágenes</string>
+    <string name="set_music">Música</string>
+    <string name="set_images">Imágenes</string>
+    <string name="set_audio_desc">Configurar el comportamiento del sonido y la reproducción</string>
+    <string name="set_playback">Reproducción</string>
+    <string name="set_dirs_list">Carpetas</string>
+    <string name="set_state">Persistencia</string>
+    <string name="set_ui_desc">Cambiar el tema y los colores de la aplicación</string>
+    <string name="set_personalize_desc">Personalizar los controles y el comportamiento de la interfaz de usuario</string>
+    <string name="set_library">Biblioteca</string>
 </resources>
