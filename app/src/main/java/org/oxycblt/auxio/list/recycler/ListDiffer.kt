@@ -99,11 +99,7 @@ enum class BasicInstructions {
 }
 
 private abstract class RealListDiffer<T>() : ListDiffer<T, BasicInstructions> {
-    override fun submitList(
-        newList: List<T>,
-        instructions: BasicInstructions,
-        onDone: () -> Unit
-    ) {
+    override fun submitList(newList: List<T>, instructions: BasicInstructions, onDone: () -> Unit) {
         when (instructions) {
             BasicInstructions.DIFF -> diffList(newList, onDone)
             BasicInstructions.REPLACE -> replaceList(newList, onDone)

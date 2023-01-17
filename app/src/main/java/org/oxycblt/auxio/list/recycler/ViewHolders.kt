@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.list.recycler
 
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -249,6 +250,7 @@ class HeaderViewHolder private constructor(private val binding: ItemHeaderBindin
      */
     fun bind(header: Header) {
         binding.title.text = binding.context.getString(header.titleRes)
+        binding.headerDivider.isVisible = header.withDivider
     }
 
     companion object {

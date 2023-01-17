@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:title="@string/set_personalize">
 
-    <PreferenceCategory app:title="@string/set_display">
+    <PreferenceCategory app:title="@string/set_display"
+        app:layout="@layout/item_bare_header">
 
         <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
             app:key="@string/set_key_home_tabs"

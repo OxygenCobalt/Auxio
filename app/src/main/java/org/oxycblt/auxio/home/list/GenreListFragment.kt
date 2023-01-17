@@ -28,10 +28,10 @@ import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.recycler.BasicInstructions
 import org.oxycblt.auxio.list.recycler.GenreViewHolder
 import org.oxycblt.auxio.list.recycler.ListDiffer
 import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
-import org.oxycblt.auxio.list.recycler.BasicInstructions
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
@@ -109,8 +109,7 @@ class GenreListFragment :
     }
 
     private fun updateList(artists: List<Genre>) {
-        genreAdapter.submitList(
-            artists, homeModel.genresListInstructions ?: BasicInstructions.DIFF)
+        genreAdapter.submitList(artists, homeModel.genresListInstructions ?: BasicInstructions.DIFF)
         homeModel.finishGenresListInstructions()
     }
 

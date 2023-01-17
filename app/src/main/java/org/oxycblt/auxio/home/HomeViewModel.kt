@@ -199,9 +199,7 @@ class HomeViewModel(application: Application) :
         songsListInstructions = null
     }
 
-    /**
-     * Signal that the specified [BasicInstructions] in [albumsListInstructions] were performed.
-     */
+    /** Signal that the specified [BasicInstructions] in [albumsListInstructions] were performed. */
     fun finishAlbumsListInstructions() {
         albumsListInstructions = null
     }
@@ -213,9 +211,7 @@ class HomeViewModel(application: Application) :
         artistsListInstructions = null
     }
 
-    /**
-     * Signal that the specified [BasicInstructions] in [genresListInstructions] were performed.
-     */
+    /** Signal that the specified [BasicInstructions] in [genresListInstructions] were performed. */
     fun finishGenresListInstructions() {
         genresListInstructions = null
     }

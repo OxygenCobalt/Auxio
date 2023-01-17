@@ -25,5 +25,6 @@ interface Item
 /**
  * A "header" used for delimiting groups of data.
  * @param titleRes The string resource used for the header's title.
+ * @param withDivider Whether to show a divider on the item.
  */
-data class Header(@StringRes val titleRes: Int) : Item
+data class Header(@StringRes val titleRes: Int, val withDivider: Boolean = true) : Item
