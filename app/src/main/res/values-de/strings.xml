@@ -35,7 +35,7 @@
     <string name="lng_author">Entwickelt von Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Einstellungen</string>
-    <string name="set_ui">Aussehen</string>
+    <string name="set_ui">Erscheinungsbild</string>
     <string name="set_theme">Farbschema</string>
     <string name="set_theme_auto">Automatisch</string>
     <string name="set_theme_day">Hell</string>
@@ -55,7 +55,7 @@
     <string name="set_pre_amp_without">Abgleich ohne Metadaten</string>
     <string name="set_replay_gain_mode_track">Titel bevorzugen</string>
     <string name="set_replay_gain_mode_album">Album bevorzugen</string>
-    <string name="set_personalize">Verhalten</string>
+    <string name="set_personalize">Personalisieren</string>
     <string name="set_library_song_playback_mode">Wenn ein Lied aus der Bibliothek abgespielt wird</string>
     <string name="set_keep_shuffle">Zufällig-Einstellung merken</string>
     <string name="set_keep_shuffle_desc">Zufällig anlassen, wenn ein neues Lied abgespielt wird</string>
@@ -261,4 +261,15 @@
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Zurücksetzen</string>
+    <string name="set_behavior">Verhalten</string>
+    <string name="set_ui_desc">Ändern Sie das Thema und die Farben der App</string>
+    <string name="set_personalize_desc">UI-Steuerelemente und Verhalten anpassen</string>
+    <string name="set_content_desc">Steuern, wie Musik und Bilder geladen werden</string>
+    <string name="set_music">Musik</string>
+    <string name="set_images">Bilder</string>
+    <string name="set_library">Bibliothek</string>
+    <string name="set_dirs_list">Ordner</string>
+    <string name="set_playback">Wiedergabe</string>
+    <string name="set_audio_desc">Ton und Wiedergabeverhalten konfigurieren</string>
+    <string name="set_state">Persistenz</string>
 </resources>
