@@ -38,7 +38,7 @@ constructor(
     override fun shouldDrawDivider(position: Int, adapter: RecyclerView.Adapter<*>?) =
         try {
             logD(position)
-            (adapter as PreferenceGroupAdapter).getItem(position) is PreferenceCategory
+            (adapter as PreferenceGroupAdapter).getItem(position + 1) is PreferenceCategory
         } catch (e: ClassCastException) {
             false
         } catch (e: IndexOutOfBoundsException) {

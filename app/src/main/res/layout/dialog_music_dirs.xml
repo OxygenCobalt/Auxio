@@ -11,12 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/dirs_mode_header_divider"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent" />
-
         <TextView
             style="@style/Widget.Auxio.TextView.Header"
             android:id="@+id/dirs_mode_header"
@@ -24,8 +18,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/spacing_large"
             android:paddingEnd="@dimen/spacing_large"
-            android:text="@string/set_dirs_mode"
-            app:layout_constraintTop_toBottomOf="@+id/dirs_mode_header_divider"  />
+            android:text="@string/set_dirs_mode" />
 
 
         <com.google.android.material.button.MaterialButtonToggleGroup
@@ -33,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_large"
-            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_large"
             android:gravity="center"
             app:layout_constraintTop_toBottomOf="@+id/dirs_mode_header"
@@ -43,7 +36,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/dirs_mode_exclude"
-                style="@style/Widget.Auxio.Button.Secondary"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -52,7 +45,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/dirs_mode_include"
-                style="@style/Widget.Auxio.Button.Secondary"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -65,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_large"
-            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_tiny"
             android:layout_marginEnd="@dimen/spacing_large"
             android:textAlignment="viewStart"
             app:layout_constraintTop_toBottomOf="@+id/folder_mode_group"
@@ -99,8 +92,6 @@
             app:layout_constraintTop_toBottomOf="@+id/dirs_list_header_divider"
             app:layout_constraintEnd_toEndOf="@+id/dirs_list_header" />
 
-
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dirs_recycler"
             style="@style/Widget.Auxio.RecyclerView.Linear"
@@ -110,7 +101,6 @@
             android:layout_weight="1"
             android:clipToPadding="false"
             android:overScrollMode="never"
-            android:paddingTop="@dimen/spacing_small"
             app:layout_constraintTop_toBottomOf="@+id/dirs_list_header"
             tools:listitem="@layout/item_music_dir" />
 
