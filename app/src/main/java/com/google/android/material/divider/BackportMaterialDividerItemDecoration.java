@@ -53,6 +53,9 @@ import com.google.android.material.resources.MaterialResources;
  *             layoutManager.getOrientation());
  *     recyclerView.addItemDecoration(dividerItemDecoration);
  * </pre>
+ *
+ * Modified at several points by Alexander Capehart to backport miscellaneous fixes not currently
+ * obtainable in the currently used MDC library.
  */
 public class BackportMaterialDividerItemDecoration extends ItemDecoration {
   public static final int HORIZONTAL = LinearLayout.HORIZONTAL;

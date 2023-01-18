@@ -4,7 +4,7 @@
 
 #### What's New
 - Added ability to play/shuffle selections
-- Visually refreshed header components
+- Resigned header components
 - Resigned settings view
 
 #### What's Improved
@@ -13,6 +13,7 @@
 - Pressing the button will now clear the current selection before navigating back
 - Added support for non-standard `ARTISTS` tags
 - Play Next and Add To Queue now start playback if there is no queue to add
+- Made resorting list animations consistent across app
 
 #### What's Fixed
 - Fixed unreliable ReplayGain adjustment application in certain situations
@@ -20,6 +21,8 @@
 file manager
 - Fixed notification not updating due to settings changes
 - Fixed genre picker from repeatedly showing up when device rotates
+- Fixed multi-value genres not being recognized on vorbis files
+- Fixed sharp-cornered widget bar appearing even when round mode was enabled
 
 #### What's Changed
 - Implemented new queue system

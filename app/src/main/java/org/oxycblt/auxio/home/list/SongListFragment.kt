@@ -30,9 +30,9 @@ import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.recycler.BasicInstructions
-import org.oxycblt.auxio.list.recycler.ListDiffer
-import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
+import org.oxycblt.auxio.list.adapter.ListDiffer
+import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
@@ -139,7 +139,7 @@ class SongListFragment :
     }
 
     private fun updateList(songs: List<Song>) {
-        songAdapter.submitList(songs, homeModel.songsListInstructions ?: BasicInstructions.DIFF)
+        songAdapter.submitList(songs, homeModel.songsListInstructions ?: BasicListInstructions.DIFF)
         homeModel.finishSongsListInstructions()
     }
 
@@ -161,7 +161,7 @@ class SongListFragment :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class SongAdapter(private val listener: SelectableListListener<Song>) :
-        SelectionIndicatorAdapter<Song, BasicInstructions, SongViewHolder>(
+        SelectionIndicatorAdapter<Song, BasicListInstructions, SongViewHolder>(
             ListDiffer.Async(SongViewHolder.DIFF_CALLBACK)) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =

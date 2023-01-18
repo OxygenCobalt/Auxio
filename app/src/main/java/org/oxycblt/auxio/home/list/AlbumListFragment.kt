@@ -30,10 +30,10 @@ import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
+import org.oxycblt.auxio.list.adapter.ListDiffer
+import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.AlbumViewHolder
-import org.oxycblt.auxio.list.recycler.BasicInstructions
-import org.oxycblt.auxio.list.recycler.ListDiffer
-import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.playback.formatDurationMs
@@ -132,7 +132,8 @@ class AlbumListFragment :
     }
 
     private fun updateList(albums: List<Album>) {
-        albumAdapter.submitList(albums, homeModel.albumsListInstructions ?: BasicInstructions.DIFF)
+        albumAdapter.submitList(
+            albums, homeModel.albumsListInstructions ?: BasicListInstructions.DIFF)
         homeModel.finishAlbumsListInstructions()
     }
 
@@ -150,7 +151,7 @@ class AlbumListFragment :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class AlbumAdapter(private val listener: SelectableListListener<Album>) :
-        SelectionIndicatorAdapter<Album, BasicInstructions, AlbumViewHolder>(
+        SelectionIndicatorAdapter<Album, BasicListInstructions, AlbumViewHolder>(
             ListDiffer.Async(AlbumViewHolder.DIFF_CALLBACK)) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =

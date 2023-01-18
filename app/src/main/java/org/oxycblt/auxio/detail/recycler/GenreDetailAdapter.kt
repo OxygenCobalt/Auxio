@@ -25,8 +25,8 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.list.recycler.ArtistViewHolder
-import org.oxycblt.auxio.list.recycler.SimpleItemCallback
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -46,8 +46,8 @@ class GenreDetailAdapter(private val listener: Listener<Music>) :
     override fun getItemViewType(position: Int) =
         when (getItem(position)) {
             // Support the Genre header and generic Artist/Song items. There's nothing about
-            // a genre that will make the artists/songs homogeneous, so it doesn't matter what we
-            // use for their ViewHolders.
+            // a genre that will make the artists/songs specially formatted, so it doesn't matter
+            // what we use for their ViewHolders.
             is Genre -> GenreDetailViewHolder.VIEW_TYPE
             is Artist -> ArtistViewHolder.VIEW_TYPE
             is Song -> SongViewHolder.VIEW_TYPE
@@ -81,7 +81,7 @@ class GenreDetailAdapter(private val listener: Listener<Music>) :
 
     private companion object {
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Item>() {
+            object : SimpleDiffCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Genre && newItem is Genre ->
@@ -139,7 +139,7 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Genre>() {
+            object : SimpleDiffCallback<Genre>() {
                 override fun areContentsTheSame(oldItem: Genre, newItem: Genre) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.songs.size == newItem.songs.size &&

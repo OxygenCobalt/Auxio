@@ -25,12 +25,14 @@ import org.oxycblt.auxio.music.storage.MimeType
 /**
  * A header variation that displays a button to open a sort menu.
  * @param titleRes The string resource to use as the header title
+ * @author Alexander Capehart (OxygenCobalt)
  */
 data class SortHeader(@StringRes val titleRes: Int) : Item
 
 /**
  * A header variation that delimits between disc groups.
  * @param disc The disc number to be displayed on the header.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 data class DiscHeader(val disc: Int) : Item
 
@@ -39,9 +41,25 @@ data class DiscHeader(val disc: Int) : Item
  * @param bitrateKbps The bit rate, in kilobytes-per-second. Null if it could not be parsed.
  * @param sampleRateHz The sample rate, in hertz.
  * @param resolvedMimeType The known mime type of the [Song] after it's file format was determined.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 data class SongProperties(
     val bitrateKbps: Int?,
     val sampleRateHz: Int?,
     val resolvedMimeType: MimeType
 )
+
+/**
+ * Represents the specific way to update a list of items in the detail lists.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+sealed class DetailListInstructions {
+    /** Do a plain asynchronous diff. */
+    object Diff : DetailListInstructions()
+
+    /**
+     * Replace all the items starting at the given index.
+     * @param at The index to start replacing at.
+     */
+    data class ReplaceRest(val at: Int) : DetailListInstructions()
+}

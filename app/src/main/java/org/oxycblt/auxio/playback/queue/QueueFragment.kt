@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.list.EditableListListener
-import org.oxycblt.auxio.list.recycler.BasicInstructions
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
@@ -101,7 +101,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
 
         // Replace or diff the queue depending on the type of change it is.
         val instructions = queueModel.instructions
-        queueAdapter.submitList(queue, instructions?.update ?: BasicInstructions.DIFF)
+        queueAdapter.submitList(queue, instructions?.update ?: BasicListInstructions.DIFF)
         // Update position in list (and thus past/future items)
         queueAdapter.setPosition(index, isPlaying)
 

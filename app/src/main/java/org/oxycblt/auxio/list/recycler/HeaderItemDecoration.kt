@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.BackportMaterialDividerItemDecoration
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Header
+import org.oxycblt.auxio.list.adapter.DiffAdapter
 
 /**
  * A [BackportMaterialDividerItemDecoration] that sets up the divider configuration to correctly

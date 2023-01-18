@@ -29,8 +29,8 @@ import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
 import org.oxycblt.auxio.detail.DiscHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
-import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
-import org.oxycblt.auxio.list.recycler.SimpleItemCallback
+import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.formatDurationMs
@@ -94,7 +94,7 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
     private companion object {
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Item>() {
+            object : SimpleDiffCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Album && newItem is Album ->
@@ -169,7 +169,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Album>() {
+            object : SimpleDiffCallback<Album>() {
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.areArtistContentsTheSame(newItem) &&
@@ -210,7 +210,7 @@ private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<DiscHeader>() {
+            object : SimpleDiffCallback<DiscHeader>() {
                 override fun areContentsTheSame(oldItem: DiscHeader, newItem: DiscHeader) =
                     oldItem.disc == newItem.disc
             }
@@ -277,7 +277,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Song>() {
+            object : SimpleDiffCallback<Song>() {
                 override fun areContentsTheSame(oldItem: Song, newItem: Song) =
                     oldItem.rawName == newItem.rawName && oldItem.durationMs == newItem.durationMs
             }

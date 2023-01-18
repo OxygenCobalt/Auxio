@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.list.recycler
+package org.oxycblt.auxio.list.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 

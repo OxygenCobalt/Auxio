@@ -26,6 +26,8 @@ import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.SelectableListListener
+import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
@@ -72,7 +74,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Song>() {
+            object : SimpleDiffCallback<Song>() {
                 override fun areContentsTheSame(oldItem: Song, newItem: Song) =
                     oldItem.rawName == newItem.rawName && oldItem.areArtistContentsTheSame(newItem)
             }
@@ -119,7 +121,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Album>() {
+            object : SimpleDiffCallback<Album>() {
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.areArtistContentsTheSame(newItem) &&
@@ -178,7 +180,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Artist>() {
+            object : SimpleDiffCallback<Artist>() {
                 override fun areContentsTheSame(oldItem: Artist, newItem: Artist) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.albums.size == newItem.albums.size &&
@@ -231,7 +233,7 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Genre>() {
+            object : SimpleDiffCallback<Genre>() {
                 override fun areContentsTheSame(oldItem: Genre, newItem: Genre): Boolean =
                     oldItem.rawName == newItem.rawName && oldItem.songs.size == newItem.songs.size
             }
@@ -267,7 +269,7 @@ class HeaderViewHolder private constructor(private val binding: ItemHeaderBindin
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Header>() {
+            object : SimpleDiffCallback<Header>() {
                 override fun areContentsTheSame(oldItem: Header, newItem: Header): Boolean =
                     oldItem.titleRes == newItem.titleRes
             }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.list.recycler
+package org.oxycblt.auxio.list.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import org.oxycblt.auxio.list.Item
@@ -25,6 +25,6 @@ import org.oxycblt.auxio.list.Item
  * whenever creating [DiffUtil.ItemCallback] implementations with an [Item] subclass.
  * @author Alexander Capehart (OxygenCobalt)
  */
-abstract class SimpleItemCallback<T : Item> : DiffUtil.ItemCallback<T>() {
+abstract class SimpleDiffCallback<T : Item> : DiffUtil.ItemCallback<T>() {
     final override fun areItemsTheSame(oldItem: T, newItem: T) = oldItem == newItem
 }

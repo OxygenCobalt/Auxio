@@ -20,16 +20,24 @@ package org.oxycblt.auxio.detail.recycler
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.TooltipCompat
+import androidx.recyclerview.widget.AdapterListUpdateCallback
+import androidx.recyclerview.widget.AsyncDifferConfig
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemSortHeaderBinding
+import org.oxycblt.auxio.detail.DetailListInstructions
 import org.oxycblt.auxio.detail.SortHeader
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
+import org.oxycblt.auxio.list.adapter.ListDiffer
+import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
+import org.oxycblt.auxio.list.adapter.overwriteList
 import org.oxycblt.auxio.list.recycler.*
-import org.oxycblt.auxio.list.recycler.BasicInstructions
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
@@ -45,8 +53,8 @@ abstract class DetailAdapter(
     private val listener: Listener<*>,
     diffCallback: DiffUtil.ItemCallback<Item>
 ) :
-    SelectionIndicatorAdapter<Item, BasicInstructions, RecyclerView.ViewHolder>(
-        ListDiffer.Async(diffCallback)),
+    SelectionIndicatorAdapter<Item, DetailListInstructions, RecyclerView.ViewHolder>(
+        DetailListDiffer.Factory(diffCallback)),
     AuxioRecyclerView.SpanSizeLookup {
 
     override fun getItemViewType(position: Int) =
@@ -102,7 +110,7 @@ abstract class DetailAdapter(
     protected companion object {
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Item>() {
+            object : SimpleDiffCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Header && newItem is Header ->
@@ -113,6 +121,39 @@ abstract class DetailAdapter(
                     }
                 }
             }
+    }
+}
+
+private class DetailListDiffer<T>(
+    private val updateCallback: ListUpdateCallback,
+    diffCallback: DiffUtil.ItemCallback<T>
+) : ListDiffer<T, DetailListInstructions> {
+    private val inner =
+        AsyncListDiffer(updateCallback, AsyncDifferConfig.Builder(diffCallback).build())
+
+    override val currentList: List<T>
+        get() = inner.currentList
+
+    override fun submitList(
+        newList: List<T>,
+        instructions: DetailListInstructions,
+        onDone: () -> Unit
+    ) {
+        when (instructions) {
+            is DetailListInstructions.Diff -> inner.submitList(newList, onDone)
+            is DetailListInstructions.ReplaceRest -> {
+                val amount = newList.size - instructions.at
+                updateCallback.onRemoved(instructions.at, amount)
+                inner.overwriteList(newList)
+                updateCallback.onInserted(instructions.at, amount)
+            }
+        }
+    }
+
+    class Factory<T>(private val diffCallback: DiffUtil.ItemCallback<T>) :
+        ListDiffer.Factory<T, DetailListInstructions>() {
+        override fun new(adapter: RecyclerView.Adapter<*>) =
+            DetailListDiffer(AdapterListUpdateCallback(adapter), diffCallback)
     }
 }
 
@@ -152,7 +193,7 @@ private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<SortHeader>() {
+            object : SimpleDiffCallback<SortHeader>() {
                 override fun areContentsTheSame(oldItem: SortHeader, newItem: SortHeader) =
                     oldItem.titleRes == newItem.titleRes
             }

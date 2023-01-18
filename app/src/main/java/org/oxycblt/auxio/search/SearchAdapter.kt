@@ -20,6 +20,10 @@ package org.oxycblt.auxio.search
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.list.*
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
+import org.oxycblt.auxio.list.adapter.ListDiffer
+import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.list.recycler.*
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.util.logD
@@ -30,7 +34,7 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SearchAdapter(private val listener: SelectableListListener<Music>) :
-    SelectionIndicatorAdapter<Item, BasicInstructions, RecyclerView.ViewHolder>(
+    SelectionIndicatorAdapter<Item, BasicListInstructions, RecyclerView.ViewHolder>(
         ListDiffer.Async(DIFF_CALLBACK)),
     AuxioRecyclerView.SpanSizeLookup {
 
@@ -79,7 +83,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
         val PAYLOAD_UPDATE_DIVIDER = 102249124
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Item>() {
+            object : SimpleDiffCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item) =
                     when {
                         oldItem is Song && newItem is Song ->

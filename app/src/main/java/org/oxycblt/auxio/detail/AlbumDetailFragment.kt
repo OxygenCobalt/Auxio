@@ -31,7 +31,6 @@ import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.recycler.BasicInstructions
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
@@ -141,12 +140,12 @@ class AlbumDetailFragment :
 
     override fun onOpenSortMenu(anchor: View) {
         openMenu(anchor, R.menu.menu_album_sort) {
-            val sort = detailModel.albumSortSort
+            val sort = detailModel.albumSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
             unlikelyToBeNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
             setOnMenuItemClickListener { item ->
                 item.isChecked = !item.isChecked
-                detailModel.albumSortSort =
+                detailModel.albumSongSort =
                     if (item.itemId == R.id.option_sort_asc) {
                         sort.withAscending(item.isChecked)
                     } else {
@@ -260,7 +259,9 @@ class AlbumDetailFragment :
     }
 
     private fun updateList(items: List<Item>) {
-        detailAdapter.submitList(items, BasicInstructions.DIFF)
+        detailAdapter.submitList(
+            items, detailModel.albumListInstructions ?: DetailListInstructions.Diff)
+        detailModel.finishAlbumListInstructions()
     }
 
     private fun updateSelection(selected: List<Music>) {
