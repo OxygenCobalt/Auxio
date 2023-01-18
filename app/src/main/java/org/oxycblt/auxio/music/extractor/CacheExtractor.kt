@@ -442,7 +442,7 @@ private class CacheDatabase(context: Context) :
 
     companion object {
         private const val DB_NAME = "auxio_music_cache.db"
-        private const val DB_VERSION = 1
+        private const val DB_VERSION = 2
         private const val TABLE_RAW_SONGS = "raw_songs"
 
         @Volatile private var INSTANCE: CacheDatabase? = null
