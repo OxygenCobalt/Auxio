@@ -40,7 +40,7 @@
     <string name="lbl_save">Išsaugoti</string>
     <string name="lbl_about">Apie</string>
     <string name="lbl_add">Pridėti</string>
-    <string name="set_ui">Išvaizda</string>
+    <string name="set_ui">Išvaizda ir pojūtis</string>
     <string name="lbl_format">Formatas</string>
     <string name="lbl_version">Versija</string>
     <string name="set_root_title">Nustatymai</string>
@@ -259,4 +259,16 @@
     <string name="lbl_wiki">Viki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Nustatyti iš naujo</string>
+    <string name="set_library">Biblioteka</string>
+    <string name="set_behavior">Elgesys</string>
+    <string name="set_ui_desc">Pakeisti programos temą ir spalvas</string>
+    <string name="set_content_desc">Valdyti, kaip muzika ir vaizdai įkeliama</string>
+    <string name="set_audio_desc">Konfigūruoti garso ir grojimo elgesį</string>
+    <string name="set_personalize_desc">Naudotojo UI ir elgsenos pritaikymas</string>
+    <string name="set_music">Muzika</string>
+    <string name="set_images">Vaizdai</string>
+    <string name="set_playback">Grojimas</string>
+    <string name="set_replay_gain">„ReplayGain“</string>
+    <string name="set_dirs_list">Aplankalai</string>
+    <string name="set_state">Atkaklumas</string>
 </resources>
