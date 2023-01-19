@@ -21,7 +21,7 @@
     <string name="lng_queue_added">Додано в чергу</string>
     <string name="lbl_go_artist">Перейти до виконавця</string>
     <string name="lbl_go_album">Перейти до альбому</string>
-    <string name="lbl_about">Про програму</string>
+    <string name="lbl_about">Про застосунок</string>
     <string name="lbl_version">Версія</string>
     <string name="lbl_code">Вихідний код</string>
     <string name="lbl_licenses">Ліцензії</string>
@@ -89,7 +89,7 @@
     <string name="set_cover_mode_off">Вимкнено</string>
     <string name="set_action_mode_next">Перейти до наступної</string>
     <string name="set_cover_mode_media_store">Швидкі</string>
-    <string name="set_dirs_desc">Вкажіть папки, з яких програма має завантажувати пісні</string>
+    <string name="set_dirs_desc">Вкажіть звідки слід завантажувати музику</string>
     <string name="set_dirs_mode_exclude">Виключити</string>
     <string name="fmt_lib_total_duration">Загальна тривалість: %s</string>
     <string name="lbl_mixtapes">Мікстейпи</string>
@@ -243,7 +243,7 @@
     <string name="def_codec">Невідомий формат</string>
     <string name="desc_genre_image">Зображення жанру %s</string>
     <string name="cdc_mp3">Звук MPEG-1</string>
-    <string name="err_no_app">Не знайдено жодної програми, яка б могла впоратися з цим завданням</string>
+    <string name="err_no_app">Не знайдено жодного застосунку, який би міг впоратися з цим завданням</string>
     <string name="def_date">Дата відсутня</string>
     <string name="def_track">Номер пісні невідомий</string>
     <string name="def_playback">Музика не грає</string>
@@ -266,7 +266,7 @@
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="err_no_perms">Auxio потрібен дозвіл на читання вашої музичної бібліотеки</string>
     <string name="set_behavior">Поведінка</string>
-    <string name="set_ui_desc">Змініть тему та кольори додатку</string>
+    <string name="set_ui_desc">Змініть тему та кольори застосунку</string>
     <string name="set_personalize_desc">Налаштуйте елементи керування та поведінку інтерфейсу користувача</string>
     <string name="set_content_desc">Керування завантаженням музики та зображень</string>
     <string name="set_music">Музика</string>
