@@ -44,20 +44,20 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
         get() = _index
 
     /** Specifies how to update the list when the queue changes. */
-    var instructions: Instructions? = null
+    var queueListInstructions: ListInstructions? = null
 
     init {
         playbackManager.addListener(this)
     }
 
     override fun onIndexMoved(queue: Queue) {
-        instructions = Instructions(null, queue.index)
+        queueListInstructions = ListInstructions(null, queue.index)
         _index.value = queue.index
     }
 
     override fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {
         // Queue changed trivially due to item mo -> Diff queue, stay at current index.
-        instructions = Instructions(BasicListInstructions.DIFF, null)
+        queueListInstructions = ListInstructions(BasicListInstructions.DIFF, null)
         _queue.value = queue.resolve()
         if (change != Queue.ChangeResult.MAPPING) {
             // Index changed, make sure it remains updated without actually scrolling to it.
@@ -67,14 +67,14 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
 
     override fun onQueueReordered(queue: Queue) {
         // Queue changed completely -> Replace queue, update index
-        instructions = Instructions(BasicListInstructions.REPLACE, queue.index)
+        queueListInstructions = ListInstructions(BasicListInstructions.REPLACE, queue.index)
         _queue.value = queue.resolve()
         _index.value = queue.index
     }
 
     override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
         // Entirely new queue -> Replace queue, update index
-        instructions = Instructions(BasicListInstructions.REPLACE, queue.index)
+        queueListInstructions = ListInstructions(BasicListInstructions.REPLACE, queue.index)
         _queue.value = queue.resolve()
         _index.value = queue.index
     }
@@ -119,10 +119,10 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
         return true
     }
 
-    /** Signal that the specified [Instructions] in [instructions] were performed. */
+    /** Signal that the specified [ListInstructions] in [queueListInstructions] were performed. */
     fun finishInstructions() {
-        instructions = null
+        queueListInstructions = null
     }
 
-    class Instructions(val update: BasicListInstructions?, val scrollTo: Int?)
+    class ListInstructions(val update: BasicListInstructions?, val scrollTo: Int?)
 }

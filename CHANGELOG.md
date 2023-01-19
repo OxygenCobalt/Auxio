@@ -23,6 +23,7 @@ file manager
 - Fixed genre picker from repeatedly showing up when device rotates
 - Fixed multi-value genres not being recognized on vorbis files
 - Fixed sharp-cornered widget bar appearing even when round mode was enabled
+- Fixed duplicate song items from appearing
 
 #### What's Changed
 - Implemented new queue system

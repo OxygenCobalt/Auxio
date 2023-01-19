@@ -100,7 +100,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
         val binding = requireBinding()
 
         // Replace or diff the queue depending on the type of change it is.
-        val instructions = queueModel.instructions
+        val instructions = queueModel.queueListInstructions
         queueAdapter.submitList(queue, instructions?.update ?: BasicListInstructions.DIFF)
         // Update position in list (and thus past/future items)
         queueAdapter.setPosition(index, isPlaying)

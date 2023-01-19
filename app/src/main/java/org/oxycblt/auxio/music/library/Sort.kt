@@ -97,7 +97,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
      * Sort a *mutable* list of [Song]s in-place using this [Sort]'s configuration.
      * @param songs The [Song]s to sort.
      */
-    fun songsInPlace(songs: MutableList<Song>) {
+    private fun songsInPlace(songs: MutableList<Song>) {
         songs.sortWith(mode.getSongComparator(isAscending))
     }
 

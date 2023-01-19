@@ -35,7 +35,7 @@ import org.oxycblt.auxio.util.logD
  */
 class Library(rawSongs: List<Song.Raw>, settings: MusicSettings) {
     /** All [Song]s that were detected on the device. */
-    val songs = Sort(Sort.Mode.ByName, true).songs(rawSongs.map { Song(it, settings) })
+    val songs = Sort(Sort.Mode.ByName, true).songs(rawSongs.map { Song(it, settings) }.distinct())
     /** All [Album]s found on the device. */
     val albums = buildAlbums(songs)
     /** All [Artist]s found on the device. */
