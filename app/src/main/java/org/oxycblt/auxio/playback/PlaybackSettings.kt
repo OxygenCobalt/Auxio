@@ -192,10 +192,12 @@ interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
         }
 
         override fun onSettingChanged(key: String, listener: Listener) {
-            if (key == getString(R.string.set_key_replay_gain) ||
-                key == getString(R.string.set_key_pre_amp_with) ||
-                key == getString(R.string.set_key_pre_amp_without)) {
-                listener.onReplayGainSettingsChanged()
+            when (key) {
+                getString(R.string.set_key_replay_gain),
+                getString(R.string.set_key_pre_amp_with),
+                getString(R.string.set_key_pre_amp_without) ->
+                    listener.onReplayGainSettingsChanged()
+                getString(R.string.set_key_notif_action) -> listener.onNotificationActionChanged()
             }
         }
 
