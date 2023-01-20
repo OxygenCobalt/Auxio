@@ -112,7 +112,7 @@ private abstract class BasicListDiffer<T> : ListDiffer<T, BasicListInstructions>
 }
 
 private class RealAsyncListDiffer<T>(
-    private val updateCallback: ListUpdateCallback,
+    updateCallback: ListUpdateCallback,
     diffCallback: DiffUtil.ItemCallback<T>
 ) : BasicListDiffer<T>() {
     private val inner =
@@ -126,13 +126,9 @@ private class RealAsyncListDiffer<T>(
     }
 
     override fun replaceList(newList: List<T>, onDone: () -> Unit) {
-        if (inner.currentList != newList) {
-            val oldListSize = inner.currentList.size
-            updateCallback.onRemoved(0, oldListSize)
-            inner.overwriteList(newList)
-            updateCallback.onInserted(0, newList.size)
+        inner.submitList(null) {
+            inner.submitList(newList, onDone)
         }
-        onDone()
     }
 }
 

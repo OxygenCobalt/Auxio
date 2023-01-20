@@ -139,8 +139,7 @@ class SongListFragment :
     }
 
     private fun updateList(songs: List<Song>) {
-        songAdapter.submitList(songs, homeModel.songsListInstructions ?: BasicListInstructions.DIFF)
-        homeModel.finishSongsListInstructions()
+        songAdapter.submitList(songs, BasicListInstructions.REPLACE)
     }
 
     private fun updateSelection(selection: List<Music>) {
@@ -162,7 +161,7 @@ class SongListFragment :
      */
     private class SongAdapter(private val listener: SelectableListListener<Song>) :
         SelectionIndicatorAdapter<Song, BasicListInstructions, SongViewHolder>(
-            ListDiffer.Async(SongViewHolder.DIFF_CALLBACK)) {
+            ListDiffer.Blocking(SongViewHolder.DIFF_CALLBACK)) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             SongViewHolder.from(parent)

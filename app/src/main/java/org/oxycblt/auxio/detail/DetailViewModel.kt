@@ -78,18 +78,14 @@ class DetailViewModel(application: Application) :
     /** The current list data derived from [currentAlbum]. */
     val albumList: StateFlow<List<Item>>
         get() = _albumList
-    /** Specifies how to update [albumList] when it changes. */
-    var albumListInstructions: DetailListInstructions? = null
-        private set
 
     /** The current [Sort] used for [Song]s in [albumList]. */
     var albumSongSort: Sort
         get() = musicSettings.albumSongSort
         set(value) {
             musicSettings.albumSongSort = value
-            // Refresh the album list to reflect the new sort. Make sure we only visually replace
-            // the song information, however.
-            currentAlbum.value?.let { refreshAlbumList(it, true) }
+            // Refresh the album list to reflect the new sort.
+            currentAlbum.value?.let(::refreshAlbumList)
         }
 
     // --- ARTIST ---
@@ -102,18 +98,14 @@ class DetailViewModel(application: Application) :
     private val _artistList = MutableStateFlow(listOf<Item>())
     /** The current list derived from [currentArtist]. */
     val artistList: StateFlow<List<Item>> = _artistList
-    /** Specifies how to update [artistList] when it changes. */
-    var artistListInstructions: DetailListInstructions? = null
-        private set
 
     /** The current [Sort] used for [Song]s in [artistList]. */
     var artistSongSort: Sort
         get() = musicSettings.artistSongSort
         set(value) {
             musicSettings.artistSongSort = value
-            // Refresh the artist list to reflect the new sort. Make sure we only visually replace
-            // the song information, however.
-            currentArtist.value?.let { refreshArtistList(it, true) }
+            // Refresh the artist list to reflect the new sort.
+            currentArtist.value?.let(::refreshArtistList)
         }
 
     // --- GENRE ---
@@ -126,18 +118,14 @@ class DetailViewModel(application: Application) :
     private val _genreList = MutableStateFlow(listOf<Item>())
     /** The current list data derived from [currentGenre]. */
     val genreList: StateFlow<List<Item>> = _genreList
-    /** Specifies how to update [genreList] when it changes. */
-    var genreListInstructions: DetailListInstructions? = null
-        private set
 
     /** The current [Sort] used for [Song]s in [genreList]. */
     var genreSongSort: Sort
         get() = musicSettings.genreSongSort
         set(value) {
             musicSettings.genreSongSort = value
-            // Refresh the genre list to reflect the new sort. Make sure we only visually replace
-            // the song information, however.
-            currentGenre.value?.let { refreshGenreList(it, true) }
+            // Refresh the genre list to reflect the new sort.
+            currentGenre.value?.let(::refreshGenreList)
         }
 
     /**
@@ -173,19 +161,19 @@ class DetailViewModel(application: Application) :
 
         val album = currentAlbum.value
         if (album != null) {
-            _currentAlbum.value = library.sanitize(album)?.also { refreshAlbumList(it, false) }
+            _currentAlbum.value = library.sanitize(album)?.also(::refreshAlbumList)
             logD("Updated genre to ${currentAlbum.value}")
         }
 
         val artist = currentArtist.value
         if (artist != null) {
-            _currentArtist.value = library.sanitize(artist)?.also { refreshArtistList(it, false) }
+            _currentArtist.value = library.sanitize(artist)?.also(::refreshArtistList)
             logD("Updated genre to ${currentArtist.value}")
         }
 
         val genre = currentGenre.value
         if (genre != null) {
-            _currentGenre.value = library.sanitize(genre)?.also { refreshGenreList(it, false) }
+            _currentGenre.value = library.sanitize(genre)?.also(::refreshGenreList)
             logD("Updated genre to ${currentGenre.value}")
         }
     }
@@ -215,7 +203,7 @@ class DetailViewModel(application: Application) :
             return
         }
         logD("Opening Album [uid: $uid]")
-        _currentAlbum.value = requireMusic<Album>(uid)?.also { refreshAlbumList(it, false) }
+        _currentAlbum.value = requireMusic<Album>(uid)?.also(::refreshAlbumList)
     }
 
     /**
@@ -229,7 +217,7 @@ class DetailViewModel(application: Application) :
             return
         }
         logD("Opening Artist [uid: $uid]")
-        _currentArtist.value = requireMusic<Artist>(uid)?.also { refreshArtistList(it, false) }
+        _currentArtist.value = requireMusic<Artist>(uid)?.also(::refreshArtistList)
     }
 
     /**
@@ -243,29 +231,7 @@ class DetailViewModel(application: Application) :
             return
         }
         logD("Opening Genre [uid: $uid]")
-        _currentGenre.value = requireMusic<Genre>(uid)?.also { refreshGenreList(it, false) }
-    }
-
-    /**
-     * Signal that the specified [DetailListInstructions] in [albumListInstructions] were performed.
-     */
-    fun finishAlbumListInstructions() {
-        albumListInstructions = null
-    }
-
-    /**
-     * Signal that the specified [DetailListInstructions] in [artistListInstructions] were
-     * performed.
-     */
-    fun finishArtistListInstructions() {
-        artistListInstructions = null
-    }
-
-    /**
-     * Signal that the specified [DetailListInstructions] in [genreListInstructions] were performed.
-     */
-    fun finishGenreListInstructions() {
-        genreListInstructions = null
+        _currentGenre.value = requireMusic<Genre>(uid)?.also(::refreshGenreList)
     }
 
     private fun <T : Music> requireMusic(uid: Music.UID) = musicStore.library?.find<T>(uid)
@@ -348,11 +314,11 @@ class DetailViewModel(application: Application) :
         return SongProperties(bitrate, sampleRate, resolvedMimeType)
     }
 
-    private fun refreshAlbumList(album: Album, replace: Boolean): Int {
+    private fun refreshAlbumList(album: Album) {
         logD("Refreshing album data")
         val data = mutableListOf<Item>(album)
         data.add(SortHeader(R.string.lbl_songs))
-        val songsStartIndex = data.size
+
         // To create a good user experience regarding disc numbers, we group the album's
         // songs up by disc and then delimit the groups by a disc header.
         val songs = albumSongSort.songs(album.songs)
@@ -368,17 +334,11 @@ class DetailViewModel(application: Application) :
             // Album only has one disc, don't add any redundant headers
             data.addAll(songs)
         }
-        albumListInstructions =
-            if (replace) {
-                DetailListInstructions.ReplaceRest(songsStartIndex)
-            } else {
-                DetailListInstructions.Diff
-            }
+
         _albumList.value = data
-        return songsStartIndex
     }
 
-    private fun refreshArtistList(artist: Artist, replace: Boolean) {
+    private fun refreshArtistList(artist: Artist) {
         logD("Refreshing artist data")
         val data = mutableListOf<Item>(artist)
         val albums = Sort(Sort.Mode.ByDate, false).albums(artist.albums)
@@ -411,40 +371,24 @@ class DetailViewModel(application: Application) :
             data.addAll(entry.value)
         }
 
-        var songsStartIndex: Int? = null
         // Artists may not be linked to any songs, only include a header entry if we have any.
         if (artist.songs.isNotEmpty()) {
             logD("Songs present in this artist, adding header")
             data.add(SortHeader(R.string.lbl_songs))
-            songsStartIndex = data.size
             data.addAll(artistSongSort.songs(artist.songs))
         }
 
-        artistListInstructions =
-            if (replace) {
-                DetailListInstructions.ReplaceRest(
-                    requireNotNull(songsStartIndex) { "Cannot replace empty artist song list" })
-            } else {
-                DetailListInstructions.Diff
-            }
         _artistList.value = data.toList()
     }
 
-    private fun refreshGenreList(genre: Genre, replace: Boolean) {
+    private fun refreshGenreList(genre: Genre) {
         logD("Refreshing genre data")
         val data = mutableListOf<Item>(genre)
         // Genre is guaranteed to always have artists and songs.
         data.add(Header(R.string.lbl_artists))
         data.addAll(genre.artists)
         data.add(SortHeader(R.string.lbl_songs))
-        val songsStartIndex = data.size
         data.addAll(genreSongSort.songs(genre.songs))
-        genreListInstructions =
-            if (replace) {
-                DetailListInstructions.ReplaceRest(songsStartIndex)
-            } else {
-                DetailListInstructions.Diff
-            }
         _genreList.value = data
     }
 

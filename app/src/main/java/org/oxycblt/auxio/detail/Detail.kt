@@ -48,18 +48,3 @@ data class SongProperties(
     val sampleRateHz: Int?,
     val resolvedMimeType: MimeType
 )
-
-/**
- * Represents the specific way to update a list of items in the detail lists.
- * @author Alexander Capehart (OxygenCobalt)
- */
-sealed class DetailListInstructions {
-    /** Do a plain asynchronous diff. */
-    object Diff : DetailListInstructions()
-
-    /**
-     * Replace all the items starting at the given index.
-     * @param at The index to start replacing at.
-     */
-    data class ReplaceRest(val at: Int) : DetailListInstructions()
-}

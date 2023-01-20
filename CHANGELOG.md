@@ -4,8 +4,8 @@
 
 #### What's New
 - Added ability to play/shuffle selections
-- Resigned header components
-- Resigned settings view
+- Redesigned header components
+- Redesigned settings view
 
 #### What's Improved
 - Added ability to edit previously played or currently playing items in the queue
@@ -13,7 +13,6 @@
 - Pressing the button will now clear the current selection before navigating back
 - Added support for non-standard `ARTISTS` tags
 - Play Next and Add To Queue now start playback if there is no queue to add
-- Made resorting list animations consistent across app
 
 #### What's Fixed
 - Fixed unreliable ReplayGain adjustment application in certain situations

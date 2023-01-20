@@ -31,6 +31,7 @@ import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
 import org.oxycblt.auxio.detail.recycler.DetailAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
@@ -235,9 +236,7 @@ class ArtistDetailFragment :
     }
 
     private fun updateList(items: List<Item>) {
-        detailAdapter.submitList(
-            items, detailModel.artistListInstructions ?: DetailListInstructions.Diff)
-        detailModel.finishArtistListInstructions()
+        detailAdapter.submitList(items, BasicListInstructions.DIFF)
     }
 
     private fun updateSelection(selected: List<Music>) {

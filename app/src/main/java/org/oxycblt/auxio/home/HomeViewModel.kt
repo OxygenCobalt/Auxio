@@ -45,17 +45,11 @@ class HomeViewModel(application: Application) :
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
     val songsList: StateFlow<List<Song>>
         get() = _songsList
-    /** Specifies how to update [songsList] when it changes. */
-    var songsListInstructions: BasicListInstructions? = null
-        private set
 
     private val _albumsLists = MutableStateFlow(listOf<Album>())
     /** A list of [Album]s, sorted by the preferred [Sort], to be shown in the home view. */
     val albumsList: StateFlow<List<Album>>
         get() = _albumsLists
-    /** Specifies how to update [albumsList] when it changes. */
-    var albumsListInstructions: BasicListInstructions? = null
-        private set
 
     private val _artistsList = MutableStateFlow(listOf<Artist>())
     /**
@@ -65,17 +59,11 @@ class HomeViewModel(application: Application) :
      */
     val artistsList: MutableStateFlow<List<Artist>>
         get() = _artistsList
-    /** Specifies how to update [artistsList] when it changes. */
-    var artistsListInstructions: BasicListInstructions? = null
-        private set
 
     private val _genresList = MutableStateFlow(listOf<Genre>())
     /** A list of [Genre]s, sorted by the preferred [Sort], to be shown in the home view. */
     val genresList: StateFlow<List<Genre>>
         get() = _genresList
-    /** Specifies how to update [genresList] when it changes. */
-    var genresListInstructions: BasicListInstructions? = null
-        private set
 
     /** The [MusicMode] to use when playing a [Song] from the UI. */
     val playbackMode: MusicMode
@@ -120,11 +108,8 @@ class HomeViewModel(application: Application) :
             logD("Library changed, refreshing library")
             // Get the each list of items in the library to use as our list data.
             // Applying the preferred sorting to them.
-            songsListInstructions = BasicListInstructions.DIFF
             _songsList.value = musicSettings.songSort.songs(library.songs)
-            albumsListInstructions = BasicListInstructions.DIFF
             _albumsLists.value = musicSettings.albumSort.albums(library.albums)
-            artistsListInstructions = BasicListInstructions.DIFF
             _artistsList.value =
                 musicSettings.artistSort.artists(
                     if (homeSettings.shouldHideCollaborators) {
@@ -133,7 +118,6 @@ class HomeViewModel(application: Application) :
                     } else {
                         library.artists
                     })
-            genresListInstructions = BasicListInstructions.DIFF
             _genresList.value = musicSettings.genreSort.genres(library.genres)
         }
     }
@@ -173,54 +157,21 @@ class HomeViewModel(application: Application) :
         when (_currentTabMode.value) {
             MusicMode.SONGS -> {
                 musicSettings.songSort = sort
-                songsListInstructions = BasicListInstructions.REPLACE
                 _songsList.value = sort.songs(_songsList.value)
             }
             MusicMode.ALBUMS -> {
                 musicSettings.albumSort = sort
-                albumsListInstructions = BasicListInstructions.REPLACE
                 _albumsLists.value = sort.albums(_albumsLists.value)
             }
             MusicMode.ARTISTS -> {
                 musicSettings.artistSort = sort
-                artistsListInstructions = BasicListInstructions.REPLACE
                 _artistsList.value = sort.artists(_artistsList.value)
             }
             MusicMode.GENRES -> {
                 musicSettings.genreSort = sort
-                genresListInstructions = BasicListInstructions.REPLACE
                 _genresList.value = sort.genres(_genresList.value)
             }
         }
-    }
-
-    /**
-     * Signal that the specified [BasicListInstructions] in [songsListInstructions] were performed.
-     */
-    fun finishSongsListInstructions() {
-        songsListInstructions = null
-    }
-
-    /**
-     * Signal that the specified [BasicListInstructions] in [albumsListInstructions] were performed.
-     */
-    fun finishAlbumsListInstructions() {
-        albumsListInstructions = null
-    }
-
-    /**
-     * Signal that the specified [BasicListInstructions] in [artistsListInstructions] were
-     * performed.
-     */
-    fun finishArtistsListInstructions() {
-        artistsListInstructions = null
-    }
-
-    /**
-     * Signal that the specified [BasicListInstructions] in [genresListInstructions] were performed.
-     */
-    fun finishGenresListInstructions() {
-        genresListInstructions = null
     }
 
     /**
