@@ -43,7 +43,7 @@
     <string name="lng_author">由 Alexander Capehart 开发</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">设置</string>
-    <string name="set_ui">外观</string>
+    <string name="set_ui">外观和感觉</string>
     <string name="set_theme">主题</string>
     <string name="set_theme_auto">自动</string>
     <string name="set_theme_day">浅色</string>
@@ -259,4 +259,16 @@
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">重置</string>
+    <string name="set_behavior">行为</string>
+    <string name="set_replay_gain">回放增益</string>
+    <string name="set_state">持久性</string>
+    <string name="set_ui_desc">更改应用的主题和颜色</string>
+    <string name="set_personalize_desc">定制用户界面操控和行为</string>
+    <string name="set_content_desc">控制音乐和图片加载方式</string>
+    <string name="set_images">图片</string>
+    <string name="set_playback">播放</string>
+    <string name="set_library">曲库</string>
+    <string name="set_dirs_list">文件夹</string>
+    <string name="set_music">音乐</string>
+    <string name="set_audio_desc">配置声音和播放行为</string>
 </resources>

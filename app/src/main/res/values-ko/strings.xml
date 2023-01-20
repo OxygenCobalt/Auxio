@@ -257,4 +257,8 @@
     <string name="lbl_play_selected">선택한 재생</string>
     <string name="lbl_shuffle_selected">선택한 셔플</string>
     <string name="fmt_selected">%d 선택됨</string>
+    <string name="lbl_reset">재설정</string>
+    <string name="lbl_wiki">위키</string>
+    <string name="set_playback_mode_genre">장르에서 재생</string>
+    <string name="fmt_list">%1$s, %2$s</string>
 </resources>
