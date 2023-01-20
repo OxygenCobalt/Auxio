@@ -95,7 +95,7 @@ enum class BasicListInstructions {
     REPLACE
 }
 
-private abstract class BasicListDiffer<T>() : ListDiffer<T, BasicListInstructions> {
+private abstract class BasicListDiffer<T> : ListDiffer<T, BasicListInstructions> {
     override fun submitList(
         newList: List<T>,
         instructions: BasicListInstructions,

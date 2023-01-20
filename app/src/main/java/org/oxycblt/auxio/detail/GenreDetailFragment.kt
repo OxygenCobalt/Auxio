@@ -127,10 +127,10 @@ class GenreDetailFragment :
                 if (playbackMode != null) {
                     playbackModel.playFrom(item, playbackMode)
                 } else {
-                    // When configured to play from the selected item, we already have an Artist
+                    // When configured to play from the selected item, we already have an Genre
                     // to play from.
-                    playbackModel.playFromArtist(
-                        item, unlikelyToBeNull(detailModel.currentArtist.value))
+                    playbackModel.playFromGenre(
+                        item, unlikelyToBeNull(detailModel.currentGenre.value))
                 }
             }
             else -> error("Unexpected datatype: ${item::class.simpleName}")
