@@ -36,6 +36,7 @@ import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.ListDiffer
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
+import org.oxycblt.auxio.list.adapter.overwriteList
 import org.oxycblt.auxio.list.recycler.*
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.context
@@ -141,7 +142,10 @@ private class DetailListDiffer<T>(
         when (instructions) {
             is DetailListInstructions.Diff -> inner.submitList(newList, onDone)
             is DetailListInstructions.ReplaceRest -> {
-                inner.submitList(newList.slice(0..instructions.at)) { inner.submitList(newList) }
+                val amount = newList.size - instructions.at
+                updateCallback.onRemoved(instructions.at, amount)
+                inner.overwriteList(newList)
+                updateCallback.onInserted(instructions.at, amount)
             }
         }
     }
