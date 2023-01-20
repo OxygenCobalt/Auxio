@@ -24,6 +24,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
 
+// TODO: Re-add list instructions with a less dangerous framework.
+
 /**
  * List differ wrapper that provides more flexibility regarding the way lists are updated.
  * @author Alexander Capehart (OxygenCobalt)
@@ -126,9 +128,7 @@ private class RealAsyncListDiffer<T>(
     }
 
     override fun replaceList(newList: List<T>, onDone: () -> Unit) {
-        inner.submitList(null) {
-            inner.submitList(newList, onDone)
-        }
+        inner.submitList(null) { inner.submitList(newList, onDone) }
     }
 }
 

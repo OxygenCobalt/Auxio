@@ -25,6 +25,7 @@ file manager
 - Fixed duplicate song items from appearing
 
 #### What's Changed
+- Playback state schema was updates (will wipe state)
 - Implemented new queue system
 
 #### Dev/Meta
