@@ -16,7 +16,7 @@
     <string name="lbl_shuffle">Перемішати</string>
     <string name="lbl_playback">Відтворюється</string>
     <string name="lbl_queue">Черга</string>
-    <string name="lbl_play_next">Відтворити наступною</string>
+    <string name="lbl_play_next">Відтворити наступним</string>
     <string name="lbl_queue_add">Додати в чергу</string>
     <string name="lng_queue_added">Додано в чергу</string>
     <string name="lbl_go_artist">Перейти до виконавця</string>
@@ -149,7 +149,7 @@
     <string name="lbl_state_wiped">Стан відтворення очищено</string>
     <string name="set_black_mode_desc">Використовувати повністю чорну тему</string>
     <string name="set_hide_collaborators_desc">Показувати лише тих виконавців, які безпосередньо зазначені в альбомі (найкраще працює в добре позначених бібліотеках)</string>
-    <string name="set_pre_amp_warning">Увага: Встановлення високих позитивних значень попереднього підсилювача може призвести до обрізки звуку в деяких піснях.</string>
+    <string name="set_pre_amp_warning">Увага: Встановлення високих позитивних значень попереднього підсилювача може призвести до спотворення звуку в деяких піснях.</string>
     <string name="set_detail_song_playback_mode">При відтворенні з деталей предмета</string>
     <string name="set_rescan_desc">Очистити кеш тегів і повністю перезавантажити музичну бібліотеку (повільніше, але ефективніше)</string>
     <string name="set_observing">Автоматичне перезавантаження</string>
@@ -230,7 +230,7 @@
     <string name="desc_tab_handle">Перемістити дану вкладку</string>
     <string name="desc_clear_search">Очистити пошуковий запит</string>
     <string name="desc_no_cover">Обкладинка альбому</string>
-    <string name="cdc_ogg">Ogg audio</string>
+    <string name="cdc_ogg">Звук Ogg</string>
     <string name="clr_indigo">Індиго</string>
     <string name="clr_blue">Синій</string>
     <string name="clr_deep_blue">Темно-синій</string>
@@ -245,7 +245,7 @@
     <string name="cdc_mp3">Звук MPEG-1</string>
     <string name="err_no_app">Не знайдено жодного застосунку, який би міг впоратися з цим завданням</string>
     <string name="def_date">Дата відсутня</string>
-    <string name="def_track">Номер пісні невідомий</string>
+    <string name="def_track">Немає номеру пісні</string>
     <string name="def_playback">Музика не грає</string>
     <string name="err_did_not_wipe">Не вдалось очистити статус відтворення</string>
     <string name="err_did_not_save">Не вдалось зберегти статус відтворення</string>
