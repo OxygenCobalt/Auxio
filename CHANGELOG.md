@@ -1,5 +1,11 @@
 # Changelog
 
+## dev
+
+#### What's Improved
+- Auxio will now accept zeroed track/disc numbers in the presence of non-zero total
+track/disc fields.
+
 ## 3.0.2
 
 #### What's New

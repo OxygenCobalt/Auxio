@@ -29,7 +29,8 @@ import androidx.core.database.getStringOrNull
 import java.io.File
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.parsing.parseId3v2Position
+import org.oxycblt.auxio.music.parsing.parseId3v2PositionField
+import org.oxycblt.auxio.music.parsing.transformPositionField
 import org.oxycblt.auxio.music.storage.Directory
 import org.oxycblt.auxio.music.storage.contentResolverSafe
 import org.oxycblt.auxio.music.storage.directoryCompat
@@ -40,7 +41,6 @@ import org.oxycblt.auxio.music.storage.useQuery
 import org.oxycblt.auxio.music.tags.Date
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
  * The layer that loads music from the [MediaStore] database. This is an intermediate step in the
@@ -564,8 +564,8 @@ class Api30MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor)
         // the tag itself, which is to say that it is formatted as NN/TT tracks, where
         // N is the number and T is the total. Parse the number while ignoring the
         // total, as we have no use for it.
-        cursor.getStringOrNull(trackIndex)?.parseId3v2Position()?.let { raw.track = it }
-        cursor.getStringOrNull(discIndex)?.parseId3v2Position()?.let { raw.disc = it }
+        cursor.getStringOrNull(trackIndex)?.parseId3v2PositionField()?.let { raw.track = it }
+        cursor.getStringOrNull(discIndex)?.parseId3v2PositionField()?.let { raw.disc = it }
     }
 }
 
@@ -576,7 +576,7 @@ class Api30MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor)
  * @return The track number extracted from the combined integer value, or null if the value was
  * zero.
  */
-private fun Int.unpackTrackNo() = mod(1000).nonZeroOrNull()
+private fun Int.unpackTrackNo() = transformPositionField(mod(1000), null)
 
 /**
  * Unpack the disc number from a combined track + disc [Int] field. These fields appear within
@@ -584,4 +584,4 @@ private fun Int.unpackTrackNo() = mod(1000).nonZeroOrNull()
  * disc number is the 4th+ digit.
  * @return The disc number extracted from the combined integer field, or null if the value was zero.
  */
-private fun Int.unpackDiscNo() = div(1000).nonZeroOrNull()
+private fun Int.unpackDiscNo() = transformPositionField(div(1000), null)

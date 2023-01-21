@@ -92,18 +92,40 @@ class ParsingUtilTest {
     }
 
     @Test
-    fun parseId3v2Position_correct() {
-        assertEquals(16, "16/32".parseId3v2Position())
+    fun parseId3v2PositionField_correct() {
+        assertEquals(16, "16/32".parseId3v2PositionField())
+        assertEquals(16, "16".parseId3v2PositionField())
     }
 
     @Test
-    fun parseId3v2Position_noTotal() {
-        assertEquals(16, "16".parseId3v2Position())
+    fun parseId3v2PositionField_zeroed() {
+        assertEquals(null, "0".parseId3v2PositionField())
+        assertEquals(0, "0/32".parseId3v2PositionField())
     }
 
     @Test
-    fun parseId3v2Position_wack() {
-        assertEquals(16, "16/".parseId3v2Position())
+    fun parseId3v2PositionField_wack() {
+        assertEquals(16, "16/".parseId3v2PositionField())
+        assertEquals(null, "a".parseId3v2PositionField())
+        assertEquals(null, "a/b".parseId3v2PositionField())
+    }
+
+    @Test
+    fun parseVorbisPositionField_correct() {
+        assertEquals(16, parseVorbisPositionField("16", "32"))
+        assertEquals(16, parseVorbisPositionField("16", null))
+    }
+
+    @Test
+    fun parseVorbisPositionField_zeroed() {
+        assertEquals(null, parseVorbisPositionField("0", null))
+        assertEquals(0, parseVorbisPositionField("0", "32"))
+    }
+
+    @Test
+    fun parseVorbisPositionField_wack() {
+        assertEquals(null, parseVorbisPositionField("a", null))
+        assertEquals(null, parseVorbisPositionField("a", "b"))
     }
 
     @Test

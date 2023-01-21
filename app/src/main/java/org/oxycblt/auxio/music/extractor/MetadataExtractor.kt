@@ -23,7 +23,8 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
 import kotlinx.coroutines.flow.flow
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.parsing.parseId3v2Position
+import org.oxycblt.auxio.music.parsing.parseId3v2PositionField
+import org.oxycblt.auxio.music.parsing.parseVorbisPositionField
 import org.oxycblt.auxio.music.storage.toAudioUri
 import org.oxycblt.auxio.music.tags.Date
 import org.oxycblt.auxio.util.logD
@@ -182,10 +183,10 @@ class Task(context: Context, private val raw: Song.Raw) {
         textFrames["TSOT"]?.let { raw.sortName = it[0] }
 
         // Track. Only parse out the track number and ignore the total tracks value.
-        textFrames["TRCK"]?.run { first().parseId3v2Position() }?.let { raw.track = it }
+        textFrames["TRCK"]?.run { first().parseId3v2PositionField() }?.let { raw.track = it }
 
         // Disc. Only parse out the disc number and ignore the total discs value.
-        textFrames["TPOS"]?.run { first().parseId3v2Position() }?.let { raw.disc = it }
+        textFrames["TPOS"]?.run { first().parseId3v2PositionField() }?.let { raw.disc = it }
 
         // Dates are somewhat complicated, as not only did their semantics change from a flat year
         // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
@@ -278,13 +279,17 @@ class Task(context: Context, private val raw: Song.Raw) {
         comments["title"]?.let { raw.name = it[0] }
         comments["titlesort"]?.let { raw.sortName = it[0] }
 
-        // Track. The total tracks value is in a different comment, so we can just
-        // convert the entirety of this comment into a number.
-        comments["tracknumber"]?.run { first().toIntOrNull() }?.let { raw.track = it }
+        // Track.
+        parseVorbisPositionField(
+                comments["tracknumber"]?.first(),
+                (comments["totaltracks"] ?: comments["tracktotal"] ?: comments["trackc"])?.first())
+            ?.let { raw.track = it }
 
-        // Disc. The total discs value is in a different comment, so we can just
-        // convert the entirety of this comment into a number.
-        comments["discnumber"]?.run { first().toIntOrNull() }?.let { raw.disc = it }
+        // Disc.
+        parseVorbisPositionField(
+                comments["discnumber"]?.first(),
+                (comments["totaldiscs"] ?: comments["disctotal"] ?: comments["discc"])?.first())
+            ?.let { raw.disc = it }
 
         // Vorbis dates are less complicated, but there are still several types
         // Our hierarchy for dates is as such:
