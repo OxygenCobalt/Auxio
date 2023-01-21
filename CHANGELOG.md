@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## 3.0.2
 
 #### What's New
 - Added ability to play/shuffle selections
@@ -25,8 +25,7 @@ file manager
 - Fixed duplicate song items from appearing
 
 #### What's Changed
-- Playback state schema was updates (will wipe state)
-- Implemented new queue system
+- Implemented new queue system (will wipe state)
 
 #### Dev/Meta
 - Added unit testing framework
