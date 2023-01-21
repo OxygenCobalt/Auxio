@@ -15,20 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.settings.ui
+package org.oxycblt.auxio.settings.categories
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.settings.SettingsFragmentDirections
+import org.oxycblt.auxio.settings.BasePreferenceFragment
+import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
 
 class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_accent)) {
-            findNavController().navigate(SettingsFragmentDirections.goToAccentDialog())
+            findNavController().navigate(UIPreferenceFragmentDirections.goToAccentDialog())
         }
     }
 

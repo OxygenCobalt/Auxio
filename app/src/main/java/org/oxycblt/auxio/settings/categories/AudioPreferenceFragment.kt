@@ -15,20 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.settings.ui
+package org.oxycblt.auxio.settings.categories
 
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.settings.SettingsFragmentDirections
+import org.oxycblt.auxio.settings.BasePreferenceFragment
+import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 
 /**
- * Personalization settings interface.
+ * Audio settings interface.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class PersonalizePreferenceFragment : BasePreferenceFragment(R.xml.preferences_personalize) {
+class AudioPreferenceFragment : BasePreferenceFragment(R.xml.preferences_audio) {
+
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
-        if (preference.key == getString(R.string.set_key_home_tabs)) {
-            findNavController().navigate(SettingsFragmentDirections.goToTabDialog())
+        if (preference.key == getString(R.string.set_key_pre_amp)) {
+            findNavController().navigate(AudioPreferenceFragmentDirections.goToPreAmpDialog())
         }
     }
 }

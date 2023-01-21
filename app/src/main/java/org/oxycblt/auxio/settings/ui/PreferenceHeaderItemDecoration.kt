@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.settings.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import androidx.preference.PreferenceCategory
@@ -39,6 +40,7 @@ constructor(
     defStyleAttr: Int = R.attr.materialDividerStyle,
     orientation: Int = LinearLayoutManager.VERTICAL
 ) : BackportMaterialDividerItemDecoration(context, attributeSet, defStyleAttr, orientation) {
+    @SuppressLint("RestrictedApi")
     override fun shouldDrawDivider(position: Int, adapter: RecyclerView.Adapter<*>?) =
         try {
             // Add a divider if the next item is a header (in this case a preference category

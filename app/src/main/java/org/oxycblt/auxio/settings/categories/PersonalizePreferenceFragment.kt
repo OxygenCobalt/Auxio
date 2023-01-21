@@ -15,32 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.settings.ui
+package org.oxycblt.auxio.settings.categories
 
 import androidx.navigation.fragment.findNavController
-import androidx.preference.Preference
-import coil.Coil
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.settings.SettingsFragmentDirections
+import org.oxycblt.auxio.settings.BasePreferenceFragment
+import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 
 /**
- * "Content" settings.
+ * Personalization settings interface.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MusicPreferenceFragment : BasePreferenceFragment(R.xml.preferences_music) {
+class PersonalizePreferenceFragment : BasePreferenceFragment(R.xml.preferences_personalize) {
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
-        if (preference.key == getString(R.string.set_key_separators)) {
-            findNavController().navigate(SettingsFragmentDirections.goToSeparatorsDialog())
-        }
-    }
-
-    override fun onSetupPreference(preference: Preference) {
-        if (preference.key == getString(R.string.set_key_cover_mode)) {
-            preference.onPreferenceChangeListener =
-                Preference.OnPreferenceChangeListener { _, _ ->
-                    Coil.imageLoader(requireContext()).memoryCache?.clear()
-                    true
-                }
+        if (preference.key == getString(R.string.set_key_home_tabs)) {
+            findNavController().navigate(PersonalizePreferenceFragmentDirections.goToTabDialog())
         }
     }
 }

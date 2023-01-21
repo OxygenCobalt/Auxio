@@ -15,16 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.settings.ui
+package org.oxycblt.auxio.settings
 
+import android.os.Bundle
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.MaterialSharedAxis
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.settings.SettingsFragmentDirections
+import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.showToast
 
@@ -36,9 +39,18 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        enterTransition = MaterialFadeThrough()
+        returnTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
+    }
+
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_music_dirs)) {
-            findNavController().navigate(SettingsFragmentDirections.goToMusicDirsDialog())
+            findNavController().navigate(RootPreferenceFragmentDirections.goToMusicDirsDialog())
         }
     }
 
@@ -47,6 +59,21 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
         // TODO: These seem like good things to put into a side navigation view, if I choose to
         //  do one.
         when (preference.key) {
+            getString(R.string.set_key_ui) -> {
+                findNavController().navigate(RootPreferenceFragmentDirections.goToUiPreferences())
+            }
+            getString(R.string.set_key_personalize) -> {
+                findNavController()
+                    .navigate(RootPreferenceFragmentDirections.goToPersonalizePreferences())
+            }
+            getString(R.string.set_key_music) -> {
+                findNavController()
+                    .navigate(RootPreferenceFragmentDirections.goToMusicPreferences())
+            }
+            getString(R.string.set_key_audio) -> {
+                findNavController()
+                    .navigate(RootPreferenceFragmentDirections.goToAudioPreferences())
+            }
             getString(R.string.set_key_reindex) -> musicModel.refresh()
             getString(R.string.set_key_rescan) -> musicModel.rescan()
             getString(R.string.set_key_save_state) -> {

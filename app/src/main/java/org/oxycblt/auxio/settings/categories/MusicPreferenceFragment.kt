@@ -15,21 +15,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.settings.ui
+package org.oxycblt.auxio.settings.categories
 
 import androidx.navigation.fragment.findNavController
+import androidx.preference.Preference
+import coil.Coil
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.settings.SettingsFragmentDirections
+import org.oxycblt.auxio.settings.BasePreferenceFragment
+import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 
 /**
- * Audio settings interface.
+ * "Content" settings.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AudioPreferenceFragment : BasePreferenceFragment(R.xml.preferences_audio) {
-
+class MusicPreferenceFragment : BasePreferenceFragment(R.xml.preferences_music) {
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
-        if (preference.key == getString(R.string.set_key_pre_amp)) {
-            findNavController().navigate(SettingsFragmentDirections.goToPreAmpDialog())
+        if (preference.key == getString(R.string.set_key_separators)) {
+            findNavController().navigate(MusicPreferenceFragmentDirections.goToSeparatorsDialog())
+        }
+    }
+
+    override fun onSetupPreference(preference: Preference) {
+        if (preference.key == getString(R.string.set_key_cover_mode)) {
+            preference.onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _, _ ->
+                    Coil.imageLoader(requireContext()).memoryCache?.clear()
+                    true
+                }
         }
     }
 }

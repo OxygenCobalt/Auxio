@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.settings.ui
+package org.oxycblt.auxio.settings
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -32,6 +32,10 @@ import androidx.preference.children
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.transition.MaterialSharedAxis
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.settings.ui.IntListPreference
+import org.oxycblt.auxio.settings.ui.IntListPreferenceDialog
+import org.oxycblt.auxio.settings.ui.PreferenceHeaderItemDecoration
+import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -68,14 +72,7 @@ abstract class BasePreferenceFragment(@XmlRes private val screen: Int) :
             androidx.preference.R.id.recycler_view
         view.findViewById<Toolbar>(R.id.preferences_toolbar).apply {
             title = preferenceScreen.title
-            setNavigationOnClickListener {
-                val fragmentManager = @Suppress("Deprecation") fragmentManager
-                if (fragmentManager == null || fragmentManager.backStackEntryCount == 0) {
-                    findNavController().navigateUp()
-                } else {
-                    fragmentManager.popBackStack()
-                }
-            }
+            setNavigationOnClickListener { findNavController().navigateUp() }
         }
 
         preferenceManager.onDisplayPreferenceDialogListener = this

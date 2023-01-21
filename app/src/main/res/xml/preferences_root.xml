@@ -3,26 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="@string/set_root_title">
     <Preference
-        app:fragment="org.oxycblt.auxio.settings.ui.UIPreferenceFragment"
         app:icon="@drawable/ic_accent_24"
+        app:key="@string/set_key_ui"
         app:summary="@string/set_ui_desc"
         app:title="@string/set_ui" />
 
     <Preference
-        app:fragment="org.oxycblt.auxio.settings.ui.PersonalizePreferenceFragment"
         app:icon="@drawable/ic_config_24"
+        app:key="@string/set_key_personalize"
         app:summary="@string/set_personalize_desc"
         app:title="@string/set_personalize" />
 
     <Preference
-        app:fragment="org.oxycblt.auxio.settings.ui.MusicPreferenceFragment"
         app:icon="@drawable/ic_song_24"
+        app:key="@string/set_key_music"
         app:summary="@string/set_content_desc"
         app:title="@string/set_content" />
 
     <Preference
-        app:fragment="org.oxycblt.auxio.settings.ui.AudioPreferenceFragment"
         app:icon="@drawable/ic_play_24"
+        app:key="@string/set_key_audio"
         app:summary="@string/set_audio_desc"
         app:title="@string/set_audio" />
 

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Note: The old way of naming keys was to prefix them with KEY_. Now it's to prefix them with auxio_. -->
+    <string name="set_key_ui" translatable="false">auxio_ui</string>
+    <string name="set_key_personalize" translatable="false">auxio_personalize</string>
+    <string name="set_key_music" translatable="false">auxio_music</string>
+    <string name="set_key_audio" translatable="false">auxio_audio</string>
+
     <string name="set_key_theme" translatable="false">KEY_THEME2</string>
     <string name="set_key_black_theme" translatable="false">KEY_BLACK_THEME</string>
     <string name="set_key_accent" translatable="false">auxio_accent2</string>
