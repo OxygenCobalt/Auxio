@@ -20,9 +20,11 @@ package org.oxycblt.auxio.playback.queue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.Queue
 
 /**
  * A [ViewModel] that manages the current queue state and allows navigation through the queue.
@@ -36,18 +38,50 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
     /** The current queue. */
     val queue: StateFlow<List<Song>> = _queue
 
-    private val _index = MutableStateFlow(playbackManager.index)
+    private val _index = MutableStateFlow(playbackManager.queue.index)
     /** The index of the currently playing song in the queue. */
     val index: StateFlow<Int>
         get() = _index
 
-    /** Whether to replace or diff the queue list when updating it. Is null if not specified. */
-    var replaceQueue: Boolean? = null
-    /** Flag to scroll to a particular queue item. Is null if no command has been specified. */
-    var scrollTo: Int? = null
+    /** Specifies how to update the list when the queue changes. */
+    var queueListInstructions: ListInstructions? = null
 
     init {
         playbackManager.addListener(this)
+    }
+
+    override fun onIndexMoved(queue: Queue) {
+        queueListInstructions = ListInstructions(null, queue.index)
+        _index.value = queue.index
+    }
+
+    override fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {
+        // Queue changed trivially due to item mo -> Diff queue, stay at current index.
+        queueListInstructions = ListInstructions(BasicListInstructions.DIFF, null)
+        _queue.value = queue.resolve()
+        if (change != Queue.ChangeResult.MAPPING) {
+            // Index changed, make sure it remains updated without actually scrolling to it.
+            _index.value = queue.index
+        }
+    }
+
+    override fun onQueueReordered(queue: Queue) {
+        // Queue changed completely -> Replace queue, update index
+        queueListInstructions = ListInstructions(BasicListInstructions.REPLACE, queue.index)
+        _queue.value = queue.resolve()
+        _index.value = queue.index
+    }
+
+    override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
+        // Entirely new queue -> Replace queue, update index
+        queueListInstructions = ListInstructions(BasicListInstructions.REPLACE, queue.index)
+        _queue.value = queue.resolve()
+        _index.value = queue.index
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        playbackManager.removeListener(this)
     }
 
     /**
@@ -56,10 +90,6 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
      * range.
      */
     fun goto(adapterIndex: Int) {
-        if (adapterIndex !in playbackManager.queue.indices) {
-            // Invalid input. Nothing to do.
-            return
-        }
         playbackManager.goto(adapterIndex)
     }
 
@@ -69,10 +99,7 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
      * range.
      */
     fun removeQueueDataItem(adapterIndex: Int) {
-        if (adapterIndex <= playbackManager.index ||
-            adapterIndex !in playbackManager.queue.indices) {
-            // Invalid input. Nothing to do.
-            // TODO: Allow editing played queue items.
+        if (adapterIndex !in queue.value.indices) {
             return
         }
         playbackManager.removeQueueItem(adapterIndex)
@@ -85,56 +112,17 @@ class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
      * @return true if the items were moved, false otherwise.
      */
     fun moveQueueDataItems(adapterFrom: Int, adapterTo: Int): Boolean {
-        if (adapterFrom <= playbackManager.index || adapterTo <= playbackManager.index) {
-            // Invalid input. Nothing to do.
+        if (adapterFrom !in queue.value.indices || adapterTo !in queue.value.indices) {
             return false
         }
         playbackManager.moveQueueItem(adapterFrom, adapterTo)
         return true
     }
 
-    /** Finish a replace flag specified by [replaceQueue]. */
-    fun finishReplace() {
-        replaceQueue = null
+    /** Signal that the specified [ListInstructions] in [queueListInstructions] were performed. */
+    fun finishInstructions() {
+        queueListInstructions = null
     }
 
-    /** Finish a scroll operation started by [scrollTo]. */
-    fun finishScrollTo() {
-        scrollTo = null
-    }
-
-    override fun onIndexMoved(index: Int) {
-        // Index moved -> Scroll to new index
-        replaceQueue = null
-        scrollTo = index
-        _index.value = index
-    }
-
-    override fun onQueueChanged(queue: List<Song>) {
-        // Queue changed trivially due to item move -> Diff queue, stay at current index.
-        replaceQueue = false
-        scrollTo = null
-        _queue.value = playbackManager.queue.toMutableList()
-    }
-
-    override fun onQueueReworked(index: Int, queue: List<Song>) {
-        // Queue changed completely -> Replace queue, update index
-        replaceQueue = true
-        scrollTo = index
-        _queue.value = playbackManager.queue.toMutableList()
-        _index.value = index
-    }
-
-    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        // Entirely new queue -> Replace queue, update index
-        replaceQueue = true
-        scrollTo = index
-        _queue.value = playbackManager.queue.toMutableList()
-        _index.value = index
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        playbackManager.removeListener(this)
-    }
+    class ListInstructions(val update: BasicListInstructions?, val scrollTo: Int?)
 }

@@ -19,7 +19,6 @@ package org.oxycblt.auxio.ui.accent
 
 import android.os.Build
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.util.logW
 
 private val ACCENT_NAMES =
@@ -112,7 +111,7 @@ private val ACCENT_PRIMARY_COLORS =
  * @param index The unique number for this particular accent.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class Accent private constructor(val index: Int) : Item {
+class Accent private constructor(val index: Int) {
     /** The name of this [Accent]. */
     val name: Int
         get() = ACCENT_NAMES[index]

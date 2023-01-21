@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.playback.replaygain
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.Player
@@ -28,11 +27,10 @@ import com.google.android.exoplayer2.audio.BaseAudioProcessor
 import com.google.android.exoplayer2.util.MimeTypes
 import java.nio.ByteBuffer
 import kotlin.math.pow
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.extractor.Tags
+import org.oxycblt.auxio.music.extractor.TextTags
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -45,10 +43,10 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ReplayGainAudioProcessor(private val context: Context) :
-    BaseAudioProcessor(), Player.Listener, SharedPreferences.OnSharedPreferenceChangeListener {
+class ReplayGainAudioProcessor(context: Context) :
+    BaseAudioProcessor(), Player.Listener, PlaybackSettings.Listener {
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settings = Settings(context)
+    private val playbackSettings = PlaybackSettings.from(context)
     private var lastFormat: Format? = null
 
     private var volume = 1f
@@ -65,7 +63,7 @@ class ReplayGainAudioProcessor(private val context: Context) :
      */
     fun addToListeners(player: Player) {
         player.addListener(this)
-        settings.addListener(this)
+        playbackSettings.registerListener(this)
     }
 
     /**
@@ -75,7 +73,7 @@ class ReplayGainAudioProcessor(private val context: Context) :
      */
     fun releaseFromListeners(player: Player) {
         player.removeListener(this)
-        settings.removeListener(this)
+        playbackSettings.unregisterListener(this)
     }
 
     // --- OVERRIDES ---
@@ -98,13 +96,9 @@ class ReplayGainAudioProcessor(private val context: Context) :
         applyReplayGain(null)
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (key == context.getString(R.string.set_key_replay_gain) ||
-            key == context.getString(R.string.set_key_pre_amp_with) ||
-            key == context.getString(R.string.set_key_pre_amp_without)) {
-            // ReplayGain changed, we need to set it up again.
-            applyReplayGain(lastFormat)
-        }
+    override fun onReplayGainSettingsChanged() {
+        // ReplayGain config changed, we need to set it up again.
+        applyReplayGain(lastFormat)
     }
 
     // --- REPLAYGAIN PARSING ---
@@ -116,26 +110,24 @@ class ReplayGainAudioProcessor(private val context: Context) :
     private fun applyReplayGain(format: Format?) {
         lastFormat = format
         val gain = parseReplayGain(format ?: return)
-        val preAmp = settings.replayGainPreAmp
+        val preAmp = playbackSettings.replayGainPreAmp
 
         val adjust =
             if (gain != null) {
                 logD("Found ReplayGain adjustment $gain")
                 // ReplayGain is configurable, so determine what to do based off of the mode.
                 val useAlbumGain =
-                    when (settings.replayGainMode) {
+                    when (playbackSettings.replayGainMode) {
                         // User wants track gain to be preferred. Default to album gain only if
                         // there is no track gain.
                         ReplayGainMode.TRACK -> gain.track == 0f
-
                         // User wants album gain to be preferred. Default to track gain only if
                         // here is no album gain.
                         ReplayGainMode.ALBUM -> gain.album != 0f
-
                         // User wants album gain to be used when in an album, track gain otherwise.
                         ReplayGainMode.DYNAMIC ->
                             playbackManager.parent is Album &&
-                                playbackManager.song?.album == playbackManager.parent
+                                playbackManager.queue.currentSong?.album == playbackManager.parent
                     }
 
                 val resolvedGain =
@@ -168,35 +160,35 @@ class ReplayGainAudioProcessor(private val context: Context) :
      * @return A [Adjustment] adjustment, or null if there were no valid adjustments.
      */
     private fun parseReplayGain(format: Format): Adjustment? {
-        val tags = Tags(format.metadata ?: return null)
+        val textTags = TextTags(format.metadata ?: return null)
         var trackGain = 0f
         var albumGain = 0f
 
         // Most ReplayGain tags are formatted as a simple decibel adjustment in a custom
         // replaygain_*_gain tag.
         if (format.sampleMimeType != MimeTypes.AUDIO_OPUS) {
-            tags.id3v2["TXXX:$TAG_RG_TRACK_GAIN"]
+            textTags.id3v2["TXXX:$TAG_RG_TRACK_GAIN"]
                 ?.run { first().parseReplayGainAdjustment() }
                 ?.let { trackGain = it }
-            tags.id3v2["TXXX:$TAG_RG_ALBUM_GAIN"]
+            textTags.id3v2["TXXX:$TAG_RG_ALBUM_GAIN"]
                 ?.run { first().parseReplayGainAdjustment() }
                 ?.let { albumGain = it }
-            tags.vorbis[TAG_RG_ALBUM_GAIN]
+            textTags.vorbis[TAG_RG_ALBUM_GAIN]
                 ?.run { first().parseReplayGainAdjustment() }
                 ?.let { trackGain = it }
-            tags.vorbis[TAG_RG_TRACK_GAIN]
+            textTags.vorbis[TAG_RG_TRACK_GAIN]
                 ?.run { first().parseReplayGainAdjustment() }
                 ?.let { albumGain = it }
         } else {
             // Opus has it's own "r128_*_gain" ReplayGain specification, which requires dividing the
             // adjustment by 256 to get the gain. This is used alongside the base adjustment
             // intrinsic to the format to create the normalized adjustment. That base adjustment
-            // is already handled by the media  framework, so we just need to apply the more
+            // is already handled by the media framework, so we just need to apply the more
             // specific adjustments.
-            tags.vorbis[TAG_R128_TRACK_GAIN]
+            textTags.vorbis[TAG_R128_TRACK_GAIN]
                 ?.run { first().parseReplayGainAdjustment() }
                 ?.let { trackGain = it / 256f }
-            tags.vorbis[TAG_R128_ALBUM_GAIN]
+            textTags.vorbis[TAG_R128_ALBUM_GAIN]
                 ?.run { first().parseReplayGainAdjustment() }
                 ?.let { albumGain = it / 256f }
         }
@@ -231,27 +223,32 @@ class ReplayGainAudioProcessor(private val context: Context) :
         throw AudioProcessor.UnhandledAudioFormatException(inputAudioFormat)
     }
 
-    override fun isActive() = super.isActive() && volume != 1f
-
     override fun queueInput(inputBuffer: ByteBuffer) {
-        val position = inputBuffer.position()
+        val pos = inputBuffer.position()
         val limit = inputBuffer.limit()
-        val size = limit - position
-        val buffer = replaceOutputBuffer(size)
+        val buffer = replaceOutputBuffer(limit - pos)
 
-        for (i in position until limit step 2) {
-            // Ensure we clamp the values to the minimum and maximum values possible
-            // for the encoding. This prevents issues where samples amplified beyond
-            // 1 << 16 will end up becoming truncated during the conversion to a short,
-            // resulting in popping.
-            var sample = inputBuffer.getLeShort(i)
-            sample =
-                (sample * volume)
-                    .toInt()
-                    .coerceAtLeast(Short.MIN_VALUE.toInt())
-                    .coerceAtMost(Short.MAX_VALUE.toInt())
-                    .toShort()
-            buffer.putLeShort(sample)
+        if (volume == 1f) {
+            // Nothing to adjust, just copy the audio data.
+            // isActive is technically a much better way of doing a no-op like this, but since
+            // the adjustment can change during playback I'm largely forced to do this.
+            buffer.put(inputBuffer.slice())
+        } else {
+            for (i in pos until limit step 2) {
+                // 16-bit PCM audio, deserialize a little-endian short.
+                var sample = inputBuffer.getLeShort(i)
+                // Ensure we clamp the values to the minimum and maximum values possible
+                // for the encoding. This prevents issues where samples amplified beyond
+                // 1 << 16 will end up becoming truncated during the conversion to a short,
+                // resulting in popping.
+                sample =
+                    (sample * volume)
+                        .toInt()
+                        .coerceAtLeast(Short.MIN_VALUE.toInt())
+                        .coerceAtMost(Short.MAX_VALUE.toInt())
+                        .toShort()
+                buffer.putLeShort(sample)
+            }
         }
 
         inputBuffer.position(limit)

@@ -28,7 +28,7 @@
     <string name="lbl_licenses">Licences</string>
     <string name="lng_author">Développé par OxygenCobalt</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Paramètres</string>
+    <string name="set_root_title">Paramètres</string>
     <string name="set_ui">Apparence</string>
     <string name="set_theme">Thème</string>
     <string name="set_theme_auto">Automatique</string>
@@ -36,7 +36,7 @@
     <string name="set_theme_night">Sombre</string>
     <string name="set_accent">Couleur d\'accentuation</string>
     <string name="set_audio">Audio</string>
-    <string name="set_behavior">Comportement</string>
+    <string name="set_personalize">Comportement</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Pas de musique trouvée</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -128,4 +128,30 @@
     <string name="lbl_album_remix">Album de remixes</string>
     <string name="lbl_genre">Genre</string>
     <string name="lbl_equalizer">Égaliseur</string>
+    <string name="desc_shuffle_all">Lecture aléatoire de tous les titres</string>
+    <string name="desc_auxio_icon">Auxio icône</string>
+    <string name="desc_no_cover">Couverture de l\'album</string>
+    <string name="def_genre">Genre inconnu</string>
+    <string name="clr_dynamic">Dynamique</string>
+    <string name="clr_cyan">Cyan</string>
+    <string name="lbl_shuffle_selected">Lecture aléatoire sélectionnée</string>
+    <string name="lbl_play_selected">Réinitialiser</string>
+    <string name="err_no_dirs">Aucun dossier</string>
+    <string name="desc_music_dir_delete">Supprimer le dossier</string>
+    <string name="def_artist">Artiste inconnu</string>
+    <string name="def_codec">Format inconnu</string>
+    <string name="lbl_compilation_live">Compilation en direct</string>
+    <string name="lbl_compilation_remix">Compilations de remix</string>
+    <string name="lbl_mixes">Mixes</string>
+    <string name="lbl_mix">Mix</string>
+    <string name="err_bad_dir">Ce dossier n\'est pas pris en charge</string>
+    <string name="lbl_reset">Réinitialiser</string>
+    <string name="cdc_ogg">Ogg audio</string>
+    <string name="clr_deep_purple">Violet Claire</string>
+    <string name="cdc_mp3">MPEG-1 audio</string>
+    <string name="err_index_failed">Échec du chargement de la musique</string>
+    <string name="lbl_wiki">Wiki</string>
+    <string name="cdc_mp4">MPEG-4 audio</string>
+    <string name="def_date">Pas de date</string>
+    <string name="desc_album_cover">Couverture de l\'album pour %s</string>
 </resources>

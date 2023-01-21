@@ -43,7 +43,7 @@
     <string name="lng_author">Sviluppato da Alexander Capehart</string>
     <string name="lbl_library_counts">Statistiche libreria</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Opzioni</string>
+    <string name="set_root_title">Opzioni</string>
     <string name="set_ui">Aspetto</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Automatico</string>
@@ -61,11 +61,11 @@
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Autoplay cuffie</string>
     <string name="set_headset_autoplay_desc">Comincia la riproduzione ogni volta che le cuffie sono inserite (potrebbe non funzionare su tutti i dispositivi)</string>
-    <string name="set_replay_gain">Strategia ReplayGain</string>
-    <string name="set_replay_gain_track">Preferisci traccia</string>
-    <string name="set_replay_gain_album">Preferisci disco</string>
-    <string name="set_replay_gain_dynamic">Preferisci l\'album se in riproduzione</string>
-    <string name="set_behavior">Comportamento</string>
+    <string name="set_replay_gain_mode">Strategia ReplayGain</string>
+    <string name="set_replay_gain_mode_track">Preferisci traccia</string>
+    <string name="set_replay_gain_mode_album">Preferisci disco</string>
+    <string name="set_replay_gain_mode_dynamic">Preferisci l\'album se in riproduzione</string>
+    <string name="set_personalize">Comportamento</string>
     <string name="set_library_song_playback_mode">Quando in riproduzione dalla libreria</string>
     <string name="set_keep_shuffle">Mantieni mescolamento</string>
     <string name="set_keep_shuffle_desc">Mantiene il mescolamento anche se una nuova canzone è selezionata</string>
@@ -224,8 +224,8 @@
     <string name="lbl_genre">Genere</string>
     <string name="lbl_state_wiped">Stato ripristinato</string>
     <string name="set_bar_action">Azione personalizzata barra di riproduzione</string>
-    <string name="set_bar_action_next">Vai alla prossima</string>
-    <string name="set_bar_action_repeat">Modalità ripetizione</string>
+    <string name="set_action_mode_next">Vai alla prossima</string>
+    <string name="set_action_mode_repeat">Modalità ripetizione</string>
     <string name="desc_exit">Interrompi riproduzione</string>
     <string name="set_hide_collaborators">Nascondi collaboratori</string>
     <string name="set_hide_collaborators_desc">Mostra solo artisti che sono direttamente accreditati in un album (funziona meglio su librerie ben taggate)</string>
@@ -261,4 +261,12 @@
     <string name="set_playback_mode_genre">Riproduci dal genere</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
+    <string name="lbl_reset">Ripristina</string>
+    <string name="set_behavior">Comportamento</string>
+    <string name="set_dirs_list">Cartelle</string>
+    <string name="set_music">Musica</string>
+    <string name="set_images">Immagini</string>
+    <string name="set_library">Collezione</string>
+    <string name="set_ui_desc">Cambia il tema e i colori dell\'app</string>
+    <string name="set_content_desc">Controlla come vengono caricate musica e immagini</string>
 </resources>

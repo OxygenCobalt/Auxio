@@ -30,26 +30,17 @@ import org.oxycblt.auxio.util.logD
 /**
  * A highly customized [ItemTouchHelper.Callback] that enables some extra eye candy in the queue UI,
  * such as an animation when lifting items.
+ *
+ * TODO: Why is item movement so expensive???
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHelper.Callback() {
     private var shouldLift = true
 
-    override fun getMovementFlags(
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder
-    ): Int {
-        val queueHolder = viewHolder as QueueSongViewHolder
-        return if (queueHolder.isFuture) {
-            makeFlag(
-                ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN) or
-                makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)
-        } else {
-            // Avoid allowing any touch actions for already-played queue items, as the playback
-            // system does not currently allow for this.
-            0
-        }
-    }
+    override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) =
+        makeFlag(ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN) or
+            makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)
 
     override fun onChildDraw(
         c: Canvas,

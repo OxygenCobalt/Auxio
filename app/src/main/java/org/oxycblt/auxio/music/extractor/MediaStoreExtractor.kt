@@ -27,17 +27,17 @@ import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import java.io.File
-import org.oxycblt.auxio.music.Date
+import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.filesystem.Directory
-import org.oxycblt.auxio.music.filesystem.contentResolverSafe
-import org.oxycblt.auxio.music.filesystem.directoryCompat
-import org.oxycblt.auxio.music.filesystem.mediaStoreVolumeNameCompat
-import org.oxycblt.auxio.music.filesystem.safeQuery
-import org.oxycblt.auxio.music.filesystem.storageVolumesCompat
-import org.oxycblt.auxio.music.filesystem.useQuery
 import org.oxycblt.auxio.music.parsing.parseId3v2Position
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.music.storage.Directory
+import org.oxycblt.auxio.music.storage.contentResolverSafe
+import org.oxycblt.auxio.music.storage.directoryCompat
+import org.oxycblt.auxio.music.storage.mediaStoreVolumeNameCompat
+import org.oxycblt.auxio.music.storage.safeQuery
+import org.oxycblt.auxio.music.storage.storageVolumesCompat
+import org.oxycblt.auxio.music.storage.useQuery
+import org.oxycblt.auxio.music.tags.Date
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.nonZeroOrNull
@@ -86,20 +86,20 @@ abstract class MediaStoreExtractor(
     open fun init(): Cursor {
         val start = System.currentTimeMillis()
         cacheExtractor.init()
-        val settings = Settings(context)
+        val musicSettings = MusicSettings.from(context)
         val storageManager = context.getSystemServiceCompat(StorageManager::class)
 
         val args = mutableListOf<String>()
         var selector = BASE_SELECTOR
 
         // Filter out audio that is not music, if enabled.
-        if (settings.excludeNonMusic) {
+        if (musicSettings.excludeNonMusic) {
             logD("Excluding non-music")
             selector += " AND ${MediaStore.Audio.AudioColumns.IS_MUSIC}=1"
         }
 
         // Set up the projection to follow the music directory configuration.
-        val dirs = settings.getMusicDirs(storageManager)
+        val dirs = musicSettings.musicDirs
         if (dirs.dirs.isNotEmpty()) {
             selector += " AND "
             if (!dirs.shouldInclude) {
@@ -305,7 +305,7 @@ abstract class MediaStoreExtractor(
         // MediaStore only exposes the year value of a file. This is actually worse than it
         // seems, as it means that it will not read ID3v2 TDRC tags or Vorbis DATE comments.
         // This is one of the major weaknesses of using MediaStore, hence the redundancy layers.
-        raw.date = cursor.getIntOrNull(yearIndex)?.let(Date::from)
+        raw.date = cursor.getStringOrNull(yearIndex)?.let(Date::from)
         // A non-existent album name should theoretically be the name of the folder it contained
         // in, but in practice it is more often "0" (as in /storage/emulated/0), even when it the
         // file is not actually in the root internal storage directory. We can't do anything to

@@ -30,17 +30,17 @@ import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
+import org.oxycblt.auxio.list.adapter.ListDiffer
+import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SongViewHolder
-import org.oxycblt.auxio.list.recycler.SyncListDiffer
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.secsToMs
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.collectImmediately
 
 /**
@@ -48,11 +48,11 @@ import org.oxycblt.auxio.util.collectImmediately
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SongListFragment :
-    ListFragment<FragmentHomeListBinding>(),
+    ListFragment<Song, FragmentHomeListBinding>(),
     FastScrollRecyclerView.PopupProvider,
     FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
-    private val homeAdapter = SongAdapter(this)
+    private val songAdapter = SongAdapter(this)
     // Save memory by re-using the same formatter and string builder when creating popup text
     private val formatterSb = StringBuilder(64)
     private val formatter = Formatter(formatterSb)
@@ -65,13 +65,13 @@ class SongListFragment :
 
         binding.homeRecycler.apply {
             id = R.id.home_song_recycler
-            adapter = homeAdapter
+            adapter = songAdapter
             popupProvider = this@SongListFragment
             listener = this@SongListFragment
         }
 
-        collectImmediately(homeModel.songLists, homeAdapter::replaceList)
-        collectImmediately(selectionModel.selected, homeAdapter::setSelectedItems)
+        collectImmediately(homeModel.songsList, ::updateList)
+        collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
@@ -86,7 +86,7 @@ class SongListFragment :
     }
 
     override fun getPopup(pos: Int): String? {
-        val song = homeModel.songLists.value[pos]
+        val song = homeModel.songsList.value[pos]
         // Change how we display the popup depending on the current sort mode.
         // Note: We don't use the more correct individual artist name here, as sorts are largely
         // based off the names of the parent objects and not the child objects.
@@ -130,27 +130,28 @@ class SongListFragment :
         homeModel.setFastScrolling(isFastScrolling)
     }
 
-    override fun onRealClick(music: Music) {
-        check(music is Song) { "Unexpected datatype: ${music::class.java}" }
-        when (Settings(requireContext()).libPlaybackMode) {
-            MusicMode.SONGS -> playbackModel.playFromAll(music)
-            MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
-            MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-            MusicMode.GENRES -> playbackModel.playFromGenre(music)
-        }
+    override fun onRealClick(item: Song) {
+        playbackModel.playFrom(item, homeModel.playbackMode)
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
-        check(item is Song) { "Unexpected datatype: ${item::class.java}" }
+    override fun onOpenMenu(item: Song, anchor: View) {
         openMusicMenu(anchor, R.menu.menu_song_actions, item)
+    }
+
+    private fun updateList(songs: List<Song>) {
+        songAdapter.submitList(songs, BasicListInstructions.REPLACE)
+    }
+
+    private fun updateSelection(selection: List<Music>) {
+        songAdapter.setSelected(selection.filterIsInstanceTo(mutableSetOf()))
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         if (parent == null) {
-            homeAdapter.setPlayingItem(song, isPlaying)
+            songAdapter.setPlaying(song, isPlaying)
         } else {
             // Ignore playback that is not from all songs
-            homeAdapter.setPlayingItem(null, isPlaying)
+            songAdapter.setPlaying(null, isPlaying)
         }
     }
 
@@ -158,26 +159,15 @@ class SongListFragment :
      * A [SelectionIndicatorAdapter] that shows a list of [Song]s using [SongViewHolder].
      * @param listener An [SelectableListListener] to bind interactions to.
      */
-    private class SongAdapter(private val listener: SelectableListListener) :
-        SelectionIndicatorAdapter<SongViewHolder>() {
-        private val differ = SyncListDiffer(this, SongViewHolder.DIFF_CALLBACK)
-
-        override val currentList: List<Item>
-            get() = differ.currentList
+    private class SongAdapter(private val listener: SelectableListListener<Song>) :
+        SelectionIndicatorAdapter<Song, BasicListInstructions, SongViewHolder>(
+            ListDiffer.Blocking(SongViewHolder.DIFF_CALLBACK)) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             SongViewHolder.from(parent)
 
         override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
-            holder.bind(differ.currentList[position], listener)
-        }
-
-        /**
-         * Asynchronously update the list with new [Song]s.
-         * @param newList The new [Song]s for the adapter to display.
-         */
-        fun replaceList(newList: List<Song>) {
-            differ.replaceList(newList)
+            holder.bind(getItem(position), listener)
         }
     }
 }

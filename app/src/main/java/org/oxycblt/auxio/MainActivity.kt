@@ -29,7 +29,7 @@ import org.oxycblt.auxio.music.system.IndexerService
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.system.PlaybackService
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.androidViewModels
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupTheme() {
-        val settings = Settings(this)
+        val settings = UISettings.from(this)
         // Apply the theme configuration.
         AppCompatDelegate.setDefaultNightMode(settings.theme)
         // Apply the color scheme. The black theme requires it's own set of themes since
@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
         val action =
             when (intent.action) {
                 Intent.ACTION_VIEW -> InternalPlayer.Action.Open(intent.data ?: return false)
-                AuxioApp.INTENT_KEY_SHORTCUT_SHUFFLE -> InternalPlayer.Action.ShuffleAll
+                Auxio.INTENT_KEY_SHORTCUT_SHUFFLE -> InternalPlayer.Action.ShuffleAll
                 else -> return false
             }
         playbackModel.startAction(action)

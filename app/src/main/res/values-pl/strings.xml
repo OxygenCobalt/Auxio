@@ -27,7 +27,7 @@
     <string name="lbl_code">Kod źródłowy</string>
     <string name="lbl_licenses">Licencje</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Ustawienia</string>
+    <string name="set_root_title">Ustawienia</string>
     <string name="set_ui">Wygląd</string>
     <string name="set_theme">Motyw</string>
     <string name="set_theme_auto">Automatyczny</string>
@@ -35,7 +35,7 @@
     <string name="set_theme_night">Ciemny</string>
     <string name="set_accent">Odcień koloru</string>
     <string name="set_audio">Dźwięk</string>
-    <string name="set_behavior">Zachowanie</string>
+    <string name="set_personalize">Zachowanie</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nie znaleziono muzyki</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -141,7 +141,7 @@
     <string name="set_reindex">Załaduj ponownie bibliotekę</string>
     <string name="set_reindex_desc">Może wyczyścić stan odtwarzania</string>
     <string name="desc_clear_queue_item">Usuń utwór z kolejki</string>
-    <string name="set_replay_gain_album">Preferuj album</string>
+    <string name="set_replay_gain_mode_album">Preferuj album</string>
     <string name="set_observing">Automatyczne ponowne załadowanie</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="set_separators_and">Et (&amp;)</string>
@@ -156,10 +156,10 @@
     <string name="set_round_mode">Zaokrąglone okładki</string>
     <string name="set_round_mode_desc">Zaokrąglone rogi okładek</string>
     <string name="set_bar_action">Akcja na pasku odtwarzania</string>
-    <string name="set_bar_action_next">Następny utwór</string>
-    <string name="set_bar_action_repeat">Powtórz</string>
-    <string name="set_replay_gain">Ustawienie ReplayGain</string>
-    <string name="set_replay_gain_dynamic">Preferuj album, jeśli takowy jest odtwarzany</string>
+    <string name="set_action_mode_next">Następny utwór</string>
+    <string name="set_action_mode_repeat">Powtórz</string>
+    <string name="set_replay_gain_mode">Ustawienie ReplayGain</string>
+    <string name="set_replay_gain_mode_dynamic">Preferuj album, jeśli takowy jest odtwarzany</string>
     <string name="set_library_song_playback_mode">Odtwarzając utwór z widoku biblioteki</string>
     <string name="set_save_state">Zapisz stan odtwarzania</string>
     <string name="set_separators_comma">Przecinek (,)</string>
@@ -180,7 +180,7 @@
     <string name="desc_tab_handle">Przesuń kartę</string>
     <string name="desc_artist_image">Wizerunek wykonawcy dla %s</string>
     <string name="lng_indexing">Ładuję bibliotekę muzyczną…</string>
-    <string name="set_replay_gain_track">Preferuj utwór</string>
+    <string name="set_replay_gain_mode_track">Preferuj utwór</string>
     <string name="lbl_state_restored">Przywrócono stan odtwarzania</string>
     <string name="lbl_state_wiped">Wyczyszczono stan odtwarzania</string>
     <string name="lbl_state_saved">Zapisano stan odtwarzania</string>

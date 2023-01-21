@@ -31,14 +31,13 @@ import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
 import org.oxycblt.auxio.detail.recycler.DetailAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
@@ -49,7 +48,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A [ListFragment] that shows information about an [Artist].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter.Listener {
+class ArtistDetailFragment :
+    ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener<Music> {
     private val detailModel: DetailViewModel by activityViewModels()
     // Information about what artist to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an artist.
@@ -87,7 +87,7 @@ class ArtistDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapte
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setArtistUid(args.artistUid)
         collectImmediately(detailModel.currentArtist, ::updateItem)
-        collectImmediately(detailModel.artistList, detailAdapter::submitList)
+        collectImmediately(detailModel.artistList, ::updateList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
@@ -121,27 +121,25 @@ class ArtistDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapte
         }
     }
 
-    override fun onRealClick(music: Music) {
-        when (music) {
+    override fun onRealClick(item: Music) {
+        when (item) {
+            is Album -> navModel.exploreNavigateTo(item)
             is Song -> {
-                when (Settings(requireContext()).detailPlaybackMode) {
+                val playbackMode = detailModel.playbackMode
+                if (playbackMode != null) {
+                    playbackModel.playFrom(item, playbackMode)
+                } else {
                     // When configured to play from the selected item, we already have an Artist
                     // to play from.
-                    null ->
-                        playbackModel.playFromArtist(
-                            music, unlikelyToBeNull(detailModel.currentArtist.value))
-                    MusicMode.SONGS -> playbackModel.playFromAll(music)
-                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
-                    MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-                    MusicMode.GENRES -> playbackModel.playFromGenre(music)
+                    playbackModel.playFromArtist(
+                        item, unlikelyToBeNull(detailModel.currentArtist.value))
                 }
             }
-            is Album -> navModel.exploreNavigateTo(music)
-            else -> error("Unexpected datatype: ${music::class.simpleName}")
+            else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
+    override fun onOpenMenu(item: Music, anchor: View) {
         when (item) {
             is Song -> openMusicMenu(anchor, R.menu.menu_artist_song_actions, item)
             is Album -> openMusicMenu(anchor, R.menu.menu_artist_album_actions, item)
@@ -159,13 +157,13 @@ class ArtistDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapte
 
     override fun onOpenSortMenu(anchor: View) {
         openMenu(anchor, R.menu.menu_artist_sort) {
-            val sort = detailModel.artistSort
+            val sort = detailModel.artistSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
             unlikelyToBeNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
             setOnMenuItemClickListener { item ->
                 item.isChecked = !item.isChecked
 
-                detailModel.artistSort =
+                detailModel.artistSongSort =
                     if (item.itemId == R.id.option_sort_asc) {
                         sort.withAscending(item.isChecked)
                     } else {
@@ -199,7 +197,7 @@ class ArtistDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapte
                 else -> null
             }
 
-        detailAdapter.setPlayingItem(playingItem, isPlaying)
+        detailAdapter.setPlaying(playingItem, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {
@@ -237,8 +235,12 @@ class ArtistDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapte
         }
     }
 
+    private fun updateList(items: List<Item>) {
+        detailAdapter.submitList(items, BasicListInstructions.DIFF)
+    }
+
     private fun updateSelection(selected: List<Music>) {
-        detailAdapter.setSelectedItems(selected)
+        detailAdapter.setSelected(selected.toSet())
         requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
     }
 }

@@ -31,7 +31,6 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.system.PlaybackService
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.*
 
 /**
@@ -197,7 +196,7 @@ class WidgetProvider : AppWidgetProvider() {
         // Below API 31, enable a rounded bar only if round mode is enabled.
         // On API 31+, the bar should always be round in order to fit in with other widgets.
         val background =
-            if (Settings(context).roundMode && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            if (useRoundedRemoteViews(context)) {
                 R.drawable.ui_widget_bar_round
             } else {
                 R.drawable.ui_widget_bar_system
@@ -216,7 +215,7 @@ class WidgetProvider : AppWidgetProvider() {
         // On API 31+, the background should always be round in order to fit in with other
         // widgets.
         val background =
-            if (Settings(context).roundMode && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            if (useRoundedRemoteViews(context)) {
                 R.drawable.ui_widget_bg_round
             } else {
                 R.drawable.ui_widget_bg_system

@@ -23,10 +23,10 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
-import org.oxycblt.auxio.music.Date
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.parsing.correctWhitespace
 import org.oxycblt.auxio.music.parsing.splitEscaped
+import org.oxycblt.auxio.music.tags.Date
 import org.oxycblt.auxio.util.*
 
 /**
@@ -142,7 +142,7 @@ class ReadWriteCacheExtractor(private val context: Context) : WriteOnlyCacheExtr
             rawSong.albumMusicBrainzId = cachedRawSong.albumMusicBrainzId
             rawSong.albumName = cachedRawSong.albumName
             rawSong.albumSortName = cachedRawSong.albumSortName
-            rawSong.albumTypes = cachedRawSong.albumTypes
+            rawSong.releaseTypes = cachedRawSong.releaseTypes
 
             rawSong.artistMusicBrainzIds = cachedRawSong.artistMusicBrainzIds
             rawSong.artistNames = cachedRawSong.artistNames
@@ -190,7 +190,7 @@ private class CacheDatabase(context: Context) :
             append("${Columns.ALBUM_MUSIC_BRAINZ_ID} STRING,")
             append("${Columns.ALBUM_NAME} STRING NOT NULL,")
             append("${Columns.ALBUM_SORT_NAME} STRING,")
-            append("${Columns.ALBUM_TYPES} STRING,")
+            append("${Columns.RELEASE_TYPES} STRING,")
             append("${Columns.ARTIST_MUSIC_BRAINZ_IDS} STRING,")
             append("${Columns.ARTIST_NAMES} STRING,")
             append("${Columns.ARTIST_SORT_NAMES} STRING,")
@@ -249,7 +249,7 @@ private class CacheDatabase(context: Context) :
                 cursor.getColumnIndexOrThrow(Columns.ALBUM_MUSIC_BRAINZ_ID)
             val albumNameIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_NAME)
             val albumSortNameIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_SORT_NAME)
-            val albumTypesIndex = cursor.getColumnIndexOrThrow(Columns.ALBUM_TYPES)
+            val releaseTypesIndex = cursor.getColumnIndexOrThrow(Columns.RELEASE_TYPES)
 
             val artistMusicBrainzIdsIndex =
                 cursor.getColumnIndexOrThrow(Columns.ARTIST_MUSIC_BRAINZ_IDS)
@@ -286,8 +286,8 @@ private class CacheDatabase(context: Context) :
                 raw.albumMusicBrainzId = cursor.getStringOrNull(albumMusicBrainzIdIndex)
                 raw.albumName = cursor.getString(albumNameIndex)
                 raw.albumSortName = cursor.getStringOrNull(albumSortNameIndex)
-                cursor.getStringOrNull(albumTypesIndex)?.let {
-                    raw.albumTypes = it.parseSQLMultiValue()
+                cursor.getStringOrNull(releaseTypesIndex)?.let {
+                    raw.releaseTypes = it.parseSQLMultiValue()
                 }
 
                 cursor.getStringOrNull(artistMusicBrainzIdsIndex)?.let {
@@ -351,7 +351,7 @@ private class CacheDatabase(context: Context) :
                 put(Columns.ALBUM_MUSIC_BRAINZ_ID, rawSong.albumMusicBrainzId)
                 put(Columns.ALBUM_NAME, rawSong.albumName)
                 put(Columns.ALBUM_SORT_NAME, rawSong.albumSortName)
-                put(Columns.ALBUM_TYPES, rawSong.albumTypes.toSQLMultiValue())
+                put(Columns.RELEASE_TYPES, rawSong.releaseTypes.toSQLMultiValue())
 
                 put(Columns.ARTIST_MUSIC_BRAINZ_IDS, rawSong.artistMusicBrainzIds.toSQLMultiValue())
                 put(Columns.ARTIST_NAMES, rawSong.artistNames.toSQLMultiValue())
@@ -422,8 +422,8 @@ private class CacheDatabase(context: Context) :
         const val ALBUM_NAME = "album"
         /** @see Song.Raw.albumSortName */
         const val ALBUM_SORT_NAME = "album_sort"
-        /** @see Song.Raw.albumTypes */
-        const val ALBUM_TYPES = "album_types"
+        /** @see Song.Raw.releaseTypes */
+        const val RELEASE_TYPES = "album_types"
         /** @see Song.Raw.artistMusicBrainzIds */
         const val ARTIST_MUSIC_BRAINZ_IDS = "artists_mbid"
         /** @see Song.Raw.artistNames */
@@ -442,7 +442,7 @@ private class CacheDatabase(context: Context) :
 
     companion object {
         private const val DB_NAME = "auxio_music_cache.db"
-        private const val DB_VERSION = 1
+        private const val DB_VERSION = 2
         private const val TABLE_RAW_SONGS = "raw_songs"
 
         @Volatile private var INSTANCE: CacheDatabase? = null

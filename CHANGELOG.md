@@ -1,5 +1,35 @@
 # Changelog
 
+## 3.0.2
+
+#### What's New
+- Added ability to play/shuffle selections
+- Redesigned header components
+- Redesigned settings view
+
+#### What's Improved
+- Added ability to edit previously played or currently playing items in the queue
+- Added support for date values formatted as "YYYYMMDD"
+- Pressing the button will now clear the current selection before navigating back
+- Added support for non-standard `ARTISTS` tags
+- Play Next and Add To Queue now start playback if there is no queue to add
+
+#### What's Fixed
+- Fixed unreliable ReplayGain adjustment application in certain situations
+- Fixed crash that would occur in music folders dialog when user does not have a working
+file manager
+- Fixed notification not updating due to settings changes
+- Fixed genre picker from repeatedly showing up when device rotates
+- Fixed multi-value genres not being recognized on vorbis files
+- Fixed sharp-cornered widget bar appearing even when round mode was enabled
+- Fixed duplicate song items from appearing
+
+#### What's Changed
+- Implemented new queue system (will wipe state)
+
+#### Dev/Meta
+- Added unit testing framework
+
 ## 3.0.1
 
 #### What's New

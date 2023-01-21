@@ -27,30 +27,27 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.list.EditableListListener
-import org.oxycblt.auxio.list.recycler.PlayingIndicatorAdapter
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
+import org.oxycblt.auxio.list.adapter.DiffAdapter
+import org.oxycblt.auxio.list.adapter.ListDiffer
+import org.oxycblt.auxio.list.adapter.PlayingIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SongViewHolder
-import org.oxycblt.auxio.list.recycler.SyncListDiffer
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.getAttrColorCompat
-import org.oxycblt.auxio.util.getDimen
-import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.*
 
 /**
  * A [RecyclerView.Adapter] that shows an editable list of queue items.
  * @param listener A [EditableListListener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class QueueAdapter(private val listener: EditableListListener) :
-    RecyclerView.Adapter<QueueSongViewHolder>() {
-    private var differ = SyncListDiffer(this, QueueSongViewHolder.DIFF_CALLBACK)
+class QueueAdapter(private val listener: EditableListListener<Song>) :
+    DiffAdapter<Song, BasicListInstructions, QueueSongViewHolder>(
+        ListDiffer.Blocking(QueueSongViewHolder.DIFF_CALLBACK)) {
     // Since PlayingIndicator adapter relies on an item value, we cannot use it for this
     // adapter, as one item can appear at several points in the UI. Use a similar implementation
     // with an index value instead.
     private var currentIndex = 0
     private var isPlaying = false
-
-    override fun getItemCount() = differ.currentList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         QueueSongViewHolder.from(parent)
@@ -64,29 +61,11 @@ class QueueAdapter(private val listener: EditableListListener) :
         payload: List<Any>
     ) {
         if (payload.isEmpty()) {
-            viewHolder.bind(differ.currentList[position], listener)
+            viewHolder.bind(getItem(position), listener)
         }
 
         viewHolder.isFuture = position > currentIndex
         viewHolder.updatePlayingIndicator(position == currentIndex, isPlaying)
-    }
-
-    /**
-     * Synchronously update the list with new items. This is exceedingly slow for large diffs, so
-     * only use it for trivial updates.
-     * @param newList The new [Song]s for the adapter to display.
-     */
-    fun submitList(newList: List<Song>) {
-        differ.submitList(newList)
-    }
-
-    /**
-     * Replace the list with a new list. This is exceedingly slow for large diffs, so only use it
-     * for trivial updates.
-     * @param newList The new [Song]s for the adapter to display.
-     */
-    fun replaceList(newList: List<Song>) {
-        differ.replaceList(newList)
     }
 
     /**
@@ -96,30 +75,19 @@ class QueueAdapter(private val listener: EditableListListener) :
      * @param isPlaying Whether playback is ongoing or paused.
      */
     fun setPosition(index: Int, isPlaying: Boolean) {
-        var updatedIndex = false
+        logD("Updating index")
+        val lastIndex = currentIndex
+        currentIndex = index
 
-        if (index != currentIndex) {
-            val lastIndex = currentIndex
-            currentIndex = index
-            updatedIndex = true
-
-            // Have to update not only the currently playing item, but also all items marked
-            // as playing.
-            if (currentIndex < lastIndex) {
-                notifyItemRangeChanged(0, lastIndex + 1, PAYLOAD_UPDATE_POSITION)
-            } else {
-                notifyItemRangeChanged(0, currentIndex + 1, PAYLOAD_UPDATE_POSITION)
-            }
+        // Have to update not only the currently playing item, but also all items marked
+        // as playing.
+        if (currentIndex < lastIndex) {
+            notifyItemRangeChanged(0, lastIndex + 1, PAYLOAD_UPDATE_POSITION)
+        } else {
+            notifyItemRangeChanged(0, currentIndex + 1, PAYLOAD_UPDATE_POSITION)
         }
 
-        if (this.isPlaying != isPlaying) {
-            this.isPlaying = isPlaying
-            // Don't need to do anything if we've already sent an update from changing the
-            // index.
-            if (!updatedIndex) {
-                notifyItemChanged(index, PAYLOAD_UPDATE_POSITION)
-            }
-        }
+        this.isPlaying = isPlaying
     }
 
     private companion object {
@@ -158,7 +126,6 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
             binding.songAlbumCover.isEnabled = value
             binding.songName.isEnabled = value
             binding.songInfo.isEnabled = value
-            binding.songDragHandle.isEnabled = value
         }
 
     init {
@@ -178,7 +145,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
      * @param listener A [EditableListListener] to bind interactions to.
      */
     @SuppressLint("ClickableViewAccessibility")
-    fun bind(song: Song, listener: EditableListListener) {
+    fun bind(song: Song, listener: EditableListListener<Song>) {
         listener.bind(song, this, bodyView, binding.songDragHandle)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.resolveName(binding.context)
@@ -202,6 +169,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
         fun from(parent: View) =
             QueueSongViewHolder(ItemQueueSongBinding.inflate(parent.context.inflater))
 
+        // TODO: This is not good enough, I need to compare item indices as well.
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK = SongViewHolder.DIFF_CALLBACK
     }

@@ -21,10 +21,11 @@ import android.content.Context
 import androidx.core.text.isDigitsOnly
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
-import org.oxycblt.auxio.music.Date
+import kotlinx.coroutines.flow.flow
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.filesystem.toAudioUri
 import org.oxycblt.auxio.music.parsing.parseId3v2Position
+import org.oxycblt.auxio.music.storage.toAudioUri
+import org.oxycblt.auxio.music.tags.Date
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -61,12 +62,11 @@ class MetadataExtractor(
     fun finalize(rawSongs: List<Song.Raw>) = mediaStoreExtractor.finalize(rawSongs)
 
     /**
-     * Parse all [Song.Raw] instances queued by the sub-extractors. This will first delegate to the
-     * sub-extractors before parsing the metadata itself.
-     * @param emit A listener that will be invoked with every new [Song.Raw] instance when they are
-     * successfully loaded.
+     * Returns a flow that parses all [Song.Raw] instances queued by the sub-extractors. This will
+     * first delegate to the sub-extractors before parsing the metadata itself.
+     * @return A flow of [Song.Raw] instances.
      */
-    suspend fun parse(emit: suspend (Song.Raw) -> Unit) {
+    fun extract() = flow {
         while (true) {
             val raw = Song.Raw()
             when (mediaStoreExtractor.populate(raw)) {
@@ -160,9 +160,9 @@ class Task(context: Context, private val raw: Song.Raw) {
 
         val metadata = format.metadata
         if (metadata != null) {
-            val tags = Tags(metadata)
-            populateWithId3v2(tags.id3v2)
-            populateWithVorbis(tags.vorbis)
+            val textTags = TextTags(metadata)
+            populateWithId3v2(textTags.id3v2)
+            populateWithVorbis(textTags.vorbis)
         } else {
             logD("No metadata could be extracted for ${raw.name}")
         }
@@ -207,18 +207,20 @@ class Task(context: Context, private val raw: Song.Raw) {
         textFrames["TALB"]?.let { raw.albumName = it[0] }
         textFrames["TSOA"]?.let { raw.albumSortName = it[0] }
         (textFrames["TXXX:musicbrainz album type"] ?: textFrames["GRP1"])?.let {
-            raw.albumTypes = it
+            raw.releaseTypes = it
         }
 
         // Artist
         textFrames["TXXX:musicbrainz artist id"]?.let { raw.artistMusicBrainzIds = it }
-        textFrames["TPE1"]?.let { raw.artistNames = it }
-        textFrames["TSOP"]?.let { raw.artistSortNames = it }
+        (textFrames["TXXX:artists"] ?: textFrames["TPE1"])?.let { raw.artistNames = it }
+        (textFrames["TXXX:artists_sort"] ?: textFrames["TSOP"])?.let { raw.artistSortNames = it }
 
         // Album artist
         textFrames["TXXX:musicbrainz album artist id"]?.let { raw.albumArtistMusicBrainzIds = it }
-        textFrames["TPE2"]?.let { raw.albumArtistNames = it }
-        textFrames["TSO2"]?.let { raw.albumArtistSortNames = it }
+        (textFrames["TXXX:albumartists"] ?: textFrames["TPE2"])?.let { raw.albumArtistNames = it }
+        (textFrames["TXXX:albumartists_sort"] ?: textFrames["TSO2"])?.let {
+            raw.albumArtistSortNames = it
+        }
 
         // Genre
         textFrames["TCON"]?.let { raw.genreNames = it }
@@ -229,7 +231,7 @@ class Task(context: Context, private val raw: Song.Raw) {
      * Frames.
      * @param textFrames A mapping between ID3v2 Text Identification Frame IDs and one or more
      * values.
-     * @retrn A [Date] of a year value from TORY/TYER, a month and day value from TDAT, and a
+     * @return A [Date] of a year value from TORY/TYER, a month and day value from TDAT, and a
      * hour/minute value from TIME. No second value is included. The latter two fields may not be
      * included in they cannot be parsed. Will be null if a year value could not be parsed.
      */
@@ -292,26 +294,28 @@ class Task(context: Context, private val raw: Song.Raw) {
         // date tag that android supports, so it must be 15 years old or more!)
         (comments["originaldate"]?.run { Date.from(first()) }
                 ?: comments["date"]?.run { Date.from(first()) }
-                    ?: comments["year"]?.run { first().toIntOrNull()?.let(Date::from) })
+                    ?: comments["year"]?.run { Date.from(first()) })
             ?.let { raw.date = it }
 
         // Album
         comments["musicbrainz_albumid"]?.let { raw.albumMusicBrainzId = it[0] }
         comments["album"]?.let { raw.albumName = it[0] }
         comments["albumsort"]?.let { raw.albumSortName = it[0] }
-        comments["releasetype"]?.let { raw.albumTypes = it }
+        comments["releasetype"]?.let { raw.releaseTypes = it }
 
         // Artist
         comments["musicbrainz_artistid"]?.let { raw.artistMusicBrainzIds = it }
-        comments["artist"]?.let { raw.artistNames = it }
-        comments["artistsort"]?.let { raw.artistSortNames = it }
+        (comments["artists"] ?: comments["artist"])?.let { raw.artistNames = it }
+        (comments["artists_sort"] ?: comments["artistsort"])?.let { raw.artistSortNames = it }
 
         // Album artist
         comments["musicbrainz_albumartistid"]?.let { raw.albumArtistMusicBrainzIds = it }
-        comments["albumartist"]?.let { raw.albumArtistNames = it }
-        comments["albumartistsort"]?.let { raw.albumArtistSortNames = it }
+        (comments["albumartists"] ?: comments["albumartist"])?.let { raw.albumArtistNames = it }
+        (comments["albumartists_sort"] ?: comments["albumartistsort"])?.let {
+            raw.albumArtistSortNames = it
+        }
 
         // Genre
-        comments["GENRE"]?.let { raw.genreNames = it }
+        comments["genre"]?.let { raw.genreNames = it }
     }
 }

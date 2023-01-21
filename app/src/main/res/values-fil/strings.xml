@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="set_replay_gain_album">Naisin ang album</string>
+    <string name="set_replay_gain_mode_album">Naisin ang album</string>
     <string name="lbl_retry">Subukan muli</string>
     <string name="lng_indexing">Nilo-load ang iyong music library…</string>
     <string name="lng_observing">Tinitignan ang iyong music library para sa mga pagbabago…</string>
@@ -62,7 +62,7 @@
     <string name="lbl_licenses">Mga Lisensya</string>
     <string name="lng_author">Binuo ni OxygenCobalt</string>
     <string name="lbl_library_counts">Istatistika ng library</string>
-    <string name="set_title">Mga Setting</string>
+    <string name="set_root_title">Mga Setting</string>
     <string name="set_ui">Hitsura</string>
     <string name="set_theme_auto">Kusa</string>
     <string name="set_theme_day">Maliwanag</string>
@@ -78,10 +78,10 @@
     <string name="set_headset_autoplay">Kusang pagtugtog ng headset</string>
     <string name="set_headset_autoplay_desc">Laging simulan ang pagtugtog tuwing pagkonekta ng headset (maaaring \'di gumana sa lahat ng device)</string>
     <string name="set_notif_action">Naisin ang alternatibong aksyong patalastas</string>
-    <string name="set_replay_gain_dynamic">Naisin ang album kung may isang tumutugtog</string>
+    <string name="set_replay_gain_mode_dynamic">Naisin ang album kung may isang tumutugtog</string>
     <string name="set_pre_amp">ReplayGain pre-amp</string>
     <string name="set_pre_amp_with">Ayos gamit ang mga tag</string>
-    <string name="set_behavior">Ugalian</string>
+    <string name="set_personalize">Ugalian</string>
     <string name="lbl_songs">Mga Kanta</string>
     <string name="info_app_desc">Isang magaan at makatwirang manunugtog para sa android.</string>
     <string name="lbl_ep_remix">Remix EP</string>
@@ -97,7 +97,7 @@
     <string name="set_theme">Tema</string>
     <string name="set_lib_tabs_desc">Ibahin ang pagkakita at ayos ng mga library tab</string>
     <string name="set_pre_amp_desc">Inilalapat ang pre-amp sa kasalukuyang ayos habang ito\'y tumutugtog</string>
-    <string name="set_replay_gain_track">Naisin ang track</string>
+    <string name="set_replay_gain_mode_track">Naisin ang track</string>
     <string name="set_pre_amp_warning">Babala: Ang pag-iba ng pre-amp sa mataas na positibong ayos ay maaaring magdulot ng karurukan sa ilang mga audio track.</string>
     <string name="set_pre_amp_without">Ayos na \'di gamit ang mga tag</string>
 </resources>

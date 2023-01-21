@@ -73,10 +73,10 @@
     <string name="set_audio">Zvuk</string>
     <string name="set_headset_autoplay">Slušalice: odmah reproduciraj</string>
     <string name="set_headset_autoplay_desc">Uvijek pokreni reprodukciju kada su slušalice povezane (možda neće raditi na svim uređajima)</string>
-    <string name="set_replay_gain">Strategija pojačanja</string>
-    <string name="set_replay_gain_track">Preferiraj zvučni zapis</string>
-    <string name="set_replay_gain_album">Preferiraj album</string>
-    <string name="set_replay_gain_dynamic">Ako se reproducira album, preferiraj album</string>
+    <string name="set_replay_gain_mode">Strategija pojačanja</string>
+    <string name="set_replay_gain_mode_track">Preferiraj zvučni zapis</string>
+    <string name="set_replay_gain_mode_album">Preferiraj album</string>
+    <string name="set_replay_gain_mode_dynamic">Ako se reproducira album, preferiraj album</string>
     <string name="set_pre_amp">Pretpojačalo pojačanja</string>
     <string name="set_pre_amp_desc">Pretpojačalo je tijekom reprodukcije primijenjeno postojećoj prilagodbi</string>
     <string name="set_pre_amp_with">Prilagođavanje s oznakama</string>
@@ -185,12 +185,12 @@
     <string name="lbl_go_artist">Idi na izvođača</string>
     <string name="lbl_go_album">Idi na album</string>
     <string name="set_keep_shuffle_desc">Ostavi miješanje omogućeno kada se druga pjesma reproducira</string>
-    <string name="set_title">Postavke</string>
+    <string name="set_root_title">Postavke</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Automatski</string>
     <string name="set_notif_action">Koristi alternativnu radnju za obavijest</string>
     <string name="set_round_mode_desc">Omogući zaobljene rubove na dodatnim elementima korisničkog sučelja (zahtijeva zaobljene omote albuma)</string>
-    <string name="set_behavior">Ponašanje</string>
+    <string name="set_personalize">Ponašanje</string>
     <string name="set_rewind_prev">Premotaj prije preskakanja natrag</string>
     <string name="set_save_desc">Spremi trenutno stanje reprodukcije</string>
     <string name="desc_skip_next">Preskoči na sljedeću pjesmu</string>
@@ -228,8 +228,8 @@
     <string name="set_separators_semicolon">Točka-zarez (;)</string>
     <string name="set_bar_action">Prilagođena radnja trake reprodukcije</string>
     <string name="lbl_equalizer">Ekvilajzer</string>
-    <string name="set_bar_action_next">Prijeđi na sljedeću</string>
-    <string name="set_bar_action_repeat">Način ponavljanja</string>
+    <string name="set_action_mode_next">Prijeđi na sljedeću</string>
+    <string name="set_action_mode_repeat">Način ponavljanja</string>
     <string name="set_hide_collaborators">Sakrij suradnike</string>
     <string name="set_cover_mode_off">Isključeno</string>
     <string name="set_exclude_non_music">Isključi sve što nije glazba</string>
@@ -254,4 +254,6 @@
     <string name="lbl_play_selected">Reproduciraj odabrane</string>
     <string name="set_playback_mode_genre">Reproduciraj iz žanra</string>
     <string name="lbl_wiki">Wiki</string>
+    <string name="fmt_list">%1$s, %2$s</string>
+    <string name="lbl_reset">Resetiraj</string>
 </resources>

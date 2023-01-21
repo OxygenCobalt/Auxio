@@ -29,8 +29,8 @@ import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
 import org.oxycblt.auxio.detail.DiscHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
-import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
-import org.oxycblt.auxio.list.recycler.SimpleItemCallback
+import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.formatDurationMs
@@ -48,7 +48,7 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
      * An extension to [DetailAdapter.Listener] that enables interactions specific to the album
      * detail view.
      */
-    interface Listener : DetailAdapter.Listener {
+    interface Listener : DetailAdapter.Listener<Song> {
         /**
          * Called when the artist name in the [Album] header was clicked, requesting navigation to
          * it's parent artist.
@@ -57,7 +57,7 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
     }
 
     override fun getItemViewType(position: Int) =
-        when (differ.currentList[position]) {
+        when (getItem(position)) {
             // Support the Album header, sub-headers for each disc, and special album songs.
             is Album -> AlbumDetailViewHolder.VIEW_TYPE
             is DiscHeader -> DiscHeaderViewHolder.VIEW_TYPE
@@ -75,7 +75,7 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        when (val item = differ.currentList[position]) {
+        when (val item = getItem(position)) {
             is Album -> (holder as AlbumDetailViewHolder).bind(item, listener)
             is DiscHeader -> (holder as DiscHeaderViewHolder).bind(item)
             is Song -> (holder as AlbumSongViewHolder).bind(item, listener)
@@ -83,15 +83,18 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
     }
 
     override fun isItemFullWidth(position: Int): Boolean {
+        if (super.isItemFullWidth(position)) {
+            return true
+        }
         // The album and disc headers should be full-width in all configurations.
-        val item = differ.currentList[position]
-        return super.isItemFullWidth(position) || item is Album || item is DiscHeader
+        val item = getItem(position)
+        return item is Album || item is DiscHeader
     }
 
     private companion object {
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Item>() {
+            object : SimpleDiffCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Album && newItem is Album ->
@@ -126,7 +129,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
         binding.detailCover.bind(album)
 
         // The type text depends on the release type (Album, EP, Single, etc.)
-        binding.detailType.text = binding.context.getString(album.type.stringRes)
+        binding.detailType.text = binding.context.getString(album.releaseType.stringRes)
 
         binding.detailName.text = album.resolveName(binding.context)
 
@@ -166,14 +169,14 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Album>() {
+            object : SimpleDiffCallback<Album>() {
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.areArtistContentsTheSame(newItem) &&
                         oldItem.dates == newItem.dates &&
                         oldItem.songs.size == newItem.songs.size &&
                         oldItem.durationMs == newItem.durationMs &&
-                        oldItem.type == newItem.type
+                        oldItem.releaseType == newItem.releaseType
             }
     }
 }
@@ -207,7 +210,7 @@ private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<DiscHeader>() {
+            object : SimpleDiffCallback<DiscHeader>() {
                 override fun areContentsTheSame(oldItem: DiscHeader, newItem: DiscHeader) =
                     oldItem.disc == newItem.disc
             }
@@ -226,7 +229,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
      * @param song The new [Song] to bind.
      * @param listener A [SelectableListListener] to bind interactions to.
      */
-    fun bind(song: Song, listener: SelectableListListener) {
+    fun bind(song: Song, listener: SelectableListListener<Song>) {
         listener.bind(song, this, menuButton = binding.songMenu)
 
         binding.songTrack.apply {
@@ -274,7 +277,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Song>() {
+            object : SimpleDiffCallback<Song>() {
                 override fun areContentsTheSame(oldItem: Song, newItem: Song) =
                     oldItem.rawName == newItem.rawName && oldItem.durationMs == newItem.durationMs
             }

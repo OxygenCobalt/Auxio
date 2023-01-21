@@ -22,7 +22,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.WindowInsets
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.material.bottomsheet.NeoBottomSheetBehavior
+import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import kotlin.math.abs
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
@@ -42,7 +42,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
     private var setup = false
 
     override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View): Boolean {
-        if (dependency.coordinatorLayoutBehavior is NeoBottomSheetBehavior) {
+        if (dependency.coordinatorLayoutBehavior is BackportBottomSheetBehavior) {
             dep = dependency
             return true
         }
@@ -55,7 +55,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         child: V,
         dependency: View
     ): Boolean {
-        val behavior = dependency.coordinatorLayoutBehavior as NeoBottomSheetBehavior
+        val behavior = dependency.coordinatorLayoutBehavior as BackportBottomSheetBehavior
         val consumed = behavior.calculateConsumedByBar()
         if (consumed == Int.MIN_VALUE) {
             return false
@@ -87,7 +87,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         heightUsed: Int
     ): Boolean {
         val dep = dep ?: return false
-        val behavior = dep.coordinatorLayoutBehavior as NeoBottomSheetBehavior
+        val behavior = dep.coordinatorLayoutBehavior as BackportBottomSheetBehavior
         val consumed = behavior.calculateConsumedByBar()
         if (consumed == Int.MIN_VALUE) {
             return false
@@ -106,7 +106,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
             child.setOnApplyWindowInsetsListener { _, insets ->
                 lastInsets = insets
                 val dep = dep ?: return@setOnApplyWindowInsetsListener insets
-                val behavior = dep.coordinatorLayoutBehavior as NeoBottomSheetBehavior
+                val behavior = dep.coordinatorLayoutBehavior as BackportBottomSheetBehavior
                 val consumed = behavior.calculateConsumedByBar()
                 if (consumed == Int.MIN_VALUE) {
                     return@setOnApplyWindowInsetsListener insets
@@ -138,7 +138,7 @@ class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: Attri
         child.layout(0, 0, child.measuredWidth, child.measuredHeight)
     }
 
-    private fun NeoBottomSheetBehavior<*>.calculateConsumedByBar(): Int {
+    private fun BackportBottomSheetBehavior<*>.calculateConsumedByBar(): Int {
         val offset = calculateSlideOffset()
         if (offset == Float.MIN_VALUE || peekHeight < 0) {
             return Int.MIN_VALUE

@@ -43,15 +43,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.library.Library
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.service.ForegroundManager
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
@@ -91,7 +93,8 @@ class PlaybackService :
     // Managers
     private val playbackManager = PlaybackStateManager.getInstance()
     private val musicStore = MusicStore.getInstance()
-    private lateinit var settings: Settings
+    private lateinit var musicSettings: MusicSettings
+    private lateinit var playbackSettings: PlaybackSettings
 
     // State
     private lateinit var foregroundManager: ForegroundManager
@@ -142,7 +145,8 @@ class PlaybackService :
                 .also { it.addListener(this) }
         replayGainProcessor.addToListeners(player)
         // Initialize the core service components
-        settings = Settings(this)
+        musicSettings = MusicSettings.from(this)
+        playbackSettings = PlaybackSettings.from(this)
         foregroundManager = ForegroundManager(this)
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
@@ -212,7 +216,7 @@ class PlaybackService :
         get() = player.audioSessionId
 
     override val shouldRewindWithPrev: Boolean
-        get() = settings.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
+        get() = playbackSettings.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
 
     override fun getState(durationMs: Long) =
         InternalPlayer.State.from(
@@ -285,7 +289,7 @@ class PlaybackService :
             if (playbackManager.repeatMode == RepeatMode.TRACK) {
                 playbackManager.rewind()
                 // May be configured to pause when we repeat a track.
-                if (settings.pauseOnRepeat) {
+                if (playbackSettings.pauseOnRepeat) {
                     playbackManager.setPlaying(false)
                 }
             } else {
@@ -302,7 +306,7 @@ class PlaybackService :
 
     // --- MUSICSTORE OVERRIDES ---
 
-    override fun onLibraryChanged(library: MusicStore.Library?) {
+    override fun onLibraryChanged(library: Library?) {
         if (library != null) {
             // We now have a library, see if we have anything we need to do.
             playbackManager.requestAction(this)
@@ -351,12 +355,16 @@ class PlaybackService :
             }
             // Shuffle all -> Start new playback from all songs
             is InternalPlayer.Action.ShuffleAll -> {
-                playbackManager.play(null, null, settings, true)
+                playbackManager.play(null, null, musicSettings.songSort.songs(library.songs), true)
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
             is InternalPlayer.Action.Open -> {
                 library.findSongForUri(application, action.uri)?.let { song ->
-                    playbackManager.play(song, null, settings)
+                    playbackManager.play(
+                        song,
+                        null,
+                        musicSettings.songSort.songs(library.songs),
+                        playbackManager.queue.isShuffled && playbackSettings.keepShuffle)
                 }
             }
         }
@@ -411,8 +419,7 @@ class PlaybackService :
                     playbackManager.setPlaying(!playbackManager.playerState.isPlaying)
                 ACTION_INC_REPEAT_MODE ->
                     playbackManager.repeatMode = playbackManager.repeatMode.increment()
-                ACTION_INVERT_SHUFFLE ->
-                    playbackManager.reshuffle(!playbackManager.isShuffled, settings)
+                ACTION_INVERT_SHUFFLE -> playbackManager.reorder(!playbackManager.queue.isShuffled)
                 ACTION_SKIP_PREV -> playbackManager.prev()
                 ACTION_SKIP_NEXT -> playbackManager.next()
                 ACTION_EXIT -> {
@@ -427,8 +434,8 @@ class PlaybackService :
             // ACTION_HEADSET_PLUG will fire when this BroadcastReciever is initially attached,
             // which would result in unexpected playback. Work around it by dropping the first
             // call to this function, which should come from that Intent.
-            if (settings.headsetAutoplay &&
-                playbackManager.song != null &&
+            if (playbackSettings.headsetAutoplay &&
+                playbackManager.queue.currentSong != null &&
                 initialHeadsetPlugEventHandled) {
                 logD("Device connected, resuming")
                 playbackManager.setPlaying(true)
@@ -436,7 +443,7 @@ class PlaybackService :
         }
 
         private fun pauseFromHeadsetPlug() {
-            if (playbackManager.song != null) {
+            if (playbackManager.queue.currentSong != null) {
                 logD("Device disconnected, pausing")
                 playbackManager.setPlaying(false)
             }

@@ -25,26 +25,22 @@ import androidx.recyclerview.widget.RecyclerView
  * A basic listener for list interactions.
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface ClickableListListener {
+interface ClickableListListener<in T> {
     /**
-     * Called when an [Item] in the list is clicked.
-     * @param item The [Item] that was clicked.
+     * Called when an item in the list is clicked.
+     * @param item The [T] item that was clicked.
      * @param viewHolder The [RecyclerView.ViewHolder] of the item that was clicked.
      */
-    fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder)
+    fun onClick(item: T, viewHolder: RecyclerView.ViewHolder)
 
     /**
      * Binds this instance to a list item.
-     * @param item The [Item] that this list entry is bound to.
+     * @param item The [T] to bind this item to.
      * @param viewHolder The [RecyclerView.ViewHolder] of the item that was clicked.
      * @param bodyView The [View] containing the main body of the list item. Any click events on
      * this [View] are routed to the listener. Defaults to the root view.
      */
-    fun bind(
-        item: Item,
-        viewHolder: RecyclerView.ViewHolder,
-        bodyView: View = viewHolder.itemView
-    ) {
+    fun bind(item: T, viewHolder: RecyclerView.ViewHolder, bodyView: View = viewHolder.itemView) {
         bodyView.setOnClickListener { onClick(item, viewHolder) }
     }
 }
@@ -53,7 +49,7 @@ interface ClickableListListener {
  * An extension of [ClickableListListener] that enables list editing functionality.
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface EditableListListener : ClickableListListener {
+interface EditableListListener<in T> : ClickableListListener<T> {
     /**
      * Called when a [RecyclerView.ViewHolder] requests that it should be dragged.
      * @param viewHolder The [RecyclerView.ViewHolder] that should start being dragged.
@@ -62,14 +58,14 @@ interface EditableListListener : ClickableListListener {
 
     /**
      * Binds this instance to a list item.
-     * @param item The [Item] that this list entry is bound to.
+     * @param item The [T] to bind this item to.
      * @param viewHolder The [RecyclerView.ViewHolder] to bind.
      * @param bodyView The [View] containing the main body of the list item. Any click events on
      * this [View] are routed to the listener. Defaults to the root view.
      * @param dragHandle A touchable [View]. Any drag on this view will start a drag event.
      */
     fun bind(
-        item: Item,
+        item: T,
         viewHolder: RecyclerView.ViewHolder,
         bodyView: View = viewHolder.itemView,
         dragHandle: View
@@ -89,30 +85,30 @@ interface EditableListListener : ClickableListListener {
  * An extension of [ClickableListListener] that enables menu and selection functionality.
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface SelectableListListener : ClickableListListener {
+interface SelectableListListener<in T> : ClickableListListener<T> {
     /**
-     * Called when an [Item] in the list requests that a menu related to it should be opened.
-     * @param item The [Item] to show a menu for.
+     * Called when an item in the list requests that a menu related to it should be opened.
+     * @param item The [T] item to open a menu for.
      * @param anchor The [View] to anchor the menu to.
      */
-    fun onOpenMenu(item: Item, anchor: View)
+    fun onOpenMenu(item: T, anchor: View)
 
     /**
-     * Called when an [Item] in the list requests that it be selected.
-     * @param item The [Item] to select.
+     * Called when an item in the list requests that it be selected.
+     * @param item The [T] item to select.
      */
-    fun onSelect(item: Item)
+    fun onSelect(item: T)
 
     /**
      * Binds this instance to a list item.
-     * @param item The [Item] that this list entry is bound to.
+     * @param item The [T] to bind this item to.
      * @param viewHolder The [RecyclerView.ViewHolder] to bind.
      * @param bodyView The [View] containing the main body of the list item. Any click events on
      * this [View] are routed to the listener. Defaults to the root view.
      * @param menuButton A clickable [View]. Any click events on this [View] will open a menu.
      */
     fun bind(
-        item: Item,
+        item: T,
         viewHolder: RecyclerView.ViewHolder,
         bodyView: View = viewHolder.itemView,
         menuButton: View

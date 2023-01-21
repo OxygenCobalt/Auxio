@@ -65,12 +65,11 @@ abstract class ViewBindingFragment<VB : ViewBinding> : Fragment() {
      * @return The currently-inflated [ViewBinding].
      * @throws IllegalStateException if the [ViewBinding] is not inflated.
      */
-    protected fun requireBinding(): VB {
-        return requireNotNull(_binding) {
+    protected fun requireBinding() =
+        requireNotNull(_binding) {
             "ViewBinding was available. Fragment should be a valid state " +
                 "right now, but instead it was ${lifecycle.currentState}"
         }
-    }
 
     final override fun onCreateView(
         inflater: LayoutInflater,

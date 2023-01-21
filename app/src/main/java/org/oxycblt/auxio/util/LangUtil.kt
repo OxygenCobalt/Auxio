@@ -34,6 +34,17 @@ fun <T> unlikelyToBeNull(value: T?) =
     }
 
 /**
+ * Require that the given data is a specific type [T].
+ * @param data The data to check.
+ * @return A data casted to [T].
+ * @throws IllegalStateException If the data cannot be casted to [T].
+ */
+inline fun <reified T> requireIs(data: Any?): T {
+    check(data is T) { "Unexpected datatype: ${data?.let { it::class.simpleName }}" }
+    return data
+}
+
+/**
  * Aliases a check to ensure that the given number is non-zero.
  * @return The given number if it's non-zero, null otherwise.
  */

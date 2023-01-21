@@ -32,15 +32,13 @@ import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.music.filesystem.MimeType
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.music.library.Library
+import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.music.storage.MimeType
+import org.oxycblt.auxio.music.tags.ReleaseType
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.*
 
 /**
@@ -53,7 +51,8 @@ import org.oxycblt.auxio.util.*
 class DetailViewModel(application: Application) :
     AndroidViewModel(application), MusicStore.Listener {
     private val musicStore = MusicStore.getInstance()
-    private val settings = Settings(application)
+    private val musicSettings = MusicSettings.from(application)
+    private val playbackSettings = PlaybackSettings.from(application)
 
     private var currentSongJob: Job? = null
 
@@ -81,10 +80,10 @@ class DetailViewModel(application: Application) :
         get() = _albumList
 
     /** The current [Sort] used for [Song]s in [albumList]. */
-    var albumSort: Sort
-        get() = settings.detailAlbumSort
+    var albumSongSort: Sort
+        get() = musicSettings.albumSongSort
         set(value) {
-            settings.detailAlbumSort = value
+            musicSettings.albumSongSort = value
             // Refresh the album list to reflect the new sort.
             currentAlbum.value?.let(::refreshAlbumList)
         }
@@ -101,10 +100,10 @@ class DetailViewModel(application: Application) :
     val artistList: StateFlow<List<Item>> = _artistList
 
     /** The current [Sort] used for [Song]s in [artistList]. */
-    var artistSort: Sort
-        get() = settings.detailArtistSort
+    var artistSongSort: Sort
+        get() = musicSettings.artistSongSort
         set(value) {
-            settings.detailArtistSort = value
+            musicSettings.artistSongSort = value
             // Refresh the artist list to reflect the new sort.
             currentArtist.value?.let(::refreshArtistList)
         }
@@ -121,13 +120,20 @@ class DetailViewModel(application: Application) :
     val genreList: StateFlow<List<Item>> = _genreList
 
     /** The current [Sort] used for [Song]s in [genreList]. */
-    var genreSort: Sort
-        get() = settings.detailGenreSort
+    var genreSongSort: Sort
+        get() = musicSettings.genreSongSort
         set(value) {
-            settings.detailGenreSort = value
+            musicSettings.genreSongSort = value
             // Refresh the genre list to reflect the new sort.
             currentGenre.value?.let(::refreshGenreList)
         }
+
+    /**
+     * The [MusicMode] to use when playing a [Song] from the UI, or null to play from the currently
+     * shown item.
+     */
+    val playbackMode: MusicMode?
+        get() = playbackSettings.inParentPlaybackMode
 
     init {
         musicStore.addListener(this)
@@ -137,7 +143,7 @@ class DetailViewModel(application: Application) :
         musicStore.removeListener(this)
     }
 
-    override fun onLibraryChanged(library: MusicStore.Library?) {
+    override fun onLibraryChanged(library: Library?) {
         if (library == null) {
             // Nothing to do.
             return
@@ -173,8 +179,8 @@ class DetailViewModel(application: Application) :
     }
 
     /**
-     * Set a new [currentSong] from it's [Music.UID]. If the [Music.UID] differs, [currentSong]
-     * and [songProperties] will be updated to align with the new [Song].
+     * Set a new [currentSong] from it's [Music.UID]. If the [Music.UID] differs, [currentSong] and
+     * [songProperties] will be updated to align with the new [Song].
      * @param uid The UID of the [Song] to load. Must be valid.
      */
     fun setSongUid(uid: Music.UID) {
@@ -315,7 +321,7 @@ class DetailViewModel(application: Application) :
 
         // To create a good user experience regarding disc numbers, we group the album's
         // songs up by disc and then delimit the groups by a disc header.
-        val songs = albumSort.songs(album.songs)
+        val songs = albumSongSort.songs(album.songs)
         // Songs without disc tags become part of Disc 1.
         val byDisc = songs.groupBy { it.disc ?: 1 }
         if (byDisc.size > 1) {
@@ -339,21 +345,21 @@ class DetailViewModel(application: Application) :
 
         val byReleaseGroup =
             albums.groupBy {
-                // Remap the complicated Album.Type data structure into an easier
+                // Remap the complicated ReleaseType data structure into an easier
                 // "AlbumGrouping" enum that will automatically group and sort
                 // the artist's albums.
-                when (it.type.refinement) {
-                    Album.Type.Refinement.LIVE -> AlbumGrouping.LIVE
-                    Album.Type.Refinement.REMIX -> AlbumGrouping.REMIXES
+                when (it.releaseType.refinement) {
+                    ReleaseType.Refinement.LIVE -> AlbumGrouping.LIVE
+                    ReleaseType.Refinement.REMIX -> AlbumGrouping.REMIXES
                     null ->
-                        when (it.type) {
-                            is Album.Type.Album -> AlbumGrouping.ALBUMS
-                            is Album.Type.EP -> AlbumGrouping.EPS
-                            is Album.Type.Single -> AlbumGrouping.SINGLES
-                            is Album.Type.Compilation -> AlbumGrouping.COMPILATIONS
-                            is Album.Type.Soundtrack -> AlbumGrouping.SOUNDTRACKS
-                            is Album.Type.Mix -> AlbumGrouping.MIXES
-                            is Album.Type.Mixtape -> AlbumGrouping.MIXTAPES
+                        when (it.releaseType) {
+                            is ReleaseType.Album -> AlbumGrouping.ALBUMS
+                            is ReleaseType.EP -> AlbumGrouping.EPS
+                            is ReleaseType.Single -> AlbumGrouping.SINGLES
+                            is ReleaseType.Compilation -> AlbumGrouping.COMPILATIONS
+                            is ReleaseType.Soundtrack -> AlbumGrouping.SOUNDTRACKS
+                            is ReleaseType.Mix -> AlbumGrouping.MIXES
+                            is ReleaseType.Mixtape -> AlbumGrouping.MIXTAPES
                         }
                 }
             }
@@ -369,7 +375,7 @@ class DetailViewModel(application: Application) :
         if (artist.songs.isNotEmpty()) {
             logD("Songs present in this artist, adding header")
             data.add(SortHeader(R.string.lbl_songs))
-            data.addAll(artistSort.songs(artist.songs))
+            data.addAll(artistSongSort.songs(artist.songs))
         }
 
         _artistList.value = data.toList()
@@ -382,12 +388,12 @@ class DetailViewModel(application: Application) :
         data.add(Header(R.string.lbl_artists))
         data.addAll(genre.artists)
         data.add(SortHeader(R.string.lbl_songs))
-        data.addAll(genreSort.songs(genre.songs))
+        data.addAll(genreSongSort.songs(genre.songs))
         _genreList.value = data
     }
 
     /**
-     * A simpler mapping of [Album.Type] used for grouping and sorting songs.
+     * A simpler mapping of [ReleaseType] used for grouping and sorting songs.
      * @param headerTitleRes The title string resource to use for a header created out of an
      * instance of this enum.
      */

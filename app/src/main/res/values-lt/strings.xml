@@ -40,10 +40,10 @@
     <string name="lbl_save">Išsaugoti</string>
     <string name="lbl_about">Apie</string>
     <string name="lbl_add">Pridėti</string>
-    <string name="set_ui">Išvaizda</string>
+    <string name="set_ui">Išvaizda ir pojūtis</string>
     <string name="lbl_format">Formatas</string>
     <string name="lbl_version">Versija</string>
-    <string name="set_title">Nustatymai</string>
+    <string name="set_root_title">Nustatymai</string>
     <string name="set_theme">Temos</string>
     <string name="set_black_mode_desc">Naudokti grynai juodą tamsią temą</string>
     <string name="info_app_desc">Paprastas, racionalus „Android“ muzikos grotuvas.</string>
@@ -80,7 +80,7 @@
     <string name="lbl_cancel">Atšaukti</string>
     <string name="lbl_code">Šaltinio kodas</string>
     <string name="set_display">Rodyti</string>
-    <string name="set_replay_gain">„ReplayGain“ strategija</string>
+    <string name="set_replay_gain_mode">„ReplayGain“ strategija</string>
     <string name="lbl_singles">Singlai</string>
     <string name="lbl_ok">Gerai</string>
     <string name="set_round_mode_desc">Įgalinti papildomų vartotojo sąsajos elementų suapvalintus kampus (reikia, kad albumo viršeliai būtų suapvalinti)</string>
@@ -124,7 +124,7 @@
     <string name="set_headset_autoplay_desc">Visada pradėti groti, kai prijungtos ausinės (gali veikti ne visuose įrenginiuose)</string>
     <string name="cdc_ogg">Ogg garsas</string>
     <string name="lng_author">Sukūrė Alexanderis Capehartas</string>
-    <string name="set_replay_gain_track">Pageidaujamas takeliui</string>
+    <string name="set_replay_gain_mode_track">Pageidaujamas takeliui</string>
     <string name="err_no_dirs">Jokių aplankų</string>
     <string name="err_bad_dir">Šis aplankas nepalaikomas</string>
     <string name="desc_play_pause">Groti arba pristabdyti</string>
@@ -134,8 +134,8 @@
     <string name="lbl_mixtapes">Mikstapai</string>
     <string name="set_lib_tabs">Bibliotekos skirtukai</string>
     <string name="set_lib_tabs_desc">Keisti bibliotekos skirtukų matomumą ir tvarką</string>
-    <string name="set_replay_gain_album">Pageidaujamas albumui</string>
-    <string name="set_replay_gain_dynamic">Pageidaujamas albumui, jei vienas groja</string>
+    <string name="set_replay_gain_mode_album">Pageidaujamas albumui</string>
+    <string name="set_replay_gain_mode_dynamic">Pageidaujamas albumui, jei vienas groja</string>
     <string name="err_no_app">Jokių programų nerasta, kurios galėtų atlikti šią užduotį</string>
     <string name="desc_auxio_icon">„Auxio“ piktograma</string>
     <string name="desc_queue_handle">Perkelti šią eilės dainą</string>
@@ -167,9 +167,9 @@
     <string name="desc_exit">Sustabdyti grojimą</string>
     <string name="def_track">Nėra takelio numerio</string>
     <string name="def_bitrate">Nėra bitų srauto</string>
-    <string name="set_bar_action_next">Pereiti prie kitos</string>
+    <string name="set_action_mode_next">Pereiti prie kitos</string>
     <string name="set_headset_autoplay">Automatinis ausinių grojimas</string>
-    <string name="set_bar_action_repeat">Kartojimo režimas</string>
+    <string name="set_action_mode_repeat">Kartojimo režimas</string>
     <string name="desc_queue_bar">Atidaryti eilę</string>
     <string name="desc_clear_search">Išvalyti paieškos užklausą</string>
     <string name="set_dirs_mode_exclude_desc">Muzika <b>nebus</b> įkeliama iš pridėtų aplankų jūs pridėsite.</string>
@@ -191,7 +191,7 @@
     <string name="fmt_lib_artist_count">Įkrauti atlikėjai: %d</string>
     <string name="fmt_indexing">Kraunama jūsų muzikos biblioteka… (%1$d/%2$d)</string>
     <string name="desc_shuffle_all">Maišyti visas dainas</string>
-    <string name="set_behavior">Elgesys</string>
+    <string name="set_personalize">Elgesys</string>
     <string name="set_pre_amp_warning">Įspėjimas: Keičiant išankstinį stiprintuvą į didelę teigiamą vertę, kai kuriuose garso takeliuose gali atsirasti pikų.</string>
     <string name="desc_album_cover">Albumo viršelis, skirtas %s</string>
     <string name="desc_artist_image">Atlikėjo vaizdas, skirtas %s</string>
@@ -258,4 +258,17 @@
     <string name="set_playback_mode_genre">Groti iš žanro</string>
     <string name="lbl_wiki">Viki</string>
     <string name="fmt_list">%1$s, %2$s</string>
+    <string name="lbl_reset">Nustatyti iš naujo</string>
+    <string name="set_library">Biblioteka</string>
+    <string name="set_behavior">Elgesys</string>
+    <string name="set_ui_desc">Pakeisti programos temą ir spalvas</string>
+    <string name="set_content_desc">Valdyti, kaip muzika ir vaizdai įkeliama</string>
+    <string name="set_audio_desc">Konfigūruoti garso ir grojimo elgesį</string>
+    <string name="set_personalize_desc">Naudotojo UI ir elgsenos pritaikymas</string>
+    <string name="set_music">Muzika</string>
+    <string name="set_images">Vaizdai</string>
+    <string name="set_playback">Grojimas</string>
+    <string name="set_replay_gain">„ReplayGain“</string>
+    <string name="set_dirs_list">Aplankalai</string>
+    <string name="set_state">Atkaklumas</string>
 </resources>

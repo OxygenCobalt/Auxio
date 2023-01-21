@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/set_root_title">
+    <Preference
+        app:icon="@drawable/ic_accent_24"
+        app:key="@string/set_key_ui"
+        app:summary="@string/set_ui_desc"
+        app:title="@string/set_ui" />
+
+    <Preference
+        app:icon="@drawable/ic_config_24"
+        app:key="@string/set_key_personalize"
+        app:summary="@string/set_personalize_desc"
+        app:title="@string/set_personalize" />
+
+    <Preference
+        app:icon="@drawable/ic_song_24"
+        app:key="@string/set_key_music"
+        app:summary="@string/set_content_desc"
+        app:title="@string/set_content" />
+
+    <Preference
+        app:icon="@drawable/ic_play_24"
+        app:key="@string/set_key_audio"
+        app:summary="@string/set_audio_desc"
+        app:title="@string/set_audio" />
+
+    <PreferenceCategory app:title="@string/set_library">
+
+        <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+            app:key="@string/set_key_music_dirs"
+            app:summary="@string/set_dirs_desc"
+            app:title="@string/set_dirs" />
+
+        <Preference
+            app:key="@string/set_key_reindex"
+            app:summary="@string/set_reindex_desc"
+            app:title="@string/set_reindex" />
+
+        <Preference
+            app:key="@string/set_key_rescan"
+            app:summary="@string/set_rescan_desc"
+            app:title="@string/set_rescan" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/set_state">
+
+        <Preference
+            app:key="@string/set_key_save_state"
+            app:summary="@string/set_save_desc"
+            app:title="@string/set_save_state" />
+
+        <Preference
+            app:key="@string/set_key_wipe_state"
+            app:summary="@string/set_wipe_desc"
+            app:title="@string/set_wipe_state" />
+
+        <Preference
+            app:key="@string/set_key_restore_state"
+            app:summary="@string/set_restore_desc"
+            app:title="@string/set_restore_state" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -160,8 +160,10 @@
     <!-- Settings namespace | Settings-related labels -->
     <eat-comment />
 
-    <string name="set_title">Settings</string>
-    <string name="set_ui">Appearance</string>
+    <string name="set_root_title">Settings</string>
+
+    <string name="set_ui">Look and Feel</string>
+    <string name="set_ui_desc">Change the theme and colors of the app</string>
     <string name="set_theme">Theme</string>
     <string name="set_theme_auto">Automatic</string>
     <string name="set_theme_day">Light</string>
@@ -169,37 +171,19 @@
     <string name="set_accent">Color scheme</string>
     <string name="set_black_mode">Black theme</string>
     <string name="set_black_mode_desc">Use a pure-black dark theme</string>
+    <string name="set_round_mode">Round mode</string>
+    <string name="set_round_mode_desc">Enable rounded corners on additional UI elements (requires album covers to be rounded)</string>
 
+    <string name="set_personalize">Personalize</string>
+    <string name="set_personalize_desc">Customize UI controls and behavior</string>
     <string name="set_display">Display</string>
     <string name="set_lib_tabs">Library tabs</string>
     <string name="set_lib_tabs_desc">Change visibility and order of library tabs</string>
-    <string name="set_hide_collaborators">Hide collaborators</string>
-    <string name="set_hide_collaborators_desc">Only show artists that are directly credited on an album (works best on well-tagged libraries)</string>
-    <string name="set_cover_mode">Album covers</string>
-    <string name="set_cover_mode_off">Off</string>
-    <string name="set_cover_mode_media_store">Fast</string>
-    <string name="set_cover_mode_quality">High quality</string>
-    <string name="set_round_mode">Round mode</string>
-    <string name="set_round_mode_desc">Enable rounded corners on additional UI elements (requires album covers to be rounded)</string>
-    <string name="set_bar_action">Custom playback bar action</string>
     <!-- Skip to next (song) -->
-    <string name="set_bar_action_next">Skip to next</string>
-    <string name="set_bar_action_repeat">Repeat mode</string>
+    <string name="set_bar_action">Custom playback bar action</string>
     <string name="set_notif_action">Custom notification action</string>
-
-    <string name="set_audio">Audio</string>
-    <string name="set_headset_autoplay">Headset autoplay</string>
-    <string name="set_headset_autoplay_desc">Always start playing when a headset is connected (may not work on all devices)</string>
-    <string name="set_replay_gain">ReplayGain strategy</string>
-    <string name="set_replay_gain_track">Prefer track</string>
-    <string name="set_replay_gain_album">Prefer album</string>
-    <string name="set_replay_gain_dynamic">Prefer album if one is playing</string>
-    <string name="set_pre_amp">ReplayGain pre-amp</string>
-    <string name="set_pre_amp_desc">The pre-amp is applied to the existing adjustment during playback</string>
-    <string name="set_pre_amp_with">Adjustment with tags</string>
-    <string name="set_pre_amp_without">Adjustment without tags</string>
-    <string name="set_pre_amp_warning">Warning: Changing the pre-amp to a high positive value may result in peaking on some audio tracks.</string>
-
+    <string name="set_action_mode_next">Skip to next</string>
+    <string name="set_action_mode_repeat">Repeat mode</string>
     <string name="set_behavior">Behavior</string>
     <string name="set_library_song_playback_mode">When playing from the library</string>
     <string name="set_detail_song_playback_mode">When playing from item details</string>
@@ -210,27 +194,54 @@
     <string name="set_playback_mode_genre">Play from genre</string>
     <string name="set_keep_shuffle">Remember shuffle</string>
     <string name="set_keep_shuffle_desc">Keep shuffle on when playing a new song</string>
+
+    <string name="set_content">Content</string>
+    <string name="set_content_desc">Control how music and images are loaded</string>
+    <string name="set_music">Music</string>
+    <string name="set_observing">Automatic reloading</string>
+    <string name="set_observing_desc">Reload the music library whenever it changes (requires persistent notification)</string>
+    <string name="set_exclude_non_music">Exclude non-music</string>
+    <string name="set_exclude_non_music_desc">Ignore audio files that are not music, such as podcasts</string>
+    <string name="set_separators">Multi-value separators</string>
+    <string name="set_separators_desc">Configure characters that denote multiple tag values</string>
+    <string name="set_separators_comma">Comma (,)</string>
+    <string name="set_separators_semicolon">Semicolon (;)</string>
+    <string name="set_separators_slash">Slash (/)</string>
+    <string name="set_separators_plus">Plus (+)</string>
+    <string name="set_separators_and">Ampersand (&amp;)</string>
+    <string name="set_separators_warning">Warning: Using this setting may result in some tags being incorrectly interpreted as having multiple values. You can resolve this by prefixing unwanted separator characters with a backslash (\\).</string>
+    <string name="set_hide_collaborators">Hide collaborators</string>
+    <string name="set_hide_collaborators_desc">Only show artists that are directly credited on an album (works best on well-tagged libraries)</string>
+    <string name="set_images">Images</string>
+    <string name="set_cover_mode">Album covers</string>
+    <string name="set_cover_mode_off">Off</string>
+    <string name="set_cover_mode_media_store">Fast</string>
+    <string name="set_cover_mode_quality">High quality</string>
+
+    <string name="set_audio">Audio</string>
+    <string name="set_audio_desc">Configure sound and playback behavior</string>
+    <string name="set_playback">Playback</string>
+    <string name="set_headset_autoplay">Headset autoplay</string>
+    <string name="set_headset_autoplay_desc">Always start playing when a headset is connected (may not work on all devices)</string>
     <string name="set_rewind_prev">Rewind before skipping back</string>
     <string name="set_rewind_prev_desc">Rewind before skipping to the previous song</string>
     <string name="set_repeat_pause">Pause on repeat</string>
     <string name="set_repeat_pause_desc">Pause when a song repeats</string>
-    <string name="set_save_state">Save playback state</string>
-    <string name="set_save_desc">Save the current playback state now</string>
-    <string name="set_wipe_state">Clear playback state</string>
-    <string name="set_wipe_desc">Clear the previously saved playback state (if any)</string>
-    <string name="set_restore_state">Restore playback state</string>
-    <string name="set_restore_desc">Restore the previously saved playback state (if any)</string>
+    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain_mode">ReplayGain strategy</string>
+    <string name="set_replay_gain_mode_track">Prefer track</string>
+    <string name="set_replay_gain_mode_album">Prefer album</string>
+    <string name="set_replay_gain_mode_dynamic">Prefer album if one is playing</string>
+    <string name="set_pre_amp">ReplayGain pre-amp</string>
+    <string name="set_pre_amp_desc">The pre-amp is applied to the existing adjustment during playback</string>
+    <string name="set_pre_amp_with">Adjustment with tags</string>
+    <string name="set_pre_amp_without">Adjustment without tags</string>
+    <string name="set_pre_amp_warning">Warning: Changing the pre-amp to a high positive value may result in peaking on some audio tracks.</string>
 
-    <string name="set_content">Content</string>
-    <string name="set_reindex">Refresh music</string>
-    <string name="set_reindex_desc">Reload the music library, using cached tags when possible</string>
-    <!-- Different from "Reload music" -->
-    <string name="set_rescan">Rescan music</string>
-    <string name="set_rescan_desc">Clear the tag cache and fully reload the music library (slower, but more complete)</string>
-    <string name="set_observing">Automatic reloading</string>
-    <string name="set_observing_desc">Reload the music library whenever it changes (requires persistent notification)</string>
+    <string name="set_library">Library</string>
     <string name="set_dirs">Music folders</string>
     <string name="set_dirs_desc">Manage where music should be loaded from</string>
+    <string name="set_dirs_list">Folders</string>
     <!-- As in the mode to be used with the music folders setting -->
     <string name="set_dirs_mode">Mode</string>
     <!-- Exclude folders from music loading -->
@@ -239,16 +250,19 @@
     <!-- Restrict music loading to selected folders -->
     <string name="set_dirs_mode_include">Include</string>
     <string name="set_dirs_mode_include_desc">Music will <b>only</b> be loaded from the folders you add.</string>
-    <string name="set_exclude_non_music">Exclude non-music</string>
-    <string name="set_exclude_non_music_desc">Ignore audio files that are not music, such as podcasts</string>
-    <string name="set_separators">Multi-value separators</string>
-    <string name="set_separators_desc">Configure characters that denote multiple tag values</string>
-    <string name="set_separators_warning">Warning: Using this setting may result in some tags being incorrectly interpreted as having multiple values. You can resolve this by prefixing unwanted separator characters with a backslash (\\).</string>
-    <string name="set_separators_comma">Comma (,)</string>
-    <string name="set_separators_semicolon">Semicolon (;)</string>
-    <string name="set_separators_slash">Slash (/)</string>
-    <string name="set_separators_plus">Plus (+)</string>
-    <string name="set_separators_and">Ampersand (&amp;)</string>
+    <string name="set_reindex">Refresh music</string>
+    <string name="set_reindex_desc">Reload the music library, using cached tags when possible</string>
+    <!-- Different from "Reload music" -->
+    <string name="set_rescan">Rescan music</string>
+    <string name="set_rescan_desc">Clear the tag cache and fully reload the music library (slower, but more complete)</string>
+
+    <string name="set_state">Persistence</string>
+    <string name="set_save_state">Save playback state</string>
+    <string name="set_save_desc">Save the current playback state now</string>
+    <string name="set_wipe_state">Clear playback state</string>
+    <string name="set_wipe_desc">Clear the previously saved playback state (if any)</string>
+    <string name="set_restore_state">Restore playback state</string>
+    <string name="set_restore_desc">Restore the previously saved playback state (if any)</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">No music found</string>

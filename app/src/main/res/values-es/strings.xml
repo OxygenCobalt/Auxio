@@ -42,8 +42,8 @@
     <string name="lbl_licenses">Licencias</string>
     <string name="lng_author">Desarrollado por Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Ajustes</string>
-    <string name="set_ui">Apariencia</string>
+    <string name="set_root_title">Ajustes</string>
+    <string name="set_ui">Aspecto y sensación</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Automático</string>
     <string name="set_theme_day">Claro</string>
@@ -58,11 +58,11 @@
     <string name="set_round_mode_desc">Habilite las esquinas redondeadas en los elementos adicionales de la interfaz del usuario (requiere que las portadas de los álbumes estén redondeadas)</string>
     <string name="set_notif_action">Usar acciones de notificación alternativas</string>
     <string name="set_audio">Sonido</string>
-    <string name="set_replay_gain">Estrategia de la ganancia de la repetición</string>
-    <string name="set_replay_gain_track">Por pista</string>
-    <string name="set_replay_gain_album">Por álbum</string>
-    <string name="set_replay_gain_dynamic">Preferir el álbum si se está en reproducción</string>
-    <string name="set_behavior">Comportamiento</string>
+    <string name="set_replay_gain_mode">Estrategia de la ganancia de la repetición</string>
+    <string name="set_replay_gain_mode_track">Por pista</string>
+    <string name="set_replay_gain_mode_album">Por álbum</string>
+    <string name="set_replay_gain_mode_dynamic">Preferir el álbum si se está en reproducción</string>
+    <string name="set_personalize">Comportamiento</string>
     <string name="set_library_song_playback_mode">Cuando se está reproduciendo de la biblioteca</string>
     <string name="set_keep_shuffle">Recordar mezcla</string>
     <string name="set_keep_shuffle_desc">Mantener mezcla cuando se reproduce una nueva canción</string>
@@ -128,10 +128,12 @@
     <string name="fmt_lib_song_count">Canciones cargadas: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d canción</item>
+        <item quantity="many">%d canciones</item>
         <item quantity="other">%d canciones</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d álbum</item>
+        <item quantity="many">%d álbumes</item>
         <item quantity="other">%d álbumes</item>
     </plurals>
     <string name="lbl_size">Tamaño</string>
@@ -235,16 +237,16 @@
     <string name="lbl_equalizer">Ecualizador</string>
     <string name="set_cover_mode">Portadas de álbumes</string>
     <string name="set_cover_mode_off">Apagado</string>
-    <string name="set_bar_action_repeat">Modo de repetición</string>
+    <string name="set_action_mode_repeat">Modo de repetición</string>
     <string name="set_separators_plus">Más (+)</string>
-    <string name="set_separators_and">Y comercial (&amp;)</string>
+    <string name="set_separators_and">Y (&amp;)</string>
     <string name="desc_exit">Detener la reproducción</string>
     <string name="set_exclude_non_music_desc">Ignorar archivos de audio que no sean música, como podcasts</string>
     <string name="set_separators_warning">Advertencia: El uso de esta configuración puede dar lugar a que algunas etiquetas se interpreten incorrectamente como si tuvieran varios valores. Puede resolverlo anteponiendo a los caracteres separadores no deseados una barra invertida (\\).</string>
     <string name="set_cover_mode_quality">Alta calidad</string>
     <string name="set_cover_mode_media_store">Rápido</string>
     <string name="set_bar_action">Acción personalizada de la barra de reproducción</string>
-    <string name="set_bar_action_next">Saltar al siguiente</string>
+    <string name="set_action_mode_next">Saltar al siguiente</string>
     <string name="set_hide_collaborators_desc">Mostrar solo artistas que estén acreditados directamente en un álbum (funciona mejor en bibliotecas bien etiquetadas)</string>
     <string name="set_hide_collaborators">Ocultar colaboradores</string>
     <plurals name="fmt_artist_count">
@@ -262,4 +264,17 @@
     <string name="set_playback_mode_genre">Reproducir desde el género</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
+    <string name="lbl_reset">Restablecer</string>
+    <string name="set_behavior">Comportamiento</string>
+    <string name="set_replay_gain">Ganancia de la reproducción</string>
+    <string name="set_content_desc">Controla cómo se cargan la música y las imágenes</string>
+    <string name="set_music">Música</string>
+    <string name="set_images">Imágenes</string>
+    <string name="set_audio_desc">Configurar el comportamiento del sonido y la reproducción</string>
+    <string name="set_playback">Reproducción</string>
+    <string name="set_dirs_list">Carpetas</string>
+    <string name="set_state">Persistencia</string>
+    <string name="set_ui_desc">Cambiar el tema y los colores de la aplicación</string>
+    <string name="set_personalize_desc">Personalizar los controles y el comportamiento de la interfaz de usuario</string>
+    <string name="set_library">Biblioteca</string>
 </resources>

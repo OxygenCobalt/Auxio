@@ -71,6 +71,14 @@ abstract class SelectionFragment<VB : ViewBinding> :
                 requireContext().showToast(R.string.lng_queue_added)
                 true
             }
+            R.id.action_selection_play -> {
+                playbackModel.play(selectionModel.consume())
+                true
+            }
+            R.id.action_selection_shuffle -> {
+                playbackModel.shuffle(selectionModel.consume())
+                true
+            }
             else -> false
         }
 }

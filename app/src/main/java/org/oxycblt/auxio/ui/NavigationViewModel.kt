@@ -79,15 +79,15 @@ class NavigationViewModel : ViewModel() {
 
     /**
      * Navigate to a given [Music] item. Will do nothing if already navigating.
-     * @param item The [Music] to navigate to.
+     * @param music The [Music] to navigate to.
      */
-    fun exploreNavigateTo(item: Music) {
+    fun exploreNavigateTo(music: Music) {
         if (_exploreNavigationItem.value != null) {
             logD("Already navigating, not doing explore action")
             return
         }
-        logD("Navigating to ${item.rawName}")
-        _exploreNavigationItem.value = item
+        logD("Navigating to ${music.rawName}")
+        _exploreNavigationItem.value = music
     }
 
     /**

@@ -2,8 +2,8 @@
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
-    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.0.1">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.0.1&color=0D5AF5">
+    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.0.2">
+        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.0.2&color=0D5AF5">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg">

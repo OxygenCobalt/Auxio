@@ -37,7 +37,7 @@
     <string name="lbl_licenses">Licenties</string>
     <string name="lng_author">Ontwikkeld door OxygenCobalt</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Instellingen</string>
+    <string name="set_root_title">Instellingen</string>
     <string name="set_ui">Uiterlijk</string>
     <string name="set_theme">Thema</string>
     <string name="set_theme_auto">Automatisch</string>
@@ -47,7 +47,7 @@
     <string name="set_display">Scherm</string>
     <string name="set_notif_action">Gebruikt een afternatief notification action</string>
     <string name="set_audio">Audio</string>
-    <string name="set_behavior">Gedrag</string>
+    <string name="set_personalize">Gedrag</string>
     <string name="set_library_song_playback_mode">Bij het afspelen vanuit de bibliotheek</string>
     <string name="set_keep_shuffle">Onthoud shuffle</string>
     <string name="set_keep_shuffle_desc">Houd shuffle aan bij het afspelen van een nieuw nummer</string>
@@ -124,9 +124,9 @@
     <string name="lbl_relative_path">Ouderpad</string>
     <string name="lbl_props">Lied eigenschappen</string>
     <string name="lbl_file_name">Bestandsnaam</string>
-    <string name="set_replay_gain_dynamic">Voorkeur album als er een speelt</string>
-    <string name="set_replay_gain_track">Voorkeur titel</string>
-    <string name="set_replay_gain_album">Voorkeur album</string>
+    <string name="set_replay_gain_mode_dynamic">Voorkeur album als er een speelt</string>
+    <string name="set_replay_gain_mode_track">Voorkeur titel</string>
+    <string name="set_replay_gain_mode_album">Voorkeur album</string>
     <string name="set_pre_amp_desc">De voorversterker wordt toegepast op de bestaande afstelling tijdens weergave</string>
     <string name="set_dirs">Muziek mappen</string>
     <string name="set_pre_amp">ReplayGain voorversterker</string>
@@ -157,7 +157,7 @@
     <string name="lbl_library_counts">Bibliotheekstatistieken</string>
     <string name="set_lib_tabs_desc">Verander de zichtbaarheid en volgorde van bibliotheek-tabbladen</string>
     <string name="set_headset_autoplay">Headset automatisch afspelen</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain_mode">ReplayGain</string>
     <string name="set_pre_amp_warning">Waarschuwing: Als u de voorversterker op een hoge positieve waarde zet, kan dit bij sommige audiotracks tot pieken leiden.</string>
     <string name="set_playback_mode_none">Afspelen vanaf getoond item</string>
     <string name="set_restore_state">Afspeelstatus herstellen</string>

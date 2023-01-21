@@ -20,17 +20,19 @@ package org.oxycblt.auxio.detail
 import androidx.annotation.StringRes
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.filesystem.MimeType
+import org.oxycblt.auxio.music.storage.MimeType
 
 /**
  * A header variation that displays a button to open a sort menu.
  * @param titleRes The string resource to use as the header title
+ * @author Alexander Capehart (OxygenCobalt)
  */
 data class SortHeader(@StringRes val titleRes: Int) : Item
 
 /**
  * A header variation that delimits between disc groups.
  * @param disc The disc number to be displayed on the header.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 data class DiscHeader(val disc: Int) : Item
 
@@ -39,6 +41,7 @@ data class DiscHeader(val disc: Int) : Item
  * @param bitrateKbps The bit rate, in kilobytes-per-second. Null if it could not be parsed.
  * @param sampleRateHz The sample rate, in hertz.
  * @param resolvedMimeType The known mime type of the [Song] after it's file format was determined.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 data class SongProperties(
     val bitrateKbps: Int?,

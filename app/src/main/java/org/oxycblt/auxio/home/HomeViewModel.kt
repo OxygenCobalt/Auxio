@@ -18,21 +18,15 @@
 package org.oxycblt.auxio.home
 
 import android.app.Application
-import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.music.library.Library
+import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -40,15 +34,15 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class HomeViewModel(application: Application) :
-    AndroidViewModel(application),
-    MusicStore.Listener,
-    SharedPreferences.OnSharedPreferenceChangeListener {
+    AndroidViewModel(application), MusicStore.Listener, HomeSettings.Listener {
     private val musicStore = MusicStore.getInstance()
-    private val settings = Settings(application)
+    private val homeSettings = HomeSettings.from(application)
+    private val musicSettings = MusicSettings.from(application)
+    private val playbackSettings = PlaybackSettings.from(application)
 
     private val _songsList = MutableStateFlow(listOf<Song>())
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
-    val songLists: StateFlow<List<Song>>
+    val songsList: StateFlow<List<Song>>
         get() = _songsList
 
     private val _albumsLists = MutableStateFlow(listOf<Album>())
@@ -70,11 +64,15 @@ class HomeViewModel(application: Application) :
     val genresList: StateFlow<List<Genre>>
         get() = _genresList
 
+    /** The [MusicMode] to use when playing a [Song] from the UI. */
+    val playbackMode: MusicMode
+        get() = playbackSettings.inListPlaybackMode
+
     /**
      * A list of [MusicMode] corresponding to the current [Tab] configuration, excluding invisible
      * [Tab]s.
      */
-    var currentTabModes: List<MusicMode> = makeTabModes()
+    var currentTabModes = makeTabModes()
         private set
 
     private val _currentTabMode = MutableStateFlow(currentTabModes[0])
@@ -95,45 +93,82 @@ class HomeViewModel(application: Application) :
 
     init {
         musicStore.addListener(this)
-        settings.addListener(this)
+        homeSettings.registerListener(this)
     }
 
     override fun onCleared() {
         super.onCleared()
         musicStore.removeListener(this)
-        settings.removeListener(this)
+        homeSettings.unregisterListener(this)
     }
 
-    override fun onLibraryChanged(library: MusicStore.Library?) {
+    override fun onLibraryChanged(library: Library?) {
         if (library != null) {
             logD("Library changed, refreshing library")
             // Get the each list of items in the library to use as our list data.
             // Applying the preferred sorting to them.
-            _songsList.value = settings.libSongSort.songs(library.songs)
-            _albumsLists.value = settings.libAlbumSort.albums(library.albums)
+            _songsList.value = musicSettings.songSort.songs(library.songs)
+            _albumsLists.value = musicSettings.albumSort.albums(library.albums)
             _artistsList.value =
-                settings.libArtistSort.artists(
-                    if (settings.shouldHideCollaborators) {
+                musicSettings.artistSort.artists(
+                    if (homeSettings.shouldHideCollaborators) {
                         // Hide Collaborators is enabled, filter out collaborators.
                         library.artists.filter { !it.isCollaborator }
                     } else {
                         library.artists
                     })
-            _genresList.value = settings.libGenreSort.genres(library.genres)
+            _genresList.value = musicSettings.genreSort.genres(library.genres)
         }
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        when (key) {
-            context.getString(R.string.set_key_lib_tabs) -> {
-                // Tabs changed, update  the current tabs and set up a re-create event.
-                currentTabModes = makeTabModes()
-                _shouldRecreate.value = true
+    override fun onTabsChanged() {
+        // Tabs changed, update  the current tabs and set up a re-create event.
+        currentTabModes = makeTabModes()
+        _shouldRecreate.value = true
+    }
+
+    override fun onHideCollaboratorsChanged() {
+        // Changes in the hide collaborator setting will change the artist contents
+        // of the library, consider it a library update.
+        onLibraryChanged(musicStore.library)
+    }
+
+    /**
+     * Get the preferred [Sort] for a given [Tab].
+     * @param tabMode The [MusicMode] of the [Tab] desired.
+     * @return The [Sort] preferred for that [Tab]
+     */
+    fun getSortForTab(tabMode: MusicMode) =
+        when (tabMode) {
+            MusicMode.SONGS -> musicSettings.songSort
+            MusicMode.ALBUMS -> musicSettings.albumSort
+            MusicMode.ARTISTS -> musicSettings.artistSort
+            MusicMode.GENRES -> musicSettings.genreSort
+        }
+
+    /**
+     * Update the preferred [Sort] for the current [Tab]. Will update corresponding list.
+     * @param sort The new [Sort] to apply. Assumed to be an allowed sort for the current [Tab].
+     */
+    fun setSortForCurrentTab(sort: Sort) {
+        logD("Updating ${_currentTabMode.value} sort to $sort")
+        // Can simply re-sort the current list of items without having to access the library.
+        when (_currentTabMode.value) {
+            MusicMode.SONGS -> {
+                musicSettings.songSort = sort
+                _songsList.value = sort.songs(_songsList.value)
             }
-            context.getString(R.string.set_key_hide_collaborators) -> {
-                // Changes in the hide collaborator setting will change the artist contents
-                // of the library, consider it a library update.
-                onLibraryChanged(musicStore.library)
+            MusicMode.ALBUMS -> {
+                musicSettings.albumSort = sort
+                _albumsLists.value = sort.albums(_albumsLists.value)
+            }
+            MusicMode.ARTISTS -> {
+                musicSettings.artistSort = sort
+                _artistsList.value = sort.artists(_artistsList.value)
+            }
+            MusicMode.GENRES -> {
+                musicSettings.genreSort = sort
+                _genresList.value = sort.genres(_genresList.value)
             }
         }
     }
@@ -156,46 +191,6 @@ class HomeViewModel(application: Application) :
     }
 
     /**
-     * Get the preferred [Sort] for a given [Tab].
-     * @param tabMode The [MusicMode] of the [Tab] desired.
-     * @return The [Sort] preferred for that [Tab]
-     */
-    fun getSortForTab(tabMode: MusicMode) =
-        when (tabMode) {
-            MusicMode.SONGS -> settings.libSongSort
-            MusicMode.ALBUMS -> settings.libAlbumSort
-            MusicMode.ARTISTS -> settings.libArtistSort
-            MusicMode.GENRES -> settings.libGenreSort
-        }
-
-    /**
-     * Update the preferred [Sort] for the current [Tab]. Will update corresponding list.
-     * @param sort The new [Sort] to apply. Assumed to be an allowed sort for the current [Tab].
-     */
-    fun setSortForCurrentTab(sort: Sort) {
-        logD("Updating ${_currentTabMode.value} sort to $sort")
-        // Can simply re-sort the current list of items without having to access the library.
-        when (_currentTabMode.value) {
-            MusicMode.SONGS -> {
-                settings.libSongSort = sort
-                _songsList.value = sort.songs(_songsList.value)
-            }
-            MusicMode.ALBUMS -> {
-                settings.libAlbumSort = sort
-                _albumsLists.value = sort.albums(_albumsLists.value)
-            }
-            MusicMode.ARTISTS -> {
-                settings.libArtistSort = sort
-                _artistsList.value = sort.artists(_artistsList.value)
-            }
-            MusicMode.GENRES -> {
-                settings.libGenreSort = sort
-                _genresList.value = sort.genres(_genresList.value)
-            }
-        }
-    }
-
-    /**
      * Update whether the user is fast scrolling or not in the home view.
      * @param isFastScrolling true if the user is currently fast scrolling, false otherwise.
      */
@@ -209,5 +204,6 @@ class HomeViewModel(application: Application) :
      * @return A list of the [MusicMode]s for each visible [Tab] in the configuration, ordered in
      * the same way as the configuration.
      */
-    private fun makeTabModes() = settings.libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
+    private fun makeTabModes() =
+        homeSettings.homeTabs.filterIsInstance<Tab.Visible>().map { it.mode }
 }

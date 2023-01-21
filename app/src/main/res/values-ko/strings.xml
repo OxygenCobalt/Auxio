@@ -50,7 +50,7 @@
     <string name="lng_author">Alexander Capehart가 개발</string>
     <string name="lbl_library_counts">라이브러리 통계</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">설정</string>
+    <string name="set_root_title">설정</string>
     <string name="set_ui">모양</string>
     <string name="set_theme">테마</string>
     <string name="set_theme_auto">자동</string>
@@ -68,16 +68,16 @@
     <string name="set_audio">소리</string>
     <string name="set_headset_autoplay">헤드셋 자동 재생</string>
     <string name="set_headset_autoplay_desc">헤드셋을 연결하면 항상 자동으로 음악 재생 (기기에 따라 작동하지 않을 수 있음)</string>
-    <string name="set_replay_gain">ReplayGain 계획</string>
-    <string name="set_replay_gain_track">트랙 선호</string>
-    <string name="set_replay_gain_album">앨범 선호</string>
-    <string name="set_replay_gain_dynamic">앨법 재생 중인 경우 앨범 선호</string>
+    <string name="set_replay_gain_mode">ReplayGain 계획</string>
+    <string name="set_replay_gain_mode_track">트랙 선호</string>
+    <string name="set_replay_gain_mode_album">앨범 선호</string>
+    <string name="set_replay_gain_mode_dynamic">앨법 재생 중인 경우 앨범 선호</string>
     <string name="set_pre_amp">ReplayGain 프리앰프</string>
     <string name="set_pre_amp_desc">재생 중에 프리앰프를 적용하여 조정</string>
     <string name="set_pre_amp_with">태그로 조정</string>
     <string name="set_pre_amp_without">태그 없이 조정</string>
     <string name="set_pre_amp_warning">주의: 프리앰프를 높게 설정하면 일부 소리 트랙이 왜곡될 수 있습니다.</string>
-    <string name="set_behavior">동작</string>
+    <string name="set_personalize">동작</string>
     <string name="set_library_song_playback_mode">라이브러리에서 재생할 때</string>
     <string name="set_keep_shuffle">무작위 재생 기억</string>
     <string name="set_keep_shuffle_desc">새로운 곡을 재생할 때 무작위 재생 유지</string>
@@ -199,7 +199,7 @@
     <string name="lbl_sort_date_added">추가된 날짜</string>
     <string name="lbl_relative_path">상위 경로</string>
     <string name="set_bar_action">맞춤형 재생 동작 버튼</string>
-    <string name="set_bar_action_repeat">반복 방식</string>
+    <string name="set_action_mode_repeat">반복 방식</string>
     <string name="desc_queue_bar">대기열 열기</string>
     <string name="lbl_ep_live">라이브 EP</string>
     <string name="lbl_single_remix">리믹스 싱글</string>
@@ -243,7 +243,7 @@
     <string name="set_separators_warning">경고: 이 설정을 사용하면 일부 태그가 여러 값을 갖는 것으로 잘못 해석될 수 있습니다. 구분자로 읽히지 않도록 하려면 해당 구분자 앞에 백슬래시 (\\)를 붙입니다.</string>
     <string name="set_detail_song_playback_mode">항목 세부 정보에서 재생할 때</string>
     <string name="lng_observing">음악 라이브러리의 변경사항을 추적하는 중…</string>
-    <string name="set_bar_action_next">다음 곡으로 건너뛰기</string>
+    <string name="set_action_mode_next">다음 곡으로 건너뛰기</string>
     <string name="set_exclude_non_music_desc">팟캐스트와 같이 음악이 아닌 소리 파일 무시</string>
     <string name="set_hide_collaborators">공동작업자 숨기기</string>
     <string name="set_hide_collaborators_desc">앨범에 등장하는 아티스트만 표시 (자세히 태그된 라이브러리에 최적화)</string>
@@ -257,4 +257,8 @@
     <string name="lbl_play_selected">선택한 재생</string>
     <string name="lbl_shuffle_selected">선택한 셔플</string>
     <string name="fmt_selected">%d 선택됨</string>
+    <string name="lbl_reset">재설정</string>
+    <string name="lbl_wiki">위키</string>
+    <string name="set_playback_mode_genre">장르에서 재생</string>
+    <string name="fmt_list">%1$s, %2$s</string>
 </resources>

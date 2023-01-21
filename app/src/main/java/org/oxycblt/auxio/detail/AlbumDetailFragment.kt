@@ -31,26 +31,22 @@ import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.util.canScroll
-import org.oxycblt.auxio.util.collect
-import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.showToast
-import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.util.*
 
 /**
  * A [ListFragment] that shows information about an [Album].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAdapter.Listener {
+class AlbumDetailFragment :
+    ListFragment<Song, FragmentDetailBinding>(), AlbumDetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
     // Information about what album to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an album.
@@ -88,7 +84,7 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setAlbumUid(args.albumUid)
         collectImmediately(detailModel.currentAlbum, ::updateAlbum)
-        collectImmediately(detailModel.albumList, detailAdapter::submitList)
+        collectImmediately(detailModel.albumList, ::updateList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
@@ -126,21 +122,12 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
         }
     }
 
-    override fun onRealClick(music: Music) {
-        check(music is Song) { "Unexpected datatype: ${music::class.java}" }
-        when (Settings(requireContext()).detailPlaybackMode) {
-            // "Play from shown item" and "Play from album" functionally have the same
-            // behavior since a song can only have one album.
-            null,
-            MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
-            MusicMode.SONGS -> playbackModel.playFromAll(music)
-            MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-            MusicMode.GENRES -> playbackModel.playFromGenre(music)
-        }
+    override fun onRealClick(item: Song) {
+        // There can only be one album, so a null mode and an ALBUMS mode will function the same.
+        playbackModel.playFrom(item, detailModel.playbackMode ?: MusicMode.ALBUMS)
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
-        check(item is Song) { "Unexpected datatype: ${item::class.simpleName}" }
+    override fun onOpenMenu(item: Song, anchor: View) {
         openMusicMenu(anchor, R.menu.menu_album_song_actions, item)
     }
 
@@ -154,12 +141,12 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
 
     override fun onOpenSortMenu(anchor: View) {
         openMenu(anchor, R.menu.menu_album_sort) {
-            val sort = detailModel.albumSort
+            val sort = detailModel.albumSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
             unlikelyToBeNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
             setOnMenuItemClickListener { item ->
                 item.isChecked = !item.isChecked
-                detailModel.albumSort =
+                detailModel.albumSongSort =
                     if (item.itemId == R.id.option_sort_asc) {
                         sort.withAscending(item.isChecked)
                     } else {
@@ -185,10 +172,10 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         if (parent is Album && parent == unlikelyToBeNull(detailModel.currentAlbum.value)) {
-            detailAdapter.setPlayingItem(song, isPlaying)
+            detailAdapter.setPlaying(song, isPlaying)
         } else {
             // Clear the ViewHolders if the mode isn't ALL_SONGS
-            detailAdapter.setPlayingItem(null, isPlaying)
+            detailAdapter.setPlaying(null, isPlaying)
         }
     }
 
@@ -272,8 +259,12 @@ class AlbumDetailFragment : ListFragment<FragmentDetailBinding>(), AlbumDetailAd
         }
     }
 
+    private fun updateList(items: List<Item>) {
+        detailAdapter.submitList(items, BasicListInstructions.DIFF)
+    }
+
     private fun updateSelection(selected: List<Music>) {
-        detailAdapter.setSelectedItems(selected)
+        detailAdapter.setSelected(selected.toSet())
         requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
     }
 }

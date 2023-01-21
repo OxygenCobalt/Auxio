@@ -21,6 +21,7 @@ package org.oxycblt.auxio.music
 
 import android.content.Context
 import android.os.Parcelable
+import androidx.annotation.VisibleForTesting
 import java.security.MessageDigest
 import java.text.CollationKey
 import java.text.Collator
@@ -30,10 +31,12 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.music.filesystem.*
+import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.music.parsing.parseId3GenreNames
 import org.oxycblt.auxio.music.parsing.parseMultiValue
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.music.storage.*
+import org.oxycblt.auxio.music.tags.Date
+import org.oxycblt.auxio.music.tags.ReleaseType
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -308,10 +311,10 @@ sealed class MusicParent : Music() {
 /**
  * A song. Perhaps the foundation of the entirety of Auxio.
  * @param raw The [Song.Raw] to derive the member data from.
- * @param settings [Settings] to determine the artist configuration.
+ * @param musicSettings [MusicSettings] to perform further user-configured parsing.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class Song constructor(raw: Raw, settings: Settings) : Music() {
+class Song constructor(raw: Raw, musicSettings: MusicSettings) : Music() {
     override val uid =
     // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
     raw.musicBrainzId?.toUuidOrNull()?.let { UID.musicBrainz(MusicMode.SONGS, it) }
@@ -381,9 +384,9 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
     val album: Album
         get() = unlikelyToBeNull(_album)
 
-    private val artistMusicBrainzIds = raw.artistMusicBrainzIds.parseMultiValue(settings)
-    private val artistNames = raw.artistNames.parseMultiValue(settings)
-    private val artistSortNames = raw.artistSortNames.parseMultiValue(settings)
+    private val artistMusicBrainzIds = raw.artistMusicBrainzIds.parseMultiValue(musicSettings)
+    private val artistNames = raw.artistNames.parseMultiValue(musicSettings)
+    private val artistSortNames = raw.artistSortNames.parseMultiValue(musicSettings)
     private val rawArtists =
         artistNames.mapIndexed { i, name ->
             Artist.Raw(
@@ -392,9 +395,10 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
                 artistSortNames.getOrNull(i))
         }
 
-    private val albumArtistMusicBrainzIds = raw.albumArtistMusicBrainzIds.parseMultiValue(settings)
-    private val albumArtistNames = raw.albumArtistNames.parseMultiValue(settings)
-    private val albumArtistSortNames = raw.albumArtistSortNames.parseMultiValue(settings)
+    private val albumArtistMusicBrainzIds =
+        raw.albumArtistMusicBrainzIds.parseMultiValue(musicSettings)
+    private val albumArtistNames = raw.albumArtistNames.parseMultiValue(musicSettings)
+    private val albumArtistSortNames = raw.albumArtistSortNames.parseMultiValue(musicSettings)
     private val rawAlbumArtists =
         albumArtistNames.mapIndexed { i, name ->
             Artist.Raw(
@@ -462,7 +466,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
             musicBrainzId = raw.albumMusicBrainzId?.toUuidOrNull(),
             name = requireNotNull(raw.albumName) { "Invalid raw: No album name" },
             sortName = raw.albumSortName,
-            type = Album.Type.parse(raw.albumTypes.parseMultiValue(settings)),
+            releaseType = ReleaseType.parse(raw.releaseTypes.parseMultiValue(musicSettings)),
             rawArtists =
                 rawAlbumArtists.ifEmpty { rawArtists }.ifEmpty { listOf(Artist.Raw(null, null)) })
 
@@ -481,7 +485,7 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
      */
     val _rawGenres =
         raw.genreNames
-            .parseId3GenreNames(settings)
+            .parseId3GenreNames(musicSettings)
             .map { Genre.Raw(it) }
             .ifEmpty { listOf(Genre.Raw()) }
 
@@ -581,8 +585,8 @@ class Song constructor(raw: Raw, settings: Settings) : Music() {
         var albumName: String? = null,
         /** @see Album.Raw.sortName */
         var albumSortName: String? = null,
-        /** @see Album.Raw.type */
-        var albumTypes: List<String> = listOf(),
+        /** @see Album.Raw.releaseType */
+        var releaseTypes: List<String> = listOf(),
         /** @see Artist.Raw.musicBrainzId */
         var artistMusicBrainzIds: List<String> = listOf(),
         /** @see Artist.Raw.name */
@@ -628,10 +632,10 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     val dates = Date.Range.from(songs.mapNotNull { it.date })
 
     /**
-     * The [Type] of this album, signifying the type of release it actually is. Defaults to
-     * [Type.Album].
+     * The [ReleaseType] of this album, signifying the type of release it actually is. Defaults to
+     * [ReleaseType.Album].
      */
-    val type = raw.type ?: Type.Album(null)
+    val releaseType = raw.releaseType ?: ReleaseType.Album(null)
     /**
      * The URI to a MediaStore-provided album cover. These images will be fast to load, but at the
      * cost of image quality.
@@ -727,201 +731,6 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
     }
 
     /**
-     * The type of release an [Album] is considered. This includes EPs, Singles, Compilations, etc.
-     *
-     * This class is derived from the MusicBrainz Release Group Type specification. It can be found
-     * at: https://musicbrainz.org/doc/Release_Group/Type
-     * @author Alexander Capehart (OxygenCobalt)
-     */
-    sealed class Type {
-        /**
-         * A specification of what kind of performance this release is. If null, the release is
-         * considered "Plain".
-         */
-        abstract val refinement: Refinement?
-
-        /** The string resource corresponding to the name of this release type to show in the UI. */
-        abstract val stringRes: Int
-
-        /**
-         * A plain album.
-         * @param refinement A specification of what kind of performance this release is. If null,
-         * the release is considered "Plain".
-         */
-        data class Album(override val refinement: Refinement?) : Type() {
-            override val stringRes: Int
-                get() =
-                    when (refinement) {
-                        null -> R.string.lbl_album
-                        // If present, include the refinement in the name of this release type.
-                        Refinement.LIVE -> R.string.lbl_album_live
-                        Refinement.REMIX -> R.string.lbl_album_remix
-                    }
-        }
-
-        /**
-         * A "Extended Play", or EP. Usually a smaller release consisting of 4-5 songs.
-         * @param refinement A specification of what kind of performance this release is. If null,
-         * the release is considered "Plain".
-         */
-        data class EP(override val refinement: Refinement?) : Type() {
-            override val stringRes: Int
-                get() =
-                    when (refinement) {
-                        null -> R.string.lbl_ep
-                        // If present, include the refinement in the name of this release type.
-                        Refinement.LIVE -> R.string.lbl_ep_live
-                        Refinement.REMIX -> R.string.lbl_ep_remix
-                    }
-        }
-
-        /**
-         * A single. Usually a release consisting of 1-2 songs.
-         * @param refinement A specification of what kind of performance this release is. If null,
-         * the release is considered "Plain".
-         */
-        data class Single(override val refinement: Refinement?) : Type() {
-            override val stringRes: Int
-                get() =
-                    when (refinement) {
-                        null -> R.string.lbl_single
-                        // If present, include the refinement in the name of this release type.
-                        Refinement.LIVE -> R.string.lbl_single_live
-                        Refinement.REMIX -> R.string.lbl_single_remix
-                    }
-        }
-
-        /**
-         * A compilation. Usually consists of many songs from a variety of artists.
-         * @param refinement A specification of what kind of performance this release is. If null,
-         * the release is considered "Plain".
-         */
-        data class Compilation(override val refinement: Refinement?) : Type() {
-            override val stringRes: Int
-                get() =
-                    when (refinement) {
-                        null -> R.string.lbl_compilation
-                        // If present, include the refinement in the name of this release type.
-                        Refinement.LIVE -> R.string.lbl_compilation_live
-                        Refinement.REMIX -> R.string.lbl_compilation_remix
-                    }
-        }
-
-        /**
-         * A soundtrack. Similar to a [Compilation], but created for a specific piece of (usually
-         * visual) media.
-         */
-        object Soundtrack : Type() {
-            override val refinement: Refinement?
-                get() = null
-
-            override val stringRes: Int
-                get() = R.string.lbl_soundtrack
-        }
-
-        /**
-         * A (DJ) Mix. These are usually one large track consisting of the artist playing several
-         * sub-tracks with smooth transitions between them.
-         */
-        object Mix : Type() {
-            override val refinement: Refinement?
-                get() = null
-
-            override val stringRes: Int
-                get() = R.string.lbl_mix
-        }
-
-        /**
-         * A Mix-tape. These are usually [EP]-sized releases of music made to promote an [Artist] or
-         * a future release.
-         */
-        object Mixtape : Type() {
-            override val refinement: Refinement?
-                get() = null
-
-            override val stringRes: Int
-                get() = R.string.lbl_mixtape
-        }
-
-        /** A specification of what kind of performance a particular release is. */
-        enum class Refinement {
-            /** A release consisting of a live performance */
-            LIVE,
-
-            /** A release consisting of another [Artist]s remix of a prior performance. */
-            REMIX
-        }
-
-        companion object {
-            /**
-             * Parse a [Type] from a string formatted with the MusicBrainz Release Group Type
-             * specification.
-             * @param types A list of values consisting of valid release type values.
-             * @return A [Type] consisting of the given types, or null if the types were not valid.
-             */
-            fun parse(types: List<String>): Type? {
-                val primary = types.getOrNull(0) ?: return null
-                return when {
-                    // Primary types should be the first types in the sequence.
-                    primary.equals("album", true) -> types.parseSecondaryTypes(1) { Album(it) }
-                    primary.equals("ep", true) -> types.parseSecondaryTypes(1) { EP(it) }
-                    primary.equals("single", true) -> types.parseSecondaryTypes(1) { Single(it) }
-                    // The spec makes no mention of whether primary types are a pre-requisite for
-                    // secondary types, so we assume that it's not and map oprhan secondary types
-                    // to Album release types.
-                    else -> types.parseSecondaryTypes(0) { Album(it) }
-                }
-            }
-
-            /**
-             * Parse "secondary" types (i.e not [Album], [EP], or [Single]) from a string formatted
-             * with the MusicBrainz Release Group Type specification.
-             * @param index The index of the release type to parse.
-             * @param convertRefinement Code to convert a [Refinement] into a [Type] corresponding
-             * to the callee's context. This is used in order to handle secondary times that are
-             * actually [Refinement]s.
-             * @return A [Type] corresponding to the secondary type found at that index.
-             */
-            private inline fun List<String>.parseSecondaryTypes(
-                index: Int,
-                convertRefinement: (Refinement?) -> Type
-            ): Type {
-                val secondary = getOrNull(index)
-                return if (secondary.equals("compilation", true)) {
-                    // Secondary type is a compilation, actually parse the third type
-                    // and put that into a compilation if needed.
-                    parseSecondaryTypeImpl(getOrNull(index + 1)) { Compilation(it) }
-                } else {
-                    // Secondary type is a plain value, use the original values given.
-                    parseSecondaryTypeImpl(secondary, convertRefinement)
-                }
-            }
-
-            /**
-             * Parse "secondary" types (i.e not [Album], [EP], [Single]) that do not correspond to
-             * any child values.
-             * @param type The release type value to parse.
-             * @param convertRefinement Code to convert a [Refinement] into a [Type] corresponding
-             * to the callee's context. This is used in order to handle secondary times that are
-             * actually [Refinement]s.
-             */
-            private inline fun parseSecondaryTypeImpl(
-                type: String?,
-                convertRefinement: (Refinement?) -> Type
-            ) =
-                when {
-                    // Parse all the types that have no children
-                    type.equals("soundtrack", true) -> Soundtrack
-                    type.equals("mixtape/street", true) -> Mixtape
-                    type.equals("dj-mix", true) -> Mix
-                    type.equals("live", true) -> convertRefinement(Refinement.LIVE)
-                    type.equals("remix", true) -> convertRefinement(Refinement.REMIX)
-                    else -> convertRefinement(null)
-                }
-        }
-    }
-
-    /**
      * Raw information about an [Album] obtained from the component [Song] instances. **This is only
      * meant for use within the music package.**
      */
@@ -937,8 +746,8 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
         val name: String,
         /** @see Music.rawSortName */
         val sortName: String?,
-        /** @see Album.type */
-        val type: Type?,
+        /** @see Album.releaseType */
+        val releaseType: ReleaseType?,
         /** @see Artist.Raw.name */
         val rawArtists: List<Artist.Raw>
     ) {
@@ -955,16 +764,15 @@ class Album constructor(raw: Raw, override val songs: List<Song>) : MusicParent(
 
         override fun hashCode() = hashCode
 
-        override fun equals(other: Any?): Boolean {
-            if (other !is Raw) return false
-            if (musicBrainzId != null &&
-                other.musicBrainzId != null &&
-                musicBrainzId == other.musicBrainzId) {
-                return true
-            }
-
-            return name.equals(other.name, true) && rawArtists == other.rawArtists
-        }
+        override fun equals(other: Any?) =
+            other is Raw &&
+                when {
+                    musicBrainzId != null && other.musicBrainzId != null ->
+                        musicBrainzId == other.musicBrainzId
+                    musicBrainzId == null && other.musicBrainzId == null ->
+                        name.equals(other.name, true) && rawArtists == other.rawArtists
+                    else -> false
+                }
     }
 }
 
@@ -1108,21 +916,19 @@ class Artist constructor(private val raw: Raw, songAlbums: List<Music>) : MusicP
 
         override fun hashCode() = hashCode
 
-        override fun equals(other: Any?): Boolean {
-            if (other !is Raw) return false
-
-            if (musicBrainzId != null &&
-                other.musicBrainzId != null &&
-                musicBrainzId == other.musicBrainzId) {
-                return true
-            }
-
-            return when {
-                name != null && other.name != null -> name.equals(other.name, true)
-                name == null && other.name == null -> true
-                else -> false
-            }
-        }
+        override fun equals(other: Any?) =
+            other is Raw &&
+                when {
+                    musicBrainzId != null && other.musicBrainzId != null ->
+                        musicBrainzId == other.musicBrainzId
+                    musicBrainzId == null && other.musicBrainzId == null ->
+                        when {
+                            name != null && other.name != null -> name.equals(other.name, true)
+                            name == null && other.name == null -> true
+                            else -> false
+                        }
+                    else -> false
+                }
     }
 }
 
@@ -1217,7 +1023,7 @@ class Genre constructor(private val raw: Raw, override val songs: List<Song>) : 
  * @return A [UUID] converted from the [String] value, or null if the value was not valid.
  * @see UUID.fromString
  */
-fun String.toUuidOrNull(): UUID? =
+private fun String.toUuidOrNull(): UUID? =
     try {
         UUID.fromString(this)
     } catch (e: IllegalArgumentException) {
@@ -1228,7 +1034,8 @@ fun String.toUuidOrNull(): UUID? =
  * Update a [MessageDigest] with a lowercase [String].
  * @param string The [String] to hash. If null, it will not be hashed.
  */
-private fun MessageDigest.update(string: String?) {
+@VisibleForTesting
+fun MessageDigest.update(string: String?) {
     if (string != null) {
         update(string.lowercase().toByteArray())
     } else {
@@ -1240,7 +1047,8 @@ private fun MessageDigest.update(string: String?) {
  * Update a [MessageDigest] with the string representation of a [Date].
  * @param date The [Date] to hash. If null, nothing will be done.
  */
-private fun MessageDigest.update(date: Date?) {
+@VisibleForTesting
+fun MessageDigest.update(date: Date?) {
     if (date != null) {
         update(date.toString().toByteArray())
     } else {
@@ -1252,7 +1060,8 @@ private fun MessageDigest.update(date: Date?) {
  * Update a [MessageDigest] with the lowercase versions of all of the input [String]s.
  * @param strings The [String]s to hash. If a [String] is null, it will not be hashed.
  */
-private fun MessageDigest.update(strings: List<String?>) {
+@VisibleForTesting
+fun MessageDigest.update(strings: List<String?>) {
     strings.forEach(::update)
 }
 
@@ -1260,7 +1069,8 @@ private fun MessageDigest.update(strings: List<String?>) {
  * Update a [MessageDigest] with the little-endian bytes of a [Int].
  * @param n The [Int] to write. If null, nothing will be done.
  */
-private fun MessageDigest.update(n: Int?) {
+@VisibleForTesting
+fun MessageDigest.update(n: Int?) {
     if (n != null) {
         update(byteArrayOf(n.toByte(), n.shr(8).toByte(), n.shr(16).toByte(), n.shr(24).toByte()))
     } else {

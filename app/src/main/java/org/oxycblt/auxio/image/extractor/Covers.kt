@@ -29,8 +29,8 @@ import java.io.InputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.image.CoverMode
+import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -47,10 +47,8 @@ object Covers {
      * loading failed or should not occur.
      */
     suspend fun fetch(context: Context, album: Album): InputStream? {
-        val settings = Settings(context)
-
         return try {
-            when (settings.coverMode) {
+            when (ImageSettings.from(context).coverMode) {
                 CoverMode.OFF -> null
                 CoverMode.MEDIA_STORE -> fetchMediaStoreCovers(context, album)
                 CoverMode.QUALITY -> fetchQualityCovers(context, album)

@@ -32,7 +32,7 @@ import org.oxycblt.auxio.util.inflater
  * A [RecyclerView.Adapter] that displays an array of [Tab]s open for configuration.
  * @param listener A [EditableListListener] for tab interactions.
  */
-class TabAdapter(private val listener: EditableListListener) :
+class TabAdapter(private val listener: EditableListListener<Tab>) :
     RecyclerView.Adapter<TabViewHolder>() {
     /** The current array of [Tab]s. */
     var tabs = arrayOf<Tab>()
@@ -93,7 +93,7 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
      * @param listener A [EditableListListener] to bind interactions to.
      */
     @SuppressLint("ClickableViewAccessibility")
-    fun bind(tab: Tab, listener: EditableListListener) {
+    fun bind(tab: Tab, listener: EditableListListener<Tab>) {
         listener.bind(tab, this, dragHandle = binding.tabDragHandle)
         binding.tabCheckBox.apply {
             // Update the CheckBox name to align with the mode

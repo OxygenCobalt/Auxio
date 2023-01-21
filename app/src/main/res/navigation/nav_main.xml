@@ -10,7 +10,7 @@
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_show_settings"
-            app:destination="@id/settings_fragment" />
+            app:destination="@id/root_preferences_fragment" />
         <action
             android:id="@+id/action_show_about"
             app:destination="@id/about_fragment" />
@@ -68,27 +68,64 @@
             app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
 
+
     <fragment
-        android:id="@+id/settings_fragment"
-        android:name="org.oxycblt.auxio.settings.SettingsFragment"
-        android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings">
+        android:id="@+id/root_preferences_fragment"
+        android:name="org.oxycblt.auxio.settings.RootPreferenceFragment"
+        android:label="fragment_settings">
         <action
-            android:id="@+id/go_to_accent_dialog"
-            app:destination="@id/accent_dialog" />
+            android:id="@+id/go_to_ui_preferences"
+            app:destination="@id/ui_preferences_fragment" />
         <action
-            android:id="@+id/go_to_tab_dialog"
-            app:destination="@id/tab_dialog" />
+            android:id="@+id/go_to_personalize_preferences"
+            app:destination="@id/personalize_preferences_fragment" />
         <action
-            android:id="@+id/go_to_pre_amp_dialog"
-            app:destination="@id/pre_amp_dialog" />
+            android:id="@+id/go_to_music_preferences"
+            app:destination="@id/music_preferences_fragment" />
+        <action
+            android:id="@+id/go_to_audio_preferences"
+            app:destination="@id/audio_preferences_fragment" />
         <action
             android:id="@+id/go_to_music_dirs_dialog"
             app:destination="@id/music_dirs_dialog" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ui_preferences_fragment"
+        android:name="org.oxycblt.auxio.settings.categories.UIPreferenceFragment"
+        android:label="fragment_ui_preferences">
+        <action
+            android:id="@+id/go_to_accent_dialog"
+            app:destination="@id/accent_dialog" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/personalize_preferences_fragment"
+        android:name="org.oxycblt.auxio.settings.categories.PersonalizePreferenceFragment"
+        android:label="fragment_personalize_preferences">
+        <action
+            android:id="@+id/go_to_tab_dialog"
+            app:destination="@id/tab_dialog" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/music_preferences_fragment"
+        android:name="org.oxycblt.auxio.settings.categories.MusicPreferenceFragment"
+        android:label="fragment_personalize_preferences">
         <action
             android:id="@+id/go_to_separators_dialog"
             app:destination="@id/separators_dialog" />
     </fragment>
+
+    <fragment
+        android:id="@+id/audio_preferences_fragment"
+        android:name="org.oxycblt.auxio.settings.categories.AudioPreferenceFragment"
+        android:label="fragment_personalize_preferences">
+        <action
+            android:id="@+id/go_to_pre_amp_dialog"
+            app:destination="@id/pre_amp_dialog" />
+    </fragment>
+
     <dialog
         android:id="@+id/accent_dialog"
         android:name="org.oxycblt.auxio.ui.accent.AccentCustomizeDialog"
@@ -106,7 +143,7 @@
         tools:layout="@layout/dialog_pre_amp" />
     <dialog
         android:id="@+id/music_dirs_dialog"
-        android:name="org.oxycblt.auxio.music.filesystem.MusicDirsDialog"
+        android:name="org.oxycblt.auxio.music.storage.MusicDirsDialog"
         android:label="music_dirs_dialog"
         tools:layout="@layout/dialog_music_dirs" />
     <dialog

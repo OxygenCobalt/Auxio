@@ -19,7 +19,6 @@ package org.oxycblt.auxio.playback.system
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -31,13 +30,15 @@ import androidx.media.session.MediaButtonReceiver
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
+import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.ActionMode
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.Queue
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -50,7 +51,8 @@ import org.oxycblt.auxio.util.logD
 class MediaSessionComponent(private val context: Context, private val listener: Listener) :
     MediaSessionCompat.Callback(),
     PlaybackStateManager.Listener,
-    SharedPreferences.OnSharedPreferenceChangeListener {
+    ImageSettings.Listener,
+    PlaybackSettings.Listener {
     private val mediaSession =
         MediaSessionCompat(context, context.packageName).apply {
             isActive = true
@@ -58,13 +60,14 @@ class MediaSessionComponent(private val context: Context, private val listener: 
         }
 
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settings = Settings(context)
+    private val playbackSettings = PlaybackSettings.from(context)
 
     private val notification = NotificationComponent(context, mediaSession.sessionToken)
     private val provider = BitmapProvider(context)
 
     init {
         playbackManager.addListener(this)
+        playbackSettings.registerListener(this)
         mediaSession.setCallback(this)
     }
 
@@ -82,7 +85,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
      */
     fun release() {
         provider.release()
-        settings.removeListener(this)
+        playbackSettings.unregisterListener(this)
         playbackManager.removeListener(this)
         mediaSession.apply {
             isActive = false
@@ -92,22 +95,38 @@ class MediaSessionComponent(private val context: Context, private val listener: 
 
     // --- PLAYBACKSTATEMANAGER OVERRIDES ---
 
-    override fun onIndexMoved(index: Int) {
-        updateMediaMetadata(playbackManager.song, playbackManager.parent)
+    override fun onIndexMoved(queue: Queue) {
+        updateMediaMetadata(queue.currentSong, playbackManager.parent)
         invalidateSessionState()
     }
 
-    override fun onQueueChanged(queue: List<Song>) {
+    override fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {
         updateQueue(queue)
+        when (change) {
+            // Nothing special to do with mapping changes.
+            Queue.ChangeResult.MAPPING -> {}
+            // Index changed, ensure playback state's index changes.
+            Queue.ChangeResult.INDEX -> invalidateSessionState()
+            // Song changed, ensure metadata changes.
+            Queue.ChangeResult.SONG ->
+                updateMediaMetadata(queue.currentSong, playbackManager.parent)
+        }
     }
 
-    override fun onQueueReworked(index: Int, queue: List<Song>) {
+    override fun onQueueReordered(queue: Queue) {
         updateQueue(queue)
         invalidateSessionState()
+        mediaSession.setShuffleMode(
+            if (queue.isShuffled) {
+                PlaybackStateCompat.SHUFFLE_MODE_ALL
+            } else {
+                PlaybackStateCompat.SHUFFLE_MODE_NONE
+            })
+        invalidateSecondaryAction()
     }
 
-    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        updateMediaMetadata(playbackManager.song, parent)
+    override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
+        updateMediaMetadata(queue.currentSong, parent)
         updateQueue(queue)
         invalidateSessionState()
     }
@@ -131,25 +150,16 @@ class MediaSessionComponent(private val context: Context, private val listener: 
         invalidateSecondaryAction()
     }
 
-    override fun onShuffledChanged(isShuffled: Boolean) {
-        mediaSession.setShuffleMode(
-            if (isShuffled) {
-                PlaybackStateCompat.SHUFFLE_MODE_ALL
-            } else {
-                PlaybackStateCompat.SHUFFLE_MODE_NONE
-            })
-
-        invalidateSecondaryAction()
-    }
-
     // --- SETTINGS OVERRIDES ---
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        when (key) {
-            context.getString(R.string.set_key_cover_mode) ->
-                updateMediaMetadata(playbackManager.song, playbackManager.parent)
-            context.getString(R.string.set_key_notif_action) -> invalidateSecondaryAction()
-        }
+    override fun onCoverModeChanged() {
+        // Need to reload the metadata cover.
+        updateMediaMetadata(playbackManager.queue.currentSong, playbackManager.parent)
+    }
+
+    override fun onNotificationActionChanged() {
+        // Need to re-load the action shown in the notification.
+        invalidateSecondaryAction()
     }
 
     // --- MEDIASESSION OVERRIDES ---
@@ -219,16 +229,13 @@ class MediaSessionComponent(private val context: Context, private val listener: 
     }
 
     override fun onSetShuffleMode(shuffleMode: Int) {
-        playbackManager.reshuffle(
+        playbackManager.reorder(
             shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ||
-                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP,
-            settings)
+                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP)
     }
 
     override fun onSkipToQueueItem(id: Long) {
-        if (id in playbackManager.queue.indices) {
-            playbackManager.goto(id.toInt())
-        }
+        playbackManager.goto(id.toInt())
     }
 
     override fun onCustomAction(action: String?, extras: Bundle?) {
@@ -318,9 +325,9 @@ class MediaSessionComponent(private val context: Context, private val listener: 
      * Upload a new queue to the [MediaSessionCompat].
      * @param queue The current queue to upload.
      */
-    private fun updateQueue(queue: List<Song>) {
+    private fun updateQueue(queue: Queue) {
         val queueItems =
-            queue.mapIndexed { i, song ->
+            queue.resolve().mapIndexed { i, song ->
                 val description =
                     MediaDescriptionCompat.Builder()
                         // Media ID should not be the item index but rather the UID,
@@ -350,18 +357,18 @@ class MediaSessionComponent(private val context: Context, private val listener: 
                 .intoPlaybackState(PlaybackStateCompat.Builder())
                 .setActions(ACTIONS)
                 // Active queue ID corresponds to the indices we populated prior, use them here.
-                .setActiveQueueItemId(playbackManager.index.toLong())
+                .setActiveQueueItemId(playbackManager.queue.index.toLong())
 
         // Android 13+ relies on custom actions in the notification.
 
         // Add the secondary action (either repeat/shuffle depending on the configuration)
         val secondaryAction =
-            when (settings.playbackNotificationAction) {
+            when (playbackSettings.notificationAction) {
                 ActionMode.SHUFFLE ->
                     PlaybackStateCompat.CustomAction.Builder(
                         PlaybackService.ACTION_INVERT_SHUFFLE,
                         context.getString(R.string.desc_shuffle),
-                        if (playbackManager.isShuffled) {
+                        if (playbackManager.queue.isShuffled) {
                             R.drawable.ic_shuffle_on_24
                         } else {
                             R.drawable.ic_shuffle_off_24
@@ -390,8 +397,8 @@ class MediaSessionComponent(private val context: Context, private val listener: 
     private fun invalidateSecondaryAction() {
         invalidateSessionState()
 
-        when (settings.playbackNotificationAction) {
-            ActionMode.SHUFFLE -> notification.updateShuffled(playbackManager.isShuffled)
+        when (playbackSettings.notificationAction) {
+            ActionMode.SHUFFLE -> notification.updateShuffled(playbackManager.queue.isShuffled)
             else -> notification.updateRepeatMode(playbackManager.repeatMode)
         }
 

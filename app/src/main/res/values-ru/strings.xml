@@ -42,7 +42,7 @@
     <string name="lbl_licenses">Лицензии</string>
     <string name="lng_author">Разработано Александром Кейпхартом</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Настройки</string>
+    <string name="set_root_title">Настройки</string>
     <string name="set_ui">Внешний вид</string>
     <string name="set_theme">Тема</string>
     <string name="set_theme_auto">Автоматически</string>
@@ -60,11 +60,11 @@
     <string name="set_audio">Звук</string>
     <string name="set_headset_autoplay">Воспроизводить при подключении</string>
     <string name="set_headset_autoplay_desc">Всегда начинать воспроизведение при подключении наушников (может работать не на всех устройствах)</string>
-    <string name="set_replay_gain">Выравнивание громкости</string>
-    <string name="set_replay_gain_track">По треку</string>
-    <string name="set_replay_gain_album">По альбому</string>
-    <string name="set_replay_gain_dynamic">Предпочитать альбом, если он воспроизводится</string>
-    <string name="set_behavior">Поведение</string>
+    <string name="set_replay_gain_mode">Выравнивание громкости</string>
+    <string name="set_replay_gain_mode_track">По треку</string>
+    <string name="set_replay_gain_mode_album">По альбому</string>
+    <string name="set_replay_gain_mode_dynamic">Предпочитать альбом, если он воспроизводится</string>
+    <string name="set_personalize">Поведение</string>
     <string name="set_library_song_playback_mode">При воспроизведении из библиотеки</string>
     <string name="set_keep_shuffle">Запоминать перемешивание</string>
     <string name="set_keep_shuffle_desc">Запоминать режим перемешивания для новых треков</string>
@@ -224,8 +224,8 @@
     <string name="fmt_lib_album_count">Альбомов загружено: %d</string>
     <string name="fmt_indexing">Загрузка музыкальной библиотеки… (%1$d/%2$d)</string>
     <string name="lbl_genre">Жанр</string>
-    <string name="set_bar_action_next">Перейти к следующей</string>
-    <string name="set_bar_action_repeat">Режим повтора</string>
+    <string name="set_action_mode_next">Перейти к следующей</string>
+    <string name="set_action_mode_repeat">Режим повтора</string>
     <string name="lbl_equalizer">Эквалайзер</string>
     <string name="set_hide_collaborators">Скрыть соавторов</string>
     <string name="set_hide_collaborators_desc">Показывать только тех исполнителей, которые напрямую указаны в альбоме</string>
@@ -264,4 +264,8 @@
     <string name="lbl_play_selected">Воспроизвести выбранное</string>
     <string name="lbl_shuffle_selected">Перемешать выбранное</string>
     <string name="fmt_selected">%d Выбрано</string>
+    <string name="lbl_wiki">Вики</string>
+    <string name="lbl_reset">Сбросить</string>
+    <string name="fmt_list">%1$s,%2$s</string>
+    <string name="set_playback_mode_genre">Играть по жанру</string>
 </resources>

@@ -169,7 +169,8 @@
         <item name="android:paddingEnd">@dimen/spacing_medium</item>
         <item name="android:minHeight">@dimen/size_btn</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMedium</item>
+        <item name="android:textColor">?attr/colorSecondary</item>
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.LabelLarge</item>
     </style>
 
     <style name="Widget.Auxio.TextView.Detail" parent="Widget.Auxio.TextView.Base">
@@ -196,7 +197,7 @@
 
     <style name="Widget.Auxio.Button.Primary" parent="Widget.Material3.Button" />
 
-    <style name="Widget.Auxio.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton" />
+    <style name="Widget.Auxio.Button.Secondary" parent="Widget.Material3.Button.TonalButton" />
 
     <style name="Widget.Auxio.Button.Icon.Base" parent="Widget.Material3.Button.IconButton">
         <item name="materialThemeOverlay">@style/ThemeOverlay.Auxio.UncheckableIconButton</item>

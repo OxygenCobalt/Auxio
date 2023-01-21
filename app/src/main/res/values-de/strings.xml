@@ -34,8 +34,8 @@
     <string name="lbl_licenses">Lizenzen</string>
     <string name="lng_author">Entwickelt von Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Einstellungen</string>
-    <string name="set_ui">Aussehen</string>
+    <string name="set_root_title">Einstellungen</string>
+    <string name="set_ui">Erscheinungsbild</string>
     <string name="set_theme">Farbschema</string>
     <string name="set_theme_auto">Automatisch</string>
     <string name="set_theme_day">Hell</string>
@@ -48,14 +48,14 @@
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Kopfhörer: automatische Wiedergabe</string>
     <string name="set_headset_autoplay_desc">Beginne die Wiedergabe immer, wenn Kopfhörer verbunden sind (funktioniert nicht auf allen Geräten)</string>
-    <string name="set_replay_gain">ReplayGain-Strategie</string>
+    <string name="set_replay_gain_mode">ReplayGain-Strategie</string>
     <string name="set_pre_amp">ReplayGain-Prälautverstärkung</string>
     <string name="set_pre_amp_desc">Während der Musikwiedergabe, trifft die Prälautverstärkung dem aktuellem Abgleich zu</string>
     <string name="set_pre_amp_with">Abgleich mit Metadaten</string>
     <string name="set_pre_amp_without">Abgleich ohne Metadaten</string>
-    <string name="set_replay_gain_track">Titel bevorzugen</string>
-    <string name="set_replay_gain_album">Album bevorzugen</string>
-    <string name="set_behavior">Verhalten</string>
+    <string name="set_replay_gain_mode_track">Titel bevorzugen</string>
+    <string name="set_replay_gain_mode_album">Album bevorzugen</string>
+    <string name="set_personalize">Personalisieren</string>
     <string name="set_library_song_playback_mode">Wenn ein Lied aus der Bibliothek abgespielt wird</string>
     <string name="set_keep_shuffle">Zufällig-Einstellung merken</string>
     <string name="set_keep_shuffle_desc">Zufällig anlassen, wenn ein neues Lied abgespielt wird</string>
@@ -142,7 +142,7 @@
     <string name="lbl_sort_track">Titel</string>
     <string name="lbl_ok">OK</string>
     <string name="lbl_library_counts">Bibliotheksstatistiken</string>
-    <string name="set_replay_gain_dynamic">Album bevorzugen, wenn eines abgespielt wird</string>
+    <string name="set_replay_gain_mode_dynamic">Album bevorzugen, wenn eines abgespielt wird</string>
     <string name="clr_dynamic">Dynamische Farbe</string>
     <string name="fmt_disc_no">Schallplatte %d</string>
     <string name="fmt_db_pos">+%.1f dB</string>
@@ -222,8 +222,8 @@
     <string name="lbl_genre">Genre</string>
     <string name="lbl_equalizer">Equalizer</string>
     <string name="set_bar_action">Angepasste Wiedergabeaktionstaste</string>
-    <string name="set_bar_action_next">Zum nächsten Song gehen</string>
-    <string name="set_bar_action_repeat">Wiederholungsmodus</string>
+    <string name="set_action_mode_next">Zum nächsten Song gehen</string>
+    <string name="set_action_mode_repeat">Wiederholungsmodus</string>
     <string name="desc_exit">Wiedergabe anhalten</string>
     <string name="lbl_compilation_live">Live-Kompilation</string>
     <string name="lbl_compilation_remix">Remix-Kompilation</string>
@@ -244,7 +244,7 @@
     <string name="set_cover_mode_off">Aus</string>
     <string name="set_cover_mode_media_store">Schnell</string>
     <string name="set_cover_mode_quality">Hohe Qualität</string>
-    <string name="set_hide_collaborators">Mitarbeiter ausblenden</string>
+    <string name="set_hide_collaborators">Mitarbeitende ausblenden</string>
     <string name="set_hide_collaborators_desc">Nur Künstler anzeigen, die direkt auf einem Album erwähnt werden (funktioniert am besten mit gut getaggten Bibliotheken)</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d Künstler</item>
@@ -260,4 +260,17 @@
     <string name="set_playback_mode_genre">Vom Genre abspielen</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
+    <string name="lbl_reset">Zurücksetzen</string>
+    <string name="set_behavior">Verhalten</string>
+    <string name="set_ui_desc">Ändern Sie das Thema und die Farben der App</string>
+    <string name="set_personalize_desc">UI-Steuerelemente und Verhalten anpassen</string>
+    <string name="set_content_desc">Steuern, wie Musik und Bilder geladen werden</string>
+    <string name="set_music">Musik</string>
+    <string name="set_images">Bilder</string>
+    <string name="set_library">Bibliothek</string>
+    <string name="set_dirs_list">Ordner</string>
+    <string name="set_playback">Wiedergabe</string>
+    <string name="set_audio_desc">Ton und Wiedergabeverhalten konfigurieren</string>
+    <string name="set_state">Persistenz</string>
+    <string name="set_replay_gain">ReplayGain</string>
 </resources>

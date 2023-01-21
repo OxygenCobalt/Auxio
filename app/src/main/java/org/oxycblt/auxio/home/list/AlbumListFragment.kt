@@ -30,14 +30,12 @@ import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
+import org.oxycblt.auxio.list.adapter.ListDiffer
+import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.AlbumViewHolder
-import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
-import org.oxycblt.auxio.list.recycler.SyncListDiffer
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.secsToMs
 import org.oxycblt.auxio.util.collectImmediately
@@ -47,7 +45,7 @@ import org.oxycblt.auxio.util.collectImmediately
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumListFragment :
-    ListFragment<FragmentHomeListBinding>(),
+    ListFragment<Album, FragmentHomeListBinding>(),
     FastScrollRecyclerView.Listener,
     FastScrollRecyclerView.PopupProvider {
     private val homeModel: HomeViewModel by activityViewModels()
@@ -69,8 +67,8 @@ class AlbumListFragment :
             listener = this@AlbumListFragment
         }
 
-        collectImmediately(homeModel.albumsList, albumAdapter::replaceList)
-        collectImmediately(selectionModel.selected, albumAdapter::setSelectedItems)
+        collectImmediately(homeModel.albumsList, ::updateList)
+        collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
@@ -125,45 +123,40 @@ class AlbumListFragment :
         homeModel.setFastScrolling(isFastScrolling)
     }
 
-    override fun onRealClick(music: Music) {
-        check(music is Album) { "Unexpected datatype: ${music::class.java}" }
-        navModel.exploreNavigateTo(music)
+    override fun onRealClick(item: Album) {
+        navModel.exploreNavigateTo(item)
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
-        check(item is Album) { "Unexpected datatype: ${item::class.java}" }
+    override fun onOpenMenu(item: Album, anchor: View) {
         openMusicMenu(anchor, R.menu.menu_album_actions, item)
+    }
+
+    private fun updateList(albums: List<Album>) {
+        albumAdapter.submitList(albums, BasicListInstructions.REPLACE)
+    }
+
+    private fun updateSelection(selection: List<Music>) {
+        albumAdapter.setSelected(selection.filterIsInstanceTo(mutableSetOf()))
     }
 
     private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
         // If an album is playing, highlight it within this adapter.
-        albumAdapter.setPlayingItem(parent as? Album, isPlaying)
+        albumAdapter.setPlaying(parent as? Album, isPlaying)
     }
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Album]s using [AlbumViewHolder].
      * @param listener An [SelectableListListener] to bind interactions to.
      */
-    private class AlbumAdapter(private val listener: SelectableListListener) :
-        SelectionIndicatorAdapter<AlbumViewHolder>() {
-        private val differ = SyncListDiffer(this, AlbumViewHolder.DIFF_CALLBACK)
-
-        override val currentList: List<Item>
-            get() = differ.currentList
+    private class AlbumAdapter(private val listener: SelectableListListener<Album>) :
+        SelectionIndicatorAdapter<Album, BasicListInstructions, AlbumViewHolder>(
+            ListDiffer.Blocking(AlbumViewHolder.DIFF_CALLBACK)) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             AlbumViewHolder.from(parent)
 
         override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
-            holder.bind(differ.currentList[position], listener)
-        }
-
-        /**
-         * Asynchronously update the list with new [Album]s.
-         * @param newList The new [Album]s for the adapter to display.
-         */
-        fun replaceList(newList: List<Album>) {
-            differ.replaceList(newList)
+            holder.bind(getItem(position), listener)
         }
     }
 }

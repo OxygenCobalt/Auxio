@@ -21,6 +21,8 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -50,7 +52,7 @@ class PickerViewModel : ViewModel(), MusicStore.Listener {
         musicStore.removeListener(this)
     }
 
-    override fun onLibraryChanged(library: MusicStore.Library?) {
+    override fun onLibraryChanged(library: Library?) {
         if (library != null) {
             refreshChoices()
         }

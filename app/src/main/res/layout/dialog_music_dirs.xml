@@ -4,13 +4,93 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.Auxio.Dialog.NestedScrollView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
+
+        <TextView
+            style="@style/Widget.Auxio.TextView.Header"
+            android:id="@+id/dirs_mode_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/spacing_large"
+            android:paddingEnd="@dimen/spacing_large"
+            android:text="@string/set_dirs_mode" />
+
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/folder_mode_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_large"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_large"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/dirs_mode_header"
+            app:checkedButton="@+id/dirs_mode_exclude"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/dirs_mode_exclude"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:icon="@drawable/ic_check_24"
+                android:text="@string/set_dirs_mode_exclude" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/dirs_mode_include"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/set_dirs_mode_include" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
+            android:id="@+id/dirs_mode_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_large"
+            android:layout_marginTop="@dimen/spacing_tiny"
+            android:layout_marginEnd="@dimen/spacing_large"
+            android:textAlignment="viewStart"
+            app:layout_constraintTop_toBottomOf="@+id/folder_mode_group"
+            tools:text="Mode description" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/dirs_list_header_divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            app:layout_constraintTop_toBottomOf="@+id/dirs_mode_desc"/>
+
+        <TextView
+            android:id="@+id/dirs_list_header"
+            style="@style/Widget.Auxio.TextView.Header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/spacing_large"
+            android:paddingEnd="@dimen/spacing_large"
+            android:text="@string/set_dirs_list"
+            app:layout_constraintTop_toBottomOf="@+id/dirs_list_header_divider" />
+
+        <Button
+            style="@style/Widget.Auxio.Button.Icon.Small"
+            android:id="@+id/dirs_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_add_24"
+            android:contentDescription="@string/lbl_add"
+            android:layout_marginEnd="@dimen/spacing_mid_large"
+            app:layout_constraintTop_toBottomOf="@+id/dirs_list_header_divider"
+            app:layout_constraintEnd_toEndOf="@+id/dirs_list_header" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dirs_recycler"
@@ -19,7 +99,9 @@
             android:layout_height="0dp"
             android:layout_gravity="center"
             android:layout_weight="1"
+            android:clipToPadding="false"
             android:overScrollMode="never"
+            app:layout_constraintTop_toBottomOf="@+id/dirs_list_header"
             tools:listitem="@layout/item_music_dir" />
 
         <TextView
@@ -34,61 +116,9 @@
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.Auxio.LabelLarge"
             android:textColor="?android:attr/textColorSecondary"
-            tools:visibility="gone" />
+            app:layout_constraintTop_toTopOf="@+id/dirs_recycler"/>
 
-        <TextView
-            style="@style/Widget.Auxio.TextView.Header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/spacing_large"
-            android:paddingEnd="@dimen/spacing_large"
-            android:text="@string/set_dirs_mode" />
-
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/folder_mode_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_large"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:layout_marginEnd="@dimen/spacing_large"
-            android:gravity="center"
-            app:checkedButton="@+id/dirs_mode_exclude"
-            app:selectionRequired="true"
-            app:singleSelection="true">
-
-            <Button
-                android:id="@+id/dirs_mode_exclude"
-                style="@style/Widget.Auxio.Button.Secondary"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/set_dirs_mode_exclude" />
-
-            <Button
-                android:id="@+id/dirs_mode_include"
-                style="@style/Widget.Auxio.Button.Secondary"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/set_dirs_mode_include" />
-
-        </com.google.android.material.button.MaterialButtonToggleGroup>
-
-        <TextView
-            android:id="@+id/dirs_mode_desc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_large"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:layout_marginEnd="@dimen/spacing_large"
-            android:textAlignment="viewStart"
-            tools:text="Mode description" />
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.core.widget.NestedScrollView>

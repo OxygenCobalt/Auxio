@@ -30,7 +30,7 @@ import org.oxycblt.auxio.R
  *
  * Adapted from Material Files: https://github.com/zhanghai/MaterialFiles
  *
- * @author Alexander Capehart (OxygenCobalt)
+ * @author Hai Zhang, Alexander Capehart (OxygenCobalt)
  */
 class ReadOnlyTextInput
 @JvmOverloads

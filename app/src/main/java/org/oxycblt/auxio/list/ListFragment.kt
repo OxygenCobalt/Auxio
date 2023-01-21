@@ -37,7 +37,8 @@ import org.oxycblt.auxio.util.showToast
  * A Fragment containing a selectable list.
  * @author Alexander Capehart (OxygenCobalt)
  */
-abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), SelectableListListener {
+abstract class ListFragment<in T : Music, VB : ViewBinding> :
+    SelectionFragment<VB>(), SelectableListListener<T> {
     protected val navModel: NavigationViewModel by activityViewModels()
     private var currentMenu: PopupMenu? = null
 
@@ -50,12 +51,11 @@ abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), Selecta
     /**
      * Called when [onClick] is called, but does not result in the item being selected. This more or
      * less corresponds to an [onClick] implementation in a non-[ListFragment].
-     * @param music The [Music] item that was clicked.
+     * @param item The [T] data of the item that was clicked.
      */
-    abstract fun onRealClick(music: Music)
+    abstract fun onRealClick(item: T)
 
-    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
-        check(item is Music) { "Unexpected datatype: ${item::class.simpleName}" }
+    override fun onClick(item: T, viewHolder: RecyclerView.ViewHolder) {
         if (selectionModel.selected.value.isNotEmpty()) {
             // Map clicking an item to selecting an item when items are already selected.
             selectionModel.select(item)
@@ -65,8 +65,7 @@ abstract class ListFragment<VB : ViewBinding> : SelectionFragment<VB>(), Selecta
         }
     }
 
-    override fun onSelect(item: Item) {
-        check(item is Music) { "Unexpected datatype: ${item::class.simpleName}" }
+    override fun onSelect(item: T) {
         selectionModel.select(item)
     }
 

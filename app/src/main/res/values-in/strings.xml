@@ -27,7 +27,7 @@
     <string name="lbl_code">Lihat di GitHub</string>
     <string name="lbl_licenses">Lisensi</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Setelan</string>
+    <string name="set_root_title">Setelan</string>
     <string name="set_ui">Tampilan</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Otomatis</string>
@@ -35,7 +35,7 @@
     <string name="set_theme_night">Gelap</string>
     <string name="set_accent">Aksen</string>
     <string name="set_audio">Audio</string>
-    <string name="set_behavior">Perilaku</string>
+    <string name="set_personalize">Perilaku</string>
     <string name="set_keep_shuffle">Ingat putar acak</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Musik tidak ditemukan</string>
@@ -64,7 +64,7 @@
     <string name="set_lib_tabs_desc">Mengubah visibilitas dan urutan tab pustaka</string>
     <string name="set_headset_autoplay">Putar otomatis headset</string>
     <string name="set_headset_autoplay_desc">Selalu mulai bermain ketika headset tersambung (mungkin tidak berfungsi pada semua perangkat)</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain_mode">ReplayGain</string>
     <string name="lbl_relative_path">Jalur induk</string>
     <string name="lbl_size">Ukuran</string>
     <string name="lbl_sample_rate">Tingkat sampel</string>
@@ -87,8 +87,8 @@
     <string name="lbl_shuffle_shortcut_short">Acak</string>
     <string name="lbl_shuffle_shortcut_long">Acak Semua</string>
     <string name="lbl_state_saved">Status disimpan</string>
-    <string name="set_replay_gain_track">Lebih suka trek</string>
-    <string name="set_replay_gain_album">Lebih suka album</string>
+    <string name="set_replay_gain_mode_track">Lebih suka trek</string>
+    <string name="set_replay_gain_mode_album">Lebih suka album</string>
     <string name="set_pre_amp">Pra-amp ReplayGain</string>
     <string name="set_pre_amp_desc">Pre-amp diterapkan ke penyesuaian yang ada selama pemutaran</string>
     <string name="set_pre_amp_with">Penyesuaian dengan tag</string>
@@ -132,7 +132,7 @@
     <string name="fmt_lib_song_count">Lagu yang dimuat: %d</string>
     <string name="fmt_lib_album_count">Album yang dimuat: %d</string>
     <string name="fmt_lib_artist_count">Artis yang dimuat: %d</string>
-    <string name="set_replay_gain_dynamic">Lebih suka album jika ada yang diputar</string>
+    <string name="set_replay_gain_mode_dynamic">Lebih suka album jika ada yang diputar</string>
     <string name="set_library_song_playback_mode">Saat bermain dari perpustakaan</string>
     <string name="set_playback_mode_album">Putar dari album</string>
     <string name="desc_change_repeat">Ubah mode pengulangan</string>

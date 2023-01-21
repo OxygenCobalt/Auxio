@@ -18,29 +18,28 @@
 package org.oxycblt.auxio.search
 
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.list.*
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
+import org.oxycblt.auxio.list.adapter.ListDiffer
+import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.list.recycler.*
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.util.logD
 
 /**
  * An adapter that displays search results.
  * @param listener An [SelectableListListener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SearchAdapter(private val listener: SelectableListListener) :
-    SelectionIndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
-    private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
-
-    override val currentList: List<Item>
-        get() = differ.currentList
+class SearchAdapter(private val listener: SelectableListListener<Music>) :
+    SelectionIndicatorAdapter<Item, BasicListInstructions, RecyclerView.ViewHolder>(
+        ListDiffer.Async(DIFF_CALLBACK)),
+    AuxioRecyclerView.SpanSizeLookup {
 
     override fun getItemViewType(position: Int) =
-        when (differ.currentList[position]) {
+        when (getItem(position)) {
             is Song -> SongViewHolder.VIEW_TYPE
             is Album -> AlbumViewHolder.VIEW_TYPE
             is Artist -> ArtistViewHolder.VIEW_TYPE
@@ -60,7 +59,8 @@ class SearchAdapter(private val listener: SelectableListListener) :
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val item = differ.currentList[position]) {
+        logD(position)
+        when (val item = getItem(position)) {
             is Song -> (holder as SongViewHolder).bind(item, listener)
             is Album -> (holder as AlbumViewHolder).bind(item, listener)
             is Artist -> (holder as ArtistViewHolder).bind(item, listener)
@@ -69,22 +69,21 @@ class SearchAdapter(private val listener: SelectableListListener) :
         }
     }
 
-    override fun isItemFullWidth(position: Int) = differ.currentList[position] is Header
+    override fun isItemFullWidth(position: Int) = getItem(position) is Header
 
     /**
-     * Asynchronously update the list with new items. Assumes that the list only contains supported
-     * data..
-     * @param newList The new [Item]s for the adapter to display.
-     * @param callback A block called when the asynchronous update is completed.
+     * Make sure that the top header has a correctly configured divider visibility. This would
+     * normally be automatically done by the differ, but that results in a strange animation.
      */
-    fun submitList(newList: List<Item>, callback: () -> Unit) {
-        differ.submitList(newList, callback)
+    fun pokeDividers() {
+        notifyItemChanged(0, PAYLOAD_UPDATE_DIVIDER)
     }
 
     private companion object {
+        val PAYLOAD_UPDATE_DIVIDER = 102249124
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Item>() {
+            object : SimpleDiffCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item) =
                     when {
                         oldItem is Song && newItem is Song ->

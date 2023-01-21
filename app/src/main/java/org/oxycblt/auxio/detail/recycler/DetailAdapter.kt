@@ -20,7 +20,6 @@ package org.oxycblt.auxio.detail.recycler
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.TooltipCompat
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
@@ -29,26 +28,29 @@ import org.oxycblt.auxio.detail.SortHeader
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
+import org.oxycblt.auxio.list.adapter.*
 import org.oxycblt.auxio.list.recycler.*
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
 /**
  * A [RecyclerView.Adapter] that implements behavior shared across each detail view's adapters.
  * @param listener A [Listener] to bind interactions to.
- * @param itemCallback A [DiffUtil.ItemCallback] to use with [AsyncListDiffer] when updating the
+ * @param diffCallback A [DiffUtil.ItemCallback] to use for item comparison when diffing the
  * internal list.
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class DetailAdapter(
-    private val listener: Listener,
-    itemCallback: DiffUtil.ItemCallback<Item>
-) : SelectionIndicatorAdapter<RecyclerView.ViewHolder>(), AuxioRecyclerView.SpanSizeLookup {
-    // Safe to leak this since the listener will not fire during initialization
-    @Suppress("LeakingThis") protected val differ = AsyncListDiffer(this, itemCallback)
+    private val listener: Listener<*>,
+    diffCallback: DiffUtil.ItemCallback<Item>
+) :
+    SelectionIndicatorAdapter<Item, BasicListInstructions, RecyclerView.ViewHolder>(
+        ListDiffer.Async(diffCallback)),
+    AuxioRecyclerView.SpanSizeLookup {
 
     override fun getItemViewType(position: Int) =
-        when (differ.currentList[position]) {
+        when (getItem(position)) {
             // Implement support for headers and sort headers
             is Header -> HeaderViewHolder.VIEW_TYPE
             is SortHeader -> SortHeaderViewHolder.VIEW_TYPE
@@ -63,7 +65,7 @@ abstract class DetailAdapter(
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val item = differ.currentList[position]) {
+        when (val item = getItem(position)) {
             is Header -> (holder as HeaderViewHolder).bind(item)
             is SortHeader -> (holder as SortHeaderViewHolder).bind(item, listener)
         }
@@ -71,24 +73,12 @@ abstract class DetailAdapter(
 
     override fun isItemFullWidth(position: Int): Boolean {
         // Headers should be full-width in all configurations.
-        val item = differ.currentList[position]
+        val item = getItem(position)
         return item is Header || item is SortHeader
     }
 
-    override val currentList: List<Item>
-        get() = differ.currentList
-
-    /**
-     * Asynchronously update the list with new items. Assumes that the list only contains data
-     * supported by the concrete [DetailAdapter] implementation.
-     * @param newList The new [Item]s for the adapter to display.
-     */
-    fun submitList(newList: List<Item>) {
-        differ.submitList(newList)
-    }
-
     /** An extended [SelectableListListener] for [DetailAdapter] implementations. */
-    interface Listener : SelectableListListener {
+    interface Listener<in T : Music> : SelectableListListener<T> {
         // TODO: Split off into sub-listeners if a collapsing toolbar is implemented.
         /**
          * Called when the play button in a detail header is pressed, requesting that the current
@@ -112,7 +102,7 @@ abstract class DetailAdapter(
     protected companion object {
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Item>() {
+            object : SimpleDiffCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Header && newItem is Header ->
@@ -138,7 +128,7 @@ private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
      * @param sortHeader The new [SortHeader] to bind.
      * @param listener An [DetailAdapter.Listener] to bind interactions to.
      */
-    fun bind(sortHeader: SortHeader, listener: DetailAdapter.Listener) {
+    fun bind(sortHeader: SortHeader, listener: DetailAdapter.Listener<*>) {
         binding.headerTitle.text = binding.context.getString(sortHeader.titleRes)
         binding.headerButton.apply {
             // Add a Tooltip based on the content description so that the purpose of this
@@ -162,7 +152,7 @@ private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<SortHeader>() {
+            object : SimpleDiffCallback<SortHeader>() {
                 override fun areContentsTheSame(oldItem: SortHeader, newItem: SortHeader) =
                     oldItem.titleRes == newItem.titleRes
             }

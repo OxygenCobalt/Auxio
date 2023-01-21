@@ -32,7 +32,7 @@ import org.oxycblt.auxio.util.inflater
  * @param listener A [ClickableListListener] to bind interactions to.
  * @author OxygenCobalt.
  */
-class ArtistChoiceAdapter(private val listener: ClickableListListener) :
+class ArtistChoiceAdapter(private val listener: ClickableListListener<Artist>) :
     RecyclerView.Adapter<ArtistChoiceViewHolder>() {
     private var artists = listOf<Artist>()
 
@@ -67,7 +67,7 @@ class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
      * @param artist The new [Artist] to bind.
      * @param listener A [ClickableListListener] to bind interactions to.
      */
-    fun bind(artist: Artist, listener: ClickableListListener) {
+    fun bind(artist: Artist, listener: ClickableListListener<Artist>) {
         listener.bind(artist, this)
         binding.pickerImage.bind(artist)
         binding.pickerName.text = artist.resolveName(binding.context)

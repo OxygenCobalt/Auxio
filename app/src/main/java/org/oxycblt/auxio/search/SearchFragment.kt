@@ -31,14 +31,13 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.*
 
 /**
@@ -50,7 +49,7 @@ import org.oxycblt.auxio.util.*
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SearchFragment : ListFragment<FragmentSearchBinding>() {
+class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
     private val searchModel: SearchViewModel by androidViewModels()
     private val searchAdapter = SearchAdapter(this)
     private var imm: InputMethodManager? = null
@@ -134,26 +133,19 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
         return false
     }
 
-    override fun onRealClick(music: Music) {
-        when (music) {
-            is Song ->
-                when (Settings(requireContext()).libPlaybackMode) {
-                    MusicMode.SONGS -> playbackModel.playFromAll(music)
-                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
-                    MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-                    MusicMode.GENRES -> playbackModel.playFromGenre(music)
-                }
-            is MusicParent -> navModel.exploreNavigateTo(music)
+    override fun onRealClick(item: Music) {
+        when (item) {
+            is MusicParent -> navModel.exploreNavigateTo(item)
+            is Song -> playbackModel.playFrom(item, searchModel.playbackMode)
         }
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
+    override fun onOpenMenu(item: Music, anchor: View) {
         when (item) {
             is Song -> openMusicMenu(anchor, R.menu.menu_song_actions, item)
             is Album -> openMusicMenu(anchor, R.menu.menu_album_actions, item)
             is Artist -> openMusicMenu(anchor, R.menu.menu_artist_actions, item)
             is Genre -> openMusicMenu(anchor, R.menu.menu_artist_actions, item)
-            else -> logW("Unexpected datatype when opening menu: ${item::class.java}")
         }
     }
 
@@ -162,16 +154,17 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
         // Don't show the RecyclerView (and it's stray overscroll effects) when there
         // are no results.
         binding.searchRecycler.isInvisible = results.isEmpty()
-        searchAdapter.submitList(results.toMutableList()) {
+        searchAdapter.submitList(results.toMutableList(), BasicListInstructions.DIFF) {
             // I would make it so that the position is only scrolled back to the top when
             // the query actually changes instead of once every re-creation event, but sadly
             // that doesn't seem possible.
             binding.searchRecycler.scrollToPosition(0)
+            searchAdapter.pokeDividers()
         }
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        searchAdapter.setPlayingItem(parent ?: song, isPlaying)
+        searchAdapter.setPlaying(parent ?: song, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {
@@ -189,7 +182,7 @@ class SearchFragment : ListFragment<FragmentSearchBinding>() {
     }
 
     private fun updateSelection(selected: List<Music>) {
-        searchAdapter.setSelectedItems(selected)
+        searchAdapter.setSelected(selected.toSet())
         if (requireBinding().searchSelectionToolbar.updateSelectionAmount(selected.size) &&
             selected.isNotEmpty()) {
             // Make selection of obscured items easier by hiding the keyboard.

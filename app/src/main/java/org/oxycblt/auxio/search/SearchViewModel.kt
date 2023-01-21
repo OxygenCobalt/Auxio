@@ -30,11 +30,11 @@ import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.music.library.Library
+import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
 
@@ -45,7 +45,8 @@ import org.oxycblt.auxio.util.logD
 class SearchViewModel(application: Application) :
     AndroidViewModel(application), MusicStore.Listener {
     private val musicStore = MusicStore.getInstance()
-    private val settings = Settings(context)
+    private val searchSettings = SearchSettings.from(application)
+    private val playbackSettings = PlaybackSettings.from(application)
     private var lastQuery: String? = null
     private var currentSearchJob: Job? = null
 
@@ -53,6 +54,10 @@ class SearchViewModel(application: Application) :
     /** The results of the last [search] call, if any. */
     val searchResults: StateFlow<List<Item>>
         get() = _searchResults
+
+    /** The [MusicMode] to use when playing a [Song] from the UI. */
+    val playbackMode: MusicMode
+        get() = playbackSettings.inListPlaybackMode
 
     init {
         musicStore.addListener(this)
@@ -63,7 +68,7 @@ class SearchViewModel(application: Application) :
         musicStore.removeListener(this)
     }
 
-    override fun onLibraryChanged(library: MusicStore.Library?) {
+    override fun onLibraryChanged(library: Library?) {
         if (library != null) {
             // Make sure our query is up to date with the music library.
             search(lastQuery)
@@ -96,9 +101,9 @@ class SearchViewModel(application: Application) :
             }
     }
 
-    private fun searchImpl(library: MusicStore.Library, query: String): List<Item> {
+    private fun searchImpl(library: Library, query: String): List<Item> {
         val sort = Sort(Sort.Mode.ByName, true)
-        val filterMode = settings.searchFilterMode
+        val filterMode = searchSettings.searchFilterMode
         val results = mutableListOf<Item>()
 
         // Note: A null filter mode maps to the "All" filter option, hence the check.
@@ -183,7 +188,7 @@ class SearchViewModel(application: Application) :
      */
     @IdRes
     fun getFilterOptionId() =
-        when (settings.searchFilterMode) {
+        when (searchSettings.searchFilterMode) {
             MusicMode.SONGS -> R.id.option_filter_songs
             MusicMode.ALBUMS -> R.id.option_filter_albums
             MusicMode.ARTISTS -> R.id.option_filter_artists
@@ -208,7 +213,7 @@ class SearchViewModel(application: Application) :
                 else -> error("Invalid option ID provided")
             }
         logD("Updating filter mode to $newFilterMode")
-        settings.searchFilterMode = newFilterMode
+        searchSettings.searchFilterMode = newFilterMode
         search(lastQuery)
     }
 

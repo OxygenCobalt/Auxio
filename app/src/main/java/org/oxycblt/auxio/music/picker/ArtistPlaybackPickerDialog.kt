@@ -21,11 +21,12 @@ import android.os.Bundle
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
-import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.androidActivityViewModels
+import org.oxycblt.auxio.util.requireIs
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * An [ArtistPickerDialog] intended for when [Artist] playback is ambiguous.
@@ -42,12 +43,10 @@ class ArtistPlaybackPickerDialog : ArtistPickerDialog() {
         super.onBindingCreated(binding, savedInstanceState)
     }
 
-    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
+    override fun onClick(item: Artist, viewHolder: RecyclerView.ViewHolder) {
         super.onClick(item, viewHolder)
         // User made a choice, play the given song from that artist.
-        check(item is Artist) { "Unexpected datatype: ${item::class.simpleName}" }
-        val song = pickerModel.currentItem.value
-        check(song is Song) { "Unexpected datatype: ${item::class.simpleName}" }
+        val song = requireIs<Song>(unlikelyToBeNull(pickerModel.currentItem.value))
         playbackModel.playFromArtist(song, item)
     }
 }

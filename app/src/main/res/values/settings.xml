@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Note: The old way of naming keys was to prefix them with KEY_. Now it's to prefix them with auxio_. -->
+    <string name="set_key_ui" translatable="false">auxio_ui</string>
+    <string name="set_key_personalize" translatable="false">auxio_personalize</string>
+    <string name="set_key_music" translatable="false">auxio_music</string>
+    <string name="set_key_audio" translatable="false">auxio_audio</string>
+
     <string name="set_key_theme" translatable="false">KEY_THEME2</string>
     <string name="set_key_black_theme" translatable="false">KEY_BLACK_THEME</string>
     <string name="set_key_accent" translatable="false">auxio_accent2</string>
@@ -20,8 +25,8 @@
     <string name="set_key_pre_amp_with" translatable="false">auxio_pre_amp_with</string>
     <string name="set_key_pre_amp_without" translatable="false">auxio_pre_amp_without</string>
 
-    <string name="set_key_library_song_playback_mode" translatable="false">auxio_library_playback_mode</string>
-    <string name="set_key_detail_song_playback_mode" translatable="false">auxio_detail_playback_mode</string>
+    <string name="set_key_in_list_playback_mode" translatable="false">auxio_library_playback_mode</string>
+    <string name="set_key_in_parent_playback_mode" translatable="false">auxio_detail_playback_mode</string>
     <string name="set_key_keep_shuffle" translatable="false">KEY_KEEP_SHUFFLE</string>
     <string name="set_key_rewind_prev" translatable="false">KEY_PREV_REWIND</string>
     <string name="set_key_repeat_pause" translatable="false">KEY_LOOP_PAUSE</string>
@@ -29,7 +34,7 @@
     <string name="set_key_wipe_state" translatable="false">auxio_wipe_state</string>
     <string name="set_key_restore_state" translatable="false">auxio_restore_state</string>
 
-    <string name="set_key_lib_tabs" translatable="false">auxio_lib_tabs</string>
+    <string name="set_key_home_tabs" translatable="false">auxio_lib_tabs</string>
     <string name="set_key_hide_collaborators" translatable="false">auxio_hide_collaborators</string>
     <string name="set_key_round_mode" translatable="false">auxio_round_covers</string>
     <string name="set_key_bar_action" translatable="false">auxio_bar_action</string>
@@ -37,14 +42,14 @@
 
     <string name="set_key_search_filter" translatable="false">KEY_SEARCH_FILTER</string>
 
-    <string name="set_key_lib_songs_sort" translatable="false">auxio_songs_sort</string>
-    <string name="set_key_lib_albums_sort" translatable="false">auxio_albums_sort</string>
-    <string name="set_key_lib_artists_sort" translatable="false">auxio_artists_sort</string>
-    <string name="set_key_lib_genres_sort" translatable="false">auxio_genres_sort</string>
+    <string name="set_key_songs_sort" translatable="false">auxio_songs_sort</string>
+    <string name="set_key_albums_sort" translatable="false">auxio_albums_sort</string>
+    <string name="set_key_artists_sort" translatable="false">auxio_artists_sort</string>
+    <string name="set_key_genres_sort" translatable="false">auxio_genres_sort</string>
 
-    <string name="set_key_detail_album_sort" translatable="false">auxio_album_sort</string>
-    <string name="set_key_detail_artist_sort" translatable="false">auxio_artist_sort</string>
-    <string name="set_key_detail_genre_sort" translatable="false">auxio_genre_sort</string>
+    <string name="set_key_album_songs_sort" translatable="false">auxio_album_sort</string>
+    <string name="set_key_artist_songs_sort" translatable="false">auxio_artist_sort</string>
+    <string name="set_key_genre_songs_sort" translatable="false">auxio_genre_sort</string>
 
     <string-array name="entries_theme">
         <item>@string/set_theme_auto</item>
@@ -77,8 +82,8 @@
     </integer-array>
 
     <string-array name="entries_bar_action">
-        <item>@string/set_bar_action_next</item>
-        <item>@string/set_bar_action_repeat</item>
+        <item>@string/set_action_mode_next</item>
+        <item>@string/set_action_mode_repeat</item>
         <item>@string/lbl_shuffle</item>
     </string-array>
 
@@ -89,7 +94,7 @@
     </integer-array>
 
     <integer-array name="entries_notif_action">
-        <item>@string/set_bar_action_repeat</item>
+        <item>@string/set_action_mode_repeat</item>
         <item>@string/lbl_shuffle</item>
     </integer-array>
 
@@ -129,9 +134,9 @@
     </integer-array>
 
     <string-array name="entries_replay_gain">
-        <item>@string/set_replay_gain_track</item>
-        <item>@string/set_replay_gain_album</item>
-        <item>@string/set_replay_gain_dynamic</item>
+        <item>@string/set_replay_gain_mode_track</item>
+        <item>@string/set_replay_gain_mode_album</item>
+        <item>@string/set_replay_gain_mode_dynamic</item>
     </string-array>
 
     <integer-array name="values_replay_gain">

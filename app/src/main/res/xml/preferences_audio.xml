@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:title="@string/set_audio">
+    <PreferenceCategory android:title="@string/set_playback">
+
+        <SwitchPreferenceCompat
+            app:key="@string/set_key_headset_autoplay"
+            app:summary="@string/set_headset_autoplay_desc"
+            app:title="@string/set_headset_autoplay" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="@string/set_key_rewind_prev"
+            app:summary="@string/set_rewind_prev_desc"
+            app:title="@string/set_rewind_prev" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="@string/set_key_repeat_pause"
+            app:summary="@string/set_repeat_pause_desc"
+            app:title="@string/set_repeat_pause" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/set_replay_gain">
+
+        <org.oxycblt.auxio.settings.ui.IntListPreference
+            app:defaultValue="@integer/replay_gain_dynamic"
+            app:entries="@array/entries_replay_gain"
+            app:entryValues="@array/values_replay_gain"
+            app:key="@string/set_key_replay_gain"
+            app:title="@string/set_replay_gain_mode" />
+
+        <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+            app:key="@string/set_key_pre_amp"
+            app:summary="@string/set_pre_amp_desc"
+            app:title="@string/set_pre_amp" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

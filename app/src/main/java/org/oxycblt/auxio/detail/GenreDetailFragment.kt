@@ -31,15 +31,14 @@ import org.oxycblt.auxio.detail.recycler.DetailAdapter
 import org.oxycblt.auxio.detail.recycler.GenreDetailAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.Sort
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
@@ -50,7 +49,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A [ListFragment] that shows information for a particular [Genre].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter.Listener {
+class GenreDetailFragment :
+    ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener<Music> {
     private val detailModel: DetailViewModel by activityViewModels()
     // Information about what genre to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an genre.
@@ -86,7 +86,7 @@ class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setGenreUid(args.genreUid)
         collectImmediately(detailModel.currentGenre, ::updateItem)
-        collectImmediately(detailModel.genreList, detailAdapter::submitList)
+        collectImmediately(detailModel.genreList, ::updateList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
@@ -120,26 +120,25 @@ class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter
         }
     }
 
-    override fun onRealClick(music: Music) {
-        when (music) {
-            is Artist -> navModel.exploreNavigateTo(music)
-            is Song ->
-                when (Settings(requireContext()).detailPlaybackMode) {
-                    // When configured to play from the selected item, we already have a Genre
+    override fun onRealClick(item: Music) {
+        when (item) {
+            is Artist -> navModel.exploreNavigateTo(item)
+            is Song -> {
+                val playbackMode = detailModel.playbackMode
+                if (playbackMode != null) {
+                    playbackModel.playFrom(item, playbackMode)
+                } else {
+                    // When configured to play from the selected item, we already have an Genre
                     // to play from.
-                    null ->
-                        playbackModel.playFromGenre(
-                            music, unlikelyToBeNull(detailModel.currentGenre.value))
-                    MusicMode.SONGS -> playbackModel.playFromAll(music)
-                    MusicMode.ALBUMS -> playbackModel.playFromAlbum(music)
-                    MusicMode.ARTISTS -> playbackModel.playFromArtist(music)
-                    MusicMode.GENRES -> playbackModel.playFromGenre(music)
+                    playbackModel.playFromGenre(
+                        item, unlikelyToBeNull(detailModel.currentGenre.value))
                 }
-            else -> error("Unexpected datatype: ${music::class.simpleName}")
+            }
+            else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
 
-    override fun onOpenMenu(item: Item, anchor: View) {
+    override fun onOpenMenu(item: Music, anchor: View) {
         when (item) {
             is Artist -> openMusicMenu(anchor, R.menu.menu_artist_actions, item)
             is Song -> openMusicMenu(anchor, R.menu.menu_song_actions, item)
@@ -157,12 +156,12 @@ class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter
 
     override fun onOpenSortMenu(anchor: View) {
         openMenu(anchor, R.menu.menu_genre_sort) {
-            val sort = detailModel.genreSort
+            val sort = detailModel.genreSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
             unlikelyToBeNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
             setOnMenuItemClickListener { item ->
                 item.isChecked = !item.isChecked
-                detailModel.genreSort =
+                detailModel.genreSongSort =
                     if (item.itemId == R.id.option_sort_asc) {
                         sort.withAscending(item.isChecked)
                     } else {
@@ -184,17 +183,15 @@ class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        var item: Item? = null
-
+        var playingMusic: Music? = null
         if (parent is Artist) {
-            item = parent
+            playingMusic = parent
         }
-
+        // Prefer songs that might be playing from this genre.
         if (parent is Genre && parent.uid == unlikelyToBeNull(detailModel.currentGenre.value).uid) {
-            item = song
+            playingMusic = song
         }
-
-        detailAdapter.setPlayingItem(item, isPlaying)
+        detailAdapter.setPlaying(playingMusic, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {
@@ -221,8 +218,12 @@ class GenreDetailFragment : ListFragment<FragmentDetailBinding>(), DetailAdapter
         }
     }
 
+    private fun updateList(items: List<Item>) {
+        detailAdapter.submitList(items, BasicListInstructions.DIFF)
+    }
+
     private fun updateSelection(selected: List<Music>) {
-        detailAdapter.setSelectedItems(selected)
+        detailAdapter.setSelected(selected.toSet())
         requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
     }
 }

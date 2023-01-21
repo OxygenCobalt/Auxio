@@ -53,6 +53,7 @@
         <item name="colorControlNormal">?attr/colorOnSurfaceVariant</item>
         <item name="colorControlActivated">?attr/colorPrimary</item>
 
+        <item name="preferenceTheme">@style/PreferenceTheme.Auxio</item>
         <item name="preferenceStyle">@style/Preference.Auxio</item>
         <item name="preferenceCategoryStyle">@style/Preference.Auxio.PreferenceCategory</item>
         <item name="dialogPreferenceStyle">@style/Preference.Auxio.DialogPreference</item>

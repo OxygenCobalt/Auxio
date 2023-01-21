@@ -27,15 +27,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.Sort
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.extractor.*
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
@@ -51,7 +45,7 @@ import org.oxycblt.auxio.util.logW
  * @author Alexander Capehart (OxygenCobalt)
  */
 class Indexer private constructor() {
-    @Volatile private var lastResponse: Result<MusicStore.Library>? = null
+    @Volatile private var lastResponse: Result<Library>? = null
     @Volatile private var indexingState: Indexing? = null
     @Volatile private var controller: Controller? = null
     @Volatile private var listener: Listener? = null
@@ -197,11 +191,11 @@ class Indexer private constructor() {
      * @param context [Context] required to load music.
      * @param withCache Whether to use the cache or not when loading. If false, the cache will still
      * be written, but no cache entries will be loaded into the new library.
-     * @return A newly-loaded [MusicStore.Library].
+     * @return A newly-loaded [Library].
      * @throws NoPermissionException If [PERMISSION_READ_AUDIO] was not granted.
      * @throws NoMusicException If no music was found on the device.
      */
-    private suspend fun indexImpl(context: Context, withCache: Boolean): MusicStore.Library {
+    private suspend fun indexImpl(context: Context, withCache: Boolean): Library {
         if (ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
             PackageManager.PERMISSION_DENIED) {
             // No permissions, signal that we can't do anything.
@@ -217,7 +211,6 @@ class Indexer private constructor() {
             } else {
                 WriteOnlyCacheExtractor(context)
             }
-
         val mediaStoreExtractor =
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
@@ -226,33 +219,24 @@ class Indexer private constructor() {
                     Api29MediaStoreExtractor(context, cacheDatabase)
                 else -> Api21MediaStoreExtractor(context, cacheDatabase)
             }
-
         val metadataExtractor = MetadataExtractor(context, mediaStoreExtractor)
-
-        val songs =
-            buildSongs(metadataExtractor, Settings(context)).ifEmpty { throw NoMusicException() }
+        val rawSongs = loadRawSongs(metadataExtractor).ifEmpty { throw NoMusicException() }
         // Build the rest of the music library from the song list. This is much more powerful
         // and reliable compared to using MediaStore to obtain grouping information.
         val buildStart = System.currentTimeMillis()
-        val albums = buildAlbums(songs)
-        val artists = buildArtists(songs, albums)
-        val genres = buildGenres(songs)
+        val library = Library(rawSongs, MusicSettings.from(context))
         logD("Successfully built library in ${System.currentTimeMillis() - buildStart}ms")
-        return MusicStore.Library(songs, albums, artists, genres)
+        return library
     }
 
     /**
      * Load a list of [Song]s from the device.
      * @param metadataExtractor The completed [MetadataExtractor] instance to use to load [Song.Raw]
      * instances.
-     * @param settings [Settings] required to create [Song] instances.
      * @return A possibly empty list of [Song]s. These [Song]s will be incomplete and must be linked
      * with parent [Album], [Artist], and [Genre] items in order to be usable.
      */
-    private suspend fun buildSongs(
-        metadataExtractor: MetadataExtractor,
-        settings: Settings
-    ): List<Song> {
+    private suspend fun loadRawSongs(metadataExtractor: MetadataExtractor): List<Song.Raw> {
         logD("Starting indexing process")
         val start = System.currentTimeMillis()
         // Start initializing the extractors. Use an indeterminate state, as there is no ETA on
@@ -262,104 +246,23 @@ class Indexer private constructor() {
         yield()
 
         // Note: We use a set here so we can eliminate song duplicates.
-        val songs = mutableSetOf<Song>()
         val rawSongs = mutableListOf<Song.Raw>()
-        metadataExtractor.parse { rawSong ->
-            songs.add(Song(rawSong, settings))
+        metadataExtractor.extract().collect { rawSong ->
             rawSongs.add(rawSong)
-
             // Now we can signal a defined progress by showing how many songs we have
             // loaded, and the projected amount of songs we found in the library
             // (obtained by the extractors)
             yield()
-            emitIndexing(Indexing.Songs(songs.size, total))
+            emitIndexing(Indexing.Songs(rawSongs.size, total))
         }
 
         // Finalize the extractors with the songs we have now loaded. There is no ETA
         // on this process, so go back to an indeterminate state.
         emitIndexing(Indexing.Indeterminate)
         metadataExtractor.finalize(rawSongs)
-        logD("Successfully built ${songs.size} songs in ${System.currentTimeMillis() - start}ms")
-
-        // Ensure that sorting order is consistent so that grouping is also consistent.
-        // Rolling this into the set is not an option, as songs with the same sort result
-        // would be lost.
-        return Sort(Sort.Mode.ByName, true).songs(songs)
-    }
-
-    /**
-     * Build a list of [Album]s from the given [Song]s.
-     * @param songs The [Song]s to build [Album]s from. These will be linked with their respective
-     * [Album]s when created.
-     * @return A non-empty list of [Album]s. These [Album]s will be incomplete and must be linked
-     * with parent [Artist] instances in order to be usable.
-     */
-    private fun buildAlbums(songs: List<Song>): List<Album> {
-        // Group songs by their singular raw album, then map the raw instances and their
-        // grouped songs to Album values. Album.Raw will handle the actual grouping rules.
-        val songsByAlbum = songs.groupBy { it._rawAlbum }
-        val albums = songsByAlbum.map { Album(it.key, it.value) }
-        logD("Successfully built ${albums.size} albums")
-        return albums
-    }
-
-    /**
-     * Group up [Song]s and [Album]s into [Artist] instances. Both of these items are required as
-     * they group into [Artist] instances much differently, with [Song]s being grouped primarily by
-     * artist names, and [Album]s being grouped primarily by album artist names.
-     * @param songs The [Song]s to build [Artist]s from. One [Song] can result in the creation of
-     * one or more [Artist] instances. These will be linked with their respective [Artist]s when
-     * created.
-     * @param albums The [Album]s to build [Artist]s from. One [Album] can result in the creation of
-     * one or more [Artist] instances. These will be linked with their respective [Artist]s when
-     * created.
-     * @return A non-empty list of [Artist]s. These [Artist]s will consist of the combined groupings
-     * of [Song]s and [Album]s.
-     */
-    private fun buildArtists(songs: List<Song>, albums: List<Album>): List<Artist> {
-        // Add every raw artist credited to each Song/Album to the grouping. This way,
-        // different multi-artist combinations are not treated as different artists.
-        val musicByArtist = mutableMapOf<Artist.Raw, MutableList<Music>>()
-
-        for (song in songs) {
-            for (rawArtist in song._rawArtists) {
-                musicByArtist.getOrPut(rawArtist) { mutableListOf() }.add(song)
-            }
-        }
-
-        for (album in albums) {
-            for (rawArtist in album._rawArtists) {
-                musicByArtist.getOrPut(rawArtist) { mutableListOf() }.add(album)
-            }
-        }
-
-        // Convert the combined mapping into artist instances.
-        val artists = musicByArtist.map { Artist(it.key, it.value) }
-        logD("Successfully built ${artists.size} artists")
-        return artists
-    }
-
-    /**
-     * Group up [Song]s into [Genre] instances.
-     * @param [songs] The [Song]s to build [Genre]s from. One [Song] can result in the creation of
-     * one or more [Genre] instances. These will be linked with their respective [Genre]s when
-     * created.
-     * @return A non-empty list of [Genre]s.
-     */
-    private fun buildGenres(songs: List<Song>): List<Genre> {
-        // Add every raw genre credited to each Song to the grouping. This way,
-        // different multi-genre combinations are not treated as different genres.
-        val songsByGenre = mutableMapOf<Genre.Raw, MutableList<Song>>()
-        for (song in songs) {
-            for (rawGenre in song._rawGenres) {
-                songsByGenre.getOrPut(rawGenre) { mutableListOf() }.add(song)
-            }
-        }
-
-        // Convert the mapping into genre instances.
-        val genres = songsByGenre.map { Genre(it.key, it.value) }
-        logD("Successfully built ${genres.size} genres")
-        return genres
+        logD(
+            "Successfully loaded ${rawSongs.size} raw songs in ${System.currentTimeMillis() - start}ms")
+        return rawSongs
     }
 
     /**
@@ -386,7 +289,7 @@ class Indexer private constructor() {
      * @param result The new [Result] to emit, representing the outcome of the music loading
      * process.
      */
-    private suspend fun emitCompletion(result: Result<MusicStore.Library>) {
+    private suspend fun emitCompletion(result: Result<Library>) {
         yield()
         // Swap to the Main thread so that downstream callbacks don't crash from being on
         // a background thread. Does not occur in emitIndexing due to efficiency reasons.
@@ -417,7 +320,7 @@ class Indexer private constructor() {
          * Music loading has completed.
          * @param result The outcome of the music loading process.
          */
-        data class Complete(val result: Result<MusicStore.Library>) : State()
+        data class Complete(val result: Result<Library>) : State()
     }
 
     /**
@@ -455,7 +358,7 @@ class Indexer private constructor() {
      *
      * This is only useful for code that absolutely must show the current loading process.
      * Otherwise, [MusicStore.Listener] is highly recommended due to it's updates only consisting of
-     * the [MusicStore.Library].
+     * the [Library].
      */
     interface Listener {
         /**

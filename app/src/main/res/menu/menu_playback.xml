@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_open_equalizer"
-        android:icon="@drawable/ic_equalizer"
+        android:icon="@drawable/ic_config_24"
         android:title="@string/lbl_equalizer"
         app:showAsAction="ifRoom" />
     <item

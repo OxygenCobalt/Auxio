@@ -42,8 +42,8 @@
     <string name="lbl_licenses">许可证</string>
     <string name="lng_author">由 Alexander Capehart 开发</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">设置</string>
-    <string name="set_ui">外观</string>
+    <string name="set_root_title">设置</string>
+    <string name="set_ui">外观和感觉</string>
     <string name="set_theme">主题</string>
     <string name="set_theme_auto">自动</string>
     <string name="set_theme_day">浅色</string>
@@ -60,11 +60,11 @@
     <string name="set_audio">音频</string>
     <string name="set_headset_autoplay">自动播放</string>
     <string name="set_headset_autoplay_desc">连接至耳机时总是自动播放（并非在所有设备上都有用）</string>
-    <string name="set_replay_gain">回放增益</string>
-    <string name="set_replay_gain_track">偏好曲目</string>
-    <string name="set_replay_gain_album">偏好专辑</string>
-    <string name="set_replay_gain_dynamic">如果已有专辑正在播放则优先增益专辑</string>
-    <string name="set_behavior">行为</string>
+    <string name="set_replay_gain_mode">回放增益</string>
+    <string name="set_replay_gain_mode_track">偏好曲目</string>
+    <string name="set_replay_gain_mode_album">偏好专辑</string>
+    <string name="set_replay_gain_mode_dynamic">如果已有专辑正在播放则优先增益专辑</string>
+    <string name="set_personalize">行为</string>
     <string name="set_library_song_playback_mode">从音乐库中选择播放时</string>
     <string name="set_keep_shuffle">记住随机模式</string>
     <string name="set_keep_shuffle_desc">播放新曲目时保留随机播放模式</string>
@@ -221,8 +221,8 @@
     <string name="lbl_live_group">现场</string>
     <string name="lbl_genre">流派</string>
     <string name="set_bar_action">自定义播放栏动作</string>
-    <string name="set_bar_action_repeat">重复模式</string>
-    <string name="set_bar_action_next">跳到下一首</string>
+    <string name="set_action_mode_repeat">重复模式</string>
+    <string name="set_action_mode_next">跳到下一首</string>
     <string name="lbl_equalizer">均衡器</string>
     <string name="desc_exit">停止播放</string>
     <string name="set_separators_and">与号 (&amp;)</string>
@@ -258,4 +258,17 @@
     <string name="set_playback_mode_genre">按流派播放</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
+    <string name="lbl_reset">重置</string>
+    <string name="set_behavior">行为</string>
+    <string name="set_replay_gain">回放增益</string>
+    <string name="set_state">持久性</string>
+    <string name="set_ui_desc">更改应用的主题和颜色</string>
+    <string name="set_personalize_desc">定制用户界面操控和行为</string>
+    <string name="set_content_desc">控制音乐和图片加载方式</string>
+    <string name="set_images">图片</string>
+    <string name="set_playback">播放</string>
+    <string name="set_library">曲库</string>
+    <string name="set_dirs_list">文件夹</string>
+    <string name="set_music">音乐</string>
+    <string name="set_audio_desc">配置声音和播放行为</string>
 </resources>

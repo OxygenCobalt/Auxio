@@ -25,9 +25,9 @@
     <string name="lbl_version">Versão</string>
     <string name="lbl_code">Código-fonte</string>
     <string name="lbl_licenses">Licenças</string>
-    <string name="lng_author">Desenvolvido por OxygenCobalt</string>
+    <string name="lng_author">Desenvolvido por Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">Configurações</string>
+    <string name="set_root_title">Configurações</string>
     <string name="set_ui">Aparência</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Automático</string>
@@ -35,7 +35,7 @@
     <string name="set_theme_night">Escuro</string>
     <string name="set_accent">Paleta de cor</string>
     <string name="set_audio">Áudio</string>
-    <string name="set_behavior">Comportamento</string>
+    <string name="set_personalize">Comportamento</string>
     <string name="set_keep_shuffle">Manter modo aleatório ativado</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nenhuma música encontrada</string>
@@ -62,10 +62,12 @@
     <string name="fmt_lib_song_count">Músicas carregadas: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d música</item>
+        <item quantity="many">%d músicas</item>
         <item quantity="other">%d músicas</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d álbum</item>
+        <item quantity="many">%d álbuns</item>
         <item quantity="other">%d álbuns</item>
     </plurals>
     <string name="lbl_sort_asc">Crescente</string>
@@ -91,7 +93,7 @@
     <string name="set_rewind_prev_desc">Retrocede a música antes de voltar para a anterior</string>
     <string name="set_dirs_mode_include_desc">‘As músicas serão carregadas <b>somente</b> das pastas que você adicionar.</string>
     <string name="set_dirs_mode_exclude">Excluir</string>
-    <string name="set_dirs_mode_exclude_desc">As músicas <b>não</b> serão carregadas das pastas que você adicionar</string>
+    <string name="set_dirs_mode_exclude_desc">As músicas <b>não</b> serão carregadas das pastas que você adicionar.</string>
     <string name="set_dirs_mode">Modo</string>
     <string name="err_no_perms">O Auxio precisa de permissão para ler sua biblioteca de músicas</string>
     <string name="info_app_desc">Um reprodutor de música simples e racional para android.</string>
@@ -147,7 +149,7 @@
     <string name="cdc_ogg">Áudio Ogg</string>
     <string name="cdc_mka">Áudio Matroska</string>
     <string name="cdc_aac">Codificação de Audio Avançada (AAC)</string>
-    <string name="cdc_flac">Codec gratuito de áudio sem perdas (FLAC)</string>
+    <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="desc_queue_handle">Mover esta música da fila</string>
     <string name="clr_dynamic">Dinâmico</string>
     <string name="fmt_lib_total_duration">Duração total: %s</string>
@@ -163,16 +165,16 @@
     <string name="lbl_ok">OK</string>
     <string name="set_display">Exibição</string>
     <string name="set_round_mode_desc">Ativar cantos arredondados em elementos adicionais da interface do usuário (requer que as capas dos álbuns sejam arredondadas)</string>
-    <string name="set_replay_gain">Modo de normalização de volume (ReplayGain)</string>
+    <string name="set_replay_gain_mode">Modo de normalização de volume (ReplayGain)</string>
     <string name="set_playback_mode_none">Reproduzir a partir do item mostrado</string>
     <string name="set_playback_mode_songs">Reproduzir de todas as músicas</string>
-    <string name="set_replay_gain_album">Preferir álbum</string>
-    <string name="set_replay_gain_dynamic">Prefira o álbum se estiver tocando</string>
+    <string name="set_replay_gain_mode_album">Preferir álbum</string>
+    <string name="set_replay_gain_mode_dynamic">Prefira o álbum se estiver tocando</string>
     <string name="set_observing">Recarregamento automático</string>
-    <string name="set_observing_desc">Recarrega a biblioteca de músicas sempre que ela mudar (requer notificação persistente)</string>
+    <string name="set_observing_desc">Recarrega a biblioteca de músicas sempre que ela mudar (requer notificação fixa)</string>
     <string name="lbl_sort_date_added">Data adicionada</string>
     <string name="lbl_cancel">Cancelar</string>
-    <string name="set_replay_gain_track">Preferir faixa</string>
+    <string name="set_replay_gain_mode_track">Preferir faixa</string>
     <string name="desc_queue_bar">Abrir fila</string>
     <string name="lbl_album_live">Álbum ao vivo</string>
     <string name="lbl_soundtracks">Trilhas sonoras</string>
@@ -193,14 +195,14 @@
     <string name="lbl_indexing">Carregando música</string>
     <string name="lbl_observing">Monitorando a biblioteca de músicas</string>
     <string name="set_round_mode">Cantos arredondados</string>
-    <string name="set_bar_action_next">Pular para o próximo</string>
+    <string name="set_action_mode_next">Pular para o próximo</string>
     <string name="set_playback_mode_album">Reproduzir do álbum</string>
     <string name="set_save_state">Salvar lista de reprodução</string>
     <string name="set_wipe_state">Limpar lista de reprodução</string>
     <string name="set_restore_state">Restaurar lista de reprodução</string>
     <string name="lng_widget">Visualize e controle a reprodução de música</string>
     <string name="set_bar_action">Ação personalizada na barra de reprodução</string>
-    <string name="set_bar_action_repeat">Modo de repetição</string>
+    <string name="set_action_mode_repeat">Modo de repetição</string>
     <string name="set_wipe_desc">Limpa a lista de reprodução salva anteriormente (se houver)</string>
     <string name="lbl_eps">EPs</string>
     <string name="lbl_ep">EP</string>
@@ -245,12 +247,20 @@
     <string name="lbl_mix">Mix</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d artista</item>
+        <item quantity="many">%d artistas</item>
         <item quantity="other">%d artistas</item>
     </plurals>
     <string name="set_rescan">Re-escanear músicas</string>
-    <string name="set_rescan_desc">Limpa os metadados em cache e recarrega totalmente a biblioteca de músicas (mais lento, porém mais completo)</string>
+    <string name="set_rescan_desc">Limpa os metadados em cache e recarrega totalmente a biblioteca de música (lento, porém mais completo)</string>
     <string name="err_did_not_wipe">Não foi possível limpar a lista</string>
     <string name="err_did_not_save">Não foi possível salvar a lista</string>
     <string name="set_hide_collaborators">Ocultar artistas colaboradores</string>
     <string name="set_hide_collaborators_desc">Mostrar apenas artistas que foram creditados diretamente no álbum (funciona melhor em músicas com metadados completos)</string>
+    <string name="lbl_play_selected">Tocar selecionada(s)</string>
+    <string name="lbl_shuffle_selected">Aleatorizar selecionadas</string>
+    <string name="fmt_selected">%d Selecionadas</string>
+    <string name="lbl_wiki">Wiki</string>
+    <string name="lbl_reset">Redefinir</string>
+    <string name="fmt_list">%1$s, %2$s</string>
+    <string name="set_playback_mode_genre">Tocar a partir do gênero</string>
 </resources>

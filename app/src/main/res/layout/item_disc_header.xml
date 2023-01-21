@@ -22,7 +22,11 @@
 
     <TextView
         android:id="@+id/disc_no"
-        style="@style/Widget.Auxio.TextView.Header"
+        android:paddingStart="@dimen/spacing_medium"
+        android:paddingEnd="@dimen/spacing_medium"
+        android:paddingTop="@dimen/spacing_mid_medium"
+        android:paddingBottom="@dimen/spacing_mid_medium"
+        android:textAppearance="@style/TextAppearance.Auxio.TitleMedium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

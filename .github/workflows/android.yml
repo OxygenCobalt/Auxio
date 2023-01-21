@@ -29,6 +29,8 @@ jobs:
         ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+    - name: Test app with Gradle
+      run: ./gradlew app:testDebug
     - name: Build debug APK with Gradle
       run: ./gradlew app:packageDebug
     - name: Upload debug APK artifact

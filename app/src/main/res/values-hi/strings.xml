@@ -22,14 +22,14 @@
     <string name="lbl_code">GitHub में देखें</string>
     <string name="lbl_licenses">लाइसेंस</string>
     <!-- Settings namespace | Settings-related labels -->
-    <string name="set_title">सेटिंग्स</string>
+    <string name="set_root_title">सेटिंग्स</string>
     <string name="set_theme">थीम</string>
     <string name="set_theme_auto">सफ़ेद</string>
     <string name="set_theme_day">गहरा</string>
     <string name="set_theme_night">स्वचलित</string>
     <string name="set_accent">एक्सेंट</string>
     <string name="set_audio">ऑडियो</string>
-    <string name="set_behavior">चाल चलन</string>
+    <string name="set_personalize">चाल चलन</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">कोई संगीत नहीं मिला</string>
     <!-- Description Namespace | Accessibility Strings -->

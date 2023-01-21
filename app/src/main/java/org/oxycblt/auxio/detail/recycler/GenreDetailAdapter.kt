@@ -25,11 +25,12 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.list.recycler.ArtistViewHolder
-import org.oxycblt.auxio.list.recycler.SimpleItemCallback
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
@@ -40,12 +41,13 @@ import org.oxycblt.auxio.util.inflater
  * @param listener A [DetailAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreDetailAdapter(private val listener: Listener) : DetailAdapter(listener, DIFF_CALLBACK) {
+class GenreDetailAdapter(private val listener: Listener<Music>) :
+    DetailAdapter(listener, DIFF_CALLBACK) {
     override fun getItemViewType(position: Int) =
-        when (differ.currentList[position]) {
+        when (getItem(position)) {
             // Support the Genre header and generic Artist/Song items. There's nothing about
-            // a genre that will make the artists/songs homogeneous, so it doesn't matter what we
-            // use for their ViewHolders.
+            // a genre that will make the artists/songs specially formatted, so it doesn't matter
+            // what we use for their ViewHolders.
             is Genre -> GenreDetailViewHolder.VIEW_TYPE
             is Artist -> ArtistViewHolder.VIEW_TYPE
             is Song -> SongViewHolder.VIEW_TYPE
@@ -62,7 +64,7 @@ class GenreDetailAdapter(private val listener: Listener) : DetailAdapter(listene
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        when (val item = differ.currentList[position]) {
+        when (val item = getItem(position)) {
             is Genre -> (holder as GenreDetailViewHolder).bind(item, listener)
             is Artist -> (holder as ArtistViewHolder).bind(item, listener)
             is Song -> (holder as SongViewHolder).bind(item, listener)
@@ -70,14 +72,16 @@ class GenreDetailAdapter(private val listener: Listener) : DetailAdapter(listene
     }
 
     override fun isItemFullWidth(position: Int): Boolean {
+        if (super.isItemFullWidth(position)) {
+            return true
+        }
         // Genre headers should be full-width in all configurations
-        val item = differ.currentList[position]
-        return super.isItemFullWidth(position) || item is Genre
+        return getItem(position) is Genre
     }
 
     private companion object {
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Item>() {
+            object : SimpleDiffCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Genre && newItem is Genre ->
@@ -105,7 +109,7 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
      * @param genre The new [Song] to bind.
      * @param listener A [DetailAdapter.Listener] to bind interactions to.
      */
-    fun bind(genre: Genre, listener: DetailAdapter.Listener) {
+    fun bind(genre: Genre, listener: DetailAdapter.Listener<*>) {
         binding.detailCover.bind(genre)
         binding.detailType.text = binding.context.getString(R.string.lbl_genre)
         binding.detailName.text = genre.resolveName(binding.context)
@@ -135,7 +139,7 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Genre>() {
+            object : SimpleDiffCallback<Genre>() {
                 override fun areContentsTheSame(oldItem: Genre, newItem: Genre) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.songs.size == newItem.songs.size &&

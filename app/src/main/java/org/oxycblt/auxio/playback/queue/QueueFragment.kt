@@ -27,19 +27,18 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.list.EditableListListener
-import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewBindingFragment] that displays an editable queue.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListListener {
+class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListListener<Song> {
     private val queueModel: QueueViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val queueAdapter = QueueAdapter(this)
@@ -78,10 +77,11 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
 
     override fun onDestroyBinding(binding: FragmentQueueBinding) {
         super.onDestroyBinding(binding)
+        touchHelper = null
         binding.queueRecycler.adapter = null
     }
 
-    override fun onClick(item: Item, viewHolder: RecyclerView.ViewHolder) {
+    override fun onClick(item: Song, viewHolder: RecyclerView.ViewHolder) {
         queueModel.goto(viewHolder.bindingAdapterPosition)
     }
 
@@ -100,18 +100,13 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
         val binding = requireBinding()
 
         // Replace or diff the queue depending on the type of change it is.
-        // TODO: Extend this to the whole app.
-        if (queueModel.replaceQueue == true) {
-            logD("Replacing queue")
-            queueAdapter.replaceList(queue)
-        } else {
-            logD("Diffing queue")
-            queueAdapter.submitList(queue)
-        }
-        queueModel.finishReplace()
+        val instructions = queueModel.queueListInstructions
+        queueAdapter.submitList(queue, instructions?.update ?: BasicListInstructions.DIFF)
+        // Update position in list (and thus past/future items)
+        queueAdapter.setPosition(index, isPlaying)
 
         // If requested, scroll to a new item (occurs when the index moves)
-        val scrollTo = queueModel.scrollTo
+        val scrollTo = instructions?.scrollTo
         if (scrollTo != null) {
             val lmm = binding.queueRecycler.layoutManager as LinearLayoutManager
             val start = lmm.findFirstCompletelyVisibleItemPosition()
@@ -126,15 +121,13 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
                 binding.queueRecycler.scrollToPosition(scrollTo)
             } else if (scrollTo > end) {
                 // We need to scroll downwards, we need to offset by a screen of songs.
-                // This does have some error due to what the layout manager returns being
-                // somewhat mutable. This is considered okay.
+                // This does have some error due to how many completely visible items on-screen
+                // can vary. This is considered okay.
                 binding.queueRecycler.scrollToPosition(
                     min(queue.lastIndex, scrollTo + (end - start)))
             }
         }
-        queueModel.finishScrollTo()
 
-        // Update position in list (and thus past/future items)
-        queueAdapter.setPosition(index, isPlaying)
+        queueModel.finishInstructions()
     }
 }

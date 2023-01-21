@@ -26,11 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.playback.state.InternalPlayer
-import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
-import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.playback.state.*
 import org.oxycblt.auxio.util.context
 
 /**
@@ -39,8 +35,10 @@ import org.oxycblt.auxio.util.context
  */
 class PlaybackViewModel(application: Application) :
     AndroidViewModel(application), PlaybackStateManager.Listener {
-    private val settings = Settings(application)
+    private val musicSettings = MusicSettings.from(application)
+    private val playbackSettings = PlaybackSettings.from(application)
     private val playbackManager = PlaybackStateManager.getInstance()
+    private val musicStore = MusicStore.getInstance()
     private var lastPositionJob: Job? = null
 
     private val _song = MutableStateFlow<Song?>(null)
@@ -85,6 +83,10 @@ class PlaybackViewModel(application: Application) :
     val genrePickerSong: StateFlow<Song?>
         get() = _genrePlaybackPickerSong
 
+    /** The current action to show on the playback bar. */
+    val currentBarAction: ActionMode
+        get() = playbackSettings.barAction
+
     /**
      * The current audio session ID of the internal player. Null if no [InternalPlayer] is
      * available.
@@ -100,13 +102,25 @@ class PlaybackViewModel(application: Application) :
         playbackManager.removeListener(this)
     }
 
-    override fun onIndexMoved(index: Int) {
-        _song.value = playbackManager.song
+    override fun onIndexMoved(queue: Queue) {
+        _song.value = queue.currentSong
     }
 
-    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        _song.value = playbackManager.song
-        _parent.value = playbackManager.parent
+    override fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {
+        // Other types of queue changes preserve the current song.
+        if (change == Queue.ChangeResult.SONG) {
+            _song.value = queue.currentSong
+        }
+    }
+
+    override fun onQueueReordered(queue: Queue) {
+        _isShuffled.value = queue.isShuffled
+    }
+
+    override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
+        _song.value = queue.currentSong
+        _parent.value = parent
+        _isShuffled.value = queue.isShuffled
     }
 
     override fun onStateChanged(state: InternalPlayer.State) {
@@ -126,35 +140,33 @@ class PlaybackViewModel(application: Application) :
             }
     }
 
-    override fun onShuffledChanged(isShuffled: Boolean) {
-        _isShuffled.value = isShuffled
-    }
-
     override fun onRepeatChanged(repeatMode: RepeatMode) {
         _repeatMode.value = repeatMode
     }
 
     // --- PLAYING FUNCTIONS ---
 
-    /**
-     * Play the given [Song] from all songs in the music library.
-     * @param song The [Song] to play.
-     */
-    fun playFromAll(song: Song) {
-        playbackManager.play(song, null, settings)
-    }
-
     /** Shuffle all songs in the music library. */
     fun shuffleAll() {
-        playbackManager.play(null, null, settings, true)
+        playImpl(null, null, true)
     }
 
     /**
-     * Play a [Song] from it's [Album].
+     * Play a [Song] from the [MusicParent] outlined by the given [MusicMode].
+     * - If [MusicMode.SONGS], the [Song] is played from all songs.
+     * - If [MusicMode.ALBUMS], the [Song] is played from it's [Album].
+     * - If [MusicMode.ARTISTS], the [Song] is played from one of it's [Artist]s.
+     * - If [MusicMode.GENRES], the [Song] is played from one of it's [Genre]s.
      * @param song The [Song] to play.
+     * @param playbackMode The [MusicMode] to play from.
      */
-    fun playFromAlbum(song: Song) {
-        playbackManager.play(song, song.album, settings)
+    fun playFrom(song: Song, playbackMode: MusicMode) {
+        when (playbackMode) {
+            MusicMode.SONGS -> playImpl(song, null)
+            MusicMode.ALBUMS -> playImpl(song, song.album)
+            MusicMode.ARTISTS -> playFromArtist(song)
+            MusicMode.GENRES -> playFromGenre(song)
+        }
     }
 
     /**
@@ -165,10 +177,9 @@ class PlaybackViewModel(application: Application) :
      */
     fun playFromArtist(song: Song, artist: Artist? = null) {
         if (artist != null) {
-            check(artist in song.artists) { "Artist not in song artists" }
-            playbackManager.play(song, artist, settings)
+            playImpl(song, artist)
         } else if (song.artists.size == 1) {
-            playbackManager.play(song, song.artists[0], settings)
+            playImpl(song, song.artists[0])
         } else {
             _artistPlaybackPickerSong.value = song
         }
@@ -191,61 +202,91 @@ class PlaybackViewModel(application: Application) :
      */
     fun playFromGenre(song: Song, genre: Genre? = null) {
         if (genre != null) {
-            check(genre.songs.contains(song)) { "Invalid input: Genre is not linked to song" }
-            playbackManager.play(song, genre, settings)
+            playImpl(song, genre)
         } else if (song.genres.size == 1) {
-            playbackManager.play(song, song.genres[0], settings)
+            playImpl(song, song.genres[0])
         } else {
             _genrePlaybackPickerSong.value = song
         }
     }
 
     /**
+     * Mark the [Genre] playback choice process as complete. This should occur when the [Genre]
+     * choice dialog is opened after this flag is detected.
+     * @see playFromGenre
+     */
+    fun finishPlaybackGenrePicker() {
+        _genrePlaybackPickerSong.value = null
+    }
+
+    /**
      * Play an [Album].
      * @param album The [Album] to play.
      */
-    fun play(album: Album) {
-        playbackManager.play(null, album, settings, false)
-    }
+    fun play(album: Album) = playImpl(null, album, false)
 
     /**
      * Play an [Artist].
      * @param artist The [Artist] to play.
      */
-    fun play(artist: Artist) {
-        playbackManager.play(null, artist, settings, false)
-    }
+    fun play(artist: Artist) = playImpl(null, artist, false)
 
     /**
      * Play a [Genre].
      * @param genre The [Genre] to play.
      */
-    fun play(genre: Genre) {
-        playbackManager.play(null, genre, settings, false)
-    }
+    fun play(genre: Genre) = playImpl(null, genre, false)
+
+    /**
+     * Play a [Music] selection.
+     * @param selection The selection to play.
+     */
+    fun play(selection: List<Music>) =
+        playbackManager.play(null, null, selectionToSongs(selection), false)
 
     /**
      * Shuffle an [Album].
      * @param album The [Album] to shuffle.
      */
-    fun shuffle(album: Album) {
-        playbackManager.play(null, album, settings, true)
-    }
+    fun shuffle(album: Album) = playImpl(null, album, true)
 
     /**
      * Shuffle an [Artist].
      * @param artist The [Artist] to shuffle.
      */
-    fun shuffle(artist: Artist) {
-        playbackManager.play(null, artist, settings, true)
-    }
+    fun shuffle(artist: Artist) = playImpl(null, artist, true)
 
     /**
      * Shuffle an [Genre].
      * @param genre The [Genre] to shuffle.
      */
-    fun shuffle(genre: Genre) {
-        playbackManager.play(null, genre, settings, true)
+    fun shuffle(genre: Genre) = playImpl(null, genre, true)
+
+    /**
+     * Shuffle a [Music] selection.
+     * @param selection The selection to shuffle.
+     */
+    fun shuffle(selection: List<Music>) =
+        playbackManager.play(null, null, selectionToSongs(selection), true)
+
+    private fun playImpl(
+        song: Song?,
+        parent: MusicParent?,
+        shuffled: Boolean = playbackManager.queue.isShuffled && playbackSettings.keepShuffle
+    ) {
+        check(song == null || parent == null || parent.songs.contains(song)) {
+            "Song to play not in parent"
+        }
+        val library = musicStore.library ?: return
+        val sort =
+            when (parent) {
+                is Genre -> musicSettings.genreSongSort
+                is Artist -> musicSettings.artistSongSort
+                is Album -> musicSettings.albumSongSort
+                null -> musicSettings.songSort
+            }
+        val queue = sort.songs(parent?.songs ?: library.songs)
+        playbackManager.play(song, parent, queue, shuffled)
     }
 
     /**
@@ -284,8 +325,6 @@ class PlaybackViewModel(application: Application) :
      * @param song The [Song] to add.
      */
     fun playNext(song: Song) {
-        // TODO: Queue additions without a playing song should map to playing items
-        //  (impossible until queue rework)
         playbackManager.playNext(song)
     }
 
@@ -294,7 +333,7 @@ class PlaybackViewModel(application: Application) :
      * @param album The [Album] to add.
      */
     fun playNext(album: Album) {
-        playbackManager.playNext(settings.detailAlbumSort.songs(album.songs))
+        playbackManager.playNext(musicSettings.albumSongSort.songs(album.songs))
     }
 
     /**
@@ -302,7 +341,7 @@ class PlaybackViewModel(application: Application) :
      * @param artist The [Artist] to add.
      */
     fun playNext(artist: Artist) {
-        playbackManager.playNext(settings.detailArtistSort.songs(artist.songs))
+        playbackManager.playNext(musicSettings.artistSongSort.songs(artist.songs))
     }
 
     /**
@@ -310,7 +349,7 @@ class PlaybackViewModel(application: Application) :
      * @param genre The [Genre] to add.
      */
     fun playNext(genre: Genre) {
-        playbackManager.playNext(settings.detailGenreSort.songs(genre.songs))
+        playbackManager.playNext(musicSettings.genreSongSort.songs(genre.songs))
     }
 
     /**
@@ -334,7 +373,7 @@ class PlaybackViewModel(application: Application) :
      * @param album The [Album] to add.
      */
     fun addToQueue(album: Album) {
-        playbackManager.addToQueue(settings.detailAlbumSort.songs(album.songs))
+        playbackManager.addToQueue(musicSettings.albumSongSort.songs(album.songs))
     }
 
     /**
@@ -342,7 +381,7 @@ class PlaybackViewModel(application: Application) :
      * @param artist The [Artist] to add.
      */
     fun addToQueue(artist: Artist) {
-        playbackManager.addToQueue(settings.detailArtistSort.songs(artist.songs))
+        playbackManager.addToQueue(musicSettings.artistSongSort.songs(artist.songs))
     }
 
     /**
@@ -350,7 +389,7 @@ class PlaybackViewModel(application: Application) :
      * @param genre The [Genre] to add.
      */
     fun addToQueue(genre: Genre) {
-        playbackManager.addToQueue(settings.detailGenreSort.songs(genre.songs))
+        playbackManager.addToQueue(musicSettings.genreSongSort.songs(genre.songs))
     }
 
     /**
@@ -364,13 +403,13 @@ class PlaybackViewModel(application: Application) :
     // --- STATUS FUNCTIONS ---
 
     /** Toggle [isPlaying] (i.e from playing to paused) */
-    fun toggleIsPlaying() {
+    fun togglePlaying() {
         playbackManager.setPlaying(!playbackManager.playerState.isPlaying)
     }
 
     /** Toggle [isShuffled] (ex. from on to off) */
-    fun invertShuffled() {
-        playbackManager.reshuffle(!playbackManager.isShuffled, settings)
+    fun toggleShuffled() {
+        playbackManager.reorder(!playbackManager.queue.isShuffled)
     }
 
     /**
@@ -427,9 +466,9 @@ class PlaybackViewModel(application: Application) :
     private fun selectionToSongs(selection: List<Music>): List<Song> {
         return selection.flatMap {
             when (it) {
-                is Album -> settings.detailAlbumSort.songs(it.songs)
-                is Artist -> settings.detailArtistSort.songs(it.songs)
-                is Genre -> settings.detailGenreSort.songs(it.songs)
+                is Album -> musicSettings.albumSongSort.songs(it.songs)
+                is Artist -> musicSettings.artistSongSort.songs(it.songs)
+                is Genre -> musicSettings.genreSongSort.songs(it.songs)
                 is Song -> listOf(it)
             }
         }

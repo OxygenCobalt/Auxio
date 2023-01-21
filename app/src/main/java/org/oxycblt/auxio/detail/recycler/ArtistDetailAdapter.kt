@@ -28,10 +28,11 @@ import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
-import org.oxycblt.auxio.list.recycler.SelectionIndicatorAdapter
-import org.oxycblt.auxio.list.recycler.SimpleItemCallback
+import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
@@ -42,9 +43,10 @@ import org.oxycblt.auxio.util.inflater
  * @param listener A [DetailAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistDetailAdapter(private val listener: Listener) : DetailAdapter(listener, DIFF_CALLBACK) {
+class ArtistDetailAdapter(private val listener: Listener<Music>) :
+    DetailAdapter(listener, DIFF_CALLBACK) {
     override fun getItemViewType(position: Int) =
-        when (differ.currentList[position]) {
+        when (getItem(position)) {
             // Support an artist header, and special artist albums/songs.
             is Artist -> ArtistDetailViewHolder.VIEW_TYPE
             is Album -> ArtistAlbumViewHolder.VIEW_TYPE
@@ -63,7 +65,7 @@ class ArtistDetailAdapter(private val listener: Listener) : DetailAdapter(listen
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
         // Re-binding an item with new data and not just a changed selection/playing state.
-        when (val item = differ.currentList[position]) {
+        when (val item = getItem(position)) {
             is Artist -> (holder as ArtistDetailViewHolder).bind(item, listener)
             is Album -> (holder as ArtistAlbumViewHolder).bind(item, listener)
             is Song -> (holder as ArtistSongViewHolder).bind(item, listener)
@@ -71,15 +73,17 @@ class ArtistDetailAdapter(private val listener: Listener) : DetailAdapter(listen
     }
 
     override fun isItemFullWidth(position: Int): Boolean {
+        if (super.isItemFullWidth(position)) {
+            return true
+        }
         // Artist headers should be full-width in all configurations.
-        val item = differ.currentList[position]
-        return super.isItemFullWidth(position) || item is Artist
+        return getItem(position) is Artist
     }
 
     private companion object {
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Item>() {
+            object : SimpleDiffCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Artist && newItem is Artist ->
@@ -109,7 +113,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
      * @param artist The new [Artist] to bind.
      * @param listener A [DetailAdapter.Listener] to bind interactions to.
      */
-    fun bind(artist: Artist, listener: DetailAdapter.Listener) {
+    fun bind(artist: Artist, listener: DetailAdapter.Listener<*>) {
         binding.detailCover.bind(artist)
         binding.detailType.text = binding.context.getString(R.string.lbl_artist)
         binding.detailName.text = artist.resolveName(binding.context)
@@ -161,7 +165,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Artist>() {
+            object : SimpleDiffCallback<Artist>() {
                 override fun areContentsTheSame(oldItem: Artist, newItem: Artist) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.areGenreContentsTheSame(newItem) &&
@@ -183,7 +187,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
      * @param album The new [Album] to bind.
      * @param listener An [SelectableListListener] to bind interactions to.
      */
-    fun bind(album: Album, listener: SelectableListListener) {
+    fun bind(album: Album, listener: SelectableListListener<Album>) {
         listener.bind(album, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(album)
         binding.parentName.text = album.resolveName(binding.context)
@@ -216,7 +220,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Album>() {
+            object : SimpleDiffCallback<Album>() {
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName && oldItem.dates == newItem.dates
             }
@@ -235,7 +239,7 @@ private class ArtistSongViewHolder private constructor(private val binding: Item
      * @param song The new [Song] to bind.
      * @param listener An [SelectableListListener] to bind interactions to.
      */
-    fun bind(song: Song, listener: SelectableListListener) {
+    fun bind(song: Song, listener: SelectableListListener<Song>) {
         listener.bind(song, this, menuButton = binding.songMenu)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.resolveName(binding.context)
@@ -265,7 +269,7 @@ private class ArtistSongViewHolder private constructor(private val binding: Item
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleItemCallback<Song>() {
+            object : SimpleDiffCallback<Song>() {
                 override fun areContentsTheSame(oldItem: Song, newItem: Song) =
                     oldItem.rawName == newItem.rawName &&
                         oldItem.album.rawName == newItem.album.rawName
