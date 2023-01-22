@@ -2,9 +2,13 @@
 
 ## dev
 
+#### What's New
+- Added support for disc subtitles
+
 #### What's Improved
 - Auxio will now accept zeroed track/disc numbers in the presence of non-zero total
 track/disc fields.
+
 
 ## 3.0.2
 

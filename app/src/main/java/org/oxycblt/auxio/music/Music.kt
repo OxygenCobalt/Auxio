@@ -36,6 +36,7 @@ import org.oxycblt.auxio.music.parsing.parseId3GenreNames
 import org.oxycblt.auxio.music.parsing.parseMultiValue
 import org.oxycblt.auxio.music.storage.*
 import org.oxycblt.auxio.music.tags.Date
+import org.oxycblt.auxio.music.tags.Disc
 import org.oxycblt.auxio.music.tags.ReleaseType
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -340,8 +341,8 @@ class Song constructor(raw: Raw, musicSettings: MusicSettings) : Music() {
     /** The track number. Will be null if no valid track number was present in the metadata. */
     val track = raw.track
 
-    /** The disc number. Will be null if no valid disc number was present in the metadata. */
-    val disc = raw.disc
+    /** The [Disc] number. Will be null if no valid disc number was present in the metadata. */
+    val disc = raw.disc?.let { Disc(it, raw.subtitle) }
 
     /** The release [Date]. Will be null if no valid date was present in the metadata. */
     val date = raw.date
@@ -573,8 +574,10 @@ class Song constructor(raw: Raw, musicSettings: MusicSettings) : Music() {
         var sortName: String? = null,
         /** @see Song.track */
         var track: Int? = null,
-        /** @see Song.disc */
+        /** @see Disc.number */
         var disc: Int? = null,
+        /** @See Disc.name */
+        var subtitle: String? = null,
         /** @see Song.date */
         var date: Date? = null,
         /** @see Album.Raw.mediaStoreId */

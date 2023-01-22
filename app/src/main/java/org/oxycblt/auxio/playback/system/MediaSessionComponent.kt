@@ -300,7 +300,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
             builder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, it.toLong())
         }
         song.disc?.let {
-            builder.putLong(MediaMetadataCompat.METADATA_KEY_DISC_NUMBER, it.toLong())
+            builder.putLong(MediaMetadataCompat.METADATA_KEY_DISC_NUMBER, it.number.toLong())
         }
         song.date?.let { builder.putString(MediaMetadataCompat.METADATA_KEY_DATE, it.toString()) }
 

@@ -37,6 +37,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.music.storage.MimeType
+import org.oxycblt.auxio.music.tags.Disc
 import org.oxycblt.auxio.music.tags.ReleaseType
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.*
@@ -323,11 +324,11 @@ class DetailViewModel(application: Application) :
         // songs up by disc and then delimit the groups by a disc header.
         val songs = albumSongSort.songs(album.songs)
         // Songs without disc tags become part of Disc 1.
-        val byDisc = songs.groupBy { it.disc ?: 1 }
+        val byDisc = songs.groupBy { it.disc ?: Disc(1, null) }
         if (byDisc.size > 1) {
             logD("Album has more than one disc, interspersing headers")
             for (entry in byDisc.entries) {
-                data.add(DiscHeader(entry.key))
+                data.add(entry.key)
                 data.addAll(entry.value)
             }
         } else {

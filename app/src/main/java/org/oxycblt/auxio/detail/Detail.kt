@@ -30,13 +30,6 @@ import org.oxycblt.auxio.music.storage.MimeType
 data class SortHeader(@StringRes val titleRes: Int) : Item
 
 /**
- * A header variation that delimits between disc groups.
- * @param disc The disc number to be displayed on the header.
- * @author Alexander Capehart (OxygenCobalt)
- */
-data class DiscHeader(val disc: Int) : Item
-
-/**
  * The properties of a [Song]'s file.
  * @param bitrateKbps The bit rate, in kilobytes-per-second. Null if it could not be parsed.
  * @param sampleRateHz The sample rate, in hertz.

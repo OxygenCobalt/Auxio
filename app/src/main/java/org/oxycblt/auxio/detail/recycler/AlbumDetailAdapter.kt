@@ -19,6 +19,7 @@ package org.oxycblt.auxio.detail.recycler
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
@@ -26,13 +27,13 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
-import org.oxycblt.auxio.detail.DiscHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.tags.Disc
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
@@ -60,7 +61,7 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
         when (getItem(position)) {
             // Support the Album header, sub-headers for each disc, and special album songs.
             is Album -> AlbumDetailViewHolder.VIEW_TYPE
-            is DiscHeader -> DiscHeaderViewHolder.VIEW_TYPE
+            is Disc -> DiscViewHolder.VIEW_TYPE
             is Song -> AlbumSongViewHolder.VIEW_TYPE
             else -> super.getItemViewType(position)
         }
@@ -68,7 +69,7 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
             AlbumDetailViewHolder.VIEW_TYPE -> AlbumDetailViewHolder.from(parent)
-            DiscHeaderViewHolder.VIEW_TYPE -> DiscHeaderViewHolder.from(parent)
+            DiscViewHolder.VIEW_TYPE -> DiscViewHolder.from(parent)
             AlbumSongViewHolder.VIEW_TYPE -> AlbumSongViewHolder.from(parent)
             else -> super.onCreateViewHolder(parent, viewType)
         }
@@ -77,7 +78,7 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
         super.onBindViewHolder(holder, position)
         when (val item = getItem(position)) {
             is Album -> (holder as AlbumDetailViewHolder).bind(item, listener)
-            is DiscHeader -> (holder as DiscHeaderViewHolder).bind(item)
+            is Disc -> (holder as DiscViewHolder).bind(item)
             is Song -> (holder as AlbumSongViewHolder).bind(item, listener)
         }
     }
@@ -88,7 +89,7 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
         }
         // The album and disc headers should be full-width in all configurations.
         val item = getItem(position)
-        return item is Album || item is DiscHeader
+        return item is Album || item is Disc
     }
 
     private companion object {
@@ -99,8 +100,8 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
                     return when {
                         oldItem is Album && newItem is Album ->
                             AlbumDetailViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
-                        oldItem is DiscHeader && newItem is DiscHeader ->
-                            DiscHeaderViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
+                        oldItem is Disc && newItem is Disc ->
+                            DiscViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is Song && newItem is Song ->
                             AlbumSongViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
 
@@ -182,18 +183,22 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [DiscHeader] to delimit different disc groups. Use
- * [from] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [Disc] to delimit different disc groups. Use [from]
+ * to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
-private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
+private class DiscViewHolder(private val binding: ItemDiscHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
-     * @param discHeader The new [DiscHeader] to bind.
+     * @param disc The new [disc] to bind.
      */
-    fun bind(discHeader: DiscHeader) {
-        binding.discNo.text = binding.context.getString(R.string.fmt_disc_no, discHeader.disc)
+    fun bind(disc: Disc) {
+        binding.discNumber.text = binding.context.getString(R.string.fmt_disc_no, disc.number)
+        binding.discName.apply {
+            text = disc.name
+            isGone = disc.name == null
+        }
     }
 
     companion object {
@@ -206,13 +211,13 @@ private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
          * @return A new instance.
          */
         fun from(parent: View) =
-            DiscHeaderViewHolder(ItemDiscHeaderBinding.inflate(parent.context.inflater))
+            DiscViewHolder(ItemDiscHeaderBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleDiffCallback<DiscHeader>() {
-                override fun areContentsTheSame(oldItem: DiscHeader, newItem: DiscHeader) =
-                    oldItem.disc == newItem.disc
+            object : SimpleDiffCallback<Disc>() {
+                override fun areContentsTheSame(oldItem: Disc, newItem: Disc) =
+                    oldItem.number == newItem.number && oldItem.name == newItem.name
             }
     }
 }

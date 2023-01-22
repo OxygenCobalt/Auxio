@@ -186,6 +186,7 @@ private class CacheDatabase(context: Context) :
             append("${Columns.SORT_NAME} STRING,")
             append("${Columns.TRACK} INT,")
             append("${Columns.DISC} INT,")
+            append("${Columns.SUBTITLE} STRING,")
             append("${Columns.DATE} STRING,")
             append("${Columns.ALBUM_MUSIC_BRAINZ_ID} STRING,")
             append("${Columns.ALBUM_NAME} STRING NOT NULL,")
@@ -243,6 +244,7 @@ private class CacheDatabase(context: Context) :
 
             val trackIndex = cursor.getColumnIndexOrThrow(Columns.TRACK)
             val discIndex = cursor.getColumnIndexOrThrow(Columns.DISC)
+            val subtitleIndex = cursor.getColumnIndex(Columns.SUBTITLE)
             val dateIndex = cursor.getColumnIndexOrThrow(Columns.DATE)
 
             val albumMusicBrainzIdIndex =
@@ -281,6 +283,7 @@ private class CacheDatabase(context: Context) :
 
                 raw.track = cursor.getIntOrNull(trackIndex)
                 raw.disc = cursor.getIntOrNull(discIndex)
+                raw.subtitle = cursor.getStringOrNull(subtitleIndex)
                 raw.date = cursor.getStringOrNull(dateIndex)?.let(Date::from)
 
                 raw.albumMusicBrainzId = cursor.getStringOrNull(albumMusicBrainzIdIndex)
@@ -346,6 +349,7 @@ private class CacheDatabase(context: Context) :
 
                 put(Columns.TRACK, rawSong.track)
                 put(Columns.DISC, rawSong.disc)
+                put(Columns.SUBTITLE, rawSong.subtitle)
                 put(Columns.DATE, rawSong.date?.toString())
 
                 put(Columns.ALBUM_MUSIC_BRAINZ_ID, rawSong.albumMusicBrainzId)
@@ -414,6 +418,8 @@ private class CacheDatabase(context: Context) :
         const val TRACK = "track"
         /** @see Song.Raw.disc */
         const val DISC = "disc"
+        /** @see Song.Raw.subtitle */
+        const val SUBTITLE = "subtitle"
         /** @see Song.Raw.date */
         const val DATE = "date"
         /** @see Song.Raw.albumMusicBrainzId */
@@ -442,7 +448,7 @@ private class CacheDatabase(context: Context) :
 
     companion object {
         private const val DB_NAME = "auxio_music_cache.db"
-        private const val DB_VERSION = 2
+        private const val DB_VERSION = 3
         private const val TABLE_RAW_SONGS = "raw_songs"
 
         @Volatile private var INSTANCE: CacheDatabase? = null

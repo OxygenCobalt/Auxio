@@ -178,15 +178,16 @@ class Task(context: Context, private val raw: Song.Raw) {
      */
     private fun populateWithId3v2(textFrames: Map<String, List<String>>) {
         // Song
-        textFrames["TXXX:musicbrainz release track id"]?.let { raw.musicBrainzId = it[0] }
-        textFrames["TIT2"]?.let { raw.name = it[0] }
-        textFrames["TSOT"]?.let { raw.sortName = it[0] }
+        textFrames["TXXX:musicbrainz release track id"]?.let { raw.musicBrainzId = it.first() }
+        textFrames["TIT2"]?.let { raw.name = it.first() }
+        textFrames["TSOT"]?.let { raw.sortName = it.first() }
 
-        // Track. Only parse out the track number and ignore the total tracks value.
+        // Track.
         textFrames["TRCK"]?.run { first().parseId3v2PositionField() }?.let { raw.track = it }
 
-        // Disc. Only parse out the disc number and ignore the total discs value.
+        // Disc and it's subtitle name.
         textFrames["TPOS"]?.run { first().parseId3v2PositionField() }?.let { raw.disc = it }
+        textFrames["TSST"]?.let { raw.subtitle = it.first() }
 
         // Dates are somewhat complicated, as not only did their semantics change from a flat year
         // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
@@ -204,9 +205,9 @@ class Task(context: Context, private val raw: Song.Raw) {
             ?.let { raw.date = it }
 
         // Album
-        textFrames["TXXX:musicbrainz album id"]?.let { raw.albumMusicBrainzId = it[0] }
-        textFrames["TALB"]?.let { raw.albumName = it[0] }
-        textFrames["TSOA"]?.let { raw.albumSortName = it[0] }
+        textFrames["TXXX:musicbrainz album id"]?.let { raw.albumMusicBrainzId = it.first() }
+        textFrames["TALB"]?.let { raw.albumName = it.first() }
+        textFrames["TSOA"]?.let { raw.albumSortName = it.first() }
         (textFrames["TXXX:musicbrainz album type"] ?: textFrames["GRP1"])?.let {
             raw.releaseTypes = it
         }
@@ -244,19 +245,19 @@ class Task(context: Context, private val raw: Song.Raw) {
                 ?: textFrames["TYER"]?.run { first().toIntOrNull() } ?: return null
 
         val tdat = textFrames["TDAT"]
-        return if (tdat != null && tdat[0].length == 4 && tdat[0].isDigitsOnly()) {
+        return if (tdat != null && tdat.first().length == 4 && tdat.first().isDigitsOnly()) {
             // TDAT frames consist of a 4-digit string where the first two digits are
             // the month and the last two digits are the day.
-            val mm = tdat[0].substring(0..1).toInt()
-            val dd = tdat[0].substring(2..3).toInt()
+            val mm = tdat.first().substring(0..1).toInt()
+            val dd = tdat.first().substring(2..3).toInt()
 
             val time = textFrames["TIME"]
-            if (time != null && time[0].length == 4 && time[0].isDigitsOnly()) {
+            if (time != null && time.first().length == 4 && time.first().isDigitsOnly()) {
                 // TIME frames consist of a 4-digit string where the first two digits are
                 // the hour and the last two digits are the minutes. No second value is
                 // possible.
-                val hh = time[0].substring(0..1).toInt()
-                val mi = time[0].substring(2..3).toInt()
+                val hh = time.first().substring(0..1).toInt()
+                val mi = time.first().substring(2..3).toInt()
                 // Able to return a full date.
                 Date.from(year, mm, dd, hh, mi)
             } else {
@@ -275,9 +276,9 @@ class Task(context: Context, private val raw: Song.Raw) {
      */
     private fun populateWithVorbis(comments: Map<String, List<String>>) {
         // Song
-        comments["musicbrainz_releasetrackid"]?.let { raw.musicBrainzId = it[0] }
-        comments["title"]?.let { raw.name = it[0] }
-        comments["titlesort"]?.let { raw.sortName = it[0] }
+        comments["musicbrainz_releasetrackid"]?.let { raw.musicBrainzId = it.first() }
+        comments["title"]?.let { raw.name = it.first() }
+        comments["titlesort"]?.let { raw.sortName = it.first() }
 
         // Track.
         parseVorbisPositionField(
@@ -285,11 +286,12 @@ class Task(context: Context, private val raw: Song.Raw) {
                 (comments["totaltracks"] ?: comments["tracktotal"] ?: comments["trackc"])?.first())
             ?.let { raw.track = it }
 
-        // Disc.
+        // Disc and it's subtitle name.
         parseVorbisPositionField(
                 comments["discnumber"]?.first(),
                 (comments["totaldiscs"] ?: comments["disctotal"] ?: comments["discc"])?.first())
             ?.let { raw.disc = it }
+        comments["discsubtitle"]?.let { raw.subtitle = it.first() }
 
         // Vorbis dates are less complicated, but there are still several types
         // Our hierarchy for dates is as such:
@@ -303,9 +305,9 @@ class Task(context: Context, private val raw: Song.Raw) {
             ?.let { raw.date = it }
 
         // Album
-        comments["musicbrainz_albumid"]?.let { raw.albumMusicBrainzId = it[0] }
-        comments["album"]?.let { raw.albumName = it[0] }
-        comments["albumsort"]?.let { raw.albumSortName = it[0] }
+        comments["musicbrainz_albumid"]?.let { raw.albumMusicBrainzId = it.first() }
+        comments["album"]?.let { raw.albumName = it.first() }
+        comments["albumsort"]?.let { raw.albumSortName = it.first() }
         comments["releasetype"]?.let { raw.releaseTypes = it }
 
         // Artist
