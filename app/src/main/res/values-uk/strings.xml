@@ -185,7 +185,7 @@
     <string name="lbl_state_restored">Стан відтворення відновлено</string>
     <string name="lng_widget">Перегляд і керування відтворенням музики</string>
     <string name="set_rewind_prev_desc">Перемотайте на початок пісні перед відтворенням попередньої</string>
-    <string name="set_round_mode_desc">Увімкнути закруглені кути на додаткових елементах інтерфейсу (потрібно заокруглення обкладинок альбомів)</string>
+    <string name="set_round_mode_desc">Увімкнути заокруглені кути на додаткових елементах інтерфейсу (потрібно заокруглення обкладинок альбомів)</string>
     <string name="set_pre_amp_desc">Попередній підсилювач застосовується до наявних налаштувань під час відтворення</string>
     <string name="set_playback_mode_songs">Відтворити всі пісні</string>
     <string name="set_reindex_desc">Перезавантажити музичну бібліотеку, використовуючи кешовані теги, коли це можливо</string>
@@ -236,7 +236,7 @@
     <string name="clr_deep_blue">Темно-синій</string>
     <string name="clr_green">Зелений</string>
     <string name="clr_deep_green">Темно-зелений</string>
-    <string name="clr_dynamic">Динамічні</string>
+    <string name="clr_dynamic">Динамічний</string>
     <string name="fmt_db_pos">+%.1f дБ</string>
     <string name="fmt_db_neg">-%.1f дБ</string>
     <string name="desc_artist_image">Фото виконавця %s</string>
