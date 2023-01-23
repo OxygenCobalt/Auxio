@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.tags
+package org.oxycblt.auxio.music.format
 
 import org.oxycblt.auxio.list.Item
 

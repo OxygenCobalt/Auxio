@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music.tags
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.oxycblt.auxio.music.format.Disc
 
 class DiscTest {
     @Test

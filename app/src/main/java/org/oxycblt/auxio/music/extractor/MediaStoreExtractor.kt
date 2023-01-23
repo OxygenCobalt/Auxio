@@ -29,6 +29,7 @@ import androidx.core.database.getStringOrNull
 import java.io.File
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.format.Date
 import org.oxycblt.auxio.music.parsing.parseId3v2PositionField
 import org.oxycblt.auxio.music.parsing.transformPositionField
 import org.oxycblt.auxio.music.storage.Directory
@@ -38,7 +39,6 @@ import org.oxycblt.auxio.music.storage.mediaStoreVolumeNameCompat
 import org.oxycblt.auxio.music.storage.safeQuery
 import org.oxycblt.auxio.music.storage.storageVolumesCompat
 import org.oxycblt.auxio.music.storage.useQuery
-import org.oxycblt.auxio.music.tags.Date
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 
@@ -83,7 +83,7 @@ abstract class MediaStoreExtractor(
      * the media database for music files.
      * @return A [Cursor] of the music data returned from the database.
      */
-    open fun init(): Cursor {
+    open suspend fun init(): Cursor {
         val start = System.currentTimeMillis()
         cacheExtractor.init()
         val musicSettings = MusicSettings.from(context)
@@ -195,7 +195,7 @@ abstract class MediaStoreExtractor(
      * freeing up memory.
      * @param rawSongs The songs to write into the cache.
      */
-    fun finalize(rawSongs: List<Song.Raw>) {
+    open suspend fun finalize(rawSongs: List<Song.Raw>) {
         // Free the cursor (and it's resources)
         cursor?.close()
         cursor = null
@@ -325,12 +325,27 @@ abstract class MediaStoreExtractor(
         genreNamesMap[raw.mediaStoreId]?.let { raw.genreNames = listOf(it) }
     }
 
-    private companion object {
+    companion object {
+        /**
+         * Create a framework-backed instance.
+         * @param context [Context] required.
+         * @param cacheExtractor [CacheExtractor] to wrap.
+         * @return A new [MediaStoreExtractor] that will work best on the device's API level.
+         */
+        fun from(context: Context, cacheExtractor: CacheExtractor) =
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
+                    Api30MediaStoreExtractor(context, cacheExtractor)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+                    Api29MediaStoreExtractor(context, cacheExtractor)
+                else -> Api21MediaStoreExtractor(context, cacheExtractor)
+            }
+
         /**
          * The base selector that works across all versions of android. Does not exclude
          * directories.
          */
-        const val BASE_SELECTOR = "NOT ${MediaStore.Audio.Media.SIZE}=0"
+        private const val BASE_SELECTOR = "NOT ${MediaStore.Audio.Media.SIZE}=0"
 
         /**
          * The album artist of a song. This column has existed since at least API 21, but until API
@@ -338,13 +353,13 @@ abstract class MediaStoreExtractor(
          * versions that Auxio supports.
          */
         @Suppress("InlinedApi")
-        const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
+        private const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
 
         /**
          * The external volume. This naming has existed since API 21, but no constant existed for it
          * until API 29. This will work on all versions that Auxio supports.
          */
-        @Suppress("InlinedApi") const val VOLUME_EXTERNAL = MediaStore.VOLUME_EXTERNAL
+        @Suppress("InlinedApi") private const val VOLUME_EXTERNAL = MediaStore.VOLUME_EXTERNAL
     }
 }
 
@@ -358,12 +373,12 @@ abstract class MediaStoreExtractor(
  * @param cacheExtractor [CacheExtractor] implementation for cache optimizations.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class Api21MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor) :
+private class Api21MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor) :
     MediaStoreExtractor(context, cacheExtractor) {
     private var trackIndex = -1
     private var dataIndex = -1
 
-    override fun init(): Cursor {
+    override suspend fun init(): Cursor {
         val cursor = super.init()
         // Set up cursor indices for later use.
         trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
@@ -438,12 +453,12 @@ class Api21MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor)
  * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class BaseApi29MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor) :
+private open class BaseApi29MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor) :
     MediaStoreExtractor(context, cacheExtractor) {
     private var volumeIndex = -1
     private var relativePathIndex = -1
 
-    override fun init(): Cursor {
+    override suspend fun init(): Cursor {
         val cursor = super.init()
         // Set up cursor indices for later use.
         volumeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
@@ -501,11 +516,11 @@ open class BaseApi29MediaStoreExtractor(context: Context, cacheExtractor: CacheE
  * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class Api29MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor) :
+private open class Api29MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor) :
     BaseApi29MediaStoreExtractor(context, cacheExtractor) {
     private var trackIndex = -1
 
-    override fun init(): Cursor {
+    override suspend fun init(): Cursor {
         val cursor = super.init()
         // Set up cursor indices for later use.
         trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
@@ -536,12 +551,12 @@ open class Api29MediaStoreExtractor(context: Context, cacheExtractor: CacheExtra
  * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.R)
-class Api30MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor) :
+private class Api30MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor) :
     BaseApi29MediaStoreExtractor(context, cacheExtractor) {
     private var trackIndex: Int = -1
     private var discIndex: Int = -1
 
-    override fun init(): Cursor {
+    override suspend fun init(): Cursor {
         val cursor = super.init()
         // Set up cursor indices for later use.
         trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)

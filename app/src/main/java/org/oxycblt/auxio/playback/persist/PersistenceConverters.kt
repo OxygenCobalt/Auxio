@@ -19,7 +19,6 @@ package org.oxycblt.auxio.playback.persist
 
 import androidx.room.TypeConverter
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.playback.state.RepeatMode
 
 /**
  * Defines conversions used in the persistence table.
@@ -29,6 +28,6 @@ object PersistenceConverters {
     /** @see [Music.UID.toString] */
     @TypeConverter fun fromMusicUID(uid: Music.UID?) = uid?.toString()
 
-    /** @see [Music.UID.fromString]*/
+    /** @see [Music.UID.fromString] */
     @TypeConverter fun toMusicUid(string: String?) = string?.let(Music.UID::fromString)
 }

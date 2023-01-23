@@ -26,6 +26,7 @@ import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.oxycblt.auxio.music.format.TextTags
 
 class TextTagsTest {
     @Test

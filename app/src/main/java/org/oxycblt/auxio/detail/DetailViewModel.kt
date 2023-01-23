@@ -33,11 +33,11 @@ import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.extractor.AudioInfo
+import org.oxycblt.auxio.music.format.AudioInfo
+import org.oxycblt.auxio.music.format.Disc
+import org.oxycblt.auxio.music.format.ReleaseType
 import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.music.library.Sort
-import org.oxycblt.auxio.music.tags.Disc
-import org.oxycblt.auxio.music.tags.ReleaseType
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.*
 

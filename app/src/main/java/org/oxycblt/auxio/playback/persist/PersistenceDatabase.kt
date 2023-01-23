@@ -37,7 +37,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
  */
 @Database(
     entities = [PlaybackState::class, QueueHeapItem::class, QueueMappingItem::class],
-    version = 1,
+    version = 27,
     exportSchema = false)
 @TypeConverters(PersistenceConverters::class)
 abstract class PersistenceDatabase : RoomDatabase() {

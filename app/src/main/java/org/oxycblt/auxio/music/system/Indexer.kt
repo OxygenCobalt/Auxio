@@ -24,6 +24,7 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.BuildConfig
@@ -205,20 +206,8 @@ class Indexer private constructor() {
         // Create the chain of extractors. Each extractor builds on the previous and
         // enables version-specific features in order to create the best possible music
         // experience.
-        val cacheDatabase =
-            if (withCache) {
-                ReadWriteCacheExtractor(context)
-            } else {
-                WriteOnlyCacheExtractor(context)
-            }
-        val mediaStoreExtractor =
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
-                    Api30MediaStoreExtractor(context, cacheDatabase)
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
-                    Api29MediaStoreExtractor(context, cacheDatabase)
-                else -> Api21MediaStoreExtractor(context, cacheDatabase)
-            }
+        val cacheExtractor = CacheExtractor.from(context, withCache)
+        val mediaStoreExtractor = MediaStoreExtractor.from(context, cacheExtractor)
         val metadataExtractor = MetadataExtractor(context, mediaStoreExtractor)
         val rawSongs = loadRawSongs(metadataExtractor).ifEmpty { throw NoMusicException() }
         // Build the rest of the music library from the song list. This is much more powerful

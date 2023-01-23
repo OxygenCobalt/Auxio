@@ -21,7 +21,7 @@ import java.util.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.oxycblt.auxio.music.tags.Date
+import org.oxycblt.auxio.music.format.Date
 
 class MusicTest {
     @Test

@@ -23,10 +23,11 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
 import kotlinx.coroutines.flow.flow
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.format.Date
+import org.oxycblt.auxio.music.format.TextTags
 import org.oxycblt.auxio.music.parsing.parseId3v2PositionField
 import org.oxycblt.auxio.music.parsing.parseVorbisPositionField
 import org.oxycblt.auxio.music.storage.toAudioUri
-import org.oxycblt.auxio.music.tags.Date
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -53,14 +54,14 @@ class MetadataExtractor(
      * relies on.
      * @return The amount of music that is expected to be loaded.
      */
-    fun init() = mediaStoreExtractor.init().count
+    suspend fun init() = mediaStoreExtractor.init().count
 
     /**
      * Finalize the Extractor by writing the newly-loaded [Song.Raw]s back into the cache, alongside
      * freeing up memory.
      * @param rawSongs The songs to write into the cache.
      */
-    fun finalize(rawSongs: List<Song.Raw>) = mediaStoreExtractor.finalize(rawSongs)
+    suspend fun finalize(rawSongs: List<Song.Raw>) = mediaStoreExtractor.finalize(rawSongs)
 
     /**
      * Returns a flow that parses all [Song.Raw] instances queued by the sub-extractors. This will
