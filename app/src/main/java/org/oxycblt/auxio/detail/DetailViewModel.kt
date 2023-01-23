@@ -18,8 +18,6 @@
 package org.oxycblt.auxio.detail
 
 import android.app.Application
-import android.media.MediaExtractor
-import android.media.MediaFormat
 import androidx.annotation.StringRes
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,13 +28,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.list.Header
+import org.oxycblt.auxio.detail.recycler.SortHeader
+import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.extractor.AudioInfo
 import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.music.library.Sort
-import org.oxycblt.auxio.music.storage.MimeType
 import org.oxycblt.auxio.music.tags.Disc
 import org.oxycblt.auxio.music.tags.ReleaseType
 import org.oxycblt.auxio.playback.PlaybackSettings
@@ -54,6 +53,7 @@ class DetailViewModel(application: Application) :
     private val musicStore = MusicStore.getInstance()
     private val musicSettings = MusicSettings.from(application)
     private val playbackSettings = PlaybackSettings.from(application)
+    private val audioInfoProvider = AudioInfo.Provider.from(application)
 
     private var currentSongJob: Job? = null
 
@@ -64,9 +64,9 @@ class DetailViewModel(application: Application) :
     val currentSong: StateFlow<Song?>
         get() = _currentSong
 
-    private val _songProperties = MutableStateFlow<SongProperties?>(null)
-    /** The [SongProperties] of the currently shown [Song]. Null if not loaded yet. */
-    val songProperties: StateFlow<SongProperties?> = _songProperties
+    private val _songAudioInfo = MutableStateFlow<AudioInfo?>(null)
+    /** The [AudioInfo] of the currently shown [Song]. Null if not loaded yet. */
+    val songAudioInfo: StateFlow<AudioInfo?> = _songAudioInfo
 
     // --- ALBUM ---
 
@@ -156,7 +156,7 @@ class DetailViewModel(application: Application) :
 
         val song = currentSong.value
         if (song != null) {
-            _currentSong.value = library.sanitize(song)?.also(::loadProperties)
+            _currentSong.value = library.sanitize(song)?.also(::refreshAudioInfo)
             logD("Updated song to ${currentSong.value}")
         }
 
@@ -181,7 +181,7 @@ class DetailViewModel(application: Application) :
 
     /**
      * Set a new [currentSong] from it's [Music.UID]. If the [Music.UID] differs, [currentSong] and
-     * [songProperties] will be updated to align with the new [Song].
+     * [songAudioInfo] will be updated to align with the new [Song].
      * @param uid The UID of the [Song] to load. Must be valid.
      */
     fun setSongUid(uid: Music.UID) {
@@ -190,7 +190,7 @@ class DetailViewModel(application: Application) :
             return
         }
         logD("Opening Song [uid: $uid]")
-        _currentSong.value = requireMusic<Song>(uid)?.also(::loadProperties)
+        _currentSong.value = requireMusic<Song>(uid)?.also(::refreshAudioInfo)
     }
 
     /**
@@ -238,81 +238,19 @@ class DetailViewModel(application: Application) :
     private fun <T : Music> requireMusic(uid: Music.UID) = musicStore.library?.find<T>(uid)
 
     /**
-     * Start a new job to load a given [Song]'s [SongProperties]. Result is pushed to
-     * [songProperties].
+     * Start a new job to load a given [Song]'s [AudioInfo]. Result is pushed to [songAudioInfo].
      * @param song The song to load.
      */
-    private fun loadProperties(song: Song) {
+    private fun refreshAudioInfo(song: Song) {
         // Clear any previous job in order to avoid stale data from appearing in the UI.
         currentSongJob?.cancel()
-        _songProperties.value = null
+        _songAudioInfo.value = null
         currentSongJob =
             viewModelScope.launch(Dispatchers.IO) {
-                val properties = this@DetailViewModel.loadPropertiesImpl(song)
+                val info = audioInfoProvider.extract(song)
                 yield()
-                _songProperties.value = properties
+                _songAudioInfo.value = info
             }
-    }
-
-    private fun loadPropertiesImpl(song: Song): SongProperties {
-        // While we would use ExoPlayer to extract this information, it doesn't support
-        // common data like bit rate in progressive data sources due to there being no
-        // demand. Thus, we are stuck with the inferior OS-provided MediaExtractor.
-        val extractor = MediaExtractor()
-
-        try {
-            extractor.setDataSource(context, song.uri, emptyMap())
-        } catch (e: Exception) {
-            // Can feasibly fail with invalid file formats. Note that this isn't considered
-            // an error condition in the UI, as there is still plenty of other song information
-            // that we can show.
-            logW("Unable to extract song attributes.")
-            logW(e.stackTraceToString())
-            return SongProperties(null, null, song.mimeType)
-        }
-
-        // Get the first track from the extractor (This is basically always the only
-        // track we need to analyze).
-        val format = extractor.getTrackFormat(0)
-
-        // Accessing fields can throw an exception if the fields are not present, and
-        // the new method for using default values is not available on lower API levels.
-        // So, we are forced to handle the exception and map it to a saner null value.
-        val bitrate =
-            try {
-                // Convert bytes-per-second to kilobytes-per-second.
-                format.getInteger(MediaFormat.KEY_BIT_RATE) / 1000
-            } catch (e: NullPointerException) {
-                logD("Unable to extract bit rate field")
-                null
-            }
-
-        val sampleRate =
-            try {
-                format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
-            } catch (e: NullPointerException) {
-                logE("Unable to extract sample rate field")
-                null
-            }
-
-        val resolvedMimeType =
-            if (song.mimeType.fromFormat != null) {
-                // ExoPlayer was already able to populate the format.
-                song.mimeType
-            } else {
-                // ExoPlayer couldn't populate the format somehow, populate it here.
-                val formatMimeType =
-                    try {
-                        format.getString(MediaFormat.KEY_MIME)
-                    } catch (e: NullPointerException) {
-                        logE("Unable to extract mime type field")
-                        null
-                    }
-
-                MimeType(song.mimeType.fromExtension, formatMimeType)
-            }
-
-        return SongProperties(bitrate, sampleRate, resolvedMimeType)
     }
 
     private fun refreshAlbumList(album: Album) {
@@ -368,7 +306,7 @@ class DetailViewModel(application: Application) :
         logD("Release groups for this artist: ${byReleaseGroup.keys}")
 
         for (entry in byReleaseGroup.entries.sortedBy { it.key }) {
-            data.add(Header(entry.key.headerTitleRes))
+            data.add(BasicHeader(entry.key.headerTitleRes))
             data.addAll(entry.value)
         }
 
@@ -386,7 +324,7 @@ class DetailViewModel(application: Application) :
         logD("Refreshing genre data")
         val data = mutableListOf<Item>(genre)
         // Genre is guaranteed to always have artists and songs.
-        data.add(Header(R.string.lbl_artists))
+        data.add(BasicHeader(R.string.lbl_artists))
         data.addAll(genre.artists)
         data.add(SortHeader(R.string.lbl_songs))
         data.addAll(genreSongSort.songs(genre.songs))

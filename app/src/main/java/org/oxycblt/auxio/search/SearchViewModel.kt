@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.list.Header
+import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.MusicStore
@@ -119,19 +119,19 @@ class SearchViewModel(application: Application) :
 
         return buildList {
             results.artists?.let { artists ->
-                add(Header(R.string.lbl_artists))
+                add(BasicHeader(R.string.lbl_artists))
                 addAll(SORT.artists(artists))
             }
             results.albums?.let { albums ->
-                add(Header(R.string.lbl_albums))
+                add(BasicHeader(R.string.lbl_albums))
                 addAll(SORT.albums(albums))
             }
             results.genres?.let { genres ->
-                add(Header(R.string.lbl_genres))
+                add(BasicHeader(R.string.lbl_genres))
                 addAll(SORT.genres(genres))
             }
             results.songs?.let { songs ->
-                add(Header(R.string.lbl_songs))
+                add(BasicHeader(R.string.lbl_songs))
                 addAll(SORT.songs(songs))
             }
         }

@@ -24,6 +24,16 @@ interface Item
 
 /**
  * A "header" used for delimiting groups of data.
- * @param titleRes The string resource used for the header's title.
+ * @author Alexander Capehart (OxygenCobalt)
  */
-data class Header(@StringRes val titleRes: Int) : Item
+interface Header : Item {
+    /** The string resource used for the header's title. */
+    val titleRes: Int
+}
+
+/**
+ * A basic header with no additional actions.
+ * @param titleRes The string resource used for the header's title.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+data class BasicHeader(@StringRes override val titleRes: Int) : Header
