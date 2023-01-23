@@ -23,6 +23,8 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.library.Library
+import org.oxycblt.auxio.playback.persist.PersistenceRepository
+import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.playback.state.PlaybackStateManager.Listener
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -387,11 +389,11 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Restore the previously saved state (if any) and apply it to the playback state.
-     * @param database The [PlaybackStateDatabase] to load from.
+     * @param repository The [PersistenceRepository] to load from.
      * @param force Whether to do a restore regardless of any prior playback state.
      * @return If the state was restored, false otherwise.
      */
-    suspend fun restoreState(database: PlaybackStateDatabase, force: Boolean): Boolean {
+    suspend fun restoreState(repository: PersistenceRepository, force: Boolean): Boolean {
         if (isInitialized && !force) {
             // Already initialized and not forcing a restore, nothing to do.
             return false
@@ -401,7 +403,7 @@ class PlaybackStateManager private constructor() {
         val internalPlayer = internalPlayer ?: return false
         val state =
             try {
-                withContext(Dispatchers.IO) { database.read(library) }
+                withContext(Dispatchers.IO) { repository.readState(library) }
             } catch (e: Exception) {
                 logE("Unable to restore playback state.")
                 logE(e.stackTraceToString())
@@ -432,16 +434,16 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Save the current state.
-     * @param database The [PlaybackStateDatabase] to save the state to.
+     * @param database The [PersistenceRepository] to save the state to.
      * @return If state was saved, false otherwise.
      */
-    suspend fun saveState(database: PlaybackStateDatabase): Boolean {
+    suspend fun saveState(database: PersistenceRepository): Boolean {
         logD("Saving state to DB")
         // Create the saved state from the current playback state.
         val state =
             synchronized(this) {
                 queue.toSavedState()?.let {
-                    PlaybackStateDatabase.SavedState(
+                    PersistenceRepository.SavedState(
                         parent = parent,
                         queueState = it,
                         positionMs = playerState.calculateElapsedPositionMs(),
@@ -449,7 +451,7 @@ class PlaybackStateManager private constructor() {
                 }
             }
         return try {
-            withContext(Dispatchers.IO) { database.write(state) }
+            withContext(Dispatchers.IO) { database.saveState(state) }
             true
         } catch (e: Exception) {
             logE("Unable to save playback state.")
@@ -460,13 +462,13 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Clear the current state.
-     * @param database The [PlaybackStateDatabase] to clear te state from
+     * @param repository The [PersistenceRepository] to clear the state from
      * @return If the state was cleared, false otherwise.
      */
-    suspend fun wipeState(database: PlaybackStateDatabase) =
+    suspend fun wipeState(repository: PersistenceRepository) =
         try {
             logD("Wiping state")
-            withContext(Dispatchers.IO) { database.write(null) }
+            withContext(Dispatchers.IO) { repository.saveState(null) }
             true
         } catch (e: Exception) {
             logE("Unable to wipe playback state.")

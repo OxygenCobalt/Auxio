@@ -48,9 +48,9 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.playback.PlaybackSettings
+import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
 import org.oxycblt.auxio.playback.state.InternalPlayer
-import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.service.ForegroundManager
@@ -95,6 +95,7 @@ class PlaybackService :
     private val musicStore = MusicStore.getInstance()
     private lateinit var musicSettings: MusicSettings
     private lateinit var playbackSettings: PlaybackSettings
+    private lateinit var persistenceRepository: PersistenceRepository
 
     // State
     private lateinit var foregroundManager: ForegroundManager
@@ -147,6 +148,7 @@ class PlaybackService :
         // Initialize the core service components
         musicSettings = MusicSettings.from(this)
         playbackSettings = PlaybackSettings.from(this)
+        persistenceRepository = PersistenceRepository.from(this)
         foregroundManager = ForegroundManager(this)
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
@@ -331,9 +333,7 @@ class PlaybackService :
             // to save the current state as it's not long until this service (and likely the whole
             // app) is killed.
             logD("Saving playback state")
-            saveScope.launch {
-                playbackManager.saveState(PlaybackStateDatabase.getInstance(this@PlaybackService))
-            }
+            saveScope.launch { playbackManager.saveState(persistenceRepository) }
         }
     }
 
@@ -348,10 +348,7 @@ class PlaybackService :
         when (action) {
             // Restore state -> Start a new restoreState job
             is InternalPlayer.Action.RestoreState -> {
-                restoreScope.launch {
-                    playbackManager.restoreState(
-                        PlaybackStateDatabase.getInstance(this@PlaybackService), false)
-                }
+                restoreScope.launch { playbackManager.restoreState(persistenceRepository, false) }
             }
             // Shuffle all -> Start new playback from all songs
             is InternalPlayer.Action.ShuffleAll -> {

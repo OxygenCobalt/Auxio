@@ -48,6 +48,8 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Unit testing
  *
+ * TODO: Migrate to value classes FOR ALL ENUMS
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MainActivity : AppCompatActivity() {

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.state
+package org.oxycblt.auxio.playback.queue
 
 import kotlin.random.Random
 import kotlin.random.nextInt

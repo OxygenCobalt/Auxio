@@ -28,9 +28,9 @@ import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.image.extractor.SquareFrameTransform
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.playback.state.Queue
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getDimenPixels

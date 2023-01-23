@@ -4,6 +4,7 @@ plugins {
     id "androidx.navigation.safeargs.kotlin"
     id "com.diffplug.spotless"
     id "kotlin-parcelize"
+    id 'kotlin-kapt'
 }
 
 android {
@@ -92,6 +93,12 @@ dependencies {
 
     // Preferences
     implementation "androidx.preference:preference-ktx:1.2.0"
+
+    // Database
+    def room_version = '2.4.3'
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
 
     // --- THIRD PARTY ---
 

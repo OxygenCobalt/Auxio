@@ -26,8 +26,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.playback.persist.PersistenceRepository
+import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.playback.state.*
-import org.oxycblt.auxio.util.context
 
 /**
  * An [AndroidViewModel] that provides a safe UI frontend for the current playback state.
@@ -38,6 +39,7 @@ class PlaybackViewModel(application: Application) :
     private val musicSettings = MusicSettings.from(application)
     private val playbackSettings = PlaybackSettings.from(application)
     private val playbackManager = PlaybackStateManager.getInstance()
+    private val persistenceRepository = PersistenceRepository.from(application)
     private val musicStore = MusicStore.getInstance()
     private var lastPositionJob: Job? = null
 
@@ -428,7 +430,7 @@ class PlaybackViewModel(application: Application) :
      */
     fun savePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
-            val saved = playbackManager.saveState(PlaybackStateDatabase.getInstance(context))
+            val saved = playbackManager.saveState(persistenceRepository)
             onDone(saved)
         }
     }
@@ -439,7 +441,7 @@ class PlaybackViewModel(application: Application) :
      */
     fun wipePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
-            val wiped = playbackManager.wipeState(PlaybackStateDatabase.getInstance(context))
+            val wiped = playbackManager.wipeState(persistenceRepository)
             onDone(wiped)
         }
     }
@@ -451,8 +453,7 @@ class PlaybackViewModel(application: Application) :
      */
     fun tryRestorePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
-            val restored =
-                playbackManager.restoreState(PlaybackStateDatabase.getInstance(context), true)
+            val restored = playbackManager.restoreState(persistenceRepository, true)
             onDone(restored)
         }
     }

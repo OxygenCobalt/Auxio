@@ -35,9 +35,9 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.PlaybackSettings
+import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.playback.state.Queue
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.logD
 
