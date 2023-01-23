@@ -159,7 +159,6 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             // the query actually changes instead of once every re-creation event, but sadly
             // that doesn't seem possible.
             binding.searchRecycler.scrollToPosition(0)
-            searchAdapter.pokeDividers()
         }
     }
 

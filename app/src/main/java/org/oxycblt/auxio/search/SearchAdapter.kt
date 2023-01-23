@@ -71,16 +71,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
 
     override fun isItemFullWidth(position: Int) = getItem(position) is BasicHeader
 
-    /**
-     * Make sure that the top header has a correctly configured divider visibility. This would
-     * normally be automatically done by the differ, but that results in a strange animation.
-     */
-    fun pokeDividers() {
-        notifyItemChanged(0, PAYLOAD_UPDATE_DIVIDER)
-    }
-
     private companion object {
-        val PAYLOAD_UPDATE_DIVIDER = 102249124
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<Item>() {
