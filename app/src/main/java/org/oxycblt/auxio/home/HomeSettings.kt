@@ -41,38 +41,37 @@ interface HomeSettings : Settings<HomeSettings.Listener> {
         fun onHideCollaboratorsChanged()
     }
 
-    private class Real(context: Context) : Settings.Real<Listener>(context), HomeSettings {
-        override var homeTabs: Array<Tab>
-            get() =
-                Tab.fromIntCode(
-                    sharedPreferences.getInt(
-                        getString(R.string.set_key_home_tabs), Tab.SEQUENCE_DEFAULT))
-                    ?: unlikelyToBeNull(Tab.fromIntCode(Tab.SEQUENCE_DEFAULT))
-            set(value) {
-                sharedPreferences.edit {
-                    putInt(getString(R.string.set_key_home_tabs), Tab.toIntCode(value))
-                    apply()
-                }
-            }
-
-        override val shouldHideCollaborators: Boolean
-            get() =
-                sharedPreferences.getBoolean(getString(R.string.set_key_hide_collaborators), false)
-
-        override fun onSettingChanged(key: String, listener: Listener) {
-            when (key) {
-                getString(R.string.set_key_home_tabs) -> listener.onTabsChanged()
-                getString(R.string.set_key_hide_collaborators) ->
-                    listener.onHideCollaboratorsChanged()
-            }
-        }
-    }
-
     companion object {
         /**
          * Get a framework-backed implementation.
          * @param context [Context] required.
          */
-        fun from(context: Context): HomeSettings = Real(context)
+        fun from(context: Context): HomeSettings = RealHomeSettings(context)
+    }
+}
+
+private class RealHomeSettings(context: Context) :
+    Settings.Real<HomeSettings.Listener>(context), HomeSettings {
+    override var homeTabs: Array<Tab>
+        get() =
+            Tab.fromIntCode(
+                sharedPreferences.getInt(
+                    getString(R.string.set_key_home_tabs), Tab.SEQUENCE_DEFAULT))
+                ?: unlikelyToBeNull(Tab.fromIntCode(Tab.SEQUENCE_DEFAULT))
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_home_tabs), Tab.toIntCode(value))
+                apply()
+            }
+        }
+
+    override val shouldHideCollaborators: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_hide_collaborators), false)
+
+    override fun onSettingChanged(key: String, listener: HomeSettings.Listener) {
+        when (key) {
+            getString(R.string.set_key_home_tabs) -> listener.onTabsChanged()
+            getString(R.string.set_key_hide_collaborators) -> listener.onHideCollaboratorsChanged()
+        }
     }
 }

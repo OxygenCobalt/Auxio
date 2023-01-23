@@ -53,7 +53,7 @@ class Directory private constructor(val volume: StorageVolume, val relativePath:
     /**
      * Converts this [Directory] instance into an opaque document tree path. This is a huge
      * violation of the document tree URI contract, but it's also the only one can sensibly work
-     * with these uris in the UI, and it doesn't exactly matter since we never write or read
+     * with these uris in the UI, and it doesn't exactly matter since we never write or read to
      * directory.
      * @return A URI [String] abiding by the document tree specification, or null if the [Directory]
      * is not valid.

@@ -31,26 +31,25 @@ interface SearchSettings : Settings<Nothing> {
     /** The type of Music the search view is currently filtering to. */
     var searchFilterMode: MusicMode?
 
-    private class Real(context: Context) : Settings.Real<Nothing>(context), SearchSettings {
-        override var searchFilterMode: MusicMode?
-            get() =
-                MusicMode.fromIntCode(
-                    sharedPreferences.getInt(
-                        getString(R.string.set_key_search_filter), Int.MIN_VALUE))
-            set(value) {
-                sharedPreferences.edit {
-                    putInt(
-                        getString(R.string.set_key_search_filter), value?.intCode ?: Int.MIN_VALUE)
-                    apply()
-                }
-            }
-    }
-
     companion object {
         /**
          * Get a framework-backed implementation.
          * @param context [Context] required.
          */
-        fun from(context: Context): SearchSettings = Real(context)
+        fun from(context: Context): SearchSettings = RealSearchSettings(context)
     }
+}
+
+private class RealSearchSettings(context: Context) :
+    Settings.Real<Nothing>(context), SearchSettings {
+    override var searchFilterMode: MusicMode?
+        get() =
+            MusicMode.fromIntCode(
+                sharedPreferences.getInt(getString(R.string.set_key_search_filter), Int.MIN_VALUE))
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_search_filter), value?.intCode ?: Int.MIN_VALUE)
+                apply()
+            }
+        }
 }

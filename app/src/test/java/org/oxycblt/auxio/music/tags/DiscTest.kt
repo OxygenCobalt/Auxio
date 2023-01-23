@@ -17,10 +17,18 @@
  
 package org.oxycblt.auxio.music.tags
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class DiscTest {
+    @Test
+    fun disc_compare() {
+        val a = Disc(1, "Part I")
+        val b = Disc(2, "Part II")
+        assertEquals(-1, a.compareTo(b))
+    }
+
     @Test
     fun disc_equals_correct() {
         val a = Disc(1, "Part I")
