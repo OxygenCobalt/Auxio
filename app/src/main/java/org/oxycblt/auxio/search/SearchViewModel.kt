@@ -21,7 +21,6 @@ import android.app.Application
 import androidx.annotation.IdRes
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import java.text.Normalizer
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,7 +34,6 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.playback.PlaybackSettings
-import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -47,6 +45,7 @@ class SearchViewModel(application: Application) :
     private val musicStore = MusicStore.getInstance()
     private val searchSettings = SearchSettings.from(application)
     private val playbackSettings = PlaybackSettings.from(application)
+    private var searchEngine = SearchEngine.from(application)
     private var lastQuery: String? = null
     private var currentSearchJob: Job? = null
 
@@ -101,86 +100,42 @@ class SearchViewModel(application: Application) :
             }
     }
 
-    private fun searchImpl(library: Library, query: String): List<Item> {
-        val sort = Sort(Sort.Mode.ByName, true)
+    private suspend fun searchImpl(library: Library, query: String): List<Item> {
         val filterMode = searchSettings.searchFilterMode
-        val results = mutableListOf<Item>()
 
-        // Note: A null filter mode maps to the "All" filter option, hence the check.
+        val items =
+            if (filterMode == null) {
+                // A nulled filter mode means to not filter anything.
+                SearchEngine.Items(library.songs, library.albums, library.artists, library.genres)
+            } else {
+                SearchEngine.Items(
+                    songs = if (filterMode == MusicMode.SONGS) library.songs else null,
+                    albums = if (filterMode == MusicMode.ALBUMS) library.albums else null,
+                    artists = if (filterMode == MusicMode.ARTISTS) library.artists else null,
+                    genres = if (filterMode == MusicMode.GENRES) library.genres else null)
+            }
 
-        if (filterMode == null || filterMode == MusicMode.ARTISTS) {
-            library.artists.searchListImpl(query)?.let {
-                results.add(Header(R.string.lbl_artists))
-                results.addAll(sort.artists(it))
+        val results = searchEngine.search(items, query)
+
+        return buildList {
+            results.artists?.let { artists ->
+                add(Header(R.string.lbl_artists))
+                addAll(SORT.artists(artists))
+            }
+            results.albums?.let { albums ->
+                add(Header(R.string.lbl_albums))
+                addAll(SORT.albums(albums))
+            }
+            results.genres?.let { genres ->
+                add(Header(R.string.lbl_genres))
+                addAll(SORT.genres(genres))
+            }
+            results.songs?.let { songs ->
+                add(Header(R.string.lbl_songs))
+                addAll(SORT.songs(songs))
             }
         }
-
-        if (filterMode == null || filterMode == MusicMode.ALBUMS) {
-            library.albums.searchListImpl(query)?.let {
-                results.add(Header(R.string.lbl_albums))
-                results.addAll(sort.albums(it))
-            }
-        }
-
-        if (filterMode == null || filterMode == MusicMode.GENRES) {
-            library.genres.searchListImpl(query)?.let {
-                results.add(Header(R.string.lbl_genres))
-                results.addAll(sort.genres(it))
-            }
-        }
-
-        if (filterMode == null || filterMode == MusicMode.SONGS) {
-            library.songs
-                .searchListImpl(query) { q, song -> song.path.name.contains(q) }
-                ?.let {
-                    results.add(Header(R.string.lbl_songs))
-                    results.addAll(sort.songs(it))
-                }
-        }
-
-        // Handle if we were canceled while searching.
-        return results
     }
-
-    /**
-     * Search a given [Music] list.
-     * @param query The query to search for. The routine will compare this query to the names of
-     * each object in the list and
-     * @param fallback Additional comparison code to run if the item does not match the query
-     * initially. This can be used to compare against additional attributes to improve search result
-     * quality.
-     */
-    private inline fun <T : Music> List<T>.searchListImpl(
-        query: String,
-        fallback: (String, T) -> Boolean = { _, _ -> false }
-    ) =
-        filter {
-                // See if the plain resolved name matches the query. This works for most situations.
-                val name = it.resolveName(context)
-                if (name.contains(query, ignoreCase = true)) {
-                    return@filter true
-                }
-
-                // See if the sort name matches. This can sometimes be helpful as certain libraries
-                // will tag sort names to have a alphabetized version of the title.
-                val sortName = it.rawSortName
-                if (sortName != null && sortName.contains(query, ignoreCase = true)) {
-                    return@filter true
-                }
-
-                // As a last-ditch effort, see if the normalized name matches. This will replace
-                // any non-alphabetical characters with their alphabetical representations, which
-                // could make it match the query.
-                val normalizedName =
-                    NORMALIZATION_SANITIZE_REGEX.replace(
-                        Normalizer.normalize(name, Normalizer.Form.NFKD), "")
-                if (normalizedName.contains(query, ignoreCase = true)) {
-                    return@filter true
-                }
-
-                fallback(query, it)
-            }
-            .ifEmpty { null }
 
     /**
      * Returns the ID of the filter option to currently highlight.
@@ -218,10 +173,6 @@ class SearchViewModel(application: Application) :
     }
 
     private companion object {
-        /**
-         * Converts the output of [Normalizer] to remove any junk characters added by it's
-         * replacements.
-         */
-        val NORMALIZATION_SANITIZE_REGEX = Regex("\\p{InCombiningDiacriticalMarks}+")
+        val SORT = Sort(Sort.Mode.ByName, true)
     }
 }
