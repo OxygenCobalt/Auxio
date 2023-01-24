@@ -186,7 +186,7 @@ class PlaybackStateManager private constructor() {
         var play = true
         if (!queue.goto(queue.index + 1)) {
             queue.goto(0)
-            play = false
+            play = repeatMode == RepeatMode.ALL
         }
         notifyIndexMoved()
         internalPlayer.loadSong(queue.currentSong, play)

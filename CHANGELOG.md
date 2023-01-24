@@ -7,8 +7,10 @@
 
 #### What's Improved
 - Auxio will now accept zeroed track/disc numbers in the presence of non-zero total
-track/disc fields.
+track/disc fields
 
+#### What's Fixed
+- Fixed non-functioning "repeat all" repeat mode
 
 ## 3.0.2
 
