@@ -135,10 +135,12 @@
     <string name="fmt_lib_total_duration">Durata totale: %s</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d canzone</item>
+        <item quantity="many">%d canzoni</item>
         <item quantity="other">%d canzoni</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d disco</item>
+        <item quantity="many">%d dischi</item>
         <item quantity="other">%d dischi</item>
     </plurals>
     <string name="set_dirs_mode">Modo</string>
@@ -249,6 +251,7 @@
     <string name="set_separators_plus">Più (+)</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d artista</item>
+        <item quantity="many">%d artisti</item>
         <item quantity="other">%d artisti</item>
     </plurals>
     <string name="set_rescan">Riscansiona musica</string>
@@ -269,4 +272,9 @@
     <string name="set_library">Collezione</string>
     <string name="set_ui_desc">Cambia il tema e i colori dell\'app</string>
     <string name="set_content_desc">Controlla come vengono caricate musica e immagini</string>
+    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_playback">Riproduzione</string>
+    <string name="set_state">Persistenza</string>
+    <string name="set_personalize_desc">Personalizza controlli e comportamento dell\'UI</string>
+    <string name="set_audio_desc">Configura comportamento di suono e riproduzione</string>
 </resources>
