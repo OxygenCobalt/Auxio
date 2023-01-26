@@ -268,4 +268,15 @@
     <string name="lbl_reset">Сбросить</string>
     <string name="fmt_list">%1$s,%2$s</string>
     <string name="set_playback_mode_genre">Играть по жанру</string>
+    <string name="set_behavior">Поведение</string>
+    <string name="set_replay_gain">Выравнивание громкости ReplayGain</string>
+    <string name="set_music">Музыка</string>
+    <string name="set_images">Изображения</string>
+    <string name="set_library">Библиотека</string>
+    <string name="set_ui_desc">Изменить тему и цвета приложения</string>
+    <string name="set_personalize_desc">Настройка элементов управления и поведения пользовательского интерфейса</string>
+    <string name="set_content_desc">Управляйте загрузкой музыки и изображений</string>
+    <string name="set_audio_desc">Настройка звука и поведения при воспроизведении</string>
+    <string name="set_playback">Воспроизведение</string>
+    <string name="set_dirs_list">Папки</string>
 </resources>
