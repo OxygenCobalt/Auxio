@@ -31,8 +31,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.storage.contentResolverSafe
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.service.ForegroundManager
@@ -55,7 +55,7 @@ import org.oxycblt.auxio.util.logD
  */
 class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
     private val indexer = Indexer.getInstance()
-    private val musicStore = MusicStore.getInstance()
+    private val musicRepository = MusicRepository.get()
     private val playbackManager = PlaybackStateManager.get()
     private val serviceJob = Job()
     private val indexScope = CoroutineScope(serviceJob + Dispatchers.IO)
@@ -85,7 +85,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
         indexer.registerController(this)
         // An indeterminate indexer and a missing library implies we are extremely early
         // in app initialization so start loading music.
-        if (musicStore.library == null && indexer.isIndeterminate) {
+        if (musicRepository.library == null && indexer.isIndeterminate) {
             logD("No library present and no previous response, indexing music now")
             onStartIndexing(true)
         }
@@ -129,11 +129,11 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
             is Indexer.State.Indexing -> updateActiveSession(state.indexing)
             is Indexer.State.Complete -> {
                 val newLibrary = state.result.getOrNull()
-                if (newLibrary != null && newLibrary != musicStore.library) {
+                if (newLibrary != null && newLibrary != musicRepository.library) {
                     logD("Applying new library")
                     // We only care if the newly-loaded library is going to replace a previously
                     // loaded library.
-                    if (musicStore.library != null) {
+                    if (musicRepository.library != null) {
                         // Wipe possibly-invalidated outdated covers
                         imageLoader.memoryCache?.clear()
                         // Clear invalid models from PlaybackStateManager. This is not connected
@@ -153,7 +153,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
                         }
                     }
                     // Forward the new library to MusicStore to continue the update process.
-                    musicStore.library = newLibrary
+                    musicRepository.library = newLibrary
                 }
                 // On errors, while we would want to show a notification that displays the
                 // error, that requires the Android 13 notification permission, which is not

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Auxio Project
+ * Copyright (c) 2023 Auxio Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,22 +28,13 @@ import org.oxycblt.auxio.music.library.Library
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MusicStore private constructor() {
-    private val listeners = mutableListOf<Listener>()
-
+interface MusicRepository {
     /**
      * The current [Library]. May be null if a [Library] has not been successfully loaded yet. This
      * can change, so it's highly recommended to not access this directly and instead rely on
      * [Listener].
      */
-    @Volatile
-    var library: Library? = null
-        set(value) {
-            field = value
-            for (callback in listeners) {
-                callback.onLibraryChanged(library)
-            }
-        }
+    var library: Library?
 
     /**
      * Add a [Listener] to this instance. This can be used to receive changes in the music library.
@@ -51,11 +42,7 @@ class MusicStore private constructor() {
      * @param listener The [Listener] to add.
      * @see Listener
      */
-    @Synchronized
-    fun addListener(listener: Listener) {
-        listener.onLibraryChanged(library)
-        listeners.add(listener)
-    }
+    fun addListener(listener: Listener)
 
     /**
      * Remove a [Listener] from this instance, preventing it from receiving any further updates.
@@ -63,12 +50,9 @@ class MusicStore private constructor() {
      * the first place.
      * @see Listener
      */
-    @Synchronized
-    fun removeListener(listener: Listener) {
-        listeners.remove(listener)
-    }
+    fun removeListener(listener: Listener)
 
-    /** A listener for changes in the music library. */
+    /** A listener for changes in [MusicRepository] */
     interface Listener {
         /**
          * Called when the current [Library] has changed.
@@ -78,23 +62,47 @@ class MusicStore private constructor() {
     }
 
     companion object {
-        @Volatile private var INSTANCE: MusicStore? = null
+        @Volatile private var INSTANCE: MusicRepository? = null
 
         /**
          * Get a singleton instance.
          * @return The (possibly newly-created) singleton instance.
          */
-        fun getInstance(): MusicStore {
+        fun get(): MusicRepository {
             val currentInstance = INSTANCE
             if (currentInstance != null) {
                 return currentInstance
             }
 
             synchronized(this) {
-                val newInstance = MusicStore()
+                val newInstance = RealMusicRepository()
                 INSTANCE = newInstance
                 return newInstance
             }
         }
+    }
+}
+
+private class RealMusicRepository : MusicRepository {
+    private val listeners = mutableListOf<MusicRepository.Listener>()
+
+    @Volatile
+    override var library: Library? = null
+        set(value) {
+            field = value
+            for (callback in listeners) {
+                callback.onLibraryChanged(library)
+            }
+        }
+
+    @Synchronized
+    override fun addListener(listener: MusicRepository.Listener) {
+        listener.onLibraryChanged(library)
+        listeners.add(listener)
+    }
+
+    @Synchronized
+    override fun removeListener(listener: MusicRepository.Listener) {
+        listeners.remove(listener)
     }
 }

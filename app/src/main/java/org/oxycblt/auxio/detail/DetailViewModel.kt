@@ -32,7 +32,6 @@ import org.oxycblt.auxio.detail.recycler.SortHeader
 import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.format.AudioInfo
 import org.oxycblt.auxio.music.format.Disc
 import org.oxycblt.auxio.music.format.ReleaseType
@@ -49,8 +48,8 @@ import org.oxycblt.auxio.util.*
  * @author Alexander Capehart (OxygenCobalt)
  */
 class DetailViewModel(application: Application) :
-    AndroidViewModel(application), MusicStore.Listener {
-    private val musicStore = MusicStore.getInstance()
+    AndroidViewModel(application), MusicRepository.Listener {
+    private val musicRepository = MusicRepository.get()
     private val musicSettings = MusicSettings.from(application)
     private val playbackSettings = PlaybackSettings.from(application)
     private val audioInfoProvider = AudioInfo.Provider.from(application)
@@ -137,11 +136,11 @@ class DetailViewModel(application: Application) :
         get() = playbackSettings.inParentPlaybackMode
 
     init {
-        musicStore.addListener(this)
+        musicRepository.addListener(this)
     }
 
     override fun onCleared() {
-        musicStore.removeListener(this)
+        musicRepository.removeListener(this)
     }
 
     override fun onLibraryChanged(library: Library?) {
@@ -235,7 +234,7 @@ class DetailViewModel(application: Application) :
         _currentGenre.value = requireMusic<Genre>(uid)?.also(::refreshGenreList)
     }
 
-    private fun <T : Music> requireMusic(uid: Music.UID) = musicStore.library?.find<T>(uid)
+    private fun <T : Music> requireMusic(uid: Music.UID) = musicRepository.library?.find<T>(uid)
 
     /**
      * Start a new job to load a given [Song]'s [AudioInfo]. Result is pushed to [songAudioInfo].

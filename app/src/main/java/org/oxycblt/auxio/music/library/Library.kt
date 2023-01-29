@@ -29,7 +29,8 @@ import org.oxycblt.auxio.util.logD
  * Organized music library information.
  *
  * This class allows for the creation of a well-formed music library graph from raw song
- * information. It's generally not expected to create this yourself and instead use [MusicStore].
+ * information. It's generally not expected to create this yourself and instead use
+ * [MusicRepository].
  *
  * @author Alexander Capehart
  */

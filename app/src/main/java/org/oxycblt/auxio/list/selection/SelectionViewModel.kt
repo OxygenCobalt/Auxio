@@ -21,15 +21,14 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.library.Library
 
 /**
  * A [ViewModel] that manages the current selection.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SelectionViewModel : ViewModel(), MusicStore.Listener {
-    private val musicStore = MusicStore.getInstance()
+class SelectionViewModel : ViewModel(), MusicRepository.Listener {
+    private val musicRepository = MusicRepository.get()
 
     private val _selected = MutableStateFlow(listOf<Music>())
     /** the currently selected items. These are ordered in earliest selected and latest selected. */
@@ -37,7 +36,7 @@ class SelectionViewModel : ViewModel(), MusicStore.Listener {
         get() = _selected
 
     init {
-        musicStore.addListener(this)
+        musicRepository.addListener(this)
     }
 
     override fun onLibraryChanged(library: Library?) {
@@ -60,7 +59,7 @@ class SelectionViewModel : ViewModel(), MusicStore.Listener {
 
     override fun onCleared() {
         super.onCleared()
-        musicStore.removeListener(this)
+        musicRepository.removeListener(this)
     }
 
     /**

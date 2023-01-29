@@ -43,8 +43,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.playback.PlaybackSettings
@@ -80,7 +80,7 @@ class PlaybackService :
     Player.Listener,
     InternalPlayer,
     MediaSessionComponent.Listener,
-    MusicStore.Listener {
+    MusicRepository.Listener {
     // Player components
     private lateinit var player: ExoPlayer
     private lateinit var replayGainProcessor: ReplayGainAudioProcessor
@@ -90,12 +90,12 @@ class PlaybackService :
     private lateinit var widgetComponent: WidgetComponent
     private val systemReceiver = PlaybackReceiver()
 
-    // Managers
+    // Shared components
     private val playbackManager = PlaybackStateManager.get()
-    private val musicStore = MusicStore.getInstance()
-    private lateinit var musicSettings: MusicSettings
     private lateinit var playbackSettings: PlaybackSettings
     private lateinit var persistenceRepository: PersistenceRepository
+    private val musicRepository = MusicRepository.get()
+    private lateinit var musicSettings: MusicSettings
 
     // State
     private lateinit var foregroundManager: ForegroundManager
@@ -153,7 +153,7 @@ class PlaybackService :
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
         playbackManager.registerInternalPlayer(this)
-        musicStore.addListener(this)
+        musicRepository.addListener(this)
         widgetComponent = WidgetComponent(this)
         mediaSessionComponent = MediaSessionComponent(this, this)
         registerReceiver(
@@ -193,7 +193,7 @@ class PlaybackService :
         // Pause just in case this destruction was unexpected.
         playbackManager.setPlaying(false)
         playbackManager.unregisterInternalPlayer(this)
-        musicStore.removeListener(this)
+        musicRepository.removeListener(this)
 
         unregisterReceiver(systemReceiver)
         serviceJob.cancel()
@@ -339,7 +339,7 @@ class PlaybackService :
 
     override fun performAction(action: InternalPlayer.Action): Boolean {
         val library =
-            musicStore.library
+            musicRepository.library
             // No library, cannot do anything.
             ?: return false
 

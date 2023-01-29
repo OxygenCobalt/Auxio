@@ -30,7 +30,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.playback.PlaybackSettings
@@ -41,8 +40,8 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SearchViewModel(application: Application) :
-    AndroidViewModel(application), MusicStore.Listener {
-    private val musicStore = MusicStore.getInstance()
+    AndroidViewModel(application), MusicRepository.Listener {
+    private val musicRepository = MusicRepository.get()
     private val searchSettings = SearchSettings.from(application)
     private val playbackSettings = PlaybackSettings.from(application)
     private var searchEngine = SearchEngine.from(application)
@@ -59,12 +58,12 @@ class SearchViewModel(application: Application) :
         get() = playbackSettings.inListPlaybackMode
 
     init {
-        musicStore.addListener(this)
+        musicRepository.addListener(this)
     }
 
     override fun onCleared() {
         super.onCleared()
-        musicStore.removeListener(this)
+        musicRepository.removeListener(this)
     }
 
     override fun onLibraryChanged(library: Library?) {
@@ -84,7 +83,7 @@ class SearchViewModel(application: Application) :
         currentSearchJob?.cancel()
         lastQuery = query
 
-        val library = musicStore.library
+        val library = musicRepository.library
         if (query.isNullOrEmpty() || library == null) {
             logD("Search query is not applicable.")
             _searchResults.value = listOf()

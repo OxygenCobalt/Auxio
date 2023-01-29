@@ -40,7 +40,7 @@ class PlaybackViewModel(application: Application) :
     private val playbackSettings = PlaybackSettings.from(application)
     private val playbackManager = PlaybackStateManager.get()
     private val persistenceRepository = PersistenceRepository.from(application)
-    private val musicStore = MusicStore.getInstance()
+    private val musicRepository = MusicRepository.get()
     private var lastPositionJob: Job? = null
 
     private val _song = MutableStateFlow<Song?>(null)
@@ -279,7 +279,7 @@ class PlaybackViewModel(application: Application) :
         check(song == null || parent == null || parent.songs.contains(song)) {
             "Song to play not in parent"
         }
-        val library = musicStore.library ?: return
+        val library = musicRepository.library ?: return
         val sort =
             when (parent) {
                 is Genre -> musicSettings.genreSongSort
@@ -449,7 +449,7 @@ class PlaybackViewModel(application: Application) :
      */
     fun tryRestorePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
-            val library = musicStore.library
+            val library = musicRepository.library
             if (library != null) {
                 val savedState = persistenceRepository.readState(library)
                 if (savedState != null) {

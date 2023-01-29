@@ -21,7 +21,6 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -30,8 +29,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * contain the music themselves and then exit if the library changes.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class PickerViewModel : ViewModel(), MusicStore.Listener {
-    private val musicStore = MusicStore.getInstance()
+class PickerViewModel : ViewModel(), MusicRepository.Listener {
+    private val musicRepository = MusicRepository.get()
 
     private val _currentItem = MutableStateFlow<Music?>(null)
     /** The current item whose artists should be shown in the picker. Null if there is no item. */
@@ -49,7 +48,7 @@ class PickerViewModel : ViewModel(), MusicStore.Listener {
         get() = _genreChoices
 
     override fun onCleared() {
-        musicStore.removeListener(this)
+        musicRepository.removeListener(this)
     }
 
     override fun onLibraryChanged(library: Library?) {
@@ -63,7 +62,7 @@ class PickerViewModel : ViewModel(), MusicStore.Listener {
      * @param uid The [Music.UID] of the [Song] to update to.
      */
     fun setItemUid(uid: Music.UID) {
-        val library = unlikelyToBeNull(musicStore.library)
+        val library = unlikelyToBeNull(musicRepository.library)
         _currentItem.value = library.find(uid)
         refreshChoices()
     }

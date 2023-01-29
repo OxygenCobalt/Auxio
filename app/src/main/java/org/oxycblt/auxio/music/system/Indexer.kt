@@ -39,8 +39,8 @@ import org.oxycblt.auxio.util.logW
  *
  * This class provides low-level access into the exact state of the music loading process. **This
  * class should not be used in most cases.** It is highly volatile and provides far more information
- * than is usually needed. Use [MusicStore] instead if you do not need to work with the exact music
- * loading state.
+ * than is usually needed. Use [MusicRepository] instead if you do not need to work with the exact
+ * music loading state.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -345,8 +345,8 @@ class Indexer private constructor() {
      * A listener for rapid-fire changes in the music loading state.
      *
      * This is only useful for code that absolutely must show the current loading process.
-     * Otherwise, [MusicStore.Listener] is highly recommended due to it's updates only consisting of
-     * the [Library].
+     * Otherwise, [MusicRepository.Listener] is highly recommended due to it's updates only
+     * consisting of the [Library].
      */
     interface Listener {
         /**

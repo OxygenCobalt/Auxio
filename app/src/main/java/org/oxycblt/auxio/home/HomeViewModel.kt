@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.playback.PlaybackSettings
@@ -34,8 +33,8 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class HomeViewModel(application: Application) :
-    AndroidViewModel(application), MusicStore.Listener, HomeSettings.Listener {
-    private val musicStore = MusicStore.getInstance()
+    AndroidViewModel(application), MusicRepository.Listener, HomeSettings.Listener {
+    private val musicRepository = MusicRepository.get()
     private val homeSettings = HomeSettings.from(application)
     private val musicSettings = MusicSettings.from(application)
     private val playbackSettings = PlaybackSettings.from(application)
@@ -92,13 +91,13 @@ class HomeViewModel(application: Application) :
     val isFastScrolling: StateFlow<Boolean> = _isFastScrolling
 
     init {
-        musicStore.addListener(this)
+        musicRepository.addListener(this)
         homeSettings.registerListener(this)
     }
 
     override fun onCleared() {
         super.onCleared()
-        musicStore.removeListener(this)
+        musicRepository.removeListener(this)
         homeSettings.unregisterListener(this)
     }
 
@@ -130,7 +129,7 @@ class HomeViewModel(application: Application) :
     override fun onHideCollaboratorsChanged() {
         // Changes in the hide collaborator setting will change the artist contents
         // of the library, consider it a library update.
-        onLibraryChanged(musicStore.library)
+        onLibraryChanged(musicRepository.library)
     }
 
     /**
