@@ -68,25 +68,11 @@ class Library(rawSongs: List<Song.Raw>, settings: MusicSettings) {
     fun sanitize(song: Song) = find<Song>(song.uid)
 
     /**
-     * Convert a [Album] from an another library into a [Album] in this [Library].
-     * @param album The [Album] to convert.
+     * Convert a [MusicParent] from an another library into a [MusicParent] in this [Library].
+     * @param parent The [MusicParent] to convert.
      * @return The analogous [Album] in this [Library], or null if it does not exist.
      */
-    fun sanitize(album: Album) = find<Album>(album.uid)
-
-    /**
-     * Convert a [Artist] from an another library into a [Artist] in this [Library].
-     * @param artist The [Artist] to convert.
-     * @return The analogous [Artist] in this [Library], or null if it does not exist.
-     */
-    fun sanitize(artist: Artist) = find<Artist>(artist.uid)
-
-    /**
-     * Convert a [Genre] from an another library into a [Genre] in this [Library].
-     * @param genre The [Genre] to convert.
-     * @return The analogous [Genre] in this [Library], or null if it does not exist.
-     */
-    fun sanitize(genre: Genre) = find<Genre>(genre.uid)
+    fun <T : MusicParent> sanitize(parent: T) = find<T>(parent.uid)
 
     /**
      * Find a [Song] instance corresponding to the given Intent.ACTION_VIEW [Uri].

@@ -44,7 +44,7 @@ import org.oxycblt.auxio.util.logD
  */
 class WidgetComponent(private val context: Context) :
     PlaybackStateManager.Listener, UISettings.Listener, ImageSettings.Listener {
-    private val playbackManager = PlaybackStateManager.getInstance()
+    private val playbackManager = PlaybackStateManager.get()
     private val uiSettings = UISettings.from(context)
     private val imageSettings = ImageSettings.from(context)
     private val widgetProvider = WidgetProvider()
@@ -133,7 +133,7 @@ class WidgetComponent(private val context: Context) :
      * @param cover A pre-loaded album cover [Bitmap] for [song].
      * @param isPlaying [PlaybackStateManager.playerState]
      * @param repeatMode [PlaybackStateManager.repeatMode]
-     * @param isShuffled [PlaybackStateManager.isShuffled]
+     * @param isShuffled [Queue.isShuffled]
      */
     data class PlaybackState(
         val song: Song,

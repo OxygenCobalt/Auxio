@@ -59,7 +59,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
             setQueueTitle(context.getString(R.string.lbl_queue))
         }
 
-    private val playbackManager = PlaybackStateManager.getInstance()
+    private val playbackManager = PlaybackStateManager.get()
     private val playbackSettings = PlaybackSettings.from(context)
 
     private val notification = NotificationComponent(context, mediaSession.sessionToken)

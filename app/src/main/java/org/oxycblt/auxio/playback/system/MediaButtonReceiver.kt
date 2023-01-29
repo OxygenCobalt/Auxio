@@ -30,7 +30,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
  */
 class MediaButtonReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        val playbackManager = PlaybackStateManager.getInstance()
+        val playbackManager = PlaybackStateManager.get()
         if (playbackManager.queue.currentSong != null) {
             // We have a song, so we can assume that the service will start a foreground state.
             // At least, I hope. Again, *this is why we don't do this*. I cannot describe how

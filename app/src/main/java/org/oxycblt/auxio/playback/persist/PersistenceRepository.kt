@@ -21,8 +21,9 @@ import android.content.Context
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.playback.queue.Queue
-import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 
 /**
  * Manages the persisted playback state in a structured manner.
@@ -30,30 +31,16 @@ import org.oxycblt.auxio.util.logD
  */
 interface PersistenceRepository {
     /**
-     * Read the previously persisted [SavedState].
-     * @param library The [Library] required to de-serialize the [SavedState].
+     * Read the previously persisted [PlaybackStateManager.SavedState].
+     * @param library The [Library] required to de-serialize the [PlaybackStateManager.SavedState].
      */
-    suspend fun readState(library: Library): SavedState?
+    suspend fun readState(library: Library): PlaybackStateManager.SavedState?
 
     /**
-     * Persist a new [SavedState].
-     * @param state The [SavedState] to persist.
+     * Persist a new [PlaybackStateManager.SavedState].
+     * @param state The [PlaybackStateManager.SavedState] to persist.
      */
-    suspend fun saveState(state: SavedState?)
-
-    /**
-     * A condensed representation of the playback state that can be persisted.
-     * @param parent The [MusicParent] item currently being played from.
-     * @param queueState The [Queue.SavedState]
-     * @param positionMs The current position in the currently played song, in ms
-     * @param repeatMode The current [RepeatMode].
-     */
-    data class SavedState(
-        val parent: MusicParent?,
-        val queueState: Queue.SavedState,
-        val positionMs: Long,
-        val repeatMode: RepeatMode,
-    )
+    suspend fun saveState(state: PlaybackStateManager.SavedState?): Boolean
 
     companion object {
         /**
@@ -69,10 +56,19 @@ private class RealPersistenceRepository(private val context: Context) : Persiste
     private val playbackStateDao: PlaybackStateDao by lazy { database.playbackStateDao() }
     private val queueDao: QueueDao by lazy { database.queueDao() }
 
-    override suspend fun readState(library: Library): PersistenceRepository.SavedState? {
-        val playbackState = playbackStateDao.getState() ?: return null
-        val heap = queueDao.getHeap()
-        val mapping = queueDao.getMapping()
+    override suspend fun readState(library: Library): PlaybackStateManager.SavedState? {
+        val playbackState: PlaybackState
+        val heap: List<QueueHeapItem>
+        val mapping: List<QueueMappingItem>
+        try {
+            playbackState = playbackStateDao.getState() ?: return null
+            heap = queueDao.getHeap()
+            mapping = queueDao.getMapping()
+        } catch (e: Exception) {
+            logE("Unable to load playback state data")
+            logE(e.stackTraceToString())
+            return null
+        }
 
         val orderedMapping = mutableListOf<Int>()
         val shuffledMapping = mutableListOf<Int>()
@@ -82,8 +78,9 @@ private class RealPersistenceRepository(private val context: Context) : Persiste
         }
 
         val parent = playbackState.parentUid?.let { library.find<MusicParent>(it) }
+        logD("Read playback state")
 
-        return PersistenceRepository.SavedState(
+        return PlaybackStateManager.SavedState(
             parent = parent,
             queueState =
                 Queue.SavedState(
@@ -96,12 +93,18 @@ private class RealPersistenceRepository(private val context: Context) : Persiste
             repeatMode = playbackState.repeatMode)
     }
 
-    override suspend fun saveState(state: PersistenceRepository.SavedState?) {
+    override suspend fun saveState(state: PlaybackStateManager.SavedState?): Boolean {
         // Only bother saving a state if a song is actively playing from one.
         // This is not the case with a null state.
-        playbackStateDao.nukeState()
-        queueDao.nukeHeap()
-        queueDao.nukeMapping()
+        try {
+            playbackStateDao.nukeState()
+            queueDao.nukeHeap()
+            queueDao.nukeMapping()
+        } catch (e: Exception) {
+            logE("Unable to clear previous state")
+            logE(e.stackTraceToString())
+            return false
+        }
         logD("Cleared state")
         if (state != null) {
             // Transform saved state into raw state, which can then be written to the database.
@@ -113,22 +116,29 @@ private class RealPersistenceRepository(private val context: Context) : Persiste
                     repeatMode = state.repeatMode,
                     songUid = state.queueState.songUid,
                     parentUid = state.parent?.uid)
-            playbackStateDao.insertState(playbackState)
 
             // Convert the remaining queue information do their database-specific counterparts.
             val heap =
                 state.queueState.heap.mapIndexed { i, song ->
                     QueueHeapItem(i, requireNotNull(song).uid)
                 }
-            queueDao.insertHeap(heap)
             val mapping =
                 state.queueState.orderedMapping.zip(state.queueState.shuffledMapping).mapIndexed {
                     i,
                     pair ->
                     QueueMappingItem(i, pair.first, pair.second)
                 }
-            queueDao.insertMapping(mapping)
+            try {
+                playbackStateDao.insertState(playbackState)
+                queueDao.insertHeap(heap)
+                queueDao.insertMapping(mapping)
+            } catch (e: Exception) {
+                logE("Unable to write new state")
+                logE(e.stackTraceToString())
+                return false
+            }
             logD("Wrote state")
         }
+        return true
     }
 }

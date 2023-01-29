@@ -91,7 +91,7 @@ class PlaybackService :
     private val systemReceiver = PlaybackReceiver()
 
     // Managers
-    private val playbackManager = PlaybackStateManager.getInstance()
+    private val playbackManager = PlaybackStateManager.get()
     private val musicStore = MusicStore.getInstance()
     private lateinit var musicSettings: MusicSettings
     private lateinit var playbackSettings: PlaybackSettings
@@ -333,7 +333,7 @@ class PlaybackService :
             // to save the current state as it's not long until this service (and likely the whole
             // app) is killed.
             logD("Saving playback state")
-            saveScope.launch { playbackManager.saveState(persistenceRepository) }
+            saveScope.launch { persistenceRepository.saveState(playbackManager.toSavedState()) }
         }
     }
 
@@ -348,7 +348,11 @@ class PlaybackService :
         when (action) {
             // Restore state -> Start a new restoreState job
             is InternalPlayer.Action.RestoreState -> {
-                restoreScope.launch { playbackManager.restoreState(persistenceRepository, false) }
+                restoreScope.launch {
+                    persistenceRepository.readState(library)?.let {
+                        playbackManager.applySavedState(it, false)
+                    }
+                }
             }
             // Shuffle all -> Start new playback from all songs
             is InternalPlayer.Action.ShuffleAll -> {

@@ -56,7 +56,7 @@ import org.oxycblt.auxio.util.logD
 class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
     private val indexer = Indexer.getInstance()
     private val musicStore = MusicStore.getInstance()
-    private val playbackManager = PlaybackStateManager.getInstance()
+    private val playbackManager = PlaybackStateManager.get()
     private val serviceJob = Job()
     private val indexScope = CoroutineScope(serviceJob + Dispatchers.IO)
     private var currentIndexJob: Job? = null
@@ -139,7 +139,18 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
                         // Clear invalid models from PlaybackStateManager. This is not connected
                         // to a listener as it is bad practice for a shared object to attach to
                         // the listener system of another.
-                        playbackManager.sanitize(newLibrary)
+                        playbackManager.toSavedState()?.let { savedState ->
+                            playbackManager.applySavedState(
+                                PlaybackStateManager.SavedState(
+                                    parent = savedState.parent?.let(newLibrary::sanitize),
+                                    queueState =
+                                        savedState.queueState.remap { song ->
+                                            newLibrary.sanitize(requireNotNull(song))
+                                        },
+                                    positionMs = savedState.positionMs,
+                                    repeatMode = savedState.repeatMode),
+                                true)
+                        }
                     }
                     // Forward the new library to MusicStore to continue the update process.
                     musicStore.library = newLibrary

@@ -73,6 +73,7 @@ abstract class PersistenceDatabase : RoomDatabase() {
                             PersistenceDatabase::class.java,
                             "auxio_playback_persistence.db")
                         .fallbackToDestructiveMigration()
+                        .fallbackToDestructiveMigrationFrom(1)
                         .fallbackToDestructiveMigrationOnDowngrade()
                         .build()
                 INSTANCE = newInstance

@@ -45,7 +45,7 @@ import org.oxycblt.auxio.util.logD
  */
 class ReplayGainAudioProcessor(context: Context) :
     BaseAudioProcessor(), Player.Listener, PlaybackSettings.Listener {
-    private val playbackManager = PlaybackStateManager.getInstance()
+    private val playbackManager = PlaybackStateManager.get()
     private val playbackSettings = PlaybackSettings.from(context)
     private var lastFormat: Format? = null
 

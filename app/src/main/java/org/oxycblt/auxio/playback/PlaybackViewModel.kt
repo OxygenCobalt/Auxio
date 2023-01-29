@@ -38,7 +38,7 @@ class PlaybackViewModel(application: Application) :
     AndroidViewModel(application), PlaybackStateManager.Listener {
     private val musicSettings = MusicSettings.from(application)
     private val playbackSettings = PlaybackSettings.from(application)
-    private val playbackManager = PlaybackStateManager.getInstance()
+    private val playbackManager = PlaybackStateManager.get()
     private val persistenceRepository = PersistenceRepository.from(application)
     private val musicStore = MusicStore.getInstance()
     private var lastPositionJob: Job? = null
@@ -430,8 +430,7 @@ class PlaybackViewModel(application: Application) :
      */
     fun savePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
-            val saved = playbackManager.saveState(persistenceRepository)
-            onDone(saved)
+            onDone(persistenceRepository.saveState(playbackManager.toSavedState()))
         }
     }
 
@@ -440,10 +439,7 @@ class PlaybackViewModel(application: Application) :
      * @param onDone Called when the wipe is completed with true if successful, and false otherwise.
      */
     fun wipePlaybackState(onDone: (Boolean) -> Unit) {
-        viewModelScope.launch {
-            val wiped = playbackManager.wipeState(persistenceRepository)
-            onDone(wiped)
-        }
+        viewModelScope.launch { onDone(persistenceRepository.saveState(null)) }
     }
 
     /**
@@ -453,8 +449,16 @@ class PlaybackViewModel(application: Application) :
      */
     fun tryRestorePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
-            val restored = playbackManager.restoreState(persistenceRepository, true)
-            onDone(restored)
+            val library = musicStore.library
+            if (library != null) {
+                val savedState = persistenceRepository.readState(library)
+                if (savedState != null) {
+                    playbackManager.applySavedState(savedState, true)
+                    onDone(true)
+                    return@launch
+                }
+            }
+            onDone(false)
         }
     }
 
