@@ -37,8 +37,11 @@ import org.oxycblt.auxio.music.Song
  * @author OxygenCobalt
  */
 interface Queue {
+    /** The index of the currently playing [Song] in the current mapping. */
     val index: Int
+    /** The currently playing [Song]. */
     val currentSong: Song?
+    /** Whether this queue is shuffled. */
     val isShuffled: Boolean
     /**
      * Resolve this queue into a more conventional list of [Song]s.
@@ -96,25 +99,18 @@ class EditableQueue : Queue {
     @Volatile private var heap = mutableListOf<Song>()
     @Volatile private var orderedMapping = mutableListOf<Int>()
     @Volatile private var shuffledMapping = mutableListOf<Int>()
-    /** The index of the currently playing [Song] in the current mapping. */
     @Volatile
     override var index = -1
         private set
-    /** The currently playing [Song]. */
     override val currentSong: Song?
         get() =
             shuffledMapping
                 .ifEmpty { orderedMapping.ifEmpty { null } }
                 ?.getOrNull(index)
                 ?.let(heap::get)
-    /** Whether this queue is shuffled. */
     override val isShuffled: Boolean
         get() = shuffledMapping.isNotEmpty()
 
-    /**
-     * Resolve this queue into a more conventional list of [Song]s.
-     * @return A list of [Song] corresponding to the current queue mapping.
-     */
     override fun resolve() =
         if (currentSong != null) {
             shuffledMapping.map { heap[it] }.ifEmpty { orderedMapping.map { heap[it] } }

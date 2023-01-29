@@ -54,7 +54,7 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
-    private val indexer = Indexer.getInstance()
+    private val indexer = Indexer.get()
     private val musicRepository = MusicRepository.get()
     private val playbackManager = PlaybackStateManager.get()
     private val serviceJob = Job()

@@ -44,23 +44,15 @@ import org.oxycblt.auxio.util.logW
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class Indexer private constructor() {
-    @Volatile private var lastResponse: Result<Library>? = null
-    @Volatile private var indexingState: Indexing? = null
-    @Volatile private var controller: Controller? = null
-    @Volatile private var listener: Listener? = null
-
+interface Indexer {
     /** Whether music loading is occurring or not. */
     val isIndexing: Boolean
-        get() = indexingState != null
-
     /**
      * Whether this instance has not completed a loading process and is not currently loading music.
      * This often occurs early in an app's lifecycle, and consumers should try to avoid showing any
      * state when this flag is true.
      */
     val isIndeterminate: Boolean
-        get() = lastResponse == null && indexingState == null
 
     /**
      * Register a [Controller] for this instance. This instance will handle any commands to start
@@ -68,19 +60,7 @@ class Indexer private constructor() {
      * [Listener] methods to initialize the instance with the current state.
      * @param controller The [Controller] to register. Will do nothing if already registered.
      */
-    @Synchronized
-    fun registerController(controller: Controller) {
-        if (BuildConfig.DEBUG && this.controller != null) {
-            logW("Controller is already registered")
-            return
-        }
-
-        // Initialize the controller with the current state.
-        val currentState =
-            indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
-        controller.onIndexerStateChanged(currentState)
-        this.controller = controller
-    }
+    fun registerController(controller: Controller)
 
     /**
      * Unregister the [Controller] from this instance, prevent it from recieving any further
@@ -88,15 +68,7 @@ class Indexer private constructor() {
      * @param controller The [Controller] to unregister. Must be the current [Controller]. Does
      * nothing if invoked by another [Controller] implementation.
      */
-    @Synchronized
-    fun unregisterController(controller: Controller) {
-        if (BuildConfig.DEBUG && this.controller !== controller) {
-            logW("Given controller did not match current controller")
-            return
-        }
-
-        this.controller = null
-    }
+    fun unregisterController(controller: Controller)
 
     /**
      * Register the [Listener] for this instance. This can be used to receive rapid-fire updates to
@@ -104,19 +76,7 @@ class Indexer private constructor() {
      * [Listener] methods to initialize the instance with the current state.
      * @param listener The [Listener] to add.
      */
-    @Synchronized
-    fun registerListener(listener: Listener) {
-        if (BuildConfig.DEBUG && this.listener != null) {
-            logW("Listener is already registered")
-            return
-        }
-
-        // Initialize the listener with the current state.
-        val currentState =
-            indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
-        listener.onIndexerStateChanged(currentState)
-        this.listener = listener
-    }
+    fun registerListener(listener: Listener)
 
     /**
      * Unregister a [Listener] from this instance, preventing it from recieving any further updates.
@@ -124,15 +84,7 @@ class Indexer private constructor() {
      * invoked by another [Listener] implementation.
      * @see Listener
      */
-    @Synchronized
-    fun unregisterListener(listener: Listener) {
-        if (BuildConfig.DEBUG && this.listener !== listener) {
-            logW("Given controller did not match current controller")
-            return
-        }
-
-        this.listener = null
-    }
+    fun unregisterListener(listener: Listener)
 
     /**
      * Start the indexing process. This should be done from in the background from [Controller]'s
@@ -141,159 +93,22 @@ class Indexer private constructor() {
      * @param withCache Whether to use the cache or not when loading. If false, the cache will still
      * be written, but no cache entries will be loaded into the new library.
      */
-    suspend fun index(context: Context, withCache: Boolean) {
-        val result =
-            try {
-                val start = System.currentTimeMillis()
-                val library = indexImpl(context, withCache)
-                logD(
-                    "Music indexing completed successfully in " +
-                        "${System.currentTimeMillis() - start}ms")
-                Result.success(library)
-            } catch (e: CancellationException) {
-                // Got cancelled, propagate upwards to top-level co-routine.
-                logD("Loading routine was cancelled")
-                throw e
-            } catch (e: Exception) {
-                // Music loading process failed due to something we have not handled.
-                logE("Music indexing failed")
-                logE(e.stackTraceToString())
-                Result.failure(e)
-            }
-        emitCompletion(result)
-    }
+    suspend fun index(context: Context, withCache: Boolean)
 
     /**
      * Request that the music library should be reloaded. This should be used by components that do
-     * not manage the indexing process in order to signal that the [Controller] should call [index]
-     * eventually.
+     * not manage the indexing process in order to signal that the [Indexer.Controller] should call
+     * [index] eventually.
      * @param withCache Whether to use the cache when loading music. Does nothing if there is no
-     * [Controller].
+     * [Indexer.Controller].
      */
-    @Synchronized
-    fun requestReindex(withCache: Boolean) {
-        logD("Requesting reindex")
-        controller?.onStartIndexing(withCache)
-    }
+    fun requestReindex(withCache: Boolean)
 
     /**
      * Reset the current loading state to signal that the instance is not loading. This should be
      * called by [Controller] after it's indexing co-routine was cancelled.
      */
-    @Synchronized
-    fun reset() {
-        logD("Cancelling last job")
-        emitIndexing(null)
-    }
-
-    /**
-     * Internal implementation of the music loading process.
-     * @param context [Context] required to load music.
-     * @param withCache Whether to use the cache or not when loading. If false, the cache will still
-     * be written, but no cache entries will be loaded into the new library.
-     * @return A newly-loaded [Library].
-     * @throws NoPermissionException If [PERMISSION_READ_AUDIO] was not granted.
-     * @throws NoMusicException If no music was found on the device.
-     */
-    private suspend fun indexImpl(context: Context, withCache: Boolean): Library {
-        if (ContextCompat.checkSelfPermission(context, PERMISSION_READ_AUDIO) ==
-            PackageManager.PERMISSION_DENIED) {
-            // No permissions, signal that we can't do anything.
-            throw NoPermissionException()
-        }
-
-        // Create the chain of extractors. Each extractor builds on the previous and
-        // enables version-specific features in order to create the best possible music
-        // experience.
-        val cacheExtractor = CacheExtractor.from(context, withCache)
-        val mediaStoreExtractor = MediaStoreExtractor.from(context, cacheExtractor)
-        val metadataExtractor = MetadataExtractor(context, mediaStoreExtractor)
-        val rawSongs = loadRawSongs(metadataExtractor).ifEmpty { throw NoMusicException() }
-        // Build the rest of the music library from the song list. This is much more powerful
-        // and reliable compared to using MediaStore to obtain grouping information.
-        val buildStart = System.currentTimeMillis()
-        val library = Library(rawSongs, MusicSettings.from(context))
-        logD("Successfully built library in ${System.currentTimeMillis() - buildStart}ms")
-        return library
-    }
-
-    /**
-     * Load a list of [Song]s from the device.
-     * @param metadataExtractor The completed [MetadataExtractor] instance to use to load [Song.Raw]
-     * instances.
-     * @return A possibly empty list of [Song]s. These [Song]s will be incomplete and must be linked
-     * with parent [Album], [Artist], and [Genre] items in order to be usable.
-     */
-    private suspend fun loadRawSongs(metadataExtractor: MetadataExtractor): List<Song.Raw> {
-        logD("Starting indexing process")
-        val start = System.currentTimeMillis()
-        // Start initializing the extractors. Use an indeterminate state, as there is no ETA on
-        // how long a media database query will take.
-        emitIndexing(Indexing.Indeterminate)
-        val total = metadataExtractor.init()
-        yield()
-
-        // Note: We use a set here so we can eliminate song duplicates.
-        val rawSongs = mutableListOf<Song.Raw>()
-        metadataExtractor.extract().collect { rawSong ->
-            rawSongs.add(rawSong)
-            // Now we can signal a defined progress by showing how many songs we have
-            // loaded, and the projected amount of songs we found in the library
-            // (obtained by the extractors)
-            yield()
-            emitIndexing(Indexing.Songs(rawSongs.size, total))
-        }
-
-        // Finalize the extractors with the songs we have now loaded. There is no ETA
-        // on this process, so go back to an indeterminate state.
-        emitIndexing(Indexing.Indeterminate)
-        metadataExtractor.finalize(rawSongs)
-        logD(
-            "Successfully loaded ${rawSongs.size} raw songs in ${System.currentTimeMillis() - start}ms")
-        return rawSongs
-    }
-
-    /**
-     * Emit a new [State.Indexing] state. This can be used to signal the current state of the music
-     * loading process to external code. Assumes that the callee has already checked if they have
-     * not been canceled and thus have the ability to emit a new state.
-     * @param indexing The new [Indexing] state to emit, or null if no loading process is occurring.
-     */
-    @Synchronized
-    private fun emitIndexing(indexing: Indexing?) {
-        indexingState = indexing
-        // If we have canceled the loading process, we want to revert to a previous completion
-        // whenever possible to prevent state inconsistency.
-        val state =
-            indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
-        controller?.onIndexerStateChanged(state)
-        listener?.onIndexerStateChanged(state)
-    }
-
-    /**
-     * Emit a new [State.Complete] state. This can be used to signal the completion of the music
-     * loading process to external code. Will check if the callee has not been canceled and thus has
-     * the ability to emit a new state
-     * @param result The new [Result] to emit, representing the outcome of the music loading
-     * process.
-     */
-    private suspend fun emitCompletion(result: Result<Library>) {
-        yield()
-        // Swap to the Main thread so that downstream callbacks don't crash from being on
-        // a background thread. Does not occur in emitIndexing due to efficiency reasons.
-        withContext(Dispatchers.Main) {
-            synchronized(this) {
-                // Do not check for redundancy here, as we actually need to notify a switch
-                // from Indexing -> Complete and not Indexing -> Indexing or Complete -> Complete.
-                lastResponse = result
-                indexingState = null
-                // Signal that the music loading process has been completed.
-                val state = State.Complete(result)
-                controller?.onIndexerStateChanged(state)
-                listener?.onIndexerStateChanged(state)
-            }
-        }
-    }
+    fun reset()
 
     /** Represents the current state of [Indexer]. */
     sealed class State {
@@ -394,16 +209,208 @@ class Indexer private constructor() {
          * Get a singleton instance.
          * @return The (possibly newly-created) singleton instance.
          */
-        fun getInstance(): Indexer {
+        fun get(): Indexer {
             val currentInstance = INSTANCE
             if (currentInstance != null) {
                 return currentInstance
             }
 
             synchronized(this) {
-                val newInstance = Indexer()
+                val newInstance = RealIndexer()
                 INSTANCE = newInstance
                 return newInstance
+            }
+        }
+    }
+}
+
+private class RealIndexer : Indexer {
+    @Volatile private var lastResponse: Result<Library>? = null
+    @Volatile private var indexingState: Indexer.Indexing? = null
+    @Volatile private var controller: Indexer.Controller? = null
+    @Volatile private var listener: Indexer.Listener? = null
+
+    override val isIndexing: Boolean
+        get() = indexingState != null
+
+    override val isIndeterminate: Boolean
+        get() = lastResponse == null && indexingState == null
+
+    @Synchronized
+    override fun registerController(controller: Indexer.Controller) {
+        if (BuildConfig.DEBUG && this.controller != null) {
+            logW("Controller is already registered")
+            return
+        }
+
+        // Initialize the controller with the current state.
+        val currentState =
+            indexingState?.let { Indexer.State.Indexing(it) }
+                ?: lastResponse?.let { Indexer.State.Complete(it) }
+        controller.onIndexerStateChanged(currentState)
+        this.controller = controller
+    }
+
+    @Synchronized
+    override fun unregisterController(controller: Indexer.Controller) {
+        if (BuildConfig.DEBUG && this.controller !== controller) {
+            logW("Given controller did not match current controller")
+            return
+        }
+
+        this.controller = null
+    }
+
+    @Synchronized
+    override fun registerListener(listener: Indexer.Listener) {
+        if (BuildConfig.DEBUG && this.listener != null) {
+            logW("Listener is already registered")
+            return
+        }
+
+        // Initialize the listener with the current state.
+        val currentState =
+            indexingState?.let { Indexer.State.Indexing(it) }
+                ?: lastResponse?.let { Indexer.State.Complete(it) }
+        listener.onIndexerStateChanged(currentState)
+        this.listener = listener
+    }
+
+    @Synchronized
+    override fun unregisterListener(listener: Indexer.Listener) {
+        if (BuildConfig.DEBUG && this.listener !== listener) {
+            logW("Given controller did not match current controller")
+            return
+        }
+
+        this.listener = null
+    }
+
+    override suspend fun index(context: Context, withCache: Boolean) {
+        val result =
+            try {
+                val start = System.currentTimeMillis()
+                val library = indexImpl(context, withCache)
+                logD(
+                    "Music indexing completed successfully in " +
+                        "${System.currentTimeMillis() - start}ms")
+                Result.success(library)
+            } catch (e: CancellationException) {
+                // Got cancelled, propagate upwards to top-level co-routine.
+                logD("Loading routine was cancelled")
+                throw e
+            } catch (e: Exception) {
+                // Music loading process failed due to something we have not handled.
+                logE("Music indexing failed")
+                logE(e.stackTraceToString())
+                Result.failure(e)
+            }
+        emitCompletion(result)
+    }
+
+    @Synchronized
+    override fun requestReindex(withCache: Boolean) {
+        logD("Requesting reindex")
+        controller?.onStartIndexing(withCache)
+    }
+
+    @Synchronized
+    override fun reset() {
+        logD("Cancelling last job")
+        emitIndexing(null)
+    }
+
+    private suspend fun indexImpl(context: Context, withCache: Boolean): Library {
+        if (ContextCompat.checkSelfPermission(context, Indexer.PERMISSION_READ_AUDIO) ==
+            PackageManager.PERMISSION_DENIED) {
+            // No permissions, signal that we can't do anything.
+            throw Indexer.NoPermissionException()
+        }
+
+        // Create the chain of extractors. Each extractor builds on the previous and
+        // enables version-specific features in order to create the best possible music
+        // experience.
+        val cacheExtractor = CacheExtractor.from(context, withCache)
+        val mediaStoreExtractor = MediaStoreExtractor.from(context, cacheExtractor)
+        val metadataExtractor = MetadataExtractor(context, mediaStoreExtractor)
+        val rawSongs = loadRawSongs(metadataExtractor).ifEmpty { throw Indexer.NoMusicException() }
+        // Build the rest of the music library from the song list. This is much more powerful
+        // and reliable compared to using MediaStore to obtain grouping information.
+        val buildStart = System.currentTimeMillis()
+        val library = Library(rawSongs, MusicSettings.from(context))
+        logD("Successfully built library in ${System.currentTimeMillis() - buildStart}ms")
+        return library
+    }
+
+    private suspend fun loadRawSongs(metadataExtractor: MetadataExtractor): List<Song.Raw> {
+        logD("Starting indexing process")
+        val start = System.currentTimeMillis()
+        // Start initializing the extractors. Use an indeterminate state, as there is no ETA on
+        // how long a media database query will take.
+        emitIndexing(Indexer.Indexing.Indeterminate)
+        val total = metadataExtractor.init()
+        yield()
+
+        // Note: We use a set here so we can eliminate song duplicates.
+        val rawSongs = mutableListOf<Song.Raw>()
+        metadataExtractor.extract().collect { rawSong ->
+            rawSongs.add(rawSong)
+            // Now we can signal a defined progress by showing how many songs we have
+            // loaded, and the projected amount of songs we found in the library
+            // (obtained by the extractors)
+            yield()
+            emitIndexing(Indexer.Indexing.Songs(rawSongs.size, total))
+        }
+
+        // Finalize the extractors with the songs we have now loaded. There is no ETA
+        // on this process, so go back to an indeterminate state.
+        emitIndexing(Indexer.Indexing.Indeterminate)
+        metadataExtractor.finalize(rawSongs)
+        logD(
+            "Successfully loaded ${rawSongs.size} raw songs in ${System.currentTimeMillis() - start}ms")
+        return rawSongs
+    }
+
+    /**
+     * Emit a new [Indexer.State.Indexing] state. This can be used to signal the current state of
+     * the music loading process to external code. Assumes that the callee has already checked if
+     * they have not been canceled and thus have the ability to emit a new state.
+     * @param indexing The new [Indexer.Indexing] state to emit, or null if no loading process is
+     * occurring.
+     */
+    @Synchronized
+    private fun emitIndexing(indexing: Indexer.Indexing?) {
+        indexingState = indexing
+        // If we have canceled the loading process, we want to revert to a previous completion
+        // whenever possible to prevent state inconsistency.
+        val state =
+            indexingState?.let { Indexer.State.Indexing(it) }
+                ?: lastResponse?.let { Indexer.State.Complete(it) }
+        controller?.onIndexerStateChanged(state)
+        listener?.onIndexerStateChanged(state)
+    }
+
+    /**
+     * Emit a new [Indexer.State.Complete] state. This can be used to signal the completion of the
+     * music loading process to external code. Will check if the callee has not been canceled and
+     * thus has the ability to emit a new state
+     * @param result The new [Result] to emit, representing the outcome of the music loading
+     * process.
+     */
+    private suspend fun emitCompletion(result: Result<Library>) {
+        yield()
+        // Swap to the Main thread so that downstream callbacks don't crash from being on
+        // a background thread. Does not occur in emitIndexing due to efficiency reasons.
+        withContext(Dispatchers.Main) {
+            synchronized(this) {
+                // Do not check for redundancy here, as we actually need to notify a switch
+                // from Indexing -> Complete and not Indexing -> Indexing or Complete -> Complete.
+                lastResponse = result
+                indexingState = null
+                // Signal that the music loading process has been completed.
+                val state = Indexer.State.Complete(result)
+                controller?.onIndexerStateChanged(state)
+                listener?.onIndexerStateChanged(state)
             }
         }
     }
