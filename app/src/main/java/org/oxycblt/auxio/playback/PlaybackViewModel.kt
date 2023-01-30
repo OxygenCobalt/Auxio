@@ -17,9 +17,11 @@
  
 package org.oxycblt.auxio.playback
 
-import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,12 +36,15 @@ import org.oxycblt.auxio.playback.state.*
  * An [AndroidViewModel] that provides a safe UI frontend for the current playback state.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class PlaybackViewModel(application: Application) :
-    AndroidViewModel(application), PlaybackStateManager.Listener {
-    private val musicSettings = MusicSettings.from(application)
-    private val playbackSettings = PlaybackSettings.from(application)
+@HiltViewModel
+class PlaybackViewModel
+@Inject
+constructor(
+    private val persistenceRepository: PersistenceRepository,
+    private val playbackSettings: PlaybackSettings,
+    private val musicSettings: MusicSettings
+) : ViewModel(), PlaybackStateManager.Listener {
     private val playbackManager = PlaybackStateManager.get()
-    private val persistenceRepository = PersistenceRepository.from(application)
     private val musicRepository = MusicRepository.get()
     private var lastPositionJob: Job? = null
 

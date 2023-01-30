@@ -12,6 +12,9 @@ track/disc fields
 #### What's Fixed
 - Fixed non-functioning "repeat all" repeat mode
 
+#### Dev/Meta
+- Started using dependency injection
+
 ## 3.0.2
 
 #### What's New

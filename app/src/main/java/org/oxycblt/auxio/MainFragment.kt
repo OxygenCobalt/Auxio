@@ -58,7 +58,7 @@ class MainFragment :
     ViewBindingFragment<FragmentMainBinding>(),
     ViewTreeObserver.OnPreDrawListener,
     NavController.OnDestinationChangedListener {
-    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private val selectionModel: SelectionViewModel by activityViewModels()
     private val callback = DynamicBackPressedCallback()

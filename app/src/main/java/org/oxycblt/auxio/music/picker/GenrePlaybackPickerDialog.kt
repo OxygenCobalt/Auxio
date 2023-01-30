@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music.picker
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -32,7 +33,6 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.requireIs
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -45,7 +45,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 class GenrePlaybackPickerDialog :
     ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<Genre> {
     private val pickerModel: PickerViewModel by viewModels()
-    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     // Information about what Song to show choices for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel a Song.
     private val args: GenrePlaybackPickerDialogArgs by navArgs()

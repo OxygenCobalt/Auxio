@@ -22,6 +22,7 @@ import android.text.format.Formatter
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isInvisible
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,7 +32,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.format.AudioInfo
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 
 /**
@@ -40,7 +40,7 @@ import org.oxycblt.auxio.util.collectImmediately
  */
 @AndroidEntryPoint
 class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
-    private val detailModel: DetailViewModel by androidActivityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     // Information about what song to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an song.
     private val args: SongDetailDialogArgs by navArgs()

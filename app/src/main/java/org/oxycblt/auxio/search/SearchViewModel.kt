@@ -17,10 +17,12 @@
  
 package org.oxycblt.auxio.search
 
-import android.app.Application
 import androidx.annotation.IdRes
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,12 +41,15 @@ import org.oxycblt.auxio.util.logD
  * An [AndroidViewModel] that keeps performs search operations and tracks their results.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SearchViewModel(application: Application) :
-    AndroidViewModel(application), MusicRepository.Listener {
+@HiltViewModel
+class SearchViewModel
+@Inject
+constructor(
+    private val searchEngine: SearchEngine,
+    private val searchSettings: SearchSettings,
+    private val playbackSettings: PlaybackSettings,
+) : ViewModel(), MusicRepository.Listener {
     private val musicRepository = MusicRepository.get()
-    private val searchSettings = SearchSettings.from(application)
-    private val playbackSettings = PlaybackSettings.from(application)
-    private var searchEngine = SearchEngine.from(application)
     private var lastQuery: String? = null
     private var currentSearchJob: Job? = null
 

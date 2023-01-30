@@ -28,9 +28,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import org.oxycblt.auxio.music.RealSong
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.format.Date
+import org.oxycblt.auxio.music.library.RealSong
 import org.oxycblt.auxio.music.parsing.correctWhitespace
 import org.oxycblt.auxio.music.parsing.splitEscaped
 import org.oxycblt.auxio.util.*

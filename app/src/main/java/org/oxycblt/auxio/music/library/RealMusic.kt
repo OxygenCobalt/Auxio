@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.library
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
@@ -25,10 +25,16 @@ import java.text.Collator
 import java.util.UUID
 import kotlin.math.max
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.format.Date
 import org.oxycblt.auxio.music.format.Disc
 import org.oxycblt.auxio.music.format.ReleaseType
-import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.music.parsing.parseId3GenreNames
 import org.oxycblt.auxio.music.parsing.parseMultiValue
 import org.oxycblt.auxio.music.storage.Directory
@@ -225,8 +231,7 @@ class RealSong(raw: Raw, musicSettings: MusicSettings) : Song {
     }
 
     /** Raw information about a [RealSong] obtained from the filesystem/Extractor instances. */
-    class Raw
-    constructor(
+    class Raw(
         /**
          * The ID of the [RealSong]'s audio file, obtained from MediaStore. Note that this ID is
          * highly unstable and should only be used for accessing the audio file.
@@ -438,7 +443,7 @@ class RealAlbum(val raw: Raw, override val songs: List<RealSong>) : Album {
  * These instances will be linked to this [RealArtist].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class RealArtist constructor(private val raw: Raw, songAlbums: List<Music>) : Artist {
+class RealArtist(private val raw: Raw, songAlbums: List<Music>) : Artist {
     override val uid =
     // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
     raw.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ARTISTS, it) }
@@ -569,7 +574,7 @@ class RealArtist constructor(private val raw: Raw, songAlbums: List<Music>) : Ar
  * Library-backed implementation of [RealGenre].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class RealGenre constructor(private val raw: Raw, override val songs: List<RealSong>) : Genre {
+class RealGenre(private val raw: Raw, override val songs: List<RealSong>) : Genre {
     override val uid = Music.UID.auxio(MusicMode.GENRES) { update(raw.name) }
     override val rawName = raw.name
     override val rawSortName = rawName

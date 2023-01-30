@@ -26,6 +26,7 @@ import androidx.core.view.isInvisible
 import androidx.core.view.postDelayed
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,10 +57,10 @@ import org.oxycblt.auxio.util.*
  */
 @AndroidEntryPoint
 class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
-    private val searchModel: SearchViewModel by androidViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
+    private val searchModel: SearchViewModel by viewModels()
     private val searchAdapter = SearchAdapter(this)
     private var imm: InputMethodManager? = null
     private var launchedKeyboard = false

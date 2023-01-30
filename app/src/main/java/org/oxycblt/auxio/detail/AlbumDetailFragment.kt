@@ -54,7 +54,7 @@ class AlbumDetailFragment :
     ListFragment<Song, FragmentDetailBinding>(), AlbumDetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     // Information about what album to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an album.

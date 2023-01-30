@@ -22,9 +22,9 @@ import androidx.core.text.isDigitsOnly
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
 import kotlinx.coroutines.flow.flow
-import org.oxycblt.auxio.music.RealSong
 import org.oxycblt.auxio.music.format.Date
 import org.oxycblt.auxio.music.format.TextTags
+import org.oxycblt.auxio.music.library.RealSong
 import org.oxycblt.auxio.music.parsing.parseId3v2PositionField
 import org.oxycblt.auxio.music.parsing.parseVorbisPositionField
 import org.oxycblt.auxio.music.storage.toAudioUri

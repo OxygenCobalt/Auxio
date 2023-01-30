@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.music.picker
 
 import android.os.Bundle
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +26,6 @@ import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.requireIs
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -35,7 +35,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 @AndroidEntryPoint
 class ArtistPlaybackPickerDialog : ArtistPickerDialog() {
-    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     // Information about what Song to show choices for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel a Song.
     private val args: ArtistPlaybackPickerDialogArgs by navArgs()

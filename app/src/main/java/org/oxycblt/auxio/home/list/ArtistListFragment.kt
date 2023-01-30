@@ -42,7 +42,6 @@ import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.NavigationViewModel
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.nonZeroOrNull
 
@@ -57,7 +56,7 @@ class ArtistListFragment :
     FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     private val artistAdapter = ArtistAdapter(this)
 

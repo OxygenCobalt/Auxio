@@ -30,6 +30,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.extractor.*
 import org.oxycblt.auxio.music.library.Library
+import org.oxycblt.auxio.music.library.RealSong
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW

@@ -29,7 +29,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -38,7 +37,7 @@ import org.oxycblt.auxio.util.showToast
  */
 @AndroidEntryPoint
 class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
-    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -17,8 +17,9 @@
  
 package org.oxycblt.auxio.home
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.home.tabs.Tab
@@ -32,12 +33,15 @@ import org.oxycblt.auxio.util.logD
  * The ViewModel for managing the tab data and lists of the home view.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class HomeViewModel(application: Application) :
-    AndroidViewModel(application), MusicRepository.Listener, HomeSettings.Listener {
+@HiltViewModel
+class HomeViewModel
+@Inject
+constructor(
+    private val homeSettings: HomeSettings,
+    private val playbackSettings: PlaybackSettings,
+    private val musicSettings: MusicSettings
+) : ViewModel(), MusicRepository.Listener, HomeSettings.Listener {
     private val musicRepository = MusicRepository.get()
-    private val homeSettings = HomeSettings.from(application)
-    private val musicSettings = MusicSettings.from(application)
-    private val playbackSettings = PlaybackSettings.from(application)
 
     private val _songsList = MutableStateFlow(listOf<Song>())
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */

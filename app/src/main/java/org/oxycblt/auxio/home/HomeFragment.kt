@@ -68,10 +68,10 @@ import org.oxycblt.auxio.util.*
 @AndroidEntryPoint
 class HomeFragment :
     SelectionFragment<FragmentHomeBinding>(), AppBarLayout.OnOffsetChangedListener {
-    private val homeModel: HomeViewModel by androidActivityViewModels()
+    private val homeModel: HomeViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
 

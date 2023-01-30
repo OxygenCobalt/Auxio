@@ -43,7 +43,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.NavigationViewModel
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
@@ -59,7 +58,7 @@ class GenreDetailFragment :
     ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener<Music> {
     private val detailModel: DetailViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     // Information about what genre to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an genre.

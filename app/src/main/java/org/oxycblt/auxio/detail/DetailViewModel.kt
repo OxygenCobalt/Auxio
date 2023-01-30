@@ -20,7 +20,10 @@ package org.oxycblt.auxio.detail
 import android.app.Application
 import androidx.annotation.StringRes
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,12 +50,15 @@ import org.oxycblt.auxio.util.*
  * @param application [Application] context required to initialize certain information.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class DetailViewModel(application: Application) :
-    AndroidViewModel(application), MusicRepository.Listener {
+@HiltViewModel
+class DetailViewModel
+@Inject
+constructor(
+    private val audioInfoProvider: AudioInfo.Provider,
+    private val musicSettings: MusicSettings,
+    private val playbackSettings: PlaybackSettings
+) : ViewModel(), MusicRepository.Listener {
     private val musicRepository = MusicRepository.get()
-    private val musicSettings = MusicSettings.from(application)
-    private val playbackSettings = PlaybackSettings.from(application)
-    private val audioInfoProvider = AudioInfo.Provider.from(application)
 
     private var currentSongJob: Job? = null
 

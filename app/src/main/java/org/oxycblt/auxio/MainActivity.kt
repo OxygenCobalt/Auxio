@@ -20,6 +20,7 @@ package org.oxycblt.auxio
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
@@ -31,7 +32,6 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.ui.UISettings
-import org.oxycblt.auxio.util.androidViewModels
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -53,7 +53,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val playbackModel: PlaybackViewModel by androidViewModels()
+    private val playbackModel: PlaybackViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

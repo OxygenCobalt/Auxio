@@ -32,7 +32,6 @@ import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 
 /**
@@ -42,7 +41,7 @@ import org.oxycblt.auxio.util.collectImmediately
 @AndroidEntryPoint
 class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListListener<Song> {
     private val queueModel: QueueViewModel by activityViewModels()
-    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val queueAdapter = QueueAdapter(this)
     private var touchHelper: ItemTouchHelper? = null
 
