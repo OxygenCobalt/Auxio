@@ -2,6 +2,7 @@ buildscript {
     ext {
         kotlin_version = '1.7.21'
         navigation_version = "2.5.3"
+        hilt_version = "2.42"
     }
 
     repositories {
@@ -14,6 +15,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigation_version"
         classpath "com.diffplug.spotless:spotless-plugin-gradle:6.10.0"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

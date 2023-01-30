@@ -26,6 +26,7 @@ import android.os.Looper
 import android.os.PowerManager
 import android.provider.MediaStore
 import coil.imageLoader
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -53,6 +54,7 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
     private val indexer = Indexer.get()
     private val musicRepository = MusicRepository.get()

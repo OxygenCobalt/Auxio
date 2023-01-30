@@ -28,6 +28,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
@@ -41,6 +42,7 @@ import org.oxycblt.auxio.util.showToast
  * Dialog that manages the music dirs setting.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class MusicDirsDialog :
     ViewBindingDialogFragment<DialogMusicDirsBinding>(), DirectoryAdapter.Listener {
     private val dirAdapter = DirectoryAdapter(this)

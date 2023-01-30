@@ -24,6 +24,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isInvisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSongDetailBinding
 import org.oxycblt.auxio.music.Song
@@ -37,6 +38,7 @@ import org.oxycblt.auxio.util.collectImmediately
  * A [ViewBindingDialogFragment] that shows information about a Song.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
     private val detailModel: DetailViewModel by androidActivityViewModels()
     // Information about what song to display is initially within the navigation arguments

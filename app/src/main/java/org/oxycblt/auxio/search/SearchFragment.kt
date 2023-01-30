@@ -28,6 +28,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.list.Item
@@ -53,6 +54,7 @@ import org.oxycblt.auxio.util.*
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
     private val searchModel: SearchViewModel by androidViewModels()
     override val navModel: NavigationViewModel by activityViewModels()

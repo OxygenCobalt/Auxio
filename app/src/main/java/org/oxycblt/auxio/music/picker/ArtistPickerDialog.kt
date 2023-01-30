@@ -23,6 +23,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.list.ClickableListListener
@@ -36,6 +37,7 @@ import org.oxycblt.auxio.util.collectImmediately
  * to choose from.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 abstract class ArtistPickerDialog :
     ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<Artist> {
     protected val pickerModel: PickerViewModel by viewModels()

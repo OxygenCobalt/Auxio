@@ -21,6 +21,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
@@ -34,6 +35,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A [ViewBindingDialogFragment] that allows the user to configure the current [Accent].
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class AccentCustomizeDialog :
     ViewBindingDialogFragment<DialogAccentBinding>(), ClickableListListener<Accent> {
     private var accentAdapter = AccentAdapter(this)

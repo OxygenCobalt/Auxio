@@ -22,6 +22,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogTabsBinding
@@ -34,6 +35,7 @@ import org.oxycblt.auxio.util.logD
  * A [ViewBindingDialogFragment] that allows the user to modify the home [Tab] configuration.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class TabCustomizeDialog :
     ViewBindingDialogFragment<DialogTabsBinding>(), EditableListListener<Tab> {
     private val tabAdapter = TabAdapter(this)

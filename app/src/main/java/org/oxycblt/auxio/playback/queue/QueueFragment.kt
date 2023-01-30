@@ -24,6 +24,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.list.EditableListListener
@@ -38,6 +39,7 @@ import org.oxycblt.auxio.util.collectImmediately
  * A [ViewBindingFragment] that displays an editable queue.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListListener<Song> {
     private val queueModel: QueueViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()

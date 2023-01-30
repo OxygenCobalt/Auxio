@@ -25,6 +25,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
@@ -52,6 +53,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A [ListFragment] that shows information about an [Artist].
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class ArtistDetailFragment :
     ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener<Music> {
     private val detailModel: DetailViewModel by activityViewModels()

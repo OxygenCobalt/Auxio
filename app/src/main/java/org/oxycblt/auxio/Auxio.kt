@@ -25,6 +25,7 @@ import androidx.core.graphics.drawable.IconCompat
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.request.CachePolicy
+import dagger.hilt.android.HiltAndroidApp
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.image.extractor.AlbumCoverFetcher
 import org.oxycblt.auxio.image.extractor.ArtistImageFetcher
@@ -38,6 +39,7 @@ import org.oxycblt.auxio.ui.UISettings
  * A simple, rational music player for android.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@HiltAndroidApp
 class Auxio : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()

@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music.picker
 import android.os.Bundle
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Song
@@ -32,6 +33,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * An [ArtistPickerDialog] intended for when [Artist] playback is ambiguous.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class ArtistPlaybackPickerDialog : ArtistPickerDialog() {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     // Information about what Song to show choices for is initially within the navigation arguments

@@ -22,6 +22,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
@@ -49,6 +50,7 @@ import org.oxycblt.auxio.util.nonZeroOrNull
  * A [ListFragment] that shows a list of [Artist]s.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class ArtistListFragment :
     ListFragment<Artist, FragmentHomeListBinding>(),
     FastScrollRecyclerView.PopupProvider,

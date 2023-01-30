@@ -37,6 +37,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Field
 import kotlin.math.abs
 import org.oxycblt.auxio.BuildConfig
@@ -64,6 +65,7 @@ import org.oxycblt.auxio.util.*
  * to other views.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class HomeFragment :
     SelectionFragment<FragmentHomeBinding>(), AppBarLayout.OnOffsetChangedListener {
     private val homeModel: HomeViewModel by androidActivityViewModels()

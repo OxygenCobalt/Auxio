@@ -24,6 +24,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.list.ClickableListListener
@@ -40,6 +41,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A picker [ViewBindingDialogFragment] intended for when [Genre] playback is ambiguous.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class GenrePlaybackPickerDialog :
     ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<Genre> {
     private val pickerModel: PickerViewModel by viewModels()

@@ -33,6 +33,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.transition.MaterialFadeThrough
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
@@ -52,6 +53,7 @@ import org.oxycblt.auxio.util.*
  * high-level navigation features.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class MainFragment :
     ViewBindingFragment<FragmentMainBinding>(),
     ViewTreeObserver.OnPreDrawListener,

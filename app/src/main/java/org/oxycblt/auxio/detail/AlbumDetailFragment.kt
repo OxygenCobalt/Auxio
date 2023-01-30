@@ -26,6 +26,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearSmoothScroller
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
@@ -48,6 +49,7 @@ import org.oxycblt.auxio.util.*
  * A [ListFragment] that shows information about an [Album].
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class AlbumDetailFragment :
     ListFragment<Song, FragmentDetailBinding>(), AlbumDetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()

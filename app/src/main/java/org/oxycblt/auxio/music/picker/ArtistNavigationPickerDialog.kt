@@ -21,6 +21,7 @@ import android.os.Bundle
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.ui.NavigationViewModel
@@ -29,6 +30,7 @@ import org.oxycblt.auxio.ui.NavigationViewModel
  * An [ArtistPickerDialog] intended for when [Artist] navigation is ambiguous.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class ArtistNavigationPickerDialog : ArtistPickerDialog() {
     private val navModel: NavigationViewModel by activityViewModels()
     // Information about what Song to show choices for is initially within the navigation arguments

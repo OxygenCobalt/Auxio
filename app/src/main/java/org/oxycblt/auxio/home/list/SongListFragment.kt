@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
@@ -51,6 +52,7 @@ import org.oxycblt.auxio.util.collectImmediately
  * A [ListFragment] that shows a list of [Song]s.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class SongListFragment :
     ListFragment<Song, FragmentHomeListBinding>(),
     FastScrollRecyclerView.PopupProvider,

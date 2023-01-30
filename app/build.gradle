@@ -4,7 +4,8 @@ plugins {
     id "androidx.navigation.safeargs.kotlin"
     id "com.diffplug.spotless"
     id "kotlin-parcelize"
-    id 'kotlin-kapt'
+    id "dagger.hilt.android.plugin"
+    id "kotlin-kapt"
 }
 
 android {
@@ -118,7 +119,14 @@ dependencies {
     // Locked below 1.7.0-alpha03 to avoid the same ripple bug
     implementation "com.google.android.material:material:1.7.0-alpha02"
 
-    // Development
+    // Dependency Injection
+    def dagger_version = "2.40"
+    implementation "com.google.dagger:dagger:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+    // Testing
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.9.1"
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
