@@ -86,8 +86,7 @@ interface Library {
 }
 
 private class RealLibrary(rawSongs: List<RealSong.Raw>, settings: MusicSettings) : Library {
-    override val songs =
-        Sort(Sort.Mode.ByName, true).songs(rawSongs.map { RealSong(it, settings) }.distinct())
+    override val songs = buildSongs(rawSongs, settings)
     override val albums = buildAlbums(songs)
     override val artists = buildArtists(songs, albums)
     override val genres = buildGenres(songs)
@@ -123,6 +122,16 @@ private class RealLibrary(rawSongs: List<RealSong.Raw>, settings: MusicSettings)
             val size = cursor.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE))
             songs.find { it.path.name == displayName && it.size == size }
         }
+
+    /**
+     * Build a list [RealSong]s from the given [RealSong.Raw].
+     * @param rawSongs The [RealSong.Raw]s to build the [RealSong]s from.
+     * @param settings [MusicSettings] required to build [RealSong]s.
+     * @return A sorted list of [RealSong]s derived from the [RealSong.Raw] that should be suitable
+     * for grouping.
+     */
+    private fun buildSongs(rawSongs: List<RealSong.Raw>, settings: MusicSettings) =
+        Sort(Sort.Mode.ByName, true).songs(rawSongs.map { RealSong(it, settings) }.distinct())
 
     /**
      * Build a list of [Album]s from the given [Song]s.

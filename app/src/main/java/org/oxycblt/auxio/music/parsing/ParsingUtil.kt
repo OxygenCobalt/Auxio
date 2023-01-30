@@ -96,7 +96,7 @@ fun List<String>.correctWhitespace() = mapNotNull { it.correctWhitespace() }
 
 /**
  * Attempt to parse a string by the user's separator preferences.
- * @param settings [Settings] required to obtain user separator configuration.
+ * @param settings [MusicSettings] required to obtain user separator configuration.
  * @return A list of one or more [String]s that were split up by the user-defined separators.
  */
 private fun String.maybeParseBySeparators(settings: MusicSettings): List<String> {

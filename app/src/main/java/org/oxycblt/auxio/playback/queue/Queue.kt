@@ -186,8 +186,9 @@ class EditableQueue : Queue {
     /**
      * Add [Song]s to the top of the queue. Will start playback if nothing is playing.
      * @param songs The [Song]s to add.
-     * @return [ChangeResult.MAPPING] if added to an existing queue, or [ChangeResult.SONG] if there
-     * was no prior playback and these enqueued [Song]s start new playback.
+     * @return [Queue.ChangeResult.MAPPING] if added to an existing queue, or
+     * [Queue.ChangeResult.SONG] if there was no prior playback and these enqueued [Song]s start new
+     * playback.
      */
     fun playNext(songs: List<Song>): Queue.ChangeResult {
         if (orderedMapping.isEmpty()) {

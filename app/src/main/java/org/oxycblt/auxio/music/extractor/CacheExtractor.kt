@@ -202,9 +202,7 @@ private abstract class CacheDatabase : RoomDatabase() {
 @Dao
 private interface CacheDao {
     @Query("SELECT * FROM ${CachedSong.TABLE_NAME}") suspend fun readCache(): List<CachedSong>
-
     @Query("DELETE FROM ${CachedSong.TABLE_NAME}") suspend fun nukeCache()
-
     @Insert suspend fun insertCache(songs: List<CachedSong>)
 }
 
@@ -216,49 +214,49 @@ private data class CachedSong(
      * unstable and should only be used for accessing the audio file.
      */
     @PrimaryKey var mediaStoreId: Long,
-    /** @see Song.dateAdded */
+    /** @see RealSong.Raw.dateAdded */
     var dateAdded: Long,
     /** The latest date the [Song]'s audio file was modified, as a unix epoch timestamp. */
     var dateModified: Long,
-    /** @see Song.size */
+    /** @see RealSong.Raw.size */
     var size: Long? = null,
-    /** @see Song.durationMs */
+    /** @see RealSong.Raw */
     var durationMs: Long,
-    /** @see Music.UID */
+    /** @see RealSong.Raw.musicBrainzId */
     var musicBrainzId: String? = null,
-    /** @see Music.rawName */
+    /** @see RealSong.Raw.name */
     var name: String,
-    /** @see Music.rawSortName */
+    /** @see RealSong.Raw.sortName */
     var sortName: String? = null,
-    /** @see Song.track */
+    /** @see RealSong.Raw.track */
     var track: Int? = null,
-    /** @see Disc.number */
+    /** @see RealSong.Raw.name */
     var disc: Int? = null,
-    /** @See Disc.name */
+    /** @See RealSong.Raw.subtitle */
     var subtitle: String? = null,
-    /** @see Song.date */
+    /** @see RealSong.Raw.date */
     var date: Date? = null,
-    /** @see Album.Raw.musicBrainzId */
+    /** @see RealSong.Raw.albumMusicBrainzId */
     var albumMusicBrainzId: String? = null,
-    /** @see Album.Raw.name */
+    /** @see RealSong.Raw.albumName */
     var albumName: String,
-    /** @see Album.Raw.sortName */
+    /** @see RealSong.Raw.albumSortName */
     var albumSortName: String? = null,
-    /** @see Album.Raw.releaseType */
+    /** @see RealSong.Raw.releaseTypes */
     var releaseTypes: List<String> = listOf(),
-    /** @see Artist.Raw.musicBrainzId */
+    /** @see RealSong.Raw.artistMusicBrainzIds */
     var artistMusicBrainzIds: List<String> = listOf(),
-    /** @see Artist.Raw.name */
+    /** @see RealSong.Raw.artistNames */
     var artistNames: List<String> = listOf(),
-    /** @see Artist.Raw.sortName */
+    /** @see RealSong.Raw.artistSortNames */
     var artistSortNames: List<String> = listOf(),
-    /** @see Artist.Raw.musicBrainzId */
+    /** @see RealSong.Raw.albumArtistMusicBrainzIds */
     var albumArtistMusicBrainzIds: List<String> = listOf(),
-    /** @see Artist.Raw.name */
+    /** @see RealSong.Raw.albumArtistNames */
     var albumArtistNames: List<String> = listOf(),
-    /** @see Artist.Raw.sortName */
+    /** @see RealSong.Raw.albumArtistSortNames */
     var albumArtistSortNames: List<String> = listOf(),
-    /** @see Genre.Raw.name */
+    /** @see RealSong.Raw.genreNames */
     var genreNames: List<String> = listOf()
 ) {
     fun copyToRaw(rawSong: RealSong.Raw): CachedSong {

@@ -12,13 +12,14 @@
         android:layout_height="match_parent">
 
         <TextView
-            style="@style/Widget.Auxio.TextView.Header"
             android:id="@+id/dirs_mode_header"
+            style="@style/Widget.Auxio.TextView.Header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/spacing_large"
             android:paddingEnd="@dimen/spacing_large"
-            android:text="@string/set_dirs_mode" />
+            android:text="@string/set_dirs_mode"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <com.google.android.material.button.MaterialButtonToggleGroup

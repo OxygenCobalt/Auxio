@@ -129,7 +129,7 @@ class WidgetComponent(private val context: Context) :
 
     /**
      * A condensed form of the playback state that is safe to use in AppWidgets.
-     * @param song [PlaybackStateManager.song]
+     * @param song [Queue.currentSong]
      * @param cover A pre-loaded album cover [Bitmap] for [song].
      * @param isPlaying [PlaybackStateManager.playerState]
      * @param repeatMode [PlaybackStateManager.repeatMode]

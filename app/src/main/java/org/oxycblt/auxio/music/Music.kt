@@ -225,6 +225,7 @@ sealed interface Music : Item {
  * @author Alexander Capehart (OxygenCobalt)
  */
 sealed interface MusicParent : Music {
+    /** The child [Song]s of this [MusicParent]. */
     val songs: List<Song>
 }
 
@@ -337,10 +338,6 @@ interface Album : MusicParent {
 /**
  * An abstract artist. These are actually a combination of the artist and album artist tags from
  * within the library, derived from [Song]s and [Album]s respectively.
- * @param raw The [Artist.Raw] to derive the member data from.
- * @param songAlbums A list of the [Song]s and [Album]s that are a part of this [Artist], either
- * through artist or album artist tags. Providing [Song]s to the artist is optional. These instances
- * will be linked to this [Artist].
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Artist : MusicParent {

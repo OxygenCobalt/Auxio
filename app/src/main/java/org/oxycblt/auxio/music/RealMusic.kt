@@ -401,7 +401,7 @@ class RealAlbum(val raw: Raw, override val songs: List<RealSong>) : Album {
         val sortName: String?,
         /** @see Album.releaseType */
         val releaseType: ReleaseType?,
-        /** @see Artist.Raw.name */
+        /** @see RealArtist.Raw.name */
         val rawArtists: List<RealArtist.Raw>
     ) {
         // Albums are grouped as follows:
@@ -694,29 +694,6 @@ fun MessageDigest.update(n: Int?) {
     }
 }
 
-/** Cached collator instance re-used with [makeCollationKey]. */
-private val COLLATOR: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
-
-/**
- * Provided implementation to create a [CollationKey] in the way described by [collationKey]. This
- * should be used in all overrides of all [CollationKey].
- * @param music The [Music] to create the [CollationKey] for.
- * @return A [CollationKey] that follows the specification described by [collationKey].
- */
-private fun makeCollationKey(music: Music): CollationKey? {
-    val sortName =
-        (music.rawSortName ?: music.rawName)?.run {
-            when {
-                length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
-                length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
-                length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
-                else -> this
-            }
-        }
-
-    return COLLATOR.getCollationKey(sortName)
-}
-
 /**
  * Join a list of [Music]'s resolved names into a string in a localized manner, using
  * [R.string.fmt_list].
@@ -736,4 +713,27 @@ private fun resolveNames(context: Context, values: List<Music>): String {
         joined = context.getString(R.string.fmt_list, joined, values[i].resolveName(context))
     }
     return joined
+}
+
+/** Cached collator instance re-used with [makeCollationKey]. */
+private val COLLATOR: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
+
+/**
+ * Provided implementation to create a [CollationKey] in the way described by [Music.collationKey].
+ * This should be used in all overrides of all [CollationKey].
+ * @param music The [Music] to create the [CollationKey] for.
+ * @return A [CollationKey] that follows the specification described by [Music.collationKey].
+ */
+private fun makeCollationKey(music: Music): CollationKey? {
+    val sortName =
+        (music.rawSortName ?: music.rawName)?.run {
+            when {
+                length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
+                length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
+                length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
+                else -> this
+            }
+        }
+
+    return COLLATOR.getCollationKey(sortName)
 }

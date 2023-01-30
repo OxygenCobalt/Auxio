@@ -51,23 +51,23 @@ class MusicTest {
     @Test
     fun albumRaw_equals_inconsistentCase() {
         val a =
-            Album.Raw(
+            RealAlbum.Raw(
                 mediaStoreId = -1,
                 musicBrainzId = null,
                 name = "Paraglow",
                 sortName = null,
                 releaseType = null,
                 rawArtists =
-                    listOf(Artist.Raw(name = "Parannoul"), Artist.Raw(name = "Asian Glow")))
+                    listOf(RealArtist.Raw(name = "Parannoul"), RealArtist.Raw(name = "Asian Glow")))
         val b =
-            Album.Raw(
+            RealAlbum.Raw(
                 mediaStoreId = -1,
                 musicBrainzId = null,
                 name = "paraglow",
                 sortName = null,
                 releaseType = null,
                 rawArtists =
-                    listOf(Artist.Raw(name = "Parannoul"), Artist.Raw(name = "Asian glow")))
+                    listOf(RealArtist.Raw(name = "Parannoul"), RealArtist.Raw(name = "Asian glow")))
         assertTrue(a == b)
         assertTrue(a.hashCode() == b.hashCode())
     }
@@ -75,21 +75,21 @@ class MusicTest {
     @Test
     fun albumRaw_equals_withMbids() {
         val a =
-            Album.Raw(
+            RealAlbum.Raw(
                 mediaStoreId = -1,
                 musicBrainzId = UUID.fromString("c7b245c9-8099-32ea-af95-893acedde2cf"),
                 name = "Weezer",
                 sortName = "Blue Album",
                 releaseType = null,
-                rawArtists = listOf(Artist.Raw(name = "Weezer")))
+                rawArtists = listOf(RealArtist.Raw(name = "Weezer")))
         val b =
-            Album.Raw(
+            RealAlbum.Raw(
                 mediaStoreId = -1,
                 musicBrainzId = UUID.fromString("923d5ba6-7eee-3bce-bcb2-c913b2bd69d4"),
                 name = "Weezer",
                 sortName = "Green Album",
                 releaseType = null,
-                rawArtists = listOf(Artist.Raw(name = "Weezer")))
+                rawArtists = listOf(RealArtist.Raw(name = "Weezer")))
         assertTrue(a != b)
         assertTrue(a.hashCode() != b.hashCode())
     }
@@ -97,51 +97,51 @@ class MusicTest {
     @Test
     fun albumRaw_equals_inconsistentMbids() {
         val a =
-            Album.Raw(
+            RealAlbum.Raw(
                 mediaStoreId = -1,
                 musicBrainzId = UUID.fromString("c7b245c9-8099-32ea-af95-893acedde2cf"),
                 name = "Weezer",
                 sortName = "Blue Album",
                 releaseType = null,
-                rawArtists = listOf(Artist.Raw(name = "Weezer")))
+                rawArtists = listOf(RealArtist.Raw(name = "Weezer")))
         val b =
-            Album.Raw(
+            RealAlbum.Raw(
                 mediaStoreId = -1,
                 musicBrainzId = null,
                 name = "Weezer",
                 sortName = "Green Album",
                 releaseType = null,
-                rawArtists = listOf(Artist.Raw(name = "Weezer")))
+                rawArtists = listOf(RealArtist.Raw(name = "Weezer")))
         assertTrue(a != b)
         assertTrue(a.hashCode() != b.hashCode())
     }
 
     @Test
-    fun albumRaw_equals_withArtists() {
+    fun albumRaw_equals_withRealArtists() {
         val a =
-            Album.Raw(
+            RealAlbum.Raw(
                 mediaStoreId = -1,
                 musicBrainzId = null,
                 name = "Album",
                 sortName = null,
                 releaseType = null,
-                rawArtists = listOf(Artist.Raw(name = "Artist A")))
+                rawArtists = listOf(RealArtist.Raw(name = "RealArtist A")))
         val b =
-            Album.Raw(
+            RealAlbum.Raw(
                 mediaStoreId = -1,
                 musicBrainzId = null,
                 name = "Album",
                 sortName = null,
                 releaseType = null,
-                rawArtists = listOf(Artist.Raw(name = "Artist B")))
+                rawArtists = listOf(RealArtist.Raw(name = "RealArtist B")))
         assertTrue(a != b)
         assertTrue(a.hashCode() != b.hashCode())
     }
 
     @Test
     fun artistRaw_equals_inconsistentCase() {
-        val a = Artist.Raw(musicBrainzId = null, name = "Parannoul")
-        val b = Artist.Raw(musicBrainzId = null, name = "parannoul")
+        val a = RealArtist.Raw(musicBrainzId = null, name = "Parannoul")
+        val b = RealArtist.Raw(musicBrainzId = null, name = "parannoul")
         assertTrue(a == b)
         assertTrue(a.hashCode() == b.hashCode())
     }
@@ -149,11 +149,11 @@ class MusicTest {
     @Test
     fun artistRaw_equals_withMbids() {
         val a =
-            Artist.Raw(
+            RealArtist.Raw(
                 musicBrainzId = UUID.fromString("677325ef-d850-44bb-8258-0d69bbc0b3f7"),
                 name = "Artist")
         val b =
-            Artist.Raw(
+            RealArtist.Raw(
                 musicBrainzId = UUID.fromString("6b625592-d88d-48c8-ac1a-c5b476d78bcc"),
                 name = "Artist")
         assertTrue(a != b)
@@ -163,50 +163,50 @@ class MusicTest {
     @Test
     fun artistRaw_equals_inconsistentMbids() {
         val a =
-            Artist.Raw(
+            RealArtist.Raw(
                 musicBrainzId = UUID.fromString("677325ef-d850-44bb-8258-0d69bbc0b3f7"),
                 name = "Artist")
-        val b = Artist.Raw(musicBrainzId = null, name = "Artist")
+        val b = RealArtist.Raw(musicBrainzId = null, name = "Artist")
         assertTrue(a != b)
         assertTrue(a.hashCode() != b.hashCode())
     }
 
     @Test
     fun artistRaw_equals_missingNames() {
-        val a = Artist.Raw(name = null)
-        val b = Artist.Raw(name = null)
+        val a = RealArtist.Raw(name = null)
+        val b = RealArtist.Raw(name = null)
         assertTrue(a == b)
         assertTrue(a.hashCode() == b.hashCode())
     }
 
     @Test
     fun artistRaw_equals_inconsistentNames() {
-        val a = Artist.Raw(name = null)
-        val b = Artist.Raw(name = "Parannoul")
+        val a = RealArtist.Raw(name = null)
+        val b = RealArtist.Raw(name = "Parannoul")
         assertTrue(a != b)
         assertTrue(a.hashCode() != b.hashCode())
     }
 
     @Test
     fun genreRaw_equals_inconsistentCase() {
-        val a = Genre.Raw("Future Garage")
-        val b = Genre.Raw("future garage")
+        val a = RealGenre.Raw("Future Garage")
+        val b = RealGenre.Raw("future garage")
         assertTrue(a == b)
         assertTrue(a.hashCode() == b.hashCode())
     }
 
     @Test
     fun genreRaw_equals_missingNames() {
-        val a = Genre.Raw(name = null)
-        val b = Genre.Raw(name = null)
+        val a = RealGenre.Raw(name = null)
+        val b = RealGenre.Raw(name = null)
         assertTrue(a == b)
         assertTrue(a.hashCode() == b.hashCode())
     }
 
     @Test
     fun genreRaw_equals_inconsistentNames() {
-        val a = Genre.Raw(name = null)
-        val b = Genre.Raw(name = "Future Garage")
+        val a = RealGenre.Raw(name = null)
+        val b = RealGenre.Raw(name = "Future Garage")
         assertTrue(a != b)
         assertTrue(a.hashCode() != b.hashCode())
     }

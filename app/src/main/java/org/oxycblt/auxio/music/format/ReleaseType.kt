@@ -125,7 +125,7 @@ sealed class ReleaseType {
     }
 
     /**
-     * A Mix-tape. These are usually [EP]-sized releases of music made to promote an [Artist] or a
+     * A Mix-tape. These are usually [EP]-sized releases of music made to promote an Artist or a
      * future release.
      */
     object Mixtape : ReleaseType() {
@@ -141,7 +141,7 @@ sealed class ReleaseType {
         /** A release consisting of a live performance */
         LIVE,
 
-        /** A release consisting of another [Artist]s remix of a prior performance. */
+        /** A release consisting of another Artists remix of a prior performance. */
         REMIX
     }
 
