@@ -279,4 +279,5 @@
     <string name="set_audio_desc">Настройка звука и поведения при воспроизведении</string>
     <string name="set_playback">Воспроизведение</string>
     <string name="set_dirs_list">Папки</string>
+    <string name="set_state">Настойчивость</string>
 </resources>
