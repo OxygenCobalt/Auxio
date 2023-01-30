@@ -319,7 +319,8 @@ class RealAlbum(val raw: Raw, override val songs: List<RealSong>) : Album {
     // Note: Append song contents to MusicParent equality so that Groups with
     // the same UID but different contents are not equal.
     override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
-    override fun equals(other: Any?) = other is Album && uid == other.uid && songs == other.songs
+    override fun equals(other: Any?) =
+        other is RealAlbum && uid == other.uid && songs == other.songs
 
     private val _artists = mutableListOf<RealArtist>()
     override val artists: List<Artist>
@@ -455,7 +456,8 @@ class RealArtist constructor(private val raw: Raw, songAlbums: List<Music>) : Ar
     // Note: Append song contents to MusicParent equality so that Groups with
     // the same UID but different contents are not equal.
     override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
-    override fun equals(other: Any?) = other is Album && uid == other.uid && songs == other.songs
+    override fun equals(other: Any?) =
+        other is RealArtist && uid == other.uid && songs == other.songs
 
     override lateinit var genres: List<Genre>
     override fun resolveGenreContents(context: Context) = resolveNames(context, genres)
@@ -581,7 +583,8 @@ class RealGenre constructor(private val raw: Raw, override val songs: List<RealS
     // Note: Append song contents to MusicParent equality so that Groups with
     // the same UID but different contents are not equal.
     override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
-    override fun equals(other: Any?) = other is Album && uid == other.uid && songs == other.songs
+    override fun equals(other: Any?) =
+        other is RealGenre && uid == other.uid && songs == other.songs
 
     init {
         val distinctAlbums = mutableSetOf<Album>()
