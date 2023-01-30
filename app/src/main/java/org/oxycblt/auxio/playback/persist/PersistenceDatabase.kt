@@ -69,7 +69,7 @@ abstract class PersistenceDatabase : RoomDatabase() {
             synchronized(this) {
                 val newInstance =
                     Room.databaseBuilder(
-                            context,
+                            context.applicationContext,
                             PersistenceDatabase::class.java,
                             "auxio_playback_persistence.db")
                         .fallbackToDestructiveMigration()

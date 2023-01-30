@@ -187,7 +187,9 @@ private abstract class CacheDatabase : RoomDatabase() {
             synchronized(this) {
                 val newInstance =
                     Room.databaseBuilder(
-                            context, CacheDatabase::class.java, "auxio_metadata_cache.db")
+                            context.applicationContext,
+                            CacheDatabase::class.java,
+                            "auxio_metadata_cache.db")
                         .fallbackToDestructiveMigration()
                         .fallbackToDestructiveMigrationFrom(0)
                         .fallbackToDestructiveMigrationOnDowngrade()

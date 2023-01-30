@@ -280,6 +280,7 @@ interface PlaybackStateManager {
          */
         fun get(): PlaybackStateManager {
             val currentInstance = INSTANCE
+            logD(currentInstance)
 
             if (currentInstance != null) {
                 return currentInstance
@@ -553,6 +554,7 @@ private class RealPlaybackStateManager : PlaybackStateManager {
             // Internal player may have reloaded the media item, re-seek to the previous position
             seekTo(savedState.positionMs)
         }
+        isInitialized = true
     }
 
     // --- CALLBACKS ---
