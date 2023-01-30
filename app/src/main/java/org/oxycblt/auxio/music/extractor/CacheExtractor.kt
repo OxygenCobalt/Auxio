@@ -28,6 +28,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import org.oxycblt.auxio.music.RealSong
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.format.Date
 import org.oxycblt.auxio.music.parsing.correctWhitespace
@@ -45,20 +46,20 @@ interface CacheExtractor {
     suspend fun init()
 
     /**
-     * Finalize the Extractor by writing the newly-loaded [Song.Raw]s back into the cache, alongside
-     * freeing up memory.
+     * Finalize the Extractor by writing the newly-loaded [RealSong.Raw]s back into the cache,
+     * alongside freeing up memory.
      * @param rawSongs The songs to write into the cache.
      */
-    suspend fun finalize(rawSongs: List<Song.Raw>)
+    suspend fun finalize(rawSongs: List<RealSong.Raw>)
 
     /**
-     * Use the cache to populate the given [Song.Raw].
-     * @param rawSong The [Song.Raw] to attempt to populate. Note that this [Song.Raw] will only
-     * contain the bare minimum information required to load a cache entry.
+     * Use the cache to populate the given [RealSong.Raw].
+     * @param rawSong The [RealSong.Raw] to attempt to populate. Note that this [RealSong.Raw] will
+     * only contain the bare minimum information required to load a cache entry.
      * @return An [ExtractionResult] representing the result of the operation.
      * [ExtractionResult.PARSED] is not returned.
      */
-    fun populate(rawSong: Song.Raw): ExtractionResult
+    fun populate(rawSong: RealSong.Raw): ExtractionResult
 
     companion object {
         /**
@@ -90,7 +91,7 @@ private open class WriteOnlyCacheExtractor(private val context: Context) : Cache
         // Nothing to do.
     }
 
-    override suspend fun finalize(rawSongs: List<Song.Raw>) {
+    override suspend fun finalize(rawSongs: List<RealSong.Raw>) {
         try {
             // Still write out whatever data was extracted.
             cacheDao.nukeCache()
@@ -101,7 +102,7 @@ private open class WriteOnlyCacheExtractor(private val context: Context) : Cache
         }
     }
 
-    override fun populate(rawSong: Song.Raw) =
+    override fun populate(rawSong: RealSong.Raw) =
         // Nothing to do.
         ExtractionResult.NONE
 }
@@ -133,7 +134,7 @@ private class ReadWriteCacheExtractor(private val context: Context) :
         }
     }
 
-    override suspend fun finalize(rawSongs: List<Song.Raw>) {
+    override suspend fun finalize(rawSongs: List<RealSong.Raw>) {
         cacheMap = null
         // Same some time by not re-writing the cache if we were able to create the entire
         // library from it. If there is even just one song we could not populate from the
@@ -144,7 +145,7 @@ private class ReadWriteCacheExtractor(private val context: Context) :
         }
     }
 
-    override fun populate(rawSong: Song.Raw): ExtractionResult {
+    override fun populate(rawSong: RealSong.Raw): ExtractionResult {
         val map = cacheMap ?: return ExtractionResult.NONE
 
         // For a cached raw song to be used, it must exist within the cache and have matching
@@ -260,7 +261,7 @@ private data class CachedSong(
     /** @see Genre.Raw.name */
     var genreNames: List<String> = listOf()
 ) {
-    fun copyToRaw(rawSong: Song.Raw): CachedSong {
+    fun copyToRaw(rawSong: RealSong.Raw): CachedSong {
         rawSong.musicBrainzId = musicBrainzId
         rawSong.name = name
         rawSong.sortName = sortName
@@ -305,7 +306,7 @@ private data class CachedSong(
     companion object {
         const val TABLE_NAME = "cached_songs"
 
-        fun fromRaw(rawSong: Song.Raw) =
+        fun fromRaw(rawSong: RealSong.Raw) =
             CachedSong(
                 mediaStoreId =
                     requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No MediaStore ID" },

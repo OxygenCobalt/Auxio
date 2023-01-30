@@ -337,12 +337,12 @@ private class RealIndexer : Indexer {
         // Build the rest of the music library from the song list. This is much more powerful
         // and reliable compared to using MediaStore to obtain grouping information.
         val buildStart = System.currentTimeMillis()
-        val library = Library(rawSongs, MusicSettings.from(context))
+        val library = Library.from(rawSongs, MusicSettings.from(context))
         logD("Successfully built library in ${System.currentTimeMillis() - buildStart}ms")
         return library
     }
 
-    private suspend fun loadRawSongs(metadataExtractor: MetadataExtractor): List<Song.Raw> {
+    private suspend fun loadRawSongs(metadataExtractor: MetadataExtractor): List<RealSong.Raw> {
         logD("Starting indexing process")
         val start = System.currentTimeMillis()
         // Start initializing the extractors. Use an indeterminate state, as there is no ETA on
@@ -352,7 +352,7 @@ private class RealIndexer : Indexer {
         yield()
 
         // Note: We use a set here so we can eliminate song duplicates.
-        val rawSongs = mutableListOf<Song.Raw>()
+        val rawSongs = mutableListOf<RealSong.Raw>()
         metadataExtractor.extract().collect { rawSong ->
             rawSongs.add(rawSong)
             // Now we can signal a defined progress by showing how many songs we have

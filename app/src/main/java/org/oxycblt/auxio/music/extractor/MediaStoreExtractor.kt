@@ -28,7 +28,7 @@ import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import java.io.File
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.RealSong
 import org.oxycblt.auxio.music.format.Date
 import org.oxycblt.auxio.music.parsing.parseId3v2PositionField
 import org.oxycblt.auxio.music.parsing.transformPositionField
@@ -191,11 +191,11 @@ abstract class MediaStoreExtractor(
     }
 
     /**
-     * Finalize the Extractor by writing the newly-loaded [Song.Raw]s back into the cache, alongside
-     * freeing up memory.
+     * Finalize the Extractor by writing the newly-loaded [RealSong.Raw]s back into the cache,
+     * alongside freeing up memory.
      * @param rawSongs The songs to write into the cache.
      */
-    open suspend fun finalize(rawSongs: List<Song.Raw>) {
+    open suspend fun finalize(rawSongs: List<RealSong.Raw>) {
         // Free the cursor (and it's resources)
         cursor?.close()
         cursor = null
@@ -203,12 +203,12 @@ abstract class MediaStoreExtractor(
     }
 
     /**
-     * Populate a [Song.Raw] with the next [Cursor] value provided by [MediaStore].
-     * @param raw The [Song.Raw] to populate.
+     * Populate a [RealSong.Raw] with the next [Cursor] value provided by [MediaStore].
+     * @param raw The [RealSong.Raw] to populate.
      * @return An [ExtractionResult] signifying the result of the operation. Will return
      * [ExtractionResult.CACHED] if [CacheExtractor] returned it.
      */
-    fun populate(raw: Song.Raw): ExtractionResult {
+    fun populate(raw: RealSong.Raw): ExtractionResult {
         val cursor = requireNotNull(cursor) { "MediaStoreLayer is not properly initialized" }
         // Move to the next cursor, stopping if we have exhausted it.
         if (!cursor.moveToNext()) {
@@ -268,15 +268,15 @@ abstract class MediaStoreExtractor(
     protected abstract fun addDirToSelector(dir: Directory, args: MutableList<String>): Boolean
 
     /**
-     * Populate a [Song.Raw] with the "File Data" of the given [MediaStore] [Cursor], which is the
-     * data that cannot be cached. This includes any information not intrinsic to the file and
+     * Populate a [RealSong.Raw] with the "File Data" of the given [MediaStore] [Cursor], which is
+     * the data that cannot be cached. This includes any information not intrinsic to the file and
      * instead dependent on the file-system, which could change without invalidating the cache due
      * to volume additions or removals.
      * @param cursor The [Cursor] to read from.
-     * @param raw The [Song.Raw] to populate.
+     * @param raw The [RealSong.Raw] to populate.
      * @see populateMetadata
      */
-    protected open fun populateFileData(cursor: Cursor, raw: Song.Raw) {
+    protected open fun populateFileData(cursor: Cursor, raw: RealSong.Raw) {
         raw.mediaStoreId = cursor.getLong(idIndex)
         raw.dateAdded = cursor.getLong(dateAddedIndex)
         raw.dateModified = cursor.getLong(dateAddedIndex)
@@ -288,14 +288,14 @@ abstract class MediaStoreExtractor(
     }
 
     /**
-     * Populate a [Song.Raw] with the Metadata of the given [MediaStore] [Cursor], which is the data
-     * about a [Song.Raw] that can be cached. This includes any information intrinsic to the file or
-     * it's file format, such as music tags.
+     * Populate a [RealSong.Raw] with the Metadata of the given [MediaStore] [Cursor], which is the
+     * data about a [RealSong.Raw] that can be cached. This includes any information intrinsic to
+     * the file or it's file format, such as music tags.
      * @param cursor The [Cursor] to read from.
-     * @param raw The [Song.Raw] to populate.
+     * @param raw The [RealSong.Raw] to populate.
      * @see populateFileData
      */
-    protected open fun populateMetadata(cursor: Cursor, raw: Song.Raw) {
+    protected open fun populateMetadata(cursor: Cursor, raw: RealSong.Raw) {
         // Song title
         raw.name = cursor.getString(titleIndex)
         // Size (in bytes)
@@ -408,7 +408,7 @@ private class Api21MediaStoreExtractor(context: Context, cacheExtractor: CacheEx
         return true
     }
 
-    override fun populateFileData(cursor: Cursor, raw: Song.Raw) {
+    override fun populateFileData(cursor: Cursor, raw: RealSong.Raw) {
         super.populateFileData(cursor, raw)
 
         val data = cursor.getString(dataIndex)
@@ -434,7 +434,7 @@ private class Api21MediaStoreExtractor(context: Context, cacheExtractor: CacheEx
         }
     }
 
-    override fun populateMetadata(cursor: Cursor, raw: Song.Raw) {
+    override fun populateMetadata(cursor: Cursor, raw: RealSong.Raw) {
         super.populateMetadata(cursor, raw)
         // See unpackTrackNo/unpackDiscNo for an explanation
         // of how this column is set up.
@@ -495,7 +495,7 @@ private open class BaseApi29MediaStoreExtractor(context: Context, cacheExtractor
         return true
     }
 
-    override fun populateFileData(cursor: Cursor, raw: Song.Raw) {
+    override fun populateFileData(cursor: Cursor, raw: RealSong.Raw) {
         super.populateFileData(cursor, raw)
         // Find the StorageVolume whose MediaStore name corresponds to this song.
         // This is combined with the plain relative path column to create the directory.
@@ -530,7 +530,7 @@ private open class Api29MediaStoreExtractor(context: Context, cacheExtractor: Ca
     override val projection: Array<String>
         get() = super.projection + arrayOf(MediaStore.Audio.AudioColumns.TRACK)
 
-    override fun populateMetadata(cursor: Cursor, raw: Song.Raw) {
+    override fun populateMetadata(cursor: Cursor, raw: RealSong.Raw) {
         super.populateMetadata(cursor, raw)
         // This extractor is volume-aware, but does not support the modern track columns.
         // Use the old column instead. See unpackTrackNo/unpackDiscNo for an explanation
@@ -573,7 +573,7 @@ private class Api30MediaStoreExtractor(context: Context, cacheExtractor: CacheEx
                     MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER,
                     MediaStore.Audio.AudioColumns.DISC_NUMBER)
 
-    override fun populateMetadata(cursor: Cursor, raw: Song.Raw) {
+    override fun populateMetadata(cursor: Cursor, raw: RealSong.Raw) {
         super.populateMetadata(cursor, raw)
         // Both CD_TRACK_NUMBER and DISC_NUMBER tend to be formatted as they are in
         // the tag itself, which is to say that it is formatted as NN/TT tracks, where

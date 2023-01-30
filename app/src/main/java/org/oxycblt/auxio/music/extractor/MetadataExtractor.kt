@@ -22,7 +22,7 @@ import androidx.core.text.isDigitsOnly
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
 import kotlinx.coroutines.flow.flow
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.RealSong
 import org.oxycblt.auxio.music.format.Date
 import org.oxycblt.auxio.music.format.TextTags
 import org.oxycblt.auxio.music.parsing.parseId3v2PositionField
@@ -57,20 +57,20 @@ class MetadataExtractor(
     suspend fun init() = mediaStoreExtractor.init().count
 
     /**
-     * Finalize the Extractor by writing the newly-loaded [Song.Raw]s back into the cache, alongside
-     * freeing up memory.
+     * Finalize the Extractor by writing the newly-loaded [RealSong.Raw]s back into the cache,
+     * alongside freeing up memory.
      * @param rawSongs The songs to write into the cache.
      */
-    suspend fun finalize(rawSongs: List<Song.Raw>) = mediaStoreExtractor.finalize(rawSongs)
+    suspend fun finalize(rawSongs: List<RealSong.Raw>) = mediaStoreExtractor.finalize(rawSongs)
 
     /**
-     * Returns a flow that parses all [Song.Raw] instances queued by the sub-extractors. This will
-     * first delegate to the sub-extractors before parsing the metadata itself.
-     * @return A flow of [Song.Raw] instances.
+     * Returns a flow that parses all [RealSong.Raw] instances queued by the sub-extractors. This
+     * will first delegate to the sub-extractors before parsing the metadata itself.
+     * @return A flow of [RealSong.Raw] instances.
      */
     fun extract() = flow {
         while (true) {
-            val raw = Song.Raw()
+            val raw = RealSong.Raw()
             when (mediaStoreExtractor.populate(raw)) {
                 ExtractionResult.NONE -> break
                 ExtractionResult.PARSED -> {}
@@ -122,12 +122,12 @@ class MetadataExtractor(
 }
 
 /**
- * Wraps a [MetadataExtractor] future and processes it into a [Song.Raw] when completed.
+ * Wraps a [MetadataExtractor] future and processes it into a [RealSong.Raw] when completed.
  * @param context [Context] required to open the audio file.
- * @param raw [Song.Raw] to process.
+ * @param raw [RealSong.Raw] to process.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class Task(context: Context, private val raw: Song.Raw) {
+class Task(context: Context, private val raw: RealSong.Raw) {
     // Note that we do not leverage future callbacks. This is because errors in the
     // (highly fallible) extraction process will not bubble up to Indexer when a
     // listener is used, instead crashing the app entirely.
@@ -139,9 +139,9 @@ class Task(context: Context, private val raw: Song.Raw) {
 
     /**
      * Try to get a completed song from this [Task], if it has finished processing.
-     * @return A [Song.Raw] instance if processing has completed, null otherwise.
+     * @return A [RealSong.Raw] instance if processing has completed, null otherwise.
      */
-    fun get(): Song.Raw? {
+    fun get(): RealSong.Raw? {
         if (!future.isDone) {
             // Not done yet, nothing to do.
             return null
@@ -173,7 +173,7 @@ class Task(context: Context, private val raw: Song.Raw) {
     }
 
     /**
-     * Complete this instance's [Song.Raw] with ID3v2 Text Identification Frames.
+     * Complete this instance's [RealSong.Raw] with ID3v2 Text Identification Frames.
      * @param textFrames A mapping between ID3v2 Text Identification Frame IDs and one or more
      * values.
      */
@@ -272,7 +272,7 @@ class Task(context: Context, private val raw: Song.Raw) {
     }
 
     /**
-     * Complete this instance's [Song.Raw] with Vorbis comments.
+     * Complete this instance's [RealSong.Raw] with Vorbis comments.
      * @param comments A mapping between vorbis comment names and one or more vorbis comment values.
      */
     private fun populateWithVorbis(comments: Map<String, List<String>>) {

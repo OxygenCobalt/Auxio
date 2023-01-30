@@ -55,7 +55,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
      * @param songs The list of [Song]s.
      * @return A new list of [Song]s sorted by this [Sort]'s configuration.
      */
-    fun songs(songs: Collection<Song>): List<Song> {
+    fun <T : Song> songs(songs: Collection<T>): List<T> {
         val mutable = songs.toMutableList()
         songsInPlace(mutable)
         return mutable
@@ -66,7 +66,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
      * @param albums The list of [Album]s.
      * @return A new list of [Album]s sorted by this [Sort]'s configuration.
      */
-    fun albums(albums: Collection<Album>): List<Album> {
+    fun <T : Album> albums(albums: Collection<T>): List<T> {
         val mutable = albums.toMutableList()
         albumsInPlace(mutable)
         return mutable
@@ -77,7 +77,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
      * @param artists The list of [Artist]s.
      * @return A new list of [Artist]s sorted by this [Sort]'s configuration.
      */
-    fun artists(artists: Collection<Artist>): List<Artist> {
+    fun <T : Artist> artists(artists: Collection<T>): List<T> {
         val mutable = artists.toMutableList()
         artistsInPlace(mutable)
         return mutable
@@ -88,7 +88,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
      * @param genres The list of [Genre]s.
      * @return A new list of [Genre]s sorted by this [Sort]'s configuration.
      */
-    fun genres(genres: Collection<Genre>): List<Genre> {
+    fun <T : Genre> genres(genres: Collection<T>): List<T> {
         val mutable = genres.toMutableList()
         genresInPlace(mutable)
         return mutable
@@ -98,7 +98,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
      * Sort a *mutable* list of [Song]s in-place using this [Sort]'s configuration.
      * @param songs The [Song]s to sort.
      */
-    private fun songsInPlace(songs: MutableList<Song>) {
+    private fun songsInPlace(songs: MutableList<out Song>) {
         songs.sortWith(mode.getSongComparator(isAscending))
     }
 
@@ -106,7 +106,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
      * Sort a *mutable* list of [Album]s in-place using this [Sort]'s configuration.
      * @param albums The [Album]s to sort.
      */
-    private fun albumsInPlace(albums: MutableList<Album>) {
+    private fun albumsInPlace(albums: MutableList<out Album>) {
         albums.sortWith(mode.getAlbumComparator(isAscending))
     }
 
@@ -114,7 +114,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
      * Sort a *mutable* list of [Artist]s in-place using this [Sort]'s configuration.
      * @param artists The [Album]s to sort.
      */
-    private fun artistsInPlace(artists: MutableList<Artist>) {
+    private fun artistsInPlace(artists: MutableList<out Artist>) {
         artists.sortWith(mode.getArtistComparator(isAscending))
     }
 
@@ -122,7 +122,7 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
      * Sort a *mutable* list of [Genre]s in-place using this [Sort]'s configuration.
      * @param genres The [Genre]s to sort.
      */
-    private fun genresInPlace(genres: MutableList<Genre>) {
+    private fun genresInPlace(genres: MutableList<out Genre>) {
         genres.sortWith(mode.getGenreComparator(isAscending))
     }
 

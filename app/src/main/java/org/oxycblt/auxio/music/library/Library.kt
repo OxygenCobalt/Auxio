@@ -34,23 +34,70 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart
  */
-class Library(rawSongs: List<Song.Raw>, settings: MusicSettings) {
-    /** All [Song]s that were detected on the device. */
-    val songs = Sort(Sort.Mode.ByName, true).songs(rawSongs.map { Song(it, settings) }.distinct())
-    /** All [Album]s found on the device. */
-    val albums = buildAlbums(songs)
-    /** All [Artist]s found on the device. */
-    val artists = buildArtists(songs, albums)
-    /** All [Genre]s found on the device. */
-    val genres = buildGenres(songs)
+interface Library {
+    /** All [Song]s in this [Library]. */
+    val songs: List<Song>
+    /** All [Album]s in this [Library]. */
+    val albums: List<Album>
+    /** All [Artist]s in this [Library]. */
+    val artists: List<Artist>
+    /** All [Genre]s in this [Library]. */
+    val genres: List<Genre>
+
+    /**
+     * Finds a [Music] item [T] in the library by it's [Music.UID].
+     * @param uid The [Music.UID] to search for.
+     * @return The [T] corresponding to the given [Music.UID], or null if nothing could be found or
+     * the [Music.UID] did not correspond to a [T].
+     */
+    fun <T : Music> find(uid: Music.UID): T?
+
+    /**
+     * Convert a [Song] from an another library into a [Song] in this [Library].
+     * @param song The [Song] to convert.
+     * @return The analogous [Song] in this [Library], or null if it does not exist.
+     */
+    fun sanitize(song: Song): Song?
+
+    /**
+     * Convert a [MusicParent] from an another library into a [MusicParent] in this [Library].
+     * @param parent The [MusicParent] to convert.
+     * @return The analogous [Album] in this [Library], or null if it does not exist.
+     */
+    fun <T : MusicParent> sanitize(parent: T): T?
+
+    /**
+     * Find a [Song] instance corresponding to the given Intent.ACTION_VIEW [Uri].
+     * @param context [Context] required to analyze the [Uri].
+     * @param uri [Uri] to search for.
+     * @return A [Song] corresponding to the given [Uri], or null if one could not be found.
+     */
+    fun findSongForUri(context: Context, uri: Uri): Song?
+
+    companion object {
+        /**
+         * Create a library-backed instance of [Library].
+         * @param rawSongs [RealSong.Raw]s to create the library out of.
+         * @param settings [MusicSettings] required.
+         */
+        fun from(rawSongs: List<RealSong.Raw>, settings: MusicSettings): Library =
+            RealLibrary(rawSongs, settings)
+    }
+}
+
+private class RealLibrary(rawSongs: List<RealSong.Raw>, settings: MusicSettings) : Library {
+    override val songs =
+        Sort(Sort.Mode.ByName, true).songs(rawSongs.map { RealSong(it, settings) }.distinct())
+    override val albums = buildAlbums(songs)
+    override val artists = buildArtists(songs, albums)
+    override val genres = buildGenres(songs)
 
     // Use a mapping to make finding information based on it's UID much faster.
     private val uidMap = buildMap {
-        for (music in (songs + albums + artists + genres)) {
-            // Finalize all music in the same mapping creation loop for efficiency.
-            music._finalize()
-            this[music.uid] = music
-        }
+        songs.forEach { this[it.uid] = it.finalize() }
+        albums.forEach { this[it.uid] = it.finalize() }
+        artists.forEach { this[it.uid] = it.finalize() }
+        genres.forEach { this[it.uid] = it.finalize() }
     }
 
     /**
@@ -59,29 +106,13 @@ class Library(rawSongs: List<Song.Raw>, settings: MusicSettings) {
      * @return The [T] corresponding to the given [Music.UID], or null if nothing could be found or
      * the [Music.UID] did not correspond to a [T].
      */
-    @Suppress("UNCHECKED_CAST") fun <T : Music> find(uid: Music.UID) = uidMap[uid] as? T
+    @Suppress("UNCHECKED_CAST") override fun <T : Music> find(uid: Music.UID) = uidMap[uid] as? T
 
-    /**
-     * Convert a [Song] from an another library into a [Song] in this [Library].
-     * @param song The [Song] to convert.
-     * @return The analogous [Song] in this [Library], or null if it does not exist.
-     */
-    fun sanitize(song: Song) = find<Song>(song.uid)
+    override fun sanitize(song: Song) = find<Song>(song.uid)
 
-    /**
-     * Convert a [MusicParent] from an another library into a [MusicParent] in this [Library].
-     * @param parent The [MusicParent] to convert.
-     * @return The analogous [Album] in this [Library], or null if it does not exist.
-     */
-    fun <T : MusicParent> sanitize(parent: T) = find<T>(parent.uid)
+    override fun <T : MusicParent> sanitize(parent: T) = find<T>(parent.uid)
 
-    /**
-     * Find a [Song] instance corresponding to the given Intent.ACTION_VIEW [Uri].
-     * @param context [Context] required to analyze the [Uri].
-     * @param uri [Uri] to search for.
-     * @return A [Song] corresponding to the given [Uri], or null if one could not be found.
-     */
-    fun findSongForUri(context: Context, uri: Uri) =
+    override fun findSongForUri(context: Context, uri: Uri) =
         context.contentResolverSafe.useQuery(
             uri, arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE)) { cursor ->
             cursor.moveToFirst()
@@ -100,11 +131,11 @@ class Library(rawSongs: List<Song.Raw>, settings: MusicSettings) {
      * @return A non-empty list of [Album]s. These [Album]s will be incomplete and must be linked
      * with parent [Artist] instances in order to be usable.
      */
-    private fun buildAlbums(songs: List<Song>): List<Album> {
+    private fun buildAlbums(songs: List<RealSong>): List<RealAlbum> {
         // Group songs by their singular raw album, then map the raw instances and their
         // grouped songs to Album values. Album.Raw will handle the actual grouping rules.
-        val songsByAlbum = songs.groupBy { it._rawAlbum }
-        val albums = songsByAlbum.map { Album(it.key, it.value) }
+        val songsByAlbum = songs.groupBy { it.rawAlbum }
+        val albums = songsByAlbum.map { RealAlbum(it.key, it.value) }
         logD("Successfully built ${albums.size} albums")
         return albums
     }
@@ -122,25 +153,25 @@ class Library(rawSongs: List<Song.Raw>, settings: MusicSettings) {
      * @return A non-empty list of [Artist]s. These [Artist]s will consist of the combined groupings
      * of [Song]s and [Album]s.
      */
-    private fun buildArtists(songs: List<Song>, albums: List<Album>): List<Artist> {
+    private fun buildArtists(songs: List<RealSong>, albums: List<RealAlbum>): List<RealArtist> {
         // Add every raw artist credited to each Song/Album to the grouping. This way,
         // different multi-artist combinations are not treated as different artists.
-        val musicByArtist = mutableMapOf<Artist.Raw, MutableList<Music>>()
+        val musicByArtist = mutableMapOf<RealArtist.Raw, MutableList<Music>>()
 
         for (song in songs) {
-            for (rawArtist in song._rawArtists) {
+            for (rawArtist in song.rawArtists) {
                 musicByArtist.getOrPut(rawArtist) { mutableListOf() }.add(song)
             }
         }
 
         for (album in albums) {
-            for (rawArtist in album._rawArtists) {
+            for (rawArtist in album.rawArtists) {
                 musicByArtist.getOrPut(rawArtist) { mutableListOf() }.add(album)
             }
         }
 
         // Convert the combined mapping into artist instances.
-        val artists = musicByArtist.map { Artist(it.key, it.value) }
+        val artists = musicByArtist.map { RealArtist(it.key, it.value) }
         logD("Successfully built ${artists.size} artists")
         return artists
     }
@@ -152,18 +183,18 @@ class Library(rawSongs: List<Song.Raw>, settings: MusicSettings) {
      * created.
      * @return A non-empty list of [Genre]s.
      */
-    private fun buildGenres(songs: List<Song>): List<Genre> {
+    private fun buildGenres(songs: List<RealSong>): List<RealGenre> {
         // Add every raw genre credited to each Song to the grouping. This way,
         // different multi-genre combinations are not treated as different genres.
-        val songsByGenre = mutableMapOf<Genre.Raw, MutableList<Song>>()
+        val songsByGenre = mutableMapOf<RealGenre.Raw, MutableList<RealSong>>()
         for (song in songs) {
-            for (rawGenre in song._rawGenres) {
+            for (rawGenre in song.rawGenres) {
                 songsByGenre.getOrPut(rawGenre) { mutableListOf() }.add(song)
             }
         }
 
         // Convert the mapping into genre instances.
-        val genres = songsByGenre.map { Genre(it.key, it.value) }
+        val genres = songsByGenre.map { RealGenre(it.key, it.value) }
         logD("Successfully built ${genres.size} genres")
         return genres
     }
