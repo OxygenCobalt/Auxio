@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.library.Library
-import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewModel] that manages the current selection.

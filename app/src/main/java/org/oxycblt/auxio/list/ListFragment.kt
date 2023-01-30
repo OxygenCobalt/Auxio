@@ -21,7 +21,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.MainFragmentDirections
@@ -39,7 +38,7 @@ import org.oxycblt.auxio.util.showToast
  */
 abstract class ListFragment<in T : Music, VB : ViewBinding> :
     SelectionFragment<VB>(), SelectableListListener<T> {
-    protected val navModel: NavigationViewModel by activityViewModels()
+    protected abstract val navModel: NavigationViewModel
     private var currentMenu: PopupMenu? = null
 
     override fun onDestroyBinding(binding: VB) {

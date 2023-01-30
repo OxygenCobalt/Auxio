@@ -32,12 +32,16 @@ import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.list.adapter.ListDiffer
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.GenreViewHolder
+import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
+import org.oxycblt.auxio.ui.NavigationViewModel
+import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 
 /**
@@ -49,6 +53,9 @@ class GenreListFragment :
     FastScrollRecyclerView.PopupProvider,
     FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
+    override val navModel: NavigationViewModel by activityViewModels()
+    override val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    override val selectionModel: SelectionViewModel by activityViewModels()
     private val genreAdapter = GenreAdapter(this)
 
     override fun onCreateBinding(inflater: LayoutInflater) =

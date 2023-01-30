@@ -49,10 +49,12 @@ import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
 import org.oxycblt.auxio.list.selection.SelectionFragment
+import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.music.library.Sort
 import org.oxycblt.auxio.music.system.Indexer
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.*
@@ -67,6 +69,8 @@ class HomeFragment :
     private val homeModel: HomeViewModel by androidActivityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
+    override val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    override val selectionModel: SelectionViewModel by activityViewModels()
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

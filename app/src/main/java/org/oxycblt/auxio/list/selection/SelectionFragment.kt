@@ -20,12 +20,10 @@ package org.oxycblt.auxio.list.selection
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -34,8 +32,8 @@ import org.oxycblt.auxio.util.showToast
  */
 abstract class SelectionFragment<VB : ViewBinding> :
     ViewBindingFragment<VB>(), Toolbar.OnMenuItemClickListener {
-    protected val selectionModel: SelectionViewModel by activityViewModels()
-    protected val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    protected abstract val selectionModel: SelectionViewModel
+    protected abstract val playbackModel: PlaybackViewModel
 
     /**
      * Get the [SelectionToolbarOverlay] of the concrete Fragment to be automatically managed by

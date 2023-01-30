@@ -25,6 +25,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isInvisible
 import androidx.core.view.postDelayed
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialSharedAxis
 import org.oxycblt.auxio.R
@@ -32,12 +33,15 @@ import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.adapter.BasicListInstructions
+import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.*
 
 /**
@@ -51,6 +55,9 @@ import org.oxycblt.auxio.util.*
  */
 class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
     private val searchModel: SearchViewModel by androidViewModels()
+    override val navModel: NavigationViewModel by activityViewModels()
+    override val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    override val selectionModel: SelectionViewModel by activityViewModels()
     private val searchAdapter = SearchAdapter(this)
     private var imm: InputMethodManager? = null
     private var launchedKeyboard = false

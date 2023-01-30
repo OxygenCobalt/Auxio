@@ -32,6 +32,7 @@ import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.adapter.BasicListInstructions
+import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
@@ -39,6 +40,8 @@ import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.*
 
 /**
@@ -48,6 +51,9 @@ import org.oxycblt.auxio.util.*
 class AlbumDetailFragment :
     ListFragment<Song, FragmentDetailBinding>(), AlbumDetailAdapter.Listener {
     private val detailModel: DetailViewModel by activityViewModels()
+    override val navModel: NavigationViewModel by activityViewModels()
+    override val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    override val selectionModel: SelectionViewModel by activityViewModels()
     // Information about what album to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an album.
     private val args: AlbumDetailFragmentArgs by navArgs()
