@@ -15,17 +15,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.format
+package org.oxycblt.auxio.music.metadata
 
-import org.oxycblt.auxio.list.Item
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Test
 
-/**
- * A disc identifier for a song.
- * @param number The disc number.
- * @param name The name of the disc group, if any. Null if not present.
- */
-class Disc(val number: Int, val name: String?) : Item, Comparable<Disc> {
-    override fun hashCode() = number.hashCode()
-    override fun equals(other: Any?) = other is Disc && number == other.number
-    override fun compareTo(other: Disc) = number.compareTo(other.number)
+class DiscTest {
+    @Test
+    fun disc_compare() {
+        val a = Disc(1, "Part I")
+        val b = Disc(2, "Part II")
+        assertEquals(-1, a.compareTo(b))
+    }
+
+    @Test
+    fun disc_equals_correct() {
+        val a = Disc(1, "Part I")
+        val b = Disc(1, "Part I")
+        assertTrue(a == b)
+        assertTrue(a.hashCode() == b.hashCode())
+    }
+
+    @Test
+    fun disc_equals_inconsistentNames() {
+        val a = Disc(1, "Part I")
+        val b = Disc(1, null)
+        assertTrue(a == b)
+        assertTrue(a.hashCode() == b.hashCode())
+    }
 }

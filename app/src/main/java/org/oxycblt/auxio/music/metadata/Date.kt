@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.format
+package org.oxycblt.auxio.music.metadata
 
 import android.content.Context
 import java.text.ParseException

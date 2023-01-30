@@ -26,9 +26,9 @@ import java.util.UUID
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.music.format.Date
-import org.oxycblt.auxio.music.format.Disc
-import org.oxycblt.auxio.music.format.ReleaseType
+import org.oxycblt.auxio.music.metadata.Date
+import org.oxycblt.auxio.music.metadata.Disc
+import org.oxycblt.auxio.music.metadata.ReleaseType
 import org.oxycblt.auxio.music.storage.MimeType
 import org.oxycblt.auxio.music.storage.Path
 import org.oxycblt.auxio.util.toUuidOrNull

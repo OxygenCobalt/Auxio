@@ -28,7 +28,7 @@ import com.google.android.exoplayer2.util.MimeTypes
 import java.nio.ByteBuffer
 import kotlin.math.pow
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.format.TextTags
+import org.oxycblt.auxio.music.metadata.TextTags
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.logD

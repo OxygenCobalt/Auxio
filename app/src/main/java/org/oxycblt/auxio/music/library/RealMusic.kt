@@ -32,9 +32,9 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.format.Date
-import org.oxycblt.auxio.music.format.Disc
-import org.oxycblt.auxio.music.format.ReleaseType
+import org.oxycblt.auxio.music.metadata.Date
+import org.oxycblt.auxio.music.metadata.Disc
+import org.oxycblt.auxio.music.metadata.ReleaseType
 import org.oxycblt.auxio.music.parsing.parseId3GenreNames
 import org.oxycblt.auxio.music.parsing.parseMultiValue
 import org.oxycblt.auxio.music.storage.Directory

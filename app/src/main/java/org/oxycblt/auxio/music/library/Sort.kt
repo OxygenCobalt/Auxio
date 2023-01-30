@@ -22,9 +22,9 @@ import kotlin.math.max
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.format.Date
-import org.oxycblt.auxio.music.format.Disc
 import org.oxycblt.auxio.music.library.Sort.Mode
+import org.oxycblt.auxio.music.metadata.Date
+import org.oxycblt.auxio.music.metadata.Disc
 
 /**
  * A sorting method.

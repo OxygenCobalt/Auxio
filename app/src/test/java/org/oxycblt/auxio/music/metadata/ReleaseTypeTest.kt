@@ -15,11 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.tags
+package org.oxycblt.auxio.music.metadata
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.oxycblt.auxio.music.format.ReleaseType
 
 class ReleaseTypeTest {
     @Test

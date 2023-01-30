@@ -15,20 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.metadata
 
-import android.content.Context
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import org.oxycblt.auxio.music.metadata.AudioInfo
+import org.oxycblt.auxio.list.Item
 
-@Module
-@InstallIn(SingletonComponent::class)
-class MusicModule {
-    @Provides fun settings(@ApplicationContext context: Context) = MusicSettings.from(context)
-    @Provides
-    fun audioInfoProvider(@ApplicationContext context: Context) = AudioInfo.Provider.from(context)
+/**
+ * A disc identifier for a song.
+ * @param number The disc number.
+ * @param name The name of the disc group, if any. Null if not present.
+ */
+class Disc(val number: Int, val name: String?) : Item, Comparable<Disc> {
+    override fun hashCode() = number.hashCode()
+    override fun equals(other: Any?) = other is Disc && number == other.number
+    override fun compareTo(other: Disc) = number.compareTo(other.number)
 }

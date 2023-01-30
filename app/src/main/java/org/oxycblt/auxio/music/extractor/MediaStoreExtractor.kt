@@ -28,8 +28,8 @@ import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import java.io.File
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.music.format.Date
 import org.oxycblt.auxio.music.library.RealSong
+import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.parsing.parseId3v2PositionField
 import org.oxycblt.auxio.music.parsing.transformPositionField
 import org.oxycblt.auxio.music.storage.Directory

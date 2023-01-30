@@ -29,7 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSongDetailBinding
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.format.AudioInfo
+import org.oxycblt.auxio.music.metadata.AudioInfo
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately

@@ -15,15 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.library
 
 import java.util.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.oxycblt.auxio.music.format.Date
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.metadata.Date
 
-class MusicTest {
+class RealMusicTest {
     @Test
     fun musicUid_auxio() {
         val uid =
