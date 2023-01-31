@@ -275,6 +275,6 @@
     <string name="set_replay_gain">Вирівнювання гучності (ReplayGain)</string>
     <string name="set_library">Бібліотека</string>
     <string name="set_state">Наполегливість</string>
-    <string name="set_audio_desc">Налаштування звуку і поведінки відтворення</string>
+    <string name="set_audio_desc">Налаштування звуку і поведінки при відтворенні</string>
     <string name="set_dirs_list">Папки</string>
 </resources>
