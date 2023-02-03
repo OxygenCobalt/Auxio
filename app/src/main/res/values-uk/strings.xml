@@ -116,7 +116,7 @@
     <string name="set_repeat_pause">Пауза при повторенні</string>
     <string name="lbl_genre">Жанр</string>
     <string name="lbl_sort_disc">Диск</string>
-    <string name="lbl_sort_asc">По зростанню</string>
+    <string name="lbl_sort_asc">За зростанням</string>
     <string name="lbl_sort_name">Назва</string>
     <string name="lbl_song_detail">Переглянути властивості</string>
     <string name="set_exclude_non_music_desc">Ігнорувати аудіо файли які не являються музикою, наприклад, подкасти</string>
@@ -277,4 +277,5 @@
     <string name="set_state">Наполегливість</string>
     <string name="set_audio_desc">Налаштування звуку і поведінки при відтворенні</string>
     <string name="set_dirs_list">Папки</string>
+    <string name="lbl_sort_dec">За спаданням</string>
 </resources>
