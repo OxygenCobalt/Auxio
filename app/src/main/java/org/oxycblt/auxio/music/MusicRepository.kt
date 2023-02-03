@@ -62,24 +62,11 @@ interface MusicRepository {
     }
 
     companion object {
-        @Volatile private var INSTANCE: MusicRepository? = null
-
         /**
-         * Get a singleton instance.
-         * @return The (possibly newly-created) singleton instance.
+         * Create a new instance.
+         * @return A newly-created implementation of [MusicRepository].
          */
-        fun get(): MusicRepository {
-            val currentInstance = INSTANCE
-            if (currentInstance != null) {
-                return currentInstance
-            }
-
-            synchronized(this) {
-                val newInstance = RealMusicRepository()
-                INSTANCE = newInstance
-                return newInstance
-            }
-        }
+        fun new(): MusicRepository = RealMusicRepository()
     }
 }
 

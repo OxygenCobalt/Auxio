@@ -50,12 +50,11 @@ import org.oxycblt.auxio.util.*
 class DetailViewModel
 @Inject
 constructor(
+    private val musicRepository: MusicRepository,
     private val audioInfoProvider: AudioInfo.Provider,
     private val musicSettings: MusicSettings,
     private val playbackSettings: PlaybackSettings
 ) : ViewModel(), MusicRepository.Listener {
-    private val musicRepository = MusicRepository.get()
-
     private var currentSongJob: Job? = null
 
     // --- SONG ---

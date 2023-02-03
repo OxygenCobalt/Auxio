@@ -39,12 +39,12 @@ import org.oxycblt.auxio.playback.state.*
 class PlaybackViewModel
 @Inject
 constructor(
-    private val persistenceRepository: PersistenceRepository,
+    private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
+    private val persistenceRepository: PersistenceRepository,
+    private val musicRepository: MusicRepository,
     private val musicSettings: MusicSettings
 ) : ViewModel(), PlaybackStateManager.Listener {
-    private val playbackManager = PlaybackStateManager.get()
-    private val musicRepository = MusicRepository.get()
     private var lastPositionJob: Job? = null
 
     private val _song = MutableStateFlow<Song?>(null)

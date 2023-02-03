@@ -24,10 +24,13 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
+import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 @Module
 @InstallIn(SingletonComponent::class)
 class PlaybackModule {
+    @Provides fun playbackStateManager() = PlaybackStateManager.get()
+
     @Provides fun settings(@ApplicationContext context: Context) = PlaybackSettings.from(context)
 
     @Provides

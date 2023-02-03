@@ -39,6 +39,7 @@ import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.mediacodec.MediaCodecSelector
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -93,11 +94,11 @@ class PlaybackService :
     private val systemReceiver = PlaybackReceiver()
 
     // Shared components
-    private val playbackManager = PlaybackStateManager.get()
-    private lateinit var playbackSettings: PlaybackSettings
-    private lateinit var persistenceRepository: PersistenceRepository
-    private val musicRepository = MusicRepository.get()
-    private lateinit var musicSettings: MusicSettings
+    @Inject lateinit var playbackManager: PlaybackStateManager
+    @Inject lateinit var playbackSettings: PlaybackSettings
+    @Inject lateinit var persistenceRepository: PersistenceRepository
+    @Inject lateinit var musicRepository: MusicRepository
+    @Inject lateinit var musicSettings: MusicSettings
 
     // State
     private lateinit var foregroundManager: ForegroundManager
@@ -148,8 +149,6 @@ class PlaybackService :
                 .also { it.addListener(this) }
         replayGainProcessor.addToListeners(player)
         // Initialize the core service components
-        musicSettings = MusicSettings.from(this)
-        playbackSettings = PlaybackSettings.from(this)
         persistenceRepository = PersistenceRepository.from(this)
         foregroundManager = ForegroundManager(this)
         // Initialize any listener-dependent components last as we wouldn't want a listener race

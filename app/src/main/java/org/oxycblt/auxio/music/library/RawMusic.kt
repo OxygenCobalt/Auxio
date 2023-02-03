@@ -22,7 +22,10 @@ import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.metadata.*
 import org.oxycblt.auxio.music.storage.Directory
 
-/** Raw information about a [RealSong] obtained from the filesystem/Extractor instances. */
+/**
+ * Raw information about a [RealSong] obtained from the filesystem/Extractor instances.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class RawSong(
     /**
      * The ID of the [RealSong]'s audio file, obtained from MediaStore. Note that this ID is highly
@@ -83,7 +86,10 @@ class RawSong(
     var genreNames: List<String> = listOf()
 )
 
-/** Raw information about an [RealAlbum] obtained from the component [RealSong] instances. */
+/**
+ * Raw information about an [RealAlbum] obtained from the component [RealSong] instances.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class RawAlbum(
     /**
      * The ID of the [RealAlbum]'s grouping, obtained from MediaStore. Note that this ID is highly
@@ -128,6 +134,7 @@ class RawAlbum(
 /**
  * Raw information about an [RealArtist] obtained from the component [RealSong] and [RealAlbum]
  * instances.
+ * @author Alexander Capehart (OxygenCobalt)
  */
 class RawArtist(
     /** @see Music.UID */
@@ -166,7 +173,10 @@ class RawArtist(
             }
 }
 
-/** Raw information about a [RealGenre] obtained from the component [RealSong] instances. */
+/**
+ * Raw information about a [RealGenre] obtained from the component [RealSong] instances.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class RawGenre(
     /** @see Music.rawName */
     val name: String? = null

@@ -18,6 +18,8 @@
 package org.oxycblt.auxio.list.selection
 
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
@@ -27,9 +29,9 @@ import org.oxycblt.auxio.music.library.Library
  * A [ViewModel] that manages the current selection.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SelectionViewModel : ViewModel(), MusicRepository.Listener {
-    private val musicRepository = MusicRepository.get()
-
+@HiltViewModel
+class SelectionViewModel @Inject constructor(private val musicRepository: MusicRepository) :
+    ViewModel(), MusicRepository.Listener {
     private val _selected = MutableStateFlow(listOf<Music>())
     /** the currently selected items. These are ordered in earliest selected and latest selected. */
     val selected: StateFlow<List<Music>>

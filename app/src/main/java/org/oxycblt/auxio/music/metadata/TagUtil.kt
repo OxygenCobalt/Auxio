@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.parsing
+package org.oxycblt.auxio.music.metadata
 
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.util.nonZeroOrNull

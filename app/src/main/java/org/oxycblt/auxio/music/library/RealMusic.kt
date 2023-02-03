@@ -34,8 +34,8 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.metadata.Disc
 import org.oxycblt.auxio.music.metadata.ReleaseType
-import org.oxycblt.auxio.music.parsing.parseId3GenreNames
-import org.oxycblt.auxio.music.parsing.parseMultiValue
+import org.oxycblt.auxio.music.metadata.parseId3GenreNames
+import org.oxycblt.auxio.music.metadata.parseMultiValue
 import org.oxycblt.auxio.music.storage.MimeType
 import org.oxycblt.auxio.music.storage.Path
 import org.oxycblt.auxio.music.storage.toAudioUri

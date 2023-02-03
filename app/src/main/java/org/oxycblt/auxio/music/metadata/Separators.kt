@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.parsing
+package org.oxycblt.auxio.music.metadata
 
 /**
  * Defines the allowed separator characters that can be used to delimit multi-value tags.

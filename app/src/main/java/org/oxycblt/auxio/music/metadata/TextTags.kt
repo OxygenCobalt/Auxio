@@ -21,7 +21,6 @@ import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.id3.InternalFrame
 import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
-import org.oxycblt.auxio.music.parsing.correctWhitespace
 
 /**
  * Processing wrapper for [Metadata] that allows organized access to text-based audio tags.

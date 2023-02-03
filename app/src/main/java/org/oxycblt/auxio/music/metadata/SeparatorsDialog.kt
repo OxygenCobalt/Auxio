@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.parsing
+package org.oxycblt.auxio.music.metadata
 
 import android.os.Bundle
 import android.view.LayoutInflater

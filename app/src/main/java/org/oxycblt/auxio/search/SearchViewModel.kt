@@ -44,11 +44,11 @@ import org.oxycblt.auxio.util.logD
 class SearchViewModel
 @Inject
 constructor(
+    private val musicRepository: MusicRepository,
     private val searchEngine: SearchEngine,
     private val searchSettings: SearchSettings,
     private val playbackSettings: PlaybackSettings,
 ) : ViewModel(), MusicRepository.Listener {
-    private val musicRepository = MusicRepository.get()
     private var lastQuery: String? = null
     private var currentSearchJob: Job? = null
 

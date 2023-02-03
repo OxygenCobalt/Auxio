@@ -31,10 +31,9 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.library.RawSong
-import org.oxycblt.auxio.music.library.RealSong
 import org.oxycblt.auxio.music.metadata.Date
-import org.oxycblt.auxio.music.parsing.parseId3v2PositionField
-import org.oxycblt.auxio.music.parsing.transformPositionField
+import org.oxycblt.auxio.music.metadata.parseId3v2PositionField
+import org.oxycblt.auxio.music.metadata.transformPositionField
 import org.oxycblt.auxio.music.storage.Directory
 import org.oxycblt.auxio.music.storage.contentResolverSafe
 import org.oxycblt.auxio.music.storage.directoryCompat
@@ -282,10 +281,10 @@ private abstract class RealMediaStoreExtractor(private val context: Context) : M
     protected abstract fun addDirToSelector(dir: Directory, args: MutableList<String>): Boolean
 
     /**
-     * Populate a [RawSong] with the "File Data" of the given [MediaStore] [Cursor], which
-     * is the data that cannot be cached. This includes any information not intrinsic to the file
-     * and instead dependent on the file-system, which could change without invalidating the cache
-     * due to volume additions or removals.
+     * Populate a [RawSong] with the "File Data" of the given [MediaStore] [Cursor], which is the
+     * data that cannot be cached. This includes any information not intrinsic to the file and
+     * instead dependent on the file-system, which could change without invalidating the cache due
+     * to volume additions or removals.
      * @param cursor The [Cursor] to read from.
      * @param rawSong The [RawSong] to populate.
      * @see populateMetadata
@@ -302,9 +301,9 @@ private abstract class RealMediaStoreExtractor(private val context: Context) : M
     }
 
     /**
-     * Populate a [RawSong] with the Metadata of the given [MediaStore] [Cursor], which is
-     * the data about a [RawSong] that can be cached. This includes any information
-     * intrinsic to the file or it's file format, such as music tags.
+     * Populate a [RawSong] with the Metadata of the given [MediaStore] [Cursor], which is the data
+     * about a [RawSong] that can be cached. This includes any information intrinsic to the file or
+     * it's file format, such as music tags.
      * @param cursor The [Cursor] to read from.
      * @param rawSong The [RawSong] to populate.
      * @see populateFileData

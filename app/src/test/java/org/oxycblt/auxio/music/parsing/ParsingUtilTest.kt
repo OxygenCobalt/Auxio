@@ -20,6 +20,12 @@ package org.oxycblt.auxio.music.parsing
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.oxycblt.auxio.music.FakeMusicSettings
+import org.oxycblt.auxio.music.metadata.correctWhitespace
+import org.oxycblt.auxio.music.metadata.parseId3GenreNames
+import org.oxycblt.auxio.music.metadata.parseId3v2PositionField
+import org.oxycblt.auxio.music.metadata.parseMultiValue
+import org.oxycblt.auxio.music.metadata.parseVorbisPositionField
+import org.oxycblt.auxio.music.metadata.splitEscaped
 
 class ParsingUtilTest {
     @Test

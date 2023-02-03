@@ -200,8 +200,6 @@ interface Indexer {
     }
 
     companion object {
-        @Volatile private var INSTANCE: Indexer? = null
-
         /**
          * A version-compatible identifier for the read external storage permission required by the
          * system to load audio.
@@ -215,21 +213,10 @@ interface Indexer {
             }
 
         /**
-         * Get a singleton instance.
-         * @return The (possibly newly-created) singleton instance.
+         * Create a new instance.
+         * @return A newly-created implementation of [Indexer].
          */
-        fun get(): Indexer {
-            val currentInstance = INSTANCE
-            if (currentInstance != null) {
-                return currentInstance
-            }
-
-            synchronized(this) {
-                val newInstance = RealIndexer()
-                INSTANCE = newInstance
-                return newInstance
-            }
-        }
+        fun new(): Indexer = RealIndexer()
     }
 }
 

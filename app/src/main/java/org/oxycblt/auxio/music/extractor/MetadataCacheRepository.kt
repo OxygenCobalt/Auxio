@@ -30,10 +30,9 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.library.RawSong
-import org.oxycblt.auxio.music.library.RealSong
 import org.oxycblt.auxio.music.metadata.Date
-import org.oxycblt.auxio.music.parsing.correctWhitespace
-import org.oxycblt.auxio.music.parsing.splitEscaped
+import org.oxycblt.auxio.music.metadata.correctWhitespace
+import org.oxycblt.auxio.music.metadata.splitEscaped
 import org.oxycblt.auxio.util.*
 
 /**

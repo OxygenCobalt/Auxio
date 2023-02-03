@@ -27,6 +27,7 @@ import android.os.PowerManager
 import android.provider.MediaStore
 import coil.imageLoader
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -55,9 +56,9 @@ import org.oxycblt.auxio.util.logD
  */
 @AndroidEntryPoint
 class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
-    private val indexer = Indexer.get()
-    private val musicRepository = MusicRepository.get()
-    private val playbackManager = PlaybackStateManager.get()
+    @Inject lateinit var indexer: Indexer
+    @Inject lateinit var musicRepository: MusicRepository
+    @Inject lateinit var playbackManager: PlaybackStateManager
     private val serviceJob = Job()
     private val indexScope = CoroutineScope(serviceJob + Dispatchers.IO)
     private var currentIndexJob: Job? = null

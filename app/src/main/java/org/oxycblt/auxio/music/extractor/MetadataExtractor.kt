@@ -24,11 +24,10 @@ import com.google.android.exoplayer2.MetadataRetriever
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.library.RawSong
-import org.oxycblt.auxio.music.library.RealSong
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.metadata.TextTags
-import org.oxycblt.auxio.music.parsing.parseId3v2PositionField
-import org.oxycblt.auxio.music.parsing.parseVorbisPositionField
+import org.oxycblt.auxio.music.metadata.parseId3v2PositionField
+import org.oxycblt.auxio.music.metadata.parseVorbisPositionField
 import org.oxycblt.auxio.music.storage.toAudioUri
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW

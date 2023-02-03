@@ -18,6 +18,8 @@
 package org.oxycblt.auxio.playback.queue
 
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.list.adapter.BasicListInstructions
@@ -30,8 +32,9 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class QueueViewModel : ViewModel(), PlaybackStateManager.Listener {
-    private val playbackManager = PlaybackStateManager.get()
+@HiltViewModel
+class QueueViewModel @Inject constructor(private val playbackManager: PlaybackStateManager) :
+    ViewModel(), PlaybackStateManager.Listener {
 
     private val _queue = MutableStateFlow(listOf<Song>())
     /** The current queue. */

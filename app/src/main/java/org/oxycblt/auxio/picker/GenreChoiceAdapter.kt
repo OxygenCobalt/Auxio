@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.picker
+package org.oxycblt.auxio.picker
 
 import android.view.View
 import android.view.ViewGroup
@@ -23,54 +23,54 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemPickerChoiceBinding
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
-import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
 /**
- * An [RecyclerView.Adapter] that displays a list of [Artist] choices.
+ * An [RecyclerView.Adapter] that displays a list of [Genre] choices.
  * @param listener A [ClickableListListener] to bind interactions to.
  * @author OxygenCobalt.
  */
-class ArtistChoiceAdapter(private val listener: ClickableListListener<Artist>) :
-    RecyclerView.Adapter<ArtistChoiceViewHolder>() {
-    private var artists = listOf<Artist>()
+class GenreChoiceAdapter(private val listener: ClickableListListener<Genre>) :
+    RecyclerView.Adapter<GenreChoiceViewHolder>() {
+    private var genres = listOf<Genre>()
 
-    override fun getItemCount() = artists.size
+    override fun getItemCount() = genres.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        ArtistChoiceViewHolder.from(parent)
+        GenreChoiceViewHolder.from(parent)
 
-    override fun onBindViewHolder(holder: ArtistChoiceViewHolder, position: Int) =
-        holder.bind(artists[position], listener)
+    override fun onBindViewHolder(holder: GenreChoiceViewHolder, position: Int) =
+        holder.bind(genres[position], listener)
 
     /**
-     * Immediately update the [Artist] choices.
-     * @param newArtists The new [Artist]s to show.
+     * Immediately update the [Genre] choices.
+     * @param newGenres The new [Genre]s to show.
      */
-    fun submitList(newArtists: List<Artist>) {
-        if (newArtists != artists) {
-            artists = newArtists
+    fun submitList(newGenres: List<Genre>) {
+        if (newGenres != genres) {
+            genres = newGenres
             @Suppress("NotifyDataSetChanged") notifyDataSetChanged()
         }
     }
 }
 
 /**
- * A [DialogRecyclerView.ViewHolder] that displays a smaller variant of a typical [Artist] item, for
- * use with [ArtistChoiceAdapter]. Use [from] to create an instance.
+ * A [DialogRecyclerView.ViewHolder] that displays a smaller variant of a typical [Genre] item, for
+ * use with [GenreChoiceAdapter]. Use [from] to create an instance.
  */
-class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
+class GenreChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
-     * @param artist The new [Artist] to bind.
+     * @param genre The new [Genre] to bind.
      * @param listener A [ClickableListListener] to bind interactions to.
      */
-    fun bind(artist: Artist, listener: ClickableListListener<Artist>) {
-        listener.bind(artist, this)
-        binding.pickerImage.bind(artist)
-        binding.pickerName.text = artist.resolveName(binding.context)
+    fun bind(genre: Genre, listener: ClickableListListener<Genre>) {
+        listener.bind(genre, this)
+        binding.pickerImage.bind(genre)
+        binding.pickerName.text = genre.resolveName(binding.context)
     }
 
     companion object {
@@ -80,6 +80,6 @@ class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
          * @return A new instance.
          */
         fun from(parent: View) =
-            ArtistChoiceViewHolder(ItemPickerChoiceBinding.inflate(parent.context.inflater))
+            GenreChoiceViewHolder(ItemPickerChoiceBinding.inflate(parent.context.inflater))
     }
 }

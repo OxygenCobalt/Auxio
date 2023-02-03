@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.picker
+package org.oxycblt.auxio.picker
 
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
@@ -24,21 +24,18 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.requireIs
-import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.auxio.ui.NavigationViewModel
 
 /**
- * An [ArtistPickerDialog] intended for when [Artist] playback is ambiguous.
+ * An [ArtistPickerDialog] intended for when [Artist] navigation is ambiguous.
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class ArtistPlaybackPickerDialog : ArtistPickerDialog() {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
+class ArtistNavigationPickerDialog : ArtistPickerDialog() {
+    private val navModel: NavigationViewModel by activityViewModels()
     // Information about what Song to show choices for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel a Song.
-    private val args: ArtistPlaybackPickerDialogArgs by navArgs()
+    private val args: ArtistNavigationPickerDialogArgs by navArgs()
 
     override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {
         pickerModel.setItemUid(args.itemUid)
@@ -47,8 +44,7 @@ class ArtistPlaybackPickerDialog : ArtistPickerDialog() {
 
     override fun onClick(item: Artist, viewHolder: RecyclerView.ViewHolder) {
         super.onClick(item, viewHolder)
-        // User made a choice, play the given song from that artist.
-        val song = requireIs<Song>(unlikelyToBeNull(pickerModel.currentItem.value))
-        playbackModel.playFromArtist(song, item)
+        // User made a choice, navigate to it.
+        navModel.exploreNavigateTo(item)
     }
 }

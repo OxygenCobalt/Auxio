@@ -15,9 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.picker
+package org.oxycblt.auxio.picker
 
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
@@ -29,8 +31,9 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * contain the music themselves and then exit if the library changes.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class PickerViewModel : ViewModel(), MusicRepository.Listener {
-    private val musicRepository = MusicRepository.get()
+@HiltViewModel
+class PickerViewModel @Inject constructor(private val musicRepository: MusicRepository) :
+    ViewModel(), MusicRepository.Listener {
 
     private val _currentItem = MutableStateFlow<Music?>(null)
     /** The current item whose artists should be shown in the picker. Null if there is no item. */
