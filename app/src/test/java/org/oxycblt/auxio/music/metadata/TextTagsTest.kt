@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.extractor
+package org.oxycblt.auxio.music.metadata
 
 import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.flac.PictureFrame
@@ -26,7 +26,6 @@ import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.oxycblt.auxio.music.metadata.TextTags
 
 class TextTagsTest {
     @Test

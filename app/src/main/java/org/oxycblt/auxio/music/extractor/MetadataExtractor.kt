@@ -23,6 +23,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
+import org.oxycblt.auxio.music.library.RawSong
 import org.oxycblt.auxio.music.library.RealSong
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.metadata.TextTags
@@ -45,10 +46,7 @@ class MetadataExtractor(private val context: Context) {
     // producing similar throughput's to other kinds of manual metadata extraction.
     private val taskPool: Array<Task?> = arrayOfNulls(TASK_CAPACITY)
 
-    suspend fun consume(
-        incompleteSongs: Channel<RealSong.Raw>,
-        completeSongs: Channel<RealSong.Raw>
-    ) {
+    suspend fun consume(incompleteSongs: Channel<RawSong>, completeSongs: Channel<RawSong>) {
         spin@ while (true) {
             // Spin until there is an open slot we can insert a task in.
             for (i in taskPool.indices) {
@@ -97,12 +95,12 @@ class MetadataExtractor(private val context: Context) {
 }
 
 /**
- * Wraps a [MetadataExtractor] future and processes it into a [RealSong.Raw] when completed.
+ * Wraps a [MetadataExtractor] future and processes it into a [RawSong] when completed.
  * @param context [Context] required to open the audio file.
- * @param raw [RealSong.Raw] to process.
+ * @param rawSong [RawSong] to process.
  * @author Alexander Capehart (OxygenCobalt)
  */
-private class Task(context: Context, private val raw: RealSong.Raw) {
+private class Task(context: Context, private val rawSong: RawSong) {
     // Note that we do not leverage future callbacks. This is because errors in the
     // (highly fallible) extraction process will not bubble up to Indexer when a
     // listener is used, instead crashing the app entirely.
@@ -110,15 +108,13 @@ private class Task(context: Context, private val raw: RealSong.Raw) {
         MetadataRetriever.retrieveMetadata(
             context,
             MediaItem.fromUri(
-                requireNotNull(raw.mediaStoreId) { "Invalid raw: No id" }.toAudioUri()))
-
-    init {}
+                requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No id" }.toAudioUri()))
 
     /**
      * Try to get a completed song from this [Task], if it has finished processing.
-     * @return A [RealSong.Raw] instance if processing has completed, null otherwise.
+     * @return A [RawSong] instance if processing has completed, null otherwise.
      */
-    fun get(): RealSong.Raw? {
+    fun get(): RawSong? {
         if (!future.isDone) {
             // Not done yet, nothing to do.
             return null
@@ -128,13 +124,13 @@ private class Task(context: Context, private val raw: RealSong.Raw) {
             try {
                 future.get()[0].getFormat(0)
             } catch (e: Exception) {
-                logW("Unable to extract metadata for ${raw.name}")
+                logW("Unable to extract metadata for ${rawSong.name}")
                 logW(e.stackTraceToString())
                 null
             }
         if (format == null) {
-            logD("Nothing could be extracted for ${raw.name}")
-            return raw
+            logD("Nothing could be extracted for ${rawSong.name}")
+            return rawSong
         }
 
         val metadata = format.metadata
@@ -143,29 +139,29 @@ private class Task(context: Context, private val raw: RealSong.Raw) {
             populateWithId3v2(textTags.id3v2)
             populateWithVorbis(textTags.vorbis)
         } else {
-            logD("No metadata could be extracted for ${raw.name}")
+            logD("No metadata could be extracted for ${rawSong.name}")
         }
 
-        return raw
+        return rawSong
     }
 
     /**
-     * Complete this instance's [RealSong.Raw] with ID3v2 Text Identification Frames.
+     * Complete this instance's [RawSong] with ID3v2 Text Identification Frames.
      * @param textFrames A mapping between ID3v2 Text Identification Frame IDs and one or more
      * values.
      */
     private fun populateWithId3v2(textFrames: Map<String, List<String>>) {
         // Song
-        textFrames["TXXX:musicbrainz release track id"]?.let { raw.musicBrainzId = it.first() }
-        textFrames["TIT2"]?.let { raw.name = it.first() }
-        textFrames["TSOT"]?.let { raw.sortName = it.first() }
+        textFrames["TXXX:musicbrainz release track id"]?.let { rawSong.musicBrainzId = it.first() }
+        textFrames["TIT2"]?.let { rawSong.name = it.first() }
+        textFrames["TSOT"]?.let { rawSong.sortName = it.first() }
 
         // Track.
-        textFrames["TRCK"]?.run { first().parseId3v2PositionField() }?.let { raw.track = it }
+        textFrames["TRCK"]?.run { first().parseId3v2PositionField() }?.let { rawSong.track = it }
 
         // Disc and it's subtitle name.
-        textFrames["TPOS"]?.run { first().parseId3v2PositionField() }?.let { raw.disc = it }
-        textFrames["TSST"]?.let { raw.subtitle = it.first() }
+        textFrames["TPOS"]?.run { first().parseId3v2PositionField() }?.let { rawSong.disc = it }
+        textFrames["TSST"]?.let { rawSong.subtitle = it.first() }
 
         // Dates are somewhat complicated, as not only did their semantics change from a flat year
         // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
@@ -180,30 +176,36 @@ private class Task(context: Context, private val raw: RealSong.Raw) {
                 ?: textFrames["TDRC"]?.run { Date.from(first()) }
                     ?: textFrames["TDRL"]?.run { Date.from(first()) }
                     ?: parseId3v23Date(textFrames))
-            ?.let { raw.date = it }
+            ?.let { rawSong.date = it }
 
         // Album
-        textFrames["TXXX:musicbrainz album id"]?.let { raw.albumMusicBrainzId = it.first() }
-        textFrames["TALB"]?.let { raw.albumName = it.first() }
-        textFrames["TSOA"]?.let { raw.albumSortName = it.first() }
+        textFrames["TXXX:musicbrainz album id"]?.let { rawSong.albumMusicBrainzId = it.first() }
+        textFrames["TALB"]?.let { rawSong.albumName = it.first() }
+        textFrames["TSOA"]?.let { rawSong.albumSortName = it.first() }
         (textFrames["TXXX:musicbrainz album type"] ?: textFrames["GRP1"])?.let {
-            raw.releaseTypes = it
+            rawSong.releaseTypes = it
         }
 
         // Artist
-        textFrames["TXXX:musicbrainz artist id"]?.let { raw.artistMusicBrainzIds = it }
-        (textFrames["TXXX:artists"] ?: textFrames["TPE1"])?.let { raw.artistNames = it }
-        (textFrames["TXXX:artists_sort"] ?: textFrames["TSOP"])?.let { raw.artistSortNames = it }
+        textFrames["TXXX:musicbrainz artist id"]?.let { rawSong.artistMusicBrainzIds = it }
+        (textFrames["TXXX:artists"] ?: textFrames["TPE1"])?.let { rawSong.artistNames = it }
+        (textFrames["TXXX:artists_sort"] ?: textFrames["TSOP"])?.let {
+            rawSong.artistSortNames = it
+        }
 
         // Album artist
-        textFrames["TXXX:musicbrainz album artist id"]?.let { raw.albumArtistMusicBrainzIds = it }
-        (textFrames["TXXX:albumartists"] ?: textFrames["TPE2"])?.let { raw.albumArtistNames = it }
+        textFrames["TXXX:musicbrainz album artist id"]?.let {
+            rawSong.albumArtistMusicBrainzIds = it
+        }
+        (textFrames["TXXX:albumartists"] ?: textFrames["TPE2"])?.let {
+            rawSong.albumArtistNames = it
+        }
         (textFrames["TXXX:albumartists_sort"] ?: textFrames["TSO2"])?.let {
-            raw.albumArtistSortNames = it
+            rawSong.albumArtistSortNames = it
         }
 
         // Genre
-        textFrames["TCON"]?.let { raw.genreNames = it }
+        textFrames["TCON"]?.let { rawSong.genreNames = it }
     }
 
     /**
@@ -249,27 +251,27 @@ private class Task(context: Context, private val raw: RealSong.Raw) {
     }
 
     /**
-     * Complete this instance's [RealSong.Raw] with Vorbis comments.
+     * Complete this instance's [RawSong] with Vorbis comments.
      * @param comments A mapping between vorbis comment names and one or more vorbis comment values.
      */
     private fun populateWithVorbis(comments: Map<String, List<String>>) {
         // Song
-        comments["musicbrainz_releasetrackid"]?.let { raw.musicBrainzId = it.first() }
-        comments["title"]?.let { raw.name = it.first() }
-        comments["titlesort"]?.let { raw.sortName = it.first() }
+        comments["musicbrainz_releasetrackid"]?.let { rawSong.musicBrainzId = it.first() }
+        comments["title"]?.let { rawSong.name = it.first() }
+        comments["titlesort"]?.let { rawSong.sortName = it.first() }
 
         // Track.
         parseVorbisPositionField(
                 comments["tracknumber"]?.first(),
                 (comments["totaltracks"] ?: comments["tracktotal"] ?: comments["trackc"])?.first())
-            ?.let { raw.track = it }
+            ?.let { rawSong.track = it }
 
         // Disc and it's subtitle name.
         parseVorbisPositionField(
                 comments["discnumber"]?.first(),
                 (comments["totaldiscs"] ?: comments["disctotal"] ?: comments["discc"])?.first())
-            ?.let { raw.disc = it }
-        comments["discsubtitle"]?.let { raw.subtitle = it.first() }
+            ?.let { rawSong.disc = it }
+        comments["discsubtitle"]?.let { rawSong.subtitle = it.first() }
 
         // Vorbis dates are less complicated, but there are still several types
         // Our hierarchy for dates is as such:
@@ -280,27 +282,27 @@ private class Task(context: Context, private val raw: RealSong.Raw) {
         (comments["originaldate"]?.run { Date.from(first()) }
                 ?: comments["date"]?.run { Date.from(first()) }
                     ?: comments["year"]?.run { Date.from(first()) })
-            ?.let { raw.date = it }
+            ?.let { rawSong.date = it }
 
         // Album
-        comments["musicbrainz_albumid"]?.let { raw.albumMusicBrainzId = it.first() }
-        comments["album"]?.let { raw.albumName = it.first() }
-        comments["albumsort"]?.let { raw.albumSortName = it.first() }
-        comments["releasetype"]?.let { raw.releaseTypes = it }
+        comments["musicbrainz_albumid"]?.let { rawSong.albumMusicBrainzId = it.first() }
+        comments["album"]?.let { rawSong.albumName = it.first() }
+        comments["albumsort"]?.let { rawSong.albumSortName = it.first() }
+        comments["releasetype"]?.let { rawSong.releaseTypes = it }
 
         // Artist
-        comments["musicbrainz_artistid"]?.let { raw.artistMusicBrainzIds = it }
-        (comments["artists"] ?: comments["artist"])?.let { raw.artistNames = it }
-        (comments["artists_sort"] ?: comments["artistsort"])?.let { raw.artistSortNames = it }
+        comments["musicbrainz_artistid"]?.let { rawSong.artistMusicBrainzIds = it }
+        (comments["artists"] ?: comments["artist"])?.let { rawSong.artistNames = it }
+        (comments["artists_sort"] ?: comments["artistsort"])?.let { rawSong.artistSortNames = it }
 
         // Album artist
-        comments["musicbrainz_albumartistid"]?.let { raw.albumArtistMusicBrainzIds = it }
-        (comments["albumartists"] ?: comments["albumartist"])?.let { raw.albumArtistNames = it }
+        comments["musicbrainz_albumartistid"]?.let { rawSong.albumArtistMusicBrainzIds = it }
+        (comments["albumartists"] ?: comments["albumartist"])?.let { rawSong.albumArtistNames = it }
         (comments["albumartists_sort"] ?: comments["albumartistsort"])?.let {
-            raw.albumArtistSortNames = it
+            rawSong.albumArtistSortNames = it
         }
 
         // Genre
-        comments["genre"]?.let { raw.genreNames = it }
+        comments["genre"]?.let { rawSong.genreNames = it }
     }
 }

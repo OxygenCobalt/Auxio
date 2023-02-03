@@ -29,6 +29,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.library.RawSong
 import org.oxycblt.auxio.music.library.RealSong
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.parsing.correctWhitespace
@@ -41,15 +42,15 @@ import org.oxycblt.auxio.util.*
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface MetadataCache {
-    /** Whether this cache has encountered a [RealSong.Raw] that did not have a cache entry. */
+    /** Whether this cache has encountered a [RawSong] that did not have a cache entry. */
     val invalidated: Boolean
 
     /**
-     * Populate a [RealSong.Raw] from a cache entry, if it exists.
-     * @param rawSong The [RealSong.Raw] to populate.
+     * Populate a [RawSong] from a cache entry, if it exists.
+     * @param rawSong The [RawSong] to populate.
      * @return true if a cache entry could be applied to [rawSong], false otherwise.
      */
-    fun populate(rawSong: RealSong.Raw): Boolean
+    fun populate(rawSong: RawSong): Boolean
 }
 
 private class RealMetadataCache(cachedSongs: List<CachedSong>) : MetadataCache {
@@ -60,7 +61,7 @@ private class RealMetadataCache(cachedSongs: List<CachedSong>) : MetadataCache {
     }
 
     override var invalidated = false
-    override fun populate(rawSong: RealSong.Raw): Boolean {
+    override fun populate(rawSong: RawSong): Boolean {
 
         // For a cached raw song to be used, it must exist within the cache and have matching
         // addition and modification timestamps. Technically the addition timestamp doesn't
@@ -93,10 +94,10 @@ interface MetadataCacheRepository {
     suspend fun readCache(): MetadataCache?
 
     /**
-     * Write the list of newly-loaded [RealSong.Raw]s to the cache, replacing the prior data.
+     * Write the list of newly-loaded [RawSong]s to the cache, replacing the prior data.
      * @param rawSongs The [rawSongs] to write to the cache.
      */
-    suspend fun writeCache(rawSongs: List<RealSong.Raw>)
+    suspend fun writeCache(rawSongs: List<RawSong>)
 
     companion object {
         /**
@@ -124,7 +125,7 @@ private class RealMetadataCacheRepository(private val context: Context) : Metada
             null
         }
 
-    override suspend fun writeCache(rawSongs: List<RealSong.Raw>) {
+    override suspend fun writeCache(rawSongs: List<RawSong>) {
         try {
             // Still write out whatever data was extracted.
             cachedSongsDao.nukeSongs()
@@ -185,52 +186,52 @@ private data class CachedSong(
      * unstable and should only be used for accessing the audio file.
      */
     @PrimaryKey var mediaStoreId: Long,
-    /** @see RealSong.Raw.dateAdded */
+    /** @see RawSong.dateAdded */
     var dateAdded: Long,
     /** The latest date the [Song]'s audio file was modified, as a unix epoch timestamp. */
     var dateModified: Long,
-    /** @see RealSong.Raw.size */
+    /** @see RawSong.size */
     var size: Long? = null,
-    /** @see RealSong.Raw */
+    /** @see RawSong */
     var durationMs: Long,
-    /** @see RealSong.Raw.musicBrainzId */
+    /** @see RawSong.musicBrainzId */
     var musicBrainzId: String? = null,
-    /** @see RealSong.Raw.name */
+    /** @see RawSong.name */
     var name: String,
-    /** @see RealSong.Raw.sortName */
+    /** @see RawSong.sortName */
     var sortName: String? = null,
-    /** @see RealSong.Raw.track */
+    /** @see RawSong.track */
     var track: Int? = null,
-    /** @see RealSong.Raw.name */
+    /** @see RawSong.name */
     var disc: Int? = null,
-    /** @See RealSong.Raw.subtitle */
+    /** @See RawSong.subtitle */
     var subtitle: String? = null,
-    /** @see RealSong.Raw.date */
+    /** @see RawSong.date */
     var date: Date? = null,
-    /** @see RealSong.Raw.albumMusicBrainzId */
+    /** @see RawSong.albumMusicBrainzId */
     var albumMusicBrainzId: String? = null,
-    /** @see RealSong.Raw.albumName */
+    /** @see RawSong.albumName */
     var albumName: String,
-    /** @see RealSong.Raw.albumSortName */
+    /** @see RawSong.albumSortName */
     var albumSortName: String? = null,
-    /** @see RealSong.Raw.releaseTypes */
+    /** @see RawSong.releaseTypes */
     var releaseTypes: List<String> = listOf(),
-    /** @see RealSong.Raw.artistMusicBrainzIds */
+    /** @see RawSong.artistMusicBrainzIds */
     var artistMusicBrainzIds: List<String> = listOf(),
-    /** @see RealSong.Raw.artistNames */
+    /** @see RawSong.artistNames */
     var artistNames: List<String> = listOf(),
-    /** @see RealSong.Raw.artistSortNames */
+    /** @see RawSong.artistSortNames */
     var artistSortNames: List<String> = listOf(),
-    /** @see RealSong.Raw.albumArtistMusicBrainzIds */
+    /** @see RawSong.albumArtistMusicBrainzIds */
     var albumArtistMusicBrainzIds: List<String> = listOf(),
-    /** @see RealSong.Raw.albumArtistNames */
+    /** @see RawSong.albumArtistNames */
     var albumArtistNames: List<String> = listOf(),
-    /** @see RealSong.Raw.albumArtistSortNames */
+    /** @see RawSong.albumArtistSortNames */
     var albumArtistSortNames: List<String> = listOf(),
-    /** @see RealSong.Raw.genreNames */
+    /** @see RawSong.genreNames */
     var genreNames: List<String> = listOf()
 ) {
-    fun copyToRaw(rawSong: RealSong.Raw): CachedSong {
+    fun copyToRaw(rawSong: RawSong): CachedSong {
         rawSong.musicBrainzId = musicBrainzId
         rawSong.name = name
         rawSong.sortName = sortName
@@ -275,7 +276,7 @@ private data class CachedSong(
     companion object {
         const val TABLE_NAME = "cached_songs"
 
-        fun fromRaw(rawSong: RealSong.Raw) =
+        fun fromRaw(rawSong: RawSong) =
             CachedSong(
                 mediaStoreId =
                     requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No MediaStore ID" },

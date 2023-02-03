@@ -36,7 +36,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.extractor.*
 import org.oxycblt.auxio.music.library.Library
-import org.oxycblt.auxio.music.library.RealSong
+import org.oxycblt.auxio.music.library.RawSong
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
@@ -362,14 +362,14 @@ private class RealIndexer : Indexer {
         // Now start processing the queried song information in parallel. Songs that can't be
         // received from the cache are consisted incomplete and pushed to a separate channel
         // that will eventually be processed into completed raw songs.
-        val completeSongs = Channel<RealSong.Raw>(Channel.UNLIMITED)
-        val incompleteSongs = Channel<RealSong.Raw>(Channel.UNLIMITED)
+        val completeSongs = Channel<RawSong>(Channel.UNLIMITED)
+        val incompleteSongs = Channel<RawSong>(Channel.UNLIMITED)
         val mediaStoreJob =
             scope.async { mediaStoreExtractor.consume(cache, incompleteSongs, completeSongs) }
         val metadataJob = scope.async { metadataExtractor.consume(incompleteSongs, completeSongs) }
 
         // Await completed raw songs as they are processed.
-        val rawSongs = LinkedList<RealSong.Raw>()
+        val rawSongs = LinkedList<RawSong>()
         for (rawSong in completeSongs) {
             rawSongs.add(rawSong)
             emitIndexing(Indexer.Indexing.Songs(rawSongs.size, total))
