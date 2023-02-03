@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.playback
 
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +32,7 @@ import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.playback.state.*
 
 /**
- * An [AndroidViewModel] that provides a safe UI frontend for the current playback state.
+ * An [ViewModel] that provides a safe UI frontend for the current playback state.
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel

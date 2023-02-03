@@ -36,149 +36,118 @@ import org.oxycblt.auxio.music.parsing.splitEscaped
 import org.oxycblt.auxio.util.*
 
 /**
- * Defines an Extractor that can load cached music. This is the first step in the music extraction
- * process and is an optimization to avoid the slow [MediaStoreExtractor] and [MetadataExtractor]
- * extraction process.
+ * A cache of music metadata obtained in prior music loading operations. Obtain an instance with
+ * [MetadataCacheRepository].
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface CacheExtractor {
-    /** Initialize the Extractor by reading the cache data into memory. */
-    suspend fun init()
+interface MetadataCache {
+    /** Whether this cache has encountered a [RealSong.Raw] that did not have a cache entry. */
+    val invalidated: Boolean
 
     /**
-     * Finalize the Extractor by writing the newly-loaded [RealSong.Raw]s back into the cache,
-     * alongside freeing up memory.
-     * @param rawSongs The songs to write into the cache.
+     * Populate a [RealSong.Raw] from a cache entry, if it exists.
+     * @param rawSong The [RealSong.Raw] to populate.
+     * @return true if a cache entry could be applied to [rawSong], false otherwise.
      */
-    suspend fun finalize(rawSongs: List<RealSong.Raw>)
-
-    /**
-     * Use the cache to populate the given [RealSong.Raw].
-     * @param rawSong The [RealSong.Raw] to attempt to populate. Note that this [RealSong.Raw] will
-     * only contain the bare minimum information required to load a cache entry.
-     * @return An [ExtractionResult] representing the result of the operation.
-     * [ExtractionResult.PARSED] is not returned.
-     */
-    fun populate(rawSong: RealSong.Raw): ExtractionResult
-
-    companion object {
-        /**
-         * Create an instance with optional read-capacity.
-         * @param context [Context] required.
-         * @param readable Whether the new [CacheExtractor] should be able to read cached entries.
-         * @return A new [CacheExtractor] with the specified configuration.
-         */
-        fun from(context: Context, readable: Boolean): CacheExtractor =
-            if (readable) {
-                ReadWriteCacheExtractor(context)
-            } else {
-                WriteOnlyCacheExtractor(context)
-            }
-    }
+    fun populate(rawSong: RealSong.Raw): Boolean
 }
 
-/**
- * A [CacheExtractor] only capable of writing to the cache. This can be used to load music with
- * without the cache if the user desires.
- * @param context [Context] required to read the cache database.
- * @see CacheExtractor
- * @author Alexander Capehart (OxygenCobalt)
- */
-private open class WriteOnlyCacheExtractor(private val context: Context) : CacheExtractor {
-    protected val cacheDao: CacheDao by lazy { CacheDatabase.getInstance(context).cacheDao() }
-
-    override suspend fun init() {
-        // Nothing to do.
-    }
-
-    override suspend fun finalize(rawSongs: List<RealSong.Raw>) {
-        try {
-            // Still write out whatever data was extracted.
-            cacheDao.nukeCache()
-            cacheDao.insertCache(rawSongs.map(CachedSong::fromRaw))
-        } catch (e: Exception) {
-            logE("Unable to save cache database.")
-            logE(e.stackTraceToString())
+private class RealMetadataCache(cachedSongs: List<CachedSong>) : MetadataCache {
+    private val cacheMap = buildMap {
+        for (cachedSong in cachedSongs) {
+            put(cachedSong.mediaStoreId, cachedSong)
         }
     }
 
-    override fun populate(rawSong: RealSong.Raw) =
-        // Nothing to do.
-        ExtractionResult.NONE
-}
-
-/**
- * A [CacheExtractor] that supports reading from and writing to the cache.
- * @param context [Context] required to load
- * @see CacheExtractor
- * @author Alexander Capehart
- */
-private class ReadWriteCacheExtractor(private val context: Context) :
-    WriteOnlyCacheExtractor(context) {
-    private var cacheMap: Map<Long, CachedSong>? = null
-    private var invalidate = false
-
-    override suspend fun init() {
-        try {
-            // Faster to load the whole database into memory than do a query on each
-            // populate call.
-            val cache = cacheDao.readCache()
-            cacheMap = buildMap {
-                for (cachedSong in cache) {
-                    put(cachedSong.mediaStoreId, cachedSong)
-                }
-            }
-        } catch (e: Exception) {
-            logE("Unable to load cache database.")
-            logE(e.stackTraceToString())
-        }
-    }
-
-    override suspend fun finalize(rawSongs: List<RealSong.Raw>) {
-        cacheMap = null
-        // Same some time by not re-writing the cache if we were able to create the entire
-        // library from it. If there is even just one song we could not populate from the
-        // cache, then we will re-write it.
-        if (invalidate) {
-            logD("Cache was invalidated during loading, rewriting")
-            super.finalize(rawSongs)
-        }
-    }
-
-    override fun populate(rawSong: RealSong.Raw): ExtractionResult {
-        val map = cacheMap ?: return ExtractionResult.NONE
+    override var invalidated = false
+    override fun populate(rawSong: RealSong.Raw): Boolean {
 
         // For a cached raw song to be used, it must exist within the cache and have matching
         // addition and modification timestamps. Technically the addition timestamp doesn't
         // exist, but to safeguard against possible OEM-specific timestamp incoherence, we
         // check for it anyway.
-        val cachedSong = map[rawSong.mediaStoreId]
+        val cachedSong = cacheMap[rawSong.mediaStoreId]
         if (cachedSong != null &&
             cachedSong.dateAdded == rawSong.dateAdded &&
             cachedSong.dateModified == rawSong.dateModified) {
             cachedSong.copyToRaw(rawSong)
-            return ExtractionResult.CACHED
+            return true
         }
 
         // We could not populate this song. This means our cache is stale and should be
         // re-written with newly-loaded music.
-        invalidate = true
-        return ExtractionResult.NONE
+        invalidated = true
+        return false
+    }
+}
+
+/**
+ * A repository allowing access to cached metadata obtained in prior music loading operations.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+interface MetadataCacheRepository {
+    /**
+     * Read the current [MetadataCache], if it exists.
+     * @return The stored [MetadataCache], or null if it could not be obtained.
+     */
+    suspend fun readCache(): MetadataCache?
+
+    /**
+     * Write the list of newly-loaded [RealSong.Raw]s to the cache, replacing the prior data.
+     * @param rawSongs The [rawSongs] to write to the cache.
+     */
+    suspend fun writeCache(rawSongs: List<RealSong.Raw>)
+
+    companion object {
+        /**
+         * Create a framework-backed instance.
+         * @param context [Context] required.
+         * @return A new instance.
+         */
+        fun from(context: Context): MetadataCacheRepository = RealMetadataCacheRepository(context)
+    }
+}
+
+private class RealMetadataCacheRepository(private val context: Context) : MetadataCacheRepository {
+    private val cachedSongsDao: CachedSongsDao by lazy {
+        MetadataCacheDatabase.getInstance(context).cachedSongsDao()
+    }
+
+    override suspend fun readCache() =
+        try {
+            // Faster to load the whole database into memory than do a query on each
+            // populate call.
+            RealMetadataCache(cachedSongsDao.readSongs())
+        } catch (e: Exception) {
+            logE("Unable to load cache database.")
+            logE(e.stackTraceToString())
+            null
+        }
+
+    override suspend fun writeCache(rawSongs: List<RealSong.Raw>) {
+        try {
+            // Still write out whatever data was extracted.
+            cachedSongsDao.nukeSongs()
+            cachedSongsDao.insertSongs(rawSongs.map(CachedSong::fromRaw))
+        } catch (e: Exception) {
+            logE("Unable to save cache database.")
+            logE(e.stackTraceToString())
+        }
     }
 }
 
 @Database(entities = [CachedSong::class], version = 27, exportSchema = false)
-private abstract class CacheDatabase : RoomDatabase() {
-    abstract fun cacheDao(): CacheDao
+private abstract class MetadataCacheDatabase : RoomDatabase() {
+    abstract fun cachedSongsDao(): CachedSongsDao
 
     companion object {
-        @Volatile private var INSTANCE: CacheDatabase? = null
+        @Volatile private var INSTANCE: MetadataCacheDatabase? = null
 
         /**
          * Get/create the shared instance of this database.
          * @param context [Context] required.
          */
-        fun getInstance(context: Context): CacheDatabase {
+        fun getInstance(context: Context): MetadataCacheDatabase {
             val instance = INSTANCE
             if (instance != null) {
                 return instance
@@ -188,7 +157,7 @@ private abstract class CacheDatabase : RoomDatabase() {
                 val newInstance =
                     Room.databaseBuilder(
                             context.applicationContext,
-                            CacheDatabase::class.java,
+                            MetadataCacheDatabase::class.java,
                             "auxio_metadata_cache.db")
                         .fallbackToDestructiveMigration()
                         .fallbackToDestructiveMigrationFrom(0)
@@ -202,10 +171,10 @@ private abstract class CacheDatabase : RoomDatabase() {
 }
 
 @Dao
-private interface CacheDao {
-    @Query("SELECT * FROM ${CachedSong.TABLE_NAME}") suspend fun readCache(): List<CachedSong>
-    @Query("DELETE FROM ${CachedSong.TABLE_NAME}") suspend fun nukeCache()
-    @Insert suspend fun insertCache(songs: List<CachedSong>)
+private interface CachedSongsDao {
+    @Query("SELECT * FROM ${CachedSong.TABLE_NAME}") suspend fun readSongs(): List<CachedSong>
+    @Query("DELETE FROM ${CachedSong.TABLE_NAME}") suspend fun nukeSongs()
+    @Insert suspend fun insertSongs(songs: List<CachedSong>)
 }
 
 @Entity(tableName = CachedSong.TABLE_NAME)

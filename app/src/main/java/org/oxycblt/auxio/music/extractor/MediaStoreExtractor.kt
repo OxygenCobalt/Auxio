@@ -27,6 +27,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import java.io.File
+import kotlinx.coroutines.channels.Channel
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.library.RealSong
 import org.oxycblt.auxio.music.metadata.Date
@@ -47,14 +48,45 @@ import org.oxycblt.auxio.util.logD
  * music extraction process and primarily intended for redundancy for files not natively supported
  * by [MetadataExtractor]. Solely relying on this is not recommended, as it often produces bad
  * metadata.
- * @param context [Context] required to query the media database.
- * @param cacheExtractor [CacheExtractor] implementation for cache optimizations.
  * @author Alexander Capehart (OxygenCobalt)
  */
-abstract class MediaStoreExtractor(
-    private val context: Context,
-    private val cacheExtractor: CacheExtractor
-) {
+interface MediaStoreExtractor {
+    /**
+     * Query the media database, initializing this instance in the process.
+     * @return The new [Cursor] returned by the media databases.
+     */
+    suspend fun query(): Cursor
+
+    /**
+     * Consume the [Cursor] loaded after [query].
+     * @param cache A [MetadataCache] used to avoid extracting metadata for cached songs, or null if
+     * no [MetadataCache] was available.
+     * @param incompleteSongs A channel where songs that could not be retrieved from the
+     * [MetadataCache] should be sent to.
+     * @param completeSongs A channel where completed songs should be sent to.
+     */
+    suspend fun consume(
+        cache: MetadataCache?,
+        incompleteSongs: Channel<RealSong.Raw>,
+        completeSongs: Channel<RealSong.Raw>
+    )
+
+    companion object {
+        /**
+         * Create a framework-backed instance.
+         * @param context [Context] required.
+         * @return A new [RealMediaStoreExtractor] that will work best on the device's API level.
+         */
+        fun from(context: Context): MediaStoreExtractor =
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30MediaStoreExtractor(context)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Api29MediaStoreExtractor(context)
+                else -> Api21MediaStoreExtractor(context)
+            }
+    }
+}
+
+private abstract class RealMediaStoreExtractor(private val context: Context) : MediaStoreExtractor {
     private var cursor: Cursor? = null
     private var idIndex = -1
     private var titleIndex = -1
@@ -78,14 +110,8 @@ abstract class MediaStoreExtractor(
     protected var volumes = listOf<StorageVolume>()
         private set
 
-    /**
-     * Initialize this instance. This involves setting up the required sub-extractors and querying
-     * the media database for music files.
-     * @return A [Cursor] of the music data returned from the database.
-     */
-    open suspend fun init(): Cursor {
+    override suspend fun query(): Cursor {
         val start = System.currentTimeMillis()
-        cacheExtractor.init()
         val musicSettings = MusicSettings.from(context)
         val storageManager = context.getSystemServiceCompat(StorageManager::class)
 
@@ -190,42 +216,27 @@ abstract class MediaStoreExtractor(
         return cursor
     }
 
-    /**
-     * Finalize the Extractor by writing the newly-loaded [RealSong.Raw]s back into the cache,
-     * alongside freeing up memory.
-     * @param rawSongs The songs to write into the cache.
-     */
-    open suspend fun finalize(rawSongs: List<RealSong.Raw>) {
-        // Free the cursor (and it's resources)
-        cursor?.close()
-        cursor = null
-        cacheExtractor.finalize(rawSongs)
-    }
-
-    /**
-     * Populate a [RealSong.Raw] with the next [Cursor] value provided by [MediaStore].
-     * @param raw The [RealSong.Raw] to populate.
-     * @return An [ExtractionResult] signifying the result of the operation. Will return
-     * [ExtractionResult.CACHED] if [CacheExtractor] returned it.
-     */
-    fun populate(raw: RealSong.Raw): ExtractionResult {
-        val cursor = requireNotNull(cursor) { "MediaStoreLayer is not properly initialized" }
-        // Move to the next cursor, stopping if we have exhausted it.
-        if (!cursor.moveToNext()) {
-            logD("Cursor is exhausted")
-            return ExtractionResult.NONE
+    override suspend fun consume(
+        cache: MetadataCache?,
+        incompleteSongs: Channel<RealSong.Raw>,
+        completeSongs: Channel<RealSong.Raw>
+    ) {
+        val cursor = requireNotNull(cursor) { "Must call query first before running consume" }
+        while (cursor.moveToNext()) {
+            val rawSong = RealSong.Raw()
+            populateFileData(cursor, rawSong)
+            if (cache?.populate(rawSong) == true) {
+                completeSongs.send(rawSong)
+            } else {
+                populateMetadata(cursor, rawSong)
+                incompleteSongs.send(rawSong)
+            }
         }
-
-        // Populate the minimum required columns to maybe obtain a cache entry.
-        populateFileData(cursor, raw)
-        if (cacheExtractor.populate(raw) == ExtractionResult.CACHED) {
-            // We found a valid cache entry, no need to fully read the entry.
-            return ExtractionResult.CACHED
-        }
-
-        // Could not load entry from cache, we have to read the rest of the metadata.
-        populateMetadata(cursor, raw)
-        return ExtractionResult.PARSED
+        // Free the cursor and signal that no more incomplete songs will be produced by
+        // this extractor.
+        cursor.close()
+        incompleteSongs.close()
+        this.cursor = null
     }
 
     /**
@@ -327,21 +338,6 @@ abstract class MediaStoreExtractor(
 
     companion object {
         /**
-         * Create a framework-backed instance.
-         * @param context [Context] required.
-         * @param cacheExtractor [CacheExtractor] to wrap.
-         * @return A new [MediaStoreExtractor] that will work best on the device's API level.
-         */
-        fun from(context: Context, cacheExtractor: CacheExtractor) =
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
-                    Api30MediaStoreExtractor(context, cacheExtractor)
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
-                    Api29MediaStoreExtractor(context, cacheExtractor)
-                else -> Api21MediaStoreExtractor(context, cacheExtractor)
-            }
-
-        /**
          * The base selector that works across all versions of android. Does not exclude
          * directories.
          */
@@ -366,20 +362,12 @@ abstract class MediaStoreExtractor(
 // Note: The separation between version-specific backends may not be the cleanest. To preserve
 // speed, we only want to add redundancy on known issues, not with possible issues.
 
-/**
- * A [MediaStoreExtractor] that completes the music loading process in a way compatible from API 21
- * onwards to API 28.
- * @param context [Context] required to query the media database.
- * @param cacheExtractor [CacheExtractor] implementation for cache optimizations.
- * @author Alexander Capehart (OxygenCobalt)
- */
-private class Api21MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor) :
-    MediaStoreExtractor(context, cacheExtractor) {
+private class Api21MediaStoreExtractor(context: Context) : RealMediaStoreExtractor(context) {
     private var trackIndex = -1
     private var dataIndex = -1
 
-    override suspend fun init(): Cursor {
-        val cursor = super.init()
+    override suspend fun query(): Cursor {
+        val cursor = super.query()
         // Set up cursor indices for later use.
         trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
         dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
@@ -447,19 +435,19 @@ private class Api21MediaStoreExtractor(context: Context, cacheExtractor: CacheEx
 }
 
 /**
- * A [MediaStoreExtractor] that implements common behavior supported from API 29 onwards.
+ * A [RealMediaStoreExtractor] that implements common behavior supported from API 29 onwards.
  * @param context [Context] required to query the media database.
- * @param cacheExtractor [CacheExtractor] implementation for cache optimizations.
+ * @param metadataCacheRepository [MetadataCacheRepository] implementation for cache optimizations.
  * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-private open class BaseApi29MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor) :
-    MediaStoreExtractor(context, cacheExtractor) {
+private open class BaseApi29MediaStoreExtractor(context: Context) :
+    RealMediaStoreExtractor(context) {
     private var volumeIndex = -1
     private var relativePathIndex = -1
 
-    override suspend fun init(): Cursor {
-        val cursor = super.init()
+    override suspend fun query(): Cursor {
+        val cursor = super.query()
         // Set up cursor indices for later use.
         volumeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
         relativePathIndex =
@@ -509,19 +497,20 @@ private open class BaseApi29MediaStoreExtractor(context: Context, cacheExtractor
 }
 
 /**
- * A [MediaStoreExtractor] that completes the music loading process in a way compatible with at API
+ * A [RealMediaStoreExtractor] that completes the music loading process in a way compatible with at
+ * API
  * 29.
  * @param context [Context] required to query the media database.
- * @param cacheExtractor [CacheExtractor] implementation for cache functionality.
+ * @param metadataCacheRepository [MetadataCacheRepository] implementation for cache functionality.
  * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-private open class Api29MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor) :
-    BaseApi29MediaStoreExtractor(context, cacheExtractor) {
+private open class Api29MediaStoreExtractor(context: Context) :
+    BaseApi29MediaStoreExtractor(context) {
     private var trackIndex = -1
 
-    override suspend fun init(): Cursor {
-        val cursor = super.init()
+    override suspend fun query(): Cursor {
+        val cursor = super.query()
         // Set up cursor indices for later use.
         trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
         return cursor
@@ -544,20 +533,19 @@ private open class Api29MediaStoreExtractor(context: Context, cacheExtractor: Ca
 }
 
 /**
- * A [MediaStoreExtractor] that completes the music loading process in a way compatible from API 30
- * onwards.
+ * A [RealMediaStoreExtractor] that completes the music loading process in a way compatible from API
+ * 30 onwards.
  * @param context [Context] required to query the media database.
- * @param cacheExtractor [CacheExtractor] implementation for cache optimizations.
+ * @param metadataCacheRepository [MetadataCacheRepository] implementation for cache optimizations.
  * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.R)
-private class Api30MediaStoreExtractor(context: Context, cacheExtractor: CacheExtractor) :
-    BaseApi29MediaStoreExtractor(context, cacheExtractor) {
+private class Api30MediaStoreExtractor(context: Context) : BaseApi29MediaStoreExtractor(context) {
     private var trackIndex: Int = -1
     private var discIndex: Int = -1
 
-    override suspend fun init(): Cursor {
-        val cursor = super.init()
+    override suspend fun query(): Cursor {
+        val cursor = super.query()
         // Set up cursor indices for later use.
         trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
         discIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISC_NUMBER)

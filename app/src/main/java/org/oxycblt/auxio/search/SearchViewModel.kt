@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.search
 
 import androidx.annotation.IdRes
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,7 +37,7 @@ import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.logD
 
 /**
- * An [AndroidViewModel] that keeps performs search operations and tracks their results.
+ * An [ViewModel] that keeps performs search operations and tracks their results.
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel

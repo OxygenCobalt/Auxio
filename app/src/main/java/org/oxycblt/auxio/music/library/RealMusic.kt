@@ -46,6 +46,8 @@ import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
+// TODO: Split off raw music and real music
+
 /**
  * Library-backed implementation of [RealSong].
  * @param raw The [Raw] to derive the member data from.

@@ -26,6 +26,10 @@ import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
 
+/**
+ * Display preferences.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_accent)) {

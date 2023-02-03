@@ -17,9 +17,7 @@
  
 package org.oxycblt.auxio.detail
 
-import android.app.Application
 import androidx.annotation.StringRes
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,10 +42,8 @@ import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.*
 
 /**
- * [AndroidViewModel] that manages the Song, Album, Artist, and Genre detail views. Keeps track of
- * the current item they are showing, sub-data to display, and configuration. Since this ViewModel
- * requires a context, it must be instantiated [AndroidViewModel]'s Factory.
- * @param application [Application] context required to initialize certain information.
+ * [ViewModel] that manages the Song, Album, Artist, and Genre detail views. Keeps track of the
+ * current item they are showing, sub-data to display, and configuration.
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel

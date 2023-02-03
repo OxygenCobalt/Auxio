@@ -30,7 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.cancel
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
@@ -119,11 +119,11 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
     override fun onStartIndexing(withCache: Boolean) {
         if (indexer.isIndexing) {
             // Cancel the previous music loading job.
-            currentIndexJob?.cancel()
+            indexScope.cancel()
             indexer.reset()
         }
         // Start a new music loading job on a co-routine.
-        currentIndexJob = indexScope.launch { indexer.index(this@IndexerService, withCache) }
+        indexer.index(this@IndexerService, withCache, indexScope)
     }
 
     override fun onIndexerStateChanged(state: Indexer.State?) {

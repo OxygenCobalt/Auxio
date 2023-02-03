@@ -21,7 +21,7 @@ import android.content.Context
 import androidx.core.text.isDigitsOnly
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.channels.Channel
 import org.oxycblt.auxio.music.library.RealSong
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.metadata.TextTags
@@ -34,86 +34,53 @@ import org.oxycblt.auxio.util.logW
 /**
  * The extractor that leverages ExoPlayer's [MetadataRetriever] API to parse metadata. This is the
  * last step in the music extraction process and is mostly responsible for papering over the bad
- * metadata that [MediaStoreExtractor] produces.
+ * metadata that [RealMediaStoreExtractor] produces.
  *
  * @param context [Context] required for reading audio files.
- * @param mediaStoreExtractor [MediaStoreExtractor] implementation for cache optimizations and
- * redundancy.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MetadataExtractor(
-    private val context: Context,
-    private val mediaStoreExtractor: MediaStoreExtractor
-) {
+class MetadataExtractor(private val context: Context) {
     // We can parallelize MetadataRetriever Futures to work around it's speed issues,
     // producing similar throughput's to other kinds of manual metadata extraction.
     private val taskPool: Array<Task?> = arrayOfNulls(TASK_CAPACITY)
 
-    /**
-     * Initialize this extractor. This actually initializes the sub-extractors that this instance
-     * relies on.
-     * @return The amount of music that is expected to be loaded.
-     */
-    suspend fun init() = mediaStoreExtractor.init().count
-
-    /**
-     * Finalize the Extractor by writing the newly-loaded [RealSong.Raw]s back into the cache,
-     * alongside freeing up memory.
-     * @param rawSongs The songs to write into the cache.
-     */
-    suspend fun finalize(rawSongs: List<RealSong.Raw>) = mediaStoreExtractor.finalize(rawSongs)
-
-    /**
-     * Returns a flow that parses all [RealSong.Raw] instances queued by the sub-extractors. This
-     * will first delegate to the sub-extractors before parsing the metadata itself.
-     * @return A flow of [RealSong.Raw] instances.
-     */
-    fun extract() = flow {
-        while (true) {
-            val raw = RealSong.Raw()
-            when (mediaStoreExtractor.populate(raw)) {
-                ExtractionResult.NONE -> break
-                ExtractionResult.PARSED -> {}
-                ExtractionResult.CACHED -> {
-                    // Avoid running the expensive parsing process on songs we can already
-                    // restore from the cache.
-                    emit(raw)
-                    continue
-                }
-            }
-
-            // Spin until there is an open slot we can insert a task in.
-            spin@ while (true) {
-                for (i in taskPool.indices) {
-                    val task = taskPool[i]
-                    if (task != null) {
-                        val finishedRaw = task.get()
-                        if (finishedRaw != null) {
-                            emit(finishedRaw)
-                            taskPool[i] = Task(context, raw)
-                            break@spin
-                        }
-                    } else {
-                        taskPool[i] = Task(context, raw)
-                        break@spin
-                    }
-                }
-            }
-        }
-
+    suspend fun consume(
+        incompleteSongs: Channel<RealSong.Raw>,
+        completeSongs: Channel<RealSong.Raw>
+    ) {
         spin@ while (true) {
-            // Spin until all of the remaining tasks are complete.
+            // Spin until there is an open slot we can insert a task in.
             for (i in taskPool.indices) {
                 val task = taskPool[i]
                 if (task != null) {
-                    val finishedRaw = task.get() ?: continue@spin
-                    emit(finishedRaw)
+                    completeSongs.send(task.get() ?: continue)
+                }
+                val result = incompleteSongs.tryReceive()
+                if (result.isClosed) {
                     taskPool[i] = null
+                    break@spin
+                }
+                taskPool[i] = result.getOrNull()?.let { Task(context, it) }
+            }
+        }
+
+        do {
+            var ongoingTasks = false
+            for (i in taskPool.indices) {
+                val task = taskPool[i]
+                if (task != null) {
+                    val finishedRawSong = task.get()
+                    if (finishedRawSong != null) {
+                        completeSongs.send(finishedRawSong)
+                        taskPool[i] = null
+                    } else {
+                        ongoingTasks = true
+                    }
                 }
             }
+        } while (ongoingTasks)
 
-            break
-        }
+        completeSongs.close()
     }
 
     private companion object {
@@ -127,7 +94,7 @@ class MetadataExtractor(
  * @param raw [RealSong.Raw] to process.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class Task(context: Context, private val raw: RealSong.Raw) {
+private class Task(context: Context, private val raw: RealSong.Raw) {
     // Note that we do not leverage future callbacks. This is because errors in the
     // (highly fallible) extraction process will not bubble up to Indexer when a
     // listener is used, instead crashing the app entirely.
@@ -136,6 +103,8 @@ class Task(context: Context, private val raw: RealSong.Raw) {
             context,
             MediaItem.fromUri(
                 requireNotNull(raw.mediaStoreId) { "Invalid raw: No id" }.toAudioUri()))
+
+    init {}
 
     /**
      * Try to get a completed song from this [Task], if it has finished processing.

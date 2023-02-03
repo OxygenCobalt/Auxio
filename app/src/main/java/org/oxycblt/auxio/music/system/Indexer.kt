@@ -22,8 +22,13 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
+import java.util.LinkedList
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.BuildConfig
@@ -93,8 +98,9 @@ interface Indexer {
      * @param context [Context] required to load music.
      * @param withCache Whether to use the cache or not when loading. If false, the cache will still
      * be written, but no cache entries will be loaded into the new library.
+     * @param scope The [CoroutineScope] to run the indexing job in.
      */
-    suspend fun index(context: Context, withCache: Boolean)
+    fun index(context: Context, withCache: Boolean, scope: CoroutineScope)
 
     /**
      * Request that the music library should be reloaded. This should be used by components that do
@@ -287,26 +293,28 @@ private class RealIndexer : Indexer {
         this.listener = null
     }
 
-    override suspend fun index(context: Context, withCache: Boolean) {
-        val result =
-            try {
-                val start = System.currentTimeMillis()
-                val library = indexImpl(context, withCache)
-                logD(
-                    "Music indexing completed successfully in " +
-                        "${System.currentTimeMillis() - start}ms")
-                Result.success(library)
-            } catch (e: CancellationException) {
-                // Got cancelled, propagate upwards to top-level co-routine.
-                logD("Loading routine was cancelled")
-                throw e
-            } catch (e: Exception) {
-                // Music loading process failed due to something we have not handled.
-                logE("Music indexing failed")
-                logE(e.stackTraceToString())
-                Result.failure(e)
-            }
-        emitCompletion(result)
+    override fun index(context: Context, withCache: Boolean, scope: CoroutineScope) {
+        scope.launch {
+            val result =
+                try {
+                    val start = System.currentTimeMillis()
+                    val library = indexImpl(context, withCache, this)
+                    logD(
+                        "Music indexing completed successfully in " +
+                            "${System.currentTimeMillis() - start}ms")
+                    Result.success(library)
+                } catch (e: CancellationException) {
+                    // Got cancelled, propagate upwards to top-level co-routine.
+                    logD("Loading routine was cancelled")
+                    throw e
+                } catch (e: Exception) {
+                    // Music loading process failed due to something we have not handled.
+                    logE("Music indexing failed")
+                    logE(e.stackTraceToString())
+                    Result.failure(e)
+                }
+            emitCompletion(result)
+        }
     }
 
     @Synchronized
@@ -321,55 +329,62 @@ private class RealIndexer : Indexer {
         emitIndexing(null)
     }
 
-    private suspend fun indexImpl(context: Context, withCache: Boolean): Library {
+    private suspend fun indexImpl(
+        context: Context,
+        withCache: Boolean,
+        scope: CoroutineScope
+    ): Library {
         if (ContextCompat.checkSelfPermission(context, Indexer.PERMISSION_READ_AUDIO) ==
             PackageManager.PERMISSION_DENIED) {
             // No permissions, signal that we can't do anything.
             throw Indexer.NoPermissionException()
         }
 
-        // Create the chain of extractors. Each extractor builds on the previous and
-        // enables version-specific features in order to create the best possible music
-        // experience.
-        val cacheExtractor = CacheExtractor.from(context, withCache)
-        val mediaStoreExtractor = MediaStoreExtractor.from(context, cacheExtractor)
-        val metadataExtractor = MetadataExtractor(context, mediaStoreExtractor)
-        val rawSongs = loadRawSongs(metadataExtractor).ifEmpty { throw Indexer.NoMusicException() }
-        // Build the rest of the music library from the song list. This is much more powerful
-        // and reliable compared to using MediaStore to obtain grouping information.
-        val buildStart = System.currentTimeMillis()
-        val library = Library.from(rawSongs, MusicSettings.from(context))
-        logD("Successfully built library in ${System.currentTimeMillis() - buildStart}ms")
-        return library
-    }
-
-    private suspend fun loadRawSongs(metadataExtractor: MetadataExtractor): List<RealSong.Raw> {
-        logD("Starting indexing process")
-        val start = System.currentTimeMillis()
         // Start initializing the extractors. Use an indeterminate state, as there is no ETA on
         // how long a media database query will take.
         emitIndexing(Indexer.Indexing.Indeterminate)
-        val total = metadataExtractor.init()
-        yield()
 
-        // Note: We use a set here so we can eliminate song duplicates.
-        val rawSongs = mutableListOf<RealSong.Raw>()
-        metadataExtractor.extract().collect { rawSong ->
+        val metadataCacheRepository = MetadataCacheRepository.from(context)
+        val mediaStoreExtractor = MediaStoreExtractor.from(context)
+        val metadataExtractor = MetadataExtractor(context)
+
+        // Do the initial query of the cache and media databases in parallel.
+        val mediaStoreQueryJob = scope.async { mediaStoreExtractor.query() }
+        val cache =
+            if (withCache) {
+                metadataCacheRepository.readCache()
+            } else {
+                null
+            }
+        val total = mediaStoreQueryJob.await().count
+
+        // Now start processing the queried song information in parallel. Songs that can't be
+        // received from the cache are consisted incomplete and pushed to a separate channel
+        // that will eventually be processed into completed raw songs.
+        val completeSongs = Channel<RealSong.Raw>(Channel.UNLIMITED)
+        val incompleteSongs = Channel<RealSong.Raw>(Channel.UNLIMITED)
+        val mediaStoreJob =
+            scope.async { mediaStoreExtractor.consume(cache, incompleteSongs, completeSongs) }
+        val metadataJob = scope.async { metadataExtractor.consume(incompleteSongs, completeSongs) }
+
+        // Await completed raw songs as they are processed.
+        val rawSongs = LinkedList<RealSong.Raw>()
+        for (rawSong in completeSongs) {
             rawSongs.add(rawSong)
-            // Now we can signal a defined progress by showing how many songs we have
-            // loaded, and the projected amount of songs we found in the library
-            // (obtained by the extractors)
-            yield()
             emitIndexing(Indexer.Indexing.Songs(rawSongs.size, total))
         }
+        mediaStoreJob.await()
+        metadataJob.await()
 
-        // Finalize the extractors with the songs we have now loaded. There is no ETA
-        // on this process, so go back to an indeterminate state.
+        // Successfully loaded the library, now save the cache and create the library in
+        // parallel.
         emitIndexing(Indexer.Indexing.Indeterminate)
-        metadataExtractor.finalize(rawSongs)
-        logD(
-            "Successfully loaded ${rawSongs.size} raw songs in ${System.currentTimeMillis() - start}ms")
-        return rawSongs
+        val libraryJob =
+            scope.async(Dispatchers.Main) { Library.from(rawSongs, MusicSettings.from(context)) }
+        if (cache == null || cache.invalidated) {
+            metadataCacheRepository.writeCache(rawSongs)
+        }
+        return libraryJob.await()
     }
 
     /**
