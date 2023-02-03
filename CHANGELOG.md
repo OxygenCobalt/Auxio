@@ -8,6 +8,8 @@
 #### What's Improved
 - Auxio will now accept zeroed track/disc numbers in the presence of non-zero total
 track/disc fields
+- Music loading has been made slightly faster
+- Improved sort menu usability
 
 #### What's Fixed
 - Fixed non-functioning "repeat all" repeat mode

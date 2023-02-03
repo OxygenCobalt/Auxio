@@ -38,7 +38,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.NavigationViewModel

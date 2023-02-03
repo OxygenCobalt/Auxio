@@ -92,6 +92,7 @@
     <string name="lbl_sort_track">Track</string>
     <string name="lbl_sort_date_added">Date added</string>
     <string name="lbl_sort_asc">Ascending</string>
+    <string name="lbl_sort_dec">Descending</string>
 
     <string name="lbl_playback">Now playing</string>
     <string name="lbl_equalizer">Equalizer</string>

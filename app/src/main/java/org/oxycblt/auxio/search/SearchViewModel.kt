@@ -32,7 +32,7 @@ import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.library.Library
-import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.logD
 
@@ -176,6 +176,6 @@ constructor(
     }
 
     private companion object {
-        val SORT = Sort(Sort.Mode.ByName, true)
+        val SORT = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
     }
 }

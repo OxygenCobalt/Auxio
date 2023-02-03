@@ -34,7 +34,7 @@ import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.library.Library
-import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.metadata.AudioInfo
 import org.oxycblt.auxio.music.metadata.Disc
 import org.oxycblt.auxio.music.metadata.ReleaseType
@@ -280,7 +280,7 @@ constructor(
     private fun refreshArtistList(artist: Artist) {
         logD("Refreshing artist data")
         val data = mutableListOf<Item>(artist)
-        val albums = Sort(Sort.Mode.ByDate, false).albums(artist.albums)
+        val albums = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING).albums(artist.albums)
 
         val byReleaseGroup =
             albums.groupBy {

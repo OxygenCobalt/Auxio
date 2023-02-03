@@ -40,7 +40,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.*
@@ -151,14 +151,19 @@ class AlbumDetailFragment :
         openMenu(anchor, R.menu.menu_album_sort) {
             val sort = detailModel.albumSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
-            unlikelyToBeNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
+            val directionItemId =
+                when (sort.direction) {
+                    Sort.Direction.ASCENDING -> R.id.option_sort_asc
+                    Sort.Direction.DESCENDING -> R.id.option_sort_dec
+                }
+            unlikelyToBeNull(menu.findItem(directionItemId)).isChecked = true
             setOnMenuItemClickListener { item ->
                 item.isChecked = !item.isChecked
                 detailModel.albumSongSort =
-                    if (item.itemId == R.id.option_sort_asc) {
-                        sort.withAscending(item.isChecked)
-                    } else {
-                        sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
+                    when (item.itemId) {
+                        R.id.option_sort_asc -> sort.withDirection(Sort.Direction.ASCENDING)
+                        R.id.option_sort_dec -> sort.withDirection(Sort.Direction.DESCENDING)
+                        else -> sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
                     }
                 true
             }

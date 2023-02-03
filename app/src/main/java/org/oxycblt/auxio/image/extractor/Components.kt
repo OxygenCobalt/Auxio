@@ -35,7 +35,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.list.Sort
 
 /**
  * A [Keyer] implementation for [Music] data.
@@ -91,7 +91,7 @@ private constructor(
 ) : Fetcher {
     override suspend fun fetch(): FetchResult? {
         // Pick the "most prominent" albums (i.e albums with the most songs) to show in the image.
-        val albums = Sort(Sort.Mode.ByCount, false).albums(artist.albums)
+        val albums = Sort(Sort.Mode.ByCount, Sort.Direction.DESCENDING).albums(artist.albums)
         val results = albums.mapAtMostNotNull(4) { album -> Covers.fetch(context, album) }
         return Images.createMosaic(context, results, size)
     }

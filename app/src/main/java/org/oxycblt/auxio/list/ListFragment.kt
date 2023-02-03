@@ -21,6 +21,8 @@ import android.view.MenuItem
 import android.view.View
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.internal.view.SupportMenu
+import androidx.core.view.MenuCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.MainFragmentDirections
@@ -237,6 +239,8 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
         currentMenu =
             PopupMenu(requireContext(), anchor).apply {
                 inflate(menuRes)
+                logD(menu is SupportMenu)
+                MenuCompat.setGroupDividerEnabled(menu, true)
                 block()
                 setOnDismissListener { currentMenu = null }
                 show()

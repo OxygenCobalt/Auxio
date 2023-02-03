@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music.library
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.storage.contentResolverSafe
 import org.oxycblt.auxio.music.storage.useQuery
@@ -76,7 +77,7 @@ interface Library {
 
     companion object {
         /**
-         * Create a library-backed instance of [Library].
+         * Create an instance of [Library].
          * @param rawSongs [RawSong]s to create the library out of.
          * @param settings [MusicSettings] required.
          */
@@ -93,10 +94,10 @@ private class RealLibrary(rawSongs: List<RawSong>, settings: MusicSettings) : Li
 
     // Use a mapping to make finding information based on it's UID much faster.
     private val uidMap = buildMap {
-        songs.forEach { this[it.uid] = it.finalize() }
-        albums.forEach { this[it.uid] = it.finalize() }
-        artists.forEach { this[it.uid] = it.finalize() }
-        genres.forEach { this[it.uid] = it.finalize() }
+        songs.forEach { put(it.uid, it.finalize()) }
+        albums.forEach { put(it.uid, it.finalize()) }
+        artists.forEach { put(it.uid, it.finalize()) }
+        genres.forEach { put(it.uid, it.finalize()) }
     }
 
     /**
@@ -131,7 +132,8 @@ private class RealLibrary(rawSongs: List<RawSong>, settings: MusicSettings) : Li
      * grouping.
      */
     private fun buildSongs(rawSongs: List<RawSong>, settings: MusicSettings) =
-        Sort(Sort.Mode.ByName, true).songs(rawSongs.map { RealSong(it, settings) }.distinct())
+        Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+            .songs(rawSongs.map { RealSong(it, settings) }.distinct())
 
     /**
      * Build a list of [Album]s from the given [Song]s.

@@ -21,7 +21,7 @@ import android.content.Context
 import android.os.storage.StorageManager
 import androidx.core.content.edit
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.storage.Directory
 import org.oxycblt.auxio.music.storage.MusicDirectories
 import org.oxycblt.auxio.settings.Settings
@@ -116,7 +116,7 @@ private class RealMusicSettings(context: Context) :
         get() =
             Sort.fromIntCode(
                 sharedPreferences.getInt(getString(R.string.set_key_songs_sort), Int.MIN_VALUE))
-                ?: Sort(Sort.Mode.ByName, true)
+                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
         set(value) {
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_songs_sort), value.intCode)
@@ -128,7 +128,7 @@ private class RealMusicSettings(context: Context) :
         get() =
             Sort.fromIntCode(
                 sharedPreferences.getInt(getString(R.string.set_key_albums_sort), Int.MIN_VALUE))
-                ?: Sort(Sort.Mode.ByName, true)
+                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
         set(value) {
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_albums_sort), value.intCode)
@@ -140,7 +140,7 @@ private class RealMusicSettings(context: Context) :
         get() =
             Sort.fromIntCode(
                 sharedPreferences.getInt(getString(R.string.set_key_artists_sort), Int.MIN_VALUE))
-                ?: Sort(Sort.Mode.ByName, true)
+                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
         set(value) {
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_artists_sort), value.intCode)
@@ -152,7 +152,7 @@ private class RealMusicSettings(context: Context) :
         get() =
             Sort.fromIntCode(
                 sharedPreferences.getInt(getString(R.string.set_key_genres_sort), Int.MIN_VALUE))
-                ?: Sort(Sort.Mode.ByName, true)
+                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
         set(value) {
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_genres_sort), value.intCode)
@@ -166,7 +166,7 @@ private class RealMusicSettings(context: Context) :
                 Sort.fromIntCode(
                     sharedPreferences.getInt(
                         getString(R.string.set_key_album_songs_sort), Int.MIN_VALUE))
-                    ?: Sort(Sort.Mode.ByDisc, true)
+                    ?: Sort(Sort.Mode.ByDisc, Sort.Direction.ASCENDING)
 
             // Correct legacy album sort modes to Disc
             if (sort.mode is Sort.Mode.ByName) {
@@ -187,7 +187,7 @@ private class RealMusicSettings(context: Context) :
             Sort.fromIntCode(
                 sharedPreferences.getInt(
                     getString(R.string.set_key_artist_songs_sort), Int.MIN_VALUE))
-                ?: Sort(Sort.Mode.ByDate, false)
+                ?: Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING)
         set(value) {
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_artist_songs_sort), value.intCode)
@@ -200,7 +200,7 @@ private class RealMusicSettings(context: Context) :
             Sort.fromIntCode(
                 sharedPreferences.getInt(
                     getString(R.string.set_key_genre_songs_sort), Int.MIN_VALUE))
-                ?: Sort(Sort.Mode.ByName, true)
+                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
         set(value) {
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_genre_songs_sort), value.intCode)

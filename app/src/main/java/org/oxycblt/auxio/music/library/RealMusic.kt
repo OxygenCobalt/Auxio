@@ -24,6 +24,7 @@ import java.text.CollationKey
 import java.text.Collator
 import kotlin.math.max
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -418,7 +419,7 @@ class RealArtist(private val rawArtist: RawArtist, songAlbums: List<Music>) : Ar
     fun finalize(): Artist {
         check(songs.isNotEmpty() || albums.isNotEmpty()) { "Malformed artist: Empty" }
         genres =
-            Sort(Sort.Mode.ByName, true)
+            Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
                 .genres(songs.flatMapTo(mutableSetOf()) { it.genres })
                 .sortedByDescending { genre -> songs.count { it.genres.contains(genre) } }
         return this
@@ -458,10 +459,10 @@ class RealGenre(private val rawGenre: RawGenre, override val songs: List<RealSon
         }
 
         albums =
-            Sort(Sort.Mode.ByName, true).albums(distinctAlbums).sortedByDescending { album ->
-                album.songs.count { it.genres.contains(this) }
-            }
-        artists = Sort(Sort.Mode.ByName, true).artists(distinctArtists)
+            Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+                .albums(distinctAlbums)
+                .sortedByDescending { album -> album.songs.count { it.genres.contains(this) } }
+        artists = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING).artists(distinctArtists)
         durationMs = totalDuration
     }
 
