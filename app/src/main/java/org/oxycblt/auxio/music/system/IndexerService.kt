@@ -119,11 +119,11 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
     override fun onStartIndexing(withCache: Boolean) {
         if (indexer.isIndexing) {
             // Cancel the previous music loading job.
-            indexScope.cancel()
+            currentIndexJob?.cancel()
             indexer.reset()
         }
         // Start a new music loading job on a co-routine.
-        indexer.index(this@IndexerService, withCache, indexScope)
+        currentIndexJob = indexer.index(this@IndexerService, withCache, indexScope)
     }
 
     override fun onIndexerStateChanged(state: Indexer.State?) {

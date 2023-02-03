@@ -22,6 +22,7 @@ import androidx.core.text.isDigitsOnly
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.library.RealSong
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.metadata.TextTags
@@ -53,7 +54,13 @@ class MetadataExtractor(private val context: Context) {
             for (i in taskPool.indices) {
                 val task = taskPool[i]
                 if (task != null) {
-                    completeSongs.send(task.get() ?: continue)
+                    val finishedRawSong = task.get()
+                    if (finishedRawSong != null) {
+                        completeSongs.send(finishedRawSong)
+                        yield()
+                    } else {
+                        continue
+                    }
                 }
                 val result = incompleteSongs.tryReceive()
                 if (result.isClosed) {
@@ -73,6 +80,7 @@ class MetadataExtractor(private val context: Context) {
                     if (finishedRawSong != null) {
                         completeSongs.send(finishedRawSong)
                         taskPool[i] = null
+                        yield()
                     } else {
                         ongoingTasks = true
                     }

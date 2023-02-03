@@ -26,6 +26,7 @@ import java.util.LinkedList
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -99,8 +100,9 @@ interface Indexer {
      * @param withCache Whether to use the cache or not when loading. If false, the cache will still
      * be written, but no cache entries will be loaded into the new library.
      * @param scope The [CoroutineScope] to run the indexing job in.
+     * @return The [Job] stacking the indexing status.
      */
-    fun index(context: Context, withCache: Boolean, scope: CoroutineScope)
+    fun index(context: Context, withCache: Boolean, scope: CoroutineScope): Job
 
     /**
      * Request that the music library should be reloaded. This should be used by components that do
@@ -293,7 +295,7 @@ private class RealIndexer : Indexer {
         this.listener = null
     }
 
-    override fun index(context: Context, withCache: Boolean, scope: CoroutineScope) {
+    override fun index(context: Context, withCache: Boolean, scope: CoroutineScope) =
         scope.launch {
             val result =
                 try {
@@ -315,7 +317,6 @@ private class RealIndexer : Indexer {
                 }
             emitCompletion(result)
         }
-    }
 
     @Synchronized
     override fun requestReindex(withCache: Boolean) {

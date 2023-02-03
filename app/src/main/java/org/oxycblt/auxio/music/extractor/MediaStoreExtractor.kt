@@ -28,6 +28,7 @@ import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import java.io.File
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.library.RealSong
 import org.oxycblt.auxio.music.metadata.Date
@@ -231,6 +232,7 @@ private abstract class RealMediaStoreExtractor(private val context: Context) : M
                 populateMetadata(cursor, rawSong)
                 incompleteSongs.send(rawSong)
             }
+            yield()
         }
         // Free the cursor and signal that no more incomplete songs will be produced by
         // this extractor.
