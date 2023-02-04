@@ -280,4 +280,5 @@
     <string name="set_playback">Воспроизведение</string>
     <string name="set_dirs_list">Папки</string>
     <string name="set_state">Настойчивость</string>
+    <string name="lbl_sort_dec">По убыванию</string>
 </resources>
