@@ -271,4 +271,5 @@
     <string name="set_replay_gain">„ReplayGain“</string>
     <string name="set_dirs_list">Aplankalai</string>
     <string name="set_state">Atkaklumas</string>
+    <string name="lbl_sort_dec">Mažėjantis</string>
 </resources>
