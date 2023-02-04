@@ -32,7 +32,7 @@
     <string name="set_theme_day">Світла</string>
     <string name="set_theme_night">Темна</string>
     <string name="set_audio">Аудіо</string>
-    <string name="set_personalize">Поведінка</string>
+    <string name="set_personalize">Персоналізація</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Музику не знайдено</string>
     <!-- Hint Namespace | EditText Hints -->
@@ -57,7 +57,7 @@
     <string name="lbl_shuffle_selected">Перемішати вибране</string>
     <string name="lbl_file_name">Ім\'я файлу</string>
     <string name="lbl_format">Формат</string>
-    <string name="lbl_ok">OK</string>
+    <string name="lbl_ok">Добре</string>
     <string name="lbl_cancel">Відміна</string>
     <string name="lbl_save">Зберегти</string>
     <string name="lbl_shuffle_shortcut_short">Перемішати</string>
@@ -70,8 +70,8 @@
     <string name="lbl_compilation_remix">Збірки реміксів</string>
     <string name="lbl_bitrate">Бітрейт</string>
     <string name="lbl_observing">Моніторинг музичної бібліотеки</string>
-    <string name="info_app_desc">Простий, раціональний музичний плеєр на Android.</string>
-    <string name="lbl_indexing">Завантаження пісень</string>
+    <string name="info_app_desc">Простий, раціональний музичний плеєр для Android.</string>
+    <string name="lbl_indexing">Завантаження музики</string>
     <string name="lbl_album">Альбом</string>
     <string name="lbl_singles">Сингли</string>
     <string name="lbl_single">Сингл</string>
@@ -82,7 +82,7 @@
     <string name="lbl_album_live">Концертний альбом</string>
     <string name="lbl_relative_path">Шлях до каталогу</string>
     <string name="set_display">Екран</string>
-    <string name="lbl_sort_date">Рік</string>
+    <string name="lbl_sort_date">Дата</string>
     <string name="lbl_play_selected">Відтворити вибране</string>
     <string name="set_cover_mode">Обкладинки альбомів</string>
     <string name="set_hide_collaborators">Приховати співавторів</string>
