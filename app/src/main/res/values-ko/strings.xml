@@ -51,7 +51,7 @@
     <string name="lbl_library_counts">라이브러리 통계</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">설정</string>
-    <string name="set_ui">모양</string>
+    <string name="set_ui">보고 느낌</string>
     <string name="set_theme">테마</string>
     <string name="set_theme_auto">자동</string>
     <string name="set_theme_day">밝음</string>
@@ -261,4 +261,17 @@
     <string name="lbl_wiki">위키</string>
     <string name="set_playback_mode_genre">장르에서 재생</string>
     <string name="fmt_list">%1$s, %2$s</string>
+    <string name="set_replay_gain">리플레이게인</string>
+    <string name="set_audio_desc">사운드 및 재생 동작 구성</string>
+    <string name="set_playback">재생</string>
+    <string name="set_dirs_list">폴더</string>
+    <string name="set_ui_desc">앱의 테마 및 색상 변경</string>
+    <string name="set_music">음악</string>
+    <string name="set_library">라이브러리</string>
+    <string name="set_images">이미지</string>
+    <string name="set_content_desc">음악 및 이미지 불러오기 방법 제어</string>
+    <string name="set_state">지속</string>
+    <string name="set_behavior">동작</string>
+    <string name="set_personalize_desc">UI 제어 및 동작 커스텀</string>
+    <string name="lbl_sort_dec">내림차순</string>
 </resources>

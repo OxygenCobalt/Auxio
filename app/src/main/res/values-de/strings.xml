@@ -49,8 +49,8 @@
     <string name="set_headset_autoplay">Kopfhörer: automatische Wiedergabe</string>
     <string name="set_headset_autoplay_desc">Beginne die Wiedergabe immer, wenn Kopfhörer verbunden sind (funktioniert nicht auf allen Geräten)</string>
     <string name="set_replay_gain_mode">ReplayGain-Strategie</string>
-    <string name="set_pre_amp">ReplayGain-Prälautverstärkung</string>
-    <string name="set_pre_amp_desc">Während der Musikwiedergabe, trifft die Prälautverstärkung dem aktuellem Abgleich zu</string>
+    <string name="set_pre_amp">ReplayGain-Vorverstärkung</string>
+    <string name="set_pre_amp_desc">Die Vorverstärkung wird während der Wiedergabe auf die existierende Einstellung angewendet</string>
     <string name="set_pre_amp_with">Abgleich mit Metadaten</string>
     <string name="set_pre_amp_without">Abgleich ohne Metadaten</string>
     <string name="set_replay_gain_mode_track">Titel bevorzugen</string>
@@ -227,8 +227,8 @@
     <string name="desc_exit">Wiedergabe anhalten</string>
     <string name="lbl_compilation_live">Live-Kompilation</string>
     <string name="lbl_compilation_remix">Remix-Kompilation</string>
-    <string name="lbl_mixes">Mischungen</string>
-    <string name="lbl_mix">Mischung</string>
+    <string name="lbl_mixes">Mixes</string>
+    <string name="lbl_mix">Mix</string>
     <string name="set_separators">Mehrfachwert-Trenner</string>
     <string name="set_separators_desc">Zeichen ändern, welche mehrere Tag-Werte trennt</string>
     <string name="set_separators_and">Und-Zeichen (&amp;)</string>

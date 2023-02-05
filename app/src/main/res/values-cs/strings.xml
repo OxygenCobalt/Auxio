@@ -282,4 +282,5 @@
     <string name="set_playback">Přehrávání</string>
     <string name="set_library">Knihovna</string>
     <string name="set_state">Perzistence</string>
+    <string name="lbl_sort_dec">Sestupně</string>
 </resources>
