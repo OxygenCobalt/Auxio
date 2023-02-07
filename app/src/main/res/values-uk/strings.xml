@@ -58,7 +58,7 @@
     <string name="lbl_file_name">Ім\'я файлу</string>
     <string name="lbl_format">Формат</string>
     <string name="lbl_ok">Добре</string>
-    <string name="lbl_cancel">Відміна</string>
+    <string name="lbl_cancel">Скасувати</string>
     <string name="lbl_save">Зберегти</string>
     <string name="lbl_shuffle_shortcut_short">Перемішати</string>
     <string name="lbl_shuffle_shortcut_long">Перемішати все</string>
