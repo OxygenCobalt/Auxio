@@ -259,4 +259,16 @@
     <string name="set_replay_gain_mode">ReplayGain stratejisi</string>
     <string name="desc_queue_handle">Bu şarkıyı kuyrukta taşı</string>
     <string name="fmt_list">%1$s, %2$s</string>
+    <string name="set_content_desc">Müzik ve görüntülerin nasıl yükleneceğini denetleyin</string>
+    <string name="set_music">Müzik</string>
+    <string name="set_images">Resimler</string>
+    <string name="set_audio_desc">Sesi ve oynatma davranışını yapılandırın</string>
+    <string name="set_playback">Oynatma</string>
+    <string name="set_library">Kütüphane</string>
+    <string name="set_state">Kalıcılık</string>
+    <string name="lbl_sort_dec">Azalan</string>
+    <string name="set_ui_desc">Uygulamanın temasını ve renklerini değiştirin</string>
+    <string name="set_dirs_list">Klasörler</string>
+    <string name="set_personalize_desc">Arayüz kontrollerini ve davranışını özelleştirin</string>
+    <string name="set_behavior">Davranış</string>
 </resources>
