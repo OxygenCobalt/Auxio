@@ -277,4 +277,5 @@
     <string name="set_state">Persistenza</string>
     <string name="set_personalize_desc">Personalizza controlli e comportamento dell\'UI</string>
     <string name="set_audio_desc">Configura comportamento di suono e riproduzione</string>
+    <string name="lbl_sort_dec">Discendente</string>
 </resources>
