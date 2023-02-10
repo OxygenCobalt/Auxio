@@ -260,4 +260,18 @@
         <item quantity="many">%d artistas</item>
         <item quantity="other">%d artistas</item>
     </plurals>
+    <string name="set_replay_gain">Equalização de volume ReplayGain</string>
+    <string name="lbl_sort_dec">Descendente</string>
+    <string name="set_ui_desc">Mude o tema e as cores do app</string>
+    <string name="set_personalize_desc">Personalize os controles e o comportamento da interface do usuário</string>
+    <string name="set_content_desc">Controle como a música e as imagens são carregadas</string>
+    <string name="set_music">Música</string>
+    <string name="set_images">Imagens</string>
+    <string name="set_audio_desc">Configurar som e comportamento de reprodução</string>
+    <string name="set_playback">Reprodução</string>
+    <string name="set_dirs_list">Pastas</string>
+    <string name="set_library">Biblioteca</string>
+    <string name="set_state">Estado de reprodução</string>
+    <string name="set_separators_and">E comercial (&amp;)</string>
+    <string name="set_behavior">Comportamento</string>
 </resources>
