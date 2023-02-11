@@ -18,7 +18,9 @@
 package org.oxycblt.auxio.search
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.Normalizer
+import javax.inject.Inject
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -51,17 +53,10 @@ interface SearchEngine {
         val artists: List<Artist>?,
         val genres: List<Genre>?
     )
-
-    companion object {
-        /**
-         * Get a framework-backed implementation.
-         * @param context [Context] required.
-         */
-        fun from(context: Context): SearchEngine = RealSearchEngine(context)
-    }
 }
 
-private class RealSearchEngine(private val context: Context) : SearchEngine {
+class SearchEngineImpl @Inject constructor(@ApplicationContext private val context: Context) :
+    SearchEngine {
     override suspend fun search(items: SearchEngine.Items, query: String) =
         SearchEngine.Items(
             songs = items.songs?.searchListImpl(query) { q, song -> song.path.name.contains(q) },

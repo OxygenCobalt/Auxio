@@ -67,7 +67,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
     private lateinit var observingNotification: ObservingNotification
     private lateinit var wakeLock: PowerManager.WakeLock
     private lateinit var indexerContentObserver: SystemContentObserver
-    private lateinit var settings: MusicSettings
+    @Inject lateinit var musicSettings: MusicSettings
 
     override fun onCreate() {
         super.onCreate()
@@ -82,8 +82,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
         indexerContentObserver = SystemContentObserver()
-        settings = MusicSettings.from(this)
-        settings.registerListener(this)
+        musicSettings.registerListener(this)
         indexer.registerController(this)
         // An indeterminate indexer and a missing library implies we are extremely early
         // in app initialization so start loading music.
@@ -107,7 +106,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
         // Then cancel the listener-dependent components to ensure that stray reloading
         // events will not occur.
         indexerContentObserver.release()
-        settings.unregisterListener(this)
+        musicSettings.unregisterListener(this)
         indexer.unregisterController(this)
         // Then cancel any remaining music loading jobs.
         serviceJob.cancel()
@@ -197,7 +196,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
      * currently monitoring the music library for changes.
      */
     private fun updateIdleSession() {
-        if (settings.shouldBeObserving) {
+        if (musicSettings.shouldBeObserving) {
             // There are a few reasons why we stay in the foreground with automatic rescanning:
             // 1. Newer versions of Android have become more and more restrictive regarding
             // how a foreground service starts. Thus, it's best to go foreground now so that
@@ -287,7 +286,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
         override fun run() {
             // Check here if we should even start a reindex. This is much less bug-prone than
             // registering and de-registering this component as this setting changes.
-            if (settings.shouldBeObserving) {
+            if (musicSettings.shouldBeObserving) {
                 onStartIndexing(true)
             }
         }

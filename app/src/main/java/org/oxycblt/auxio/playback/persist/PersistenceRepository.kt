@@ -18,6 +18,8 @@
 package org.oxycblt.auxio.playback.persist
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.model.Library
 import org.oxycblt.auxio.playback.queue.Queue
@@ -47,11 +49,13 @@ interface PersistenceRepository {
          * Get a framework-backed implementation.
          * @param context [Context] required.
          */
-        fun from(context: Context): PersistenceRepository = RealPersistenceRepository(context)
+        fun from(context: Context): PersistenceRepository = PersistenceRepositoryImpl(context)
     }
 }
 
-private class RealPersistenceRepository(private val context: Context) : PersistenceRepository {
+class PersistenceRepositoryImpl
+@Inject
+constructor(@ApplicationContext private val context: Context) : PersistenceRepository {
     private val database: PersistenceDatabase by lazy { PersistenceDatabase.getInstance(context) }
     private val playbackStateDao: PlaybackStateDao by lazy { database.playbackStateDao() }
     private val queueDao: QueueDao by lazy { database.queueDao() }

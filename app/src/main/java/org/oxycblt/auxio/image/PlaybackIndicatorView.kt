@@ -26,6 +26,8 @@ import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.shape.MaterialShapeDrawable
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.UISettings
@@ -41,6 +43,7 @@ import org.oxycblt.auxio.util.getDrawableCompat
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class PlaybackIndicatorView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
@@ -52,6 +55,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private val indicatorMatrix = Matrix()
     private val indicatorMatrixSrc = RectF()
     private val indicatorMatrixDst = RectF()
+    @Inject lateinit var uiSettings: UISettings
 
     /**
      * The corner radius of this view. This allows the outer ImageGroup to apply it's corner radius
@@ -61,7 +65,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         set(value) {
             field = value
             (background as? MaterialShapeDrawable)?.let { bg ->
-                if (UISettings.from(context).roundMode) {
+                if (uiSettings.roundMode) {
                     bg.setCornerSize(value)
                 } else {
                     bg.setCornerSize(0f)

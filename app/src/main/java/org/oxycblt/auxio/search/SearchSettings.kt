@@ -19,6 +19,8 @@ package org.oxycblt.auxio.search
 
 import android.content.Context
 import androidx.core.content.edit
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.settings.Settings
@@ -30,18 +32,10 @@ import org.oxycblt.auxio.settings.Settings
 interface SearchSettings : Settings<Nothing> {
     /** The type of Music the search view is currently filtering to. */
     var searchFilterMode: MusicMode?
-
-    companion object {
-        /**
-         * Get a framework-backed implementation.
-         * @param context [Context] required.
-         */
-        fun from(context: Context): SearchSettings = RealSearchSettings(context)
-    }
 }
 
-private class RealSearchSettings(context: Context) :
-    Settings.Real<Nothing>(context), SearchSettings {
+class SearchSettingsImpl @Inject constructor(@ApplicationContext context: Context) :
+    Settings.Impl<Nothing>(context), SearchSettings {
     override var searchFilterMode: MusicMode?
         get() =
             MusicMode.fromIntCode(

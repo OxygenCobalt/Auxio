@@ -18,11 +18,60 @@
 package org.oxycblt.auxio.music.extractor
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.music.cache.CacheDatabase
 import org.oxycblt.auxio.music.cache.CachedSong
 import org.oxycblt.auxio.music.cache.CachedSongsDao
 import org.oxycblt.auxio.music.model.RawSong
 import org.oxycblt.auxio.util.*
+
+/**
+ * A repository allowing access to cached metadata obtained in prior music loading operations.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+interface CacheRepository {
+    /**
+     * Read the current [Cache], if it exists.
+     * @return The stored [Cache], or null if it could not be obtained.
+     */
+    suspend fun readCache(): Cache?
+
+    /**
+     * Write the list of newly-loaded [RawSong]s to the cache, replacing the prior data.
+     * @param rawSongs The [rawSongs] to write to the cache.
+     */
+    suspend fun writeCache(rawSongs: List<RawSong>)
+}
+
+class CacheRepositoryImpl @Inject constructor(@ApplicationContext private val context: Context) :
+    CacheRepository {
+    private val cachedSongsDao: CachedSongsDao by lazy {
+        CacheDatabase.getInstance(context).cachedSongsDao()
+    }
+
+    override suspend fun readCache(): Cache? =
+        try {
+            // Faster to load the whole database into memory than do a query on each
+            // populate call.
+            CacheImpl(cachedSongsDao.readSongs())
+        } catch (e: Exception) {
+            logE("Unable to load cache database.")
+            logE(e.stackTraceToString())
+            null
+        }
+
+    override suspend fun writeCache(rawSongs: List<RawSong>) {
+        try {
+            // Still write out whatever data was extracted.
+            cachedSongsDao.nukeSongs()
+            cachedSongsDao.insertSongs(rawSongs.map(CachedSong::fromRaw))
+        } catch (e: Exception) {
+            logE("Unable to save cache database.")
+            logE(e.stackTraceToString())
+        }
+    }
+}
 
 /**
  * A cache of music metadata obtained in prior music loading operations. Obtain an instance with
@@ -41,7 +90,7 @@ interface Cache {
     fun populate(rawSong: RawSong): Boolean
 }
 
-private class RealCache(cachedSongs: List<CachedSong>) : Cache {
+private class CacheImpl(cachedSongs: List<CachedSong>) : Cache {
     private val cacheMap = buildMap {
         for (cachedSong in cachedSongs) {
             put(cachedSong.mediaStoreId, cachedSong)
@@ -67,60 +116,5 @@ private class RealCache(cachedSongs: List<CachedSong>) : Cache {
         // re-written with newly-loaded music.
         invalidated = true
         return false
-    }
-}
-
-/**
- * A repository allowing access to cached metadata obtained in prior music loading operations.
- * @author Alexander Capehart (OxygenCobalt)
- */
-interface CacheRepository {
-    /**
-     * Read the current [Cache], if it exists.
-     * @return The stored [Cache], or null if it could not be obtained.
-     */
-    suspend fun readCache(): Cache?
-
-    /**
-     * Write the list of newly-loaded [RawSong]s to the cache, replacing the prior data.
-     * @param rawSongs The [rawSongs] to write to the cache.
-     */
-    suspend fun writeCache(rawSongs: List<RawSong>)
-
-    companion object {
-        /**
-         * Create a framework-backed instance.
-         * @param context [Context] required.
-         * @return A new instance.
-         */
-        fun from(context: Context): CacheRepository = RealCacheRepository(context)
-    }
-}
-
-private class RealCacheRepository(private val context: Context) : CacheRepository {
-    private val cachedSongsDao: CachedSongsDao by lazy {
-        CacheDatabase.getInstance(context).cachedSongsDao()
-    }
-
-    override suspend fun readCache() =
-        try {
-            // Faster to load the whole database into memory than do a query on each
-            // populate call.
-            RealCache(cachedSongsDao.readSongs())
-        } catch (e: Exception) {
-            logE("Unable to load cache database.")
-            logE(e.stackTraceToString())
-            null
-        }
-
-    override suspend fun writeCache(rawSongs: List<RawSong>) {
-        try {
-            // Still write out whatever data was extracted.
-            cachedSongsDao.nukeSongs()
-            cachedSongsDao.insertSongs(rawSongs.map(CachedSong::fromRaw))
-        } catch (e: Exception) {
-            logE("Unable to save cache database.")
-            logE(e.stackTraceToString())
-        }
     }
 }

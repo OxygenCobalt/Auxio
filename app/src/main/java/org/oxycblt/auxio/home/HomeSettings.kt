@@ -19,6 +19,8 @@ package org.oxycblt.auxio.home
 
 import android.content.Context
 import androidx.core.content.edit
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.settings.Settings
@@ -40,18 +42,10 @@ interface HomeSettings : Settings<HomeSettings.Listener> {
         /** Called when the [shouldHideCollaborators] configuration changes. */
         fun onHideCollaboratorsChanged()
     }
-
-    companion object {
-        /**
-         * Get a framework-backed implementation.
-         * @param context [Context] required.
-         */
-        fun from(context: Context): HomeSettings = RealHomeSettings(context)
-    }
 }
 
-private class RealHomeSettings(context: Context) :
-    Settings.Real<HomeSettings.Listener>(context), HomeSettings {
+class HomeSettingsImpl @Inject constructor(@ApplicationContext context: Context) :
+    Settings.Impl<HomeSettings.Listener>(context), HomeSettings {
     override var homeTabs: Array<Tab>
         get() =
             Tab.fromIntCode(

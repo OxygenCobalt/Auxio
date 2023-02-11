@@ -71,12 +71,12 @@ interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
          * Get a framework-backed implementation.
          * @param context [Context] required.
          */
-        fun from(context: Context): PlaybackSettings = RealPlaybackSettings(context)
+        fun from(context: Context): PlaybackSettings = PlaybackSettingsImpl(context)
     }
 }
 
-private class RealPlaybackSettings(context: Context) :
-    Settings.Real<PlaybackSettings.Listener>(context), PlaybackSettings {
+class PlaybackSettingsImpl(context: Context) :
+    Settings.Impl<PlaybackSettings.Listener>(context), PlaybackSettings {
     override val inListPlaybackMode: MusicMode
         get() =
             MusicMode.fromIntCode(

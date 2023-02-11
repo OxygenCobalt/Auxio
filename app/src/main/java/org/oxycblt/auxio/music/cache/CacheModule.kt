@@ -17,17 +17,15 @@
  
 package org.oxycblt.auxio.music.cache
 
-import android.content.Context
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import org.oxycblt.auxio.music.extractor.CacheRepository
+import org.oxycblt.auxio.music.extractor.CacheRepositoryImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
-class CacheModule {
-    @Provides
-    fun cacheRepository(@ApplicationContext context: Context) = CacheRepository.from(context)
+interface CacheModule {
+    @Binds fun cacheRepository(cacheRepository: CacheRepositoryImpl): CacheRepository
 }

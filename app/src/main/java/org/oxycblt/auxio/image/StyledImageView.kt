@@ -32,6 +32,8 @@ import androidx.core.graphics.drawable.DrawableCompat
 import coil.dispose
 import coil.load
 import com.google.android.material.shape.MaterialShapeDrawable
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.extractor.SquareFrameTransform
 import org.oxycblt.auxio.music.Album
@@ -53,10 +55,13 @@ import org.oxycblt.auxio.util.getDrawableCompat
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class StyledImageView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AppCompatImageView(context, attrs, defStyleAttr) {
+    @Inject lateinit var uiSettings: UISettings
+
     init {
         // Load view attributes
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.StyledImageView)
@@ -81,7 +86,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         background =
             MaterialShapeDrawable().apply {
                 fillColor = context.getColorCompat(R.color.sel_cover_bg)
-                if (UISettings.from(context).roundMode) {
+                if (uiSettings.roundMode) {
                     // Only use the specified corner radius when round mode is enabled.
                     setCornerSize(cornerRadius)
                 }

@@ -22,6 +22,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
@@ -39,6 +40,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 class AccentCustomizeDialog :
     ViewBindingDialogFragment<DialogAccentBinding>(), ClickableListListener<Accent> {
     private var accentAdapter = AccentAdapter(this)
+    @Inject lateinit var uiSettings: UISettings
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogAccentBinding.inflate(inflater)
 
@@ -46,14 +48,13 @@ class AccentCustomizeDialog :
         builder
             .setTitle(R.string.set_accent)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
-                val settings = UISettings.from(requireContext())
-                if (accentAdapter.selectedAccent == settings.accent) {
+                if (accentAdapter.selectedAccent == uiSettings.accent) {
                     // Nothing to do.
                     return@setPositiveButton
                 }
 
                 logD("Applying new accent")
-                settings.accent = unlikelyToBeNull(accentAdapter.selectedAccent)
+                uiSettings.accent = unlikelyToBeNull(accentAdapter.selectedAccent)
                 requireActivity().recreate()
                 dismiss()
             }
@@ -67,7 +68,7 @@ class AccentCustomizeDialog :
             if (savedInstanceState != null) {
                 Accent.from(savedInstanceState.getInt(KEY_PENDING_ACCENT))
             } else {
-                UISettings.from(requireContext()).accent
+                uiSettings.accent
             })
     }
 

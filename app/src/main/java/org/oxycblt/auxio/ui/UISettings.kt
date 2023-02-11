@@ -21,6 +21,8 @@ import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.accent.Accent
@@ -50,12 +52,12 @@ interface UISettings : Settings<UISettings.Listener> {
          * Get a framework-backed implementation.
          * @param context [Context] required.
          */
-        fun from(context: Context): UISettings = RealUISettings(context)
+        fun from(context: Context): UISettings = UISettingsImpl(context)
     }
 }
 
-private class RealUISettings(context: Context) :
-    Settings.Real<UISettings.Listener>(context), UISettings {
+class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
+    Settings.Impl<UISettings.Listener>(context), UISettings {
     override val theme: Int
         get() =
             sharedPreferences.getInt(

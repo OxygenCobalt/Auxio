@@ -23,6 +23,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogTabsBinding
@@ -40,6 +41,7 @@ class TabCustomizeDialog :
     ViewBindingDialogFragment<DialogTabsBinding>(), EditableListListener<Tab> {
     private val tabAdapter = TabAdapter(this)
     private var touchHelper: ItemTouchHelper? = null
+    @Inject lateinit var homeSettings: HomeSettings
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogTabsBinding.inflate(inflater)
 
@@ -48,13 +50,13 @@ class TabCustomizeDialog :
             .setTitle(R.string.set_lib_tabs)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
                 logD("Committing tab changes")
-                HomeSettings.from(requireContext()).homeTabs = tabAdapter.tabs
+                homeSettings.homeTabs = tabAdapter.tabs
             }
             .setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onBindingCreated(binding: DialogTabsBinding, savedInstanceState: Bundle?) {
-        var tabs = HomeSettings.from(requireContext()).homeTabs
+        var tabs = homeSettings.homeTabs
         // Try to restore a pending tab configuration that was saved prior.
         if (savedInstanceState != null) {
             val savedTabs = Tab.fromIntCode(savedInstanceState.getInt(KEY_TABS))

@@ -81,7 +81,7 @@ interface MediaStoreExtractor {
          * Create a framework-backed instance.
          * @param context [Context] required.
          * @param musicSettings [MusicSettings] required.
-         * @return A new [RealMediaStoreExtractor] that will work best on the device's API level.
+         * @return A new [MediaStoreExtractor] that will work best on the device's API level.
          */
         fun from(context: Context, musicSettings: MusicSettings): MediaStoreExtractor =
             when {
@@ -94,7 +94,7 @@ interface MediaStoreExtractor {
     }
 }
 
-private abstract class RealMediaStoreExtractor(
+private abstract class BaseMediaStoreExtractor(
     protected val context: Context,
     private val musicSettings: MusicSettings
 ) : MediaStoreExtractor {
@@ -352,7 +352,7 @@ private abstract class RealMediaStoreExtractor(
 // speed, we only want to add redundancy on known issues, not with possible issues.
 
 private class Api21MediaStoreExtractor(context: Context, musicSettings: MusicSettings) :
-    RealMediaStoreExtractor(context, musicSettings) {
+    BaseMediaStoreExtractor(context, musicSettings) {
     override val projection: Array<String>
         get() =
             super.projection +
@@ -385,7 +385,7 @@ private class Api21MediaStoreExtractor(context: Context, musicSettings: MusicSet
         cursor: Cursor,
         genreNamesMap: Map<Long, String>,
         storageManager: StorageManager
-    ) : RealMediaStoreExtractor.Query(cursor, genreNamesMap) {
+    ) : BaseMediaStoreExtractor.Query(cursor, genreNamesMap) {
         // Set up cursor indices for later use.
         private val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
         private val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
@@ -430,7 +430,7 @@ private class Api21MediaStoreExtractor(context: Context, musicSettings: MusicSet
 }
 
 /**
- * A [RealMediaStoreExtractor] that implements common behavior supported from API 29 onwards.
+ * A [BaseMediaStoreExtractor] that implements common behavior supported from API 29 onwards.
  * @param context [Context] required to query the media database.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -438,7 +438,7 @@ private class Api21MediaStoreExtractor(context: Context, musicSettings: MusicSet
 private abstract class BaseApi29MediaStoreExtractor(
     context: Context,
     musicSettings: MusicSettings
-) : RealMediaStoreExtractor(context, musicSettings) {
+) : BaseMediaStoreExtractor(context, musicSettings) {
     override val projection: Array<String>
         get() =
             super.projection +
@@ -471,7 +471,7 @@ private abstract class BaseApi29MediaStoreExtractor(
         cursor: Cursor,
         genreNamesMap: Map<Long, String>,
         storageManager: StorageManager
-    ) : RealMediaStoreExtractor.Query(cursor, genreNamesMap) {
+    ) : BaseMediaStoreExtractor.Query(cursor, genreNamesMap) {
         private val volumeIndex =
             cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
         private val relativePathIndex =
@@ -493,7 +493,7 @@ private abstract class BaseApi29MediaStoreExtractor(
 }
 
 /**
- * A [RealMediaStoreExtractor] that completes the music loading process in a way compatible with at
+ * A [BaseMediaStoreExtractor] that completes the music loading process in a way compatible with at
  * API
  * 29.
  * @param context [Context] required to query the media database.
@@ -533,7 +533,7 @@ private class Api29MediaStoreExtractor(context: Context, musicSettings: MusicSet
 }
 
 /**
- * A [RealMediaStoreExtractor] that completes the music loading process in a way compatible from API
+ * A [BaseMediaStoreExtractor] that completes the music loading process in a way compatible from API
  * 30 onwards.
  * @param context [Context] required to query the media database.
  * @author Alexander Capehart (OxygenCobalt)

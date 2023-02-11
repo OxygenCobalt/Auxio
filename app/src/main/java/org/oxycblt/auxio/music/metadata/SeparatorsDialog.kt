@@ -22,6 +22,8 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import com.google.android.material.checkbox.MaterialCheckBox
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSeparatorsBinding
@@ -33,7 +35,10 @@ import org.oxycblt.auxio.ui.ViewBindingDialogFragment
  * split tags with multiple values.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
+    @Inject lateinit var musicSettings: MusicSettings
+
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogSeparatorsBinding.inflate(inflater)
 
@@ -42,7 +47,7 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
             .setTitle(R.string.set_separators)
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
-                MusicSettings.from(requireContext()).multiValueSeparators = getCurrentSeparators()
+                musicSettings.multiValueSeparators = getCurrentSeparators()
             }
     }
 
@@ -59,7 +64,7 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
         // the corresponding CheckBox for each character instead of doing an iteration
         // through the separator list for each CheckBox.
         (savedInstanceState?.getString(KEY_PENDING_SEPARATORS)
-                ?: MusicSettings.from(requireContext()).multiValueSeparators)
+                ?: musicSettings.multiValueSeparators)
             .forEach {
                 when (it) {
                     Separators.COMMA -> binding.separatorComma.isChecked = true

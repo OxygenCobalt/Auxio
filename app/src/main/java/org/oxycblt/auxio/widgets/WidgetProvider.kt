@@ -27,10 +27,13 @@ import android.os.Bundle
 import android.util.SizeF
 import android.view.View
 import android.widget.RemoteViews
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.system.PlaybackService
+import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.*
 
 /**
@@ -38,7 +41,10 @@ import org.oxycblt.auxio.util.*
  * state alongside actions to control it.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class WidgetProvider : AppWidgetProvider() {
+    @Inject lateinit var uiSettings: UISettings
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -139,7 +145,7 @@ class WidgetProvider : AppWidgetProvider() {
      */
     private fun newThinLayout(context: Context, state: WidgetComponent.PlaybackState) =
         newRemoteViews(context, R.layout.widget_thin)
-            .setupBackground(context)
+            .setupBackground()
             .setupPlaybackState(context, state)
             .setupTimelineControls(context, state)
 
@@ -150,7 +156,7 @@ class WidgetProvider : AppWidgetProvider() {
      */
     private fun newSmallLayout(context: Context, state: WidgetComponent.PlaybackState) =
         newRemoteViews(context, R.layout.widget_small)
-            .setupBar(context)
+            .setupBar()
             .setupCover(context, state)
             .setupTimelineControls(context, state)
 
@@ -161,7 +167,7 @@ class WidgetProvider : AppWidgetProvider() {
      */
     private fun newMediumLayout(context: Context, state: WidgetComponent.PlaybackState) =
         newRemoteViews(context, R.layout.widget_medium)
-            .setupBackground(context)
+            .setupBackground()
             .setupPlaybackState(context, state)
             .setupTimelineControls(context, state)
 
@@ -172,7 +178,7 @@ class WidgetProvider : AppWidgetProvider() {
      */
     private fun newWideLayout(context: Context, state: WidgetComponent.PlaybackState) =
         newRemoteViews(context, R.layout.widget_wide)
-            .setupBar(context)
+            .setupBar()
             .setupCover(context, state)
             .setupFullControls(context, state)
 
@@ -183,7 +189,7 @@ class WidgetProvider : AppWidgetProvider() {
      */
     private fun newLargeLayout(context: Context, state: WidgetComponent.PlaybackState) =
         newRemoteViews(context, R.layout.widget_large)
-            .setupBackground(context)
+            .setupBackground()
             .setupPlaybackState(context, state)
             .setupFullControls(context, state)
 
@@ -192,11 +198,11 @@ class WidgetProvider : AppWidgetProvider() {
      * "floating" drawable that sits in front of the cover and contains the controls.
      * @param context [Context] required to set up the view.
      */
-    private fun RemoteViews.setupBar(context: Context): RemoteViews {
+    private fun RemoteViews.setupBar(): RemoteViews {
         // Below API 31, enable a rounded bar only if round mode is enabled.
         // On API 31+, the bar should always be round in order to fit in with other widgets.
         val background =
-            if (useRoundedRemoteViews(context)) {
+            if (useRoundedRemoteViews(uiSettings)) {
                 R.drawable.ui_widget_bar_round
             } else {
                 R.drawable.ui_widget_bar_system
@@ -210,12 +216,12 @@ class WidgetProvider : AppWidgetProvider() {
      * self-explanatory, being a solid-color background that sits behind the cover and controls.
      * @param context [Context] required to set up the view.
      */
-    private fun RemoteViews.setupBackground(context: Context): RemoteViews {
+    private fun RemoteViews.setupBackground(): RemoteViews {
         // Below API 31, enable a rounded background only if round mode is enabled.
         // On API 31+, the background should always be round in order to fit in with other
         // widgets.
         val background =
-            if (useRoundedRemoteViews(context)) {
+            if (useRoundedRemoteViews(uiSettings)) {
                 R.drawable.ui_widget_bg_round
             } else {
                 R.drawable.ui_widget_bg_system

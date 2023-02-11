@@ -17,16 +17,14 @@
  
 package org.oxycblt.auxio.search
 
-import android.content.Context
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-class SearchModule {
-    @Provides fun engine(@ApplicationContext context: Context) = SearchEngine.from(context)
-    @Provides fun settings(@ApplicationContext context: Context) = SearchSettings.from(context)
+interface SearchModule {
+    @Binds fun engine(searchEngine: SearchEngineImpl): SearchEngine
+    @Binds fun settings(searchSettings: SearchSettingsImpl): SearchSettings
 }

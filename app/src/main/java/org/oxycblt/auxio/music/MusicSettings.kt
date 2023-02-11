@@ -63,18 +63,10 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
         /** Called when the [shouldBeObserving] configuration has changed. */
         fun onObservingChanged() {}
     }
-
-    companion object {
-        /**
-         * Get a framework-backed implementation.
-         * @param context [Context] required.
-         */
-        fun from(context: Context): MusicSettings = MusicSettingsImpl(context)
-    }
 }
 
 class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context) :
-    Settings.Real<MusicSettings.Listener>(context), MusicSettings {
+    Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
     private val storageManager = context.getSystemServiceCompat(StorageManager::class)
 
     override var musicDirs: MusicDirectories

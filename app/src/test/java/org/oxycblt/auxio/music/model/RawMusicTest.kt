@@ -117,7 +117,7 @@ class RawMusicTest {
     }
 
     @Test
-    fun albumRaw_equals_withRealArtists() {
+    fun albumRaw_equals_withArtists() {
         val a =
             RawAlbum(
                 mediaStoreId = -1,
@@ -125,7 +125,7 @@ class RawMusicTest {
                 name = "Album",
                 sortName = null,
                 releaseType = null,
-                rawArtists = listOf(RawArtist(name = "RealArtist A")))
+                rawArtists = listOf(RawArtist(name = "Artist A")))
         val b =
             RawAlbum(
                 mediaStoreId = -1,
@@ -133,7 +133,7 @@ class RawMusicTest {
                 name = "Album",
                 sortName = null,
                 releaseType = null,
-                rawArtists = listOf(RawArtist(name = "RealArtist B")))
+                rawArtists = listOf(RawArtist(name = "Artist B")))
         assertTrue(a != b)
         assertTrue(a.hashCode() != b.hashCode())
     }

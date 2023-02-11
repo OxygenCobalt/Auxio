@@ -41,12 +41,12 @@ interface ImageSettings : Settings<ImageSettings.Listener> {
          * Get a framework-backed implementation.
          * @param context [Context] required.
          */
-        fun from(context: Context): ImageSettings = RealImageSettings(context)
+        fun from(context: Context): ImageSettings = ImageSettingsImpl(context)
     }
 }
 
-private class RealImageSettings(context: Context) :
-    Settings.Real<ImageSettings.Listener>(context), ImageSettings {
+class ImageSettingsImpl(context: Context) :
+    Settings.Impl<ImageSettings.Listener>(context), ImageSettings {
     override val coverMode: CoverMode
         get() =
             CoverMode.fromIntCode(

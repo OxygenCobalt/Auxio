@@ -287,7 +287,7 @@ interface PlaybackStateManager {
             }
 
             synchronized(this) {
-                val newInstance = RealPlaybackStateManager()
+                val newInstance = PlaybackStateManagerImpl()
                 INSTANCE = newInstance
                 return newInstance
             }
@@ -295,7 +295,7 @@ interface PlaybackStateManager {
     }
 }
 
-private class RealPlaybackStateManager : PlaybackStateManager {
+private class PlaybackStateManagerImpl : PlaybackStateManager {
     private val listeners = mutableListOf<PlaybackStateManager.Listener>()
     @Volatile private var internalPlayer: InternalPlayer? = null
     @Volatile private var pendingAction: InternalPlayer.Action? = null

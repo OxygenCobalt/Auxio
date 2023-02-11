@@ -26,6 +26,7 @@ import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.request.CachePolicy
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.image.extractor.AlbumCoverFetcher
 import org.oxycblt.auxio.image.extractor.ArtistImageFetcher
@@ -41,12 +42,16 @@ import org.oxycblt.auxio.ui.UISettings
  */
 @HiltAndroidApp
 class Auxio : Application(), ImageLoaderFactory {
+    @Inject lateinit var imageSettings: ImageSettings
+    @Inject lateinit var playbackSettings: PlaybackSettings
+    @Inject lateinit var uiSettings: UISettings
+
     override fun onCreate() {
         super.onCreate()
         // Migrate any settings that may have changed in an app update.
-        ImageSettings.from(this).migrate()
-        PlaybackSettings.from(this).migrate()
-        UISettings.from(this).migrate()
+        imageSettings.migrate()
+        playbackSettings.migrate()
+        uiSettings.migrate()
         // Adding static shortcuts in a dynamic manner is better than declaring them
         // manually, as it will properly handle the difference between debug and release
         // Auxio instances.

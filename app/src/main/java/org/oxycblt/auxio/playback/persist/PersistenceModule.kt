@@ -15,20 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.playback.persist
 
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
-import org.oxycblt.auxio.music.system.Indexer
-import org.oxycblt.auxio.music.system.IndexerImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface MusicModule {
-    @Singleton @Binds fun repository(musicRepository: MusicRepositoryImpl): MusicRepository
-    @Singleton @Binds fun indexer(indexer: IndexerImpl): Indexer
-    @Binds fun settings(musicSettingsImpl: MusicSettingsImpl): MusicSettings
+interface PersistenceModule {
+    @Binds fun repository(persistenceRepository: PersistenceRepositoryImpl): PersistenceRepository
 }
