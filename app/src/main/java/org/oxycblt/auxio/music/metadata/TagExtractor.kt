@@ -192,7 +192,7 @@ private class Task(context: Context, private val rawSong: RawSong) {
         textFrames["TXXX:musicbrainz album id"]?.let { rawSong.albumMusicBrainzId = it.first() }
         textFrames["TALB"]?.let { rawSong.albumName = it.first() }
         textFrames["TSOA"]?.let { rawSong.albumSortName = it.first() }
-        (textFrames["TXXX:musicbrainz album type"] ?: textFrames["GRP1"])?.let {
+        (textFrames["TXXX:musicbrainz album type"] ?: textFrames["TXXX:releasetype"] ?: textFrames["GRP1"])?.let {
             rawSong.releaseTypes = it
         }
 
