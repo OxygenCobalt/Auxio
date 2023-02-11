@@ -15,13 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.extractor
+package org.oxycblt.auxio.music.storage
 
 import android.content.Context
 import android.database.Cursor
 import android.os.Build
 import android.os.storage.StorageManager
-import android.os.storage.StorageVolume
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
@@ -30,91 +29,77 @@ import java.io.File
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.music.library.RawSong
+import org.oxycblt.auxio.music.extractor.Cache
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.metadata.parseId3v2PositionField
 import org.oxycblt.auxio.music.metadata.transformPositionField
-import org.oxycblt.auxio.music.storage.Directory
-import org.oxycblt.auxio.music.storage.contentResolverSafe
-import org.oxycblt.auxio.music.storage.directoryCompat
-import org.oxycblt.auxio.music.storage.mediaStoreVolumeNameCompat
-import org.oxycblt.auxio.music.storage.safeQuery
-import org.oxycblt.auxio.music.storage.storageVolumesCompat
-import org.oxycblt.auxio.music.storage.useQuery
+import org.oxycblt.auxio.music.model.RawSong
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD
 
 /**
  * The layer that loads music from the [MediaStore] database. This is an intermediate step in the
  * music extraction process and primarily intended for redundancy for files not natively supported
- * by [MetadataExtractor]. Solely relying on this is not recommended, as it often produces bad
+ * by other extractors. Solely relying on this is not recommended, as it often produces bad
  * metadata.
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface MediaStoreExtractor {
     /**
-     * Query the media database, initializing this instance in the process.
-     * @return The new [Cursor] returned by the media databases.
+     * Query the media database.
+     * @return A new [Query] returned from the media database.
      */
-    suspend fun query(): Cursor
+    suspend fun query(): Query
 
     /**
      * Consume the [Cursor] loaded after [query].
-     * @param cache A [MetadataCache] used to avoid extracting metadata for cached songs, or null if
-     * no [MetadataCache] was available.
-     * @param incompleteSongs A channel where songs that could not be retrieved from the
-     * [MetadataCache] should be sent to.
+     * @param query The [Query] to consume.
+     * @param cache A [Cache] used to avoid extracting metadata for cached songs, or null if no
+     * [Cache] was available.
+     * @param incompleteSongs A channel where songs that could not be retrieved from the [Cache]
+     * should be sent to.
      * @param completeSongs A channel where completed songs should be sent to.
      */
     suspend fun consume(
-        cache: MetadataCache?,
+        query: Query,
+        cache: Cache?,
         incompleteSongs: Channel<RawSong>,
         completeSongs: Channel<RawSong>
     )
+
+    /** A black-box interface representing a query from the media database. */
+    interface Query {
+        val projectedTotal: Int
+        fun moveToNext(): Boolean
+        fun close()
+        fun populateFileInfo(rawSong: RawSong)
+        fun populateTags(rawSong: RawSong)
+    }
 
     companion object {
         /**
          * Create a framework-backed instance.
          * @param context [Context] required.
+         * @param musicSettings [MusicSettings] required.
          * @return A new [RealMediaStoreExtractor] that will work best on the device's API level.
          */
-        fun from(context: Context): MediaStoreExtractor =
+        fun from(context: Context, musicSettings: MusicSettings): MediaStoreExtractor =
             when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30MediaStoreExtractor(context)
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Api29MediaStoreExtractor(context)
-                else -> Api21MediaStoreExtractor(context)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
+                    Api30MediaStoreExtractor(context, musicSettings)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+                    Api29MediaStoreExtractor(context, musicSettings)
+                else -> Api21MediaStoreExtractor(context, musicSettings)
             }
     }
 }
 
-private abstract class RealMediaStoreExtractor(private val context: Context) : MediaStoreExtractor {
-    private var cursor: Cursor? = null
-    private var idIndex = -1
-    private var titleIndex = -1
-    private var displayNameIndex = -1
-    private var mimeTypeIndex = -1
-    private var sizeIndex = -1
-    private var dateAddedIndex = -1
-    private var dateModifiedIndex = -1
-    private var durationIndex = -1
-    private var yearIndex = -1
-    private var albumIndex = -1
-    private var albumIdIndex = -1
-    private var artistIndex = -1
-    private var albumArtistIndex = -1
-    private val genreNamesMap = mutableMapOf<Long, String>()
-
-    /**
-     * The [StorageVolume]s currently scanned by [MediaStore]. This should be used to transform path
-     * information from the database into volume-aware paths.
-     */
-    protected var volumes = listOf<StorageVolume>()
-        private set
-
-    override suspend fun query(): Cursor {
+private abstract class RealMediaStoreExtractor(
+    protected val context: Context,
+    private val musicSettings: MusicSettings
+) : MediaStoreExtractor {
+    final override suspend fun query(): MediaStoreExtractor.Query {
         val start = System.currentTimeMillis()
-        val musicSettings = MusicSettings.from(context)
-        val storageManager = context.getSystemServiceCompat(StorageManager::class)
 
         val args = mutableListOf<String>()
         var selector = BASE_SELECTOR
@@ -156,30 +141,14 @@ private abstract class RealMediaStoreExtractor(private val context: Context) : M
         // Now we can actually query MediaStore.
         logD("Starting song query [proj: ${projection.toList()}, selector: $selector, args: $args]")
         val cursor =
-            context.contentResolverSafe
-                .safeQuery(
-                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                    projection,
-                    selector,
-                    args.toTypedArray())
-                .also { cursor = it }
+            context.contentResolverSafe.safeQuery(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                projection,
+                selector,
+                args.toTypedArray())
         logD("Song query succeeded [Projected total: ${cursor.count}]")
 
-        // Set up cursor indices for later use.
-        idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
-        titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE)
-        displayNameIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
-        mimeTypeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.MIME_TYPE)
-        sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.SIZE)
-        dateAddedIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_ADDED)
-        dateModifiedIndex =
-            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_MODIFIED)
-        durationIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)
-        yearIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.YEAR)
-        albumIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM)
-        albumIdIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID)
-        artistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)
-        albumArtistIndex = cursor.getColumnIndexOrThrow(AUDIO_COLUMN_ALBUM_ARTIST)
+        val genreNamesMap = mutableMapOf<Long, String>()
 
         // Since we can't obtain the genre tag from a song query, we must construct our own
         // equivalent from genre database queries. Theoretically, this isn't needed since
@@ -211,34 +180,31 @@ private abstract class RealMediaStoreExtractor(private val context: Context) : M
             }
         }
 
-        volumes = storageManager.storageVolumesCompat
         logD("Finished initialization in ${System.currentTimeMillis() - start}ms")
-
-        return cursor
+        return wrapQuery(cursor, genreNamesMap)
     }
 
-    override suspend fun consume(
-        cache: MetadataCache?,
+    final override suspend fun consume(
+        query: MediaStoreExtractor.Query,
+        cache: Cache?,
         incompleteSongs: Channel<RawSong>,
         completeSongs: Channel<RawSong>
     ) {
-        val cursor = requireNotNull(cursor) { "Must call query first before running consume" }
-        while (cursor.moveToNext()) {
+        while (query.moveToNext()) {
             val rawSong = RawSong()
-            populateFileData(cursor, rawSong)
+            query.populateFileInfo(rawSong)
             if (cache?.populate(rawSong) == true) {
                 completeSongs.send(rawSong)
             } else {
-                populateMetadata(cursor, rawSong)
+                query.populateFileInfo(rawSong)
                 incompleteSongs.send(rawSong)
             }
             yield()
         }
         // Free the cursor and signal that no more incomplete songs will be produced by
         // this extractor.
-        cursor.close()
+        query.close()
         incompleteSongs.close()
-        this.cursor = null
     }
 
     /**
@@ -280,62 +246,80 @@ private abstract class RealMediaStoreExtractor(private val context: Context) : M
      */
     protected abstract fun addDirToSelector(dir: Directory, args: MutableList<String>): Boolean
 
-    /**
-     * Populate a [RawSong] with the "File Data" of the given [MediaStore] [Cursor], which is the
-     * data that cannot be cached. This includes any information not intrinsic to the file and
-     * instead dependent on the file-system, which could change without invalidating the cache due
-     * to volume additions or removals.
-     * @param cursor The [Cursor] to read from.
-     * @param rawSong The [RawSong] to populate.
-     * @see populateMetadata
-     */
-    protected open fun populateFileData(cursor: Cursor, rawSong: RawSong) {
-        rawSong.mediaStoreId = cursor.getLong(idIndex)
-        rawSong.dateAdded = cursor.getLong(dateAddedIndex)
-        rawSong.dateModified = cursor.getLong(dateAddedIndex)
-        // Try to use the DISPLAY_NAME column to obtain a (probably sane) file name
-        // from the android system.
-        rawSong.fileName = cursor.getStringOrNull(displayNameIndex)
-        rawSong.extensionMimeType = cursor.getString(mimeTypeIndex)
-        rawSong.albumMediaStoreId = cursor.getLong(albumIdIndex)
-    }
+    protected abstract fun wrapQuery(
+        cursor: Cursor,
+        genreNamesMap: Map<Long, String>
+    ): MediaStoreExtractor.Query
 
-    /**
-     * Populate a [RawSong] with the Metadata of the given [MediaStore] [Cursor], which is the data
-     * about a [RawSong] that can be cached. This includes any information intrinsic to the file or
-     * it's file format, such as music tags.
-     * @param cursor The [Cursor] to read from.
-     * @param rawSong The [RawSong] to populate.
-     * @see populateFileData
-     */
-    protected open fun populateMetadata(cursor: Cursor, rawSong: RawSong) {
-        // Song title
-        rawSong.name = cursor.getString(titleIndex)
-        // Size (in bytes)
-        rawSong.size = cursor.getLong(sizeIndex)
-        // Duration (in milliseconds)
-        rawSong.durationMs = cursor.getLong(durationIndex)
-        // MediaStore only exposes the year value of a file. This is actually worse than it
-        // seems, as it means that it will not read ID3v2 TDRC tags or Vorbis DATE comments.
-        // This is one of the major weaknesses of using MediaStore, hence the redundancy layers.
-        rawSong.date = cursor.getStringOrNull(yearIndex)?.let(Date::from)
-        // A non-existent album name should theoretically be the name of the folder it contained
-        // in, but in practice it is more often "0" (as in /storage/emulated/0), even when it the
-        // file is not actually in the root internal storage directory. We can't do anything to
-        // fix this, really.
-        rawSong.albumName = cursor.getString(albumIndex)
-        // Android does not make a non-existent artist tag null, it instead fills it in
-        // as <unknown>, which makes absolutely no sense given how other columns default
-        // to null if they are not present. If this column is such, null it so that
-        // it's easier to handle later.
-        val artist = cursor.getString(artistIndex)
-        if (artist != MediaStore.UNKNOWN_STRING) {
-            rawSong.artistNames = listOf(artist)
+    abstract class Query(
+        protected val cursor: Cursor,
+        private val genreNamesMap: Map<Long, String>
+    ) : MediaStoreExtractor.Query {
+        private val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
+        private val titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE)
+        private val displayNameIndex =
+            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
+        private val mimeTypeIndex =
+            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.MIME_TYPE)
+        private val sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.SIZE)
+        private val dateAddedIndex =
+            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_ADDED)
+        private val dateModifiedIndex =
+            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATE_MODIFIED)
+        private val durationIndex =
+            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)
+        private val yearIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.YEAR)
+        private val albumIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM)
+        private val albumIdIndex =
+            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID)
+        private val artistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)
+        private val albumArtistIndex = cursor.getColumnIndexOrThrow(AUDIO_COLUMN_ALBUM_ARTIST)
+
+        final override val projectedTotal = cursor.count
+        final override fun moveToNext() = cursor.moveToNext()
+        final override fun close() = cursor.close()
+
+        override fun populateFileInfo(rawSong: RawSong) {
+            rawSong.mediaStoreId = cursor.getLong(idIndex)
+            rawSong.dateAdded = cursor.getLong(dateAddedIndex)
+            rawSong.dateModified = cursor.getLong(dateModifiedIndex)
+            // Try to use the DISPLAY_NAME column to obtain a (probably sane) file name
+            // from the android system.
+            rawSong.fileName = cursor.getStringOrNull(displayNameIndex)
+            rawSong.extensionMimeType = cursor.getString(mimeTypeIndex)
+            rawSong.albumMediaStoreId = cursor.getLong(albumIdIndex)
         }
-        // The album artist column is nullable and never has placeholder values.
-        cursor.getStringOrNull(albumArtistIndex)?.let { rawSong.albumArtistNames = listOf(it) }
-        // Get the genre value we had to query for in initialization
-        genreNamesMap[rawSong.mediaStoreId]?.let { rawSong.genreNames = listOf(it) }
+
+        override fun populateTags(rawSong: RawSong) {
+            // Song title
+            rawSong.name = cursor.getString(titleIndex)
+            // Size (in bytes)
+            rawSong.size = cursor.getLong(sizeIndex)
+            // Duration (in milliseconds)
+            rawSong.durationMs = cursor.getLong(durationIndex)
+            // MediaStore only exposes the year value of a file. This is actually worse than it
+            // seems, as it means that it will not read ID3v2 TDRC tags or Vorbis DATE comments.
+            // This is one of the major weaknesses of using MediaStore, hence the redundancy layers.
+            rawSong.date = cursor.getStringOrNull(yearIndex)?.let(Date::from)
+            // A non-existent album name should theoretically be the name of the folder it contained
+            // in, but in practice it is more often "0" (as in /storage/emulated/0), even when it
+            // the
+            // file is not actually in the root internal storage directory. We can't do anything to
+            // fix this, really.
+            rawSong.albumName = cursor.getString(albumIndex)
+            // Android does not make a non-existent artist tag null, it instead fills it in
+            // as <unknown>, which makes absolutely no sense given how other columns default
+            // to null if they are not present. If this column is such, null it so that
+            // it's easier to handle later.
+            val artist = cursor.getString(artistIndex)
+            if (artist != MediaStore.UNKNOWN_STRING) {
+                rawSong.artistNames = listOf(artist)
+            }
+            // The album artist column is nullable and never has placeholder values.
+            cursor.getStringOrNull(albumArtistIndex)?.let { rawSong.albumArtistNames = listOf(it) }
+            // Get the genre value we had to query for in initialization
+            genreNamesMap[rawSong.mediaStoreId]?.let { rawSong.genreNames = listOf(it) }
+        }
     }
 
     companion object {
@@ -364,18 +348,11 @@ private abstract class RealMediaStoreExtractor(private val context: Context) : M
 // Note: The separation between version-specific backends may not be the cleanest. To preserve
 // speed, we only want to add redundancy on known issues, not with possible issues.
 
-private class Api21MediaStoreExtractor(context: Context) : RealMediaStoreExtractor(context) {
-    private var trackIndex = -1
-    private var dataIndex = -1
+// Note: The separation between version-specific backends may not be the cleanest. To preserve
+// speed, we only want to add redundancy on known issues, not with possible issues.
 
-    override suspend fun query(): Cursor {
-        val cursor = super.query()
-        // Set up cursor indices for later use.
-        trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
-        dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
-        return cursor
-    }
-
+private class Api21MediaStoreExtractor(context: Context, musicSettings: MusicSettings) :
+    RealMediaStoreExtractor(context, musicSettings) {
     override val projection: Array<String>
         get() =
             super.projection +
@@ -398,40 +375,56 @@ private class Api21MediaStoreExtractor(context: Context) : RealMediaStoreExtract
         return true
     }
 
-    override fun populateFileData(cursor: Cursor, rawSong: RawSong) {
-        super.populateFileData(cursor, rawSong)
+    override fun wrapQuery(
+        cursor: Cursor,
+        genreNamesMap: Map<Long, String>,
+    ): MediaStoreExtractor.Query =
+        Query(cursor, genreNamesMap, context.getSystemServiceCompat(StorageManager::class))
 
-        val data = cursor.getString(dataIndex)
+    private class Query(
+        cursor: Cursor,
+        genreNamesMap: Map<Long, String>,
+        storageManager: StorageManager
+    ) : RealMediaStoreExtractor.Query(cursor, genreNamesMap) {
+        // Set up cursor indices for later use.
+        private val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
+        private val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
+        private val volumes = storageManager.storageVolumesCompat
 
-        // On some OEM devices below API 29, DISPLAY_NAME may not be present. I assume
-        // that this only applies to below API 29, as beyond API 29, this column not being
-        // present would completely break the scoped storage system. Fill it in with DATA
-        // if it's not available.
-        if (rawSong.fileName == null) {
-            rawSong.fileName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
-        }
+        override fun populateFileInfo(rawSong: RawSong) {
+            super.populateFileInfo(rawSong)
 
-        // Find the volume that transforms the DATA column into a relative path. This is
-        // the Directory we will use.
-        val rawPath = data.substringBeforeLast(File.separatorChar)
-        for (volume in volumes) {
-            val volumePath = volume.directoryCompat ?: continue
-            val strippedPath = rawPath.removePrefix(volumePath)
-            if (strippedPath != rawPath) {
-                rawSong.directory = Directory.from(volume, strippedPath)
-                break
+            val data = cursor.getString(dataIndex)
+            // On some OEM devices below API 29, DISPLAY_NAME may not be present. I assume
+            // that this only applies to below API 29, as beyond API 29, this column not being
+            // present would completely break the scoped storage system. Fill it in with DATA
+            // if it's not available.
+            if (rawSong.fileName == null) {
+                rawSong.fileName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
+            }
+
+            // Find the volume that transforms the DATA column into a relative path. This is
+            // the Directory we will use.
+            val rawPath = data.substringBeforeLast(File.separatorChar)
+            for (volume in volumes) {
+                val volumePath = volume.directoryCompat ?: continue
+                val strippedPath = rawPath.removePrefix(volumePath)
+                if (strippedPath != rawPath) {
+                    rawSong.directory = Directory.from(volume, strippedPath)
+                    break
+                }
             }
         }
-    }
 
-    override fun populateMetadata(cursor: Cursor, rawSong: RawSong) {
-        super.populateMetadata(cursor, rawSong)
-        // See unpackTrackNo/unpackDiscNo for an explanation
-        // of how this column is set up.
-        val rawTrack = cursor.getIntOrNull(trackIndex)
-        if (rawTrack != null) {
-            rawTrack.unpackTrackNo()?.let { rawSong.track = it }
-            rawTrack.unpackDiscNo()?.let { rawSong.disc = it }
+        override fun populateTags(rawSong: RawSong) {
+            super.populateTags(rawSong)
+            // See unpackTrackNo/unpackDiscNo for an explanation
+            // of how this column is set up.
+            val rawTrack = cursor.getIntOrNull(trackIndex)
+            if (rawTrack != null) {
+                rawTrack.unpackTrackNo()?.let { rawSong.track = it }
+                rawTrack.unpackDiscNo()?.let { rawSong.disc = it }
+            }
         }
     }
 }
@@ -442,20 +435,10 @@ private class Api21MediaStoreExtractor(context: Context) : RealMediaStoreExtract
  * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-private open class BaseApi29MediaStoreExtractor(context: Context) :
-    RealMediaStoreExtractor(context) {
-    private var volumeIndex = -1
-    private var relativePathIndex = -1
-
-    override suspend fun query(): Cursor {
-        val cursor = super.query()
-        // Set up cursor indices for later use.
-        volumeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
-        relativePathIndex =
-            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
-        return cursor
-    }
-
+private abstract class BaseApi29MediaStoreExtractor(
+    context: Context,
+    musicSettings: MusicSettings
+) : RealMediaStoreExtractor(context, musicSettings) {
     override val projection: Array<String>
         get() =
             super.projection +
@@ -484,15 +467,27 @@ private open class BaseApi29MediaStoreExtractor(context: Context) :
         return true
     }
 
-    override fun populateFileData(cursor: Cursor, rawSong: RawSong) {
-        super.populateFileData(cursor, rawSong)
-        // Find the StorageVolume whose MediaStore name corresponds to this song.
-        // This is combined with the plain relative path column to create the directory.
-        val volumeName = cursor.getString(volumeIndex)
-        val relativePath = cursor.getString(relativePathIndex)
-        val volume = volumes.find { it.mediaStoreVolumeNameCompat == volumeName }
-        if (volume != null) {
-            rawSong.directory = Directory.from(volume, relativePath)
+    abstract class Query(
+        cursor: Cursor,
+        genreNamesMap: Map<Long, String>,
+        storageManager: StorageManager
+    ) : RealMediaStoreExtractor.Query(cursor, genreNamesMap) {
+        private val volumeIndex =
+            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
+        private val relativePathIndex =
+            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
+        private val volumes = storageManager.storageVolumesCompat
+
+        final override fun populateFileInfo(rawSong: RawSong) {
+            super.populateFileInfo(rawSong)
+            // Find the StorageVolume whose MediaStore name corresponds to this song.
+            // This is combined with the plain relative path column to create the directory.
+            val volumeName = cursor.getString(volumeIndex)
+            val relativePath = cursor.getString(relativePathIndex)
+            val volume = volumes.find { it.mediaStoreVolumeNameCompat == volumeName }
+            if (volume != null) {
+                rawSong.directory = Directory.from(volume, relativePath)
+            }
         }
     }
 }
@@ -505,29 +500,34 @@ private open class BaseApi29MediaStoreExtractor(context: Context) :
  * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-private open class Api29MediaStoreExtractor(context: Context) :
-    BaseApi29MediaStoreExtractor(context) {
-    private var trackIndex = -1
-
-    override suspend fun query(): Cursor {
-        val cursor = super.query()
-        // Set up cursor indices for later use.
-        trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
-        return cursor
-    }
+private class Api29MediaStoreExtractor(context: Context, musicSettings: MusicSettings) :
+    BaseApi29MediaStoreExtractor(context, musicSettings) {
 
     override val projection: Array<String>
         get() = super.projection + arrayOf(MediaStore.Audio.AudioColumns.TRACK)
 
-    override fun populateMetadata(cursor: Cursor, rawSong: RawSong) {
-        super.populateMetadata(cursor, rawSong)
-        // This extractor is volume-aware, but does not support the modern track columns.
-        // Use the old column instead. See unpackTrackNo/unpackDiscNo for an explanation
-        // of how this column is set up.
-        val rawTrack = cursor.getIntOrNull(trackIndex)
-        if (rawTrack != null) {
-            rawTrack.unpackTrackNo()?.let { rawSong.track = it }
-            rawTrack.unpackDiscNo()?.let { rawSong.disc = it }
+    override fun wrapQuery(
+        cursor: Cursor,
+        genreNamesMap: Map<Long, String>
+    ): MediaStoreExtractor.Query =
+        Query(cursor, genreNamesMap, context.getSystemServiceCompat(StorageManager::class))
+
+    private class Query(
+        cursor: Cursor,
+        genreNamesMap: Map<Long, String>,
+        storageManager: StorageManager
+    ) : BaseApi29MediaStoreExtractor.Query(cursor, genreNamesMap, storageManager) {
+        private val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
+        override fun populateTags(rawSong: RawSong) {
+            super.populateTags(rawSong)
+            // This extractor is volume-aware, but does not support the modern track columns.
+            // Use the old column instead. See unpackTrackNo/unpackDiscNo for an explanation
+            // of how this column is set up.
+            val rawTrack = cursor.getIntOrNull(trackIndex)
+            if (rawTrack != null) {
+                rawTrack.unpackTrackNo()?.let { rawSong.track = it }
+                rawTrack.unpackDiscNo()?.let { rawSong.disc = it }
+            }
         }
     }
 }
@@ -539,18 +539,8 @@ private open class Api29MediaStoreExtractor(context: Context) :
  * @author Alexander Capehart (OxygenCobalt)
  */
 @RequiresApi(Build.VERSION_CODES.R)
-private class Api30MediaStoreExtractor(context: Context) : BaseApi29MediaStoreExtractor(context) {
-    private var trackIndex: Int = -1
-    private var discIndex: Int = -1
-
-    override suspend fun query(): Cursor {
-        val cursor = super.query()
-        // Set up cursor indices for later use.
-        trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
-        discIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISC_NUMBER)
-        return cursor
-    }
-
+private class Api30MediaStoreExtractor(context: Context, musicSettings: MusicSettings) :
+    BaseApi29MediaStoreExtractor(context, musicSettings) {
     override val projection: Array<String>
         get() =
             super.projection +
@@ -560,14 +550,33 @@ private class Api30MediaStoreExtractor(context: Context) : BaseApi29MediaStoreEx
                     MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER,
                     MediaStore.Audio.AudioColumns.DISC_NUMBER)
 
-    override fun populateMetadata(cursor: Cursor, rawSong: RawSong) {
-        super.populateMetadata(cursor, rawSong)
-        // Both CD_TRACK_NUMBER and DISC_NUMBER tend to be formatted as they are in
-        // the tag itself, which is to say that it is formatted as NN/TT tracks, where
-        // N is the number and T is the total. Parse the number while ignoring the
-        // total, as we have no use for it.
-        cursor.getStringOrNull(trackIndex)?.parseId3v2PositionField()?.let { rawSong.track = it }
-        cursor.getStringOrNull(discIndex)?.parseId3v2PositionField()?.let { rawSong.disc = it }
+    override fun wrapQuery(
+        cursor: Cursor,
+        genreNamesMap: Map<Long, String>
+    ): MediaStoreExtractor.Query =
+        Query(cursor, genreNamesMap, context.getSystemServiceCompat(StorageManager::class))
+
+    private class Query(
+        cursor: Cursor,
+        genreNamesMap: Map<Long, String>,
+        storageManager: StorageManager
+    ) : BaseApi29MediaStoreExtractor.Query(cursor, genreNamesMap, storageManager) {
+        private val trackIndex =
+            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
+        private val discIndex =
+            cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISC_NUMBER)
+
+        override fun populateTags(rawSong: RawSong) {
+            super.populateTags(rawSong)
+            // Both CD_TRACK_NUMBER and DISC_NUMBER tend to be formatted as they are in
+            // the tag itself, which is to say that it is formatted as NN/TT tracks, where
+            // N is the number and T is the total. Parse the number while ignoring the
+            // total, as we have no use for it.
+            cursor.getStringOrNull(trackIndex)?.parseId3v2PositionField()?.let {
+                rawSong.track = it
+            }
+            cursor.getStringOrNull(discIndex)?.parseId3v2PositionField()?.let { rawSong.disc = it }
+        }
     }
 }
 

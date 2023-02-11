@@ -17,7 +17,8 @@
  
 package org.oxycblt.auxio.music
 
-import org.oxycblt.auxio.music.library.Library
+import javax.inject.Inject
+import org.oxycblt.auxio.music.model.Library
 
 /**
  * A repository granting access to the music library.
@@ -60,17 +61,9 @@ interface MusicRepository {
          */
         fun onLibraryChanged(library: Library?)
     }
-
-    companion object {
-        /**
-         * Create a new instance.
-         * @return A newly-created implementation of [MusicRepository].
-         */
-        fun new(): MusicRepository = RealMusicRepository()
-    }
 }
 
-private class RealMusicRepository : MusicRepository {
+class MusicRepositoryImpl @Inject constructor() : MusicRepository {
     private val listeners = mutableListOf<MusicRepository.Listener>()
 
     @Volatile

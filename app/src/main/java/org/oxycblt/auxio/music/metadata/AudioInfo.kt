@@ -20,6 +20,8 @@ package org.oxycblt.auxio.music.metadata
 import android.content.Context
 import android.media.MediaExtractor
 import android.media.MediaFormat
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.storage.MimeType
 import org.oxycblt.auxio.util.logD
@@ -46,18 +48,15 @@ data class AudioInfo(
          * @return The [AudioInfo] of the [Song], if possible to obtain.
          */
         suspend fun extract(song: Song): AudioInfo
-
-        companion object {
-            /**
-             * Get a framework-backed implementation.
-             * @param context [Context] required.
-             */
-            fun from(context: Context): Provider = RealAudioInfoProvider(context)
-        }
     }
 }
 
-private class RealAudioInfoProvider(private val context: Context) : AudioInfo.Provider {
+/**
+ * A framework-backed implementation of [AudioInfo.Provider].
+ * @param context [Context] required to read audio files.
+ */
+class AudioInfoProviderImpl @Inject constructor(@ApplicationContext private val context: Context) :
+    AudioInfo.Provider {
     // While we would use ExoPlayer to extract this information, it doesn't support
     // common data like bit rate in progressive data sources due to there being no
     // demand. Thus, we are stuck with the inferior OS-provided MediaExtractor.

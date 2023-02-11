@@ -50,11 +50,11 @@ import org.oxycblt.auxio.home.list.ArtistListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.selection.SelectionFragment
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.library.Library
-import org.oxycblt.auxio.list.Sort
+import org.oxycblt.auxio.music.model.Library
 import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.MainNavigationAction

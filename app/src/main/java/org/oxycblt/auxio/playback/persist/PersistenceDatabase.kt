@@ -27,6 +27,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.playback.state.RepeatMode
@@ -39,7 +40,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
     entities = [PlaybackState::class, QueueHeapItem::class, QueueMappingItem::class],
     version = 27,
     exportSchema = false)
-@TypeConverters(PersistenceConverters::class)
+@TypeConverters(PersistenceDatabase.Converters::class)
 abstract class PersistenceDatabase : RoomDatabase() {
     /**
      * Get the current [PlaybackStateDao].
@@ -52,6 +53,14 @@ abstract class PersistenceDatabase : RoomDatabase() {
      * @return A [QueueDao] providing control of the database's queue tables.
      */
     abstract fun queueDao(): QueueDao
+
+    object Converters {
+        /** @see [Music.UID.toString] */
+        @TypeConverter fun fromMusicUID(uid: Music.UID?) = uid?.toString()
+
+        /** @see [Music.UID.fromString] */
+        @TypeConverter fun toMusicUid(string: String?) = string?.let(Music.UID::fromString)
+    }
 
     companion object {
         @Volatile private var INSTANCE: PersistenceDatabase? = null
@@ -145,10 +154,6 @@ interface QueueDao {
     suspend fun insertMapping(mapping: List<QueueMappingItem>)
 }
 
-/**
- * A raw representation of the persisted playback state.
- * @author Alexander Capehart
- */
 @Entity(tableName = PlaybackState.TABLE_NAME)
 data class PlaybackState(
     @PrimaryKey val id: Int,
@@ -163,10 +168,6 @@ data class PlaybackState(
     }
 }
 
-/**
- * A raw representation of the an individual item in the persisted queue's heap.
- * @author Alexander Capehart
- */
 @Entity(tableName = QueueHeapItem.TABLE_NAME)
 data class QueueHeapItem(@PrimaryKey val id: Int, val uid: Music.UID) {
     companion object {
@@ -174,10 +175,6 @@ data class QueueHeapItem(@PrimaryKey val id: Int, val uid: Music.UID) {
     }
 }
 
-/**
- * A raw representation of the heap indices at a particular position in the persisted queue.
- * @author Alexander Capehart
- */
 @Entity(tableName = QueueMappingItem.TABLE_NAME)
 data class QueueMappingItem(
     @PrimaryKey val id: Int,

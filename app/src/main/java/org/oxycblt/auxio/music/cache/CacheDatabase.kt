@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Auxio Project
+ * Copyright (c) 2023 Auxio Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.extractor
+package org.oxycblt.auxio.music.cache
 
 import android.content.Context
 import androidx.room.Dao
@@ -28,126 +28,23 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.library.RawSong
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.metadata.correctWhitespace
 import org.oxycblt.auxio.music.metadata.splitEscaped
-import org.oxycblt.auxio.util.*
-
-/**
- * A cache of music metadata obtained in prior music loading operations. Obtain an instance with
- * [MetadataCacheRepository].
- * @author Alexander Capehart (OxygenCobalt)
- */
-interface MetadataCache {
-    /** Whether this cache has encountered a [RawSong] that did not have a cache entry. */
-    val invalidated: Boolean
-
-    /**
-     * Populate a [RawSong] from a cache entry, if it exists.
-     * @param rawSong The [RawSong] to populate.
-     * @return true if a cache entry could be applied to [rawSong], false otherwise.
-     */
-    fun populate(rawSong: RawSong): Boolean
-}
-
-private class RealMetadataCache(cachedSongs: List<CachedSong>) : MetadataCache {
-    private val cacheMap = buildMap {
-        for (cachedSong in cachedSongs) {
-            put(cachedSong.mediaStoreId, cachedSong)
-        }
-    }
-
-    override var invalidated = false
-    override fun populate(rawSong: RawSong): Boolean {
-
-        // For a cached raw song to be used, it must exist within the cache and have matching
-        // addition and modification timestamps. Technically the addition timestamp doesn't
-        // exist, but to safeguard against possible OEM-specific timestamp incoherence, we
-        // check for it anyway.
-        val cachedSong = cacheMap[rawSong.mediaStoreId]
-        if (cachedSong != null &&
-            cachedSong.dateAdded == rawSong.dateAdded &&
-            cachedSong.dateModified == rawSong.dateModified) {
-            cachedSong.copyToRaw(rawSong)
-            return true
-        }
-
-        // We could not populate this song. This means our cache is stale and should be
-        // re-written with newly-loaded music.
-        invalidated = true
-        return false
-    }
-}
-
-/**
- * A repository allowing access to cached metadata obtained in prior music loading operations.
- * @author Alexander Capehart (OxygenCobalt)
- */
-interface MetadataCacheRepository {
-    /**
-     * Read the current [MetadataCache], if it exists.
-     * @return The stored [MetadataCache], or null if it could not be obtained.
-     */
-    suspend fun readCache(): MetadataCache?
-
-    /**
-     * Write the list of newly-loaded [RawSong]s to the cache, replacing the prior data.
-     * @param rawSongs The [rawSongs] to write to the cache.
-     */
-    suspend fun writeCache(rawSongs: List<RawSong>)
-
-    companion object {
-        /**
-         * Create a framework-backed instance.
-         * @param context [Context] required.
-         * @return A new instance.
-         */
-        fun from(context: Context): MetadataCacheRepository = RealMetadataCacheRepository(context)
-    }
-}
-
-private class RealMetadataCacheRepository(private val context: Context) : MetadataCacheRepository {
-    private val cachedSongsDao: CachedSongsDao by lazy {
-        MetadataCacheDatabase.getInstance(context).cachedSongsDao()
-    }
-
-    override suspend fun readCache() =
-        try {
-            // Faster to load the whole database into memory than do a query on each
-            // populate call.
-            RealMetadataCache(cachedSongsDao.readSongs())
-        } catch (e: Exception) {
-            logE("Unable to load cache database.")
-            logE(e.stackTraceToString())
-            null
-        }
-
-    override suspend fun writeCache(rawSongs: List<RawSong>) {
-        try {
-            // Still write out whatever data was extracted.
-            cachedSongsDao.nukeSongs()
-            cachedSongsDao.insertSongs(rawSongs.map(CachedSong::fromRaw))
-        } catch (e: Exception) {
-            logE("Unable to save cache database.")
-            logE(e.stackTraceToString())
-        }
-    }
-}
+import org.oxycblt.auxio.music.model.RawSong
 
 @Database(entities = [CachedSong::class], version = 27, exportSchema = false)
-private abstract class MetadataCacheDatabase : RoomDatabase() {
+abstract class CacheDatabase : RoomDatabase() {
     abstract fun cachedSongsDao(): CachedSongsDao
 
     companion object {
-        @Volatile private var INSTANCE: MetadataCacheDatabase? = null
+        @Volatile private var INSTANCE: CacheDatabase? = null
 
         /**
          * Get/create the shared instance of this database.
          * @param context [Context] required.
          */
-        fun getInstance(context: Context): MetadataCacheDatabase {
+        fun getInstance(context: Context): CacheDatabase {
             val instance = INSTANCE
             if (instance != null) {
                 return instance
@@ -157,8 +54,8 @@ private abstract class MetadataCacheDatabase : RoomDatabase() {
                 val newInstance =
                     Room.databaseBuilder(
                             context.applicationContext,
-                            MetadataCacheDatabase::class.java,
-                            "auxio_metadata_cache.db")
+                            CacheDatabase::class.java,
+                            "auxio_tag_cache.db")
                         .fallbackToDestructiveMigration()
                         .fallbackToDestructiveMigrationFrom(0)
                         .fallbackToDestructiveMigrationOnDowngrade()
@@ -171,7 +68,7 @@ private abstract class MetadataCacheDatabase : RoomDatabase() {
 }
 
 @Dao
-private interface CachedSongsDao {
+interface CachedSongsDao {
     @Query("SELECT * FROM ${CachedSong.TABLE_NAME}") suspend fun readSongs(): List<CachedSong>
     @Query("DELETE FROM ${CachedSong.TABLE_NAME}") suspend fun nukeSongs()
     @Insert suspend fun insertSongs(songs: List<CachedSong>)
@@ -179,7 +76,7 @@ private interface CachedSongsDao {
 
 @Entity(tableName = CachedSong.TABLE_NAME)
 @TypeConverters(CachedSong.Converters::class)
-private data class CachedSong(
+data class CachedSong(
     /**
      * The ID of the [Song]'s audio file, obtained from MediaStore. Note that this ID is highly
      * unstable and should only be used for accessing the audio file.

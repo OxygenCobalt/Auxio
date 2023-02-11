@@ -20,6 +20,8 @@ package org.oxycblt.auxio.music
 import android.content.Context
 import android.os.storage.StorageManager
 import androidx.core.content.edit
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.storage.Directory
@@ -67,11 +69,11 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
          * Get a framework-backed implementation.
          * @param context [Context] required.
          */
-        fun from(context: Context): MusicSettings = RealMusicSettings(context)
+        fun from(context: Context): MusicSettings = MusicSettingsImpl(context)
     }
 }
 
-private class RealMusicSettings(context: Context) :
+class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context) :
     Settings.Real<MusicSettings.Listener>(context), MusicSettings {
     private val storageManager = context.getSystemServiceCompat(StorageManager::class)
 

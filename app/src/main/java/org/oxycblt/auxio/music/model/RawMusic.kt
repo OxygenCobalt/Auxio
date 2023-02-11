@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.library
+package org.oxycblt.auxio.music.model
 
 import java.util.UUID
 import org.oxycblt.auxio.music.*

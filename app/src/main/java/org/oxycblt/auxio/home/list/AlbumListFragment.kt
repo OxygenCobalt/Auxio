@@ -31,13 +31,13 @@ import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.list.adapter.ListDiffer
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.AlbumViewHolder
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.secsToMs

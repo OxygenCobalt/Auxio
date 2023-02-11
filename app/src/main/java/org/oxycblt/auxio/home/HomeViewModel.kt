@@ -23,9 +23,9 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.home.tabs.Tab
-import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.list.Sort
+import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.model.Library
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.logD
 

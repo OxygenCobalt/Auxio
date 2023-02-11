@@ -21,8 +21,8 @@ import androidx.annotation.IdRes
 import kotlin.math.max
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.list.Sort.Mode
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.metadata.Disc
 

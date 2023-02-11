@@ -23,7 +23,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.library.Library
+import org.oxycblt.auxio.music.model.Library
 
 /**
  * A [ViewModel] that manages the current selection.

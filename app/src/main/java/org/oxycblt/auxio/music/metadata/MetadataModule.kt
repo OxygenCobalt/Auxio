@@ -15,19 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.persist
+package org.oxycblt.auxio.music.metadata
 
-import androidx.room.TypeConverter
-import org.oxycblt.auxio.music.Music
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
-/**
- * Defines conversions used in the persistence table.
- * @author Alexander Capehart (OxygenCobalt)
- */
-object PersistenceConverters {
-    /** @see [Music.UID.toString] */
-    @TypeConverter fun fromMusicUID(uid: Music.UID?) = uid?.toString()
-
-    /** @see [Music.UID.fromString] */
-    @TypeConverter fun toMusicUid(string: String?) = string?.let(Music.UID::fromString)
+@Module
+@InstallIn(SingletonComponent::class)
+interface MetadataModule {
+    @Binds fun tagExtractor(tagExtractor: TagExtractorImpl): TagExtractor
+    @Binds fun audioInfoProvider(audioInfoProvider: AudioInfoProviderImpl): AudioInfo.Provider
 }

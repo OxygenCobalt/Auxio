@@ -15,20 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.storage
 
-import dagger.Binds
+import android.content.Context
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
-import org.oxycblt.auxio.music.system.Indexer
-import org.oxycblt.auxio.music.system.IndexerImpl
+import org.oxycblt.auxio.music.MusicSettings
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface MusicModule {
-    @Singleton @Binds fun musicRepository(musicRepository: MusicRepositoryImpl): MusicRepository
-    @Singleton @Binds fun indexer(indexer: IndexerImpl): Indexer
-    @Binds fun settings(musicSettingsImpl: MusicSettingsImpl): MusicSettings
+class StorageModule {
+    @Provides
+    fun mediaStoreExtractor(@ApplicationContext context: Context, musicSettings: MusicSettings) =
+        MediaStoreExtractor.from(context, musicSettings)
 }

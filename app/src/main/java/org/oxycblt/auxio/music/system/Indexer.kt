@@ -23,6 +23,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
 import java.util.LinkedList
+import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,8 +36,10 @@ import kotlinx.coroutines.yield
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.extractor.*
-import org.oxycblt.auxio.music.library.Library
-import org.oxycblt.auxio.music.library.RawSong
+import org.oxycblt.auxio.music.metadata.TagExtractor
+import org.oxycblt.auxio.music.model.Library
+import org.oxycblt.auxio.music.model.RawSong
+import org.oxycblt.auxio.music.storage.MediaStoreExtractor
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
@@ -211,16 +214,17 @@ interface Indexer {
             } else {
                 Manifest.permission.READ_EXTERNAL_STORAGE
             }
-
-        /**
-         * Create a new instance.
-         * @return A newly-created implementation of [Indexer].
-         */
-        fun new(): Indexer = RealIndexer()
     }
 }
 
-private class RealIndexer : Indexer {
+class IndexerImpl
+@Inject
+constructor(
+    private val musicSettings: MusicSettings,
+    private val cacheRepository: CacheRepository,
+    private val mediaStoreExtractor: MediaStoreExtractor,
+    private val tagExtractor: TagExtractor
+) : Indexer {
     @Volatile private var lastResponse: Result<Library>? = null
     @Volatile private var indexingState: Indexer.Indexing? = null
     @Volatile private var controller: Indexer.Controller? = null
@@ -332,19 +336,15 @@ private class RealIndexer : Indexer {
         // how long a media database query will take.
         emitIndexing(Indexer.Indexing.Indeterminate)
 
-        val metadataCacheRepository = MetadataCacheRepository.from(context)
-        val mediaStoreExtractor = MediaStoreExtractor.from(context)
-        val metadataExtractor = MetadataExtractor(context)
-
         // Do the initial query of the cache and media databases in parallel.
         val mediaStoreQueryJob = scope.async { mediaStoreExtractor.query() }
         val cache =
             if (withCache) {
-                metadataCacheRepository.readCache()
+                cacheRepository.readCache()
             } else {
                 null
             }
-        val total = mediaStoreQueryJob.await().count
+        val query = mediaStoreQueryJob.await()
 
         // Now start processing the queried song information in parallel. Songs that can't be
         // received from the cache are consisted incomplete and pushed to a separate channel
@@ -352,14 +352,16 @@ private class RealIndexer : Indexer {
         val completeSongs = Channel<RawSong>(Channel.UNLIMITED)
         val incompleteSongs = Channel<RawSong>(Channel.UNLIMITED)
         val mediaStoreJob =
-            scope.async { mediaStoreExtractor.consume(cache, incompleteSongs, completeSongs) }
-        val metadataJob = scope.async { metadataExtractor.consume(incompleteSongs, completeSongs) }
+            scope.async {
+                mediaStoreExtractor.consume(query, cache, incompleteSongs, completeSongs)
+            }
+        val metadataJob = scope.async { tagExtractor.consume(incompleteSongs, completeSongs) }
 
         // Await completed raw songs as they are processed.
         val rawSongs = LinkedList<RawSong>()
         for (rawSong in completeSongs) {
             rawSongs.add(rawSong)
-            emitIndexing(Indexer.Indexing.Songs(rawSongs.size, total))
+            emitIndexing(Indexer.Indexing.Songs(rawSongs.size, query.projectedTotal))
         }
         mediaStoreJob.await()
         metadataJob.await()
@@ -367,10 +369,9 @@ private class RealIndexer : Indexer {
         // Successfully loaded the library, now save the cache and create the library in
         // parallel.
         emitIndexing(Indexer.Indexing.Indeterminate)
-        val libraryJob =
-            scope.async(Dispatchers.Main) { Library.from(rawSongs, MusicSettings.from(context)) }
+        val libraryJob = scope.async(Dispatchers.Main) { Library.from(rawSongs, musicSettings) }
         if (cache == null || cache.invalidated) {
-            metadataCacheRepository.writeCache(rawSongs)
+            cacheRepository.writeCache(rawSongs)
         }
         return libraryJob.await()
     }

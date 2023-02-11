@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Auxio Project
+ * Copyright (c) 2023 Auxio Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,19 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.extractor
+package org.oxycblt.auxio.music.metadata
 
 import android.content.Context
 import androidx.core.text.isDigitsOnly
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
-import org.oxycblt.auxio.music.library.RawSong
-import org.oxycblt.auxio.music.metadata.Date
-import org.oxycblt.auxio.music.metadata.TextTags
-import org.oxycblt.auxio.music.metadata.parseId3v2PositionField
-import org.oxycblt.auxio.music.metadata.parseVorbisPositionField
+import org.oxycblt.auxio.music.model.RawSong
 import org.oxycblt.auxio.music.storage.toAudioUri
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
@@ -35,17 +33,30 @@ import org.oxycblt.auxio.util.logW
 /**
  * The extractor that leverages ExoPlayer's [MetadataRetriever] API to parse metadata. This is the
  * last step in the music extraction process and is mostly responsible for papering over the bad
- * metadata that [RealMediaStoreExtractor] produces.
+ * metadata that other extractors produce.
  *
- * @param context [Context] required for reading audio files.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MetadataExtractor(private val context: Context) {
-    // We can parallelize MetadataRetriever Futures to work around it's speed issues,
-    // producing similar throughput's to other kinds of manual metadata extraction.
-    private val taskPool: Array<Task?> = arrayOfNulls(TASK_CAPACITY)
+interface TagExtractor {
+    /**
+     * Extract the metadata of songs from [incompleteSongs] and send them to [completeSongs]. Will
+     * terminate as soon as [incompleteSongs] is closed.
+     * @param incompleteSongs A [Channel] of incomplete songs to process.
+     * @param completeSongs A [Channel] to send completed songs to.
+     */
+    suspend fun consume(incompleteSongs: Channel<RawSong>, completeSongs: Channel<RawSong>)
+}
 
-    suspend fun consume(incompleteSongs: Channel<RawSong>, completeSongs: Channel<RawSong>) {
+class TagExtractorImpl @Inject constructor(@ApplicationContext private val context: Context) :
+    TagExtractor {
+    override suspend fun consume(
+        incompleteSongs: Channel<RawSong>,
+        completeSongs: Channel<RawSong>
+    ) {
+        // We can parallelize MetadataRetriever Futures to work around it's speed issues,
+        // producing similar throughput's to other kinds of manual metadata extraction.
+        val taskPool: Array<Task?> = arrayOfNulls(TASK_CAPACITY)
+
         spin@ while (true) {
             // Spin until there is an open slot we can insert a task in.
             for (i in taskPool.indices) {
@@ -94,7 +105,7 @@ class MetadataExtractor(private val context: Context) {
 }
 
 /**
- * Wraps a [MetadataExtractor] future and processes it into a [RawSong] when completed.
+ * Wraps a [TagExtractor] future and processes it into a [RawSong] when completed.
  * @param context [Context] required to open the audio file.
  * @param rawSong [RawSong] to process.
  * @author Alexander Capehart (OxygenCobalt)

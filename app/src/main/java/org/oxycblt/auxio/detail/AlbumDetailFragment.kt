@@ -32,6 +32,7 @@ import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Album
@@ -40,7 +41,6 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.*
