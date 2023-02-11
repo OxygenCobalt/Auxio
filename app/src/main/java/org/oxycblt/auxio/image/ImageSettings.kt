@@ -19,6 +19,8 @@ package org.oxycblt.auxio.image
 
 import android.content.Context
 import androidx.core.content.edit
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
@@ -45,7 +47,7 @@ interface ImageSettings : Settings<ImageSettings.Listener> {
     }
 }
 
-class ImageSettingsImpl(context: Context) :
+class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context) :
     Settings.Impl<ImageSettings.Listener>(context), ImageSettings {
     override val coverMode: CoverMode
         get() =
