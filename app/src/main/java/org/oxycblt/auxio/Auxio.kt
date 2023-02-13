@@ -47,6 +47,7 @@ class Auxio : Application() {
         // Adding static shortcuts in a dynamic manner is better than declaring them
         // manually, as it will properly handle the difference between debug and release
         // Auxio instances.
+        // TODO: Switch to static shortcuts
         ShortcutManagerCompat.addDynamicShortcuts(
             this,
             listOf(

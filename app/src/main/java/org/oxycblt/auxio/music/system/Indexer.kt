@@ -328,6 +328,7 @@ constructor(
     ): Library {
         if (ContextCompat.checkSelfPermission(context, Indexer.PERMISSION_READ_AUDIO) ==
             PackageManager.PERMISSION_DENIED) {
+            logE("Permission check failed")
             // No permissions, signal that we can't do anything.
             throw Indexer.NoPermissionException()
         }
@@ -337,6 +338,7 @@ constructor(
         emitIndexing(Indexer.Indexing.Indeterminate)
 
         // Do the initial query of the cache and media databases in parallel.
+        logD("Starting queries")
         val mediaStoreQueryJob = scope.async { mediaStoreExtractor.query() }
         val cache =
             if (withCache) {
@@ -349,6 +351,7 @@ constructor(
         // Now start processing the queried song information in parallel. Songs that can't be
         // received from the cache are consisted incomplete and pushed to a separate channel
         // that will eventually be processed into completed raw songs.
+        logD("Starting song discovery")
         val completeSongs = Channel<RawSong>(Channel.UNLIMITED)
         val incompleteSongs = Channel<RawSong>(Channel.UNLIMITED)
         val mediaStoreJob =
@@ -363,15 +366,18 @@ constructor(
             rawSongs.add(rawSong)
             emitIndexing(Indexer.Indexing.Songs(rawSongs.size, query.projectedTotal))
         }
+        // These should be no-ops
         mediaStoreJob.await()
         metadataJob.await()
 
         if (rawSongs.isEmpty()) {
+            logE("Music library was empty")
             throw Indexer.NoMusicException()
         }
 
         // Successfully loaded the library, now save the cache and create the library in
         // parallel.
+        logD("Discovered ${rawSongs.size} songs, starting finalization")
         emitIndexing(Indexer.Indexing.Indeterminate)
         val libraryJob = scope.async(Dispatchers.Main) { Library.from(rawSongs, musicSettings) }
         if (cache == null || cache.invalidated) {

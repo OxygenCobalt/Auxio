@@ -57,25 +57,22 @@ class TagExtractorImpl @Inject constructor(@ApplicationContext private val conte
         // producing similar throughput's to other kinds of manual metadata extraction.
         val taskPool: Array<Task?> = arrayOfNulls(TASK_CAPACITY)
 
-        spin@ while (true) {
-            // Spin until there is an open slot we can insert a task in.
-            for (i in taskPool.indices) {
-                val task = taskPool[i]
-                if (task != null) {
-                    val finishedRawSong = task.get()
-                    if (finishedRawSong != null) {
-                        completeSongs.send(finishedRawSong)
-                        yield()
-                    } else {
-                        continue
+        for (song in incompleteSongs) {
+            spin@ while (true) {
+                for (i in taskPool.indices) {
+                    val task = taskPool[i]
+                    if (task != null) {
+                        val finishedRawSong = task.get()
+                        if (finishedRawSong != null) {
+                            completeSongs.send(finishedRawSong)
+                            yield()
+                        } else {
+                            continue
+                        }
                     }
-                }
-                val result = incompleteSongs.tryReceive()
-                if (result.isClosed) {
-                    taskPool[i] = null
+                    taskPool[i] = Task(context, song)
                     break@spin
                 }
-                taskPool[i] = result.getOrNull()?.let { Task(context, it) }
             }
         }
 
