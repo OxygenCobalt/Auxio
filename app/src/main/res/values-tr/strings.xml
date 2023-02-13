@@ -28,7 +28,7 @@
     <string name="lbl_licenses">Lisanslar</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Ayarlar</string>
-    <string name="set_ui">Görünüm</string>
+    <string name="set_ui">Dış görünüş</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Otomatik</string>
     <string name="set_theme_day">Açık</string>
@@ -46,11 +46,11 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <plurals name="fmt_song_count">
         <item quantity="one">%d şarkı</item>
-        <item quantity="other">%d şarkı</item>
+        <item quantity="other">%d şarkılar</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d albüm</item>
-        <item quantity="other">%d albüm</item>
+        <item quantity="other">%d albümler</item>
     </plurals>
     <string name="lbl_file_name">Dosya adı</string>
     <string name="lbl_song_detail">Özellikleri görüntüle</string>
@@ -231,7 +231,7 @@
     <string name="fmt_selected">%d Seçili</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d sanatçı</item>
-        <item quantity="other">%d sanatçı</item>
+        <item quantity="other">%d sanatçılar</item>
     </plurals>
     <string name="lbl_mixes">Karmalar</string>
     <string name="lbl_mix">Karma</string>
@@ -259,4 +259,17 @@
     <string name="set_replay_gain_mode">ReplayGain stratejisi</string>
     <string name="desc_queue_handle">Bu şarkıyı kuyrukta taşı</string>
     <string name="fmt_list">%1$s, %2$s</string>
+    <string name="set_content_desc">Müzik ve görüntülerin nasıl yükleneceğini denetleyin</string>
+    <string name="set_music">Müzik</string>
+    <string name="set_images">Resimler</string>
+    <string name="set_audio_desc">Sesi ve oynatma davranışını yapılandırın</string>
+    <string name="set_playback">Oynatma</string>
+    <string name="set_library">Kütüphane</string>
+    <string name="set_state">Kalıcılık</string>
+    <string name="lbl_sort_dec">Azalan</string>
+    <string name="set_ui_desc">Uygulamanın temasını ve renklerini değiştirin</string>
+    <string name="set_dirs_list">Klasörler</string>
+    <string name="set_personalize_desc">Arayüz kontrollerini ve davranışını özelleştirin</string>
+    <string name="set_behavior">Davranış</string>
+    <string name="set_replay_gain">Ses yüksekliği dengesi ReplayGain</string>
 </resources>

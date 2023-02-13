@@ -272,5 +272,6 @@
     <string name="set_playback">Wiedergabe</string>
     <string name="set_audio_desc">Ton und Wiedergabeverhalten konfigurieren</string>
     <string name="set_state">Persistenz</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">Lautstärkeanpassung ReplayGain</string>
+    <string name="lbl_sort_dec">Absteigend</string>
 </resources>

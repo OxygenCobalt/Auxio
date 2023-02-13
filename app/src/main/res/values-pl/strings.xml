@@ -71,7 +71,7 @@
         <item quantity="other">%d albumów</item>
     </plurals>
     <string name="lbl_album_live">Album koncertowy</string>
-    <string name="lbl_album_remix">Remix album</string>
+    <string name="lbl_album_remix">Album z remiksami</string>
     <string name="lbl_album">Album</string>
     <string name="lbl_eps">Minialbumy</string>
     <string name="lbl_ep">Minialbum</string>
@@ -132,7 +132,7 @@
     <string name="def_artist">Nieznany wykonawca</string>
     <string name="lbl_bitrate">Bitrate</string>
     <string name="def_track">Nieznany numer</string>
-    <string name="lbl_equalizer">Equalizer</string>
+    <string name="lbl_equalizer">Wyrównywacz</string>
     <string name="lbl_size">Rozmiar</string>
     <string name="err_no_dirs">Brak folderów</string>
     <string name="set_playback_mode_songs">Odtwórz wszystkie utwory</string>
@@ -144,7 +144,7 @@
     <string name="set_replay_gain_mode_album">Preferuj album</string>
     <string name="set_observing">Automatyczne ponowne załadowanie</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
-    <string name="set_separators_and">Et (&amp;)</string>
+    <string name="set_separators_and">Ampersand (&amp;)</string>
     <string name="err_index_failed">Nie udało się załadować muzyki</string>
     <string name="lbl_compilation_remix">Kompilacja remiksów</string>
     <string name="lbl_compilation_live">Kompilacja koncertowa</string>
@@ -278,4 +278,5 @@
     <string name="set_music">Muzyka</string>
     <string name="err_did_not_wipe">Nie można wyczyścić stanu</string>
     <string name="err_did_not_save">Nie można zapisać stanu odtwarzania</string>
+    <string name="lbl_sort_dec">Malejąco</string>
 </resources>
