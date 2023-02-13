@@ -10,12 +10,15 @@
 track/disc fields
 - Music loading has been made slightly faster
 - Improved sort menu usability
+- Fall back to `TXXX:RELEASETYPE` on ID3v2 files
 
 #### What's Fixed
 - Fixed non-functioning "repeat all" repeat mode
+- Fixed visual clipping of shuffle button shadow
 
 #### Dev/Meta
 - Started using dependency injection
+- Updated to MDC 1.8.0 alpha-01
 
 ## 3.0.2
 
