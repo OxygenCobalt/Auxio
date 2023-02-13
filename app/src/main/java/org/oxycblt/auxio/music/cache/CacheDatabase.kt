@@ -47,13 +47,13 @@ interface CachedSongsDao {
 @TypeConverters(CachedSong.Converters::class)
 data class CachedSong(
     /**
-     * The ID of the [Song]'s audio file, obtained from MediaStore. Note that this ID is highly
+     * The ID of the [RawSong]'s audio file, obtained from MediaStore. Note that this ID is highly
      * unstable and should only be used for accessing the audio file.
      */
     @PrimaryKey var mediaStoreId: Long,
     /** @see RawSong.dateAdded */
     var dateAdded: Long,
-    /** The latest date the [Song]'s audio file was modified, as a unix epoch timestamp. */
+    /** The latest date the [RawSong]'s audio file was modified, as a unix epoch timestamp. */
     var dateModified: Long,
     /** @see RawSong.size */
     var size: Long? = null,

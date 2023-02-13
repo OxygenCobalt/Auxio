@@ -17,10 +17,8 @@ import sys
 import subprocess
 import re
 
-# WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE FLAC EXTENSION AND 
+# WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE FFMPEG EXTENSION AND 
 # THE GRADLE DEPENDENCY. IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
-# EXO_VERSION = "2.18.2"
-FLAC_VERSION = "1.3.2"
 
 OK="\033[1;32m" # Bold green
 FATAL="\033[1;31m" # Bold red
@@ -102,18 +100,26 @@ sh("git clone https://github.com/OxygenCobalt/ExoPlayer.git " + exoplayer_path)
 os.chdir(exoplayer_path)
 sh("git checkout auxio")
 
-print(INFO + "info:" + NC + " assembling flac extension...")
-flac_ext_aar_path = os.path.join(exoplayer_path, "extensions", "flac", 
-    "buildout", "outputs", "aar", "extension-flac-release.aar")
-flac_ext_jni_path = os.path.join("extensions", "flac", "src", "main", "jni")
+print(INFO + "info:" + NC + " assembling ffmpeg extension...")
+if system == "Linux":
+    host = "linux-x86_64"
+elif system == "Darwin":
+    host = "darwin-x86_64"
 
-os.chdir(flac_ext_jni_path)
-sh('curl "https://ftp.osuosl.org/pub/xiph/releases/flac/flac-' + FLAC_VERSION + 
-    '.tar.xz" | tar xJ && mv "flac-' + FLAC_VERSION + '" flac')
-sh(ndk_build_path + " APP_ABI=all -j4")
+ffmpeg_ext_path = os.path.join(exoplayer_path, "extensions", "ffmpeg", "src", "main")
+ffmpeg_ext_aar_path = os.path.join(exoplayer_path, "extensions", "ffmpeg", "buildout", "outputs", "aar", "extension-ffmpeg-release.aar")
+ffmpeg_ext_jni_path = os.path.join(exoplayer_path, "extensions", "ffmpeg", "src", "main", "jni")
+ffmpeg_src_path = os.path.join(ffmpeg_ext_jni_path, "ffmpeg")
+
+os.chdir(ffmpeg_ext_jni_path)
+sh("git clone git://source.ffmpeg.org/ffmpeg ffmpeg")
+os.chdir(ffmpeg_src_path)
+sh("git checkout release/4.2")
+os.chdir(ffmpeg_ext_jni_path)
+sh('./build_ffmpeg.sh "' + ffmpeg_ext_path + '" "' + ndk_path + '" "' + host + '" "' + "flac" + '" "' + "alac" + '"')
 
 os.chdir(exoplayer_path)
-sh("./gradlew extension-flac:bundleReleaseAar")
+sh("./gradlew extension-ffmpeg:bundleReleaseAar")
  
 print(INFO + "info:" + NC + " assembling extractor component...")
 
@@ -124,7 +130,7 @@ sh("./gradlew library-extractor:bundleReleaseAar")
 
 os.chdir(start_path)
 sh("mkdir " + libs_path)
-sh("cp " + flac_ext_aar_path + " " + libs_path)
+sh("cp " + ffmpeg_ext_aar_path + " " + libs_path)
 sh("cp " + extractor_aar_path + " " + libs_path)
  
 print(OK + "success:" + NC + " completed pre-build")

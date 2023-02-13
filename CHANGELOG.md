@@ -4,6 +4,7 @@
 
 #### What's New
 - Added support for disc subtitles
+- Added support for ALAC files
 
 #### What's Improved
 - Auxio will now accept zeroed track/disc numbers in the presence of non-zero total
@@ -11,6 +12,7 @@ track/disc fields
 - Music loading has been made slightly faster
 - Improved sort menu usability
 - Fall back to `TXXX:RELEASETYPE` on ID3v2 files
+- Switches and checkboxes have been mildly visually refreshed
 
 #### What's Fixed
 - Fixed non-functioning "repeat all" repeat mode

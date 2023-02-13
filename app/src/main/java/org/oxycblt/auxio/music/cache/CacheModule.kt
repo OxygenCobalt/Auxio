@@ -26,8 +26,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import org.oxycblt.auxio.music.extractor.CacheRepository
-import org.oxycblt.auxio.music.extractor.CacheRepositoryImpl
 
 @Module
 @InstallIn(SingletonComponent::class)

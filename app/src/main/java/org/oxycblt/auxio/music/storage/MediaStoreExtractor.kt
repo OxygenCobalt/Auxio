@@ -29,7 +29,7 @@ import java.io.File
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.music.extractor.Cache
+import org.oxycblt.auxio.music.cache.Cache
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.metadata.parseId3v2PositionField
 import org.oxycblt.auxio.music.metadata.transformPositionField

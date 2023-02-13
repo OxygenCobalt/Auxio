@@ -196,7 +196,6 @@ class WidgetProvider : AppWidgetProvider() {
     /**
      * Set up the control bar in a [RemoteViews] layout that contains one. This is a kind of
      * "floating" drawable that sits in front of the cover and contains the controls.
-     * @param context [Context] required to set up the view.
      */
     private fun RemoteViews.setupBar(): RemoteViews {
         // Below API 31, enable a rounded bar only if round mode is enabled.
@@ -214,7 +213,6 @@ class WidgetProvider : AppWidgetProvider() {
     /**
      * Set up the background in a [RemoteViews] layout that contains one. This is largely
      * self-explanatory, being a solid-color background that sits behind the cover and controls.
-     * @param context [Context] required to set up the view.
      */
     private fun RemoteViews.setupBackground(): RemoteViews {
         // Below API 31, enable a rounded background only if round mode is enabled.

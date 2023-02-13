@@ -21,6 +21,7 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.annotation.AttrRes
 import com.google.android.material.button.MaterialButton
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.fixDoubleRipple
 
 /**
@@ -30,8 +31,11 @@ import org.oxycblt.auxio.util.fixDoubleRipple
  */
 open class RippleFixMaterialButton
 @JvmOverloads
-constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
-    MaterialButton(context, attrs, defStyleAttr) {
+constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    @AttrRes defStyleAttr: Int = R.attr.materialButtonStyle
+) : MaterialButton(context, attrs, defStyleAttr) {
     init {
         fixDoubleRipple()
     }

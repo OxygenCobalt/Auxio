@@ -15,11 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.extractor
+package org.oxycblt.auxio.music.cache
 
 import javax.inject.Inject
-import org.oxycblt.auxio.music.cache.CachedSong
-import org.oxycblt.auxio.music.cache.CachedSongsDao
 import org.oxycblt.auxio.music.model.RawSong
 import org.oxycblt.auxio.util.*
 

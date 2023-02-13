@@ -127,7 +127,6 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-
     // Testing
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.9.1"
     testImplementation "junit:junit:4.13.2"

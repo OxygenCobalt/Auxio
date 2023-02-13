@@ -56,8 +56,10 @@ import org.oxycblt.auxio.util.logD
  */
 @AndroidEntryPoint
 class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
-    @Inject lateinit var indexer: Indexer
+    @Inject lateinit var imageLoader: ImageLoader
     @Inject lateinit var musicRepository: MusicRepository
+    @Inject lateinit var indexer: Indexer
+    @Inject lateinit var musicSettings: MusicSettings
     @Inject lateinit var playbackManager: PlaybackStateManager
     private val serviceJob = Job()
     private val indexScope = CoroutineScope(serviceJob + Dispatchers.IO)
@@ -67,8 +69,6 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
     private lateinit var observingNotification: ObservingNotification
     private lateinit var wakeLock: PowerManager.WakeLock
     private lateinit var indexerContentObserver: SystemContentObserver
-    @Inject lateinit var musicSettings: MusicSettings
-    @Inject lateinit var imageLoader: ImageLoader
 
     override fun onCreate() {
         super.onCreate()

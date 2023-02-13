@@ -157,6 +157,8 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
                 MediaFormat.MIMETYPE_AUDIO_VORBIS -> R.string.cdc_vorbis
                 MediaFormat.MIMETYPE_AUDIO_OPUS -> R.string.cdc_opus
                 MediaFormat.MIMETYPE_AUDIO_FLAC -> R.string.cdc_flac
+                // TODO: Add ALAC to this as soon as I can stop using MediaFormat for
+                //  extracting metadata and just use ExoPlayer.
                 // We don't give a name to more unpopular formats.
                 else -> -1
             }

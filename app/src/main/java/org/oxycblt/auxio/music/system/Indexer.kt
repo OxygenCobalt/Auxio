@@ -35,7 +35,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.extractor.*
+import org.oxycblt.auxio.music.cache.CacheRepository
 import org.oxycblt.auxio.music.metadata.TagExtractor
 import org.oxycblt.auxio.music.model.Library
 import org.oxycblt.auxio.music.model.RawSong
