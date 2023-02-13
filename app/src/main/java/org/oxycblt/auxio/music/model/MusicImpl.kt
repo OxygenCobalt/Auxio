@@ -46,12 +46,12 @@ import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * Library-backed implementation of [RealSong].
+ * Library-backed implementation of [Song].
  * @param rawSong The [RawSong] to derive the member data from.
  * @param musicSettings [MusicSettings] to perform further user-configured parsing.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class RealSong(rawSong: RawSong, musicSettings: MusicSettings) : Song {
+class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
     override val uid =
     // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
     rawSong.musicBrainzId?.toUuidOrNull()?.let { Music.UID.musicBrainz(MusicMode.SONGS, it) }
@@ -90,7 +90,7 @@ class RealSong(rawSong: RawSong, musicSettings: MusicSettings) : Song {
     override val size = requireNotNull(rawSong.size) { "Invalid raw: No size" }
     override val durationMs = requireNotNull(rawSong.durationMs) { "Invalid raw: No duration" }
     override val dateAdded = requireNotNull(rawSong.dateAdded) { "Invalid raw: No date added" }
-    private var _album: RealAlbum? = null
+    private var _album: AlbumImpl? = null
     override val album: Album
         get() = unlikelyToBeNull(_album)
 
@@ -121,7 +121,7 @@ class RealSong(rawSong: RawSong, musicSettings: MusicSettings) : Song {
                 albumArtistSortNames.getOrNull(i))
         }
 
-    private val _artists = mutableListOf<RealArtist>()
+    private val _artists = mutableListOf<ArtistImpl>()
     override val artists: List<Artist>
         get() = _artists
     override fun resolveArtistContents(context: Context) = resolveNames(context, artists)
@@ -137,14 +137,14 @@ class RealSong(rawSong: RawSong, musicSettings: MusicSettings) : Song {
         return true
     }
 
-    private val _genres = mutableListOf<RealGenre>()
+    private val _genres = mutableListOf<GenreImpl>()
     override val genres: List<Genre>
         get() = _genres
     override fun resolveGenreContents(context: Context) = resolveNames(context, genres)
 
     /**
-     * The [RawAlbum] instances collated by the [RealSong]. This can be used to group [RealSong]s
-     * into an [RealAlbum].
+     * The [RawAlbum] instances collated by the [Song]. This can be used to group [Song]s
+     * into an [Album].
      */
     val rawAlbum =
         RawAlbum(
@@ -159,16 +159,16 @@ class RealSong(rawSong: RawSong, musicSettings: MusicSettings) : Song {
                     .ifEmpty { listOf(RawArtist(null, null)) })
 
     /**
-     * The [RawArtist] instances collated by the [RealSong]. The artists of the song take priority,
+     * The [RawArtist] instances collated by the [Song]. The artists of the song take priority,
      * followed by the album artists. If there are no artists, this field will be a single "unknown"
-     * [RawArtist]. This can be used to group up [RealSong]s into an [RealArtist].
+     * [RawArtist]. This can be used to group up [Song]s into an [Artist].
      */
     val rawArtists =
         rawIndividualArtists.ifEmpty { rawAlbumArtists }.ifEmpty { listOf(RawArtist()) }
 
     /**
-     * The [RawGenre] instances collated by the [RealSong]. This can be used to group up [RealSong]s
-     * into a [RealGenre]. ID3v2 Genre names are automatically converted to their resolved names.
+     * The [RawGenre] instances collated by the [Song]. This can be used to group up [Song]s
+     * into a [Genre]. ID3v2 Genre names are automatically converted to their resolved names.
      */
     val rawGenres =
         rawSong.genreNames
@@ -177,26 +177,26 @@ class RealSong(rawSong: RawSong, musicSettings: MusicSettings) : Song {
             .ifEmpty { listOf(RawGenre()) }
 
     /**
-     * Links this [RealSong] with a parent [RealAlbum].
-     * @param album The parent [RealAlbum] to link to.
+     * Links this [Song] with a parent [Album].
+     * @param album The parent [Album] to link to.
      */
-    fun link(album: RealAlbum) {
+    fun link(album: AlbumImpl) {
         _album = album
     }
 
     /**
-     * Links this [RealSong] with a parent [RealArtist].
-     * @param artist The parent [RealArtist] to link to.
+     * Links this [Song] with a parent [Artist].
+     * @param artist The parent [Artist] to link to.
      */
-    fun link(artist: RealArtist) {
+    fun link(artist: ArtistImpl) {
         _artists.add(artist)
     }
 
     /**
-     * Links this [RealSong] with a parent [RealGenre].
-     * @param genre The parent [RealGenre] to link to.
+     * Links this [Song] with a parent [Genre].
+     * @param genre The parent [Genre] to link to.
      */
-    fun link(genre: RealGenre) {
+    fun link(genre: GenreImpl) {
         _genres.add(genre)
     }
 
@@ -231,13 +231,13 @@ class RealSong(rawSong: RawSong, musicSettings: MusicSettings) : Song {
 }
 
 /**
- * Library-backed implementation of [RealAlbum].
+ * Library-backed implementation of [Album].
  * @param rawAlbum The [RawAlbum] to derive the member data from.
- * @param songs The [RealSong]s that are a part of this [RealAlbum]. These items will be linked to
- * this [RealAlbum].
+ * @param songs The [Song]s that are a part of this [Album]. These items will be linked to
+ * this [Album].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class RealAlbum(val rawAlbum: RawAlbum, override val songs: List<RealSong>) : Album {
+class AlbumImpl(val rawAlbum: RawAlbum, override val songs: List<SongImpl>) : Album {
     override val uid =
     // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
     rawAlbum.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ALBUMS, it) }
@@ -263,9 +263,9 @@ class RealAlbum(val rawAlbum: RawAlbum, override val songs: List<RealSong>) : Al
     // the same UID but different contents are not equal.
     override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
     override fun equals(other: Any?) =
-        other is RealAlbum && uid == other.uid && songs == other.songs
+        other is AlbumImpl && uid == other.uid && songs == other.songs
 
-    private val _artists = mutableListOf<RealArtist>()
+    private val _artists = mutableListOf<ArtistImpl>()
     override val artists: List<Artist>
         get() = _artists
     override fun resolveArtistContents(context: Context) = resolveNames(context, artists)
@@ -298,17 +298,17 @@ class RealAlbum(val rawAlbum: RawAlbum, override val songs: List<RealSong>) : Al
     }
 
     /**
-     * The [RawArtist] instances collated by the [RealAlbum]. The album artists of the song take
+     * The [RawArtist] instances collated by the [Album]. The album artists of the song take
      * priority, followed by the artists. If there are no artists, this field will be a single
-     * "unknown" [RawArtist]. This can be used to group up [RealAlbum]s into an [RealArtist].
+     * "unknown" [RawArtist]. This can be used to group up [Album]s into an [Artist].
      */
     val rawArtists = rawAlbum.rawArtists
 
     /**
-     * Links this [RealAlbum] with a parent [RealArtist].
-     * @param artist The parent [RealArtist] to link to.
+     * Links this [Album] with a parent [Artist].
+     * @param artist The parent [Artist] to link to.
      */
-    fun link(artist: RealArtist) {
+    fun link(artist: ArtistImpl) {
         _artists.add(artist)
     }
 
@@ -332,14 +332,14 @@ class RealAlbum(val rawAlbum: RawAlbum, override val songs: List<RealSong>) : Al
 }
 
 /**
- * Library-backed implementation of [RealArtist].
+ * Library-backed implementation of [Artist].
  * @param rawArtist The [RawArtist] to derive the member data from.
- * @param songAlbums A list of the [RealSong]s and [RealAlbum]s that are a part of this [RealArtist]
- * , either through artist or album artist tags. Providing [RealSong]s to the artist is optional.
- * These instances will be linked to this [RealArtist].
+ * @param songAlbums A list of the [Song]s and [Album]s that are a part of this [Artist]
+ * , either through artist or album artist tags. Providing [Song]s to the artist is optional.
+ * These instances will be linked to this [Artist].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class RealArtist(private val rawArtist: RawArtist, songAlbums: List<Music>) : Artist {
+class ArtistImpl(private val rawArtist: RawArtist, songAlbums: List<Music>) : Artist {
     override val uid =
     // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
     rawArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ARTISTS, it) }
@@ -358,7 +358,7 @@ class RealArtist(private val rawArtist: RawArtist, songAlbums: List<Music>) : Ar
     // the same UID but different contents are not equal.
     override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
     override fun equals(other: Any?) =
-        other is RealArtist && uid == other.uid && songs == other.songs
+        other is ArtistImpl && uid == other.uid && songs == other.songs
 
     override lateinit var genres: List<Genre>
     override fun resolveGenreContents(context: Context) = resolveNames(context, genres)
@@ -382,12 +382,12 @@ class RealArtist(private val rawArtist: RawArtist, songAlbums: List<Music>) : Ar
 
         for (music in songAlbums) {
             when (music) {
-                is RealSong -> {
+                is SongImpl -> {
                     music.link(this)
                     distinctSongs.add(music)
                     distinctAlbums.add(music.album)
                 }
-                is RealAlbum -> {
+                is AlbumImpl -> {
                     music.link(this)
                     distinctAlbums.add(music)
                     noAlbums = false
@@ -403,12 +403,12 @@ class RealArtist(private val rawArtist: RawArtist, songAlbums: List<Music>) : Ar
     }
 
     /**
-     * Returns the original position of this [RealArtist]'s [RawArtist] within the given [RawArtist]
-     * list. This can be used to create a consistent ordering within child [RealArtist] lists based
+     * Returns the original position of this [Artist]'s [RawArtist] within the given [RawArtist]
+     * list. This can be used to create a consistent ordering within child [Artist] lists based
      * on the original tag order.
-     * @param rawArtists The [RawArtist] instances to check. It is assumed that this [RealArtist]'s
+     * @param rawArtists The [RawArtist] instances to check. It is assumed that this [Artist]'s
      * [RawArtist] will be within the list.
-     * @return The index of the [RealArtist]'s [RawArtist] within the list.
+     * @return The index of the [Artist]'s [RawArtist] within the list.
      */
     fun getOriginalPositionIn(rawArtists: List<RawArtist>) = rawArtists.indexOf(rawArtist)
 
@@ -426,10 +426,10 @@ class RealArtist(private val rawArtist: RawArtist, songAlbums: List<Music>) : Ar
     }
 }
 /**
- * Library-backed implementation of [RealGenre].
+ * Library-backed implementation of [Genre].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class RealGenre(private val rawGenre: RawGenre, override val songs: List<RealSong>) : Genre {
+class GenreImpl(private val rawGenre: RawGenre, override val songs: List<SongImpl>) : Genre {
     override val uid = Music.UID.auxio(MusicMode.GENRES) { update(rawGenre.name) }
     override val rawName = rawGenre.name
     override val rawSortName = rawName
@@ -444,7 +444,7 @@ class RealGenre(private val rawGenre: RawGenre, override val songs: List<RealSon
     // the same UID but different contents are not equal.
     override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
     override fun equals(other: Any?) =
-        other is RealGenre && uid == other.uid && songs == other.songs
+        other is GenreImpl && uid == other.uid && songs == other.songs
 
     init {
         val distinctAlbums = mutableSetOf<Album>()
@@ -467,12 +467,12 @@ class RealGenre(private val rawGenre: RawGenre, override val songs: List<RealSon
     }
 
     /**
-     * Returns the original position of this [RealGenre]'s [RawGenre] within the given [RawGenre]
-     * list. This can be used to create a consistent ordering within child [RealGenre] lists based
+     * Returns the original position of this [Genre]'s [RawGenre] within the given [RawGenre]
+     * list. This can be used to create a consistent ordering within child [Genre] lists based
      * on the original tag order.
-     * @param rawGenres The [RawGenre] instances to check. It is assumed that this [RealGenre] 's
+     * @param rawGenres The [RawGenre] instances to check. It is assumed that this [Genre] 's
      * [RawGenre] will be within the list.
-     * @return The index of the [RealGenre]'s [RawGenre] within the list.
+     * @return The index of the [Genre]'s [RawGenre] within the list.
      */
     fun getOriginalPositionIn(rawGenres: List<RawGenre>) = rawGenres.indexOf(rawGenre)
 

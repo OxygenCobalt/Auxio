@@ -23,18 +23,18 @@ import org.oxycblt.auxio.music.metadata.*
 import org.oxycblt.auxio.music.storage.Directory
 
 /**
- * Raw information about a [RealSong] obtained from the filesystem/Extractor instances.
+ * Raw information about a [SongImpl] obtained from the filesystem/Extractor instances.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class RawSong(
     /**
-     * The ID of the [RealSong]'s audio file, obtained from MediaStore. Note that this ID is highly
+     * The ID of the [SongImpl]'s audio file, obtained from MediaStore. Note that this ID is highly
      * unstable and should only be used for accessing the audio file.
      */
     var mediaStoreId: Long? = null,
     /** @see Song.dateAdded */
     var dateAdded: Long? = null,
-    /** The latest date the [RealSong]'s audio file was modified, as a unix epoch timestamp. */
+    /** The latest date the [SongImpl]'s audio file was modified, as a unix epoch timestamp. */
     var dateModified: Long? = null,
     /** @see Song.path */
     var fileName: String? = null,
@@ -87,12 +87,12 @@ class RawSong(
 )
 
 /**
- * Raw information about an [RealAlbum] obtained from the component [RealSong] instances.
+ * Raw information about an [AlbumImpl] obtained from the component [SongImpl] instances.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class RawAlbum(
     /**
-     * The ID of the [RealAlbum]'s grouping, obtained from MediaStore. Note that this ID is highly
+     * The ID of the [AlbumImpl]'s grouping, obtained from MediaStore. Note that this ID is highly
      * unstable and should only be used for accessing the system-provided cover art.
      */
     val mediaStoreId: Long,
@@ -132,7 +132,7 @@ class RawAlbum(
 }
 
 /**
- * Raw information about an [RealArtist] obtained from the component [RealSong] and [RealAlbum]
+ * Raw information about an [ArtistImpl] obtained from the component [SongImpl] and [AlbumImpl]
  * instances.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -174,7 +174,7 @@ class RawArtist(
 }
 
 /**
- * Raw information about a [RealGenre] obtained from the component [RealSong] instances.
+ * Raw information about a [GenreImpl] obtained from the component [SongImpl] instances.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class RawGenre(
