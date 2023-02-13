@@ -22,6 +22,8 @@ import android.graphics.Bitmap
 import android.os.Build
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
@@ -39,14 +41,16 @@ import org.oxycblt.auxio.util.logD
 /**
  * A component that manages the "Now Playing" state. This is kept separate from the [WidgetProvider]
  * itself to prevent possible memory leaks and enable extension to more widgets in the future.
- * @param context [Context] required to manage AppWidgetProviders.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class WidgetComponent(private val context: Context) :
-    PlaybackStateManager.Listener, UISettings.Listener, ImageSettings.Listener {
-    private val playbackManager = PlaybackStateManager.get()
-    private val uiSettings = UISettings.from(context)
-    private val imageSettings = ImageSettings.from(context)
+class WidgetComponent
+@Inject
+constructor(
+    @ApplicationContext private val context: Context,
+    private val imageSettings: ImageSettings,
+    private val playbackManager: PlaybackStateManager,
+    private val uiSettings: UISettings
+) : PlaybackStateManager.Listener, UISettings.Listener, ImageSettings.Listener {
     private val widgetProvider = WidgetProvider()
     private val provider = BitmapProvider(context)
 
@@ -109,9 +113,10 @@ class WidgetComponent(private val context: Context) :
     /** Release this instance, preventing any further events from updating the widget instances. */
     fun release() {
         provider.release()
+        imageSettings.unregisterListener(this)
+        playbackManager.removeListener(this)
         uiSettings.unregisterListener(this)
         widgetProvider.reset(context)
-        playbackManager.removeListener(this)
     }
 
     // --- CALLBACKS ---

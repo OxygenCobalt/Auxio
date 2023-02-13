@@ -86,11 +86,11 @@ class PlaybackService :
     MusicRepository.Listener {
     // Player components
     private lateinit var player: ExoPlayer
-    private lateinit var replayGainProcessor: ReplayGainAudioProcessor
+    @Inject lateinit var replayGainProcessor: ReplayGainAudioProcessor
 
     // System backend components
-    private lateinit var mediaSessionComponent: MediaSessionComponent
-    private lateinit var widgetComponent: WidgetComponent
+    @Inject lateinit var mediaSessionComponent: MediaSessionComponent
+    @Inject lateinit var widgetComponent: WidgetComponent
     private val systemReceiver = PlaybackReceiver()
 
     // Shared components
@@ -115,8 +115,6 @@ class PlaybackService :
     override fun onCreate() {
         super.onCreate()
 
-        // Initialize the player component.
-        replayGainProcessor = ReplayGainAudioProcessor(this)
         // Enable constant bitrate seeking so that certain MP3s/AACs are seekable
         val extractorsFactory = DefaultExtractorsFactory().setConstantBitrateSeekingEnabled(true)
         // Since Auxio is a music player, only specify an audio renderer to save
@@ -155,8 +153,7 @@ class PlaybackService :
         // condition to cause us to load music before we were fully initialize.
         playbackManager.registerInternalPlayer(this)
         musicRepository.addListener(this)
-        widgetComponent = WidgetComponent(this)
-        mediaSessionComponent = MediaSessionComponent(this, this)
+        mediaSessionComponent.registerListener(this)
         registerReceiver(
             systemReceiver,
             IntentFilter().apply {

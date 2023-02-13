@@ -27,6 +27,8 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
@@ -44,11 +46,15 @@ import org.oxycblt.auxio.util.logD
 /**
  * A component that mirrors the current playback state into the [MediaSessionCompat] and
  * [NotificationComponent].
- * @param context [Context] required to initialize components.
- * @param listener [Listener] to forward notification updates to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MediaSessionComponent(private val context: Context, private val listener: Listener) :
+class MediaSessionComponent
+@Inject
+constructor(
+    @ApplicationContext private val context: Context,
+    private val playbackManager: PlaybackStateManager,
+    private val playbackSettings: PlaybackSettings
+) :
     MediaSessionCompat.Callback(),
     PlaybackStateManager.Listener,
     ImageSettings.Listener,
@@ -59,11 +65,10 @@ class MediaSessionComponent(private val context: Context, private val listener: 
             setQueueTitle(context.getString(R.string.lbl_queue))
         }
 
-    private val playbackManager = PlaybackStateManager.get()
-    private val playbackSettings = PlaybackSettings.from(context)
-
     private val notification = NotificationComponent(context, mediaSession.sessionToken)
     private val provider = BitmapProvider(context)
+
+    private var listener: Listener? = null
 
     init {
         playbackManager.addListener(this)
@@ -80,10 +85,19 @@ class MediaSessionComponent(private val context: Context, private val listener: 
     }
 
     /**
+     * Register a [Listener] for notification updates to this service.
+     * @param listener The [Listener] to register.
+     */
+    fun registerListener(listener: Listener) {
+        this.listener = listener
+    }
+
+    /**
      * Release this instance, closing the [MediaSessionCompat] and preventing any further updates to
      * the [NotificationComponent].
      */
     fun release() {
+        listener = null
         provider.release()
         playbackSettings.unregisterListener(this)
         playbackManager.removeListener(this)
@@ -135,7 +149,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
         invalidateSessionState()
         notification.updatePlaying(playbackManager.playerState.isPlaying)
         if (!provider.isBusy) {
-            listener.onPostNotification(notification)
+            listener?.onPostNotification(notification)
         }
     }
 
@@ -316,7 +330,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
                     val metadata = builder.build()
                     mediaSession.setMetadata(metadata)
                     notification.updateMetadata(metadata)
-                    listener.onPostNotification(notification)
+                    listener?.onPostNotification(notification)
                 }
             })
     }
@@ -403,7 +417,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
         }
 
         if (!provider.isBusy) {
-            listener.onPostNotification(notification)
+            listener?.onPostNotification(notification)
         }
     }
 

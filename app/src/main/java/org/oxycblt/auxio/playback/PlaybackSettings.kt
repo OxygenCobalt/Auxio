@@ -19,6 +19,8 @@ package org.oxycblt.auxio.playback
 
 import android.content.Context
 import androidx.core.content.edit
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicMode
@@ -65,17 +67,9 @@ interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
         /** Called when [notificationAction] has changed. */
         fun onNotificationActionChanged() {}
     }
-
-    companion object {
-        /**
-         * Get a framework-backed implementation.
-         * @param context [Context] required.
-         */
-        fun from(context: Context): PlaybackSettings = PlaybackSettingsImpl(context)
-    }
 }
 
-class PlaybackSettingsImpl(context: Context) :
+class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Context) :
     Settings.Impl<PlaybackSettings.Listener>(context), PlaybackSettings {
     override val inListPlaybackMode: MusicMode
         get() =

@@ -17,17 +17,19 @@
  
 package org.oxycblt.auxio.playback
 
-import android.content.Context
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.PlaybackStateManagerImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
-class PlaybackModule {
-    @Provides fun stateManager() = PlaybackStateManager.get()
-    @Provides fun settings(@ApplicationContext context: Context) = PlaybackSettings.from(context)
+interface PlaybackModule {
+    @Singleton
+    @Binds
+    fun stateManager(playbackManager: PlaybackStateManagerImpl): PlaybackStateManager
+    @Binds fun settings(playbackSettings: PlaybackSettingsImpl): PlaybackSettings
 }

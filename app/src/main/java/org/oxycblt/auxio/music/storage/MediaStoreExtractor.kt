@@ -196,7 +196,7 @@ private abstract class BaseMediaStoreExtractor(
             if (cache?.populate(rawSong) == true) {
                 completeSongs.send(rawSong)
             } else {
-                query.populateFileInfo(rawSong)
+                query.populateTags(rawSong)
                 incompleteSongs.send(rawSong)
             }
             yield()

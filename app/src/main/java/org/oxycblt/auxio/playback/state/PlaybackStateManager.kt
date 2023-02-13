@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.playback.state
 
+import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
@@ -39,8 +40,6 @@ import org.oxycblt.auxio.util.logW
  *
  * Internal consumers should usually use [Listener], however the component that manages the player
  * itself should instead use [InternalPlayer].
- *
- * All access should be done with [get].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -270,32 +269,9 @@ interface PlaybackStateManager {
         val positionMs: Long,
         val repeatMode: RepeatMode,
     )
-
-    companion object {
-        @Volatile private var INSTANCE: PlaybackStateManager? = null
-
-        /**
-         * Get a singleton instance.
-         * @return The (possibly newly-created) singleton instance.
-         */
-        fun get(): PlaybackStateManager {
-            val currentInstance = INSTANCE
-            logD(currentInstance)
-
-            if (currentInstance != null) {
-                return currentInstance
-            }
-
-            synchronized(this) {
-                val newInstance = PlaybackStateManagerImpl()
-                INSTANCE = newInstance
-                return newInstance
-            }
-        }
-    }
 }
 
-private class PlaybackStateManagerImpl : PlaybackStateManager {
+class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     private val listeners = mutableListOf<PlaybackStateManager.Listener>()
     @Volatile private var internalPlayer: InternalPlayer? = null
     @Volatile private var pendingAction: InternalPlayer.Action? = null
