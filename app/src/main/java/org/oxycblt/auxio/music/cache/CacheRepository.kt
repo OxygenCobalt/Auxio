@@ -17,10 +17,7 @@
  
 package org.oxycblt.auxio.music.extractor
 
-import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import org.oxycblt.auxio.music.cache.CacheDatabase
 import org.oxycblt.auxio.music.cache.CachedSong
 import org.oxycblt.auxio.music.cache.CachedSongsDao
 import org.oxycblt.auxio.music.model.RawSong
@@ -44,12 +41,8 @@ interface CacheRepository {
     suspend fun writeCache(rawSongs: List<RawSong>)
 }
 
-class CacheRepositoryImpl @Inject constructor(@ApplicationContext private val context: Context) :
+class CacheRepositoryImpl @Inject constructor(private val cachedSongsDao: CachedSongsDao) :
     CacheRepository {
-    private val cachedSongsDao: CachedSongsDao by lazy {
-        CacheDatabase.getInstance(context).cachedSongsDao()
-    }
-
     override suspend fun readCache(): Cache? =
         try {
             // Faster to load the whole database into memory than do a query on each

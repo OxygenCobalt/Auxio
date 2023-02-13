@@ -146,8 +146,6 @@ class PlaybackService :
                 .build()
                 .also { it.addListener(this) }
         replayGainProcessor.addToListeners(player)
-        // Initialize the core service components
-        persistenceRepository = PersistenceRepository.from(this)
         foregroundManager = ForegroundManager(this)
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.

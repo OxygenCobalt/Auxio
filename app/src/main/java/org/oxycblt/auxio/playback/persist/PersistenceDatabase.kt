@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.playback.persist
 
-import android.content.Context
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Entity
@@ -25,7 +24,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
@@ -60,35 +58,6 @@ abstract class PersistenceDatabase : RoomDatabase() {
 
         /** @see [Music.UID.fromString] */
         @TypeConverter fun toMusicUid(string: String?) = string?.let(Music.UID::fromString)
-    }
-
-    companion object {
-        @Volatile private var INSTANCE: PersistenceDatabase? = null
-
-        /**
-         * Get/create the shared instance of this database.
-         * @param context [Context] required.
-         */
-        fun getInstance(context: Context): PersistenceDatabase {
-            val instance = INSTANCE
-            if (instance != null) {
-                return instance
-            }
-
-            synchronized(this) {
-                val newInstance =
-                    Room.databaseBuilder(
-                            context.applicationContext,
-                            PersistenceDatabase::class.java,
-                            "auxio_playback_persistence.db")
-                        .fallbackToDestructiveMigration()
-                        .fallbackToDestructiveMigrationFrom(1)
-                        .fallbackToDestructiveMigrationOnDowngrade()
-                        .build()
-                INSTANCE = newInstance
-                return newInstance
-            }
-        }
     }
 }
 

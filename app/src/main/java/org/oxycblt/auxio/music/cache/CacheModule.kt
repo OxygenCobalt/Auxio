@@ -17,10 +17,15 @@
  
 package org.oxycblt.auxio.music.cache
 
+import android.content.Context
+import androidx.room.Room
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import org.oxycblt.auxio.music.extractor.CacheRepository
 import org.oxycblt.auxio.music.extractor.CacheRepositoryImpl
 
@@ -28,4 +33,20 @@ import org.oxycblt.auxio.music.extractor.CacheRepositoryImpl
 @InstallIn(SingletonComponent::class)
 interface CacheModule {
     @Binds fun cacheRepository(cacheRepository: CacheRepositoryImpl): CacheRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+class CacheRoomModule {
+    @Singleton
+    @Provides
+    fun database(@ApplicationContext context: Context) =
+        Room.databaseBuilder(
+                context.applicationContext, CacheDatabase::class.java, "music_cache.db")
+            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigrationFrom(0)
+            .fallbackToDestructiveMigrationOnDowngrade()
+            .build()
+
+    @Provides fun cachedSongsDao(database: CacheDatabase) = database.cachedSongsDao()
 }

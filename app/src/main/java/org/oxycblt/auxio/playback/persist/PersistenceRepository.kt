@@ -17,8 +17,6 @@
  
 package org.oxycblt.auxio.playback.persist
 
-import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.model.Library
@@ -43,22 +41,12 @@ interface PersistenceRepository {
      * @param state The [PlaybackStateManager.SavedState] to persist.
      */
     suspend fun saveState(state: PlaybackStateManager.SavedState?): Boolean
-
-    companion object {
-        /**
-         * Get a framework-backed implementation.
-         * @param context [Context] required.
-         */
-        fun from(context: Context): PersistenceRepository = PersistenceRepositoryImpl(context)
-    }
 }
 
 class PersistenceRepositoryImpl
 @Inject
-constructor(@ApplicationContext private val context: Context) : PersistenceRepository {
-    private val database: PersistenceDatabase by lazy { PersistenceDatabase.getInstance(context) }
-    private val playbackStateDao: PlaybackStateDao by lazy { database.playbackStateDao() }
-    private val queueDao: QueueDao by lazy { database.queueDao() }
+constructor(private val playbackStateDao: PlaybackStateDao, private val queueDao: QueueDao) :
+    PersistenceRepository {
 
     override suspend fun readState(library: Library): PlaybackStateManager.SavedState? {
         val playbackState: PlaybackState

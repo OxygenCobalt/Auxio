@@ -17,14 +17,12 @@
  
 package org.oxycblt.auxio.music.cache
 
-import android.content.Context
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
@@ -36,35 +34,6 @@ import org.oxycblt.auxio.music.model.RawSong
 @Database(entities = [CachedSong::class], version = 27, exportSchema = false)
 abstract class CacheDatabase : RoomDatabase() {
     abstract fun cachedSongsDao(): CachedSongsDao
-
-    companion object {
-        @Volatile private var INSTANCE: CacheDatabase? = null
-
-        /**
-         * Get/create the shared instance of this database.
-         * @param context [Context] required.
-         */
-        fun getInstance(context: Context): CacheDatabase {
-            val instance = INSTANCE
-            if (instance != null) {
-                return instance
-            }
-
-            synchronized(this) {
-                val newInstance =
-                    Room.databaseBuilder(
-                            context.applicationContext,
-                            CacheDatabase::class.java,
-                            "auxio_tag_cache.db")
-                        .fallbackToDestructiveMigration()
-                        .fallbackToDestructiveMigrationFrom(0)
-                        .fallbackToDestructiveMigrationOnDowngrade()
-                        .build()
-                INSTANCE = newInstance
-                return newInstance
-            }
-        }
-    }
 }
 
 @Dao

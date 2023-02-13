@@ -17,13 +17,38 @@
  
 package org.oxycblt.auxio.playback.persist
 
+import android.content.Context
+import androidx.room.Room
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 interface PersistenceModule {
     @Binds fun repository(persistenceRepository: PersistenceRepositoryImpl): PersistenceRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+class PersistenceRoomModule {
+    @Singleton
+    @Provides
+    fun database(@ApplicationContext context: Context) =
+        Room.databaseBuilder(
+                context.applicationContext,
+                PersistenceDatabase::class.java,
+                "playback_persistence.db")
+            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigrationFrom(1)
+            .fallbackToDestructiveMigrationOnDowngrade()
+            .build()
+
+    @Provides fun playbackStateDao(database: PersistenceDatabase) = database.playbackStateDao()
+
+    @Provides fun queueDao(database: PersistenceDatabase) = database.queueDao()
 }
