@@ -366,6 +366,10 @@ constructor(
         mediaStoreJob.await()
         metadataJob.await()
 
+        if (rawSongs.isEmpty()) {
+            throw Indexer.NoMusicException()
+        }
+
         // Successfully loaded the library, now save the cache and create the library in
         // parallel.
         emitIndexing(Indexer.Indexing.Indeterminate)

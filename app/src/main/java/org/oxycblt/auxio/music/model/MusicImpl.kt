@@ -143,8 +143,8 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
     override fun resolveGenreContents(context: Context) = resolveNames(context, genres)
 
     /**
-     * The [RawAlbum] instances collated by the [Song]. This can be used to group [Song]s
-     * into an [Album].
+     * The [RawAlbum] instances collated by the [Song]. This can be used to group [Song]s into an
+     * [Album].
      */
     val rawAlbum =
         RawAlbum(
@@ -167,8 +167,8 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
         rawIndividualArtists.ifEmpty { rawAlbumArtists }.ifEmpty { listOf(RawArtist()) }
 
     /**
-     * The [RawGenre] instances collated by the [Song]. This can be used to group up [Song]s
-     * into a [Genre]. ID3v2 Genre names are automatically converted to their resolved names.
+     * The [RawGenre] instances collated by the [Song]. This can be used to group up [Song]s into a
+     * [Genre]. ID3v2 Genre names are automatically converted to their resolved names.
      */
     val rawGenres =
         rawSong.genreNames
@@ -233,8 +233,8 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
 /**
  * Library-backed implementation of [Album].
  * @param rawAlbum The [RawAlbum] to derive the member data from.
- * @param songs The [Song]s that are a part of this [Album]. These items will be linked to
- * this [Album].
+ * @param songs The [Song]s that are a part of this [Album]. These items will be linked to this
+ * [Album].
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumImpl(val rawAlbum: RawAlbum, override val songs: List<SongImpl>) : Album {
@@ -334,9 +334,9 @@ class AlbumImpl(val rawAlbum: RawAlbum, override val songs: List<SongImpl>) : Al
 /**
  * Library-backed implementation of [Artist].
  * @param rawArtist The [RawArtist] to derive the member data from.
- * @param songAlbums A list of the [Song]s and [Album]s that are a part of this [Artist]
- * , either through artist or album artist tags. Providing [Song]s to the artist is optional.
- * These instances will be linked to this [Artist].
+ * @param songAlbums A list of the [Song]s and [Album]s that are a part of this [Artist] , either
+ * through artist or album artist tags. Providing [Song]s to the artist is optional. These instances
+ * will be linked to this [Artist].
  * @author Alexander Capehart (OxygenCobalt)
  */
 class ArtistImpl(private val rawArtist: RawArtist, songAlbums: List<Music>) : Artist {
@@ -404,8 +404,8 @@ class ArtistImpl(private val rawArtist: RawArtist, songAlbums: List<Music>) : Ar
 
     /**
      * Returns the original position of this [Artist]'s [RawArtist] within the given [RawArtist]
-     * list. This can be used to create a consistent ordering within child [Artist] lists based
-     * on the original tag order.
+     * list. This can be used to create a consistent ordering within child [Artist] lists based on
+     * the original tag order.
      * @param rawArtists The [RawArtist] instances to check. It is assumed that this [Artist]'s
      * [RawArtist] will be within the list.
      * @return The index of the [Artist]'s [RawArtist] within the list.
@@ -467,9 +467,9 @@ class GenreImpl(private val rawGenre: RawGenre, override val songs: List<SongImp
     }
 
     /**
-     * Returns the original position of this [Genre]'s [RawGenre] within the given [RawGenre]
-     * list. This can be used to create a consistent ordering within child [Genre] lists based
-     * on the original tag order.
+     * Returns the original position of this [Genre]'s [RawGenre] within the given [RawGenre] list.
+     * This can be used to create a consistent ordering within child [Genre] lists based on the
+     * original tag order.
      * @param rawGenres The [RawGenre] instances to check. It is assumed that this [Genre] 's
      * [RawGenre] will be within the list.
      * @return The index of the [Genre]'s [RawGenre] within the list.

@@ -5,8 +5,6 @@
     <style name="Widget.Auxio.AppBarLayout" parent="Widget.Material3.AppBarLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <!-- Resolve lifted state flickering when scrolling fast. -->
-        <item name="android:stateListAnimator">@null</item>
     </style>
 
     <!-- Base toolbar style -->

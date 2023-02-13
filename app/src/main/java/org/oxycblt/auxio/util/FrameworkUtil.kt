@@ -24,6 +24,7 @@ import android.os.Build
 import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
@@ -105,6 +106,17 @@ val ViewBinding.context: Context
  * screen.
  */
 fun RecyclerView.canScroll() = computeVerticalScrollRange() > height
+
+/**
+ * Fix the double ripple that appears in MaterialButton instances due to an issue with AppCompat 1.5
+ * or higher.
+ */
+fun AppCompatButton.fixDoubleRipple() {
+    AppCompatButton::class.java.getDeclaredField("mBackgroundTintHelper").apply {
+        isAccessible = true
+        set(this@fixDoubleRipple, null)
+    }
+}
 
 /**
  * Get the [CoordinatorLayout.Behavior] of a [View], or null if the [View] is not part of a

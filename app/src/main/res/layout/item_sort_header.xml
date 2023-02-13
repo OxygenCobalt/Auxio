@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Songs" />
 
-    <Button
+    <org.oxycblt.auxio.ui.RippleFixMaterialButton
         android:id="@+id/header_button"
         style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"

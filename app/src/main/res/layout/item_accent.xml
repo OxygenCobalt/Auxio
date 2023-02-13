@@ -7,7 +7,7 @@
     android:padding="@dimen/spacing_tiny"
     android:theme="@style/ThemeOverlay.Accent">
 
-    <com.google.android.material.button.MaterialButton
+    <org.oxycblt.auxio.ui.RippleFixMaterialButton
         android:id="@+id/accent"
         style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"

@@ -67,7 +67,7 @@ dependencies {
 
     // General
     // 1.4.0 is used in order to avoid a ripple bug in material components
-    implementation "androidx.appcompat:appcompat:1.4.0"
+    implementation "androidx.appcompat:appcompat:1.6.1"
     implementation "androidx.core:core-ktx:1.9.0"
     implementation "androidx.activity:activity-ktx:1.6.1"
     implementation "androidx.fragment:fragment-ktx:1.5.5"
@@ -113,14 +113,16 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["extension-*.aar"])
 
     // Image loading
-    implementation "io.coil-kt:coil-base:2.1.0"
+    implementation "io.coil-kt:coil-base:2.2.0"
 
     // Material
-    // Locked below 1.7.0-alpha03 to avoid the same ripple bug
-    implementation "com.google.android.material:material:1.7.0-alpha02"
+    // TODO: Stuck on 1.8.0-alpha01 until ripple bug with tab layout can be worked around
+    // TODO: Exactly figure out the conditions that the 1.7.0 ripple bug occurred so you can just
+    //  PR a fix.
+    implementation "com.google.android.material:material:1.8.0-alpha01"
 
     // Dependency Injection
-    def dagger_version = "2.40"
+    def dagger_version = "2.44.2"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     implementation "com.google.dagger:hilt-android:$hilt_version"

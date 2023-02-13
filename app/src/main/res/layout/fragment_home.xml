@@ -10,8 +10,7 @@
 
     <org.oxycblt.auxio.ui.CoordinatorAppBarLayout
         android:id="@+id/home_appbar"
-        style="@style/Widget.Auxio.AppBarLayout"
-        android:fitsSystemWindows="true">
+        style="@style/Widget.Auxio.AppBarLayout">
 
         <org.oxycblt.auxio.list.selection.SelectionToolbarOverlay
             android:id="@+id/home_selection_toolbar"
@@ -98,7 +97,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/home_indexing_action"
                         app:layout_constraintTop_toTopOf="@+id/home_indexing_action" />
 
-                    <Button
+                    <org.oxycblt.auxio.ui.RippleFixMaterialButton
                         android:id="@+id/home_indexing_action"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.google.android.material.button.MaterialButton
+            <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_play_pause"
                 style="@style/Widget.Auxio.Button.Icon.Small"
                 android:layout_width="wrap_content"
@@ -66,7 +66,7 @@
                 android:contentDescription="@string/desc_play_pause"
                 app:icon="@drawable/sel_playing_state_24" />
 
-            <com.google.android.material.button.MaterialButton
+            <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_secondary_action"
                 style="@style/Widget.Auxio.Button.Icon.Small"
                 android:layout_width="wrap_content"

@@ -22,9 +22,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.oxycblt.auxio.util.fixDoubleRipple
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -100,6 +102,16 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
         // Apply the newly-configured view to the dialog.
         (requireDialog() as AlertDialog).setView(view)
         logD("Fragment created")
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        (requireDialog() as AlertDialog).apply {
+            (getButton(AlertDialog.BUTTON_NEUTRAL) as AppCompatButton).fixDoubleRipple()
+            (getButton(AlertDialog.BUTTON_POSITIVE) as AppCompatButton).fixDoubleRipple()
+            (getButton(AlertDialog.BUTTON_NEGATIVE) as AppCompatButton).fixDoubleRipple()
+        }
     }
 
     final override fun onDestroyView() {

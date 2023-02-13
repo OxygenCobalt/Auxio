@@ -35,7 +35,7 @@
             app:selectionRequired="true"
             app:singleSelection="true">
 
-            <com.google.android.material.button.MaterialButton
+            <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/dirs_mode_exclude"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
@@ -44,7 +44,7 @@
                 tools:icon="@drawable/ic_check_24"
                 android:text="@string/set_dirs_mode_exclude" />
 
-            <com.google.android.material.button.MaterialButton
+            <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/dirs_mode_include"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
@@ -82,7 +82,7 @@
             android:text="@string/set_dirs_list"
             app:layout_constraintTop_toBottomOf="@+id/dirs_list_header_divider" />
 
-        <Button
+        <org.oxycblt.auxio.ui.RippleFixMaterialButton
             style="@style/Widget.Auxio.Button.Icon.Small"
             android:id="@+id/dirs_add"
             android:layout_width="wrap_content"
