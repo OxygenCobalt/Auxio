@@ -42,13 +42,14 @@ object Covers {
     /**
      * Fetch an album cover, respecting the current cover configuration.
      * @param context [Context] required to load the image.
+     * @param imageSettings [ImageSettings] required to obtain configuration information.
      * @param album [Album] to load the cover from.
      * @return An [InputStream] of image data if the cover loading was successful, null if the cover
      * loading failed or should not occur.
      */
-    suspend fun fetch(context: Context, album: Album): InputStream? {
+    suspend fun fetch(context: Context, imageSettings: ImageSettings, album: Album): InputStream? {
         return try {
-            when (ImageSettings.from(context).coverMode) {
+            when (imageSettings.coverMode) {
                 CoverMode.OFF -> null
                 CoverMode.MEDIA_STORE -> fetchMediaStoreCovers(context, album)
                 CoverMode.QUALITY -> fetchQualityCovers(context, album)

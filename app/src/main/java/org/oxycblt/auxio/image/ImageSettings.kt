@@ -37,14 +37,6 @@ interface ImageSettings : Settings<ImageSettings.Listener> {
         /** Called when [coverMode] changes. */
         fun onCoverModeChanged() {}
     }
-
-    companion object {
-        /**
-         * Get a framework-backed implementation.
-         * @param context [Context] required.
-         */
-        fun from(context: Context): ImageSettings = ImageSettingsImpl(context)
-    }
 }
 
 class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context) :

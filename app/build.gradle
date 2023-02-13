@@ -113,7 +113,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["extension-*.aar"])
 
     // Image loading
-    implementation "io.coil-kt:coil:2.1.0"
+    implementation "io.coil-kt:coil-base:2.1.0"
 
     // Material
     // Locked below 1.7.0-alpha03 to avoid the same ripple bug

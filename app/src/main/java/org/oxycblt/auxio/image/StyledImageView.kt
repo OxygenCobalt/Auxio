@@ -29,8 +29,9 @@ import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import coil.dispose
-import coil.load
+import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.util.CoilUtils
 import com.google.android.material.shape.MaterialShapeDrawable
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -60,6 +61,7 @@ class StyledImageView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AppCompatImageView(context, attrs, defStyleAttr) {
+    @Inject lateinit var imageLoader: ImageLoader
     @Inject lateinit var uiSettings: UISettings
 
     init {
@@ -125,13 +127,16 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * field for the name of the [Music].
      */
     private fun bindImpl(music: Music, @DrawableRes errorRes: Int, @StringRes descRes: Int) {
+        val request =
+            ImageRequest.Builder(context)
+                .data(music)
+                .error(StyledDrawable(context, context.getDrawableCompat(errorRes)))
+                .transformations(SquareFrameTransform.INSTANCE)
+                .target(this)
+                .build()
         // Dispose of any previous image request and load a new image.
-        dispose()
-        load(music) {
-            error(StyledDrawable(context, context.getDrawableCompat(errorRes)))
-            transformations(SquareFrameTransform.INSTANCE)
-        }
-
+        CoilUtils.dispose(this)
+        imageLoader.enqueue(request)
         // Update the content description to the specified resource.
         contentDescription = context.getString(descRes, music.resolveName(context))
     }

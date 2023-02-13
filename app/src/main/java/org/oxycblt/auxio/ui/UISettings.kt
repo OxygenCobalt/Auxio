@@ -46,14 +46,6 @@ interface UISettings : Settings<UISettings.Listener> {
         /** Called when [roundMode] changes. */
         fun onRoundModeChanged()
     }
-
-    companion object {
-        /**
-         * Get a framework-backed implementation.
-         * @param context [Context] required.
-         */
-        fun from(context: Context): UISettings = UISettingsImpl(context)
-    }
 }
 
 class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :

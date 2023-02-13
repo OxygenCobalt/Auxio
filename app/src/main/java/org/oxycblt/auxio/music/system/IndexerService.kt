@@ -25,7 +25,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.os.PowerManager
 import android.provider.MediaStore
-import coil.imageLoader
+import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -68,6 +68,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
     private lateinit var wakeLock: PowerManager.WakeLock
     private lateinit var indexerContentObserver: SystemContentObserver
     @Inject lateinit var musicSettings: MusicSettings
+    @Inject lateinit var imageLoader: ImageLoader
 
     override fun onCreate() {
         super.onCreate()

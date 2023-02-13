@@ -48,11 +48,11 @@ class WidgetComponent
 constructor(
     @ApplicationContext private val context: Context,
     private val imageSettings: ImageSettings,
+    private val bitmapProvider: BitmapProvider,
     private val playbackManager: PlaybackStateManager,
     private val uiSettings: UISettings
 ) : PlaybackStateManager.Listener, UISettings.Listener, ImageSettings.Listener {
     private val widgetProvider = WidgetProvider()
-    private val provider = BitmapProvider(context)
 
     init {
         playbackManager.addListener(this)
@@ -74,7 +74,7 @@ constructor(
         val repeatMode = playbackManager.repeatMode
         val isShuffled = playbackManager.queue.isShuffled
 
-        provider.load(
+        bitmapProvider.load(
             song,
             object : BitmapProvider.Target {
                 override fun onConfigRequest(builder: ImageRequest.Builder): ImageRequest.Builder {
@@ -112,7 +112,7 @@ constructor(
 
     /** Release this instance, preventing any further events from updating the widget instances. */
     fun release() {
-        provider.release()
+        bitmapProvider.release()
         imageSettings.unregisterListener(this)
         playbackManager.removeListener(this)
         uiSettings.unregisterListener(this)

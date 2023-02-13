@@ -52,8 +52,9 @@ class MediaSessionComponent
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
+    private val bitmapProvider: BitmapProvider,
     private val playbackManager: PlaybackStateManager,
-    private val playbackSettings: PlaybackSettings
+    private val playbackSettings: PlaybackSettings,
 ) :
     MediaSessionCompat.Callback(),
     PlaybackStateManager.Listener,
@@ -66,7 +67,6 @@ constructor(
         }
 
     private val notification = NotificationComponent(context, mediaSession.sessionToken)
-    private val provider = BitmapProvider(context)
 
     private var listener: Listener? = null
 
@@ -98,7 +98,7 @@ constructor(
      */
     fun release() {
         listener = null
-        provider.release()
+        bitmapProvider.release()
         playbackSettings.unregisterListener(this)
         playbackManager.removeListener(this)
         mediaSession.apply {
@@ -148,7 +148,7 @@ constructor(
     override fun onStateChanged(state: InternalPlayer.State) {
         invalidateSessionState()
         notification.updatePlaying(playbackManager.playerState.isPlaying)
-        if (!provider.isBusy) {
+        if (!bitmapProvider.isBusy) {
             listener?.onPostNotification(notification)
         }
     }
@@ -321,7 +321,7 @@ constructor(
         // We are normally supposed to use URIs for album art, but that removes some of the
         // nice things we can do like square cropping or high quality covers. Instead,
         // we load a full-size bitmap into the media session and take the performance hit.
-        provider.load(
+        bitmapProvider.load(
             song,
             object : BitmapProvider.Target {
                 override fun onCompleted(bitmap: Bitmap?) {
@@ -416,7 +416,7 @@ constructor(
             else -> notification.updateRepeatMode(playbackManager.repeatMode)
         }
 
-        if (!provider.isBusy) {
+        if (!bitmapProvider.isBusy) {
             listener?.onPostNotification(notification)
         }
     }
