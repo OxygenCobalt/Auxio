@@ -68,12 +68,12 @@ precise/original dates, sort tags, and more
 
 ## Building
 
-Auxio relies on a custom version of ExoPlayer that enables some extra features. So, the build process is as follows:
-
-1. `cd` into the project directory.
-2. Run `python3 prebuild.py`, which installs ExoPlayer and it's extensions.
-    - The pre-build process only works with \*nix systems. On windows, this process must be done manually.
-3. Build the project normally in Android Studio.
+Auxio relies on a custom version of ExoPlayer that enables some extra features. This adds some caveats to
+the build process:
+1. The project uses submodules, so when cloning initially, use `git clone --recurse-submodules` to properly
+download in the external code.
+2. You are **unable** to build this project on windows, as the custom ExoPlayer build runs shell scripts that
+will only work on unix-based systems.
 
 ## Contributing
 
