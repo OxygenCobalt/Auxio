@@ -10,6 +10,7 @@ plugins {
 
 android {
     compileSdk 33
+    ndkVersion "21.4.7075529"
     namespace "org.oxycblt.auxio"
 
     defaultConfig {
