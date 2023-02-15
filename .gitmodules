@@ -1,4 +1,5 @@
 [submodule "ExoPlayer"]
 	path = ExoPlayer
 	url = https://github.com/OxygenCobalt/ExoPlayer.git
-	branch = auxio
+	branch = eaade31ae8f9772d9388c9ebec5e79765f1b999e
+	
