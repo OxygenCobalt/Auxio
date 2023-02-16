@@ -92,4 +92,9 @@
     <string name="lng_search_library">ਆਪਣੀ ਲਾਇਬ੍ਰੇਰੀ ਖੋਜੋ…</string>
     <string name="set_root_title">ਸੈਟਿੰਗਾਂ</string>
     <string name="set_ui">ਦਿੱਖ ਅਤੇ ਛੋਹ</string>
+    <string name="set_ui_desc">ਐਪ ਦਾ ਥੀਮ ਅਤੇ ਰੰਗ ਬਦਲੋ</string>
+    <string name="set_theme">ਥੀਮ</string>
+    <string name="set_theme_auto">ਸਵੈਚਾਲਿਤ</string>
+    <string name="set_theme_day">ਹਲਕਾ</string>
+    <string name="set_theme_night">ਗੂੜ੍ਹਾ</string>
 </resources>
