@@ -142,7 +142,7 @@
     <string name="clr_orange">Oranžová</string>
     <string name="clr_brown">Hnědá</string>
     <string name="clr_grey">Šedá</string>
-    <string name="clr_dynamic">Dynamická</string>
+    <string name="clr_dynamic">Dynamické</string>
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_disc_no">Disk %d</string>
     <string name="fmt_db_pos">+%.1f dB</string>
