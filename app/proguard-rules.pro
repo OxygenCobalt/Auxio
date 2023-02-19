@@ -19,7 +19,3 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
-
-# Obsfucation is what proprietary software does to keep the user unaware of it's abuses.
-# Also it's easier to fix issues if the stack trace symbols remain unmangled.
--dontobfuscate
