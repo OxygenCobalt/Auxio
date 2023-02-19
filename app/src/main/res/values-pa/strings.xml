@@ -97,4 +97,8 @@
     <string name="set_theme_auto">ਸਵੈਚਾਲਿਤ</string>
     <string name="set_theme_day">ਹਲਕਾ</string>
     <string name="set_theme_night">ਗੂੜ੍ਹਾ</string>
+    <string name="set_accent">ਰੰਗ ਸਕੀਮ</string>
+    <string name="set_black_mode">ਕਾਲ੍ਹਾ ਥੀਮ</string>
+    <string name="set_black_mode_desc">ਇੱਕ ਸ਼ੁੱਧ-ਕਾਲ੍ਹਾ ਗੂੜ੍ਹਾ ਥੀਮ ਵਰਤੋ</string>
+    <string name="set_round_mode">ਗੋਲ ਮੋਡ</string>
 </resources>
