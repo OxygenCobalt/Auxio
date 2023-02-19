@@ -57,12 +57,13 @@ data class AudioInfo(
  */
 class AudioInfoProviderImpl @Inject constructor(@ApplicationContext private val context: Context) :
     AudioInfo.Provider {
-    // While we would use ExoPlayer to extract this information, it doesn't support
-    // common data like bit rate in progressive data sources due to there being no
-    // demand. Thus, we are stuck with the inferior OS-provided MediaExtractor.
-    private val extractor = MediaExtractor()
 
     override suspend fun extract(song: Song): AudioInfo {
+        // While we would use ExoPlayer to extract this information, it doesn't support
+        // common data like bit rate in progressive data sources due to there being no
+        // demand. Thus, we are stuck with the inferior OS-provided MediaExtractor.
+        val extractor = MediaExtractor()
+
         try {
             extractor.setDataSource(context, song.uri, emptyMap())
         } catch (e: Exception) {
