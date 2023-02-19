@@ -102,9 +102,7 @@ dependencies {
 
     // --- THIRD PARTY ---
 
-    // Exoplayer
-    // WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE PRE-BUILD SCRIPT.
-    // IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
+    // Exoplayer (Vendored)
     implementation project(":exoplayer-library-core")
     implementation project(":exoplayer-extension-ffmpeg")
 
