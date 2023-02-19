@@ -10,6 +10,11 @@ plugins {
 
 android {
     compileSdk 33
+    // NDK is not used in Auxio explicitly (used in the ffmpeg extension), but we need to specify
+    // it here so that binary stripping will work.
+    // TODO: Eventually you might just want to start vendoring the FFMpeg extension so the
+    //  NDK use is unified
+    ndkVersion = "23.2.8568313"
     namespace "org.oxycblt.auxio"
 
     defaultConfig {
