@@ -109,7 +109,7 @@ dependencies {
     implementation project(":exoplayer-extension-ffmpeg")
 
     // Image loading
-    implementation "io.coil-kt:coil-base:2.2.0"
+    implementation 'io.coil-kt:coil-base:2.2.2'
 
     // Material
     // TODO: Stuck on 1.8.0-alpha01 until ripple bug with tab layout can be worked around
@@ -118,13 +118,13 @@ dependencies {
     implementation "com.google.android.material:material:1.8.0-alpha01"
 
     // Dependency Injection
-    def dagger_version = "2.44.2"
+    def dagger_version = '2.45'
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     // Testing
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:2.9.1"
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
