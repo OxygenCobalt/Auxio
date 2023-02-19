@@ -35,14 +35,6 @@ import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.audio.AudioCapabilities
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer
 import com.google.android.exoplayer2.ext.ffmpeg.FfmpegAudioRenderer
-import com.google.android.exoplayer2.extractor.ExtractorsFactory
-import com.google.android.exoplayer2.extractor.flac.FlacExtractor
-import com.google.android.exoplayer2.extractor.mkv.MatroskaExtractor
-import com.google.android.exoplayer2.extractor.mp3.Mp3Extractor
-import com.google.android.exoplayer2.extractor.mp4.Mp4Extractor
-import com.google.android.exoplayer2.extractor.ogg.OggExtractor
-import com.google.android.exoplayer2.extractor.ts.AdtsExtractor
-import com.google.android.exoplayer2.extractor.wav.WavExtractor
 import com.google.android.exoplayer2.mediacodec.MediaCodecSelector
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,6 +44,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.music.AudioOnlyExtractors
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
@@ -125,17 +118,6 @@ class PlaybackService :
         // Define our own extractors so we can exclude non-audio parsers.
         // Ordering is derived from the DefaultExtractorsFactory's optimized ordering:
         // https://docs.google.com/document/d/1w2mKaWMxfz2Ei8-LdxqbPs1VLe_oudB-eryXXw9OvQQ.
-        val extractorsFactory = ExtractorsFactory {
-            arrayOf(
-                FlacExtractor(),
-                WavExtractor(),
-                Mp4Extractor(),
-                OggExtractor(),
-                MatroskaExtractor(),
-                // Enable constant bitrate seeking so that certain MP3s/AACs are seekable
-                AdtsExtractor(AdtsExtractor.FLAG_ENABLE_CONSTANT_BITRATE_SEEKING),
-                Mp3Extractor(Mp3Extractor.FLAG_ENABLE_CONSTANT_BITRATE_SEEKING))
-        }
         // Since Auxio is a music player, only specify an audio renderer to save
         // battery/apk size/cache size
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
@@ -152,7 +134,7 @@ class PlaybackService :
 
         player =
             ExoPlayer.Builder(this, audioRenderer)
-                .setMediaSourceFactory(DefaultMediaSourceFactory(this, extractorsFactory))
+                .setMediaSourceFactory(DefaultMediaSourceFactory(this, AudioOnlyExtractors))
                 // Enable automatic WakeLock support
                 .setWakeMode(C.WAKE_MODE_LOCAL)
                 .setAudioAttributes(

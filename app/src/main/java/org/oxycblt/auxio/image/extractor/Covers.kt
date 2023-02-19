@@ -24,6 +24,7 @@ import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.MetadataRetriever
 import com.google.android.exoplayer2.metadata.flac.PictureFrame
 import com.google.android.exoplayer2.metadata.id3.ApicFrame
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +32,7 @@ import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.AudioOnlyExtractors
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -103,7 +105,9 @@ object Covers {
      */
     private suspend fun fetchExoplayerCover(context: Context, album: Album): InputStream? {
         val uri = album.songs[0].uri
-        val future = MetadataRetriever.retrieveMetadata(context, MediaItem.fromUri(uri))
+        val future =
+            MetadataRetriever.retrieveMetadata(
+                DefaultMediaSourceFactory(context, AudioOnlyExtractors), MediaItem.fromUri(uri))
 
         // future.get is a blocking call that makes us spin until the future is done.
         // This is bad for a co-routine, as it prevents cancellation and by extension

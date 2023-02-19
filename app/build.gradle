@@ -6,6 +6,7 @@ plugins {
     id "kotlin-parcelize"
     id "dagger.hilt.android.plugin"
     id "kotlin-kapt"
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -81,6 +82,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.viewpager2:viewpager2:1.1.0-beta01"
+    implementation 'androidx.core:core-ktx:+'
 
     // Lifecycle
     def lifecycle_version = "2.5.1"

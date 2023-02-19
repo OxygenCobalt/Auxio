@@ -21,10 +21,12 @@ import android.content.Context
 import androidx.core.text.isDigitsOnly
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
+import org.oxycblt.auxio.music.AudioOnlyExtractors
 import org.oxycblt.auxio.music.model.RawSong
 import org.oxycblt.auxio.music.storage.toAudioUri
 import org.oxycblt.auxio.util.logD
@@ -113,7 +115,7 @@ private class Task(context: Context, private val rawSong: RawSong) {
     // listener is used, instead crashing the app entirely.
     private val future =
         MetadataRetriever.retrieveMetadata(
-            context,
+            DefaultMediaSourceFactory(context, AudioOnlyExtractors),
             MediaItem.fromUri(
                 requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No id" }.toAudioUri()))
 
