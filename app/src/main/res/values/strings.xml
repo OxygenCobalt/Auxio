@@ -83,14 +83,15 @@
     <!-- As in to not filter -->
     <string name="lbl_filter_all">All</string>
 
+    <string name="lbl_name">Name</string>
+    <string name="lbl_date">Date</string>
+    <string name="lbl_duration">Duration</string>
+    <string name="lbl_song_count">Song count</string>
+    <string name="lbl_disc">Disc</string>
+    <string name="lbl_track">Track</string>
+    <string name="lbl_date_added">Date added</string>
+
     <string name="lbl_sort">Sort</string>
-    <string name="lbl_sort_name">Name</string>
-    <string name="lbl_sort_date">Date</string>
-    <string name="lbl_sort_duration">Duration</string>
-    <string name="lbl_sort_count">Song count</string>
-    <string name="lbl_sort_disc">Disc</string>
-    <string name="lbl_sort_track">Track</string>
-    <string name="lbl_sort_date_added">Date added</string>
     <string name="lbl_sort_asc">Ascending</string>
     <string name="lbl_sort_dec">Descending</string>
 
@@ -311,11 +312,8 @@
     <string name="def_artist">Unknown artist</string>
     <string name="def_genre">Unknown genre</string>
     <string name="def_date">No date</string>
-    <string name="def_track">No track number</string>
+    <string name="def_track">No track</string>
     <string name="def_playback">No music playing</string>
-    <string name="def_codec">Unknown format</string>
-    <string name="def_bitrate">No bitrate</string>
-    <string name="def_sample_rate">No sample rate</string>
 
     <!-- Codec Namespace | Format names -->
     <eat-comment />

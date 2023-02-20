@@ -34,6 +34,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.ui.MainNavigationAction
@@ -184,7 +185,7 @@ class PlaybackPanelFragment :
         val context = requireContext()
         binding.playbackCover.bind(song)
         binding.playbackSong.text = song.resolveName(context)
-        binding.playbackArtist.text = song.resolveArtistContents(context)
+        binding.playbackArtist.text = song.artists.resolveNames(context)
         binding.playbackAlbum.text = song.album.resolveName(context)
         binding.playbackSeekBar.durationDs = song.durationMs.msToDs()
     }

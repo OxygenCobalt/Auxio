@@ -33,6 +33,7 @@ import org.oxycblt.auxio.list.adapter.ListDiffer
 import org.oxycblt.auxio.list.adapter.PlayingIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.*
 
 /**
@@ -149,7 +150,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
         listener.bind(song, this, bodyView, binding.songDragHandle)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.resolveName(binding.context)
-        binding.songInfo.text = song.resolveArtistContents(binding.context)
+        binding.songInfo.text = song.artists.resolveNames(binding.context)
         // Not swiping this ViewHolder if it's being re-bound, ensure that the background is
         // not visible. See QueueDragCallback for why this is done.
         binding.background.isInvisible = true

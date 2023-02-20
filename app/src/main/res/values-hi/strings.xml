@@ -46,7 +46,7 @@
         <item quantity="one">%d एल्बम</item>
         <item quantity="other">%d एल्बम</item>
     </plurals>
-    <string name="lbl_sort_name">नाम</string>
+    <string name="lbl_name">नाम</string>
     <string name="lbl_genre">शैली</string>
     <string name="lbl_playback">अब खेल रहे हैं</string>
     <string name="lbl_compilation">संकलन</string>
@@ -55,5 +55,5 @@
     <string name="lbl_size">आकार</string>
     <string name="lbl_ok">ठीक है</string>
     <string name="lbl_artist">कलाकार</string>
-    <string name="lbl_sort_date_added">तिथि जोड़ी गई</string>
+    <string name="lbl_date_added">तिथि जोड़ी गई</string>
 </resources>

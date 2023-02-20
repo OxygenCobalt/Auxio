@@ -49,7 +49,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
         listener.bind(song, this, menuButton = binding.songMenu)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.resolveName(binding.context)
-        binding.songInfo.text = song.resolveArtistContents(binding.context)
+        binding.songInfo.text = song.artists.resolveNames(binding.context)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -76,7 +76,8 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<Song>() {
                 override fun areContentsTheSame(oldItem: Song, newItem: Song) =
-                    oldItem.rawName == newItem.rawName && oldItem.areArtistContentsTheSame(newItem)
+                    oldItem.rawName == newItem.rawName &&
+                        oldItem.artists.areRawNamesTheSame(newItem.artists)
             }
     }
 }
@@ -96,7 +97,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
         listener.bind(album, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(album)
         binding.parentName.text = album.resolveName(binding.context)
-        binding.parentInfo.text = album.resolveArtistContents(binding.context)
+        binding.parentInfo.text = album.artists.resolveNames(binding.context)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -124,7 +125,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
             object : SimpleDiffCallback<Album>() {
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
-                        oldItem.areArtistContentsTheSame(newItem) &&
+                        oldItem.artists.areRawNamesTheSame(newItem.artists) &&
                         oldItem.releaseType == newItem.releaseType
             }
     }

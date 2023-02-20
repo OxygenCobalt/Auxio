@@ -23,6 +23,7 @@ import android.os.Parcelable
 import java.security.MessageDigest
 import java.text.CollationKey
 import java.util.UUID
+import kotlin.math.max
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.list.Item
@@ -31,6 +32,7 @@ import org.oxycblt.auxio.music.metadata.Disc
 import org.oxycblt.auxio.music.metadata.ReleaseType
 import org.oxycblt.auxio.music.storage.MimeType
 import org.oxycblt.auxio.music.storage.Path
+import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.auxio.util.toUuidOrNull
 
 /**
@@ -270,27 +272,10 @@ interface Song : Music {
      */
     val artists: List<Artist>
     /**
-     * Resolves one or more [Artist]s into a single piece of human-readable names.
-     * @param context [Context] required for [resolveName]. formatter.
-     */
-    fun resolveArtistContents(context: Context): String
-    /**
-     * Checks if the [Artist] *display* of this [Song] and another [Song] are equal. This will only
-     * compare surface-level names, and not [Music.UID]s.
-     * @param other The [Song] to compare to.
-     * @return True if the [Artist] displays are equal, false otherwise
-     */
-    fun areArtistContentsTheSame(other: Song): Boolean
-    /**
      * The parent [Genre]s of this [Song]. Is often one, but there can be multiple if more than one
      * [Genre] name was specified in the metadata.
      */
     val genres: List<Genre>
-    /**
-     * Resolves one or more [Genre]s into a single piece human-readable names.
-     * @param context [Context] required for [resolveName].
-     */
-    fun resolveGenreContents(context: Context): String
 }
 
 /**
@@ -321,18 +306,6 @@ interface Album : MusicParent {
      * are prioritized for this field.
      */
     val artists: List<Artist>
-    /**
-     * Resolves one or more [Artist]s into a single piece of human-readable names.
-     * @param context [Context] required for [resolveName].
-     */
-    fun resolveArtistContents(context: Context): String
-    /**
-     * Checks if the [Artist] *display* of this [Album] and another [Album] are equal. This will
-     * only compare surface-level names, and not [Music.UID]s.
-     * @param other The [Album] to compare to.
-     * @return True if the [Artist] displays are equal, false otherwise
-     */
-    fun areArtistContentsTheSame(other: Album): Boolean
 }
 
 /**
@@ -359,18 +332,6 @@ interface Artist : MusicParent {
     val isCollaborator: Boolean
     /** The [Genre]s of this artist. */
     val genres: List<Genre>
-    /**
-     * Resolves one or more [Genre]s into a single piece of human-readable names.
-     * @param context [Context] required for [resolveName].
-     */
-    fun resolveGenreContents(context: Context): String
-    /**
-     * Checks if the [Genre] *display* of this [Artist] and another [Artist] are equal. This will
-     * only compare surface-level names, and not [Music.UID]s.
-     * @param other The [Artist] to compare to.
-     * @return True if the [Genre] displays are equal, false otherwise
-     */
-    fun areGenreContentsTheSame(other: Artist): Boolean
 }
 
 /**
@@ -384,4 +345,19 @@ interface Genre : MusicParent {
     val artists: List<Artist>
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
+}
+
+fun <T : Music> List<T>.resolveNames(context: Context) =
+    concatLocalized(context) { it.resolveName(context) }
+
+fun <T : Music> List<T>.areRawNamesTheSame(other: List<T>): Boolean {
+    for (i in 0 until max(size, other.size)) {
+        val a = getOrNull(i) ?: return false
+        val b = other.getOrNull(i) ?: return false
+        if (a.rawName != b.rawName) {
+            return false
+        }
+    }
+
+    return true
 }

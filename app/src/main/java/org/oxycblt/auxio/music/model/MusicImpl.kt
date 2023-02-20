@@ -22,7 +22,6 @@ import androidx.annotation.VisibleForTesting
 import java.security.MessageDigest
 import java.text.CollationKey
 import java.text.Collator
-import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Album
@@ -124,23 +123,10 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
     private val _artists = mutableListOf<ArtistImpl>()
     override val artists: List<Artist>
         get() = _artists
-    override fun resolveArtistContents(context: Context) = resolveNames(context, artists)
-    override fun areArtistContentsTheSame(other: Song): Boolean {
-        for (i in 0 until max(artists.size, other.artists.size)) {
-            val a = artists.getOrNull(i) ?: return false
-            val b = other.artists.getOrNull(i) ?: return false
-            if (a.rawName != b.rawName) {
-                return false
-            }
-        }
-
-        return true
-    }
 
     private val _genres = mutableListOf<GenreImpl>()
     override val genres: List<Genre>
         get() = _genres
-    override fun resolveGenreContents(context: Context) = resolveNames(context, genres)
 
     /**
      * The [RawAlbum] instances collated by the [Song]. This can be used to group [Song]s into an
@@ -268,18 +254,7 @@ class AlbumImpl(val rawAlbum: RawAlbum, override val songs: List<SongImpl>) : Al
     private val _artists = mutableListOf<ArtistImpl>()
     override val artists: List<Artist>
         get() = _artists
-    override fun resolveArtistContents(context: Context) = resolveNames(context, artists)
-    override fun areArtistContentsTheSame(other: Album): Boolean {
-        for (i in 0 until max(artists.size, other.artists.size)) {
-            val a = artists.getOrNull(i) ?: return false
-            val b = other.artists.getOrNull(i) ?: return false
-            if (a.rawName != b.rawName) {
-                return false
-            }
-        }
 
-        return true
-    }
     init {
         var totalDuration: Long = 0
         var earliestDateAdded: Long = Long.MAX_VALUE
@@ -361,18 +336,6 @@ class ArtistImpl(private val rawArtist: RawArtist, songAlbums: List<Music>) : Ar
         other is ArtistImpl && uid == other.uid && songs == other.songs
 
     override lateinit var genres: List<Genre>
-    override fun resolveGenreContents(context: Context) = resolveNames(context, genres)
-    override fun areGenreContentsTheSame(other: Artist): Boolean {
-        for (i in 0 until max(genres.size, other.genres.size)) {
-            val a = genres.getOrNull(i) ?: return false
-            val b = other.genres.getOrNull(i) ?: return false
-            if (a.rawName != b.rawName) {
-                return false
-            }
-        }
-
-        return true
-    }
 
     init {
         val distinctSongs = mutableSetOf<Song>()
@@ -532,27 +495,6 @@ fun MessageDigest.update(n: Int?) {
     } else {
         update(0)
     }
-}
-
-/**
- * Join a list of [Music]'s resolved names into a string in a localized manner, using
- * [R.string.fmt_list].
- * @param context [Context] required to obtain localized formatting.
- * @param values The list of [Music] to format.
- * @return A single string consisting of the values delimited by a localized separator.
- */
-private fun resolveNames(context: Context, values: List<Music>): String {
-    if (values.isEmpty()) {
-        // Nothing to do.
-        return ""
-    }
-
-    var joined = values.first().resolveName(context)
-    for (i in 1..values.lastIndex) {
-        // Chain all previous values with the next value in the list with another delimiter.
-        joined = context.getString(R.string.fmt_list, joined, values[i].resolveName(context))
-    }
-    return joined
 }
 
 /** Cached collator instance re-used with [makeCollationKey]. */

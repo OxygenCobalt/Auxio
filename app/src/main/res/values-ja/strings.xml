@@ -5,7 +5,7 @@
     <string name="lbl_grant">許可する</string>
     <string name="lbl_artists">アーティスト</string>
     <string name="lbl_genres">ジャンル</string>
-    <string name="lbl_sort_duration">曲の長さ</string>
+    <string name="lbl_duration">曲の長さ</string>
     <string name="set_save_desc">現在の再生状態を保存</string>
     <string name="desc_tab_handle">このタブを移動</string>
     <string name="desc_queue_handle">この再生待ちの曲を移動</string>
@@ -13,8 +13,8 @@
     <string name="lbl_songs">曲</string>
     <string name="lbl_all_songs">すべての曲</string>
     <string name="lbl_sort">並べ替え</string>
-    <string name="lbl_sort_name">曲名</string>
-    <string name="lbl_sort_count">再生回数</string>
+    <string name="lbl_name">曲名</string>
+    <string name="lbl_song_count">再生回数</string>
     <string name="lbl_cancel">キャンセル</string>
     <string name="lbl_shuffle_shortcut_short">シャフル</string>
     <string name="set_theme_auto">自動</string>
@@ -24,7 +24,7 @@
     <string name="set_keep_shuffle">シャフルを記憶</string>
     <string name="set_repeat_pause_desc">曲の繰り返し時にポーズ</string>
     <string name="desc_clear_search">検索クエリを解除</string>
-    <string name="lbl_sort_date">日付け</string>
+    <string name="lbl_date">日付け</string>
     <string name="set_cover_mode_quality">高クオリティ</string>
     <string name="set_round_mode">ラウンドモード</string>
     <string name="err_no_music">音楽が見つかりません</string>
@@ -46,9 +46,9 @@
     <string name="lbl_compilation_remix">リミックスオムニバス</string>
     <string name="lbl_mixes">DJミックス</string>
     <string name="lbl_mix">DJミックス</string>
-    <string name="lbl_sort_disc">ディスク</string>
+    <string name="lbl_disc">ディスク</string>
     <string name="lbl_equalizer">イコライザ</string>
-    <string name="lbl_sort_track">トラック</string>
+    <string name="lbl_track">トラック</string>
     <string name="lbl_sort_asc">昇順</string>
     <string name="lbl_playback">再生中</string>
     <string name="set_accent">カラースキーム</string>
@@ -58,7 +58,7 @@
     <string name="desc_exit">再生停止</string>
     <string name="clr_red">赤</string>
     <string name="lbl_file_name">ファイル名</string>
-    <string name="lbl_sort_date_added">追加した日付け</string>
+    <string name="lbl_date_added">追加した日付け</string>
     <string name="lbl_sample_rate">サンプルレート</string>
     <string name="lbl_sort_dec">降順</string>
     <string name="lbl_play">再生</string>

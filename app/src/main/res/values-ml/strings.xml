@@ -9,7 +9,7 @@
     <string name="def_artist">അജ്ഞാത കലാകാരൻ</string>
     <string name="clr_grey">ചാരനിറം</string>
     <string name="lbl_single">ഒറ്റയായ</string>
-    <string name="lbl_sort_date">തീയതി</string>
+    <string name="lbl_date">തീയതി</string>
     <string name="lbl_all_songs">എല്ലാ പാട്ടുകളും</string>
     <string name="lbl_artist">കലാകാരൻ</string>
     <string name="lbl_artists">കലാകാരന്മാർ</string>
@@ -17,8 +17,8 @@
     <string name="lbl_genre">വിഭാഗം</string>
     <string name="lbl_search">തിരയുക</string>
     <string name="lbl_sort">അടുക്കുക</string>
-    <string name="lbl_sort_name">പേര്</string>
-    <string name="lbl_sort_duration">ദൈർഘ്യം</string>
+    <string name="lbl_name">പേര്</string>
+    <string name="lbl_duration">ദൈർഘ്യം</string>
     <string name="lbl_props">പാട്ടിന്റെ സവിശേഷതകൾ</string>
     <string name="lbl_filter_all">എല്ലാം</string>
     <string name="lbl_play_next">അടുത്തത് കളിക്കുക</string>
@@ -78,8 +78,8 @@
     <string name="lbl_retry">വീണ്ടും ശ്രമിക്കുക</string>
     <string name="lbl_grant">അനുവദിക്കുക</string>
     <string name="lbl_songs">ഗാനങ്ങൾ</string>
-    <string name="lbl_sort_count">പാട്ടുകളുടെ എണ്ണം</string>
-    <string name="lbl_sort_date_added">തീയതി ചേർത്തു</string>
+    <string name="lbl_song_count">പാട്ടുകളുടെ എണ്ണം</string>
+    <string name="lbl_date_added">തീയതി ചേർത്തു</string>
     <string name="lbl_sort_asc">ആരോഹണം</string>
     <string name="lbl_playback">ഇപ്പോൾ കളിക്കുന്നു</string>
     <string name="lbl_play">കളിക്കുക</string>

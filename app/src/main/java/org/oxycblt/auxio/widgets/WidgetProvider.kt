@@ -31,6 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.ui.UISettings
@@ -265,7 +266,7 @@ class WidgetProvider : AppWidgetProvider() {
     ): RemoteViews {
         setupCover(context, state)
         setTextViewText(R.id.widget_song, state.song.resolveName(context))
-        setTextViewText(R.id.widget_artist, state.song.resolveArtistContents(context))
+        setTextViewText(R.id.widget_artist, state.song.artists.resolveNames(context))
         return this
     }
 

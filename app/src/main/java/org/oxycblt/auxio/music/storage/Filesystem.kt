@@ -142,10 +142,9 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
      * Resolve the mime type into a human-readable format name, such as "Ogg Vorbis".
      * @param context [Context] required to obtain human-readable strings.
      * @return A human-readable name for this mime type. Will first try [fromFormat], then falling
-     * back to [fromExtension], then falling back to the extension name, and then finally a
-     * placeholder "No Format" string.
+     * back to [fromExtension], and then null if that fails.
      */
-    fun resolveName(context: Context): String {
+    fun resolveName(context: Context): String? {
         // We try our best to produce a more readable name for the common audio formats.
         val formatName =
             when (fromFormat) {
@@ -201,8 +200,6 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
         } else {
             // Fall back to the extension if we can't find a special name for this format.
             MimeTypeMap.getSingleton().getExtensionFromMimeType(fromExtension)?.uppercase()
-            // Fall back to a placeholder if even that fails.
-            ?: context.getString(R.string.def_codec)
         }
     }
 }

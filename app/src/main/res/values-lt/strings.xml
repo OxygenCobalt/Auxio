@@ -6,12 +6,12 @@
     <string name="lbl_filter">Filtruoti</string>
     <string name="lbl_filter_all">Visos</string>
     <string name="lbl_sort">Rūšiuoti</string>
-    <string name="lbl_sort_name">Pavadinimas</string>
-    <string name="lbl_sort_date">Metai</string>
-    <string name="lbl_sort_duration">Trukmė</string>
-    <string name="lbl_sort_count">Dainų skaičius</string>
-    <string name="lbl_sort_disc">Diskas</string>
-    <string name="lbl_sort_date_added">Pridėta data</string>
+    <string name="lbl_name">Pavadinimas</string>
+    <string name="lbl_date">Metai</string>
+    <string name="lbl_duration">Trukmė</string>
+    <string name="lbl_song_count">Dainų skaičius</string>
+    <string name="lbl_disc">Diskas</string>
+    <string name="lbl_date_added">Pridėta data</string>
     <string name="lbl_sort_asc">Kylantis</string>
     <string name="lbl_play_next">Groti kitą</string>
     <string name="lbl_queue_add">Pridėti į eilę</string>
@@ -29,7 +29,7 @@
     <string name="set_black_mode">Juodoji tema</string>
     <string name="lbl_artists">Atlikėjai</string>
     <string name="lbl_albums">Albumai</string>
-    <string name="lbl_sort_track">Takelis</string>
+    <string name="lbl_track">Takelis</string>
     <string name="lbl_playback">Dabar groja</string>
     <string name="lbl_play">Groti</string>
     <string name="lbl_licenses">Licencijos</string>

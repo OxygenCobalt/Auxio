@@ -38,12 +38,12 @@
     <string name="lbl_filter">ਫਿਲਟਰ</string>
     <string name="lbl_filter_all">ਸਾਰੇ</string>
     <string name="lbl_sort">ਲੜੀਬੱਧ</string>
-    <string name="lbl_sort_name">ਨਾਮ</string>
-    <string name="lbl_sort_date">ਮਿਤੀ</string>
-    <string name="lbl_sort_duration">ਮਿਆਦ</string>
-    <string name="lbl_sort_disc">ਡਿਸਕ</string>
-    <string name="lbl_sort_track">ਟਰੈਕ</string>
-    <string name="lbl_sort_date_added">ਮਿਤੀ ਸ਼ਾਮਲ ਕੀਤੀ ਗਈ</string>
+    <string name="lbl_name">ਨਾਮ</string>
+    <string name="lbl_date">ਮਿਤੀ</string>
+    <string name="lbl_duration">ਮਿਆਦ</string>
+    <string name="lbl_disc">ਡਿਸਕ</string>
+    <string name="lbl_track">ਟਰੈਕ</string>
+    <string name="lbl_date_added">ਮਿਤੀ ਸ਼ਾਮਲ ਕੀਤੀ ਗਈ</string>
     <string name="lbl_sort_asc">ਵੱਧਦੇ ਹੋਏ</string>
     <string name="lbl_playback">ਹੁਣ ਚੱਲ ਰਿਹਾ ਹੈ</string>
     <string name="lbl_equalizer">ਇਕੋਲਾਈਜ਼ਰ</string>
@@ -74,7 +74,7 @@
     <string name="lbl_library_counts">ਲਾਇਬ੍ਰੇਰੀ ਦੇ ਅੰਕੜੇ</string>
     <string name="info_app_desc">ਐਂਡਰੌਇਡ ਲਈ ਇੱਕ ਸਰਲ, ਤਰਕਸੰਗਤ ਸੰਗੀਤ ਪਲੇਅਰ।</string>
     <string name="lbl_search">ਖੋਜੋ</string>
-    <string name="lbl_sort_count">ਗੀਤ ਦੀ ਗਿਣਤੀ</string>
+    <string name="lbl_song_count">ਗੀਤ ਦੀ ਗਿਣਤੀ</string>
     <string name="lbl_sort_dec">ਘਟਦੇ ਹੋਏ</string>
     <string name="lbl_play_selected">ਚੁਣਿਆ ਹੋਇਆ ਚਲਾਓ</string>
     <string name="lbl_go_artist">ਕਲਾਕਾਰ \'ਤੇ ਜਾਓ</string>

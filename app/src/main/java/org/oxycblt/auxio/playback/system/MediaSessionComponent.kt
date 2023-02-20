@@ -35,6 +35,7 @@ import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.queue.Queue
@@ -285,7 +286,7 @@ constructor(
         // Populate MediaMetadataCompat. For efficiency, cache some fields that are re-used
         // several times.
         val title = song.resolveName(context)
-        val artist = song.resolveArtistContents(context)
+        val artist = song.artists.resolveNames(context)
         val builder =
             MediaMetadataCompat.Builder()
                 .putText(MediaMetadataCompat.METADATA_KEY_TITLE, title)
@@ -295,14 +296,14 @@ constructor(
                 .putText(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
                 .putText(
                     MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST,
-                    song.album.resolveArtistContents(context))
+                    song.album.artists.resolveNames(context))
                 .putText(MediaMetadataCompat.METADATA_KEY_AUTHOR, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_COMPOSER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_WRITER, artist)
                 .putText(
                     METADATA_KEY_PARENT,
                     parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
-                .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.resolveGenreContents(context))
+                .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.genres.resolveNames(context))
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, artist)
                 .putText(
@@ -348,7 +349,7 @@ constructor(
                         // as it's used to request a song to be played from the queue.
                         .setMediaId(song.uid.toString())
                         .setTitle(song.resolveName(context))
-                        .setSubtitle(song.resolveArtistContents(context))
+                        .setSubtitle(song.artists.resolveNames(context))
                         // Since we usually have to load many songs into the queue, use the
                         // MediaStore URI instead of loading a bitmap.
                         .setIconUri(song.album.coverUri)

@@ -55,7 +55,7 @@
     <string name="lbl_observing">檢測音樂庫</string>
     <string name="lbl_format">格式</string>
     <string name="set_black_mode">黑色主題</string>
-    <string name="lbl_sort_duration">時長</string>
+    <string name="lbl_duration">時長</string>
     <string name="lbl_size">大小</string>
     <string name="lbl_bitrate">位元率</string>
     <string name="lbl_sample_rate">取樣頻率</string>

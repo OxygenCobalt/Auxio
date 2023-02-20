@@ -82,7 +82,7 @@
     <string name="lbl_album_live">Концертний альбом</string>
     <string name="lbl_relative_path">Шлях до каталогу</string>
     <string name="set_display">Екран</string>
-    <string name="lbl_sort_date">Дата</string>
+    <string name="lbl_date">Дата</string>
     <string name="lbl_play_selected">Відтворити вибране</string>
     <string name="set_cover_mode">Обкладинки альбомів</string>
     <string name="set_hide_collaborators">Приховати співавторів</string>
@@ -94,7 +94,7 @@
     <string name="fmt_lib_total_duration">Загальна тривалість: %s</string>
     <string name="lbl_mixtapes">Мікстейпи</string>
     <string name="lbl_artist">Виконавець</string>
-    <string name="lbl_sort_duration">Тривалість</string>
+    <string name="lbl_duration">Тривалість</string>
     <string name="lbl_mixes">Мікси</string>
     <string name="lbl_mix">Мікс</string>
     <string name="set_round_mode">Заокруглені обкладинки</string>
@@ -102,7 +102,7 @@
     <string name="lbl_props">Властивості пісні</string>
     <string name="lbl_add">Додати</string>
     <string name="set_repeat_pause_desc">Ставити на паузу при повторенні пісні</string>
-    <string name="lbl_sort_date_added">Дата додавання</string>
+    <string name="lbl_date_added">Дата додавання</string>
     <string name="lbl_sample_rate">Частота дискретизації</string>
     <string name="set_cover_mode_quality">Висока якість</string>
     <string name="set_reindex">Оновити музику</string>
@@ -115,9 +115,9 @@
     <string name="set_keep_shuffle">Запам\'ятати перемішування</string>
     <string name="set_repeat_pause">Пауза при повторенні</string>
     <string name="lbl_genre">Жанр</string>
-    <string name="lbl_sort_disc">Диск</string>
+    <string name="lbl_disc">Диск</string>
     <string name="lbl_sort_asc">За зростанням</string>
-    <string name="lbl_sort_name">Назва</string>
+    <string name="lbl_name">Назва</string>
     <string name="lbl_song_detail">Переглянути властивості</string>
     <string name="set_exclude_non_music_desc">Ігнорувати аудіо файли які не являються музикою, наприклад, подкасти</string>
     <string name="set_exclude_non_music">Виключити інші звукові файли</string>
@@ -126,7 +126,7 @@
     <string name="lbl_compilation_live">Концертна збірка</string>
     <string name="lbl_ep">Мініальбом</string>
     <string name="lbl_eps">Мініальбоми</string>
-    <string name="lbl_sort_count">Номер пісні</string>
+    <string name="lbl_song_count">Номер пісні</string>
     <string name="set_headset_autoplay_desc">Завжди починати відтворення при підключенні гарнітури (може працювати не на всіх пристроях)</string>
     <string name="lbl_ep_remix">Мініальбом реміксів</string>
     <string name="lbl_single_live">Концертний сингл</string>
@@ -181,7 +181,7 @@
     <string name="set_save_state">Зберегти стан відтворення</string>
     <string name="set_wipe_state">Очистити стан відтворення</string>
     <string name="set_restore_state">Відновити стан відтворення</string>
-    <string name="lbl_sort_track">Пісня</string>
+    <string name="lbl_track">Пісня</string>
     <string name="lbl_state_restored">Стан відтворення відновлено</string>
     <string name="lng_widget">Перегляд і керування відтворенням музики</string>
     <string name="set_rewind_prev_desc">Перемотайте на початок пісні перед відтворенням попередньої</string>

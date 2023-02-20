@@ -33,7 +33,9 @@ import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.areRawNamesTheSame
 import org.oxycblt.auxio.music.metadata.Disc
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
@@ -136,7 +138,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
         // Artist name maps to the subhead text
         binding.detailSubhead.apply {
-            text = album.resolveArtistContents(context)
+            text = album.artists.resolveNames(context)
 
             // Add a QoL behavior where navigation to the artist will occur if the artist
             // name is pressed.
@@ -173,7 +175,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
             object : SimpleDiffCallback<Album>() {
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
-                        oldItem.areArtistContentsTheSame(newItem) &&
+                        oldItem.artists.areRawNamesTheSame(newItem.artists) &&
                         oldItem.dates == newItem.dates &&
                         oldItem.songs.size == newItem.songs.size &&
                         oldItem.durationMs == newItem.durationMs &&

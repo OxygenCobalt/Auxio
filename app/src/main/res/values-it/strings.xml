@@ -15,10 +15,10 @@
     <string name="lbl_filter">Filtro</string>
     <string name="lbl_filter_all">Tutto</string>
     <string name="lbl_sort">Ordine</string>
-    <string name="lbl_sort_name">Nome</string>
+    <string name="lbl_name">Nome</string>
     <string name="lbl_artist">Artista</string>
     <string name="lbl_album">Disco</string>
-    <string name="lbl_sort_date">Anno</string>
+    <string name="lbl_date">Anno</string>
     <string name="lbl_sort_asc">Ascendente</string>
     <string name="lbl_playback">Ora in riproduzione</string>
     <string name="lbl_play">Riproduci</string>
@@ -175,10 +175,10 @@
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="lbl_indexer">Caricamento musica</string>
     <string name="lng_indexing">Caricamento libreria musicale…</string>
-    <string name="lbl_sort_duration">Durata</string>
-    <string name="lbl_sort_count">Numero canzoni</string>
-    <string name="lbl_sort_disc">Disco</string>
-    <string name="lbl_sort_track">Traccia</string>
+    <string name="lbl_duration">Durata</string>
+    <string name="lbl_song_count">Numero canzoni</string>
+    <string name="lbl_disc">Disco</string>
+    <string name="lbl_track">Traccia</string>
     <string name="lbl_ok">OK</string>
     <string name="lbl_sample_rate">Frequenza di campionamento</string>
     <string name="lbl_song_detail">Vedi proprietà</string>
@@ -196,7 +196,7 @@
     <string name="lbl_indexing">Caricamento musica</string>
     <string name="lbl_observing">Monitoraggio libreria musicale</string>
     <string name="lbl_state_restored">Stato ripristinato</string>
-    <string name="lbl_sort_date_added">Data aggiunta</string>
+    <string name="lbl_date_added">Data aggiunta</string>
     <string name="set_observing">Ricaricamento automatico</string>
     <string name="set_restore_state">Ripristina stato riproduzione</string>
     <string name="set_restore_desc">Ripristina lo stato di riproduzione precedentemente salvato (se disponibile)</string>

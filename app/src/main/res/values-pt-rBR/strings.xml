@@ -98,11 +98,11 @@
     <string name="err_no_perms">O Auxio precisa de permissão para ler sua biblioteca de músicas</string>
     <string name="info_app_desc">Um reprodutor de música simples e racional para android.</string>
     <string name="lng_indexing">Carregando sua biblioteca de músicas…</string>
-    <string name="lbl_sort_date">Ano</string>
-    <string name="lbl_sort_duration">Duração</string>
-    <string name="lbl_sort_count">Contagem de músicas</string>
-    <string name="lbl_sort_disc">Disco</string>
-    <string name="lbl_sort_name">Nome</string>
+    <string name="lbl_date">Ano</string>
+    <string name="lbl_duration">Duração</string>
+    <string name="lbl_song_count">Contagem de músicas</string>
+    <string name="lbl_disc">Disco</string>
+    <string name="lbl_name">Nome</string>
     <string name="lbl_artist">Artista</string>
     <string name="lbl_album">Álbum</string>
     <string name="lbl_props">Propriedades da música</string>
@@ -172,7 +172,7 @@
     <string name="set_replay_gain_mode_dynamic">Prefira o álbum se estiver tocando</string>
     <string name="set_observing">Recarregamento automático</string>
     <string name="set_observing_desc">Recarrega a biblioteca de músicas sempre que ela mudar (requer notificação fixa)</string>
-    <string name="lbl_sort_date_added">Data adicionada</string>
+    <string name="lbl_date_added">Data adicionada</string>
     <string name="lbl_cancel">Cancelar</string>
     <string name="set_replay_gain_mode_track">Preferir faixa</string>
     <string name="desc_queue_bar">Abrir fila</string>
@@ -213,7 +213,7 @@
     <string name="lbl_compilation">Compilação</string>
     <string name="lbl_single_remix">Single remix</string>
     <string name="set_content">Conteúdo</string>
-    <string name="lbl_sort_track">Faixa</string>
+    <string name="lbl_track">Faixa</string>
     <string name="set_library_song_playback_mode">Ao tocar da biblioteca</string>
     <string name="set_detail_song_playback_mode">Ao tocar a partir dos detalhes do item</string>
     <string name="lbl_mixtapes">Mixtapes</string>
