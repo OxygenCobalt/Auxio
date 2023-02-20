@@ -193,7 +193,6 @@
     <string name="set_separators_slash">슬래쉬 (/)</string>
     <string name="set_separators_plus">플러스 (+)</string>
     <string name="set_separators_and">앰퍼샌드 (&amp;)</string>
-    <string name="def_sample_rate">샘플 속도 없음</string>
     <string name="cdc_mp3">MPEG-1 오디오</string>
     <string name="lbl_date_added">추가된 날짜</string>
     <string name="lbl_relative_path">상위 경로</string>

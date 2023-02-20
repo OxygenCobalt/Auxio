@@ -126,7 +126,6 @@
     <string name="desc_clear_queue_item">Remover esta música da fila</string>
     <string name="desc_clear_search">Limpar histórico de pesquisa</string>
     <string name="desc_album_cover">Capa do álbum para %s</string>
-    <string name="def_bitrate">Sem taxa de bits</string>
     <string name="desc_tab_handle">Mover esta aba</string>
     <string name="desc_no_cover">Capa do álbum</string>
     <string name="desc_skip_next">Pular para a próxima música</string>

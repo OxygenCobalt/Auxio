@@ -147,7 +147,6 @@
     <string name="set_dirs_mode">模式</string>
     <string name="set_dirs_mode_exclude">排除</string>
     <string name="set_dirs_mode_include">包含</string>
-    <string name="def_bitrate">没有比特率信息</string>
     <string name="cdc_mp3">MPEG-1 音频</string>
     <string name="cdc_mp4">MPEG-4 音频</string>
     <string name="cdc_ogg">Ogg 音频</string>

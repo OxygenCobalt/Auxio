@@ -169,7 +169,6 @@
     <string name="def_track">Geen tracknummer</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="clr_dynamic">Dynamisch</string>
-    <string name="def_sample_rate">Geen Bemonsteringsfrequentie</string>
     <string name="cdc_mp3">MPEG-1 Audio</string>
     <string name="cdc_mp4">MPEG-4 Audio</string>
     <string name="cdc_ogg">Ogg Audio</string>

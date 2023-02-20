@@ -100,7 +100,6 @@
     <string name="desc_album_cover">%s Albümünün kapağı</string>
     <string name="desc_artist_image">%s Sanatçısının resmi</string>
     <string name="def_track">Parça numarası yok</string>
-    <string name="def_bitrate">Bit Hızı yok</string>
     <string name="cdc_mka">Matroska Ses</string>
     <string name="cdc_aac">İleri Düzeyde Ses Kodlama (AAC)</string>
     <string name="cdc_flac">Bağımsız Kayıpsız Ses Kodlama (FLAC)</string>

@@ -88,7 +88,6 @@
     <string name="lbl_sample_rate">Częstotliwość próbkowania</string>
     <string name="lbl_shuffle_shortcut_short">Losowo</string>
     <string name="set_headset_autoplay">Autoodtwarzanie w słuchawkach</string>
-    <string name="def_bitrate">Nieznany bitrate</string>
     <string name="clr_teal">Morski</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="lbl_file_name">Nazwa pliku</string>

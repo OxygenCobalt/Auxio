@@ -173,7 +173,6 @@
     <string name="lbl_singles">Синглы</string>
     <string name="set_pre_amp">Предусилитель ReplayGain</string>
     <string name="set_dirs_mode_exclude">Исключить</string>
-    <string name="def_sample_rate">Нет частоты дискретизации</string>
     <string name="cdc_aac">AAC</string>
     <string name="set_wipe_state">Очистить состояние воспроизведения</string>
     <string name="set_dirs_mode_exclude_desc">Музыка <b>не</b> будет загружена из указанных папок.</string>
