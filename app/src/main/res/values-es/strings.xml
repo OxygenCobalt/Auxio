@@ -105,7 +105,7 @@
     <string name="def_artist">Artista desconocido</string>
     <string name="def_genre">Género desconocido</string>
     <string name="def_date">Sin fecha</string>
-    <string name="def_track">Sin número de pista</string>
+    <string name="def_track">Ninguna pista</string>
     <string name="def_playback">Sin música en reproducción</string>
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Rojo</string>
