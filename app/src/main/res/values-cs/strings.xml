@@ -123,7 +123,7 @@
     <string name="def_artist">Neznámý umělec</string>
     <string name="def_genre">Neznámý žánr</string>
     <string name="def_date">Žádné datum</string>
-    <string name="def_track">Žádné číslo stopy</string>
+    <string name="def_track">Žádná stopa</string>
     <string name="def_playback">Nehraje žádná hudba</string>
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Červená</string>
