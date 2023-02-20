@@ -154,7 +154,6 @@
     <string name="set_dirs_mode_exclude">Excluir</string>
     <string name="set_dirs_mode_exclude_desc">La música<b>no</b> se cargará de las carpetas que añadas.</string>
     <string name="set_dirs_mode_include">Incluir</string>
-    <string name="def_sample_rate">Sin frecuencia de muestreo</string>
     <string name="def_bitrate">Sin tasa de bits</string>
     <string name="cdc_mka">Audio matroska</string>
     <string name="cdc_flac">Free Losless Audio Codec (FLAC)</string>
@@ -184,7 +183,6 @@
     <string name="set_dirs">Carpetas de música</string>
     <string name="set_dirs_desc">Gestionar de dónde se cargará la música</string>
     <string name="set_dirs_mode_include_desc">La música<b>solo</b> se cargará de las carpetas que añadas.</string>
-    <string name="def_codec">Formato desconocido</string>
     <string name="clr_dynamic">Dinámico</string>
     <string name="fmt_disc_no">Disco %d</string>
     <string name="lbl_eps">Reproducción extendidas (EPs)</string>

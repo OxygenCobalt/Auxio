@@ -173,7 +173,6 @@
     <string name="lbl_singles">Синглы</string>
     <string name="set_pre_amp">Предусилитель ReplayGain</string>
     <string name="set_dirs_mode_exclude">Исключить</string>
-    <string name="def_bitrate">Нет битрейта</string>
     <string name="def_sample_rate">Нет частоты дискретизации</string>
     <string name="cdc_aac">AAC</string>
     <string name="set_wipe_state">Очистить состояние воспроизведения</string>
@@ -215,7 +214,6 @@
     <string name="fmt_sample_rate">%d Гц</string>
     <string name="fmt_lib_artist_count">Исполнителей загружено: %d</string>
     <string name="clr_dynamic">Динамический</string>
-    <string name="def_codec">Неизвестный формат</string>
     <string name="lbl_soundtracks">Саундтреки</string>
     <string name="lbl_soundtrack">Саундтрек</string>
     <string name="lbl_mixtapes">Микстейпы</string>

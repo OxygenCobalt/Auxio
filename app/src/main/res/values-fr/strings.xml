@@ -139,7 +139,6 @@
     <string name="err_no_dirs">Aucun dossier</string>
     <string name="desc_music_dir_delete">Supprimer le dossier</string>
     <string name="def_artist">Artiste inconnu</string>
-    <string name="def_codec">Format inconnu</string>
     <string name="lbl_compilation_live">Compilation en direct</string>
     <string name="lbl_compilation_remix">Compilations de remix</string>
     <string name="lbl_mixes">Mixes</string>

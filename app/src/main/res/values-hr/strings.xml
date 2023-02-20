@@ -122,9 +122,7 @@
     <string name="def_track">Bez broja pjesama</string>
     <string name="def_date">Bez datuma</string>
     <string name="def_playback">Glazba se ne reproducira</string>
-    <string name="def_codec">Nepoznat format</string>
     <string name="def_bitrate">Bez brzine prijenosa</string>
-    <string name="def_sample_rate">Bez frekvencije</string>
     <string name="cdc_mp3">MPEG-1 zvuk</string>
     <string name="cdc_mp4">MPEG-4 zvuk</string>
     <string name="cdc_ogg">Ogg zvuk</string>

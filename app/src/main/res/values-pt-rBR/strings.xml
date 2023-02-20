@@ -126,7 +126,6 @@
     <string name="desc_clear_queue_item">Remover esta música da fila</string>
     <string name="desc_clear_search">Limpar histórico de pesquisa</string>
     <string name="desc_album_cover">Capa do álbum para %s</string>
-    <string name="def_codec">Formato desconhecido</string>
     <string name="def_bitrate">Sem taxa de bits</string>
     <string name="desc_tab_handle">Mover esta aba</string>
     <string name="desc_no_cover">Capa do álbum</string>
@@ -143,7 +142,6 @@
     <string name="desc_artist_image">Imagem do artista para %s</string>
     <string name="desc_genre_image">Imagem de gênero para %s</string>
     <string name="def_artist">Artista desconhecido</string>
-    <string name="def_sample_rate">Sem taxa de amostragem</string>
     <string name="cdc_mp3">Áudio MPEG-1</string>
     <string name="cdc_mp4">Áudio MPEG-4</string>
     <string name="cdc_ogg">Áudio Ogg</string>

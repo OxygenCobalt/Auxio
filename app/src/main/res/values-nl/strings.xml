@@ -141,7 +141,6 @@
     <string name="fmt_indexing">Uw muziekbibliotheek wordt geladen… (%1$d/%2$d)</string>
     <string name="set_dirs_mode_exclude">Uitgezonderd</string>
     <string name="desc_shuffle_all">Alle liedjes shuffelen</string>
-    <string name="def_codec">Onbekend Formaat</string>
     <string name="set_dirs_mode_include">Includeer</string>
     <string name="set_repeat_pause_desc">Pauze wanneer een liedje wordt herhaald</string>
     <string name="set_dirs_mode_exclude_desc">Muziek zal <b>niet</b> worden geladen vanuit de mappen die u toevoegt.</string>
@@ -170,7 +169,6 @@
     <string name="def_track">Geen tracknummer</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="clr_dynamic">Dynamisch</string>
-    <string name="def_bitrate">Geen Bitsnelheid</string>
     <string name="def_sample_rate">Geen Bemonsteringsfrequentie</string>
     <string name="cdc_mp3">MPEG-1 Audio</string>
     <string name="cdc_mp4">MPEG-4 Audio</string>
