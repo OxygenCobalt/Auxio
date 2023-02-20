@@ -42,6 +42,7 @@ constructor(
     private val musicRepository: MusicRepository,
     private val musicSettings: MusicSettings
 ) : ViewModel(), MusicRepository.Listener, HomeSettings.Listener {
+
     private val _songsList = MutableStateFlow(listOf<Song>())
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
     val songsList: StateFlow<List<Song>>

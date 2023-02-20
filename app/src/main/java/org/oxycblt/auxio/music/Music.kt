@@ -347,9 +347,21 @@ interface Genre : MusicParent {
     val durationMs: Long
 }
 
+/**
+ * Run [Music.resolveName] on each instance in the given list and concatenate them into a [String]
+ * in a localized manner.
+ * @param context [Context] required
+ * @return A concatenated string.
+ */
 fun <T : Music> List<T>.resolveNames(context: Context) =
     concatLocalized(context) { it.resolveName(context) }
 
+/**
+ * Returns if [Music.rawName] matches for each item in a list. Useful for scenarios where the
+ * display information of an item must be compared without a context.
+ * @param other The list of items to compare to.
+ * @return True if they are the same (by [Music.rawName]), false otherwise.
+ */
 fun <T : Music> List<T>.areRawNamesTheSame(other: List<T>): Boolean {
     for (i in 0 until max(size, other.size)) {
         val a = getOrNull(i) ?: return false

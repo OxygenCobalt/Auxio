@@ -91,7 +91,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
                         val formattedNumber = getString(R.string.fmt_number, it.number)
                         val zipped =
                             if (it.name != null) {
-                                getString(R.string.fmt_zipped_names, it.name, formattedNumber)
+                                getString(R.string.fmt_zipped_names, formattedNumber, it.name)
                             } else {
                                 formattedNumber
                             }
