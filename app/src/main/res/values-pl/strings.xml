@@ -128,7 +128,7 @@
     <string name="lbl_remix_group">Remixy</string>
     <string name="def_artist">Nieznany wykonawca</string>
     <string name="lbl_bitrate">Bitrate</string>
-    <string name="def_track">Nieznany numer</string>
+    <string name="def_track">Brak ścieżki dźwiękowej</string>
     <string name="lbl_equalizer">Wyrównywacz</string>
     <string name="lbl_size">Rozmiar</string>
     <string name="err_no_dirs">Brak folderów</string>
