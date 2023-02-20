@@ -106,6 +106,7 @@ data class CachedSong(
 
         rawSong.track = track
         rawSong.disc = disc
+        rawSong.subtitle = subtitle
         rawSong.date = date
 
         rawSong.albumMusicBrainzId = albumMusicBrainzId
@@ -155,6 +156,7 @@ data class CachedSong(
                 durationMs = requireNotNull(rawSong.durationMs) { "Invalid raw: No duration" },
                 track = rawSong.track,
                 disc = rawSong.disc,
+                subtitle = rawSong.subtitle,
                 date = rawSong.date,
                 albumMusicBrainzId = rawSong.albumMusicBrainzId,
                 albumName = requireNotNull(rawSong.albumName) { "Invalid raw: No album name" },

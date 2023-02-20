@@ -28,8 +28,8 @@ import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSongDetailBinding
-import org.oxycblt.auxio.detail.recycler.SongPropertyAdapter
 import org.oxycblt.auxio.detail.recycler.SongProperty
+import org.oxycblt.auxio.detail.recycler.SongPropertyAdapter
 import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
