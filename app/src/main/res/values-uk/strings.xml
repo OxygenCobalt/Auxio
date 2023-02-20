@@ -242,7 +242,7 @@
     <string name="cdc_mp3">Звук MPEG-1</string>
     <string name="err_no_app">Не знайдено жодного застосунку, який би міг впоратися з цим завданням</string>
     <string name="def_date">Дата відсутня</string>
-    <string name="def_track">Немає номеру пісні</string>
+    <string name="def_track">Немає пісні</string>
     <string name="def_playback">Музика не грає</string>
     <string name="err_did_not_wipe">Не вдалось очистити статус відтворення</string>
     <string name="err_did_not_save">Не вдалось зберегти статус відтворення</string>
