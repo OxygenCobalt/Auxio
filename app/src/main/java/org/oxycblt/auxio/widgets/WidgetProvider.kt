@@ -27,8 +27,6 @@ import android.os.Bundle
 import android.util.SizeF
 import android.view.View
 import android.widget.RemoteViews
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.resolveNames
@@ -42,10 +40,7 @@ import org.oxycblt.auxio.util.*
  * state alongside actions to control it.
  * @author Alexander Capehart (OxygenCobalt)
  */
-@AndroidEntryPoint
 class WidgetProvider : AppWidgetProvider() {
-    @Inject lateinit var uiSettings: UISettings
-
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -75,9 +70,10 @@ class WidgetProvider : AppWidgetProvider() {
     /**
      * Update the currently shown layout based on the given [WidgetComponent.PlaybackState]
      * @param context [Context] required to update the widget layout.
+     * @param uiSettings [UISettings] to obtain round mode configuration
      * @param state [WidgetComponent.PlaybackState] to show, or null if no playback is going on.
      */
-    fun update(context: Context, state: WidgetComponent.PlaybackState?) {
+    fun update(context: Context, uiSettings: UISettings, state: WidgetComponent.PlaybackState?) {
         if (state == null) {
             // No state, use the default widget.
             reset(context)
@@ -89,11 +85,11 @@ class WidgetProvider : AppWidgetProvider() {
         // the widget elements, plus some leeway for text sizing.
         val views =
             mapOf(
-                SizeF(180f, 100f) to newThinLayout(context, state),
-                SizeF(180f, 152f) to newSmallLayout(context, state),
-                SizeF(272f, 152f) to newWideLayout(context, state),
-                SizeF(180f, 272f) to newMediumLayout(context, state),
-                SizeF(272f, 272f) to newLargeLayout(context, state))
+                SizeF(180f, 100f) to newThinLayout(context, uiSettings, state),
+                SizeF(180f, 152f) to newSmallLayout(context, uiSettings, state),
+                SizeF(272f, 152f) to newWideLayout(context, uiSettings, state),
+                SizeF(180f, 272f) to newMediumLayout(context, uiSettings, state),
+                SizeF(272f, 272f) to newLargeLayout(context, uiSettings, state))
 
         // Manually update AppWidgetManager with the new views.
         val awm = AppWidgetManager.getInstance(context)
@@ -131,66 +127,66 @@ class WidgetProvider : AppWidgetProvider() {
 
     // --- LAYOUTS ---
 
-    /**
-     * Create and configure a [RemoteViews] for [R.layout.widget_default], intended for situations
-     * where no other widget layout is applicable.
-     * @param context [Context] required to create the [RemoteViews].
-     */
     private fun newDefaultLayout(context: Context) =
         newRemoteViews(context, R.layout.widget_default)
 
-    /**
-     * Create and configure a [RemoteViews] for [R.layout.widget_thin], intended for extremely small
-     * grid sizes on phones in landscape mode.
-     * @param context [Context] required to create the [RemoteViews].
-     */
-    private fun newThinLayout(context: Context, state: WidgetComponent.PlaybackState) =
+    private fun newThinLayout(
+        context: Context,
+        uiSettings: UISettings,
+        state: WidgetComponent.PlaybackState
+    ) =
         newRemoteViews(context, R.layout.widget_thin)
-            .setupBackground()
+            .setupBackground(
+                uiSettings,
+            )
             .setupPlaybackState(context, state)
             .setupTimelineControls(context, state)
 
-    /**
-     * Create and configure a [RemoteViews] for [R.layout.widget_small], intended to be a
-     * modestly-sized default layout for most devices.
-     * @param context [Context] required to create the [RemoteViews].
-     */
-    private fun newSmallLayout(context: Context, state: WidgetComponent.PlaybackState) =
+    private fun newSmallLayout(
+        context: Context,
+        uiSettings: UISettings,
+        state: WidgetComponent.PlaybackState
+    ) =
         newRemoteViews(context, R.layout.widget_small)
-            .setupBar()
+            .setupBar(
+                uiSettings,
+            )
             .setupCover(context, state)
             .setupTimelineControls(context, state)
 
-    /**
-     * Create and configure a [RemoteViews] for [R.layout.widget_medium], intended to be a taller
-     * widget that shows more information about the currently playing song.
-     * @param context [Context] required to create the [RemoteViews].
-     */
-    private fun newMediumLayout(context: Context, state: WidgetComponent.PlaybackState) =
+    private fun newMediumLayout(
+        context: Context,
+        uiSettings: UISettings,
+        state: WidgetComponent.PlaybackState
+    ) =
         newRemoteViews(context, R.layout.widget_medium)
-            .setupBackground()
+            .setupBackground(
+                uiSettings,
+            )
             .setupPlaybackState(context, state)
             .setupTimelineControls(context, state)
 
-    /**
-     * Create and configure a [RemoteViews] for [R.layout.widget_wide], intended to be a wider
-     * version of [R.layout.widget_small] that shows additional controls.
-     * @param context [Context] required to create the [RemoteViews].
-     */
-    private fun newWideLayout(context: Context, state: WidgetComponent.PlaybackState) =
+    private fun newWideLayout(
+        context: Context,
+        uiSettings: UISettings,
+        state: WidgetComponent.PlaybackState
+    ) =
         newRemoteViews(context, R.layout.widget_wide)
-            .setupBar()
+            .setupBar(
+                uiSettings,
+            )
             .setupCover(context, state)
             .setupFullControls(context, state)
 
-    /**
-     * Create and configure a [RemoteViews] for [R.layout.widget_large], intended to be a wider
-     * version of [R.layout.widget_medium] that shows additional controls.
-     * @param context [Context] required to create the [RemoteViews].
-     */
-    private fun newLargeLayout(context: Context, state: WidgetComponent.PlaybackState) =
+    private fun newLargeLayout(
+        context: Context,
+        uiSettings: UISettings,
+        state: WidgetComponent.PlaybackState
+    ) =
         newRemoteViews(context, R.layout.widget_large)
-            .setupBackground()
+            .setupBackground(
+                uiSettings,
+            )
             .setupPlaybackState(context, state)
             .setupFullControls(context, state)
 
@@ -198,7 +194,9 @@ class WidgetProvider : AppWidgetProvider() {
      * Set up the control bar in a [RemoteViews] layout that contains one. This is a kind of
      * "floating" drawable that sits in front of the cover and contains the controls.
      */
-    private fun RemoteViews.setupBar(): RemoteViews {
+    private fun RemoteViews.setupBar(
+        uiSettings: UISettings,
+    ): RemoteViews {
         // Below API 31, enable a rounded bar only if round mode is enabled.
         // On API 31+, the bar should always be round in order to fit in with other widgets.
         val background =
@@ -215,7 +213,9 @@ class WidgetProvider : AppWidgetProvider() {
      * Set up the background in a [RemoteViews] layout that contains one. This is largely
      * self-explanatory, being a solid-color background that sits behind the cover and controls.
      */
-    private fun RemoteViews.setupBackground(): RemoteViews {
+    private fun RemoteViews.setupBackground(
+        uiSettings: UISettings,
+    ): RemoteViews {
         // Below API 31, enable a rounded background only if round mode is enabled.
         // On API 31+, the background should always be round in order to fit in with other
         // widgets.

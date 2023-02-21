@@ -65,7 +65,7 @@ constructor(
         val song = playbackManager.queue.currentSong
         if (song == null) {
             logD("No song, resetting widget")
-            widgetProvider.update(context, null)
+            widgetProvider.update(context, uiSettings, null)
             return
         }
 
@@ -105,7 +105,7 @@ constructor(
 
                 override fun onCompleted(bitmap: Bitmap?) {
                     val state = PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled)
-                    widgetProvider.update(context, state)
+                    widgetProvider.update(context, uiSettings, state)
                 }
             })
     }

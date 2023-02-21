@@ -25,6 +25,8 @@ import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 
 /**
  * A [BroadcastReceiver] that forwards [Intent.ACTION_MEDIA_BUTTON] [Intent]s to [PlaybackService].
@@ -35,6 +37,7 @@ class MediaButtonReceiver : BroadcastReceiver() {
     @Inject lateinit var playbackManager: PlaybackStateManager
 
     override fun onReceive(context: Context, intent: Intent) {
+        super.onRecieve()
         if (playbackManager.queue.currentSong != null) {
             // We have a song, so we can assume that the service will start a foreground state.
             // At least, I hope. Again, *this is why we don't do this*. I cannot describe how
