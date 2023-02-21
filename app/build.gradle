@@ -20,8 +20,8 @@ android {
 
     defaultConfig {
         applicationId namespace
-        versionName "3.0.2"
-        versionCode 26
+        versionName "3.0.3"
+        versionCode 27
 
         minSdk 21
         targetSdk 33

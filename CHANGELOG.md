@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## 3.0.3
 
 #### What's New
 - Added support for disc subtitles
