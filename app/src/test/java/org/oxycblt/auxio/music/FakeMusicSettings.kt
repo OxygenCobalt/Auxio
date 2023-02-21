@@ -33,6 +33,8 @@ open class FakeMusicSettings : MusicSettings {
     override var multiValueSeparators: String
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
+    override val automaticSortNames: Boolean
+        get() = throw NotImplementedError()
     override var songSort: Sort
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
