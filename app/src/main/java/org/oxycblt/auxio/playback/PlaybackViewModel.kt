@@ -17,28 +17,34 @@
  
 package org.oxycblt.auxio.playback
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.playback.persist.PersistenceRepository
+import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.playback.state.*
-import org.oxycblt.auxio.util.context
 
 /**
- * An [AndroidViewModel] that provides a safe UI frontend for the current playback state.
+ * An [ViewModel] that provides a safe UI frontend for the current playback state.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class PlaybackViewModel(application: Application) :
-    AndroidViewModel(application), PlaybackStateManager.Listener {
-    private val musicSettings = MusicSettings.from(application)
-    private val playbackSettings = PlaybackSettings.from(application)
-    private val playbackManager = PlaybackStateManager.getInstance()
-    private val musicStore = MusicStore.getInstance()
+@HiltViewModel
+class PlaybackViewModel
+@Inject
+constructor(
+    private val playbackManager: PlaybackStateManager,
+    private val playbackSettings: PlaybackSettings,
+    private val persistenceRepository: PersistenceRepository,
+    private val musicRepository: MusicRepository,
+    private val musicSettings: MusicSettings
+) : ViewModel(), PlaybackStateManager.Listener {
     private var lastPositionJob: Job? = null
 
     private val _song = MutableStateFlow<Song?>(null)
@@ -277,7 +283,7 @@ class PlaybackViewModel(application: Application) :
         check(song == null || parent == null || parent.songs.contains(song)) {
             "Song to play not in parent"
         }
-        val library = musicStore.library ?: return
+        val library = musicRepository.library ?: return
         val sort =
             when (parent) {
                 is Genre -> musicSettings.genreSongSort
@@ -428,8 +434,7 @@ class PlaybackViewModel(application: Application) :
      */
     fun savePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
-            val saved = playbackManager.saveState(PlaybackStateDatabase.getInstance(context))
-            onDone(saved)
+            onDone(persistenceRepository.saveState(playbackManager.toSavedState()))
         }
     }
 
@@ -438,10 +443,7 @@ class PlaybackViewModel(application: Application) :
      * @param onDone Called when the wipe is completed with true if successful, and false otherwise.
      */
     fun wipePlaybackState(onDone: (Boolean) -> Unit) {
-        viewModelScope.launch {
-            val wiped = playbackManager.wipeState(PlaybackStateDatabase.getInstance(context))
-            onDone(wiped)
-        }
+        viewModelScope.launch { onDone(persistenceRepository.saveState(null)) }
     }
 
     /**
@@ -451,9 +453,16 @@ class PlaybackViewModel(application: Application) :
      */
     fun tryRestorePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
-            val restored =
-                playbackManager.restoreState(PlaybackStateDatabase.getInstance(context), true)
-            onDone(restored)
+            val library = musicRepository.library
+            if (library != null) {
+                val savedState = persistenceRepository.readState(library)
+                if (savedState != null) {
+                    playbackManager.applySavedState(savedState, true)
+                    onDone(true)
+                    return@launch
+                }
+            }
+            onDone(false)
         }
     }
 

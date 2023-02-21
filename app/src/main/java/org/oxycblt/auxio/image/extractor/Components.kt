@@ -27,15 +27,17 @@ import coil.fetch.SourceResult
 import coil.key.Keyer
 import coil.request.Options
 import coil.size.Size
+import javax.inject.Inject
 import kotlin.math.min
 import okio.buffer
 import okio.source
+import org.oxycblt.auxio.image.ImageSettings
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.library.Sort
 
 /**
  * A [Keyer] implementation for [Music] data.
@@ -57,9 +59,13 @@ class MusicKeyer : Keyer<Music> {
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumCoverFetcher
-private constructor(private val context: Context, private val album: Album) : Fetcher {
+private constructor(
+    private val context: Context,
+    private val imageSettings: ImageSettings,
+    private val album: Album
+) : Fetcher {
     override suspend fun fetch(): FetchResult? =
-        Covers.fetch(context, album)?.run {
+        Covers.fetch(context, imageSettings, album)?.run {
             SourceResult(
                 source = ImageSource(source().buffer(), context),
                 mimeType = null,
@@ -67,15 +73,17 @@ private constructor(private val context: Context, private val album: Album) : Fe
         }
 
     /** A [Fetcher.Factory] implementation that works with [Song]s. */
-    class SongFactory : Fetcher.Factory<Song> {
+    class SongFactory @Inject constructor(private val imageSettings: ImageSettings) :
+        Fetcher.Factory<Song> {
         override fun create(data: Song, options: Options, imageLoader: ImageLoader) =
-            AlbumCoverFetcher(options.context, data.album)
+            AlbumCoverFetcher(options.context, imageSettings, data.album)
     }
 
     /** A [Fetcher.Factory] implementation that works with [Album]s. */
-    class AlbumFactory : Fetcher.Factory<Album> {
+    class AlbumFactory @Inject constructor(private val imageSettings: ImageSettings) :
+        Fetcher.Factory<Album> {
         override fun create(data: Album, options: Options, imageLoader: ImageLoader) =
-            AlbumCoverFetcher(options.context, data)
+            AlbumCoverFetcher(options.context, imageSettings, data)
     }
 }
 
@@ -86,20 +94,23 @@ private constructor(private val context: Context, private val album: Album) : Fe
 class ArtistImageFetcher
 private constructor(
     private val context: Context,
+    private val imageSettings: ImageSettings,
     private val size: Size,
     private val artist: Artist
 ) : Fetcher {
     override suspend fun fetch(): FetchResult? {
         // Pick the "most prominent" albums (i.e albums with the most songs) to show in the image.
-        val albums = Sort(Sort.Mode.ByCount, false).albums(artist.albums)
-        val results = albums.mapAtMostNotNull(4) { album -> Covers.fetch(context, album) }
+        val albums = Sort(Sort.Mode.ByCount, Sort.Direction.DESCENDING).albums(artist.albums)
+        val results =
+            albums.mapAtMostNotNull(4) { album -> Covers.fetch(context, imageSettings, album) }
         return Images.createMosaic(context, results, size)
     }
 
     /** [Fetcher.Factory] implementation. */
-    class Factory : Fetcher.Factory<Artist> {
+    class Factory @Inject constructor(private val imageSettings: ImageSettings) :
+        Fetcher.Factory<Artist> {
         override fun create(data: Artist, options: Options, imageLoader: ImageLoader) =
-            ArtistImageFetcher(options.context, options.size, data)
+            ArtistImageFetcher(options.context, imageSettings, options.size, data)
     }
 }
 
@@ -110,18 +121,20 @@ private constructor(
 class GenreImageFetcher
 private constructor(
     private val context: Context,
+    private val imageSettings: ImageSettings,
     private val size: Size,
     private val genre: Genre
 ) : Fetcher {
     override suspend fun fetch(): FetchResult? {
-        val results = genre.albums.mapAtMostNotNull(4) { Covers.fetch(context, it) }
+        val results = genre.albums.mapAtMostNotNull(4) { Covers.fetch(context, imageSettings, it) }
         return Images.createMosaic(context, results, size)
     }
 
     /** [Fetcher.Factory] implementation. */
-    class Factory : Fetcher.Factory<Genre> {
+    class Factory @Inject constructor(private val imageSettings: ImageSettings) :
+        Fetcher.Factory<Genre> {
         override fun create(data: Genre, options: Options, imageLoader: ImageLoader) =
-            GenreImageFetcher(options.context, options.size, data)
+            GenreImageFetcher(options.context, imageSettings, options.size, data)
     }
 }
 

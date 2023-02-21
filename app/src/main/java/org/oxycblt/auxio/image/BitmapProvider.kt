@@ -20,10 +20,12 @@ package org.oxycblt.auxio.image
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.core.graphics.drawable.toBitmap
-import coil.imageLoader
+import coil.ImageLoader
 import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.size.Size
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.image.extractor.SquareFrameTransform
 import org.oxycblt.auxio.music.Song
 
@@ -38,7 +40,12 @@ import org.oxycblt.auxio.music.Song
  * @param context [Context] required to load images.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class BitmapProvider(private val context: Context) {
+class BitmapProvider
+@Inject
+constructor(
+    @ApplicationContext private val context: Context,
+    private val imageLoader: ImageLoader
+) {
     /**
      * An extension of [Disposable] with an additional [Target] to deliver the final [Bitmap] to.
      */
@@ -94,7 +101,7 @@ class BitmapProvider(private val context: Context) {
                     onSuccess = {
                         synchronized(this) {
                             if (currentHandle == handle) {
-                                // Has not been superceded by a new request, can deliver
+                                // Has not been superseded by a new request, can deliver
                                 // this result.
                                 target.onCompleted(it.toBitmap())
                             }
@@ -103,13 +110,13 @@ class BitmapProvider(private val context: Context) {
                     onError = {
                         synchronized(this) {
                             if (currentHandle == handle) {
-                                // Has not been superceded by a new request, can deliver
+                                // Has not been superseded by a new request, can deliver
                                 // this result.
                                 target.onCompleted(null)
                             }
                         }
                     })
-        currentRequest = Request(context.imageLoader.enqueue(imageRequest.build()), target)
+        currentRequest = Request(imageLoader.enqueue(imageRequest.build()), target)
     }
 
     /** Release this instance, cancelling any currently running operations. */

@@ -26,7 +26,7 @@
         tools:ignore="RtlSymmetry,contentDescription"
         tools:text="Artists" />
 
-    <Button
+    <org.oxycblt.auxio.ui.RippleFixMaterialButton
         android:id="@+id/tab_drag_handle"
         style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"

@@ -23,18 +23,13 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
 import android.view.WindowInsets
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
@@ -111,6 +106,17 @@ val ViewBinding.context: Context
  * screen.
  */
 fun RecyclerView.canScroll() = computeVerticalScrollRange() > height
+
+/**
+ * Fix the double ripple that appears in MaterialButton instances due to an issue with AppCompat 1.5
+ * or higher.
+ */
+fun AppCompatButton.fixDoubleRipple() {
+    AppCompatButton::class.java.getDeclaredField("mBackgroundTintHelper").apply {
+        isAccessible = true
+        set(this@fixDoubleRipple, null)
+    }
+}
 
 /**
  * Get the [CoordinatorLayout.Behavior] of a [View], or null if the [View] is not part of a
@@ -195,35 +201,6 @@ private fun Fragment.launch(
 ) {
     viewLifecycleOwner.lifecycleScope.launch { viewLifecycleOwner.repeatOnLifecycle(state, block) }
 }
-
-/**
- * An extension to [viewModels] that automatically provides an
- * [ViewModelProvider.AndroidViewModelFactory]. Use whenever an [AndroidViewModel] is used.
- */
-inline fun <reified T : AndroidViewModel> Fragment.androidViewModels() =
-    viewModels<T> { ViewModelProvider.AndroidViewModelFactory(requireActivity().application) }
-
-/**
- * An extension to [viewModels] that automatically provides an
- * [ViewModelProvider.AndroidViewModelFactory]. Use whenever an [AndroidViewModel] is used. Note
- * that this implementation is for an [AppCompatActivity], and thus makes this functionally
- * equivalent in scope to [androidActivityViewModels].
- */
-inline fun <reified T : AndroidViewModel> AppCompatActivity.androidViewModels() =
-    viewModels<T> { ViewModelProvider.AndroidViewModelFactory(application) }
-
-/**
- * An extension to [activityViewModels] that automatically provides an
- * [ViewModelProvider.AndroidViewModelFactory]. Use whenever an [AndroidViewModel] is used.
- */
-inline fun <reified T : AndroidViewModel> Fragment.androidActivityViewModels() =
-    activityViewModels<T> {
-        ViewModelProvider.AndroidViewModelFactory(requireActivity().application)
-    }
-
-/** The [Context] provided to an [AndroidViewModel]. */
-inline val AndroidViewModel.context: Context
-    get() = getApplication()
 
 /**
  * Get the "System Bar" [Insets] in this [WindowInsets] instance in a version-compatible manner This

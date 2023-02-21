@@ -21,6 +21,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPreAmpBinding
@@ -31,7 +33,10 @@ import org.oxycblt.auxio.ui.ViewBindingDialogFragment
  * aa [ViewBindingDialogFragment] that allows user configuration of the current [ReplayGainPreAmp].
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class PreAmpCustomizeDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
+    @Inject lateinit var playbackSettings: PlaybackSettings
+
     override fun onCreateBinding(inflater: LayoutInflater) = DialogPreAmpBinding.inflate(inflater)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
@@ -39,11 +44,11 @@ class PreAmpCustomizeDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
             .setTitle(R.string.set_pre_amp)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
                 val binding = requireBinding()
-                PlaybackSettings.from(requireContext()).replayGainPreAmp =
+                playbackSettings.replayGainPreAmp =
                     ReplayGainPreAmp(binding.withTagsSlider.value, binding.withoutTagsSlider.value)
             }
             .setNeutralButton(R.string.lbl_reset) { _, _ ->
-                PlaybackSettings.from(requireContext()).replayGainPreAmp = ReplayGainPreAmp(0f, 0f)
+                playbackSettings.replayGainPreAmp = ReplayGainPreAmp(0f, 0f)
             }
             .setNegativeButton(R.string.lbl_cancel, null)
     }
@@ -53,7 +58,7 @@ class PreAmpCustomizeDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
             // First initialization, we need to supply the sliders with the values from
             // settings. After this, the sliders save their own state, so we do not need to
             // do any restore behavior.
-            val preAmp = PlaybackSettings.from(requireContext()).replayGainPreAmp
+            val preAmp = playbackSettings.replayGainPreAmp
             binding.withTagsSlider.value = preAmp.with
             binding.withoutTagsSlider.value = preAmp.without
         }

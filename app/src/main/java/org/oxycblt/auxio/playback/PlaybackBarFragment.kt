@@ -20,14 +20,15 @@ package org.oxycblt.auxio.playback
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.activityViewModels
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
@@ -36,8 +37,9 @@ import org.oxycblt.auxio.util.getColorCompat
  * A [ViewBindingFragment] that shows the current playback state in a compact manner.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
-    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -121,7 +123,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
             val binding = requireBinding()
             binding.playbackCover.bind(song)
             binding.playbackSong.text = song.resolveName(context)
-            binding.playbackInfo.text = song.resolveArtistContents(context)
+            binding.playbackInfo.text = song.artists.resolveNames(context)
             binding.playbackProgressBar.max = song.durationMs.msToDs().toInt()
         }
     }

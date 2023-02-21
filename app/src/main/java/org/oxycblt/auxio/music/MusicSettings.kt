@@ -20,8 +20,10 @@ package org.oxycblt.auxio.music
 import android.content.Context
 import android.os.storage.StorageManager
 import androidx.core.content.edit
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.storage.Directory
 import org.oxycblt.auxio.music.storage.MusicDirectories
 import org.oxycblt.auxio.settings.Settings
@@ -40,6 +42,8 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     val shouldBeObserving: Boolean
     /** A [String] of characters representing the desired characters to denote multi-value tags. */
     var multiValueSeparators: String
+    /** Whether to trim english articles with song sort names. */
+    val automaticSortNames: Boolean
     /** The [Sort] mode used in [Song] lists. */
     var songSort: Sort
     /** The [Sort] mode used in [Album] lists. */
@@ -61,164 +65,158 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
         /** Called when the [shouldBeObserving] configuration has changed. */
         fun onObservingChanged() {}
     }
+}
 
-    private class Real(context: Context) : Settings.Real<Listener>(context), MusicSettings {
-        private val storageManager = context.getSystemServiceCompat(StorageManager::class)
+class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context) :
+    Settings.Impl<MusicSettings.Listener>(context), MusicSettings {
+    private val storageManager = context.getSystemServiceCompat(StorageManager::class)
 
-        override var musicDirs: MusicDirectories
-            get() {
-                val dirs =
-                    (sharedPreferences.getStringSet(getString(R.string.set_key_music_dirs), null)
-                            ?: emptySet())
-                        .mapNotNull { Directory.fromDocumentTreeUri(storageManager, it) }
-                return MusicDirectories(
-                    dirs,
-                    sharedPreferences.getBoolean(
-                        getString(R.string.set_key_music_dirs_include), false))
-            }
-            set(value) {
-                sharedPreferences.edit {
-                    putStringSet(
-                        getString(R.string.set_key_music_dirs),
-                        value.dirs.map(Directory::toDocumentTreeUri).toSet())
-                    putBoolean(getString(R.string.set_key_music_dirs_include), value.shouldInclude)
-                    apply()
-                }
-            }
-
-        override val excludeNonMusic: Boolean
-            get() =
-                sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
-
-        override val shouldBeObserving: Boolean
-            get() = sharedPreferences.getBoolean(getString(R.string.set_key_observing), false)
-
-        override var multiValueSeparators: String
-            // Differ from convention and store a string of separator characters instead of an int
-            // code. This makes it easier to use and more extendable.
-            get() = sharedPreferences.getString(getString(R.string.set_key_separators), "") ?: ""
-            set(value) {
-                sharedPreferences.edit {
-                    putString(getString(R.string.set_key_separators), value)
-                    apply()
-                }
-            }
-
-        override var songSort: Sort
-            get() =
-                Sort.fromIntCode(
-                    sharedPreferences.getInt(getString(R.string.set_key_songs_sort), Int.MIN_VALUE))
-                    ?: Sort(Sort.Mode.ByName, true)
-            set(value) {
-                sharedPreferences.edit {
-                    putInt(getString(R.string.set_key_songs_sort), value.intCode)
-                    apply()
-                }
-            }
-
-        override var albumSort: Sort
-            get() =
-                Sort.fromIntCode(
-                    sharedPreferences.getInt(
-                        getString(R.string.set_key_albums_sort), Int.MIN_VALUE))
-                    ?: Sort(Sort.Mode.ByName, true)
-            set(value) {
-                sharedPreferences.edit {
-                    putInt(getString(R.string.set_key_albums_sort), value.intCode)
-                    apply()
-                }
-            }
-
-        override var artistSort: Sort
-            get() =
-                Sort.fromIntCode(
-                    sharedPreferences.getInt(
-                        getString(R.string.set_key_artists_sort), Int.MIN_VALUE))
-                    ?: Sort(Sort.Mode.ByName, true)
-            set(value) {
-                sharedPreferences.edit {
-                    putInt(getString(R.string.set_key_artists_sort), value.intCode)
-                    apply()
-                }
-            }
-
-        override var genreSort: Sort
-            get() =
-                Sort.fromIntCode(
-                    sharedPreferences.getInt(
-                        getString(R.string.set_key_genres_sort), Int.MIN_VALUE))
-                    ?: Sort(Sort.Mode.ByName, true)
-            set(value) {
-                sharedPreferences.edit {
-                    putInt(getString(R.string.set_key_genres_sort), value.intCode)
-                    apply()
-                }
-            }
-
-        override var albumSongSort: Sort
-            get() {
-                var sort =
-                    Sort.fromIntCode(
-                        sharedPreferences.getInt(
-                            getString(R.string.set_key_album_songs_sort), Int.MIN_VALUE))
-                        ?: Sort(Sort.Mode.ByDisc, true)
-
-                // Correct legacy album sort modes to Disc
-                if (sort.mode is Sort.Mode.ByName) {
-                    sort = sort.withMode(Sort.Mode.ByDisc)
-                }
-
-                return sort
-            }
-            set(value) {
-                sharedPreferences.edit {
-                    putInt(getString(R.string.set_key_album_songs_sort), value.intCode)
-                    apply()
-                }
-            }
-
-        override var artistSongSort: Sort
-            get() =
-                Sort.fromIntCode(
-                    sharedPreferences.getInt(
-                        getString(R.string.set_key_artist_songs_sort), Int.MIN_VALUE))
-                    ?: Sort(Sort.Mode.ByDate, false)
-            set(value) {
-                sharedPreferences.edit {
-                    putInt(getString(R.string.set_key_artist_songs_sort), value.intCode)
-                    apply()
-                }
-            }
-
-        override var genreSongSort: Sort
-            get() =
-                Sort.fromIntCode(
-                    sharedPreferences.getInt(
-                        getString(R.string.set_key_genre_songs_sort), Int.MIN_VALUE))
-                    ?: Sort(Sort.Mode.ByName, true)
-            set(value) {
-                sharedPreferences.edit {
-                    putInt(getString(R.string.set_key_genre_songs_sort), value.intCode)
-                    apply()
-                }
-            }
-
-        override fun onSettingChanged(key: String, listener: Listener) {
-            when (key) {
-                getString(R.string.set_key_exclude_non_music),
-                getString(R.string.set_key_music_dirs),
-                getString(R.string.set_key_music_dirs_include),
-                getString(R.string.set_key_separators) -> listener.onIndexingSettingChanged()
-                getString(R.string.set_key_observing) -> listener.onObservingChanged()
+    override var musicDirs: MusicDirectories
+        get() {
+            val dirs =
+                (sharedPreferences.getStringSet(getString(R.string.set_key_music_dirs), null)
+                        ?: emptySet())
+                    .mapNotNull { Directory.fromDocumentTreeUri(storageManager, it) }
+            return MusicDirectories(
+                dirs,
+                sharedPreferences.getBoolean(getString(R.string.set_key_music_dirs_include), false))
+        }
+        set(value) {
+            sharedPreferences.edit {
+                putStringSet(
+                    getString(R.string.set_key_music_dirs),
+                    value.dirs.map(Directory::toDocumentTreeUri).toSet())
+                putBoolean(getString(R.string.set_key_music_dirs_include), value.shouldInclude)
+                apply()
             }
         }
-    }
 
-    companion object {
-        /**
-         * Get a framework-backed implementation.
-         * @param context [Context] required.
-         */
-        fun from(context: Context): MusicSettings = Real(context)
+    override val excludeNonMusic: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_exclude_non_music), true)
+
+    override val shouldBeObserving: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_observing), false)
+
+    override var multiValueSeparators: String
+        // Differ from convention and store a string of separator characters instead of an int
+        // code. This makes it easier to use and more extendable.
+        get() = sharedPreferences.getString(getString(R.string.set_key_separators), "") ?: ""
+        set(value) {
+            sharedPreferences.edit {
+                putString(getString(R.string.set_key_separators), value)
+                apply()
+            }
+        }
+
+    override val automaticSortNames: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_auto_sort_names), true)
+
+    override var songSort: Sort
+        get() =
+            Sort.fromIntCode(
+                sharedPreferences.getInt(getString(R.string.set_key_songs_sort), Int.MIN_VALUE))
+                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_songs_sort), value.intCode)
+                apply()
+            }
+        }
+
+    override var albumSort: Sort
+        get() =
+            Sort.fromIntCode(
+                sharedPreferences.getInt(getString(R.string.set_key_albums_sort), Int.MIN_VALUE))
+                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_albums_sort), value.intCode)
+                apply()
+            }
+        }
+
+    override var artistSort: Sort
+        get() =
+            Sort.fromIntCode(
+                sharedPreferences.getInt(getString(R.string.set_key_artists_sort), Int.MIN_VALUE))
+                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_artists_sort), value.intCode)
+                apply()
+            }
+        }
+
+    override var genreSort: Sort
+        get() =
+            Sort.fromIntCode(
+                sharedPreferences.getInt(getString(R.string.set_key_genres_sort), Int.MIN_VALUE))
+                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_genres_sort), value.intCode)
+                apply()
+            }
+        }
+
+    override var albumSongSort: Sort
+        get() {
+            var sort =
+                Sort.fromIntCode(
+                    sharedPreferences.getInt(
+                        getString(R.string.set_key_album_songs_sort), Int.MIN_VALUE))
+                    ?: Sort(Sort.Mode.ByDisc, Sort.Direction.ASCENDING)
+
+            // Correct legacy album sort modes to Disc
+            if (sort.mode is Sort.Mode.ByName) {
+                sort = sort.withMode(Sort.Mode.ByDisc)
+            }
+
+            return sort
+        }
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_album_songs_sort), value.intCode)
+                apply()
+            }
+        }
+
+    override var artistSongSort: Sort
+        get() =
+            Sort.fromIntCode(
+                sharedPreferences.getInt(
+                    getString(R.string.set_key_artist_songs_sort), Int.MIN_VALUE))
+                ?: Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING)
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_artist_songs_sort), value.intCode)
+                apply()
+            }
+        }
+
+    override var genreSongSort: Sort
+        get() =
+            Sort.fromIntCode(
+                sharedPreferences.getInt(
+                    getString(R.string.set_key_genre_songs_sort), Int.MIN_VALUE))
+                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_genre_songs_sort), value.intCode)
+                apply()
+            }
+        }
+
+    override fun onSettingChanged(key: String, listener: MusicSettings.Listener) {
+        // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"
+        //  (just need to manipulate data)
+        when (key) {
+            getString(R.string.set_key_exclude_non_music),
+            getString(R.string.set_key_music_dirs),
+            getString(R.string.set_key_music_dirs_include),
+            getString(R.string.set_key_separators),
+            getString(R.string.set_key_auto_sort_names) -> listener.onIndexingSettingChanged()
+            getString(R.string.set_key_observing) -> listener.onObservingChanged()
+        }
     }
 }

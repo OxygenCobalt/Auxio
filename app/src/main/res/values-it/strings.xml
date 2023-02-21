@@ -15,10 +15,10 @@
     <string name="lbl_filter">Filtro</string>
     <string name="lbl_filter_all">Tutto</string>
     <string name="lbl_sort">Ordine</string>
-    <string name="lbl_sort_name">Nome</string>
+    <string name="lbl_name">Nome</string>
     <string name="lbl_artist">Artista</string>
     <string name="lbl_album">Disco</string>
-    <string name="lbl_sort_date">Anno</string>
+    <string name="lbl_date">Anno</string>
     <string name="lbl_sort_asc">Ascendente</string>
     <string name="lbl_playback">Ora in riproduzione</string>
     <string name="lbl_play">Riproduci</string>
@@ -135,17 +135,18 @@
     <string name="fmt_lib_total_duration">Durata totale: %s</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d canzone</item>
+        <item quantity="many">%d canzoni</item>
         <item quantity="other">%d canzoni</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d disco</item>
+        <item quantity="many">%d dischi</item>
         <item quantity="other">%d dischi</item>
     </plurals>
     <string name="set_dirs_mode">Modo</string>
     <string name="set_dirs_mode_exclude_desc">La musica <b>non</b> sarà caricata dalle cartelle che aggiungi.</string>
     <string name="set_dirs_mode_include">Includi</string>
     <string name="set_dirs_mode_include_desc">La musica sarà caricata <b>solo</b> dalle cartelle che aggiungi.</string>
-    <string name="def_codec">Formato sconosciuto</string>
     <string name="cdc_mp3">MPEG-1 audio</string>
     <string name="cdc_mp4">MPEG-4 audio</string>
     <string name="cdc_ogg">Ogg audio</string>
@@ -169,14 +170,13 @@
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="fmt_disc_no">Disco %d</string>
     <string name="fmt_bitrate">%d kbps</string>
-    <string name="def_sample_rate">Nessuna frequenza di campionamento</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="lbl_indexer">Caricamento musica</string>
     <string name="lng_indexing">Caricamento libreria musicale…</string>
-    <string name="lbl_sort_duration">Durata</string>
-    <string name="lbl_sort_count">Numero canzoni</string>
-    <string name="lbl_sort_disc">Disco</string>
-    <string name="lbl_sort_track">Traccia</string>
+    <string name="lbl_duration">Durata</string>
+    <string name="lbl_song_count">Numero canzoni</string>
+    <string name="lbl_disc">Disco</string>
+    <string name="lbl_track">Traccia</string>
     <string name="lbl_ok">OK</string>
     <string name="lbl_sample_rate">Frequenza di campionamento</string>
     <string name="lbl_song_detail">Vedi proprietà</string>
@@ -186,7 +186,6 @@
     <string name="lbl_format">Formato</string>
     <string name="lbl_size">Dimensione</string>
     <string name="lbl_bitrate">Velocità di trasmissione</string>
-    <string name="def_bitrate">Nessuna velocità di trasmissione</string>
     <string name="lbl_cancel">Cancella</string>
     <string name="set_pre_amp">Pre-amp ReplayGain</string>
     <string name="lng_observing">Sto monitorando i cambiamenti nella tua libreria musicale…</string>
@@ -194,7 +193,7 @@
     <string name="lbl_indexing">Caricamento musica</string>
     <string name="lbl_observing">Monitoraggio libreria musicale</string>
     <string name="lbl_state_restored">Stato ripristinato</string>
-    <string name="lbl_sort_date_added">Data aggiunta</string>
+    <string name="lbl_date_added">Data aggiunta</string>
     <string name="set_observing">Ricaricamento automatico</string>
     <string name="set_restore_state">Ripristina stato riproduzione</string>
     <string name="set_restore_desc">Ripristina lo stato di riproduzione precedentemente salvato (se disponibile)</string>
@@ -249,6 +248,7 @@
     <string name="set_separators_plus">Più (+)</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d artista</item>
+        <item quantity="many">%d artisti</item>
         <item quantity="other">%d artisti</item>
     </plurals>
     <string name="set_rescan">Riscansiona musica</string>
@@ -269,4 +269,10 @@
     <string name="set_library">Collezione</string>
     <string name="set_ui_desc">Cambia il tema e i colori dell\'app</string>
     <string name="set_content_desc">Controlla come vengono caricate musica e immagini</string>
+    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_playback">Riproduzione</string>
+    <string name="set_state">Persistenza</string>
+    <string name="set_personalize_desc">Personalizza controlli e comportamento dell\'UI</string>
+    <string name="set_audio_desc">Configura comportamento di suono e riproduzione</string>
+    <string name="lbl_sort_dec">Discendente</string>
 </resources>

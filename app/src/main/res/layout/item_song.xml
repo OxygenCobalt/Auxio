@@ -44,7 +44,7 @@
         app:layout_constraintTop_toBottomOf="@+id/song_name"
         tools:text="Info" />
 
-    <Button
+    <org.oxycblt.auxio.ui.RippleFixMaterialButton
         android:id="@+id/song_menu"
         style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"

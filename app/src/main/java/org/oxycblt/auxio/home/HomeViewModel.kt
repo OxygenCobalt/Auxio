@@ -17,15 +17,15 @@
  
 package org.oxycblt.auxio.home
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.home.tabs.Tab
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.library.Library
-import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.music.model.Library
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.logD
 
@@ -33,12 +33,15 @@ import org.oxycblt.auxio.util.logD
  * The ViewModel for managing the tab data and lists of the home view.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class HomeViewModel(application: Application) :
-    AndroidViewModel(application), MusicStore.Listener, HomeSettings.Listener {
-    private val musicStore = MusicStore.getInstance()
-    private val homeSettings = HomeSettings.from(application)
-    private val musicSettings = MusicSettings.from(application)
-    private val playbackSettings = PlaybackSettings.from(application)
+@HiltViewModel
+class HomeViewModel
+@Inject
+constructor(
+    private val homeSettings: HomeSettings,
+    private val playbackSettings: PlaybackSettings,
+    private val musicRepository: MusicRepository,
+    private val musicSettings: MusicSettings
+) : ViewModel(), MusicRepository.Listener, HomeSettings.Listener {
 
     private val _songsList = MutableStateFlow(listOf<Song>())
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
@@ -92,13 +95,13 @@ class HomeViewModel(application: Application) :
     val isFastScrolling: StateFlow<Boolean> = _isFastScrolling
 
     init {
-        musicStore.addListener(this)
+        musicRepository.addListener(this)
         homeSettings.registerListener(this)
     }
 
     override fun onCleared() {
         super.onCleared()
-        musicStore.removeListener(this)
+        musicRepository.removeListener(this)
         homeSettings.unregisterListener(this)
     }
 
@@ -130,7 +133,7 @@ class HomeViewModel(application: Application) :
     override fun onHideCollaboratorsChanged() {
         // Changes in the hide collaborator setting will change the artist contents
         // of the library, consider it a library update.
-        onLibraryChanged(musicStore.library)
+        onLibraryChanged(musicRepository.library)
     }
 
     /**

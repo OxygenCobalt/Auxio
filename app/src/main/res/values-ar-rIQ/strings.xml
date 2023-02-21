@@ -15,10 +15,10 @@
     <string name="lbl_filter">تصفية</string>
     <string name="lbl_filter_all">الكل</string>
     <string name="lbl_sort">فرز</string>
-    <string name="lbl_sort_name">اسم</string>
+    <string name="lbl_name">اسم</string>
     <string name="lbl_artist">فنان</string>
     <string name="lbl_album">البوم</string>
-    <string name="lbl_sort_date">سنة</string>
+    <string name="lbl_date">سنة</string>
     <string name="lbl_sort_asc">تصاعدي</string>
     <string name="lbl_playback">يعمل الآن</string>
     <string name="lbl_play">تشغيل</string>

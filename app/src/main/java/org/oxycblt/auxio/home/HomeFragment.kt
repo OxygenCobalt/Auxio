@@ -23,6 +23,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.MenuCompat
 import androidx.core.view.isVisible
 import androidx.core.view.iterator
 import androidx.core.view.updatePadding
@@ -37,6 +38,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Field
 import kotlin.math.abs
 import org.oxycblt.auxio.BuildConfig
@@ -48,11 +50,13 @@ import org.oxycblt.auxio.home.list.ArtistListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.selection.SelectionFragment
+import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.library.Library
-import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.music.model.Library
 import org.oxycblt.auxio.music.system.Indexer
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.*
@@ -62,9 +66,12 @@ import org.oxycblt.auxio.util.*
  * to other views.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class HomeFragment :
     SelectionFragment<FragmentHomeBinding>(), AppBarLayout.OnOffsetChangedListener {
-    private val homeModel: HomeViewModel by androidActivityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val selectionModel: SelectionViewModel by activityViewModels()
+    private val homeModel: HomeViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
@@ -98,7 +105,10 @@ class HomeFragment :
 
         // --- UI SETUP ---
         binding.homeAppbar.addOnOffsetChangedListener(this)
-        binding.homeToolbar.setOnMenuItemClickListener(this)
+        binding.homeToolbar.apply {
+            setOnMenuItemClickListener(this@HomeFragment)
+            MenuCompat.setGroupDividerEnabled(menu, true)
+        }
 
         // Load the track color in manually as it's unclear whether the track actually supports
         // using a ColorStateList in the resources
@@ -207,11 +217,18 @@ class HomeFragment :
                 // Junk click event when opening the menu
             }
             R.id.option_sort_asc -> {
-                item.isChecked = !item.isChecked
+                item.isChecked = true
                 homeModel.setSortForCurrentTab(
                     homeModel
                         .getSortForTab(homeModel.currentTabMode.value)
-                        .withAscending(item.isChecked))
+                        .withDirection(Sort.Direction.ASCENDING))
+            }
+            R.id.option_sort_dec -> {
+                item.isChecked = true
+                homeModel.setSortForCurrentTab(
+                    homeModel
+                        .getSortForTab(homeModel.currentTabMode.value)
+                        .withDirection(Sort.Direction.DESCENDING))
             }
             else -> {
                 // Sorting option was selected, mark it as selected and update the mode
@@ -264,6 +281,7 @@ class HomeFragment :
                 // Only allow sorting by name, count, and duration for artists
                 MusicMode.ARTISTS -> { id ->
                         id == R.id.option_sort_asc ||
+                            id == R.id.option_sort_dec ||
                             id == R.id.option_sort_name ||
                             id == R.id.option_sort_count ||
                             id == R.id.option_sort_duration
@@ -271,6 +289,7 @@ class HomeFragment :
                 // Only allow sorting by name, count, and duration for genres
                 MusicMode.GENRES -> { id ->
                         id == R.id.option_sort_asc ||
+                            id == R.id.option_sort_dec ||
                             id == R.id.option_sort_name ||
                             id == R.id.option_sort_count ||
                             id == R.id.option_sort_duration
@@ -286,7 +305,10 @@ class HomeFragment :
             // Check the ascending option and corresponding sort option to align with
             // the current sort of the tab.
             if (option.itemId == toHighlight.mode.itemId ||
-                (option.itemId == R.id.option_sort_asc && toHighlight.isAscending)) {
+                (option.itemId == R.id.option_sort_asc &&
+                    toHighlight.direction == Sort.Direction.ASCENDING) ||
+                (option.itemId == R.id.option_sort_dec &&
+                    toHighlight.direction == Sort.Direction.DESCENDING)) {
                 option.isChecked = true
             }
 

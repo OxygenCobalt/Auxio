@@ -137,8 +137,8 @@ fun AppWidgetManager.updateAppWidgetCompat(
 /**
  * Returns whether rounded UI elements are appropriate for the widget, either based on the current
  * settings or if the widget has to fit in aesthetically with other widgets.
- * @param context [Context] configuration to use.
+ * @param [uiSettings] [UISettings] required to obtain round mode configuration.
  * @return true if to use round mode, false otherwise.
  */
-fun useRoundedRemoteViews(context: Context) =
-    UISettings.from(context).roundMode || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+fun useRoundedRemoteViews(uiSettings: UISettings) =
+    uiSettings.roundMode || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S

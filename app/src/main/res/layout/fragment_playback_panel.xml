@@ -102,7 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.google.android.material.button.MaterialButton
+            <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_repeat"
                 style="@style/Widget.Auxio.Button.Icon.Large"
                 android:layout_width="wrap_content"
@@ -114,7 +114,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/playback_skip_prev" />
 
-            <com.google.android.material.button.MaterialButton
+            <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_skip_prev"
                 style="@style/Widget.Auxio.Button.Icon.Large"
                 android:layout_width="wrap_content"
@@ -139,7 +139,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:icon="@drawable/ic_play_24" />
 
-            <com.google.android.material.button.MaterialButton
+            <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_skip_next"
                 style="@style/Widget.Auxio.Button.Icon.Large"
                 android:layout_width="wrap_content"
@@ -151,7 +151,7 @@
                 app:layout_constraintStart_toEndOf="@+id/playback_play_pause"
                 app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
-            <com.google.android.material.button.MaterialButton
+            <org.oxycblt.auxio.ui.RippleFixMaterialButton
                 android:id="@+id/playback_shuffle"
                 style="@style/Widget.Auxio.Button.Icon.Large"
                 android:layout_width="wrap_content"

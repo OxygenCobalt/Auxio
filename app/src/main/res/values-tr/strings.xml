@@ -28,7 +28,7 @@
     <string name="lbl_licenses">Lisanslar</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Ayarlar</string>
-    <string name="set_ui">Görünüm</string>
+    <string name="set_ui">Dış görünüş</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Otomatik</string>
     <string name="set_theme_day">Açık</string>
@@ -46,11 +46,11 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <plurals name="fmt_song_count">
         <item quantity="one">%d şarkı</item>
-        <item quantity="other">%d şarkı</item>
+        <item quantity="other">%d şarkılar</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d albüm</item>
-        <item quantity="other">%d albüm</item>
+        <item quantity="other">%d albümler</item>
     </plurals>
     <string name="lbl_file_name">Dosya adı</string>
     <string name="lbl_song_detail">Özellikleri görüntüle</string>
@@ -64,9 +64,9 @@
     <string name="lbl_add">Ekle</string>
     <string name="lbl_save">Kaydet</string>
     <string name="fmt_lib_total_duration">Toplam süre: %s</string>
-    <string name="lbl_sort_count">Şarkı sayısı</string>
-    <string name="lbl_sort_disc">Disk</string>
-    <string name="lbl_sort_track">Parça</string>
+    <string name="lbl_song_count">Şarkı sayısı</string>
+    <string name="lbl_disc">Disk</string>
+    <string name="lbl_track">Parça</string>
     <string name="lbl_size">Boyut</string>
     <string name="lbl_bitrate">Bit hızı</string>
     <string name="lbl_sample_rate">Örnek hızı</string>
@@ -74,11 +74,11 @@
     <string name="info_app_desc">Android için basit, rasyonel bir müzik çalar.</string>
     <string name="lbl_indexer">Müzik yükleniyor</string>
     <string name="lng_indexing">Müzik kitaplığınız yükleniyor…</string>
-    <string name="lbl_sort_name">Ad</string>
+    <string name="lbl_name">Ad</string>
     <string name="lbl_artist">Sanatçı</string>
     <string name="lbl_album">Albüm</string>
-    <string name="lbl_sort_date">Yıl</string>
-    <string name="lbl_sort_duration">Süre</string>
+    <string name="lbl_date">Yıl</string>
+    <string name="lbl_duration">Süre</string>
     <string name="lbl_state_saved">Durum kaydedildi</string>
     <string name="lng_author">Alexander Capehart tarafından geliştirildi</string>
     <string name="set_black_mode">Siyah tema</string>
@@ -100,9 +100,6 @@
     <string name="desc_album_cover">%s Albümünün kapağı</string>
     <string name="desc_artist_image">%s Sanatçısının resmi</string>
     <string name="def_track">Parça numarası yok</string>
-    <string name="def_codec">Bilinmeyen biçim</string>
-    <string name="def_bitrate">Bit Hızı yok</string>
-    <string name="def_sample_rate">Örnek Hızı yok</string>
     <string name="cdc_mka">Matroska Ses</string>
     <string name="cdc_aac">İleri Düzeyde Ses Kodlama (AAC)</string>
     <string name="cdc_flac">Bağımsız Kayıpsız Ses Kodlama (FLAC)</string>
@@ -192,7 +189,7 @@
     <string name="lng_observing">Müzik kitaplığı değişiklikler için denetleniyor…</string>
     <string name="set_observing">Otomatik yeniden yükleme</string>
     <string name="set_observing_desc">Müzik kitaplığı her değiştiğinde yeniden yükleyin (kalıcı bildirim gerektirir)</string>
-    <string name="lbl_sort_date_added">Eklendiği tarih</string>
+    <string name="lbl_date_added">Eklendiği tarih</string>
     <string name="lbl_album_remix">Remix albüm</string>
     <string name="lbl_album_live">Canlı albüm</string>
     <string name="desc_clear_queue_item">Bu şarkıyı kuyruktan kaldır</string>
@@ -231,7 +228,7 @@
     <string name="fmt_selected">%d Seçili</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d sanatçı</item>
-        <item quantity="other">%d sanatçı</item>
+        <item quantity="other">%d sanatçılar</item>
     </plurals>
     <string name="lbl_mixes">Karmalar</string>
     <string name="lbl_mix">Karma</string>
@@ -259,4 +256,17 @@
     <string name="set_replay_gain_mode">ReplayGain stratejisi</string>
     <string name="desc_queue_handle">Bu şarkıyı kuyrukta taşı</string>
     <string name="fmt_list">%1$s, %2$s</string>
+    <string name="set_content_desc">Müzik ve görüntülerin nasıl yükleneceğini denetleyin</string>
+    <string name="set_music">Müzik</string>
+    <string name="set_images">Resimler</string>
+    <string name="set_audio_desc">Sesi ve oynatma davranışını yapılandırın</string>
+    <string name="set_playback">Oynatma</string>
+    <string name="set_library">Kütüphane</string>
+    <string name="set_state">Kalıcılık</string>
+    <string name="lbl_sort_dec">Azalan</string>
+    <string name="set_ui_desc">Uygulamanın temasını ve renklerini değiştirin</string>
+    <string name="set_dirs_list">Klasörler</string>
+    <string name="set_personalize_desc">Arayüz kontrollerini ve davranışını özelleştirin</string>
+    <string name="set_behavior">Davranış</string>
+    <string name="set_replay_gain">Ses yüksekliği dengesi ReplayGain</string>
 </resources>

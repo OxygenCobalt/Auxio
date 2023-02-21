@@ -18,6 +18,8 @@
 package org.oxycblt.auxio.music
 
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.system.Indexer
@@ -26,8 +28,9 @@ import org.oxycblt.auxio.music.system.Indexer
  * A [ViewModel] providing data specific to the music loading process.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MusicViewModel : ViewModel(), Indexer.Listener {
-    private val indexer = Indexer.getInstance()
+@HiltViewModel
+class MusicViewModel @Inject constructor(private val indexer: Indexer) :
+    ViewModel(), Indexer.Listener {
 
     private val _indexerState = MutableStateFlow<Indexer.State?>(null)
     /** The current music loading state, or null if no loading is going on. */

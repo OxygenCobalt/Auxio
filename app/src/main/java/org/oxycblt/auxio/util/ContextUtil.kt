@@ -39,6 +39,7 @@ import androidx.core.content.ContextCompat
 import kotlin.reflect.KClass
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.MainActivity
+import org.oxycblt.auxio.R
 
 /**
  * Get a [LayoutInflater] instance from this [Context].
@@ -56,6 +57,25 @@ val Context.isNight
 /** Whether the device is in landscape mode or not. */
 val Context.isLandscape
     get() = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+/**
+ * Concatenate values in a list together in a localized manner.
+ * @param context [Context] require.d
+ * @param map Function to map the [T] values to a string value to be concatenated.
+ */
+inline fun <T> List<T>.concatLocalized(context: Context, map: (T) -> String): String {
+    if (isEmpty()) {
+        // Nothing to do.
+        return ""
+    }
+
+    var joined = map(first())
+    for (i in 1..lastIndex) {
+        // Chain all previous values with the next value in the list with another delimiter.
+        joined = context.getString(R.string.fmt_list, joined, map(get(i)))
+    }
+    return joined
+}
 
 /**
  * @brief Get a plural resource.

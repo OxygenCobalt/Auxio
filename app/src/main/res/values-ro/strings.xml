@@ -26,7 +26,7 @@
     <string name="lbl_version">Versiune</string>
     <string name="lbl_code">Cod sursă</string>
     <string name="lbl_licenses">Licențe</string>
-    <string name="lng_author">Dezvoltat de OxygenCobalt</string>
+    <string name="lng_author">Dezvoltat de Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Setări</string>
     <string name="set_ui">Aspect</string>
@@ -92,17 +92,17 @@
     <string name="lbl_shuffle_shortcut_long">Amestecă-le pe toate</string>
     <string name="lbl_ok">Bine</string>
     <string name="lbl_cancel">Anulează</string>
-    <string name="lbl_sort_disc">Disc</string>
+    <string name="lbl_disc">Disc</string>
     <string name="lbl_song_detail">Vezi proprietăți</string>
-    <string name="lbl_sort_date">Data</string>
+    <string name="lbl_date">Data</string>
     <string name="lbl_mix">Mix</string>
     <string name="lbl_mixes">Mixuri</string>
-    <string name="lbl_sort_track">Piesă</string>
-    <string name="lbl_sort_duration">Durată</string>
-    <string name="lbl_sort_count">Număr de melodii</string>
+    <string name="lbl_track">Piesă</string>
+    <string name="lbl_duration">Durată</string>
+    <string name="lbl_song_count">Număr de melodii</string>
     <string name="lbl_equalizer">Egalizator</string>
     <string name="lbl_bitrate">Bit rate</string>
-    <string name="lbl_sort_date_added">Data adăugării</string>
+    <string name="lbl_date_added">Data adăugării</string>
     <string name="lbl_relative_path">Calea principală</string>
     <string name="lbl_format">Format</string>
     <string name="lbl_props">Proprietățile cântecului</string>
@@ -124,5 +124,14 @@
     <string name="lbl_artist">Artist</string>
     <string name="lbl_soundtracks">Coloane sonore</string>
     <string name="lbl_soundtrack">Coloană sonoră</string>
-    <string name="lbl_sort_name">Nume</string>
+    <string name="lbl_name">Nume</string>
+    <string name="set_personalize_desc">Personalizați controalele și comportamentul UI</string>
+    <string name="set_black_mode">Tema neagră</string>
+    <string name="set_ui_desc">Schimbați tema și culorile aplicației</string>
+    <string name="set_round_mode_desc">Activați colțurile rotunjite pentru elementele suplimentare ale interfeței de utilizare (necesită rotunjirea coperților albumelor)</string>
+    <string name="lng_indexing">Se încarcă biblioteca muzicală…</string>
+    <string name="lng_observing">Monitorizarea bibliotecii muzicale pentru modificări…</string>
+    <string name="set_display">Afişa</string>
+    <string name="set_black_mode_desc">Utilizați o temă întunecată pur-negru</string>
+    <string name="set_round_mode">Coperți rotunjite ale albumelor</string>
 </resources>

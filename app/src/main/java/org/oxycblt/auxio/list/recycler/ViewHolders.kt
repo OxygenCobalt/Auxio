@@ -24,7 +24,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemHeaderBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
-import org.oxycblt.auxio.list.Header
+import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
@@ -49,7 +49,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
         listener.bind(song, this, menuButton = binding.songMenu)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.resolveName(binding.context)
-        binding.songInfo.text = song.resolveArtistContents(binding.context)
+        binding.songInfo.text = song.artists.resolveNames(binding.context)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -76,7 +76,8 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<Song>() {
                 override fun areContentsTheSame(oldItem: Song, newItem: Song) =
-                    oldItem.rawName == newItem.rawName && oldItem.areArtistContentsTheSame(newItem)
+                    oldItem.rawName == newItem.rawName &&
+                        oldItem.artists.areRawNamesTheSame(newItem.artists)
             }
     }
 }
@@ -96,7 +97,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
         listener.bind(album, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(album)
         binding.parentName.text = album.resolveName(binding.context)
-        binding.parentInfo.text = album.resolveArtistContents(binding.context)
+        binding.parentInfo.text = album.artists.resolveNames(binding.context)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -124,7 +125,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
             object : SimpleDiffCallback<Album>() {
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.rawName == newItem.rawName &&
-                        oldItem.areArtistContentsTheSame(newItem) &&
+                        oldItem.artists.areRawNamesTheSame(newItem.artists) &&
                         oldItem.releaseType == newItem.releaseType
             }
     }
@@ -241,23 +242,23 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [Header]. Use [from] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [BasicHeader]. Use [from] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class HeaderViewHolder private constructor(private val binding: ItemHeaderBinding) :
+class BasicHeaderViewHolder private constructor(private val binding: ItemHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
-     * @param header The new [Header] to bind.
+     * @param basicHeader The new [BasicHeader] to bind.
      */
-    fun bind(header: Header) {
-        logD(binding.context.getString(header.titleRes))
-        binding.title.text = binding.context.getString(header.titleRes)
+    fun bind(basicHeader: BasicHeader) {
+        logD(binding.context.getString(basicHeader.titleRes))
+        binding.title.text = binding.context.getString(basicHeader.titleRes)
     }
 
     companion object {
         /** Unique ID for this ViewHolder type. */
-        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_HEADER
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_BASIC_HEADER
 
         /**
          * Create a new instance.
@@ -265,13 +266,15 @@ class HeaderViewHolder private constructor(private val binding: ItemHeaderBindin
          * @return A new instance.
          */
         fun from(parent: View) =
-            HeaderViewHolder(ItemHeaderBinding.inflate(parent.context.inflater))
+            BasicHeaderViewHolder(ItemHeaderBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleDiffCallback<Header>() {
-                override fun areContentsTheSame(oldItem: Header, newItem: Header): Boolean =
-                    oldItem.titleRes == newItem.titleRes
+            object : SimpleDiffCallback<BasicHeader>() {
+                override fun areContentsTheSame(
+                    oldItem: BasicHeader,
+                    newItem: BasicHeader
+                ): Boolean = oldItem.titleRes == newItem.titleRes
             }
     }
 }

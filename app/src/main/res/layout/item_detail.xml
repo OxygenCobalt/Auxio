@@ -63,7 +63,7 @@
         tools:text="Info B" />
 
 
-    <Button
+    <org.oxycblt.auxio.ui.RippleFixMaterialButton
         android:id="@+id/detail_play_button"
         style="@style/Widget.Auxio.Button.Secondary"
         android:layout_width="0dp"
@@ -75,7 +75,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detail_info" />
 
-    <Button
+    <org.oxycblt.auxio.ui.RippleFixMaterialButton
         android:id="@+id/detail_shuffle_button"
         style="@style/Widget.Auxio.Button.Primary"
         android:layout_width="0dp"

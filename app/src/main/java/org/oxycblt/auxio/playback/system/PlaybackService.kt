@@ -34,23 +34,25 @@ import com.google.android.exoplayer2.RenderersFactory
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.audio.AudioCapabilities
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer
-import com.google.android.exoplayer2.ext.flac.LibflacAudioRenderer
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
+import com.google.android.exoplayer2.ext.ffmpeg.FfmpegAudioRenderer
 import com.google.android.exoplayer2.mediacodec.MediaCodecSelector
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.music.AudioOnlyExtractors
+import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.library.Library
+import org.oxycblt.auxio.music.model.Library
 import org.oxycblt.auxio.playback.PlaybackSettings
+import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
 import org.oxycblt.auxio.playback.state.InternalPlayer
-import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.service.ForegroundManager
@@ -75,26 +77,28 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class PlaybackService :
     Service(),
     Player.Listener,
     InternalPlayer,
     MediaSessionComponent.Listener,
-    MusicStore.Listener {
+    MusicRepository.Listener {
     // Player components
     private lateinit var player: ExoPlayer
-    private lateinit var replayGainProcessor: ReplayGainAudioProcessor
+    @Inject lateinit var replayGainProcessor: ReplayGainAudioProcessor
 
     // System backend components
-    private lateinit var mediaSessionComponent: MediaSessionComponent
-    private lateinit var widgetComponent: WidgetComponent
+    @Inject lateinit var mediaSessionComponent: MediaSessionComponent
+    @Inject lateinit var widgetComponent: WidgetComponent
     private val systemReceiver = PlaybackReceiver()
 
-    // Managers
-    private val playbackManager = PlaybackStateManager.getInstance()
-    private val musicStore = MusicStore.getInstance()
-    private lateinit var musicSettings: MusicSettings
-    private lateinit var playbackSettings: PlaybackSettings
+    // Shared components
+    @Inject lateinit var playbackManager: PlaybackStateManager
+    @Inject lateinit var playbackSettings: PlaybackSettings
+    @Inject lateinit var persistenceRepository: PersistenceRepository
+    @Inject lateinit var musicRepository: MusicRepository
+    @Inject lateinit var musicSettings: MusicSettings
 
     // State
     private lateinit var foregroundManager: ForegroundManager
@@ -111,10 +115,9 @@ class PlaybackService :
     override fun onCreate() {
         super.onCreate()
 
-        // Initialize the player component.
-        replayGainProcessor = ReplayGainAudioProcessor(this)
-        // Enable constant bitrate seeking so that certain MP3s/AACs are seekable
-        val extractorsFactory = DefaultExtractorsFactory().setConstantBitrateSeekingEnabled(true)
+        // Define our own extractors so we can exclude non-audio parsers.
+        // Ordering is derived from the DefaultExtractorsFactory's optimized ordering:
+        // https://docs.google.com/document/d/1w2mKaWMxfz2Ei8-LdxqbPs1VLe_oudB-eryXXw9OvQQ.
         // Since Auxio is a music player, only specify an audio renderer to save
         // battery/apk size/cache size
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
@@ -126,12 +129,12 @@ class PlaybackService :
                     audioListener,
                     AudioCapabilities.DEFAULT_AUDIO_CAPABILITIES,
                     replayGainProcessor),
-                LibflacAudioRenderer(handler, audioListener, replayGainProcessor))
+                FfmpegAudioRenderer(handler, audioListener, replayGainProcessor))
         }
 
         player =
             ExoPlayer.Builder(this, audioRenderer)
-                .setMediaSourceFactory(DefaultMediaSourceFactory(this, extractorsFactory))
+                .setMediaSourceFactory(DefaultMediaSourceFactory(this, AudioOnlyExtractors))
                 // Enable automatic WakeLock support
                 .setWakeMode(C.WAKE_MODE_LOCAL)
                 .setAudioAttributes(
@@ -144,16 +147,12 @@ class PlaybackService :
                 .build()
                 .also { it.addListener(this) }
         replayGainProcessor.addToListeners(player)
-        // Initialize the core service components
-        musicSettings = MusicSettings.from(this)
-        playbackSettings = PlaybackSettings.from(this)
         foregroundManager = ForegroundManager(this)
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
         playbackManager.registerInternalPlayer(this)
-        musicStore.addListener(this)
-        widgetComponent = WidgetComponent(this)
-        mediaSessionComponent = MediaSessionComponent(this, this)
+        musicRepository.addListener(this)
+        mediaSessionComponent.registerListener(this)
         registerReceiver(
             systemReceiver,
             IntentFilter().apply {
@@ -172,7 +171,7 @@ class PlaybackService :
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        // Forward system media button sent by MediaButtonReciever to MediaSessionComponent
+        // Forward system media button sent by MediaButtonReceiver to MediaSessionComponent
         if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
             mediaSessionComponent.handleMediaButtonIntent(intent)
         }
@@ -191,7 +190,7 @@ class PlaybackService :
         // Pause just in case this destruction was unexpected.
         playbackManager.setPlaying(false)
         playbackManager.unregisterInternalPlayer(this)
-        musicStore.removeListener(this)
+        musicRepository.removeListener(this)
 
         unregisterReceiver(systemReceiver)
         serviceJob.cancel()
@@ -331,15 +330,13 @@ class PlaybackService :
             // to save the current state as it's not long until this service (and likely the whole
             // app) is killed.
             logD("Saving playback state")
-            saveScope.launch {
-                playbackManager.saveState(PlaybackStateDatabase.getInstance(this@PlaybackService))
-            }
+            saveScope.launch { persistenceRepository.saveState(playbackManager.toSavedState()) }
         }
     }
 
     override fun performAction(action: InternalPlayer.Action): Boolean {
         val library =
-            musicStore.library
+            musicRepository.library
             // No library, cannot do anything.
             ?: return false
 
@@ -349,8 +346,9 @@ class PlaybackService :
             // Restore state -> Start a new restoreState job
             is InternalPlayer.Action.RestoreState -> {
                 restoreScope.launch {
-                    playbackManager.restoreState(
-                        PlaybackStateDatabase.getInstance(this@PlaybackService), false)
+                    persistenceRepository.readState(library)?.let {
+                        playbackManager.applySavedState(it, false)
+                    }
                 }
             }
             // Shuffle all -> Start new playback from all songs

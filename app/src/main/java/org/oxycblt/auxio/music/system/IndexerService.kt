@@ -25,14 +25,15 @@ import android.os.IBinder
 import android.os.Looper
 import android.os.PowerManager
 import android.provider.MediaStore
-import coil.imageLoader
+import coil.ImageLoader
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.storage.contentResolverSafe
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.service.ForegroundManager
@@ -53,10 +54,13 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
-    private val indexer = Indexer.getInstance()
-    private val musicStore = MusicStore.getInstance()
-    private val playbackManager = PlaybackStateManager.getInstance()
+    @Inject lateinit var imageLoader: ImageLoader
+    @Inject lateinit var musicRepository: MusicRepository
+    @Inject lateinit var indexer: Indexer
+    @Inject lateinit var musicSettings: MusicSettings
+    @Inject lateinit var playbackManager: PlaybackStateManager
     private val serviceJob = Job()
     private val indexScope = CoroutineScope(serviceJob + Dispatchers.IO)
     private var currentIndexJob: Job? = null
@@ -65,7 +69,6 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
     private lateinit var observingNotification: ObservingNotification
     private lateinit var wakeLock: PowerManager.WakeLock
     private lateinit var indexerContentObserver: SystemContentObserver
-    private lateinit var settings: MusicSettings
 
     override fun onCreate() {
         super.onCreate()
@@ -80,12 +83,11 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
         indexerContentObserver = SystemContentObserver()
-        settings = MusicSettings.from(this)
-        settings.registerListener(this)
+        musicSettings.registerListener(this)
         indexer.registerController(this)
         // An indeterminate indexer and a missing library implies we are extremely early
         // in app initialization so start loading music.
-        if (musicStore.library == null && indexer.isIndeterminate) {
+        if (musicRepository.library == null && indexer.isIndeterminate) {
             logD("No library present and no previous response, indexing music now")
             onStartIndexing(true)
         }
@@ -105,7 +107,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
         // Then cancel the listener-dependent components to ensure that stray reloading
         // events will not occur.
         indexerContentObserver.release()
-        settings.unregisterListener(this)
+        musicSettings.unregisterListener(this)
         indexer.unregisterController(this)
         // Then cancel any remaining music loading jobs.
         serviceJob.cancel()
@@ -121,7 +123,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
             indexer.reset()
         }
         // Start a new music loading job on a co-routine.
-        currentIndexJob = indexScope.launch { indexer.index(this@IndexerService, withCache) }
+        currentIndexJob = indexer.index(this@IndexerService, withCache, indexScope)
     }
 
     override fun onIndexerStateChanged(state: Indexer.State?) {
@@ -129,20 +131,31 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
             is Indexer.State.Indexing -> updateActiveSession(state.indexing)
             is Indexer.State.Complete -> {
                 val newLibrary = state.result.getOrNull()
-                if (newLibrary != null && newLibrary != musicStore.library) {
+                if (newLibrary != null && newLibrary != musicRepository.library) {
                     logD("Applying new library")
                     // We only care if the newly-loaded library is going to replace a previously
                     // loaded library.
-                    if (musicStore.library != null) {
+                    if (musicRepository.library != null) {
                         // Wipe possibly-invalidated outdated covers
                         imageLoader.memoryCache?.clear()
                         // Clear invalid models from PlaybackStateManager. This is not connected
                         // to a listener as it is bad practice for a shared object to attach to
                         // the listener system of another.
-                        playbackManager.sanitize(newLibrary)
+                        playbackManager.toSavedState()?.let { savedState ->
+                            playbackManager.applySavedState(
+                                PlaybackStateManager.SavedState(
+                                    parent = savedState.parent?.let(newLibrary::sanitize),
+                                    queueState =
+                                        savedState.queueState.remap { song ->
+                                            newLibrary.sanitize(requireNotNull(song))
+                                        },
+                                    positionMs = savedState.positionMs,
+                                    repeatMode = savedState.repeatMode),
+                                true)
+                        }
                     }
                     // Forward the new library to MusicStore to continue the update process.
-                    musicStore.library = newLibrary
+                    musicRepository.library = newLibrary
                 }
                 // On errors, while we would want to show a notification that displays the
                 // error, that requires the Android 13 notification permission, which is not
@@ -184,7 +197,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
      * currently monitoring the music library for changes.
      */
     private fun updateIdleSession() {
-        if (settings.shouldBeObserving) {
+        if (musicSettings.shouldBeObserving) {
             // There are a few reasons why we stay in the foreground with automatic rescanning:
             // 1. Newer versions of Android have become more and more restrictive regarding
             // how a foreground service starts. Thus, it's best to go foreground now so that
@@ -274,7 +287,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
         override fun run() {
             // Check here if we should even start a reindex. This is much less bug-prone than
             // registering and de-registering this component as this setting changes.
-            if (settings.shouldBeObserving) {
+            if (musicSettings.shouldBeObserving) {
                 onStartIndexing(true)
             }
         }

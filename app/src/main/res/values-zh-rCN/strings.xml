@@ -15,10 +15,10 @@
     <string name="lbl_filter">过滤器</string>
     <string name="lbl_filter_all">全部</string>
     <string name="lbl_sort">排序方式</string>
-    <string name="lbl_sort_name">名称</string>
+    <string name="lbl_name">名称</string>
     <string name="lbl_artist">艺术家</string>
     <string name="lbl_album">专辑</string>
-    <string name="lbl_sort_date">年份</string>
+    <string name="lbl_date">年份</string>
     <string name="lbl_sort_asc">首字符（正序）</string>
     <string name="lbl_playback">正在播放</string>
     <string name="lbl_play">播放</string>
@@ -147,8 +147,6 @@
     <string name="set_dirs_mode">模式</string>
     <string name="set_dirs_mode_exclude">排除</string>
     <string name="set_dirs_mode_include">包含</string>
-    <string name="def_codec">未知格式</string>
-    <string name="def_bitrate">没有比特率信息</string>
     <string name="cdc_mp3">MPEG-1 音频</string>
     <string name="cdc_mp4">MPEG-4 音频</string>
     <string name="cdc_ogg">Ogg 音频</string>
@@ -170,13 +168,12 @@
     <string name="set_dirs_mode_exclude_desc">将 <b>不会</b>从您添加的目录中加载音乐。</string>
     <string name="cdc_aac">高级音乐编码 (AAC)</string>
     <string name="fmt_lib_album_count">已加载专辑数量：%d</string>
-    <string name="def_sample_rate">没有采样率信息</string>
     <string name="lbl_indexer">音乐加载中</string>
     <string name="lng_indexing">正在加载您的音乐库……</string>
-    <string name="lbl_sort_disc">碟片</string>
-    <string name="lbl_sort_duration">时长</string>
-    <string name="lbl_sort_count">歌曲计数</string>
-    <string name="lbl_sort_track">音轨</string>
+    <string name="lbl_disc">碟片</string>
+    <string name="lbl_duration">时长</string>
+    <string name="lbl_song_count">歌曲计数</string>
+    <string name="lbl_track">音轨</string>
     <string name="lbl_song_detail">查看属性</string>
     <string name="lbl_props">曲目属性</string>
     <string name="lbl_file_name">文件名</string>
@@ -210,7 +207,7 @@
     <string name="lbl_mixtapes">混音带</string>
     <string name="lbl_mixtape">混音带</string>
     <string name="lbl_remix_group">混音</string>
-    <string name="lbl_sort_date_added">添加日期</string>
+    <string name="lbl_date_added">添加日期</string>
     <string name="lbl_album_remix">混音专辑</string>
     <string name="lbl_ep_live">现场 EP</string>
     <string name="lbl_album_live">现场专辑</string>
@@ -271,4 +268,5 @@
     <string name="set_dirs_list">文件夹</string>
     <string name="set_music">音乐</string>
     <string name="set_audio_desc">配置声音和播放行为</string>
+    <string name="lbl_sort_dec">降序</string>
 </resources>

@@ -95,14 +95,14 @@
     <string name="lbl_indexer">Chargement de musique</string>
     <string name="lng_widget">Afficher et contrôler la lecture de la musique</string>
     <string name="lng_indexing">Chargement de votre bibliothèque musicale…</string>
-    <string name="lbl_sort_name">Nom</string>
+    <string name="lbl_name">Nom</string>
     <string name="lbl_artist">Artiste</string>
     <string name="lbl_album">Album</string>
-    <string name="lbl_sort_date">Année</string>
-    <string name="lbl_sort_duration">Durée</string>
-    <string name="lbl_sort_count">Nombre de chansons</string>
-    <string name="lbl_sort_disc">Disque</string>
-    <string name="lbl_sort_track">Piste</string>
+    <string name="lbl_date">Année</string>
+    <string name="lbl_duration">Durée</string>
+    <string name="lbl_song_count">Nombre de chansons</string>
+    <string name="lbl_disc">Disque</string>
+    <string name="lbl_track">Piste</string>
     <string name="lbl_song_detail">Voir les propriétés</string>
     <string name="lbl_props">Propriétés de la chanson</string>
     <string name="lbl_ep_live">EP live</string>
@@ -123,7 +123,7 @@
     <string name="lbl_mixtapes">Mixtapes</string>
     <string name="lbl_mixtape">Mixtape</string>
     <string name="lbl_remix_group">Remix</string>
-    <string name="lbl_sort_date_added">Date d\'ajout</string>
+    <string name="lbl_date_added">Date d\'ajout</string>
     <string name="lbl_album_live">Album live</string>
     <string name="lbl_album_remix">Album de remixes</string>
     <string name="lbl_genre">Genre</string>
@@ -139,7 +139,6 @@
     <string name="err_no_dirs">Aucun dossier</string>
     <string name="desc_music_dir_delete">Supprimer le dossier</string>
     <string name="def_artist">Artiste inconnu</string>
-    <string name="def_codec">Format inconnu</string>
     <string name="lbl_compilation_live">Compilation en direct</string>
     <string name="lbl_compilation_remix">Compilations de remix</string>
     <string name="lbl_mixes">Mixes</string>

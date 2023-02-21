@@ -22,6 +22,7 @@ import android.content.Context
 import android.util.AttributeSet
 import com.google.android.material.button.MaterialButton
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.ui.RippleFixMaterialButton
 import org.oxycblt.auxio.util.getInteger
 
 /**
@@ -32,7 +33,7 @@ import org.oxycblt.auxio.util.getInteger
 class AnimatedMaterialButton
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-    MaterialButton(context, attrs, defStyleAttr) {
+    RippleFixMaterialButton(context, attrs, defStyleAttr) {
     private var currentCornerRadiusRatio = 0f
     private var animator: ValueAnimator? = null
 

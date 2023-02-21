@@ -25,20 +25,24 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.DetailAdapter
 import org.oxycblt.auxio.detail.recycler.GenreDetailAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.BasicListInstructions
+import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
@@ -49,9 +53,13 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A [ListFragment] that shows information for a particular [Genre].
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class GenreDetailFragment :
     ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener<Music> {
     private val detailModel: DetailViewModel by activityViewModels()
+    override val navModel: NavigationViewModel by activityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val selectionModel: SelectionViewModel by activityViewModels()
     // Information about what genre to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an genre.
     private val args: GenreDetailFragmentArgs by navArgs()
@@ -158,14 +166,19 @@ class GenreDetailFragment :
         openMenu(anchor, R.menu.menu_genre_sort) {
             val sort = detailModel.genreSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
-            unlikelyToBeNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
+            val directionItemId =
+                when (sort.direction) {
+                    Sort.Direction.ASCENDING -> R.id.option_sort_asc
+                    Sort.Direction.DESCENDING -> R.id.option_sort_dec
+                }
+            unlikelyToBeNull(menu.findItem(directionItemId)).isChecked = true
             setOnMenuItemClickListener { item ->
                 item.isChecked = !item.isChecked
                 detailModel.genreSongSort =
-                    if (item.itemId == R.id.option_sort_asc) {
-                        sort.withAscending(item.isChecked)
-                    } else {
-                        sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
+                    when (item.itemId) {
+                        R.id.option_sort_asc -> sort.withDirection(Sort.Direction.ASCENDING)
+                        R.id.option_sort_dec -> sort.withDirection(Sort.Direction.DESCENDING)
+                        else -> sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
                     }
                 true
             }

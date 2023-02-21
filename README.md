@@ -2,8 +2,8 @@
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
-    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.0.2">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.0.2&color=0D5AF5">
+    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.0.3">
+        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.0.3&color=0D5AF5">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg">
@@ -68,12 +68,12 @@ precise/original dates, sort tags, and more
 
 ## Building
 
-Auxio relies on a custom version of ExoPlayer that enables some extra features. So, the build process is as follows:
-
-1. `cd` into the project directory.
-2. Run `python3 prebuild.py`, which installs ExoPlayer and it's extensions.
-    - The pre-build process only works with \*nix systems. On windows, this process must be done manually.
-3. Build the project normally in Android Studio.
+Auxio relies on a custom version of ExoPlayer that enables some extra features. This adds some caveats to
+the build process:
+1. The project uses submodules, so when cloning initially, use `git clone --recurse-submodules` to properly
+download in the external code.
+2. You are **unable** to build this project on windows, as the custom ExoPlayer build runs shell scripts that
+will only work on unix-based systems.
 
 ## Contributing
 

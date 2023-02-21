@@ -20,13 +20,22 @@ package org.oxycblt.auxio.settings.categories
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
 
+/**
+ * Display preferences.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+@AndroidEntryPoint
 class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
+    @Inject lateinit var uiSettings: UISettings
+
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_accent)) {
             findNavController().navigate(UIPreferenceFragmentDirections.goToAccentDialog())
@@ -43,7 +52,7 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
                     }
             }
             getString(R.string.set_key_accent) -> {
-                preference.summary = getString(UISettings.from(requireContext()).accent.name)
+                preference.summary = getString(uiSettings.accent.name)
             }
             getString(R.string.set_key_black_theme) -> {
                 preference.onPreferenceChangeListener =

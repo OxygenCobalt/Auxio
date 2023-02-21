@@ -27,28 +27,36 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.ActionMode
 import org.oxycblt.auxio.playback.PlaybackSettings
+import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.playback.state.Queue
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.logD
 
 /**
  * A component that mirrors the current playback state into the [MediaSessionCompat] and
  * [NotificationComponent].
- * @param context [Context] required to initialize components.
- * @param listener [Listener] to forward notification updates to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MediaSessionComponent(private val context: Context, private val listener: Listener) :
+class MediaSessionComponent
+@Inject
+constructor(
+    @ApplicationContext private val context: Context,
+    private val bitmapProvider: BitmapProvider,
+    private val playbackManager: PlaybackStateManager,
+    private val playbackSettings: PlaybackSettings,
+) :
     MediaSessionCompat.Callback(),
     PlaybackStateManager.Listener,
     ImageSettings.Listener,
@@ -59,11 +67,9 @@ class MediaSessionComponent(private val context: Context, private val listener: 
             setQueueTitle(context.getString(R.string.lbl_queue))
         }
 
-    private val playbackManager = PlaybackStateManager.getInstance()
-    private val playbackSettings = PlaybackSettings.from(context)
-
     private val notification = NotificationComponent(context, mediaSession.sessionToken)
-    private val provider = BitmapProvider(context)
+
+    private var listener: Listener? = null
 
     init {
         playbackManager.addListener(this)
@@ -80,11 +86,20 @@ class MediaSessionComponent(private val context: Context, private val listener: 
     }
 
     /**
+     * Register a [Listener] for notification updates to this service.
+     * @param listener The [Listener] to register.
+     */
+    fun registerListener(listener: Listener) {
+        this.listener = listener
+    }
+
+    /**
      * Release this instance, closing the [MediaSessionCompat] and preventing any further updates to
      * the [NotificationComponent].
      */
     fun release() {
-        provider.release()
+        listener = null
+        bitmapProvider.release()
         playbackSettings.unregisterListener(this)
         playbackManager.removeListener(this)
         mediaSession.apply {
@@ -134,8 +149,8 @@ class MediaSessionComponent(private val context: Context, private val listener: 
     override fun onStateChanged(state: InternalPlayer.State) {
         invalidateSessionState()
         notification.updatePlaying(playbackManager.playerState.isPlaying)
-        if (!provider.isBusy) {
-            listener.onPostNotification(notification)
+        if (!bitmapProvider.isBusy) {
+            listener?.onPostNotification(notification)
         }
     }
 
@@ -271,7 +286,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
         // Populate MediaMetadataCompat. For efficiency, cache some fields that are re-used
         // several times.
         val title = song.resolveName(context)
-        val artist = song.resolveArtistContents(context)
+        val artist = song.artists.resolveNames(context)
         val builder =
             MediaMetadataCompat.Builder()
                 .putText(MediaMetadataCompat.METADATA_KEY_TITLE, title)
@@ -281,14 +296,14 @@ class MediaSessionComponent(private val context: Context, private val listener: 
                 .putText(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
                 .putText(
                     MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST,
-                    song.album.resolveArtistContents(context))
+                    song.album.artists.resolveNames(context))
                 .putText(MediaMetadataCompat.METADATA_KEY_AUTHOR, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_COMPOSER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_WRITER, artist)
                 .putText(
                     METADATA_KEY_PARENT,
                     parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
-                .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.resolveGenreContents(context))
+                .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.genres.resolveNames(context))
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, artist)
                 .putText(
@@ -300,14 +315,14 @@ class MediaSessionComponent(private val context: Context, private val listener: 
             builder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, it.toLong())
         }
         song.disc?.let {
-            builder.putLong(MediaMetadataCompat.METADATA_KEY_DISC_NUMBER, it.toLong())
+            builder.putLong(MediaMetadataCompat.METADATA_KEY_DISC_NUMBER, it.number.toLong())
         }
         song.date?.let { builder.putString(MediaMetadataCompat.METADATA_KEY_DATE, it.toString()) }
 
         // We are normally supposed to use URIs for album art, but that removes some of the
         // nice things we can do like square cropping or high quality covers. Instead,
         // we load a full-size bitmap into the media session and take the performance hit.
-        provider.load(
+        bitmapProvider.load(
             song,
             object : BitmapProvider.Target {
                 override fun onCompleted(bitmap: Bitmap?) {
@@ -316,7 +331,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
                     val metadata = builder.build()
                     mediaSession.setMetadata(metadata)
                     notification.updateMetadata(metadata)
-                    listener.onPostNotification(notification)
+                    listener?.onPostNotification(notification)
                 }
             })
     }
@@ -334,7 +349,7 @@ class MediaSessionComponent(private val context: Context, private val listener: 
                         // as it's used to request a song to be played from the queue.
                         .setMediaId(song.uid.toString())
                         .setTitle(song.resolveName(context))
-                        .setSubtitle(song.resolveArtistContents(context))
+                        .setSubtitle(song.artists.resolveNames(context))
                         // Since we usually have to load many songs into the queue, use the
                         // MediaStore URI instead of loading a bitmap.
                         .setIconUri(song.album.coverUri)
@@ -402,8 +417,8 @@ class MediaSessionComponent(private val context: Context, private val listener: 
             else -> notification.updateRepeatMode(playbackManager.repeatMode)
         }
 
-        if (!provider.isBusy) {
-            listener.onPostNotification(notification)
+        if (!bitmapProvider.isBusy) {
+            listener?.onPostNotification(notification)
         }
     }
 

@@ -16,7 +16,7 @@
     <string name="lbl_shuffle">Перемішати</string>
     <string name="lbl_playback">Відтворюється</string>
     <string name="lbl_queue">Черга</string>
-    <string name="lbl_play_next">Відтворити наступною</string>
+    <string name="lbl_play_next">Відтворити наступним</string>
     <string name="lbl_queue_add">Додати в чергу</string>
     <string name="lng_queue_added">Додано в чергу</string>
     <string name="lbl_go_artist">Перейти до виконавця</string>
@@ -32,7 +32,7 @@
     <string name="set_theme_day">Світла</string>
     <string name="set_theme_night">Темна</string>
     <string name="set_audio">Аудіо</string>
-    <string name="set_personalize">Поведінка</string>
+    <string name="set_personalize">Персоналізація</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Музику не знайдено</string>
     <!-- Hint Namespace | EditText Hints -->
@@ -57,8 +57,8 @@
     <string name="lbl_shuffle_selected">Перемішати вибране</string>
     <string name="lbl_file_name">Ім\'я файлу</string>
     <string name="lbl_format">Формат</string>
-    <string name="lbl_ok">OK</string>
-    <string name="lbl_cancel">Відміна</string>
+    <string name="lbl_ok">Добре</string>
+    <string name="lbl_cancel">Скасувати</string>
     <string name="lbl_save">Зберегти</string>
     <string name="lbl_shuffle_shortcut_short">Перемішати</string>
     <string name="lbl_shuffle_shortcut_long">Перемішати все</string>
@@ -70,8 +70,8 @@
     <string name="lbl_compilation_remix">Збірки реміксів</string>
     <string name="lbl_bitrate">Бітрейт</string>
     <string name="lbl_observing">Моніторинг музичної бібліотеки</string>
-    <string name="info_app_desc">Простий, раціональний музичний плеєр на Android.</string>
-    <string name="lbl_indexing">Завантаження пісень</string>
+    <string name="info_app_desc">Простий, раціональний музичний плеєр для Android.</string>
+    <string name="lbl_indexing">Завантаження музики</string>
     <string name="lbl_album">Альбом</string>
     <string name="lbl_singles">Сингли</string>
     <string name="lbl_single">Сингл</string>
@@ -82,7 +82,7 @@
     <string name="lbl_album_live">Концертний альбом</string>
     <string name="lbl_relative_path">Шлях до каталогу</string>
     <string name="set_display">Екран</string>
-    <string name="lbl_sort_date">Рік</string>
+    <string name="lbl_date">Дата</string>
     <string name="lbl_play_selected">Відтворити вибране</string>
     <string name="set_cover_mode">Обкладинки альбомів</string>
     <string name="set_hide_collaborators">Приховати співавторів</string>
@@ -94,7 +94,7 @@
     <string name="fmt_lib_total_duration">Загальна тривалість: %s</string>
     <string name="lbl_mixtapes">Мікстейпи</string>
     <string name="lbl_artist">Виконавець</string>
-    <string name="lbl_sort_duration">Тривалість</string>
+    <string name="lbl_duration">Тривалість</string>
     <string name="lbl_mixes">Мікси</string>
     <string name="lbl_mix">Мікс</string>
     <string name="set_round_mode">Заокруглені обкладинки</string>
@@ -102,7 +102,7 @@
     <string name="lbl_props">Властивості пісні</string>
     <string name="lbl_add">Додати</string>
     <string name="set_repeat_pause_desc">Ставити на паузу при повторенні пісні</string>
-    <string name="lbl_sort_date_added">Дата додавання</string>
+    <string name="lbl_date_added">Дата додавання</string>
     <string name="lbl_sample_rate">Частота дискретизації</string>
     <string name="set_cover_mode_quality">Висока якість</string>
     <string name="set_reindex">Оновити музику</string>
@@ -115,9 +115,9 @@
     <string name="set_keep_shuffle">Запам\'ятати перемішування</string>
     <string name="set_repeat_pause">Пауза при повторенні</string>
     <string name="lbl_genre">Жанр</string>
-    <string name="lbl_sort_disc">Диск</string>
-    <string name="lbl_sort_asc">По зростанню</string>
-    <string name="lbl_sort_name">Назва</string>
+    <string name="lbl_disc">Диск</string>
+    <string name="lbl_sort_asc">За зростанням</string>
+    <string name="lbl_name">Назва</string>
     <string name="lbl_song_detail">Переглянути властивості</string>
     <string name="set_exclude_non_music_desc">Ігнорувати аудіо файли які не являються музикою, наприклад, подкасти</string>
     <string name="set_exclude_non_music">Виключити інші звукові файли</string>
@@ -126,7 +126,7 @@
     <string name="lbl_compilation_live">Концертна збірка</string>
     <string name="lbl_ep">Мініальбом</string>
     <string name="lbl_eps">Мініальбоми</string>
-    <string name="lbl_sort_count">Номер пісні</string>
+    <string name="lbl_song_count">Номер пісні</string>
     <string name="set_headset_autoplay_desc">Завжди починати відтворення при підключенні гарнітури (може працювати не на всіх пристроях)</string>
     <string name="lbl_ep_remix">Мініальбом реміксів</string>
     <string name="lbl_single_live">Концертний сингл</string>
@@ -149,7 +149,7 @@
     <string name="lbl_state_wiped">Стан відтворення очищено</string>
     <string name="set_black_mode_desc">Використовувати повністю чорну тему</string>
     <string name="set_hide_collaborators_desc">Показувати лише тих виконавців, які безпосередньо зазначені в альбомі (найкраще працює в добре позначених бібліотеках)</string>
-    <string name="set_pre_amp_warning">Увага: Встановлення високих позитивних значень попереднього підсилювача може призвести до обрізки звуку в деяких піснях.</string>
+    <string name="set_pre_amp_warning">Увага: Встановлення високих позитивних значень попереднього підсилювача може призвести до спотворення звуку в деяких піснях.</string>
     <string name="set_detail_song_playback_mode">При відтворенні з деталей предмета</string>
     <string name="set_rescan_desc">Очистити кеш тегів і повністю перезавантажити музичну бібліотеку (повільніше, але ефективніше)</string>
     <string name="set_observing">Автоматичне перезавантаження</string>
@@ -181,11 +181,11 @@
     <string name="set_save_state">Зберегти стан відтворення</string>
     <string name="set_wipe_state">Очистити стан відтворення</string>
     <string name="set_restore_state">Відновити стан відтворення</string>
-    <string name="lbl_sort_track">Пісня</string>
+    <string name="lbl_track">Пісня</string>
     <string name="lbl_state_restored">Стан відтворення відновлено</string>
     <string name="lng_widget">Перегляд і керування відтворенням музики</string>
     <string name="set_rewind_prev_desc">Перемотайте на початок пісні перед відтворенням попередньої</string>
-    <string name="set_round_mode_desc">Увімкнути закруглені кути на додаткових елементах інтерфейсу (потрібно заокруглення обкладинок альбомів)</string>
+    <string name="set_round_mode_desc">Увімкнути заокруглені кути на додаткових елементах інтерфейсу (потрібно заокруглення обкладинок альбомів)</string>
     <string name="set_pre_amp_desc">Попередній підсилювач застосовується до наявних налаштувань під час відтворення</string>
     <string name="set_playback_mode_songs">Відтворити всі пісні</string>
     <string name="set_reindex_desc">Перезавантажити музичну бібліотеку, використовуючи кешовані теги, коли це можливо</string>
@@ -195,7 +195,6 @@
     <string name="set_separators_semicolon">Крапка з комою (;)</string>
     <string name="err_bad_dir">Ця папка не підтримується</string>
     <string name="def_artist">Невідомий виконавець</string>
-    <string name="def_bitrate">Немає бітрейту</string>
     <string name="clr_lime">Лаймовий</string>
     <string name="set_separators_and">Амперсанд (&amp;)</string>
     <string name="err_no_dirs">Немає папок</string>
@@ -217,7 +216,6 @@
     </plurals>
     <string name="desc_album_cover">Обкладинка альбому %s</string>
     <string name="def_genre">Невідомий жанр</string>
-    <string name="def_sample_rate">Немає частоти дискретизації</string>
     <string name="desc_queue_bar">Відкрити чергу</string>
     <string name="clr_yellow">Жовтий</string>
     <string name="desc_queue_handle">Перемістити пісню в черзі</string>
@@ -230,22 +228,21 @@
     <string name="desc_tab_handle">Перемістити дану вкладку</string>
     <string name="desc_clear_search">Очистити пошуковий запит</string>
     <string name="desc_no_cover">Обкладинка альбому</string>
-    <string name="cdc_ogg">Ogg audio</string>
+    <string name="cdc_ogg">Звук Ogg</string>
     <string name="clr_indigo">Індиго</string>
     <string name="clr_blue">Синій</string>
     <string name="clr_deep_blue">Темно-синій</string>
     <string name="clr_green">Зелений</string>
     <string name="clr_deep_green">Темно-зелений</string>
-    <string name="clr_dynamic">Динамічні</string>
+    <string name="clr_dynamic">Динамічний</string>
     <string name="fmt_db_pos">+%.1f дБ</string>
     <string name="fmt_db_neg">-%.1f дБ</string>
     <string name="desc_artist_image">Фото виконавця %s</string>
-    <string name="def_codec">Невідомий формат</string>
     <string name="desc_genre_image">Зображення жанру %s</string>
     <string name="cdc_mp3">Звук MPEG-1</string>
     <string name="err_no_app">Не знайдено жодного застосунку, який би міг впоратися з цим завданням</string>
     <string name="def_date">Дата відсутня</string>
-    <string name="def_track">Номер пісні невідомий</string>
+    <string name="def_track">Немає пісні</string>
     <string name="def_playback">Музика не грає</string>
     <string name="err_did_not_wipe">Не вдалось очистити статус відтворення</string>
     <string name="err_did_not_save">Не вдалось зберегти статус відтворення</string>
@@ -275,6 +272,7 @@
     <string name="set_replay_gain">Вирівнювання гучності (ReplayGain)</string>
     <string name="set_library">Бібліотека</string>
     <string name="set_state">Наполегливість</string>
-    <string name="set_audio_desc">Налаштування звуку і поведінки відтворення</string>
+    <string name="set_audio_desc">Налаштування звуку і поведінки при відтворенні</string>
     <string name="set_dirs_list">Папки</string>
+    <string name="lbl_sort_dec">За спаданням</string>
 </resources>

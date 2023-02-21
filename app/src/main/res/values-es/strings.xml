@@ -15,10 +15,10 @@
     <string name="lbl_filter">Filtrar</string>
     <string name="lbl_filter_all">Todo</string>
     <string name="lbl_sort">Organizar</string>
-    <string name="lbl_sort_name">Nombre</string>
+    <string name="lbl_name">Nombre</string>
     <string name="lbl_artist">Artista</string>
     <string name="lbl_album">Álbum</string>
-    <string name="lbl_sort_date">Año</string>
+    <string name="lbl_date">Año</string>
     <string name="lbl_sort_asc">Ascendente</string>
     <string name="lbl_playback">En reproducción</string>
     <string name="lbl_play">Reproducir</string>
@@ -105,7 +105,7 @@
     <string name="def_artist">Artista desconocido</string>
     <string name="def_genre">Género desconocido</string>
     <string name="def_date">Sin fecha</string>
-    <string name="def_track">Sin número de pista</string>
+    <string name="def_track">Ninguna pista</string>
     <string name="def_playback">Sin música en reproducción</string>
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Rojo</string>
@@ -139,9 +139,9 @@
     <string name="lbl_size">Tamaño</string>
     <string name="lbl_format">Formato</string>
     <string name="lbl_bitrate">Tasa de bits</string>
-    <string name="lbl_sort_duration">Duración</string>
-    <string name="lbl_sort_track">Pista</string>
-    <string name="lbl_sort_disc">Disco</string>
+    <string name="lbl_duration">Duración</string>
+    <string name="lbl_track">Pista</string>
+    <string name="lbl_disc">Disco</string>
     <string name="lbl_song_detail">Ver propiedades</string>
     <string name="lbl_shuffle_shortcut_short">Mezclar</string>
     <string name="lbl_shuffle_shortcut_long">Mezclar todo</string>
@@ -154,8 +154,6 @@
     <string name="set_dirs_mode_exclude">Excluir</string>
     <string name="set_dirs_mode_exclude_desc">La música<b>no</b> se cargará de las carpetas que añadas.</string>
     <string name="set_dirs_mode_include">Incluir</string>
-    <string name="def_sample_rate">Sin frecuencia de muestreo</string>
-    <string name="def_bitrate">Sin tasa de bits</string>
     <string name="cdc_mka">Audio matroska</string>
     <string name="cdc_flac">Free Losless Audio Codec (FLAC)</string>
     <string name="cdc_aac">Advances Audio Coding (AAC)</string>
@@ -163,7 +161,7 @@
     <string name="fmt_lib_artist_count">Artistas cargados: %d</string>
     <string name="fmt_lib_genre_count">Géneros cargados: %d</string>
     <string name="lbl_indexer">Carga de música</string>
-    <string name="lbl_sort_count">Número de canciones</string>
+    <string name="lbl_song_count">Número de canciones</string>
     <string name="lbl_state_restored">Estado restaurado</string>
     <string name="set_observing">Recarga automática</string>
     <string name="set_observing_desc">Recargar la biblioteca musical cada vez que cambie (requiere una notificación persistente)</string>
@@ -174,7 +172,7 @@
     <string name="lng_observing">Monitorizando cambios en tu librería de música…</string>
     <string name="cdc_ogg">Audio ogg</string>
     <string name="set_detail_song_playback_mode">Cuando se reproduce desde los detalles</string>
-    <string name="lbl_sort_date_added">Fecha de añadido</string>
+    <string name="lbl_date_added">Fecha de añadido</string>
     <string name="lbl_props">Propiedades de la canción</string>
     <string name="lbl_sample_rate">Frecuencia de muestreo</string>
     <string name="lbl_cancel">Cancelar</string>
@@ -184,7 +182,6 @@
     <string name="set_dirs">Carpetas de música</string>
     <string name="set_dirs_desc">Gestionar de dónde se cargará la música</string>
     <string name="set_dirs_mode_include_desc">La música<b>solo</b> se cargará de las carpetas que añadas.</string>
-    <string name="def_codec">Formato desconocido</string>
     <string name="clr_dynamic">Dinámico</string>
     <string name="fmt_disc_no">Disco %d</string>
     <string name="lbl_eps">Reproducción extendidas (EPs)</string>
@@ -239,7 +236,7 @@
     <string name="set_cover_mode_off">Apagado</string>
     <string name="set_action_mode_repeat">Modo de repetición</string>
     <string name="set_separators_plus">Más (+)</string>
-    <string name="set_separators_and">Y (&amp;)</string>
+    <string name="set_separators_and">Signo et</string>
     <string name="desc_exit">Detener la reproducción</string>
     <string name="set_exclude_non_music_desc">Ignorar archivos de audio que no sean música, como podcasts</string>
     <string name="set_separators_warning">Advertencia: El uso de esta configuración puede dar lugar a que algunas etiquetas se interpreten incorrectamente como si tuvieran varios valores. Puede resolverlo anteponiendo a los caracteres separadores no deseados una barra invertida (\\).</string>
@@ -277,4 +274,5 @@
     <string name="set_ui_desc">Cambiar el tema y los colores de la aplicación</string>
     <string name="set_personalize_desc">Personalizar los controles y el comportamiento de la interfaz de usuario</string>
     <string name="set_library">Biblioteca</string>
+    <string name="lbl_sort_dec">Descendente</string>
 </resources>

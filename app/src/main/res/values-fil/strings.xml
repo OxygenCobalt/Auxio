@@ -19,10 +19,10 @@
     <string name="lbl_single_remix">Remix single</string>
     <string name="lbl_compilations">Mga Compilation</string>
     <string name="lbl_sort">Ayusin</string>
-    <string name="lbl_sort_name">Pangalan</string>
-    <string name="lbl_sort_date">Taon</string>
-    <string name="lbl_sort_duration">Tagal</string>
-    <string name="lbl_sort_count">Bilang ng kanta</string>
+    <string name="lbl_name">Pangalan</string>
+    <string name="lbl_date">Taon</string>
+    <string name="lbl_duration">Tagal</string>
+    <string name="lbl_song_count">Bilang ng kanta</string>
     <string name="lbl_compilation">Compilation</string>
     <string name="lbl_soundtracks">Mga Soundtrack</string>
     <string name="lbl_soundtrack">Soundtrack</string>
@@ -32,8 +32,8 @@
     <string name="lbl_artists">Mga Artista</string>
     <string name="lbl_filter">Salain</string>
     <string name="lbl_filter_all">Lahat</string>
-    <string name="lbl_sort_disc">Disko</string>
-    <string name="lbl_sort_date_added">Petsa ng pagdagdag</string>
+    <string name="lbl_disc">Disko</string>
+    <string name="lbl_date_added">Petsa ng pagdagdag</string>
     <string name="lbl_sort_asc">Pataas</string>
     <string name="lbl_playback">Tinutugtog Ngayon</string>
     <string name="lbl_play">Tugtugin</string>

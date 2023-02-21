@@ -21,6 +21,8 @@ import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.accent.Accent
@@ -44,66 +46,59 @@ interface UISettings : Settings<UISettings.Listener> {
         /** Called when [roundMode] changes. */
         fun onRoundModeChanged()
     }
+}
 
-    private class Real(context: Context) : Settings.Real<Listener>(context), UISettings {
-        override val theme: Int
-            get() =
-                sharedPreferences.getInt(
-                    getString(R.string.set_key_theme), AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
+    Settings.Impl<UISettings.Listener>(context), UISettings {
+    override val theme: Int
+        get() =
+            sharedPreferences.getInt(
+                getString(R.string.set_key_theme), AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
-        override val useBlackTheme: Boolean
-            get() = sharedPreferences.getBoolean(getString(R.string.set_key_black_theme), false)
+    override val useBlackTheme: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_black_theme), false)
 
-        override var accent: Accent
-            get() =
-                Accent.from(
-                    sharedPreferences.getInt(getString(R.string.set_key_accent), Accent.DEFAULT))
-            set(value) {
-                sharedPreferences.edit {
-                    putInt(getString(R.string.set_key_accent), value.index)
-                    apply()
-                }
-            }
-
-        override val roundMode: Boolean
-            get() = sharedPreferences.getBoolean(getString(R.string.set_key_round_mode), false)
-
-        override fun migrate() {
-            if (sharedPreferences.contains(OLD_KEY_ACCENT3)) {
-                logD("Migrating $OLD_KEY_ACCENT3")
-
-                var accent = sharedPreferences.getInt(OLD_KEY_ACCENT3, 5)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    // Accents were previously frozen as soon as the OS was updated to android
-                    // twelve, as dynamic colors were enabled by default. This is no longer the
-                    // case, so we need to re-update the setting to dynamic colors here.
-                    accent = 16
-                }
-
-                sharedPreferences.edit {
-                    putInt(getString(R.string.set_key_accent), accent)
-                    remove(OLD_KEY_ACCENT3)
-                    apply()
-                }
+    override var accent: Accent
+        get() =
+            Accent.from(
+                sharedPreferences.getInt(getString(R.string.set_key_accent), Accent.DEFAULT))
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_accent), value.index)
+                apply()
             }
         }
 
-        override fun onSettingChanged(key: String, listener: Listener) {
-            if (key == getString(R.string.set_key_round_mode)) {
-                listener.onRoundModeChanged()
-            }
-        }
+    override val roundMode: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_round_mode), false)
 
-        private companion object {
-            const val OLD_KEY_ACCENT3 = "auxio_accent"
+    override fun migrate() {
+        if (sharedPreferences.contains(OLD_KEY_ACCENT3)) {
+            logD("Migrating $OLD_KEY_ACCENT3")
+
+            var accent = sharedPreferences.getInt(OLD_KEY_ACCENT3, 5)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                // Accents were previously frozen as soon as the OS was updated to android
+                // twelve, as dynamic colors were enabled by default. This is no longer the
+                // case, so we need to re-update the setting to dynamic colors here.
+                accent = 16
+            }
+
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_accent), accent)
+                remove(OLD_KEY_ACCENT3)
+                apply()
+            }
         }
     }
 
-    companion object {
-        /**
-         * Get a framework-backed implementation.
-         * @param context [Context] required.
-         */
-        fun from(context: Context): UISettings = Real(context)
+    override fun onSettingChanged(key: String, listener: UISettings.Listener) {
+        if (key == getString(R.string.set_key_round_mode)) {
+            listener.onRoundModeChanged()
+        }
+    }
+
+    private companion object {
+        const val OLD_KEY_ACCENT3 = "auxio_accent"
     }
 }

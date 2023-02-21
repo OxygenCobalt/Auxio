@@ -31,8 +31,8 @@ object IntegerTable {
     const val VIEW_TYPE_ARTIST = 0xA002
     /** GenreViewHolder */
     const val VIEW_TYPE_GENRE = 0xA003
-    /** HeaderViewHolder */
-    const val VIEW_TYPE_HEADER = 0xA004
+    /** BasicHeaderViewHolder */
+    const val VIEW_TYPE_BASIC_HEADER = 0xA004
     /** SortHeaderViewHolder */
     const val VIEW_TYPE_SORT_HEADER = 0xA005
     /** AlbumDetailViewHolder */

@@ -18,10 +18,13 @@
 package org.oxycblt.auxio.settings.ui
 
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatButton
 import androidx.preference.PreferenceDialogFragmentCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.util.fixDoubleRipple
 
 /**
  * The companion dialog to [IntListPreference]. Use [from] to create an instance.
@@ -31,6 +34,16 @@ class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
     private val listPreference: IntListPreference
         get() = (preference as IntListPreference)
     private var pendingValueIndex = -1
+
+    override fun onStart() {
+        super.onStart()
+
+        (requireDialog() as AlertDialog).apply {
+            (getButton(AlertDialog.BUTTON_NEUTRAL) as AppCompatButton).fixDoubleRipple()
+            (getButton(AlertDialog.BUTTON_POSITIVE) as AppCompatButton).fixDoubleRipple()
+            (getButton(AlertDialog.BUTTON_NEGATIVE) as AppCompatButton).fixDoubleRipple()
+        }
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?) =
         // PreferenceDialogFragmentCompat does not allow us to customize the actual creation

@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single"
+        android:id="@+id/sort_modes">
         <item
             android:id="@+id/option_sort_disc"
-            android:title="@string/lbl_sort_disc" />
+            android:title="@string/lbl_disc" />
         <item
             android:id="@+id/option_sort_track"
-            android:title="@string/lbl_sort_track" />
+            android:title="@string/lbl_track" />
     </group>
-    <group android:checkableBehavior="all">
+    <group android:checkableBehavior="single"
+        android:id="@+id/sort_direction">
         <item
             android:id="@+id/option_sort_asc"
             android:title="@string/lbl_sort_asc" />
+        <item
+            android:id="@+id/option_sort_dec"
+            android:title="@string/lbl_sort_dec" />
     </group>
 </menu>

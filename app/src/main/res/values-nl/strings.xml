@@ -116,11 +116,11 @@
     <string name="lng_widget">Muziekweergave bekijken en regelen</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="lbl_song_detail">Bekijk eigenschappen</string>
-    <string name="lbl_sort_name">Naam</string>
+    <string name="lbl_name">Naam</string>
     <string name="lbl_artist">Artiest</string>
     <string name="lbl_cancel">@android:string/cancel</string>
     <string name="set_lib_tabs">Bibliotheek tabbladen</string>
-    <string name="lbl_sort_date">Jaar</string>
+    <string name="lbl_date">Jaar</string>
     <string name="lbl_relative_path">Ouderpad</string>
     <string name="lbl_props">Lied eigenschappen</string>
     <string name="lbl_file_name">Bestandsnaam</string>
@@ -141,7 +141,6 @@
     <string name="fmt_indexing">Uw muziekbibliotheek wordt geladen… (%1$d/%2$d)</string>
     <string name="set_dirs_mode_exclude">Uitgezonderd</string>
     <string name="desc_shuffle_all">Alle liedjes shuffelen</string>
-    <string name="def_codec">Onbekend Formaat</string>
     <string name="set_dirs_mode_include">Includeer</string>
     <string name="set_repeat_pause_desc">Pauze wanneer een liedje wordt herhaald</string>
     <string name="set_dirs_mode_exclude_desc">Muziek zal <b>niet</b> worden geladen vanuit de mappen die u toevoegt.</string>
@@ -170,8 +169,6 @@
     <string name="def_track">Geen tracknummer</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="clr_dynamic">Dynamisch</string>
-    <string name="def_bitrate">Geen Bitsnelheid</string>
-    <string name="def_sample_rate">Geen Bemonsteringsfrequentie</string>
     <string name="cdc_mp3">MPEG-1 Audio</string>
     <string name="cdc_mp4">MPEG-4 Audio</string>
     <string name="cdc_ogg">Ogg Audio</string>
@@ -181,10 +178,10 @@
     <string name="fmt_lib_genre_count">Genres geladen: %d</string>
     <string name="lbl_indexer">Muziek aan het laden</string>
     <string name="lbl_album">Album</string>
-    <string name="lbl_sort_duration">Looptijd</string>
-    <string name="lbl_sort_count">Aantal Liedjes</string>
-    <string name="lbl_sort_disc">Disc</string>
-    <string name="lbl_sort_track">Titel</string>
+    <string name="lbl_duration">Looptijd</string>
+    <string name="lbl_song_count">Aantal Liedjes</string>
+    <string name="lbl_disc">Disc</string>
+    <string name="lbl_track">Titel</string>
     <string name="lbl_format">Formaat</string>
     <string name="lbl_size">Grootte</string>
     <string name="lbl_bitrate">Bitsnelheid</string>

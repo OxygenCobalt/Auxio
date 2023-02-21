@@ -44,7 +44,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
             is Album -> AlbumViewHolder.VIEW_TYPE
             is Artist -> ArtistViewHolder.VIEW_TYPE
             is Genre -> GenreViewHolder.VIEW_TYPE
-            is Header -> HeaderViewHolder.VIEW_TYPE
+            is BasicHeader -> BasicHeaderViewHolder.VIEW_TYPE
             else -> super.getItemViewType(position)
         }
 
@@ -54,7 +54,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
             AlbumViewHolder.VIEW_TYPE -> AlbumViewHolder.from(parent)
             ArtistViewHolder.VIEW_TYPE -> ArtistViewHolder.from(parent)
             GenreViewHolder.VIEW_TYPE -> GenreViewHolder.from(parent)
-            HeaderViewHolder.VIEW_TYPE -> HeaderViewHolder.from(parent)
+            BasicHeaderViewHolder.VIEW_TYPE -> BasicHeaderViewHolder.from(parent)
             else -> error("Invalid item type $viewType")
         }
 
@@ -65,22 +65,13 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
             is Album -> (holder as AlbumViewHolder).bind(item, listener)
             is Artist -> (holder as ArtistViewHolder).bind(item, listener)
             is Genre -> (holder as GenreViewHolder).bind(item, listener)
-            is Header -> (holder as HeaderViewHolder).bind(item)
+            is BasicHeader -> (holder as BasicHeaderViewHolder).bind(item)
         }
     }
 
-    override fun isItemFullWidth(position: Int) = getItem(position) is Header
-
-    /**
-     * Make sure that the top header has a correctly configured divider visibility. This would
-     * normally be automatically done by the differ, but that results in a strange animation.
-     */
-    fun pokeDividers() {
-        notifyItemChanged(0, PAYLOAD_UPDATE_DIVIDER)
-    }
+    override fun isItemFullWidth(position: Int) = getItem(position) is BasicHeader
 
     private companion object {
-        val PAYLOAD_UPDATE_DIVIDER = 102249124
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<Item>() {
@@ -94,8 +85,8 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
                             ArtistViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is Genre && newItem is Genre ->
                             GenreViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
-                        oldItem is Header && newItem is Header ->
-                            HeaderViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
+                        oldItem is BasicHeader && newItem is BasicHeader ->
+                            BasicHeaderViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         else -> false
                     }
             }

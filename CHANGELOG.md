@@ -1,5 +1,37 @@
 # Changelog
 
+## 3.0.3
+
+#### What's New
+- Added support for disc subtitles
+- Added support for ALAC files
+- Song properties view now shows tags
+- Added option to control whether articles like "the" are ignored when sorting
+
+#### What's Improved
+- Will now accept zeroed track/disc numbers in the presence of non-zero total
+track/disc fields
+- Music loading has been made slightly faster
+- Improved sort menu usability
+- Fall back to `TXXX:RELEASETYPE` on ID3v2 files
+- Switches and checkboxes have been mildly visually refreshed
+
+#### What's Fixed
+- Fixed non-functioning "repeat all" repeat mode
+- Fixed visual clipping of shuffle button shadow
+- Fixed SeekBar remaining in a "stuck" state if gesture navigation was used
+while selecting it.
+
+#### Dev/Meta
+- Started using dependency injection
+- Started code obsfucation
+- Only bundle audio-related extractors with ExoPlayer
+- Switched to Room for database management
+- Updated to MDC 1.8.0 alpha-01
+- Updated to AGP 7.4.1
+- Updated to Gradle 8.0
+- Updated to ExoPlayer 2.18.3
+
 ## 3.0.2
 
 #### What's New

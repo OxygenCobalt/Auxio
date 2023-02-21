@@ -17,10 +17,10 @@
  
 package org.oxycblt.auxio.music
 
-import org.oxycblt.auxio.music.library.Sort
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.storage.MusicDirectories
 
-interface FakeMusicSettings : MusicSettings {
+open class FakeMusicSettings : MusicSettings {
     override fun registerListener(listener: MusicSettings.Listener) = throw NotImplementedError()
     override fun unregisterListener(listener: MusicSettings.Listener) = throw NotImplementedError()
     override var musicDirs: MusicDirectories
@@ -33,6 +33,8 @@ interface FakeMusicSettings : MusicSettings {
     override var multiValueSeparators: String
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
+    override val automaticSortNames: Boolean
+        get() = throw NotImplementedError()
     override var songSort: Sort
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()

@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.playback.replaygain
 
-import android.content.Context
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.Player
@@ -26,9 +25,10 @@ import com.google.android.exoplayer2.audio.AudioProcessor
 import com.google.android.exoplayer2.audio.BaseAudioProcessor
 import com.google.android.exoplayer2.util.MimeTypes
 import java.nio.ByteBuffer
+import javax.inject.Inject
 import kotlin.math.pow
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.extractor.TextTags
+import org.oxycblt.auxio.music.metadata.TextTags
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.logD
@@ -43,10 +43,12 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ReplayGainAudioProcessor(context: Context) :
-    BaseAudioProcessor(), Player.Listener, PlaybackSettings.Listener {
-    private val playbackManager = PlaybackStateManager.getInstance()
-    private val playbackSettings = PlaybackSettings.from(context)
+class ReplayGainAudioProcessor
+@Inject
+constructor(
+    private val playbackManager: PlaybackStateManager,
+    private val playbackSettings: PlaybackSettings
+) : BaseAudioProcessor(), Player.Listener, PlaybackSettings.Listener {
     private var lastFormat: Format? = null
 
     private var volume = 1f

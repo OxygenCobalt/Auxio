@@ -6,12 +6,12 @@
     <string name="lbl_filter">Filtruoti</string>
     <string name="lbl_filter_all">Visos</string>
     <string name="lbl_sort">Rūšiuoti</string>
-    <string name="lbl_sort_name">Pavadinimas</string>
-    <string name="lbl_sort_date">Metai</string>
-    <string name="lbl_sort_duration">Trukmė</string>
-    <string name="lbl_sort_count">Dainų skaičius</string>
-    <string name="lbl_sort_disc">Diskas</string>
-    <string name="lbl_sort_date_added">Pridėta data</string>
+    <string name="lbl_name">Pavadinimas</string>
+    <string name="lbl_date">Metai</string>
+    <string name="lbl_duration">Trukmė</string>
+    <string name="lbl_song_count">Dainų skaičius</string>
+    <string name="lbl_disc">Diskas</string>
+    <string name="lbl_date_added">Pridėta data</string>
     <string name="lbl_sort_asc">Kylantis</string>
     <string name="lbl_play_next">Groti kitą</string>
     <string name="lbl_queue_add">Pridėti į eilę</string>
@@ -29,7 +29,7 @@
     <string name="set_black_mode">Juodoji tema</string>
     <string name="lbl_artists">Atlikėjai</string>
     <string name="lbl_albums">Albumai</string>
-    <string name="lbl_sort_track">Takelis</string>
+    <string name="lbl_track">Takelis</string>
     <string name="lbl_playback">Dabar groja</string>
     <string name="lbl_play">Groti</string>
     <string name="lbl_licenses">Licencijos</string>
@@ -166,7 +166,6 @@
     <string name="err_no_music">Jokios muzikos nerasta</string>
     <string name="desc_exit">Sustabdyti grojimą</string>
     <string name="def_track">Nėra takelio numerio</string>
-    <string name="def_bitrate">Nėra bitų srauto</string>
     <string name="set_action_mode_next">Pereiti prie kitos</string>
     <string name="set_headset_autoplay">Automatinis ausinių grojimas</string>
     <string name="set_action_mode_repeat">Kartojimo režimas</string>
@@ -179,7 +178,6 @@
     <string name="set_playback_mode_none">Groti iš parodyto elemento</string>
     <string name="set_playback_mode_album">Groti iš albumo</string>
     <string name="set_playback_mode_artist">Groti iš atlikėjo</string>
-    <string name="def_codec">Nežinomas formatas</string>
     <string name="lbl_state_wiped">Išvalyta būsena</string>
     <string name="set_dirs_mode_exclude">Neįtraukti</string>
     <string name="set_dirs_mode_include_desc">Muzika <b>bus</b> įkeliama iš aplankų jūs pridėsite.</string>
@@ -211,7 +209,6 @@
     <string name="desc_track_number">Takelis %d</string>
     <string name="desc_change_repeat">Keisti kartojimo režimą</string>
     <string name="clr_indigo">Indigos</string>
-    <string name="def_sample_rate">Nėra diskretizavimo dažnio</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="lbl_mixes">Miksai</string>
     <string name="lbl_mix">Miksas</string>
@@ -271,4 +268,5 @@
     <string name="set_replay_gain">„ReplayGain“</string>
     <string name="set_dirs_list">Aplankalai</string>
     <string name="set_state">Atkaklumas</string>
+    <string name="lbl_sort_dec">Mažėjantis</string>
 </resources>

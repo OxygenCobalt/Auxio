@@ -17,7 +17,7 @@
  
 package org.oxycblt.auxio.util
 
-import android.os.Looper
+import java.util.UUID
 import kotlin.reflect.KClass
 import org.oxycblt.auxio.BuildConfig
 
@@ -83,13 +83,13 @@ fun lazyReflectedMethod(clazz: KClass<*>, method: String) = lazy {
 }
 
 /**
- * Assert that the execution is currently on a background thread. This is helpful for functions that
- * don't necessarily require suspend, but still want to ensure that they are being called with a
- * co-routine.
- * @throws IllegalStateException If the execution is not on a background thread.
+ * Convert a [String] to a [UUID].
+ * @return A [UUID] converted from the [String] value, or null if the value was not valid.
+ * @see UUID.fromString
  */
-fun requireBackgroundThread() {
-    check(Looper.myLooper() != Looper.getMainLooper()) {
-        "This operation must be ran on a background thread"
+fun String.toUuidOrNull(): UUID? =
+    try {
+        UUID.fromString(this)
+    } catch (e: IllegalArgumentException) {
+        null
     }
-}

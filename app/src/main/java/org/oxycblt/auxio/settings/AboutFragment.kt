@@ -28,6 +28,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialFadeThrough
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
@@ -43,6 +44,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * A [ViewBindingFragment] that displays information about the app and the current music library.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
     private val musicModel: MusicViewModel by activityViewModels()
 

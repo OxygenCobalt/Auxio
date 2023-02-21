@@ -17,14 +17,14 @@
     <string name="lbl_filter">Filtr</string>
     <string name="lbl_filter_all">Vše</string>
     <string name="lbl_sort">Řadit</string>
-    <string name="lbl_sort_name">Název</string>
+    <string name="lbl_name">Název</string>
     <string name="lbl_artist">Umělec</string>
     <string name="lbl_album">Album</string>
-    <string name="lbl_sort_date">Rok</string>
-    <string name="lbl_sort_duration">Trvání</string>
-    <string name="lbl_sort_count">Počet skladeb</string>
-    <string name="lbl_sort_disc">Disk</string>
-    <string name="lbl_sort_track">Stopa</string>
+    <string name="lbl_date">Rok</string>
+    <string name="lbl_duration">Trvání</string>
+    <string name="lbl_song_count">Počet skladeb</string>
+    <string name="lbl_disc">Disk</string>
+    <string name="lbl_track">Stopa</string>
     <string name="lbl_sort_asc">Vzestupně</string>
     <string name="lbl_playback">Právě hraje</string>
     <string name="lbl_play">Přehrát</string>
@@ -123,7 +123,7 @@
     <string name="def_artist">Neznámý umělec</string>
     <string name="def_genre">Neznámý žánr</string>
     <string name="def_date">Žádné datum</string>
-    <string name="def_track">Žádné číslo stopy</string>
+    <string name="def_track">Žádná stopa</string>
     <string name="def_playback">Nehraje žádná hudba</string>
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Červená</string>
@@ -142,7 +142,7 @@
     <string name="clr_orange">Oranžová</string>
     <string name="clr_brown">Hnědá</string>
     <string name="clr_grey">Šedá</string>
-    <string name="clr_dynamic">Dynamická</string>
+    <string name="clr_dynamic">Dynamické</string>
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_disc_no">Disk %d</string>
     <string name="fmt_db_pos">+%.1f dB</string>
@@ -172,9 +172,6 @@
     <string name="set_dirs_mode_exclude_desc">Z přidaných složek <b>nebude</b> načtena hudba.</string>
     <string name="set_dirs_mode_include">Zahrnout</string>
     <string name="set_dirs_mode_include_desc">Hudba bude načtena <b>pouze</b> z přidaných složek.</string>
-    <string name="def_codec">Neznámý formát</string>
-    <string name="def_bitrate">Žádná přenosová rychlost</string>
-    <string name="def_sample_rate">Žádná vzorkovací frekvence</string>
     <string name="cdc_mp3">Zvuk MPEG-1</string>
     <string name="cdc_mp4">Zvuk MPEG-4</string>
     <string name="cdc_ogg">Zvuk Ogg</string>
@@ -204,7 +201,7 @@
     <string name="lng_observing">Sledování změn v hudební knihovně…</string>
     <string name="set_observing_desc">Znovu načíst hudební knihovnu při změně (vyžaduje trvalé oznámení)</string>
     <string name="lbl_indexing">Načítání hudby</string>
-    <string name="lbl_sort_date_added">Datum přidání</string>
+    <string name="lbl_date_added">Datum přidání</string>
     <string name="lbl_single">Singl</string>
     <string name="lbl_singles">Singly</string>
     <string name="lbl_ep">EP</string>
@@ -282,4 +279,5 @@
     <string name="set_playback">Přehrávání</string>
     <string name="set_library">Knihovna</string>
     <string name="set_state">Perzistence</string>
+    <string name="lbl_sort_dec">Sestupně</string>
 </resources>

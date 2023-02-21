@@ -20,17 +20,19 @@ package org.oxycblt.auxio
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.music.system.IndexerService
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.ui.UISettings
-import org.oxycblt.auxio.util.androidViewModels
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -50,8 +52,10 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val playbackModel: PlaybackViewModel by androidViewModels()
+    private val playbackModel: PlaybackViewModel by viewModels()
+    @Inject lateinit var uiSettings: UISettings
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,17 +85,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupTheme() {
-        val settings = UISettings.from(this)
         // Apply the theme configuration.
-        AppCompatDelegate.setDefaultNightMode(settings.theme)
+        AppCompatDelegate.setDefaultNightMode(uiSettings.theme)
         // Apply the color scheme. The black theme requires it's own set of themes since
         // it's not possible to modify the themes at run-time.
-        if (isNight && settings.useBlackTheme) {
-            logD("Applying black theme [accent ${settings.accent}]")
-            setTheme(settings.accent.blackTheme)
+        if (isNight && uiSettings.useBlackTheme) {
+            logD("Applying black theme [accent ${uiSettings.accent}]")
+            setTheme(uiSettings.accent.blackTheme)
         } else {
-            logD("Applying normal theme [accent ${settings.accent}]")
-            setTheme(settings.accent.theme)
+            logD("Applying normal theme [accent ${uiSettings.accent}]")
+            setTheme(uiSettings.accent.theme)
         }
     }
 

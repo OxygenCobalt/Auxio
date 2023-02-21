@@ -22,15 +22,9 @@ import android.content.Intent
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import coil.ImageLoader
-import coil.ImageLoaderFactory
-import coil.request.CachePolicy
+import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 import org.oxycblt.auxio.image.ImageSettings
-import org.oxycblt.auxio.image.extractor.AlbumCoverFetcher
-import org.oxycblt.auxio.image.extractor.ArtistImageFetcher
-import org.oxycblt.auxio.image.extractor.ErrorCrossfadeTransitionFactory
-import org.oxycblt.auxio.image.extractor.GenreImageFetcher
-import org.oxycblt.auxio.image.extractor.MusicKeyer
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.ui.UISettings
 
@@ -38,16 +32,22 @@ import org.oxycblt.auxio.ui.UISettings
  * A simple, rational music player for android.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class Auxio : Application(), ImageLoaderFactory {
+@HiltAndroidApp
+class Auxio : Application() {
+    @Inject lateinit var imageSettings: ImageSettings
+    @Inject lateinit var playbackSettings: PlaybackSettings
+    @Inject lateinit var uiSettings: UISettings
+
     override fun onCreate() {
         super.onCreate()
         // Migrate any settings that may have changed in an app update.
-        ImageSettings.from(this).migrate()
-        PlaybackSettings.from(this).migrate()
-        UISettings.from(this).migrate()
+        imageSettings.migrate()
+        playbackSettings.migrate()
+        uiSettings.migrate()
         // Adding static shortcuts in a dynamic manner is better than declaring them
         // manually, as it will properly handle the difference between debug and release
         // Auxio instances.
+        // TODO: Switch to static shortcuts
         ShortcutManagerCompat.addDynamicShortcuts(
             this,
             listOf(
@@ -60,22 +60,6 @@ class Auxio : Application(), ImageLoaderFactory {
                             .setAction(INTENT_KEY_SHORTCUT_SHUFFLE))
                     .build()))
     }
-
-    override fun newImageLoader() =
-        ImageLoader.Builder(applicationContext)
-            .components {
-                // Add fetchers for Music components to make them usable with ImageRequest
-                add(MusicKeyer())
-                add(AlbumCoverFetcher.SongFactory())
-                add(AlbumCoverFetcher.AlbumFactory())
-                add(ArtistImageFetcher.Factory())
-                add(GenreImageFetcher.Factory())
-            }
-            // Use our own crossfade with error drawable support
-            .transitionFactory(ErrorCrossfadeTransitionFactory())
-            // Not downloading anything, so no disk-caching
-            .diskCachePolicy(CachePolicy.DISABLED)
-            .build()
 
     companion object {
         /** The [Intent] name for the "Shuffle All" shortcut. */

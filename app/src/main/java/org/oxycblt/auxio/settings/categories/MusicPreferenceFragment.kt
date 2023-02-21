@@ -19,7 +19,9 @@ package org.oxycblt.auxio.settings.categories
 
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
-import coil.Coil
+import coil.ImageLoader
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
@@ -28,7 +30,10 @@ import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
  * "Content" settings.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class MusicPreferenceFragment : BasePreferenceFragment(R.xml.preferences_music) {
+    @Inject lateinit var imageLoader: ImageLoader
+
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_separators)) {
             findNavController().navigate(MusicPreferenceFragmentDirections.goToSeparatorsDialog())
@@ -39,7 +44,7 @@ class MusicPreferenceFragment : BasePreferenceFragment(R.xml.preferences_music) 
         if (preference.key == getString(R.string.set_key_cover_mode)) {
             preference.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { _, _ ->
-                    Coil.imageLoader(requireContext()).memoryCache?.clear()
+                    imageLoader.memoryCache?.clear()
                     true
                 }
         }

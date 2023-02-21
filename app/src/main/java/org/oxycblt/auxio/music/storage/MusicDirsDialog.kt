@@ -28,6 +28,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
@@ -41,11 +43,13 @@ import org.oxycblt.auxio.util.showToast
  * Dialog that manages the music dirs setting.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class MusicDirsDialog :
     ViewBindingDialogFragment<DialogMusicDirsBinding>(), DirectoryAdapter.Listener {
     private val dirAdapter = DirectoryAdapter(this)
     private var openDocumentTreeLauncher: ActivityResultLauncher<Uri?>? = null
     private var storageManager: StorageManager? = null
+    @Inject lateinit var musicSettings: MusicSettings
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogMusicDirsBinding.inflate(inflater)
@@ -55,11 +59,10 @@ class MusicDirsDialog :
             .setTitle(R.string.set_dirs)
             .setNegativeButton(R.string.lbl_cancel, null)
             .setPositiveButton(R.string.lbl_save) { _, _ ->
-                val settings = MusicSettings.from(requireContext())
                 val newDirs = MusicDirectories(dirAdapter.dirs, isUiModeInclude(requireBinding()))
-                if (settings.musicDirs != newDirs) {
+                if (musicSettings.musicDirs != newDirs) {
                     logD("Committing changes")
-                    settings.musicDirs = newDirs
+                    musicSettings.musicDirs = newDirs
                 }
             }
     }
@@ -96,7 +99,7 @@ class MusicDirsDialog :
             itemAnimator = null
         }
 
-        var dirs = MusicSettings.from(context).musicDirs
+        var dirs = musicSettings.musicDirs
         if (savedInstanceState != null) {
             val pendingDirs = savedInstanceState.getStringArrayList(KEY_PENDING_DIRS)
             if (pendingDirs != null) {

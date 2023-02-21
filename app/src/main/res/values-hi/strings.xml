@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Label Namespace | Static Labels -->
-    <string name="lbl_retry">फिर से कोशिश करे</string>
+    <string name="lbl_retry">पुन: प्रयास करें</string>
     <string name="lbl_grant">अनुदान</string>
     <string name="lbl_artists">कलाकार</string>
     <string name="lbl_albums">एल्बम</string>
     <string name="lbl_songs">गीत</string>
-    <string name="lbl_all_songs">गीत</string>
+    <string name="lbl_all_songs">सभी गीत</string>
     <string name="lbl_filter">छलनी</string>
     <string name="lbl_search">खोजें</string>
     <string name="lbl_filter_all">सारे</string>
@@ -19,7 +19,7 @@
     <string name="lbl_queue_add">क़तार में जोड़ें</string>
     <string name="lng_queue_added">कतार में जोड़ा गया</string>
     <string name="lbl_about">इसके बारे में</string>
-    <string name="lbl_code">GitHub में देखें</string>
+    <string name="lbl_code">स्रोत कोड</string>
     <string name="lbl_licenses">लाइसेंस</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">सेटिंग्स</string>
@@ -46,4 +46,14 @@
         <item quantity="one">%d एल्बम</item>
         <item quantity="other">%d एल्बम</item>
     </plurals>
+    <string name="lbl_name">नाम</string>
+    <string name="lbl_genre">शैली</string>
+    <string name="lbl_playback">अब खेल रहे हैं</string>
+    <string name="lbl_compilation">संकलन</string>
+    <string name="lbl_sort_asc">आरोही</string>
+    <string name="lbl_genres">शैलियां</string>
+    <string name="lbl_size">आकार</string>
+    <string name="lbl_ok">ठीक है</string>
+    <string name="lbl_artist">कलाकार</string>
+    <string name="lbl_date_added">तिथि जोड़ी गई</string>
 </resources>

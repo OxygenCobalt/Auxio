@@ -54,7 +54,7 @@ interface Settings<L> {
      * A framework-backed [Settings] implementation.
      * @param context [Context] required.
      */
-    abstract class Real<L>(private val context: Context) :
+    abstract class Impl<L>(private val context: Context) :
         Settings<L>, SharedPreferences.OnSharedPreferenceChangeListener {
         protected val sharedPreferences: SharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
@@ -85,6 +85,7 @@ interface Settings<L> {
             sharedPreferences: SharedPreferences,
             key: String
         ) {
+            // FIXME: Settings initialization firing the listener.
             onSettingChanged(key, unlikelyToBeNull(listener))
         }
 

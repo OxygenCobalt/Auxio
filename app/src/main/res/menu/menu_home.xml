@@ -14,10 +14,11 @@
         android:title="@string/lbl_sort"
         app:showAsAction="ifRoom">
         <menu>
-            <group android:checkableBehavior="single">
+            <group android:checkableBehavior="single"
+                android:id="@+id/sort_modes">
                 <item
                     android:id="@+id/option_sort_name"
-                    android:title="@string/lbl_sort_name" />
+                    android:title="@string/lbl_name" />
                 <item
                     android:id="@+id/option_sort_artist"
                     android:title="@string/lbl_artist" />
@@ -26,21 +27,25 @@
                     android:title="@string/lbl_album" />
                 <item
                     android:id="@+id/option_sort_year"
-                    android:title="@string/lbl_sort_date" />
+                    android:title="@string/lbl_date" />
                 <item
                     android:id="@+id/option_sort_duration"
-                    android:title="@string/lbl_sort_duration" />
+                    android:title="@string/lbl_duration" />
                 <item
                     android:id="@+id/option_sort_count"
-                    android:title="@string/lbl_sort_count" />
+                    android:title="@string/lbl_song_count" />
                 <item
                     android:id="@+id/option_sort_date_added"
-                    android:title="@string/lbl_sort_date_added" />
+                    android:title="@string/lbl_date_added" />
             </group>
-            <group android:checkableBehavior="all">
+            <group android:checkableBehavior="single"
+                android:id="@+id/sort_direction">
                 <item
                     android:id="@+id/option_sort_asc"
                     android:title="@string/lbl_sort_asc" />
+                <item
+                    android:id="@+id/option_sort_dec"
+                    android:title="@string/lbl_sort_dec" />
             </group>
         </menu>
     </item>

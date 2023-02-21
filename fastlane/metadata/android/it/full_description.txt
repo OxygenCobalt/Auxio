@@ -1,21 +1,22 @@
-Auxio è un lettore di musica locale con UI/UX veloce, affidabile e semplice. Basato su <a href="https://exoplayer.dev/">Exoplayer</a>, Auxio fornisce supporto e qualità di ascolto migliori rispetto ad altre app che usano funzioni di Android superate. In breve, riproduce la musica.
+Auxio è un lettore musicale locale con un'UI/UX veloce e affidabile, senza le numerose funzioni inutili presenti in altri lettori musicali. Basato su Exoplayer, Auxio ha un supporto di libreria e una qualità di ascolto superiore rispetto ad altre applicazioni che utilizzano funzionalità Android obsolete. In breve, <b>riproduce musica</b>.
 
-<b>Funzioni</b>
+<b>Caratteristiche</b>
 
 - Riproduzione basata su ExoPlayer
-- Elegante interfaccia in linea con le ultime novità del Material Design
-- UI di facile utilizzo
+- Interfaccia utente scattante derivata dalle ultime linee guida del Material Design
+- Interfaccia utente autorevole che privilegia la facilità d'uso rispetto ai casi limite
 - Comportamento personalizzabile
-- Supporto a numero dischi, artisti multipli, tipo release, date originali/precise, tags ordinamento, etc.
-- Indicizzazione artisti e album artisti avanzata
-- Gestione delle cartelle informata dei cambiamenti della SD Card
-- Affidabilità della persistenza dello stato di riproduzione
-- Supporto Replay Gain (su MP3, FLAC, OGG, OPUS, e files MP4)
-- Supporto equalizzatori esterni (es. Wavelet)
+- Supporto per numeri di disco, artisti multipli, tipi di release,
+date precise/originali, tag di ordinamento e altro ancora
+- Organizzazione di artisti avanzata che unifica gli artisti e gli artisti degli album
+- Gestione delle cartelle consapevole delle schede SD
+- Persistenza affidabile dello stato di riproduzione
+- Supporto completo di ReplayGain (su file MP3, FLAC, OGG, OPUS e MP4)
+- Supporto di equalizzatori esterni (es. Wavelet)
 - Edge-to-edge
-- Supporto copertine integrate
+- Supporto delle copertine incorporate
 - Funzionalità di ricerca
-- Autoplay cuffie
-- Widgets responsivi
-- Completamente privato ed offline
-- No copertine dischi arrotondate (a meno che tu non le voglia)
+- Riproduzione automatica delle cuffie
+- Widget eleganti che si adattano automaticamente alle loro dimensioni
+- Completamente privato e offline
+- Niente copertine arrotondate degli album ( meno che tu non le voglia, in tal caso puoi)

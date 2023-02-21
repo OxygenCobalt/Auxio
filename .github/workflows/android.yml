@@ -11,22 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - name: Clone repository
+      uses: actions/checkout@v3
+    - name: Clone submodules
+      run: git submodule update --init --recursive
     - name: Set up JDK 11
       uses: actions/setup-java@v3
       with:
         java-version: '11'
         distribution: 'temurin'
         cache: gradle
-    - name: Set up NDK r21e
-      uses: nttld/setup-ndk@v1.2.0
-      id: setup-ndk
-      with:
-        ndk-version: r21e
-        add-to-path: false
-    - run: python3 prebuild.py
-      env:
-        ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Test app with Gradle

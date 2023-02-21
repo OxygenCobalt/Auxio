@@ -78,15 +78,15 @@
     <string name="fmt_lib_artist_count">Artistas carregados: %d</string>
     <string name="fmt_lib_total_duration">Duração total: %s</string>
     <string name="err_index_failed">Falha no carregamento da música</string>
-    <string name="lbl_sort_name">Nome</string>
+    <string name="lbl_name">Nome</string>
     <string name="set_replay_gain_mode_dynamic">Prefira o álbum se estiver tocando</string>
     <string name="err_no_app">Nenhuma aplicação encontrada que possa lidar com esta tarefa</string>
     <string name="clr_cyan">Ciano</string>
-    <string name="lbl_sort_count">Contagem de músicas</string>
+    <string name="lbl_song_count">Contagem de músicas</string>
     <string name="lbl_format">Formato</string>
     <string name="lbl_library_counts">Estatísticas da biblioteca</string>
     <string name="desc_no_cover">Capa do álbum</string>
-    <string name="lbl_sort_date">Ano</string>
+    <string name="lbl_date">Ano</string>
     <string name="set_cover_mode_media_store">Rápido</string>
     <string name="set_cover_mode_quality">Qualidade alta</string>
     <string name="set_bar_action">Ação da barra de reprodução personalizada</string>
@@ -100,8 +100,8 @@
     <string name="desc_music_dir_delete">Remover pasta</string>
     <string name="lbl_compilation_remix">Compilações de remix</string>
     <string name="lbl_compilation_live">Compilação ao vivo</string>
-    <string name="lbl_sort_disc">Disco</string>
-    <string name="lbl_sort_track">Faixa</string>
+    <string name="lbl_disc">Disco</string>
+    <string name="lbl_track">Faixa</string>
     <string name="lbl_bitrate">Taxa de bits</string>
     <string name="set_action_mode_next">Pular para o próximo</string>
     <string name="set_pre_amp_warning">Aviso: Alterar o pré-amplificador para um valor positivo alto pode resultar em picos em algumas faixas de áudio.</string>
@@ -109,7 +109,7 @@
     <string name="set_separators_slash">Barra (/)</string>
     <string name="set_separators_plus">Mais (+)</string>
     <string name="cdc_ogg">Áudio Ogg</string>
-    <string name="lbl_sort_date_added">Data adicionada</string>
+    <string name="lbl_date_added">Data adicionada</string>
     <string name="lbl_sample_rate">Taxa de amostragem</string>
     <string name="lbl_save">Gravar</string>
     <string name="set_separators">Separadores multi-valor</string>
@@ -125,7 +125,6 @@
     <string name="desc_clear_search">Limpar consulta de pesquisa</string>
     <string name="desc_genre_image">Imagem de gênero para %s</string>
     <string name="def_date">Sem data</string>
-    <string name="def_codec">Formato desconhecido</string>
     <string name="cdc_flac">Codec de Audio Gratuito Sem Perdas (FLAC)</string>
     <string name="clr_deep_purple">Roxo profundo</string>
     <string name="clr_indigo">Índigo</string>
@@ -136,7 +135,7 @@
     <string name="lbl_compilations">Compilações</string>
     <string name="lbl_compilation">Compilação</string>
     <string name="lbl_live_group">Ao vivo</string>
-    <string name="lbl_sort_duration">Duração</string>
+    <string name="lbl_duration">Duração</string>
     <string name="lbl_cancel">Cancelar</string>
     <string name="lng_indexing">A carregar a sua biblioteca de músicas…</string>
     <string name="set_dirs_desc">Gira de onde a música deve ser carregada</string>
@@ -163,7 +162,6 @@
     <string name="desc_tab_handle">Mover esta guia</string>
     <string name="def_artist">Artista desconhecido</string>
     <string name="def_playback">Nenhuma música tocando</string>
-    <string name="def_bitrate">Sem taxa de bits</string>
     <string name="clr_dynamic">Dinâmico</string>
     <string name="fmt_disc_no">Disco %d</string>
     <string name="desc_album_cover">Capa do álbum para %s</string>
@@ -196,7 +194,6 @@
     <string name="desc_shuffle">Ativar ou desativar a reprodução aleatória</string>
     <string name="desc_shuffle_all">Embaralhar todas as músicas</string>
     <string name="desc_clear_queue_item">Remover esta música de fila</string>
-    <string name="def_sample_rate">Sem taxa de amostragem</string>
     <string name="cdc_mka">Áudio Matroska</string>
     <string name="cdc_aac">Codificação de Audio Avançada (AAC)</string>
     <string name="lbl_album">Álbum</string>
@@ -260,4 +257,18 @@
         <item quantity="many">%d artistas</item>
         <item quantity="other">%d artistas</item>
     </plurals>
+    <string name="set_replay_gain">Equalização de volume ReplayGain</string>
+    <string name="lbl_sort_dec">Descendente</string>
+    <string name="set_ui_desc">Mude o tema e as cores do app</string>
+    <string name="set_personalize_desc">Personalize os controles e o comportamento da interface do usuário</string>
+    <string name="set_content_desc">Controle como a música e as imagens são carregadas</string>
+    <string name="set_music">Música</string>
+    <string name="set_images">Imagens</string>
+    <string name="set_audio_desc">Configurar som e comportamento de reprodução</string>
+    <string name="set_playback">Reprodução</string>
+    <string name="set_dirs_list">Pastas</string>
+    <string name="set_library">Biblioteca</string>
+    <string name="set_state">Estado de reprodução</string>
+    <string name="set_separators_and">E comercial (&amp;)</string>
+    <string name="set_behavior">Comportamento</string>
 </resources>

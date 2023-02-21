@@ -15,14 +15,14 @@
     <string name="lbl_filter">필터</string>
     <string name="lbl_filter_all">전체</string>
     <string name="lbl_sort">정렬</string>
-    <string name="lbl_sort_name">제목</string>
+    <string name="lbl_name">제목</string>
     <string name="lbl_artist">아티스트</string>
     <string name="lbl_album">앨범</string>
-    <string name="lbl_sort_date">연도</string>
-    <string name="lbl_sort_duration">길이</string>
-    <string name="lbl_sort_count">곡 수</string>
-    <string name="lbl_sort_disc">디스크</string>
-    <string name="lbl_sort_track">트랙</string>
+    <string name="lbl_date">연도</string>
+    <string name="lbl_duration">길이</string>
+    <string name="lbl_song_count">곡 수</string>
+    <string name="lbl_disc">디스크</string>
+    <string name="lbl_track">트랙</string>
     <string name="lbl_sort_asc">오름차순</string>
     <string name="lbl_playback">지금 재생 중</string>
     <string name="lbl_play">재생</string>
@@ -51,7 +51,7 @@
     <string name="lbl_library_counts">라이브러리 통계</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">설정</string>
-    <string name="set_ui">모양</string>
+    <string name="set_ui">보고 느낌</string>
     <string name="set_theme">테마</string>
     <string name="set_theme_auto">자동</string>
     <string name="set_theme_day">밝음</string>
@@ -193,10 +193,8 @@
     <string name="set_separators_slash">슬래쉬 (/)</string>
     <string name="set_separators_plus">플러스 (+)</string>
     <string name="set_separators_and">앰퍼샌드 (&amp;)</string>
-    <string name="def_bitrate">전송속도 없음</string>
-    <string name="def_sample_rate">샘플 속도 없음</string>
     <string name="cdc_mp3">MPEG-1 오디오</string>
-    <string name="lbl_sort_date_added">추가된 날짜</string>
+    <string name="lbl_date_added">추가된 날짜</string>
     <string name="lbl_relative_path">상위 경로</string>
     <string name="set_bar_action">맞춤형 재생 동작 버튼</string>
     <string name="set_action_mode_repeat">반복 방식</string>
@@ -219,7 +217,6 @@
     <string name="set_cover_mode_quality">고품질</string>
     <string name="set_restore_desc">이전에 저장된 재생 상태 복원 (있는 경우)</string>
     <string name="err_did_not_restore">재생상태를 복원할 수 없음</string>
-    <string name="def_codec">알 수 없는 형식</string>
     <string name="set_observing_desc">음악 라이브러리가 변경될 때마다 새로고침 (고정 알림 필요)</string>
     <string name="lbl_state_wiped">상태 지워짐</string>
     <string name="lbl_indexing">음악 불러오기 중</string>
@@ -261,4 +258,17 @@
     <string name="lbl_wiki">위키</string>
     <string name="set_playback_mode_genre">장르에서 재생</string>
     <string name="fmt_list">%1$s, %2$s</string>
+    <string name="set_replay_gain">리플레이게인</string>
+    <string name="set_audio_desc">사운드 및 재생 동작 구성</string>
+    <string name="set_playback">재생</string>
+    <string name="set_dirs_list">폴더</string>
+    <string name="set_ui_desc">앱의 테마 및 색상 변경</string>
+    <string name="set_music">음악</string>
+    <string name="set_library">라이브러리</string>
+    <string name="set_images">이미지</string>
+    <string name="set_content_desc">음악 및 이미지 불러오기 방법 제어</string>
+    <string name="set_state">지속</string>
+    <string name="set_behavior">동작</string>
+    <string name="set_personalize_desc">UI 제어 및 동작 커스텀</string>
+    <string name="lbl_sort_dec">내림차순</string>
 </resources>

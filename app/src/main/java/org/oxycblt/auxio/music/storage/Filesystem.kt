@@ -53,7 +53,7 @@ class Directory private constructor(val volume: StorageVolume, val relativePath:
     /**
      * Converts this [Directory] instance into an opaque document tree path. This is a huge
      * violation of the document tree URI contract, but it's also the only one can sensibly work
-     * with these uris in the UI, and it doesn't exactly matter since we never write or read
+     * with these uris in the UI, and it doesn't exactly matter since we never write or read to
      * directory.
      * @return A URI [String] abiding by the document tree specification, or null if the [Directory]
      * is not valid.
@@ -142,10 +142,9 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
      * Resolve the mime type into a human-readable format name, such as "Ogg Vorbis".
      * @param context [Context] required to obtain human-readable strings.
      * @return A human-readable name for this mime type. Will first try [fromFormat], then falling
-     * back to [fromExtension], then falling back to the extension name, and then finally a
-     * placeholder "No Format" string.
+     * back to [fromExtension], and then null if that fails.
      */
-    fun resolveName(context: Context): String {
+    fun resolveName(context: Context): String? {
         // We try our best to produce a more readable name for the common audio formats.
         val formatName =
             when (fromFormat) {
@@ -157,6 +156,8 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
                 MediaFormat.MIMETYPE_AUDIO_VORBIS -> R.string.cdc_vorbis
                 MediaFormat.MIMETYPE_AUDIO_OPUS -> R.string.cdc_opus
                 MediaFormat.MIMETYPE_AUDIO_FLAC -> R.string.cdc_flac
+                // TODO: Add ALAC to this as soon as I can stop using MediaFormat for
+                //  extracting metadata and just use ExoPlayer.
                 // We don't give a name to more unpopular formats.
                 else -> -1
             }
@@ -199,8 +200,6 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
         } else {
             // Fall back to the extension if we can't find a special name for this format.
             MimeTypeMap.getSingleton().getExtensionFromMimeType(fromExtension)?.uppercase()
-            // Fall back to a placeholder if even that fails.
-            ?: context.getString(R.string.def_codec)
         }
     }
 }

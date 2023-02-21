@@ -68,13 +68,13 @@
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_indexing">Φόρτωση της συλλογής μουσικής σας… (%1$d/%2$d)</string>
     <string name="fmt_lib_genre_count">Είδη που φορτώθηκαν: %d</string>
-    <string name="lbl_sort_count">Αριθμός τραγουδιών</string>
+    <string name="lbl_song_count">Αριθμός τραγουδιών</string>
     <string name="err_bad_dir">Αυτός ο φάκελος δεν υποστηρίζεται</string>
     <string name="fmt_disc_no">Δίσκος %d</string>
     <string name="fmt_lib_album_count">Album που φορτώθηκαν: %d</string>
     <string name="fmt_lib_artist_count">Καλλιτέχνες που φορτώθηκαν: %d</string>
-    <string name="lbl_sort_date">Έτος</string>
-    <string name="lbl_sort_disc">Δίσκος</string>
+    <string name="lbl_date">Έτος</string>
+    <string name="lbl_disc">Δίσκος</string>
     <string name="err_no_music">Δεν βρέθηκε καθόλου μουσική</string>
     <string name="err_index_failed">Η φόρτωση μουσικής απέτυχε</string>
     <string name="fmt_bitrate">%d kbps</string>
@@ -93,8 +93,8 @@
     <string name="lbl_genre">Είδος</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="fmt_sample_rate">%d Hz</string>
-    <string name="lbl_sort_name">Όνομα</string>
-    <string name="lbl_sort_duration">Διάρκεια</string>
+    <string name="lbl_name">Όνομα</string>
+    <string name="lbl_duration">Διάρκεια</string>
     <string name="fmt_lib_total_duration">Συνολική διάρκεια: %s</string>
     <string name="err_no_dirs">Καθόλου φάκελοι</string>
     <string name="info_app_desc">Μιά απλή, λογική εφαρμογή αναπαραγωγής μουσικής για Android.</string>
@@ -104,7 +104,7 @@
     <string name="lbl_eps">EP</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_artist">Καλλιτέχνης</string>
-    <string name="lbl_sort_date_added">Ημερομηνία πρόσθεσης</string>
+    <string name="lbl_date_added">Ημερομηνία πρόσθεσης</string>
     <string name="lbl_format">Μορφή</string>
     <string name="set_content">Περιεχομένο</string>
     <string name="lbl_shuffle_shortcut_long">Tυχαία αναπαραγωγή όλων</string>

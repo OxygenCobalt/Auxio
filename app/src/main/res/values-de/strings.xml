@@ -49,8 +49,8 @@
     <string name="set_headset_autoplay">Kopfhörer: automatische Wiedergabe</string>
     <string name="set_headset_autoplay_desc">Beginne die Wiedergabe immer, wenn Kopfhörer verbunden sind (funktioniert nicht auf allen Geräten)</string>
     <string name="set_replay_gain_mode">ReplayGain-Strategie</string>
-    <string name="set_pre_amp">ReplayGain-Prälautverstärkung</string>
-    <string name="set_pre_amp_desc">Während der Musikwiedergabe, trifft die Prälautverstärkung dem aktuellem Abgleich zu</string>
+    <string name="set_pre_amp">ReplayGain-Vorverstärkung</string>
+    <string name="set_pre_amp_desc">Die Vorverstärkung wird während der Wiedergabe auf die existierende Einstellung angewendet</string>
     <string name="set_pre_amp_with">Abgleich mit Metadaten</string>
     <string name="set_pre_amp_without">Abgleich ohne Metadaten</string>
     <string name="set_replay_gain_mode_track">Titel bevorzugen</string>
@@ -119,7 +119,7 @@
     <string name="lng_widget">Musikwiedergabe anzeigen und kontrollieren</string>
     <string name="lbl_artist">Künstler</string>
     <string name="lbl_album">Album</string>
-    <string name="lbl_sort_date">Jahr</string>
+    <string name="lbl_date">Jahr</string>
     <string name="set_black_mode">Schwarzes Farbschema</string>
     <string name="set_black_mode_desc">Ein rein schwarzes dunkles Farbschema verwenden</string>
     <string name="set_repeat_pause">Pause bei Wiederholung</string>
@@ -131,15 +131,15 @@
     <string name="def_playback">Keine Musik wird gespielt</string>
     <string name="set_lib_tabs">Bibliotheks-Registerkarten</string>
     <string name="set_lib_tabs_desc">Sichtbarkeit und Ordnung der Bibliotheksregisterkarten ändern</string>
-    <string name="lbl_sort_name">Name</string>
+    <string name="lbl_name">Name</string>
     <string name="desc_shuffle_all">Alle Lieder zufällig</string>
     <string name="desc_clear_queue_item">Lied in der Warteschlange löschen</string>
     <string name="desc_tab_handle">Tab versetzen</string>
     <string name="def_artist">Unbekannter Künstler</string>
-    <string name="lbl_sort_duration">Dauer</string>
-    <string name="lbl_sort_count">Anzahl der Lieder</string>
-    <string name="lbl_sort_disc">Schallplatte</string>
-    <string name="lbl_sort_track">Titel</string>
+    <string name="lbl_duration">Dauer</string>
+    <string name="lbl_song_count">Anzahl der Lieder</string>
+    <string name="lbl_disc">Schallplatte</string>
+    <string name="lbl_track">Titel</string>
     <string name="lbl_ok">OK</string>
     <string name="lbl_library_counts">Bibliotheksstatistiken</string>
     <string name="set_replay_gain_mode_dynamic">Album bevorzugen, wenn eines abgespielt wird</string>
@@ -163,9 +163,6 @@
     <string name="set_dirs_mode_include">Einschließen</string>
     <string name="set_dirs_mode_include_desc">Musik wird <b>nur</b> von den von dir hinzugefügten Ordnern geladen.</string>
     <string name="def_track">Keine Titelnummer</string>
-    <string name="def_codec">Unbekanntes Format</string>
-    <string name="def_bitrate">Keine Bitrate</string>
-    <string name="def_sample_rate">Keine Abtastrate</string>
     <string name="cdc_ogg">Ogg-Audio</string>
     <string name="cdc_mp4">MPEG-4-Audio</string>
     <string name="cdc_mp3">MPEG-1-Audio</string>
@@ -190,7 +187,7 @@
     <string name="lbl_observing">Überwachen der Musikbibliothek</string>
     <string name="lbl_indexing">Musik wird geladen</string>
     <string name="lng_observing">Musikbibliothek wird auf Änderungen überwacht…</string>
-    <string name="lbl_sort_date_added">Hinzugefügt am</string>
+    <string name="lbl_date_added">Hinzugefügt am</string>
     <string name="set_observing_desc">Musikbibliothek neu laden, sobald es Änderungen gibt (erfordert persistente Benachrichtigung)</string>
     <string name="set_observing">Automatisch neuladen</string>
     <string name="lbl_state_restored">Zustand wiederhergestellt</string>
@@ -227,8 +224,8 @@
     <string name="desc_exit">Wiedergabe anhalten</string>
     <string name="lbl_compilation_live">Live-Kompilation</string>
     <string name="lbl_compilation_remix">Remix-Kompilation</string>
-    <string name="lbl_mixes">Mischungen</string>
-    <string name="lbl_mix">Mischung</string>
+    <string name="lbl_mixes">Mixes</string>
+    <string name="lbl_mix">Mix</string>
     <string name="set_separators">Mehrfachwert-Trenner</string>
     <string name="set_separators_desc">Zeichen ändern, welche mehrere Tag-Werte trennt</string>
     <string name="set_separators_and">Und-Zeichen (&amp;)</string>
@@ -272,5 +269,6 @@
     <string name="set_playback">Wiedergabe</string>
     <string name="set_audio_desc">Ton und Wiedergabeverhalten konfigurieren</string>
     <string name="set_state">Persistenz</string>
-    <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_replay_gain">Lautstärkeanpassung ReplayGain</string>
+    <string name="lbl_sort_dec">Absteigend</string>
 </resources>

@@ -4,16 +4,24 @@ plugins {
     id "androidx.navigation.safeargs.kotlin"
     id "com.diffplug.spotless"
     id "kotlin-parcelize"
+    id "dagger.hilt.android.plugin"
+    id "kotlin-kapt"
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
     compileSdk 33
+    // NDK is not used in Auxio explicitly (used in the ffmpeg extension), but we need to specify
+    // it here so that binary stripping will work.
+    // TODO: Eventually you might just want to start vendoring the FFMpeg extension so the
+    //  NDK use is unified
+    ndkVersion = "23.2.8568313"
     namespace "org.oxycblt.auxio"
 
     defaultConfig {
         applicationId namespace
-        versionName "3.0.2"
-        versionCode 26
+        versionName "3.0.3"
+        versionCode 27
 
         minSdk 21
         targetSdk 33
@@ -21,14 +29,13 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    // ExoPlayer, AndroidX, and Material Components all need Java 8 to compile.
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
         freeCompilerArgs += "-Xjvm-default=all"
     }
 
@@ -42,16 +49,16 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+
+            dependenciesInfo {
+                includeInApk = false
+                includeInBundle = false
+            }
         }
     }
 
     buildFeatures {
         viewBinding true
-    }
-
-    dependenciesInfo {
-        includeInApk = false
-        includeInBundle = false
     }
 }
 
@@ -66,7 +73,7 @@ dependencies {
 
     // General
     // 1.4.0 is used in order to avoid a ripple bug in material components
-    implementation "androidx.appcompat:appcompat:1.4.0"
+    implementation "androidx.appcompat:appcompat:1.6.1"
     implementation "androidx.core:core-ktx:1.9.0"
     implementation "androidx.activity:activity-ktx:1.6.1"
     implementation "androidx.fragment:fragment-ktx:1.5.5"
@@ -75,6 +82,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.viewpager2:viewpager2:1.1.0-beta01"
+    implementation 'androidx.core:core-ktx:+'
 
     // Lifecycle
     def lifecycle_version = "2.5.1"
@@ -93,30 +101,38 @@ dependencies {
     // Preferences
     implementation "androidx.preference:preference-ktx:1.2.0"
 
+    // Database
+    def room_version = '2.5.0'
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+
     // --- THIRD PARTY ---
 
-    // Exoplayer
-    // WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE PRE-BUILD SCRIPT.
-    // IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
-    implementation("com.google.android.exoplayer:exoplayer-core:2.18.2") {
-        exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
-    }
-
-    implementation fileTree(dir: "libs", include: ["library-*.aar"])
-    implementation fileTree(dir: "libs", include: ["extension-*.aar"])
+    // Exoplayer (Vendored)
+    implementation project(":exoplayer-library-core")
+    implementation project(":exoplayer-extension-ffmpeg")
 
     // Image loading
-    implementation "io.coil-kt:coil:2.1.0"
+    implementation 'io.coil-kt:coil-base:2.2.2'
 
     // Material
-    // Locked below 1.7.0-alpha03 to avoid the same ripple bug
-    implementation "com.google.android.material:material:1.7.0-alpha02"
+    // TODO: Stuck on 1.8.0-alpha01 until ripple bug with tab layout can be worked around
+    // TODO: Exactly figure out the conditions that the 1.7.0 ripple bug occurred so you can just
+    //  PR a fix.
+    implementation "com.google.android.material:material:1.8.0-alpha01"
 
-    // Development
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:2.9.1"
+    // Dependency Injection
+    def dagger_version = '2.45'
+    implementation "com.google.dagger:dagger:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    // Testing
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
     testImplementation "junit:junit:4.13.2"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
 
 spotless {

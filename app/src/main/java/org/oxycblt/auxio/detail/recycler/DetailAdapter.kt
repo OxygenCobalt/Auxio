@@ -19,12 +19,13 @@ package org.oxycblt.auxio.detail.recycler
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemSortHeaderBinding
-import org.oxycblt.auxio.detail.SortHeader
+import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
@@ -52,21 +53,21 @@ abstract class DetailAdapter(
     override fun getItemViewType(position: Int) =
         when (getItem(position)) {
             // Implement support for headers and sort headers
-            is Header -> HeaderViewHolder.VIEW_TYPE
+            is BasicHeader -> BasicHeaderViewHolder.VIEW_TYPE
             is SortHeader -> SortHeaderViewHolder.VIEW_TYPE
             else -> super.getItemViewType(position)
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
-            HeaderViewHolder.VIEW_TYPE -> HeaderViewHolder.from(parent)
+            BasicHeaderViewHolder.VIEW_TYPE -> BasicHeaderViewHolder.from(parent)
             SortHeaderViewHolder.VIEW_TYPE -> SortHeaderViewHolder.from(parent)
             else -> error("Invalid item type $viewType")
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
-            is Header -> (holder as HeaderViewHolder).bind(item)
+            is BasicHeader -> (holder as BasicHeaderViewHolder).bind(item)
             is SortHeader -> (holder as SortHeaderViewHolder).bind(item, listener)
         }
     }
@@ -74,7 +75,7 @@ abstract class DetailAdapter(
     override fun isItemFullWidth(position: Int): Boolean {
         // Headers should be full-width in all configurations.
         val item = getItem(position)
-        return item is Header || item is SortHeader
+        return item is BasicHeader || item is SortHeader
     }
 
     /** An extended [SelectableListListener] for [DetailAdapter] implementations. */
@@ -105,8 +106,8 @@ abstract class DetailAdapter(
             object : SimpleDiffCallback<Item>() {
                 override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
-                        oldItem is Header && newItem is Header ->
-                            HeaderViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
+                        oldItem is BasicHeader && newItem is BasicHeader ->
+                            BasicHeaderViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is SortHeader && newItem is SortHeader ->
                             SortHeaderViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         else -> false
@@ -117,8 +118,15 @@ abstract class DetailAdapter(
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [SortHeader], a variation on [Header] that adds a
- * button opening a menu for sorting. Use [from] to create an instance.
+ * A header variation that displays a button to open a sort menu.
+ * @param titleRes The string resource to use as the header title
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+data class SortHeader(@StringRes override val titleRes: Int) : Header
+
+/**
+ * A [RecyclerView.ViewHolder] that displays a [SortHeader], a variation on [BasicHeader] that adds
+ * a button opening a menu for sorting. Use [from] to create an instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
 private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :

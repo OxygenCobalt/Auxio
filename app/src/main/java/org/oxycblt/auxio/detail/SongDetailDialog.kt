@@ -17,30 +17,40 @@
  
 package org.oxycblt.auxio.detail
 
+import android.content.Context
 import android.os.Bundle
 import android.text.format.Formatter
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isInvisible
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSongDetailBinding
+import org.oxycblt.auxio.detail.recycler.SongProperty
+import org.oxycblt.auxio.detail.recycler.SongPropertyAdapter
+import org.oxycblt.auxio.list.adapter.BasicListInstructions
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.metadata.AudioInfo
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.concatLocalized
 
 /**
  * A [ViewBindingDialogFragment] that shows information about a Song.
  * @author Alexander Capehart (OxygenCobalt)
  */
+@AndroidEntryPoint
 class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
-    private val detailModel: DetailViewModel by androidActivityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     // Information about what song to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an song.
     private val args: SongDetailDialogArgs by navArgs()
+    private val detailAdapter = SongPropertyAdapter()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogSongDetailBinding.inflate(inflater)
@@ -52,48 +62,72 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
     override fun onBindingCreated(binding: DialogSongDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
+        binding.detailProperties.adapter = detailAdapter
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setSongUid(args.itemUid)
-        collectImmediately(detailModel.currentSong, detailModel.songProperties, ::updateSong)
+        collectImmediately(detailModel.currentSong, detailModel.songAudioInfo, ::updateSong)
     }
 
-    private fun updateSong(song: Song?, properties: SongProperties?) {
+    private fun updateSong(song: Song?, info: AudioInfo?) {
         if (song == null) {
             // Song we were showing no longer exists.
             findNavController().navigateUp()
             return
         }
 
-        val binding = requireBinding()
-        if (properties != null) {
-            // Finished loading Song properties, populate and show the list of Song information.
-            binding.detailLoading.isInvisible = true
-            binding.detailContainer.isInvisible = false
-
+        if (info != null) {
             val context = requireContext()
-            binding.detailFileName.setText(song.path.name)
-            binding.detailRelativeDir.setText(song.path.parent.resolveName(context))
-            binding.detailFormat.setText(properties.resolvedMimeType.resolveName(context))
-            binding.detailSize.setText(Formatter.formatFileSize(context, song.size))
-            binding.detailDuration.setText(song.durationMs.formatDurationMs(true))
-
-            if (properties.bitrateKbps != null) {
-                binding.detailBitrate.setText(
-                    getString(R.string.fmt_bitrate, properties.bitrateKbps))
-            } else {
-                binding.detailBitrate.setText(R.string.def_bitrate)
-            }
-
-            if (properties.sampleRateHz != null) {
-                binding.detailSampleRate.setText(
-                    getString(R.string.fmt_sample_rate, properties.sampleRateHz))
-            } else {
-                binding.detailSampleRate.setText(R.string.def_sample_rate)
-            }
-        } else {
-            // Loading is still on-going, don't show anything yet.
-            binding.detailLoading.isInvisible = false
-            binding.detailContainer.isInvisible = true
+            detailAdapter.submitList(
+                buildList {
+                    add(SongProperty(R.string.lbl_name, song.zipName(context)))
+                    add(SongProperty(R.string.lbl_album, song.album.zipName(context)))
+                    add(SongProperty(R.string.lbl_artists, song.artists.zipNames(context)))
+                    add(SongProperty(R.string.lbl_genres, song.genres.resolveNames(context)))
+                    song.date?.let { add(SongProperty(R.string.lbl_date, it.resolveDate(context))) }
+                    song.track?.let {
+                        add(SongProperty(R.string.lbl_track, getString(R.string.fmt_number, it)))
+                    }
+                    song.disc?.let {
+                        val formattedNumber = getString(R.string.fmt_number, it.number)
+                        val zipped =
+                            if (it.name != null) {
+                                getString(R.string.fmt_zipped_names, formattedNumber, it.name)
+                            } else {
+                                formattedNumber
+                            }
+                        add(SongProperty(R.string.lbl_disc, zipped))
+                    }
+                    add(SongProperty(R.string.lbl_file_name, song.path.name))
+                    add(
+                        SongProperty(
+                            R.string.lbl_relative_path, song.path.parent.resolveName(context)))
+                    info.resolvedMimeType.resolveName(context)?.let {
+                        SongProperty(R.string.lbl_format, it)
+                    }
+                    add(
+                        SongProperty(
+                            R.string.lbl_size, Formatter.formatFileSize(context, song.size)))
+                    add(SongProperty(R.string.lbl_duration, song.durationMs.formatDurationMs(true)))
+                    info.bitrateKbps?.let {
+                        add(SongProperty(R.string.lbl_bitrate, getString(R.string.fmt_bitrate, it)))
+                    }
+                    info.sampleRateHz?.let {
+                        add(
+                            SongProperty(
+                                R.string.lbl_sample_rate, getString(R.string.fmt_sample_rate, it)))
+                    }
+                },
+                BasicListInstructions.REPLACE)
         }
     }
+
+    private fun <T : Music> T.zipName(context: Context) =
+        if (rawSortName != null) {
+            getString(R.string.fmt_zipped_names, resolveName(context), rawSortName)
+        } else {
+            resolveName(context)
+        }
+
+    private fun <T : Music> List<T>.zipNames(context: Context) =
+        concatLocalized(context) { it.zipName(context) }
 }

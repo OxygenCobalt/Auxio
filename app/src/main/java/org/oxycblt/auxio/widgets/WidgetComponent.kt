@@ -22,15 +22,17 @@ import android.graphics.Bitmap
 import android.os.Build
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.image.extractor.SquareFrameTransform
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.playback.state.Queue
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getDimenPixels
@@ -39,16 +41,18 @@ import org.oxycblt.auxio.util.logD
 /**
  * A component that manages the "Now Playing" state. This is kept separate from the [WidgetProvider]
  * itself to prevent possible memory leaks and enable extension to more widgets in the future.
- * @param context [Context] required to manage AppWidgetProviders.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class WidgetComponent(private val context: Context) :
-    PlaybackStateManager.Listener, UISettings.Listener, ImageSettings.Listener {
-    private val playbackManager = PlaybackStateManager.getInstance()
-    private val uiSettings = UISettings.from(context)
-    private val imageSettings = ImageSettings.from(context)
+class WidgetComponent
+@Inject
+constructor(
+    @ApplicationContext private val context: Context,
+    private val imageSettings: ImageSettings,
+    private val bitmapProvider: BitmapProvider,
+    private val playbackManager: PlaybackStateManager,
+    private val uiSettings: UISettings
+) : PlaybackStateManager.Listener, UISettings.Listener, ImageSettings.Listener {
     private val widgetProvider = WidgetProvider()
-    private val provider = BitmapProvider(context)
 
     init {
         playbackManager.addListener(this)
@@ -61,7 +65,7 @@ class WidgetComponent(private val context: Context) :
         val song = playbackManager.queue.currentSong
         if (song == null) {
             logD("No song, resetting widget")
-            widgetProvider.update(context, null)
+            widgetProvider.update(context, uiSettings, null)
             return
         }
 
@@ -70,7 +74,7 @@ class WidgetComponent(private val context: Context) :
         val repeatMode = playbackManager.repeatMode
         val isShuffled = playbackManager.queue.isShuffled
 
-        provider.load(
+        bitmapProvider.load(
             song,
             object : BitmapProvider.Target {
                 override fun onConfigRequest(builder: ImageRequest.Builder): ImageRequest.Builder {
@@ -101,17 +105,18 @@ class WidgetComponent(private val context: Context) :
 
                 override fun onCompleted(bitmap: Bitmap?) {
                     val state = PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled)
-                    widgetProvider.update(context, state)
+                    widgetProvider.update(context, uiSettings, state)
                 }
             })
     }
 
     /** Release this instance, preventing any further events from updating the widget instances. */
     fun release() {
-        provider.release()
+        bitmapProvider.release()
+        imageSettings.unregisterListener(this)
+        playbackManager.removeListener(this)
         uiSettings.unregisterListener(this)
         widgetProvider.reset(context)
-        playbackManager.removeListener(this)
     }
 
     // --- CALLBACKS ---
@@ -129,11 +134,11 @@ class WidgetComponent(private val context: Context) :
 
     /**
      * A condensed form of the playback state that is safe to use in AppWidgets.
-     * @param song [PlaybackStateManager.song]
+     * @param song [Queue.currentSong]
      * @param cover A pre-loaded album cover [Bitmap] for [song].
      * @param isPlaying [PlaybackStateManager.playerState]
      * @param repeatMode [PlaybackStateManager.repeatMode]
-     * @param isShuffled [PlaybackStateManager.isShuffled]
+     * @param isShuffled [Queue.isShuffled]
      */
     data class PlaybackState(
         val song: Song,

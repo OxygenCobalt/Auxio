@@ -83,15 +83,17 @@
     <!-- As in to not filter -->
     <string name="lbl_filter_all">All</string>
 
+    <string name="lbl_name">Name</string>
+    <string name="lbl_date">Date</string>
+    <string name="lbl_duration">Duration</string>
+    <string name="lbl_song_count">Song count</string>
+    <string name="lbl_disc">Disc</string>
+    <string name="lbl_track">Track</string>
+    <string name="lbl_date_added">Date added</string>
+
     <string name="lbl_sort">Sort</string>
-    <string name="lbl_sort_name">Name</string>
-    <string name="lbl_sort_date">Date</string>
-    <string name="lbl_sort_duration">Duration</string>
-    <string name="lbl_sort_count">Song count</string>
-    <string name="lbl_sort_disc">Disc</string>
-    <string name="lbl_sort_track">Track</string>
-    <string name="lbl_sort_date_added">Date added</string>
     <string name="lbl_sort_asc">Ascending</string>
+    <string name="lbl_sort_dec">Descending</string>
 
     <string name="lbl_playback">Now playing</string>
     <string name="lbl_equalizer">Equalizer</string>
@@ -210,6 +212,8 @@
     <string name="set_separators_plus">Plus (+)</string>
     <string name="set_separators_and">Ampersand (&amp;)</string>
     <string name="set_separators_warning">Warning: Using this setting may result in some tags being incorrectly interpreted as having multiple values. You can resolve this by prefixing unwanted separator characters with a backslash (\\).</string>
+    <string name="set_auto_sort_names">Ignore articles when sorting</string>
+    <string name="set_auto_sort_names_desc">Ignore words like \"the\" when sorting by name (works best with english-language music)</string>
     <string name="set_hide_collaborators">Hide collaborators</string>
     <string name="set_hide_collaborators_desc">Only show artists that are directly credited on an album (works best on well-tagged libraries)</string>
     <string name="set_images">Images</string>
@@ -310,11 +314,8 @@
     <string name="def_artist">Unknown artist</string>
     <string name="def_genre">Unknown genre</string>
     <string name="def_date">No date</string>
-    <string name="def_track">No track number</string>
+    <string name="def_track">No track</string>
     <string name="def_playback">No music playing</string>
-    <string name="def_codec">Unknown format</string>
-    <string name="def_bitrate">No bitrate</string>
-    <string name="def_sample_rate">No sample rate</string>
 
     <!-- Codec Namespace | Format names -->
     <eat-comment />

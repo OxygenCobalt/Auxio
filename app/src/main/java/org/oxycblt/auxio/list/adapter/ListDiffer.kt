@@ -63,7 +63,7 @@ interface ListDiffer<T, I> {
     class Async<T>(private val diffCallback: DiffUtil.ItemCallback<T>) :
         Factory<T, BasicListInstructions>() {
         override fun new(adapter: RecyclerView.Adapter<*>): ListDiffer<T, BasicListInstructions> =
-            RealAsyncListDiffer(AdapterListUpdateCallback(adapter), diffCallback)
+            AsyncListDifferImpl(AdapterListUpdateCallback(adapter), diffCallback)
     }
 
     /**
@@ -75,7 +75,7 @@ interface ListDiffer<T, I> {
     class Blocking<T>(private val diffCallback: DiffUtil.ItemCallback<T>) :
         Factory<T, BasicListInstructions>() {
         override fun new(adapter: RecyclerView.Adapter<*>): ListDiffer<T, BasicListInstructions> =
-            RealBlockingListDiffer(AdapterListUpdateCallback(adapter), diffCallback)
+            BlockingListDifferImpl(AdapterListUpdateCallback(adapter), diffCallback)
     }
 }
 
@@ -113,7 +113,7 @@ private abstract class BasicListDiffer<T> : ListDiffer<T, BasicListInstructions>
     protected abstract fun replaceList(newList: List<T>, onDone: () -> Unit)
 }
 
-private class RealAsyncListDiffer<T>(
+private class AsyncListDifferImpl<T>(
     updateCallback: ListUpdateCallback,
     diffCallback: DiffUtil.ItemCallback<T>
 ) : BasicListDiffer<T>() {
@@ -132,7 +132,7 @@ private class RealAsyncListDiffer<T>(
     }
 }
 
-private class RealBlockingListDiffer<T>(
+private class BlockingListDifferImpl<T>(
     private val updateCallback: ListUpdateCallback,
     private val diffCallback: DiffUtil.ItemCallback<T>
 ) : BasicListDiffer<T>() {

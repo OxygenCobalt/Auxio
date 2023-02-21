@@ -30,10 +30,7 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
@@ -122,7 +119,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
             // Information about the artist's genre(s) map to the sub-head text
             binding.detailSubhead.apply {
                 isVisible = true
-                text = artist.resolveGenreContents(binding.context)
+                text = artist.genres.resolveNames(context)
             }
 
             // Song and album counts map to the info
@@ -168,7 +165,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
             object : SimpleDiffCallback<Artist>() {
                 override fun areContentsTheSame(oldItem: Artist, newItem: Artist) =
                     oldItem.rawName == newItem.rawName &&
-                        oldItem.areGenreContentsTheSame(newItem) &&
+                        oldItem.genres.areRawNamesTheSame(newItem.genres) &&
                         oldItem.albums.size == newItem.albums.size &&
                         oldItem.songs.size == newItem.songs.size
             }
