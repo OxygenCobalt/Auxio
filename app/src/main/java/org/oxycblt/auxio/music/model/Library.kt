@@ -100,6 +100,21 @@ private class LibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings) : Li
         genres.forEach { put(it.uid, it.finalize()) }
     }
 
+    override fun equals(other: Any?) =
+        other is Library &&
+            other.songs == songs &&
+            other.albums == albums &&
+            other.artists == artists &&
+            other.genres == genres
+
+    override fun hashCode(): Int {
+        var hashCode = songs.hashCode()
+        hashCode = hashCode * 31 + albums.hashCode()
+        hashCode = hashCode * 31 + artists.hashCode()
+        hashCode = hashCode * 31 + genres.hashCode()
+        return hashCode
+    }
+
     /**
      * Finds a [Music] item [T] in the library by it's [Music.UID].
      * @param uid The [Music.UID] to search for.

@@ -85,6 +85,7 @@ interface Settings<L> {
             sharedPreferences: SharedPreferences,
             key: String
         ) {
+            // FIXME: Settings initialization firing the listener.
             onSettingChanged(key, unlikelyToBeNull(listener))
         }
 
