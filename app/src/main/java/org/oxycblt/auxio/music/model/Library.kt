@@ -88,9 +88,9 @@ interface Library {
 
 private class LibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings) : Library {
     override val songs = buildSongs(rawSongs, settings)
-    override val albums = buildAlbums(songs)
-    override val artists = buildArtists(songs, albums)
-    override val genres = buildGenres(songs)
+    override val albums = buildAlbums(songs, settings)
+    override val artists = buildArtists(songs, albums, settings)
+    override val genres = buildGenres(songs, settings)
 
     // Use a mapping to make finding information based on it's UID much faster.
     private val uidMap = buildMap {
@@ -127,7 +127,7 @@ private class LibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings) : Li
     /**
      * Build a list [SongImpl]s from the given [RawSong].
      * @param rawSongs The [RawSong]s to build the [SongImpl]s from.
-     * @param settings [MusicSettings] required to build [SongImpl]s.
+     * @param settings [MusicSettings] to obtain user parsing configuration.
      * @return A sorted list of [SongImpl]s derived from the [RawSong] that should be suitable for
      * grouping.
      */
@@ -139,14 +139,15 @@ private class LibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings) : Li
      * Build a list of [Album]s from the given [Song]s.
      * @param songs The [Song]s to build [Album]s from. These will be linked with their respective
      * [Album]s when created.
+     * @param settings [MusicSettings] to obtain user parsing configuration.
      * @return A non-empty list of [Album]s. These [Album]s will be incomplete and must be linked
      * with parent [Artist] instances in order to be usable.
      */
-    private fun buildAlbums(songs: List<SongImpl>): List<AlbumImpl> {
+    private fun buildAlbums(songs: List<SongImpl>, settings: MusicSettings): List<AlbumImpl> {
         // Group songs by their singular raw album, then map the raw instances and their
         // grouped songs to Album values. Album.Raw will handle the actual grouping rules.
         val songsByAlbum = songs.groupBy { it.rawAlbum }
-        val albums = songsByAlbum.map { AlbumImpl(it.key, it.value) }
+        val albums = songsByAlbum.map { AlbumImpl(it.key, settings, it.value) }
         logD("Successfully built ${albums.size} albums")
         return albums
     }
@@ -161,10 +162,15 @@ private class LibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings) : Li
      * @param albums The [Album]s to build [Artist]s from. One [Album] can result in the creation of
      * one or more [Artist] instances. These will be linked with their respective [Artist]s when
      * created.
+     * @param settings [MusicSettings] to obtain user parsing configuration.
      * @return A non-empty list of [Artist]s. These [Artist]s will consist of the combined groupings
      * of [Song]s and [Album]s.
      */
-    private fun buildArtists(songs: List<SongImpl>, albums: List<AlbumImpl>): List<ArtistImpl> {
+    private fun buildArtists(
+        songs: List<SongImpl>,
+        albums: List<AlbumImpl>,
+        settings: MusicSettings
+    ): List<ArtistImpl> {
         // Add every raw artist credited to each Song/Album to the grouping. This way,
         // different multi-artist combinations are not treated as different artists.
         val musicByArtist = mutableMapOf<RawArtist, MutableList<Music>>()
@@ -182,7 +188,7 @@ private class LibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings) : Li
         }
 
         // Convert the combined mapping into artist instances.
-        val artists = musicByArtist.map { ArtistImpl(it.key, it.value) }
+        val artists = musicByArtist.map { ArtistImpl(it.key, settings, it.value) }
         logD("Successfully built ${artists.size} artists")
         return artists
     }
@@ -192,9 +198,10 @@ private class LibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings) : Li
      * @param [songs] The [Song]s to build [Genre]s from. One [Song] can result in the creation of
      * one or more [Genre] instances. These will be linked with their respective [Genre]s when
      * created.
+     * @param settings [MusicSettings] to obtain user parsing configuration.
      * @return A non-empty list of [Genre]s.
      */
-    private fun buildGenres(songs: List<SongImpl>): List<GenreImpl> {
+    private fun buildGenres(songs: List<SongImpl>, settings: MusicSettings): List<GenreImpl> {
         // Add every raw genre credited to each Song to the grouping. This way,
         // different multi-genre combinations are not treated as different genres.
         val songsByGenre = mutableMapOf<RawGenre, MutableList<SongImpl>>()
@@ -205,7 +212,7 @@ private class LibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings) : Li
         }
 
         // Convert the mapping into genre instances.
-        val genres = songsByGenre.map { GenreImpl(it.key, it.value) }
+        val genres = songsByGenre.map { GenreImpl(it.key, settings, it.value) }
         logD("Successfully built ${genres.size} genres")
         return genres
     }

@@ -47,7 +47,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 /**
  * Library-backed implementation of [Song].
  * @param rawSong The [RawSong] to derive the member data from.
- * @param musicSettings [MusicSettings] to perform further user-configured parsing.
+ * @param musicSettings [MusicSettings] to for user parsing configuration.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
@@ -70,7 +70,7 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
             }
     override val rawName = requireNotNull(rawSong.name) { "Invalid raw: No title" }
     override val rawSortName = rawSong.sortName
-    override val collationKey = makeCollationKey(this)
+    override val collationKey = makeCollationKey(musicSettings)
     override fun resolveName(context: Context) = rawName
 
     override val track = rawSong.track
@@ -219,11 +219,16 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
 /**
  * Library-backed implementation of [Album].
  * @param rawAlbum The [RawAlbum] to derive the member data from.
+ * @param musicSettings [MusicSettings] to for user parsing configuration.
  * @param songs The [Song]s that are a part of this [Album]. These items will be linked to this
  * [Album].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AlbumImpl(val rawAlbum: RawAlbum, override val songs: List<SongImpl>) : Album {
+class AlbumImpl(
+    private val rawAlbum: RawAlbum,
+    musicSettings: MusicSettings,
+    override val songs: List<SongImpl>
+) : Album {
     override val uid =
     // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
     rawAlbum.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ALBUMS, it) }
@@ -236,7 +241,7 @@ class AlbumImpl(val rawAlbum: RawAlbum, override val songs: List<SongImpl>) : Al
             }
     override val rawName = rawAlbum.name
     override val rawSortName = rawAlbum.sortName
-    override val collationKey = makeCollationKey(this)
+    override val collationKey = makeCollationKey(musicSettings)
     override fun resolveName(context: Context) = rawName
 
     override val dates = Date.Range.from(songs.mapNotNull { it.date })
@@ -309,19 +314,24 @@ class AlbumImpl(val rawAlbum: RawAlbum, override val songs: List<SongImpl>) : Al
 /**
  * Library-backed implementation of [Artist].
  * @param rawArtist The [RawArtist] to derive the member data from.
+ * @param musicSettings [MusicSettings] to for user parsing configuration.
  * @param songAlbums A list of the [Song]s and [Album]s that are a part of this [Artist] , either
  * through artist or album artist tags. Providing [Song]s to the artist is optional. These instances
  * will be linked to this [Artist].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistImpl(private val rawArtist: RawArtist, songAlbums: List<Music>) : Artist {
+class ArtistImpl(
+    private val rawArtist: RawArtist,
+    musicSettings: MusicSettings,
+    songAlbums: List<Music>
+) : Artist {
     override val uid =
     // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
     rawArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ARTISTS, it) }
             ?: Music.UID.auxio(MusicMode.ARTISTS) { update(rawArtist.name) }
     override val rawName = rawArtist.name
     override val rawSortName = rawArtist.sortName
-    override val collationKey = makeCollationKey(this)
+    override val collationKey = makeCollationKey(musicSettings)
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
     override val songs: List<Song>
 
@@ -390,13 +400,20 @@ class ArtistImpl(private val rawArtist: RawArtist, songAlbums: List<Music>) : Ar
 }
 /**
  * Library-backed implementation of [Genre].
+ * @param rawGenre [RawGenre] to derive the member data from.
+ * @param musicSettings [MusicSettings] to for user parsing configuration.
+ * @param songs Child [SongImpl]s of this instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreImpl(private val rawGenre: RawGenre, override val songs: List<SongImpl>) : Genre {
+class GenreImpl(
+    private val rawGenre: RawGenre,
+    musicSettings: MusicSettings,
+    override val songs: List<SongImpl>
+) : Genre {
     override val uid = Music.UID.auxio(MusicMode.GENRES) { update(rawGenre.name) }
     override val rawName = rawGenre.name
     override val rawSortName = rawName
-    override val collationKey = makeCollationKey(this)
+    override val collationKey = makeCollationKey(musicSettings)
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
 
     override val albums: List<Album>
@@ -503,19 +520,23 @@ private val COLLATOR: Collator = Collator.getInstance().apply { strength = Colla
 /**
  * Provided implementation to create a [CollationKey] in the way described by [Music.collationKey].
  * This should be used in all overrides of all [CollationKey].
- * @param music The [Music] to create the [CollationKey] for.
+ * @param musicSettings [MusicSettings] required for user parsing configuration.
  * @return A [CollationKey] that follows the specification described by [Music.collationKey].
  */
-private fun makeCollationKey(music: Music): CollationKey? {
-    val sortName =
-        (music.rawSortName ?: music.rawName)?.run {
-            when {
-                length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
-                length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
-                length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
-                else -> this
+private fun Music.makeCollationKey(musicSettings: MusicSettings): CollationKey? {
+    var sortName = (rawSortName ?: rawName) ?: return null
+
+    if (musicSettings.automaticSortNames) {
+        sortName =
+            sortName.run {
+                when {
+                    length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
+                    length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
+                    length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
+                    else -> this
+                }
             }
-        }
+    }
 
     return COLLATOR.getCollationKey(sortName)
 }

@@ -42,6 +42,8 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     val shouldBeObserving: Boolean
     /** A [String] of characters representing the desired characters to denote multi-value tags. */
     var multiValueSeparators: String
+    /** Whether to trim english articles with song sort names. */
+    val automaticSortNames: Boolean
     /** The [Sort] mode used in [Song] lists. */
     var songSort: Sort
     /** The [Sort] mode used in [Album] lists. */
@@ -105,6 +107,9 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context
                 apply()
             }
         }
+
+    override val automaticSortNames: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_auto_sort_names), true)
 
     override var songSort: Sort
         get() =
@@ -203,11 +208,14 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context
         }
 
     override fun onSettingChanged(key: String, listener: MusicSettings.Listener) {
+        // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"
+        //  (just need to manipulate data)
         when (key) {
             getString(R.string.set_key_exclude_non_music),
             getString(R.string.set_key_music_dirs),
             getString(R.string.set_key_music_dirs_include),
-            getString(R.string.set_key_separators) -> listener.onIndexingSettingChanged()
+            getString(R.string.set_key_separators),
+            getString(R.string.set_key_auto_sort_names) -> listener.onIndexingSettingChanged()
             getString(R.string.set_key_observing) -> listener.onObservingChanged()
         }
     }
