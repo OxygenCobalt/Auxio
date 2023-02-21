@@ -165,15 +165,12 @@
     <string name="desc_genre_image">Выява жанру для %s</string>
     <string name="def_artist">Невядомы выканаўца</string>
     <string name="def_genre">Невядомы жанр</string>
-    <string name="def_codec">Невядомы фармат</string>
     <string name="cdc_ogg">Ogg аўдыё</string>
     <string name="def_date">Без даты</string>
     <string name="def_track">Няма нумара кампазіцыі</string>
     <string name="cdc_mp3">MPEG-1 аўдыё</string>
     <string name="cdc_mka">Matroska аўдыё</string>
     <string name="def_playback">Музыка не грае</string>
-    <string name="def_bitrate">Няма бітрэйту</string>
-    <string name="def_sample_rate">Няма частаты дыскрэтызацыі</string>
     <string name="cdc_mp4">MPEG-4 аўдыё</string>
     <string name="clr_red">Чырвоны</string>
     <string name="clr_purple">Фіялетавы</string>

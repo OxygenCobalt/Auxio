@@ -195,7 +195,6 @@
     <string name="set_separators_semicolon">Крапка з комою (;)</string>
     <string name="err_bad_dir">Ця папка не підтримується</string>
     <string name="def_artist">Невідомий виконавець</string>
-    <string name="def_bitrate">Немає бітрейту</string>
     <string name="clr_lime">Лаймовий</string>
     <string name="set_separators_and">Амперсанд (&amp;)</string>
     <string name="err_no_dirs">Немає папок</string>
@@ -217,7 +216,6 @@
     </plurals>
     <string name="desc_album_cover">Обкладинка альбому %s</string>
     <string name="def_genre">Невідомий жанр</string>
-    <string name="def_sample_rate">Немає частоти дискретизації</string>
     <string name="desc_queue_bar">Відкрити чергу</string>
     <string name="clr_yellow">Жовтий</string>
     <string name="desc_queue_handle">Перемістити пісню в черзі</string>
@@ -240,12 +238,11 @@
     <string name="fmt_db_pos">+%.1f дБ</string>
     <string name="fmt_db_neg">-%.1f дБ</string>
     <string name="desc_artist_image">Фото виконавця %s</string>
-    <string name="def_codec">Невідомий формат</string>
     <string name="desc_genre_image">Зображення жанру %s</string>
     <string name="cdc_mp3">Звук MPEG-1</string>
     <string name="err_no_app">Не знайдено жодного застосунку, який би міг впоратися з цим завданням</string>
     <string name="def_date">Дата відсутня</string>
-    <string name="def_track">Немає номеру пісні</string>
+    <string name="def_track">Немає пісні</string>
     <string name="def_playback">Музика не грає</string>
     <string name="err_did_not_wipe">Не вдалось очистити статус відтворення</string>
     <string name="err_did_not_save">Не вдалось зберегти статус відтворення</string>

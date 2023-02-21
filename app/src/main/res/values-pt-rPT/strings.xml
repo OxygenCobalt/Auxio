@@ -125,7 +125,6 @@
     <string name="desc_clear_search">Limpar consulta de pesquisa</string>
     <string name="desc_genre_image">Imagem de gênero para %s</string>
     <string name="def_date">Sem data</string>
-    <string name="def_codec">Formato desconhecido</string>
     <string name="cdc_flac">Codec de Audio Gratuito Sem Perdas (FLAC)</string>
     <string name="clr_deep_purple">Roxo profundo</string>
     <string name="clr_indigo">Índigo</string>
@@ -163,7 +162,6 @@
     <string name="desc_tab_handle">Mover esta guia</string>
     <string name="def_artist">Artista desconhecido</string>
     <string name="def_playback">Nenhuma música tocando</string>
-    <string name="def_bitrate">Sem taxa de bits</string>
     <string name="clr_dynamic">Dinâmico</string>
     <string name="fmt_disc_no">Disco %d</string>
     <string name="desc_album_cover">Capa do álbum para %s</string>
@@ -196,7 +194,6 @@
     <string name="desc_shuffle">Ativar ou desativar a reprodução aleatória</string>
     <string name="desc_shuffle_all">Embaralhar todas as músicas</string>
     <string name="desc_clear_queue_item">Remover esta música de fila</string>
-    <string name="def_sample_rate">Sem taxa de amostragem</string>
     <string name="cdc_mka">Áudio Matroska</string>
     <string name="cdc_aac">Codificação de Audio Avançada (AAC)</string>
     <string name="lbl_album">Álbum</string>

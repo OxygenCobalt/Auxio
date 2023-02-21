@@ -141,7 +141,6 @@
     <string name="set_dirs_mode_exclude_desc">Musik <b>tidak</b> akan dimuat dari folder yang Anda tambahkan.</string>
     <string name="desc_clear_queue_item">Hapus lagu antrian ini</string>
     <string name="desc_clear_search">Hapus kueri pencarian</string>
-    <string name="def_bitrate">Tidak ada Bitrate</string>
     <string name="set_pre_amp_without">Penyesuaian tanpa tag</string>
     <string name="set_dirs">Folder musik</string>
     <string name="set_playback_mode_artist">Putar dari artis</string>
@@ -168,10 +167,8 @@
     <string name="fmt_lib_total_duration">Total durasi: %s</string>
     <string name="desc_genre_image">Gambar Genre untuk %s</string>
     <string name="def_genre">Genre Tidak Diketahui</string>
-    <string name="def_codec">Format Tidak Diketahui</string>
     <string name="cdc_mka">Audio Matroska</string>
     <string name="clr_deep_green">Hijau Tua</string>
-    <string name="def_sample_rate">Tidak Ada Tingkat Sampel</string>
     <string name="clr_yellow">Kuning</string>
     <string name="cdc_mp4">Audio MPEG-4</string>
     <string name="clr_cyan">Cyan</string>

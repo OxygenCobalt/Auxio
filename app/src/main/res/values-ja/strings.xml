@@ -201,9 +201,6 @@
     <string name="desc_skip_next">次の曲にスキップ</string>
     <string name="err_did_not_save">再生状態を保存できません</string>
     <string name="desc_shuffle_all">すべての曲をシャフル</string>
-    <string name="def_bitrate">ビットレートがありません</string>
-    <string name="def_sample_rate">サンプルレートがありません</string>
-    <string name="def_codec">未知のオーディオ形式</string>
     <string name="fmt_sample_rate">%d ヘルツ</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="set_pre_amp_with">タグで調整</string>

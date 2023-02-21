@@ -81,7 +81,6 @@
     <string name="desc_no_cover">Okładka albumu</string>
     <string name="def_genre">Nieznany gatunek</string>
     <string name="def_date">Nieznana data</string>
-    <string name="def_sample_rate">Nieznana częstotliwość próbkowania</string>
     <string name="cdc_mp3">MPEG-1 audio</string>
     <string name="lbl_track">Utwór</string>
     <string name="lbl_song_detail">Wyświetl szczegóły</string>
@@ -89,8 +88,6 @@
     <string name="lbl_sample_rate">Częstotliwość próbkowania</string>
     <string name="lbl_shuffle_shortcut_short">Losowo</string>
     <string name="set_headset_autoplay">Autoodtwarzanie w słuchawkach</string>
-    <string name="def_codec">Nieznany format</string>
-    <string name="def_bitrate">Nieznany bitrate</string>
     <string name="clr_teal">Morski</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="lbl_file_name">Nazwa pliku</string>
@@ -131,7 +128,7 @@
     <string name="lbl_remix_group">Remixy</string>
     <string name="def_artist">Nieznany wykonawca</string>
     <string name="lbl_bitrate">Bitrate</string>
-    <string name="def_track">Nieznany numer</string>
+    <string name="def_track">Brak ścieżki dźwiękowej</string>
     <string name="lbl_equalizer">Wyrównywacz</string>
     <string name="lbl_size">Rozmiar</string>
     <string name="err_no_dirs">Brak folderów</string>
