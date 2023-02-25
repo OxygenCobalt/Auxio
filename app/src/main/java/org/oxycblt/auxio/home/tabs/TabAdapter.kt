@@ -30,6 +30,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * A [RecyclerView.Adapter] that displays an array of [Tab]s open for configuration.
+ *
  * @param listener A [EditableListListener] for tab interactions.
  */
 class TabAdapter(private val listener: EditableListListener<Tab>) :
@@ -46,6 +47,7 @@ class TabAdapter(private val listener: EditableListListener<Tab>) :
 
     /**
      * Immediately update the tab array. This should be used when initializing the list.
+     *
      * @param newTabs The new array of tabs to show.
      */
     fun submitTabs(newTabs: Array<Tab>) {
@@ -55,6 +57,7 @@ class TabAdapter(private val listener: EditableListListener<Tab>) :
 
     /**
      * Update a specific tab to the given value.
+     *
      * @param at The position of the tab to update.
      * @param tab The new tab.
      */
@@ -66,6 +69,7 @@ class TabAdapter(private val listener: EditableListListener<Tab>) :
 
     /**
      * Swap two tabs with each other.
+     *
      * @param a The position of the first tab to swap.
      * @param b The position of the second tab to swap.
      */
@@ -83,12 +87,14 @@ class TabAdapter(private val listener: EditableListListener<Tab>) :
 
 /**
  * A [RecyclerView.ViewHolder] that displays a [Tab]. Use [from] to create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class TabViewHolder private constructor(private val binding: ItemTabBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
+     *
      * @param tab The new [Tab] to bind.
      * @param listener A [EditableListListener] to bind interactions to.
      */
@@ -114,6 +120,7 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
     companion object {
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */

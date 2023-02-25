@@ -21,6 +21,7 @@ import org.oxycblt.auxio.list.Item
 
 /**
  * A disc identifier for a song.
+ *
  * @param number The disc number.
  * @param name The name of the disc group, if any. Null if not present.
  */

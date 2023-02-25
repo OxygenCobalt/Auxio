@@ -64,6 +64,7 @@ import org.oxycblt.auxio.util.*
 /**
  * The starting [SelectionFragment] of Auxio. Shows the user's music library and enables navigation
  * to other views.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -483,10 +484,11 @@ class HomeFragment :
 
     /**
      * [FragmentStateAdapter] implementation for the [HomeFragment]'s [ViewPager2] instance.
+     *
      * @param tabs The current tab configuration. This will define the [Fragment]s created.
      * @param fragmentManager The [FragmentManager] required by [FragmentStateAdapter].
      * @param lifecycleOwner The [LifecycleOwner], whose Lifecycle is required by
-     * [FragmentStateAdapter].
+     *   [FragmentStateAdapter].
      */
     private class HomePagerAdapter(
         private val tabs: List<MusicMode>,

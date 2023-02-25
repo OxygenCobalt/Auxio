@@ -57,6 +57,7 @@ class NavigationViewModel : ViewModel() {
      * Navigate to something in the main navigation graph. This can be used by UIs in the explore
      * navigation graph to trigger navigation in the higher-level main navigation graph. Will do
      * nothing if already navigating.
+     *
      * @param action The [MainNavigationAction] to perform.
      */
     fun mainNavigateTo(action: MainNavigationAction) {
@@ -79,6 +80,7 @@ class NavigationViewModel : ViewModel() {
 
     /**
      * Navigate to a given [Music] item. Will do nothing if already navigating.
+     *
      * @param music The [Music] to navigate to.
      */
     fun exploreNavigateTo(music: Music) {
@@ -92,8 +94,9 @@ class NavigationViewModel : ViewModel() {
 
     /**
      * Navigate to one of the parent [Artist]'s of the given [Song].
+     *
      * @param song The [Song] to navigate with. If there are multiple parent [Artist]s, a picker
-     * dialog will be shown.
+     *   dialog will be shown.
      */
     fun exploreNavigateToParentArtist(song: Song) {
         exploreNavigateToParentArtistImpl(song, song.artists)
@@ -101,8 +104,9 @@ class NavigationViewModel : ViewModel() {
 
     /**
      * Navigate to one of the parent [Artist]'s of the given [Album].
+     *
      * @param album The [Album] to navigate with. If there are multiple parent [Artist]s, a picker
-     * dialog will be shown.
+     *   dialog will be shown.
      */
     fun exploreNavigateToParentArtist(album: Album) {
         exploreNavigateToParentArtistImpl(album, album.artists)
@@ -137,6 +141,7 @@ class NavigationViewModel : ViewModel() {
  * Represents the possible actions within the main navigation graph. This can be used with
  * [NavigationViewModel] to initiate navigation in the main navigation graph from anywhere in the
  * app, including outside the main navigation graph.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 sealed class MainNavigationAction {
@@ -148,8 +153,9 @@ sealed class MainNavigationAction {
 
     /**
      * Navigate to the given [NavDirections].
+     *
      * @param directions The [NavDirections] to navigate to. Assumed to be part of the main
-     * navigation graph.
+     *   navigation graph.
      */
     data class Directions(val directions: NavDirections) : MainNavigationAction()
 }

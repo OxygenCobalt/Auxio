@@ -30,6 +30,7 @@ import org.oxycblt.auxio.util.logW
 
 /**
  * The properties of a [Song]'s file.
+ *
  * @param bitrateKbps The bit rate, in kilobytes-per-second. Null if it could not be parsed.
  * @param sampleRateHz The sample rate, in hertz.
  * @param resolvedMimeType The known mime type of the [Song] after it's file format was determined.
@@ -44,6 +45,7 @@ data class AudioInfo(
     interface Provider {
         /**
          * Extract the [AudioInfo] of a given [Song].
+         *
          * @param song The [Song] to read.
          * @return The [AudioInfo] of the [Song], if possible to obtain.
          */
@@ -53,6 +55,7 @@ data class AudioInfo(
 
 /**
  * A framework-backed implementation of [AudioInfo.Provider].
+ *
  * @param context [Context] required to read audio files.
  */
 class AudioInfoProviderImpl @Inject constructor(@ApplicationContext private val context: Context) :

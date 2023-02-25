@@ -35,6 +35,7 @@ import org.oxycblt.auxio.util.getColorCompat
 
 /**
  * A [ViewBindingFragment] that shows the current playback state in a compact manner.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

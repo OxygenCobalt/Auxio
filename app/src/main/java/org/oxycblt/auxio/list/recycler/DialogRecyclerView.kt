@@ -34,6 +34,7 @@ import org.oxycblt.auxio.util.getDimenPixels
  * A [RecyclerView] intended for use in Dialogs, adding features such as:
  * - NestedScrollView scrollIndicators behavior emulation
  * - Dialog-specific [ViewHolder] that automatically resolves certain issues.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class DialogRecyclerView

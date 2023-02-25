@@ -28,6 +28,7 @@ import com.google.android.exoplayer2.extractor.wav.WavExtractor
 
 /**
  * A [ExtractorsFactory] that only provides audio containers to save APK space.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 object AudioOnlyExtractors : ExtractorsFactory {

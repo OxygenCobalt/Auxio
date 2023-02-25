@@ -41,12 +41,13 @@ import kotlinx.coroutines.launch
 
 /**
  * Get if this [View] contains the given [PointF], with optional leeway.
+ *
  * @param x The x value of the point to check.
  * @param y The y value of the point to check.
  * @param minTouchTargetSize A minimum size to use when checking the value. This can be used to
- * extend the range where a point is considered "contained" by the [View] beyond it's actual size.
+ *   extend the range where a point is considered "contained" by the [View] beyond it's actual size.
  * @return true if the [PointF] is contained by the view, false otherwise. Adapted from
- * AndroidFastScroll: https://github.com/zhanghai/AndroidFastScroll
+ *   AndroidFastScroll: https://github.com/zhanghai/AndroidFastScroll
  */
 fun View.isUnder(x: Float, y: Float, minTouchTargetSize: Int = 0) =
     isUnderImpl(x, left, right, (parent as View).width, minTouchTargetSize) &&
@@ -54,6 +55,7 @@ fun View.isUnder(x: Float, y: Float, minTouchTargetSize: Int = 0) =
 
 /**
  * Internal implementation of [isUnder].
+ *
  * @param position The position to check.
  * @param viewStart The start of the view bounds, on the same axis as [position].
  * @param viewEnd The end of the view bounds, on the same axis as [position]
@@ -129,6 +131,7 @@ val View.coordinatorLayoutBehavior: CoordinatorLayout.Behavior<View>?
  * Collect a [StateFlow] into [block] in a lifecycle-aware manner *eventually.* Due to co-routine
  * launching, the initializing call will occur ~100ms after draw time. If this is not desirable, use
  * [collectImmediately].
+ *
  * @param stateFlow The [StateFlow] to collect.
  * @param block The code to run when the [StateFlow] updates.
  */
@@ -140,6 +143,7 @@ fun <T> Fragment.collect(stateFlow: StateFlow<T>, block: (T) -> Unit) {
  * Collect a [StateFlow] into a [block] in a lifecycle-aware manner *immediately.* This will
  * immediately run an initializing call to ensure the UI is set up before draw-time. Note that this
  * will result in two initializing calls.
+ *
  * @param stateFlow The [StateFlow] to collect.
  * @param block The code to run when the [StateFlow] updates.
  */
@@ -151,6 +155,7 @@ fun <T> Fragment.collectImmediately(stateFlow: StateFlow<T>, block: (T) -> Unit)
 /**
  * Like [collectImmediately], but with two [StateFlow] instances that are collected with the same
  * block.
+ *
  * @param a The first [StateFlow] to collect.
  * @param b The second [StateFlow] to collect.
  * @param block The code to run when either [StateFlow] updates.
@@ -171,6 +176,7 @@ fun <T1, T2> Fragment.collectImmediately(
 /**
  * Like [collectImmediately], but with three [StateFlow] instances that are collected with the same
  * block.
+ *
  * @param a The first [StateFlow] to collect.
  * @param b The second [StateFlow] to collect.
  * @param c The third [StateFlow] to collect.
@@ -191,6 +197,7 @@ fun <T1, T2, T3> Fragment.collectImmediately(
  * Launch a [Fragment] co-routine whenever the [Lifecycle] hits the given [Lifecycle.State]. This
  * should always been used when launching [Fragment] co-routines was it will not result in
  * unexpected behavior.
+ *
  * @param state The [Lifecycle.State] to launch the co-routine in.
  * @param block The block to run in the co-routine.
  * @see repeatOnLifecycle
@@ -250,6 +257,7 @@ val WindowInsets.systemGestureInsetsCompat: Insets
 
 /**
  * Returns the given [Insets] based on the to the API 30+ [WindowInsets] convention.
+ *
  * @param typeMask The type of [Insets] to obtain.
  * @return Compat [Insets] corresponding to the given type.
  * @see WindowInsets.getInsets
@@ -259,6 +267,7 @@ private fun WindowInsets.getCompatInsets(typeMask: Int) = Insets.toCompatInsets(
 
 /**
  * Returns "System Bar" [Insets] based on the API 21+ [WindowInsets] convention.
+ *
  * @return Compat [Insets] consisting of the [WindowInsets] "System Bar" [Insets] field.
  * @see WindowInsets.getSystemWindowInsets
  */
@@ -272,6 +281,7 @@ private fun WindowInsets.getSystemWindowCompatInsets() =
 
 /**
  * Returns "System Bar" [Insets] based on the API 29 [WindowInsets] convention.
+ *
  * @return Compat [Insets] consisting of the [WindowInsets] "System Gesture" [Insets] fields.
  * @see WindowInsets.getSystemGestureInsets
  */
@@ -281,6 +291,7 @@ private fun WindowInsets.getSystemGestureCompatInsets() = Insets.toCompatInsets(
 
 /**
  * Replace the "System Bar" [Insets] in [WindowInsets] with a new set of [Insets].
+ *
  * @param left The new left inset.
  * @param top The new top inset.
  * @param right The new right inset.

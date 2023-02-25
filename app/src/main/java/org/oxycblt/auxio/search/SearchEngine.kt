@@ -29,11 +29,13 @@ import org.oxycblt.auxio.music.Song
 
 /**
  * Implements the fuzzy-ish searching algorithm used in the search view.
+ *
  * @author Alexander Capehart
  */
 interface SearchEngine {
     /**
      * Begin a search.
+     *
      * @param items The items to search over.
      * @param query The query to search for.
      * @return A list of items filtered by the given query.
@@ -42,6 +44,7 @@ interface SearchEngine {
 
     /**
      * Input/output data to use with [SearchEngine].
+     *
      * @param songs A list of [Song]s, null if empty.
      * @param albums A list of [Album]s, null if empty.
      * @param artists A list of [Artist]s, null if empty.
@@ -66,11 +69,12 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
 
     /**
      * Search a given [Music] list.
+     *
      * @param query The query to search for. The routine will compare this query to the names of
-     * each object in the list and
+     *   each object in the list and
      * @param fallback Additional comparison code to run if the item does not match the query
-     * initially. This can be used to compare against additional attributes to improve search result
-     * quality.
+     *   initially. This can be used to compare against additional attributes to improve search
+     *   result quality.
      */
     private inline fun <T : Music> List<T>.searchListImpl(
         query: String,

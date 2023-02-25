@@ -30,6 +30,7 @@ import org.oxycblt.auxio.ui.UISettings
 
 /**
  * A simple, rational music player for android.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltAndroidApp

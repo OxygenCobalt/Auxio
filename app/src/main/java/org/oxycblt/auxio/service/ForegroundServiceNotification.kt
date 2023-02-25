@@ -26,6 +26,7 @@ import androidx.core.app.NotificationManagerCompat
 /**
  * Wrapper around [NotificationCompat.Builder] intended for use for [NotificationCompat]s that
  * signal a Service's ongoing foreground state.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class ForegroundServiceNotification(context: Context, info: ChannelInfo) :
@@ -47,6 +48,7 @@ abstract class ForegroundServiceNotification(context: Context, info: ChannelInfo
 
     /**
      * The code used to identify this notification.
+     *
      * @see NotificationManagerCompat.notify
      */
     abstract val code: Int
@@ -60,6 +62,7 @@ abstract class ForegroundServiceNotification(context: Context, info: ChannelInfo
 
     /**
      * Reduced representation of a [NotificationChannelCompat].
+     *
      * @param id The ID of the channel.
      * @param nameRes A string resource ID corresponding to the human-readable name of this channel.
      */

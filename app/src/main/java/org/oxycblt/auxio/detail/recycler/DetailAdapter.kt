@@ -37,9 +37,10 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * A [RecyclerView.Adapter] that implements behavior shared across each detail view's adapters.
+ *
  * @param listener A [Listener] to bind interactions to.
  * @param diffCallback A [DiffUtil.ItemCallback] to use for item comparison when diffing the
- * internal list.
+ *   internal list.
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class DetailAdapter(
@@ -119,6 +120,7 @@ abstract class DetailAdapter(
 
 /**
  * A header variation that displays a button to open a sort menu.
+ *
  * @param titleRes The string resource to use as the header title
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -127,12 +129,14 @@ data class SortHeader(@StringRes override val titleRes: Int) : Header
 /**
  * A [RecyclerView.ViewHolder] that displays a [SortHeader], a variation on [BasicHeader] that adds
  * a button opening a menu for sorting. Use [from] to create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
+     *
      * @param sortHeader The new [SortHeader] to bind.
      * @param listener An [DetailAdapter.Listener] to bind interactions to.
      */
@@ -152,6 +156,7 @@ private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
 
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */

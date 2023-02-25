@@ -38,16 +38,18 @@ import org.oxycblt.auxio.util.logW
 
 /**
  * Internal utilities for loading album covers.
+ *
  * @author Alexander Capehart (OxygenCobalt).
  */
 object Covers {
     /**
      * Fetch an album cover, respecting the current cover configuration.
+     *
      * @param context [Context] required to load the image.
      * @param imageSettings [ImageSettings] required to obtain configuration information.
      * @param album [Album] to load the cover from.
      * @return An [InputStream] of image data if the cover loading was successful, null if the cover
-     * loading failed or should not occur.
+     *   loading failed or should not occur.
      */
     suspend fun fetch(context: Context, imageSettings: ImageSettings, album: Album): InputStream? {
         return try {
@@ -67,7 +69,7 @@ object Covers {
      * order:
      * - [MediaMetadataRetriever], as it has the best support and speed.
      * - ExoPlayer's [MetadataRetriever], as some devices (notably Samsung) can have broken
-     * [MediaMetadataRetriever] implementations.
+     *   [MediaMetadataRetriever] implementations.
      * - MediaStore, as a last-ditch fallback if the format is really obscure.
      *
      * @param context [Context] required to load the image.
@@ -80,6 +82,7 @@ object Covers {
 
     /**
      * Loads an album cover with [MediaMetadataRetriever].
+     *
      * @param context [Context] required to load the image.
      * @param album [Album] to load the cover from.
      * @return An [InputStream] of image data if the cover loading was successful, null otherwise.
@@ -99,6 +102,7 @@ object Covers {
 
     /**
      * Loads an [Album] cover with ExoPlayer's [MetadataRetriever].
+     *
      * @param context [Context] required to load the image.
      * @param album [Album] to load the cover from.
      * @return An [InputStream] of image data if the cover loading was successful, null otherwise.
@@ -173,6 +177,7 @@ object Covers {
 
     /**
      * Loads an [Album] cover from MediaStore.
+     *
      * @param context [Context] required to load the image.
      * @param album [Album] to load the cover from.
      * @return An [InputStream] of image data if the cover loading was successful, null otherwise.

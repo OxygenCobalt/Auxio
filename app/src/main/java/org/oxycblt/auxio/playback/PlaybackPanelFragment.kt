@@ -47,6 +47,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 /**
  * A [ViewBindingFragment] more information about the currently playing song, alongside all
  * available controls.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

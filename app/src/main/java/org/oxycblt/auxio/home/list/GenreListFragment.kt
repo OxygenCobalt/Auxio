@@ -46,6 +46,7 @@ import org.oxycblt.auxio.util.collectImmediately
 
 /**
  * A [ListFragment] that shows a list of [Genre]s.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -131,6 +132,7 @@ class GenreListFragment :
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Genre]s using [GenreViewHolder].
+     *
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class GenreAdapter(private val listener: SelectableListListener<Genre>) :

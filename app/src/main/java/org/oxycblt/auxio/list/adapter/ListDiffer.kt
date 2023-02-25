@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 /**
  * List differ wrapper that provides more flexibility regarding the way lists are updated.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface ListDiffer<T, I> {
@@ -36,6 +37,7 @@ interface ListDiffer<T, I> {
 
     /**
      * Dynamically determine how to update the list based on the given instructions.
+     *
      * @param newList The new list of [T] items to show.
      * @param instructions The [BasicListInstructions] specifying how to update the list.
      * @param onDone Called when the update process is completed.
@@ -49,6 +51,7 @@ interface ListDiffer<T, I> {
     abstract class Factory<T, I> {
         /**
          * Create a new [ListDiffer] bound to the given [RecyclerView.Adapter].
+         *
          * @param adapter The [RecyclerView.Adapter] to bind to.
          */
         abstract fun new(adapter: RecyclerView.Adapter<*>): ListDiffer<T, I>
@@ -57,8 +60,9 @@ interface ListDiffer<T, I> {
     /**
      * Update lists on another thread. This is useful when large diffs are likely to occur in this
      * list that would be exceedingly slow with [Blocking].
+     *
      * @param diffCallback A [DiffUtil.ItemCallback] to use for item comparison when diffing the
-     * internal list.
+     *   internal list.
      */
     class Async<T>(private val diffCallback: DiffUtil.ItemCallback<T>) :
         Factory<T, BasicListInstructions>() {
@@ -69,8 +73,9 @@ interface ListDiffer<T, I> {
     /**
      * Update lists on the main thread. This is useful when many small, discrete list diffs are
      * likely to occur that would cause [Async] to suffer from race conditions.
+     *
      * @param diffCallback A [DiffUtil.ItemCallback] to use for item comparison when diffing the
-     * internal list.
+     *   internal list.
      */
     class Blocking<T>(private val diffCallback: DiffUtil.ItemCallback<T>) :
         Factory<T, BasicListInstructions>() {
@@ -81,6 +86,7 @@ interface ListDiffer<T, I> {
 
 /**
  * Represents the specific way to update a list of items.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 enum class BasicListInstructions {

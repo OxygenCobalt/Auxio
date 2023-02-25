@@ -47,6 +47,7 @@ import org.oxycblt.auxio.util.*
 
 /**
  * A [ListFragment] that shows information about an [Album].
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

@@ -33,6 +33,7 @@ import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 /**
  * A [ViewBindingDialogFragment] that allows the user to configure the separator characters used to
  * split tags with multiple values.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

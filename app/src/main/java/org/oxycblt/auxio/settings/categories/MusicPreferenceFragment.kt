@@ -28,6 +28,7 @@ import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 
 /**
  * "Content" settings.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

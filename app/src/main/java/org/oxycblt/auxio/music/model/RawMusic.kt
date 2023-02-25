@@ -24,6 +24,7 @@ import org.oxycblt.auxio.music.storage.Directory
 
 /**
  * Raw information about a [SongImpl] obtained from the filesystem/Extractor instances.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class RawSong(
@@ -88,6 +89,7 @@ class RawSong(
 
 /**
  * Raw information about an [AlbumImpl] obtained from the component [SongImpl] instances.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class RawAlbum(
@@ -134,6 +136,7 @@ class RawAlbum(
 /**
  * Raw information about an [ArtistImpl] obtained from the component [SongImpl] and [AlbumImpl]
  * instances.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class RawArtist(
@@ -175,6 +178,7 @@ class RawArtist(
 
 /**
  * Raw information about a [GenreImpl] obtained from the component [SongImpl] instances.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class RawGenre(

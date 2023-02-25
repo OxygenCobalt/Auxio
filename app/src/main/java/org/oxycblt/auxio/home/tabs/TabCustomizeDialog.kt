@@ -34,6 +34,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewBindingDialogFragment] that allows the user to modify the home [Tab] configuration.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

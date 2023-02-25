@@ -38,6 +38,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * An [DetailAdapter] implementing the header and sub-items for the [Genre] detail view.
+ *
  * @param listener A [DetailAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -100,12 +101,14 @@ class GenreDetailAdapter(private val listener: Listener<Music>) :
 /**
  * A [RecyclerView.ViewHolder] that displays the [Genre] header in the detail view. Use [from] to
  * create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 private class GenreDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
     RecyclerView.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
+     *
      * @param genre The new [Song] to bind.
      * @param listener A [DetailAdapter.Listener] to bind interactions to.
      */
@@ -131,6 +134,7 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
 
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */

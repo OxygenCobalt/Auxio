@@ -41,18 +41,21 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * Shared [PreferenceFragmentCompat] used across all preference screens.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class BasePreferenceFragment(@XmlRes private val screen: Int) :
     PreferenceFragmentCompat() {
     /**
      * Called when the UI entry of a given [Preference] needs to be configured.
+     *
      * @param preference The [Preference] to configure.
      */
     open fun onSetupPreference(preference: Preference) {}
 
     /**
      * Called when an arbitrary [WrappedDialogPreference] needs to be opened.
+     *
      * @param preference The [WrappedDialogPreference] to open.
      */
     open fun onOpenDialogPreference(preference: WrappedDialogPreference) {}

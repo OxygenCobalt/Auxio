@@ -30,6 +30,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * User configuration for the general app UI.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface UISettings : Settings<UISettings.Listener> {

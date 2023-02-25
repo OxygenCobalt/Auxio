@@ -49,6 +49,7 @@ import org.oxycblt.auxio.util.collectImmediately
 
 /**
  * A [ListFragment] that shows a list of [Song]s.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -165,6 +166,7 @@ class SongListFragment :
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Song]s using [SongViewHolder].
+     *
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class SongAdapter(private val listener: SelectableListListener<Song>) :

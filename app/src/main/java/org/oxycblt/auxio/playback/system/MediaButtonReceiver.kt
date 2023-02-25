@@ -28,6 +28,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 /**
  * A [BroadcastReceiver] that forwards [Intent.ACTION_MEDIA_BUTTON] [Intent]s to [PlaybackService].
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

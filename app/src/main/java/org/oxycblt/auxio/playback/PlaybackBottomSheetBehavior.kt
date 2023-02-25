@@ -31,6 +31,7 @@ import org.oxycblt.auxio.util.getDimen
 
 /**
  * The [BaseBottomSheetBehavior] for the playback bottom sheet. This bottom sheet
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :

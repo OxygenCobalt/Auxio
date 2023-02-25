@@ -37,12 +37,14 @@ import okio.source
 
 /**
  * Utilities for constructing Artist and Genre images.
+ *
  * @author Alexander Capehart (OxygenCobalt), Karim Abou Zeid
  */
 object Images {
     /**
      * Create a mosaic image from the given image [InputStream]s. Derived from phonograph:
      * https://github.com/kabouzeid/Phonograph
+     *
      * @param context [Context] required to generate the mosaic.
      * @param streams [InputStream]s of image data to create the mosaic out of.
      * @param size [Size] of the Mosaic to generate.
@@ -104,8 +106,9 @@ object Images {
 
     /**
      * Get an image dimension suitable to create a mosaic with.
+     *
      * @return A pixel dimension derived from the given [Dimension] that will always be even,
-     * allowing it to be sub-divided.
+     *   allowing it to be sub-divided.
      */
     private fun Dimension.mosaicSize(): Int {
         val size = pxOrElse { 512 }

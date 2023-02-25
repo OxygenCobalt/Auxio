@@ -88,8 +88,9 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
 
     /**
      * Start playing the the queue item at the given index.
+     *
      * @param adapterIndex The index of the queue item to play. Does nothing if the index is out of
-     * range.
+     *   range.
      */
     fun goto(adapterIndex: Int) {
         playbackManager.goto(adapterIndex)
@@ -97,8 +98,9 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
 
     /**
      * Remove a queue item at the given index.
+     *
      * @param adapterIndex The index of the queue item to play. Does nothing if the index is out of
-     * range.
+     *   range.
      */
     fun removeQueueDataItem(adapterIndex: Int) {
         if (adapterIndex !in queue.value.indices) {
@@ -109,6 +111,7 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
 
     /**
      * Move a queue item from one index to another index.
+     *
      * @param adapterFrom The index of the queue item to move.
      * @param adapterTo The destination index for the queue item.
      * @return true if the items were moved, false otherwise.

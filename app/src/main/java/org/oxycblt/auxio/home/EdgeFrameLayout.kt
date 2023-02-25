@@ -27,6 +27,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A [FrameLayout] that automatically applies bottom insets.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class EdgeFrameLayout

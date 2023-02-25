@@ -32,6 +32,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A lifecycle-aware [DialogFragment] that automatically manages the [ViewBinding] lifecycle.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
@@ -39,6 +40,7 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
 
     /**
      * Configure the [AlertDialog.Builder] during [onCreateDialog].
+     *
      * @param builder The [AlertDialog.Builder] to configure.
      * @see onCreateDialog
      */
@@ -46,6 +48,7 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
 
     /**
      * Inflate the [ViewBinding] during [onCreateView].
+     *
      * @param inflater The [LayoutInflater] to inflate the [ViewBinding] with.
      * @return A new [ViewBinding] instance.
      * @see onCreateView
@@ -54,6 +57,7 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
 
     /**
      * Configure the newly-inflated [ViewBinding] during [onViewCreated].
+     *
      * @param binding The [ViewBinding] to configure.
      * @param savedInstanceState The previously saved state of the UI.
      * @see onViewCreated
@@ -62,6 +66,7 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
 
     /**
      * Free memory held by the [ViewBinding] during [onDestroyView]
+     *
      * @param binding The [ViewBinding] to release.
      * @see onDestroyView
      */
@@ -73,6 +78,7 @@ abstract class ViewBindingDialogFragment<VB : ViewBinding> : DialogFragment() {
 
     /**
      * Get the [ViewBinding] under the assumption that it has been inflated.
+     *
      * @return The currently-inflated [ViewBinding].
      * @throws IllegalStateException if the [ViewBinding] is not inflated.
      */

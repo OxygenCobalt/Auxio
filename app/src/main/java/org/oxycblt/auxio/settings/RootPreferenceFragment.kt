@@ -33,6 +33,7 @@ import org.oxycblt.auxio.util.showToast
 
 /**
  * The [PreferenceFragmentCompat] that displays the root settings list.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

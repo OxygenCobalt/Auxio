@@ -42,6 +42,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A [ViewBindingFragment] that displays information about the app and the current music library.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -93,6 +94,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
 
     /**
      * Open the given URI in a web browser.
+     *
      * @param uri The URL to open.
      */
     private fun openLinkInBrowser(uri: String) {
@@ -143,6 +145,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
 
     /**
      * Open an app chooser for a given [Intent].
+     *
      * @param intent The [Intent] to show an app chooser for.
      */
     private fun openAppChooser(intent: Intent) {

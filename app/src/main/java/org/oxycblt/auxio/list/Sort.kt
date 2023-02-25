@@ -38,6 +38,7 @@ import org.oxycblt.auxio.music.metadata.Disc
 data class Sort(val mode: Mode, val direction: Direction) {
     /**
      * Create a new [Sort] with the same [mode], but a different [Direction].
+     *
      * @param direction The new [Direction] to sort in.
      * @return A new sort with the same mode, but with the new [Direction] value applied.
      */
@@ -45,6 +46,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
     /**
      * Create a new [Sort] with the same [direction] value, but different [mode] value.
+     *
      * @param mode Tbe new mode to use for the Sort.
      * @return A new sort with the same [direction] value, but with the new [mode] applied.
      */
@@ -52,6 +54,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
     /**
      * Sort a list of [Song]s.
+     *
      * @param songs The list of [Song]s.
      * @return A new list of [Song]s sorted by this [Sort]'s configuration.
      */
@@ -63,6 +66,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
     /**
      * Sort a list of [Album]s.
+     *
      * @param albums The list of [Album]s.
      * @return A new list of [Album]s sorted by this [Sort]'s configuration.
      */
@@ -74,6 +78,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
     /**
      * Sort a list of [Artist]s.
+     *
      * @param artists The list of [Artist]s.
      * @return A new list of [Artist]s sorted by this [Sort]'s configuration.
      */
@@ -85,6 +90,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
     /**
      * Sort a list of [Genre]s.
+     *
      * @param genres The list of [Genre]s.
      * @return A new list of [Genre]s sorted by this [Sort]'s configuration.
      */
@@ -96,6 +102,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
     /**
      * Sort a *mutable* list of [Song]s in-place using this [Sort]'s configuration.
+     *
      * @param songs The [Song]s to sort.
      */
     private fun songsInPlace(songs: MutableList<out Song>) {
@@ -104,6 +111,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
     /**
      * Sort a *mutable* list of [Album]s in-place using this [Sort]'s configuration.
+     *
      * @param albums The [Album]s to sort.
      */
     private fun albumsInPlace(albums: MutableList<out Album>) {
@@ -112,6 +120,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
     /**
      * Sort a *mutable* list of [Artist]s in-place using this [Sort]'s configuration.
+     *
      * @param artists The [Album]s to sort.
      */
     private fun artistsInPlace(artists: MutableList<out Artist>) {
@@ -120,6 +129,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
     /**
      * Sort a *mutable* list of [Genre]s in-place using this [Sort]'s configuration.
+     *
      * @param genres The [Genre]s to sort.
      */
     private fun genresInPlace(genres: MutableList<out Genre>) {
@@ -128,6 +138,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
     /**
      * The integer representation of this instance.
+     *
      * @see fromIntCode
      */
     val intCode: Int
@@ -150,6 +161,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Get a [Comparator] that sorts [Song]s according to this [Mode].
+         *
          * @param direction The direction to sort in.
          * @return A [Comparator] that can be used to sort a [Song] list according to this [Mode].
          */
@@ -159,6 +171,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Get a [Comparator] that sorts [Album]s according to this [Mode].
+         *
          * @param direction The direction to sort in.
          * @return A [Comparator] that can be used to sort a [Album] list according to this [Mode].
          */
@@ -168,6 +181,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Return a [Comparator] that sorts [Artist]s according to this [Mode].
+         *
          * @param direction The direction to sort in.
          * @return A [Comparator] that can be used to sort a [Artist] list according to this [Mode].
          */
@@ -177,6 +191,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Return a [Comparator] that sorts [Genre]s according to this [Mode].
+         *
          * @param direction The direction to sort in.
          * @return A [Comparator] that can be used to sort a [Genre] list according to this [Mode].
          */
@@ -186,6 +201,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Sort by the item's name.
+         *
          * @see Music.collationKey
          */
         object ByName : Mode() {
@@ -210,6 +226,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Sort by the [Album] of an item. Only available for [Song]s.
+         *
          * @see Album.collationKey
          */
         object ByAlbum : Mode() {
@@ -229,6 +246,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Sort by the [Artist] name of an item. Only available for [Song] and [Album].
+         *
          * @see Artist.collationKey
          */
         object ByArtist : Mode() {
@@ -256,6 +274,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Sort by the [Date] of an item. Only available for [Song] and [Album].
+         *
          * @see Song.date
          * @see Album.dates
          */
@@ -308,6 +327,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Sort by the amount of songs an item contains. Only available for [MusicParent]s.
+         *
          * @see MusicParent.songs
          */
         object ByCount : Mode() {
@@ -333,6 +353,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Sort by the disc number of an item. Only available for [Song]s.
+         *
          * @see Song.disc
          */
         object ByDisc : Mode() {
@@ -351,6 +372,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Sort by the track number of an item. Only available for [Song]s.
+         *
          * @see Song.track
          */
         object ByTrack : Mode() {
@@ -369,6 +391,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Sort by the date an item was added. Only supported by [Song]s and [Album]s.
+         *
          * @see Song.dateAdded
          * @see Album.dates
          */
@@ -391,6 +414,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Utility function to create a [Comparator] in a dynamic way determined by [direction].
+         *
          * @param direction The [Direction] to sort in.
          * @see compareBy
          * @see compareByDescending
@@ -406,6 +430,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Utility function to create a [Comparator] in a dynamic way determined by [direction]
+         *
          * @param direction The [Direction] to sort in.
          * @param comparator A [Comparator] to wrap.
          * @return A new [Comparator] with the specified configuration.
@@ -419,6 +444,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Utility function to create a [Comparator] a dynamic way determined by [direction]
+         *
          * @param direction The [Direction] to sort in.
          * @param comparator A [Comparator] to wrap.
          * @param selector Called to obtain a specific attribute to sort by.
@@ -439,6 +465,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
         /**
          * Utility function to create a [Comparator] that sorts in ascending order based on the
          * given [Comparator], with a selector based on the item itself.
+         *
          * @param comparator The [Comparator] to wrap.
          * @return A new [Comparator] with the specified configuration.
          * @see compareBy
@@ -448,8 +475,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * A [Comparator] that chains several other [Comparator]s together to form one comparison.
+         *
          * @param comparators The [Comparator]s to chain. These will be iterated through in order
-         * during a comparison, with the first non-equal result becoming the result.
+         *   during a comparison, with the first non-equal result becoming the result.
          */
         private class MultiComparator<T>(vararg comparators: Comparator<T>) : Comparator<T> {
             private val _comparators = comparators
@@ -468,6 +496,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
         /**
          * Wraps a [Comparator], extending it to compare two lists.
+         *
          * @param inner The [Comparator] to use.
          */
         private class ListComparator<T>(private val inner: Comparator<T>) : Comparator<List<T>> {
@@ -500,6 +529,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
         /**
          * A [Comparator] that compares abstract [Music] values. Internally, this is similar to
          * [NullableComparator], however comparing [Music.collationKey] instead of [Comparable].
+         *
          * @see NullableComparator
          * @see Music.collationKey
          */
@@ -555,6 +585,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
         companion object {
             /**
              * Convert a [Mode] integer representation into an instance.
+             *
              * @param intCode An integer representation of a [Mode]
              * @return The corresponding [Mode], or null if the [Mode] is invalid.
              * @see intCode
@@ -575,6 +606,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
             /**
              * Convert a menu item ID into a [Mode].
+             *
              * @param itemId The menu resource ID to convert
              * @return A [Mode] corresponding to the given ID, or null if the ID is invalid.
              * @see itemId
@@ -604,6 +636,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
     companion object {
         /**
          * Convert a [Sort] integer representation into an instance.
+         *
          * @param intCode An integer representation of a [Sort]
          * @return The corresponding [Sort], or null if the [Sort] is invalid.
          * @see intCode

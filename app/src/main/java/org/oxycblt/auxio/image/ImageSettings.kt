@@ -27,6 +27,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * User configuration specific to image loading.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface ImageSettings : Settings<ImageSettings.Listener> {

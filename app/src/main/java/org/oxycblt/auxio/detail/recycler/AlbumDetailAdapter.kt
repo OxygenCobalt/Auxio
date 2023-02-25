@@ -43,6 +43,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * An [DetailAdapter] implementing the header and sub-items for the [Album] detail view.
+ *
  * @param listener A [Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -118,6 +119,7 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
 /**
  * A [RecyclerView.ViewHolder] that displays the [Album] header in the detail view. Use [from] to
  * create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 private class AlbumDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
@@ -125,6 +127,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
     /**
      * Bind new data to this instance.
+     *
      * @param album The new [Album] to bind.
      * @param listener A [AlbumDetailAdapter.Listener] to bind interactions to.
      */
@@ -164,6 +167,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
@@ -187,12 +191,14 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 /**
  * A [RecyclerView.ViewHolder] that displays a [Disc] to delimit different disc groups. Use [from]
  * to create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 private class DiscViewHolder(private val binding: ItemDiscHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
+     *
      * @param disc The new [disc] to bind.
      */
     fun bind(disc: Disc) {
@@ -209,6 +215,7 @@ private class DiscViewHolder(private val binding: ItemDiscHeaderBinding) :
 
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
@@ -227,12 +234,14 @@ private class DiscViewHolder(private val binding: ItemDiscHeaderBinding) :
 /**
  * A [RecyclerView.ViewHolder] that displays a [Song] in the context of an [Album]. Use [from] to
  * create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 private class AlbumSongViewHolder private constructor(private val binding: ItemAlbumSongBinding) :
     SelectionIndicatorAdapter.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
+     *
      * @param song The new [Song] to bind.
      * @param listener A [SelectableListListener] to bind interactions to.
      */
@@ -276,6 +285,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
 
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */

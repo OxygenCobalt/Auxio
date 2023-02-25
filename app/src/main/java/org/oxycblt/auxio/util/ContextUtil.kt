@@ -43,6 +43,7 @@ import org.oxycblt.auxio.R
 
 /**
  * Get a [LayoutInflater] instance from this [Context].
+ *
  * @see LayoutInflater.from
  */
 val Context.inflater: LayoutInflater
@@ -60,6 +61,7 @@ val Context.isLandscape
 
 /**
  * Concatenate values in a list together in a localized manner.
+ *
  * @param context [Context] require.d
  * @param map Function to map the [T] values to a string value to be concatenated.
  */
@@ -78,23 +80,24 @@ inline fun <T> List<T>.concatLocalized(context: Context, map: (T) -> String): St
 }
 
 /**
- * @brief Get a plural resource.
  * @param pluralRes A plural resource ID.
  * @param value Int value for the plural.
  * @return The formatted string requested.
+ * @brief Get a plural resource.
  */
 fun Context.getPlural(@PluralsRes pluralRes: Int, value: Int) =
     resources.getQuantityString(pluralRes, value, value)
 
 /**
- * @brief Get an integer resource.
  * @param integerRes An integer resource ID.
  * @return The integer resource requested.
+ * @brief Get an integer resource.
  */
 fun Context.getInteger(@IntegerRes integerRes: Int) = resources.getInteger(integerRes)
 
 /**
  * Get a [ColorStateList] resource.
+ *
  * @param colorRes A color resource ID.
  * @return The [ColorStateList] requested.
  */
@@ -105,6 +108,7 @@ fun Context.getColorCompat(@ColorRes colorRes: Int) =
 
 /**
  * Get a [ColorStateList] pointed to by an attribute.
+ *
  * @param attrRes An attribute resource ID.
  * @return The [ColorStateList] the requested attribute points to.
  */
@@ -126,6 +130,7 @@ fun Context.getAttrColorCompat(@AttrRes attrRes: Int): ColorStateList {
 
 /**
  * Get a Drawable.
+ *
  * @param drawableRes The Drawable resource ID.
  * @return The Drawable requested.
  */
@@ -136,6 +141,7 @@ fun Context.getDrawableCompat(@DrawableRes drawableRes: Int) =
 
 /**
  * Get the complex (i.e DP) size of a dimension.
+ *
  * @param dimenRes The dimension resource.
  * @return The size of the dimension requested, in complex units.
  */
@@ -143,6 +149,7 @@ fun Context.getDrawableCompat(@DrawableRes drawableRes: Int) =
 
 /**
  * Get the pixel size of a dimension.
+ *
  * @param dimenRes The dimension resource
  * @return The size of the dimension requested, in pixels
  */
@@ -150,6 +157,7 @@ fun Context.getDrawableCompat(@DrawableRes drawableRes: Int) =
 
 /**
  * Get an instance of the requested system service.
+ *
  * @param T The system service in question.
  * @param serviceClass The service's kotlin class [Java class will be used in function call]
  * @return The system service
@@ -162,6 +170,7 @@ fun <T : Any> Context.getSystemServiceCompat(serviceClass: KClass<T>) =
 
 /**
  * Create a short-length [Toast] with text from the specified string resource.
+ *
  * @param stringRes The resource to the string to use in the toast.
  */
 fun Context.showToast(@StringRes stringRes: Int) {
@@ -178,6 +187,7 @@ fun Context.newMainPendingIntent(): PendingIntent =
 
 /**
  * Create a [PendingIntent] that will broadcast the specified command when launched.
+ *
  * @param action The action to broadcast when the [PendingIntent] is launched.
  */
 fun Context.newBroadcastPendingIntent(action: String): PendingIntent =

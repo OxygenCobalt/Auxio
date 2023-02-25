@@ -42,6 +42,7 @@ import org.oxycblt.auxio.util.concatLocalized
 
 /**
  * A [ViewBindingDialogFragment] that shows information about a Song.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

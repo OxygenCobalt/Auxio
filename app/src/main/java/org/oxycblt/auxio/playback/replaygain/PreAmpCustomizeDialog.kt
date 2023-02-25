@@ -31,6 +31,7 @@ import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 
 /**
  * aa [ViewBindingDialogFragment] that allows user configuration of the current [ReplayGainPreAmp].
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

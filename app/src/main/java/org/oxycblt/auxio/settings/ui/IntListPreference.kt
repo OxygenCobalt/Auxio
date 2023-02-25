@@ -114,8 +114,9 @@ constructor(
 
     /**
      * Get the index of the current value.
+     *
      * @return The index of the current value within [values], or -1 if the [IntListPreference] is
-     * not set.
+     *   not set.
      */
     fun getValueIndex(): Int {
         val curValue = currentValue
@@ -127,6 +128,7 @@ constructor(
 
     /**
      * Set the current value of this preference using it's index.
+     *
      * @param index The index of the new value within [values]. Must be valid.
      */
     fun setValueIndex(index: Int) {

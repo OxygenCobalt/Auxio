@@ -30,6 +30,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * A [RecyclerView.Adapter] that displays [Accent] choices.
+ *
  * @param listener A [ClickableListListener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -62,6 +63,7 @@ class AccentAdapter(private val listener: ClickableListListener<Accent>) :
 
     /**
      * Update the currently selected [Accent].
+     *
      * @param accent The new [Accent] to select.
      */
     fun setSelectedAccent(accent: Accent) {
@@ -83,6 +85,7 @@ class AccentAdapter(private val listener: ClickableListListener<Accent>) :
 
 /**
  * A [RecyclerView.ViewHolder] that displays an [Accent] choice. Use [from] to create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AccentViewHolder private constructor(private val binding: ItemAccentBinding) :
@@ -90,6 +93,7 @@ class AccentViewHolder private constructor(private val binding: ItemAccentBindin
 
     /**
      * Bind new data to this instance.
+     *
      * @param accent The new [Accent] to bind.
      * @param listener A [ClickableListListener] to bind interactions to.
      */
@@ -106,6 +110,7 @@ class AccentViewHolder private constructor(private val binding: ItemAccentBindin
 
     /**
      * Set whether this [Accent] is selected or not.
+     *
      * @param isSelected Whether this [Accent] is currently selected.
      */
     fun setSelected(isSelected: Boolean) {
@@ -122,6 +127,7 @@ class AccentViewHolder private constructor(private val binding: ItemAccentBindin
     companion object {
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */

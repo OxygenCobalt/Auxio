@@ -50,6 +50,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A [ListFragment] that shows information about an [Artist].
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

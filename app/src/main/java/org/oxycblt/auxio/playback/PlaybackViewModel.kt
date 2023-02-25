@@ -33,6 +33,7 @@ import org.oxycblt.auxio.playback.state.*
 
 /**
  * An [ViewModel] that provides a safe UI frontend for the current playback state.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
@@ -76,6 +77,7 @@ constructor(
     /**
      * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing a
      * [Song] from one of it's [Artist]s.
+     *
      * @see playFromArtist
      */
     val artistPickerSong: StateFlow<Song?>
@@ -163,6 +165,7 @@ constructor(
      * - If [MusicMode.ALBUMS], the [Song] is played from it's [Album].
      * - If [MusicMode.ARTISTS], the [Song] is played from one of it's [Artist]s.
      * - If [MusicMode.GENRES], the [Song] is played from one of it's [Genre]s.
+     *
      * @param song The [Song] to play.
      * @param playbackMode The [MusicMode] to play from.
      */
@@ -177,9 +180,10 @@ constructor(
 
     /**
      * Play a [Song] from one of it's [Artist]s.
+     *
      * @param song The [Song] to play.
      * @param artist The [Artist] to play from. Must be linked to the [Song]. If null, the user will
-     * be prompted on what artist to play. Defaults to null.
+     *   be prompted on what artist to play. Defaults to null.
      */
     fun playFromArtist(song: Song, artist: Artist? = null) {
         if (artist != null) {
@@ -194,6 +198,7 @@ constructor(
     /**
      * Mark the [Artist] playback choice process as complete. This should occur when the [Artist]
      * choice dialog is opened after this flag is detected.
+     *
      * @see playFromArtist
      */
     fun finishPlaybackArtistPicker() {
@@ -202,9 +207,10 @@ constructor(
 
     /**
      * PLay a [Song] from one of it's [Genre]s.
+     *
      * @param song The [Song] to play.
      * @param genre The [Genre] to play from. Must be linked to the [Song]. If null, the user will
-     * be prompted on what artist to play. Defaults to null.
+     *   be prompted on what artist to play. Defaults to null.
      */
     fun playFromGenre(song: Song, genre: Genre? = null) {
         if (genre != null) {
@@ -219,6 +225,7 @@ constructor(
     /**
      * Mark the [Genre] playback choice process as complete. This should occur when the [Genre]
      * choice dialog is opened after this flag is detected.
+     *
      * @see playFromGenre
      */
     fun finishPlaybackGenrePicker() {
@@ -227,24 +234,28 @@ constructor(
 
     /**
      * Play an [Album].
+     *
      * @param album The [Album] to play.
      */
     fun play(album: Album) = playImpl(null, album, false)
 
     /**
      * Play an [Artist].
+     *
      * @param artist The [Artist] to play.
      */
     fun play(artist: Artist) = playImpl(null, artist, false)
 
     /**
      * Play a [Genre].
+     *
      * @param genre The [Genre] to play.
      */
     fun play(genre: Genre) = playImpl(null, genre, false)
 
     /**
      * Play a [Music] selection.
+     *
      * @param selection The selection to play.
      */
     fun play(selection: List<Music>) =
@@ -252,24 +263,28 @@ constructor(
 
     /**
      * Shuffle an [Album].
+     *
      * @param album The [Album] to shuffle.
      */
     fun shuffle(album: Album) = playImpl(null, album, true)
 
     /**
      * Shuffle an [Artist].
+     *
      * @param artist The [Artist] to shuffle.
      */
     fun shuffle(artist: Artist) = playImpl(null, artist, true)
 
     /**
      * Shuffle an [Genre].
+     *
      * @param genre The [Genre] to shuffle.
      */
     fun shuffle(genre: Genre) = playImpl(null, genre, true)
 
     /**
      * Shuffle a [Music] selection.
+     *
      * @param selection The selection to shuffle.
      */
     fun shuffle(selection: List<Music>) =
@@ -298,6 +313,7 @@ constructor(
     /**
      * Start the given [InternalPlayer.Action] to be completed eventually. This can be used to
      * enqueue a playback action at startup to then occur when the music library is fully loaded.
+     *
      * @param action The [InternalPlayer.Action] to perform eventually.
      */
     fun startAction(action: InternalPlayer.Action) {
@@ -308,6 +324,7 @@ constructor(
 
     /**
      * Seek to the given position in the currently playing [Song].
+     *
      * @param positionDs The position to seek to, in deci-seconds (1/10th of a second).
      */
     fun seekTo(positionDs: Long) {
@@ -328,6 +345,7 @@ constructor(
 
     /**
      * Add a [Song] to the top of the queue.
+     *
      * @param song The [Song] to add.
      */
     fun playNext(song: Song) {
@@ -336,6 +354,7 @@ constructor(
 
     /**
      * Add a [Album] to the top of the queue.
+     *
      * @param album The [Album] to add.
      */
     fun playNext(album: Album) {
@@ -344,6 +363,7 @@ constructor(
 
     /**
      * Add a [Artist] to the top of the queue.
+     *
      * @param artist The [Artist] to add.
      */
     fun playNext(artist: Artist) {
@@ -352,6 +372,7 @@ constructor(
 
     /**
      * Add a [Genre] to the top of the queue.
+     *
      * @param genre The [Genre] to add.
      */
     fun playNext(genre: Genre) {
@@ -360,6 +381,7 @@ constructor(
 
     /**
      * Add a selection to the top of the queue.
+     *
      * @param selection The [Music] selection to add.
      */
     fun playNext(selection: List<Music>) {
@@ -368,6 +390,7 @@ constructor(
 
     /**
      * Add a [Song] to the end of the queue.
+     *
      * @param song The [Song] to add.
      */
     fun addToQueue(song: Song) {
@@ -376,6 +399,7 @@ constructor(
 
     /**
      * Add a [Album] to the end of the queue.
+     *
      * @param album The [Album] to add.
      */
     fun addToQueue(album: Album) {
@@ -384,6 +408,7 @@ constructor(
 
     /**
      * Add a [Artist] to the end of the queue.
+     *
      * @param artist The [Artist] to add.
      */
     fun addToQueue(artist: Artist) {
@@ -392,6 +417,7 @@ constructor(
 
     /**
      * Add a [Genre] to the end of the queue.
+     *
      * @param genre The [Genre] to add.
      */
     fun addToQueue(genre: Genre) {
@@ -400,6 +426,7 @@ constructor(
 
     /**
      * Add a selection to the end of the queue.
+     *
      * @param selection The [Music] selection to add.
      */
     fun addToQueue(selection: List<Music>) {
@@ -420,6 +447,7 @@ constructor(
 
     /**
      * Toggle [repeatMode] (ex. from [RepeatMode.NONE] to [RepeatMode.TRACK])
+     *
      * @see RepeatMode.increment
      */
     fun toggleRepeatMode() {
@@ -430,6 +458,7 @@ constructor(
 
     /**
      * Force-save the current playback state.
+     *
      * @param onDone Called when the save is completed with true if successful, and false otherwise.
      */
     fun savePlaybackState(onDone: (Boolean) -> Unit) {
@@ -440,6 +469,7 @@ constructor(
 
     /**
      * Clear the current playback state.
+     *
      * @param onDone Called when the wipe is completed with true if successful, and false otherwise.
      */
     fun wipePlaybackState(onDone: (Boolean) -> Unit) {
@@ -448,8 +478,9 @@ constructor(
 
     /**
      * Force-restore the current playback state.
+     *
      * @param onDone Called when the restoration is completed with true if successful, and false
-     * otherwise.
+     *   otherwise.
      */
     fun tryRestorePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
@@ -468,9 +499,10 @@ constructor(
 
     /**
      * Convert the given selection to a list of [Song]s.
+     *
      * @param selection The selection of [Music] to convert.
      * @return A [Song] list containing the child items of any [MusicParent] instances in the list
-     * alongside the unchanged [Song]s or the original selection.
+     *   alongside the unchanged [Song]s or the original selection.
      */
     private fun selectionToSongs(selection: List<Music>): List<Song> {
         return selection.flatMap {

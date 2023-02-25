@@ -30,6 +30,7 @@ import org.oxycblt.auxio.R
 /**
  * A [BackportMaterialDividerItemDecoration] that sets up the divider configuration to correctly
  * separate preference categories.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PreferenceHeaderItemDecoration

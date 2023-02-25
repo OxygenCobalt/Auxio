@@ -32,6 +32,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * A behavior that automatically re-layouts and re-insets content to align with the parent layout's
  * bottom sheet. Ideally, we would only want to re-inset content, but that has too many issues to
  * sensibly implement.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :

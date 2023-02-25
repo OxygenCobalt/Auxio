@@ -51,6 +51,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A [ListFragment] that shows information for a particular [Genre].
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

@@ -31,6 +31,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * The ViewModel for managing the tab data and lists of the home view.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
@@ -138,6 +139,7 @@ constructor(
 
     /**
      * Get the preferred [Sort] for a given [Tab].
+     *
      * @param tabMode The [MusicMode] of the [Tab] desired.
      * @return The [Sort] preferred for that [Tab]
      */
@@ -151,6 +153,7 @@ constructor(
 
     /**
      * Update the preferred [Sort] for the current [Tab]. Will update corresponding list.
+     *
      * @param sort The new [Sort] to apply. Assumed to be an allowed sort for the current [Tab].
      */
     fun setSortForCurrentTab(sort: Sort) {
@@ -178,6 +181,7 @@ constructor(
 
     /**
      * Update [currentTabMode] to reflect a new ViewPager2 position
+     *
      * @param pagerPos The new position of the ViewPager2 instance.
      */
     fun synchronizeTabPosition(pagerPos: Int) {
@@ -187,6 +191,7 @@ constructor(
 
     /**
      * Mark the recreation process as complete.
+     *
      * @see shouldRecreate
      */
     fun finishRecreate() {
@@ -195,6 +200,7 @@ constructor(
 
     /**
      * Update whether the user is fast scrolling or not in the home view.
+     *
      * @param isFastScrolling true if the user is currently fast scrolling, false otherwise.
      */
     fun setFastScrolling(isFastScrolling: Boolean) {
@@ -204,8 +210,9 @@ constructor(
 
     /**
      * Create a list of [MusicMode]s representing a simpler version of the [Tab] configuration.
+     *
      * @return A list of the [MusicMode]s for each visible [Tab] in the configuration, ordered in
-     * the same way as the configuration.
+     *   the same way as the configuration.
      */
     private fun makeTabModes() =
         homeSettings.homeTabs.filterIsInstance<Tab.Visible>().map { it.mode }

@@ -31,6 +31,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * - Automatic edge-to-edge support
  * - Adapter-based [SpanSizeLookup] implementation
  * - Automatic [setHasFixedSize] setup
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 open class AuxioRecyclerView
@@ -89,6 +90,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     interface SpanSizeLookup {
         /**
          * Get if the item at a position takes up the whole width of the [RecyclerView] or not.
+         *
          * @param position The position of the item.
          * @return true if the item is full-width, false otherwise.
          */

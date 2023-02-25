@@ -59,8 +59,9 @@ constructor(
 
     /**
      * Add this instance to the components required for it to function correctly.
+     *
      * @param player The [Player] to attach to. Should already have this instance as an audio
-     * processor.
+     *   processor.
      */
     fun addToListeners(player: Player) {
         player.addListener(this)
@@ -69,8 +70,9 @@ constructor(
 
     /**
      * Remove this instance from the components required for it to function correctly.
+     *
      * @param player The [Player] to detach from. Should already have this instance as an audio
-     * processor.
+     *   processor.
      */
     fun releaseFromListeners(player: Player) {
         player.removeListener(this)
@@ -106,6 +108,7 @@ constructor(
 
     /**
      * Updates the volume adjustment based on the given [Format].
+     *
      * @param format The [Format] of the currently playing track, or null if nothing is playing.
      */
     private fun applyReplayGain(format: Format?) {
@@ -157,6 +160,7 @@ constructor(
 
     /**
      * Parse ReplayGain information from the given [Format].
+     *
      * @param format The [Format] to parse.
      * @return A [Adjustment] adjustment, or null if there were no valid adjustments.
      */
@@ -199,6 +203,7 @@ constructor(
 
     /**
      * Parse a ReplayGain adjustment into a float value.
+     *
      * @return A parsed adjustment float, or null if the adjustment had invalid formatting.
      */
     private fun String.parseReplayGainAdjustment() =
@@ -254,6 +259,7 @@ constructor(
 
     /**
      * Always read a little-endian [Short] from the [ByteBuffer] at the given index.
+     *
      * @param at The index to read the [Short] from.
      */
     private fun ByteBuffer.getLeShort(at: Int) =
@@ -261,6 +267,7 @@ constructor(
 
     /**
      * Always write a little-endian [Short] at the end of the [ByteBuffer].
+     *
      * @param short The [Short] to write.
      */
     private fun ByteBuffer.putLeShort(short: Short) {
@@ -270,6 +277,7 @@ constructor(
 
     /**
      * The resolved ReplayGain adjustment for a file.
+     *
      * @param track The track adjustment (in dB), or 0 if it is not present.
      * @param album The album adjustment (in dB), or 0 if it is not present.
      */

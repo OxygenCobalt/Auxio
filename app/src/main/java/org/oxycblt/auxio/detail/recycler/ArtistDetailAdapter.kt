@@ -37,6 +37,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * A [DetailAdapter] implementing the header and sub-items for the [Artist] detail view.
+ *
  * @param listener A [DetailAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -100,6 +101,7 @@ class ArtistDetailAdapter(private val listener: Listener<Music>) :
 /**
  * A [RecyclerView.ViewHolder] that displays the [Artist] header in the detail view. Use [from] to
  * create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 private class ArtistDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
@@ -107,6 +109,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 
     /**
      * Bind new data to this instance.
+     *
      * @param artist The new [Artist] to bind.
      * @param listener A [DetailAdapter.Listener] to bind interactions to.
      */
@@ -154,6 +157,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
@@ -175,12 +179,14 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 /**
  * A [RecyclerView.ViewHolder] that displays an [Album] in the context of an [Artist]. Use [from] to
  * create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 private class ArtistAlbumViewHolder private constructor(private val binding: ItemParentBinding) :
     SelectionIndicatorAdapter.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
+     *
      * @param album The new [Album] to bind.
      * @param listener An [SelectableListListener] to bind interactions to.
      */
@@ -209,6 +215,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
 
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
@@ -227,12 +234,14 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
 /**
  * A [RecyclerView.ViewHolder] that displays a [Song] in the context of an [Artist]. Use [from] to
  * create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 private class ArtistSongViewHolder private constructor(private val binding: ItemSongBinding) :
     SelectionIndicatorAdapter.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
+     *
      * @param song The new [Song] to bind.
      * @param listener An [SelectableListListener] to bind interactions to.
      */
@@ -258,6 +267,7 @@ private class ArtistSongViewHolder private constructor(private val binding: Item
 
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */

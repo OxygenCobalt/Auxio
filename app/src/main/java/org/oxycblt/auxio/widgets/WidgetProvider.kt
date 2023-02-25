@@ -38,6 +38,7 @@ import org.oxycblt.auxio.util.*
 /**
  * The [AppWidgetProvider] for the "Now Playing" widget. This widget shows the current playback
  * state alongside actions to control it.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class WidgetProvider : AppWidgetProvider() {
@@ -69,6 +70,7 @@ class WidgetProvider : AppWidgetProvider() {
 
     /**
      * Update the currently shown layout based on the given [WidgetComponent.PlaybackState]
+     *
      * @param context [Context] required to update the widget layout.
      * @param uiSettings [UISettings] to obtain round mode configuration
      * @param state [WidgetComponent.PlaybackState] to show, or null if no playback is going on.
@@ -105,6 +107,7 @@ class WidgetProvider : AppWidgetProvider() {
 
     /**
      * Revert to the default layout that displays "No music playing".
+     *
      * @param context [Context] required to update the widget layout.
      */
     fun reset(context: Context) {
@@ -117,6 +120,7 @@ class WidgetProvider : AppWidgetProvider() {
 
     /**
      * Request an update from [WidgetComponent].
+     *
      * @param context [Context] required to send update request broadcast.
      */
     private fun requestUpdate(context: Context) {
@@ -231,6 +235,7 @@ class WidgetProvider : AppWidgetProvider() {
 
     /**
      * Set up the album cover in a [RemoteViews] layout that contains one.
+     *
      * @param context [Context] required to set up the view.
      * @param state Current [WidgetComponent.PlaybackState] to display.
      */
@@ -257,6 +262,7 @@ class WidgetProvider : AppWidgetProvider() {
     /**
      * Set up the album cover, song title, and artist name in a [RemoteViews] layout that contains
      * them.
+     *
      * @param context [Context] required to set up the view.
      * @param state Current [WidgetComponent.PlaybackState] to display.
      */
@@ -272,6 +278,7 @@ class WidgetProvider : AppWidgetProvider() {
 
     /**
      * Set up the play/pause button in a [RemoteViews] layout that contains one.
+     *
      * @param context [Context] required to set up the view.
      * @param state Current [WidgetComponent.PlaybackState] to display.
      */
@@ -308,6 +315,7 @@ class WidgetProvider : AppWidgetProvider() {
     /**
      * Set up the play/pause and skip previous/next button in a [RemoteViews] layout that contains
      * them.
+     *
      * @param context [Context] required to set up the view.
      * @param state Current [WidgetComponent.PlaybackState] to display.
      */
@@ -333,6 +341,7 @@ class WidgetProvider : AppWidgetProvider() {
     /**
      * Set up the play/pause, skip previous/next, and repeat/shuffle buttons in a [RemoteViews] that
      * contains them.
+     *
      * @param context [Context] required to set up the view.
      * @param state Current [WidgetComponent.PlaybackState] to display.
      */

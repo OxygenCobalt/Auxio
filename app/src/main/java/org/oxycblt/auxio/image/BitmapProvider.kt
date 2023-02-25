@@ -55,14 +55,16 @@ constructor(
     interface Target {
         /**
          * Configure the [ImageRequest.Builder] to enable [Target]-specific configuration.
+         *
          * @param builder The [ImageRequest.Builder] that will be used to request the desired
-         * [Bitmap].
+         *   [Bitmap].
          * @return The same [ImageRequest.Builder] in order to easily chain configuration methods.
          */
         fun onConfigRequest(builder: ImageRequest.Builder): ImageRequest.Builder = builder
 
         /**
          * Called when the loading process is completed.
+         *
          * @param bitmap The loaded bitmap, or null if the bitmap could not be loaded.
          */
         fun onCompleted(bitmap: Bitmap?)
@@ -77,6 +79,7 @@ constructor(
 
     /**
      * Load the Album cover [Bitmap] from a [Song].
+     *
      * @param song The song to load a [Bitmap] of it's album cover from.
      * @param target The [Target] to deliver the [Bitmap] to asynchronously.
      */

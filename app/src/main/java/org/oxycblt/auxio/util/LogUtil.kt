@@ -25,12 +25,14 @@ import org.oxycblt.auxio.BuildConfig
 
 /**
  * Log an object to the debug channel. Automatically handles tags.
+ *
  * @param obj The object to log.
  */
 fun Any.logD(obj: Any?) = logD("$obj")
 
 /**
  * Log a string message to the debug channel. Automatically handles tags.
+ *
  * @param msg The message to log.
  */
 fun Any.logD(msg: String) {
@@ -41,12 +43,14 @@ fun Any.logD(msg: String) {
 
 /**
  * Log a string message to the warning channel. Automatically handles tags.
+ *
  * @param msg The message to log.
  */
 fun Any.logW(msg: String) = Log.w(autoTag, msg)
 
 /**
  * Log a string message to the error channel. Automatically handles tags.
+ *
  * @param msg The message to log.
  */
 fun Any.logE(msg: String) = Log.e(autoTag, msg)

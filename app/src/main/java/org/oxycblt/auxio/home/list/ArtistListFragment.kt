@@ -47,6 +47,7 @@ import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
  * A [ListFragment] that shows a list of [Artist]s.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -132,6 +133,7 @@ class ArtistListFragment :
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Artist]s using [ArtistViewHolder].
+     *
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class ArtistAdapter(private val listener: SelectableListListener<Artist>) :

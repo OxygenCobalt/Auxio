@@ -27,6 +27,7 @@ import org.oxycblt.auxio.util.fixDoubleRipple
 /**
  * Fixes an issue where double ripples appear on [MaterialButton] from AppCompat 1.5 afterwards due
  * to a currently unfixed change.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 open class RippleFixMaterialButton

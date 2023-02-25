@@ -24,6 +24,7 @@ import org.oxycblt.auxio.music.Music
 /**
  * A [PlayingIndicatorAdapter] that also supports indicating the selection status of a group of
  * items.
+ *
  * @param differFactory The [ListDiffer.Factory] that defines the type of [ListDiffer] to use.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -41,6 +42,7 @@ abstract class SelectionIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
 
     /**
      * Update the list of selected items.
+     *
      * @param items A set of selected [T] items.
      */
     fun setSelected(items: Set<T>) {
@@ -74,6 +76,7 @@ abstract class SelectionIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
     abstract class ViewHolder(root: View) : PlayingIndicatorAdapter.ViewHolder(root) {
         /**
          * Update the selection indicator within this [PlayingIndicatorAdapter.ViewHolder].
+         *
          * @param isSelected Whether this [PlayingIndicatorAdapter.ViewHolder] is selected.
          */
         abstract fun updateSelectionIndicator(isSelected: Boolean)

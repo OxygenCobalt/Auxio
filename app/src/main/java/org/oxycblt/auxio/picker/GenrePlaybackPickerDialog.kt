@@ -39,6 +39,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A picker [ViewBindingDialogFragment] intended for when [Genre] playback is ambiguous.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

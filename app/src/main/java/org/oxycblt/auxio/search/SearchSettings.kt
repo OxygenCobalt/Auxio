@@ -27,6 +27,7 @@ import org.oxycblt.auxio.settings.Settings
 
 /**
  * User configuration specific to the search UI.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface SearchSettings : Settings<Nothing> {

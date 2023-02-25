@@ -48,9 +48,9 @@ import org.oxycblt.auxio.util.getInteger
  * This class is primarily intended for list items. For other uses, [StyledImageView] is more
  * suitable.
  *
- * TODO: Rework content descriptions here
- *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Rework content descriptions here
  */
 class ImageGroup
 @JvmOverloads
@@ -146,6 +146,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     /**
      * Bind a [Song] to the internal [StyledImageView].
+     *
      * @param song The [Song] to bind to the view.
      * @see StyledImageView.bind
      */
@@ -153,6 +154,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     /**
      * Bind a [Album] to the internal [StyledImageView].
+     *
      * @param album The [Album] to bind to the view.
      * @see StyledImageView.bind
      */
@@ -160,6 +162,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     /**
      * Bind a [Genre] to the internal [StyledImageView].
+     *
      * @param artist The [Artist] to bind to the view.
      * @see StyledImageView.bind
      */
@@ -167,6 +170,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     /**
      * Bind a [Genre] to the internal [StyledImageView].
+     *
      * @param genre The [Genre] to bind to the view.
      * @see StyledImageView.bind
      */

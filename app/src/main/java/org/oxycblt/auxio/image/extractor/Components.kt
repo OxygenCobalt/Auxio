@@ -41,6 +41,7 @@ import org.oxycblt.auxio.music.Song
 
 /**
  * A [Keyer] implementation for [Music] data.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MusicKeyer : Keyer<Music> {
@@ -56,6 +57,7 @@ class MusicKeyer : Keyer<Music> {
 /**
  * Generic [Fetcher] for [Album] covers. Works with both [Album] and [Song]. Use [SongFactory] or
  * [AlbumFactory] for instantiation.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumCoverFetcher
@@ -89,6 +91,7 @@ private constructor(
 
 /**
  * [Fetcher] for [Artist] images. Use [Factory] for instantiation.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class ArtistImageFetcher
@@ -116,6 +119,7 @@ private constructor(
 
 /**
  * [Fetcher] for [Genre] images. Use [Factory] for instantiation.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class GenreImageFetcher
@@ -141,9 +145,10 @@ private constructor(
 /**
  * Map at most N [T] items a collection into a collection of [R], ignoring [T] that cannot be
  * transformed into [R].
+ *
  * @param n The maximum amount of items to map.
  * @param transform The function that transforms data [T] from the original list into data [R] in
- * the new list. Can return null if the [T] cannot be transformed into an [R].
+ *   the new list. Can return null if the [T] cannot be transformed into an [R].
  * @return A new list of at most N non-null [R] items.
  */
 private inline fun <T : Any, R : Any> Collection<T>.mapAtMostNotNull(

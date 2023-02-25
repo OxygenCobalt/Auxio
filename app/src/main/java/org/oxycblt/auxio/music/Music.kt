@@ -38,11 +38,13 @@ import org.oxycblt.auxio.util.toUuidOrNull
 /**
  * Abstract music data. This contains universal information about all concrete music
  * implementations, such as identification information and names.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 sealed interface Music : Item {
     /**
      * A unique identifier for this music item.
+     *
      * @see UID
      */
     val uid: UID
@@ -56,9 +58,10 @@ sealed interface Music : Item {
     /**
      * Returns a name suitable for use in the app UI. This should be favored over [rawName] in
      * nearly all cases.
+     *
      * @param context [Context] required to obtain placeholder text or formatting information.
      * @return A human-readable string representing the name of this music. In the case that the
-     * item does not have a name, an analogous "Unknown X" name is returned.
+     *   item does not have a name, an analogous "Unknown X" name is returned.
      */
     fun resolveName(context: Context): String
 
@@ -76,7 +79,7 @@ sealed interface Music : Item {
      * The key will have the following attributes:
      * - If [rawSortName] is present, this key will be derived from it. Otherwise [rawName] is used.
      * - If the string begins with an article, such as "the", it will be stripped, as is usually
-     * convention for sorting media. This is not internationalized.
+     *   convention for sorting media. This is not internationalized.
      */
     val collationKey: CollationKey?
 
@@ -86,15 +89,14 @@ sealed interface Music : Item {
      * [UID] enables a much cheaper and more reliable form of differentiating music, derived from
      * either a hash of meaningful metadata or the MusicBrainz ID spec. Using this enables several
      * improvements to music management in this app, including:
-     *
      * - Proper differentiation of identical music. It's common for large, well-tagged libraries to
-     * have functionally duplicate items that are differentiated with MusicBrainz IDs, and so [UID]
-     * allows us to properly differentiate between these in the app.
+     *   have functionally duplicate items that are differentiated with MusicBrainz IDs, and so
+     *   [UID] allows us to properly differentiate between these in the app.
      * - Better music persistence between restarts. Whereas directly storing song names would be
-     * prone to collisions, and storing MediaStore IDs would drift rapidly as the music library
-     * changes, [UID] enables a much stronger form of persistence given it's unique link to a
-     * specific files metadata configuration, which is unlikely to collide with another item or
-     * drift as the music library changes.
+     *   prone to collisions, and storing MediaStore IDs would drift rapidly as the music library
+     *   changes, [UID] enables a much stronger form of persistence given it's unique link to a
+     *   specific files metadata configuration, which is unlikely to collide with another item or
+     *   drift as the music library changes.
      *
      * Note: Generally try to use [UID] as a black box that can only be read, written, and compared.
      * It will not be fun if you try to manipulate it in any other manner.
@@ -125,6 +127,7 @@ sealed interface Music : Item {
 
         /**
          * Internal marker of [Music.UID] format type.
+         *
          * @param namespace Namespace to use in the [Music.UID]'s string representation.
          */
         private enum class Format(val namespace: String) {
@@ -139,10 +142,11 @@ sealed interface Music : Item {
             /**
              * Creates an Auxio-style [UID] with a [UUID] composed of a hash of the non-subjective,
              * unlikely-to-change metadata of the music.
+             *
              * @param mode The analogous [MusicMode] of the item that created this [UID].
              * @param updates Block to update the [MessageDigest] hash with the metadata of the
-             * item. Make sure the metadata hashed semantically aligns with the format
-             * specification.
+             *   item. Make sure the metadata hashed semantically aligns with the format
+             *   specification.
              * @return A new auxio-style [UID].
              */
             fun auxio(mode: MusicMode, updates: MessageDigest.() -> Unit): UID {
@@ -181,19 +185,21 @@ sealed interface Music : Item {
             /**
              * Creates a MusicBrainz-style [UID] with a [UUID] derived from the MusicBrainz ID
              * extracted from a file.
+             *
              * @param mode The analogous [MusicMode] of the item that created this [UID].
              * @param mbid The analogous MusicBrainz ID for this item that was extracted from a
-             * file.
+             *   file.
              * @return A new MusicBrainz-style [UID].
              */
             fun musicBrainz(mode: MusicMode, mbid: UUID): UID = UID(Format.MUSICBRAINZ, mode, mbid)
 
             /**
              * Convert a [UID]'s string representation back into a concrete [UID] instance.
+             *
              * @param uid The [UID]'s string representation, formatted as
-             * `format_namespace:music_mode_int-uuid`.
+             *   `format_namespace:music_mode_int-uuid`.
              * @return A [UID] converted from the string representation, or null if the string
-             * representation was invalid.
+             *   representation was invalid.
              */
             fun fromString(uid: String): UID? {
                 val split = uid.split(':', limit = 2)
@@ -224,6 +230,7 @@ sealed interface Music : Item {
 
 /**
  * An abstract grouping of [Song]s and other [Music] data.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 sealed interface MusicParent : Music {
@@ -233,6 +240,7 @@ sealed interface MusicParent : Music {
 
 /**
  * A song.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Song : Music {
@@ -281,6 +289,7 @@ interface Song : Music {
 /**
  * An abstract release group. While it may be called an album, it encompasses other types of
  * releases like singles, EPs, and compilations.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Album : MusicParent {
@@ -311,6 +320,7 @@ interface Album : MusicParent {
 /**
  * An abstract artist. These are actually a combination of the artist and album artist tags from
  * within the library, derived from [Song]s and [Album]s respectively.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Artist : MusicParent {
@@ -336,6 +346,7 @@ interface Artist : MusicParent {
 
 /**
  * A genre.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Genre : MusicParent {
@@ -350,6 +361,7 @@ interface Genre : MusicParent {
 /**
  * Run [Music.resolveName] on each instance in the given list and concatenate them into a [String]
  * in a localized manner.
+ *
  * @param context [Context] required
  * @return A concatenated string.
  */
@@ -359,6 +371,7 @@ fun <T : Music> List<T>.resolveNames(context: Context) =
 /**
  * Returns if [Music.rawName] matches for each item in a list. Useful for scenarios where the
  * display information of an item must be compared without a context.
+ *
  * @param other The list of items to compare to.
  * @return True if they are the same (by [Music.rawName]), false otherwise.
  */

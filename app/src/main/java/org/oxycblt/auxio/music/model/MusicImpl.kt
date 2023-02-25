@@ -46,14 +46,15 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * Library-backed implementation of [Song].
+ *
  * @param rawSong The [RawSong] to derive the member data from.
  * @param musicSettings [MusicSettings] to for user parsing configuration.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
     override val uid =
-    // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
-    rawSong.musicBrainzId?.toUuidOrNull()?.let { Music.UID.musicBrainz(MusicMode.SONGS, it) }
+        // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
+        rawSong.musicBrainzId?.toUuidOrNull()?.let { Music.UID.musicBrainz(MusicMode.SONGS, it) }
             ?: Music.UID.auxio(MusicMode.SONGS) {
                 // Song UIDs are based on the raw data without parsing so that they remain
                 // consistent across music setting changes. Parents are not held up to the
@@ -164,6 +165,7 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
 
     /**
      * Links this [Song] with a parent [Album].
+     *
      * @param album The parent [Album] to link to.
      */
     fun link(album: AlbumImpl) {
@@ -172,6 +174,7 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
 
     /**
      * Links this [Song] with a parent [Artist].
+     *
      * @param artist The parent [Artist] to link to.
      */
     fun link(artist: ArtistImpl) {
@@ -180,6 +183,7 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
 
     /**
      * Links this [Song] with a parent [Genre].
+     *
      * @param genre The parent [Genre] to link to.
      */
     fun link(genre: GenreImpl) {
@@ -188,6 +192,7 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
 
     /**
      * Perform final validation and organization on this instance.
+     *
      * @return This instance upcasted to [Song].
      */
     fun finalize(): Song {
@@ -218,10 +223,11 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
 
 /**
  * Library-backed implementation of [Album].
+ *
  * @param rawAlbum The [RawAlbum] to derive the member data from.
  * @param musicSettings [MusicSettings] to for user parsing configuration.
  * @param songs The [Song]s that are a part of this [Album]. These items will be linked to this
- * [Album].
+ *   [Album].
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumImpl(
@@ -230,8 +236,8 @@ class AlbumImpl(
     override val songs: List<SongImpl>
 ) : Album {
     override val uid =
-    // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
-    rawAlbum.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ALBUMS, it) }
+        // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
+        rawAlbum.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ALBUMS, it) }
             ?: Music.UID.auxio(MusicMode.ALBUMS) {
                 // Hash based on only names despite the presence of a date to increase stability.
                 // I don't know if there is any situation where an artist will have two albums with
@@ -286,6 +292,7 @@ class AlbumImpl(
 
     /**
      * Links this [Album] with a parent [Artist].
+     *
      * @param artist The parent [Artist] to link to.
      */
     fun link(artist: ArtistImpl) {
@@ -294,6 +301,7 @@ class AlbumImpl(
 
     /**
      * Perform final validation and organization on this instance.
+     *
      * @return This instance upcasted to [Album].
      */
     fun finalize(): Album {
@@ -313,11 +321,12 @@ class AlbumImpl(
 
 /**
  * Library-backed implementation of [Artist].
+ *
  * @param rawArtist The [RawArtist] to derive the member data from.
  * @param musicSettings [MusicSettings] to for user parsing configuration.
  * @param songAlbums A list of the [Song]s and [Album]s that are a part of this [Artist] , either
- * through artist or album artist tags. Providing [Song]s to the artist is optional. These instances
- * will be linked to this [Artist].
+ *   through artist or album artist tags. Providing [Song]s to the artist is optional. These
+ *   instances will be linked to this [Artist].
  * @author Alexander Capehart (OxygenCobalt)
  */
 class ArtistImpl(
@@ -326,8 +335,8 @@ class ArtistImpl(
     songAlbums: List<Music>
 ) : Artist {
     override val uid =
-    // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
-    rawArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ARTISTS, it) }
+        // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
+        rawArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ARTISTS, it) }
             ?: Music.UID.auxio(MusicMode.ARTISTS) { update(rawArtist.name) }
     override val rawName = rawArtist.name
     override val rawSortName = rawArtist.sortName
@@ -379,14 +388,16 @@ class ArtistImpl(
      * Returns the original position of this [Artist]'s [RawArtist] within the given [RawArtist]
      * list. This can be used to create a consistent ordering within child [Artist] lists based on
      * the original tag order.
+     *
      * @param rawArtists The [RawArtist] instances to check. It is assumed that this [Artist]'s
-     * [RawArtist] will be within the list.
+     *   [RawArtist] will be within the list.
      * @return The index of the [Artist]'s [RawArtist] within the list.
      */
     fun getOriginalPositionIn(rawArtists: List<RawArtist>) = rawArtists.indexOf(rawArtist)
 
     /**
      * Perform final validation and organization on this instance.
+     *
      * @return This instance upcasted to [Artist].
      */
     fun finalize(): Artist {
@@ -400,6 +411,7 @@ class ArtistImpl(
 }
 /**
  * Library-backed implementation of [Genre].
+ *
  * @param rawGenre [RawGenre] to derive the member data from.
  * @param musicSettings [MusicSettings] to for user parsing configuration.
  * @param songs Child [SongImpl]s of this instance.
@@ -450,14 +462,16 @@ class GenreImpl(
      * Returns the original position of this [Genre]'s [RawGenre] within the given [RawGenre] list.
      * This can be used to create a consistent ordering within child [Genre] lists based on the
      * original tag order.
+     *
      * @param rawGenres The [RawGenre] instances to check. It is assumed that this [Genre] 's
-     * [RawGenre] will be within the list.
+     *   [RawGenre] will be within the list.
      * @return The index of the [Genre]'s [RawGenre] within the list.
      */
     fun getOriginalPositionIn(rawGenres: List<RawGenre>) = rawGenres.indexOf(rawGenre)
 
     /**
      * Perform final validation and organization on this instance.
+     *
      * @return This instance upcasted to [Genre].
      */
     fun finalize(): Music {
@@ -468,6 +482,7 @@ class GenreImpl(
 
 /**
  * Update a [MessageDigest] with a lowercase [String].
+ *
  * @param string The [String] to hash. If null, it will not be hashed.
  */
 @VisibleForTesting
@@ -481,6 +496,7 @@ fun MessageDigest.update(string: String?) {
 
 /**
  * Update a [MessageDigest] with the string representation of a [Date].
+ *
  * @param date The [Date] to hash. If null, nothing will be done.
  */
 @VisibleForTesting
@@ -494,6 +510,7 @@ fun MessageDigest.update(date: Date?) {
 
 /**
  * Update a [MessageDigest] with the lowercase versions of all of the input [String]s.
+ *
  * @param strings The [String]s to hash. If a [String] is null, it will not be hashed.
  */
 @VisibleForTesting
@@ -503,6 +520,7 @@ fun MessageDigest.update(strings: List<String?>) {
 
 /**
  * Update a [MessageDigest] with the little-endian bytes of a [Int].
+ *
  * @param n The [Int] to write. If null, nothing will be done.
  */
 @VisibleForTesting
@@ -520,6 +538,7 @@ private val COLLATOR: Collator = Collator.getInstance().apply { strength = Colla
 /**
  * Provided implementation to create a [CollationKey] in the way described by [Music.collationKey].
  * This should be used in all overrides of all [CollationKey].
+ *
  * @param musicSettings [MusicSettings] required for user parsing configuration.
  * @return A [CollationKey] that follows the specification described by [Music.collationKey].
  */

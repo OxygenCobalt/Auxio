@@ -27,6 +27,7 @@ import coil.transition.TransitionTarget
 
 /**
  * A copy of [CrossfadeTransition.Factory] that also applies a transition to error results.
+ *
  * @author Coil Team, Alexander Capehart (OxygenCobalt)
  */
 class ErrorCrossfadeTransitionFactory : Transition.Factory {

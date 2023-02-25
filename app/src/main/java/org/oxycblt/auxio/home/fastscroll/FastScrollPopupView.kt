@@ -40,6 +40,7 @@ import org.oxycblt.auxio.util.isRtl
 
 /**
  * A [MaterialTextView] that displays the popup indicator used in FastScrollRecyclerView
+ *
  * @author Alexander Capehart (OxygenCobalt), Hai Zhang
  */
 class FastScrollPopupView

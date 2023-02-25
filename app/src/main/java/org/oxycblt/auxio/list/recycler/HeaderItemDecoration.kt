@@ -29,6 +29,7 @@ import org.oxycblt.auxio.list.adapter.DiffAdapter
 /**
  * A [BackportMaterialDividerItemDecoration] that sets up the divider configuration to correctly
  * separate content with headers.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class HeaderItemDecoration

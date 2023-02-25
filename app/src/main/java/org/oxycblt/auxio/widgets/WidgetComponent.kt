@@ -41,6 +41,7 @@ import org.oxycblt.auxio.util.logD
 /**
  * A component that manages the "Now Playing" state. This is kept separate from the [WidgetProvider]
  * itself to prevent possible memory leaks and enable extension to more widgets in the future.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class WidgetComponent
@@ -134,6 +135,7 @@ constructor(
 
     /**
      * A condensed form of the playback state that is safe to use in AppWidgets.
+     *
      * @param song [Queue.currentSong]
      * @param cover A pre-loaded album cover [Bitmap] for [song].
      * @param isPlaying [PlaybackStateManager.playerState]

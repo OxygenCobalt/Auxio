@@ -29,6 +29,7 @@ import org.oxycblt.auxio.util.newMainPendingIntent
 
 /**
  * A dynamic [ForegroundServiceNotification] that shows the current music loading state.
+ *
  * @param context [Context] required to create the notification.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -53,6 +54,7 @@ class IndexingNotification(private val context: Context) :
 
     /**
      * Update this notification with the new music loading state.
+     *
      * @param indexing The new music loading state to display in the notification.
      * @return true if the notification updated, false otherwise
      */
@@ -90,6 +92,7 @@ class IndexingNotification(private val context: Context) :
 /**
  * A static [ForegroundServiceNotification] that signals to the user that the app is currently
  * monitoring the music library for changes.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class ObservingNotification(context: Context) :

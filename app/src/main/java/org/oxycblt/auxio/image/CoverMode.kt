@@ -21,6 +21,7 @@ import org.oxycblt.auxio.IntegerTable
 
 /**
  * Represents the options available for album cover loading.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 enum class CoverMode {
@@ -33,6 +34,7 @@ enum class CoverMode {
 
     /**
      * The integer representation of this instance.
+     *
      * @see fromIntCode
      */
     val intCode: Int
@@ -46,6 +48,7 @@ enum class CoverMode {
     companion object {
         /**
          * Convert a [CoverMode] integer representation into an instance.
+         *
          * @param intCode An integer representation of a [CoverMode]
          * @return The corresponding [CoverMode], or null if the [CoverMode] is invalid.
          * @see CoverMode.intCode

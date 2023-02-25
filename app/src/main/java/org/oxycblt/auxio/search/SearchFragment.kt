@@ -49,11 +49,10 @@ import org.oxycblt.auxio.util.*
 /**
  * The [ListFragment] providing search functionality for the music library.
  *
- * TODO: Better keyboard management
- *
- * TODO: Multi-filtering with chips
- *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Better keyboard management
+ * TODO: Multi-filtering with chips
  */
 @AndroidEntryPoint
 class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
@@ -201,6 +200,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     /**
      * Safely focus the keyboard on a particular [View].
+     *
      * @param view The [View] to focus the keyboard on.
      */
     private fun showKeyboard(view: View) {

@@ -24,6 +24,7 @@ import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 
 /**
  * Audio settings interface.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AudioPreferenceFragment : BasePreferenceFragment(R.xml.preferences_audio) {

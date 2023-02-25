@@ -24,6 +24,7 @@ interface Item
 
 /**
  * A "header" used for delimiting groups of data.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Header : Item {
@@ -33,6 +34,7 @@ interface Header : Item {
 
 /**
  * A basic header with no additional actions.
+ *
  * @param titleRes The string resource used for the header's title.
  * @author Alexander Capehart (OxygenCobalt)
  */

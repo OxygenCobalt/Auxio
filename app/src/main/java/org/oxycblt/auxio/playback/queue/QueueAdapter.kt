@@ -38,6 +38,7 @@ import org.oxycblt.auxio.util.*
 
 /**
  * A [RecyclerView.Adapter] that shows an editable list of queue items.
+ *
  * @param listener A [EditableListListener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -72,6 +73,7 @@ class QueueAdapter(private val listener: EditableListListener<Song>) :
     /**
      * Set the position of the currently playing item in the queue. This will mark the item as
      * playing and any previous items as played.
+     *
      * @param index The position of the currently playing item in the queue.
      * @param isPlaying Whether playback is ongoing or paused.
      */
@@ -99,6 +101,7 @@ class QueueAdapter(private val listener: EditableListListener<Song>) :
 /**
  * A [PlayingIndicatorAdapter.ViewHolder] that displays a queue [Song]. Use [from] to create an
  * instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueSongViewHolder private constructor(private val binding: ItemQueueSongBinding) :
@@ -142,6 +145,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
 
     /**
      * Bind new data to this instance.
+     *
      * @param song The new [Song] to bind.
      * @param listener A [EditableListListener] to bind interactions to.
      */
@@ -164,6 +168,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
     companion object {
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */

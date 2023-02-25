@@ -31,6 +31,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * User configuration specific to the playback system.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface PlaybackSettings : Settings<PlaybackSettings.Listener> {

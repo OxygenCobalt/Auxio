@@ -30,6 +30,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * An adapter that displays search results.
+ *
  * @param listener An [SelectableListListener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */

@@ -29,6 +29,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * An [RecyclerView.Adapter] that displays a list of [Genre] choices.
+ *
  * @param listener A [ClickableListListener] to bind interactions to.
  * @author OxygenCobalt.
  */
@@ -46,6 +47,7 @@ class GenreChoiceAdapter(private val listener: ClickableListListener<Genre>) :
 
     /**
      * Immediately update the [Genre] choices.
+     *
      * @param newGenres The new [Genre]s to show.
      */
     fun submitList(newGenres: List<Genre>) {
@@ -64,6 +66,7 @@ class GenreChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
+     *
      * @param genre The new [Genre] to bind.
      * @param listener A [ClickableListListener] to bind interactions to.
      */
@@ -76,6 +79,7 @@ class GenreChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
     companion object {
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */

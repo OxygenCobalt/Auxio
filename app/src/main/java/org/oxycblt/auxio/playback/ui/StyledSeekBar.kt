@@ -29,6 +29,7 @@ import org.oxycblt.auxio.util.logD
 /**
  * A wrapper around [Slider] that shows position and duration values and sanitizes input to reduce
  * crashes from invalid values.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class StyledSeekBar
@@ -112,6 +113,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         /**
          * Called when the internal [Slider] was scrubbed to a new position, requesting that a seek
          * be performed.
+         *
          * @param positionDs The position to seek to, in deci-seconds (1/10th of a second).
          */
         fun onSeekConfirmed(positionDs: Long)

@@ -36,6 +36,7 @@ import org.oxycblt.auxio.util.collectImmediately
 
 /**
  * A [ViewBindingFragment] that displays an editable queue.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

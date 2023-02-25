@@ -43,6 +43,7 @@ interface TagExtractor {
     /**
      * Extract the metadata of songs from [incompleteSongs] and send them to [completeSongs]. Will
      * terminate as soon as [incompleteSongs] is closed.
+     *
      * @param incompleteSongs A [Channel] of incomplete songs to process.
      * @param completeSongs A [Channel] to send completed songs to.
      */
@@ -105,6 +106,7 @@ class TagExtractorImpl @Inject constructor(@ApplicationContext private val conte
 
 /**
  * Wraps a [TagExtractor] future and processes it into a [RawSong] when completed.
+ *
  * @param context [Context] required to open the audio file.
  * @param rawSong [RawSong] to process.
  * @author Alexander Capehart (OxygenCobalt)
@@ -121,6 +123,7 @@ private class Task(context: Context, private val rawSong: RawSong) {
 
     /**
      * Try to get a completed song from this [Task], if it has finished processing.
+     *
      * @return A [RawSong] instance if processing has completed, null otherwise.
      */
     fun get(): RawSong? {
@@ -156,8 +159,9 @@ private class Task(context: Context, private val rawSong: RawSong) {
 
     /**
      * Complete this instance's [RawSong] with ID3v2 Text Identification Frames.
+     *
      * @param textFrames A mapping between ID3v2 Text Identification Frame IDs and one or more
-     * values.
+     *   values.
      */
     private fun populateWithId3v2(textFrames: Map<String, List<String>>) {
         // Song
@@ -220,11 +224,12 @@ private class Task(context: Context, private val rawSong: RawSong) {
     /**
      * Parses the ID3v2.3 timestamp specification into a [Date] from the given Text Identification
      * Frames.
+     *
      * @param textFrames A mapping between ID3v2 Text Identification Frame IDs and one or more
-     * values.
+     *   values.
      * @return A [Date] of a year value from TORY/TYER, a month and day value from TDAT, and a
-     * hour/minute value from TIME. No second value is included. The latter two fields may not be
-     * included in they cannot be parsed. Will be null if a year value could not be parsed.
+     *   hour/minute value from TIME. No second value is included. The latter two fields may not be
+     *   included in they cannot be parsed. Will be null if a year value could not be parsed.
      */
     private fun parseId3v23Date(textFrames: Map<String, List<String>>): Date? {
         // Assume that TDAT/TIME can refer to TYER or TORY depending on if TORY
@@ -261,6 +266,7 @@ private class Task(context: Context, private val rawSong: RawSong) {
 
     /**
      * Complete this instance's [RawSong] with Vorbis comments.
+     *
      * @param comments A mapping between vorbis comment names and one or more vorbis comment values.
      */
     private fun populateWithVorbis(comments: Map<String, List<String>>) {

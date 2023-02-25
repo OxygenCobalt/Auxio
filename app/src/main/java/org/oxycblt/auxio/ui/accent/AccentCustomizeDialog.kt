@@ -34,6 +34,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A [ViewBindingDialogFragment] that allows the user to configure the current [Accent].
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

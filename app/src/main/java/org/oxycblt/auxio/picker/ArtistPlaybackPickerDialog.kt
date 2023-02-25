@@ -31,6 +31,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * An [ArtistPickerDialog] intended for when [Artist] playback is ambiguous.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

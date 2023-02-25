@@ -24,6 +24,7 @@ import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 
 /**
  * Personalization settings interface.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PersonalizePreferenceFragment : BasePreferenceFragment(R.xml.preferences_personalize) {

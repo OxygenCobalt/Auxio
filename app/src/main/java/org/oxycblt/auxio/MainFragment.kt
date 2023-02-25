@@ -51,6 +51,7 @@ import org.oxycblt.auxio.util.*
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls the more
  * high-level navigation features.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

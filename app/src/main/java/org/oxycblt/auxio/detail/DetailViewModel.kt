@@ -44,6 +44,7 @@ import org.oxycblt.auxio.util.*
 /**
  * [ViewModel] that manages the Song, Album, Artist, and Genre detail views. Keeps track of the
  * current item they are showing, sub-data to display, and configuration.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
@@ -182,6 +183,7 @@ constructor(
     /**
      * Set a new [currentSong] from it's [Music.UID]. If the [Music.UID] differs, [currentSong] and
      * [songAudioInfo] will be updated to align with the new [Song].
+     *
      * @param uid The UID of the [Song] to load. Must be valid.
      */
     fun setSongUid(uid: Music.UID) {
@@ -196,6 +198,7 @@ constructor(
     /**
      * Set a new [currentAlbum] from it's [Music.UID]. If the [Music.UID] differs, [currentAlbum]
      * and [albumList] will be updated to align with the new [Album].
+     *
      * @param uid The [Music.UID] of the [Album] to update [currentAlbum] to. Must be valid.
      */
     fun setAlbumUid(uid: Music.UID) {
@@ -210,6 +213,7 @@ constructor(
     /**
      * Set a new [currentArtist] from it's [Music.UID]. If the [Music.UID] differs, [currentArtist]
      * and [artistList] will be updated to align with the new [Artist].
+     *
      * @param uid The [Music.UID] of the [Artist] to update [currentArtist] to. Must be valid.
      */
     fun setArtistUid(uid: Music.UID) {
@@ -224,6 +228,7 @@ constructor(
     /**
      * Set a new [currentGenre] from it's [Music.UID]. If the [Music.UID] differs, [currentGenre]
      * and [genreList] will be updated to align with the new album.
+     *
      * @param uid The [Music.UID] of the [Genre] to update [currentGenre] to. Must be valid.
      */
     fun setGenreUid(uid: Music.UID) {
@@ -239,6 +244,7 @@ constructor(
 
     /**
      * Start a new job to load a given [Song]'s [AudioInfo]. Result is pushed to [songAudioInfo].
+     *
      * @param song The song to load.
      */
     private fun refreshAudioInfo(song: Song) {
@@ -333,8 +339,9 @@ constructor(
 
     /**
      * A simpler mapping of [ReleaseType] used for grouping and sorting songs.
+     *
      * @param headerTitleRes The title string resource to use for a header created out of an
-     * instance of this enum.
+     *   instance of this enum.
      */
     private enum class AlbumGrouping(@StringRes val headerTitleRes: Int) {
         ALBUMS(R.string.lbl_albums),

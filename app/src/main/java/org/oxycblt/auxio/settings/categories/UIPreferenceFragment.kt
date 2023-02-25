@@ -30,6 +30,7 @@ import org.oxycblt.auxio.util.isNight
 
 /**
  * Display preferences.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

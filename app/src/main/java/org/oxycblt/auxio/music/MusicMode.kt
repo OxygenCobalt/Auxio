@@ -21,6 +21,7 @@ import org.oxycblt.auxio.IntegerTable
 
 /**
  * Represents a data configuration corresponding to a specific type of [Music],
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 enum class MusicMode {
@@ -35,6 +36,7 @@ enum class MusicMode {
 
     /**
      * The integer representation of this instance.
+     *
      * @see fromIntCode
      */
     val intCode: Int
@@ -49,6 +51,7 @@ enum class MusicMode {
     companion object {
         /**
          * Convert a [MusicMode] integer representation into an instance.
+         *
          * @param intCode An integer representation of a [MusicMode]
          * @return The corresponding [MusicMode], or null if the [MusicMode] is invalid.
          * @see MusicMode.intCode

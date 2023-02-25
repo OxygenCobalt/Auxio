@@ -28,6 +28,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * User configuration specific to the home UI.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface HomeSettings : Settings<HomeSettings.Listener> {

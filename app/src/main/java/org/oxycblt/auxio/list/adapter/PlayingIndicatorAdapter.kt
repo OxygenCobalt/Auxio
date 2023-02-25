@@ -23,6 +23,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * A [RecyclerView.Adapter] that supports indicating the playback status of a particular item.
+ *
  * @param differFactory The [ListDiffer.Factory] that defines the type of [ListDiffer] to use.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -50,6 +51,7 @@ abstract class PlayingIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
     }
     /**
      * Update the currently playing item in the list.
+     *
      * @param item The [T] currently being played, or null if it is not being played.
      * @param isPlaying Whether playback is ongoing or paused.
      */
@@ -103,9 +105,10 @@ abstract class PlayingIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
     abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         /**
          * Update the playing indicator within this [RecyclerView.ViewHolder].
+         *
          * @param isActive True if this item is playing, false otherwise.
          * @param isPlaying True if playback is ongoing, false if paused. If this is true,
-         * [isActive] will also be true.
+         *   [isActive] will also be true.
          */
         abstract fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean)
     }

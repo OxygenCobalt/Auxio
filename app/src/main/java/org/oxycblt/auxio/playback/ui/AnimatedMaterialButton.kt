@@ -28,6 +28,7 @@ import org.oxycblt.auxio.util.getInteger
 /**
  * A [MaterialButton] that automatically morphs from a circle to a squircle shape appearance when
  * [isActivated] changes.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AnimatedMaterialButton

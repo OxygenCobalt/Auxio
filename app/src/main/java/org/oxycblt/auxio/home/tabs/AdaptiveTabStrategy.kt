@@ -27,6 +27,7 @@ import org.oxycblt.auxio.util.logD
 /**
  * A [TabLayoutMediator.TabConfigurationStrategy] that uses larger/smaller tab configurations
  * depending on the screen configuration.
+ *
  * @param context [Context] required to obtain window information
  * @param tabs Current tab configuration from settings
  * @author Alexander Capehart (OxygenCobalt)

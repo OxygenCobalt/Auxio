@@ -47,6 +47,7 @@ import org.oxycblt.auxio.util.logD
 /**
  * A component that mirrors the current playback state into the [MediaSessionCompat] and
  * [NotificationComponent].
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MediaSessionComponent
@@ -79,6 +80,7 @@ constructor(
 
     /**
      * Forward a system media button [Intent] to the [MediaSessionCompat].
+     *
      * @param intent The [Intent.ACTION_MEDIA_BUTTON] [Intent] to forward.
      */
     fun handleMediaButtonIntent(intent: Intent) {
@@ -87,6 +89,7 @@ constructor(
 
     /**
      * Register a [Listener] for notification updates to this service.
+     *
      * @param listener The [Listener] to register.
      */
     fun registerListener(listener: Listener) {
@@ -271,10 +274,11 @@ constructor(
     /**
      * Upload a new [MediaMetadataCompat] based on the current playback state to the
      * [MediaSessionCompat] and [NotificationComponent].
+     *
      * @param song The current [Song] to create the [MediaMetadataCompat] from, or null if no [Song]
-     * is currently playing.
+     *   is currently playing.
      * @param parent The current [MusicParent] to create the [MediaMetadataCompat] from, or null if
-     * playback is currently occuring from all songs.
+     *   playback is currently occuring from all songs.
      */
     private fun updateMediaMetadata(song: Song?, parent: MusicParent?) {
         if (song == null) {
@@ -338,6 +342,7 @@ constructor(
 
     /**
      * Upload a new queue to the [MediaSessionCompat].
+     *
      * @param queue The current queue to upload.
      */
     private fun updateQueue(queue: Queue) {
@@ -367,8 +372,8 @@ constructor(
         logD("Updating media session playback state")
 
         val state =
-        // InternalPlayer.State handles position/state information.
-        playbackManager.playerState
+            // InternalPlayer.State handles position/state information.
+            playbackManager.playerState
                 .intoPlaybackState(PlaybackStateCompat.Builder())
                 .setActions(ACTIONS)
                 // Active queue ID corresponds to the indices we populated prior, use them here.
@@ -426,6 +431,7 @@ constructor(
     interface Listener {
         /**
          * Called when the [NotificationComponent] changes, requiring it to be re-posed.
+         *
          * @param notification The new [NotificationComponent].
          */
         fun onPostNotification(notification: NotificationComponent)

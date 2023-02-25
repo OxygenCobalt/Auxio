@@ -40,6 +40,7 @@ interface MusicRepository {
     /**
      * Add a [Listener] to this instance. This can be used to receive changes in the music library.
      * Will invoke all [Listener] methods to initialize the instance with the current state.
+     *
      * @param listener The [Listener] to add.
      * @see Listener
      */
@@ -47,8 +48,9 @@ interface MusicRepository {
 
     /**
      * Remove a [Listener] from this instance, preventing it from receiving any further updates.
+     *
      * @param listener The [Listener] to remove. Does nothing if the [Listener] was never added in
-     * the first place.
+     *   the first place.
      * @see Listener
      */
     fun removeListener(listener: Listener)
@@ -57,6 +59,7 @@ interface MusicRepository {
     interface Listener {
         /**
          * Called when the current [Library] has changed.
+         *
          * @param library The new [Library], or null if no [Library] has been loaded yet.
          */
         fun onLibraryChanged(library: Library?)

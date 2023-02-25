@@ -28,6 +28,7 @@ import org.oxycblt.auxio.ui.NavigationViewModel
 
 /**
  * An [ArtistPickerDialog] intended for when [Artist] navigation is ambiguous.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

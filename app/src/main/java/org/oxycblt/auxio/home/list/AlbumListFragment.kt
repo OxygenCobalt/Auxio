@@ -46,6 +46,7 @@ import org.oxycblt.auxio.util.collectImmediately
 
 /**
  * A [ListFragment] that shows a list of [Album]s.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -154,6 +155,7 @@ class AlbumListFragment :
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Album]s using [AlbumViewHolder].
+     *
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class AlbumAdapter(private val listener: SelectableListListener<Album>) :

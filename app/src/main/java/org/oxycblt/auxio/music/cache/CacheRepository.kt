@@ -23,17 +23,20 @@ import org.oxycblt.auxio.util.*
 
 /**
  * A repository allowing access to cached metadata obtained in prior music loading operations.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface CacheRepository {
     /**
      * Read the current [Cache], if it exists.
+     *
      * @return The stored [Cache], or null if it could not be obtained.
      */
     suspend fun readCache(): Cache?
 
     /**
      * Write the list of newly-loaded [RawSong]s to the cache, replacing the prior data.
+     *
      * @param rawSongs The [rawSongs] to write to the cache.
      */
     suspend fun writeCache(rawSongs: List<RawSong>)
@@ -67,6 +70,7 @@ class CacheRepositoryImpl @Inject constructor(private val cachedSongsDao: Cached
 /**
  * A cache of music metadata obtained in prior music loading operations. Obtain an instance with
  * [CacheRepository].
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Cache {
@@ -75,6 +79,7 @@ interface Cache {
 
     /**
      * Populate a [RawSong] from a cache entry, if it exists.
+     *
      * @param rawSong The [RawSong] to populate.
      * @return true if a cache entry could be applied to [rawSong], false otherwise.
      */

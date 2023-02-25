@@ -31,6 +31,7 @@ import org.oxycblt.auxio.util.getSystemServiceCompat
 
 /**
  * User configuration specific to music system.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface MusicSettings : Settings<MusicSettings.Listener> {

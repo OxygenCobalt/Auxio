@@ -33,6 +33,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * An adapter for [SongProperty] instances.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SongPropertyAdapter :
@@ -48,6 +49,7 @@ class SongPropertyAdapter :
 
 /**
  * A property entry for use in [SongPropertyAdapter].
+ *
  * @param name The contextual title to use for the property.
  * @param value The value of the property.
  * @author Alexander Capehart (OxygenCobalt)
@@ -56,6 +58,7 @@ data class SongProperty(@StringRes val name: Int, val value: String) : Item
 
 /**
  * A [RecyclerView.ViewHolder] that displays a [SongProperty]. Use [from] to create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SongPropertyViewHolder private constructor(private val binding: ItemSongPropertyBinding) :
@@ -69,6 +72,7 @@ class SongPropertyViewHolder private constructor(private val binding: ItemSongPr
     companion object {
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */

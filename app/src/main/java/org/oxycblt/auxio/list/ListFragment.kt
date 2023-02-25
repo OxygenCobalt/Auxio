@@ -36,6 +36,7 @@ import org.oxycblt.auxio.util.showToast
 
 /**
  * A Fragment containing a selectable list.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class ListFragment<in T : Music, VB : ViewBinding> :
@@ -52,6 +53,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
     /**
      * Called when [onClick] is called, but does not result in the item being selected. This more or
      * less corresponds to an [onClick] implementation in a non-[ListFragment].
+     *
      * @param item The [T] data of the item that was clicked.
      */
     abstract fun onRealClick(item: T)
@@ -73,6 +75,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
     /**
      * Opens a menu in the context of a [Song]. This menu will be managed by the Fragment and closed
      * when the view is destroyed. If a menu is already opened, this call is ignored.
+     *
      * @param anchor The [View] to anchor the menu to.
      * @param menuRes The resource of the menu to load.
      * @param song The [Song] to create the menu for.
@@ -111,6 +114,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
     /**
      * Opens a menu in the context of a [Album]. This menu will be managed by the Fragment and
      * closed when the view is destroyed. If a menu is already opened, this call is ignored.
+     *
      * @param anchor The [View] to anchor the menu to.
      * @param menuRes The resource of the menu to load.
      * @param album The [Album] to create the menu for.
@@ -147,6 +151,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
     /**
      * Opens a menu in the context of a [Artist]. This menu will be managed by the Fragment and
      * closed when the view is destroyed. If a menu is already opened, this call is ignored.
+     *
      * @param anchor The [View] to anchor the menu to.
      * @param menuRes The resource of the menu to load.
      * @param artist The [Artist] to create the menu for.
@@ -180,6 +185,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
     /**
      * Opens a menu in the context of a [Genre]. This menu will be managed by the Fragment and
      * closed when the view is destroyed. If a menu is already opened, this call is ignored.
+     *
      * @param anchor The [View] to anchor the menu to.
      * @param menuRes The resource of the menu to load.
      * @param genre The [Genre] to create the menu for.
@@ -226,6 +232,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
     /**
      * Open a menu. This menu will be managed by the Fragment and closed when the view is destroyed.
      * If a menu is already opened, this call is ignored.
+     *
      * @param anchor The [View] to anchor the menu to.
      * @param menuRes The resource of the menu to load.
      * @param block A block that is ran within [PopupMenu] that allows further configuration.
