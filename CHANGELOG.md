@@ -24,7 +24,6 @@ while selecting it.
 
 #### Dev/Meta
 - Started using dependency injection
-- Started code obsfucation
 - Only bundle audio-related extractors with ExoPlayer
 - Switched to Room for database management
 - Updated to MDC 1.8.0 alpha-01
