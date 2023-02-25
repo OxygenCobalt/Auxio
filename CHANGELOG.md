@@ -1,5 +1,11 @@
 # Changelog
 
+## dev
+
+#### What's Improved
+- Accept `REPLAYGAIN_*` adjustment information on OPUS files alongside
+`R128_*` adjustments.
+
 ## 3.0.3
 
 #### What's New

@@ -23,7 +23,6 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Tracks
 import com.google.android.exoplayer2.audio.AudioProcessor
 import com.google.android.exoplayer2.audio.BaseAudioProcessor
-import com.google.android.exoplayer2.util.MimeTypes
 import java.nio.ByteBuffer
 import javax.inject.Inject
 import kotlin.math.pow
@@ -168,32 +167,28 @@ constructor(
 
         // Most ReplayGain tags are formatted as a simple decibel adjustment in a custom
         // replaygain_*_gain tag.
-        if (format.sampleMimeType != MimeTypes.AUDIO_OPUS) {
-            textTags.id3v2["TXXX:$TAG_RG_TRACK_GAIN"]
-                ?.run { first().parseReplayGainAdjustment() }
-                ?.let { trackGain = it }
-            textTags.id3v2["TXXX:$TAG_RG_ALBUM_GAIN"]
-                ?.run { first().parseReplayGainAdjustment() }
-                ?.let { albumGain = it }
-            textTags.vorbis[TAG_RG_ALBUM_GAIN]
-                ?.run { first().parseReplayGainAdjustment() }
-                ?.let { trackGain = it }
-            textTags.vorbis[TAG_RG_TRACK_GAIN]
-                ?.run { first().parseReplayGainAdjustment() }
-                ?.let { albumGain = it }
-        } else {
-            // Opus has it's own "r128_*_gain" ReplayGain specification, which requires dividing the
-            // adjustment by 256 to get the gain. This is used alongside the base adjustment
-            // intrinsic to the format to create the normalized adjustment. That base adjustment
-            // is already handled by the media framework, so we just need to apply the more
-            // specific adjustments.
-            textTags.vorbis[TAG_R128_TRACK_GAIN]
-                ?.run { first().parseReplayGainAdjustment() }
-                ?.let { trackGain = it / 256f }
-            textTags.vorbis[TAG_R128_ALBUM_GAIN]
-                ?.run { first().parseReplayGainAdjustment() }
-                ?.let { albumGain = it / 256f }
-        }
+        textTags.id3v2["TXXX:$TAG_RG_TRACK_GAIN"]
+            ?.run { first().parseReplayGainAdjustment() }
+            ?.let { trackGain = it }
+        textTags.id3v2["TXXX:$TAG_RG_ALBUM_GAIN"]
+            ?.run { first().parseReplayGainAdjustment() }
+            ?.let { albumGain = it }
+        textTags.vorbis[TAG_RG_ALBUM_GAIN]
+            ?.run { first().parseReplayGainAdjustment() }
+            ?.let { trackGain = it }
+        textTags.vorbis[TAG_RG_TRACK_GAIN]
+            ?.run { first().parseReplayGainAdjustment() }
+            ?.let { albumGain = it }
+        // Opus has it's own "r128_*_gain" ReplayGain specification, which requires dividing the
+        // adjustment by 256 to get the gain. This is used alongside the base adjustment
+        // intrinsic to the format to create the normalized adjustment. This is normally the only
+        // tag used for opus files, but some software still writes replay gain tags anyway.
+        textTags.vorbis[TAG_R128_TRACK_GAIN]
+            ?.run { first().parseReplayGainAdjustment() }
+            ?.let { trackGain = it / 256f }
+        textTags.vorbis[TAG_R128_ALBUM_GAIN]
+            ?.run { first().parseReplayGainAdjustment() }
+            ?.let { albumGain = it / 256f }
 
         return if (trackGain != 0f || albumGain != 0f) {
             Adjustment(trackGain, albumGain)
