@@ -99,7 +99,7 @@
     <string name="set_dirs_mode_include_desc">Müzik <b>yalnızca</b> eklediğiniz klasörlerden yüklenecektir.</string>
     <string name="desc_album_cover">%s Albümünün kapağı</string>
     <string name="desc_artist_image">%s Sanatçısının resmi</string>
-    <string name="def_track">Parça numarası yok</string>
+    <string name="def_track">Parça yok</string>
     <string name="cdc_mka">Matroska Ses</string>
     <string name="cdc_aac">İleri Düzeyde Ses Kodlama (AAC)</string>
     <string name="cdc_flac">Bağımsız Kayıpsız Ses Kodlama (FLAC)</string>
@@ -269,4 +269,6 @@
     <string name="set_personalize_desc">Arayüz kontrollerini ve davranışını özelleştirin</string>
     <string name="set_behavior">Davranış</string>
     <string name="set_replay_gain">Ses yüksekliği dengesi ReplayGain</string>
+    <string name="set_auto_sort_names">Sıralama yaparken makaleleri yoksay</string>
+    <string name="set_auto_sort_names_desc">Ada göre sıralarken \"the\" gibi kelimeleri yok sayın (en iyi ingilizce müzikle çalışır)</string>
 </resources>

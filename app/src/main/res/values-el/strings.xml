@@ -131,4 +131,5 @@
     <string name="lbl_soundtrack">Σάουντρακ</string>
     <string name="lbl_live_group">Ζωντανά</string>
     <string name="set_dirs">Φάκελοι μουσικής</string>
+    <string name="lbl_track">Μουσικο κομματι</string>
 </resources>

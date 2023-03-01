@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_retry">再試行</string>
-    <string name="info_app_desc">シンプルで合理的な音楽プレイヤー。</string>
+    <string name="info_app_desc">Android 用のシンプルで合理的な音楽プレーヤー。</string>
     <string name="lbl_grant">許可する</string>
     <string name="lbl_artists">アーティスト</string>
     <string name="lbl_genres">ジャンル</string>
@@ -34,7 +34,7 @@
     <string name="clr_deep_blue">紺</string>
     <string name="lbl_add">追加</string>
     <string name="lbl_save">保存</string>
-    <string name="lng_search_library">ライブラリ… を検索</string>
+    <string name="lng_search_library">ライブラリ検索…</string>
     <string name="set_theme_night">暗い</string>
     <string name="set_hide_collaborators">協力者を隠す</string>
     <string name="set_lib_tabs">ライブラリタブ</string>
@@ -69,7 +69,7 @@
     <string name="lbl_format">オーディオ形式</string>
     <string name="lbl_shuffle_shortcut_long">すべてをシャフル</string>
     <string name="lbl_ok">OK</string>
-    <string name="lng_indexing">音楽ライブラリ... を読み込み中</string>
+    <string name="lng_indexing">音楽ライブラリを読み込んでいます…</string>
     <string name="set_root_title">設定</string>
     <string name="set_ui_desc">アプリのテーマと色を変更</string>
     <string name="set_personalize">個人仕様</string>
@@ -165,10 +165,10 @@
     <string name="set_wipe_state">再生状態を解除</string>
     <string name="set_wipe_desc">前回保存された再生状態を解除</string>
     <string name="cdc_mka">Matroska オーディオ</string>
-    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
-    <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
+    <string name="cdc_aac">高度なオーディオ コーデック (AAC)</string>
+    <string name="cdc_flac">品質を損なうことのない無料のオーディオ コーデック (FLAC)</string>
     <string name="clr_grey">グレイ</string>
-    <string name="def_track">トラック番号がありません</string>
+    <string name="def_track">トラックなし</string>
     <string name="fmt_lib_total_duration">全再生時間: %s</string>
     <string name="desc_skip_prev">最後の曲にスキップ</string>
     <string name="set_notif_action">カスタム通知</string>
@@ -182,7 +182,7 @@
     <string name="lbl_song_detail">プロパティを見る</string>
     <string name="lbl_queue">再生待ち</string>
     <string name="lbl_library_counts">ライブラリ統計</string>
-    <string name="lng_observing">音楽ライブラリ ... への変更をモニタリング</string>
+    <string name="lng_observing">音楽ライブラリの変更を監視しています…</string>
     <string name="set_behavior">挙動</string>
     <string name="set_content_desc">音楽と画像の読み込み方法をコントロール</string>
     <string name="set_images">画像</string>
@@ -237,4 +237,29 @@
     <string name="clr_orange">オレンジ</string>
     <string name="fmt_indexing">音楽ライブラリ … を読み込み中 (%1$d/%2$d)</string>
     <string name="fmt_db_pos">+%.1f デシベル</string>
+    <string name="set_round_mode_desc">追加の UI 要素で角丸を有効にします (アルバム カバーを丸める必要があります)</string>
+    <string name="set_ui">外観</string>
+    <string name="set_dirs_mode">モード</string>
+    <string name="set_separators_desc">複数のタグ値を表す文字を構成する</string>
+    <string name="set_bar_action">カスタム再生バー アクション</string>
+    <string name="set_auto_sort_names">ソート時に記事を無視する</string>
+    <string name="set_auto_sort_names_desc">名前で並べ替えるときに「the」などの単語を無視する (英語の音楽に最適)</string>
+    <string name="set_cover_mode_media_store">初期 (高速読み込み)</string>
+    <string name="set_replay_gain_mode_dynamic">再生中の場合はアルバムを優先</string>
+    <string name="set_separators">複数値セパレータ</string>
+    <string name="lbl_relative_path">親パス</string>
+    <string name="set_observing_desc">変更されるたびに音楽ライブラリをリロードします (永続的な通知が必要です)</string>
+    <string name="set_audio_desc">サウンドと再生の動作を構成する</string>
+    <string name="set_rewind_prev">戻る前に巻き戻す</string>
+    <string name="set_pre_amp_warning">警告: プリアンプを高い正の値に変更すると、一部のオーディオ トラックでピーキングが発生する場合があります。</string>
+    <string name="set_state">再生状況</string>
+    <string name="desc_queue_bar">キューを開く</string>
+    <string name="lng_widget">音楽再生の表示と制御</string>
+    <string name="set_replay_gain_mode">ラウドネスイコライゼーション</string>
+    <string name="set_separators_warning">警告: この設定を使用すると、一部のタグが複数の値を持つと誤って解釈される場合があります。 これは、不要な区切り文字の前にバックスラッシュ (\\) を付けることで解決できます。</string>
+    <string name="set_pre_amp_desc">プリアンプは、再生中に既存の調整に適用されます</string>
+    <string name="set_rescan_desc">タグ キャッシュをクリアし、音楽ライブラリを完全にリロードします (遅くなりますが、より完全になります)</string>
+    <string name="set_pre_amp">ReplayGain プリアンプ</string>
+    <string name="fmt_list">%1$s、%2$s</string>
+    <string name="set_personalize_desc">UI コントロールと動作をカスタマイズする</string>
 </resources>

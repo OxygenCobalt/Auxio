@@ -107,7 +107,7 @@
     <string name="def_artist">未知艺术家</string>
     <string name="def_genre">未知流派</string>
     <string name="def_date">没有日期</string>
-    <string name="def_track">无曲目编号</string>
+    <string name="def_track">无曲目</string>
     <string name="def_playback">未播放音乐</string>
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">红色</string>
@@ -269,4 +269,6 @@
     <string name="set_music">音乐</string>
     <string name="set_audio_desc">配置声音和播放行为</string>
     <string name="lbl_sort_dec">降序</string>
+    <string name="set_auto_sort_names">排序时忽略冠词</string>
+    <string name="set_auto_sort_names_desc">按名称排序时忽略类似“the”这样的冠词（对英文歌曲的效果最好）</string>
 </resources>

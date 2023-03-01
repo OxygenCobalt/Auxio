@@ -156,7 +156,7 @@
     <string name="set_dirs_mode_include">Incluir</string>
     <string name="cdc_mka">Audio matroska</string>
     <string name="cdc_flac">Free Losless Audio Codec (FLAC)</string>
-    <string name="cdc_aac">Advances Audio Coding (AAC)</string>
+    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="fmt_indexing">Cargando tu biblioteca de música… (%1$d/%2$d)</string>
     <string name="fmt_lib_artist_count">Artistas cargados: %d</string>
     <string name="fmt_lib_genre_count">Géneros cargados: %d</string>
@@ -275,4 +275,6 @@
     <string name="set_personalize_desc">Personalizar los controles y el comportamiento de la interfaz de usuario</string>
     <string name="set_library">Biblioteca</string>
     <string name="lbl_sort_dec">Descendente</string>
+    <string name="set_auto_sort_names">Ignorar artículos al ordenar</string>
+    <string name="set_auto_sort_names_desc">Ignorar palabras como \"the\" al ordenar por nombre (funciona mejor con música en inglés)</string>
 </resources>

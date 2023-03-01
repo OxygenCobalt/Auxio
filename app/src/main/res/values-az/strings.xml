@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lbl_indexer">Musiqi yüklənir</string>
+    <string name="lbl_indexing">Musiqi yüklənir</string>
+    <string name="lbl_retry">Təkrar cəhd et</string>
+    <string name="lbl_grant">İcazə ver</string>
+    <string name="lbl_songs">Mahnılar</string>
+    <string name="lbl_all_songs">Bütün mahnılar</string>
+    <string name="lbl_albums">Albomlar</string>
+    <string name="lbl_album">Albom</string>
+    <string name="lbl_album_live">Canlı albom</string>
+    <string name="lbl_album_remix">Remiks albom</string>
+    <string name="lbl_eps">Ep-lər</string>
+    <string name="lbl_singles">Tək</string>
+    <string name="lbl_single">Tək</string>
+    <string name="lbl_single_live">Canlı tək</string>
+    <string name="lbl_single_remix">Remiks tək</string>
+    <string name="lbl_compilation">Kompilyasiya</string>
+    <string name="lbl_compilations">Kompilyasiyalar</string>
+    <string name="lbl_soundtrack">Səs treki</string>
+    <string name="info_app_desc">Android üçün asan, səmərəli musiqi oynadıcı.</string>
+    <string name="lbl_observing">Musiqi kitabxanası yoxlanılır</string>
+    <string name="lbl_ep_live">Canlı EP</string>
+    <string name="lbl_ep">EP</string>
+    <string name="lbl_ep_remix">Remiks EP</string>
+    <string name="lbl_soundtracks">Səs treklər</string>
+</resources>

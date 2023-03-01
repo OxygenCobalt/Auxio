@@ -24,9 +24,9 @@
     <string name="lbl_go_artist">Aller à l\'artiste</string>
     <string name="lbl_about">À propos</string>
     <string name="lbl_version">Version</string>
-    <string name="lbl_code">Voir sur GitHub</string>
+    <string name="lbl_code">Code source</string>
     <string name="lbl_licenses">Licences</string>
-    <string name="lng_author">Développé par OxygenCobalt</string>
+    <string name="lng_author">Développé par Alexandre Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Paramètres</string>
     <string name="set_ui">Apparence</string>
@@ -153,4 +153,16 @@
     <string name="cdc_mp4">MPEG-4 audio</string>
     <string name="def_date">Pas de date</string>
     <string name="desc_album_cover">Couverture de l\'album pour %s</string>
+    <string name="lbl_state_wiped">État effacé</string>
+    <string name="lng_observing">Surveillance de votre bibliothèque musicale pour les changements…</string>
+    <string name="set_round_mode">Couvertures arrondies</string>
+    <string name="set_round_mode_desc">Activer les coins arrondis sur des éléments d\'interface utilisateur supplémentaires (nécessite que les couvertures d\'album soient arrondies)</string>
+    <string name="lbl_sort_dec">Descendant</string>
+    <string name="lbl_state_restored">Etat restauré</string>
+    <string name="set_personalize_desc">Personnaliser les commandes et le comportement de l\'interface utilisateur</string>
+    <string name="set_action_mode_next">Passer au suivant</string>
+    <string name="set_action_mode_repeat">Mode répétition</string>
+    <string name="set_behavior">Comportement</string>
+    <string name="set_bar_action">Action personnalisée de la barre de lecture</string>
+    <string name="set_ui_desc">Changer le thème et les couleurs de l\'application</string>
 </resources>
