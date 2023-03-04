@@ -61,9 +61,7 @@ body:
     attributes:
       label: Bug report
       description: |
-        If possible, provide a "bug report" ZIP file to make it easier to identify the issue.
-        Go to [here](https://developer.android.com/studio/debug/bug-report) for guidance on how
-        to take one.
+        If possible, provide a "bug report" ZIP file to make it easier to identify the issue. Go to [here](https://developer.android.com/studio/debug/bug-report) for guidance on how to take one.
     validations:
       required: true
   - type: checkboxes
