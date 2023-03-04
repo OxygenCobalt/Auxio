@@ -5,6 +5,7 @@
 #### What's Fixed
 - Fixed MP4-AAC files not playing due to an accidental audio extractor
 deletion
+- Fix "format" not appearing in song properties view
 
 #### What's Improved
 - Accept `REPLAYGAIN_*` adjustment information on OPUS files alongside
