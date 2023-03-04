@@ -27,16 +27,13 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import org.oxycblt.auxio.image.extractor.AlbumCoverFetcher
-import org.oxycblt.auxio.image.extractor.ArtistImageFetcher
-import org.oxycblt.auxio.image.extractor.ErrorCrossfadeTransitionFactory
-import org.oxycblt.auxio.image.extractor.GenreImageFetcher
-import org.oxycblt.auxio.image.extractor.MusicKeyer
+import org.oxycblt.auxio.image.extractor.*
 
 @Module
 @InstallIn(SingletonComponent::class)
 interface ImageModule {
     @Binds fun settings(imageSettings: ImageSettingsImpl): ImageSettings
+    @Binds fun coverExtractor(coverExtractor: CoverExtractorImpl): CoverExtractor
 }
 
 @Module

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Auxio Project
+ * Copyright (c) 2023 Auxio Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,24 +24,20 @@ import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.MetadataRetriever
 import com.google.android.exoplayer2.metadata.flac.PictureFrame
 import com.google.android.exoplayer2.metadata.id3.ApicFrame
-import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import com.google.android.exoplayer2.source.MediaSource
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.ByteArrayInputStream
 import java.io.InputStream
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.AudioOnlyExtractors
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
-/**
- * Internal utilities for loading album covers.
- *
- * @author Alexander Capehart (OxygenCobalt).
- */
-object Covers {
+interface CoverExtractor {
     /**
      * Fetch an album cover, respecting the current cover configuration.
      *
@@ -51,44 +47,35 @@ object Covers {
      * @return An [InputStream] of image data if the cover loading was successful, null if the cover
      *   loading failed or should not occur.
      */
-    suspend fun fetch(context: Context, imageSettings: ImageSettings, album: Album): InputStream? {
-        return try {
+    suspend fun extract(album: Album): InputStream?
+}
+
+class CoverExtractorImpl
+@Inject
+constructor(
+    @ApplicationContext private val context: Context,
+    private val imageSettings: ImageSettings,
+    private val mediaSourceFactory: MediaSource.Factory
+) : CoverExtractor {
+
+    override suspend fun extract(album: Album): InputStream? =
+        try {
             when (imageSettings.coverMode) {
                 CoverMode.OFF -> null
-                CoverMode.MEDIA_STORE -> fetchMediaStoreCovers(context, album)
-                CoverMode.QUALITY -> fetchQualityCovers(context, album)
+                CoverMode.MEDIA_STORE -> extractMediaStoreCover(album)
+                CoverMode.QUALITY -> extractQualityCover(album)
             }
         } catch (e: Exception) {
             logW("Unable to extract album cover due to an error: $e")
             null
         }
-    }
 
-    /**
-     * Load an [Album] cover directly from one of it's Song files. This attempts the following in
-     * order:
-     * - [MediaMetadataRetriever], as it has the best support and speed.
-     * - ExoPlayer's [MetadataRetriever], as some devices (notably Samsung) can have broken
-     *   [MediaMetadataRetriever] implementations.
-     * - MediaStore, as a last-ditch fallback if the format is really obscure.
-     *
-     * @param context [Context] required to load the image.
-     * @param album [Album] to load the cover from.
-     * @return An [InputStream] of image data if the cover loading was successful, null otherwise.
-     */
-    private suspend fun fetchQualityCovers(context: Context, album: Album) =
-        fetchAospMetadataCovers(context, album)
-            ?: fetchExoplayerCover(context, album) ?: fetchMediaStoreCovers(context, album)
+    private suspend fun extractQualityCover(album: Album) =
+        extractAospMetadataCover(album)
+            ?: extractExoplayerCover(album) ?: extractMediaStoreCover(album)
 
-    /**
-     * Loads an album cover with [MediaMetadataRetriever].
-     *
-     * @param context [Context] required to load the image.
-     * @param album [Album] to load the cover from.
-     * @return An [InputStream] of image data if the cover loading was successful, null otherwise.
-     */
-    private fun fetchAospMetadataCovers(context: Context, album: Album): InputStream? {
-        MediaMetadataRetriever().apply {
+    private fun extractAospMetadataCover(album: Album): InputStream? =
+        MediaMetadataRetriever().run {
             // This call is time-consuming but it also doesn't seem to hold up the main thread,
             // so it's probably fine not to wrap it.rmt
             setDataSource(context, album.songs[0].uri)
@@ -98,20 +85,11 @@ object Covers {
             // If its null [i.e there is no embedded cover], than just ignore it and move on
             return embeddedPicture?.let { ByteArrayInputStream(it) }.also { release() }
         }
-    }
 
-    /**
-     * Loads an [Album] cover with ExoPlayer's [MetadataRetriever].
-     *
-     * @param context [Context] required to load the image.
-     * @param album [Album] to load the cover from.
-     * @return An [InputStream] of image data if the cover loading was successful, null otherwise.
-     */
-    private suspend fun fetchExoplayerCover(context: Context, album: Album): InputStream? {
-        val uri = album.songs[0].uri
+    private suspend fun extractExoplayerCover(album: Album): InputStream? {
         val future =
             MetadataRetriever.retrieveMetadata(
-                DefaultMediaSourceFactory(context, AudioOnlyExtractors), MediaItem.fromUri(uri))
+                mediaSourceFactory, MediaItem.fromUri(album.songs[0].uri))
 
         // future.get is a blocking call that makes us spin until the future is done.
         // This is bad for a co-routine, as it prevents cancellation and by extension
@@ -175,18 +153,8 @@ object Covers {
         return stream
     }
 
-    /**
-     * Loads an [Album] cover from MediaStore.
-     *
-     * @param context [Context] required to load the image.
-     * @param album [Album] to load the cover from.
-     * @return An [InputStream] of image data if the cover loading was successful, null otherwise.
-     */
     @Suppress("BlockingMethodInNonBlockingContext")
-    private suspend fun fetchMediaStoreCovers(context: Context, album: Album): InputStream? {
+    private suspend fun extractMediaStoreCover(album: Album) =
         // Eliminate any chance that this blocking call might mess up the loading process
-        return withContext(Dispatchers.IO) {
-            context.contentResolver.openInputStream(album.coverUri)
-        }
-    }
+        withContext(Dispatchers.IO) { context.contentResolver.openInputStream(album.coverUri) }
 }

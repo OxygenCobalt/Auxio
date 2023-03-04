@@ -17,9 +17,23 @@
  
 package org.oxycblt.auxio.playback
 
+import android.content.Context
+import com.google.android.exoplayer2.extractor.ExtractorsFactory
+import com.google.android.exoplayer2.extractor.flac.FlacExtractor
+import com.google.android.exoplayer2.extractor.mkv.MatroskaExtractor
+import com.google.android.exoplayer2.extractor.mp3.Mp3Extractor
+import com.google.android.exoplayer2.extractor.mp4.FragmentedMp4Extractor
+import com.google.android.exoplayer2.extractor.mp4.Mp4Extractor
+import com.google.android.exoplayer2.extractor.ogg.OggExtractor
+import com.google.android.exoplayer2.extractor.ts.AdtsExtractor
+import com.google.android.exoplayer2.extractor.wav.WavExtractor
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import com.google.android.exoplayer2.source.MediaSource
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -32,4 +46,28 @@ interface PlaybackModule {
     @Binds
     fun stateManager(playbackManager: PlaybackStateManagerImpl): PlaybackStateManager
     @Binds fun settings(playbackSettings: PlaybackSettingsImpl): PlaybackSettings
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+class ExoPlayerModule {
+    @Provides
+    fun mediaSourceFactory(
+        @ApplicationContext context: Context,
+        extractorsFactory: ExtractorsFactory
+    ): MediaSource.Factory = DefaultMediaSourceFactory(context, extractorsFactory)
+
+    @Provides
+    fun extractorsFactory() = ExtractorsFactory {
+        arrayOf(
+            FlacExtractor(),
+            WavExtractor(),
+            FragmentedMp4Extractor(),
+            Mp4Extractor(),
+            OggExtractor(),
+            MatroskaExtractor(),
+            // Enable constant bitrate seeking so that certain MP3s/AACs are seekable
+            AdtsExtractor(AdtsExtractor.FLAG_ENABLE_CONSTANT_BITRATE_SEEKING),
+            Mp3Extractor(Mp3Extractor.FLAG_ENABLE_CONSTANT_BITRATE_SEEKING))
+    }
 }

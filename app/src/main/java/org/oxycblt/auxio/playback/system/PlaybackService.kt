@@ -36,7 +36,7 @@ import com.google.android.exoplayer2.audio.AudioCapabilities
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer
 import com.google.android.exoplayer2.ext.ffmpeg.FfmpegAudioRenderer
 import com.google.android.exoplayer2.mediacodec.MediaCodecSelector
-import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import com.google.android.exoplayer2.source.MediaSource
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -44,7 +44,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.music.AudioOnlyExtractors
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
@@ -85,6 +84,7 @@ class PlaybackService :
     MusicRepository.Listener {
     // Player components
     private lateinit var player: ExoPlayer
+    @Inject lateinit var mediaSourceFactory: MediaSource.Factory
     @Inject lateinit var replayGainProcessor: ReplayGainAudioProcessor
 
     // System backend components
@@ -133,7 +133,7 @@ class PlaybackService :
 
         player =
             ExoPlayer.Builder(this, audioRenderer)
-                .setMediaSourceFactory(DefaultMediaSourceFactory(this, AudioOnlyExtractors))
+                .setMediaSourceFactory(mediaSourceFactory)
                 // Enable automatic WakeLock support
                 .setWakeMode(C.WAKE_MODE_LOCAL)
                 .setAudioAttributes(
