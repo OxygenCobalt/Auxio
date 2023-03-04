@@ -2,6 +2,10 @@
 
 ## dev
 
+#### What's Fixed
+- Fixed MP4-AAC files not playing due to an accidental audio extractor
+deletion
+
 #### What's Improved
 - Accept `REPLAYGAIN_*` adjustment information on OPUS files alongside
 `R128_*` adjustments.

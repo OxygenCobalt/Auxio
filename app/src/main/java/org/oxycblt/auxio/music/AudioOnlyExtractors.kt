@@ -21,6 +21,7 @@ import com.google.android.exoplayer2.extractor.ExtractorsFactory
 import com.google.android.exoplayer2.extractor.flac.FlacExtractor
 import com.google.android.exoplayer2.extractor.mkv.MatroskaExtractor
 import com.google.android.exoplayer2.extractor.mp3.Mp3Extractor
+import com.google.android.exoplayer2.extractor.mp4.FragmentedMp4Extractor
 import com.google.android.exoplayer2.extractor.mp4.Mp4Extractor
 import com.google.android.exoplayer2.extractor.ogg.OggExtractor
 import com.google.android.exoplayer2.extractor.ts.AdtsExtractor
@@ -36,6 +37,7 @@ object AudioOnlyExtractors : ExtractorsFactory {
         arrayOf(
             FlacExtractor(),
             WavExtractor(),
+            FragmentedMp4Extractor(),
             Mp4Extractor(),
             OggExtractor(),
             MatroskaExtractor(),
