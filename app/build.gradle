@@ -57,6 +57,14 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude "DebugProbesKt.bin"
+        exclude "kotlin-tooling-metadata.json"
+        exclude "**/kotlin/**"
+        exclude "**/okhttp3/**"
+        exclude "META-INF/*.version"
+    }
+
     buildFeatures {
         viewBinding true
     }
