@@ -29,20 +29,35 @@ import org.oxycblt.auxio.music.storage.toAudioUri
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
+/**
+ * An processing abstraction over the [MetadataRetriever] and [TextTags] workflow that operates on
+ * [RawSong] instances.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 interface TagWorker {
+    /**
+     * Poll to see if this worker is done processing.
+     *
+     * @return A completed [RawSong] if done, null otherwise.
+     */
     fun poll(): RawSong?
 
+    /** Factory for new [TagWorker] jobs. */
     interface Factory {
+        /**
+         * Create a new [TagWorker] to complete the given [RawSong].
+         *
+         * @param rawSong The [RawSong] to assign a new [TagWorker] to.
+         * @return A new [TagWorker] wrapping the given [RawSong].
+         */
         fun create(rawSong: RawSong): TagWorker
     }
 }
 
-class TagWorkerImpl(private val rawSong: RawSong, private val future: Future<TrackGroupArray>) :
+class TagWorkerImpl
+private constructor(private val rawSong: RawSong, private val future: Future<TrackGroupArray>) :
     TagWorker {
-    // Note that we do not leverage future callbacks. This is because errors in the
-    // (highly fallible) extraction process will not bubble up to Indexer when a
-    // listener is used, instead crashing the app entirely.
-
     /**
      * Try to get a completed song from this [TagWorker], if it has finished processing.
      *
@@ -246,6 +261,9 @@ class TagWorkerImpl(private val rawSong: RawSong, private val future: Future<Tra
     class Factory @Inject constructor(private val mediaSourceFactory: MediaSource.Factory) :
         TagWorker.Factory {
         override fun create(rawSong: RawSong) =
+            // Note that we do not leverage future callbacks. This is because errors in the
+            // (highly fallible) extraction process will not bubble up to Indexer when a
+            // listener is used, instead crashing the app entirely.
             TagWorkerImpl(
                 rawSong,
                 MetadataRetriever.retrieveMetadata(

@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.BackportMaterialDividerItemDecoration
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Header
-import org.oxycblt.auxio.list.adapter.DiffAdapter
+import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
 
 /**
  * A [BackportMaterialDividerItemDecoration] that sets up the divider configuration to correctly
@@ -45,7 +45,7 @@ constructor(
             // Add a divider if the next item is a header. This organizes the divider to separate
             // the ends of content rather than the beginning of content, alongside an added benefit
             // of preventing top headers from having a divider applied.
-            (adapter as DiffAdapter<*, *, *>).getItem(position + 1) is Header
+            (adapter as FlexibleListAdapter<*, *>).getItem(position + 1) is Header
         } catch (e: ClassCastException) {
             false
         } catch (e: IndexOutOfBoundsException) {

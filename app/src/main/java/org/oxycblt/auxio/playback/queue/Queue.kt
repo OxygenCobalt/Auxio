@@ -98,6 +98,26 @@ interface Queue {
     }
 }
 
+data class QueueChange(val internal: InternalChange, val externalChange: ExternalChange) {
+    enum class InternalChange {
+        /** Only the mapping has changed. */
+        MAPPING,
+        /** The mapping has changed, and the index also changed to align with it. */
+        INDEX,
+        /**
+         * The current song has changed, possibly alongside the mapping and index depending on the
+         * context.
+         */
+        SONG
+    }
+
+    sealed class ExternalChange {
+        data class Add(val at: Int, val amount: Int) : ExternalChange()
+        data class Remove(val at: Int) : ExternalChange()
+        data class Move(val from: Int, val to: Int) : ExternalChange()
+    }
+}
+
 class EditableQueue : Queue {
     @Volatile private var heap = mutableListOf<Song>()
     @Volatile private var orderedMapping = mutableListOf<Int>()

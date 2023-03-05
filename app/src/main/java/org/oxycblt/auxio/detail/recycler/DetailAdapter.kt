@@ -39,16 +39,14 @@ import org.oxycblt.auxio.util.inflater
  * A [RecyclerView.Adapter] that implements behavior shared across each detail view's adapters.
  *
  * @param listener A [Listener] to bind interactions to.
- * @param diffCallback A [DiffUtil.ItemCallback] to use for item comparison when diffing the
- *   internal list.
+ * @param diffCallback A [DiffUtil.ItemCallback] to compare list updates with.
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class DetailAdapter(
     private val listener: Listener<*>,
-    diffCallback: DiffUtil.ItemCallback<Item>
+    private val diffCallback: DiffUtil.ItemCallback<Item>
 ) :
-    SelectionIndicatorAdapter<Item, BasicListInstructions, RecyclerView.ViewHolder>(
-        ListDiffer.Async(diffCallback)),
+    SelectionIndicatorAdapter<Item, RecyclerView.ViewHolder>(diffCallback),
     AuxioRecyclerView.SpanSizeLookup {
 
     override fun getItemViewType(position: Int) =

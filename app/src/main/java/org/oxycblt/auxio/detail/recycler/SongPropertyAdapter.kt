@@ -23,10 +23,7 @@ import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemSongPropertyBinding
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
-import org.oxycblt.auxio.list.adapter.DiffAdapter
-import org.oxycblt.auxio.list.adapter.ListDiffer
-import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
+import org.oxycblt.auxio.list.adapter.*
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
@@ -37,8 +34,8 @@ import org.oxycblt.auxio.util.inflater
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SongPropertyAdapter :
-    DiffAdapter<SongProperty, BasicListInstructions, SongPropertyViewHolder>(
-        ListDiffer.Blocking(SongPropertyViewHolder.DIFF_CALLBACK)) {
+    FlexibleListAdapter<SongProperty, SongPropertyViewHolder>(
+        SongPropertyViewHolder.DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         SongPropertyViewHolder.from(parent)
 

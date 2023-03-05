@@ -18,18 +18,19 @@
 package org.oxycblt.auxio.list.adapter
 
 import android.view.View
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.util.logD
 
 /**
  * A [RecyclerView.Adapter] that supports indicating the playback status of a particular item.
  *
- * @param differFactory The [ListDiffer.Factory] that defines the type of [ListDiffer] to use.
+ * @param diffCallback A [DiffUtil.ItemCallback] to compare list updates with.
  * @author Alexander Capehart (OxygenCobalt)
  */
-abstract class PlayingIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
-    differFactory: ListDiffer.Factory<T, I>
-) : DiffAdapter<T, I, VH>(differFactory) {
+abstract class PlayingIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
+    diffCallback: DiffUtil.ItemCallback<T>
+) : FlexibleListAdapter<T, VH>(diffCallback) {
     // There are actually two states for this adapter:
     // - The currently playing item, which is usually marked as "selected" and becomes accented.
     // - Whether playback is ongoing, which corresponds to whether the item's ImageGroup is
@@ -40,7 +41,7 @@ abstract class PlayingIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
     override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
         // Only try to update the playing indicator if the ViewHolder supports it
         if (holder is ViewHolder) {
-            holder.updatePlayingIndicator(currentList[position] == currentItem, isPlaying)
+            holder.updatePlayingIndicator(getItem(position) == currentItem, isPlaying)
         }
 
         if (payloads.isEmpty()) {

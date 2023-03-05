@@ -32,8 +32,6 @@ import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
-import org.oxycblt.auxio.list.adapter.ListDiffer
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.list.selection.SelectionViewModel
@@ -79,7 +77,7 @@ class SongListFragment :
             listener = this@SongListFragment
         }
 
-        collectImmediately(homeModel.songsList, ::updateList)
+        collectImmediately(homeModel.songsList, ::updateSongs)
         collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -147,8 +145,8 @@ class SongListFragment :
         openMusicMenu(anchor, R.menu.menu_song_actions, item)
     }
 
-    private fun updateList(songs: List<Song>) {
-        songAdapter.submitList(songs, BasicListInstructions.REPLACE)
+    private fun updateSongs(songs: List<Song>) {
+        songAdapter.update(songs, homeModel.songsInstructions.consume())
     }
 
     private fun updateSelection(selection: List<Music>) {
@@ -170,8 +168,7 @@ class SongListFragment :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class SongAdapter(private val listener: SelectableListListener<Song>) :
-        SelectionIndicatorAdapter<Song, BasicListInstructions, SongViewHolder>(
-            ListDiffer.Blocking(SongViewHolder.DIFF_CALLBACK)) {
+        SelectionIndicatorAdapter<Song, SongViewHolder>(SongViewHolder.DIFF_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             SongViewHolder.from(parent)

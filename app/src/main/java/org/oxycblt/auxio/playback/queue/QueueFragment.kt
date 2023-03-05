@@ -28,7 +28,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.list.EditableListListener
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
@@ -102,13 +101,12 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
         val binding = requireBinding()
 
         // Replace or diff the queue depending on the type of change it is.
-        val instructions = queueModel.queueListInstructions
-        queueAdapter.submitList(queue, instructions?.update ?: BasicListInstructions.DIFF)
+        queueAdapter.update(queue, queueModel.queueInstructions.consume())
         // Update position in list (and thus past/future items)
         queueAdapter.setPosition(index, isPlaying)
 
         // If requested, scroll to a new item (occurs when the index moves)
-        val scrollTo = instructions?.scrollTo
+        val scrollTo = queueModel.scrollTo.consume()
         if (scrollTo != null) {
             val lmm = binding.queueRecycler.layoutManager as LinearLayoutManager
             val start = lmm.findFirstCompletelyVisibleItemPosition()
@@ -129,7 +127,5 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
                     min(queue.lastIndex, scrollTo + (end - start)))
             }
         }
-
-        queueModel.finishInstructions()
     }
 }

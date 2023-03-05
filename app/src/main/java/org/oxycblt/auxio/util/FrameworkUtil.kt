@@ -28,16 +28,8 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
 
 /**
  * Get if this [View] contains the given [PointF], with optional leeway.
@@ -126,88 +118,6 @@ fun AppCompatButton.fixDoubleRipple() {
  */
 val View.coordinatorLayoutBehavior: CoordinatorLayout.Behavior<View>?
     get() = (layoutParams as? CoordinatorLayout.LayoutParams)?.behavior
-
-/**
- * Collect a [StateFlow] into [block] in a lifecycle-aware manner *eventually.* Due to co-routine
- * launching, the initializing call will occur ~100ms after draw time. If this is not desirable, use
- * [collectImmediately].
- *
- * @param stateFlow The [StateFlow] to collect.
- * @param block The code to run when the [StateFlow] updates.
- */
-fun <T> Fragment.collect(stateFlow: StateFlow<T>, block: (T) -> Unit) {
-    launch { stateFlow.collect(block) }
-}
-
-/**
- * Collect a [StateFlow] into a [block] in a lifecycle-aware manner *immediately.* This will
- * immediately run an initializing call to ensure the UI is set up before draw-time. Note that this
- * will result in two initializing calls.
- *
- * @param stateFlow The [StateFlow] to collect.
- * @param block The code to run when the [StateFlow] updates.
- */
-fun <T> Fragment.collectImmediately(stateFlow: StateFlow<T>, block: (T) -> Unit) {
-    block(stateFlow.value)
-    launch { stateFlow.collect(block) }
-}
-
-/**
- * Like [collectImmediately], but with two [StateFlow] instances that are collected with the same
- * block.
- *
- * @param a The first [StateFlow] to collect.
- * @param b The second [StateFlow] to collect.
- * @param block The code to run when either [StateFlow] updates.
- */
-fun <T1, T2> Fragment.collectImmediately(
-    a: StateFlow<T1>,
-    b: StateFlow<T2>,
-    block: (T1, T2) -> Unit
-) {
-    block(a.value, b.value)
-    // We can combine flows, but only if we transform them into one flow output.
-    // Thus, we have to first combine the two flow values into a Pair, and then
-    // decompose it when we collect the values.
-    val combine = a.combine(b) { first, second -> Pair(first, second) }
-    launch { combine.collect { block(it.first, it.second) } }
-}
-
-/**
- * Like [collectImmediately], but with three [StateFlow] instances that are collected with the same
- * block.
- *
- * @param a The first [StateFlow] to collect.
- * @param b The second [StateFlow] to collect.
- * @param c The third [StateFlow] to collect.
- * @param block The code to run when any of the [StateFlow]s update.
- */
-fun <T1, T2, T3> Fragment.collectImmediately(
-    a: StateFlow<T1>,
-    b: StateFlow<T2>,
-    c: StateFlow<T3>,
-    block: (T1, T2, T3) -> Unit
-) {
-    block(a.value, b.value, c.value)
-    val combine = combine(a, b, c) { a1, b2, c3 -> Triple(a1, b2, c3) }
-    launch { combine.collect { block(it.first, it.second, it.third) } }
-}
-
-/**
- * Launch a [Fragment] co-routine whenever the [Lifecycle] hits the given [Lifecycle.State]. This
- * should always been used when launching [Fragment] co-routines was it will not result in
- * unexpected behavior.
- *
- * @param state The [Lifecycle.State] to launch the co-routine in.
- * @param block The block to run in the co-routine.
- * @see repeatOnLifecycle
- */
-private fun Fragment.launch(
-    state: Lifecycle.State = Lifecycle.State.STARTED,
-    block: suspend CoroutineScope.() -> Unit
-) {
-    viewLifecycleOwner.lifecycleScope.launch { viewLifecycleOwner.repeatOnLifecycle(state, block) }
-}
 
 /**
  * Get the "System Bar" [Insets] in this [WindowInsets] instance in a version-compatible manner This

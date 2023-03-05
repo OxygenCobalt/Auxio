@@ -33,7 +33,6 @@ import org.oxycblt.auxio.detail.recycler.GenreDetailAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -106,6 +105,9 @@ class GenreDetailFragment :
         super.onDestroyBinding(binding)
         binding.detailToolbar.setOnMenuItemClickListener(null)
         binding.detailRecycler.adapter = null
+        // Avoid possible race conditions that could cause a bad replace instruction to be consumed
+        // during list initialization and crash the app. Could happen if the user is fast enough.
+        detailModel.genreInstructions.consume()
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -232,8 +234,8 @@ class GenreDetailFragment :
         }
     }
 
-    private fun updateList(items: List<Item>) {
-        detailAdapter.submitList(items, BasicListInstructions.DIFF)
+    private fun updateList(list: List<Item>) {
+        detailAdapter.update(list, detailModel.genreInstructions.consume())
     }
 
     private fun updateSelection(selected: List<Music>) {

@@ -24,9 +24,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.Sort
+import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.model.Library
 import org.oxycblt.auxio.playback.PlaybackSettings
+import org.oxycblt.auxio.util.Event
+import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -48,11 +51,19 @@ constructor(
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
     val songsList: StateFlow<List<Song>>
         get() = _songsList
+    private val _songsInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for how to update [songsList] in the UI. */
+    val songsInstructions: Event<UpdateInstructions>
+        get() = _songsInstructions
 
     private val _albumsLists = MutableStateFlow(listOf<Album>())
     /** A list of [Album]s, sorted by the preferred [Sort], to be shown in the home view. */
     val albumsList: StateFlow<List<Album>>
         get() = _albumsLists
+    private val _albumsInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for how to update [albumsList] in the UI. */
+    val albumsInstructions: Event<UpdateInstructions>
+        get() = _albumsInstructions
 
     private val _artistsList = MutableStateFlow(listOf<Artist>())
     /**
@@ -62,11 +73,19 @@ constructor(
      */
     val artistsList: MutableStateFlow<List<Artist>>
         get() = _artistsList
+    private val _artistsInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for how to update [artistsList] in the UI. */
+    val artistsInstructions: Event<UpdateInstructions>
+        get() = _artistsInstructions
 
     private val _genresList = MutableStateFlow(listOf<Genre>())
     /** A list of [Genre]s, sorted by the preferred [Sort], to be shown in the home view. */
     val genresList: StateFlow<List<Genre>>
         get() = _genresList
+    private val _genresInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for how to update [genresList] in the UI. */
+    val genresInstructions: Event<UpdateInstructions>
+        get() = _genresInstructions
 
     /** The [MusicMode] to use when playing a [Song] from the UI. */
     val playbackMode: MusicMode
@@ -83,13 +102,14 @@ constructor(
     /** The [MusicMode] of the currently shown [Tab]. */
     val currentTabMode: StateFlow<MusicMode> = _currentTabMode
 
-    private val _shouldRecreate = MutableStateFlow(false)
+    private val _shouldRecreate = MutableEvent<Unit>()
     /**
      * A marker to re-create all library tabs, usually initiated by a settings change. When this
      * flag is true, all tabs (and their respective ViewPager2 fragments) will be re-created from
      * scratch.
      */
-    val shouldRecreate: StateFlow<Boolean> = _shouldRecreate
+    val shouldRecreate: Event<Unit>
+        get() = _shouldRecreate
 
     private val _isFastScrolling = MutableStateFlow(false)
     /** A marker for whether the user is fast-scrolling in the home view or not. */
@@ -111,8 +131,11 @@ constructor(
             logD("Library changed, refreshing library")
             // Get the each list of items in the library to use as our list data.
             // Applying the preferred sorting to them.
+            _songsInstructions.put(UpdateInstructions.Diff)
             _songsList.value = musicSettings.songSort.songs(library.songs)
+            _albumsInstructions.put(UpdateInstructions.Diff)
             _albumsLists.value = musicSettings.albumSort.albums(library.albums)
+            _artistsInstructions.put(UpdateInstructions.Diff)
             _artistsList.value =
                 musicSettings.artistSort.artists(
                     if (homeSettings.shouldHideCollaborators) {
@@ -121,6 +144,7 @@ constructor(
                     } else {
                         library.artists
                     })
+            _genresInstructions.put(UpdateInstructions.Diff)
             _genresList.value = musicSettings.genreSort.genres(library.genres)
         }
     }
@@ -128,7 +152,7 @@ constructor(
     override fun onTabsChanged() {
         // Tabs changed, update  the current tabs and set up a re-create event.
         currentTabModes = makeTabModes()
-        _shouldRecreate.value = true
+        _shouldRecreate.put(Unit)
     }
 
     override fun onHideCollaboratorsChanged() {
@@ -162,18 +186,22 @@ constructor(
         when (_currentTabMode.value) {
             MusicMode.SONGS -> {
                 musicSettings.songSort = sort
+                _songsInstructions.put(UpdateInstructions.Replace(0))
                 _songsList.value = sort.songs(_songsList.value)
             }
             MusicMode.ALBUMS -> {
                 musicSettings.albumSort = sort
+                _albumsInstructions.put(UpdateInstructions.Replace(0))
                 _albumsLists.value = sort.albums(_albumsLists.value)
             }
             MusicMode.ARTISTS -> {
                 musicSettings.artistSort = sort
+                _artistsInstructions.put(UpdateInstructions.Replace(0))
                 _artistsList.value = sort.artists(_artistsList.value)
             }
             MusicMode.GENRES -> {
                 musicSettings.genreSort = sort
+                _genresInstructions.put(UpdateInstructions.Replace(0))
                 _genresList.value = sort.genres(_genresList.value)
             }
         }
@@ -187,15 +215,6 @@ constructor(
     fun synchronizeTabPosition(pagerPos: Int) {
         logD("Updating current tab to ${currentTabModes[pagerPos]}")
         _currentTabMode.value = currentTabModes[pagerPos]
-    }
-
-    /**
-     * Mark the recreation process as complete.
-     *
-     * @see shouldRecreate
-     */
-    fun finishRecreate() {
-        _shouldRecreate.value = false
     }
 
     /**

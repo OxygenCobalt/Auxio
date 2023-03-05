@@ -30,7 +30,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSongDetailBinding
 import org.oxycblt.auxio.detail.recycler.SongProperty
 import org.oxycblt.auxio.detail.recycler.SongPropertyAdapter
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
+import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.metadata.AudioInfo
@@ -79,7 +79,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
         if (info != null) {
             val context = requireContext()
-            detailAdapter.submitList(
+            detailAdapter.update(
                 buildList {
                     add(SongProperty(R.string.lbl_name, song.zipName(context)))
                     add(SongProperty(R.string.lbl_album, song.album.zipName(context)))
@@ -120,7 +120,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
                                 R.string.lbl_sample_rate, getString(R.string.fmt_sample_rate, it)))
                     }
                 },
-                BasicListInstructions.REPLACE)
+                UpdateInstructions.Replace(0))
         }
     }
 

@@ -34,7 +34,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -163,7 +162,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         // Don't show the RecyclerView (and it's stray overscroll effects) when there
         // are no results.
         binding.searchRecycler.isInvisible = results.isEmpty()
-        searchAdapter.submitList(results.toMutableList(), BasicListInstructions.DIFF) {
+        searchAdapter.update(results.toMutableList(), null) {
             // I would make it so that the position is only scrolled back to the top when
             // the query actually changes instead of once every re-creation event, but sadly
             // that doesn't seem possible.

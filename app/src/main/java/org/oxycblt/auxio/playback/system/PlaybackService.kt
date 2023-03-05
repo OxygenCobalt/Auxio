@@ -114,9 +114,6 @@ class PlaybackService :
     override fun onCreate() {
         super.onCreate()
 
-        // Define our own extractors so we can exclude non-audio parsers.
-        // Ordering is derived from the DefaultExtractorsFactory's optimized ordering:
-        // https://docs.google.com/document/d/1w2mKaWMxfz2Ei8-LdxqbPs1VLe_oudB-eryXXw9OvQQ.
         // Since Auxio is a music player, only specify an audio renderer to save
         // battery/apk size/cache size
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->

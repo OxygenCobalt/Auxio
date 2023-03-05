@@ -37,6 +37,11 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
+/**
+ * Stateless interface for loading [Album] cover image data.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 interface CoverExtractor {
     /**
      * Fetch an album cover, respecting the current cover configuration.

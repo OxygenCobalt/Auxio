@@ -30,8 +30,6 @@ import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
-import org.oxycblt.auxio.list.adapter.ListDiffer
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.ArtistViewHolder
 import org.oxycblt.auxio.list.selection.SelectionViewModel
@@ -43,6 +41,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
@@ -74,7 +73,7 @@ class ArtistListFragment :
             listener = this@ArtistListFragment
         }
 
-        collectImmediately(homeModel.artistsList, ::updateList)
+        collectImmediately(homeModel.artistsList, ::updateArtists)
         collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
@@ -118,8 +117,8 @@ class ArtistListFragment :
         openMusicMenu(anchor, R.menu.menu_artist_actions, item)
     }
 
-    private fun updateList(artists: List<Artist>) {
-        artistAdapter.submitList(artists, BasicListInstructions.REPLACE)
+    private fun updateArtists(artists: List<Artist>) {
+        artistAdapter.update(artists, homeModel.artistsInstructions.consume().also { logD(it) })
     }
 
     private fun updateSelection(selection: List<Music>) {
@@ -137,8 +136,7 @@ class ArtistListFragment :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class ArtistAdapter(private val listener: SelectableListListener<Artist>) :
-        SelectionIndicatorAdapter<Artist, BasicListInstructions, ArtistViewHolder>(
-            ListDiffer.Blocking(ArtistViewHolder.DIFF_CALLBACK)) {
+        SelectionIndicatorAdapter<Artist, ArtistViewHolder>(ArtistViewHolder.DIFF_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ArtistViewHolder.from(parent)

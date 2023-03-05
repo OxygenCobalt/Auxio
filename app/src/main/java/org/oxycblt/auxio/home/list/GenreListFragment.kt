@@ -30,8 +30,6 @@ import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
-import org.oxycblt.auxio.list.adapter.ListDiffer
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.GenreViewHolder
 import org.oxycblt.auxio.list.selection.SelectionViewModel
@@ -43,6 +41,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [ListFragment] that shows a list of [Genre]s.
@@ -73,7 +72,7 @@ class GenreListFragment :
             listener = this@GenreListFragment
         }
 
-        collectImmediately(homeModel.genresList, ::updateList)
+        collectImmediately(homeModel.genresList, ::updateGenres)
         collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
@@ -117,8 +116,8 @@ class GenreListFragment :
         openMusicMenu(anchor, R.menu.menu_artist_actions, item)
     }
 
-    private fun updateList(artists: List<Genre>) {
-        genreAdapter.submitList(artists, BasicListInstructions.REPLACE)
+    private fun updateGenres(genres: List<Genre>) {
+        genreAdapter.update(genres, homeModel.genresInstructions.consume().also { logD(it) })
     }
 
     private fun updateSelection(selection: List<Music>) {
@@ -136,8 +135,7 @@ class GenreListFragment :
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class GenreAdapter(private val listener: SelectableListListener<Genre>) :
-        SelectionIndicatorAdapter<Genre, BasicListInstructions, GenreViewHolder>(
-            ListDiffer.Blocking(GenreViewHolder.DIFF_CALLBACK)) {
+        SelectionIndicatorAdapter<Genre, GenreViewHolder>(GenreViewHolder.DIFF_CALLBACK) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             GenreViewHolder.from(parent)
 
