@@ -27,8 +27,10 @@ import com.google.android.exoplayer2.extractor.mp4.Mp4Extractor
 import com.google.android.exoplayer2.extractor.ogg.OggExtractor
 import com.google.android.exoplayer2.extractor.ts.AdtsExtractor
 import com.google.android.exoplayer2.extractor.wav.WavExtractor
-import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.ContentDataSource
+import com.google.android.exoplayer2.upstream.DataSource
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -53,12 +55,20 @@ interface PlaybackModule {
 class ExoPlayerModule {
     @Provides
     fun mediaSourceFactory(
-        @ApplicationContext context: Context,
+        dataSourceFactory: DataSource.Factory,
         extractorsFactory: ExtractorsFactory
-    ): MediaSource.Factory = DefaultMediaSourceFactory(context, extractorsFactory)
+    ): MediaSource.Factory = ProgressiveMediaSource.Factory(dataSourceFactory, extractorsFactory)
+
+    @Provides
+    fun dataSourceFactory(@ApplicationContext context: Context) =
+        // We only ever open conte tURIs, so only provide those data sources.
+        DataSource.Factory { ContentDataSource(context) }
 
     @Provides
     fun extractorsFactory() = ExtractorsFactory {
+        // Define our own extractors so we can exclude non-audio parsers.
+        // Ordering is derived from the DefaultExtractorsFactory's optimized ordering:
+        // https://docs.google.com/document/d/1w2mKaWMxfz2Ei8-LdxqbPs1VLe_oudB-eryXXw9OvQQ.
         arrayOf(
             FlacExtractor(),
             WavExtractor(),
