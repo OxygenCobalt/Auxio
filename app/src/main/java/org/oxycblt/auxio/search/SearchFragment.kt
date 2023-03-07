@@ -97,7 +97,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         binding.searchEditText.apply {
             addTextChangedListener { text ->
                 // Run the search with the updated text as the query
-                searchModel.search(text?.toString())
+                searchModel.search(text?.toString()?.trim())
             }
 
             if (!launchedKeyboard) {
