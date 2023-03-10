@@ -129,7 +129,7 @@
     <string name="def_artist">Nieznany wykonawca</string>
     <string name="lbl_bitrate">Bitrate</string>
     <string name="def_track">Brak ścieżki dźwiękowej</string>
-    <string name="lbl_equalizer">Wyrównywacz</string>
+    <string name="lbl_equalizer">Korektor</string>
     <string name="lbl_size">Rozmiar</string>
     <string name="err_no_dirs">Brak folderów</string>
     <string name="set_playback_mode_songs">Odtwórz wszystkie utwory</string>
@@ -241,13 +241,13 @@
     <string name="set_exclude_non_music">Wyklucz inne pliki dźwiękowe</string>
     <string name="set_cover_mode">Okładki albumów</string>
     <string name="set_cover_mode_off">Wyłączone</string>
-    <string name="set_cover_mode_media_store">Szybkie</string>
+    <string name="set_cover_mode_media_store">Niska jakość</string>
     <string name="set_cover_mode_quality">Wysoka jakość</string>
     <string name="set_separators_warning">Uwaga: To ustawienie może powodować nieprawidłowe przetwarzenie tagów jako posiadających wiele wartości. Problem ten należy rozwiązać stawiając ukośnik wsteczny (\\) przed niepożądanymi znakami rozdzielającymi.</string>
     <string name="set_ui_desc">Zmień motyw i kolory aplikacji</string>
     <string name="set_hide_collaborators">Ukryj współpracowników</string>
     <string name="set_content_desc">Zarządzaj pobieraniem muzyki i obrazów</string>
-    <string name="set_library">Księgozbiór</string>
+    <string name="set_library">Biblioteka</string>
     <string name="set_personalize_desc">Konfigurowanie kontroli i zachowania interfejsu użytkownika</string>
     <string name="set_hide_collaborators_desc">Pokaż tylko artystów, którzy są bezpośrednio przypisani do albumu (działa najlepiej w dobrze oznaczonych bibliotekach)</string>
     <string name="set_playback">Odtwarzanie</string>
@@ -276,6 +276,6 @@
     <string name="err_did_not_wipe">Nie można wyczyścić stanu</string>
     <string name="err_did_not_save">Nie można zapisać stanu odtwarzania</string>
     <string name="lbl_sort_dec">Malejąco</string>
-    <string name="set_auto_sort_names">Ignoruj artykuły podczas sortowania</string>
+    <string name="set_auto_sort_names">Ignoruj rodzajniki podczas sortowania</string>
     <string name="set_auto_sort_names_desc">Ignoruj słowa takie jak „the” podczas sortowania według nazwy (działa najlepiej z muzyką w języku angielskim)</string>
 </resources>
