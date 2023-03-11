@@ -140,13 +140,13 @@
     <string name="desc_clear_queue_item">Usuń utwór z kolejki</string>
     <string name="set_replay_gain_mode_album">Preferuj album</string>
     <string name="set_observing">Automatyczne ponowne załadowanie</string>
-    <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
+    <string name="cdc_flac">Darmowy kodek audio bez utraty jakości (FLAC)</string>
     <string name="set_separators_and">Ampersand (&amp;)</string>
     <string name="err_index_failed">Nie udało się załadować muzyki</string>
     <string name="lbl_compilation_remix">Kompilacja remiksów</string>
     <string name="lbl_compilation_live">Kompilacja koncertowa</string>
     <string name="lbl_mixes">Mixy</string>
-    <string name="lbl_mix">Mix</string>
+    <string name="lbl_mix">Miks</string>
     <string name="desc_skip_prev">Przejdź do ostatniego utworu</string>
     <string name="desc_skip_next">Przejdź do następnego utworu</string>
     <string name="lng_author">Zaprojektowany Przez Alexandra Capeharta</string>
