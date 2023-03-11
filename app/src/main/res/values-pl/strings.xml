@@ -81,7 +81,7 @@
     <string name="desc_no_cover">Okładka albumu</string>
     <string name="def_genre">Nieznany gatunek</string>
     <string name="def_date">Nieznana data</string>
-    <string name="cdc_mp3">MPEG-1 audio</string>
+    <string name="cdc_mp3">Dźwięk MPEG-1</string>
     <string name="lbl_track">Utwór</string>
     <string name="lbl_song_detail">Wyświetl szczegóły</string>
     <string name="lbl_props">Szczegóły utworu</string>
@@ -164,12 +164,12 @@
     <string name="set_separators_slash">Ukośnik (/)</string>
     <string name="set_separators_plus">Plus (+)</string>
     <string name="desc_exit">Zatrzymaj odtwarzanie</string>
-    <string name="cdc_mp4">MPEG-4 audio</string>
+    <string name="cdc_mp4">Dźwięk MPEG-4</string>
     <string name="cdc_ogg">Ogg audio</string>
     <string name="info_app_desc">Prosty i rozsądny odtwarzacz muzyki na Androida.</string>
     <string name="desc_music_dir_delete">Usuń folder</string>
     <string name="desc_queue_bar">Pokaż kolejkę</string>
-    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
+    <string name="cdc_aac">Zaawansowany kodek audio (AAC)</string>
     <string name="set_observing_desc">Automatycznie załaduj ponownie bibliotekę po wykryciu zmian (wymaga stałego powiadomienia)</string>
     <string name="set_dirs_mode_exclude">Wyklucz</string>
     <string name="set_dirs_mode_include">Uwzględnij</string>
@@ -189,7 +189,7 @@
     <string name="fmt_bitrate">%d kb/s</string>
     <string name="set_save_desc">Zapisz obecny stan odtwarzania</string>
     <string name="set_wipe_state">Wyczyść stan odtwarzania</string>
-    <string name="cdc_mka">Matroska audio</string>
+    <string name="cdc_mka">Dźwięk Matroska</string>
     <string name="set_wipe_desc">Wyczyść poprzedni stan odtwarzania (jeśli istnieje)</string>
     <string name="set_restore_state">Przywróć stan odtwarzania</string>
     <string name="set_restore_desc">Przywróć poprzedni stan odtwarzania (jeśli istnieje)</string>
