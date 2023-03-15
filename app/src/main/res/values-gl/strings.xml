@@ -255,4 +255,9 @@
     <string name="err_no_music">Sen música</string>
     <string name="desc_track_number">Pista %d</string>
     <string name="cdc_mka">Audio Matroska</string>
+    <string name="lbl_mixtapes">Mixtapes (compilación de cancións)</string>
+    <string name="lbl_mixtape">Mixtapes (compilación de cancións)</string>
+    <string name="lbl_remix_group">Remix</string>
+    <string name="set_separators_slash">Barra (/)</string>
+    <string name="set_separators_warning">Aviso: o uso desta configuración pode provocar que algunhas etiquetas interpretense incorrectamente como que teñen varios valores. Podes resolver isto antepoñendo caracteres separadores non desexados cunha barra invertida (\\).</string>
 </resources>
