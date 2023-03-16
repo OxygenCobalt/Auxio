@@ -2,7 +2,7 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Ponów</string>
-    <string name="lbl_grant">Przyznaj</string>
+    <string name="lbl_grant">Zezwól</string>
     <string name="lbl_genres">Gatunki</string>
     <string name="lbl_artists">Wykonawcy</string>
     <string name="lbl_albums">Albumy</string>
@@ -17,9 +17,9 @@
     <string name="lbl_shuffle">Losowo</string>
     <string name="lbl_playback">Obecnie odtwarzane</string>
     <string name="lbl_queue">Kolejka</string>
-    <string name="lbl_play_next">Odtwarzaj następny</string>
+    <string name="lbl_play_next">Odtwórz następny</string>
     <string name="lbl_queue_add">Dodaj do kolejki</string>
-    <string name="lng_queue_added">Dodany do kolejki</string>
+    <string name="lng_queue_added">Dodano do kolejki</string>
     <string name="lbl_go_artist">Przejdź do wykonawcy</string>
     <string name="lbl_go_album">Przejdź do albumu</string>
     <string name="lbl_about">O aplikacji</string>
@@ -28,14 +28,14 @@
     <string name="lbl_licenses">Licencje</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Ustawienia</string>
-    <string name="set_ui">Rodzaj i zachowanie</string>
+    <string name="set_ui">Wygląd</string>
     <string name="set_theme">Motyw</string>
-    <string name="set_theme_auto">Automatyczny</string>
+    <string name="set_theme_auto">Systemowy</string>
     <string name="set_theme_day">Jasny</string>
     <string name="set_theme_night">Ciemny</string>
-    <string name="set_accent">Odcień koloru</string>
+    <string name="set_accent">Kolor akcentu</string>
     <string name="set_audio">Dźwięk</string>
-    <string name="set_personalize">Zachowanie</string>
+    <string name="set_personalize">Interfejs</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nie znaleziono muzyki</string>
     <!-- Description Namespace | Accessibility Strings -->
@@ -102,7 +102,7 @@
     <string name="lbl_ep_live">Minialbum koncertowy</string>
     <string name="lbl_ep_remix">Minialbum z remiksami</string>
     <string name="lbl_single_live">Koncertowy singiel</string>
-    <string name="lbl_single_remix">Remix</string>
+    <string name="lbl_single_remix">Remiks</string>
     <string name="lbl_compilations">Kompilacje</string>
     <string name="lbl_compilation">Kompilacja</string>
     <string name="lbl_soundtracks">Ścieżki dźwiękowe</string>
@@ -115,7 +115,7 @@
     <string name="clr_deep_purple">Ciemny fiolet</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="lbl_name">Nazwa</string>
-    <string name="lbl_date">Rok</string>
+    <string name="lbl_date">Data wydania</string>
     <string name="lbl_single">Singiel</string>
     <string name="lbl_singles">Single</string>
     <string name="lbl_duration">Czas trwania</string>
@@ -125,7 +125,7 @@
     <string name="lbl_artist">Wykonawca</string>
     <string name="lbl_save">Zapisz</string>
     <string name="lbl_mixtapes">Składanki</string>
-    <string name="lbl_remix_group">Remixy</string>
+    <string name="lbl_remix_group">Remiksy</string>
     <string name="def_artist">Nieznany wykonawca</string>
     <string name="lbl_bitrate">Bitrate</string>
     <string name="def_track">Brak ścieżki dźwiękowej</string>
@@ -141,23 +141,23 @@
     <string name="set_replay_gain_mode_album">Preferuj album</string>
     <string name="set_observing">Automatyczne ponowne załadowanie</string>
     <string name="cdc_flac">Darmowy kodek audio bez utraty jakości (FLAC)</string>
-    <string name="set_separators_and">Ampersand (&amp;)</string>
+    <string name="set_separators_and">Et (&amp;)</string>
     <string name="err_index_failed">Nie udało się załadować muzyki</string>
     <string name="lbl_compilation_remix">Kompilacja remiksów</string>
     <string name="lbl_compilation_live">Kompilacja koncertowa</string>
-    <string name="lbl_mixes">Mixy</string>
-    <string name="lbl_mix">Miks</string>
+    <string name="lbl_mixes">DJ Sety</string>
+    <string name="lbl_mix">DJ Set</string>
     <string name="desc_skip_prev">Przejdź do ostatniego utworu</string>
     <string name="desc_skip_next">Przejdź do następnego utworu</string>
-    <string name="lng_author">Zaprojektowany Przez Alexandra Capeharta</string>
-    <string name="set_round_mode">Zaokrąglone okładki</string>
-    <string name="set_round_mode_desc">Włącz zaokrąglone rogi na dodatkowych elementach interfejsu użytkownika (wymaga zaokrąglenia okładek albumów)</string>
+    <string name="lng_author">Autorstwa Alexandra Capeharta</string>
+    <string name="set_round_mode">Zaokrąglone krawędzie</string>
+    <string name="set_round_mode_desc">Włącz zaokrąglone rogi na dodatkowych elementach interfejsu (wymaga zaokrąglenia okładek albumów)</string>
     <string name="set_bar_action">Akcja na pasku odtwarzania</string>
     <string name="set_action_mode_next">Następny utwór</string>
     <string name="set_action_mode_repeat">Powtórz</string>
     <string name="set_replay_gain_mode">Ustawienie ReplayGain</string>
     <string name="set_replay_gain_mode_dynamic">Preferuj album, jeśli takowy jest odtwarzany</string>
-    <string name="set_library_song_playback_mode">Odtwarzając utwór z widoku biblioteki</string>
+    <string name="set_library_song_playback_mode">Odtwarzanie utworu z widoku biblioteki</string>
     <string name="set_save_state">Zapisz stan odtwarzania</string>
     <string name="set_separators_comma">Przecinek (,)</string>
     <string name="set_separators_semicolon">Średnik (;)</string>
@@ -184,7 +184,7 @@
     <string name="set_lib_tabs">Karty w bibliotece</string>
     <string name="set_lib_tabs_desc">Zmień widoczność i kolejność kart w bibliotece</string>
     <string name="set_black_mode_desc">Użyj czarnego motywu</string>
-    <string name="set_display">Wyświetlanie</string>
+    <string name="set_display">Elementy</string>
     <string name="clr_dynamic">Dynamiczny</string>
     <string name="fmt_bitrate">%d kb/s</string>
     <string name="set_save_desc">Zapisz obecny stan odtwarzania</string>
@@ -215,8 +215,8 @@
     <string name="set_pre_amp_with">Regulacja w oparciu o tagi</string>
     <string name="set_pre_amp_without">Regulacja bez tagów</string>
     <string name="set_pre_amp_desc">Wzmocnienie dźwięku przez preamplifier jest nakładane na wcześniej ustawione wzmocnienie podczas odtwarzania</string>
-    <string name="set_detail_song_playback_mode">Odtwarzając utwór ze szczegółów elementu</string>
-    <string name="set_playback_mode_none">Odtwarzaj tylko z elementu</string>
+    <string name="set_detail_song_playback_mode">Odtwarzanie utworu z widoku szczegółowego</string>
+    <string name="set_playback_mode_none">Odtwarzaj tylko wybrane</string>
     <string name="set_repeat_pause_desc">Zatrzymaj odtwarzanie kiedy utwór zostanie ponownie odtworzony</string>
     <string name="set_dirs_mode_include_desc">Muzyka zostanie załadowana <b>tylko</b> z wybranych folderów.</string>
     <string name="set_separators">Znaki oddzielające wartości</string>
@@ -224,13 +224,13 @@
     <string name="err_no_perms">Auxio wymaga zgody na dostęp do twojej biblioteki muzycznej</string>
     <string name="err_bad_dir">Ten folder nie jest wspierany</string>
     <string name="def_playback">Utwory nie są odtwarzane</string>
-    <string name="fmt_indexing">Ładuję twoją bibliotekę muzyczną… (%1$d/%2$d)</string>
+    <string name="fmt_indexing">Ładuję bibliotekę muzyczną… (%1$d/%2$d)</string>
     <string name="fmt_lib_album_count">Załadowane albumy: %d</string>
     <string name="fmt_lib_genre_count">Załadowane gatunki: %d</string>
     <string name="fmt_lib_total_duration">Łączny czas trwania: %s</string>
     <string name="set_dirs_mode_exclude_desc">Muzyka <b>nie</b> zostanie załadowana z wybranych folderów.</string>
     <string name="desc_change_repeat">Zmień tryb powtarzania</string>
-    <string name="desc_shuffle_all">Odtwarzaj losowo wszystkie utwory</string>
+    <string name="desc_shuffle_all">Odtwórz losowo wszystkie utwory</string>
     <string name="lng_observing">Monitoruję zmiany w bibliotece muzycznej…</string>
     <string name="lbl_indexer">Ładowanie muzyki</string>
     <string name="lbl_observing">Monitoruję bibliotekę muzyczną</string>
@@ -245,24 +245,24 @@
     <string name="set_cover_mode_quality">Wysoka jakość</string>
     <string name="set_separators_warning">Uwaga: To ustawienie może powodować nieprawidłowe przetwarzenie tagów jako posiadających wiele wartości. Problem ten należy rozwiązać stawiając ukośnik wsteczny (\\) przed niepożądanymi znakami rozdzielającymi.</string>
     <string name="set_ui_desc">Zmień motyw i kolory aplikacji</string>
-    <string name="set_hide_collaborators">Ukryj współpracowników</string>
-    <string name="set_content_desc">Zarządzaj pobieraniem muzyki i obrazów</string>
+    <string name="set_hide_collaborators">Ukryj wykonawców uczestniczących</string>
+    <string name="set_content_desc">Zarządzaj ładowaniem muzyki i obrazów</string>
     <string name="set_library">Biblioteka</string>
-    <string name="set_personalize_desc">Konfigurowanie kontroli i zachowania interfejsu użytkownika</string>
-    <string name="set_hide_collaborators_desc">Pokaż tylko artystów, którzy są bezpośrednio przypisani do albumu (działa najlepiej w dobrze oznaczonych bibliotekach)</string>
+    <string name="set_personalize_desc">Dostosuj elementy i funkcje interfejsu</string>
+    <string name="set_hide_collaborators_desc">Pokaż tylko artystów bezpośrednio przypisanych do albumu (działa najlepiej w dobrze otagowanych bibliotekach)</string>
     <string name="set_playback">Odtwarzanie</string>
     <string name="set_dirs_list">Folder</string>
     <string name="set_state">Wytrwałość</string>
-    <string name="set_images">Obraz</string>
+    <string name="set_images">Obrazy</string>
     <string name="set_audio_desc">Dostosowywanie dźwięku i zachowania podczas odtwarzania</string>
     <string name="lbl_play_selected">Odtwórz wybrane</string>
-    <string name="lbl_shuffle_selected">Przetasuj wybrane</string>
+    <string name="lbl_shuffle_selected">Wybrane losowo</string>
     <string name="fmt_selected">%d Wybrano</string>
     <string name="set_replay_gain">Wyrównanie głośności (ReplayGain)</string>
-    <string name="lbl_reset">Zresetować</string>
+    <string name="lbl_reset">Resetuj</string>
     <string name="lbl_wiki">Wiki</string>
-    <string name="set_behavior">Zachowanie</string>
-    <string name="set_playback_mode_genre">Graj według gatunku</string>
+    <string name="set_behavior">Funkcje</string>
+    <string name="set_playback_mode_genre">Odtwórz gatunek</string>
     <string name="set_rescan_desc">Wyczyść pamięć podręczną tagów i całkowicie zaktualizuj bibliotekę (powoli, ale wydajniej)</string>
     <string name="set_rescan">Przeskanuj muzykę</string>
     <plurals name="fmt_artist_count">
