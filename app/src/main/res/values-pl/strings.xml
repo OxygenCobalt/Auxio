@@ -33,7 +33,7 @@
     <string name="set_theme_auto">Systemowy</string>
     <string name="set_theme_day">Jasny</string>
     <string name="set_theme_night">Ciemny</string>
-    <string name="set_accent">Kolor akcentu</string>
+    <string name="set_accent">Kolor akcentów</string>
     <string name="set_audio">Dźwięk</string>
     <string name="set_personalize">Interfejs</string>
     <!-- Error Namespace | Error Labels -->
@@ -114,7 +114,7 @@
     <string name="set_black_mode">Czarny motyw</string>
     <string name="clr_deep_purple">Ciemny fiolet</string>
     <string name="fmt_db_neg">-%.1f dB</string>
-    <string name="lbl_name">Nazwa</string>
+    <string name="lbl_name">Tytuł</string>
     <string name="lbl_date">Data wydania</string>
     <string name="lbl_single">Singiel</string>
     <string name="lbl_singles">Single</string>
@@ -145,8 +145,8 @@
     <string name="err_index_failed">Nie udało się załadować muzyki</string>
     <string name="lbl_compilation_remix">Kompilacja remiksów</string>
     <string name="lbl_compilation_live">Kompilacja koncertowa</string>
-    <string name="lbl_mixes">DJ Sety</string>
-    <string name="lbl_mix">DJ Set</string>
+    <string name="lbl_mixes">DJ Miksy</string>
+    <string name="lbl_mix">DJ Mix</string>
     <string name="desc_skip_prev">Przejdź do ostatniego utworu</string>
     <string name="desc_skip_next">Przejdź do następnego utworu</string>
     <string name="lng_author">Autorstwa Alexandra Capeharta</string>
@@ -154,10 +154,10 @@
     <string name="set_round_mode_desc">Włącz zaokrąglone rogi na dodatkowych elementach interfejsu (wymaga zaokrąglenia okładek albumów)</string>
     <string name="set_bar_action">Akcja na pasku odtwarzania</string>
     <string name="set_action_mode_next">Następny utwór</string>
-    <string name="set_action_mode_repeat">Powtórz</string>
+    <string name="set_action_mode_repeat">Tryb powtarzania</string>
     <string name="set_replay_gain_mode">Ustawienie ReplayGain</string>
     <string name="set_replay_gain_mode_dynamic">Preferuj album, jeśli takowy jest odtwarzany</string>
-    <string name="set_library_song_playback_mode">Odtwarzanie utworu z widoku biblioteki</string>
+    <string name="set_library_song_playback_mode">Odtwarzanie z widoku biblioteki</string>
     <string name="set_save_state">Zapisz stan odtwarzania</string>
     <string name="set_separators_comma">Przecinek (,)</string>
     <string name="set_separators_semicolon">Średnik (;)</string>
@@ -166,7 +166,7 @@
     <string name="desc_exit">Zatrzymaj odtwarzanie</string>
     <string name="cdc_mp4">Dźwięk MPEG-4</string>
     <string name="cdc_ogg">Ogg audio</string>
-    <string name="info_app_desc">Prosty i rozsądny odtwarzacz muzyki na Androida.</string>
+    <string name="info_app_desc">Prosty i praktyczny odtwarzacz muzyki na Androida.</string>
     <string name="desc_music_dir_delete">Usuń folder</string>
     <string name="desc_queue_bar">Pokaż kolejkę</string>
     <string name="cdc_aac">Zaawansowany kodek audio (AAC)</string>
@@ -200,7 +200,7 @@
     <string name="set_rewind_prev_desc">Przewiń do początku utworu przed odtworzeniem poprzedniego</string>
     <string name="set_pre_amp">Preamplifier ReplayGain</string>
     <string name="lbl_live_group">Na żywo</string>
-    <string name="lbl_indexing">Ładowanie utworów</string>
+    <string name="lbl_indexing">Importowanie utworów</string>
     <string name="set_pre_amp_warning">Uwaga: Ustawienie wysokich pozytywnych wartości preamplifiera może skutkować przycinaniem dźwięku w niektórych utworach.</string>
     <string name="set_keep_shuffle">Zapamiętaj losowe odtwarzanie</string>
     <string name="err_no_app">Nie znaleziono aplikacji mogącej wykonać to zadanie</string>
@@ -211,12 +211,12 @@
     <string name="desc_clear_search">Wyczyść zapytanie wyszukiwania</string>
     <string name="err_did_not_restore">Nie można przywrócić stanu</string>
     <string name="desc_genre_image">Okładka gatunku %s</string>
-    <string name="lng_widget">Wyświetlanie oraz kontrolowanie odtwarzania muzyki</string>
+    <string name="lng_widget">Podgląd i sterowanie odtwarzanianiem muzyki</string>
     <string name="set_pre_amp_with">Regulacja w oparciu o tagi</string>
     <string name="set_pre_amp_without">Regulacja bez tagów</string>
     <string name="set_pre_amp_desc">Wzmocnienie dźwięku przez preamplifier jest nakładane na wcześniej ustawione wzmocnienie podczas odtwarzania</string>
-    <string name="set_detail_song_playback_mode">Odtwarzanie utworu z widoku szczegółowego</string>
-    <string name="set_playback_mode_none">Odtwarzaj tylko wybrane</string>
+    <string name="set_detail_song_playback_mode">Odtwarzanie z widoku szczegółowego</string>
+    <string name="set_playback_mode_none">Odtwórz tylko wybrane</string>
     <string name="set_repeat_pause_desc">Zatrzymaj odtwarzanie kiedy utwór zostanie ponownie odtworzony</string>
     <string name="set_dirs_mode_include_desc">Muzyka zostanie załadowana <b>tylko</b> z wybranych folderów.</string>
     <string name="set_separators">Znaki oddzielające wartości</string>
@@ -232,7 +232,7 @@
     <string name="desc_change_repeat">Zmień tryb powtarzania</string>
     <string name="desc_shuffle_all">Odtwórz losowo wszystkie utwory</string>
     <string name="lng_observing">Monitoruję zmiany w bibliotece muzycznej…</string>
-    <string name="lbl_indexer">Ładowanie muzyki</string>
+    <string name="lbl_indexer">Importowanie utworów</string>
     <string name="lbl_observing">Monitoruję bibliotekę muzyczną</string>
     <string name="set_keep_shuffle_desc">Kontynuuj odtwarzanie losowe po wybraniu nowego utworu</string>
     <string name="fmt_lib_song_count">Załadowane utwory: %d</string>
@@ -262,7 +262,7 @@
     <string name="lbl_reset">Resetuj</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="set_behavior">Funkcje</string>
-    <string name="set_playback_mode_genre">Odtwórz gatunek</string>
+    <string name="set_playback_mode_genre">Odtwórz z gatunku</string>
     <string name="set_rescan_desc">Wyczyść pamięć podręczną tagów i całkowicie zaktualizuj bibliotekę (powoli, ale wydajniej)</string>
     <string name="set_rescan">Przeskanuj muzykę</string>
     <plurals name="fmt_artist_count">
