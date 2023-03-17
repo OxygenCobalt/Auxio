@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * AboutFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,6 +119,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
             // not work in all cases, especially when no default app was set. If that is the
             // case, we will try to manually handle these cases before we try to launch the
             // browser.
+            @Suppress("DEPRECATION")
             val pkgName =
                 context.packageManager
                     .resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY)
