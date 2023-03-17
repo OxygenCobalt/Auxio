@@ -96,7 +96,7 @@ class AlbumDetailFragment :
         collectImmediately(detailModel.albumList, ::updateList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
-        collect(navModel.exploreNavigationItem, ::handleNavigation)
+        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
@@ -205,7 +205,7 @@ class AlbumDetailFragment :
                 if (unlikelyToBeNull(detailModel.currentAlbum.value) == item.album) {
                     logD("Navigating to a song in this album")
                     scrollToAlbumSong(item)
-                    navModel.finishExploreNavigation()
+                    navModel.exploreNavigationItem.consume()
                 } else {
                     logD("Navigating to another album")
                     findNavController()
@@ -219,7 +219,7 @@ class AlbumDetailFragment :
                 if (unlikelyToBeNull(detailModel.currentAlbum.value) == item) {
                     logD("Navigating to the top of this album")
                     binding.detailRecycler.scrollToPosition(0)
-                    navModel.finishExploreNavigation()
+                    navModel.exploreNavigationItem.consume()
                 } else {
                     logD("Navigating to another album")
                     findNavController()

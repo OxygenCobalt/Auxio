@@ -31,6 +31,8 @@ import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.playback.state.*
+import org.oxycblt.auxio.util.Event
+import org.oxycblt.auxio.util.MutableEvent
 
 /**
  * An [ViewModel] that provides a safe UI frontend for the current playback state.
@@ -74,22 +76,22 @@ constructor(
     val isShuffled: StateFlow<Boolean>
         get() = _isShuffled
 
-    private val _artistPlaybackPickerSong = MutableStateFlow<Song?>(null)
+    private val _artistPlaybackPickerSong = MutableEvent<Song>()
     /**
      * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing a
      * [Song] from one of it's [Artist]s.
      *
      * @see playFromArtist
      */
-    val artistPickerSong: StateFlow<Song?>
+    val artistPickerSong: Event<Song>
         get() = _artistPlaybackPickerSong
 
-    private val _genrePlaybackPickerSong = MutableStateFlow<Song?>(null)
+    private val _genrePlaybackPickerSong = MutableEvent<Song>()
     /**
      * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing a
      * [Song] from one of it's [Genre]s.
      */
-    val genrePickerSong: StateFlow<Song?>
+    val genrePickerSong: Event<Song>
         get() = _genrePlaybackPickerSong
 
     /** The current action to show on the playback bar. */
@@ -192,18 +194,8 @@ constructor(
         } else if (song.artists.size == 1) {
             playImpl(song, song.artists[0])
         } else {
-            _artistPlaybackPickerSong.value = song
+            _artistPlaybackPickerSong.put(song)
         }
-    }
-
-    /**
-     * Mark the [Artist] playback choice process as complete. This should occur when the [Artist]
-     * choice dialog is opened after this flag is detected.
-     *
-     * @see playFromArtist
-     */
-    fun finishPlaybackArtistPicker() {
-        _artistPlaybackPickerSong.value = null
     }
 
     /**
@@ -219,18 +211,8 @@ constructor(
         } else if (song.genres.size == 1) {
             playImpl(song, song.genres[0])
         } else {
-            _genrePlaybackPickerSong.value = song
+            _genrePlaybackPickerSong.put(song)
         }
-    }
-
-    /**
-     * Mark the [Genre] playback choice process as complete. This should occur when the [Genre]
-     * choice dialog is opened after this flag is detected.
-     *
-     * @see playFromGenre
-     */
-    fun finishPlaybackGenrePicker() {
-        _genrePlaybackPickerSong.value = null
     }
 
     /**

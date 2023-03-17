@@ -28,17 +28,40 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
+/**
+ * A wrapper around [StateFlow] exposing a one-time consumable event.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 interface Event<T> {
+    /** The inner [StateFlow] contained by the [Event]. */
     val flow: StateFlow<T?>
+    /**
+     * Consume whatever value is currently contained by this instance.
+     *
+     * @return A value placed into this instance prior, or null if there isn't any.
+     */
     fun consume(): T?
 }
 
+/**
+ * A wrapper around [StateFlow] exposing a one-time consumable event that can be modified by it's
+ * owner.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class MutableEvent<T> : Event<T> {
     override val flow = MutableStateFlow<T?>(null)
+    override fun consume() = flow.value?.also { flow.value = null }
+
+    /**
+     * Place a new value into this instance, replacing any prior value.
+     *
+     * @param v The value to update with.
+     */
     fun put(v: T) {
         flow.value = v
     }
-    override fun consume() = flow.value?.also { flow.value = null }
 }
 
 /**

@@ -155,11 +155,11 @@ class HomeFragment :
         binding.homeFab.setOnClickListener { playbackModel.shuffleAll() }
 
         // --- VIEWMODEL SETUP ---
-        collect(homeModel.shouldRecreate.flow, ::handleRecreate)
+        collect(homeModel.recreateTabs.flow, ::handleRecreate)
         collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
         collectImmediately(homeModel.songsList, homeModel.isFastScrolling, ::updateFab)
         collectImmediately(musicModel.indexerState, ::updateIndexerState)
-        collect(navModel.exploreNavigationItem, ::handleNavigation)
+        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
@@ -337,7 +337,7 @@ class HomeFragment :
         binding.homePager.currentItem = 0
         // Make sure tabs are set up to also follow the new ViewPager configuration.
         setupPager(binding)
-        homeModel.shouldRecreate.consume()
+        homeModel.recreateTabs.consume()
     }
 
     private fun updateIndexerState(state: Indexer.State?) {

@@ -20,38 +20,38 @@ package org.oxycblt.auxio.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavDirections
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.Event
+import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
 
 /** A [ViewModel] that handles complicated navigation functionality. */
 class NavigationViewModel : ViewModel() {
-    private val _mainNavigationAction = MutableStateFlow<MainNavigationAction?>(null)
+    private val _mainNavigationAction = MutableEvent<MainNavigationAction>()
     /**
      * Flag for navigation within the main navigation graph. Only intended for use by MainFragment.
      */
-    val mainNavigationAction: StateFlow<MainNavigationAction?>
+    val mainNavigationAction: Event<MainNavigationAction>
         get() = _mainNavigationAction
 
-    private val _exploreNavigationItem = MutableStateFlow<Music?>(null)
+    private val _exploreNavigationItem = MutableEvent<Music>()
     /**
      * Flag for navigation within the explore navigation graph. Observe this to coordinate
      * navigation to a specific [Music] item.
      */
-    val exploreNavigationItem: StateFlow<Music?>
+    val exploreNavigationItem: Event<Music>
         get() = _exploreNavigationItem
 
-    private val _exploreArtistNavigationItem = MutableStateFlow<Music?>(null)
+    private val _exploreArtistNavigationItem = MutableEvent<Music>()
     /**
      * Variation of [exploreNavigationItem] for situations where the choice of parent [Artist] to
      * navigate to is ambiguous. Only intended for use by MainFragment, as the resolved choice will
      * eventually be assigned to [exploreNavigationItem].
      */
-    val exploreArtistNavigationItem: StateFlow<Music?>
+    val exploreArtistNavigationItem: Event<Music>
         get() = _exploreArtistNavigationItem
 
     /**
@@ -62,21 +62,12 @@ class NavigationViewModel : ViewModel() {
      * @param action The [MainNavigationAction] to perform.
      */
     fun mainNavigateTo(action: MainNavigationAction) {
-        if (_mainNavigationAction.value != null) {
+        if (_mainNavigationAction.flow.value != null) {
             logD("Already navigating, not doing main action")
             return
         }
         logD("Navigating with action $action")
-        _mainNavigationAction.value = action
-    }
-
-    /**
-     * Mark that the navigation process within the main navigation graph (initiated by
-     * [mainNavigateTo]) was completed.
-     */
-    fun finishMainNavigation() {
-        logD("Finishing main navigation process")
-        _mainNavigationAction.value = null
+        _mainNavigationAction.put(action)
     }
 
     /**
@@ -85,12 +76,12 @@ class NavigationViewModel : ViewModel() {
      * @param music The [Music] to navigate to.
      */
     fun exploreNavigateTo(music: Music) {
-        if (_exploreNavigationItem.value != null) {
+        if (_exploreNavigationItem.flow.value != null) {
             logD("Already navigating, not doing explore action")
             return
         }
         logD("Navigating to ${music.rawName}")
-        _exploreNavigationItem.value = music
+        _exploreNavigationItem.put(music)
     }
 
     /**
@@ -114,7 +105,7 @@ class NavigationViewModel : ViewModel() {
     }
 
     private fun exploreNavigateToParentArtistImpl(item: Music, artists: List<Artist>) {
-        if (_exploreArtistNavigationItem.value != null) {
+        if (_exploreArtistNavigationItem.flow.value != null) {
             logD("Already navigating, not doing explore action")
             return
         }
@@ -123,18 +114,8 @@ class NavigationViewModel : ViewModel() {
             exploreNavigateTo(artists[0])
         } else {
             logD("Navigating to a choice of ${artists.map { it.rawName }}")
-            _exploreArtistNavigationItem.value = item
+            _exploreArtistNavigationItem.put(item)
         }
-    }
-
-    /**
-     * Mark that the navigation process within the explore navigation graph (initiated by
-     * [exploreNavigateTo]) was completed.
-     */
-    fun finishExploreNavigation() {
-        logD("Finishing explore navigation process")
-        _exploreNavigationItem.value = null
-        _exploreArtistNavigationItem.value = null
     }
 }
 

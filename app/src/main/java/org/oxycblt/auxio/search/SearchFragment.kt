@@ -115,7 +115,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         collectImmediately(searchModel.searchResults, ::updateSearchResults)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
-        collect(navModel.exploreNavigationItem, ::handleNavigation)
+        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 

@@ -109,7 +109,7 @@ constructor(
      * flag is true, all tabs (and their respective ViewPager2 fragments) will be re-created from
      * scratch.
      */
-    val shouldRecreate: Event<Unit>
+    val recreateTabs: Event<Unit>
         get() = _shouldRecreate
 
     private val _isFastScrolling = MutableStateFlow(false)

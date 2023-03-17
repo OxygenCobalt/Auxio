@@ -99,7 +99,7 @@ class ArtistDetailFragment :
         collectImmediately(detailModel.artistList, ::updateList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
-        collect(navModel.exploreNavigationItem, ::handleNavigation)
+        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
@@ -240,7 +240,7 @@ class ArtistDetailFragment :
                 if (item.uid == detailModel.currentArtist.value?.uid) {
                     logD("Navigating to the top of this artist")
                     binding.detailRecycler.scrollToPosition(0)
-                    navModel.finishExploreNavigation()
+                    navModel.exploreNavigationItem.consume()
                 } else {
                     logD("Navigating to another artist")
                     findNavController()

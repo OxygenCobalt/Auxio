@@ -98,7 +98,7 @@ class GenreDetailFragment :
         collectImmediately(detailModel.genreList, ::updateList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
-        collect(navModel.exploreNavigationItem, ::handleNavigation)
+        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
@@ -229,7 +229,7 @@ class GenreDetailFragment :
                     .navigate(GenreDetailFragmentDirections.actionShowArtist(item.uid))
             }
             is Genre -> {
-                navModel.finishExploreNavigation()
+                navModel.exploreNavigationItem.consume()
             }
             null -> {}
         }
