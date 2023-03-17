@@ -10,6 +10,7 @@ deletion
 #### What's Improved
 - Accept `REPLAYGAIN_*` adjustment information on OPUS files alongside
 `R128_*` adjustments.
+- List updates are now consistent across the app
 
 ## 3.0.3
 

@@ -63,12 +63,11 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
         _index.value = queue.index
     }
 
-    override fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {
+    override fun onQueueChanged(queue: Queue, change: Queue.Change) {
         // Queue changed trivially due to item mo -> Diff queue, stay at current index.
-        // TODO: Terrible idea, need to manually deliver updates
-        _queueInstructions.put(UpdateInstructions.Diff)
+        _queueInstructions.put(change.instructions)
         _queue.value = queue.resolve()
-        if (change != Queue.ChangeResult.MAPPING) {
+        if (change.type != Queue.Change.Type.MAPPING) {
             // Index changed, make sure it remains updated without actually scrolling to it.
             _index.value = queue.index
         }

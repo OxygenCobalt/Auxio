@@ -114,9 +114,9 @@ constructor(
         _song.value = queue.currentSong
     }
 
-    override fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {
+    override fun onQueueChanged(queue: Queue, change: Queue.Change) {
         // Other types of queue changes preserve the current song.
-        if (change == Queue.ChangeResult.SONG) {
+        if (change.type == Queue.Change.Type.SONG) {
             _song.value = queue.currentSong
         }
     }

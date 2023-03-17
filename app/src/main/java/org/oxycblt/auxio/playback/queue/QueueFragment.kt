@@ -80,6 +80,9 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
         super.onDestroyBinding(binding)
         touchHelper = null
         binding.queueRecycler.adapter = null
+        // Avoid possible race conditions that could cause a bad instruction to be consumed
+        // during list initialization and crash the app. Could happen if the user is fast enough.
+        queueModel.queueInstructions.consume()
     }
 
     override fun onClick(item: Song, viewHolder: RecyclerView.ViewHolder) {

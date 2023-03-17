@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.*
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import java.util.concurrent.Executor
+import org.oxycblt.auxio.util.logD
 
 /**
  * A variant of ListDiffer with more flexible updates.
@@ -52,7 +53,10 @@ abstract class FlexibleListAdapter<T, VH : RecyclerView.ViewHolder>(
         newData: List<T>,
         instructions: UpdateInstructions?,
         callback: (() -> Unit)? = null
-    ) = differ.update(newData, instructions, callback)
+    ) =
+        differ.update(newData, instructions, callback).also {
+            logD("Update delivered: $instructions" + "")
+        }
 }
 
 /**
@@ -71,6 +75,14 @@ sealed class UpdateInstructions {
      * @param from The index at which to start replacing items (inclusive)
      */
     data class Replace(val from: Int) : UpdateInstructions()
+
+    /**
+     * Add a new set of items.
+     *
+     * @param at The position at which to add.
+     * @param size The amount of items to add.
+     */
+    data class Add(val at: Int, val size: Int) : UpdateInstructions()
 
     /**
      * Move one item to another location.
@@ -116,10 +128,6 @@ private class FlexibleListDiffer<T>(
     fun update(newList: List<T>, instructions: UpdateInstructions?, callback: (() -> Unit)?) {
         // incrementing generation means any currently-running diffs are discarded when they finish
         val runGeneration = ++maxScheduledGeneration
-        if (currentList == newList) {
-            callback?.invoke()
-            return
-        }
         when (instructions) {
             is UpdateInstructions.Replace -> {
                 updateCallback.onRemoved(instructions.from, currentList.size - instructions.from)
@@ -128,6 +136,11 @@ private class FlexibleListDiffer<T>(
                     // Need to re-insert the new data.
                     updateCallback.onInserted(instructions.from, newList.size - instructions.from)
                 }
+                callback?.invoke()
+            }
+            is UpdateInstructions.Add -> {
+                currentList = newList
+                updateCallback.onInserted(instructions.at, instructions.size)
                 callback?.invoke()
             }
             is UpdateInstructions.Move -> {

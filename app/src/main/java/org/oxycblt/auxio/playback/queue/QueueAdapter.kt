@@ -58,6 +58,7 @@ class QueueAdapter(private val listener: EditableListListener<Song>) :
         position: Int,
         payload: List<Any>
     ) {
+        logD("$position ${getItem(position).rawName}")
         if (payload.isEmpty()) {
             viewHolder.bind(getItem(position), listener)
         }

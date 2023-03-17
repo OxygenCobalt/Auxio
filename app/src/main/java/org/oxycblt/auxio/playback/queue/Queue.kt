@@ -19,6 +19,7 @@ package org.oxycblt.auxio.playback.queue
 
 import kotlin.random.Random
 import kotlin.random.nextInt
+import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 
@@ -51,19 +52,25 @@ interface Queue {
     fun resolve(): List<Song>
 
     /**
-     * Represents the possible changes that can occur during certain queue mutation events. The
-     * precise meanings of these differ somewhat depending on the type of mutation done.
+     * Represents the possible changes that can occur during certain queue mutation events.
+     *
+     * @param type The [Type] of the change to the internal queue state.
+     * @param instructions The update done to the resolved queue list.
      */
-    enum class ChangeResult {
-        /** Only the mapping has changed. */
-        MAPPING,
-        /** The mapping has changed, and the index also changed to align with it. */
-        INDEX,
-        /**
-         * The current song has changed, possibly alongside the mapping and index depending on the
-         * context.
-         */
-        SONG
+    data class Change(val type: Type, val instructions: UpdateInstructions) {
+        enum class Type {
+            /** Only the mapping has changed. */
+            MAPPING,
+
+            /** The mapping has changed, and the index also changed to align with it. */
+            INDEX,
+
+            /**
+             * The current song has changed, possibly alongside the mapping and index depending on
+             * the context.
+             */
+            SONG
+        }
     }
 
     /**
@@ -95,26 +102,6 @@ interface Queue {
          */
         inline fun remap(transform: (Song?) -> Song?) =
             SavedState(heap.map(transform), orderedMapping, shuffledMapping, index, songUid)
-    }
-}
-
-data class QueueChange(val internal: InternalChange, val externalChange: ExternalChange) {
-    enum class InternalChange {
-        /** Only the mapping has changed. */
-        MAPPING,
-        /** The mapping has changed, and the index also changed to align with it. */
-        INDEX,
-        /**
-         * The current song has changed, possibly alongside the mapping and index depending on the
-         * context.
-         */
-        SONG
-    }
-
-    sealed class ExternalChange {
-        data class Add(val at: Int, val amount: Int) : ExternalChange()
-        data class Remove(val at: Int) : ExternalChange()
-        data class Move(val from: Int, val to: Int) : ExternalChange()
     }
 }
 
@@ -213,17 +200,9 @@ class EditableQueue : Queue {
      * Add [Song]s to the top of the queue. Will start playback if nothing is playing.
      *
      * @param songs The [Song]s to add.
-     * @return [Queue.ChangeResult.MAPPING] if added to an existing queue, or
-     *   [Queue.ChangeResult.SONG] if there was no prior playback and these enqueued [Song]s start
-     *   new playback.
+     * @return A [Queue.Change] instance that reflects the changes made.
      */
-    fun playNext(songs: List<Song>): Queue.ChangeResult {
-        if (orderedMapping.isEmpty()) {
-            // No playback, start playing these songs.
-            start(songs[0], songs, false)
-            return Queue.ChangeResult.SONG
-        }
-
+    fun playNext(songs: List<Song>): Queue.Change {
         val heapIndices = songs.map(::addSongToHeap)
         if (shuffledMapping.isNotEmpty()) {
             // Add the new songs in front of the current index in the shuffled mapping and in front
@@ -236,24 +215,17 @@ class EditableQueue : Queue {
             orderedMapping.addAll(index + 1, heapIndices)
         }
         check()
-        return Queue.ChangeResult.MAPPING
+        return Queue.Change(
+            Queue.Change.Type.MAPPING, UpdateInstructions.Add(index + 1, songs.size))
     }
 
     /**
      * Add [Song]s to the end of the queue. Will start playback if nothing is playing.
      *
      * @param songs The [Song]s to add.
-     * @return [Queue.ChangeResult.MAPPING] if added to an existing queue, or
-     *   [Queue.ChangeResult.SONG] if there was no prior playback and these enqueued [Song]s start
-     *   new playback.
+     * @return A [Queue.Change] instance that reflects the changes made.
      */
-    fun addToQueue(songs: List<Song>): Queue.ChangeResult {
-        if (orderedMapping.isEmpty()) {
-            // No playback, start playing these songs.
-            start(songs[0], songs, false)
-            return Queue.ChangeResult.SONG
-        }
-
+    fun addToQueue(songs: List<Song>): Queue.Change {
         val heapIndices = songs.map(::addSongToHeap)
         // Can simple append the new songs to the end of both mappings.
         orderedMapping.addAll(heapIndices)
@@ -261,7 +233,8 @@ class EditableQueue : Queue {
             shuffledMapping.addAll(heapIndices)
         }
         check()
-        return Queue.ChangeResult.MAPPING
+        return Queue.Change(
+            Queue.Change.Type.MAPPING, UpdateInstructions.Add(index + 1, songs.size))
     }
 
     /**
@@ -269,11 +242,9 @@ class EditableQueue : Queue {
      *
      * @param src The position of the [Song] to move.
      * @param dst The destination position of the [Song].
-     * @return [Queue.ChangeResult.MAPPING] if the move occurred after the current index,
-     *   [Queue.ChangeResult.INDEX] if the move occurred before or at the current index, requiring
-     *   it to be mutated.
+     * @return A [Queue.Change] instance that reflects the changes made.
      */
-    fun move(src: Int, dst: Int): Queue.ChangeResult {
+    fun move(src: Int, dst: Int): Queue.Change {
         if (shuffledMapping.isNotEmpty()) {
             // Move songs only in the shuffled mapping. There is no sane analogous form of
             // this for the ordered mapping.
@@ -293,22 +264,20 @@ class EditableQueue : Queue {
             else -> {
                 // Nothing to do.
                 check()
-                return Queue.ChangeResult.MAPPING
+                return Queue.Change(Queue.Change.Type.MAPPING, UpdateInstructions.Move(src, dst))
             }
         }
         check()
-        return Queue.ChangeResult.INDEX
+        return Queue.Change(Queue.Change.Type.INDEX, UpdateInstructions.Move(src, dst))
     }
 
     /**
      * Remove a [Song] at the given position.
      *
      * @param at The position of the [Song] to remove.
-     * @return [Queue.ChangeResult.MAPPING] if the removed [Song] was after the current index,
-     *   [Queue.ChangeResult.INDEX] if the removed [Song] was before the current index, and
-     *   [Queue.ChangeResult.SONG] if the currently playing [Song] was removed.
+     * @return A [Queue.Change] instance that reflects the changes made.
      */
-    fun remove(at: Int): Queue.ChangeResult {
+    fun remove(at: Int): Queue.Change {
         if (shuffledMapping.isNotEmpty()) {
             // Remove the specified index in the shuffled mapping and the analogous song in the
             // ordered mapping.
@@ -323,20 +292,20 @@ class EditableQueue : Queue {
         // of the player to be completely invalidated. It's generally easier to not remove the
         // song and retain player state consistency.
 
-        val result =
+        val type =
             when {
                 // We just removed the currently playing song.
-                index == at -> Queue.ChangeResult.SONG
+                index == at -> Queue.Change.Type.SONG
                 // Index was ahead of removed song, shift back to preserve consistency.
                 index > at -> {
                     index -= 1
-                    Queue.ChangeResult.INDEX
+                    Queue.Change.Type.INDEX
                 }
                 // Nothing to do
-                else -> Queue.ChangeResult.MAPPING
+                else -> Queue.Change.Type.MAPPING
             }
         check()
-        return result
+        return Queue.Change(type, UpdateInstructions.Remove(at))
     }
 
     /**

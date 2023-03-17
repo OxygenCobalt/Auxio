@@ -244,12 +244,12 @@ interface PlaybackStateManager {
         fun onIndexMoved(queue: Queue) {}
 
         /**
-         * Called when the [Queue] changed in a manner outlined by the given [Queue.ChangeResult].
+         * Called when the [Queue] changed in a manner outlined by the given [Queue.Change].
          *
          * @param queue The new [Queue].
-         * @param change The type of [Queue.ChangeResult] that occurred.
+         * @param change The type of [Queue.Change] that occurred.
          */
-        fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {}
+        fun onQueueChanged(queue: Queue, change: Queue.Change) {}
 
         /**
          * Called when the [Queue] has changed in a non-trivial manner (such as re-shuffling), but
@@ -423,31 +423,19 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     @Synchronized
     override fun playNext(songs: List<Song>) {
-        val internalPlayer = internalPlayer ?: return
-        when (queue.playNext(songs)) {
-            Queue.ChangeResult.MAPPING -> notifyQueueChanged(Queue.ChangeResult.MAPPING)
-            Queue.ChangeResult.SONG -> {
-                // Enqueueing actually started a new playback session from all songs.
-                parent = null
-                internalPlayer.loadSong(queue.currentSong, true)
-                notifyNewPlayback()
-            }
-            Queue.ChangeResult.INDEX -> error("Unreachable")
+        if (queue.currentSong == null) {
+            play(songs[0], null, songs, false)
+        } else {
+            notifyQueueChanged(queue.playNext(songs))
         }
     }
 
     @Synchronized
     override fun addToQueue(songs: List<Song>) {
-        val internalPlayer = internalPlayer ?: return
-        when (queue.addToQueue(songs)) {
-            Queue.ChangeResult.MAPPING -> notifyQueueChanged(Queue.ChangeResult.MAPPING)
-            Queue.ChangeResult.SONG -> {
-                // Enqueueing actually started a new playback session from all songs.
-                parent = null
-                internalPlayer.loadSong(queue.currentSong, true)
-                notifyNewPlayback()
-            }
-            Queue.ChangeResult.INDEX -> error("Unreachable")
+        if (queue.currentSong == null) {
+            play(songs[0], null, songs, false)
+        } else {
+            notifyQueueChanged(queue.addToQueue(songs))
         }
     }
 
@@ -462,7 +450,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         val internalPlayer = internalPlayer ?: return
         logD("Removing item at $at")
         val change = queue.remove(at)
-        if (change == Queue.ChangeResult.SONG) {
+        if (change.type == Queue.Change.Type.SONG) {
             internalPlayer.loadSong(queue.currentSong, playerState.isPlaying)
         }
         notifyQueueChanged(change)
@@ -568,7 +556,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         }
     }
 
-    private fun notifyQueueChanged(change: Queue.ChangeResult) {
+    private fun notifyQueueChanged(change: Queue.Change) {
         for (callback in listeners) {
             callback.onQueueChanged(queue, change)
         }

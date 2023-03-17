@@ -118,16 +118,15 @@ constructor(
         invalidateSessionState()
     }
 
-    override fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {
+    override fun onQueueChanged(queue: Queue, change: Queue.Change) {
         updateQueue(queue)
-        when (change) {
+        when (change.type) {
             // Nothing special to do with mapping changes.
-            Queue.ChangeResult.MAPPING -> {}
+            Queue.Change.Type.MAPPING -> {}
             // Index changed, ensure playback state's index changes.
-            Queue.ChangeResult.INDEX -> invalidateSessionState()
+            Queue.Change.Type.INDEX -> invalidateSessionState()
             // Song changed, ensure metadata changes.
-            Queue.ChangeResult.SONG ->
-                updateMediaMetadata(queue.currentSong, playbackManager.parent)
+            Queue.Change.Type.SONG -> updateMediaMetadata(queue.currentSong, playbackManager.parent)
         }
     }
 
