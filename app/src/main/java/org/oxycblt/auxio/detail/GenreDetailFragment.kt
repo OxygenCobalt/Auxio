@@ -43,11 +43,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.NavigationViewModel
-import org.oxycblt.auxio.util.collect
-import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.showToast
-import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.auxio.util.*
 
 /**
  * A [ListFragment] that shows information for a particular [Genre].
@@ -216,17 +212,17 @@ class GenreDetailFragment :
             is Song -> {
                 logD("Navigating to another song")
                 findNavController()
-                    .navigate(GenreDetailFragmentDirections.actionShowAlbum(item.album.uid))
+                    .navigateSafe(GenreDetailFragmentDirections.actionShowAlbum(item.album.uid))
             }
             is Album -> {
                 logD("Navigating to another album")
                 findNavController()
-                    .navigate(GenreDetailFragmentDirections.actionShowAlbum(item.uid))
+                    .navigateSafe(GenreDetailFragmentDirections.actionShowAlbum(item.uid))
             }
             is Artist -> {
                 logD("Navigating to another artist")
                 findNavController()
-                    .navigate(GenreDetailFragmentDirections.actionShowArtist(item.uid))
+                    .navigateSafe(GenreDetailFragmentDirections.actionShowArtist(item.uid))
             }
             is Genre -> {
                 navModel.exploreNavigationItem.consume()

@@ -270,7 +270,7 @@ class MainFragment :
         when (action) {
             is MainNavigationAction.Expand -> tryExpandSheets()
             is MainNavigationAction.Collapse -> tryCollapseSheets()
-            is MainNavigationAction.Directions -> findNavController().navigate(action.directions)
+            is MainNavigationAction.Directions -> findNavController().navigateSafe(action.directions)
         }
 
         navModel.mainNavigationAction.consume()

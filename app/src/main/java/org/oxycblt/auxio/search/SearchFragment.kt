@@ -186,7 +186,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             }
         // Keyboard is no longer needed.
         hideKeyboard()
-        findNavController().navigate(action)
+        findNavController().navigateSafe(action)
     }
 
     private fun updateSelection(selected: List<Music>) {

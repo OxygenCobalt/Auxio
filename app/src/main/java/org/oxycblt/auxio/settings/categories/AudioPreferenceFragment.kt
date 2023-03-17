@@ -22,6 +22,7 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+import org.oxycblt.auxio.util.navigateSafe
 
 /**
  * Audio settings interface.
@@ -32,7 +33,7 @@ class AudioPreferenceFragment : BasePreferenceFragment(R.xml.preferences_audio) 
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_pre_amp)) {
-            findNavController().navigate(AudioPreferenceFragmentDirections.goToPreAmpDialog())
+            findNavController().navigateSafe(AudioPreferenceFragmentDirections.goToPreAmpDialog())
         }
     }
 }

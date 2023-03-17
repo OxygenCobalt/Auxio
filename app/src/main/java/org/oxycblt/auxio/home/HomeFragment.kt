@@ -201,7 +201,7 @@ class HomeFragment :
             R.id.action_search -> {
                 logD("Navigating to search")
                 setupAxisTransitions(MaterialSharedAxis.Z)
-                findNavController().navigate(HomeFragmentDirections.actionShowSearch())
+                findNavController().navigateSafe(HomeFragmentDirections.actionShowSearch())
             }
             R.id.action_settings -> {
                 logD("Navigating to settings")
@@ -454,7 +454,7 @@ class HomeFragment :
             }
 
         setupAxisTransitions(MaterialSharedAxis.X)
-        findNavController().navigate(action)
+        findNavController().navigateSafe(action)
     }
 
     private fun updateSelection(selected: List<Music>) {

@@ -209,7 +209,7 @@ class AlbumDetailFragment :
                 } else {
                     logD("Navigating to another album")
                     findNavController()
-                        .navigate(AlbumDetailFragmentDirections.actionShowAlbum(item.album.uid))
+                        .navigateSafe(AlbumDetailFragmentDirections.actionShowAlbum(item.album.uid))
                 }
             }
 
@@ -223,7 +223,7 @@ class AlbumDetailFragment :
                 } else {
                     logD("Navigating to another album")
                     findNavController()
-                        .navigate(AlbumDetailFragmentDirections.actionShowAlbum(item.uid))
+                        .navigateSafe(AlbumDetailFragmentDirections.actionShowAlbum(item.uid))
                 }
             }
 
@@ -231,7 +231,7 @@ class AlbumDetailFragment :
             is Artist -> {
                 logD("Navigating to another artist")
                 findNavController()
-                    .navigate(AlbumDetailFragmentDirections.actionShowArtist(item.uid))
+                    .navigateSafe(AlbumDetailFragmentDirections.actionShowArtist(item.uid))
             }
             null -> {}
             else -> error("Unexpected datatype: ${item::class.java}")

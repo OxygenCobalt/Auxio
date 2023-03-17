@@ -29,6 +29,9 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.navigation.NavAction
+import androidx.navigation.NavController
+import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 
@@ -114,6 +117,17 @@ fun AppCompatButton.fixDoubleRipple() {
 }
 
 /**
+ * Crash-safe wrapped around [NavController.navigate] that will not crash if multiple destinations
+ * are selected at once.
+ * @param directions The [NavDirections] to navigate with.
+ */
+fun NavController.navigateSafe(directions: NavDirections) = try {
+    navigate(directions)
+} catch (e: IllegalStateException) {
+    // Nothing to do.
+}
+
+/**
  * Get the [CoordinatorLayout.Behavior] of a [View], or null if the [View] is not part of a
  * [CoordinatorLayout] or does not have a [CoordinatorLayout.Behavior].
  */
@@ -149,7 +163,7 @@ val WindowInsets.systemGestureInsetsCompat: Insets
         // this should allow this code to fall back to system bar insets easily if the system
         // does not provide system gesture insets. This does require androidx Insets to allow
         // us to use the max method on all versions however, so we will want to convert the
-        // system-provided insets to such..
+        // system-provided insets to such.
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
                 // API 30+, use window inset map.

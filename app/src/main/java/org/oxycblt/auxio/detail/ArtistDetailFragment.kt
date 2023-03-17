@@ -42,11 +42,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.NavigationViewModel
-import org.oxycblt.auxio.util.collect
-import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.showToast
-import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.auxio.util.*
 
 /**
  * A [ListFragment] that shows information about an [Artist].
@@ -225,14 +221,14 @@ class ArtistDetailFragment :
             is Song -> {
                 logD("Navigating to another album")
                 findNavController()
-                    .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.album.uid))
+                    .navigateSafe(ArtistDetailFragmentDirections.actionShowAlbum(item.album.uid))
             }
             // Launch a new detail view for an album, even if it is part of
             // this artist.
             is Album -> {
                 logD("Navigating to another album")
                 findNavController()
-                    .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.uid))
+                    .navigateSafe(ArtistDetailFragmentDirections.actionShowAlbum(item.uid))
             }
             // If the artist that should be navigated to is this artist, then
             // scroll back to the top. Otherwise launch a new detail view.
@@ -244,7 +240,7 @@ class ArtistDetailFragment :
                 } else {
                     logD("Navigating to another artist")
                     findNavController()
-                        .navigate(ArtistDetailFragmentDirections.actionShowArtist(item.uid))
+                        .navigateSafe(ArtistDetailFragmentDirections.actionShowArtist(item.uid))
                 }
             }
             null -> {}
