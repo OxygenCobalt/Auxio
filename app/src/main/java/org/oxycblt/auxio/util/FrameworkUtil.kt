@@ -29,7 +29,6 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.navigation.NavAction
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.RecyclerView
@@ -119,13 +118,15 @@ fun AppCompatButton.fixDoubleRipple() {
 /**
  * Crash-safe wrapped around [NavController.navigate] that will not crash if multiple destinations
  * are selected at once.
+ *
  * @param directions The [NavDirections] to navigate with.
  */
-fun NavController.navigateSafe(directions: NavDirections) = try {
-    navigate(directions)
-} catch (e: IllegalStateException) {
-    // Nothing to do.
-}
+fun NavController.navigateSafe(directions: NavDirections) =
+    try {
+        navigate(directions)
+    } catch (e: IllegalStateException) {
+        // Nothing to do.
+    }
 
 /**
  * Get the [CoordinatorLayout.Behavior] of a [View], or null if the [View] is not part of a

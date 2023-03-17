@@ -64,7 +64,8 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
         //  do one.
         when (preference.key) {
             getString(R.string.set_key_ui) -> {
-                findNavController().navigateSafe(RootPreferenceFragmentDirections.goToUiPreferences())
+                findNavController()
+                    .navigateSafe(RootPreferenceFragmentDirections.goToUiPreferences())
             }
             getString(R.string.set_key_personalize) -> {
                 findNavController()

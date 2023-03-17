@@ -39,7 +39,8 @@ class MusicPreferenceFragment : BasePreferenceFragment(R.xml.preferences_music) 
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_separators)) {
-            findNavController().navigateSafe(MusicPreferenceFragmentDirections.goToSeparatorsDialog())
+            findNavController()
+                .navigateSafe(MusicPreferenceFragmentDirections.goToSeparatorsDialog())
         }
     }
 

@@ -32,7 +32,8 @@ import org.oxycblt.auxio.util.navigateSafe
 class PersonalizePreferenceFragment : BasePreferenceFragment(R.xml.preferences_personalize) {
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_home_tabs)) {
-            findNavController().navigateSafe(PersonalizePreferenceFragmentDirections.goToTabDialog())
+            findNavController()
+                .navigateSafe(PersonalizePreferenceFragmentDirections.goToTabDialog())
         }
     }
 }

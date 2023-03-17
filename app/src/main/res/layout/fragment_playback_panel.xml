@@ -28,15 +28,16 @@
         tools:staticIcon="@drawable/ic_song_24" />
 
 
-    <!-- TextView is wrapped in a container so that marquee doesn't break -->
+    <!-- Playback information is wrapped in a container so that marquee doesn't break -->
 
-    <FrameLayout
-        android:id="@+id/playback_song_container"
+    <LinearLayout
+        android:id="@+id/playback_info_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"
         android:layout_marginEnd="@dimen/spacing_medium"
-        app:layout_constraintBottom_toTopOf="@+id/playback_artist"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/playback_cover"
@@ -47,43 +48,31 @@
             android:id="@+id/playback_song"
             style="@style/Widget.Auxio.TextView.Primary"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             tools:text="Song Name" />
 
-    </FrameLayout>
+        <TextView
+            android:id="@+id/playback_artist"
+            style="@style/Widget.Auxio.TextView.Secondary.Marquee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Artist Name" />
 
-    <TextView
-        android:id="@+id/playback_artist"
-        style="@style/Widget.Auxio.TextView.Secondary.Marquee"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_medium"
-        app:layout_constraintBottom_toTopOf="@+id/playback_album"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/playback_cover"
-        app:layout_constraintTop_toBottomOf="@+id/playback_song_container"
-        tools:text="Artist Name" />
+        <TextView
+            android:id="@+id/playback_album"
+            style="@style/Widget.Auxio.TextView.Secondary.Marquee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Album Name" />
 
-    <TextView
-        android:id="@+id/playback_album"
-        style="@style/Widget.Auxio.TextView.Secondary.Marquee"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_medium"
-        app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/playback_cover"
-        app:layout_constraintTop_toBottomOf="@+id/playback_artist"
-        tools:text="Album Name" />
+    </LinearLayout>
 
     <org.oxycblt.auxio.playback.ui.StyledSeekBar
         android:id="@+id/playback_seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/playback_controls_container"
-        app:layout_constraintEnd_toEndOf="@+id/playback_song_container"
+        app:layout_constraintEnd_toEndOf="@+id/playback_info_container"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
