@@ -2,15 +2,18 @@
 
 ## dev
 
-#### What's Fixed
-- Fixed MP4-AAC files not playing due to an accidental audio extractor
-deletion
-- Fix "format" not appearing in song properties view
-
 #### What's Improved
 - Accept `REPLAYGAIN_*` adjustment information on OPUS files alongside
 `R128_*` adjustments.
 - List updates are now consistent across the app
+- Search view now trims search queries
+- Audio effect (equalizer) session is now broadcast when playing/pausing
+rather than on start/stop.
+
+#### What's Fixed
+- Fixed MP4-AAC files not playing due to an accidental audio extractor
+deletion
+- Fix "format" not appearing in song properties view
 
 ## 3.0.3
 

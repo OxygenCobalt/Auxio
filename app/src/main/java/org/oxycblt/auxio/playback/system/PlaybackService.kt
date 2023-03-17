@@ -226,11 +226,7 @@ class PlaybackService :
             // No song, stop playback and foreground state.
             logD("Nothing playing, stopping playback")
             player.stop()
-            if (openAudioEffectSession) {
-                // Make sure to close the audio session when we stop playback.
-                broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
-                openAudioEffectSession = false
-            }
+
             stopAndSave()
             return
         }
@@ -238,15 +234,6 @@ class PlaybackService :
         logD("Loading ${song.rawName}")
         player.setMediaItem(MediaItem.fromUri(song.uri))
         player.prepare()
-
-        if (!openAudioEffectSession) {
-            // Android does not like it if you start an audio effect session without having
-            // something within your player buffer. Make sure we only start one when we load
-            // a song.
-            broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
-            openAudioEffectSession = true
-        }
-
         player.playWhenReady = play
     }
 
@@ -263,9 +250,21 @@ class PlaybackService :
 
     override fun onEvents(player: Player, events: Player.Events) {
         super.onEvents(player, events)
-        if (events.contains(Player.EVENT_PLAY_WHEN_READY_CHANGED) && player.playWhenReady) {
-            // Mark that we have started playing so that the notification can now be posted.
-            hasPlayed = true
+        if (events.contains(Player.EVENT_PLAY_WHEN_READY_CHANGED)) {
+            if (player.playWhenReady) {
+                // Mark that we have started playing so that the notification can now be posted.
+                hasPlayed = true
+                if (!openAudioEffectSession) {
+                    // Convention to start an audioeffect session on play/pause rather than
+                    // start/stop
+                    broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
+                    openAudioEffectSession = true
+                }
+            } else if (openAudioEffectSession) {
+                // Make sure to close the audio session when we stop playback.
+                broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
+                openAudioEffectSession = false
+            }
         }
 
         // Any change to the analogous isPlaying, isAdvancing, or positionMs values require
