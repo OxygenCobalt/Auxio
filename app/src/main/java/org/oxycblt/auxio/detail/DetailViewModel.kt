@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.detail.recycler.SortHeader
+import org.oxycblt.auxio.detail.list.SortHeader
 import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.Sort
@@ -270,7 +270,7 @@ constructor(
 
     private fun refreshAlbumList(album: Album, replace: Boolean = false) {
         logD("Refreshing album data")
-        val list = mutableListOf<Item>(album)
+        val list = mutableListOf<Item>()
         list.add(SortHeader(R.string.lbl_songs))
         val instructions =
             if (replace) {
@@ -302,7 +302,7 @@ constructor(
 
     private fun refreshArtistList(artist: Artist, replace: Boolean = false) {
         logD("Refreshing artist data")
-        val list = mutableListOf<Item>(artist)
+        val list = mutableListOf<Item>()
         val albums = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING).albums(artist.albums)
 
         val byReleaseGroup =
@@ -351,7 +351,7 @@ constructor(
 
     private fun refreshGenreList(genre: Genre, replace: Boolean = false) {
         logD("Refreshing genre data")
-        val list = mutableListOf<Item>(genre)
+        val list = mutableListOf<Item>()
         // Genre is guaranteed to always have artists and songs.
         list.add(BasicHeader(R.string.lbl_artists))
         list.addAll(genre.artists)

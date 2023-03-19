@@ -34,7 +34,6 @@ import org.oxycblt.auxio.image.extractor.*
 @InstallIn(SingletonComponent::class)
 interface ImageModule {
     @Binds fun settings(imageSettings: ImageSettingsImpl): ImageSettings
-    @Binds fun coverExtractor(coverExtractor: CoverExtractorImpl): CoverExtractor
 }
 
 @Module

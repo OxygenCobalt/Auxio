@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
- * DetailAdapter.kt is part of Auxio.
+ * DetailListAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.detail.recycler
+package org.oxycblt.auxio.detail.list
 
 import android.view.View
 import android.view.ViewGroup
@@ -37,13 +37,14 @@ import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
 /**
- * A [RecyclerView.Adapter] that implements behavior shared across each detail view's adapters.
+ * A [RecyclerView.Adapter] that implements shared behavior between lists of child items in the
+ * detail views.
  *
  * @param listener A [Listener] to bind interactions to.
  * @param diffCallback A [DiffUtil.ItemCallback] to compare list updates with.
  * @author Alexander Capehart (OxygenCobalt)
  */
-abstract class DetailAdapter(
+abstract class DetailListAdapter(
     private val listener: Listener<*>,
     private val diffCallback: DiffUtil.ItemCallback<Item>
 ) :
@@ -78,21 +79,8 @@ abstract class DetailAdapter(
         return item is BasicHeader || item is SortHeader
     }
 
-    /** An extended [SelectableListListener] for [DetailAdapter] implementations. */
+    /** An extended [SelectableListListener] for [DetailListAdapter] implementations. */
     interface Listener<in T : Music> : SelectableListListener<T> {
-        // TODO: Split off into sub-listeners if a collapsing toolbar is implemented.
-        /**
-         * Called when the play button in a detail header is pressed, requesting that the current
-         * item should be played.
-         */
-        fun onPlay()
-
-        /**
-         * Called when the shuffle button in a detail header is pressed, requesting that the current
-         * item should be shuffled
-         */
-        fun onShuffle()
-
         /**
          * Called when the button in a [SortHeader] item is pressed, requesting that the sort menu
          * should be opened.
@@ -137,9 +125,9 @@ private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
      * Bind new data to this instance.
      *
      * @param sortHeader The new [SortHeader] to bind.
-     * @param listener An [DetailAdapter.Listener] to bind interactions to.
+     * @param listener An [DetailListAdapter.Listener] to bind interactions to.
      */
-    fun bind(sortHeader: SortHeader, listener: DetailAdapter.Listener<*>) {
+    fun bind(sortHeader: SortHeader, listener: DetailListAdapter.Listener<*>) {
         binding.headerTitle.text = binding.context.getString(sortHeader.titleRes)
         binding.headerButton.apply {
             // Add a Tooltip based on the content description so that the purpose of this

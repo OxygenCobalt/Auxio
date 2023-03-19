@@ -35,6 +35,7 @@ import org.oxycblt.auxio.util.logD
 abstract class FlexibleListAdapter<T, VH : RecyclerView.ViewHolder>(
     diffCallback: DiffUtil.ItemCallback<T>
 ) : RecyclerView.Adapter<VH>() {
+    @Suppress("LeakingThis")
     private val differ = FlexibleListDiffer(this, diffCallback)
     final override fun getItemCount() = differ.currentList.size
     /** The current list stored by the adapter's differ instance. */
@@ -55,9 +56,7 @@ abstract class FlexibleListAdapter<T, VH : RecyclerView.ViewHolder>(
         instructions: UpdateInstructions?,
         callback: (() -> Unit)? = null
     ) =
-        differ.update(newData, instructions, callback).also {
-            logD("Update delivered: $instructions" + "")
-        }
+        differ.update(newData, instructions, callback)
 }
 
 /**

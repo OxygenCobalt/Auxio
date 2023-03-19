@@ -33,7 +33,7 @@
         <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Auxio.HeadlineSmall</item>
 
         <item name="textAppearanceTitleLarge">@style/TextAppearance.Auxio.TitleLarge</item>
-        <item name="textAppearanceTitleMedium">@style/TextAppearance.Auxio.TitleMediumLowEmphasis
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.Auxio.TitleMedium
         </item>
         <item name="textAppearanceTitleSmall">@style/TextAppearance.Auxio.TitleSmall</item>
 

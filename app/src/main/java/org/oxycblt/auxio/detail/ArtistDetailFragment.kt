@@ -25,12 +25,15 @@ import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.ConcatAdapter
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
-import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
-import org.oxycblt.auxio.detail.recycler.DetailAdapter
+import org.oxycblt.auxio.detail.header.ArtistDetailHeaderAdapter
+import org.oxycblt.auxio.detail.header.DetailHeaderAdapter
+import org.oxycblt.auxio.detail.list.ArtistDetailListAdapter
+import org.oxycblt.auxio.detail.list.DetailListAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
@@ -51,7 +54,9 @@ import org.oxycblt.auxio.util.*
  */
 @AndroidEntryPoint
 class ArtistDetailFragment :
-    ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener<Music> {
+    ListFragment<Music, FragmentDetailBinding>(),
+    DetailHeaderAdapter.Listener,
+    DetailListAdapter.Listener<Music> {
     private val detailModel: DetailViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
@@ -59,7 +64,8 @@ class ArtistDetailFragment :
     // Information about what artist to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an artist.
     private val args: ArtistDetailFragmentArgs by navArgs()
-    private val detailAdapter = ArtistDetailAdapter(this)
+    private val artistHeaderAdapter = ArtistDetailHeaderAdapter(this)
+    private val artistListAdapter = ArtistDetailListAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +92,7 @@ class ArtistDetailFragment :
             setOnMenuItemClickListener(this@ArtistDetailFragment)
         }
 
-        binding.detailRecycler.adapter = detailAdapter
+        binding.detailRecycler.adapter = ConcatAdapter(artistHeaderAdapter, artistListAdapter)
 
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
@@ -194,8 +200,8 @@ class ArtistDetailFragment :
             findNavController().navigateUp()
             return
         }
-
         requireBinding().detailToolbar.title = artist.resolveName(requireContext())
+        artistHeaderAdapter.setParent(artist)
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
@@ -210,7 +216,7 @@ class ArtistDetailFragment :
                 else -> null
             }
 
-        detailAdapter.setPlaying(playingItem, isPlaying)
+        artistListAdapter.setPlaying(playingItem, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {
@@ -249,11 +255,11 @@ class ArtistDetailFragment :
     }
 
     private fun updateList(list: List<Item>) {
-        detailAdapter.update(list, detailModel.artistInstructions.consume())
+        artistListAdapter.update(list, detailModel.artistInstructions.consume())
     }
 
     private fun updateSelection(selected: List<Music>) {
-        detailAdapter.setSelected(selected.toSet())
+        artistListAdapter.setSelected(selected.toSet())
         requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
     }
 }

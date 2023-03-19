@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.detail.recycler
+package org.oxycblt.auxio.detail.list
 
 import android.view.View
 import android.view.ViewGroup

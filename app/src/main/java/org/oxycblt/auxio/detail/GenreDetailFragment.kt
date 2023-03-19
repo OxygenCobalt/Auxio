@@ -25,12 +25,15 @@ import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.ConcatAdapter
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
-import org.oxycblt.auxio.detail.recycler.DetailAdapter
-import org.oxycblt.auxio.detail.recycler.GenreDetailAdapter
+import org.oxycblt.auxio.detail.header.DetailHeaderAdapter
+import org.oxycblt.auxio.detail.header.GenreDetailHeaderAdapter
+import org.oxycblt.auxio.detail.list.DetailListAdapter
+import org.oxycblt.auxio.detail.list.GenreDetailListAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
@@ -52,7 +55,9 @@ import org.oxycblt.auxio.util.*
  */
 @AndroidEntryPoint
 class GenreDetailFragment :
-    ListFragment<Music, FragmentDetailBinding>(), DetailAdapter.Listener<Music> {
+    ListFragment<Music, FragmentDetailBinding>(),
+    DetailHeaderAdapter.Listener,
+    DetailListAdapter.Listener<Music> {
     private val detailModel: DetailViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
@@ -60,7 +65,8 @@ class GenreDetailFragment :
     // Information about what genre to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an genre.
     private val args: GenreDetailFragmentArgs by navArgs()
-    private val detailAdapter = GenreDetailAdapter(this)
+    private val genreHeaderAdapter = GenreDetailHeaderAdapter(this)
+    private val genreListAdapter = GenreDetailListAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +91,7 @@ class GenreDetailFragment :
             setOnMenuItemClickListener(this@GenreDetailFragment)
         }
 
-        binding.detailRecycler.adapter = detailAdapter
+        binding.detailRecycler.adapter = ConcatAdapter(genreHeaderAdapter, genreListAdapter)
 
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
@@ -191,8 +197,8 @@ class GenreDetailFragment :
             findNavController().navigateUp()
             return
         }
-
         requireBinding().detailToolbar.title = genre.resolveName(requireContext())
+        genreHeaderAdapter.setParent(genre)
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
@@ -204,7 +210,7 @@ class GenreDetailFragment :
         if (parent is Genre && parent.uid == unlikelyToBeNull(detailModel.currentGenre.value).uid) {
             playingMusic = song
         }
-        detailAdapter.setPlaying(playingMusic, isPlaying)
+        genreListAdapter.setPlaying(playingMusic, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {
@@ -232,11 +238,11 @@ class GenreDetailFragment :
     }
 
     private fun updateList(list: List<Item>) {
-        detailAdapter.update(list, detailModel.genreInstructions.consume())
+        genreListAdapter.update(list, detailModel.genreInstructions.consume())
     }
 
     private fun updateSelection(selected: List<Music>) {
-        detailAdapter.setSelected(selected.toSet())
+        genreListAdapter.setSelected(selected.toSet())
         requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
     }
 }

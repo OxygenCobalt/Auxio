@@ -38,33 +38,15 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
-/**
- * Stateless interface for loading [Album] cover image data.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-interface CoverExtractor {
-    /**
-     * Fetch an album cover, respecting the current cover configuration.
-     *
-     * @param context [Context] required to load the image.
-     * @param imageSettings [ImageSettings] required to obtain configuration information.
-     * @param album [Album] to load the cover from.
-     * @return An [InputStream] of image data if the cover loading was successful, null if the cover
-     *   loading failed or should not occur.
-     */
-    suspend fun extract(album: Album): InputStream?
-}
-
-class CoverExtractorImpl
+class CoverExtractor
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
     private val imageSettings: ImageSettings,
     private val mediaSourceFactory: MediaSource.Factory
-) : CoverExtractor {
+) {
 
-    override suspend fun extract(album: Album): InputStream? =
+    suspend fun extract(album: Album): InputStream? =
         try {
             when (imageSettings.coverMode) {
                 CoverMode.OFF -> null
