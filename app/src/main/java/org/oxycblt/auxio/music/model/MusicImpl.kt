@@ -21,17 +21,9 @@ package org.oxycblt.auxio.music.model
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import java.security.MessageDigest
-import java.text.CollationKey
-import java.text.Collator
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
-import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.metadata.Disc
 import org.oxycblt.auxio.music.metadata.ReleaseType
@@ -72,7 +64,7 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
             }
     override val rawName = requireNotNull(rawSong.name) { "Invalid raw: No title" }
     override val rawSortName = rawSong.sortName
-    override val collationKey = makeCollationKey(musicSettings)
+    override val sortName = SortName((rawSortName ?: rawName), musicSettings)
     override fun resolveName(context: Context) = rawName
 
     override val track = rawSong.track
@@ -248,7 +240,7 @@ class AlbumImpl(
             }
     override val rawName = rawAlbum.name
     override val rawSortName = rawAlbum.sortName
-    override val collationKey = makeCollationKey(musicSettings)
+    override val sortName = SortName((rawSortName ?: rawName), musicSettings)
     override fun resolveName(context: Context) = rawName
 
     override val dates = Date.Range.from(songs.mapNotNull { it.date })
@@ -341,7 +333,7 @@ class ArtistImpl(
             ?: Music.UID.auxio(MusicMode.ARTISTS) { update(rawArtist.name) }
     override val rawName = rawArtist.name
     override val rawSortName = rawArtist.sortName
-    override val collationKey = makeCollationKey(musicSettings)
+    override val sortName = (rawSortName ?: rawName)?.let { SortName(it, musicSettings) }
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
     override val songs: List<Song>
 
@@ -426,7 +418,7 @@ class GenreImpl(
     override val uid = Music.UID.auxio(MusicMode.GENRES) { update(rawGenre.name) }
     override val rawName = rawGenre.name
     override val rawSortName = rawName
-    override val collationKey = makeCollationKey(musicSettings)
+    override val sortName = (rawSortName ?: rawName)?.let { SortName(it, musicSettings) }
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
 
     override val albums: List<Album>
@@ -531,32 +523,4 @@ fun MessageDigest.update(n: Int?) {
     } else {
         update(0)
     }
-}
-
-/** Cached collator instance re-used with [makeCollationKey]. */
-private val COLLATOR: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
-
-/**
- * Provided implementation to create a [CollationKey] in the way described by [Music.collationKey].
- * This should be used in all overrides of all [CollationKey].
- *
- * @param musicSettings [MusicSettings] required for user parsing configuration.
- * @return A [CollationKey] that follows the specification described by [Music.collationKey].
- */
-private fun Music.makeCollationKey(musicSettings: MusicSettings): CollationKey? {
-    var sortName = (rawSortName ?: rawName) ?: return null
-
-    if (musicSettings.automaticSortNames) {
-        sortName =
-            sortName.run {
-                when {
-                    length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
-                    length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
-                    length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
-                    else -> this
-                }
-            }
-    }
-
-    return COLLATOR.getCollationKey(sortName)
 }

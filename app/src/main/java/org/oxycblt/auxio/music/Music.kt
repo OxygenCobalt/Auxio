@@ -23,6 +23,7 @@ import android.net.Uri
 import android.os.Parcelable
 import java.security.MessageDigest
 import java.text.CollationKey
+import java.text.Collator
 import java.util.UUID
 import kotlin.math.max
 import kotlinx.parcelize.IgnoredOnParcel
@@ -34,6 +35,7 @@ import org.oxycblt.auxio.music.metadata.ReleaseType
 import org.oxycblt.auxio.music.storage.MimeType
 import org.oxycblt.auxio.music.storage.Path
 import org.oxycblt.auxio.util.concatLocalized
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.toUuidOrNull
 
 /**
@@ -74,15 +76,11 @@ sealed interface Music : Item {
     val rawSortName: String?
 
     /**
-     * A [CollationKey] derived from [rawName] and [rawSortName] that can be used to sort items in a
-     * semantically-correct manner. Will be null if the item has no name.
-     *
-     * The key will have the following attributes:
-     * - If [rawSortName] is present, this key will be derived from it. Otherwise [rawName] is used.
-     * - If the string begins with an article, such as "the", it will be stripped, as is usually
-     *   convention for sorting media. This is not internationalized.
+     * A black-box value derived from [rawSortName] and [rawName] that can be used for user-friendly
+     * sorting in the context of music. This should be preferred over [rawSortName] in most cases.
+     * Null if there are no [rawName] or [rawSortName] values to build on.
      */
-    val collationKey: CollationKey?
+    val sortName: SortName?
 
     /**
      * A unique identifier for a piece of music.
@@ -357,6 +355,78 @@ interface Genre : MusicParent {
     val artists: List<Artist>
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
+}
+
+/**
+ * A black-box datatype for a variation of music names that is suitable for music-oriented sorting.
+ * It will automatically handle articles like "The" and numeric components like "An".
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName> {
+    private val number: Int?
+    private val collationKey: CollationKey
+    val thumbString: String?
+
+    init {
+        var sortName = name
+        if (musicSettings.automaticSortNames) {
+            sortName =
+                sortName.run {
+                    when {
+                        length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
+                        length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
+                        length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
+                        else -> this
+                    }
+                }
+        }
+
+        // Parse out numeric portions of the title and use those for sorting, if applicable.
+        val numericEnd = sortName.indexOfFirst { !it.isDigit() }
+        when (numericEnd) {
+            // No numeric component.
+            0 -> number = null
+            // Whole title is numeric.
+            -1 -> {
+                number = sortName.toIntOrNull()
+                sortName = ""
+            }
+            // Part of the title is numeric.
+            else -> {
+                number = sortName.slice(0 until numericEnd).toIntOrNull()
+                sortName = sortName.slice(numericEnd until sortName.length)
+            }
+        }
+
+        collationKey = COLLATOR.getCollationKey(sortName)
+
+        // Keep track of a string to use in the thumb view.
+        // TODO: This needs to be moved elsewhere.
+        thumbString = (number?.toString() ?: collationKey?.run { sourceString.first().uppercase() })
+    }
+
+    override fun toString(): String = number?.toString() ?: collationKey.sourceString
+
+    override fun compareTo(other: SortName) =
+        when {
+            number != null && other.number != null -> number.compareTo(other.number)
+            number != null && other.number == null -> -1 // a < b
+            number == null && other.number != null -> 1 // a > b
+            else -> collationKey.compareTo(other.collationKey)
+        }
+
+    override fun equals(other: Any?) =
+        other is SortName && number == other.number && collationKey == other.collationKey
+
+    override fun hashCode(): Int {
+        var hashCode = collationKey.hashCode()
+        if (number != null) hashCode = 31 * hashCode + number
+        return hashCode
+    }
+
+    private companion object {
+        val COLLATOR: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
+    }
 }
 
 /**

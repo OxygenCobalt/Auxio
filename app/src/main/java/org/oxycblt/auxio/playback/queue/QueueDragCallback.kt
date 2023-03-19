@@ -33,8 +33,6 @@ import org.oxycblt.auxio.util.logD
  * such as an animation when lifting items.
  *
  * @author Alexander Capehart (OxygenCobalt)
- *
- * TODO: Why is item movement so expensive???
  */
 class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHelper.Callback() {
     private var shouldLift = true

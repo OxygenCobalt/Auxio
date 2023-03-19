@@ -52,9 +52,6 @@ import org.oxycblt.auxio.util.*
  * A [ListFragment] that shows information about an [Album].
  *
  * @author Alexander Capehart (OxygenCobalt)
- *
- * TODO: Split up list and header adapters, and then work from there. Header item works fine. Make
- *   sure that other pos-dependent code functions
  */
 @AndroidEntryPoint
 class AlbumDetailFragment :

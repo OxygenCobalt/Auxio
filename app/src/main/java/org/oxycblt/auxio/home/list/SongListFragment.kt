@@ -100,15 +100,13 @@ class SongListFragment :
         // based off the names of the parent objects and not the child objects.
         return when (homeModel.getSortForTab(MusicMode.SONGS).mode) {
             // Name -> Use name
-            is Sort.Mode.ByName -> song.collationKey?.run { sourceString.first().uppercase() }
+            is Sort.Mode.ByName -> song.sortName?.thumbString
 
             // Artist -> Use name of first artist
-            is Sort.Mode.ByArtist ->
-                song.album.artists[0].collationKey?.run { sourceString.first().uppercase() }
+            is Sort.Mode.ByArtist -> song.album.artists[0].sortName?.thumbString
 
             // Album -> Use Album Name
-            is Sort.Mode.ByAlbum ->
-                song.album.collationKey?.run { sourceString.first().uppercase() }
+            is Sort.Mode.ByAlbum -> song.album.sortName?.thumbString
 
             // Year -> Use Full Year
             is Sort.Mode.ByDate -> song.album.dates?.resolveDate(requireContext())

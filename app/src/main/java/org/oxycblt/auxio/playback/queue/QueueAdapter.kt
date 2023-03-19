@@ -173,7 +173,6 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
         fun from(parent: View) =
             QueueSongViewHolder(ItemQueueSongBinding.inflate(parent.context.inflater))
 
-        // TODO: This is not good enough, I need to compare item indices as well.
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK = SongViewHolder.DIFF_CALLBACK
     }

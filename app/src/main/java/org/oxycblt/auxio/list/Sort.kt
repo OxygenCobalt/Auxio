@@ -203,7 +203,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
         /**
          * Sort by the item's name.
          *
-         * @see Music.collationKey
+         * @see Music.sortName
          */
         object ByName : Mode() {
             override val intCode: Int
@@ -248,7 +248,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
         /**
          * Sort by the [Artist] name of an item. Only available for [Song] and [Album].
          *
-         * @see Artist.collationKey
+         * @see Artist.sortName
          */
         object ByArtist : Mode() {
             override val intCode: Int
@@ -536,8 +536,8 @@ data class Sort(val mode: Mode, val direction: Direction) {
          */
         private class BasicComparator<T : Music> private constructor() : Comparator<T> {
             override fun compare(a: T, b: T): Int {
-                val aKey = a.collationKey
-                val bKey = b.collationKey
+                val aKey = a.sortName
+                val bKey = b.sortName
                 return when {
                     aKey != null && bKey != null -> aKey.compareTo(bKey)
                     aKey == null && bKey != null -> -1 // a < b

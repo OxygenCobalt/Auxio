@@ -94,11 +94,10 @@ class AlbumListFragment :
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.getSortForTab(MusicMode.ALBUMS).mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> album.collationKey?.run { sourceString.first().uppercase() }
+            is Sort.Mode.ByName -> album.sortName?.thumbString
 
             // By Artist -> Use name of first artist
-            is Sort.Mode.ByArtist ->
-                album.artists[0].collationKey?.run { sourceString.first().uppercase() }
+            is Sort.Mode.ByArtist -> album.artists[0].sortName?.thumbString
 
             // Date -> Use minimum date (Maximum dates are not sorted by, so showing them is odd)
             is Sort.Mode.ByDate -> album.dates?.run { min.resolveDate(requireContext()) }
