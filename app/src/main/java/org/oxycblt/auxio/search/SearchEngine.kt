@@ -102,7 +102,7 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
                 // which
                 // could make it match the query.
                 val normalizedName =
-                    NORMALIZATION_SANITIZE_REGEX.replace(
+                    NORMALIZE_POST_PROCESSING_REGEX.replace(
                         Normalizer.normalize(name, Normalizer.Form.NFKD), "")
                 if (normalizedName.contains(query, ignoreCase = true)) {
                     return@filter true
@@ -115,8 +115,9 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
     private companion object {
         /**
          * Converts the output of [Normalizer] to remove any junk characters added by it's
-         * replacements.
+         * replacements, alongside punctuation.
          */
-        val NORMALIZATION_SANITIZE_REGEX = Regex("\\p{InCombiningDiacriticalMarks}+")
+        val NORMALIZE_POST_PROCESSING_REGEX =
+            Regex("(\\p{InCombiningDiacriticalMarks}+)|(\\p{Punct})")
     }
 }

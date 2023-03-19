@@ -159,11 +159,14 @@ private constructor(private val rawSong: RawSong, private val future: Future<Tra
         textFrames["TCON"]?.let { rawSong.genreNames = it }
 
         // Compilation Flag
-        (textFrames["TCMP"] ?: textFrames["TXXX:compilation"] ?: textFrames["TXXX:itunescompilation"])?.let {
-            if (it.size != 1 || it[0] != "1") return@let
-            rawSong.albumArtistNames = rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
-            rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
-        }
+        (textFrames["TCMP"]
+                ?: textFrames["TXXX:compilation"] ?: textFrames["TXXX:itunescompilation"])
+            ?.let {
+                if (it.size != 1 || it[0] != "1") return@let
+                rawSong.albumArtistNames =
+                    rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
+                rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
+            }
     }
 
     /**
@@ -268,7 +271,8 @@ private constructor(private val rawSong: RawSong, private val future: Future<Tra
         // Compilation Flag
         (comments["compilation"] ?: comments["itunescompilation"])?.let {
             if (it.size != 1 || it[0] != "1") return@let
-            rawSong.albumArtistNames = rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
+            rawSong.albumArtistNames =
+                rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
             rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
         }
     }

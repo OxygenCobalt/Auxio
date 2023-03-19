@@ -7,12 +7,13 @@
 
 #### What's Improved
 - Accept `REPLAYGAIN_*` adjustment information on OPUS files alongside
-`R128_*` adjustments.
+`R128_*` adjustments
 - List updates are now consistent across the app
 - Fixed jarring header update in detail view
 - Search view now trims search queries
 - Audio effect (equalizer) session is now broadcast when playing/pausing
-rather than on start/stop.
+rather than on start/stop
+- Searching now ignores punctuation
 
 #### What's Fixed
 - Fixed MP4-AAC files not playing due to an accidental audio extractor
