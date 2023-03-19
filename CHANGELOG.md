@@ -2,6 +2,9 @@
 
 ## dev
 
+#### What's New
+- Added support for `COMPILATION` and `ITUNESCOMPILATION` flags.
+
 #### What's Improved
 - Accept `REPLAYGAIN_*` adjustment information on OPUS files alongside
 `R128_*` adjustments.
