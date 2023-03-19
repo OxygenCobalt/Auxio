@@ -31,6 +31,7 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.guava.asDeferred
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
@@ -75,30 +76,11 @@ constructor(
         }
 
     private suspend fun extractExoplayerCover(album: Album): InputStream? {
-        val future =
-            MetadataRetriever.retrieveMetadata(
-                mediaSourceFactory, MediaItem.fromUri(album.songs[0].uri))
-
-        // future.get is a blocking call that makes us spin until the future is done.
-        // This is bad for a co-routine, as it prevents cancellation and by extension
-        // messes with the image loading process and causes annoying bugs.
-        // To fix this we wrap this around in a withContext call to make it suspend and make
-        // sure that the runner can do other coroutines.
-        @Suppress("BlockingMethodInNonBlockingContext")
         val tracks =
-            withContext(Dispatchers.Default) {
-                try {
-                    future.get()
-                } catch (e: Exception) {
-                    null
-                }
-            }
-
-        if (tracks == null || tracks.isEmpty) {
-            // Unrecognized format. This is expected, as ExoPlayer only supports a
-            // subset of formats.
-            return null
-        }
+            MetadataRetriever.retrieveMetadata(
+                    mediaSourceFactory, MediaItem.fromUri(album.songs[0].uri))
+                .asDeferred()
+                .await()
 
         // The metadata extraction process of ExoPlayer results in a dump of all metadata
         // it found, which must be iterated through.
