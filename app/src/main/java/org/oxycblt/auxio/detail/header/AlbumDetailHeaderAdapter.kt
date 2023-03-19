@@ -32,6 +32,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * A [DetailHeaderAdapter] that shows [Album] information.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumDetailHeaderAdapter(private val listener: Listener) :

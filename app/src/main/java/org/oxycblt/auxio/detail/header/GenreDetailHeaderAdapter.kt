@@ -32,6 +32,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * A [DetailHeaderAdapter] that shows [Genre] information.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class GenreDetailHeaderAdapter(private val listener: Listener) :

@@ -157,6 +157,12 @@ private constructor(private val rawSong: RawSong, private val future: Future<Tra
 
         // Genre
         textFrames["TCON"]?.let { rawSong.genreNames = it }
+
+        // Compilation Flag
+        (textFrames["TXXX:compilation"] ?: textFrames["TXXX:itunescompilation"])?.let {
+            rawSong.albumArtistNames = rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
+            rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
+        }
     }
 
     /**
@@ -257,6 +263,12 @@ private constructor(private val rawSong: RawSong, private val future: Future<Tra
 
         // Genre
         comments["genre"]?.let { rawSong.genreNames = it }
+
+        // Compilation Flag
+        (comments["compilation"] ?: comments["itunescompilation"])?.let {
+            rawSong.albumArtistNames = rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
+            rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
+        }
     }
 
     class Factory @Inject constructor(private val mediaSourceFactory: MediaSource.Factory) :
@@ -272,5 +284,10 @@ private constructor(private val rawSong: RawSong, private val future: Future<Tra
                     MediaItem.fromUri(
                         requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No id" }
                             .toAudioUri())))
+    }
+
+    private companion object {
+        val COMPILATION_ALBUM_ARTISTS = listOf("Various Artists")
+        val COMPILATION_RELEASE_TYPES = listOf("compilation")
     }
 }

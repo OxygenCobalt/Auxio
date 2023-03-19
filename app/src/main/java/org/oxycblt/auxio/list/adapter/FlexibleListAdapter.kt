@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.*
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import java.util.concurrent.Executor
-import org.oxycblt.auxio.util.logD
 
 /**
  * A variant of ListDiffer with more flexible updates.
@@ -35,8 +34,7 @@ import org.oxycblt.auxio.util.logD
 abstract class FlexibleListAdapter<T, VH : RecyclerView.ViewHolder>(
     diffCallback: DiffUtil.ItemCallback<T>
 ) : RecyclerView.Adapter<VH>() {
-    @Suppress("LeakingThis")
-    private val differ = FlexibleListDiffer(this, diffCallback)
+    @Suppress("LeakingThis") private val differ = FlexibleListDiffer(this, diffCallback)
     final override fun getItemCount() = differ.currentList.size
     /** The current list stored by the adapter's differ instance. */
     val currentList: List<T>
@@ -55,8 +53,7 @@ abstract class FlexibleListAdapter<T, VH : RecyclerView.ViewHolder>(
         newData: List<T>,
         instructions: UpdateInstructions?,
         callback: (() -> Unit)? = null
-    ) =
-        differ.update(newData, instructions, callback)
+    ) = differ.update(newData, instructions, callback)
 }
 
 /**

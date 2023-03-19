@@ -35,6 +35,7 @@ abstract class DetailHeaderAdapter<T : MusicParent, VH : RecyclerView.ViewHolder
 
     /**
      * Bind the created header [RecyclerView.ViewHolder] with the current [parent].
+     *
      * @param holder The [RecyclerView.ViewHolder] to bind.
      * @param parent The current [MusicParent] to bind.
      */
@@ -42,6 +43,7 @@ abstract class DetailHeaderAdapter<T : MusicParent, VH : RecyclerView.ViewHolder
 
     /**
      * Update the [MusicParent] shown in the header.
+     *
      * @param parent The new [MusicParent] to show.
      */
     fun setParent(parent: T) {
