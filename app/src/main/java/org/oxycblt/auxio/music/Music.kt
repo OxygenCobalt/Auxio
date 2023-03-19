@@ -35,7 +35,6 @@ import org.oxycblt.auxio.music.metadata.ReleaseType
 import org.oxycblt.auxio.music.storage.MimeType
 import org.oxycblt.auxio.music.storage.Path
 import org.oxycblt.auxio.util.concatLocalized
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.toUuidOrNull
 
 /**
@@ -360,6 +359,7 @@ interface Genre : MusicParent {
 /**
  * A black-box datatype for a variation of music names that is suitable for music-oriented sorting.
  * It will automatically handle articles like "The" and numeric components like "An".
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName> {

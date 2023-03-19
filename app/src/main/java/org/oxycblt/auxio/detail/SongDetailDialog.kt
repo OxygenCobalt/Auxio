@@ -40,7 +40,6 @@ import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.concatLocalized
-import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewBindingDialogFragment] that shows information about a Song.
@@ -104,7 +103,6 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
                     add(
                         SongProperty(
                             R.string.lbl_relative_path, song.path.parent.resolveName(context)))
-                    logD(info.resolvedMimeType.resolveName(context))
                     info.resolvedMimeType.resolveName(context)?.let {
                         add(SongProperty(R.string.lbl_format, it))
                     }

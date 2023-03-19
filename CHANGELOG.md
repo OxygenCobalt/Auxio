@@ -14,6 +14,7 @@
 - Audio effect (equalizer) session is now broadcast when playing/pausing
 rather than on start/stop
 - Searching now ignores punctuation
+- Numeric names are now logically sorted (i.e 7 before 15)
 
 #### What's Fixed
 - Fixed MP4-AAC files not playing due to an accidental audio extractor
