@@ -40,7 +40,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
     entities = [PlaybackState::class, QueueHeapItem::class, QueueMappingItem::class],
     version = 27,
     exportSchema = false)
-@TypeConverters(Music.UID.Converter::class)
+@TypeConverters(PersistenceDatabase.Converters::class)
 abstract class PersistenceDatabase : RoomDatabase() {
     /**
      * Get the current [PlaybackStateDao].

@@ -144,10 +144,8 @@ interface Indexer {
          *
          * @param result The outcome of the music loading process.
          */
-        data class Complete(val result: Result<Response>) : State()
+        data class Complete(val result: Result<Library>) : State()
     }
-
-    data class Response(val result: Library, val playlists: List<Playlist>)
 
     /**
      * Represents the current progress of the music loader. Usually encapsulated in a [State].
@@ -239,7 +237,7 @@ constructor(
     private val mediaStoreExtractor: MediaStoreExtractor,
     private val tagExtractor: TagExtractor
 ) : Indexer {
-    @Volatile private var lastResponse: Result<Indexer.Response>? = null
+    @Volatile private var lastResponse: Result<Library>? = null
     @Volatile private var indexingState: Indexer.Indexing? = null
     @Volatile private var controller: Indexer.Controller? = null
     @Volatile private var listener: Indexer.Listener? = null
@@ -339,7 +337,7 @@ constructor(
         context: Context,
         withCache: Boolean,
         scope: CoroutineScope
-    ): Indexer.Response {
+    ): Library {
         if (ContextCompat.checkSelfPermission(context, Indexer.PERMISSION_READ_AUDIO) ==
             PackageManager.PERMISSION_DENIED) {
             logE("Permission check failed")
@@ -397,7 +395,7 @@ constructor(
         if (cache == null || cache.invalidated) {
             cacheRepository.writeCache(rawSongs)
         }
-        return Indexer.Response(libraryJob.await(), listOf())
+        return libraryJob.await()
     }
 
     /**
@@ -428,7 +426,7 @@ constructor(
      * @param result The new [Result] to emit, representing the outcome of the music loading
      *   process.
      */
-    private suspend fun emitCompletion(result: Result<Indexer.Response>) {
+    private suspend fun emitCompletion(result: Result<Library>) {
         yield()
         // Swap to the Main thread so that downstream callbacks don't crash from being on
         // a background thread. Does not occur in emitIndexing due to efficiency reasons.

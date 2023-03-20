@@ -20,6 +20,7 @@ rather than on start/stop
 - Fixed MP4-AAC files not playing due to an accidental audio extractor
 deletion
 - Fix "format" not appearing in song properties view
+- Fix visual bugs when editing duplicate songs in the queue
 
 ## 3.0.3
 
