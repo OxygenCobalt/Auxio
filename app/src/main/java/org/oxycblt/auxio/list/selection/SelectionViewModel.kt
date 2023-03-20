@@ -24,7 +24,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.library.Library
 
 /**
  * A [ViewModel] that manages the current selection.
@@ -33,21 +32,19 @@ import org.oxycblt.auxio.music.library.Library
  */
 @HiltViewModel
 class SelectionViewModel @Inject constructor(private val musicRepository: MusicRepository) :
-    ViewModel(), MusicRepository.Listener {
+    ViewModel(), MusicRepository.UpdateListener {
     private val _selected = MutableStateFlow(listOf<Music>())
     /** the currently selected items. These are ordered in earliest selected and latest selected. */
     val selected: StateFlow<List<Music>>
         get() = _selected
 
     init {
-        musicRepository.addListener(this)
+        musicRepository.addUpdateListener(this)
     }
 
-    override fun onLibraryChanged(library: Library?) {
-        if (library == null) {
-            return
-        }
-
+    override fun onMusicChanges(changes: MusicRepository.Changes) {
+        if (!changes.library) return
+        val library = musicRepository.library ?: return
         // Sanitize the selection to remove items that no longer exist and thus
         // won't appear in any list.
         _selected.value =
@@ -64,7 +61,7 @@ class SelectionViewModel @Inject constructor(private val musicRepository: MusicR
 
     override fun onCleared() {
         super.onCleared()
-        musicRepository.removeListener(this)
+        musicRepository.removeUpdateListener(this)
     }
 
     /**

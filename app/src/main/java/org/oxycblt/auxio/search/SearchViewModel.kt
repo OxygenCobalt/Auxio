@@ -50,7 +50,7 @@ constructor(
     private val searchEngine: SearchEngine,
     private val searchSettings: SearchSettings,
     private val playbackSettings: PlaybackSettings,
-) : ViewModel(), MusicRepository.Listener {
+) : ViewModel(), MusicRepository.UpdateListener {
     private var lastQuery: String? = null
     private var currentSearchJob: Job? = null
 
@@ -64,17 +64,16 @@ constructor(
         get() = playbackSettings.inListPlaybackMode
 
     init {
-        musicRepository.addListener(this)
+        musicRepository.addUpdateListener(this)
     }
 
     override fun onCleared() {
         super.onCleared()
-        musicRepository.removeListener(this)
+        musicRepository.removeUpdateListener(this)
     }
 
-    override fun onLibraryChanged(library: Library?) {
-        if (library != null) {
-            // Make sure our query is up to date with the music library.
+    override fun onMusicChanges(changes: MusicRepository.Changes) {
+        if (changes.library && musicRepository.library != null) {
             search(lastQuery)
         }
     }

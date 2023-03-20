@@ -36,7 +36,6 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.music.metadata.AudioInfo
 import org.oxycblt.auxio.music.metadata.Disc
 import org.oxycblt.auxio.music.metadata.ReleaseType
@@ -57,7 +56,7 @@ constructor(
     private val audioInfoProvider: AudioInfo.Provider,
     private val musicSettings: MusicSettings,
     private val playbackSettings: PlaybackSettings
-) : ViewModel(), MusicRepository.Listener {
+) : ViewModel(), MusicRepository.UpdateListener {
     private var currentSongJob: Job? = null
 
     // --- SONG ---
@@ -152,18 +151,16 @@ constructor(
         get() = playbackSettings.inParentPlaybackMode
 
     init {
-        musicRepository.addListener(this)
+        musicRepository.addUpdateListener(this)
     }
 
     override fun onCleared() {
-        musicRepository.removeListener(this)
+        musicRepository.removeUpdateListener(this)
     }
 
-    override fun onLibraryChanged(library: Library?) {
-        if (library == null) {
-            // Nothing to do.
-            return
-        }
+    override fun onMusicChanges(changes: MusicRepository.Changes) {
+        if (!changes.library) return
+        val library = musicRepository.library ?: return
 
         // If we are showing any item right now, we will need to refresh it (and any information
         // related to it) with the new library in order to prevent stale items from showing up

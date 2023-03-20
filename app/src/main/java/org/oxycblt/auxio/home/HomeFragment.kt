@@ -55,8 +55,6 @@ import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.selection.SelectionFragment
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.library.Library
-import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
@@ -158,7 +156,7 @@ class HomeFragment :
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
         collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
         collectImmediately(homeModel.songsList, homeModel.isFastScrolling, ::updateFab)
-        collectImmediately(musicModel.indexerState, ::updateIndexerState)
+        collectImmediately(musicModel.indexingState, ::updateIndexerState)
         collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
@@ -340,14 +338,14 @@ class HomeFragment :
         homeModel.recreateTabs.consume()
     }
 
-    private fun updateIndexerState(state: Indexer.State?) {
+    private fun updateIndexerState(state: IndexingState?) {
         // TODO: Make music loading experience a bit more pleasant
         //  1. Loading placeholder for item lists
         //  2. Rework the "No Music" case to not be an error and instead result in a placeholder
         val binding = requireBinding()
         when (state) {
-            is Indexer.State.Complete -> setupCompleteState(binding, state.result)
-            is Indexer.State.Indexing -> setupIndexingState(binding, state.indexing)
+            is IndexingState.Completed -> setupCompleteState(binding, state.error)
+            is IndexingState.Indexing -> setupIndexingState(binding, state.progress)
             null -> {
                 logD("Indexer is in indeterminate state")
                 binding.homeIndexingContainer.visibility = View.INVISIBLE
@@ -355,77 +353,77 @@ class HomeFragment :
         }
     }
 
-    private fun setupCompleteState(binding: FragmentHomeBinding, result: Result<Library>) {
-        if (result.isSuccess) {
+    private fun setupCompleteState(binding: FragmentHomeBinding, error: Throwable?) {
+        if (error == null) {
             logD("Received ok response")
             binding.homeFab.show()
             binding.homeIndexingContainer.visibility = View.INVISIBLE
-        } else {
-            logD("Received non-ok response")
-            val context = requireContext()
-            val throwable = unlikelyToBeNull(result.exceptionOrNull())
-            binding.homeIndexingContainer.visibility = View.VISIBLE
-            binding.homeIndexingProgress.visibility = View.INVISIBLE
-            when (throwable) {
-                is Indexer.NoPermissionException -> {
-                    logD("Updating UI to permission request state")
-                    binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
-                    // Configure the action to act as a permission launcher.
-                    binding.homeIndexingAction.apply {
-                        visibility = View.VISIBLE
-                        text = context.getString(R.string.lbl_grant)
-                        setOnClickListener {
-                            requireNotNull(storagePermissionLauncher) {
-                                    "Permission launcher was not available"
-                                }
-                                .launch(Indexer.PERMISSION_READ_AUDIO)
-                        }
+            return
+        }
+
+        logD("Received non-ok response")
+        val context = requireContext()
+        binding.homeIndexingContainer.visibility = View.VISIBLE
+        binding.homeIndexingProgress.visibility = View.INVISIBLE
+        when (error) {
+            is NoAudioPermissionException -> {
+                logD("Updating UI to permission request state")
+                binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
+                // Configure the action to act as a permission launcher.
+                binding.homeIndexingAction.apply {
+                    visibility = View.VISIBLE
+                    text = context.getString(R.string.lbl_grant)
+                    setOnClickListener {
+                        requireNotNull(storagePermissionLauncher) {
+                                "Permission launcher was not available"
+                            }
+                            .launch(PERMISSION_READ_AUDIO)
                     }
                 }
-                is Indexer.NoMusicException -> {
-                    logD("Updating UI to no music state")
-                    binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
-                    // Configure the action to act as a reload trigger.
-                    binding.homeIndexingAction.apply {
-                        visibility = View.VISIBLE
-                        text = context.getString(R.string.lbl_retry)
-                        setOnClickListener { musicModel.refresh() }
-                    }
+            }
+            is NoMusicException -> {
+                logD("Updating UI to no music state")
+                binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
+                // Configure the action to act as a reload trigger.
+                binding.homeIndexingAction.apply {
+                    visibility = View.VISIBLE
+                    text = context.getString(R.string.lbl_retry)
+                    setOnClickListener { musicModel.refresh() }
                 }
-                else -> {
-                    logD("Updating UI to error state")
-                    binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
-                    // Configure the action to act as a reload trigger.
-                    binding.homeIndexingAction.apply {
-                        visibility = View.VISIBLE
-                        text = context.getString(R.string.lbl_retry)
-                        setOnClickListener { musicModel.rescan() }
-                    }
+            }
+            else -> {
+                logD("Updating UI to error state")
+                binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
+                // Configure the action to act as a reload trigger.
+                binding.homeIndexingAction.apply {
+                    visibility = View.VISIBLE
+                    text = context.getString(R.string.lbl_retry)
+                    setOnClickListener { musicModel.rescan() }
                 }
             }
         }
     }
 
-    private fun setupIndexingState(binding: FragmentHomeBinding, indexing: Indexer.Indexing) {
+    private fun setupIndexingState(binding: FragmentHomeBinding, progress: IndexingProgress) {
         // Remove all content except for the progress indicator.
         binding.homeIndexingContainer.visibility = View.VISIBLE
         binding.homeIndexingProgress.visibility = View.VISIBLE
         binding.homeIndexingAction.visibility = View.INVISIBLE
 
-        when (indexing) {
-            is Indexer.Indexing.Indeterminate -> {
+        when (progress) {
+            is IndexingProgress.Indeterminate -> {
                 // In a query/initialization state, show a generic loading status.
                 binding.homeIndexingStatus.text = getString(R.string.lng_indexing)
                 binding.homeIndexingProgress.isIndeterminate = true
             }
-            is Indexer.Indexing.Songs -> {
+            is IndexingProgress.Songs -> {
                 // Actively loading songs, show the current progress.
                 binding.homeIndexingStatus.text =
-                    getString(R.string.fmt_indexing, indexing.current, indexing.total)
+                    getString(R.string.fmt_indexing, progress.current, progress.total)
                 binding.homeIndexingProgress.apply {
                     isIndeterminate = false
-                    max = indexing.total
-                    progress = indexing.current
+                    max = progress.total
+                    this.progress = progress.current
                 }
             }
         }

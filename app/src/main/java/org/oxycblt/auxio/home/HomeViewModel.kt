@@ -27,7 +27,6 @@ import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
@@ -46,7 +45,7 @@ constructor(
     private val playbackSettings: PlaybackSettings,
     private val musicRepository: MusicRepository,
     private val musicSettings: MusicSettings
-) : ViewModel(), MusicRepository.Listener, HomeSettings.Listener {
+) : ViewModel(), MusicRepository.UpdateListener, HomeSettings.Listener {
 
     private val _songsList = MutableStateFlow(listOf<Song>())
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
@@ -117,37 +116,37 @@ constructor(
     val isFastScrolling: StateFlow<Boolean> = _isFastScrolling
 
     init {
-        musicRepository.addListener(this)
+        musicRepository.addUpdateListener(this)
         homeSettings.registerListener(this)
     }
 
     override fun onCleared() {
         super.onCleared()
-        musicRepository.removeListener(this)
+        musicRepository.removeUpdateListener(this)
         homeSettings.unregisterListener(this)
     }
 
-    override fun onLibraryChanged(library: Library?) {
-        if (library != null) {
-            logD("Library changed, refreshing library")
-            // Get the each list of items in the library to use as our list data.
-            // Applying the preferred sorting to them.
-            _songsInstructions.put(UpdateInstructions.Diff)
-            _songsList.value = musicSettings.songSort.songs(library.songs)
-            _albumsInstructions.put(UpdateInstructions.Diff)
-            _albumsLists.value = musicSettings.albumSort.albums(library.albums)
-            _artistsInstructions.put(UpdateInstructions.Diff)
-            _artistsList.value =
-                musicSettings.artistSort.artists(
-                    if (homeSettings.shouldHideCollaborators) {
-                        // Hide Collaborators is enabled, filter out collaborators.
-                        library.artists.filter { !it.isCollaborator }
-                    } else {
-                        library.artists
-                    })
-            _genresInstructions.put(UpdateInstructions.Diff)
-            _genresList.value = musicSettings.genreSort.genres(library.genres)
-        }
+    override fun onMusicChanges(changes: MusicRepository.Changes) {
+        if (!changes.library) return
+        val library = musicRepository.library ?: return
+        logD("Library changed, refreshing library")
+        // Get the each list of items in the library to use as our list data.
+        // Applying the preferred sorting to them.
+        _songsInstructions.put(UpdateInstructions.Diff)
+        _songsList.value = musicSettings.songSort.songs(library.songs)
+        _albumsInstructions.put(UpdateInstructions.Diff)
+        _albumsLists.value = musicSettings.albumSort.albums(library.albums)
+        _artistsInstructions.put(UpdateInstructions.Diff)
+        _artistsList.value =
+            musicSettings.artistSort.artists(
+                if (homeSettings.shouldHideCollaborators) {
+                    // Hide Collaborators is enabled, filter out collaborators.
+                    library.artists.filter { !it.isCollaborator }
+                } else {
+                    library.artists
+                })
+        _genresInstructions.put(UpdateInstructions.Diff)
+        _genresList.value = musicSettings.genreSort.genres(library.genres)
     }
 
     override fun onTabsChanged() {
@@ -159,7 +158,7 @@ constructor(
     override fun onHideCollaboratorsChanged() {
         // Changes in the hide collaborator setting will change the artist contents
         // of the library, consider it a library update.
-        onLibraryChanged(musicRepository.library)
+        onMusicChanges(MusicRepository.Changes(library = true, playlists = false))
     }
 
     /**

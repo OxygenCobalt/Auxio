@@ -28,13 +28,12 @@ import android.os.PowerManager
 import android.provider.MediaStore
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.Runnable
+import java.util.*
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.storage.contentResolverSafe
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.service.ForegroundManager
@@ -56,12 +55,17 @@ import org.oxycblt.auxio.util.logD
  * TODO: Unify with PlaybackService as part of the service independence project
  */
 @AndroidEntryPoint
-class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
+class IndexerService :
+    Service(),
+    MusicRepository.IndexingWorker,
+    MusicRepository.IndexingListener,
+    MusicRepository.UpdateListener,
+    MusicSettings.Listener {
     @Inject lateinit var imageLoader: ImageLoader
     @Inject lateinit var musicRepository: MusicRepository
-    @Inject lateinit var indexer: Indexer
     @Inject lateinit var musicSettings: MusicSettings
     @Inject lateinit var playbackManager: PlaybackStateManager
+
     private val serviceJob = Job()
     private val indexScope = CoroutineScope(serviceJob + Dispatchers.IO)
     private var currentIndexJob: Job? = null
@@ -85,13 +89,9 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
         // condition to cause us to load music before we were fully initialize.
         indexerContentObserver = SystemContentObserver()
         musicSettings.registerListener(this)
-        indexer.registerController(this)
-        // An indeterminate indexer and a missing library implies we are extremely early
-        // in app initialization so start loading music.
-        if (musicRepository.library == null && indexer.isIndeterminate) {
-            logD("No library present and no previous response, indexing music now")
-            onStartIndexing(true)
-        }
+        musicRepository.addUpdateListener(this)
+        musicRepository.addIndexingListener(this)
+        musicRepository.registerWorker(this)
 
         logD("Service created.")
     }
@@ -109,83 +109,66 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
         // events will not occur.
         indexerContentObserver.release()
         musicSettings.unregisterListener(this)
-        indexer.unregisterController(this)
+        musicRepository.removeUpdateListener(this)
+        musicRepository.removeIndexingListener(this)
+        musicRepository.unregisterWorker(this)
         // Then cancel any remaining music loading jobs.
         serviceJob.cancel()
-        indexer.reset()
     }
 
     // --- CONTROLLER CALLBACKS ---
 
-    override fun onStartIndexing(withCache: Boolean) {
-        if (indexer.isIndexing) {
-            // Cancel the previous music loading job.
-            currentIndexJob?.cancel()
-            indexer.reset()
-        }
+    override fun requestIndex(withCache: Boolean) {
+        // Cancel the previous music loading job.
+        currentIndexJob?.cancel()
         // Start a new music loading job on a co-routine.
-        currentIndexJob = indexer.index(this@IndexerService, withCache, indexScope)
+        currentIndexJob =
+            indexScope.launch { musicRepository.index(this@IndexerService, withCache) }
     }
 
-    override fun onIndexerStateChanged(state: Indexer.State?) {
-        when (state) {
-            is Indexer.State.Indexing -> updateActiveSession(state.indexing)
-            is Indexer.State.Complete -> {
-                val newLibrary = state.result.getOrNull()
-                if (newLibrary != null && newLibrary != musicRepository.library) {
-                    logD("Applying new library")
-                    // We only care if the newly-loaded library is going to replace a previously
-                    // loaded library.
-                    if (musicRepository.library != null) {
-                        // Wipe possibly-invalidated outdated covers
-                        imageLoader.memoryCache?.clear()
-                        // Clear invalid models from PlaybackStateManager. This is not connected
-                        // to a listener as it is bad practice for a shared object to attach to
-                        // the listener system of another.
-                        playbackManager.toSavedState()?.let { savedState ->
-                            playbackManager.applySavedState(
-                                PlaybackStateManager.SavedState(
-                                    parent = savedState.parent?.let(newLibrary::sanitize),
-                                    queueState =
-                                        savedState.queueState.remap { song ->
-                                            newLibrary.sanitize(requireNotNull(song))
-                                        },
-                                    positionMs = savedState.positionMs,
-                                    repeatMode = savedState.repeatMode),
-                                true)
-                        }
-                    }
-                    // Forward the new library to MusicStore to continue the update process.
-                    musicRepository.library = newLibrary
-                }
-                // On errors, while we would want to show a notification that displays the
-                // error, that requires the Android 13 notification permission, which is not
-                // handled right now.
-                updateIdleSession()
-            }
-            null -> {
-                // Null is the indeterminate state that occurs on app startup or after
-                // the cancellation of a load, so in that case we want to stop foreground
-                // since (technically) nothing is loading.
-                updateIdleSession()
-            }
+    override val context = this
+
+    override val scope = indexScope
+
+    override fun onMusicChanges(changes: MusicRepository.Changes) {
+        if (!changes.library) return
+        val library = musicRepository.library ?: return
+        // Wipe possibly-invalidated outdated covers
+        imageLoader.memoryCache?.clear()
+        // Clear invalid models from PlaybackStateManager. This is not connected
+        // to a listener as it is bad practice for a shared object to attach to
+        // the listener system of another.
+        playbackManager.toSavedState()?.let { savedState ->
+            playbackManager.applySavedState(
+                PlaybackStateManager.SavedState(
+                    parent = savedState.parent?.let(library::sanitize),
+                    queueState =
+                        savedState.queueState.remap { song ->
+                            library.sanitize(requireNotNull(song))
+                        },
+                    positionMs = savedState.positionMs,
+                    repeatMode = savedState.repeatMode),
+                true)
+        }
+    }
+
+    override fun onIndexingStateChanged() {
+        val state = musicRepository.indexingState
+        if (state is IndexingState.Indexing) {
+            updateActiveSession(state.progress)
+        } else {
+            updateIdleSession()
         }
     }
 
     // --- INTERNAL ---
 
-    /**
-     * Update the current state to "Active", in which the service signals that music loading is
-     * on-going.
-     *
-     * @param state The current music loading state.
-     */
-    private fun updateActiveSession(state: Indexer.Indexing) {
+    private fun updateActiveSession(progress: IndexingProgress) {
         // When loading, we want to enter the foreground state so that android does
         // not shut off the loading process. Note that while we will always post the
         // notification when initially starting, we will not update the notification
         // unless it indicates that it has changed.
-        val changed = indexingNotification.updateIndexingState(state)
+        val changed = indexingNotification.updateIndexingState(progress)
         if (!foregroundManager.tryStartForeground(indexingNotification) && changed) {
             logD("Notification changed, re-posting notification")
             indexingNotification.post()
@@ -194,10 +177,6 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
         wakeLock.acquireSafe()
     }
 
-    /**
-     * Update the current state to "Idle", in which it either does nothing or signals that it's
-     * currently monitoring the music library for changes.
-     */
     private fun updateIdleSession() {
         if (musicSettings.shouldBeObserving) {
             // There are a few reasons why we stay in the foreground with automatic rescanning:
@@ -244,7 +223,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
 
     override fun onIndexingSettingChanged() {
         // Music loading configuration changed, need to reload music.
-        onStartIndexing(true)
+        requestIndex(true)
     }
 
     override fun onObservingChanged() {
@@ -252,7 +231,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
         // notification if we were actively loading when the automatic rescanning
         // setting changed. In such a case, the state will still be updated when
         // the music loading process ends.
-        if (!indexer.isIndexing) {
+        if (currentIndexJob == null) {
             updateIdleSession()
         }
     }
@@ -290,7 +269,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
             // Check here if we should even start a reindex. This is much less bug-prone than
             // registering and de-registering this component as this setting changes.
             if (musicSettings.shouldBeObserving) {
-                onStartIndexing(true)
+                requestIndex(true)
             }
         }
     }

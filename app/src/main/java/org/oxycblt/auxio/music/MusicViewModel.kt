@@ -23,7 +23,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.oxycblt.auxio.music.system.Indexer
 
 /**
  * A [ViewModel] providing data specific to the music loading process.
@@ -31,12 +30,12 @@ import org.oxycblt.auxio.music.system.Indexer
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
-class MusicViewModel @Inject constructor(private val indexer: Indexer) :
-    ViewModel(), Indexer.Listener {
+class MusicViewModel @Inject constructor(private val musicRepository: MusicRepository) :
+    ViewModel(), MusicRepository.UpdateListener, MusicRepository.IndexingListener {
 
-    private val _indexerState = MutableStateFlow<Indexer.State?>(null)
+    private val _indexingState = MutableStateFlow<IndexingState?>(null)
     /** The current music loading state, or null if no loading is going on. */
-    val indexerState: StateFlow<Indexer.State?> = _indexerState
+    val indexingState: StateFlow<IndexingState?> = _indexingState
 
     private val _statistics = MutableStateFlow<Statistics?>(null)
     /** [Statistics] about the last completed music load. */
@@ -44,36 +43,39 @@ class MusicViewModel @Inject constructor(private val indexer: Indexer) :
         get() = _statistics
 
     init {
-        indexer.registerListener(this)
+        musicRepository.addUpdateListener(this)
+        musicRepository.addIndexingListener(this)
     }
 
     override fun onCleared() {
-        indexer.unregisterListener(this)
+        musicRepository.removeUpdateListener(this)
+        musicRepository.removeIndexingListener(this)
     }
 
-    override fun onIndexerStateChanged(state: Indexer.State?) {
-        _indexerState.value = state
-        if (state is Indexer.State.Complete) {
-            // New state is a completed library, update the statistics values.
-            val library = state.result.getOrNull() ?: return
-            _statistics.value =
-                Statistics(
-                    library.songs.size,
-                    library.albums.size,
-                    library.artists.size,
-                    library.genres.size,
-                    library.songs.sumOf { it.durationMs })
-        }
+    override fun onMusicChanges(changes: MusicRepository.Changes) {
+        if (!changes.library) return
+        val library = musicRepository.library ?: return
+        _statistics.value =
+            Statistics(
+                library.songs.size,
+                library.albums.size,
+                library.artists.size,
+                library.genres.size,
+                library.songs.sumOf { it.durationMs })
+    }
+
+    override fun onIndexingStateChanged() {
+        _indexingState.value = musicRepository.indexingState
     }
 
     /** Requests that the music library should be re-loaded while leveraging the cache. */
     fun refresh() {
-        indexer.requestReindex(true)
+        musicRepository.requestIndex(true)
     }
 
     /** Requests that the music library be re-loaded without the cache. */
     fun rescan() {
-        indexer.requestReindex(false)
+        musicRepository.requestIndex(false)
     }
 
     /**

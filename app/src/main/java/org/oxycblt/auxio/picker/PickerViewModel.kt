@@ -24,7 +24,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -35,7 +34,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 @HiltViewModel
 class PickerViewModel @Inject constructor(private val musicRepository: MusicRepository) :
-    ViewModel(), MusicRepository.Listener {
+    ViewModel(), MusicRepository.UpdateListener {
 
     private val _currentItem = MutableStateFlow<Music?>(null)
     /** The current item whose artists should be shown in the picker. Null if there is no item. */
@@ -52,12 +51,16 @@ class PickerViewModel @Inject constructor(private val musicRepository: MusicRepo
     val genreChoices: StateFlow<List<Genre>>
         get() = _genreChoices
 
-    override fun onCleared() {
-        musicRepository.removeListener(this)
+    init {
+        musicRepository.addUpdateListener(this)
     }
 
-    override fun onLibraryChanged(library: Library?) {
-        if (library != null) {
+    override fun onCleared() {
+        musicRepository.removeUpdateListener(this)
+    }
+
+    override fun onMusicChanges(changes: MusicRepository.Changes) {
+        if (changes.library && musicRepository.library != null) {
             refreshChoices()
         }
     }

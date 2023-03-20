@@ -48,7 +48,6 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
@@ -82,7 +81,7 @@ class PlaybackService :
     Player.Listener,
     InternalPlayer,
     MediaSessionComponent.Listener,
-    MusicRepository.Listener {
+    MusicRepository.UpdateListener {
     // Player components
     private lateinit var player: ExoPlayer
     @Inject lateinit var mediaSourceFactory: MediaSource.Factory
@@ -148,7 +147,7 @@ class PlaybackService :
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
         playbackManager.registerInternalPlayer(this)
-        musicRepository.addListener(this)
+        musicRepository.addUpdateListener(this)
         mediaSessionComponent.registerListener(this)
         registerReceiver(
             systemReceiver,
@@ -187,7 +186,7 @@ class PlaybackService :
         // Pause just in case this destruction was unexpected.
         playbackManager.setPlaying(false)
         playbackManager.unregisterInternalPlayer(this)
-        musicRepository.removeListener(this)
+        musicRepository.removeUpdateListener(this)
 
         unregisterReceiver(systemReceiver)
         serviceJob.cancel()
@@ -299,10 +298,8 @@ class PlaybackService :
         playbackManager.next()
     }
 
-    // --- MUSICSTORE OVERRIDES ---
-
-    override fun onLibraryChanged(library: Library?) {
-        if (library != null) {
+    override fun onMusicChanges(changes: MusicRepository.Changes) {
+        if (changes.library && musicRepository.library != null) {
             // We now have a library, see if we have anything we need to do.
             playbackManager.requestAction(this)
         }
