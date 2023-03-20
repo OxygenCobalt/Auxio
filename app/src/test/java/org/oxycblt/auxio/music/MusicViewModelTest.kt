@@ -21,7 +21,7 @@ package org.oxycblt.auxio.music
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.oxycblt.auxio.music.model.FakeLibrary
+import org.oxycblt.auxio.music.library.FakeLibrary
 import org.oxycblt.auxio.music.system.FakeIndexer
 import org.oxycblt.auxio.music.system.Indexer
 import org.oxycblt.auxio.util.forceClear

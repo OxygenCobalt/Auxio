@@ -287,6 +287,7 @@ constructor(
                 is Genre -> musicSettings.genreSongSort
                 is Artist -> musicSettings.artistSongSort
                 is Album -> musicSettings.albumSongSort
+                is Playlist -> TODO("handle this")
                 null -> musicSettings.songSort
             }
         val queue = sort.songs(parent?.songs ?: library.songs)
@@ -494,6 +495,7 @@ constructor(
                 is Artist -> musicSettings.artistSongSort.songs(it.songs)
                 is Genre -> musicSettings.genreSongSort.songs(it.songs)
                 is Song -> listOf(it)
+                is Playlist -> TODO("handle this")
             }
         }
     }

@@ -20,7 +20,7 @@ package org.oxycblt.auxio.playback.persist
 
 import javax.inject.Inject
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.model.Library
+import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.logD

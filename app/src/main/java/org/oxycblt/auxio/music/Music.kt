@@ -21,6 +21,7 @@ package org.oxycblt.auxio.music
 import android.content.Context
 import android.net.Uri
 import android.os.Parcelable
+import androidx.room.TypeConverter
 import java.security.MessageDigest
 import java.text.CollationKey
 import java.text.Collator
@@ -134,6 +135,14 @@ sealed interface Music : Item {
 
             /** @see musicBrainz */
             MUSICBRAINZ("org.musicbrainz")
+        }
+
+        object TypeConverters {
+            /** @see [Music.UID.toString] */
+            @TypeConverter fun fromMusicUID(uid: Music.UID?) = uid?.toString()
+
+            /** @see [Music.UID.fromString] */
+            @TypeConverter fun toMusicUid(string: String?) = string?.let(Music.UID::fromString)
         }
 
         companion object {
@@ -355,6 +364,13 @@ interface Genre : MusicParent {
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
 }
+
+/**
+ * A playlist.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+interface Playlist : MusicParent
 
 /**
  * A black-box datatype for a variation of music names that is suitable for music-oriented sorting.

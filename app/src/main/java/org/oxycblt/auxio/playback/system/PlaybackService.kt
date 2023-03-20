@@ -48,7 +48,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.model.Library
+import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor

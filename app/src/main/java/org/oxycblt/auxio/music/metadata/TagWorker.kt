@@ -25,7 +25,7 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import java.util.concurrent.Future
 import javax.inject.Inject
-import org.oxycblt.auxio.music.model.RawSong
+import org.oxycblt.auxio.music.library.RawSong
 import org.oxycblt.auxio.music.storage.toAudioUri
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW

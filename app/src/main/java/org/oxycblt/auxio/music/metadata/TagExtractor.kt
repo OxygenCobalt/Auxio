@@ -22,7 +22,7 @@ import com.google.android.exoplayer2.MetadataRetriever
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
-import org.oxycblt.auxio.music.model.RawSong
+import org.oxycblt.auxio.music.library.RawSong
 
 /**
  * The extractor that leverages ExoPlayer's [MetadataRetriever] API to parse metadata. This is the

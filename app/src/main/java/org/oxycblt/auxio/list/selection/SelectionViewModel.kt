@@ -24,7 +24,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.model.Library
+import org.oxycblt.auxio.music.library.Library
 
 /**
  * A [ViewModel] that manages the current selection.
@@ -57,6 +57,7 @@ class SelectionViewModel @Inject constructor(private val musicRepository: MusicR
                     is Album -> library.sanitize(it)
                     is Artist -> library.sanitize(it)
                     is Genre -> library.sanitize(it)
+                    is Playlist -> TODO("handle this")
                 }
             }
     }

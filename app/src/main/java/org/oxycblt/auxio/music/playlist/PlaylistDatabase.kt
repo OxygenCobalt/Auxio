@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * Playlist.kt is part of Auxio.
+ * PlaylistDatabase.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playlist
+package org.oxycblt.auxio.music.playlist
 
-import java.util.UUID
-import org.oxycblt.auxio.music.Song
+import androidx.room.*
+import org.oxycblt.auxio.music.Music
 
-interface Playlist {
-    val id: UUID
-    val name: String
-    val songs: List<Song>
+@Database(
+    entities = [PlaylistInfo::class, PlaylistSong::class, PlaylistSongCrossRef::class],
+    version = 28,
+    exportSchema = false)
+@TypeConverters(Music.UID.TypeConverters::class)
+abstract class PlaylistDatabase : RoomDatabase() {
+    abstract fun playlistDao(): PlaylistDao
+}
+
+@Dao
+interface PlaylistDao {
+    @Transaction @Query("SELECT * FROM PlaylistInfo") fun readRawPlaylists(): List<RawPlaylist>
 }

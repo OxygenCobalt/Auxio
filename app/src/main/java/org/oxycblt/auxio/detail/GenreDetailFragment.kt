@@ -38,12 +38,7 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.*
@@ -233,6 +228,7 @@ class GenreDetailFragment :
             is Genre -> {
                 navModel.exploreNavigationItem.consume()
             }
+            is Playlist -> TODO("handle this")
             null -> {}
         }
     }

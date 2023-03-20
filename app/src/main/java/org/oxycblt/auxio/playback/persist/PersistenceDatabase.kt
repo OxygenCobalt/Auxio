@@ -26,7 +26,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.playback.state.RepeatMode
@@ -40,7 +39,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
     entities = [PlaybackState::class, QueueHeapItem::class, QueueMappingItem::class],
     version = 27,
     exportSchema = false)
-@TypeConverters(PersistenceDatabase.Converters::class)
+@TypeConverters(Music.UID.TypeConverters::class)
 abstract class PersistenceDatabase : RoomDatabase() {
     /**
      * Get the current [PlaybackStateDao].
@@ -55,14 +54,6 @@ abstract class PersistenceDatabase : RoomDatabase() {
      * @return A [QueueDao] providing control of the database's queue tables.
      */
     abstract fun queueDao(): QueueDao
-
-    object Converters {
-        /** @see [Music.UID.toString] */
-        @TypeConverter fun fromMusicUID(uid: Music.UID?) = uid?.toString()
-
-        /** @see [Music.UID.fromString] */
-        @TypeConverter fun toMusicUid(string: String?) = string?.let(Music.UID::fromString)
-    }
 }
 
 /**

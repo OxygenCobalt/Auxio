@@ -33,7 +33,7 @@ import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.model.Library
+import org.oxycblt.auxio.music.library.Library
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.logD
 

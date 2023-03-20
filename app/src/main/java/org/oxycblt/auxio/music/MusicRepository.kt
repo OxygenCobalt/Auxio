@@ -19,7 +19,7 @@
 package org.oxycblt.auxio.music
 
 import javax.inject.Inject
-import org.oxycblt.auxio.music.model.Library
+import org.oxycblt.auxio.music.library.Library
 
 /**
  * A repository granting access to the music library.

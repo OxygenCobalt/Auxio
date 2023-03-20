@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.model
+package org.oxycblt.auxio.music.library
 
 import android.content.Context
 import android.net.Uri

@@ -20,8 +20,8 @@ package org.oxycblt.auxio.music
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.oxycblt.auxio.music.model.FakeLibrary
-import org.oxycblt.auxio.music.model.Library
+import org.oxycblt.auxio.music.library.FakeLibrary
+import org.oxycblt.auxio.music.library.Library
 
 class MusicRepositoryTest {
     @Test
