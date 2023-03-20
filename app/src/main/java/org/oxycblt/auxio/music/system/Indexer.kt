@@ -144,8 +144,10 @@ interface Indexer {
          *
          * @param result The outcome of the music loading process.
          */
-        data class Complete(val result: Result<Library>) : State()
+        data class Complete(val result: Result<Response>) : State()
     }
+
+    data class Response(val result: Library, val playlists: List<Playlist>)
 
     /**
      * Represents the current progress of the music loader. Usually encapsulated in a [State].
@@ -237,7 +239,7 @@ constructor(
     private val mediaStoreExtractor: MediaStoreExtractor,
     private val tagExtractor: TagExtractor
 ) : Indexer {
-    @Volatile private var lastResponse: Result<Library>? = null
+    @Volatile private var lastResponse: Result<Indexer.Response>? = null
     @Volatile private var indexingState: Indexer.Indexing? = null
     @Volatile private var controller: Indexer.Controller? = null
     @Volatile private var listener: Indexer.Listener? = null
@@ -303,11 +305,11 @@ constructor(
             val result =
                 try {
                     val start = System.currentTimeMillis()
-                    val library = indexImpl(context, withCache, this)
+                    val response = indexImpl(context, withCache, this)
                     logD(
                         "Music indexing completed successfully in " +
                             "${System.currentTimeMillis() - start}ms")
-                    Result.success(library)
+                    Result.success(response)
                 } catch (e: CancellationException) {
                     // Got cancelled, propagate upwards to top-level co-routine.
                     logD("Loading routine was cancelled")
@@ -337,7 +339,7 @@ constructor(
         context: Context,
         withCache: Boolean,
         scope: CoroutineScope
-    ): Library {
+    ): Indexer.Response {
         if (ContextCompat.checkSelfPermission(context, Indexer.PERMISSION_READ_AUDIO) ==
             PackageManager.PERMISSION_DENIED) {
             logE("Permission check failed")
@@ -395,7 +397,7 @@ constructor(
         if (cache == null || cache.invalidated) {
             cacheRepository.writeCache(rawSongs)
         }
-        return libraryJob.await()
+        return Indexer.Response(libraryJob.await(), listOf())
     }
 
     /**
@@ -426,7 +428,7 @@ constructor(
      * @param result The new [Result] to emit, representing the outcome of the music loading
      *   process.
      */
-    private suspend fun emitCompletion(result: Result<Library>) {
+    private suspend fun emitCompletion(result: Result<Indexer.Response>) {
         yield()
         // Swap to the Main thread so that downstream callbacks don't crash from being on
         // a background thread. Does not occur in emitIndexing due to efficiency reasons.
