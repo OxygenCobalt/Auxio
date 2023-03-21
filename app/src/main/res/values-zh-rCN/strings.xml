@@ -271,4 +271,7 @@
     <string name="lbl_sort_dec">降序</string>
     <string name="set_auto_sort_names">排序时忽略冠词</string>
     <string name="set_auto_sort_names_desc">按名称排序时忽略类似“the”这样的冠词（对英文歌曲的效果最好）</string>
+    <string name="lbl_playlist">播放列表</string>
+    <string name="lbl_playlists">播放列表</string>
+    <string name="desc_playlist_image">%s 的播放列表图片</string>
 </resources>
