@@ -282,4 +282,7 @@
     <string name="lbl_sort_dec">Sestupně</string>
     <string name="set_auto_sort_names">Při řazení ignorovat předložky</string>
     <string name="set_auto_sort_names_desc">Ignorovat slova jako „the“ při řazení podle názvu (funguje nejlépe u hudby v angličtině)</string>
+    <string name="lbl_playlists">Seznamy skladeb</string>
+    <string name="desc_playlist_image">Obrázek seznamu skladeb pro %s</string>
+    <string name="lbl_playlist">Seznam skladeb</string>
 </resources>
