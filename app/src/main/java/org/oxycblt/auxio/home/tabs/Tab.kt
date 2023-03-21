@@ -85,7 +85,7 @@ sealed class Tab(open val mode: MusicMode) {
             // Like when deserializing, make sure there are no duplicate tabs for whatever reason.
             val distinct = tabs.distinctBy { it.mode }
 
-            var sequence = 0b0100
+            var sequence = 0
             var shift = MAX_SEQUENCE_IDX * 4
             for (tab in distinct) {
                 val bin =
