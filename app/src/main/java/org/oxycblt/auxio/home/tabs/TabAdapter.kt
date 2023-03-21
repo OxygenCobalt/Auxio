@@ -110,6 +110,7 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
                     MusicMode.ALBUMS -> R.string.lbl_albums
                     MusicMode.ARTISTS -> R.string.lbl_artists
                     MusicMode.GENRES -> R.string.lbl_genres
+                    MusicMode.PLAYLISTS -> R.string.lbl_playlists
                 })
 
             // Unlike in other adapters, we update the checked state alongside

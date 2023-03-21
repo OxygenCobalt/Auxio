@@ -37,8 +37,8 @@ import org.oxycblt.auxio.util.logW
 /**
  * Primary manager of music information and loading.
  *
- * Music information is loaded in-memory by this repository using an [IndexingWorker].
- * Changes in music (loading) can be reacted to with [UpdateListener] and [IndexingListener].
+ * Music information is loaded in-memory by this repository using an [IndexingWorker]. Changes in
+ * music (loading) can be reacted to with [UpdateListener] and [IndexingListener].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -52,6 +52,7 @@ interface MusicRepository {
 
     /**
      * Add an [UpdateListener] to receive updates from this instance.
+     *
      * @param listener The [UpdateListener] to add.
      */
     fun addUpdateListener(listener: UpdateListener)
@@ -59,12 +60,14 @@ interface MusicRepository {
     /**
      * Remove an [UpdateListener] such that it does not receive any further updates from this
      * instance.
+     *
      * @param listener The [UpdateListener] to remove.
      */
     fun removeUpdateListener(listener: UpdateListener)
 
     /**
      * Add an [IndexingListener] to receive updates from this instance.
+     *
      * @param listener The [UpdateListener] to add.
      */
     fun addIndexingListener(listener: IndexingListener)
@@ -72,6 +75,7 @@ interface MusicRepository {
     /**
      * Remove an [IndexingListener] such that it does not receive any further updates from this
      * instance.
+     *
      * @param listener The [IndexingListener] to remove.
      */
     fun removeIndexingListener(listener: IndexingListener)
@@ -79,13 +83,15 @@ interface MusicRepository {
     /**
      * Register an [IndexingWorker] to handle loading operations. Will do nothing if one is already
      * registered.
+     *
      * @param worker The [IndexingWorker] to register.
      */
     fun registerWorker(worker: IndexingWorker)
 
     /**
-     * Unregister an [IndexingWorker] and drop any work currently being done by it. Does nothing
-     * if given [IndexingWorker] is not the currently registered instance.
+     * Unregister an [IndexingWorker] and drop any work currently being done by it. Does nothing if
+     * given [IndexingWorker] is not the currently registered instance.
+     *
      * @param worker The [IndexingWorker] to unregister.
      */
     fun unregisterWorker(worker: IndexingWorker)
@@ -93,62 +99,56 @@ interface MusicRepository {
     /**
      * Request that a music loading operation is started by the current [IndexingWorker]. Does
      * nothing if one is not available.
+     *
      * @param withCache Whether to load with the music cache or not.
      */
     fun requestIndex(withCache: Boolean)
 
     /**
      * Load the music library. Any prior loads will be canceled.
+     *
      * @param worker The [IndexingWorker] to perform the work with.
      * @param withCache Whether to load with the music cache or not.
      * @return The top-level music loading [Job] started.
      */
     fun index(worker: IndexingWorker, withCache: Boolean): Job
 
-    /**
-     * A listener for changes to the stored music information.
-     */
+    /** A listener for changes to the stored music information. */
     interface UpdateListener {
         /**
          * Called when a change to the stored music information occurs.
+         *
          * @param changes The [Changes] that have occured.
          */
         fun onMusicChanges(changes: Changes)
     }
+
     /**
      * Flags indicating which kinds of music information changed.
+     *
      * @param library Whether the current [Library] has changed.
      * @param playlists Whether the current [Playlist]s have changed.
      */
     data class Changes(val library: Boolean, val playlists: Boolean)
 
-    /**
-     * A listener for events in the music loading process.
-     */
+    /** A listener for events in the music loading process. */
     interface IndexingListener {
-        /**
-         * Called when the music loading state changed.
-         */
+        /** Called when the music loading state changed. */
         fun onIndexingStateChanged()
     }
 
-    /**
-     * A persistent worker that can load music in the background.
-     */
+    /** A persistent worker that can load music in the background. */
     interface IndexingWorker {
-        /**
-         * A [Context] required to read device storage
-         */
+        /** A [Context] required to read device storage */
         val context: Context
 
-        /**
-         * The [CoroutineScope] to perform coroutine music loading work on.
-         */
+        /** The [CoroutineScope] to perform coroutine music loading work on. */
         val scope: CoroutineScope
 
         /**
-         * Request that the music loading process ([index]) should be started. Any prior
-         * loads should be canceled.
+         * Request that the music loading process ([index]) should be started. Any prior loads
+         * should be canceled.
+         *
          * @param withCache Whether to use the music cache when loading.
          */
         fun requestIndex(withCache: Boolean)
@@ -301,6 +301,7 @@ constructor(
             cacheRepository.writeCache(rawSongs)
         }
         val newLibrary = libraryJob.await()
+        // TODO: Make real playlist reading
         withContext(Dispatchers.Main) {
             emitComplete(null)
             emitData(newLibrary, listOf())

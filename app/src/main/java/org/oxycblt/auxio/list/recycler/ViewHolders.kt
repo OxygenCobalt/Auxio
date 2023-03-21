@@ -249,6 +249,60 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<Genre>() {
                 override fun areContentsTheSame(oldItem: Genre, newItem: Genre): Boolean =
+                    oldItem.rawName == newItem.rawName &&
+                        oldItem.artists.size == newItem.artists.size &&
+                        oldItem.songs.size == newItem.songs.size
+            }
+    }
+}
+
+/**
+ * A [RecyclerView.ViewHolder] that displays a [Playlist]. Use [from] to create an instance.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+class PlaylistViewHolder private constructor(private val binding: ItemParentBinding) :
+    SelectionIndicatorAdapter.ViewHolder(binding.root) {
+    /**
+     * Bind new data to this instance.
+     *
+     * @param playlist The new [Playlist] to bind.
+     * @param listener An [SelectableListListener] to bind interactions to.
+     */
+    fun bind(playlist: Playlist, listener: SelectableListListener<Playlist>) {
+        listener.bind(playlist, this, menuButton = binding.parentMenu)
+        binding.parentImage.bind(playlist)
+        binding.parentName.text = playlist.resolveName(binding.context)
+        binding.parentInfo.text =
+            binding.context.getPlural(R.plurals.fmt_song_count, playlist.songs.size)
+    }
+
+    override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
+        binding.root.isSelected = isActive
+        binding.parentImage.isPlaying = isPlaying
+    }
+
+    override fun updateSelectionIndicator(isSelected: Boolean) {
+        binding.root.isActivated = isSelected
+    }
+
+    companion object {
+        /** Unique ID for this ViewHolder type. */
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_PLAYLIST
+
+        /**
+         * Create a new instance.
+         *
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
+        fun from(parent: View) =
+            PlaylistViewHolder(ItemParentBinding.inflate(parent.context.inflater))
+
+        /** A comparator that can be used with DiffUtil. */
+        val DIFF_CALLBACK =
+            object : SimpleDiffCallback<Playlist>() {
+                override fun areContentsTheSame(oldItem: Playlist, newItem: Playlist): Boolean =
                     oldItem.rawName == newItem.rawName && oldItem.songs.size == newItem.songs.size
             }
     }

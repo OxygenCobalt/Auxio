@@ -149,7 +149,7 @@ class GenreDetailFragment :
 
     override fun onOpenMenu(item: Music, anchor: View) {
         when (item) {
-            is Artist -> openMusicMenu(anchor, R.menu.menu_artist_actions, item)
+            is Artist -> openMusicMenu(anchor, R.menu.menu_parent_actions, item)
             is Song -> openMusicMenu(anchor, R.menu.menu_song_actions, item)
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }

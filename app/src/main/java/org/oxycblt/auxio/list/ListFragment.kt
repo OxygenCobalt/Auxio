@@ -217,6 +217,40 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
         }
     }
 
+    /**
+     * Opens a menu in the context of a [Playlist]. This menu will be managed by the Fragment and
+     * closed when the view is destroyed. If a menu is already opened, this call is ignored.
+     *
+     * @param anchor The [View] to anchor the menu to.
+     * @param menuRes The resource of the menu to load.
+     * @param genre The [Playlist] to create the menu for.
+     */
+    protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, genre: Playlist) {
+        logD("Launching new genre menu: ${genre.rawName}")
+
+        openMusicMenuImpl(anchor, menuRes) {
+            when (it.itemId) {
+                R.id.action_play -> {
+                    // playbackModel.play(genre)
+                }
+                R.id.action_shuffle -> {
+                    // playbackModel.shuffle(genre)
+                }
+                R.id.action_play_next -> {
+                    // playbackModel.playNext(genre)
+                    // requireContext().showToast(R.string.lng_queue_added)
+                }
+                R.id.action_queue_add -> {
+                    // playbackModel.addToQueue(genre)
+                    // requireContext().showToast(R.string.lng_queue_added)
+                }
+                else -> {
+                    error("Unexpected menu item selected")
+                }
+            }
+        }
+    }
+
     private fun openMusicMenuImpl(
         anchor: View,
         @MenuRes menuRes: Int,

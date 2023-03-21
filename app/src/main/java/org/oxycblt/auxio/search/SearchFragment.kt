@@ -148,9 +148,9 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         when (item) {
             is Song -> openMusicMenu(anchor, R.menu.menu_song_actions, item)
             is Album -> openMusicMenu(anchor, R.menu.menu_album_actions, item)
-            is Artist -> openMusicMenu(anchor, R.menu.menu_artist_actions, item)
-            is Genre -> openMusicMenu(anchor, R.menu.menu_artist_actions, item)
-            is Playlist -> TODO("handle this")
+            is Artist -> openMusicMenu(anchor, R.menu.menu_parent_actions, item)
+            is Genre -> openMusicMenu(anchor, R.menu.menu_parent_actions, item)
+            is Playlist -> openMusicMenu(anchor, R.menu.menu_parent_actions, item)
         }
     }
 

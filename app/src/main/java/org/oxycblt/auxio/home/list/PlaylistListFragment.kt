@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2021 Auxio Project
- * ArtistListFragment.kt is part of Auxio.
+ * Copyright (c) 2023 Auxio Project
+ * PlaylistListFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
@@ -32,34 +31,27 @@ import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
-import org.oxycblt.auxio.list.recycler.ArtistViewHolder
+import org.oxycblt.auxio.list.recycler.PlaylistViewHolder
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.nonZeroOrNull
 
-/**
- * A [ListFragment] that shows a list of [Artist]s.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-@AndroidEntryPoint
-class ArtistListFragment :
-    ListFragment<Artist, FragmentHomeListBinding>(),
+class PlaylistListFragment :
+    ListFragment<Playlist, FragmentHomeListBinding>(),
     FastScrollRecyclerView.PopupProvider,
     FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
-    private val artistAdapter = ArtistAdapter(this)
+    private val playlistAdapter = PlaylistAdapter(this)
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentHomeListBinding.inflate(inflater)
@@ -68,13 +60,13 @@ class ArtistListFragment :
         super.onBindingCreated(binding, savedInstanceState)
 
         binding.homeRecycler.apply {
-            id = R.id.home_artist_recycler
-            adapter = artistAdapter
-            popupProvider = this@ArtistListFragment
-            listener = this@ArtistListFragment
+            id = R.id.home_playlist_recycler
+            adapter = playlistAdapter
+            popupProvider = this@PlaylistListFragment
+            listener = this@PlaylistListFragment
         }
 
-        collectImmediately(homeModel.artistsList, ::updateArtists)
+        collectImmediately(homeModel.playlistsList, ::updatePlaylists)
         collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
@@ -89,17 +81,17 @@ class ArtistListFragment :
     }
 
     override fun getPopup(pos: Int): String? {
-        val artist = homeModel.artistsList.value[pos]
+        val playlist = homeModel.playlistsList.value[pos]
         // Change how we display the popup depending on the current sort mode.
-        return when (homeModel.getSortForTab(MusicMode.ARTISTS).mode) {
+        return when (homeModel.getSortForTab(MusicMode.GENRES).mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> artist.sortName?.thumbString
+            is Sort.Mode.ByName -> playlist.sortName?.thumbString
 
             // Duration -> Use formatted duration
-            is Sort.Mode.ByDuration -> artist.durationMs?.formatDurationMs(false)
+            is Sort.Mode.ByDuration -> playlist.durationMs.formatDurationMs(false)
 
             // Count -> Use song count
-            is Sort.Mode.ByCount -> artist.songs.size.nonZeroOrNull()?.toString()
+            is Sort.Mode.ByCount -> playlist.songs.size.toString()
 
             // Unsupported sort, error gracefully
             else -> null
@@ -110,39 +102,39 @@ class ArtistListFragment :
         homeModel.setFastScrolling(isFastScrolling)
     }
 
-    override fun onRealClick(item: Artist) {
+    override fun onRealClick(item: Playlist) {
         navModel.exploreNavigateTo(item)
     }
 
-    override fun onOpenMenu(item: Artist, anchor: View) {
+    override fun onOpenMenu(item: Playlist, anchor: View) {
         openMusicMenu(anchor, R.menu.menu_parent_actions, item)
     }
 
-    private fun updateArtists(artists: List<Artist>) {
-        artistAdapter.update(artists, homeModel.artistsInstructions.consume().also { logD(it) })
+    private fun updatePlaylists(playlists: List<Playlist>) {
+        playlistAdapter.update(
+            playlists, homeModel.playlistsInstructions.consume().also { logD(it) })
     }
 
     private fun updateSelection(selection: List<Music>) {
-        artistAdapter.setSelected(selection.filterIsInstanceTo(mutableSetOf()))
+        playlistAdapter.setSelected(selection.filterIsInstanceTo(mutableSetOf()))
     }
 
     private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
-        // If an artist is playing, highlight it within this adapter.
-        artistAdapter.setPlaying(parent as? Artist, isPlaying)
+        // If a playlist is playing, highlight it within this adapter.
+        playlistAdapter.setPlaying(parent as? Playlist, isPlaying)
     }
 
     /**
-     * A [SelectionIndicatorAdapter] that shows a list of [Artist]s using [ArtistViewHolder].
+     * A [SelectionIndicatorAdapter] that shows a list of [Playlist]s using [PlaylistViewHolder].
      *
      * @param listener An [SelectableListListener] to bind interactions to.
      */
-    private class ArtistAdapter(private val listener: SelectableListListener<Artist>) :
-        SelectionIndicatorAdapter<Artist, ArtistViewHolder>(ArtistViewHolder.DIFF_CALLBACK) {
-
+    private class PlaylistAdapter(private val listener: SelectableListListener<Playlist>) :
+        SelectionIndicatorAdapter<Playlist, PlaylistViewHolder>(PlaylistViewHolder.DIFF_CALLBACK) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            ArtistViewHolder.from(parent)
+            PlaylistViewHolder.from(parent)
 
-        override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
             holder.bind(getItem(position), listener)
         }
     }

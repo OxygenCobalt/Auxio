@@ -20,9 +20,7 @@ package org.oxycblt.auxio.music
 
 import android.os.Build
 
-/**
- * Version-aware permission identifier for reading audio files.
- */
+/** Version-aware permission identifier for reading audio files. */
 val PERMISSION_READ_AUDIO =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         android.Manifest.permission.READ_MEDIA_AUDIO
@@ -32,25 +30,29 @@ val PERMISSION_READ_AUDIO =
 
 /**
  * Represents the current state of the music loader.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 sealed interface IndexingState {
     /**
      * Music loading is on-going.
+     *
      * @param progress The current progress of the music loading.
      */
     data class Indexing(val progress: IndexingProgress) : IndexingState
 
     /**
      * Music loading has completed.
-     * @param error If music loading has failed, the error that occurred will be here. Otherwise,
-     * it will be null.
+     *
+     * @param error If music loading has failed, the error that occurred will be here. Otherwise, it
+     *   will be null.
      */
     data class Completed(val error: Throwable?) : IndexingState
 }
 
 /**
  * Represents the current progress of music loading.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 sealed interface IndexingProgress {
@@ -59,6 +61,7 @@ sealed interface IndexingProgress {
 
     /**
      * Songs are currently being loaded.
+     *
      * @param current The current amount of songs loaded.
      * @param total The projected total amount of songs.
      */
@@ -67,6 +70,7 @@ sealed interface IndexingProgress {
 
 /**
  * Thrown by the music loader when [PERMISSION_READ_AUDIO] was not granted.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class NoAudioPermissionException : Exception() {
@@ -75,6 +79,7 @@ class NoAudioPermissionException : Exception() {
 
 /**
  * Thrown when no music was found.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class NoMusicException : Exception() {

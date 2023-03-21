@@ -38,11 +38,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.extractor.SquareFrameTransform
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.getDrawableCompat
@@ -122,6 +118,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param genre the [Genre] to bind.
      */
     fun bind(genre: Genre) = bindImpl(genre, R.drawable.ic_genre_24, R.string.desc_genre_image)
+
+    /**
+     * Bind a [Playlist]'s image to this view, also updating the content description.
+     *
+     * @param playlist the [Playlist] to bind.
+     */
+    fun bind(playlist: Playlist) =
+        bindImpl(playlist, R.drawable.ic_playlist_24, R.string.desc_playlist_image)
 
     /**
      * Internally bind a [Music]'s image to this view.

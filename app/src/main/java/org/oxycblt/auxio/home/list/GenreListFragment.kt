@@ -114,7 +114,7 @@ class GenreListFragment :
     }
 
     override fun onOpenMenu(item: Genre, anchor: View) {
-        openMusicMenu(anchor, R.menu.menu_artist_actions, item)
+        openMusicMenu(anchor, R.menu.menu_parent_actions, item)
     }
 
     private fun updateGenres(genres: List<Genre>) {

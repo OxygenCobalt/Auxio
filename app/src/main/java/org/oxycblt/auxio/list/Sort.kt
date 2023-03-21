@@ -102,39 +102,35 @@ data class Sort(val mode: Mode, val direction: Direction) {
     }
 
     /**
-     * Sort a *mutable* list of [Song]s in-place using this [Sort]'s configuration.
+     * Sort a list of [Playlist]s.
      *
-     * @param songs The [Song]s to sort.
+     * @param playlists The list of [Playlist]s.
+     * @return A new list of [Playlist]s sorted by this [Sort]'s configuration
      */
+    fun <T : Playlist> playlists(playlists: Collection<T>): List<T> {
+        val mutable = playlists.toMutableList()
+        playlistsInPlace(mutable)
+        return mutable
+    }
+
     private fun songsInPlace(songs: MutableList<out Song>) {
         songs.sortWith(mode.getSongComparator(direction))
     }
 
-    /**
-     * Sort a *mutable* list of [Album]s in-place using this [Sort]'s configuration.
-     *
-     * @param albums The [Album]s to sort.
-     */
     private fun albumsInPlace(albums: MutableList<out Album>) {
         albums.sortWith(mode.getAlbumComparator(direction))
     }
 
-    /**
-     * Sort a *mutable* list of [Artist]s in-place using this [Sort]'s configuration.
-     *
-     * @param artists The [Album]s to sort.
-     */
     private fun artistsInPlace(artists: MutableList<out Artist>) {
         artists.sortWith(mode.getArtistComparator(direction))
     }
 
-    /**
-     * Sort a *mutable* list of [Genre]s in-place using this [Sort]'s configuration.
-     *
-     * @param genres The [Genre]s to sort.
-     */
     private fun genresInPlace(genres: MutableList<out Genre>) {
         genres.sortWith(mode.getGenreComparator(direction))
+    }
+
+    private fun playlistsInPlace(playlists: MutableList<out Playlist>) {
+        playlists.sortWith(mode.getPlaylistComparator(direction))
     }
 
     /**
@@ -201,6 +197,16 @@ data class Sort(val mode: Mode, val direction: Direction) {
         }
 
         /**
+         * Return a [Comparator] that sorts [Playlist]s according to this [Mode].
+         *
+         * @param direction The direction to sort in.
+         * @return A [Comparator] that can be used to sort a [Genre] list according to this [Mode].
+         */
+        open fun getPlaylistComparator(direction: Direction): Comparator<Playlist> {
+            throw UnsupportedOperationException()
+        }
+
+        /**
          * Sort by the item's name.
          *
          * @see Music.sortName
@@ -223,12 +229,15 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
             override fun getGenreComparator(direction: Direction) =
                 compareByDynamic(direction, BasicComparator.GENRE)
+
+            override fun getPlaylistComparator(direction: Direction) =
+                compareByDynamic(direction, BasicComparator.PLAYLIST)
         }
 
         /**
          * Sort by the [Album] of an item. Only available for [Song]s.
          *
-         * @see Album.collationKey
+         * @see Album.sortName
          */
         object ByAlbum : Mode() {
             override val intCode: Int
@@ -324,6 +333,11 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override fun getGenreComparator(direction: Direction): Comparator<Genre> =
                 MultiComparator(
                     compareByDynamic(direction) { it.durationMs }, compareBy(BasicComparator.GENRE))
+
+            override fun getPlaylistComparator(direction: Direction): Comparator<Playlist> =
+                MultiComparator(
+                    compareByDynamic(direction) { it.durationMs },
+                    compareBy(BasicComparator.PLAYLIST))
         }
 
         /**
@@ -350,6 +364,11 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override fun getGenreComparator(direction: Direction): Comparator<Genre> =
                 MultiComparator(
                     compareByDynamic(direction) { it.songs.size }, compareBy(BasicComparator.GENRE))
+
+            override fun getPlaylistComparator(direction: Direction): Comparator<Playlist> =
+                MultiComparator(
+                    compareByDynamic(direction) { it.songs.size },
+                    compareBy(BasicComparator.PLAYLIST))
         }
 
         /**
@@ -555,6 +574,8 @@ data class Sort(val mode: Mode, val direction: Direction) {
                 val ARTIST: Comparator<Artist> = BasicComparator()
                 /** A re-usable instance configured for [Genre]s. */
                 val GENRE: Comparator<Genre> = BasicComparator()
+                /** A re-usable instance configured for [Playlist]s. */
+                val PLAYLIST: Comparator<Playlist> = BasicComparator()
             }
         }
 

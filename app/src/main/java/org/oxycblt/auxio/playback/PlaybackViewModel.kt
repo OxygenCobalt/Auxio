@@ -178,6 +178,7 @@ constructor(
             MusicMode.ALBUMS -> playImpl(song, song.album)
             MusicMode.ARTISTS -> playFromArtist(song)
             MusicMode.GENRES -> playFromGenre(song)
+            MusicMode.PLAYLISTS -> error("Playing from a playlist is not supported.")
         }
     }
 

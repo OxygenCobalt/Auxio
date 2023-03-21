@@ -154,6 +154,7 @@ constructor(
             MusicMode.ALBUMS -> R.id.option_filter_albums
             MusicMode.ARTISTS -> R.id.option_filter_artists
             MusicMode.GENRES -> R.id.option_filter_genres
+            MusicMode.PLAYLISTS -> R.id.option_filter_all // TODO: Handle
             // Null maps to filtering nothing.
             null -> R.id.option_filter_all
         }

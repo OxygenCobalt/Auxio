@@ -370,7 +370,12 @@ interface Genre : MusicParent {
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface Playlist : MusicParent
+interface Playlist : MusicParent {
+    /** The albums indirectly linked to by the [Song]s of this [Playlist]. */
+    val albums: List<Album>
+    /** The total duration of the songs in this genre, in milliseconds. */
+    val durationMs: Long
+}
 
 /**
  * A black-box datatype for a variation of music names that is suitable for music-oriented sorting.

@@ -46,10 +46,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
-import org.oxycblt.auxio.home.list.AlbumListFragment
-import org.oxycblt.auxio.home.list.ArtistListFragment
-import org.oxycblt.auxio.home.list.GenreListFragment
-import org.oxycblt.auxio.home.list.SongListFragment
+import org.oxycblt.auxio.home.list.*
 import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.selection.SelectionFragment
@@ -278,16 +275,8 @@ class HomeFragment :
                 MusicMode.SONGS -> { id -> id != R.id.option_sort_count }
                 // Disallow sorting by album for albums
                 MusicMode.ALBUMS -> { id -> id != R.id.option_sort_album }
-                // Only allow sorting by name, count, and duration for artists
-                MusicMode.ARTISTS -> { id ->
-                        id == R.id.option_sort_asc ||
-                            id == R.id.option_sort_dec ||
-                            id == R.id.option_sort_name ||
-                            id == R.id.option_sort_count ||
-                            id == R.id.option_sort_duration
-                    }
-                // Only allow sorting by name, count, and duration for genres
-                MusicMode.GENRES -> { id ->
+                // Only allow sorting by name, count, and duration for parents
+                else -> { id ->
                         id == R.id.option_sort_asc ||
                             id == R.id.option_sort_dec ||
                             id == R.id.option_sort_name ||
@@ -325,6 +314,7 @@ class HomeFragment :
                 MusicMode.ALBUMS -> R.id.home_album_recycler
                 MusicMode.ARTISTS -> R.id.home_artist_recycler
                 MusicMode.GENRES -> R.id.home_genre_recycler
+                MusicMode.PLAYLISTS -> R.id.home_playlist_recycler
             }
     }
 
@@ -497,6 +487,7 @@ class HomeFragment :
                 MusicMode.ALBUMS -> AlbumListFragment()
                 MusicMode.ARTISTS -> ArtistListFragment()
                 MusicMode.GENRES -> GenreListFragment()
+                MusicMode.PLAYLISTS -> PlaylistListFragment()
             }
     }
 

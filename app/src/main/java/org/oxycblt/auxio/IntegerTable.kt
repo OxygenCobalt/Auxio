@@ -33,18 +33,20 @@ object IntegerTable {
     const val VIEW_TYPE_ARTIST = 0xA002
     /** GenreViewHolder */
     const val VIEW_TYPE_GENRE = 0xA003
+    /** PlaylistViewHolder */
+    const val VIEW_TYPE_PLAYLIST = 0xA004
     /** BasicHeaderViewHolder */
-    const val VIEW_TYPE_BASIC_HEADER = 0xA004
+    const val VIEW_TYPE_BASIC_HEADER = 0xA005
     /** SortHeaderViewHolder */
-    const val VIEW_TYPE_SORT_HEADER = 0xA005
+    const val VIEW_TYPE_SORT_HEADER = 0xA006
     /** AlbumSongViewHolder */
     const val VIEW_TYPE_ALBUM_SONG = 0xA007
     /** ArtistAlbumViewHolder */
-    const val VIEW_TYPE_ARTIST_ALBUM = 0xA009
+    const val VIEW_TYPE_ARTIST_ALBUM = 0xA008
     /** ArtistSongViewHolder */
-    const val VIEW_TYPE_ARTIST_SONG = 0xA00A
+    const val VIEW_TYPE_ARTIST_SONG = 0xA009
     /** DiscHeaderViewHolder */
-    const val VIEW_TYPE_DISC_HEADER = 0xA00C
+    const val VIEW_TYPE_DISC_HEADER = 0xA00A
     /** "Music playback" notification code */
     const val PLAYBACK_NOTIFICATION_CODE = 0xA0A0
     /** "Music loading" notification code */
@@ -65,16 +67,16 @@ object IntegerTable {
     const val PLAYBACK_MODE_IN_ALBUM = 0xA105
     /** PlaybackMode.ALL_SONGS */
     const val PLAYBACK_MODE_ALL_SONGS = 0xA106
-    /** DisplayMode.NONE (No Longer used but still reserved) */
-    // const val DISPLAY_MODE_NONE = 0xA107
-    /** MusicMode._GENRES */
-    const val MUSIC_MODE_GENRES = 0xA108
-    /** MusicMode._ARTISTS */
-    const val MUSIC_MODE_ARTISTS = 0xA109
-    /** MusicMode._ALBUMS */
-    const val MUSIC_MODE_ALBUMS = 0xA10A
     /** MusicMode.SONGS */
     const val MUSIC_MODE_SONGS = 0xA10B
+    /** MusicMode.ALBUMS */
+    const val MUSIC_MODE_ALBUMS = 0xA10A
+    /** MusicMode.ARTISTS */
+    const val MUSIC_MODE_ARTISTS = 0xA109
+    /** MusicMode.GENRES */
+    const val MUSIC_MODE_GENRES = 0xA108
+    /** MusicMode.PLAYLISTS */
+    const val MUSIC_MODE_PLAYLISTS = 0xA107
     /** Sort.ByName */
     const val SORT_BY_NAME = 0xA10C
     /** Sort.ByArtist */

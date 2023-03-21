@@ -87,6 +87,15 @@ constructor(
     val genresInstructions: Event<UpdateInstructions>
         get() = _genresInstructions
 
+    private val _playlistsList = MutableStateFlow(listOf<Playlist>())
+    /** A list of [Playlist]s, sorted by the preferred [Sort], to be shown in the home view. */
+    val playlistsList: StateFlow<List<Playlist>>
+        get() = _playlistsList
+    private val _playlistsInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for how to update [genresList] in the UI. */
+    val playlistsInstructions: Event<UpdateInstructions>
+        get() = _playlistsInstructions
+
     /** The [MusicMode] to use when playing a [Song] from the UI. */
     val playbackMode: MusicMode
         get() = playbackSettings.inListPlaybackMode
@@ -127,26 +136,34 @@ constructor(
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (!changes.library) return
-        val library = musicRepository.library ?: return
-        logD("Library changed, refreshing library")
-        // Get the each list of items in the library to use as our list data.
-        // Applying the preferred sorting to them.
-        _songsInstructions.put(UpdateInstructions.Diff)
-        _songsList.value = musicSettings.songSort.songs(library.songs)
-        _albumsInstructions.put(UpdateInstructions.Diff)
-        _albumsLists.value = musicSettings.albumSort.albums(library.albums)
-        _artistsInstructions.put(UpdateInstructions.Diff)
-        _artistsList.value =
-            musicSettings.artistSort.artists(
-                if (homeSettings.shouldHideCollaborators) {
-                    // Hide Collaborators is enabled, filter out collaborators.
-                    library.artists.filter { !it.isCollaborator }
-                } else {
-                    library.artists
-                })
-        _genresInstructions.put(UpdateInstructions.Diff)
-        _genresList.value = musicSettings.genreSort.genres(library.genres)
+        val library = musicRepository.library
+        if (changes.library && library != null) {
+            logD("Refreshing library")
+            // Get the each list of items in the library to use as our list data.
+            // Applying the preferred sorting to them.
+            _songsInstructions.put(UpdateInstructions.Diff)
+            _songsList.value = musicSettings.songSort.songs(library.songs)
+            _albumsInstructions.put(UpdateInstructions.Diff)
+            _albumsLists.value = musicSettings.albumSort.albums(library.albums)
+            _artistsInstructions.put(UpdateInstructions.Diff)
+            _artistsList.value =
+                musicSettings.artistSort.artists(
+                    if (homeSettings.shouldHideCollaborators) {
+                        // Hide Collaborators is enabled, filter out collaborators.
+                        library.artists.filter { !it.isCollaborator }
+                    } else {
+                        library.artists
+                    })
+            _genresInstructions.put(UpdateInstructions.Diff)
+            _genresList.value = musicSettings.genreSort.genres(library.genres)
+        }
+
+        val playlists = musicRepository.playlists
+        if (changes.playlists && playlists != null) {
+            logD("Refreshing playlists")
+            _playlistsInstructions.put(UpdateInstructions.Diff)
+            _playlistsList.value = musicSettings.playlistSort.playlists(playlists)
+        }
     }
 
     override fun onTabsChanged() {
@@ -173,6 +190,7 @@ constructor(
             MusicMode.ALBUMS -> musicSettings.albumSort
             MusicMode.ARTISTS -> musicSettings.artistSort
             MusicMode.GENRES -> musicSettings.genreSort
+            MusicMode.PLAYLISTS -> musicSettings.playlistSort
         }
 
     /**
@@ -203,6 +221,11 @@ constructor(
                 musicSettings.genreSort = sort
                 _genresInstructions.put(UpdateInstructions.Replace(0))
                 _genresList.value = sort.genres(_genresList.value)
+            }
+            MusicMode.PLAYLISTS -> {
+                musicSettings.playlistSort = sort
+                _playlistsInstructions.put(UpdateInstructions.Replace(0))
+                _playlistsList.value = sort.playlists(_playlistsList.value)
             }
         }
     }

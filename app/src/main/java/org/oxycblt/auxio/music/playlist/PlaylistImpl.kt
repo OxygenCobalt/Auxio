@@ -30,4 +30,7 @@ class PlaylistImpl(rawPlaylist: RawPlaylist, library: Library, musicSettings: Mu
     override val rawSortName = null
     override val sortName = SortName(rawName, musicSettings)
     override val songs = rawPlaylist.songs.mapNotNull { library.find<Song>(it.songUid) }
+    override val durationMs = songs.sumOf { it.durationMs }
+    override val albums =
+        songs.groupBy { it.album }.entries.sortedByDescending { it.value.size }.map { it.key }
 }

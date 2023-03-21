@@ -76,6 +76,9 @@
     <string name="lbl_genre">Genre</string>
     <string name="lbl_genres">Genres</string>
 
+    <string name="lbl_playlist">Playlist</string>
+    <string name="lbl_playlists">Playlists</string>
+
     <!-- Search for music -->
     <string name="lbl_search">Search</string>
     <!-- As in filtering to particular types of music in the search view -->
@@ -307,6 +310,7 @@
     <string name="desc_album_cover">Album cover for %s</string>
     <string name="desc_artist_image">Artist image for %s</string>
     <string name="desc_genre_image">Genre image for %s</string>
+    <string name="desc_playlist_image">Playlist image for %s</string>
 
     <!-- Default Namespace | Placeholder values -->
     <eat-comment />

@@ -33,11 +33,7 @@ import kotlin.math.min
 import okio.buffer
 import okio.source
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
 
 /**
  * A [Keyer] implementation for [Music] data.
@@ -74,14 +70,12 @@ private constructor(
                 dataSource = DataSource.DISK)
         }
 
-    /** A [Fetcher.Factory] implementation that works with [Song]s. */
     class SongFactory @Inject constructor(private val coverExtractor: CoverExtractor) :
         Fetcher.Factory<Song> {
         override fun create(data: Song, options: Options, imageLoader: ImageLoader) =
             AlbumCoverFetcher(options.context, coverExtractor, data.album)
     }
 
-    /** A [Fetcher.Factory] implementation that works with [Album]s. */
     class AlbumFactory @Inject constructor(private val coverExtractor: CoverExtractor) :
         Fetcher.Factory<Album> {
         override fun create(data: Album, options: Options, imageLoader: ImageLoader) =
@@ -108,7 +102,6 @@ private constructor(
         return Images.createMosaic(context, results, size)
     }
 
-    /** [Fetcher.Factory] implementation. */
     class Factory @Inject constructor(private val extractor: CoverExtractor) :
         Fetcher.Factory<Artist> {
         override fun create(data: Artist, options: Options, imageLoader: ImageLoader) =
@@ -133,11 +126,34 @@ private constructor(
         return Images.createMosaic(context, results, size)
     }
 
-    /** [Fetcher.Factory] implementation. */
     class Factory @Inject constructor(private val extractor: CoverExtractor) :
         Fetcher.Factory<Genre> {
         override fun create(data: Genre, options: Options, imageLoader: ImageLoader) =
             GenreImageFetcher(options.context, extractor, options.size, data)
+    }
+}
+
+/**
+ * [Fetcher] for [Playlist] images. Use [Factory] for instantiation.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+class PlaylistImageFetcher
+private constructor(
+    private val context: Context,
+    private val extractor: CoverExtractor,
+    private val size: Size,
+    private val playlist: Playlist
+) : Fetcher {
+    override suspend fun fetch(): FetchResult? {
+        val results = playlist.albums.mapAtMostNotNull(4) { album -> extractor.extract(album) }
+        return Images.createMosaic(context, results, size)
+    }
+
+    class Factory @Inject constructor(private val extractor: CoverExtractor) :
+        Fetcher.Factory<Playlist> {
+        override fun create(data: Playlist, options: Options, imageLoader: ImageLoader) =
+            PlaylistImageFetcher(options.context, extractor, options.size, data)
     }
 }
 

@@ -46,7 +46,8 @@ class CoilModule {
         songFactory: AlbumCoverFetcher.SongFactory,
         albumFactory: AlbumCoverFetcher.AlbumFactory,
         artistFactory: ArtistImageFetcher.Factory,
-        genreFactory: GenreImageFetcher.Factory
+        genreFactory: GenreImageFetcher.Factory,
+        playlistFactory: PlaylistImageFetcher.Factory
     ) =
         ImageLoader.Builder(context)
             .components {
@@ -56,6 +57,7 @@ class CoilModule {
                 add(albumFactory)
                 add(artistFactory)
                 add(genreFactory)
+                add(playlistFactory)
             }
             // Use our own crossfade with error drawable support
             .transitionFactory(ErrorCrossfadeTransitionFactory())

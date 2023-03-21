@@ -54,6 +54,8 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     var artistSort: Sort
     /** The [Sort] mode used in [Genre] lists. */
     var genreSort: Sort
+    /** The [Sort] mode used in [Playlist] lists. */
+    var playlistSort: Sort
     /** The [Sort] mode used in an [Album]'s [Song] list. */
     var albumSongSort: Sort
     /** The [Sort] mode used in an [Artist]'s [Song] list. */
@@ -161,6 +163,17 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context
             }
         }
 
+    override var playlistSort: Sort
+        get() =
+            Sort.fromIntCode(
+                sharedPreferences.getInt(getString(R.string.set_key_playlists_sort), Int.MIN_VALUE))
+                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_playlists_sort), value.intCode)
+                apply()
+            }
+        }
     override var albumSongSort: Sort
         get() {
             var sort =

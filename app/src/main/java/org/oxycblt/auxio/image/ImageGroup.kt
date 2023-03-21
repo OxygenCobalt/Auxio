@@ -30,10 +30,7 @@ import androidx.annotation.AttrRes
 import androidx.core.view.updateMarginsRelative
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.getDimenPixels
@@ -176,6 +173,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @see StyledImageView.bind
      */
     fun bind(genre: Genre) = innerImageView.bind(genre)
+
+    /**
+     * Bind a [Playlist]'s image to the internal [StyledImageView].
+     *
+     * @param playlist the [Playlist] to bind.
+     * @see StyledImageView.bind
+     */
+    fun bind(playlist: Playlist) = innerImageView.bind(playlist)
 
     /**
      * Whether this view should be indicated to have ongoing playback or not. See
