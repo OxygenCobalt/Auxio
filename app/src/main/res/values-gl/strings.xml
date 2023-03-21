@@ -260,4 +260,12 @@
     <string name="lbl_remix_group">Remix</string>
     <string name="set_separators_slash">Barra (/)</string>
     <string name="set_separators_warning">Aviso: o uso desta configuración pode provocar que algunhas etiquetas interpretense incorrectamente como que teñen varios valores. Podes resolver isto antepoñendo caracteres separadores non desexados cunha barra invertida (\\).</string>
+    <string name="set_replay_gain_mode">Estratexia da ganancia da repetición</string>
+    <string name="set_pre_amp">Preamplificador ReplayGain</string>
+    <string name="lbl_playlists">Listas de reprodución</string>
+    <string name="lbl_playlist">lista de reprodución</string>
+    <string name="set_pre_amp_desc">O preamplificador aplícase ao axuste existente durante a reprodución</string>
+    <string name="desc_playlist_image">Imaxe da lista de reprodución para %s</string>
+    <string name="set_separators_and">ampersand</string>
+    <string name="set_replay_gain">ganancia da repetición</string>
 </resources>
