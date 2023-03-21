@@ -277,4 +277,7 @@
     <string name="lbl_sort_dec">За спаданням</string>
     <string name="set_auto_sort_names">Ігнорувати артиклі під час сортування</string>
     <string name="set_auto_sort_names_desc">Ігнорування таких слів, як \"the\", під час сортування за назвою (найкраще працює з англомовною музикою)</string>
+    <string name="desc_playlist_image">Зображення списку відтворення для %s</string>
+    <string name="lbl_playlist">Список відтворення</string>
+    <string name="lbl_playlists">Списки відтворення</string>
 </resources>
