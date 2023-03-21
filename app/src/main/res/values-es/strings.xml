@@ -277,4 +277,7 @@
     <string name="lbl_sort_dec">Descendente</string>
     <string name="set_auto_sort_names">Ignorar artículos al ordenar</string>
     <string name="set_auto_sort_names_desc">Ignorar palabras como \"the\" al ordenar por nombre (funciona mejor con música en inglés)</string>
+    <string name="lbl_playlists">Listas de reproducción</string>
+    <string name="desc_playlist_image">Imagen de la lista de reproducción para %s</string>
+    <string name="lbl_playlist">Lista de reproducción</string>
 </resources>
