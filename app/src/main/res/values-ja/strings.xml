@@ -262,4 +262,7 @@
     <string name="set_pre_amp">ReplayGain プリアンプ</string>
     <string name="fmt_list">%1$s、%2$s</string>
     <string name="set_personalize_desc">UI コントロールと動作をカスタマイズする</string>
+    <string name="lbl_playlist">プレイリスト</string>
+    <string name="lbl_playlists">プレイリスト</string>
+    <string name="desc_playlist_image">%s のプレイリスト イメージ</string>
 </resources>
