@@ -20,6 +20,7 @@ package org.oxycblt.auxio.playback
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.query
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
@@ -288,10 +289,11 @@ constructor(
                 is Genre -> musicSettings.genreSongSort
                 is Artist -> musicSettings.artistSongSort
                 is Album -> musicSettings.albumSongSort
-                is Playlist -> TODO("handle this")
+                is Playlist -> musicSettings.playlistSongSort
                 null -> musicSettings.songSort
             }
-        val queue = sort.songs(parent?.songs ?: deviceLibrary.songs)
+        val songs = parent?.songs ?: deviceLibrary.songs
+        val queue = sort?.songs(songs) ?: songs
         playbackManager.play(song, parent, queue, shuffled)
     }
 
@@ -489,11 +491,11 @@ constructor(
     private fun selectionToSongs(selection: List<Music>): List<Song> {
         return selection.flatMap {
             when (it) {
+                is Song -> listOf(it)
                 is Album -> musicSettings.albumSongSort.songs(it.songs)
                 is Artist -> musicSettings.artistSongSort.songs(it.songs)
                 is Genre -> musicSettings.genreSongSort.songs(it.songs)
-                is Song -> listOf(it)
-                is Playlist -> TODO("handle this")
+                is Playlist -> musicSettings.playlistSongSort?.songs(it.songs) ?: it.songs
             }
         }
     }

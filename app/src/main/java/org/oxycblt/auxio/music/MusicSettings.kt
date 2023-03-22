@@ -60,9 +60,11 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     var albumSongSort: Sort
     /** The [Sort] mode used in an [Artist]'s [Song] list. */
     var artistSongSort: Sort
-    /** The [Sort] mode used in an [Genre]'s [Song] list. */
+    /** The [Sort] mode used in a [Genre]'s [Song] list. */
     var genreSongSort: Sort
-    /** The [] */
+    /** The [Sort] mode used in a [Playlist]'s [Song] list, or null if sorting by original ordering. */
+    var playlistSongSort: Sort?
+
     interface Listener {
         /** Called when a setting controlling how music is loaded has changed. */
         fun onIndexingSettingChanged() {}
@@ -218,6 +220,16 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context
         set(value) {
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_genre_songs_sort), value.intCode)
+                apply()
+            }
+        }
+
+    override var playlistSongSort: Sort?
+        get() = Sort.fromIntCode(sharedPreferences.getInt(
+                    getString(R.string.set_key_playlist_songs_sort), Int.MIN_VALUE))
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.lbl_playlist), value?.intCode ?: -1)
                 apply()
             }
         }
