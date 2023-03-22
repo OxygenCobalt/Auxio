@@ -271,4 +271,7 @@
     <string name="set_replay_gain">Ses yüksekliği dengesi ReplayGain</string>
     <string name="set_auto_sort_names">Sıralama yaparken makaleleri yoksay</string>
     <string name="set_auto_sort_names_desc">Ada göre sıralarken \"the\" gibi kelimeleri yok sayın (en iyi ingilizce müzikle çalışır)</string>
+    <string name="desc_playlist_image">%s için oynatma listesi resmi</string>
+    <string name="lbl_playlist">oynatma listesi</string>
+    <string name="lbl_playlists">çalma listeleri</string>
 </resources>
