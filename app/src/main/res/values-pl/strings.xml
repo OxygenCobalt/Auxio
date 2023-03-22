@@ -278,4 +278,7 @@
     <string name="lbl_sort_dec">Malejąco</string>
     <string name="set_auto_sort_names">Ignoruj rodzajniki podczas sortowania</string>
     <string name="set_auto_sort_names_desc">Ignoruj słowa takie jak „the” podczas sortowania według tytułu (działa najlepiej z tytułami w języku angielskim)</string>
+    <string name="lbl_playlists">Playlisty</string>
+    <string name="lbl_playlist">Playlist</string>
+    <string name="desc_playlist_image">Obraz playlisty dla %s</string>
 </resources>
