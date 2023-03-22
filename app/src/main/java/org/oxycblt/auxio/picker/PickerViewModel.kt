@@ -24,7 +24,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * a [ViewModel] that manages the current music picker state. Make it so that the dialogs just
@@ -60,7 +59,7 @@ class PickerViewModel @Inject constructor(private val musicRepository: MusicRepo
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (changes.library && musicRepository.library != null) {
+        if (changes.deviceLibrary && musicRepository.deviceLibrary != null) {
             refreshChoices()
         }
     }
@@ -71,8 +70,7 @@ class PickerViewModel @Inject constructor(private val musicRepository: MusicRepo
      * @param uid The [Music.UID] of the [Song] to update to.
      */
     fun setItemUid(uid: Music.UID) {
-        val library = unlikelyToBeNull(musicRepository.library)
-        _currentItem.value = library.find(uid)
+        _currentItem.value = musicRepository.find(uid)
         refreshChoices()
     }
 

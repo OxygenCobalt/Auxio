@@ -33,7 +33,7 @@ import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.library.Library
+import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.logD
 
@@ -73,7 +73,7 @@ constructor(
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (changes.library && musicRepository.library != null) {
+        if (changes.deviceLibrary && musicRepository.deviceLibrary != null) {
             search(lastQuery)
         }
     }
@@ -89,8 +89,8 @@ constructor(
         currentSearchJob?.cancel()
         lastQuery = query
 
-        val library = musicRepository.library
-        if (query.isNullOrEmpty() || library == null) {
+        val deviceLibrary = musicRepository.deviceLibrary
+        if (query.isNullOrEmpty() || deviceLibrary == null) {
             logD("Search query is not applicable.")
             _searchResults.value = listOf()
             return
@@ -101,23 +101,27 @@ constructor(
         // Searching is time-consuming, so do it in the background.
         currentSearchJob =
             viewModelScope.launch {
-                _searchResults.value = searchImpl(library, query).also { yield() }
+                _searchResults.value = searchImpl(deviceLibrary, query).also { yield() }
             }
     }
 
-    private suspend fun searchImpl(library: Library, query: String): List<Item> {
+    private suspend fun searchImpl(deviceLibrary: DeviceLibrary, query: String): List<Item> {
         val filterMode = searchSettings.searchFilterMode
 
         val items =
             if (filterMode == null) {
                 // A nulled filter mode means to not filter anything.
-                SearchEngine.Items(library.songs, library.albums, library.artists, library.genres)
+                SearchEngine.Items(
+                    deviceLibrary.songs,
+                    deviceLibrary.albums,
+                    deviceLibrary.artists,
+                    deviceLibrary.genres)
             } else {
                 SearchEngine.Items(
-                    songs = if (filterMode == MusicMode.SONGS) library.songs else null,
-                    albums = if (filterMode == MusicMode.ALBUMS) library.albums else null,
-                    artists = if (filterMode == MusicMode.ARTISTS) library.artists else null,
-                    genres = if (filterMode == MusicMode.GENRES) library.genres else null)
+                    songs = if (filterMode == MusicMode.SONGS) deviceLibrary.songs else null,
+                    albums = if (filterMode == MusicMode.ALBUMS) deviceLibrary.albums else null,
+                    artists = if (filterMode == MusicMode.ARTISTS) deviceLibrary.artists else null,
+                    genres = if (filterMode == MusicMode.GENRES) deviceLibrary.genres else null)
             }
 
         val results = searchEngine.search(items, query)

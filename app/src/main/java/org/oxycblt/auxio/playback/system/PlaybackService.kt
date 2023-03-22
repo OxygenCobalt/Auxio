@@ -299,7 +299,7 @@ class PlaybackService :
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (changes.library && musicRepository.library != null) {
+        if (changes.deviceLibrary && musicRepository.deviceLibrary != null) {
             // We now have a library, see if we have anything we need to do.
             playbackManager.requestAction(this)
         }
@@ -328,8 +328,8 @@ class PlaybackService :
     }
 
     override fun performAction(action: InternalPlayer.Action): Boolean {
-        val library =
-            musicRepository.library
+        val deviceLibrary =
+            musicRepository.deviceLibrary
             // No library, cannot do anything.
             ?: return false
 
@@ -339,22 +339,23 @@ class PlaybackService :
             // Restore state -> Start a new restoreState job
             is InternalPlayer.Action.RestoreState -> {
                 restoreScope.launch {
-                    persistenceRepository.readState(library)?.let {
+                    persistenceRepository.readState()?.let {
                         playbackManager.applySavedState(it, false)
                     }
                 }
             }
             // Shuffle all -> Start new playback from all songs
             is InternalPlayer.Action.ShuffleAll -> {
-                playbackManager.play(null, null, musicSettings.songSort.songs(library.songs), true)
+                playbackManager.play(
+                    null, null, musicSettings.songSort.songs(deviceLibrary.songs), true)
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
             is InternalPlayer.Action.Open -> {
-                library.findSongForUri(application, action.uri)?.let { song ->
+                deviceLibrary.findSongForUri(application, action.uri)?.let { song ->
                     playbackManager.play(
                         song,
                         null,
-                        musicSettings.songSort.songs(library.songs),
+                        musicSettings.songSort.songs(deviceLibrary.songs),
                         playbackManager.queue.isShuffled && playbackSettings.keepShuffle)
                 }
             }

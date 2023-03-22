@@ -16,20 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.playlist
+package org.oxycblt.auxio.music.user
 
 import android.content.Context
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.library.Library
+import org.oxycblt.auxio.music.device.DeviceLibrary
 
-class PlaylistImpl(rawPlaylist: RawPlaylist, library: Library, musicSettings: MusicSettings) :
-    Playlist {
+class PlaylistImpl(
+    rawPlaylist: RawPlaylist,
+    deviceLibrary: DeviceLibrary,
+    musicSettings: MusicSettings
+) : Playlist {
     override val uid = rawPlaylist.playlistInfo.playlistUid
     override val rawName = rawPlaylist.playlistInfo.name
     override fun resolveName(context: Context) = rawName
     override val rawSortName = null
     override val sortName = SortName(rawName, musicSettings)
-    override val songs = rawPlaylist.songs.mapNotNull { library.find<Song>(it.songUid) }
+    override val songs = rawPlaylist.songs.mapNotNull { deviceLibrary.findSong(it.songUid) }
     override val durationMs = songs.sumOf { it.durationMs }
     override val albums =
         songs.groupBy { it.album }.entries.sortedByDescending { it.value.size }.map { it.key }

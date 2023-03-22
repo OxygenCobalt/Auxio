@@ -21,8 +21,8 @@ package org.oxycblt.auxio.music
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.oxycblt.auxio.music.library.FakeLibrary
-import org.oxycblt.auxio.music.library.Library
+import org.oxycblt.auxio.music.device.DeviceLibrary
+import org.oxycblt.auxio.music.device.FakeDeviceLibrary
 import org.oxycblt.auxio.util.forceClear
 
 class MusicViewModelTest {
@@ -49,7 +49,7 @@ class MusicViewModelTest {
         val musicRepository = TestMusicRepository()
         val musicViewModel = MusicViewModel(musicRepository)
         assertEquals(null, musicViewModel.statistics.value)
-        musicRepository.library = TestLibrary()
+        musicRepository.deviceLibrary = TestDeviceLibrary()
         assertEquals(
             MusicViewModel.Statistics(
                 2,
@@ -71,11 +71,11 @@ class MusicViewModelTest {
     }
 
     private class TestMusicRepository : FakeMusicRepository() {
-        override var library: Library? = null
+        override var deviceLibrary: DeviceLibrary? = null
             set(value) {
                 field = value
                 updateListener?.onMusicChanges(
-                    MusicRepository.Changes(library = true, playlists = false))
+                    MusicRepository.Changes(deviceLibrary = true, userLibrary = false))
             }
         override var indexingState: IndexingState? = null
             set(value) {
@@ -88,7 +88,8 @@ class MusicViewModelTest {
         val requests = mutableListOf<Boolean>()
 
         override fun addUpdateListener(listener: MusicRepository.UpdateListener) {
-            listener.onMusicChanges(MusicRepository.Changes(library = true, playlists = false))
+            listener.onMusicChanges(
+                MusicRepository.Changes(deviceLibrary = true, userLibrary = false))
             this.updateListener = listener
         }
 
@@ -110,7 +111,7 @@ class MusicViewModelTest {
         }
     }
 
-    private class TestLibrary : FakeLibrary() {
+    private class TestDeviceLibrary : FakeDeviceLibrary() {
         override val songs: List<Song>
             get() = listOf(TestSong(), TestSong())
         override val albums: List<Album>

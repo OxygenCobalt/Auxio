@@ -26,10 +26,11 @@ import javax.inject.Inject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import org.oxycblt.auxio.music.cache.CacheRepository
-import org.oxycblt.auxio.music.library.Library
-import org.oxycblt.auxio.music.library.RawSong
+import org.oxycblt.auxio.music.device.DeviceLibrary
+import org.oxycblt.auxio.music.device.RawSong
+import org.oxycblt.auxio.music.fs.MediaStoreExtractor
 import org.oxycblt.auxio.music.metadata.TagExtractor
-import org.oxycblt.auxio.music.storage.MediaStoreExtractor
+import org.oxycblt.auxio.music.user.UserLibrary
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
@@ -43,10 +44,10 @@ import org.oxycblt.auxio.util.logW
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface MusicRepository {
-    /** The current immutable music library loaded from the file-system. */
-    val library: Library?
-    /** The current mutable user-defined playlists loaded from the file-system. */
-    val playlists: List<Playlist>?
+    /** The current music information found on the device. */
+    val deviceLibrary: DeviceLibrary?
+    /** The current user-defined music information. */
+    val userLibrary: UserLibrary?
     /** The current state of music loading. Null if no load has occurred yet. */
     val indexingState: IndexingState?
 
@@ -97,6 +98,16 @@ interface MusicRepository {
     fun unregisterWorker(worker: IndexingWorker)
 
     /**
+     * Generically search for the [Music] associated with the given [Music.UID]. Note that this
+     * method is much slower that type-specific find implementations, so this should only be used if
+     * the type of music being searched for is entirely unknown.
+     *
+     * @param uid The [Music.UID] to search for.
+     * @return The expected [Music] information, or null if it could not be found.
+     */
+    fun find(uid: Music.UID): Music?
+
+    /**
      * Request that a music loading operation is started by the current [IndexingWorker]. Does
      * nothing if one is not available.
      *
@@ -118,7 +129,7 @@ interface MusicRepository {
         /**
          * Called when a change to the stored music information occurs.
          *
-         * @param changes The [Changes] that have occured.
+         * @param changes The [Changes] that have occurred.
          */
         fun onMusicChanges(changes: Changes)
     }
@@ -126,10 +137,10 @@ interface MusicRepository {
     /**
      * Flags indicating which kinds of music information changed.
      *
-     * @param library Whether the current [Library] has changed.
-     * @param playlists Whether the current [Playlist]s have changed.
+     * @param deviceLibrary Whether the current [DeviceLibrary] has changed.
+     * @param userLibrary Whether the current [Playlist]s have changed.
      */
-    data class Changes(val library: Boolean, val playlists: Boolean)
+    data class Changes(val deviceLibrary: Boolean, val userLibrary: Boolean)
 
     /** A listener for events in the music loading process. */
     interface IndexingListener {
@@ -158,17 +169,18 @@ interface MusicRepository {
 class MusicRepositoryImpl
 @Inject
 constructor(
-    private val musicSettings: MusicSettings,
     private val cacheRepository: CacheRepository,
     private val mediaStoreExtractor: MediaStoreExtractor,
-    private val tagExtractor: TagExtractor
+    private val tagExtractor: TagExtractor,
+    private val deviceLibraryProvider: DeviceLibrary.Provider,
+    private val userLibraryProvider: UserLibrary.Provider
 ) : MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
     private var indexingWorker: MusicRepository.IndexingWorker? = null
 
-    override var library: Library? = null
-    override var playlists: List<Playlist>? = null
+    override var deviceLibrary: DeviceLibrary? = null
+    override var userLibrary: UserLibrary? = null
     private var previousCompletedState: IndexingState.Completed? = null
     private var currentIndexingState: IndexingState? = null
     override val indexingState: IndexingState?
@@ -215,6 +227,10 @@ constructor(
         indexingWorker = null
         currentIndexingState = null
     }
+
+    override fun find(uid: Music.UID) =
+        (deviceLibrary?.run { findSong(uid) ?: findAlbum(uid) ?: findArtist(uid) ?: findGenre(uid) }
+            ?: userLibrary?.findPlaylist(uid))
 
     override fun requestIndex(withCache: Boolean) {
         indexingWorker?.requestIndex(withCache)
@@ -295,16 +311,20 @@ constructor(
         // parallel.
         logD("Discovered ${rawSongs.size} songs, starting finalization")
         emitLoading(IndexingProgress.Indeterminate)
-        val libraryJob =
-            worker.scope.async(Dispatchers.Main) { Library.from(rawSongs, musicSettings) }
+        val deviceLibraryChannel = Channel<DeviceLibrary>()
+        val deviceLibraryJob =
+            worker.scope.async(Dispatchers.Main) {
+                deviceLibraryProvider.create(rawSongs).also { deviceLibraryChannel.send(it) }
+            }
+        val userLibraryJob = worker.scope.async { userLibraryProvider.read(deviceLibraryChannel) }
         if (cache == null || cache.invalidated) {
             cacheRepository.writeCache(rawSongs)
         }
-        val newLibrary = libraryJob.await()
-        // TODO: Make real playlist reading
+        val deviceLibrary = deviceLibraryJob.await()
+        val userLibrary = userLibraryJob.await()
         withContext(Dispatchers.Main) {
             emitComplete(null)
-            emitData(newLibrary, listOf())
+            emitData(deviceLibrary, userLibrary)
         }
     }
 
@@ -330,14 +350,14 @@ constructor(
     }
 
     @Synchronized
-    private fun emitData(library: Library, playlists: List<Playlist>) {
-        val libraryChanged = this.library != library
-        val playlistsChanged = this.playlists != playlists
-        if (!libraryChanged && !playlistsChanged) return
+    private fun emitData(deviceLibrary: DeviceLibrary, userLibrary: UserLibrary) {
+        val deviceLibraryChanged = this.deviceLibrary != deviceLibrary
+        val userLibraryChanged = this.userLibrary != userLibrary
+        if (!deviceLibraryChanged && !userLibraryChanged) return
 
-        this.library = library
-        this.playlists = playlists
-        val changes = MusicRepository.Changes(libraryChanged, playlistsChanged)
+        this.deviceLibrary = deviceLibrary
+        this.userLibrary = userLibrary
+        val changes = MusicRepository.Changes(deviceLibraryChanged, userLibraryChanged)
         for (listener in updateListeners) {
             listener.onMusicChanges(changes)
         }

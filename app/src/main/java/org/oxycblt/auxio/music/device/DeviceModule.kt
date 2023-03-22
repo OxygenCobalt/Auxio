@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * PlaylistModule.kt is part of Auxio.
+ * DeviceModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,27 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.playlist
+package org.oxycblt.auxio.music.device
 
-import android.content.Context
-import androidx.room.Room
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-class PlaylistModule {
-    @Provides fun playlistDao(database: PlaylistDatabase) = database.playlistDao()
-
-    @Provides
-    fun playlistDatabase(@ApplicationContext context: Context) =
-        Room.databaseBuilder(
-                context.applicationContext, PlaylistDatabase::class.java, "playlists.db")
-            .fallbackToDestructiveMigration()
-            .fallbackToDestructiveMigrationFrom(0)
-            .fallbackToDestructiveMigrationOnDowngrade()
-            .build()
+interface DeviceModule {
+    @Binds
+    fun deviceLibraryProvider(providerImpl: DeviceLibraryProviderImpl): DeviceLibrary.Provider
 }

@@ -20,12 +20,11 @@ package org.oxycblt.auxio.music
 
 import android.content.Context
 import android.net.Uri
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.fs.MimeType
+import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.metadata.Disc
 import org.oxycblt.auxio.music.metadata.ReleaseType
-import org.oxycblt.auxio.music.storage.MimeType
-import org.oxycblt.auxio.music.storage.Path
 
 open class FakeSong : Song {
     override val rawName: String?

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * MusicImpl.kt is part of Auxio.
+ * DeviceMusicImpl.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.library
+package org.oxycblt.auxio.music.device
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
@@ -24,15 +24,15 @@ import java.security.MessageDigest
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.fs.MimeType
+import org.oxycblt.auxio.music.fs.Path
+import org.oxycblt.auxio.music.fs.toAudioUri
+import org.oxycblt.auxio.music.fs.toCoverUri
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.metadata.Disc
 import org.oxycblt.auxio.music.metadata.ReleaseType
 import org.oxycblt.auxio.music.metadata.parseId3GenreNames
 import org.oxycblt.auxio.music.metadata.parseMultiValue
-import org.oxycblt.auxio.music.storage.MimeType
-import org.oxycblt.auxio.music.storage.Path
-import org.oxycblt.auxio.music.storage.toAudioUri
-import org.oxycblt.auxio.music.storage.toCoverUri
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -467,7 +467,7 @@ class GenreImpl(
      *
      * @return This instance upcasted to [Genre].
      */
-    fun finalize(): Music {
+    fun finalize(): Genre {
         check(songs.isNotEmpty()) { "Malformed genre: Empty" }
         return this
     }

@@ -19,7 +19,7 @@
 package org.oxycblt.auxio.music.cache
 
 import javax.inject.Inject
-import org.oxycblt.auxio.music.library.RawSong
+import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.util.*
 
 /**

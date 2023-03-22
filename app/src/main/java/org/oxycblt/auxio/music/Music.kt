@@ -30,11 +30,11 @@ import kotlin.math.max
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.music.fs.MimeType
+import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.metadata.Disc
 import org.oxycblt.auxio.music.metadata.ReleaseType
-import org.oxycblt.auxio.music.storage.MimeType
-import org.oxycblt.auxio.music.storage.Path
 import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.auxio.util.toUuidOrNull
 
@@ -139,10 +139,10 @@ sealed interface Music : Item {
 
         object TypeConverters {
             /** @see [Music.UID.toString] */
-            @TypeConverter fun fromMusicUID(uid: Music.UID?) = uid?.toString()
+            @TypeConverter fun fromMusicUID(uid: UID?) = uid?.toString()
 
             /** @see [Music.UID.fromString] */
-            @TypeConverter fun toMusicUid(string: String?) = string?.let(Music.UID::fromString)
+            @TypeConverter fun toMusicUid(string: String?) = string?.let(UID::fromString)
         }
 
         companion object {

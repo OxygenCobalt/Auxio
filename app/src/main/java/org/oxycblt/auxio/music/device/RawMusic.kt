@@ -16,12 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.library
+package org.oxycblt.auxio.music.device
 
 import java.util.UUID
 import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.fs.Directory
 import org.oxycblt.auxio.music.metadata.*
-import org.oxycblt.auxio.music.storage.Directory
 
 /**
  * Raw information about a [SongImpl] obtained from the filesystem/Extractor instances.

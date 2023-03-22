@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.storage
+package org.oxycblt.auxio.music.fs
 
 import android.content.Context
 import android.database.Cursor
@@ -31,7 +31,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.cache.Cache
-import org.oxycblt.auxio.music.library.RawSong
+import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.metadata.Date
 import org.oxycblt.auxio.music.metadata.parseId3v2PositionField
 import org.oxycblt.auxio.music.metadata.transformPositionField

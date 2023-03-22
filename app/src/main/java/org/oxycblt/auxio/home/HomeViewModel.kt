@@ -136,33 +136,33 @@ constructor(
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        val library = musicRepository.library
-        if (changes.library && library != null) {
+        val deviceLibrary = musicRepository.deviceLibrary
+        if (changes.deviceLibrary && deviceLibrary != null) {
             logD("Refreshing library")
             // Get the each list of items in the library to use as our list data.
             // Applying the preferred sorting to them.
             _songsInstructions.put(UpdateInstructions.Diff)
-            _songsList.value = musicSettings.songSort.songs(library.songs)
+            _songsList.value = musicSettings.songSort.songs(deviceLibrary.songs)
             _albumsInstructions.put(UpdateInstructions.Diff)
-            _albumsLists.value = musicSettings.albumSort.albums(library.albums)
+            _albumsLists.value = musicSettings.albumSort.albums(deviceLibrary.albums)
             _artistsInstructions.put(UpdateInstructions.Diff)
             _artistsList.value =
                 musicSettings.artistSort.artists(
                     if (homeSettings.shouldHideCollaborators) {
                         // Hide Collaborators is enabled, filter out collaborators.
-                        library.artists.filter { !it.isCollaborator }
+                        deviceLibrary.artists.filter { !it.isCollaborator }
                     } else {
-                        library.artists
+                        deviceLibrary.artists
                     })
             _genresInstructions.put(UpdateInstructions.Diff)
-            _genresList.value = musicSettings.genreSort.genres(library.genres)
+            _genresList.value = musicSettings.genreSort.genres(deviceLibrary.genres)
         }
 
-        val playlists = musicRepository.playlists
-        if (changes.playlists && playlists != null) {
+        val userLibrary = musicRepository.userLibrary
+        if (changes.userLibrary && userLibrary != null) {
             logD("Refreshing playlists")
             _playlistsInstructions.put(UpdateInstructions.Diff)
-            _playlistsList.value = musicSettings.playlistSort.playlists(playlists)
+            _playlistsList.value = musicSettings.playlistSort.playlists(userLibrary.playlists)
         }
     }
 
@@ -175,7 +175,7 @@ constructor(
     override fun onHideCollaboratorsChanged() {
         // Changes in the hide collaborator setting will change the artist contents
         // of the library, consider it a library update.
-        onMusicChanges(MusicRepository.Changes(library = true, playlists = false))
+        onMusicChanges(MusicRepository.Changes(deviceLibrary = true, userLibrary = false))
     }
 
     /**

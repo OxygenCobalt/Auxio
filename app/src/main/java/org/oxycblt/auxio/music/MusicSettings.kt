@@ -25,8 +25,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.music.storage.Directory
-import org.oxycblt.auxio.music.storage.MusicDirectories
+import org.oxycblt.auxio.music.fs.Directory
+import org.oxycblt.auxio.music.fs.MusicDirectories
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.getSystemServiceCompat
 
@@ -62,7 +62,7 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     var artistSongSort: Sort
     /** The [Sort] mode used in an [Genre]'s [Song] list. */
     var genreSongSort: Sort
-
+    /** The [] */
     interface Listener {
         /** Called when a setting controlling how music is loaded has changed. */
         fun onIndexingSettingChanged() {}

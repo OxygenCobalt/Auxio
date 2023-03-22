@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.library
+package org.oxycblt.auxio.music.device
 
 import java.util.*
 import org.junit.Assert.assertEquals

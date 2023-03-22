@@ -24,7 +24,7 @@ import android.media.MediaFormat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.storage.MimeType
+import org.oxycblt.auxio.music.fs.MimeType
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW

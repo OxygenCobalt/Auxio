@@ -43,18 +43,19 @@ class SelectionViewModel @Inject constructor(private val musicRepository: MusicR
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (!changes.library) return
-        val library = musicRepository.library ?: return
+        if (!changes.deviceLibrary) return
+        val deviceLibrary = musicRepository.deviceLibrary ?: return
+        val userLibrary = musicRepository.userLibrary ?: return
         // Sanitize the selection to remove items that no longer exist and thus
         // won't appear in any list.
         _selected.value =
             _selected.value.mapNotNull {
                 when (it) {
-                    is Song -> library.sanitize(it)
-                    is Album -> library.sanitize(it)
-                    is Artist -> library.sanitize(it)
-                    is Genre -> library.sanitize(it)
-                    is Playlist -> TODO("handle this")
+                    is Song -> deviceLibrary.findSong(it.uid)
+                    is Album -> deviceLibrary.findAlbum(it.uid)
+                    is Artist -> deviceLibrary.findArtist(it.uid)
+                    is Genre -> deviceLibrary.findGenre(it.uid)
+                    is Playlist -> userLibrary.findPlaylist(it.uid)
                 }
             }
     }

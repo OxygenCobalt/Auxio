@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * PlaylistDatabase.kt is part of Auxio.
+ * RawPlaylist.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,21 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.playlist
+package org.oxycblt.auxio.music.user
 
 import androidx.room.*
 import org.oxycblt.auxio.music.Music
 
-@Database(
-    entities = [PlaylistInfo::class, PlaylistSong::class, PlaylistSongCrossRef::class],
-    version = 28,
-    exportSchema = false)
-@TypeConverters(Music.UID.TypeConverters::class)
-abstract class PlaylistDatabase : RoomDatabase() {
-    abstract fun playlistDao(): PlaylistDao
-}
+data class RawPlaylist(
+    @Embedded val playlistInfo: PlaylistInfo,
+    @Relation(
+        parentColumn = "playlistUid",
+        entityColumn = "songUid",
+        associateBy = Junction(PlaylistSongCrossRef::class))
+    val songs: List<PlaylistSong>
+)
 
-@Dao
-interface PlaylistDao {
-    @Transaction @Query("SELECT * FROM PlaylistInfo") fun readRawPlaylists(): List<RawPlaylist>
-}
+@Entity data class PlaylistInfo(@PrimaryKey val playlistUid: Music.UID, val name: String)
+
+@Entity data class PlaylistSong(@PrimaryKey val songUid: Music.UID)
+
+@Entity(primaryKeys = ["playlistUid", "songUid"])
+data class PlaylistSongCrossRef(
+    val playlistUid: Music.UID,
+    @ColumnInfo(index = true) val songUid: Music.UID
+)

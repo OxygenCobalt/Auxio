@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * StorageModule.kt is part of Auxio.
+ * FsModule.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.storage
+package org.oxycblt.auxio.music.fs
 
 import android.content.Context
 import dagger.Module
@@ -28,7 +28,7 @@ import org.oxycblt.auxio.music.MusicSettings
 
 @Module
 @InstallIn(SingletonComponent::class)
-class StorageModule {
+class FsModule {
     @Provides
     fun mediaStoreExtractor(@ApplicationContext context: Context, musicSettings: MusicSettings) =
         MediaStoreExtractor.from(context, musicSettings)

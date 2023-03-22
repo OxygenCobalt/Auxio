@@ -159,8 +159,8 @@ constructor(
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (!changes.library) return
-        val library = musicRepository.library ?: return
+        if (!changes.deviceLibrary) return
+        val deviceLibrary = musicRepository.deviceLibrary ?: return
 
         // If we are showing any item right now, we will need to refresh it (and any information
         // related to it) with the new library in order to prevent stale items from showing up
@@ -168,25 +168,25 @@ constructor(
 
         val song = currentSong.value
         if (song != null) {
-            _currentSong.value = library.sanitize(song)?.also(::refreshAudioInfo)
+            _currentSong.value = deviceLibrary.findSong(song.uid)?.also(::refreshAudioInfo)
             logD("Updated song to ${currentSong.value}")
         }
 
         val album = currentAlbum.value
         if (album != null) {
-            _currentAlbum.value = library.sanitize(album)?.also(::refreshAlbumList)
+            _currentAlbum.value = deviceLibrary.findAlbum(album.uid)?.also(::refreshAlbumList)
             logD("Updated genre to ${currentAlbum.value}")
         }
 
         val artist = currentArtist.value
         if (artist != null) {
-            _currentArtist.value = library.sanitize(artist)?.also(::refreshArtistList)
+            _currentArtist.value = deviceLibrary.findArtist(artist.uid)?.also(::refreshArtistList)
             logD("Updated genre to ${currentArtist.value}")
         }
 
         val genre = currentGenre.value
         if (genre != null) {
-            _currentGenre.value = library.sanitize(genre)?.also(::refreshGenreList)
+            _currentGenre.value = deviceLibrary.findGenre(genre.uid)?.also(::refreshGenreList)
             logD("Updated genre to ${currentGenre.value}")
         }
     }
@@ -203,7 +203,7 @@ constructor(
             return
         }
         logD("Opening Song [uid: $uid]")
-        _currentSong.value = requireMusic<Song>(uid)?.also(::refreshAudioInfo)
+        _currentSong.value = musicRepository.deviceLibrary?.findSong(uid)?.also(::refreshAudioInfo)
     }
 
     /**
@@ -218,7 +218,8 @@ constructor(
             return
         }
         logD("Opening Album [uid: $uid]")
-        _currentAlbum.value = requireMusic<Album>(uid)?.also(::refreshAlbumList)
+        _currentAlbum.value =
+            musicRepository.deviceLibrary?.findAlbum(uid)?.also(::refreshAlbumList)
     }
 
     /**
@@ -233,7 +234,8 @@ constructor(
             return
         }
         logD("Opening Artist [uid: $uid]")
-        _currentArtist.value = requireMusic<Artist>(uid)?.also(::refreshArtistList)
+        _currentArtist.value =
+            musicRepository.deviceLibrary?.findArtist(uid)?.also(::refreshArtistList)
     }
 
     /**
@@ -248,10 +250,9 @@ constructor(
             return
         }
         logD("Opening Genre [uid: $uid]")
-        _currentGenre.value = requireMusic<Genre>(uid)?.also(::refreshGenreList)
+        _currentGenre.value =
+            musicRepository.deviceLibrary?.findGenre(uid)?.also(::refreshGenreList)
     }
-
-    private fun <T : Music> requireMusic(uid: Music.UID) = musicRepository.library?.find<T>(uid)
 
     private fun refreshAudioInfo(song: Song) {
         // Clear any previous job in order to avoid stale data from appearing in the UI.

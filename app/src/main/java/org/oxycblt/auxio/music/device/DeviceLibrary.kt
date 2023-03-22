@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * Library.kt is part of Auxio.
+ * DeviceLibrary.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,19 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.library
+package org.oxycblt.auxio.music.device
 
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import javax.inject.Inject
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.storage.contentResolverSafe
-import org.oxycblt.auxio.music.storage.useQuery
+import org.oxycblt.auxio.music.fs.contentResolverSafe
+import org.oxycblt.auxio.music.fs.useQuery
 import org.oxycblt.auxio.util.logD
 
 /**
- * Organized music library information.
+ * Organized music library information obtained from device storage.
  *
  * This class allows for the creation of a well-formed music library graph from raw song
  * information. It's generally not expected to create this yourself and instead use
@@ -36,40 +37,23 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart
  */
-interface Library {
-    /** All [Song]s in this [Library]. */
+interface DeviceLibrary {
+    /** All [Song]s in this [DeviceLibrary]. */
     val songs: List<Song>
-    /** All [Album]s in this [Library]. */
+    /** All [Album]s in this [DeviceLibrary]. */
     val albums: List<Album>
-    /** All [Artist]s in this [Library]. */
+    /** All [Artist]s in this [DeviceLibrary]. */
     val artists: List<Artist>
-    /** All [Genre]s in this [Library]. */
+    /** All [Genre]s in this [DeviceLibrary]. */
     val genres: List<Genre>
 
     /**
-     * Finds a [Music] item [T] in the library by it's [Music.UID].
+     * Find a [Song] instance corresponding to the given [Music.UID].
      *
      * @param uid The [Music.UID] to search for.
-     * @return The [T] corresponding to the given [Music.UID], or null if nothing could be found or
-     *   the [Music.UID] did not correspond to a [T].
+     * @return The corresponding [Song], or null if one was not found.
      */
-    fun <T : Music> find(uid: Music.UID): T?
-
-    /**
-     * Convert a [Song] from an another library into a [Song] in this [Library].
-     *
-     * @param song The [Song] to convert.
-     * @return The analogous [Song] in this [Library], or null if it does not exist.
-     */
-    fun sanitize(song: Song): Song?
-
-    /**
-     * Convert a [MusicParent] from an another library into a [MusicParent] in this [Library].
-     *
-     * @param parent The [MusicParent] to convert.
-     * @return The analogous [Album] in this [Library], or null if it does not exist.
-     */
-    fun <T : MusicParent> sanitize(parent: T): T?
+    fun findSong(uid: Music.UID): Song?
 
     /**
      * Find a [Song] instance corresponding to the given Intent.ACTION_VIEW [Uri].
@@ -80,34 +64,72 @@ interface Library {
      */
     fun findSongForUri(context: Context, uri: Uri): Song?
 
+    /**
+     * Find a [Album] instance corresponding to the given [Music.UID].
+     *
+     * @param uid The [Music.UID] to search for.
+     * @return The corresponding [Song], or null if one was not found.
+     */
+    fun findAlbum(uid: Music.UID): Album?
+
+    /**
+     * Find a [Artist] instance corresponding to the given [Music.UID].
+     *
+     * @param uid The [Music.UID] to search for.
+     * @return The corresponding [Song], or null if one was not found.
+     */
+    fun findArtist(uid: Music.UID): Artist?
+
+    /**
+     * Find a [Genre] instance corresponding to the given [Music.UID].
+     *
+     * @param uid The [Music.UID] to search for.
+     * @return The corresponding [Song], or null if one was not found.
+     */
+    fun findGenre(uid: Music.UID): Genre?
+
+    /** Constructs a [DeviceLibrary] implementation in an asynchronous manner. */
+    interface Provider {
+        /**
+         * Create a new [DeviceLibrary].
+         *
+         * @param rawSongs [RawSong] instances to create a [DeviceLibrary] from.
+         */
+        suspend fun create(rawSongs: List<RawSong>): DeviceLibrary
+    }
+
     companion object {
         /**
-         * Create an instance of [Library].
+         * Create an instance of [DeviceLibrary].
          *
          * @param rawSongs [RawSong]s to create the library out of.
          * @param settings [MusicSettings] required.
          */
-        fun from(rawSongs: List<RawSong>, settings: MusicSettings): Library =
-            LibraryImpl(rawSongs, settings)
+        fun from(rawSongs: List<RawSong>, settings: MusicSettings): DeviceLibrary =
+            DeviceLibraryImpl(rawSongs, settings)
     }
 }
 
-private class LibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings) : Library {
+class DeviceLibraryProviderImpl @Inject constructor(private val musicSettings: MusicSettings) :
+    DeviceLibrary.Provider {
+    override suspend fun create(rawSongs: List<RawSong>): DeviceLibrary =
+        DeviceLibraryImpl(rawSongs, musicSettings)
+}
+
+private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings) : DeviceLibrary {
     override val songs = buildSongs(rawSongs, settings)
     override val albums = buildAlbums(songs, settings)
     override val artists = buildArtists(songs, albums, settings)
     override val genres = buildGenres(songs, settings)
 
     // Use a mapping to make finding information based on it's UID much faster.
-    private val uidMap = buildMap {
-        songs.forEach { put(it.uid, it.finalize()) }
-        albums.forEach { put(it.uid, it.finalize()) }
-        artists.forEach { put(it.uid, it.finalize()) }
-        genres.forEach { put(it.uid, it.finalize()) }
-    }
+    private val songUidMap = buildMap { songs.forEach { put(it.uid, it.finalize()) } }
+    private val albumUidMap = buildMap { albums.forEach { put(it.uid, it.finalize()) } }
+    private val artistUidMap = buildMap { artists.forEach { put(it.uid, it.finalize()) } }
+    private val genreUidMap = buildMap { genres.forEach { put(it.uid, it.finalize()) } }
 
     override fun equals(other: Any?) =
-        other is Library &&
+        other is DeviceLibrary &&
             other.songs == songs &&
             other.albums == albums &&
             other.artists == artists &&
@@ -121,18 +143,10 @@ private class LibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings) : Li
         return hashCode
     }
 
-    /**
-     * Finds a [Music] item [T] in the library by it's [Music.UID].
-     *
-     * @param uid The [Music.UID] to search for.
-     * @return The [T] corresponding to the given [Music.UID], or null if nothing could be found or
-     *   the [Music.UID] did not correspond to a [T].
-     */
-    @Suppress("UNCHECKED_CAST") override fun <T : Music> find(uid: Music.UID) = uidMap[uid] as? T
-
-    override fun sanitize(song: Song) = find<Song>(song.uid)
-
-    override fun <T : MusicParent> sanitize(parent: T) = find<T>(parent.uid)
+    override fun findSong(uid: Music.UID) = songUidMap[uid]
+    override fun findAlbum(uid: Music.UID) = albumUidMap[uid]
+    override fun findArtist(uid: Music.UID) = artistUidMap[uid]
+    override fun findGenre(uid: Music.UID) = genreUidMap[uid]
 
     override fun findSongForUri(context: Context, uri: Uri) =
         context.contentResolverSafe.useQuery(

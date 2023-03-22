@@ -282,7 +282,7 @@ constructor(
         check(song == null || parent == null || parent.songs.contains(song)) {
             "Song to play not in parent"
         }
-        val library = musicRepository.library ?: return
+        val deviceLibrary = musicRepository.deviceLibrary ?: return
         val sort =
             when (parent) {
                 is Genre -> musicSettings.genreSongSort
@@ -291,7 +291,7 @@ constructor(
                 is Playlist -> TODO("handle this")
                 null -> musicSettings.songSort
             }
-        val queue = sort.songs(parent?.songs ?: library.songs)
+        val queue = sort.songs(parent?.songs ?: deviceLibrary.songs)
         playbackManager.play(song, parent, queue, shuffled)
     }
 
@@ -469,14 +469,11 @@ constructor(
      */
     fun tryRestorePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
-            val library = musicRepository.library
-            if (library != null) {
-                val savedState = persistenceRepository.readState(library)
-                if (savedState != null) {
-                    playbackManager.applySavedState(savedState, true)
-                    onDone(true)
-                    return@launch
-                }
+            val savedState = persistenceRepository.readState()
+            if (savedState != null) {
+                playbackManager.applySavedState(savedState, true)
+                onDone(true)
+                return@launch
             }
             onDone(false)
         }

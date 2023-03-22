@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
- * Filesystem.kt is part of Auxio.
+ * Fs.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.storage
+package org.oxycblt.auxio.music.fs
 
 import android.content.Context
 import android.media.MediaFormat

@@ -53,15 +53,15 @@ class MusicViewModel @Inject constructor(private val musicRepository: MusicRepos
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (!changes.library) return
-        val library = musicRepository.library ?: return
+        if (!changes.deviceLibrary) return
+        val deviceLibrary = musicRepository.deviceLibrary ?: return
         _statistics.value =
             Statistics(
-                library.songs.size,
-                library.albums.size,
-                library.artists.size,
-                library.genres.size,
-                library.songs.sumOf { it.durationMs })
+                deviceLibrary.songs.size,
+                deviceLibrary.albums.size,
+                deviceLibrary.artists.size,
+                deviceLibrary.genres.size,
+                deviceLibrary.songs.sumOf { it.durationMs })
     }
 
     override fun onIndexingStateChanged() {

@@ -19,24 +19,16 @@
 package org.oxycblt.auxio.music
 
 import kotlinx.coroutines.Job
-import org.oxycblt.auxio.music.library.Library
+import org.oxycblt.auxio.music.device.DeviceLibrary
+import org.oxycblt.auxio.music.user.UserLibrary
 
 open class FakeMusicRepository : MusicRepository {
-    override var indexingState: IndexingState?
+    override val indexingState: IndexingState?
         get() = throw NotImplementedError()
-        set(_) {
-            throw NotImplementedError()
-        }
-    override var library: Library?
+    override val deviceLibrary: DeviceLibrary?
         get() = throw NotImplementedError()
-        set(_) {
-            throw NotImplementedError()
-        }
-    override var playlists: List<Playlist>?
+    override val userLibrary: UserLibrary?
         get() = throw NotImplementedError()
-        set(_) {
-            throw NotImplementedError()
-        }
 
     override fun addUpdateListener(listener: MusicRepository.UpdateListener) {
         throw NotImplementedError()
@@ -59,6 +51,10 @@ open class FakeMusicRepository : MusicRepository {
     }
 
     override fun unregisterWorker(worker: MusicRepository.IndexingWorker) {
+        throw NotImplementedError()
+    }
+
+    override fun find(uid: Music.UID): Music? {
         throw NotImplementedError()
     }
 

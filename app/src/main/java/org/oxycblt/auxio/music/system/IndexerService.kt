@@ -34,7 +34,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.*
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.storage.contentResolverSafe
+import org.oxycblt.auxio.music.fs.contentResolverSafe
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.service.ForegroundManager
 import org.oxycblt.auxio.util.getSystemServiceCompat
@@ -131,8 +131,8 @@ class IndexerService :
     override val scope = indexScope
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (!changes.library) return
-        val library = musicRepository.library ?: return
+        if (!changes.deviceLibrary) return
+        val deviceLibrary = musicRepository.deviceLibrary ?: return
         // Wipe possibly-invalidated outdated covers
         imageLoader.memoryCache?.clear()
         // Clear invalid models from PlaybackStateManager. This is not connected
@@ -141,10 +141,11 @@ class IndexerService :
         playbackManager.toSavedState()?.let { savedState ->
             playbackManager.applySavedState(
                 PlaybackStateManager.SavedState(
-                    parent = savedState.parent?.let(library::sanitize),
+                    parent =
+                        savedState.parent?.let { musicRepository.find(it.uid) as? MusicParent },
                     queueState =
                         savedState.queueState.remap { song ->
-                            library.sanitize(requireNotNull(song))
+                            deviceLibrary.findSong(requireNotNull(song).uid)
                         },
                     positionMs = savedState.positionMs,
                     repeatMode = savedState.repeatMode),

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * FakeLibrary.kt is part of Auxio.
+ * FakeDeviceLibrary.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.library
+package org.oxycblt.auxio.music.device
 
 import android.content.Context
 import android.net.Uri
 import org.oxycblt.auxio.music.*
 
-open class FakeLibrary : Library {
+open class FakeDeviceLibrary : DeviceLibrary {
     override val songs: List<Song>
         get() = throw NotImplementedError()
     override val albums: List<Album>
@@ -32,7 +32,7 @@ open class FakeLibrary : Library {
     override val genres: List<Genre>
         get() = throw NotImplementedError()
 
-    override fun <T : Music> find(uid: Music.UID): T? {
+    override fun findSong(uid: Music.UID): Song? {
         throw NotImplementedError()
     }
 
@@ -40,11 +40,15 @@ open class FakeLibrary : Library {
         throw NotImplementedError()
     }
 
-    override fun <T : MusicParent> sanitize(parent: T): T? {
+    override fun findAlbum(uid: Music.UID): Album? {
         throw NotImplementedError()
     }
 
-    override fun sanitize(song: Song): Song? {
+    override fun findArtist(uid: Music.UID): Artist? {
+        throw NotImplementedError()
+    }
+
+    override fun findGenre(uid: Music.UID): Genre? {
         throw NotImplementedError()
     }
 }

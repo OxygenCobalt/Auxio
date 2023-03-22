@@ -228,8 +228,7 @@ class GenreDetailFragment :
             is Genre -> {
                 navModel.exploreNavigationItem.consume()
             }
-            is Playlist -> TODO("handle this")
-            null -> {}
+            else -> {}
         }
     }
 
