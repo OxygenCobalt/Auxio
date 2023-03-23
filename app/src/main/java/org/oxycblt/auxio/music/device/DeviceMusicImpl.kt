@@ -483,6 +483,7 @@ class GenreImpl(
  * @return A new [Music.UID] of Auxio format whose [UUID] was derived from the SHA-256 hash of the
  *   metadata given.
  */
+@VisibleForTesting
 fun createHashedUid(mode: MusicMode, updates: MessageDigest.() -> Unit): Music.UID {
     val digest =
         MessageDigest.getInstance("SHA-256").run {

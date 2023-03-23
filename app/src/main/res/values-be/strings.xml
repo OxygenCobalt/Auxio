@@ -267,8 +267,8 @@
     <string name="set_playback">Прайграванне</string>
     <string name="lbl_ep_live">Канцэртны міні-альбом</string>
     <string name="lbl_ep_remix">Міні-альбом рэміксаў</string>
-    <string name="set_auto_sort_names_desc">Ігнараваць такія словы, як \"the\", пры сартаванні па імені (лепш за ўсё працуе з англамоўнай музыкай)</string>
-    <string name="set_auto_sort_names">Ігнараваць артыклі пры сартаванні</string>
+    <string name="set_intelligent_sorting_desc">Ігнараваць такія словы, як \"the\", пры сартаванні па імені (лепш за ўсё працуе з англамоўнай музыкай)</string>
+    <string name="set_intelligent_sorting">Ігнараваць артыклі пры сартаванні</string>
     <string name="lbl_eps">Міні-альбомы</string>
     <string name="lbl_ep">Міні-альбом</string>
 </resources>

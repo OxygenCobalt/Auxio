@@ -149,7 +149,7 @@
     <string name="set_separators_slash">קו נטוי (/)</string>
     <string name="set_separators_warning">אזהרה: השימוש בהגדרה זו עלול לגרום לחלק מהתגיות להיות מפורשות באופן שגוי כבעלות מספר ערכים. ניתן לפתור זאת על ידי הכנסת קו נטוי אחורי (\\) לפני תווים מפרידים לא רצויים.</string>
     <string name="set_cover_mode_quality">איכות גבוהה</string>
-    <string name="set_auto_sort_names_desc">התעלמ~י ממילים כמו \"The\" (\"ה-\") בעת סידור על פי שם (עובד באופן הכי טוב עם מוזיקה בשפה האנגלית)</string>
+    <string name="set_intelligent_sorting_desc">התעלמ~י ממילים כמו \"The\" (\"ה-\") בעת סידור על פי שם (עובד באופן הכי טוב עם מוזיקה בשפה האנגלית)</string>
     <string name="set_images">תמונות</string>
     <string name="set_audio_desc">התאמ~י התנהגות צליל והשמעה</string>
     <string name="set_headset_autoplay_desc">התחל~י לנגן תמיד ברגע שמחוברות אוזניות (עלול לא לעבוד בכל המערכות)</string>
