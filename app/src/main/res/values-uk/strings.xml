@@ -280,4 +280,5 @@
     <string name="desc_playlist_image">Зображення списку відтворення для %s</string>
     <string name="lbl_playlist">Список відтворення</string>
     <string name="lbl_playlists">Списки відтворення</string>
+    <string name="lbl_none">Немає</string>
 </resources>
