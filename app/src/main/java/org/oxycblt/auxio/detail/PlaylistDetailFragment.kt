@@ -26,7 +26,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
@@ -114,16 +113,15 @@ class PlaylistDetailFragment :
             return true
         }
 
-        // TODO: Handle
         val currentPlaylist = unlikelyToBeNull(detailModel.currentPlaylist.value)
         return when (item.itemId) {
             R.id.action_play_next -> {
-                //                playbackModel.playNext(currentPlaylist)
+                playbackModel.playNext(currentPlaylist)
                 requireContext().showToast(R.string.lng_queue_added)
                 true
             }
             R.id.action_queue_add -> {
-                //                playbackModel.addToQueue(currentPlaylist)
+                playbackModel.addToQueue(currentPlaylist)
                 requireContext().showToast(R.string.lng_queue_added)
                 true
             }
@@ -131,12 +129,8 @@ class PlaylistDetailFragment :
         }
     }
 
-    override fun onClick(item: Song, viewHolder: RecyclerView.ViewHolder) {
-        // TODO: Handle
-    }
-
     override fun onRealClick(item: Song) {
-        // TODO: Handle
+        playbackModel.playFromPlaylist(item, unlikelyToBeNull(detailModel.currentPlaylist.value))
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {
@@ -145,11 +139,11 @@ class PlaylistDetailFragment :
 
     override fun onPlay() {
         // TODO: Handle
-        //        playbackModel.play(unlikelyToBeNull(detailModel.currentPlaylist.value))
+        playbackModel.play(unlikelyToBeNull(detailModel.currentPlaylist.value))
     }
 
     override fun onShuffle() {
-        //        playbackModel.shuffle(unlikelyToBeNull(detailModel.currentPlaylist.value))
+        playbackModel.shuffle(unlikelyToBeNull(detailModel.currentPlaylist.value))
     }
 
     override fun onOpenSortMenu(anchor: View) {

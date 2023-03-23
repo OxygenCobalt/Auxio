@@ -3,17 +3,16 @@
 ## dev
 
 #### What's New
-- Added support for `COMPILATION` and `ITUNESCOMPILATION` flags.
+- Added support for `COMPILATION` and `ITUNESCOMPILATION` flags
 
 #### What's Improved
 - Accept `REPLAYGAIN_*` adjustment information on OPUS files alongside
 `R128_*` adjustments
 - List updates are now consistent across the app
 - Fixed jarring header update in detail view
-- Search view now trims search queries
+- Searching now ignores punctuation and trailing whitespace
 - Audio effect (equalizer) session is now broadcast when playing/pausing
 rather than on start/stop
-- Searching now ignores punctuation
 - Numeric names are now logically sorted (i.e 7 before 15)
 
 #### What's Fixed

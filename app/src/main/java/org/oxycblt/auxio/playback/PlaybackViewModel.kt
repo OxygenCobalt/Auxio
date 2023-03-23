@@ -168,6 +168,7 @@ constructor(
      * - If [MusicMode.ALBUMS], the [Song] is played from it's [Album].
      * - If [MusicMode.ARTISTS], the [Song] is played from one of it's [Artist]s.
      * - If [MusicMode.GENRES], the [Song] is played from one of it's [Genre]s.
+     *   [MusicMode.PLAYLISTS] is disallowed here.
      *
      * @param song The [Song] to play.
      * @param playbackMode The [MusicMode] to play from.
@@ -200,7 +201,7 @@ constructor(
     }
 
     /**
-     * PLay a [Song] from one of it's [Genre]s.
+     * Play a [Song] from one of it's [Genre]s.
      *
      * @param song The [Song] to play.
      * @param genre The [Genre] to play from. Must be linked to the [Song]. If null, the user will
@@ -214,6 +215,16 @@ constructor(
         } else {
             _genrePlaybackPickerSong.put(song)
         }
+    }
+
+    /**
+     * PLay a [Song] from one of it's [Playlist]s.
+     *
+     * @param song The [Song] to play.
+     * @param playlist The [Playlist] to play from. Must be linked to the [Song].
+     */
+    fun playFromPlaylist(song: Song, playlist: Playlist) {
+        playImpl(song, playlist)
     }
 
     /**
@@ -238,6 +249,13 @@ constructor(
     fun play(genre: Genre) = playImpl(null, genre, false)
 
     /**
+     * Play a [Playlist].
+     *
+     * @param playlist The [Playlist] to play.
+     */
+    fun play(playlist: Playlist) = playImpl(null, playlist, false)
+
+    /**
      * Play a [Music] selection.
      *
      * @param selection The selection to play.
@@ -260,11 +278,18 @@ constructor(
     fun shuffle(artist: Artist) = playImpl(null, artist, true)
 
     /**
-     * Shuffle an [Genre].
+     * Shuffle a [Genre].
      *
      * @param genre The [Genre] to shuffle.
      */
     fun shuffle(genre: Genre) = playImpl(null, genre, true)
+
+    /**
+     * Shuffle a [Playlist].
+     *
+     * @param playlist The [Playlist] to shuffle.
+     */
+    fun shuffle(playlist: Playlist) = playImpl(null, playlist, true)
 
     /**
      * Shuffle a [Music] selection.
@@ -292,7 +317,7 @@ constructor(
                 null -> musicSettings.songSort
             }
         val songs = parent?.songs ?: deviceLibrary.songs
-        val queue = sort?.songs(songs) ?: songs
+        val queue = sort.songs(songs)
         playbackManager.play(song, parent, queue, shuffled)
     }
 
@@ -366,6 +391,15 @@ constructor(
     }
 
     /**
+     * Add a [Playlist] to the top of the queue.
+     *
+     * @param playlist The [Playlist] to add.
+     */
+    fun playNext(playlist: Playlist) {
+        playbackManager.playNext(musicSettings.playlistSongSort.songs(playlist.songs))
+    }
+
+    /**
      * Add a selection to the top of the queue.
      *
      * @param selection The [Music] selection to add.
@@ -408,6 +442,15 @@ constructor(
      */
     fun addToQueue(genre: Genre) {
         playbackManager.addToQueue(musicSettings.genreSongSort.songs(genre.songs))
+    }
+
+    /**
+     * Add a [Playlist] to the end of the queue.
+     *
+     * @param playlist The [Playlist] to add.
+     */
+    fun addToQueue(playlist: Playlist) {
+        playbackManager.addToQueue(musicSettings.playlistSongSort.songs(playlist.songs))
     }
 
     /**
@@ -494,7 +537,7 @@ constructor(
                 is Album -> musicSettings.albumSongSort.songs(it.songs)
                 is Artist -> musicSettings.artistSongSort.songs(it.songs)
                 is Genre -> musicSettings.genreSongSort.songs(it.songs)
-                is Playlist -> musicSettings.playlistSongSort?.songs(it.songs) ?: it.songs
+                is Playlist -> musicSettings.playlistSongSort.songs(it.songs)
             }
         }
     }

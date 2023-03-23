@@ -58,7 +58,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
      */
     abstract fun onRealClick(item: T)
 
-    override fun onClick(item: T, viewHolder: RecyclerView.ViewHolder) {
+    final override fun onClick(item: T, viewHolder: RecyclerView.ViewHolder) {
         if (selectionModel.selected.value.isNotEmpty()) {
             // Map clicking an item to selecting an item when items are already selected.
             selectionModel.select(item)
@@ -68,7 +68,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
         }
     }
 
-    override fun onSelect(item: T) {
+    final override fun onSelect(item: T) {
         selectionModel.select(item)
     }
 
@@ -222,26 +222,26 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
      *
      * @param anchor The [View] to anchor the menu to.
      * @param menuRes The resource of the menu to load.
-     * @param genre The [Playlist] to create the menu for.
+     * @param playlist The [Playlist] to create the menu for.
      */
-    protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, genre: Playlist) {
-        logD("Launching new genre menu: ${genre.rawName}")
+    protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, playlist: Playlist) {
+        logD("Launching new playlist menu: ${playlist.rawName}")
 
         openMusicMenuImpl(anchor, menuRes) {
             when (it.itemId) {
                 R.id.action_play -> {
-                    // playbackModel.play(genre)
+                    playbackModel.play(playlist)
                 }
                 R.id.action_shuffle -> {
-                    // playbackModel.shuffle(genre)
+                    playbackModel.shuffle(playlist)
                 }
                 R.id.action_play_next -> {
-                    // playbackModel.playNext(genre)
-                    // requireContext().showToast(R.string.lng_queue_added)
+                    playbackModel.playNext(playlist)
+                    requireContext().showToast(R.string.lng_queue_added)
                 }
                 R.id.action_queue_add -> {
-                    // playbackModel.addToQueue(genre)
-                    // requireContext().showToast(R.string.lng_queue_added)
+                    playbackModel.addToQueue(playlist)
+                    requireContext().showToast(R.string.lng_queue_added)
                 }
                 else -> {
                     error("Unexpected menu item selected")

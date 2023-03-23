@@ -50,7 +50,7 @@ open class FakeMusicSettings : MusicSettings {
         set(_) = throw NotImplementedError()
     override var playlistSort: Sort
         get() = throw NotImplementedError()
-        set(value) = throw NotImplementedError()
+        set(_) = throw NotImplementedError()
     override var albumSongSort: Sort
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
