@@ -46,6 +46,7 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     var multiValueSeparators: String
     /** Whether to trim english articles with song sort names. */
     val automaticSortNames: Boolean
+    // TODO: Move sort settings to list module
     /** The [Sort] mode used in [Song] lists. */
     var songSort: Sort
     /** The [Sort] mode used in [Album] lists. */
@@ -62,8 +63,8 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     var artistSongSort: Sort
     /** The [Sort] mode used in a [Genre]'s [Song] list. */
     var genreSongSort: Sort
-    /** The [Sort] mode used in a [Playlist]'s [Song] list, or null if sorting by original ordering. */
-    var playlistSongSort: Sort?
+    /** The [Sort] mode used in a [Playlist]'s [Song] list. */
+    var playlistSongSort: Sort
 
     interface Listener {
         /** Called when a setting controlling how music is loaded has changed. */
@@ -224,12 +225,15 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context
             }
         }
 
-    override var playlistSongSort: Sort?
-        get() = Sort.fromIntCode(sharedPreferences.getInt(
+    override var playlistSongSort: Sort
+        get() =
+            Sort.fromIntCode(
+                sharedPreferences.getInt(
                     getString(R.string.set_key_playlist_songs_sort), Int.MIN_VALUE))
+                ?: Sort(Sort.Mode.ByNone, Sort.Direction.ASCENDING)
         set(value) {
             sharedPreferences.edit {
-                putInt(getString(R.string.lbl_playlist), value?.intCode ?: -1)
+                putInt(getString(R.string.set_key_playlist_songs_sort), value.intCode)
                 apply()
             }
         }

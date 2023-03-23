@@ -438,7 +438,8 @@ class HomeFragment :
                 is Album -> HomeFragmentDirections.actionShowAlbum(item.uid)
                 is Artist -> HomeFragmentDirections.actionShowArtist(item.uid)
                 is Genre -> HomeFragmentDirections.actionShowGenre(item.uid)
-                else -> return
+                is Playlist -> HomeFragmentDirections.actionShowPlaylist(item.uid)
+                null -> return
             }
 
         setupAxisTransitions(MaterialSharedAxis.X)

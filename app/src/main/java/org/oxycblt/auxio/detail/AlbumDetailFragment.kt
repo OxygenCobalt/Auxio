@@ -159,8 +159,10 @@ class AlbumDetailFragment :
 
     override fun onOpenSortMenu(anchor: View) {
         openMenu(anchor, R.menu.menu_album_sort) {
+            // Select the corresponding sort mode option
             val sort = detailModel.albumSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
+            // Select the corresponding sort direction option
             val directionItemId =
                 when (sort.direction) {
                     Sort.Direction.ASCENDING -> R.id.option_sort_asc
@@ -171,8 +173,10 @@ class AlbumDetailFragment :
                 item.isChecked = !item.isChecked
                 detailModel.albumSongSort =
                     when (item.itemId) {
+                        // Sort direction options
                         R.id.option_sort_asc -> sort.withDirection(Sort.Direction.ASCENDING)
                         R.id.option_sort_dec -> sort.withDirection(Sort.Direction.DESCENDING)
+                        // Any other option is a sort mode
                         else -> sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
                     }
                 true

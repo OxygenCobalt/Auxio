@@ -114,23 +114,28 @@ data class Sort(val mode: Mode, val direction: Direction) {
     }
 
     private fun songsInPlace(songs: MutableList<out Song>) {
-        songs.sortWith(mode.getSongComparator(direction))
+        val comparator = mode.getSongComparator(direction) ?: return
+        songs.sortWith(comparator)
     }
 
     private fun albumsInPlace(albums: MutableList<out Album>) {
-        albums.sortWith(mode.getAlbumComparator(direction))
+        val comparator = mode.getAlbumComparator(direction) ?: return
+        albums.sortWith(comparator)
     }
 
     private fun artistsInPlace(artists: MutableList<out Artist>) {
-        artists.sortWith(mode.getArtistComparator(direction))
+        val comparator = mode.getArtistComparator(direction) ?: return
+        artists.sortWith(comparator)
     }
 
     private fun genresInPlace(genres: MutableList<out Genre>) {
-        genres.sortWith(mode.getGenreComparator(direction))
+        val comparator = mode.getGenreComparator(direction) ?: return
+        genres.sortWith(comparator)
     }
 
     private fun playlistsInPlace(playlists: MutableList<out Playlist>) {
-        playlists.sortWith(mode.getPlaylistComparator(direction))
+        val comparator = mode.getPlaylistComparator(direction) ?: return
+        playlists.sortWith(comparator)
     }
 
     /**
@@ -160,50 +165,57 @@ data class Sort(val mode: Mode, val direction: Direction) {
          * Get a [Comparator] that sorts [Song]s according to this [Mode].
          *
          * @param direction The direction to sort in.
-         * @return A [Comparator] that can be used to sort a [Song] list according to this [Mode].
+         * @return A [Comparator] that can be used to sort a [Song] list according to this [Mode],
+         *   or null to not sort at all.
          */
-        open fun getSongComparator(direction: Direction): Comparator<Song> {
-            throw UnsupportedOperationException()
-        }
+        open fun getSongComparator(direction: Direction): Comparator<Song>? = null
 
         /**
          * Get a [Comparator] that sorts [Album]s according to this [Mode].
          *
          * @param direction The direction to sort in.
-         * @return A [Comparator] that can be used to sort a [Album] list according to this [Mode].
+         * @return A [Comparator] that can be used to sort a [Album] list according to this [Mode],
+         *   or null to not sort at all.
          */
-        open fun getAlbumComparator(direction: Direction): Comparator<Album> {
-            throw UnsupportedOperationException()
-        }
-
+        open fun getAlbumComparator(direction: Direction): Comparator<Album>? = null
         /**
          * Return a [Comparator] that sorts [Artist]s according to this [Mode].
          *
          * @param direction The direction to sort in.
          * @return A [Comparator] that can be used to sort a [Artist] list according to this [Mode].
+         *   or null to not sort at all.
          */
-        open fun getArtistComparator(direction: Direction): Comparator<Artist> {
-            throw UnsupportedOperationException()
-        }
+        open fun getArtistComparator(direction: Direction): Comparator<Artist>? = null
 
         /**
          * Return a [Comparator] that sorts [Genre]s according to this [Mode].
          *
          * @param direction The direction to sort in.
          * @return A [Comparator] that can be used to sort a [Genre] list according to this [Mode].
+         *   or null to not sort at all.
          */
-        open fun getGenreComparator(direction: Direction): Comparator<Genre> {
-            throw UnsupportedOperationException()
-        }
+        open fun getGenreComparator(direction: Direction): Comparator<Genre>? = null
 
         /**
          * Return a [Comparator] that sorts [Playlist]s according to this [Mode].
          *
          * @param direction The direction to sort in.
          * @return A [Comparator] that can be used to sort a [Genre] list according to this [Mode].
+         *   or null to not sort at all.
          */
-        open fun getPlaylistComparator(direction: Direction): Comparator<Playlist> {
-            throw UnsupportedOperationException()
+        open fun getPlaylistComparator(direction: Direction): Comparator<Playlist>? = null
+
+        /**
+         * Sort by the item's natural order.
+         *
+         * @see Music.sortName
+         */
+        object ByNone : Mode() {
+            override val intCode: Int
+                get() = IntegerTable.SORT_BY_NONE
+
+            override val itemId: Int
+                get() = R.id.option_sort_none
         }
 
         /**
@@ -614,6 +626,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
              */
             fun fromIntCode(intCode: Int) =
                 when (intCode) {
+                    ByNone.intCode -> ByNone
                     ByName.intCode -> ByName
                     ByArtist.intCode -> ByArtist
                     ByAlbum.intCode -> ByAlbum
@@ -635,6 +648,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
              */
             fun fromItemId(@IdRes itemId: Int) =
                 when (itemId) {
+                    ByNone.itemId -> ByNone
                     ByName.itemId -> ByName
                     ByAlbum.itemId -> ByAlbum
                     ByArtist.itemId -> ByArtist

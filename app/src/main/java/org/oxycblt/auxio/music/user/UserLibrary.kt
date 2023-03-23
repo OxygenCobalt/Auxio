@@ -21,6 +21,7 @@ package org.oxycblt.auxio.music.user
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.device.DeviceLibrary
@@ -74,6 +75,18 @@ private class UserLibraryImpl(
     private val playlistMap = mutableMapOf<Music.UID, PlaylistImpl>()
     override val playlists: List<Playlist>
         get() = playlistMap.values.toList()
+
+    init {
+        val uid = Music.UID.auxio(MusicMode.PLAYLISTS) { update("Playlist 1".toByteArray()) }
+        playlistMap[uid] =
+            PlaylistImpl(
+                RawPlaylist(
+                    PlaylistInfo(uid, "Playlist 1"),
+                    deviceLibrary.songs.slice(10..30).map { PlaylistSong(it.uid) }),
+                deviceLibrary,
+                musicSettings,
+            )
+    }
 
     override fun findPlaylist(uid: Music.UID) = playlistMap[uid]
 }

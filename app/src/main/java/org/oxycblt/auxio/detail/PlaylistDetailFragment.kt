@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2021 Auxio Project
- * GenreDetailFragment.kt is part of Auxio.
+ * Copyright (c) 2023 Auxio Project
+ * PlaylistDetailFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,14 +26,15 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.header.DetailHeaderAdapter
-import org.oxycblt.auxio.detail.header.GenreDetailHeaderAdapter
+import org.oxycblt.auxio.detail.header.PlaylistDetailHeaderAdapter
 import org.oxycblt.auxio.detail.list.DetailListAdapter
-import org.oxycblt.auxio.detail.list.GenreDetailListAdapter
+import org.oxycblt.auxio.detail.list.PlaylistDetailListAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
@@ -44,24 +45,24 @@ import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.*
 
 /**
- * A [ListFragment] that shows information for a particular [Genre].
+ * A [ListFragment] that shows information for a particular [Playlist].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class GenreDetailFragment :
-    ListFragment<Music, FragmentDetailBinding>(),
+class PlaylistDetailFragment :
+    ListFragment<Song, FragmentDetailBinding>(),
     DetailHeaderAdapter.Listener,
-    DetailListAdapter.Listener<Music> {
+    DetailListAdapter.Listener<Song> {
     private val detailModel: DetailViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
-    // Information about what genre to display is initially within the navigation arguments
-    // as a UID, as that is the only safe way to parcel an genre.
-    private val args: GenreDetailFragmentArgs by navArgs()
-    private val genreHeaderAdapter = GenreDetailHeaderAdapter(this)
-    private val genreListAdapter = GenreDetailListAdapter(this)
+    // Information about what playlist to display is initially within the navigation arguments
+    // as a UID, as that is the only safe way to parcel an playlist.
+    private val args: PlaylistDetailFragmentArgs by navArgs()
+    private val playlistHeaderAdapter = PlaylistDetailHeaderAdapter(this)
+    private val playlistListAdapter = PlaylistDetailListAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,16 +84,16 @@ class GenreDetailFragment :
         binding.detailToolbar.apply {
             inflateMenu(R.menu.menu_parent_detail)
             setNavigationOnClickListener { findNavController().navigateUp() }
-            setOnMenuItemClickListener(this@GenreDetailFragment)
+            setOnMenuItemClickListener(this@PlaylistDetailFragment)
         }
 
-        binding.detailRecycler.adapter = ConcatAdapter(genreHeaderAdapter, genreListAdapter)
+        binding.detailRecycler.adapter = ConcatAdapter(playlistHeaderAdapter, playlistListAdapter)
 
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
-        detailModel.setGenreUid(args.genreUid)
-        collectImmediately(detailModel.currentGenre, ::updatePlaylist)
-        collectImmediately(detailModel.genreList, ::updateList)
+        detailModel.setPlaylistUid(args.playlistUid)
+        collectImmediately(detailModel.currentPlaylist, ::updatePlaylist)
+        collectImmediately(detailModel.playlistList, ::updateList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
@@ -105,7 +106,7 @@ class GenreDetailFragment :
         binding.detailRecycler.adapter = null
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
-        detailModel.genreInstructions.consume()
+        detailModel.playlistInstructions.consume()
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -113,15 +114,16 @@ class GenreDetailFragment :
             return true
         }
 
-        val currentGenre = unlikelyToBeNull(detailModel.currentGenre.value)
+        // TODO: Handle
+        val currentPlaylist = unlikelyToBeNull(detailModel.currentPlaylist.value)
         return when (item.itemId) {
             R.id.action_play_next -> {
-                playbackModel.playNext(currentGenre)
+                //                playbackModel.playNext(currentPlaylist)
                 requireContext().showToast(R.string.lng_queue_added)
                 true
             }
             R.id.action_queue_add -> {
-                playbackModel.addToQueue(currentGenre)
+                //                playbackModel.addToQueue(currentPlaylist)
                 requireContext().showToast(R.string.lng_queue_added)
                 true
             }
@@ -129,44 +131,31 @@ class GenreDetailFragment :
         }
     }
 
-    override fun onRealClick(item: Music) {
-        when (item) {
-            is Artist -> navModel.exploreNavigateTo(item)
-            is Song -> {
-                val playbackMode = detailModel.playbackMode
-                if (playbackMode != null) {
-                    playbackModel.playFrom(item, playbackMode)
-                } else {
-                    // When configured to play from the selected item, we already have an Genre
-                    // to play from.
-                    playbackModel.playFromGenre(
-                        item, unlikelyToBeNull(detailModel.currentGenre.value))
-                }
-            }
-            else -> error("Unexpected datatype: ${item::class.simpleName}")
-        }
+    override fun onClick(item: Song, viewHolder: RecyclerView.ViewHolder) {
+        // TODO: Handle
     }
 
-    override fun onOpenMenu(item: Music, anchor: View) {
-        when (item) {
-            is Artist -> openMusicMenu(anchor, R.menu.menu_parent_actions, item)
-            is Song -> openMusicMenu(anchor, R.menu.menu_song_actions, item)
-            else -> error("Unexpected datatype: ${item::class.simpleName}")
-        }
+    override fun onRealClick(item: Song) {
+        // TODO: Handle
+    }
+
+    override fun onOpenMenu(item: Song, anchor: View) {
+        openMusicMenu(anchor, R.menu.menu_song_actions, item)
     }
 
     override fun onPlay() {
-        playbackModel.play(unlikelyToBeNull(detailModel.currentGenre.value))
+        // TODO: Handle
+        //        playbackModel.play(unlikelyToBeNull(detailModel.currentPlaylist.value))
     }
 
     override fun onShuffle() {
-        playbackModel.shuffle(unlikelyToBeNull(detailModel.currentGenre.value))
+        //        playbackModel.shuffle(unlikelyToBeNull(detailModel.currentPlaylist.value))
     }
 
     override fun onOpenSortMenu(anchor: View) {
-        openMenu(anchor, R.menu.menu_genre_sort) {
+        openMenu(anchor, R.menu.menu_playlist_sort) {
             // Select the corresponding sort mode option
-            val sort = detailModel.genreSongSort
+            val sort = detailModel.playlistSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
             // Select the corresponding sort direction option
             val directionItemId =
@@ -175,9 +164,17 @@ class GenreDetailFragment :
                     Sort.Direction.DESCENDING -> R.id.option_sort_dec
                 }
             unlikelyToBeNull(menu.findItem(directionItemId)).isChecked = true
+            // If there is no sort specified, disable the ascending/descending options, as
+            // they make no sense. We still do want to indicate the state however, in the case
+            // that the user wants to switch to a sort mode where they do make sense.
+            if (sort.mode is Sort.Mode.ByNone) {
+                menu.findItem(R.id.option_sort_dec).isEnabled = false
+                menu.findItem(R.id.option_sort_asc).isEnabled = false
+            }
+
             setOnMenuItemClickListener { item ->
                 item.isChecked = !item.isChecked
-                detailModel.genreSongSort =
+                detailModel.playlistSongSort =
                     when (item.itemId) {
                         // Sort direction options
                         R.id.option_sort_asc -> sort.withDirection(Sort.Direction.ASCENDING)
@@ -190,26 +187,24 @@ class GenreDetailFragment :
         }
     }
 
-    private fun updatePlaylist(genre: Genre?) {
-        if (genre == null) {
-            // Genre we were showing no longer exists.
+    private fun updatePlaylist(playlist: Playlist?) {
+        if (playlist == null) {
+            // Playlist we were showing no longer exists.
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailToolbar.title = genre.resolveName(requireContext())
-        genreHeaderAdapter.setParent(genre)
+        requireBinding().detailToolbar.title = playlist.resolveName(requireContext())
+        playlistHeaderAdapter.setParent(playlist)
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        var playingMusic: Music? = null
-        if (parent is Artist) {
-            playingMusic = parent
+        // Prefer songs that might be playing from this playlist.
+        if (parent is Playlist &&
+            parent.uid == unlikelyToBeNull(detailModel.currentPlaylist.value).uid) {
+            playlistListAdapter.setPlaying(song, isPlaying)
+        } else {
+            playlistListAdapter.setPlaying(null, isPlaying)
         }
-        // Prefer songs that might be playing from this genre.
-        if (parent is Genre && parent.uid == unlikelyToBeNull(detailModel.currentGenre.value).uid) {
-            playingMusic = song
-        }
-        genreListAdapter.setPlaying(playingMusic, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {
@@ -217,19 +212,19 @@ class GenreDetailFragment :
             is Song -> {
                 logD("Navigating to another song")
                 findNavController()
-                    .navigateSafe(GenreDetailFragmentDirections.actionShowAlbum(item.album.uid))
+                    .navigateSafe(PlaylistDetailFragmentDirections.actionShowAlbum(item.album.uid))
             }
             is Album -> {
                 logD("Navigating to another album")
                 findNavController()
-                    .navigateSafe(GenreDetailFragmentDirections.actionShowAlbum(item.uid))
+                    .navigateSafe(PlaylistDetailFragmentDirections.actionShowAlbum(item.uid))
             }
             is Artist -> {
                 logD("Navigating to another artist")
                 findNavController()
-                    .navigateSafe(GenreDetailFragmentDirections.actionShowArtist(item.uid))
+                    .navigateSafe(PlaylistDetailFragmentDirections.actionShowArtist(item.uid))
             }
-            is Genre -> {
+            is Playlist -> {
                 navModel.exploreNavigationItem.consume()
             }
             else -> {}
@@ -237,11 +232,11 @@ class GenreDetailFragment :
     }
 
     private fun updateList(list: List<Item>) {
-        genreListAdapter.update(list, detailModel.genreInstructions.consume())
+        playlistListAdapter.update(list, detailModel.playlistInstructions.consume())
     }
 
     private fun updateSelection(selected: List<Music>) {
-        genreListAdapter.setSelected(selected.toSet())
+        playlistListAdapter.setSelected(selected.toSet())
         requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
     }
 }

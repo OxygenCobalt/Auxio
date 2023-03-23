@@ -178,7 +178,8 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                 is Album -> SearchFragmentDirections.actionShowAlbum(item.uid)
                 is Artist -> SearchFragmentDirections.actionShowArtist(item.uid)
                 is Genre -> SearchFragmentDirections.actionShowGenre(item.uid)
-                else -> return
+                is Playlist -> SearchFragmentDirections.actionShowPlaylist(item.uid)
+                null -> return
             }
         // Keyboard is no longer needed.
         hideKeyboard()

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * GenreDetailHeaderAdapter.kt is part of Auxio.
+ * PlaylistDetailHeaderAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,53 +24,50 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemDetailHeaderBinding
-import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
 /**
- * A [DetailHeaderAdapter] that shows [Genre] information.
+ * A [DetailHeaderAdapter] that shows [Playlist] information.
  *
  * @param listener [DetailHeaderAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreDetailHeaderAdapter(private val listener: Listener) :
-    DetailHeaderAdapter<Genre, GenreDetailHeaderViewHolder>() {
+class PlaylistDetailHeaderAdapter(private val listener: Listener) :
+    DetailHeaderAdapter<Playlist, PlaylistDetailHeaderViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        GenreDetailHeaderViewHolder.from(parent)
+        PlaylistDetailHeaderViewHolder.from(parent)
 
-    override fun onBindHeader(holder: GenreDetailHeaderViewHolder, parent: Genre) =
+    override fun onBindHeader(holder: PlaylistDetailHeaderViewHolder, parent: Playlist) =
         holder.bind(parent, listener)
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays the [Genre] header in the detail view. Use [from] to
+ * A [RecyclerView.ViewHolder] that displays the [Playlist] header in the detail view. Use [from] to
  * create an instance.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreDetailHeaderViewHolder
+class PlaylistDetailHeaderViewHolder
 private constructor(private val binding: ItemDetailHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
      *
-     * @param genre The new [Genre] to bind.
+     * @param playlist The new [Playlist] to bind.
      * @param listener A [DetailHeaderAdapter.Listener] to bind interactions to.
      */
-    fun bind(genre: Genre, listener: DetailHeaderAdapter.Listener) {
-        binding.detailCover.bind(genre)
-        binding.detailType.text = binding.context.getString(R.string.lbl_genre)
-        binding.detailName.text = genre.resolveName(binding.context)
-        // Nothing about a genre is applicable to the sub-head text.
+    fun bind(playlist: Playlist, listener: DetailHeaderAdapter.Listener) {
+        binding.detailCover.bind(playlist)
+        binding.detailType.text = binding.context.getString(R.string.lbl_playlist)
+        binding.detailName.text = playlist.resolveName(binding.context)
+        // Nothing about a playlist is applicable to the sub-head text.
         binding.detailSubhead.isVisible = false
-        // The song and artist count of the genre maps to the info text.
+        // The song count of the playlist maps to the info text.
         binding.detailInfo.text =
-            binding.context.getString(
-                R.string.fmt_two,
-                binding.context.getPlural(R.plurals.fmt_artist_count, genre.artists.size),
-                binding.context.getPlural(R.plurals.fmt_song_count, genre.songs.size))
+            binding.context.getPlural(R.plurals.fmt_song_count, playlist.songs.size)
         binding.detailPlayButton.setOnClickListener { listener.onPlay() }
         binding.detailShuffleButton.setOnClickListener { listener.onShuffle() }
     }
@@ -83,6 +80,6 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
          * @return A new instance.
          */
         fun from(parent: View) =
-            GenreDetailHeaderViewHolder(ItemDetailHeaderBinding.inflate(parent.context.inflater))
+            PlaylistDetailHeaderViewHolder(ItemDetailHeaderBinding.inflate(parent.context.inflater))
     }
 }

@@ -143,6 +143,31 @@ constructor(
             currentGenre.value?.let { refreshGenreList(it, true) }
         }
 
+    // --- PLAYLIST ---
+    private val _currentPlaylist = MutableStateFlow<Playlist?>(null)
+    /** The current [Playlist] to display. Null if there is nothing to do. */
+    val currentPlaylist: StateFlow<Playlist?>
+        get() = _currentPlaylist
+
+    private val _playlistList = MutableStateFlow(listOf<Item>())
+    /** The current list data derived from [currentPlaylist] */
+    val playlistList: StateFlow<List<Item>> = _playlistList
+    private val _playlistInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for updating [playlistList] in the UI. */
+    val playlistInstructions: Event<UpdateInstructions>
+        get() = _playlistInstructions
+
+    /** The current [Sort] used for [Song]s in [playlistList]. */
+    var playlistSongSort: Sort
+        get() = musicSettings.playlistSongSort
+        set(value) {
+            logD(value)
+            musicSettings.playlistSongSort = value
+            logD(musicSettings.playlistSongSort)
+            // Refresh the playlist list to reflect the new sort.
+            currentPlaylist.value?.let { refreshPlaylistList(it, true) }
+        }
+
     /**
      * The [MusicMode] to use when playing a [Song] from the UI, or null to play from the currently
      * shown item.
@@ -161,6 +186,7 @@ constructor(
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         if (!changes.deviceLibrary) return
         val deviceLibrary = musicRepository.deviceLibrary ?: return
+        val userLibrary = musicRepository.userLibrary ?: return
 
         // If we are showing any item right now, we will need to refresh it (and any information
         // related to it) with the new library in order to prevent stale items from showing up
@@ -175,19 +201,25 @@ constructor(
         val album = currentAlbum.value
         if (album != null) {
             _currentAlbum.value = deviceLibrary.findAlbum(album.uid)?.also(::refreshAlbumList)
-            logD("Updated genre to ${currentAlbum.value}")
+            logD("Updated album to ${currentAlbum.value}")
         }
 
         val artist = currentArtist.value
         if (artist != null) {
             _currentArtist.value = deviceLibrary.findArtist(artist.uid)?.also(::refreshArtistList)
-            logD("Updated genre to ${currentArtist.value}")
+            logD("Updated artist to ${currentArtist.value}")
         }
 
         val genre = currentGenre.value
         if (genre != null) {
             _currentGenre.value = deviceLibrary.findGenre(genre.uid)?.also(::refreshGenreList)
             logD("Updated genre to ${currentGenre.value}")
+        }
+
+        val playlist = currentPlaylist.value
+        if (playlist != null) {
+            _currentPlaylist.value =
+                userLibrary.findPlaylist(playlist.uid)?.also(::refreshPlaylistList)
         }
     }
 
@@ -254,6 +286,22 @@ constructor(
             musicRepository.deviceLibrary?.findGenre(uid)?.also(::refreshGenreList)
     }
 
+    /**
+     * Set a new [currentPlaylist] from it's [Music.UID]. If the [Music.UID] differs,
+     * [currentPlaylist] and [currentPlaylist] will be updated to align with the new album.
+     *
+     * @param uid The [Music.UID] of the [Playlist] to update [currentPlaylist] to. Must be valid.
+     */
+    fun setPlaylistUid(uid: Music.UID) {
+        if (_currentPlaylist.value?.uid == uid) {
+            // Nothing to do.
+            return
+        }
+        logD("Opening Playlist [uid: $uid]")
+        _currentPlaylist.value =
+            musicRepository.userLibrary?.findPlaylist(uid)?.also(::refreshPlaylistList)
+    }
+
     private fun refreshAudioInfo(song: Song) {
         // Clear any previous job in order to avoid stale data from appearing in the UI.
         currentSongJob?.cancel()
@@ -267,7 +315,7 @@ constructor(
     }
 
     private fun refreshAlbumList(album: Album, replace: Boolean = false) {
-        logD("Refreshing album data")
+        logD("Refreshing album list")
         val list = mutableListOf<Item>()
         list.add(SortHeader(R.string.lbl_songs))
         val instructions =
@@ -299,7 +347,7 @@ constructor(
     }
 
     private fun refreshArtistList(artist: Artist, replace: Boolean = false) {
-        logD("Refreshing artist data")
+        logD("Refreshing artist list")
         val list = mutableListOf<Item>()
         val albums = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING).albums(artist.albums)
 
@@ -348,7 +396,7 @@ constructor(
     }
 
     private fun refreshGenreList(genre: Genre, replace: Boolean = false) {
-        logD("Refreshing genre data")
+        logD("Refreshing genre list")
         val list = mutableListOf<Item>()
         // Genre is guaranteed to always have artists and songs.
         list.add(BasicHeader(R.string.lbl_artists))
@@ -364,6 +412,21 @@ constructor(
         list.addAll(genreSongSort.songs(genre.songs))
         _genreInstructions.put(instructions)
         _genreList.value = list
+    }
+
+    private fun refreshPlaylistList(playlist: Playlist, replace: Boolean = false) {
+        logD("Refreshing playlist list")
+        val list = mutableListOf<Item>()
+        list.add(SortHeader(R.string.lbl_songs))
+        val instructions =
+            if (replace) {
+                UpdateInstructions.Replace(list.size)
+            } else {
+                UpdateInstructions.Diff
+            }
+        list.addAll(playlistSongSort.songs(playlist.songs))
+        _playlistInstructions.put(instructions)
+        _playlistList.value = list
     }
 
     /**

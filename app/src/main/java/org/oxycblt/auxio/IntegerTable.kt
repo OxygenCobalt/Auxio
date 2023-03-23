@@ -77,24 +77,26 @@ object IntegerTable {
     const val MUSIC_MODE_GENRES = 0xA108
     /** MusicMode.PLAYLISTS */
     const val MUSIC_MODE_PLAYLISTS = 0xA107
-    /** Sort.ByName */
+    /** Sort.Mode.ByName */
     const val SORT_BY_NAME = 0xA10C
-    /** Sort.ByArtist */
+    /** Sort.Mode.ByArtist */
     const val SORT_BY_ARTIST = 0xA10D
-    /** Sort.ByAlbum */
+    /** Sort.Mode.ByAlbum */
     const val SORT_BY_ALBUM = 0xA10E
-    /** Sort.ByYear */
+    /** Sort.Mode.ByYear */
     const val SORT_BY_YEAR = 0xA10F
-    /** Sort.ByDuration */
+    /** Sort.Mode.ByDuration */
     const val SORT_BY_DURATION = 0xA114
-    /** Sort.ByCount */
+    /** Sort.Mode.ByCount */
     const val SORT_BY_COUNT = 0xA115
-    /** Sort.ByDisc */
+    /** Sort.Mode.ByDisc */
     const val SORT_BY_DISC = 0xA116
-    /** Sort.ByTrack */
+    /** Sort.Mode.ByTrack */
     const val SORT_BY_TRACK = 0xA117
-    /** Sort.ByDateAdded */
+    /** Sort.Mode.ByDateAdded */
     const val SORT_BY_DATE_ADDED = 0xA118
+    /** Sort.Mode.None */
+    const val SORT_BY_NONE = 0xA11F
     /** ReplayGainMode.Off (No longer used but still reserved) */
     // const val REPLAY_GAIN_MODE_OFF = 0xA110
     /** ReplayGainMode.Track */

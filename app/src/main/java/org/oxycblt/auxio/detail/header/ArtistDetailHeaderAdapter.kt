@@ -33,6 +33,7 @@ import org.oxycblt.auxio.util.inflater
 /**
  * A [DetailHeaderAdapter] that shows [Artist] information.
  *
+ * @param listener [DetailHeaderAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class ArtistDetailHeaderAdapter(private val listener: Listener) :

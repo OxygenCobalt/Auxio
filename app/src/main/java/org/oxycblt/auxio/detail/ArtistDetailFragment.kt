@@ -87,7 +87,7 @@ class ArtistDetailFragment :
 
         // --- UI SETUP ---
         binding.detailToolbar.apply {
-            inflateMenu(R.menu.menu_genre_artist_detail)
+            inflateMenu(R.menu.menu_parent_detail)
             setNavigationOnClickListener { findNavController().navigateUp() }
             setOnMenuItemClickListener(this@ArtistDetailFragment)
         }
@@ -97,7 +97,7 @@ class ArtistDetailFragment :
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setArtistUid(args.artistUid)
-        collectImmediately(detailModel.currentArtist, ::updateItem)
+        collectImmediately(detailModel.currentArtist, ::updateArtist)
         collectImmediately(detailModel.artistList, ::updateList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -171,8 +171,10 @@ class ArtistDetailFragment :
 
     override fun onOpenSortMenu(anchor: View) {
         openMenu(anchor, R.menu.menu_artist_sort) {
+            // Select the corresponding sort mode option
             val sort = detailModel.artistSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
+            // Select the corresponding sort direction option
             val directionItemId =
                 when (sort.direction) {
                     Sort.Direction.ASCENDING -> R.id.option_sort_asc
@@ -184,8 +186,10 @@ class ArtistDetailFragment :
 
                 detailModel.artistSongSort =
                     when (item.itemId) {
+                        // Sort direction options
                         R.id.option_sort_asc -> sort.withDirection(Sort.Direction.ASCENDING)
                         R.id.option_sort_dec -> sort.withDirection(Sort.Direction.DESCENDING)
+                        // Any other option is a sort mode
                         else -> sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
                     }
 
@@ -194,7 +198,7 @@ class ArtistDetailFragment :
         }
     }
 
-    private fun updateItem(artist: Artist?) {
+    private fun updateArtist(artist: Artist?) {
         if (artist == null) {
             // Artist we were showing no longer exists.
             findNavController().navigateUp()

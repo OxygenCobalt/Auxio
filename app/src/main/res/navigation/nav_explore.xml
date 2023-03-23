@@ -50,10 +50,28 @@
             app:destination="@id/album_detail_fragment" />
     </fragment>
     <fragment
+        android:id="@+id/playlist_detail_fragment"
+        android:name="org.oxycblt.auxio.detail.PlaylistDetailFragment"
+        android:label="PlaylistDetailFragment"
+        tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="playlistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+        <action
+            android:id="@+id/action_show_artist"
+            app:destination="@id/artist_detail_fragment" />
+        <action
+            android:id="@+id/action_show_album"
+            app:destination="@id/album_detail_fragment" />
+    </fragment>
+    <fragment
         android:id="@+id/search_fragment"
         android:name="org.oxycblt.auxio.search.SearchFragment"
         android:label="SearchFragment"
         tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_show_playlist"
+            app:destination="@id/playlist_detail_fragment" />
         <action
             android:id="@+id/action_show_genre"
             app:destination="@id/genre_detail_fragment" />
@@ -72,6 +90,9 @@
         <action
             android:id="@+id/action_show_search"
             app:destination="@id/search_fragment" />
+        <action
+            android:id="@+id/action_show_playlist"
+            app:destination="@id/playlist_detail_fragment" />
         <action
             android:id="@+id/action_show_genre"
             app:destination="@id/genre_detail_fragment" />
