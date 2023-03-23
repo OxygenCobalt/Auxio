@@ -265,4 +265,5 @@
     <string name="lbl_playlist">プレイリスト</string>
     <string name="lbl_playlists">プレイリスト</string>
     <string name="desc_playlist_image">%s のプレイリスト イメージ</string>
+    <string name="lbl_none">無し</string>
 </resources>
