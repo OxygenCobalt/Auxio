@@ -21,6 +21,7 @@ package org.oxycblt.auxio.music.device
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import java.security.MessageDigest
+import java.util.*
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.*
@@ -48,7 +49,7 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         rawSong.musicBrainzId?.toUuidOrNull()?.let { Music.UID.musicBrainz(MusicMode.SONGS, it) }
-            ?: Music.UID.auxio(MusicMode.SONGS) {
+            ?: createHashedUid(MusicMode.SONGS) {
                 // Song UIDs are based on the raw data without parsing so that they remain
                 // consistent across music setting changes. Parents are not held up to the
                 // same standard since grouping is already inherently linked to settings.
@@ -231,7 +232,7 @@ class AlbumImpl(
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         rawAlbum.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ALBUMS, it) }
-            ?: Music.UID.auxio(MusicMode.ALBUMS) {
+            ?: createHashedUid(MusicMode.ALBUMS) {
                 // Hash based on only names despite the presence of a date to increase stability.
                 // I don't know if there is any situation where an artist will have two albums with
                 // the exact same name, but if there is, I would love to know.
@@ -330,7 +331,7 @@ class ArtistImpl(
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         rawArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ARTISTS, it) }
-            ?: Music.UID.auxio(MusicMode.ARTISTS) { update(rawArtist.name) }
+            ?: createHashedUid(MusicMode.ARTISTS) { update(rawArtist.name) }
     override val rawName = rawArtist.name
     override val rawSortName = rawArtist.sortName
     override val sortName = (rawSortName ?: rawName)?.let { SortName(it, musicSettings) }
@@ -415,7 +416,7 @@ class GenreImpl(
     musicSettings: MusicSettings,
     override val songs: List<SongImpl>
 ) : Genre {
-    override val uid = Music.UID.auxio(MusicMode.GENRES) { update(rawGenre.name) }
+    override val uid = createHashedUid(MusicMode.GENRES) { update(rawGenre.name) }
     override val rawName = rawGenre.name
     override val rawSortName = rawName
     override val sortName = (rawSortName ?: rawName)?.let { SortName(it, musicSettings) }
@@ -471,6 +472,48 @@ class GenreImpl(
         check(songs.isNotEmpty()) { "Malformed genre: Empty" }
         return this
     }
+}
+
+/**
+ * Generate a [Music.UID] derived from the hash of objective music metadata.
+ *
+ * @param mode The analogous [MusicMode] of the item that created this [UID].
+ * @param updates Block to update the [MessageDigest] hash with the metadata of the item. Make sure
+ *   the metadata hashed semantically aligns with the format specification.
+ * @return A new [Music.UID] of Auxio format whose [UUID] was derived from the SHA-256 hash of the
+ *   metadata given.
+ */
+fun createHashedUid(mode: MusicMode, updates: MessageDigest.() -> Unit): Music.UID {
+    val digest =
+        MessageDigest.getInstance("SHA-256").run {
+            updates()
+            digest()
+        }
+    // Convert the digest to a UUID. This does cleave off some of the hash, but this
+    // is considered okay.
+    val uuid =
+        UUID(
+            digest[0]
+                .toLong()
+                .shl(56)
+                .or(digest[1].toLong().and(0xFF).shl(48))
+                .or(digest[2].toLong().and(0xFF).shl(40))
+                .or(digest[3].toLong().and(0xFF).shl(32))
+                .or(digest[4].toLong().and(0xFF).shl(24))
+                .or(digest[5].toLong().and(0xFF).shl(16))
+                .or(digest[6].toLong().and(0xFF).shl(8))
+                .or(digest[7].toLong().and(0xFF)),
+            digest[8]
+                .toLong()
+                .shl(56)
+                .or(digest[9].toLong().and(0xFF).shl(48))
+                .or(digest[10].toLong().and(0xFF).shl(40))
+                .or(digest[11].toLong().and(0xFF).shl(32))
+                .or(digest[12].toLong().and(0xFF).shl(24))
+                .or(digest[13].toLong().and(0xFF).shl(16))
+                .or(digest[14].toLong().and(0xFF).shl(8))
+                .or(digest[15].toLong().and(0xFF)))
+    return Music.UID.auxio(mode, uuid)
 }
 
 /**

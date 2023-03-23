@@ -19,20 +19,36 @@
 package org.oxycblt.auxio.music.user
 
 import android.content.Context
+import java.util.*
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.device.DeviceLibrary
 
-class PlaylistImpl(
-    rawPlaylist: RawPlaylist,
-    deviceLibrary: DeviceLibrary,
+class PlaylistImpl
+private constructor(
+    override val uid: Music.UID,
+    override val rawName: String,
+    override val songs: List<Song>,
     musicSettings: MusicSettings
 ) : Playlist {
-    override val uid = rawPlaylist.playlistInfo.playlistUid
-    override val rawName = rawPlaylist.playlistInfo.name
+    constructor(
+        name: String,
+        songs: List<Song>,
+        musicSettings: MusicSettings
+    ) : this(Music.UID.auxio(MusicMode.PLAYLISTS, UUID.randomUUID()), name, songs, musicSettings)
+
+    constructor(
+        rawPlaylist: RawPlaylist,
+        deviceLibrary: DeviceLibrary,
+        musicSettings: MusicSettings
+    ) : this(
+        rawPlaylist.playlistInfo.playlistUid,
+        rawPlaylist.playlistInfo.name,
+        rawPlaylist.songs.mapNotNull { deviceLibrary.findSong(it.songUid) },
+        musicSettings)
+
     override fun resolveName(context: Context) = rawName
     override val rawSortName = null
     override val sortName = SortName(rawName, musicSettings)
-    override val songs = rawPlaylist.songs.mapNotNull { deviceLibrary.findSong(it.songUid) }
     override val durationMs = songs.sumOf { it.durationMs }
     override val albums =
         songs.groupBy { it.album }.entries.sortedByDescending { it.value.size }.map { it.key }

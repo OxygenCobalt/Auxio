@@ -20,10 +20,7 @@ package org.oxycblt.auxio.music.user
 
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
-import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.device.DeviceLibrary
 
 /**
@@ -54,6 +51,7 @@ interface UserLibrary {
          *
          * @param deviceLibrary Asynchronously populated [DeviceLibrary] that can be obtained later.
          *   This allows database information to be read before the actual instance is constructed.
+         * @return A new [UserLibrary] with the required implementation.
          */
         suspend fun read(deviceLibrary: Channel<DeviceLibrary>): UserLibrary
     }
@@ -77,15 +75,8 @@ private class UserLibraryImpl(
         get() = playlistMap.values.toList()
 
     init {
-        val uid = Music.UID.auxio(MusicMode.PLAYLISTS) { update("Playlist 1".toByteArray()) }
-        playlistMap[uid] =
-            PlaylistImpl(
-                RawPlaylist(
-                    PlaylistInfo(uid, "Playlist 1"),
-                    deviceLibrary.songs.slice(10..30).map { PlaylistSong(it.uid) }),
-                deviceLibrary,
-                musicSettings,
-            )
+        val playlist = PlaylistImpl("Playlist 1", deviceLibrary.songs.slice(58..100), musicSettings)
+        playlistMap[playlist.uid] = playlist
     }
 
     override fun findPlaylist(uid: Music.UID) = playlistMap[uid]
