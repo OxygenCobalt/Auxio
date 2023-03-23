@@ -269,6 +269,6 @@
     <string name="set_dirs_list">Aplankalai</string>
     <string name="set_state">Atkaklumas</string>
     <string name="lbl_sort_dec">Mažėjantis</string>
-    <string name="set_auto_sort_names_desc">Ignoruoti tokius žodžius kaip „the“, kai rūšiuojama pagal pavadinimą (geriausiai veikia su anglų kalbos muzika)</string>
-    <string name="set_auto_sort_names">Ignoruoti straipsnius rūšiuojant</string>
+    <string name="set_intelligent_sorting_desc">Ignoruoti tokius žodžius kaip „the“, kai rūšiuojama pagal pavadinimą (geriausiai veikia su anglų kalbos muzika)</string>
+    <string name="set_intelligent_sorting">Ignoruoti straipsnius rūšiuojant</string>
 </resources>

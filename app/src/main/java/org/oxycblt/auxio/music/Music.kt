@@ -85,7 +85,7 @@ sealed interface Music : Item {
      * A unique identifier for a piece of music.
      *
      * [UID] enables a much cheaper and more reliable form of differentiating music, derived from
-     * either a hash of meaningful metadata or the MusicBrainz ID spec. Using this enables several
+     * either internal app information or the MusicBrainz ID spec. Using this enables several
      * improvements to music management in this app, including:
      * - Proper differentiation of identical music. It's common for large, well-tagged libraries to
      *   have functionally duplicate items that are differentiated with MusicBrainz IDs, and so
@@ -355,7 +355,7 @@ class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName
 
     init {
         var sortName = name
-        if (musicSettings.automaticSortNames) {
+        if (musicSettings.intelligentSorting) {
             sortName =
                 sortName.run {
                     when {
@@ -365,23 +365,24 @@ class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName
                         else -> this
                     }
                 }
-        }
 
-        // Parse out numeric portions of the title and use those for sorting, if applicable.
-        val numericEnd = sortName.indexOfFirst { !it.isDigit() }
-        when (numericEnd) {
-            // No numeric component.
-            0 -> number = null
-            // Whole title is numeric.
-            -1 -> {
-                number = sortName.toIntOrNull()
-                sortName = ""
+            // Parse out numeric portions of the title and use those for sorting, if applicable.
+            when (val numericEnd = sortName.indexOfFirst { !it.isDigit() }) {
+                // No numeric component.
+                0 -> number = null
+                // Whole title is numeric.
+                -1 -> {
+                    number = sortName.toIntOrNull()
+                    sortName = ""
+                }
+                // Part of the title is numeric.
+                else -> {
+                    number = sortName.slice(0 until numericEnd).toIntOrNull()
+                    sortName = sortName.slice(numericEnd until sortName.length)
+                }
             }
-            // Part of the title is numeric.
-            else -> {
-                number = sortName.slice(0 until numericEnd).toIntOrNull()
-                sortName = sortName.slice(numericEnd until sortName.length)
-            }
+        } else {
+            number = null
         }
 
         collationKey = COLLATOR.getCollationKey(sortName)

@@ -21,6 +21,9 @@ deletion
 - Fix "format" not appearing in song properties view
 - Fix visual bugs when editing duplicate songs in the queue
 
+#### What's Changed
+- "Ignore articles when sorting" is now "Intelligent sorting"
+
 ## 3.0.3
 
 #### What's New

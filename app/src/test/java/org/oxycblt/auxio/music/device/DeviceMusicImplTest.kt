@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * RawMusicTest.kt is part of Auxio.
+ * DeviceMusicImplTest.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,11 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.metadata.Date
 
-class RawMusicTest {
+class DeviceMusicImplTest {
     @Test
     fun musicUid_auxio() {
         val uid =
-            Music.UID.auxio(MusicMode.SONGS) {
+            createHashedUid(MusicMode.SONGS) {
                 update("Wheel")
                 update(listOf("Parannoul", "Asian Glow"))
                 update("Paraglow")

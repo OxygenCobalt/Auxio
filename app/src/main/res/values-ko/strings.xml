@@ -271,9 +271,9 @@
     <string name="set_behavior">동작</string>
     <string name="set_personalize_desc">UI 제어 및 동작 커스텀</string>
     <string name="lbl_sort_dec">내림차순</string>
-    <string name="set_auto_sort_names">정렬할 때 기사 무시</string>
-    <string name="set_auto_sort_names_desc">이름으로 정렬할 때 \"the\"와 같은 단어 무시(영어 음악에서 가장 잘 작동함)</string>
     <string name="lbl_playlist">재생목록</string>
     <string name="lbl_playlists">재생목록</string>
     <string name="desc_playlist_image">%s의 재생 목록 이미지</string>
+    <string name="set_intelligent_sorting">정렬할 때 기사 무시</string>
+    <string name="set_intelligent_sorting_desc">이름으로 정렬할 때 \"the\"와 같은 단어 무시(영어 음악에서 가장 잘 작동함)</string>
 </resources>

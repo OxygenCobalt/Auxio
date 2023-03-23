@@ -44,8 +44,8 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     val shouldBeObserving: Boolean
     /** A [String] of characters representing the desired characters to denote multi-value tags. */
     var multiValueSeparators: String
-    /** Whether to trim english articles with song sort names. */
-    val automaticSortNames: Boolean
+    /** Whether to enable more advanced sorting by articles and numbers. */
+    val intelligentSorting: Boolean
     // TODO: Move sort settings to list module
     /** The [Sort] mode used in [Song] lists. */
     var songSort: Sort
@@ -115,7 +115,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context
             }
         }
 
-    override val automaticSortNames: Boolean
+    override val intelligentSorting: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_auto_sort_names), true)
 
     override var songSort: Sort

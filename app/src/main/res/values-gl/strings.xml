@@ -145,7 +145,7 @@
     <string name="set_separators_comma">Coma (,)</string>
     <string name="set_separators_semicolon">Punto e coma (;)</string>
     <string name="set_hide_collaborators_desc">Mostrar só artistas que estean directamente acreditados nun álbum (funciona mellos en bibliotecas ben etiquetadas)</string>
-    <string name="set_auto_sort_names">Ignorar artigos ao ordenar</string>
+    <string name="set_intelligent_sorting">Ignorar artigos ao ordenar</string>
     <string name="set_hide_collaborators">Agochar colaboradores</string>
     <string name="set_images">Imaxes</string>
     <string name="set_cover_mode">Portadas de álbums</string>
@@ -241,7 +241,7 @@
         <item quantity="other">%d artistas</item>
     </plurals>
     <string name="set_separators_plus">Máis (+)</string>
-    <string name="set_auto_sort_names_desc">Ignorar palabras como \"the\" ao ordenar por nome (funciona mellor con música en inglés)</string>
+    <string name="set_intelligent_sorting_desc">Ignorar palabras como \"the\" ao ordenar por nome (funciona mellor con música en inglés)</string>
     <string name="set_dirs_mode">Modo</string>
     <string name="set_dirs_desc">Xestionar dende onde se carga a música</string>
     <string name="set_repeat_pause_desc">Pausar cando se repite unha canción</string>

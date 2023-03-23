@@ -242,8 +242,8 @@
     <string name="set_dirs_mode">モード</string>
     <string name="set_separators_desc">複数のタグ値を表す文字を構成する</string>
     <string name="set_bar_action">カスタム再生バー アクション</string>
-    <string name="set_auto_sort_names">ソート時に記事を無視する</string>
-    <string name="set_auto_sort_names_desc">名前で並べ替えるときに「the」などの単語を無視する (英語の音楽に最適)</string>
+    <string name="set_intelligent_sorting">ソート時に記事を無視する</string>
+    <string name="set_intelligent_sorting_desc">名前で並べ替えるときに「the」などの単語を無視する (英語の音楽に最適)</string>
     <string name="set_cover_mode_media_store">初期 (高速読み込み)</string>
     <string name="set_replay_gain_mode_dynamic">再生中の場合はアルバムを優先</string>
     <string name="set_separators">複数値セパレータ</string>

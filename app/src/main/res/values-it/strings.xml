@@ -275,8 +275,8 @@
     <string name="set_personalize_desc">Personalizza controlli e comportamento dell\'UI</string>
     <string name="set_audio_desc">Configura comportamento di suono e riproduzione</string>
     <string name="lbl_sort_dec">Discendente</string>
-    <string name="set_auto_sort_names">Ignora gli articoli durante l\'ordinamento</string>
-    <string name="set_auto_sort_names_desc">Ignora parole come \"the\" durante l\'ordinamento per nome (funziona meglio con la musica in lingua inglese)</string>
     <string name="lbl_playlist">elenco di riproduzione</string>
     <string name="lbl_playlists">Playlist</string>
+    <string name="set_intelligent_sorting">Ignora gli articoli durante l\'ordinamento</string>
+    <string name="set_intelligent_sorting_desc">Ignora parole come \"the\" durante l\'ordinamento per nome (funziona meglio con la musica in lingua inglese)</string>
 </resources>
