@@ -280,4 +280,5 @@
     <string name="lbl_playlists">Listas de reproducción</string>
     <string name="desc_playlist_image">Imagen de la lista de reproducción para %s</string>
     <string name="lbl_playlist">Lista de reproducción</string>
+    <string name="lbl_none">Ninguno</string>
 </resources>
