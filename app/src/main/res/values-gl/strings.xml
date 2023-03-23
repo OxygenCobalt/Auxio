@@ -119,7 +119,7 @@
     <string name="desc_play_pause">Reproducir ou pausar</string>
     <string name="desc_skip_next">Saltar á seguinte canción</string>
     <string name="lbl_observing">Monitorizando a biblioteca de música</string>
-    <string name="lbl_eps">EPs</string>
+    <string name="lbl_eps">Reproducións ampliadas (EPs)</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_ep_live">EP en directo</string>
     <string name="lbl_ep_remix">EP remix</string>
@@ -268,4 +268,5 @@
     <string name="desc_playlist_image">Imaxe da lista de reprodución para %s</string>
     <string name="set_separators_and">ampersand</string>
     <string name="set_replay_gain">ganancia da repetición</string>
+    <string name="lbl_none">Ningún</string>
 </resources>
