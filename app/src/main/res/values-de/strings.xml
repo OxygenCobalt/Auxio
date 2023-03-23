@@ -271,6 +271,6 @@
     <string name="set_state">Persistenz</string>
     <string name="set_replay_gain">Lautstärkeanpassung ReplayGain</string>
     <string name="lbl_sort_dec">Absteigend</string>
-    <string name="set_auto_sort_names">Artikel beim Sortieren ignorieren</string>
-    <string name="set_auto_sort_names_desc">Wörter wie „the“ ignorieren (funktioniert am besten mit englischsprachiger Musik)</string>
+    <string name="set_intelligent_sorting">Artikel beim Sortieren ignorieren</string>
+    <string name="set_intelligent_sorting_desc">Wörter wie „the“ ignorieren (funktioniert am besten mit englischsprachiger Musik)</string>
 </resources>

@@ -269,6 +269,6 @@
     <string name="set_personalize_desc">Arayüz kontrollerini ve davranışını özelleştirin</string>
     <string name="set_behavior">Davranış</string>
     <string name="set_replay_gain">Ses yüksekliği dengesi ReplayGain</string>
-    <string name="set_auto_sort_names">Sıralama yaparken makaleleri yoksay</string>
-    <string name="set_auto_sort_names_desc">Ada göre sıralarken \"the\" gibi kelimeleri yok sayın (en iyi ingilizce müzikle çalışır)</string>
+    <string name="set_intelligent_sorting">Sıralama yaparken makaleleri yoksay</string>
+    <string name="set_intelligent_sorting_desc">Ada göre sıralarken \"the\" gibi kelimeleri yok sayın (en iyi ingilizce müzikle çalışır)</string>
 </resources>

@@ -276,6 +276,6 @@
     <string name="err_did_not_wipe">Nie można wyczyścić stanu</string>
     <string name="err_did_not_save">Nie można zapisać stanu odtwarzania</string>
     <string name="lbl_sort_dec">Malejąco</string>
-    <string name="set_auto_sort_names">Ignoruj artykuły podczas sortowania</string>
-    <string name="set_auto_sort_names_desc">Ignoruj słowa takie jak „the” podczas sortowania według nazwy (działa najlepiej z muzyką w języku angielskim)</string>
+    <string name="set_intelligent_sorting">Ignoruj rodzajniki podczas sortowania</string>
+    <string name="set_intelligent_sorting_desc">Ignoruj słowa takie jak „the” podczas sortowania według tytułu (działa najlepiej z tytułami w języku angielskim)</string>
 </resources>

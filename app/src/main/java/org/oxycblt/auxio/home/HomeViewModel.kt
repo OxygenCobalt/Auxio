@@ -130,6 +130,7 @@ constructor(
     override fun onLibraryChanged(library: Library?) {
         if (library != null) {
             logD("Library changed, refreshing library")
+            // FIXME: Sort name setting changes result in incorrect list updates
             // Get the each list of items in the library to use as our list data.
             // Applying the preferred sorting to them.
             _songsInstructions.put(UpdateInstructions.Diff)
