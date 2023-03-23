@@ -274,4 +274,5 @@
     <string name="lbl_playlist">播放列表</string>
     <string name="lbl_playlists">播放列表</string>
     <string name="desc_playlist_image">%s 的播放列表图片</string>
+    <string name="lbl_none">无</string>
 </resources>
