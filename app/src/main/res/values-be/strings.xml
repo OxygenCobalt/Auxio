@@ -271,4 +271,7 @@
     <string name="set_intelligent_sorting">Ігнараваць артыклі пры сартаванні</string>
     <string name="lbl_eps">Міні-альбомы</string>
     <string name="lbl_ep">Міні-альбом</string>
+    <string name="desc_playlist_image">Вокладка плэйліст для %s</string>
+    <string name="lbl_playlist">Плэйліст</string>
+    <string name="lbl_playlists">Плэйлісты</string>
 </resources>

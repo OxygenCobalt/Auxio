@@ -275,6 +275,10 @@
     <string name="set_personalize_desc">Personalizar los controles y el comportamiento de la interfaz de usuario</string>
     <string name="set_library">Biblioteca</string>
     <string name="lbl_sort_dec">Descendente</string>
+    <string name="lbl_playlists">Listas de reproducción</string>
+    <string name="desc_playlist_image">Imagen de la lista de reproducción para %s</string>
+    <string name="lbl_playlist">Lista de reproducción</string>
+    <string name="lbl_none">Ninguno</string>
     <string name="set_intelligent_sorting">Ignorar artículos al ordenar</string>
     <string name="set_intelligent_sorting_desc">Ignorar palabras como \"the\" al ordenar por nombre (funciona mejor con música en inglés)</string>
 </resources>

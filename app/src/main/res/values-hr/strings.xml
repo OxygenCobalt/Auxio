@@ -119,7 +119,7 @@
     <string name="desc_genre_image">Slika žanra za %s</string>
     <string name="def_artist">Nepoznat izvođač</string>
     <string name="def_genre">Nepoznat žanr</string>
-    <string name="def_track">Bez broja pjesama</string>
+    <string name="def_track">Nema staze</string>
     <string name="def_date">Bez datuma</string>
     <string name="def_playback">Glazba se ne reproducira</string>
     <string name="cdc_mp3">MPEG-1 zvuk</string>
@@ -253,4 +253,22 @@
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Resetiraj</string>
+    <string name="set_replay_gain">ReplayGain izjednačavanje glasnoće</string>
+    <string name="set_dirs_list">Mape</string>
+    <string name="lbl_sort_dec">Silazni</string>
+    <string name="set_ui_desc">Promijenite temu i boje aplikacije</string>
+    <string name="set_personalize_desc">Prilagodite kontrole i ponašanje korisničkog sučelja</string>
+    <string name="set_content_desc">Upravljajte učitavanjem glazbe i slika</string>
+    <string name="set_images">Slike</string>
+    <string name="set_audio_desc">Konfigurirajte ponašanje zvuka i reprodukcije</string>
+    <string name="set_playback">Reprodukcija</string>
+    <string name="set_library">Fonoteka</string>
+    <string name="set_state">Status reprodukcije</string>
+    <string name="set_auto_sort_names">Zanemarite članke prilikom sortiranja</string>
+    <string name="lbl_playlists">Popisi pjesama</string>
+    <string name="lbl_playlist">Popis pjesama</string>
+    <string name="set_music">Glazba</string>
+    <string name="set_auto_sort_names_desc">Ignorirajte riječi poput \"the\" prilikom sortiranja po imenu (najbolje radi s glazbom na engleskom jeziku)</string>
+    <string name="desc_playlist_image">Slika popisa za reprodukciju za %s</string>
+    <string name="set_behavior">Ponašanje</string>
 </resources>

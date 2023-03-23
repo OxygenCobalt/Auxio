@@ -159,9 +159,9 @@
     <string name="set_dirs_desc">Verwalten, von wo die Musik geladen werden soll</string>
     <string name="set_dirs_mode">Modus</string>
     <string name="set_dirs_mode_exclude">Ausschließen</string>
-    <string name="set_dirs_mode_exclude_desc">Musik wird <b>nicht</b> von den von dir hinzugefügten Ordnern geladen.</string>
+    <string name="set_dirs_mode_exclude_desc">Musik wird <b>nicht</b> aus den von dir hinzugefügten Ordnern geladen.</string>
     <string name="set_dirs_mode_include">Einschließen</string>
-    <string name="set_dirs_mode_include_desc">Musik wird <b>nur</b> von den von dir hinzugefügten Ordnern geladen.</string>
+    <string name="set_dirs_mode_include_desc">Musik wird <b>nur</b> aus den von dir hinzugefügten Ordnern geladen.</string>
     <string name="def_track">Kein Titel</string>
     <string name="cdc_ogg">Ogg-Audio</string>
     <string name="cdc_mp4">MPEG-4-Audio</string>
@@ -194,7 +194,7 @@
     <string name="set_restore_desc">Den vorher gespeicherten Wiedergabezustand wiederherstellen (wenn verfügbar)</string>
     <string name="err_did_not_restore">Zustand konnte nicht wiederhergestellt werden</string>
     <string name="lbl_ep">EP</string>
-    <string name="lbl_eps">EPs</string>
+    <string name="lbl_eps">Mini-Alben</string>
     <string name="lbl_single">Single</string>
     <string name="lbl_singles">Singles</string>
     <string name="lbl_compilations">Kompilationen</string>
@@ -271,6 +271,9 @@
     <string name="set_state">Persistenz</string>
     <string name="set_replay_gain">Lautstärkeanpassung ReplayGain</string>
     <string name="lbl_sort_dec">Absteigend</string>
+    <string name="desc_playlist_image">Playlist-Bild für %s</string>
+    <string name="lbl_playlist">Wiedergabeliste</string>
+    <string name="lbl_playlists">Wiedergabelisten</string>
     <string name="set_intelligent_sorting">Artikel beim Sortieren ignorieren</string>
     <string name="set_intelligent_sorting_desc">Wörter wie „the“ ignorieren (funktioniert am besten mit englischsprachiger Musik)</string>
 </resources>

@@ -275,6 +275,10 @@
     <string name="set_audio_desc">Налаштування звуку і поведінки при відтворенні</string>
     <string name="set_dirs_list">Папки</string>
     <string name="lbl_sort_dec">За спаданням</string>
+    <string name="desc_playlist_image">Зображення списку відтворення для %s</string>
+    <string name="lbl_playlist">Список відтворення</string>
+    <string name="lbl_playlists">Списки відтворення</string>
+    <string name="lbl_none">Немає</string>
     <string name="set_intelligent_sorting">Ігнорувати артиклі під час сортування</string>
     <string name="set_intelligent_sorting_desc">Ігнорування таких слів, як \"the\", під час сортування за назвою (найкраще працює з англомовною музикою)</string>
 </resources>
