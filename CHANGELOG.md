@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## 3.0.4
 
 #### What's New
 - Added support for `COMPILATION` and `ITUNESCOMPILATION` flags.
