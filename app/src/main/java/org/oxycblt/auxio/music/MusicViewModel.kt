@@ -79,6 +79,14 @@ class MusicViewModel @Inject constructor(private val musicRepository: MusicRepos
     }
 
     /**
+     * Create a new generic playlist.
+     * @param name The name of the new playlist. If null, the user will be prompted for a name.
+     */
+    fun createPlaylist(name: String? = null) {
+        // TODO: Implement
+    }
+
+    /**
      * Non-manipulated statistics bound the last successful music load.
      *
      * @param songs The amount of [Song]s that were loaded.

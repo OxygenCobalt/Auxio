@@ -147,12 +147,11 @@ class HomeFragment :
         // re-creating the ViewPager.
         setupPager(binding)
 
-        binding.homeFab.setOnClickListener { playbackModel.shuffleAll() }
-
         // --- VIEWMODEL SETUP ---
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
         collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
-        collectImmediately(homeModel.songsList, homeModel.isFastScrolling, ::updateFab)
+        collectImmediately(
+            homeModel.songsList, homeModel.isFastScrolling, homeModel.currentTabMode, ::updateFab)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
         collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
@@ -268,6 +267,7 @@ class HomeFragment :
     }
 
     private fun updateCurrentTab(tabMode: MusicMode) {
+        val binding = requireBinding()
         // Update the sort options to align with those allowed by the tab
         val isVisible: (Int) -> Boolean =
             when (tabMode) {
@@ -286,8 +286,7 @@ class HomeFragment :
             }
 
         val sortMenu =
-            unlikelyToBeNull(
-                requireBinding().homeToolbar.menu.findItem(R.id.submenu_sorting).subMenu)
+            unlikelyToBeNull(binding.homeToolbar.menu.findItem(R.id.submenu_sorting).subMenu)
         val toHighlight = homeModel.getSortForTab(tabMode)
 
         for (option in sortMenu) {
@@ -308,7 +307,7 @@ class HomeFragment :
         // Update the scrolling view in AppBarLayout to align with the current tab's
         // scrolling state. This prevents the lift state from being confused as one
         // goes between different tabs.
-        requireBinding().homeAppbar.liftOnScrollTargetViewId =
+        binding.homeAppbar.liftOnScrollTargetViewId =
             when (tabMode) {
                 MusicMode.SONGS -> R.id.home_song_recycler
                 MusicMode.ALBUMS -> R.id.home_album_recycler
@@ -316,6 +315,16 @@ class HomeFragment :
                 MusicMode.GENRES -> R.id.home_genre_recycler
                 MusicMode.PLAYLISTS -> R.id.home_playlist_recycler
             }
+
+        if (tabMode != MusicMode.PLAYLISTS) {
+            binding.homeFab.flipTo(R.drawable.ic_shuffle_off_24, R.string.desc_shuffle_all) {
+                playbackModel.shuffleAll()
+            }
+        } else {
+            binding.homeFab.flipTo(R.drawable.ic_add_24, R.string.desc_new_playlist) {
+                musicModel.createPlaylist()
+            }
+        }
     }
 
     private fun handleRecreate(recreate: Unit?) {
@@ -419,7 +428,7 @@ class HomeFragment :
         }
     }
 
-    private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
+    private fun updateFab(songs: List<Song>, isFastScrolling: Boolean, currentTabMode: MusicMode) {
         val binding = requireBinding()
         // If there are no songs, it's likely that the library has not been loaded, so
         // displaying the shuffle FAB makes no sense. We also don't want the fast scroll

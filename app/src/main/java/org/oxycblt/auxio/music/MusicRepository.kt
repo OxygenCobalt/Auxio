@@ -189,6 +189,7 @@ constructor(
     @Synchronized
     override fun addUpdateListener(listener: MusicRepository.UpdateListener) {
         updateListeners.add(listener)
+        listener.onMusicChanges(MusicRepository.Changes(deviceLibrary = true, userLibrary = true))
     }
 
     @Synchronized
@@ -199,6 +200,7 @@ constructor(
     @Synchronized
     override fun addIndexingListener(listener: MusicRepository.IndexingListener) {
         indexingListeners.add(listener)
+        listener.onIndexingStateChanged()
     }
 
     @Synchronized

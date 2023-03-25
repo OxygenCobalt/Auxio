@@ -123,14 +123,12 @@
         app:layout_anchor="@id/home_content"
         app:layout_anchorGravity="bottom|end">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <org.oxycblt.auxio.home.FlipFloatingActionButton
             android:id="@+id/home_fab"
             style="@style/Widget.Auxio.FloatingActionButton.Adaptive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_medium"
-            android:contentDescription="@string/desc_shuffle_all"
-            android:src="@drawable/ic_shuffle_off_24" />
+            android:layout_margin="@dimen/spacing_medium" />
 
     </org.oxycblt.auxio.home.EdgeFrameLayout>
 
