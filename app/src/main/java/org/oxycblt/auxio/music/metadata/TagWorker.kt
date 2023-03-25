@@ -56,14 +56,26 @@ interface TagWorker {
     }
 }
 
-class TagWorkerImpl
-private constructor(private val rawSong: RawSong, private val future: Future<TrackGroupArray>) :
-    TagWorker {
-    /**
-     * Try to get a completed song from this [TagWorker], if it has finished processing.
-     *
-     * @return A [RawSong] instance if processing has completed, null otherwise.
-     */
+class TagWorkerFactoryImpl
+@Inject
+constructor(private val mediaSourceFactory: MediaSource.Factory) : TagWorker.Factory {
+    override fun create(rawSong: RawSong): TagWorker =
+        // Note that we do not leverage future callbacks. This is because errors in the
+        // (highly fallible) extraction process will not bubble up to Indexer when a
+        // listener is used, instead crashing the app entirely.
+        TagWorkerImpl(
+            rawSong,
+            MetadataRetriever.retrieveMetadata(
+                mediaSourceFactory,
+                MediaItem.fromUri(
+                    requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No id" }.toAudioUri())))
+}
+
+private class TagWorkerImpl(
+    private val rawSong: RawSong,
+    private val future: Future<TrackGroupArray>
+) : TagWorker {
+
     override fun poll(): RawSong? {
         if (!future.isDone) {
             // Not done yet, nothing to do.
@@ -95,12 +107,6 @@ private constructor(private val rawSong: RawSong, private val future: Future<Tra
         return rawSong
     }
 
-    /**
-     * Complete this instance's [RawSong] with ID3v2 Text Identification Frames.
-     *
-     * @param textFrames A mapping between ID3v2 Text Identification Frame IDs and one or more
-     *   values.
-     */
     private fun populateWithId3v2(textFrames: Map<String, List<String>>) {
         // Song
         textFrames["TXXX:musicbrainz release track id"]?.let { rawSong.musicBrainzId = it.first() }
@@ -169,16 +175,6 @@ private constructor(private val rawSong: RawSong, private val future: Future<Tra
             }
     }
 
-    /**
-     * Parses the ID3v2.3 timestamp specification into a [Date] from the given Text Identification
-     * Frames.
-     *
-     * @param textFrames A mapping between ID3v2 Text Identification Frame IDs and one or more
-     *   values.
-     * @return A [Date] of a year value from TORY/TYER, a month and day value from TDAT, and a
-     *   hour/minute value from TIME. No second value is included. The latter two fields may not be
-     *   included in they cannot be parsed. Will be null if a year value could not be parsed.
-     */
     private fun parseId3v23Date(textFrames: Map<String, List<String>>): Date? {
         // Assume that TDAT/TIME can refer to TYER or TORY depending on if TORY
         // is present.
@@ -212,11 +208,6 @@ private constructor(private val rawSong: RawSong, private val future: Future<Tra
         }
     }
 
-    /**
-     * Complete this instance's [RawSong] with Vorbis comments.
-     *
-     * @param comments A mapping between vorbis comment names and one or more vorbis comment values.
-     */
     private fun populateWithVorbis(comments: Map<String, List<String>>) {
         // Song
         comments["musicbrainz_releasetrackid"]?.let { rawSong.musicBrainzId = it.first() }
@@ -275,21 +266,6 @@ private constructor(private val rawSong: RawSong, private val future: Future<Tra
                 rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
             rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
         }
-    }
-
-    class Factory @Inject constructor(private val mediaSourceFactory: MediaSource.Factory) :
-        TagWorker.Factory {
-        override fun create(rawSong: RawSong) =
-            // Note that we do not leverage future callbacks. This is because errors in the
-            // (highly fallible) extraction process will not bubble up to Indexer when a
-            // listener is used, instead crashing the app entirely.
-            TagWorkerImpl(
-                rawSong,
-                MetadataRetriever.retrieveMetadata(
-                    mediaSourceFactory,
-                    MediaItem.fromUri(
-                        requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No id" }
-                            .toAudioUri())))
     }
 
     private companion object {

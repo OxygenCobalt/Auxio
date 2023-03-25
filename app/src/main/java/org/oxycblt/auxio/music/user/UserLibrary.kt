@@ -45,23 +45,46 @@ interface UserLibrary {
     fun findPlaylist(uid: Music.UID): Playlist?
 
     /** Constructs a [UserLibrary] implementation in an asynchronous manner. */
-    interface Provider {
+    interface Factory {
         /**
          * Create a new [UserLibrary].
          *
          * @param deviceLibrary Asynchronously populated [DeviceLibrary] that can be obtained later.
          *   This allows database information to be read before the actual instance is constructed.
-         * @return A new [UserLibrary] with the required implementation.
+         * @return A new [MutableUserLibrary] with the required implementation.
          */
-        suspend fun read(deviceLibrary: Channel<DeviceLibrary>): UserLibrary
+        suspend fun read(deviceLibrary: Channel<DeviceLibrary>): MutableUserLibrary
     }
 }
 
-class UserLibraryProviderImpl
+/**
+ * A mutable instance of [UserLibrary]. Not meant for use outside of the music module. Use
+ * [MusicRepository] instead.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+interface MutableUserLibrary : UserLibrary {
+    /**
+     * Make a new [Playlist].
+     *
+     * @param name The name of the [Playlist].
+     * @param songs The songs to place in the [Playlist].
+     */
+    fun createPlaylist(name: String, songs: List<Song>)
+
+    /**
+     * Add [Song]s to a [Playlist].
+     *
+     * @param playlist The [Playlist] to add to. Must currently exist.
+     */
+    fun addToPlaylist(playlist: Playlist, songs: List<Song>)
+}
+
+class UserLibraryFactoryImpl
 @Inject
 constructor(private val playlistDao: PlaylistDao, private val musicSettings: MusicSettings) :
-    UserLibrary.Provider {
-    override suspend fun read(deviceLibrary: Channel<DeviceLibrary>): UserLibrary =
+    UserLibrary.Factory {
+    override suspend fun read(deviceLibrary: Channel<DeviceLibrary>): MutableUserLibrary =
         UserLibraryImpl(playlistDao, deviceLibrary.receive(), musicSettings)
 }
 
@@ -69,15 +92,28 @@ private class UserLibraryImpl(
     private val playlistDao: PlaylistDao,
     private val deviceLibrary: DeviceLibrary,
     private val musicSettings: MusicSettings
-) : UserLibrary {
+) : MutableUserLibrary {
     private val playlistMap = mutableMapOf<Music.UID, PlaylistImpl>()
     override val playlists: List<Playlist>
         get() = playlistMap.values.toList()
 
     init {
-        val playlist = PlaylistImpl("Playlist 1", deviceLibrary.songs.slice(58..100), musicSettings)
-        playlistMap[playlist.uid] = playlist
+        // TODO: Actually read playlists
+        createPlaylist("Playlist 1", deviceLibrary.songs.slice(58..100))
     }
 
     override fun findPlaylist(uid: Music.UID) = playlistMap[uid]
+
+    @Synchronized
+    override fun createPlaylist(name: String, songs: List<Song>) {
+        val playlistImpl = PlaylistImpl.new(name, songs, musicSettings)
+        playlistMap[playlistImpl.uid] = playlistImpl
+    }
+
+    @Synchronized
+    override fun addToPlaylist(playlist: Playlist, songs: List<Song>) {
+        val playlistImpl =
+            requireNotNull(playlistMap[playlist.uid]) { "Cannot add to invalid playlist" }
+        playlistMap[playlist.uid] = playlistImpl.edit { addAll(songs) }
+    }
 }

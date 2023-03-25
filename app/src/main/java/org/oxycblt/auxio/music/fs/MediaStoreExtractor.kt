@@ -178,8 +178,8 @@ private abstract class BaseMediaStoreExtractor(
 
                             while (cursor.moveToNext()) {
                                 // Assume that a song can't inhabit multiple genre entries, as I
-                                // doubt
-                                // MediaStore is actually aware that songs can have multiple genres.
+                                // doubt MediaStore is actually aware that songs can have multiple
+                                // genres.
                                 genreNamesMap[cursor.getLong(songIdIndex)] = name
                             }
                         }
@@ -311,9 +311,8 @@ private abstract class BaseMediaStoreExtractor(
             rawSong.date = cursor.getStringOrNull(yearIndex)?.let(Date::from)
             // A non-existent album name should theoretically be the name of the folder it contained
             // in, but in practice it is more often "0" (as in /storage/emulated/0), even when it
-            // the
-            // file is not actually in the root internal storage directory. We can't do anything to
-            // fix this, really.
+            // the file is not actually in the root internal storage directory. We can't do
+            // anything to fix this, really.
             rawSong.albumName = cursor.getString(albumIndex)
             // Android does not make a non-existent artist tag null, it instead fills it in
             // as <unknown>, which makes absolutely no sense given how other columns default
@@ -352,9 +351,6 @@ private abstract class BaseMediaStoreExtractor(
         @Suppress("InlinedApi") private const val VOLUME_EXTERNAL = MediaStore.VOLUME_EXTERNAL
     }
 }
-
-// Note: The separation between version-specific backends may not be the cleanest. To preserve
-// speed, we only want to add redundancy on known issues, not with possible issues.
 
 // Note: The separation between version-specific backends may not be the cleanest. To preserve
 // speed, we only want to add redundancy on known issues, not with possible issues.

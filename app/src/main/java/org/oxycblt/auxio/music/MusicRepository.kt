@@ -172,8 +172,8 @@ constructor(
     private val cacheRepository: CacheRepository,
     private val mediaStoreExtractor: MediaStoreExtractor,
     private val tagExtractor: TagExtractor,
-    private val deviceLibraryProvider: DeviceLibrary.Provider,
-    private val userLibraryProvider: UserLibrary.Provider
+    private val deviceLibraryFactory: DeviceLibrary.Factory,
+    private val userLibraryFactory: UserLibrary.Factory
 ) : MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
@@ -314,9 +314,9 @@ constructor(
         val deviceLibraryChannel = Channel<DeviceLibrary>()
         val deviceLibraryJob =
             worker.scope.async(Dispatchers.Main) {
-                deviceLibraryProvider.create(rawSongs).also { deviceLibraryChannel.send(it) }
+                deviceLibraryFactory.create(rawSongs).also { deviceLibraryChannel.send(it) }
             }
-        val userLibraryJob = worker.scope.async { userLibraryProvider.read(deviceLibraryChannel) }
+        val userLibraryJob = worker.scope.async { userLibraryFactory.read(deviceLibraryChannel) }
         if (cache == null || cache.invalidated) {
             cacheRepository.writeCache(rawSongs)
         }

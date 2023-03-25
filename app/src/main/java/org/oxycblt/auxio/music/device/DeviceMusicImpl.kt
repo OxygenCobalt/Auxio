@@ -342,8 +342,8 @@ class ArtistImpl(
     override val durationMs: Long?
     override val isCollaborator: Boolean
 
-    // Note: Append song contents to MusicParent equality so that Groups with
-    // the same UID but different contents are not equal.
+    // Note: Append song contents to MusicParent equality so that artists with
+    // the same UID but different songs are not equal.
     override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
     override fun equals(other: Any?) =
         other is ArtistImpl && uid == other.uid && songs == other.songs

@@ -24,9 +24,6 @@ deletion
 #### What's Changed
 - "Ignore articles when sorting" is now "Intelligent sorting"
 
-#### What's Changed
-- "Ignore articles when sorting" is now "Intelligent sorting"
-
 ## 3.0.3
 
 #### What's New

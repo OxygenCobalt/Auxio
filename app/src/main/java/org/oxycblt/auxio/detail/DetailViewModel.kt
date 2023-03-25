@@ -53,7 +53,7 @@ class DetailViewModel
 @Inject
 constructor(
     private val musicRepository: MusicRepository,
-    private val audioInfoProvider: AudioInfo.Provider,
+    private val audioInfoFactory: AudioInfo.Factory,
     private val musicSettings: MusicSettings,
     private val playbackSettings: PlaybackSettings
 ) : ViewModel(), MusicRepository.UpdateListener {
@@ -308,7 +308,7 @@ constructor(
         _songAudioInfo.value = null
         currentSongJob =
             viewModelScope.launch(Dispatchers.IO) {
-                val info = audioInfoProvider.extract(song)
+                val info = audioInfoFactory.extract(song)
                 yield()
                 _songAudioInfo.value = info
             }

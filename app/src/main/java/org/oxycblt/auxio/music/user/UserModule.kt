@@ -30,7 +30,7 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 interface UserModule {
-    @Binds fun userLibaryProvider(provider: UserLibraryProviderImpl): UserLibrary.Provider
+    @Binds fun userLibaryFactory(factory: UserLibraryFactoryImpl): UserLibrary.Factory
 }
 
 @Module

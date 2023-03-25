@@ -89,7 +89,7 @@ interface DeviceLibrary {
     fun findGenre(uid: Music.UID): Genre?
 
     /** Constructs a [DeviceLibrary] implementation in an asynchronous manner. */
-    interface Provider {
+    interface Factory {
         /**
          * Create a new [DeviceLibrary].
          *
@@ -110,8 +110,8 @@ interface DeviceLibrary {
     }
 }
 
-class DeviceLibraryProviderImpl @Inject constructor(private val musicSettings: MusicSettings) :
-    DeviceLibrary.Provider {
+class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: MusicSettings) :
+    DeviceLibrary.Factory {
     override suspend fun create(rawSongs: List<RawSong>): DeviceLibrary =
         DeviceLibraryImpl(rawSongs, musicSettings)
 }

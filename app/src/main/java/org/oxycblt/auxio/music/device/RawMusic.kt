@@ -186,13 +186,13 @@ class RawGenre(
     /** @see Music.rawName */
     val name: String? = null
 ) {
-    // Only group by the lowercase genre name. This allows Genre grouping to be
-    // case-insensitive, which may be helpful in some libraries with different ways of
-    // formatting genres.
 
     // Cache the hashCode for HashMap efficiency.
     private val hashCode = name?.lowercase().hashCode()
 
+    // Only group by the lowercase genre name. This allows Genre grouping to be
+    // case-insensitive, which may be helpful in some libraries with different ways of
+    // formatting genres.
     override fun hashCode() = hashCode
 
     override fun equals(other: Any?) =

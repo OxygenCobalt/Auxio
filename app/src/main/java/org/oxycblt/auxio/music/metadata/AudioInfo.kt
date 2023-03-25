@@ -43,7 +43,7 @@ data class AudioInfo(
     val resolvedMimeType: MimeType
 ) {
     /** Implements the process of extracting [AudioInfo] from a given [Song]. */
-    interface Provider {
+    interface Factory {
         /**
          * Extract the [AudioInfo] of a given [Song].
          *
@@ -55,12 +55,12 @@ data class AudioInfo(
 }
 
 /**
- * A framework-backed implementation of [AudioInfo.Provider].
+ * A framework-backed implementation of [AudioInfo.Factory].
  *
  * @param context [Context] required to read audio files.
  */
-class AudioInfoProviderImpl @Inject constructor(@ApplicationContext private val context: Context) :
-    AudioInfo.Provider {
+class AudioInfoFactoryImpl @Inject constructor(@ApplicationContext private val context: Context) :
+    AudioInfo.Factory {
 
     override suspend fun extract(song: Song): AudioInfo {
         // While we would use ExoPlayer to extract this information, it doesn't support
