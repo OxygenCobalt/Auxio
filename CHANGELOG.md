@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## 3.0.4
 
 #### What's New
 - Added support for `COMPILATION` and `ITUNESCOMPILATION` flags
@@ -20,6 +20,9 @@ rather than on start/stop
 deletion
 - Fix "format" not appearing in song properties view
 - Fix visual bugs when editing duplicate songs in the queue
+
+#### What's Changed
+- "Ignore articles when sorting" is now "Intelligent sorting"
 
 #### What's Changed
 - "Ignore articles when sorting" is now "Intelligent sorting"
