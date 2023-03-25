@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * AlbumListFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +33,6 @@ import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
-import org.oxycblt.auxio.list.adapter.ListDiffer
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.AlbumViewHolder
 import org.oxycblt.auxio.list.selection.SelectionViewModel
@@ -46,6 +45,7 @@ import org.oxycblt.auxio.util.collectImmediately
 
 /**
  * A [ListFragment] that shows a list of [Album]s.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -75,7 +75,7 @@ class AlbumListFragment :
             listener = this@AlbumListFragment
         }
 
-        collectImmediately(homeModel.albumsList, ::updateList)
+        collectImmediately(homeModel.albumsList, ::updateAlbums)
         collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
@@ -94,11 +94,10 @@ class AlbumListFragment :
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.getSortForTab(MusicMode.ALBUMS).mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> album.collationKey?.run { sourceString.first().uppercase() }
+            is Sort.Mode.ByName -> album.sortName?.thumbString
 
             // By Artist -> Use name of first artist
-            is Sort.Mode.ByArtist ->
-                album.artists[0].collationKey?.run { sourceString.first().uppercase() }
+            is Sort.Mode.ByArtist -> album.artists[0].sortName?.thumbString
 
             // Date -> Use minimum date (Maximum dates are not sorted by, so showing them is odd)
             is Sort.Mode.ByDate -> album.dates?.run { min.resolveDate(requireContext()) }
@@ -139,8 +138,8 @@ class AlbumListFragment :
         openMusicMenu(anchor, R.menu.menu_album_actions, item)
     }
 
-    private fun updateList(albums: List<Album>) {
-        albumAdapter.submitList(albums, BasicListInstructions.REPLACE)
+    private fun updateAlbums(albums: List<Album>) {
+        albumAdapter.update(albums, homeModel.albumsInstructions.consume())
     }
 
     private fun updateSelection(selection: List<Music>) {
@@ -154,11 +153,11 @@ class AlbumListFragment :
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Album]s using [AlbumViewHolder].
+     *
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class AlbumAdapter(private val listener: SelectableListListener<Album>) :
-        SelectionIndicatorAdapter<Album, BasicListInstructions, AlbumViewHolder>(
-            ListDiffer.Blocking(AlbumViewHolder.DIFF_CALLBACK)) {
+        SelectionIndicatorAdapter<Album, AlbumViewHolder>(AlbumViewHolder.DIFF_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             AlbumViewHolder.from(parent)

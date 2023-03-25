@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * ForegroundManager.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +24,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * A utility to create consistent foreground behavior for a given [Service].
+ *
  * @param service [Service] to wrap in this instance.
  * @author Alexander Capehart (OxygenCobalt)
  *
@@ -38,8 +40,9 @@ class ForegroundManager(private val service: Service) {
 
     /**
      * Try to enter a foreground state.
+     *
      * @param notification The [ForegroundServiceNotification] to show in order to signal the
-     * foreground state.
+     *   foreground state.
      * @return true if the state was changed, false otherwise
      * @see Service.startForeground
      */
@@ -57,6 +60,7 @@ class ForegroundManager(private val service: Service) {
 
     /**
      * Try to exit a foreground state. Will remove the foreground notification.
+     *
      * @return true if the state was changed, false otherwise
      * @see Service.stopForeground
      */

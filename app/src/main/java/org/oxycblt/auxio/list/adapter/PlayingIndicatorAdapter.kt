@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * PlayingIndicatorAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,17 +19,19 @@
 package org.oxycblt.auxio.list.adapter
 
 import android.view.View
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.util.logD
 
 /**
  * A [RecyclerView.Adapter] that supports indicating the playback status of a particular item.
- * @param differFactory The [ListDiffer.Factory] that defines the type of [ListDiffer] to use.
+ *
+ * @param diffCallback A [DiffUtil.ItemCallback] to compare list updates with.
  * @author Alexander Capehart (OxygenCobalt)
  */
-abstract class PlayingIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
-    differFactory: ListDiffer.Factory<T, I>
-) : DiffAdapter<T, I, VH>(differFactory) {
+abstract class PlayingIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
+    diffCallback: DiffUtil.ItemCallback<T>
+) : FlexibleListAdapter<T, VH>(diffCallback) {
     // There are actually two states for this adapter:
     // - The currently playing item, which is usually marked as "selected" and becomes accented.
     // - Whether playback is ongoing, which corresponds to whether the item's ImageGroup is
@@ -39,7 +42,7 @@ abstract class PlayingIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
     override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
         // Only try to update the playing indicator if the ViewHolder supports it
         if (holder is ViewHolder) {
-            holder.updatePlayingIndicator(currentList[position] == currentItem, isPlaying)
+            holder.updatePlayingIndicator(getItem(position) == currentItem, isPlaying)
         }
 
         if (payloads.isEmpty()) {
@@ -50,6 +53,7 @@ abstract class PlayingIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
     }
     /**
      * Update the currently playing item in the list.
+     *
      * @param item The [T] currently being played, or null if it is not being played.
      * @param isPlaying Whether playback is ongoing or paused.
      */
@@ -103,9 +107,10 @@ abstract class PlayingIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
     abstract class ViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         /**
          * Update the playing indicator within this [RecyclerView.ViewHolder].
+         *
          * @param isActive True if this item is playing, false otherwise.
          * @param isPlaying True if playback is ongoing, false if paused. If this is true,
-         * [isActive] will also be true.
+         *   [isActive] will also be true.
          */
         abstract fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean)
     }

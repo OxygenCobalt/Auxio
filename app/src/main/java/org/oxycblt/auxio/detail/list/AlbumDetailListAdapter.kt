@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * AlbumDetailListAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.detail.recycler
+package org.oxycblt.auxio.detail.list
 
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +26,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
-import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
@@ -33,36 +33,22 @@ import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.areRawNamesTheSame
 import org.oxycblt.auxio.music.metadata.Disc
-import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
 /**
- * An [DetailAdapter] implementing the header and sub-items for the [Album] detail view.
- * @param listener A [Listener] to bind interactions to.
+ * An [DetailListAdapter] implementing the header and sub-items for the [Album] detail view.
+ *
+ * @param listener A [DetailListAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listener, DIFF_CALLBACK) {
-    /**
-     * An extension to [DetailAdapter.Listener] that enables interactions specific to the album
-     * detail view.
-     */
-    interface Listener : DetailAdapter.Listener<Song> {
-        /**
-         * Called when the artist name in the [Album] header was clicked, requesting navigation to
-         * it's parent artist.
-         */
-        fun onNavigateToParentArtist()
-    }
-
+class AlbumDetailListAdapter(private val listener: Listener<Song>) :
+    DetailListAdapter(listener, DIFF_CALLBACK) {
     override fun getItemViewType(position: Int) =
         when (getItem(position)) {
-            // Support the Album header, sub-headers for each disc, and special album songs.
-            is Album -> AlbumDetailViewHolder.VIEW_TYPE
+            // Support sub-headers for each disc, and special album songs.
             is Disc -> DiscViewHolder.VIEW_TYPE
             is Song -> AlbumSongViewHolder.VIEW_TYPE
             else -> super.getItemViewType(position)
@@ -70,7 +56,6 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
-            AlbumDetailViewHolder.VIEW_TYPE -> AlbumDetailViewHolder.from(parent)
             DiscViewHolder.VIEW_TYPE -> DiscViewHolder.from(parent)
             AlbumSongViewHolder.VIEW_TYPE -> AlbumSongViewHolder.from(parent)
             else -> super.onCreateViewHolder(parent, viewType)
@@ -79,7 +64,6 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
         when (val item = getItem(position)) {
-            is Album -> (holder as AlbumDetailViewHolder).bind(item, listener)
             is Disc -> (holder as DiscViewHolder).bind(item)
             is Song -> (holder as AlbumSongViewHolder).bind(item, listener)
         }
@@ -98,88 +82,16 @@ class AlbumDetailAdapter(private val listener: Listener) : DetailAdapter(listene
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<Item>() {
-                override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
-                    return when {
-                        oldItem is Album && newItem is Album ->
-                            AlbumDetailViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
+                override fun areContentsTheSame(oldItem: Item, newItem: Item) =
+                    when {
                         oldItem is Disc && newItem is Disc ->
                             DiscViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is Song && newItem is Song ->
                             AlbumSongViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
 
                         // Fall back to DetailAdapter's differ to handle other headers.
-                        else -> DetailAdapter.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
+                        else -> DetailListAdapter.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                     }
-                }
-            }
-    }
-}
-
-/**
- * A [RecyclerView.ViewHolder] that displays the [Album] header in the detail view. Use [from] to
- * create an instance.
- * @author Alexander Capehart (OxygenCobalt)
- */
-private class AlbumDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
-    RecyclerView.ViewHolder(binding.root) {
-
-    /**
-     * Bind new data to this instance.
-     * @param album The new [Album] to bind.
-     * @param listener A [AlbumDetailAdapter.Listener] to bind interactions to.
-     */
-    fun bind(album: Album, listener: AlbumDetailAdapter.Listener) {
-        binding.detailCover.bind(album)
-
-        // The type text depends on the release type (Album, EP, Single, etc.)
-        binding.detailType.text = binding.context.getString(album.releaseType.stringRes)
-
-        binding.detailName.text = album.resolveName(binding.context)
-
-        // Artist name maps to the subhead text
-        binding.detailSubhead.apply {
-            text = album.artists.resolveNames(context)
-
-            // Add a QoL behavior where navigation to the artist will occur if the artist
-            // name is pressed.
-            setOnClickListener { listener.onNavigateToParentArtist() }
-        }
-
-        // Date, song count, and duration map to the info text
-        binding.detailInfo.apply {
-            // Fall back to a friendlier "No date" text if the album doesn't have date information
-            val date = album.dates?.resolveDate(context) ?: context.getString(R.string.def_date)
-            val songCount = context.getPlural(R.plurals.fmt_song_count, album.songs.size)
-            val duration = album.durationMs.formatDurationMs(true)
-            text = context.getString(R.string.fmt_three, date, songCount, duration)
-        }
-
-        binding.detailPlayButton.setOnClickListener { listener.onPlay() }
-        binding.detailShuffleButton.setOnClickListener { listener.onShuffle() }
-    }
-
-    companion object {
-        /** A unique ID for this [RecyclerView.ViewHolder] type. */
-        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_ALBUM_DETAIL
-
-        /**
-         * Create a new instance.
-         * @param parent The parent to inflate this instance from.
-         * @return A new instance.
-         */
-        fun from(parent: View) =
-            AlbumDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
-
-        /** A comparator that can be used with DiffUtil. */
-        val DIFF_CALLBACK =
-            object : SimpleDiffCallback<Album>() {
-                override fun areContentsTheSame(oldItem: Album, newItem: Album) =
-                    oldItem.rawName == newItem.rawName &&
-                        oldItem.artists.areRawNamesTheSame(newItem.artists) &&
-                        oldItem.dates == newItem.dates &&
-                        oldItem.songs.size == newItem.songs.size &&
-                        oldItem.durationMs == newItem.durationMs &&
-                        oldItem.releaseType == newItem.releaseType
             }
     }
 }
@@ -187,12 +99,14 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 /**
  * A [RecyclerView.ViewHolder] that displays a [Disc] to delimit different disc groups. Use [from]
  * to create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 private class DiscViewHolder(private val binding: ItemDiscHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
+     *
      * @param disc The new [disc] to bind.
      */
     fun bind(disc: Disc) {
@@ -209,6 +123,7 @@ private class DiscViewHolder(private val binding: ItemDiscHeaderBinding) :
 
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
@@ -227,12 +142,14 @@ private class DiscViewHolder(private val binding: ItemDiscHeaderBinding) :
 /**
  * A [RecyclerView.ViewHolder] that displays a [Song] in the context of an [Album]. Use [from] to
  * create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 private class AlbumSongViewHolder private constructor(private val binding: ItemAlbumSongBinding) :
     SelectionIndicatorAdapter.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
+     *
      * @param song The new [Song] to bind.
      * @param listener A [SelectableListListener] to bind interactions to.
      */
@@ -276,6 +193,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
 
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */

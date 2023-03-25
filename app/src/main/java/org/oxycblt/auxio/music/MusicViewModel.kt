@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * MusicViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +27,7 @@ import org.oxycblt.auxio.music.system.Indexer
 
 /**
  * A [ViewModel] providing data specific to the music loading process.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
@@ -76,6 +78,7 @@ class MusicViewModel @Inject constructor(private val indexer: Indexer) :
 
     /**
      * Non-manipulated statistics bound the last successful music load.
+     *
      * @param songs The amount of [Song]s that were loaded.
      * @param albums The amount of [Album]s that were created.
      * @param artists The amount of [Artist]s that were created.

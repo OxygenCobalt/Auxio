@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * QueueFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +29,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.list.EditableListListener
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
@@ -36,6 +36,7 @@ import org.oxycblt.auxio.util.collectImmediately
 
 /**
  * A [ViewBindingFragment] that displays an editable queue.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -80,6 +81,9 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
         super.onDestroyBinding(binding)
         touchHelper = null
         binding.queueRecycler.adapter = null
+        // Avoid possible race conditions that could cause a bad instruction to be consumed
+        // during list initialization and crash the app. Could happen if the user is fast enough.
+        queueModel.queueInstructions.consume()
     }
 
     override fun onClick(item: Song, viewHolder: RecyclerView.ViewHolder) {
@@ -101,13 +105,12 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
         val binding = requireBinding()
 
         // Replace or diff the queue depending on the type of change it is.
-        val instructions = queueModel.queueListInstructions
-        queueAdapter.submitList(queue, instructions?.update ?: BasicListInstructions.DIFF)
+        queueAdapter.update(queue, queueModel.queueInstructions.consume())
         // Update position in list (and thus past/future items)
         queueAdapter.setPosition(index, isPlaying)
 
         // If requested, scroll to a new item (occurs when the index moves)
-        val scrollTo = instructions?.scrollTo
+        val scrollTo = queueModel.scrollTo.consume()
         if (scrollTo != null) {
             val lmm = binding.queueRecycler.layoutManager as LinearLayoutManager
             val start = lmm.findFirstCompletelyVisibleItemPosition()
@@ -128,7 +131,5 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditableListL
                     min(queue.lastIndex, scrollTo + (end - start)))
             }
         }
-
-        queueModel.finishInstructions()
     }
 }

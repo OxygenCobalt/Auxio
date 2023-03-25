@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * ArtistChoiceAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +30,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * An [RecyclerView.Adapter] that displays a list of [Artist] choices.
+ *
  * @param listener A [ClickableListListener] to bind interactions to.
  * @author OxygenCobalt.
  */
@@ -46,6 +48,7 @@ class ArtistChoiceAdapter(private val listener: ClickableListListener<Artist>) :
 
     /**
      * Immediately update the [Artist] choices.
+     *
      * @param newArtists The new [Artist]s to show.
      */
     fun submitList(newArtists: List<Artist>) {
@@ -64,6 +67,7 @@ class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
+     *
      * @param artist The new [Artist] to bind.
      * @param listener A [ClickableListListener] to bind interactions to.
      */
@@ -76,6 +80,7 @@ class ArtistChoiceViewHolder(private val binding: ItemPickerChoiceBinding) :
     companion object {
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */

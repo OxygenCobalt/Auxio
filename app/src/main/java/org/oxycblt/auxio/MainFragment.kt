@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * MainFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +52,7 @@ import org.oxycblt.auxio.util.*
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls the more
  * high-level navigation features.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -127,12 +129,12 @@ class MainFragment :
         }
 
         // --- VIEWMODEL SETUP ---
-        collect(navModel.mainNavigationAction, ::handleMainNavigation)
-        collect(navModel.exploreNavigationItem, ::handleExploreNavigation)
-        collect(navModel.exploreArtistNavigationItem, ::handleArtistNavigationPicker)
+        collect(navModel.mainNavigationAction.flow, ::handleMainNavigation)
+        collect(navModel.exploreNavigationItem.flow, ::handleExploreNavigation)
+        collect(navModel.exploreArtistNavigationItem.flow, ::handleArtistNavigationPicker)
         collectImmediately(playbackModel.song, ::updateSong)
-        collect(playbackModel.artistPickerSong, ::handlePlaybackArtistPicker)
-        collect(playbackModel.genrePickerSong, ::handlePlaybackGenrePicker)
+        collect(playbackModel.artistPickerSong.flow, ::handlePlaybackArtistPicker)
+        collect(playbackModel.genrePickerSong.flow, ::handlePlaybackGenrePicker)
     }
 
     override fun onStart() {
@@ -268,10 +270,11 @@ class MainFragment :
         when (action) {
             is MainNavigationAction.Expand -> tryExpandSheets()
             is MainNavigationAction.Collapse -> tryCollapseSheets()
-            is MainNavigationAction.Directions -> findNavController().navigate(action.directions)
+            is MainNavigationAction.Directions ->
+                findNavController().navigateSafe(action.directions)
         }
 
-        navModel.finishMainNavigation()
+        navModel.mainNavigationAction.consume()
     }
 
     private fun handleExploreNavigation(item: Music?) {
@@ -285,7 +288,7 @@ class MainFragment :
             navModel.mainNavigateTo(
                 MainNavigationAction.Directions(
                     MainFragmentDirections.actionPickNavigationArtist(item.uid)))
-            navModel.finishExploreNavigation()
+            navModel.exploreArtistNavigationItem.consume()
         }
     }
 
@@ -302,7 +305,7 @@ class MainFragment :
             navModel.mainNavigateTo(
                 MainNavigationAction.Directions(
                     MainFragmentDirections.actionPickPlaybackArtist(song.uid)))
-            playbackModel.finishPlaybackArtistPicker()
+            playbackModel.artistPickerSong.consume()
         }
     }
 
@@ -311,7 +314,7 @@ class MainFragment :
             navModel.mainNavigateTo(
                 MainNavigationAction.Directions(
                     MainFragmentDirections.actionPickPlaybackGenre(song.uid)))
-            playbackModel.finishPlaybackGenrePicker()
+            playbackModel.genrePickerSong.consume()
         }
     }
 

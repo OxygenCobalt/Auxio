@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * EdgeFrameLayout.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +28,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A [FrameLayout] that automatically applies bottom insets.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class EdgeFrameLayout

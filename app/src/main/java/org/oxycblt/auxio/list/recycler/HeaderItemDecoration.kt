@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * HeaderItemDecoration.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,16 +20,18 @@ package org.oxycblt.auxio.list.recycler
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.BackportMaterialDividerItemDecoration
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Header
-import org.oxycblt.auxio.list.adapter.DiffAdapter
+import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
 
 /**
  * A [BackportMaterialDividerItemDecoration] that sets up the divider configuration to correctly
  * separate content with headers.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class HeaderItemDecoration
@@ -39,12 +42,26 @@ constructor(
     defStyleAttr: Int = R.attr.materialDividerStyle,
     orientation: Int = LinearLayoutManager.VERTICAL
 ) : BackportMaterialDividerItemDecoration(context, attributeSet, defStyleAttr, orientation) {
-    override fun shouldDrawDivider(position: Int, adapter: RecyclerView.Adapter<*>?) =
+    override fun shouldDrawDivider(position: Int, adapter: RecyclerView.Adapter<*>?): Boolean {
+        if (adapter is ConcatAdapter) {
+            val adapterAndPosition =
+                try {
+                    adapter.getWrappedAdapterAndPosition(position + 1)
+                } catch (e: IllegalArgumentException) {
+                    return false
+                }
+            return hasHeaderAtPosition(adapterAndPosition.second, adapterAndPosition.first)
+        } else {
+            return hasHeaderAtPosition(position + 1, adapter)
+        }
+    }
+
+    private fun hasHeaderAtPosition(position: Int, adapter: RecyclerView.Adapter<*>?) =
         try {
             // Add a divider if the next item is a header. This organizes the divider to separate
             // the ends of content rather than the beginning of content, alongside an added benefit
             // of preventing top headers from having a divider applied.
-            (adapter as DiffAdapter<*, *, *>).getItem(position + 1) is Header
+            (adapter as FlexibleListAdapter<*, *>).getItem(position) is Header
         } catch (e: ClassCastException) {
             false
         } catch (e: IndexOutOfBoundsException) {

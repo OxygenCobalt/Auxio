@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * RawMusic.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +25,7 @@ import org.oxycblt.auxio.music.storage.Directory
 
 /**
  * Raw information about a [SongImpl] obtained from the filesystem/Extractor instances.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class RawSong(
@@ -88,6 +90,7 @@ class RawSong(
 
 /**
  * Raw information about an [AlbumImpl] obtained from the component [SongImpl] instances.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class RawAlbum(
@@ -134,6 +137,7 @@ class RawAlbum(
 /**
  * Raw information about an [ArtistImpl] obtained from the component [SongImpl] and [AlbumImpl]
  * instances.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class RawArtist(
@@ -175,6 +179,7 @@ class RawArtist(
 
 /**
  * Raw information about a [GenreImpl] obtained from the component [SongImpl] instances.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class RawGenre(

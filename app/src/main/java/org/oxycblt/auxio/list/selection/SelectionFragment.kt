@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * SelectionFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@ import org.oxycblt.auxio.util.showToast
 
 /**
  * A subset of ListFragment that implements aspects of the selection UI.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class SelectionFragment<VB : ViewBinding> :
@@ -38,8 +40,9 @@ abstract class SelectionFragment<VB : ViewBinding> :
     /**
      * Get the [SelectionToolbarOverlay] of the concrete Fragment to be automatically managed by
      * [SelectionFragment].
+     *
      * @return The [SelectionToolbarOverlay] of the concrete [SelectionFragment]'s [VB], or null if
-     * there is not one.
+     *   there is not one.
      */
     open fun getSelectionToolbar(binding: VB): SelectionToolbarOverlay? = null
 

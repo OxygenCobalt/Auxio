@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * SearchViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +39,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * An [ViewModel] that keeps performs search operations and tracks their results.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
@@ -80,6 +82,7 @@ constructor(
     /**
      * Asynchronously search the music library. Results will be pushed to [searchResults]. Will
      * cancel any previous search operations started prior.
+     *
      * @param query The query to search the music library for.
      */
     fun search(query: String?) {
@@ -142,6 +145,7 @@ constructor(
 
     /**
      * Returns the ID of the filter option to currently highlight.
+     *
      * @return A menu item ID of the filtering option selected.
      */
     @IdRes
@@ -157,6 +161,7 @@ constructor(
 
     /**
      * Update the filter mode with the newly-selected filter option.
+     *
      * @return A menu item ID of the new filtering option selected.
      */
     fun setFilterOptionId(@IdRes id: Int) {

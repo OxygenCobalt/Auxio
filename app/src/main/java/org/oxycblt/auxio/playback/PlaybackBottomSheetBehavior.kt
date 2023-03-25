@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * PlaybackBottomSheetBehavior.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +32,7 @@ import org.oxycblt.auxio.util.getDimen
 
 /**
  * The [BaseBottomSheetBehavior] for the playback bottom sheet. This bottom sheet
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :

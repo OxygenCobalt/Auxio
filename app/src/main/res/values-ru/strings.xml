@@ -45,7 +45,7 @@
     <string name="set_root_title">Настройки</string>
     <string name="set_ui">Внешний вид</string>
     <string name="set_theme">Тема</string>
-    <string name="set_theme_auto">Автоматически</string>
+    <string name="set_theme_auto">Системная</string>
     <string name="set_theme_day">Светлая</string>
     <string name="set_theme_night">Тёмная</string>
     <string name="set_accent">Цветовой акцент</string>
@@ -278,4 +278,6 @@
     <string name="set_dirs_list">Папки</string>
     <string name="set_state">Состояние воспроизведения</string>
     <string name="lbl_sort_dec">По убыванию</string>
+    <string name="set_intelligent_sorting">Игнорировать артикли при сортировке</string>
+    <string name="set_intelligent_sorting_desc">Игнорировать такие слова, как «the», при сортировке по имени (лучше всего работает с англоязычной музыкой)</string>
 </resources>

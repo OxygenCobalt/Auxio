@@ -113,7 +113,7 @@
     </style>
 
     <style name="Widget.Auxio.TextView.Item.Primary" parent="Widget.Auxio.TextView.Item.Base">
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMediumLowEmphasis
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMedium
         </item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>

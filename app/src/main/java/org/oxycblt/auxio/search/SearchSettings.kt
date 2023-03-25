@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * SearchSettings.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +28,7 @@ import org.oxycblt.auxio.settings.Settings
 
 /**
  * User configuration specific to the search UI.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface SearchSettings : Settings<Nothing> {

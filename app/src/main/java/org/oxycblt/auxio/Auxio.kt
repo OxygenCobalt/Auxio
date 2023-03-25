@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * Auxio.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +31,7 @@ import org.oxycblt.auxio.ui.UISettings
 
 /**
  * A simple, rational music player for android.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltAndroidApp

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * AuxioRecyclerView.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +32,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * - Automatic edge-to-edge support
  * - Adapter-based [SpanSizeLookup] implementation
  * - Automatic [setHasFixedSize] setup
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 open class AuxioRecyclerView
@@ -89,6 +91,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     interface SpanSizeLookup {
         /**
          * Get if the item at a position takes up the whole width of the [RecyclerView] or not.
+         *
          * @param position The position of the item.
          * @return true if the item is full-width, false otherwise.
          */

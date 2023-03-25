@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * Components.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +32,6 @@ import javax.inject.Inject
 import kotlin.math.min
 import okio.buffer
 import okio.source
-import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -41,6 +41,7 @@ import org.oxycblt.auxio.music.Song
 
 /**
  * A [Keyer] implementation for [Music] data.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MusicKeyer : Keyer<Music> {
@@ -56,16 +57,17 @@ class MusicKeyer : Keyer<Music> {
 /**
  * Generic [Fetcher] for [Album] covers. Works with both [Album] and [Song]. Use [SongFactory] or
  * [AlbumFactory] for instantiation.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumCoverFetcher
 private constructor(
     private val context: Context,
-    private val imageSettings: ImageSettings,
+    private val extractor: CoverExtractor,
     private val album: Album
 ) : Fetcher {
     override suspend fun fetch(): FetchResult? =
-        Covers.fetch(context, imageSettings, album)?.run {
+        extractor.extract(album)?.run {
             SourceResult(
                 source = ImageSource(source().buffer(), context),
                 mimeType = null,
@@ -73,77 +75,79 @@ private constructor(
         }
 
     /** A [Fetcher.Factory] implementation that works with [Song]s. */
-    class SongFactory @Inject constructor(private val imageSettings: ImageSettings) :
+    class SongFactory @Inject constructor(private val coverExtractor: CoverExtractor) :
         Fetcher.Factory<Song> {
         override fun create(data: Song, options: Options, imageLoader: ImageLoader) =
-            AlbumCoverFetcher(options.context, imageSettings, data.album)
+            AlbumCoverFetcher(options.context, coverExtractor, data.album)
     }
 
     /** A [Fetcher.Factory] implementation that works with [Album]s. */
-    class AlbumFactory @Inject constructor(private val imageSettings: ImageSettings) :
+    class AlbumFactory @Inject constructor(private val coverExtractor: CoverExtractor) :
         Fetcher.Factory<Album> {
         override fun create(data: Album, options: Options, imageLoader: ImageLoader) =
-            AlbumCoverFetcher(options.context, imageSettings, data)
+            AlbumCoverFetcher(options.context, coverExtractor, data)
     }
 }
 
 /**
  * [Fetcher] for [Artist] images. Use [Factory] for instantiation.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class ArtistImageFetcher
 private constructor(
     private val context: Context,
-    private val imageSettings: ImageSettings,
+    private val extractor: CoverExtractor,
     private val size: Size,
     private val artist: Artist
 ) : Fetcher {
     override suspend fun fetch(): FetchResult? {
         // Pick the "most prominent" albums (i.e albums with the most songs) to show in the image.
         val albums = Sort(Sort.Mode.ByCount, Sort.Direction.DESCENDING).albums(artist.albums)
-        val results =
-            albums.mapAtMostNotNull(4) { album -> Covers.fetch(context, imageSettings, album) }
+        val results = albums.mapAtMostNotNull(4) { album -> extractor.extract(album) }
         return Images.createMosaic(context, results, size)
     }
 
     /** [Fetcher.Factory] implementation. */
-    class Factory @Inject constructor(private val imageSettings: ImageSettings) :
+    class Factory @Inject constructor(private val extractor: CoverExtractor) :
         Fetcher.Factory<Artist> {
         override fun create(data: Artist, options: Options, imageLoader: ImageLoader) =
-            ArtistImageFetcher(options.context, imageSettings, options.size, data)
+            ArtistImageFetcher(options.context, extractor, options.size, data)
     }
 }
 
 /**
  * [Fetcher] for [Genre] images. Use [Factory] for instantiation.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class GenreImageFetcher
 private constructor(
     private val context: Context,
-    private val imageSettings: ImageSettings,
+    private val extractor: CoverExtractor,
     private val size: Size,
     private val genre: Genre
 ) : Fetcher {
     override suspend fun fetch(): FetchResult? {
-        val results = genre.albums.mapAtMostNotNull(4) { Covers.fetch(context, imageSettings, it) }
+        val results = genre.albums.mapAtMostNotNull(4) { album -> extractor.extract(album) }
         return Images.createMosaic(context, results, size)
     }
 
     /** [Fetcher.Factory] implementation. */
-    class Factory @Inject constructor(private val imageSettings: ImageSettings) :
+    class Factory @Inject constructor(private val extractor: CoverExtractor) :
         Fetcher.Factory<Genre> {
         override fun create(data: Genre, options: Options, imageLoader: ImageLoader) =
-            GenreImageFetcher(options.context, imageSettings, options.size, data)
+            GenreImageFetcher(options.context, extractor, options.size, data)
     }
 }
 
 /**
  * Map at most N [T] items a collection into a collection of [R], ignoring [T] that cannot be
  * transformed into [R].
+ *
  * @param n The maximum amount of items to map.
  * @param transform The function that transforms data [T] from the original list into data [R] in
- * the new list. Can return null if the [T] cannot be transformed into an [R].
+ *   the new list. Can return null if the [T] cannot be transformed into an [R].
  * @return A new list of at most N non-null [R] items.
  */
 private inline fun <T : Any, R : Any> Collection<T>.mapAtMostNotNull(

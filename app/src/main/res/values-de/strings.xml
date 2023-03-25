@@ -162,7 +162,7 @@
     <string name="set_dirs_mode_exclude_desc">Musik wird <b>nicht</b> von den von dir hinzugefügten Ordnern geladen.</string>
     <string name="set_dirs_mode_include">Einschließen</string>
     <string name="set_dirs_mode_include_desc">Musik wird <b>nur</b> von den von dir hinzugefügten Ordnern geladen.</string>
-    <string name="def_track">Keine Titelnummer</string>
+    <string name="def_track">Kein Titel</string>
     <string name="cdc_ogg">Ogg-Audio</string>
     <string name="cdc_mp4">MPEG-4-Audio</string>
     <string name="cdc_mp3">MPEG-1-Audio</string>
@@ -271,4 +271,6 @@
     <string name="set_state">Persistenz</string>
     <string name="set_replay_gain">Lautstärkeanpassung ReplayGain</string>
     <string name="lbl_sort_dec">Absteigend</string>
+    <string name="set_intelligent_sorting">Artikel beim Sortieren ignorieren</string>
+    <string name="set_intelligent_sorting_desc">Wörter wie „the“ ignorieren (funktioniert am besten mit englischsprachiger Musik)</string>
 </resources>

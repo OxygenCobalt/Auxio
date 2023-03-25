@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * PreferenceHeaderItemDecoration.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +31,7 @@ import org.oxycblt.auxio.R
 /**
  * A [BackportMaterialDividerItemDecoration] that sets up the divider configuration to correctly
  * separate preference categories.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PreferenceHeaderItemDecoration

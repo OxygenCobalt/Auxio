@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * DialogRecyclerView.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +35,7 @@ import org.oxycblt.auxio.util.getDimenPixels
  * A [RecyclerView] intended for use in Dialogs, adding features such as:
  * - NestedScrollView scrollIndicators behavior emulation
  * - Dialog-specific [ViewHolder] that automatically resolves certain issues.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class DialogRecyclerView

@@ -108,7 +108,7 @@
     <string name="def_artist">Artista sconosciuto</string>
     <string name="def_genre">Genere sconosciuto</string>
     <string name="def_date">Data sconosciuta</string>
-    <string name="def_track">Numero traccia sconosciuto</string>
+    <string name="def_track">Nessuna traccia</string>
     <string name="def_playback">Nessuna canzone riproduzione</string>
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Rosso</string>
@@ -275,4 +275,6 @@
     <string name="set_personalize_desc">Personalizza controlli e comportamento dell\'UI</string>
     <string name="set_audio_desc">Configura comportamento di suono e riproduzione</string>
     <string name="lbl_sort_dec">Discendente</string>
+    <string name="set_intelligent_sorting">Ignora gli articoli durante l\'ordinamento</string>
+    <string name="set_intelligent_sorting_desc">Ignora parole come \"the\" durante l\'ordinamento per nome (funziona meglio con la musica in lingua inglese)</string>
 </resources>

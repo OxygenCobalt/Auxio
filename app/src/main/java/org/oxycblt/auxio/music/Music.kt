@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * Music.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +23,7 @@ import android.net.Uri
 import android.os.Parcelable
 import java.security.MessageDigest
 import java.text.CollationKey
+import java.text.Collator
 import java.util.UUID
 import kotlin.math.max
 import kotlinx.parcelize.IgnoredOnParcel
@@ -38,11 +40,13 @@ import org.oxycblt.auxio.util.toUuidOrNull
 /**
  * Abstract music data. This contains universal information about all concrete music
  * implementations, such as identification information and names.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 sealed interface Music : Item {
     /**
      * A unique identifier for this music item.
+     *
      * @see UID
      */
     val uid: UID
@@ -56,9 +60,10 @@ sealed interface Music : Item {
     /**
      * Returns a name suitable for use in the app UI. This should be favored over [rawName] in
      * nearly all cases.
+     *
      * @param context [Context] required to obtain placeholder text or formatting information.
      * @return A human-readable string representing the name of this music. In the case that the
-     * item does not have a name, an analogous "Unknown X" name is returned.
+     *   item does not have a name, an analogous "Unknown X" name is returned.
      */
     fun resolveName(context: Context): String
 
@@ -70,31 +75,26 @@ sealed interface Music : Item {
     val rawSortName: String?
 
     /**
-     * A [CollationKey] derived from [rawName] and [rawSortName] that can be used to sort items in a
-     * semantically-correct manner. Will be null if the item has no name.
-     *
-     * The key will have the following attributes:
-     * - If [rawSortName] is present, this key will be derived from it. Otherwise [rawName] is used.
-     * - If the string begins with an article, such as "the", it will be stripped, as is usually
-     * convention for sorting media. This is not internationalized.
+     * A black-box value derived from [rawSortName] and [rawName] that can be used for user-friendly
+     * sorting in the context of music. This should be preferred over [rawSortName] in most cases.
+     * Null if there are no [rawName] or [rawSortName] values to build on.
      */
-    val collationKey: CollationKey?
+    val sortName: SortName?
 
     /**
      * A unique identifier for a piece of music.
      *
      * [UID] enables a much cheaper and more reliable form of differentiating music, derived from
-     * either a hash of meaningful metadata or the MusicBrainz ID spec. Using this enables several
+     * either internal app information or the MusicBrainz ID spec. Using this enables several
      * improvements to music management in this app, including:
-     *
      * - Proper differentiation of identical music. It's common for large, well-tagged libraries to
-     * have functionally duplicate items that are differentiated with MusicBrainz IDs, and so [UID]
-     * allows us to properly differentiate between these in the app.
+     *   have functionally duplicate items that are differentiated with MusicBrainz IDs, and so
+     *   [UID] allows us to properly differentiate between these in the app.
      * - Better music persistence between restarts. Whereas directly storing song names would be
-     * prone to collisions, and storing MediaStore IDs would drift rapidly as the music library
-     * changes, [UID] enables a much stronger form of persistence given it's unique link to a
-     * specific files metadata configuration, which is unlikely to collide with another item or
-     * drift as the music library changes.
+     *   prone to collisions, and storing MediaStore IDs would drift rapidly as the music library
+     *   changes, [UID] enables a much stronger form of persistence given it's unique link to a
+     *   specific files metadata configuration, which is unlikely to collide with another item or
+     *   drift as the music library changes.
      *
      * Note: Generally try to use [UID] as a black box that can only be read, written, and compared.
      * It will not be fun if you try to manipulate it in any other manner.
@@ -125,6 +125,7 @@ sealed interface Music : Item {
 
         /**
          * Internal marker of [Music.UID] format type.
+         *
          * @param namespace Namespace to use in the [Music.UID]'s string representation.
          */
         private enum class Format(val namespace: String) {
@@ -139,10 +140,11 @@ sealed interface Music : Item {
             /**
              * Creates an Auxio-style [UID] with a [UUID] composed of a hash of the non-subjective,
              * unlikely-to-change metadata of the music.
+             *
              * @param mode The analogous [MusicMode] of the item that created this [UID].
              * @param updates Block to update the [MessageDigest] hash with the metadata of the
-             * item. Make sure the metadata hashed semantically aligns with the format
-             * specification.
+             *   item. Make sure the metadata hashed semantically aligns with the format
+             *   specification.
              * @return A new auxio-style [UID].
              */
             fun auxio(mode: MusicMode, updates: MessageDigest.() -> Unit): UID {
@@ -181,19 +183,21 @@ sealed interface Music : Item {
             /**
              * Creates a MusicBrainz-style [UID] with a [UUID] derived from the MusicBrainz ID
              * extracted from a file.
+             *
              * @param mode The analogous [MusicMode] of the item that created this [UID].
              * @param mbid The analogous MusicBrainz ID for this item that was extracted from a
-             * file.
+             *   file.
              * @return A new MusicBrainz-style [UID].
              */
             fun musicBrainz(mode: MusicMode, mbid: UUID): UID = UID(Format.MUSICBRAINZ, mode, mbid)
 
             /**
              * Convert a [UID]'s string representation back into a concrete [UID] instance.
+             *
              * @param uid The [UID]'s string representation, formatted as
-             * `format_namespace:music_mode_int-uuid`.
+             *   `format_namespace:music_mode_int-uuid`.
              * @return A [UID] converted from the string representation, or null if the string
-             * representation was invalid.
+             *   representation was invalid.
              */
             fun fromString(uid: String): UID? {
                 val split = uid.split(':', limit = 2)
@@ -224,6 +228,7 @@ sealed interface Music : Item {
 
 /**
  * An abstract grouping of [Song]s and other [Music] data.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 sealed interface MusicParent : Music {
@@ -233,6 +238,7 @@ sealed interface MusicParent : Music {
 
 /**
  * A song.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Song : Music {
@@ -281,6 +287,7 @@ interface Song : Music {
 /**
  * An abstract release group. While it may be called an album, it encompasses other types of
  * releases like singles, EPs, and compilations.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Album : MusicParent {
@@ -311,6 +318,7 @@ interface Album : MusicParent {
 /**
  * An abstract artist. These are actually a combination of the artist and album artist tags from
  * within the library, derived from [Song]s and [Album]s respectively.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Artist : MusicParent {
@@ -336,6 +344,7 @@ interface Artist : MusicParent {
 
 /**
  * A genre.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Genre : MusicParent {
@@ -348,8 +357,83 @@ interface Genre : MusicParent {
 }
 
 /**
+ * A black-box datatype for a variation of music names that is suitable for music-oriented sorting.
+ * It will automatically handle articles like "The" and numeric components like "An".
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName> {
+    private val number: Int?
+    private val collationKey: CollationKey
+    val thumbString: String?
+
+    init {
+        var sortName = name
+        if (musicSettings.intelligentSorting) {
+            sortName =
+                sortName.run {
+                    when {
+                        length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
+                        length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
+                        length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
+                        else -> this
+                    }
+                }
+
+            // Parse out numeric portions of the title and use those for sorting, if applicable.
+            when (val numericEnd = sortName.indexOfFirst { !it.isDigit() }) {
+                // No numeric component.
+                0 -> number = null
+                // Whole title is numeric.
+                -1 -> {
+                    number = sortName.toIntOrNull()
+                    sortName = ""
+                }
+                // Part of the title is numeric.
+                else -> {
+                    number = sortName.slice(0 until numericEnd).toIntOrNull()
+                    sortName = sortName.slice(numericEnd until sortName.length)
+                }
+            }
+        } else {
+            number = null
+        }
+
+        collationKey = COLLATOR.getCollationKey(sortName)
+
+        // Keep track of a string to use in the thumb view.
+        // TODO: This needs to be moved elsewhere.
+        thumbString = (number?.toString() ?: collationKey?.run { sourceString.first().uppercase() })
+    }
+
+    override fun toString(): String = number?.toString() ?: collationKey.sourceString
+
+    override fun compareTo(other: SortName) =
+        when {
+            number != null && other.number != null -> number.compareTo(other.number)
+            number != null && other.number == null -> -1 // a < b
+            number == null && other.number != null -> 1 // a > b
+            else -> collationKey.compareTo(other.collationKey)
+        }
+
+    override fun equals(other: Any?) =
+        other is SortName && number == other.number && collationKey == other.collationKey
+
+    override fun hashCode(): Int {
+        var hashCode = collationKey.hashCode()
+        if (number != null) hashCode = 31 * hashCode + number
+        return hashCode
+    }
+
+    private companion object {
+        val COLLATOR: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
+    }
+}
+
+/**
  * Run [Music.resolveName] on each instance in the given list and concatenate them into a [String]
  * in a localized manner.
+ *
  * @param context [Context] required
  * @return A concatenated string.
  */
@@ -359,6 +443,7 @@ fun <T : Music> List<T>.resolveNames(context: Context) =
 /**
  * Returns if [Music.rawName] matches for each item in a list. Useful for scenarios where the
  * display information of an item must be compared without a context.
+ *
  * @param other The list of items to compare to.
  * @return True if they are the same (by [Music.rawName]), false otherwise.
  */

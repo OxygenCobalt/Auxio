@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * UIPreferenceFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +28,11 @@ import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
+import org.oxycblt.auxio.util.navigateSafe
 
 /**
  * Display preferences.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -38,7 +41,7 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_accent)) {
-            findNavController().navigate(UIPreferenceFragmentDirections.goToAccentDialog())
+            findNavController().navigateSafe(UIPreferenceFragmentDirections.goToAccentDialog())
         }
     }
 

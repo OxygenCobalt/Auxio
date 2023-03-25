@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * AlbumDetailFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,16 +25,18 @@ import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearSmoothScroller
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
-import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
+import org.oxycblt.auxio.detail.header.AlbumDetailHeaderAdapter
+import org.oxycblt.auxio.detail.list.AlbumDetailListAdapter
+import org.oxycblt.auxio.detail.list.DetailListAdapter
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -47,11 +50,14 @@ import org.oxycblt.auxio.util.*
 
 /**
  * A [ListFragment] that shows information about an [Album].
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
 class AlbumDetailFragment :
-    ListFragment<Song, FragmentDetailBinding>(), AlbumDetailAdapter.Listener {
+    ListFragment<Song, FragmentDetailBinding>(),
+    AlbumDetailHeaderAdapter.Listener,
+    DetailListAdapter.Listener<Song> {
     private val detailModel: DetailViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
@@ -59,7 +65,8 @@ class AlbumDetailFragment :
     // Information about what album to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an album.
     private val args: AlbumDetailFragmentArgs by navArgs()
-    private val detailAdapter = AlbumDetailAdapter(this)
+    private val albumHeaderAdapter = AlbumDetailHeaderAdapter(this)
+    private val albumListAdapter = AlbumDetailListAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +93,7 @@ class AlbumDetailFragment :
             setOnMenuItemClickListener(this@AlbumDetailFragment)
         }
 
-        binding.detailRecycler.adapter = detailAdapter
+        binding.detailRecycler.adapter = ConcatAdapter(albumHeaderAdapter, albumListAdapter)
 
         // -- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
@@ -95,7 +102,7 @@ class AlbumDetailFragment :
         collectImmediately(detailModel.albumList, ::updateList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
-        collect(navModel.exploreNavigationItem, ::handleNavigation)
+        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
@@ -103,6 +110,9 @@ class AlbumDetailFragment :
         super.onDestroyBinding(binding)
         binding.detailToolbar.setOnMenuItemClickListener(null)
         binding.detailRecycler.adapter = null
+        // Avoid possible race conditions that could cause a bad replace instruction to be consumed
+        // during list initialization and crash the app. Could happen if the user is fast enough.
+        detailModel.albumInstructions.consume()
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -181,14 +191,15 @@ class AlbumDetailFragment :
             return
         }
         requireBinding().detailToolbar.title = album.resolveName(requireContext())
+        albumHeaderAdapter.setParent(album)
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         if (parent is Album && parent == unlikelyToBeNull(detailModel.currentAlbum.value)) {
-            detailAdapter.setPlaying(song, isPlaying)
+            albumListAdapter.setPlaying(song, isPlaying)
         } else {
             // Clear the ViewHolders if the mode isn't ALL_SONGS
-            detailAdapter.setPlaying(null, isPlaying)
+            albumListAdapter.setPlaying(null, isPlaying)
         }
     }
 
@@ -201,11 +212,11 @@ class AlbumDetailFragment :
                 if (unlikelyToBeNull(detailModel.currentAlbum.value) == item.album) {
                     logD("Navigating to a song in this album")
                     scrollToAlbumSong(item)
-                    navModel.finishExploreNavigation()
+                    navModel.exploreNavigationItem.consume()
                 } else {
                     logD("Navigating to another album")
                     findNavController()
-                        .navigate(AlbumDetailFragmentDirections.actionShowAlbum(item.album.uid))
+                        .navigateSafe(AlbumDetailFragmentDirections.actionShowAlbum(item.album.uid))
                 }
             }
 
@@ -215,11 +226,11 @@ class AlbumDetailFragment :
                 if (unlikelyToBeNull(detailModel.currentAlbum.value) == item) {
                     logD("Navigating to the top of this album")
                     binding.detailRecycler.scrollToPosition(0)
-                    navModel.finishExploreNavigation()
+                    navModel.exploreNavigationItem.consume()
                 } else {
                     logD("Navigating to another album")
                     findNavController()
-                        .navigate(AlbumDetailFragmentDirections.actionShowAlbum(item.uid))
+                        .navigateSafe(AlbumDetailFragmentDirections.actionShowAlbum(item.uid))
                 }
             }
 
@@ -227,7 +238,7 @@ class AlbumDetailFragment :
             is Artist -> {
                 logD("Navigating to another artist")
                 findNavController()
-                    .navigate(AlbumDetailFragmentDirections.actionShowArtist(item.uid))
+                    .navigateSafe(AlbumDetailFragmentDirections.actionShowArtist(item.uid))
             }
             null -> {}
             else -> error("Unexpected datatype: ${item::class.java}")
@@ -272,12 +283,12 @@ class AlbumDetailFragment :
         }
     }
 
-    private fun updateList(items: List<Item>) {
-        detailAdapter.submitList(items, BasicListInstructions.DIFF)
+    private fun updateList(list: List<Item>) {
+        albumListAdapter.update(list, detailModel.albumInstructions.consume())
     }
 
     private fun updateSelection(selected: List<Music>) {
-        detailAdapter.setSelected(selected.toSet())
+        albumListAdapter.setSelected(selected.toSet())
         requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
     }
 }

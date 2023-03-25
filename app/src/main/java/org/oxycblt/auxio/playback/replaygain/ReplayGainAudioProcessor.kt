@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * ReplayGainAudioProcessor.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +24,6 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Tracks
 import com.google.android.exoplayer2.audio.AudioProcessor
 import com.google.android.exoplayer2.audio.BaseAudioProcessor
-import com.google.android.exoplayer2.util.MimeTypes
 import java.nio.ByteBuffer
 import javax.inject.Inject
 import kotlin.math.pow
@@ -60,8 +60,9 @@ constructor(
 
     /**
      * Add this instance to the components required for it to function correctly.
+     *
      * @param player The [Player] to attach to. Should already have this instance as an audio
-     * processor.
+     *   processor.
      */
     fun addToListeners(player: Player) {
         player.addListener(this)
@@ -70,8 +71,9 @@ constructor(
 
     /**
      * Remove this instance from the components required for it to function correctly.
+     *
      * @param player The [Player] to detach from. Should already have this instance as an audio
-     * processor.
+     *   processor.
      */
     fun releaseFromListeners(player: Player) {
         player.removeListener(this)
@@ -107,6 +109,7 @@ constructor(
 
     /**
      * Updates the volume adjustment based on the given [Format].
+     *
      * @param format The [Format] of the currently playing track, or null if nothing is playing.
      */
     private fun applyReplayGain(format: Format?) {
@@ -158,6 +161,7 @@ constructor(
 
     /**
      * Parse ReplayGain information from the given [Format].
+     *
      * @param format The [Format] to parse.
      * @return A [Adjustment] adjustment, or null if there were no valid adjustments.
      */
@@ -168,32 +172,28 @@ constructor(
 
         // Most ReplayGain tags are formatted as a simple decibel adjustment in a custom
         // replaygain_*_gain tag.
-        if (format.sampleMimeType != MimeTypes.AUDIO_OPUS) {
-            textTags.id3v2["TXXX:$TAG_RG_TRACK_GAIN"]
-                ?.run { first().parseReplayGainAdjustment() }
-                ?.let { trackGain = it }
-            textTags.id3v2["TXXX:$TAG_RG_ALBUM_GAIN"]
-                ?.run { first().parseReplayGainAdjustment() }
-                ?.let { albumGain = it }
-            textTags.vorbis[TAG_RG_ALBUM_GAIN]
-                ?.run { first().parseReplayGainAdjustment() }
-                ?.let { trackGain = it }
-            textTags.vorbis[TAG_RG_TRACK_GAIN]
-                ?.run { first().parseReplayGainAdjustment() }
-                ?.let { albumGain = it }
-        } else {
-            // Opus has it's own "r128_*_gain" ReplayGain specification, which requires dividing the
-            // adjustment by 256 to get the gain. This is used alongside the base adjustment
-            // intrinsic to the format to create the normalized adjustment. That base adjustment
-            // is already handled by the media framework, so we just need to apply the more
-            // specific adjustments.
-            textTags.vorbis[TAG_R128_TRACK_GAIN]
-                ?.run { first().parseReplayGainAdjustment() }
-                ?.let { trackGain = it / 256f }
-            textTags.vorbis[TAG_R128_ALBUM_GAIN]
-                ?.run { first().parseReplayGainAdjustment() }
-                ?.let { albumGain = it / 256f }
-        }
+        textTags.id3v2["TXXX:$TAG_RG_TRACK_GAIN"]
+            ?.run { first().parseReplayGainAdjustment() }
+            ?.let { trackGain = it }
+        textTags.id3v2["TXXX:$TAG_RG_ALBUM_GAIN"]
+            ?.run { first().parseReplayGainAdjustment() }
+            ?.let { albumGain = it }
+        textTags.vorbis[TAG_RG_ALBUM_GAIN]
+            ?.run { first().parseReplayGainAdjustment() }
+            ?.let { trackGain = it }
+        textTags.vorbis[TAG_RG_TRACK_GAIN]
+            ?.run { first().parseReplayGainAdjustment() }
+            ?.let { albumGain = it }
+        // Opus has it's own "r128_*_gain" ReplayGain specification, which requires dividing the
+        // adjustment by 256 to get the gain. This is used alongside the base adjustment
+        // intrinsic to the format to create the normalized adjustment. This is normally the only
+        // tag used for opus files, but some software still writes replay gain tags anyway.
+        textTags.vorbis[TAG_R128_TRACK_GAIN]
+            ?.run { first().parseReplayGainAdjustment() }
+            ?.let { trackGain = it / 256f }
+        textTags.vorbis[TAG_R128_ALBUM_GAIN]
+            ?.run { first().parseReplayGainAdjustment() }
+            ?.let { albumGain = it / 256f }
 
         return if (trackGain != 0f || albumGain != 0f) {
             Adjustment(trackGain, albumGain)
@@ -204,6 +204,7 @@ constructor(
 
     /**
      * Parse a ReplayGain adjustment into a float value.
+     *
      * @return A parsed adjustment float, or null if the adjustment had invalid formatting.
      */
     private fun String.parseReplayGainAdjustment() =
@@ -259,6 +260,7 @@ constructor(
 
     /**
      * Always read a little-endian [Short] from the [ByteBuffer] at the given index.
+     *
      * @param at The index to read the [Short] from.
      */
     private fun ByteBuffer.getLeShort(at: Int) =
@@ -266,6 +268,7 @@ constructor(
 
     /**
      * Always write a little-endian [Short] at the end of the [ByteBuffer].
+     *
      * @param short The [Short] to write.
      */
     private fun ByteBuffer.putLeShort(short: Short) {
@@ -275,6 +278,7 @@ constructor(
 
     /**
      * The resolved ReplayGain adjustment for a file.
+     *
      * @param track The track adjustment (in dB), or 0 if it is not present.
      * @param album The album adjustment (in dB), or 0 if it is not present.
      */

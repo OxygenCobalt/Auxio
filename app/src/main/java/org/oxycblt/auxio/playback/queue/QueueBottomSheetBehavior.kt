@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * QueueBottomSheetBehavior.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +35,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 /**
  * The [BaseBottomSheetBehavior] for the queue bottom sheet. This is placed within the playback
  * sheet and automatically arranges itself to show the playback bar at the top.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :

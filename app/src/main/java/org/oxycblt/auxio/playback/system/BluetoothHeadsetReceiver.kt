@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * BluetoothHeadsetReceiver.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +25,7 @@ import android.content.Intent
 
 /**
  * A [BroadcastReceiver] that starts music playback when a bluetooth headset is connected.
+ *
  * @author seijikun, OxygenCobalt
  */
 class BluetoothHeadsetReceiver : BroadcastReceiver() {

@@ -17,7 +17,7 @@
             android:layout_marginStart="@dimen/spacing_large"
             android:layout_marginTop="@dimen/spacing_medium"
             android:text="@string/set_pre_amp_with"
-            android:textAppearance="@style/TextAppearance.Auxio.TitleMediumLowEmphasis"
+            android:textAppearance="@style/TextAppearance.Auxio.TitleMedium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,7 +54,7 @@
             android:layout_marginStart="@dimen/spacing_large"
             android:layout_marginTop="@dimen/spacing_medium"
             android:text="@string/set_pre_amp_without"
-            android:textAppearance="@style/TextAppearance.Auxio.TitleMediumLowEmphasis"
+            android:textAppearance="@style/TextAppearance.Auxio.TitleMedium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/with_tags_slider" />
 

@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlin_version = '1.8.0'
+        kotlin_version = '1.8.10'
         navigation_version = "2.5.3"
         hilt_version = '2.45'
     }
@@ -11,10 +11,10 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.1'
+        classpath 'com.android.tools.build:gradle:7.4.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigation_version"
-        classpath "com.diffplug.spotless:spotless-plugin-gradle:6.10.0"
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:6.17.0"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
 
         // NOTE: Do not place your application dependencies here; they belong

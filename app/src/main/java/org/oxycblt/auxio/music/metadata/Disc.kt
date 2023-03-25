@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * Disc.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +22,7 @@ import org.oxycblt.auxio.list.Item
 
 /**
  * A disc identifier for a song.
+ *
  * @param number The disc number.
  * @param name The name of the disc group, if any. Null if not present.
  */

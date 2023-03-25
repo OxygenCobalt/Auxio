@@ -23,8 +23,8 @@
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="@string/set_key_auto_sort_names"
-            app:summary="@string/set_auto_sort_names_desc"
-            app:title="@string/set_auto_sort_names" />
+            app:summary="@string/set_intelligent_sorting_desc"
+            app:title="@string/set_intelligent_sorting" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"

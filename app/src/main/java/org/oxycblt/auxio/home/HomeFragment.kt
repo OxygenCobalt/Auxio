@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * HomeFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +65,7 @@ import org.oxycblt.auxio.util.*
 /**
  * The starting [SelectionFragment] of Auxio. Shows the user's music library and enables navigation
  * to other views.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -153,11 +155,11 @@ class HomeFragment :
         binding.homeFab.setOnClickListener { playbackModel.shuffleAll() }
 
         // --- VIEWMODEL SETUP ---
-        collect(homeModel.shouldRecreate, ::handleRecreate)
+        collect(homeModel.recreateTabs.flow, ::handleRecreate)
         collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
         collectImmediately(homeModel.songsList, homeModel.isFastScrolling, ::updateFab)
         collectImmediately(musicModel.indexerState, ::updateIndexerState)
-        collect(navModel.exploreNavigationItem, ::handleNavigation)
+        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
@@ -199,7 +201,7 @@ class HomeFragment :
             R.id.action_search -> {
                 logD("Navigating to search")
                 setupAxisTransitions(MaterialSharedAxis.Z)
-                findNavController().navigate(HomeFragmentDirections.actionShowSearch())
+                findNavController().navigateSafe(HomeFragmentDirections.actionShowSearch())
             }
             R.id.action_settings -> {
                 logD("Navigating to settings")
@@ -328,18 +330,14 @@ class HomeFragment :
             }
     }
 
-    private fun handleRecreate(recreate: Boolean) {
-        if (!recreate) {
-            // Nothing to do
-            return
-        }
-
+    private fun handleRecreate(recreate: Unit?) {
+        if (recreate == null) return
         val binding = requireBinding()
         // Move back to position zero, as there must be a tab there.
         binding.homePager.currentItem = 0
         // Make sure tabs are set up to also follow the new ViewPager configuration.
         setupPager(binding)
-        homeModel.finishRecreate()
+        homeModel.recreateTabs.consume()
     }
 
     private fun updateIndexerState(state: Indexer.State?) {
@@ -456,7 +454,7 @@ class HomeFragment :
             }
 
         setupAxisTransitions(MaterialSharedAxis.X)
-        findNavController().navigate(action)
+        findNavController().navigateSafe(action)
     }
 
     private fun updateSelection(selected: List<Music>) {
@@ -483,10 +481,11 @@ class HomeFragment :
 
     /**
      * [FragmentStateAdapter] implementation for the [HomeFragment]'s [ViewPager2] instance.
+     *
      * @param tabs The current tab configuration. This will define the [Fragment]s created.
      * @param fragmentManager The [FragmentManager] required by [FragmentStateAdapter].
      * @param lifecycleOwner The [LifecycleOwner], whose Lifecycle is required by
-     * [FragmentStateAdapter].
+     *   [FragmentStateAdapter].
      */
     private class HomePagerAdapter(
         private val tabs: List<MusicMode>,

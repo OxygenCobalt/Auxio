@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * PlaybackUtil.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,52 +22,60 @@ import android.text.format.DateUtils
 
 /**
  * Convert milliseconds into deci-seconds (1/10th of a second).
+ *
  * @return A converted deci-second value.
  */
 fun Long.msToDs() = floorDiv(100)
 
 /**
  * Convert milliseconds into seconds.
+ *
  * @return A converted second value.
  */
 fun Long.msToSecs() = floorDiv(1000)
 
 /**
  * Convert deci-seconds (1/10th of a second) into milliseconds.
+ *
  * @return A converted millisecond value.
  */
 fun Long.dsToMs() = times(100)
 
 /**
  * Convert deci-seconds (1/10th of a second) into seconds.
+ *
  * @return A converted second value.
  */
 fun Long.dsToSecs() = floorDiv(10)
 
 /**
  * Convert seconds into milliseconds.
+ *
  * @return A converted millisecond value.
  */
 fun Long.secsToMs() = times(1000)
 
 /**
  * Convert a millisecond value into a string duration.
+ *
  * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
- * will be returned if the second value is 0.
+ *   will be returned if the second value is 0.
  */
 fun Long.formatDurationMs(isElapsed: Boolean) = msToSecs().formatDurationSecs(isElapsed)
 
 /**
  * // * Format a deci-second value (1/10th of a second) into a string duration.
+ *
  * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
- * will be returned if the second value is 0.
+ *   will be returned if the second value is 0.
  */
 fun Long.formatDurationDs(isElapsed: Boolean) = dsToSecs().formatDurationSecs(isElapsed)
 
 /**
  * Convert a second value into a string duration.
+ *
  * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
- * will be returned if the second value is 0.
+ *   will be returned if the second value is 0.
  */
 fun Long.formatDurationSecs(isElapsed: Boolean): String {
     if (!isElapsed && this == 0L) {

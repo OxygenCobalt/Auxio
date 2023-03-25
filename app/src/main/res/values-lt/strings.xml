@@ -165,7 +165,7 @@
     <string name="set_observing">Automatinis krovimas</string>
     <string name="err_no_music">Jokios muzikos nerasta</string>
     <string name="desc_exit">Sustabdyti grojimą</string>
-    <string name="def_track">Nėra takelio numerio</string>
+    <string name="def_track">Nėra takelio</string>
     <string name="set_action_mode_next">Pereiti prie kitos</string>
     <string name="set_headset_autoplay">Automatinis ausinių grojimas</string>
     <string name="set_action_mode_repeat">Kartojimo režimas</string>
@@ -269,4 +269,6 @@
     <string name="set_dirs_list">Aplankalai</string>
     <string name="set_state">Atkaklumas</string>
     <string name="lbl_sort_dec">Mažėjantis</string>
+    <string name="set_intelligent_sorting_desc">Ignoruoti tokius žodžius kaip „the“, kai rūšiuojama pagal pavadinimą (geriausiai veikia su anglų kalbos muzika)</string>
+    <string name="set_intelligent_sorting">Ignoruoti straipsnius rūšiuojant</string>
 </resources>

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * WrappedDialogPreference.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +25,7 @@ import androidx.preference.DialogPreference
 /**
  * Wraps a [DialogPreference] to be instantiatable. This has no purpose other to ensure that custom
  * dialog preferences are handled.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class WrappedDialogPreference

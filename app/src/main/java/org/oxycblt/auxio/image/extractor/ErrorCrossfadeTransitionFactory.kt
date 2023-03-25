@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * ErrorCrossfadeTransitionFactory.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +28,7 @@ import coil.transition.TransitionTarget
 
 /**
  * A copy of [CrossfadeTransition.Factory] that also applies a transition to error results.
+ *
  * @author Coil Team, Alexander Capehart (OxygenCobalt)
  */
 class ErrorCrossfadeTransitionFactory : Transition.Factory {

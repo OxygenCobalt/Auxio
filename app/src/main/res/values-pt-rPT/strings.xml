@@ -63,17 +63,19 @@
     <string name="fmt_lib_song_count">Músicas carregado: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d Música</item>
+        <item quantity="many">%d Músicas</item>
         <item quantity="other">%d Músicas</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">%d Álbum</item>
+        <item quantity="many">%d Álbuns</item>
         <item quantity="other">%d Álbuns</item>
     </plurals>
     <string name="set_playback_mode_none">Reproduzir a partir do item mostrado</string>
     <string name="set_playback_mode_album">Reproduzir do álbum</string>
     <string name="desc_artist_image">Imagem do artista para %s</string>
     <string name="def_genre">Gênero desconhecido</string>
-    <string name="def_track">Sem número de faixa</string>
+    <string name="def_track">Nenhuma faixa</string>
     <string name="cdc_mp4">Áudio MPEG-4</string>
     <string name="fmt_lib_artist_count">Artistas carregados: %d</string>
     <string name="fmt_lib_total_duration">Duração total: %s</string>
@@ -197,7 +199,7 @@
     <string name="cdc_mka">Áudio Matroska</string>
     <string name="cdc_aac">Codificação de Audio Avançada (AAC)</string>
     <string name="lbl_album">Álbum</string>
-    <string name="lbl_eps">EPs</string>
+    <string name="lbl_eps">Miniálbuns</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_soundtracks">Trilhas sonoras</string>
     <string name="lbl_soundtrack">Trilha sonora</string>
@@ -271,4 +273,6 @@
     <string name="set_state">Estado de reprodução</string>
     <string name="set_separators_and">E comercial (&amp;)</string>
     <string name="set_behavior">Comportamento</string>
+    <string name="set_intelligent_sorting">Ignorar artigos ao classificar</string>
+    <string name="set_intelligent_sorting_desc">Ignore palavras como \"the\" ao classificar por nome (funciona melhor com músicas em inglês)</string>
 </resources>

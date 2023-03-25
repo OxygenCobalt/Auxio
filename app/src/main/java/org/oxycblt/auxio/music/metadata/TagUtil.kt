@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * TagUtil.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +27,7 @@ import org.oxycblt.auxio.util.nonZeroOrNull
  * Parse a multi-value tag based on the user configuration. If the value is already composed of more
  * than one value, nothing is done. Otherwise, this function will attempt to split it based on the
  * user's separator preferences.
+ *
  * @param settings [MusicSettings] required to obtain user separator configuration.
  * @return A new list of one or more [String]s.
  */
@@ -40,6 +42,7 @@ fun List<String>.parseMultiValue(settings: MusicSettings) =
 /**
  * Split a [String] by the given selector, automatically handling escaped characters that satisfy
  * the selector.
+ *
  * @param selector A block that determines if the string should be split at a given character.
  * @return One or more [String]s split by the selector.
  */
@@ -83,19 +86,22 @@ inline fun String.splitEscaped(selector: (Char) -> Boolean): List<String> {
 
 /**
  * Fix trailing whitespace or blank contents in a [String].
+ *
  * @return A string with trailing whitespace remove,d or null if the [String] was all whitespace or
- * empty.
+ *   empty.
  */
 fun String.correctWhitespace() = trim().ifBlank { null }
 
 /**
  * Fix trailing whitespace or blank contents within a list of [String]s.
+ *
  * @return A list of non-blank strings with trailing whitespace removed.
  */
 fun List<String>.correctWhitespace() = mapNotNull { it.correctWhitespace() }
 
 /**
  * Attempt to parse a string by the user's separator preferences.
+ *
  * @param settings [MusicSettings] required to obtain user separator configuration.
  * @return A list of one or more [String]s that were split up by the user-defined separators.
  */
@@ -109,9 +115,11 @@ private fun String.maybeParseBySeparators(settings: MusicSettings): List<String>
 /**
  * Parse an ID3v2-style position + total [String] field. These fields consist of a number and an
  * (optional) total value delimited by a /.
+ *
  * @return The position value extracted from the string field, or null if:
  * - The position could not be parsed
  * - The position was zeroed AND the total value was not present/zeroed
+ *
  * @see transformPositionField
  */
 fun String.parseId3v2PositionField() =
@@ -122,11 +130,13 @@ fun String.parseId3v2PositionField() =
 /**
  * Parse a vorbis-style position + total field. These fields consist of two fields for the position
  * and total numbers.
+ *
  * @param pos The position value, or null if not present.
  * @param total The total value, if not present.
  * @return The position value extracted from the field, or null if:
  * - The position could not be parsed
  * - The position was zeroed AND the total value was not present/zeroed
+ *
  * @see transformPositionField
  */
 fun parseVorbisPositionField(pos: String?, total: String?) =
@@ -134,6 +144,7 @@ fun parseVorbisPositionField(pos: String?, total: String?) =
 
 /**
  * Transform a raw position + total field into a position a way that tolerates placeholder values.
+ *
  * @param pos The position value, or null if not present.
  * @param total The total value, if not present.
  * @return The position value extracted from the field, or null if:
@@ -151,6 +162,7 @@ fun transformPositionField(pos: Int?, total: Int?) =
  * Parse a multi-value genre name using ID3 rules. This will convert any ID3v1 integer
  * representations of genre fields into their named counterparts, and split up singular ID3v2-style
  * integer genre fields into one or more genres.
+ *
  * @param settings [MusicSettings] required to obtain user separator configuration.
  * @return A list of one or more genre names..
  */
@@ -164,6 +176,7 @@ fun List<String>.parseId3GenreNames(settings: MusicSettings) =
 
 /**
  * Parse a single ID3v1/ID3v2 integer genre field into their named representations.
+ *
  * @param settings [MusicSettings] required to obtain user separator configuration.
  * @return A list of one or more genre names.
  */
@@ -172,8 +185,9 @@ private fun String.parseId3MultiValueGenre(settings: MusicSettings) =
 
 /**
  * Parse an ID3v1 integer genre field.
+ *
  * @return A named genre if the field is a valid integer, "Cover" or "Remix" if the field is
- * "CR"/"RX" respectively, and nothing if the field is not a valid ID3v1 integer genre.
+ *   "CR"/"RX" respectively, and nothing if the field is not a valid ID3v1 integer genre.
  */
 private fun String.parseId3v1Genre(): String? {
     // ID3v1 genres are a plain integer value without formatting, so in that case
@@ -200,6 +214,7 @@ private val ID3V2_GENRE_RE = Regex("((?:\\((\\d+|RX|CR)\\))*)(.+)?")
 /**
  * Parse an ID3v2 integer genre field, which has support for multiple genre values and combined
  * named/integer genres.
+ *
  * @return A list of one or more genres, or null if the field is not a valid ID3v2 integer genre.
  */
 private fun String.parseId3v2Genre(): List<String>? {

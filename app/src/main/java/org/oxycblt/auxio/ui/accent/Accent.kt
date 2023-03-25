@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * Accent.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,9 +135,10 @@ class Accent private constructor(val index: Int) {
     companion object {
         /**
          * Create a new instance.
+         *
          * @param index The unique number for this particular accent.
          * @return A new [Accent] with the specified [index]. If [index] is not within the range of
-         * valid accents, [index] will be [DEFAULT] instead.
+         *   valid accents, [index] will be [DEFAULT] instead.
          */
         fun from(index: Int): Accent {
             if (index !in 0 until MAX) {

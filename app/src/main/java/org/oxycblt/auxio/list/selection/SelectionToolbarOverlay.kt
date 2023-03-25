@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * SelectionToolbarOverlay.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +33,7 @@ import org.oxycblt.auxio.util.logD
 /**
  * A wrapper around a [MaterialToolbar] that adds an additional [MaterialToolbar] showing the
  * current selection state.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SelectionToolbarOverlay
@@ -65,6 +67,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     /**
      * Set an OnClickListener for when the "cancel" button in the selection [MaterialToolbar] is
      * pressed.
+     *
      * @param listener The OnClickListener to respond to this interaction.
      * @see MaterialToolbar.setNavigationOnClickListener
      */
@@ -75,6 +78,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     /**
      * Set an [OnMenuItemClickListener] for when a MenuItem is selected from the selection
      * [MaterialToolbar].
+     *
      * @param listener The [OnMenuItemClickListener] to respond to this interaction.
      * @see MaterialToolbar.setOnMenuItemClickListener
      */
@@ -84,6 +88,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     /**
      * Update the selection [MaterialToolbar] to reflect the current selection amount.
+     *
      * @param amount The amount of items that are currently selected.
      * @return true if the selection [MaterialToolbar] changes, false otherwise.
      */
@@ -101,6 +106,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     /**
      * Animate the visibility of the inner and selection [MaterialToolbar]s to the given state.
+     *
      * @param selectionVisible Whether the selection [MaterialToolbar] should be visible or not.
      * @return true if the toolbars have changed, false otherwise.
      */
@@ -152,8 +158,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     /**
      * Update the alpha of the inner and selection [MaterialToolbar]s.
+     *
      * @param innerAlpha The opacity of the inner [MaterialToolbar]. This will map to the inverse
-     * opacity of the selection [MaterialToolbar].
+     *   opacity of the selection [MaterialToolbar].
      */
     private fun setToolbarsAlpha(innerAlpha: Float) {
         innerToolbar.apply {

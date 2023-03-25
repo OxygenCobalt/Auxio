@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * IndexerService.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,9 +51,9 @@ import org.oxycblt.auxio.util.logD
  * This [Service] also handles automatic rescanning, as that is a similarly long-running background
  * operation that would be unsuitable elsewhere in the app.
  *
- * TODO: Unify with PlaybackService as part of the service independence project
- *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Unify with PlaybackService as part of the service independence project
  */
 @AndroidEntryPoint
 class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
@@ -176,6 +177,7 @@ class IndexerService : Service(), Indexer.Controller, MusicSettings.Listener {
     /**
      * Update the current state to "Active", in which the service signals that music loading is
      * on-going.
+     *
      * @param state The current music loading state.
      */
     private fun updateActiveSession(state: Indexer.Indexing) {

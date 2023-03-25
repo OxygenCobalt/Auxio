@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * PlaybackSettings.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +32,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * User configuration specific to the playback system.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface PlaybackSettings : Settings<PlaybackSettings.Listener> {

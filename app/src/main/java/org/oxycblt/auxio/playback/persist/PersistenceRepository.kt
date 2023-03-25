@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * PersistenceRepository.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,17 +28,20 @@ import org.oxycblt.auxio.util.logE
 
 /**
  * Manages the persisted playback state in a structured manner.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface PersistenceRepository {
     /**
      * Read the previously persisted [PlaybackStateManager.SavedState].
+     *
      * @param library The [Library] required to de-serialize the [PlaybackStateManager.SavedState].
      */
     suspend fun readState(library: Library): PlaybackStateManager.SavedState?
 
     /**
      * Persist a new [PlaybackStateManager.SavedState].
+     *
      * @param state The [PlaybackStateManager.SavedState] to persist.
      */
     suspend fun saveState(state: PlaybackStateManager.SavedState?): Boolean

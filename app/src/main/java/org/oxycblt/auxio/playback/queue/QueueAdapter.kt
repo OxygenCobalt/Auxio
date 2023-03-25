@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * QueueAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,10 +28,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.list.EditableListListener
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
-import org.oxycblt.auxio.list.adapter.DiffAdapter
-import org.oxycblt.auxio.list.adapter.ListDiffer
-import org.oxycblt.auxio.list.adapter.PlayingIndicatorAdapter
+import org.oxycblt.auxio.list.adapter.*
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
@@ -38,12 +36,12 @@ import org.oxycblt.auxio.util.*
 
 /**
  * A [RecyclerView.Adapter] that shows an editable list of queue items.
+ *
  * @param listener A [EditableListListener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueAdapter(private val listener: EditableListListener<Song>) :
-    DiffAdapter<Song, BasicListInstructions, QueueSongViewHolder>(
-        ListDiffer.Blocking(QueueSongViewHolder.DIFF_CALLBACK)) {
+    FlexibleListAdapter<Song, QueueSongViewHolder>(QueueSongViewHolder.DIFF_CALLBACK) {
     // Since PlayingIndicator adapter relies on an item value, we cannot use it for this
     // adapter, as one item can appear at several points in the UI. Use a similar implementation
     // with an index value instead.
@@ -72,6 +70,7 @@ class QueueAdapter(private val listener: EditableListListener<Song>) :
     /**
      * Set the position of the currently playing item in the queue. This will mark the item as
      * playing and any previous items as played.
+     *
      * @param index The position of the currently playing item in the queue.
      * @param isPlaying Whether playback is ongoing or paused.
      */
@@ -99,6 +98,7 @@ class QueueAdapter(private val listener: EditableListListener<Song>) :
 /**
  * A [PlayingIndicatorAdapter.ViewHolder] that displays a queue [Song]. Use [from] to create an
  * instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueSongViewHolder private constructor(private val binding: ItemQueueSongBinding) :
@@ -142,6 +142,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
 
     /**
      * Bind new data to this instance.
+     *
      * @param song The new [Song] to bind.
      * @param listener A [EditableListListener] to bind interactions to.
      */
@@ -164,13 +165,13 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
     companion object {
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
         fun from(parent: View) =
             QueueSongViewHolder(ItemQueueSongBinding.inflate(parent.context.inflater))
 
-        // TODO: This is not good enough, I need to compare item indices as well.
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK = SongViewHolder.DIFF_CALLBACK
     }

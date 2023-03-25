@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * CoverMode.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +22,7 @@ import org.oxycblt.auxio.IntegerTable
 
 /**
  * Represents the options available for album cover loading.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 enum class CoverMode {
@@ -33,6 +35,7 @@ enum class CoverMode {
 
     /**
      * The integer representation of this instance.
+     *
      * @see fromIntCode
      */
     val intCode: Int
@@ -46,6 +49,7 @@ enum class CoverMode {
     companion object {
         /**
          * Convert a [CoverMode] integer representation into an instance.
+         *
          * @param intCode An integer representation of a [CoverMode]
          * @return The corresponding [CoverMode], or null if the [CoverMode] is invalid.
          * @see CoverMode.intCode

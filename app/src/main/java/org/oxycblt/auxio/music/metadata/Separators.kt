@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * Separators.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +20,7 @@ package org.oxycblt.auxio.music.metadata
 
 /**
  * Defines the allowed separator characters that can be used to delimit multi-value tags.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 object Separators {

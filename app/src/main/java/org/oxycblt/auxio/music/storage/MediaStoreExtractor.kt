@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * MediaStoreExtractor.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,22 +43,25 @@ import org.oxycblt.auxio.util.logD
  * music extraction process and primarily intended for redundancy for files not natively supported
  * by other extractors. Solely relying on this is not recommended, as it often produces bad
  * metadata.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface MediaStoreExtractor {
     /**
      * Query the media database.
+     *
      * @return A new [Query] returned from the media database.
      */
     suspend fun query(): Query
 
     /**
      * Consume the [Cursor] loaded after [query].
+     *
      * @param query The [Query] to consume.
      * @param cache A [Cache] used to avoid extracting metadata for cached songs, or null if no
-     * [Cache] was available.
+     *   [Cache] was available.
      * @param incompleteSongs A channel where songs that could not be retrieved from the [Cache]
-     * should be sent to.
+     *   should be sent to.
      * @param completeSongs A channel where completed songs should be sent to.
      */
     suspend fun consume(
@@ -79,6 +83,7 @@ interface MediaStoreExtractor {
     companion object {
         /**
          * Create a framework-backed instance.
+         *
          * @param context [Context] required.
          * @param musicSettings [MusicSettings] required.
          * @return A new [MediaStoreExtractor] that will work best on the device's API level.
@@ -158,27 +163,28 @@ private abstract class BaseMediaStoreExtractor(
         context.contentResolverSafe.useQuery(
             MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
             arrayOf(MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME)) { genreCursor ->
-            val idIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres._ID)
-            val nameIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)
+                val idIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres._ID)
+                val nameIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)
 
-            while (genreCursor.moveToNext()) {
-                val id = genreCursor.getLong(idIndex)
-                val name = genreCursor.getStringOrNull(nameIndex) ?: continue
+                while (genreCursor.moveToNext()) {
+                    val id = genreCursor.getLong(idIndex)
+                    val name = genreCursor.getStringOrNull(nameIndex) ?: continue
 
-                context.contentResolverSafe.useQuery(
-                    MediaStore.Audio.Genres.Members.getContentUri(VOLUME_EXTERNAL, id),
-                    arrayOf(MediaStore.Audio.Genres.Members._ID)) { cursor ->
-                    val songIdIndex =
-                        cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.Members._ID)
+                    context.contentResolverSafe.useQuery(
+                        MediaStore.Audio.Genres.Members.getContentUri(VOLUME_EXTERNAL, id),
+                        arrayOf(MediaStore.Audio.Genres.Members._ID)) { cursor ->
+                            val songIdIndex =
+                                cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.Members._ID)
 
-                    while (cursor.moveToNext()) {
-                        // Assume that a song can't inhabit multiple genre entries, as I doubt
-                        // MediaStore is actually aware that songs can have multiple genres.
-                        genreNamesMap[cursor.getLong(songIdIndex)] = name
-                    }
+                            while (cursor.moveToNext()) {
+                                // Assume that a song can't inhabit multiple genre entries, as I
+                                // doubt
+                                // MediaStore is actually aware that songs can have multiple genres.
+                                genreNamesMap[cursor.getLong(songIdIndex)] = name
+                            }
+                        }
                 }
             }
-        }
 
         logD("Finished initialization in ${System.currentTimeMillis() - start}ms")
         return wrapQuery(cursor, genreNamesMap)
@@ -232,15 +238,17 @@ private abstract class BaseMediaStoreExtractor(
     /**
      * The companion template to add to the projection's selector whenever arguments are added by
      * [addDirToSelector].
+     *
      * @see addDirToSelector
      */
     protected abstract val dirSelectorTemplate: String
 
     /**
      * Add a [Directory] to the given list of projection selector arguments.
+     *
      * @param dir The [Directory] to add.
      * @param args The destination list to append selector arguments to that are analogous to the
-     * given [Directory].
+     *   given [Directory].
      * @return true if the [Directory] was added, false otherwise.
      * @see dirSelectorTemplate
      */
@@ -431,6 +439,7 @@ private class Api21MediaStoreExtractor(context: Context, musicSettings: MusicSet
 
 /**
  * A [BaseMediaStoreExtractor] that implements common behavior supported from API 29 onwards.
+ *
  * @param context [Context] required to query the media database.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -494,8 +503,8 @@ private abstract class BaseApi29MediaStoreExtractor(
 
 /**
  * A [BaseMediaStoreExtractor] that completes the music loading process in a way compatible with at
- * API
- * 29.
+ * API 29.
+ *
  * @param context [Context] required to query the media database.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -535,6 +544,7 @@ private class Api29MediaStoreExtractor(context: Context, musicSettings: MusicSet
 /**
  * A [BaseMediaStoreExtractor] that completes the music loading process in a way compatible from API
  * 30 onwards.
+ *
  * @param context [Context] required to query the media database.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -584,8 +594,9 @@ private class Api30MediaStoreExtractor(context: Context, musicSettings: MusicSet
  * Unpack the track number from a combined track + disc [Int] field. These fields appear within
  * MediaStore's TRACK column, and combine the track and disc value into a single field where the
  * disc number is the 4th+ digit.
+ *
  * @return The track number extracted from the combined integer value, or null if the value was
- * zero.
+ *   zero.
  */
 private fun Int.unpackTrackNo() = transformPositionField(mod(1000), null)
 
@@ -593,6 +604,7 @@ private fun Int.unpackTrackNo() = transformPositionField(mod(1000), null)
  * Unpack the disc number from a combined track + disc [Int] field. These fields appear within
  * MediaStore's TRACK column, and combine the track and disc value into a single field where the
  * disc number is the 4th+ digit.
+ *
  * @return The disc number extracted from the combined integer field, or null if the value was zero.
  */
 private fun Int.unpackDiscNo() = transformPositionField(div(1000), null)

@@ -136,7 +136,7 @@
     <string name="clr_indigo">Índigo</string>
     <string name="def_genre">Gênero desconhecido</string>
     <string name="def_date">Sem data</string>
-    <string name="def_track">Sem número de faixa</string>
+    <string name="def_track">Nenhuma faixa</string>
     <string name="def_playback">Nenhuma música tocando</string>
     <string name="desc_artist_image">Imagem do artista para %s</string>
     <string name="desc_genre_image">Imagem de gênero para %s</string>
@@ -273,4 +273,6 @@
     <string name="set_behavior">Comportamento</string>
     <string name="set_dirs_list">Pastas</string>
     <string name="lbl_sort_dec">Descendente</string>
+    <string name="set_intelligent_sorting">Ignorar artigos ao classificar</string>
+    <string name="set_intelligent_sorting_desc">Ignore palavras como \"the\" ao classificar por nome (funciona melhor com músicas em inglês)</string>
 </resources>

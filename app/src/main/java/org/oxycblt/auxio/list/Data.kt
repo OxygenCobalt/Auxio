@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * Data.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +25,7 @@ interface Item
 
 /**
  * A "header" used for delimiting groups of data.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Header : Item {
@@ -33,6 +35,7 @@ interface Header : Item {
 
 /**
  * A basic header with no additional actions.
+ *
  * @param titleRes The string resource used for the header's title.
  * @author Alexander Capehart (OxygenCobalt)
  */

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * AnimatedMaterialButton.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@ import org.oxycblt.auxio.util.getInteger
 /**
  * A [MaterialButton] that automatically morphs from a circle to a squircle shape appearance when
  * [isActivated] changes.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AnimatedMaterialButton

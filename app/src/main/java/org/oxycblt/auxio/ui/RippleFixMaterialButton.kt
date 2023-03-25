@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * RippleFixMaterialButton.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +28,7 @@ import org.oxycblt.auxio.util.fixDoubleRipple
 /**
  * Fixes an issue where double ripples appear on [MaterialButton] from AppCompat 1.5 afterwards due
  * to a currently unfixed change.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 open class RippleFixMaterialButton

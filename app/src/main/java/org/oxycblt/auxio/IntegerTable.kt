@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * IntegerTable.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +21,7 @@ package org.oxycblt.auxio
 /**
  * A table containing all of the magic integer codes that the codebase has currently reserved. May
  * be non-contiguous.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 object IntegerTable {
@@ -35,18 +37,12 @@ object IntegerTable {
     const val VIEW_TYPE_BASIC_HEADER = 0xA004
     /** SortHeaderViewHolder */
     const val VIEW_TYPE_SORT_HEADER = 0xA005
-    /** AlbumDetailViewHolder */
-    const val VIEW_TYPE_ALBUM_DETAIL = 0xA006
     /** AlbumSongViewHolder */
     const val VIEW_TYPE_ALBUM_SONG = 0xA007
-    /** ArtistDetailViewHolder */
-    const val VIEW_TYPE_ARTIST_DETAIL = 0xA008
     /** ArtistAlbumViewHolder */
     const val VIEW_TYPE_ARTIST_ALBUM = 0xA009
     /** ArtistSongViewHolder */
     const val VIEW_TYPE_ARTIST_SONG = 0xA00A
-    /** GenreDetailViewHolder */
-    const val VIEW_TYPE_GENRE_DETAIL = 0xA00B
     /** DiscHeaderViewHolder */
     const val VIEW_TYPE_DISC_HEADER = 0xA00C
     /** "Music playback" notification code */

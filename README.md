@@ -2,16 +2,16 @@
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
-    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.0.3">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.0.3&color=0D5AF5">
+    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.0.4">
+        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.0.4&color=64B5F6&style=flat">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
-        <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg">
+        <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg?color=4B95DE&style=flat">
     </a>
     <a href="https://www.gnu.org/licenses/gpl-3.0">
-        <img src="https://img.shields.io/badge/license-GPL%20v3-blue.svg">
+        <img src="https://img.shields.io/badge/license-GPL%20v3-2B6DBE.svg?style=flat">
     </a>
-    <img alt="Minimum SDK Version" src="https://img.shields.io/badge/API-21%2B-32B5ED">
+    <img alt="Minimum SDK Version" src="https://img.shields.io/badge/API-21%2B-1450A8?style=flat">
 </p>
 <h4 align="center"><a href="/CHANGELOG.md">Changelog</a> | <a href="https://github.com/OxygenCobalt/Auxio/wiki">Wiki</a></h4>
 <p align="center">
@@ -70,9 +70,10 @@ precise/original dates, sort tags, and more
 
 Auxio relies on a custom version of ExoPlayer that enables some extra features. This adds some caveats to
 the build process:
-1. The project uses submodules, so when cloning initially, use `git clone --recurse-submodules` to properly
-download in the external code.
-2. You are **unable** to build this project on windows, as the custom ExoPlayer build runs shell scripts that
+1. `cmake` and `ninja-build` must be installed before building the project.
+2. The project uses submodules, so when cloning initially, use `git clone --recurse-submodules` to properly
+download the external code.
+3. You are **unable** to build this project on windows, as the custom ExoPlayer build runs shell scripts that
 will only work on unix-based systems.
 
 ## Contributing

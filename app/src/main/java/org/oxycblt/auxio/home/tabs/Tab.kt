@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * Tab.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,18 +23,21 @@ import org.oxycblt.auxio.util.logE
 
 /**
  * A representation of a library tab suitable for configuration.
+ *
  * @param mode The type of list in the home view this instance corresponds to.
  * @author Alexander Capehart (OxygenCobalt)
  */
 sealed class Tab(open val mode: MusicMode) {
     /**
      * A visible tab. This will be visible in the home and tab configuration views.
+     *
      * @param mode The type of list in the home view this instance corresponds to.
      */
     data class Visible(override val mode: MusicMode) : Tab(mode)
 
     /**
      * A visible tab. This will be visible in the tab configuration view, but not in the home view.
+     *
      * @param mode The type of list in the home view this instance corresponds to.
      */
     data class Invisible(override val mode: MusicMode) : Tab(mode)
@@ -68,6 +72,7 @@ sealed class Tab(open val mode: MusicMode) {
 
         /**
          * Convert an array of [Tab]s into it's integer representation.
+         *
          * @param tabs The array of [Tab]s to convert
          * @return An integer representation of the [Tab] array
          */
@@ -93,6 +98,7 @@ sealed class Tab(open val mode: MusicMode) {
 
         /**
          * Convert a [Tab] integer representation into it's corresponding array of [Tab]s.
+         *
          * @param intCode The integer representation of the [Tab]s.
          * @return An array of [Tab]s corresponding to the sequence.
          */

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * Indexer.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +69,7 @@ interface Indexer {
      * Register a [Controller] for this instance. This instance will handle any commands to start
      * the music loading process. There can be only one [Controller] at a time. Will invoke all
      * [Listener] methods to initialize the instance with the current state.
+     *
      * @param controller The [Controller] to register. Will do nothing if already registered.
      */
     fun registerController(controller: Controller)
@@ -75,8 +77,9 @@ interface Indexer {
     /**
      * Unregister the [Controller] from this instance, prevent it from recieving any further
      * commands.
+     *
      * @param controller The [Controller] to unregister. Must be the current [Controller]. Does
-     * nothing if invoked by another [Controller] implementation.
+     *   nothing if invoked by another [Controller] implementation.
      */
     fun unregisterController(controller: Controller)
 
@@ -84,14 +87,16 @@ interface Indexer {
      * Register the [Listener] for this instance. This can be used to receive rapid-fire updates to
      * the current music loading state. There can be only one [Listener] at a time. Will invoke all
      * [Listener] methods to initialize the instance with the current state.
+     *
      * @param listener The [Listener] to add.
      */
     fun registerListener(listener: Listener)
 
     /**
      * Unregister a [Listener] from this instance, preventing it from recieving any further updates.
+     *
      * @param listener The [Listener] to unregister. Must be the current [Listener]. Does nothing if
-     * invoked by another [Listener] implementation.
+     *   invoked by another [Listener] implementation.
      * @see Listener
      */
     fun unregisterListener(listener: Listener)
@@ -99,9 +104,10 @@ interface Indexer {
     /**
      * Start the indexing process. This should be done from in the background from [Controller]'s
      * context after a command has been received to start the process.
+     *
      * @param context [Context] required to load music.
      * @param withCache Whether to use the cache or not when loading. If false, the cache will still
-     * be written, but no cache entries will be loaded into the new library.
+     *   be written, but no cache entries will be loaded into the new library.
      * @param scope The [CoroutineScope] to run the indexing job in.
      * @return The [Job] stacking the indexing status.
      */
@@ -111,8 +117,9 @@ interface Indexer {
      * Request that the music library should be reloaded. This should be used by components that do
      * not manage the indexing process in order to signal that the [Indexer.Controller] should call
      * [index] eventually.
+     *
      * @param withCache Whether to use the cache when loading music. Does nothing if there is no
-     * [Indexer.Controller].
+     *   [Indexer.Controller].
      */
     fun requestReindex(withCache: Boolean)
 
@@ -126,6 +133,7 @@ interface Indexer {
     sealed class State {
         /**
          * Music loading is ongoing.
+         *
          * @param indexing The current music loading progress..
          * @see Indexer.Indexing
          */
@@ -133,6 +141,7 @@ interface Indexer {
 
         /**
          * Music loading has completed.
+         *
          * @param result The outcome of the music loading process.
          */
         data class Complete(val result: Result<Library>) : State()
@@ -140,6 +149,7 @@ interface Indexer {
 
     /**
      * Represents the current progress of the music loader. Usually encapsulated in a [State].
+     *
      * @see State.Indexing
      */
     sealed class Indexing {
@@ -150,6 +160,7 @@ interface Indexer {
 
         /**
          * Music loading has a definite progress.
+         *
          * @param current The current amount of songs that have been loaded.
          * @param total The projected total amount of songs that will be loaded.
          */
@@ -182,7 +193,7 @@ interface Indexer {
          * Notes:
          * - Null means that no loading is going on, but no load has completed either.
          * - [State.Complete] may represent a previous load, if the current loading process was
-         * canceled for one reason or another.
+         *   canceled for one reason or another.
          */
         fun onIndexerStateChanged(state: State?)
     }
@@ -195,8 +206,9 @@ interface Indexer {
         /**
          * Called when a new music loading process was requested. Implementations should forward
          * this to [index].
+         *
          * @param withCache Whether to use the cache or not when loading. If false, the cache should
-         * still be written, but no cache entries will be loaded into the new library.
+         *   still be written, but no cache entries will be loaded into the new library.
          * @see index
          */
         fun onStartIndexing(withCache: Boolean)
@@ -390,8 +402,9 @@ constructor(
      * Emit a new [Indexer.State.Indexing] state. This can be used to signal the current state of
      * the music loading process to external code. Assumes that the callee has already checked if
      * they have not been canceled and thus have the ability to emit a new state.
+     *
      * @param indexing The new [Indexer.Indexing] state to emit, or null if no loading process is
-     * occurring.
+     *   occurring.
      */
     @Synchronized
     private fun emitIndexing(indexing: Indexer.Indexing?) {
@@ -409,8 +422,9 @@ constructor(
      * Emit a new [Indexer.State.Complete] state. This can be used to signal the completion of the
      * music loading process to external code. Will check if the callee has not been canceled and
      * thus has the ability to emit a new state
+     *
      * @param result The new [Result] to emit, representing the outcome of the music loading
-     * process.
+     *   process.
      */
     private suspend fun emitCompletion(result: Result<Library>) {
         yield()

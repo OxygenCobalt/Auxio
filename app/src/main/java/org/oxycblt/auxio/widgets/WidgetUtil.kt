@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * WidgetUtil.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +36,7 @@ import org.oxycblt.auxio.util.newMainPendingIntent
 /**
  * Create a [RemoteViews] instance with the specified layout and an automatic click handler to open
  * the Auxio activity.
+ *
  * @param context [Context] required to create [RemoteViews].
  * @param layoutRes Resource ID of the layout to use. Must be compatible with [RemoteViews].
  * @return A new [RemoteViews] instance with the specified configuration.
@@ -48,9 +50,10 @@ fun newRemoteViews(context: Context, @LayoutRes layoutRes: Int): RemoteViews {
 /**
  * Get an image size guaranteed to not exceed the [RemoteViews] bitmap memory limit, assuming that
  * there is only one image.
+ *
  * @param context [Context] required to perform calculation.
  * @param reduce Optional multiplier to reduce the image size. Recommended value is 2 to avoid
- * device-specific variations in memory limit.
+ *   device-specific variations in memory limit.
  * @return The dimension of a bitmap that can be safely used in [RemoteViews].
  */
 fun getSafeRemoteViewsImageSize(context: Context, reduce: Float = 2f): Int {
@@ -64,6 +67,7 @@ fun getSafeRemoteViewsImageSize(context: Context, reduce: Float = 2f): Int {
 
 /**
  * Set the background resource of a [RemoteViews] View.
+ *
  * @param viewId The ID of the view to update.
  * @param drawableRes The resource ID of the drawable to set the background to.
  */
@@ -73,6 +77,7 @@ fun RemoteViews.setBackgroundResource(@IdRes viewId: Int, @DrawableRes drawableR
 
 /**
  * Set the layout direction of a [RemoteViews] view.
+ *
  * @param viewId The ID of the view to update.
  * @param layoutDirection The layout direction to apply to the view,
  */
@@ -83,6 +88,7 @@ fun RemoteViews.setLayoutDirection(@IdRes viewId: Int, layoutDirection: Int) {
 /**
  * Update the app widget layouts corresponding to the given [WidgetProvider] [ComponentName] with an
  * adaptive layout, in a version-compatible manner.
+ *
  * @param context [Context] required to backport adaptive layout behavior.
  * @param component [ComponentName] of the app widget layout to update.
  * @param views Mapping between different size classes and [RemoteViews] instances.
@@ -137,6 +143,7 @@ fun AppWidgetManager.updateAppWidgetCompat(
 /**
  * Returns whether rounded UI elements are appropriate for the widget, either based on the current
  * settings or if the widget has to fit in aesthetically with other widgets.
+ *
  * @param [uiSettings] [UISettings] required to obtain round mode configuration.
  * @return true if to use round mode, false otherwise.
  */

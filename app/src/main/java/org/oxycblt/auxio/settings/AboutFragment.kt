@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * AboutFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +43,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A [ViewBindingFragment] that displays information about the app and the current music library.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -93,6 +95,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
 
     /**
      * Open the given URI in a web browser.
+     *
      * @param uri The URL to open.
      */
     private fun openLinkInBrowser(uri: String) {
@@ -116,6 +119,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
             // not work in all cases, especially when no default app was set. If that is the
             // case, we will try to manually handle these cases before we try to launch the
             // browser.
+            @Suppress("DEPRECATION")
             val pkgName =
                 context.packageManager
                     .resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY)
@@ -143,6 +147,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
 
     /**
      * Open an app chooser for a given [Intent].
+     *
      * @param intent The [Intent] to show an app chooser for.
      */
     private fun openAppChooser(intent: Intent) {

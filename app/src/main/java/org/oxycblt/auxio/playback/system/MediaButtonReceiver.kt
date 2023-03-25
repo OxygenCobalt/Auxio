@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * MediaButtonReceiver.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 /**
  * A [BroadcastReceiver] that forwards [Intent.ACTION_MEDIA_BUTTON] [Intent]s to [PlaybackService].
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

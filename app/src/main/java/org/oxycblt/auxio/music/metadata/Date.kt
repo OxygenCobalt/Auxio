@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * Date.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,10 +45,11 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
     /**
      * Resolve this instance into a human-readable date.
+     *
      * @param context [Context] required to get human-readable names.
      * @return If the [Date] has a valid month and year value, a more fine-grained date (ex. "Jan
-     * 2020") will be returned. Otherwise, a plain year value (ex. "2020") is returned. Dates will
-     * be properly localized.
+     *   2020") will be returned. Otherwise, a plain year value (ex. "2020") is returned. Dates will
+     *   be properly localized.
      */
     fun resolveDate(context: Context): String {
         if (month != null) {
@@ -115,6 +117,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
      * A range of [Date]s. This is used in contexts where the [Date] of an item is derived from
      * several sub-items and thus can have a "range" of release dates. Use [from] to create an
      * instance.
+     *
      * @author Alexander Capehart
      */
     class Range
@@ -127,10 +130,11 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
         /**
          * Resolve this instance into a human-readable date range.
+         *
          * @param context [Context] required to get human-readable names.
          * @return If the date has a maximum value, then a `min - max` formatted string will be
-         * returned with the formatted [Date]s of the minimum and maximum dates respectively.
-         * Otherwise, the formatted name of the minimum [Date] will be returned.
+         *   returned with the formatted [Date]s of the minimum and maximum dates respectively.
+         *   Otherwise, the formatted name of the minimum [Date] will be returned.
          */
         fun resolveDate(context: Context) =
             if (min != max) {
@@ -149,9 +153,10 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
         companion object {
             /**
              * Create a [Range] from the given list of [Date]s.
+             *
              * @param dates The [Date]s to use.
              * @return A [Range] based on the minimum and maximum [Date]s. If there are no [Date]s,
-             * null is returned.
+             *   null is returned.
              */
             fun from(dates: List<Date>): Range? {
                 if (dates.isEmpty()) {
@@ -186,6 +191,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
         /**
          * Create a [Date] from a year component.
+         *
          * @param year The year component.
          * @return A new [Date] of the given component, or null if the component is invalid.
          */
@@ -204,38 +210,41 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
         /**
          * Create a [Date] from a date component.
+         *
          * @param year The year component.
          * @param month The month component.
          * @param day The day component.
          * @return A new [Date] consisting of the given components. May have reduced precision if
-         * the components were partially invalid, and will be null if all components are invalid.
+         *   the components were partially invalid, and will be null if all components are invalid.
          */
         fun from(year: Int, month: Int, day: Int) = fromTokens(listOf(year, month, day))
 
         /**
          * Create [Date] from a datetime component.
+         *
          * @param year The year component.
          * @param month The month component.
          * @param day The day component.
          * @param hour The hour component
          * @return A new [Date] consisting of the given components. May have reduced precision if
-         * the components were partially invalid, and will be null if all components are invalid.
+         *   the components were partially invalid, and will be null if all components are invalid.
          */
         fun from(year: Int, month: Int, day: Int, hour: Int, minute: Int) =
             fromTokens(listOf(year, month, day, hour, minute))
 
         /**
          * Create a [Date] from a [String] timestamp.
+         *
          * @param timestamp The ISO-8601 timestamp to parse. Can have reduced precision.
          * @return A new [Date] consisting of the given components. May have reduced precision if
-         * the components were partially invalid, and will be null if all components are invalid or
-         * if the timestamp is invalid.
+         *   the components were partially invalid, and will be null if all components are invalid
+         *   or if the timestamp is invalid.
          */
         fun from(timestamp: String): Date? {
             val tokens =
-            // Match the input with the timestamp regex. If there is no match, see if we can
-            // fall back to some kind of year value.
-            (ISO8601_REGEX.matchEntire(timestamp)
+                // Match the input with the timestamp regex. If there is no match, see if we can
+                // fall back to some kind of year value.
+                (ISO8601_REGEX.matchEntire(timestamp)
                         ?: return timestamp.toIntOrNull()?.let(Companion::from))
                     .groupValues
                     // Filter to the specific tokens we want and convert them to integer tokens.
@@ -245,9 +254,10 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
         /**
          * Create a [Date] from the given non-validated tokens.
+         *
          * @param tokens The tokens to use for each date component, in order of precision.
          * @return A new [Date] consisting of the given components. May have reduced precision if
-         * the components were partially invalid, and will be null if all components are invalid.
+         *   the components were partially invalid, and will be null if all components are invalid.
          */
         private fun fromTokens(tokens: List<Int>): Date? {
             val validated = mutableListOf<Int>()
@@ -262,6 +272,7 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
         /**
          * Validate a list of tokens provided by [src], and add the valid ones to [dst]. Will stop
          * as soon as an invalid token is found.
+         *
          * @param src The input tokens to validate.
          * @param dst The destination list to add valid tokens to.
          */

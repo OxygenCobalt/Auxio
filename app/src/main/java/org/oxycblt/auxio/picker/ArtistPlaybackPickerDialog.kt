@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * ArtistPlaybackPickerDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +32,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * An [ArtistPickerDialog] intended for when [Artist] playback is ambiguous.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

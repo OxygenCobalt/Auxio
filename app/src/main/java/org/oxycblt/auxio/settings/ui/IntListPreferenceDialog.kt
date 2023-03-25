@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * IntListPreferenceDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@ import org.oxycblt.auxio.util.fixDoubleRipple
 
 /**
  * The companion dialog to [IntListPreference]. Use [from] to create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
@@ -72,6 +74,7 @@ class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
 
         /**
          * Create a new instance.
+         *
          * @param preference The [IntListPreference] to display.
          * @return A new instance.
          */

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * SongListFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +33,6 @@ import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
-import org.oxycblt.auxio.list.adapter.ListDiffer
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.list.selection.SelectionViewModel
@@ -49,6 +48,7 @@ import org.oxycblt.auxio.util.collectImmediately
 
 /**
  * A [ListFragment] that shows a list of [Song]s.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -78,7 +78,7 @@ class SongListFragment :
             listener = this@SongListFragment
         }
 
-        collectImmediately(homeModel.songsList, ::updateList)
+        collectImmediately(homeModel.songsList, ::updateSongs)
         collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -100,15 +100,13 @@ class SongListFragment :
         // based off the names of the parent objects and not the child objects.
         return when (homeModel.getSortForTab(MusicMode.SONGS).mode) {
             // Name -> Use name
-            is Sort.Mode.ByName -> song.collationKey?.run { sourceString.first().uppercase() }
+            is Sort.Mode.ByName -> song.sortName?.thumbString
 
             // Artist -> Use name of first artist
-            is Sort.Mode.ByArtist ->
-                song.album.artists[0].collationKey?.run { sourceString.first().uppercase() }
+            is Sort.Mode.ByArtist -> song.album.artists[0].sortName?.thumbString
 
             // Album -> Use Album Name
-            is Sort.Mode.ByAlbum ->
-                song.album.collationKey?.run { sourceString.first().uppercase() }
+            is Sort.Mode.ByAlbum -> song.album.sortName?.thumbString
 
             // Year -> Use Full Year
             is Sort.Mode.ByDate -> song.album.dates?.resolveDate(requireContext())
@@ -146,8 +144,8 @@ class SongListFragment :
         openMusicMenu(anchor, R.menu.menu_song_actions, item)
     }
 
-    private fun updateList(songs: List<Song>) {
-        songAdapter.submitList(songs, BasicListInstructions.REPLACE)
+    private fun updateSongs(songs: List<Song>) {
+        songAdapter.update(songs, homeModel.songsInstructions.consume())
     }
 
     private fun updateSelection(selection: List<Music>) {
@@ -165,11 +163,11 @@ class SongListFragment :
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Song]s using [SongViewHolder].
+     *
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class SongAdapter(private val listener: SelectableListListener<Song>) :
-        SelectionIndicatorAdapter<Song, BasicListInstructions, SongViewHolder>(
-            ListDiffer.Blocking(SongViewHolder.DIFF_CALLBACK)) {
+        SelectionIndicatorAdapter<Song, SongViewHolder>(SongViewHolder.DIFF_CALLBACK) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             SongViewHolder.from(parent)

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * MusicDirsDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +42,7 @@ import org.oxycblt.auxio.util.showToast
 
 /**
  * Dialog that manages the music dirs setting.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -149,8 +151,9 @@ class MusicDirsDialog :
 
     /**
      * Add a Document Tree [Uri] chosen by the user to the current [MusicDirectories] instance.
+     *
      * @param uri The document tree [Uri] to add, chosen by the user. Will do nothing if the [Uri]
-     * is null or not valid.
+     *   is null or not valid.
      */
     private fun addDocumentTreeUriToDirs(uri: Uri?) {
         if (uri == null) {

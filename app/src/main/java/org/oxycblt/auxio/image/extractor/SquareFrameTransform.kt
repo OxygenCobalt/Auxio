@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * SquareFrameTransform.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +27,7 @@ import kotlin.math.min
 /**
  * A transformation that performs a center crop-style transformation on an image. Allowing this
  * behavior to be intrinsic without any view configuration.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SquareFrameTransform : Transformation {

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * RepeatMode.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +23,7 @@ import org.oxycblt.auxio.R
 
 /**
  * Represents the current repeat mode of the player.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 enum class RepeatMode {
@@ -44,6 +46,7 @@ enum class RepeatMode {
 
     /**
      * Increment the mode.
+     *
      * @return If [NONE], [ALL]. If [ALL], [TRACK]. If [TRACK], [NONE].
      */
     fun increment() =
@@ -55,6 +58,7 @@ enum class RepeatMode {
 
     /**
      * The integer representation of this instance.
+     *
      * @see fromIntCode
      */
     val icon: Int
@@ -77,6 +81,7 @@ enum class RepeatMode {
     companion object {
         /**
          * Convert a [RepeatMode] integer representation into an instance.
+         *
          * @param intCode An integer representation of a [RepeatMode]
          * @return The corresponding [RepeatMode], or null if the [RepeatMode] is invalid.
          * @see RepeatMode.intCode

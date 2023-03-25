@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * FakeMusicSettings.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +34,7 @@ open class FakeMusicSettings : MusicSettings {
     override var multiValueSeparators: String
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
-    override val automaticSortNames: Boolean
+    override val intelligentSorting: Boolean
         get() = throw NotImplementedError()
     override var songSort: Sort
         get() = throw NotImplementedError()

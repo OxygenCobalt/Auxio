@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * PickerViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +30,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 /**
  * a [ViewModel] that manages the current music picker state. Make it so that the dialogs just
  * contain the music themselves and then exit if the library changes.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
@@ -62,6 +64,7 @@ class PickerViewModel @Inject constructor(private val musicRepository: MusicRepo
 
     /**
      * Set a new [currentItem] from it's [Music.UID].
+     *
      * @param uid The [Music.UID] of the [Song] to update to.
      */
     fun setItemUid(uid: Music.UID) {

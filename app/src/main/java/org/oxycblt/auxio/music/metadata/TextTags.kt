@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * TextTags.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +25,7 @@ import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 
 /**
  * Processing wrapper for [Metadata] that allows organized access to text-based audio tags.
+ *
  * @param metadata The [Metadata] to wrap.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -79,8 +81,9 @@ class TextTags(metadata: Metadata) {
 
     /**
      * Copies and sanitizes a possibly invalid string outputted from ExoPlayer.
+     *
      * @return A new string allocated in a memory-safe manner with any UTF-8 errors replaced with
-     * the Unicode replacement byte sequence.
+     *   the Unicode replacement byte sequence.
      */
     private fun String.sanitize() = String(encodeToByteArray())
 }

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * MusicPreferenceFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,9 +26,11 @@ import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+import org.oxycblt.auxio.util.navigateSafe
 
 /**
  * "Content" settings.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -36,7 +39,8 @@ class MusicPreferenceFragment : BasePreferenceFragment(R.xml.preferences_music) 
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_separators)) {
-            findNavController().navigate(MusicPreferenceFragmentDirections.goToSeparatorsDialog())
+            findNavController()
+                .navigateSafe(MusicPreferenceFragmentDirections.goToSeparatorsDialog())
         }
     }
 

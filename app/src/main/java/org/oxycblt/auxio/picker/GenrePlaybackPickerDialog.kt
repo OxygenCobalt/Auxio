@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * GenrePlaybackPickerDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +40,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A picker [ViewBindingDialogFragment] intended for when [Genre] playback is ambiguous.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

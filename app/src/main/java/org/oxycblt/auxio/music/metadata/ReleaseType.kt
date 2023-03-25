@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * ReleaseType.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +25,7 @@ import org.oxycblt.auxio.R
  *
  * This class is derived from the MusicBrainz Release Group Type specification. It can be found at:
  * https://musicbrainz.org/doc/Release_Group/Type
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 sealed class ReleaseType {
@@ -38,8 +40,9 @@ sealed class ReleaseType {
 
     /**
      * A plain album.
+     *
      * @param refinement A specification of what kind of performance this release is. If null, the
-     * release is considered "Plain".
+     *   release is considered "Plain".
      */
     data class Album(override val refinement: Refinement?) : ReleaseType() {
         override val stringRes: Int
@@ -54,8 +57,9 @@ sealed class ReleaseType {
 
     /**
      * A "Extended Play", or EP. Usually a smaller release consisting of 4-5 songs.
+     *
      * @param refinement A specification of what kind of performance this release is. If null, the
-     * release is considered "Plain".
+     *   release is considered "Plain".
      */
     data class EP(override val refinement: Refinement?) : ReleaseType() {
         override val stringRes: Int
@@ -70,8 +74,9 @@ sealed class ReleaseType {
 
     /**
      * A single. Usually a release consisting of 1-2 songs.
+     *
      * @param refinement A specification of what kind of performance this release is. If null, the
-     * release is considered "Plain".
+     *   release is considered "Plain".
      */
     data class Single(override val refinement: Refinement?) : ReleaseType() {
         override val stringRes: Int
@@ -86,8 +91,9 @@ sealed class ReleaseType {
 
     /**
      * A compilation. Usually consists of many songs from a variety of artists.
+     *
      * @param refinement A specification of what kind of performance this release is. If null, the
-     * release is considered "Plain".
+     *   release is considered "Plain".
      */
     data class Compilation(override val refinement: Refinement?) : ReleaseType() {
         override val stringRes: Int
@@ -149,9 +155,10 @@ sealed class ReleaseType {
         /**
          * Parse a [ReleaseType] from a string formatted with the MusicBrainz Release Group Type
          * specification.
+         *
          * @param types A list of values consisting of valid release type values.
          * @return A [ReleaseType] consisting of the given types, or null if the types were not
-         * valid.
+         *   valid.
          */
         fun parse(types: List<String>): ReleaseType? {
             val primary = types.getOrNull(0) ?: return null
@@ -170,10 +177,11 @@ sealed class ReleaseType {
         /**
          * Parse "secondary" types (i.e not [Album], [EP], or [Single]) from a string formatted with
          * the MusicBrainz Release Group Type specification.
+         *
          * @param index The index of the release type to parse.
          * @param convertRefinement Code to convert a [Refinement] into a [ReleaseType]
-         * corresponding to the callee's context. This is used in order to handle secondary times
-         * that are actually [Refinement]s.
+         *   corresponding to the callee's context. This is used in order to handle secondary times
+         *   that are actually [Refinement]s.
          * @return A [ReleaseType] corresponding to the secondary type found at that index.
          */
         private inline fun List<String>.parseSecondaryTypes(
@@ -194,10 +202,11 @@ sealed class ReleaseType {
         /**
          * Parse "secondary" types (i.e not [Album], [EP], [Single]) that do not correspond to any
          * child values.
+         *
          * @param type The release type value to parse.
          * @param convertRefinement Code to convert a [Refinement] into a [ReleaseType]
-         * corresponding to the callee's context. This is used in order to handle secondary times
-         * that are actually [Refinement]s.
+         *   corresponding to the callee's context. This is used in order to handle secondary times
+         *   that are actually [Refinement]s.
          */
         private inline fun parseSecondaryTypeImpl(
             type: String?,

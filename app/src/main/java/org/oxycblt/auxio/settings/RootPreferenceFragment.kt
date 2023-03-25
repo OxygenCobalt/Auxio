@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * RootPreferenceFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,10 +30,12 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
 
 /**
  * The [PreferenceFragmentCompat] that displays the root settings list.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -61,19 +64,20 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
         //  do one.
         when (preference.key) {
             getString(R.string.set_key_ui) -> {
-                findNavController().navigate(RootPreferenceFragmentDirections.goToUiPreferences())
+                findNavController()
+                    .navigateSafe(RootPreferenceFragmentDirections.goToUiPreferences())
             }
             getString(R.string.set_key_personalize) -> {
                 findNavController()
-                    .navigate(RootPreferenceFragmentDirections.goToPersonalizePreferences())
+                    .navigateSafe(RootPreferenceFragmentDirections.goToPersonalizePreferences())
             }
             getString(R.string.set_key_music) -> {
                 findNavController()
-                    .navigate(RootPreferenceFragmentDirections.goToMusicPreferences())
+                    .navigateSafe(RootPreferenceFragmentDirections.goToMusicPreferences())
             }
             getString(R.string.set_key_audio) -> {
                 findNavController()
-                    .navigate(RootPreferenceFragmentDirections.goToAudioPreferences())
+                    .navigateSafe(RootPreferenceFragmentDirections.goToAudioPreferences())
             }
             getString(R.string.set_key_reindex) -> musicModel.refresh()
             getString(R.string.set_key_rescan) -> musicModel.rescan()

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * HomeSettings.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * User configuration specific to the home UI.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface HomeSettings : Settings<HomeSettings.Listener> {

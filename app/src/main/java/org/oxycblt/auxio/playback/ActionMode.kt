@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * ActionMode.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +23,7 @@ import org.oxycblt.auxio.IntegerTable
 /**
  * Represents a configuration option for what kind of "secondary" action to show in a particular UI
  * context.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 enum class ActionMode {
@@ -34,6 +36,7 @@ enum class ActionMode {
 
     /**
      * The integer representation of this instance.
+     *
      * @see fromIntCode
      */
     val intCode: Int
@@ -47,6 +50,7 @@ enum class ActionMode {
     companion object {
         /**
          * Convert a [ActionMode] integer representation into an instance.
+         *
          * @param intCode An integer representation of a [ActionMode]
          * @return The corresponding [ActionMode], or null if the [ActionMode] is invalid.
          * @see ActionMode.intCode

@@ -167,7 +167,7 @@
     <string name="def_genre">Невядомы жанр</string>
     <string name="cdc_ogg">Ogg аўдыё</string>
     <string name="def_date">Без даты</string>
-    <string name="def_track">Няма нумара кампазіцыі</string>
+    <string name="def_track">Няма дарожкі</string>
     <string name="cdc_mp3">MPEG-1 аўдыё</string>
     <string name="cdc_mka">Matroska аўдыё</string>
     <string name="def_playback">Музыка не грае</string>
@@ -222,9 +222,9 @@
     <string name="lbl_indexer">Загрузіць музыку</string>
     <string name="lbl_indexing">Загрузка музыкі</string>
     <string name="lbl_ok">ОК</string>
-    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
+    <string name="cdc_aac">Прасунуты аўдыё кодэк (AAC)</string>
     <string name="fmt_list">%1$s, %2$s</string>
-    <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
+    <string name="cdc_flac">Свабодны аўдыё кодэк без страты якасці (FLAC)</string>
     <string name="set_exclude_non_music">Уключыць не-музыку</string>
     <string name="set_round_mode_desc">Уключыць закругленыя вуглы на дадатковых элементах інтэрфейсу (патрабуецца закругленне вокладак альбомаў)</string>
     <string name="set_personalize_desc">Наладзьце элементы кіравання і паводзіны карыстацкага інтэрфейсу</string>
@@ -265,4 +265,10 @@
     <string name="set_cover_mode_media_store">Зыходныя (хуткая загрузка)</string>
     <string name="set_audio">Аўдыё</string>
     <string name="set_playback">Прайграванне</string>
+    <string name="lbl_ep_live">Канцэртны міні-альбом</string>
+    <string name="lbl_ep_remix">Міні-альбом рэміксаў</string>
+    <string name="set_intelligent_sorting_desc">Ігнараваць такія словы, як \"the\", пры сартаванні па імені (лепш за ўсё працуе з англамоўнай музыкай)</string>
+    <string name="set_intelligent_sorting">Ігнараваць артыклі пры сартаванні</string>
+    <string name="lbl_eps">Міні-альбомы</string>
+    <string name="lbl_ep">Міні-альбом</string>
 </resources>

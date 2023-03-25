@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * NotificationComponent.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +37,7 @@ import org.oxycblt.auxio.util.newMainPendingIntent
 /**
  * The playback notification component. Due to race conditions regarding notification updates, this
  * component is not self-sufficient. [MediaSessionComponent] should be used instead of manage it.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @SuppressLint("RestrictedApi")
@@ -67,6 +69,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
 
     /**
      * Update the currently shown metadata in this notification.
+     *
      * @param metadata The [MediaMetadataCompat] to display in this notification.
      */
     fun updateMetadata(metadata: MediaMetadataCompat) {
@@ -86,6 +89,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
 
     /**
      * Update the playing state shown in this notification.
+     *
      * @param isPlaying Whether playback should be indicated as ongoing or paused.
      */
     fun updatePlaying(isPlaying: Boolean) {
@@ -94,6 +98,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
 
     /**
      * Update the secondary action in this notification to show the current [RepeatMode].
+     *
      * @param repeatMode The current [RepeatMode].
      */
     fun updateRepeatMode(repeatMode: RepeatMode) {
@@ -102,6 +107,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
 
     /**
      * Update the secondary action in this notification to show the current shuffle state.
+     *
      * @param isShuffled Whether the queue is currently shuffled or not.
      */
     fun updateShuffled(isShuffled: Boolean) {

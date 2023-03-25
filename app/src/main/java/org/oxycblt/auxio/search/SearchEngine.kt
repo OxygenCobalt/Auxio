@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * SearchEngine.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,11 +30,13 @@ import org.oxycblt.auxio.music.Song
 
 /**
  * Implements the fuzzy-ish searching algorithm used in the search view.
+ *
  * @author Alexander Capehart
  */
 interface SearchEngine {
     /**
      * Begin a search.
+     *
      * @param items The items to search over.
      * @param query The query to search for.
      * @return A list of items filtered by the given query.
@@ -42,6 +45,7 @@ interface SearchEngine {
 
     /**
      * Input/output data to use with [SearchEngine].
+     *
      * @param songs A list of [Song]s, null if empty.
      * @param albums A list of [Album]s, null if empty.
      * @param artists A list of [Artist]s, null if empty.
@@ -66,11 +70,12 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
 
     /**
      * Search a given [Music] list.
+     *
      * @param query The query to search for. The routine will compare this query to the names of
-     * each object in the list and
+     *   each object in the list and
      * @param fallback Additional comparison code to run if the item does not match the query
-     * initially. This can be used to compare against additional attributes to improve search result
-     * quality.
+     *   initially. This can be used to compare against additional attributes to improve search
+     *   result quality.
      */
     private inline fun <T : Music> List<T>.searchListImpl(
         query: String,
@@ -97,7 +102,7 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
                 // which
                 // could make it match the query.
                 val normalizedName =
-                    NORMALIZATION_SANITIZE_REGEX.replace(
+                    NORMALIZE_POST_PROCESSING_REGEX.replace(
                         Normalizer.normalize(name, Normalizer.Form.NFKD), "")
                 if (normalizedName.contains(query, ignoreCase = true)) {
                     return@filter true
@@ -110,8 +115,9 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
     private companion object {
         /**
          * Converts the output of [Normalizer] to remove any junk characters added by it's
-         * replacements.
+         * replacements, alongside punctuation.
          */
-        val NORMALIZATION_SANITIZE_REGEX = Regex("\\p{InCombiningDiacriticalMarks}+")
+        val NORMALIZE_POST_PROCESSING_REGEX =
+            Regex("(\\p{InCombiningDiacriticalMarks}+)|(\\p{Punct})")
     }
 }

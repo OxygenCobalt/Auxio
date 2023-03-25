@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * PersistenceDatabase.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +33,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 
 /**
  * Provides raw access to the database storing the persisted playback state.
+ *
  * @author Alexander Capehart
  */
 @Database(
@@ -42,12 +44,14 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 abstract class PersistenceDatabase : RoomDatabase() {
     /**
      * Get the current [PlaybackStateDao].
+     *
      * @return A [PlaybackStateDao] providing control of the database's playback state tables.
      */
     abstract fun playbackStateDao(): PlaybackStateDao
 
     /**
      * Get the current [QueueDao].
+     *
      * @return A [QueueDao] providing control of the database's queue tables.
      */
     abstract fun queueDao(): QueueDao
@@ -63,12 +67,14 @@ abstract class PersistenceDatabase : RoomDatabase() {
 
 /**
  * Provides control of the persisted playback state table.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @Dao
 interface PlaybackStateDao {
     /**
      * Get the previously persisted [PlaybackState].
+     *
      * @return The previously persisted [PlaybackState], or null if one was not present.
      */
     @Query("SELECT * FROM ${PlaybackState.TABLE_NAME} WHERE id = 0")
@@ -79,6 +85,7 @@ interface PlaybackStateDao {
 
     /**
      * Insert a new [PlaybackState] into the database.
+     *
      * @param state The [PlaybackState] to insert.
      */
     @Insert(onConflict = OnConflictStrategy.ABORT) suspend fun insertState(state: PlaybackState)
@@ -86,18 +93,21 @@ interface PlaybackStateDao {
 
 /**
  * Provides control of the persisted queue state tables.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @Dao
 interface QueueDao {
     /**
      * Get the previously persisted queue heap.
+     *
      * @return A list of persisted [QueueHeapItem]s wrapping each heap item.
      */
     @Query("SELECT * FROM ${QueueHeapItem.TABLE_NAME}") suspend fun getHeap(): List<QueueHeapItem>
 
     /**
      * Get the previously persisted queue mapping.
+     *
      * @return A list of persisted [QueueMappingItem]s wrapping each heap item.
      */
     @Query("SELECT * FROM ${QueueMappingItem.TABLE_NAME}")
@@ -111,12 +121,14 @@ interface QueueDao {
 
     /**
      * Insert new heap entries into the database.
+     *
      * @param heap The list of wrapped [QueueHeapItem]s to insert.
      */
     @Insert(onConflict = OnConflictStrategy.ABORT) suspend fun insertHeap(heap: List<QueueHeapItem>)
 
     /**
      * Insert new mapping entries into the database.
+     *
      * @param mapping The list of wrapped [QueueMappingItem] to insert.
      */
     @Insert(onConflict = OnConflictStrategy.ABORT)

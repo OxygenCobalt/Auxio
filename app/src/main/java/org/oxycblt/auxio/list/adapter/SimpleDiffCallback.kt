@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * SimpleDiffCallback.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +24,7 @@ import org.oxycblt.auxio.list.Item
 /**
  * A [DiffUtil.ItemCallback] that automatically implements the [areItemsTheSame] method. Use this
  * whenever creating [DiffUtil.ItemCallback] implementations with an [Item] subclass.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class SimpleDiffCallback<T : Item> : DiffUtil.ItemCallback<T>() {

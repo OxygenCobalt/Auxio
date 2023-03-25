@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * SearchFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +35,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -49,11 +49,10 @@ import org.oxycblt.auxio.util.*
 /**
  * The [ListFragment] providing search functionality for the music library.
  *
- * TODO: Better keyboard management
- *
- * TODO: Multi-filtering with chips
- *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Better keyboard management
+ * TODO: Multi-filtering with chips
  */
 @AndroidEntryPoint
 class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
@@ -99,7 +98,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         binding.searchEditText.apply {
             addTextChangedListener { text ->
                 // Run the search with the updated text as the query
-                searchModel.search(text?.toString())
+                searchModel.search(text?.toString()?.trim())
             }
 
             if (!launchedKeyboard) {
@@ -116,7 +115,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         collectImmediately(searchModel.searchResults, ::updateSearchResults)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
-        collect(navModel.exploreNavigationItem, ::handleNavigation)
+        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
@@ -164,7 +163,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         // Don't show the RecyclerView (and it's stray overscroll effects) when there
         // are no results.
         binding.searchRecycler.isInvisible = results.isEmpty()
-        searchAdapter.submitList(results.toMutableList(), BasicListInstructions.DIFF) {
+        searchAdapter.update(results.toMutableList(), null) {
             // I would make it so that the position is only scrolled back to the top when
             // the query actually changes instead of once every re-creation event, but sadly
             // that doesn't seem possible.
@@ -187,7 +186,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             }
         // Keyboard is no longer needed.
         hideKeyboard()
-        findNavController().navigate(action)
+        findNavController().navigateSafe(action)
     }
 
     private fun updateSelection(selected: List<Music>) {
@@ -201,6 +200,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     /**
      * Safely focus the keyboard on a particular [View].
+     *
      * @param view The [View] to focus the keyboard on.
      */
     private fun showKeyboard(view: View) {

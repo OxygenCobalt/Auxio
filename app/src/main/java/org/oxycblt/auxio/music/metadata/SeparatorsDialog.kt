@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * SeparatorsDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +34,7 @@ import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 /**
  * A [ViewBindingDialogFragment] that allows the user to configure the separator characters used to
  * split tags with multiple values.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

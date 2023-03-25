@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * BottomSheetContentBehavior.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +33,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * A behavior that automatically re-layouts and re-insets content to align with the parent layout's
  * bottom sheet. Ideally, we would only want to re-inset content, but that has too many issues to
  * sensibly implement.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class BottomSheetContentBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :

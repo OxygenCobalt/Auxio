@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * CoordinatorAppBarLayout.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,6 +111,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * An [AppBarLayout.OnOffsetChangedListener] that will automatically move the given
      * [RecyclerView] as the [AppBarLayout] expands. Should be added right when the view is
      * expanding. Will be removed automatically.
+     *
      * @param recycler [RecyclerView] to scroll with the [AppBarLayout].
      */
     private class ExpansionHackListener(private val recycler: RecyclerView) :

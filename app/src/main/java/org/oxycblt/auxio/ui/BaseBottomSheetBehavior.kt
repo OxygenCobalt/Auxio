@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * BaseBottomSheetBehavior.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +35,7 @@ import org.oxycblt.auxio.util.systemGestureInsetsCompat
  * 1. No reasonable edge-to-edge support.
  * 2. Strange corner radius behaviors.
  * 3. Inability to skip half-expanded state when full-screen.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet: AttributeSet?) :
@@ -48,6 +50,7 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
 
     /**
      * Create a background [Drawable] to use for this [BaseBottomSheetBehavior]'s child [View].
+     *
      * @param context [Context] that can be used to draw the [Drawable].
      * @return A background drawable.
      */
@@ -56,6 +59,7 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
     /**
      * Called when window insets are being applied to the [View] this [BaseBottomSheetBehavior] is
      * linked to.
+     *
      * @param child The child view receiving the [WindowInsets].
      * @param insets The [WindowInsets] to apply.
      * @return The (possibly modified) [WindowInsets].

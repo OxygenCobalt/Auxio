@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * DirectoryAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +28,7 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * [RecyclerView.Adapter] that manages a list of [Directory] instances.
+ *
  * @param listener A [DirectoryAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -48,6 +50,7 @@ class DirectoryAdapter(private val listener: Listener) :
 
     /**
      * Add a [Directory] to the end of the list.
+     *
      * @param dir The [Directory] to add.
      */
     fun add(dir: Directory) {
@@ -61,6 +64,7 @@ class DirectoryAdapter(private val listener: Listener) :
 
     /**
      * Add a list of [Directory] instances to the end of the list.
+     *
      * @param dirs The [Directory instances to add.
      */
     fun addAll(dirs: List<Directory>) {
@@ -71,6 +75,7 @@ class DirectoryAdapter(private val listener: Listener) :
 
     /**
      * Remove a [Directory] from the list.
+     *
      * @param dir The [Directory] to remove. Must exist in the list.
      */
     fun remove(dir: Directory) {
@@ -87,12 +92,14 @@ class DirectoryAdapter(private val listener: Listener) :
 
 /**
  * A [RecyclerView.Recycler] that displays a [Directory]. Use [from] to create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MusicDirViewHolder private constructor(private val binding: ItemMusicDirBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
+     *
      * @param dir The new [Directory] to bind.
      * @param listener A [DirectoryAdapter.Listener] to bind interactions to.
      */
@@ -104,6 +111,7 @@ class MusicDirViewHolder private constructor(private val binding: ItemMusicDirBi
     companion object {
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * InternalPlayer.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +26,7 @@ import org.oxycblt.auxio.music.Song
 /**
  * An interface for internal audio playback. This can be used to coordinate what occurs in the
  * background playback task.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface InternalPlayer {
@@ -36,6 +38,7 @@ interface InternalPlayer {
 
     /**
      * Load a new [Song] into the internal player.
+     *
      * @param song The [Song] to load, or null if playback should stop entirely.
      * @param play Whether to start playing when the [Song] is loaded.
      */
@@ -43,6 +46,7 @@ interface InternalPlayer {
 
     /**
      * Called when an [Action] has been queued and this [InternalPlayer] is available to handle it.
+     *
      * @param action The [Action] to perform.
      * @return true if the action was handled, false otherwise.
      */
@@ -50,19 +54,22 @@ interface InternalPlayer {
 
     /**
      * Get a [State] corresponding to the current player state.
+     *
      * @param durationMs The duration of the currently playing track, in milliseconds. Required
-     * since the internal player cannot obtain an accurate duration itself.
+     *   since the internal player cannot obtain an accurate duration itself.
      */
     fun getState(durationMs: Long): State
 
     /**
      * Seek to a given position in the internal player.
+     *
      * @param positionMs The position to seek to, in milliseconds.
      */
     fun seekTo(positionMs: Long)
 
     /**
      * Set whether the player should play or not.
+     *
      * @param isPlaying Whether to play or pause the current playback.
      */
     fun setPlaying(isPlaying: Boolean)
@@ -80,6 +87,7 @@ interface InternalPlayer {
 
         /**
          * Start playing an audio file at the given [Uri].
+         *
          * @param uri The [Uri] of the audio file to start playing.
          */
         data class Open(val uri: Uri) : Action()
@@ -101,8 +109,9 @@ interface InternalPlayer {
     ) {
         /**
          * Calculate the "real" playback position this instance contains, in milliseconds.
+         *
          * @return If paused, the original position will be returned. Otherwise, it will be the
-         * original position plus the time elapsed since this state was created.
+         *   original position plus the time elapsed since this state was created.
          */
         fun calculateElapsedPositionMs() =
             if (isAdvancing) {
@@ -115,6 +124,7 @@ interface InternalPlayer {
 
         /**
          * Load this instance into a [PlaybackStateCompat].
+         *
          * @param builder The [PlaybackStateCompat.Builder] to mutate.
          * @return The same [PlaybackStateCompat.Builder] for easy chaining.
          */
@@ -155,8 +165,9 @@ interface InternalPlayer {
         companion object {
             /**
              * Create a new instance.
+             *
              * @param isPlaying Whether the player is actively playing audio or set to play audio in
-             * the future.
+             *   the future.
              * @param isAdvancing Whether the player is actively playing audio in this moment.
              * @param positionMs The current position of the player.
              */

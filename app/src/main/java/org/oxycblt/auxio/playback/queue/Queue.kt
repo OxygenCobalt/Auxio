@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * Queue.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +20,7 @@ package org.oxycblt.auxio.playback.queue
 
 import kotlin.random.Random
 import kotlin.random.nextInt
+import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 
@@ -45,31 +47,39 @@ interface Queue {
     val isShuffled: Boolean
     /**
      * Resolve this queue into a more conventional list of [Song]s.
+     *
      * @return A list of [Song] corresponding to the current queue mapping.
      */
     fun resolve(): List<Song>
 
     /**
-     * Represents the possible changes that can occur during certain queue mutation events. The
-     * precise meanings of these differ somewhat depending on the type of mutation done.
+     * Represents the possible changes that can occur during certain queue mutation events.
+     *
+     * @param type The [Type] of the change to the internal queue state.
+     * @param instructions The update done to the resolved queue list.
      */
-    enum class ChangeResult {
-        /** Only the mapping has changed. */
-        MAPPING,
-        /** The mapping has changed, and the index also changed to align with it. */
-        INDEX,
-        /**
-         * The current song has changed, possibly alongside the mapping and index depending on the
-         * context.
-         */
-        SONG
+    data class Change(val type: Type, val instructions: UpdateInstructions) {
+        enum class Type {
+            /** Only the mapping has changed. */
+            MAPPING,
+
+            /** The mapping has changed, and the index also changed to align with it. */
+            INDEX,
+
+            /**
+             * The current song has changed, possibly alongside the mapping and index depending on
+             * the context.
+             */
+            SONG
+        }
     }
 
     /**
      * An immutable representation of the queue state.
+     *
      * @param heap The heap of [Song]s that are/were used in the queue. This can be modified with
-     * null values to represent [Song]s that were "lost" from the heap without having to change
-     * other values.
+     *   null values to represent [Song]s that were "lost" from the heap without having to change
+     *   other values.
      * @param orderedMapping The mapping of the [heap] to an ordered queue.
      * @param shuffledMapping The mapping of the [heap] to a shuffled queue.
      * @param index The index of the currently playing [Song] at the time of serialization.
@@ -85,9 +95,10 @@ interface Queue {
         /**
          * Remaps the [heap] of this instance based on the given mapping function and copies it into
          * a new [SavedState].
+         *
          * @param transform Code to remap the existing [Song] heap into a new [Song] heap. This
-         * **MUST** be the same size as the original heap. [Song] instances that could not be
-         * converted should be replaced with null in the new heap.
+         *   **MUST** be the same size as the original heap. [Song] instances that could not be
+         *   converted should be replaced with null in the new heap.
          * @throws IllegalStateException If the invariant specified by [transform] is violated.
          */
         inline fun remap(transform: (Song?) -> Song?) =
@@ -121,6 +132,7 @@ class EditableQueue : Queue {
 
     /**
      * Go to a particular index in the queue.
+     *
      * @param to The index of the [Song] to start playing, in the current queue mapping.
      * @return true if the queue jumped to that position, false otherwise.
      */
@@ -134,11 +146,12 @@ class EditableQueue : Queue {
 
     /**
      * Start a new queue configuration.
+     *
      * @param play The [Song] to play, or null to start from a random position.
      * @param queue The queue of [Song]s to play. Must contain [play]. This list will become the
-     * heap internally.
+     *   heap internally.
      * @param shuffled Whether to shuffle the queue or not. This changes the interpretation of
-     * [queue].
+     *   [queue].
      */
     fun start(play: Song?, queue: List<Song>, shuffled: Boolean) {
         heap = queue.toMutableList()
@@ -152,6 +165,7 @@ class EditableQueue : Queue {
 
     /**
      * Re-order the queue.
+     *
      * @param shuffled Whether the queue should be shuffled or not.
      */
     fun reorder(shuffled: Boolean) {
@@ -185,18 +199,11 @@ class EditableQueue : Queue {
 
     /**
      * Add [Song]s to the top of the queue. Will start playback if nothing is playing.
+     *
      * @param songs The [Song]s to add.
-     * @return [Queue.ChangeResult.MAPPING] if added to an existing queue, or
-     * [Queue.ChangeResult.SONG] if there was no prior playback and these enqueued [Song]s start new
-     * playback.
+     * @return A [Queue.Change] instance that reflects the changes made.
      */
-    fun playNext(songs: List<Song>): Queue.ChangeResult {
-        if (orderedMapping.isEmpty()) {
-            // No playback, start playing these songs.
-            start(songs[0], songs, false)
-            return Queue.ChangeResult.SONG
-        }
-
+    fun playNext(songs: List<Song>): Queue.Change {
         val heapIndices = songs.map(::addSongToHeap)
         if (shuffledMapping.isNotEmpty()) {
             // Add the new songs in front of the current index in the shuffled mapping and in front
@@ -209,23 +216,17 @@ class EditableQueue : Queue {
             orderedMapping.addAll(index + 1, heapIndices)
         }
         check()
-        return Queue.ChangeResult.MAPPING
+        return Queue.Change(
+            Queue.Change.Type.MAPPING, UpdateInstructions.Add(index + 1, songs.size))
     }
 
     /**
      * Add [Song]s to the end of the queue. Will start playback if nothing is playing.
+     *
      * @param songs The [Song]s to add.
-     * @return [Queue.ChangeResult.MAPPING] if added to an existing queue, or
-     * [Queue.ChangeResult.SONG] if there was no prior playback and these enqueued [Song]s start new
-     * playback.
+     * @return A [Queue.Change] instance that reflects the changes made.
      */
-    fun addToQueue(songs: List<Song>): Queue.ChangeResult {
-        if (orderedMapping.isEmpty()) {
-            // No playback, start playing these songs.
-            start(songs[0], songs, false)
-            return Queue.ChangeResult.SONG
-        }
-
+    fun addToQueue(songs: List<Song>): Queue.Change {
         val heapIndices = songs.map(::addSongToHeap)
         // Can simple append the new songs to the end of both mappings.
         orderedMapping.addAll(heapIndices)
@@ -233,18 +234,18 @@ class EditableQueue : Queue {
             shuffledMapping.addAll(heapIndices)
         }
         check()
-        return Queue.ChangeResult.MAPPING
+        return Queue.Change(
+            Queue.Change.Type.MAPPING, UpdateInstructions.Add(index + 1, songs.size))
     }
 
     /**
      * Move a [Song] at the given position to a new position.
+     *
      * @param src The position of the [Song] to move.
      * @param dst The destination position of the [Song].
-     * @return [Queue.ChangeResult.MAPPING] if the move occurred after the current index,
-     * [Queue.ChangeResult.INDEX] if the move occurred before or at the current index, requiring it
-     * to be mutated.
+     * @return A [Queue.Change] instance that reflects the changes made.
      */
-    fun move(src: Int, dst: Int): Queue.ChangeResult {
+    fun move(src: Int, dst: Int): Queue.Change {
         if (shuffledMapping.isNotEmpty()) {
             // Move songs only in the shuffled mapping. There is no sane analogous form of
             // this for the ordered mapping.
@@ -264,21 +265,20 @@ class EditableQueue : Queue {
             else -> {
                 // Nothing to do.
                 check()
-                return Queue.ChangeResult.MAPPING
+                return Queue.Change(Queue.Change.Type.MAPPING, UpdateInstructions.Move(src, dst))
             }
         }
         check()
-        return Queue.ChangeResult.INDEX
+        return Queue.Change(Queue.Change.Type.INDEX, UpdateInstructions.Move(src, dst))
     }
 
     /**
      * Remove a [Song] at the given position.
+     *
      * @param at The position of the [Song] to remove.
-     * @return [Queue.ChangeResult.MAPPING] if the removed [Song] was after the current index,
-     * [Queue.ChangeResult.INDEX] if the removed [Song] was before the current index, and
-     * [Queue.ChangeResult.SONG] if the currently playing [Song] was removed.
+     * @return A [Queue.Change] instance that reflects the changes made.
      */
-    fun remove(at: Int): Queue.ChangeResult {
+    fun remove(at: Int): Queue.Change {
         if (shuffledMapping.isNotEmpty()) {
             // Remove the specified index in the shuffled mapping and the analogous song in the
             // ordered mapping.
@@ -293,24 +293,25 @@ class EditableQueue : Queue {
         // of the player to be completely invalidated. It's generally easier to not remove the
         // song and retain player state consistency.
 
-        val result =
+        val type =
             when {
                 // We just removed the currently playing song.
-                index == at -> Queue.ChangeResult.SONG
+                index == at -> Queue.Change.Type.SONG
                 // Index was ahead of removed song, shift back to preserve consistency.
                 index > at -> {
                     index -= 1
-                    Queue.ChangeResult.INDEX
+                    Queue.Change.Type.INDEX
                 }
                 // Nothing to do
-                else -> Queue.ChangeResult.MAPPING
+                else -> Queue.Change.Type.MAPPING
             }
         check()
-        return result
+        return Queue.Change(type, UpdateInstructions.Remove(at))
     }
 
     /**
      * Convert the current state of this instance into a [Queue.SavedState].
+     *
      * @return A new [Queue.SavedState] reflecting the exact state of the queue when called.
      */
     fun toSavedState() =
@@ -321,6 +322,7 @@ class EditableQueue : Queue {
 
     /**
      * Update this instance from the given [Queue.SavedState].
+     *
      * @param savedState A [Queue.SavedState] with a valid queue representation.
      */
     fun applySavedState(savedState: Queue.SavedState) {

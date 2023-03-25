@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * SongPropertyAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.detail.recycler
+package org.oxycblt.auxio.detail.list
 
 import android.view.View
 import android.view.ViewGroup
@@ -23,21 +24,19 @@ import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemSongPropertyBinding
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
-import org.oxycblt.auxio.list.adapter.DiffAdapter
-import org.oxycblt.auxio.list.adapter.ListDiffer
-import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
+import org.oxycblt.auxio.list.adapter.*
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
 /**
  * An adapter for [SongProperty] instances.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SongPropertyAdapter :
-    DiffAdapter<SongProperty, BasicListInstructions, SongPropertyViewHolder>(
-        ListDiffer.Blocking(SongPropertyViewHolder.DIFF_CALLBACK)) {
+    FlexibleListAdapter<SongProperty, SongPropertyViewHolder>(
+        SongPropertyViewHolder.DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         SongPropertyViewHolder.from(parent)
 
@@ -48,6 +47,7 @@ class SongPropertyAdapter :
 
 /**
  * A property entry for use in [SongPropertyAdapter].
+ *
  * @param name The contextual title to use for the property.
  * @param value The value of the property.
  * @author Alexander Capehart (OxygenCobalt)
@@ -56,6 +56,7 @@ data class SongProperty(@StringRes val name: Int, val value: String) : Item
 
 /**
  * A [RecyclerView.ViewHolder] that displays a [SongProperty]. Use [from] to create an instance.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SongPropertyViewHolder private constructor(private val binding: ItemSongPropertyBinding) :
@@ -69,6 +70,7 @@ class SongPropertyViewHolder private constructor(private val binding: ItemSongPr
     companion object {
         /**
          * Create a new instance.
+         *
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */

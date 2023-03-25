@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * GenreListFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +31,6 @@ import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
-import org.oxycblt.auxio.list.adapter.ListDiffer
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.GenreViewHolder
 import org.oxycblt.auxio.list.selection.SelectionViewModel
@@ -43,9 +42,11 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [ListFragment] that shows a list of [Genre]s.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -72,7 +73,7 @@ class GenreListFragment :
             listener = this@GenreListFragment
         }
 
-        collectImmediately(homeModel.genresList, ::updateList)
+        collectImmediately(homeModel.genresList, ::updateGenres)
         collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
@@ -91,7 +92,7 @@ class GenreListFragment :
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.getSortForTab(MusicMode.GENRES).mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> genre.collationKey?.run { sourceString.first().uppercase() }
+            is Sort.Mode.ByName -> genre.sortName?.thumbString
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> genre.durationMs.formatDurationMs(false)
@@ -116,8 +117,8 @@ class GenreListFragment :
         openMusicMenu(anchor, R.menu.menu_artist_actions, item)
     }
 
-    private fun updateList(artists: List<Genre>) {
-        genreAdapter.submitList(artists, BasicListInstructions.REPLACE)
+    private fun updateGenres(genres: List<Genre>) {
+        genreAdapter.update(genres, homeModel.genresInstructions.consume().also { logD(it) })
     }
 
     private fun updateSelection(selection: List<Music>) {
@@ -131,11 +132,11 @@ class GenreListFragment :
 
     /**
      * A [SelectionIndicatorAdapter] that shows a list of [Genre]s using [GenreViewHolder].
+     *
      * @param listener An [SelectableListListener] to bind interactions to.
      */
     private class GenreAdapter(private val listener: SelectableListListener<Genre>) :
-        SelectionIndicatorAdapter<Genre, BasicListInstructions, GenreViewHolder>(
-            ListDiffer.Blocking(GenreViewHolder.DIFF_CALLBACK)) {
+        SelectionIndicatorAdapter<Genre, GenreViewHolder>(GenreViewHolder.DIFF_CALLBACK) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             GenreViewHolder.from(parent)
 

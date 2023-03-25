@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * ArtistPickerDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +36,7 @@ import org.oxycblt.auxio.util.collectImmediately
  * The base class for dialogs that implements common behavior across all [Artist] pickers. These are
  * shown whenever what to do with an item's [Artist] is ambiguous, as there are multiple [Artist]'s
  * to choose from.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

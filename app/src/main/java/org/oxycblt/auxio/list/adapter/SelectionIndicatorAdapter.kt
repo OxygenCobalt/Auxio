@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * SelectionIndicatorAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,18 +19,20 @@
 package org.oxycblt.auxio.list.adapter
 
 import android.view.View
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.Music
 
 /**
  * A [PlayingIndicatorAdapter] that also supports indicating the selection status of a group of
  * items.
- * @param differFactory The [ListDiffer.Factory] that defines the type of [ListDiffer] to use.
+ *
+ * @param diffCallback A [DiffUtil.ItemCallback] to compare list updates with.
  * @author Alexander Capehart (OxygenCobalt)
  */
-abstract class SelectionIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
-    differFactory: ListDiffer.Factory<T, I>
-) : PlayingIndicatorAdapter<T, I, VH>(differFactory) {
+abstract class SelectionIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
+    diffCallback: DiffUtil.ItemCallback<T>
+) : PlayingIndicatorAdapter<T, VH>(diffCallback) {
     private var selectedItems = setOf<T>()
 
     override fun onBindViewHolder(holder: VH, position: Int, payloads: List<Any>) {
@@ -41,6 +44,7 @@ abstract class SelectionIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
 
     /**
      * Update the list of selected items.
+     *
      * @param items A set of selected [T] items.
      */
     fun setSelected(items: Set<T>) {
@@ -62,9 +66,7 @@ abstract class SelectionIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
             }
 
             // Only update items that were added or removed from the list.
-            val added = !oldSelectedItems.contains(item) && newSelectedItems.contains(item)
-            val removed = oldSelectedItems.contains(item) && !newSelectedItems.contains(item)
-            if (added || removed) {
+            if (oldSelectedItems.contains(item) xor newSelectedItems.contains(item)) {
                 notifyItemChanged(i, PAYLOAD_SELECTION_INDICATOR_CHANGED)
             }
         }
@@ -74,6 +76,7 @@ abstract class SelectionIndicatorAdapter<T, I, VH : RecyclerView.ViewHolder>(
     abstract class ViewHolder(root: View) : PlayingIndicatorAdapter.ViewHolder(root) {
         /**
          * Update the selection indicator within this [PlayingIndicatorAdapter.ViewHolder].
+         *
          * @param isSelected Whether this [PlayingIndicatorAdapter.ViewHolder] is selected.
          */
         abstract fun updateSelectionIndicator(isSelected: Boolean)

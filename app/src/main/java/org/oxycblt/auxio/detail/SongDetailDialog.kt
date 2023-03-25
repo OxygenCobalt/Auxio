@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * SongDetailDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +29,9 @@ import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSongDetailBinding
-import org.oxycblt.auxio.detail.recycler.SongProperty
-import org.oxycblt.auxio.detail.recycler.SongPropertyAdapter
-import org.oxycblt.auxio.list.adapter.BasicListInstructions
+import org.oxycblt.auxio.detail.list.SongProperty
+import org.oxycblt.auxio.detail.list.SongPropertyAdapter
+import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.metadata.AudioInfo
@@ -42,6 +43,7 @@ import org.oxycblt.auxio.util.concatLocalized
 
 /**
  * A [ViewBindingDialogFragment] that shows information about a Song.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
@@ -77,7 +79,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
         if (info != null) {
             val context = requireContext()
-            detailAdapter.submitList(
+            detailAdapter.update(
                 buildList {
                     add(SongProperty(R.string.lbl_name, song.zipName(context)))
                     add(SongProperty(R.string.lbl_album, song.album.zipName(context)))
@@ -102,7 +104,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
                         SongProperty(
                             R.string.lbl_relative_path, song.path.parent.resolveName(context)))
                     info.resolvedMimeType.resolveName(context)?.let {
-                        SongProperty(R.string.lbl_format, it)
+                        add(SongProperty(R.string.lbl_format, it))
                     }
                     add(
                         SongProperty(
@@ -117,7 +119,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
                                 R.string.lbl_sample_rate, getString(R.string.fmt_sample_rate, it)))
                     }
                 },
-                BasicListInstructions.REPLACE)
+                UpdateInstructions.Replace(0))
         }
     }
 

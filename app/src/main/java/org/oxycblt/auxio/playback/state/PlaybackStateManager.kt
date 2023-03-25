@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * PlaybackStateManager.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +35,9 @@ import org.oxycblt.auxio.util.logW
  *
  * This should ***NOT*** be used outside of the playback module.
  * - If you want to use the playback state in the UI, use PlaybackViewModel as it can withstand
- * volatile UIs.
+ *   volatile UIs.
  * - If you want to use the playback state with the ExoPlayer instance or system-side things, use
- * PlaybackService.
+ *   PlaybackService.
  *
  * Internal consumers should usually use [Listener], however the component that manages the player
  * itself should instead use [InternalPlayer].
@@ -58,6 +59,7 @@ interface PlaybackStateManager {
     /**
      * Add a [Listener] to this instance. This can be used to receive changes in the playback state.
      * Will immediately invoke [Listener] methods to initialize the instance with the current state.
+     *
      * @param listener The [Listener] to add.
      * @see Listener
      */
@@ -65,8 +67,9 @@ interface PlaybackStateManager {
 
     /**
      * Remove a [Listener] from this instance, preventing it from receiving any further updates.
+     *
      * @param listener The [Listener] to remove. Does nothing if the [Listener] was never added in
-     * the first place.
+     *   the first place.
      * @see Listener
      */
     fun removeListener(listener: Listener)
@@ -75,25 +78,28 @@ interface PlaybackStateManager {
      * Register an [InternalPlayer] for this instance. This instance will handle translating the
      * current playback state into audio playback. There can be only one [InternalPlayer] at a time.
      * Will invoke [InternalPlayer] methods to initialize the instance with the current state.
+     *
      * @param internalPlayer The [InternalPlayer] to register. Will do nothing if already
-     * registered.
+     *   registered.
      */
     fun registerInternalPlayer(internalPlayer: InternalPlayer)
 
     /**
      * Unregister the [InternalPlayer] from this instance, prevent it from receiving any further
      * commands.
+     *
      * @param internalPlayer The [InternalPlayer] to unregister. Must be the current
-     * [InternalPlayer]. Does nothing if invoked by another [InternalPlayer] implementation.
+     *   [InternalPlayer]. Does nothing if invoked by another [InternalPlayer] implementation.
      */
     fun unregisterInternalPlayer(internalPlayer: InternalPlayer)
 
     /**
      * Start new playback.
+     *
      * @param song A particular [Song] to play, or null to play the first [Song] in the new queue.
      * @param queue The queue of [Song]s to play from.
      * @param parent The [MusicParent] to play from, or null if to play from an non-specific
-     * collection of "All [Song]s".
+     *   collection of "All [Song]s".
      * @param shuffled Whether to shuffle or not.
      */
     fun play(song: Song?, parent: MusicParent?, queue: List<Song>, shuffled: Boolean)
@@ -112,36 +118,42 @@ interface PlaybackStateManager {
 
     /**
      * Play a [Song] at the given position in the queue.
+     *
      * @param index The position of the [Song] in the queue to start playing.
      */
     fun goto(index: Int)
 
     /**
      * Add [Song]s to the top of the queue.
+     *
      * @param songs The [Song]s to add.
      */
     fun playNext(songs: List<Song>)
 
     /**
      * Add a [Song] to the top of the queue.
+     *
      * @param song The [Song] to add.
      */
     fun playNext(song: Song) = playNext(listOf(song))
 
     /**
      * Add [Song]s to the end of the queue.
+     *
      * @param songs The [Song]s to add.
      */
     fun addToQueue(songs: List<Song>)
 
     /**
      * Add a [Song] to the end of the queue.
+     *
      * @param song The [Song] to add.
      */
     fun addToQueue(song: Song) = addToQueue(listOf(song))
 
     /**
      * Move a [Song] in the queue.
+     *
      * @param src The position of the [Song] to move in the queue.
      * @param dst The destination position in the queue.
      */
@@ -149,25 +161,29 @@ interface PlaybackStateManager {
 
     /**
      * Remove a [Song] from the queue.
+     *
      * @param at The position of the [Song] to remove in the queue.
      */
     fun removeQueueItem(at: Int)
 
     /**
      * (Re)shuffle or (Re)order this instance.
+     *
      * @param shuffled Whether to shuffle the queue or not.
      */
     fun reorder(shuffled: Boolean)
 
     /**
      * Synchronize the state of this instance with the current [InternalPlayer].
+     *
      * @param internalPlayer The [InternalPlayer] to synchronize with. Must be the current
-     * [InternalPlayer]. Does nothing if invoked by another [InternalPlayer] implementation.
+     *   [InternalPlayer]. Does nothing if invoked by another [InternalPlayer] implementation.
      */
     fun synchronizeState(internalPlayer: InternalPlayer)
 
     /**
      * Start a [InternalPlayer.Action] for the current [InternalPlayer] to handle eventually.
+     *
      * @param action The [InternalPlayer.Action] to perform.
      */
     fun startAction(action: InternalPlayer.Action)
@@ -175,19 +191,22 @@ interface PlaybackStateManager {
     /**
      * Request that the pending [InternalPlayer.Action] (if any) be passed to the given
      * [InternalPlayer].
+     *
      * @param internalPlayer The [InternalPlayer] to synchronize with. Must be the current
-     * [InternalPlayer]. Does nothing if invoked by another [InternalPlayer] implementation.
+     *   [InternalPlayer]. Does nothing if invoked by another [InternalPlayer] implementation.
      */
     fun requestAction(internalPlayer: InternalPlayer)
 
     /**
      * Update whether playback is ongoing or not.
+     *
      * @param isPlaying Whether playback is ongoing or not.
      */
     fun setPlaying(isPlaying: Boolean)
 
     /**
      * Seek to the given position in the currently playing [Song].
+     *
      * @param positionMs The position to seek to, in milliseconds.
      */
     fun seekTo(positionMs: Long)
@@ -197,16 +216,18 @@ interface PlaybackStateManager {
 
     /**
      * Converts the current state of this instance into a [SavedState].
+     *
      * @return An immutable [SavedState] that is analogous to the current state, or null if nothing
-     * is currently playing.
+     *   is currently playing.
      */
     fun toSavedState(): SavedState?
 
     /**
      * Restores this instance from the given [SavedState].
+     *
      * @param savedState The [SavedState] to restore from.
      * @param destructive Whether to disregard the prior playback state and overwrite it with this
-     * [SavedState].
+     *   [SavedState].
      */
     fun applySavedState(savedState: SavedState, destructive: Boolean)
 
@@ -218,26 +239,30 @@ interface PlaybackStateManager {
         /**
          * Called when the position of the currently playing item has changed, changing the current
          * [Song], but no other queue attribute has changed.
+         *
          * @param queue The new [Queue].
          */
         fun onIndexMoved(queue: Queue) {}
 
         /**
-         * Called when the [Queue] changed in a manner outlined by the given [Queue.ChangeResult].
+         * Called when the [Queue] changed in a manner outlined by the given [Queue.Change].
+         *
          * @param queue The new [Queue].
-         * @param change The type of [Queue.ChangeResult] that occurred.
+         * @param change The type of [Queue.Change] that occurred.
          */
-        fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {}
+        fun onQueueChanged(queue: Queue, change: Queue.Change) {}
 
         /**
          * Called when the [Queue] has changed in a non-trivial manner (such as re-shuffling), but
          * the currently playing [Song] has not.
+         *
          * @param queue The new [Queue].
          */
         fun onQueueReordered(queue: Queue) {}
 
         /**
          * Called when a new playback configuration was created.
+         *
          * @param queue The new [Queue].
          * @param parent The new [MusicParent] being played from, or null if playing from all songs.
          */
@@ -245,12 +270,14 @@ interface PlaybackStateManager {
 
         /**
          * Called when the state of the [InternalPlayer] changes.
+         *
          * @param state The new state of the [InternalPlayer].
          */
         fun onStateChanged(state: InternalPlayer.State) {}
 
         /**
          * Called when the [RepeatMode] changes.
+         *
          * @param repeatMode The new [RepeatMode].
          */
         fun onRepeatChanged(repeatMode: RepeatMode) {}
@@ -258,6 +285,7 @@ interface PlaybackStateManager {
 
     /**
      * A condensed representation of the playback state that can be persisted.
+     *
      * @param parent The [MusicParent] item currently being played from.
      * @param queueState The [Queue.SavedState]
      * @param positionMs The current position in the currently played song, in ms
@@ -396,31 +424,19 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     @Synchronized
     override fun playNext(songs: List<Song>) {
-        val internalPlayer = internalPlayer ?: return
-        when (queue.playNext(songs)) {
-            Queue.ChangeResult.MAPPING -> notifyQueueChanged(Queue.ChangeResult.MAPPING)
-            Queue.ChangeResult.SONG -> {
-                // Enqueueing actually started a new playback session from all songs.
-                parent = null
-                internalPlayer.loadSong(queue.currentSong, true)
-                notifyNewPlayback()
-            }
-            Queue.ChangeResult.INDEX -> error("Unreachable")
+        if (queue.currentSong == null) {
+            play(songs[0], null, songs, false)
+        } else {
+            notifyQueueChanged(queue.playNext(songs))
         }
     }
 
     @Synchronized
     override fun addToQueue(songs: List<Song>) {
-        val internalPlayer = internalPlayer ?: return
-        when (queue.addToQueue(songs)) {
-            Queue.ChangeResult.MAPPING -> notifyQueueChanged(Queue.ChangeResult.MAPPING)
-            Queue.ChangeResult.SONG -> {
-                // Enqueueing actually started a new playback session from all songs.
-                parent = null
-                internalPlayer.loadSong(queue.currentSong, true)
-                notifyNewPlayback()
-            }
-            Queue.ChangeResult.INDEX -> error("Unreachable")
+        if (queue.currentSong == null) {
+            play(songs[0], null, songs, false)
+        } else {
+            notifyQueueChanged(queue.addToQueue(songs))
         }
     }
 
@@ -435,7 +451,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         val internalPlayer = internalPlayer ?: return
         logD("Removing item at $at")
         val change = queue.remove(at)
-        if (change == Queue.ChangeResult.SONG) {
+        if (change.type == Queue.Change.Type.SONG) {
             internalPlayer.loadSong(queue.currentSong, playerState.isPlaying)
         }
         notifyQueueChanged(change)
@@ -541,7 +557,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         }
     }
 
-    private fun notifyQueueChanged(change: Queue.ChangeResult) {
+    private fun notifyQueueChanged(change: Queue.Change) {
         for (callback in listeners) {
             callback.onQueueChanged(queue, change)
         }

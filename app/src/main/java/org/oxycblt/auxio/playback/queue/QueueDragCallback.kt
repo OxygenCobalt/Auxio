@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * QueueDragCallback.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +31,6 @@ import org.oxycblt.auxio.util.logD
 /**
  * A highly customized [ItemTouchHelper.Callback] that enables some extra eye candy in the queue UI,
  * such as an animation when lifting items.
- *
- * TODO: Why is item movement so expensive???
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -127,9 +126,11 @@ class QueueDragCallback(private val playbackModel: QueueViewModel) : ItemTouchHe
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
-    ) =
-        playbackModel.moveQueueDataItems(
+    ): Boolean {
+        logD("${viewHolder.bindingAdapterPosition} ${target.bindingAdapterPosition}")
+        return playbackModel.moveQueueDataItems(
             viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
+    }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         playbackModel.removeQueueDataItem(viewHolder.bindingAdapterPosition)

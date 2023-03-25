@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
+ * SelectionViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +28,7 @@ import org.oxycblt.auxio.music.model.Library
 
 /**
  * A [ViewModel] that manages the current selection.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
@@ -67,6 +69,7 @@ class SelectionViewModel @Inject constructor(private val musicRepository: MusicR
     /**
      * Select a new [Music] item. If this item is already within the selected items, the item will
      * be removed. Otherwise, it will be added.
+     *
      * @param music The [Music] item to select.
      */
     fun select(music: Music) {
@@ -79,6 +82,7 @@ class SelectionViewModel @Inject constructor(private val musicRepository: MusicR
 
     /**
      * Consume the current selection. This will clear any items that were selected prior.
+     *
      * @return The list of selected items before it was cleared.
      */
     fun consume() = _selected.value.also { _selected.value = listOf() }

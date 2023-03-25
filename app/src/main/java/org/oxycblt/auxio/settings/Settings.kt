@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * Settings.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,11 +28,13 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 /**
  * Abstract user configuration information. This interface has no functionality whatsoever. Concrete
  * implementations should be preferred instead.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Settings<L> {
     /**
      * Migrate any settings fields from older versions into their new counterparts.
+     *
      * @throws NotImplementedError If there is nothing to migrate.
      */
     fun migrate() {
@@ -40,18 +43,21 @@ interface Settings<L> {
 
     /**
      * Add a listener to monitor for settings updates. Will do nothing if
+     *
      * @param listener The listener to add.
      */
     fun registerListener(listener: L)
 
     /**
      * Unregister a listener, preventing any further settings updates from being sent to it.
+     *
      * @param listener The listener to unregister, must be the same as the current listener.
      */
     fun unregisterListener(listener: L)
 
     /**
      * A framework-backed [Settings] implementation.
+     *
      * @param context [Context] required.
      */
     abstract class Impl<L>(private val context: Context) :
@@ -91,6 +97,7 @@ interface Settings<L> {
 
         /**
          * Called when a setting entry with the given [key] has changed.
+         *
          * @param key The key of the changed setting.
          * @param listener The implementation's listener that updates should be applied to.
          */

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * MainActivity.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,17 +41,13 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 /**
  * Auxio's single [AppCompatActivity].
  *
- * TODO: Add error screens
- *
- * TODO: Custom language support
- *
- * TODO: Use proper material attributes (Not the weird dimen attributes I currently have)
- *
- * TODO: Migrate to material animation system
- *
- * TODO: Unit testing
- *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Add error screens
+ * TODO: Custom language support
+ * TODO: Use proper material attributes (Not the weird dimen attributes I currently have)
+ * TODO: Migrate to material animation system
+ * TODO: Unit testing
  */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -112,9 +109,10 @@ class MainActivity : AppCompatActivity() {
     /**
      * Transform an [Intent] given to [MainActivity] into a [InternalPlayer.Action] that can be used
      * in the playback system.
+     *
      * @param intent The (new) [Intent] given to this [MainActivity], or null if there is no intent.
      * @return true If the analogous [InternalPlayer.Action] to the given [Intent] was started,
-     * false otherwise.
+     *   false otherwise.
      */
     private fun startIntentAction(intent: Intent?): Boolean {
         if (intent == null) {

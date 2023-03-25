@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * PersonalizePreferenceFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,15 +22,18 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+import org.oxycblt.auxio.util.navigateSafe
 
 /**
  * Personalization settings interface.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class PersonalizePreferenceFragment : BasePreferenceFragment(R.xml.preferences_personalize) {
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_home_tabs)) {
-            findNavController().navigate(PersonalizePreferenceFragmentDirections.goToTabDialog())
+            findNavController()
+                .navigateSafe(PersonalizePreferenceFragmentDirections.goToTabDialog())
         }
     }
 }

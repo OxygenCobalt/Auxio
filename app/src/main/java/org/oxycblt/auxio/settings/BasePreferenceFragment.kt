@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
+ * BasePreferenceFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,18 +42,21 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * Shared [PreferenceFragmentCompat] used across all preference screens.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class BasePreferenceFragment(@XmlRes private val screen: Int) :
     PreferenceFragmentCompat() {
     /**
      * Called when the UI entry of a given [Preference] needs to be configured.
+     *
      * @param preference The [Preference] to configure.
      */
     open fun onSetupPreference(preference: Preference) {}
 
     /**
      * Called when an arbitrary [WrappedDialogPreference] needs to be opened.
+     *
      * @param preference The [WrappedDialogPreference] to open.
      */
     open fun onOpenDialogPreference(preference: WrappedDialogPreference) {}

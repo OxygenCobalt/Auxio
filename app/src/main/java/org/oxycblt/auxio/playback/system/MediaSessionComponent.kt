@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * MediaSessionComponent.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +48,7 @@ import org.oxycblt.auxio.util.logD
 /**
  * A component that mirrors the current playback state into the [MediaSessionCompat] and
  * [NotificationComponent].
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MediaSessionComponent
@@ -79,6 +81,7 @@ constructor(
 
     /**
      * Forward a system media button [Intent] to the [MediaSessionCompat].
+     *
      * @param intent The [Intent.ACTION_MEDIA_BUTTON] [Intent] to forward.
      */
     fun handleMediaButtonIntent(intent: Intent) {
@@ -87,6 +90,7 @@ constructor(
 
     /**
      * Register a [Listener] for notification updates to this service.
+     *
      * @param listener The [Listener] to register.
      */
     fun registerListener(listener: Listener) {
@@ -115,16 +119,15 @@ constructor(
         invalidateSessionState()
     }
 
-    override fun onQueueChanged(queue: Queue, change: Queue.ChangeResult) {
+    override fun onQueueChanged(queue: Queue, change: Queue.Change) {
         updateQueue(queue)
-        when (change) {
+        when (change.type) {
             // Nothing special to do with mapping changes.
-            Queue.ChangeResult.MAPPING -> {}
+            Queue.Change.Type.MAPPING -> {}
             // Index changed, ensure playback state's index changes.
-            Queue.ChangeResult.INDEX -> invalidateSessionState()
+            Queue.Change.Type.INDEX -> invalidateSessionState()
             // Song changed, ensure metadata changes.
-            Queue.ChangeResult.SONG ->
-                updateMediaMetadata(queue.currentSong, playbackManager.parent)
+            Queue.Change.Type.SONG -> updateMediaMetadata(queue.currentSong, playbackManager.parent)
         }
     }
 
@@ -271,10 +274,11 @@ constructor(
     /**
      * Upload a new [MediaMetadataCompat] based on the current playback state to the
      * [MediaSessionCompat] and [NotificationComponent].
+     *
      * @param song The current [Song] to create the [MediaMetadataCompat] from, or null if no [Song]
-     * is currently playing.
+     *   is currently playing.
      * @param parent The current [MusicParent] to create the [MediaMetadataCompat] from, or null if
-     * playback is currently occuring from all songs.
+     *   playback is currently occuring from all songs.
      */
     private fun updateMediaMetadata(song: Song?, parent: MusicParent?) {
         if (song == null) {
@@ -338,6 +342,7 @@ constructor(
 
     /**
      * Upload a new queue to the [MediaSessionCompat].
+     *
      * @param queue The current queue to upload.
      */
     private fun updateQueue(queue: Queue) {
@@ -367,8 +372,8 @@ constructor(
         logD("Updating media session playback state")
 
         val state =
-        // InternalPlayer.State handles position/state information.
-        playbackManager.playerState
+            // InternalPlayer.State handles position/state information.
+            playbackManager.playerState
                 .intoPlaybackState(PlaybackStateCompat.Builder())
                 .setActions(ACTIONS)
                 // Active queue ID corresponds to the indices we populated prior, use them here.
@@ -426,6 +431,7 @@ constructor(
     interface Listener {
         /**
          * Called when the [NotificationComponent] changes, requiring it to be re-posed.
+         *
          * @param notification The new [NotificationComponent].
          */
         fun onPostNotification(notification: NotificationComponent)

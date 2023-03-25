@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
+ * FastScrollRecyclerView.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +50,7 @@ import org.oxycblt.auxio.util.*
  *
  * !!! MODIFICATIONS !!!:
  * - Scroller will no longer show itself on startup or relayouts, which looked unpleasant with
- * multiple views
+ *   multiple views
  * - DefaultAnimationHelper and RecyclerViewHelper were merged into the class
  * - FastScroller overlay was merged into RecyclerView instance
  * - Removed FastScrollerBuilder
@@ -61,11 +62,10 @@ import org.oxycblt.auxio.util.*
  * - Added drag listener
  * - Added documentation
  *
- * TODO: Add vibration when popup changes
- *
- * TODO: Improve support for variably sized items (Re-back with library fast scroller?)
- *
  * @author Hai Zhang, Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Add vibration when popup changes
+ * TODO: Improve support for variably sized items (Re-back with library fast scroller?)
  */
 class FastScrollRecyclerView
 @JvmOverloads
@@ -508,9 +508,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     interface PopupProvider {
         /**
          * Get text to use in the popup at the specified position.
+         *
          * @param pos The position in the list.
          * @return A [String] to use in the popup. Null if there is no applicable text for the popup
-         * at [pos].
+         *   at [pos].
          */
         fun getPopup(pos: Int): String?
     }
@@ -519,6 +520,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     interface Listener {
         /**
          * Called when the fast scrolling state changes.
+         *
          * @param isFastScrolling true if the user is currently fast scrolling, false otherwise.
          */
         fun onFastScrollingChanged(isFastScrolling: Boolean)
