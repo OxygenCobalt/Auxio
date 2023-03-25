@@ -56,7 +56,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         // --- UI SETUP ---
         binding.root.apply {
-            setOnClickListener { navModel.mainNavigateTo(MainNavigationAction.Expand) }
+            setOnClickListener { navModel.mainNavigateTo(MainNavigationAction.OpenPlaybackPanel) }
             setOnLongClickListener {
                 playbackModel.song.value?.let(navModel::exploreNavigateTo)
                 true

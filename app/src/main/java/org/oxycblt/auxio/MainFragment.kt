@@ -268,8 +268,8 @@ class MainFragment :
         }
 
         when (action) {
-            is MainNavigationAction.Expand -> tryExpandSheets()
-            is MainNavigationAction.Collapse -> tryCollapseSheets()
+            is MainNavigationAction.OpenPlaybackPanel -> tryOpenPlaybackPanel()
+            is MainNavigationAction.ClosePlaybackPanel -> tryClosePlaybackPanel()
             is MainNavigationAction.Directions ->
                 findNavController().navigateSafe(action.directions)
         }
@@ -279,7 +279,7 @@ class MainFragment :
 
     private fun handleExploreNavigation(item: Music?) {
         if (item != null) {
-            tryCollapseSheets()
+            tryClosePlaybackPanel()
         }
     }
 
@@ -318,22 +318,33 @@ class MainFragment :
         }
     }
 
-    private fun tryExpandSheets() {
+    private fun tryOpenPlaybackPanel() {
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
+
         if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_COLLAPSED) {
             // Playback sheet is not expanded and not hidden, we can expand it.
             playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_EXPANDED
+            return
+        }
+
+        val queueSheetBehavior =
+            (binding.queueSheet.coordinatorLayoutBehavior ?: return) as QueueBottomSheetBehavior
+        if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
+            queueSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED) {
+            // Queue sheet and playback sheet is expanded, close the queue sheet so the
+            // playback panel can eb shown.
+            queueSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
         }
     }
 
-    private fun tryCollapseSheets() {
+    private fun tryClosePlaybackPanel() {
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
         if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED) {
-            // Make sure the queue is also collapsed here.
+            // Playback sheet (and possibly queue) needs to be collapsed.
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
             playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED

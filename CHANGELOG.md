@@ -1,5 +1,10 @@
 # Changelog
 
+## dev
+
+## What's Improved
+- Added ability to click on the playback bar to exit the queue view
+
 ## 3.0.4
 
 #### What's New

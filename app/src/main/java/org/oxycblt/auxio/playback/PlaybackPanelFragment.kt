@@ -84,7 +84,9 @@ class PlaybackPanelFragment :
         }
 
         binding.playbackToolbar.apply {
-            setNavigationOnClickListener { navModel.mainNavigateTo(MainNavigationAction.Collapse) }
+            setNavigationOnClickListener {
+                navModel.mainNavigateTo(MainNavigationAction.ClosePlaybackPanel)
+            }
             setOnMenuItemClickListener(this@PlaybackPanelFragment)
         }
 

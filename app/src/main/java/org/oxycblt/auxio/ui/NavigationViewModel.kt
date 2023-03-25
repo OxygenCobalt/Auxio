@@ -128,10 +128,10 @@ class NavigationViewModel : ViewModel() {
  */
 sealed class MainNavigationAction {
     /** Expand the playback panel. */
-    object Expand : MainNavigationAction()
+    object OpenPlaybackPanel : MainNavigationAction()
 
     /** Collapse the playback bottom sheet. */
-    object Collapse : MainNavigationAction()
+    object ClosePlaybackPanel : MainNavigationAction()
 
     /**
      * Navigate to the given [NavDirections].
