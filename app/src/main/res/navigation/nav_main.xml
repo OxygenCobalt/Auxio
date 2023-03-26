@@ -30,31 +30,31 @@
 
     <dialog
         android:id="@+id/artist_playback_picker_dialog"
-        android:name="org.oxycblt.auxio.picker.ArtistPlaybackPickerDialog"
+        android:name="org.oxycblt.auxio.playback.picker.ArtistPlaybackPickerDialog"
         android:label="artist_playback_picker_dialog"
         tools:layout="@layout/dialog_music_picker">
         <argument
-            android:name="itemUid"
+            android:name="artistUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
 
     <dialog
         android:id="@+id/artist_navigation_picker_dialog"
-        android:name="org.oxycblt.auxio.picker.ArtistNavigationPickerDialog"
+        android:name="org.oxycblt.auxio.navigation.picker.ArtistNavigationPickerDialog"
         android:label="artist_navigation_picker_dialog"
         tools:layout="@layout/dialog_music_picker">
         <argument
-            android:name="itemUid"
+            android:name="artistUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
 
     <dialog
         android:id="@+id/genre_playback_picker_dialog"
-        android:name="org.oxycblt.auxio.picker.GenrePlaybackPickerDialog"
+        android:name="org.oxycblt.auxio.playback.picker.GenrePlaybackPickerDialog"
         android:label="genre_playback_picker_dialog"
         tools:layout="@layout/dialog_music_picker">
         <argument
-            android:name="itemUid"
+            android:name="genreUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
 
@@ -64,7 +64,7 @@
         android:label="song_detail_dialog"
         tools:layout="@layout/dialog_song_detail">
         <argument
-            android:name="itemUid"
+            android:name="songUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
 

@@ -16,10 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.ui
+package org.oxycblt.auxio.navigation
 
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavDirections
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
@@ -28,7 +27,13 @@ import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
 
-/** A [ViewModel] that handles complicated navigation functionality. */
+/**
+ * A [ViewModel] that handles complicated navigation functionality.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: This whole system is very jankily designed, perhaps it's time for a refactor?
+ */
 class NavigationViewModel : ViewModel() {
     private val _mainNavigationAction = MutableEvent<MainNavigationAction>()
     /**
@@ -117,27 +122,4 @@ class NavigationViewModel : ViewModel() {
             _exploreArtistNavigationItem.put(item)
         }
     }
-}
-
-/**
- * Represents the possible actions within the main navigation graph. This can be used with
- * [NavigationViewModel] to initiate navigation in the main navigation graph from anywhere in the
- * app, including outside the main navigation graph.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-sealed class MainNavigationAction {
-    /** Expand the playback panel. */
-    object OpenPlaybackPanel : MainNavigationAction()
-
-    /** Collapse the playback bottom sheet. */
-    object ClosePlaybackPanel : MainNavigationAction()
-
-    /**
-     * Navigate to the given [NavDirections].
-     *
-     * @param directions The [NavDirections] to navigate to. Assumed to be part of the main
-     *   navigation graph.
-     */
-    data class Directions(val directions: NavDirections) : MainNavigationAction()
 }

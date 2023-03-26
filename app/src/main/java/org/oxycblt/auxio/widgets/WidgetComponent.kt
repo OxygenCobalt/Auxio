@@ -98,8 +98,8 @@ constructor(
                         builder
                             .size(getSafeRemoteViewsImageSize(context, 10f))
                             .transformations(
-                            SquareFrameTransform.INSTANCE,
-                            RoundedCornersTransformation(cornerRadius.toFloat()))
+                                SquareFrameTransform.INSTANCE,
+                                RoundedCornersTransformation(cornerRadius.toFloat()))
                     } else {
                         builder.size(getSafeRemoteViewsImageSize(context))
                     }

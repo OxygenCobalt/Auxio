@@ -66,7 +66,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
         super.onBindingCreated(binding, savedInstanceState)
         binding.detailProperties.adapter = detailAdapter
         // DetailViewModel handles most initialization from the navigation argument.
-        detailModel.setSongUid(args.itemUid)
+        detailModel.setSongUid(args.songUid)
         collectImmediately(detailModel.currentSong, detailModel.songAudioInfo, ::updateSong)
     }
 

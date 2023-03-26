@@ -2,6 +2,9 @@
 
 ## dev
 
+## What's Fixed
+- Fixed inconsistent corner radius on widget cover art
+
 ## What's Improved
 - Added ability to click on the playback bar to exit the queue view
 

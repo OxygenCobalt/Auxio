@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2022 Auxio Project
- * GenrePlaybackPickerDialog.kt is part of Auxio.
+ * Copyright (c) 2023 Auxio Project
+ * PickerDialogFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,54 +21,53 @@ package org.oxycblt.auxio.picker
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
-import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
 import org.oxycblt.auxio.list.ClickableListListener
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.list.adapter.UpdateInstructions
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.requireIs
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A picker [ViewBindingDialogFragment] intended for when [Genre] playback is ambiguous.
+ * A [ViewBindingDialogFragment] that acts as the base for a "picker" UI, shown when a given choice
+ * is ambiguous.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-@AndroidEntryPoint
-class GenrePlaybackPickerDialog :
-    ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<Genre> {
-    private val pickerModel: PickerViewModel by viewModels()
-    private val playbackModel: PlaybackViewModel by activityViewModels()
-    // Information about what Song to show choices for is initially within the navigation arguments
-    // as UIDs, as that is the only safe way to parcel a Song.
-    private val args: GenrePlaybackPickerDialogArgs by navArgs()
+abstract class PickerDialogFragment<T : Music> :
+    ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<T> {
     // Okay to leak this since the Listener will not be called until after initialization.
-    private val genreAdapter = GenreChoiceAdapter(@Suppress("LeakingThis") this)
+    private val choiceAdapter = ChoiceAdapter(@Suppress("LeakingThis") this)
+
+    /** The string resource to use in the dialog title. */
+    abstract val titleRes: Int
+    /** The [StateFlow] of choices to show in the picker. */
+    abstract val pickerChoices: StateFlow<PickerChoices<T>?>
+    /** Called when the choice list should be initialized from the stored arguments. */
+    abstract fun initChoices()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogMusicPickerBinding.inflate(inflater)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
-        builder.setTitle(R.string.lbl_genres).setNegativeButton(R.string.lbl_cancel, null)
+        builder.setTitle(titleRes).setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {
-        binding.pickerRecycler.adapter = genreAdapter
+        binding.pickerRecycler.apply {
+            itemAnimator = null
+            adapter = choiceAdapter
+        }
 
-        pickerModel.setItemUid(args.itemUid)
-        collectImmediately(pickerModel.genreChoices) { genres ->
-            if (genres.isNotEmpty()) {
-                // Make sure the genre choices align with any changes in the music library.
-                genreAdapter.submitList(genres)
+        initChoices()
+        collectImmediately(pickerChoices) { item ->
+            if (item != null) {
+                // Make sure the choices align with any changes in the music library.
+                choiceAdapter.update(item.choices, UpdateInstructions.Diff)
             } else {
                 // Not showing any choices, navigate up.
                 findNavController().navigateUp()
@@ -80,9 +79,7 @@ class GenrePlaybackPickerDialog :
         binding.pickerRecycler.adapter = null
     }
 
-    override fun onClick(item: Genre, viewHolder: RecyclerView.ViewHolder) {
-        // User made a choice, play the given song from that genre.
-        val song = requireIs<Song>(unlikelyToBeNull(pickerModel.currentItem.value))
-        playbackModel.playFromGenre(song, item)
+    override fun onClick(item: T, viewHolder: RecyclerView.ViewHolder) {
+        findNavController().navigateUp()
     }
 }

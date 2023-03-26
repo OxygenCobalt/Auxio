@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
- * ArtistPlaybackPickerDialog.kt is part of Auxio.
+ * ArtistNavigationPickerDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,41 +16,46 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.picker
+package org.oxycblt.auxio.navigation.picker
 
-import android.os.Bundle
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
-import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
+import kotlinx.coroutines.flow.StateFlow
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.requireIs
-import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.auxio.navigation.NavigationViewModel
+import org.oxycblt.auxio.picker.PickerChoices
+import org.oxycblt.auxio.picker.PickerDialogFragment
 
 /**
- * An [ArtistPickerDialog] intended for when [Artist] playback is ambiguous.
+ * A [PickerDialogFragment] intended for when [Artist] navigation is ambiguous.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class ArtistPlaybackPickerDialog : ArtistPickerDialog() {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
+class ArtistNavigationPickerDialog : PickerDialogFragment<Artist>() {
+    private val navModel: NavigationViewModel by activityViewModels()
+    private val pickerModel: NavigationPickerViewModel by viewModels()
     // Information about what Song to show choices for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel a Song.
-    private val args: ArtistPlaybackPickerDialogArgs by navArgs()
+    private val args: ArtistNavigationPickerDialogArgs by navArgs()
 
-    override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {
-        pickerModel.setItemUid(args.itemUid)
-        super.onBindingCreated(binding, savedInstanceState)
+    override val titleRes: Int
+        get() = R.string.lbl_artists
+
+    override val pickerChoices: StateFlow<PickerChoices<Artist>?>
+        get() = pickerModel.currentArtistChoices
+
+    override fun initChoices() {
+        pickerModel.setArtistChoiceUid(args.artistUid)
     }
 
     override fun onClick(item: Artist, viewHolder: RecyclerView.ViewHolder) {
         super.onClick(item, viewHolder)
-        // User made a choice, play the given song from that artist.
-        val song = requireIs<Song>(unlikelyToBeNull(pickerModel.currentItem.value))
-        playbackModel.playFromArtist(song, item)
+        // User made a choice, navigate to it.
+        navModel.exploreNavigateTo(item)
     }
 }
