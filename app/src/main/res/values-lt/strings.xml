@@ -275,4 +275,5 @@
     <string name="lbl_playlists">Grojaraščiai</string>
     <string name="desc_playlist_image">Grojaraščio vaizdas %s</string>
     <string name="lbl_none">Jokios</string>
+    <string name="desc_new_playlist">Sukurti naują grojaraštį</string>
 </resources>
