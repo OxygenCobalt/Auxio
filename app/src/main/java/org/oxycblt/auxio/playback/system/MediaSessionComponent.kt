@@ -21,12 +21,18 @@ package org.oxycblt.auxio.playback.system
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.annotation.ColorInt
+import androidx.core.graphics.ColorUtils
 import androidx.media.session.MediaButtonReceiver
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -43,6 +49,8 @@ import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.playback.state.InternalPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.ui.UISettings
+import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -58,6 +66,7 @@ constructor(
     private val bitmapProvider: BitmapProvider,
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
+    private val uiSettings: UISettings
 ) :
     MediaSessionCompat.Callback(),
     PlaybackStateManager.Listener,
@@ -332,12 +341,37 @@ constructor(
                 override fun onCompleted(bitmap: Bitmap?) {
                     builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap)
                     builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
-                    val metadata = builder.build()
-                    mediaSession.setMetadata(metadata)
-                    notification.updateMetadata(metadata)
+                    mediaSession.setMetadata(builder.build())
+
+                    // show a player notification thumbnail based on the accent color
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && bitmap == null) {
+                        val color = context.getColorCompat(uiSettings.accent.primary).defaultColor
+                        val primaryDarkVersion = ColorUtils.blendARGB(color, Color.BLACK, 0.3f)
+                        val notificationBitmap = createOneColorBitmap(1, 1, primaryDarkVersion)
+                        builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, notificationBitmap)
+                        builder.putBitmap(
+                            MediaMetadataCompat.METADATA_KEY_ALBUM_ART, notificationBitmap)
+                    }
+                    notification.updateMetadata(builder.build())
                     listener?.onPostNotification(notification)
                 }
             })
+    }
+
+    /**
+     * Generate a bitmap based on a single color.
+     *
+     * @param width
+     * @param height
+     * @param color
+     * @return An image with a single color using the given width and height.
+     */
+    fun createOneColorBitmap(width: Int, height: Int, @ColorInt color: Int): Bitmap {
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = Paint().also { it.color = color }
+        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
+        return bitmap
     }
 
     /**
