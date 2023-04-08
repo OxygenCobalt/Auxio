@@ -279,4 +279,6 @@
     <string name="lbl_playlists">Playlist</string>
     <string name="set_intelligent_sorting">Ignora gli articoli durante l\'ordinamento</string>
     <string name="set_intelligent_sorting_desc">Ignora parole come \"the\" durante l\'ordinamento per nome (funziona meglio con la musica in lingua inglese)</string>
+    <string name="desc_new_playlist">Crea una nuova playlist</string>
+    <string name="desc_playlist_image">Immagine della playlist per %s</string>
 </resources>
