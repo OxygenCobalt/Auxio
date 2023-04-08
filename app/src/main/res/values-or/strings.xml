@@ -2,4 +2,7 @@
 <resources>
     <string name="clr_yellow">ହଳଦିଆ</string>
     <string name="clr_orange">କମଳା</string>
+    <string name="clr_green">ସବୁଜ</string>
+    <string name="clr_blue">ନୀଳ</string>
+    <string name="clr_deep_blue">ଘନ ନୀଳ</string>
 </resources>
