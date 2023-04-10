@@ -1,10 +1,10 @@
-Auxio je lokalan izvođač glazbe sa brzim UI/UX na koji se možete osloniti, bez nepotrebnih značajki koje su prisutne u ostalim izvođačima glazbe. Kreiran od <a href="https://exoplayer.dev/">Exoplayer</a>, Auxio vam daje mnogo bolje iskustvo slušanja u usporedbi s ostalim aplikacijama, koje koriste uobičajen MediaPlayer API. Ukratko, <b>reproducira glazbu.</b>
+Auxio je lokalni izvođač glazbe s brzim i pouzdanim korisničkim sučeljem/korisničkim iskustvom bez nepotrebnih značajki koje su prisutne u ostalim izvođačima glazbe. Kreiran od Exoplayera, Auxio ima vrhunsku podršku za biblioteke i kvalitetu slušanja u usporedbi s drugim aplikacijama koje koriste zastarjelu funkcionalnost Androida. Ukratko, <b>reproducira glazbu.</b>
 
 <b>Značajke</b>
 
 - Reprodukcija bazirana na ExoPlayeru
-- Elegantan UI u skladu s najnovijim Materijalnim Dizajnom
-- UX koji naglašava bolju lakoću korištenja, nasuprot kompleksnim postavkama
+- Brzo korisničko sučelje u skladu s najnovijim Materijal dizajnom
+- Korisničko iskustvo koje priorizira jednostavnost korištenja, nasuprot kompleksnim postavkama
 - Prilagodljive radnje aplikacije
 - Napredan čitač medija koji naglašava točnost metapodataka
 - Svjestan SD kartice, te tako oprezno raspoređuje mape
