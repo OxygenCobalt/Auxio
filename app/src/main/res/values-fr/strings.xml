@@ -177,9 +177,7 @@
     <string name="set_music">Musique</string>
     <string name="set_images">Images</string>
     <string name="set_cover_mode_quality">Qualité améliorée (chargement lent)</string>
-    <string name="set_auto_sort_names_desc">Ignorez les mots comme \"the\" lors du tri par nom (fonctionne mieux avec la musique en anglais)</string>
     <string name="set_separators_desc">Configurer les caractères qui indiquent plusieurs valeurs de balise</string>
-    <string name="set_auto_sort_names">Ignorer les articles lors du tri</string>
     <string name="set_cover_mode">Pochettes d\'albums</string>
     <string name="set_hide_collaborators">Masquer les collaborateurs</string>
     <string name="set_hide_collaborators_desc">Afficher uniquement les artistes qui sont directement crédités sur un album (fonctionne mieux sur les bibliothèques bien étiquetées)</string>

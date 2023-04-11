@@ -271,4 +271,9 @@
     <string name="lbl_sort_dec">Mažėjantis</string>
     <string name="set_intelligent_sorting_desc">Ignoruoti tokius žodžius kaip „the“, kai rūšiuojama pagal pavadinimą (geriausiai veikia su anglų kalbos muzika)</string>
     <string name="set_intelligent_sorting">Ignoruoti straipsnius rūšiuojant</string>
+    <string name="lbl_playlist">Grojaraštis</string>
+    <string name="lbl_playlists">Grojaraščiai</string>
+    <string name="desc_playlist_image">Grojaraščio vaizdas %s</string>
+    <string name="lbl_none">Jokios</string>
+    <string name="desc_new_playlist">Sukurti naują grojaraštį</string>
 </resources>

@@ -136,7 +136,7 @@
     <string name="set_playback_mode_album">Odtwórz album</string>
     <string name="set_headset_autoplay_desc">Automatycznie odtwórz muzykę po podłączeniu słuchawek (może nie działać na wszystkich urządzeniach)</string>
     <string name="set_reindex">Odśwież muzykę</string>
-    <string name="set_reindex_desc">Odśwież bibliotekę muzyczną używając tagów z pamięci cache, jeśli to możliwe</string>
+    <string name="set_reindex_desc">Odśwież bibliotekę muzyczną używając tagów z pamięci cache, jeśli są dostępne</string>
     <string name="desc_clear_queue_item">Usuń utwór z kolejki</string>
     <string name="set_replay_gain_mode_album">Preferuj album</string>
     <string name="set_observing">Automatycznie odśwież</string>
@@ -277,8 +277,10 @@
     <string name="err_did_not_save">Nie można zapisać stanu odtwarzania</string>
     <string name="lbl_sort_dec">Malejąco</string>
     <string name="lbl_playlists">Playlisty</string>
-    <string name="lbl_playlist">Playlist</string>
-    <string name="desc_playlist_image">Obraz playlisty dla %s</string>
-    <string name="set_intelligent_sorting">Ignoruj rodzajniki podczas sortowania</string>
-    <string name="set_intelligent_sorting_desc">Ignoruj słowa takie jak „the” podczas sortowania według tytułu (działa najlepiej z tytułami w języku angielskim)</string>
+    <string name="lbl_playlist">Playlista</string>
+    <string name="desc_playlist_image">Obraz playlisty %s</string>
+    <string name="set_intelligent_sorting">Inteligentne sortowanie</string>
+    <string name="set_intelligent_sorting_desc">Ignoruj słowa takie jak „the” oraz numery w tytule podczas sortowania (działa najlepiej z utworami w języku angielskim)</string>
+    <string name="lbl_none">Brak</string>
+    <string name="desc_new_playlist">Utwórz nową playlistę</string>
 </resources>

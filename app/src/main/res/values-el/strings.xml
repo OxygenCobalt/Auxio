@@ -2,7 +2,7 @@
 <resources>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Προσπάθεια εκ νέου</string>
-    <string name="lbl_grant">Χορήγησε</string>
+    <string name="lbl_grant">Χορήγηση</string>
     <string name="lbl_genres">Είδη</string>
     <string name="lbl_artists">Καλλιτέχνες</string>
     <string name="lbl_albums">Άλμπουμ</string>
@@ -13,7 +13,7 @@
     <string name="lbl_filter_all">Όλα</string>
     <string name="lbl_sort">Σειρά Διάταξης</string>
     <string name="lbl_play">Αναπαραγωγή</string>
-    <string name="lbl_shuffle">Tυχαία αναπαραγωγή</string>
+    <string name="lbl_shuffle">Τυχαία αναπαραγωγή</string>
     <string name="lbl_playback">Τώρα Παίζεται</string>
     <string name="lbl_queue">Ουρά αναπαραγωγής</string>
     <string name="lbl_play_next">Επόμενο</string>
@@ -81,10 +81,10 @@
     <string name="lbl_add">Πρόσθεση</string>
     <string name="lbl_props">Ιδιότητες τραγουδιού</string>
     <string name="lbl_file_name">Όνομα αρχείου</string>
-    <string name="lbl_song_detail">Προβολή Ιδιωτήτων</string>
+    <string name="lbl_song_detail">Προβολή Ιδιοτήτων</string>
     <string name="lbl_library_counts">Στατιστικά συλλογής</string>
-    <string name="lbl_album_live">Ζωντανό Album</string>
-    <string name="lbl_album_remix">Ρεμίξ album</string>
+    <string name="lbl_album_live">Ζωντανό άλμπουμ</string>
+    <string name="lbl_album_remix">Ρεμίξ άλμπουμ</string>
     <string name="lbl_ep_live">Ζωντανό EP</string>
     <string name="lbl_ep_remix">Ρεμίξ EP</string>
     <string name="lbl_compilations">Συλλογές</string>
@@ -97,10 +97,10 @@
     <string name="lbl_duration">Διάρκεια</string>
     <string name="fmt_lib_total_duration">Συνολική διάρκεια: %s</string>
     <string name="err_no_dirs">Καθόλου φάκελοι</string>
-    <string name="info_app_desc">Μιά απλή, λογική εφαρμογή αναπαραγωγής μουσικής για Android.</string>
+    <string name="info_app_desc">Μια απλή, λογική εφαρμογή αναπαραγωγής μουσικής για Android.</string>
     <string name="lbl_indexer">Φόρτωση μουσικής</string>
     <string name="lng_widget">Προβολή και έλεγχος αναπαραγωγής μουσικής</string>
-    <string name="lbl_album">Album</string>
+    <string name="lbl_album">Άλμπουμ</string>
     <string name="lbl_eps">EP</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_artist">Καλλιτέχνης</string>
@@ -132,4 +132,11 @@
     <string name="lbl_live_group">Ζωντανά</string>
     <string name="set_dirs">Φάκελοι μουσικής</string>
     <string name="lbl_track">Μουσικο κομματι</string>
+    <string name="lbl_compilation_live">Σύνθεση ζωντανών κομματιών</string>
+    <string name="lbl_compilation_remix">Σύνθεση ρεμίξ</string>
+    <string name="lbl_equalizer">Ισοσταθμιστής</string>
+    <string name="lbl_play_selected">Αναπαραγωγή επιλεγμένου</string>
+    <string name="lbl_shuffle_selected">Τυχαία αναπαραγωγή επιλεγμένων</string>
+    <string name="lbl_single">Ενιαία κυκλοφορία</string>
+    <string name="lbl_singles">Σινγκλ</string>
 </resources>

@@ -285,4 +285,6 @@
     <string name="lbl_playlist">Seznam skladeb</string>
     <string name="set_intelligent_sorting">Při řazení ignorovat předložky</string>
     <string name="set_intelligent_sorting_desc">Ignorovat slova jako „the“ při řazení podle názvu (funguje nejlépe u hudby v angličtině)</string>
+    <string name="lbl_none">Žádné</string>
+    <string name="desc_new_playlist">Vytvořit nový playlist</string>
 </resources>

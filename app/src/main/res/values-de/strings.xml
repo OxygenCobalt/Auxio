@@ -276,4 +276,6 @@
     <string name="lbl_playlists">Wiedergabelisten</string>
     <string name="set_intelligent_sorting">Artikel beim Sortieren ignorieren</string>
     <string name="set_intelligent_sorting_desc">Wörter wie „the“ ignorieren (funktioniert am besten mit englischsprachiger Musik)</string>
+    <string name="lbl_none">Keine</string>
+    <string name="desc_new_playlist">Neue Wiedergabeliste erstellen</string>
 </resources>

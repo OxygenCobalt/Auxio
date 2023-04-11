@@ -283,4 +283,6 @@
     <string name="desc_playlist_image">Обложка плейлиста для %s</string>
     <string name="set_intelligent_sorting">Игнорировать артикли при сортировке</string>
     <string name="set_intelligent_sorting_desc">Игнорировать такие слова, как «the», при сортировке по имени (лучше всего работает с англоязычной музыкой)</string>
+    <string name="lbl_none">Откл.</string>
+    <string name="desc_new_playlist">Создать новый плейлист</string>
 </resources>

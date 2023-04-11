@@ -264,11 +264,13 @@
     <string name="set_playback">Reprodukcija</string>
     <string name="set_library">Fonoteka</string>
     <string name="set_state">Status reprodukcije</string>
-    <string name="set_auto_sort_names">Zanemarite članke prilikom sortiranja</string>
     <string name="lbl_playlists">Popisi pjesama</string>
     <string name="lbl_playlist">Popis pjesama</string>
     <string name="set_music">Glazba</string>
-    <string name="set_auto_sort_names_desc">Ignorirajte riječi poput \"the\" prilikom sortiranja po imenu (najbolje radi s glazbom na engleskom jeziku)</string>
-    <string name="desc_playlist_image">Slika popisa za reprodukciju za %s</string>
+    <string name="desc_playlist_image">Slika popisa pjesama za %s</string>
     <string name="set_behavior">Ponašanje</string>
+    <string name="lbl_none">Ništa</string>
+    <string name="set_intelligent_sorting">Pametno razvrstavanje</string>
+    <string name="set_intelligent_sorting_desc">Ispravno razvrstaj imena koja počinju brojevima ili riječima poput „the” (najbolje radi s glazbom na engleskom jeziku)</string>
+    <string name="desc_new_playlist">Stvori novi popis pjesama</string>
 </resources>

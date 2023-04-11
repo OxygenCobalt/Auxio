@@ -274,4 +274,6 @@
     <string name="desc_playlist_image">Вокладка плэйліст для %s</string>
     <string name="lbl_playlist">Плэйліст</string>
     <string name="lbl_playlists">Плэйлісты</string>
+    <string name="lbl_none">Адкл.</string>
+    <string name="desc_new_playlist">Стварыце новы плэйліст</string>
 </resources>
