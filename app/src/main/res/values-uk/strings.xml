@@ -82,7 +82,7 @@
     <string name="lbl_album_live">Концертний альбом</string>
     <string name="lbl_relative_path">Шлях до каталогу</string>
     <string name="set_display">Екран</string>
-    <string name="lbl_date">Дата</string>
+    <string name="lbl_date">Рік</string>
     <string name="lbl_play_selected">Відтворити вибране</string>
     <string name="set_cover_mode">Обкладинки альбомів</string>
     <string name="set_hide_collaborators">Приховати співавторів</string>
@@ -271,7 +271,7 @@
     <string name="set_playback">Відтворення</string>
     <string name="set_replay_gain">Вирівнювання гучності (ReplayGain)</string>
     <string name="set_library">Бібліотека</string>
-    <string name="set_state">Наполегливість</string>
+    <string name="set_state">Стан відтворення</string>
     <string name="set_audio_desc">Налаштування звуку і поведінки при відтворенні</string>
     <string name="set_dirs_list">Папки</string>
     <string name="lbl_sort_dec">За спаданням</string>
