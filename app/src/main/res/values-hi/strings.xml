@@ -35,7 +35,7 @@
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_play_pause">चलाएं/रोकें</string>
     <!-- Hint Namespace | EditText Hints -->
-    <string name="lng_search_library">संग्रह में खोजें</string>
+    <string name="lng_search_library">संग्रह में खोजें…</string>
     <!-- Color Label namespace | Accent names -->
     <!-- Format Namespace | Value formatting/plurals -->
     <plurals name="fmt_song_count">
