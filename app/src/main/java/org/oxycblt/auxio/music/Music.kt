@@ -355,6 +355,9 @@ class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName
     init {
         var sortName = name
         if (musicSettings.intelligentSorting) {
+            // Strip any quotes, dots, and open parentheses from the beginning
+            sortName = sortName.replace(Regex("""^['".(]+"""), "")
+
             sortName =
                 sortName.run {
                     when {
@@ -365,16 +368,8 @@ class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName
                     }
                 }
 
-            // TODO: replace starting ' " ... (
-
-            // Zero pad the first number to (an arbitrary) five digits for better sorting
-            // Will also accept commas in between digits and strip them
-            sortName =
-                sortName.replace("""(\d+[\d,]+\d+|\d+)(.*)""".toRegex()) {
-                    val (firstNumber, remainingText) = it.destructured
-                    val onlyDigits = firstNumber.filter { c -> c.isDigit() }
-                    onlyDigits.padStart(5, '0') + remainingText
-                }
+            // Zero pad all numbers to (an arbitrary) five digits for better sorting
+            sortName = sortName.replace(Regex("""\d+""")) { it.value.padStart(5, '0') }
         }
 
         collationKey = COLLATOR.getCollationKey(sortName)
