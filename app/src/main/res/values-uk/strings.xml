@@ -177,7 +177,7 @@
     <string name="set_dirs_mode_include_desc">Музика буде завантажена <b>тільки</b> з вибраних папок.</string>
     <string name="set_restore_desc">Відновити раніше збережений стан відтворення (якщо є)</string>
     <string name="set_pre_amp_with">Регулювання на основі тегів</string>
-    <string name="set_replay_gain_mode">Вирівнювання гучності (ReplayGain)</string>
+    <string name="set_replay_gain_mode">Налаштування ReplayGain</string>
     <string name="set_save_state">Зберегти стан відтворення</string>
     <string name="set_wipe_state">Очистити стан відтворення</string>
     <string name="set_restore_state">Відновити стан відтворення</string>
@@ -204,7 +204,7 @@
     <string name="desc_exit">Зупинити відтворення</string>
     <string name="cdc_flac">Вільний аудіокодек без втрат (FLAC)</string>
     <string name="clr_deep_purple">Темно-фіолетовий</string>
-    <string name="fmt_selected">%d Вибрано</string>
+    <string name="fmt_selected">Вибрано %d</string>
     <string name="fmt_indexing">Завантаження музичної бібліотеки… (%1$d/%2$d)</string>
     <string name="fmt_bitrate">%d кбіт/с</string>
     <string name="fmt_sample_rate">%d Гц</string>
@@ -265,14 +265,14 @@
     <string name="set_behavior">Поведінка</string>
     <string name="set_ui_desc">Змініть тему та кольори застосунку</string>
     <string name="set_personalize_desc">Налаштуйте елементи керування та поведінку інтерфейсу користувача</string>
-    <string name="set_content_desc">Керування завантаженням музики та зображень</string>
+    <string name="set_content_desc">Керуйте завантаженням музики та зображень</string>
     <string name="set_music">Музика</string>
     <string name="set_images">Зображення</string>
     <string name="set_playback">Відтворення</string>
     <string name="set_replay_gain">Вирівнювання гучності (ReplayGain)</string>
     <string name="set_library">Бібліотека</string>
     <string name="set_state">Стан відтворення</string>
-    <string name="set_audio_desc">Налаштування звуку і поведінки при відтворенні</string>
+    <string name="set_audio_desc">Налаштуйте звук і поведінку при відтворенні</string>
     <string name="set_dirs_list">Папки</string>
     <string name="lbl_sort_dec">За спаданням</string>
     <string name="desc_playlist_image">Зображення списку відтворення для %s</string>
