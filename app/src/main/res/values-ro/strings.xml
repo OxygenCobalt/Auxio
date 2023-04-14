@@ -29,7 +29,7 @@
     <string name="lng_author">Dezvoltat de Alexander Capehart</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Setări</string>
-    <string name="set_ui">Aspect</string>
+    <string name="set_ui">Aspect și caracteristici</string>
     <string name="set_theme">Temă</string>
     <string name="set_theme_auto">Automat</string>
     <string name="set_theme_day">Luminos</string>
@@ -134,4 +134,30 @@
     <string name="set_display">Afişa</string>
     <string name="set_black_mode_desc">Utilizați o temă întunecată pur-negru</string>
     <string name="set_round_mode">Coperți rotunjite ale albumelor</string>
+    <string name="lbl_play_selected">Redare selecție</string>
+    <string name="lbl_playlist">Listă de redare</string>
+    <string name="lbl_playlists">Liste de redare</string>
+    <string name="lbl_sort_dec">Descrescător</string>
+    <string name="lbl_shuffle_selected">Selecție aleatorie aleasă</string>
+    <string name="set_action_mode_next">Treceți la următoarea</string>
+    <string name="set_playback_mode_artist">Redă de la artist</string>
+    <string name="set_playback_mode_genre">Redă din genul</string>
+    <string name="lbl_none">Nu există</string>
+    <string name="lbl_reset">Resetează</string>
+    <string name="lbl_wiki">Wiki</string>
+    <string name="lng_widget">Vizualizați și controlați redarea muzicii</string>
+    <string name="set_lib_tabs_desc">Schimbă vizibilitatea și ordinea taburilor din bibliotecă</string>
+    <string name="set_lib_tabs">Taburi din bibliotecă</string>
+    <string name="set_keep_shuffle">Nu uita de shuffle</string>
+    <string name="set_playback_mode_songs">Redă din toate melodiile</string>
+    <string name="set_library_song_playback_mode">În timpul redării din bibliotecă</string>
+    <string name="set_playback_mode_none">Redă de la articolul afișat</string>
+    <string name="set_content">Conținut</string>
+    <string name="set_notif_action">Acțiune de notificare personalizată</string>
+    <string name="set_keep_shuffle_desc">Menține funcția shuffle activată la redarea unei melodii noi</string>
+    <string name="set_bar_action">Personalizarea acțiunii bării de redare</string>
+    <string name="set_action_mode_repeat">Modul de repetare</string>
+    <string name="set_playback_mode_album">Redă din album</string>
+    <string name="set_detail_song_playback_mode">În timpul redării de la detaliile articolului</string>
+    <string name="set_behavior">Comportament</string>
 </resources>
