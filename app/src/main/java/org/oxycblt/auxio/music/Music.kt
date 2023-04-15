@@ -355,8 +355,7 @@ class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName
     init {
         var sortName = name
         if (musicSettings.intelligentSorting) {
-            // Strip any quotes, dots, and open parentheses from the beginning
-            sortName = sortName.replace(Regex("""^['".(]+"""), "")
+            sortName = sortName.replace(leadingPunctuation, "")
 
             sortName =
                 sortName.run {
@@ -368,8 +367,8 @@ class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName
                     }
                 }
 
-            // Zero pad all numbers to (an arbitrary) five digits for better sorting
-            sortName = sortName.replace(Regex("""\d+""")) { it.value.padStart(5, '0') }
+            // Zero pad all numbers to nine digits for better sorting
+            sortName = sortName.replace(consecutiveDigits) { it.value.padStart(9, '0') }
         }
 
         collationKey = COLLATOR.getCollationKey(sortName)
@@ -379,9 +378,8 @@ class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName
         // TODO: This needs to be moved elsewhere.
         thumbString =
             collationKey?.run {
-                var thumbChar = sourceString.firstOrNull()
-                if (thumbChar?.isLetter() != true) thumbChar = '#'
-                thumbChar.uppercase()
+                val thumbChar = sourceString.firstOrNull()
+                if (thumbChar?.isLetter() == true) thumbChar.uppercase() else "#"
             }
     }
 
@@ -395,6 +393,8 @@ class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName
 
     private companion object {
         val COLLATOR: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
+        val leadingPunctuation: Regex = Regex("""^\p{Punct}+""")
+        val consecutiveDigits: Regex = Regex("""\d+""")
     }
 }
 
