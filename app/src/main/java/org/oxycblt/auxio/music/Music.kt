@@ -349,13 +349,14 @@ interface Playlist : MusicParent {
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName> {
-    private val number: Int?
     private val collationKey: CollationKey
     val thumbString: String?
 
     init {
         var sortName = name
         if (musicSettings.intelligentSorting) {
+            sortName = sortName.replace(leadingPunctuation, "")
+
             sortName =
                 sortName.run {
                     when {
@@ -366,53 +367,34 @@ class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName
                     }
                 }
 
-            // Parse out numeric portions of the title and use those for sorting, if applicable.
-            when (val numericEnd = sortName.indexOfFirst { !it.isDigit() }) {
-                // No numeric component.
-                0 -> number = null
-                // Whole title is numeric.
-                -1 -> {
-                    number = sortName.toIntOrNull()
-                    sortName = ""
-                }
-                // Part of the title is numeric.
-                else -> {
-                    number = sortName.slice(0 until numericEnd).toIntOrNull()
-                    sortName = sortName.slice(numericEnd until sortName.length)
-                }
-            }
-        } else {
-            number = null
+            // Zero pad all numbers to six digits for better sorting
+            sortName = sortName.replace(consecutiveDigits) { it.value.padStart(6, '0') }
         }
 
         collationKey = COLLATOR.getCollationKey(sortName)
 
         // Keep track of a string to use in the thumb view.
+        // Simply show '#' for everything before 'A'
         // TODO: This needs to be moved elsewhere.
-        thumbString = (number?.toString() ?: collationKey?.run { sourceString.first().uppercase() })
+        thumbString =
+            collationKey?.run {
+                val thumbChar = sourceString.firstOrNull()
+                if (thumbChar?.isLetter() == true) thumbChar.uppercase() else "#"
+            }
     }
 
-    override fun toString(): String = number?.toString() ?: collationKey.sourceString
+    override fun toString(): String = collationKey.sourceString
 
-    override fun compareTo(other: SortName) =
-        when {
-            number != null && other.number != null -> number.compareTo(other.number)
-            number != null && other.number == null -> -1 // a < b
-            number == null && other.number != null -> 1 // a > b
-            else -> collationKey.compareTo(other.collationKey)
-        }
+    override fun compareTo(other: SortName) = collationKey.compareTo(other.collationKey)
 
-    override fun equals(other: Any?) =
-        other is SortName && number == other.number && collationKey == other.collationKey
+    override fun equals(other: Any?) = other is SortName && collationKey == other.collationKey
 
-    override fun hashCode(): Int {
-        var hashCode = collationKey.hashCode()
-        if (number != null) hashCode = 31 * hashCode + number
-        return hashCode
-    }
+    override fun hashCode(): Int = collationKey.hashCode()
 
     private companion object {
         val COLLATOR: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
+        val leadingPunctuation: Regex = Regex("""^\p{Punct}+""")
+        val consecutiveDigits: Regex = Regex("""\d+""")
     }
 }
 
