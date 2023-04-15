@@ -367,8 +367,8 @@ class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName
                     }
                 }
 
-            // Zero pad all numbers to nine digits for better sorting
-            sortName = sortName.replace(consecutiveDigits) { it.value.padStart(9, '0') }
+            // Zero pad all numbers to six digits for better sorting
+            sortName = sortName.replace(consecutiveDigits) { it.value.padStart(6, '0') }
         }
 
         collationKey = COLLATOR.getCollationKey(sortName)
