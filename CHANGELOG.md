@@ -1,5 +1,13 @@
 # Changelog
 
+## dev
+
+#### What's Fixed
+- Fixed inconsistent corner radius on widget
+- Fixed crash that would occur due to intelligent sort name functionality
+- Fixed crashing on music loading failures that should route to an error
+screen
+
 ## 3.0.4
 
 #### What's New

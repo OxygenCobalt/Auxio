@@ -23,9 +23,11 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
-import kotlinx.coroutines.*
 import java.util.LinkedList
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.*
@@ -37,8 +39,6 @@ import org.oxycblt.auxio.music.storage.MediaStoreExtractor
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Core music loading state class.
@@ -394,14 +394,18 @@ constructor(
         return libraryJob.await().getOrThrow()
     }
 
-    private inline fun <R> CoroutineScope.tryAsync(context: CoroutineContext = EmptyCoroutineContext, crossinline block: suspend () -> R) = async(context) {
-        try {
-            Result.success(block())
-        } catch (e: Exception) {
-            Result.failure(e)
+    private inline fun <R> CoroutineScope.tryAsync(
+        context: CoroutineContext = EmptyCoroutineContext,
+        crossinline block: suspend () -> R
+    ) =
+        async(context) {
+            try {
+                Result.success(block())
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
-    }
-    
+
     /**
      * Emit a new [Indexer.State.Indexing] state. This can be used to signal the current state of
      * the music loading process to external code. Assumes that the callee has already checked if
