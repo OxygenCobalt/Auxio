@@ -407,7 +407,7 @@ class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName
 
     private companion object {
         val COLLATOR: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
-        val LEADING_PUNCTUATION_REGEX = Regex("[^\\p{Punct}+]")
+        val LEADING_PUNCTUATION_REGEX = Regex("[\\p{Punct}+]")
         val CONSECUTIVE_DIGITS_REGEX = Regex("\\d+")
     }
 }

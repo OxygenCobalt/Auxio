@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## 3.0.5
 
 #### What's Fixed
 - Fixed inconsistent corner radius on widget
