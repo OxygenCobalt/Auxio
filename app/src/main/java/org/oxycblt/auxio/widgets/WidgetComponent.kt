@@ -95,9 +95,11 @@ constructor(
                     return if (cornerRadius > 0) {
                         // If rounded, reduce the bitmap size further to obtain more pronounced
                         // rounded corners.
-                        builder.transformations(
-                            SquareFrameTransform.INSTANCE,
-                            RoundedCornersTransformation(cornerRadius.toFloat()))
+                        builder
+                            .size(getSafeRemoteViewsImageSize(context, 10f))
+                            .transformations(
+                                SquareFrameTransform.INSTANCE,
+                                RoundedCornersTransformation(cornerRadius.toFloat()))
                     } else {
                         builder.size(getSafeRemoteViewsImageSize(context))
                     }

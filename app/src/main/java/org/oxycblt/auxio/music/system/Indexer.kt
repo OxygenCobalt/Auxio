@@ -25,15 +25,10 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import java.util.LinkedList
 import javax.inject.Inject
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.cache.CacheRepository
@@ -351,14 +346,15 @@ constructor(
 
         // Do the initial query of the cache and media databases in parallel.
         logD("Starting queries")
-        val mediaStoreQueryJob = scope.async { mediaStoreExtractor.query() }
+        val mediaStoreQueryJob = scope.tryAsync { mediaStoreExtractor.query() }
         val cache =
             if (withCache) {
                 cacheRepository.readCache()
             } else {
                 null
             }
-        val query = mediaStoreQueryJob.await()
+        // TODO: Stupid, actually bubble results properly
+        val query = mediaStoreQueryJob.await().getOrThrow()
 
         // Now start processing the queried song information in parallel. Songs that can't be
         // received from the cache are consisted incomplete and pushed to a separate channel
@@ -367,10 +363,10 @@ constructor(
         val completeSongs = Channel<RawSong>(Channel.UNLIMITED)
         val incompleteSongs = Channel<RawSong>(Channel.UNLIMITED)
         val mediaStoreJob =
-            scope.async {
+            scope.tryAsync {
                 mediaStoreExtractor.consume(query, cache, incompleteSongs, completeSongs)
             }
-        val metadataJob = scope.async { tagExtractor.consume(incompleteSongs, completeSongs) }
+        val metadataJob = scope.tryAsync { tagExtractor.consume(incompleteSongs, completeSongs) }
 
         // Await completed raw songs as they are processed.
         val rawSongs = LinkedList<RawSong>()
@@ -379,8 +375,8 @@ constructor(
             emitIndexing(Indexer.Indexing.Songs(rawSongs.size, query.projectedTotal))
         }
         // These should be no-ops
-        mediaStoreJob.await()
-        metadataJob.await()
+        mediaStoreJob.await().getOrThrow()
+        metadataJob.await().getOrThrow()
 
         if (rawSongs.isEmpty()) {
             logE("Music library was empty")
@@ -391,12 +387,24 @@ constructor(
         // parallel.
         logD("Discovered ${rawSongs.size} songs, starting finalization")
         emitIndexing(Indexer.Indexing.Indeterminate)
-        val libraryJob = scope.async(Dispatchers.Main) { Library.from(rawSongs, musicSettings) }
+        val libraryJob = scope.tryAsync(Dispatchers.Main) { Library.from(rawSongs, musicSettings) }
         if (cache == null || cache.invalidated) {
             cacheRepository.writeCache(rawSongs)
         }
-        return libraryJob.await()
+        return libraryJob.await().getOrThrow()
     }
+
+    private inline fun <R> CoroutineScope.tryAsync(
+        context: CoroutineContext = EmptyCoroutineContext,
+        crossinline block: suspend () -> R
+    ) =
+        async(context) {
+            try {
+                Result.success(block())
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
 
     /**
      * Emit a new [Indexer.State.Indexing] state. This can be used to signal the current state of
