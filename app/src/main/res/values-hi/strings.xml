@@ -56,4 +56,7 @@
     <string name="lbl_ok">ठीक है</string>
     <string name="lbl_artist">कलाकार</string>
     <string name="lbl_date_added">तिथि जोड़ी गई</string>
+    <string name="lbl_indexer">गाने लोड हो रहे है</string>
+    <string name="lbl_indexing">गाने लोड हो रहे है</string>
+    <string name="info_app_desc">एंड्रॉयड के लिए एक सीधा साधा, विवेकशील गाने बजाने वाला ऐप।</string>
 </resources>
