@@ -191,7 +191,7 @@
     <string name="lbl_size">Velikost</string>
     <string name="lbl_bitrate">Přenosová rychlost</string>
     <string name="lbl_sample_rate">Vzorkovací frekvence</string>
-    <string name="set_dirs">Hudební složky</string>
+    <string name="set_dirs">Složky s hudbou</string>
     <string name="set_restore_state">Obnovit stav přehrávání</string>
     <string name="lbl_state_restored">Stav obnoven</string>
     <string name="set_restore_desc">Obnovit dříve uložený stav přehrávání (pokud existuje)</string>
