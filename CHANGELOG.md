@@ -1,12 +1,10 @@
 # Changelog
 
-## dev
-
-## What's Fixed
-- Fixed inconsistent corner radius on widget cover art
-
-## What's Improved
-- Added ability to click on the playback bar to exit the queue view
+#### What's Fixed
+- Fixed inconsistent corner radius on widget
+- Fixed crash that would occur due to intelligent sort name functionality
+- Fixed crashing on music loading failures that should route to an error
+screen
 
 ## 3.0.4
 

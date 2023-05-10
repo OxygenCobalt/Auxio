@@ -355,7 +355,7 @@ class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName
     init {
         var sortName = name
         if (musicSettings.intelligentSorting) {
-            sortName = sortName.replace(leadingPunctuation, "")
+            sortName = sortName.replace(LEADING_PUNCTUATION_REGEX, "")
 
             sortName =
                 sortName.run {
@@ -367,8 +367,7 @@ class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName
                     }
                 }
 
-            // Zero pad all numbers to six digits for better sorting
-            sortName = sortName.replace(consecutiveDigits) { it.value.padStart(6, '0') }
+            sortName = sortName.replace(CONSECUTIVE_DIGITS_REGEX) { it.value.padStart(6, '0') }
         }
 
         collationKey = COLLATOR.getCollationKey(sortName)
@@ -393,8 +392,8 @@ class SortName(name: String, musicSettings: MusicSettings) : Comparable<SortName
 
     private companion object {
         val COLLATOR: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
-        val leadingPunctuation: Regex = Regex("""^\p{Punct}+""")
-        val consecutiveDigits: Regex = Regex("""\d+""")
+        val LEADING_PUNCTUATION_REGEX = Regex("[\\p{Punct}+]")
+        val CONSECUTIVE_DIGITS_REGEX = Regex("\\d+")
     }
 }
 
