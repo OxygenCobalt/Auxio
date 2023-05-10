@@ -1,4 +1,3 @@
-[submodule "ExoPlayer"]
-	path = ExoPlayer
-	url = https://github.com/OxygenCobalt/ExoPlayer.git
-	branch = auxio
+[submodule "media"]
+	path = media
+	url = https://github.com/OxygenCobalt/media.git

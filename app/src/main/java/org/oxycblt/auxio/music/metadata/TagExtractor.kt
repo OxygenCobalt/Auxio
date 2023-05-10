@@ -18,7 +18,7 @@
  
 package org.oxycblt.auxio.music.metadata
 
-import com.google.android.exoplayer2.MetadataRetriever
+import androidx.media3.exoplayer.MetadataRetriever
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield

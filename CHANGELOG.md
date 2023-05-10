@@ -1,5 +1,13 @@
 # Changelog
 
+## dev
+
+#### What's Fixed
+- Fixed issue where vorbis comments in the form of `metadata_block_picture` (lowercase) would not
+be parsed as images
+
+## 3.0.5
+
 #### What's Fixed
 - Fixed inconsistent corner radius on widget
 - Fixed crash that would occur due to intelligent sort name functionality

@@ -19,10 +19,10 @@
 package org.oxycblt.auxio.music.metadata
 
 import androidx.core.text.isDigitsOnly
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.MetadataRetriever
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.TrackGroupArray
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.MetadataRetriever
+import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.exoplayer.source.TrackGroupArray
 import java.util.concurrent.Future
 import javax.inject.Inject
 import org.oxycblt.auxio.music.device.RawSong

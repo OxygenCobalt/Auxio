@@ -20,12 +20,12 @@ package org.oxycblt.auxio.image.extractor
 
 import android.content.Context
 import android.media.MediaMetadataRetriever
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.MediaMetadata
-import com.google.android.exoplayer2.MetadataRetriever
-import com.google.android.exoplayer2.metadata.flac.PictureFrame
-import com.google.android.exoplayer2.metadata.id3.ApicFrame
-import com.google.android.exoplayer2.source.MediaSource
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.exoplayer.MetadataRetriever
+import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.extractor.metadata.flac.PictureFrame
+import androidx.media3.extractor.metadata.id3.ApicFrame
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.ByteArrayInputStream
 import java.io.InputStream
