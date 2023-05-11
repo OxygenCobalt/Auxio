@@ -30,7 +30,7 @@
 
     <dialog
         android:id="@+id/artist_playback_picker_dialog"
-        android:name="org.oxycblt.auxio.playback.picker.ArtistPlaybackPickerDialog"
+        android:name="org.oxycblt.auxio.playback.dialog.ArtistPlaybackPickerDialog"
         android:label="artist_playback_picker_dialog"
         tools:layout="@layout/dialog_music_picker">
         <argument
@@ -40,7 +40,7 @@
 
     <dialog
         android:id="@+id/artist_navigation_picker_dialog"
-        android:name="org.oxycblt.auxio.navigation.picker.ArtistNavigationPickerDialog"
+        android:name="org.oxycblt.auxio.navigation.dialog.ArtistNavigationPickerDialog"
         android:label="artist_navigation_picker_dialog"
         tools:layout="@layout/dialog_music_picker">
         <argument
@@ -50,7 +50,7 @@
 
     <dialog
         android:id="@+id/genre_playback_picker_dialog"
-        android:name="org.oxycblt.auxio.playback.picker.GenrePlaybackPickerDialog"
+        android:name="org.oxycblt.auxio.playback.dialog.GenrePlaybackPickerDialog"
         android:label="genre_playback_picker_dialog"
         tools:layout="@layout/dialog_music_picker">
         <argument

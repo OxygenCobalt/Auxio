@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.picker
+package org.oxycblt.auxio.playback.dialog
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +24,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.picker.PickerChoices
 
 /**
  * A [ViewModel] that stores the choices shown in the playback picker dialogs.
@@ -34,15 +33,10 @@ import org.oxycblt.auxio.picker.PickerChoices
 @HiltViewModel
 class PlaybackPickerViewModel @Inject constructor(private val musicRepository: MusicRepository) :
     ViewModel(), MusicRepository.UpdateListener {
-    private val _currentArtistChoices = MutableStateFlow<ArtistPlaybackChoices?>(null)
+    private val _currentPickerSong = MutableStateFlow<Song?>(null)
     /** The current set of [Artist] choices to show in the picker, or null if to show nothing. */
-    val currentArtistChoices: StateFlow<ArtistPlaybackChoices?>
-        get() = _currentArtistChoices
-
-    private val _currentGenreChoices = MutableStateFlow<GenrePlaybackChoices?>(null)
-    /** The current set of [Genre] choices to show in the picker, or null if to show nothing. */
-    val currentGenreChoices: StateFlow<GenrePlaybackChoices?>
-        get() = _currentGenreChoices
+    val currentPickerSong: StateFlow<Song?>
+        get() = _currentPickerSong
 
     init {
         musicRepository.addUpdateListener(this)
@@ -51,14 +45,7 @@ class PlaybackPickerViewModel @Inject constructor(private val musicRepository: M
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         if (!changes.deviceLibrary) return
         val deviceLibrary = musicRepository.deviceLibrary ?: return
-        _currentArtistChoices.value =
-            _currentArtistChoices.value?.run {
-                deviceLibrary.findSong(song.uid)?.let { newSong -> ArtistPlaybackChoices(newSong) }
-            }
-        _currentGenreChoices.value =
-            _currentGenreChoices.value?.run {
-                deviceLibrary.findSong(song.uid)?.let { newSong -> GenrePlaybackChoices(newSong) }
-            }
+        _currentPickerSong.value = _currentPickerSong.value?.run { deviceLibrary.findSong(uid) }
     }
 
     override fun onCleared() {
@@ -67,30 +54,11 @@ class PlaybackPickerViewModel @Inject constructor(private val musicRepository: M
     }
 
     /**
-     * Set the [Music.UID] of the item to show [Artist] choices for.
+     * Set the [Music.UID] of the [Song] to show choices for.
      *
      * @param uid The [Music.UID] of the item to show. Must be a [Song].
      */
-    fun setArtistChoiceUid(uid: Music.UID) {
-        _currentArtistChoices.value =
-            musicRepository.deviceLibrary?.findSong(uid)?.let { ArtistPlaybackChoices(it) }
+    fun setPickerSongUid(uid: Music.UID) {
+        _currentPickerSong.value = musicRepository.deviceLibrary?.findSong(uid)
     }
-
-    /**
-     * Set the [Music.UID] of the item to show [Genre] choices for.
-     *
-     * @param uid The [Music.UID] of the item to show. Must be a [Song].
-     */
-    fun setGenreChoiceUid(uid: Music.UID) {
-        _currentGenreChoices.value =
-            musicRepository.deviceLibrary?.findSong(uid)?.let { GenrePlaybackChoices(it) }
-    }
-}
-
-data class ArtistPlaybackChoices(val song: Song) : PickerChoices<Artist> {
-    override val choices = song.artists
-}
-
-data class GenrePlaybackChoices(val song: Song) : PickerChoices<Genre> {
-    override val choices = song.genres
 }

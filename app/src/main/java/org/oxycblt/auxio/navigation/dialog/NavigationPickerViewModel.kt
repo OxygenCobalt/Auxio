@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.navigation.picker
+package org.oxycblt.auxio.navigation.dialog
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +24,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.picker.PickerChoices
 
 /**
  * A [ViewModel] that stores the current information required for [ArtistNavigationPickerDialog].
@@ -36,7 +35,7 @@ class NavigationPickerViewModel @Inject constructor(private val musicRepository:
     ViewModel(), MusicRepository.UpdateListener {
     private val _currentArtistChoices = MutableStateFlow<ArtistNavigationChoices?>(null)
     /** The current set of [Artist] choices to show in the picker, or null if to show nothing. */
-    val currentArtistChoices: StateFlow<PickerChoices<Artist>?>
+    val currentArtistChoices: StateFlow<ArtistNavigationChoices?>
         get() = _currentArtistChoices
 
     init {
@@ -49,13 +48,13 @@ class NavigationPickerViewModel @Inject constructor(private val musicRepository:
         // Need to sanitize different items depending on the current set of choices.
         _currentArtistChoices.value =
             when (val choices = _currentArtistChoices.value) {
-                is ArtistNavigationChoices.FromSong ->
+                is SongArtistNavigationChoices ->
                     deviceLibrary.findSong(choices.song.uid)?.let {
-                        ArtistNavigationChoices.FromSong(it)
+                        SongArtistNavigationChoices(it)
                     }
-                is ArtistNavigationChoices.FromAlbum ->
+                is AlbumArtistNavigationChoices ->
                     deviceLibrary.findAlbum(choices.album.uid)?.let {
-                        ArtistNavigationChoices.FromAlbum(it)
+                        AlbumArtistNavigationChoices(it)
                     }
                 else -> null
             }
@@ -75,19 +74,32 @@ class NavigationPickerViewModel @Inject constructor(private val musicRepository:
         // Support Songs and Albums, which have parent artists.
         _currentArtistChoices.value =
             when (val music = musicRepository.find(uid)) {
-                is Song -> ArtistNavigationChoices.FromSong(music)
-                is Album -> ArtistNavigationChoices.FromAlbum(music)
+                is Song -> SongArtistNavigationChoices(music)
+                is Album -> AlbumArtistNavigationChoices(music)
                 else -> null
             }
     }
+}
 
-    private sealed interface ArtistNavigationChoices : PickerChoices<Artist> {
-        data class FromSong(val song: Song) : ArtistNavigationChoices {
-            override val choices = song.artists
-        }
+/**
+ * The current list of choices to show in the artist navigation picker dialog.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+sealed interface ArtistNavigationChoices {
+    /** The current [Artist] choices. */
+    val choices: List<Artist>
+}
 
-        data class FromAlbum(val album: Album) : ArtistNavigationChoices {
-            override val choices = album.artists
-        }
-    }
+/** Backing implementation of [ArtistNavigationChoices] that is based on a [Song]. */
+private data class SongArtistNavigationChoices(val song: Song) : ArtistNavigationChoices {
+    override val choices = song.artists
+}
+
+/**
+ * Backing implementation of [ArtistNavigationChoices] that is based on an
+ * [AlbumArtistNavigationChoices].
+ */
+private data class AlbumArtistNavigationChoices(val album: Album) : ArtistNavigationChoices {
+    override val choices = album.artists
 }
