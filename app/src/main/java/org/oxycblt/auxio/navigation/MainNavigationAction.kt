@@ -27,12 +27,12 @@ import androidx.navigation.NavDirections
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-sealed class MainNavigationAction {
+sealed interface MainNavigationAction {
     /** Expand the playback panel. */
-    object OpenPlaybackPanel : MainNavigationAction()
+    object OpenPlaybackPanel : MainNavigationAction
 
     /** Collapse the playback bottom sheet. */
-    object ClosePlaybackPanel : MainNavigationAction()
+    object ClosePlaybackPanel : MainNavigationAction
 
     /**
      * Navigate to the given [NavDirections].
@@ -40,5 +40,5 @@ sealed class MainNavigationAction {
      * @param directions The [NavDirections] to navigate to. Assumed to be part of the main
      *   navigation graph.
      */
-    data class Directions(val directions: NavDirections) : MainNavigationAction()
+    data class Directions(val directions: NavDirections) : MainNavigationAction
 }

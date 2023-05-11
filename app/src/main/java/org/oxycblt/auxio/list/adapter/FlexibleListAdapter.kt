@@ -62,16 +62,16 @@ abstract class FlexibleListAdapter<T, VH : RecyclerView.ViewHolder>(
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-sealed class UpdateInstructions {
+sealed interface UpdateInstructions {
     /** Use an asynchronous diff. Useful for unpredictable updates, but looks chaotic and janky. */
-    object Diff : UpdateInstructions()
+    object Diff : UpdateInstructions
 
     /**
      * Visually replace all items from a given point. More visually coherent than [Diff].
      *
      * @param from The index at which to start replacing items (inclusive)
      */
-    data class Replace(val from: Int) : UpdateInstructions()
+    data class Replace(val from: Int) : UpdateInstructions
 
     /**
      * Add a new set of items.
@@ -79,7 +79,7 @@ sealed class UpdateInstructions {
      * @param at The position at which to add.
      * @param size The amount of items to add.
      */
-    data class Add(val at: Int, val size: Int) : UpdateInstructions()
+    data class Add(val at: Int, val size: Int) : UpdateInstructions
 
     /**
      * Move one item to another location.
@@ -87,14 +87,14 @@ sealed class UpdateInstructions {
      * @param from The index of the item to move.
      * @param to The index to move the item to.
      */
-    data class Move(val from: Int, val to: Int) : UpdateInstructions()
+    data class Move(val from: Int, val to: Int) : UpdateInstructions
 
     /**
      * Remove an item.
      *
      * @param at The location that the item should be removed from.
      */
-    data class Remove(val at: Int) : UpdateInstructions()
+    data class Remove(val at: Int) : UpdateInstructions
 }
 
 /**

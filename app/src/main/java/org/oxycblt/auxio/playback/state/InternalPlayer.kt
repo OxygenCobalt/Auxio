@@ -75,22 +75,22 @@ interface InternalPlayer {
     fun setPlaying(isPlaying: Boolean)
 
     /** Possible long-running background tasks handled by the background playback task. */
-    sealed class Action {
+    sealed interface Action {
         /** Restore the previously saved playback state. */
-        object RestoreState : Action()
+        object RestoreState : Action
 
         /**
          * Start shuffled playback of the entire music library. Analogous to the "Shuffle All"
          * shortcut.
          */
-        object ShuffleAll : Action()
+        object ShuffleAll : Action
 
         /**
          * Start playing an audio file at the given [Uri].
          *
          * @param uri The [Uri] of the audio file to start playing.
          */
-        data class Open(val uri: Uri) : Action()
+        data class Open(val uri: Uri) : Action
     }
 
     /**

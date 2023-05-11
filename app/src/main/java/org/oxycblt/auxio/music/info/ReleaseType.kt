@@ -28,15 +28,15 @@ import org.oxycblt.auxio.R
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-sealed class ReleaseType {
+sealed interface ReleaseType {
     /**
      * A specification of what kind of performance this release is. If null, the release is
      * considered "Plain".
      */
-    abstract val refinement: Refinement?
+    val refinement: Refinement?
 
     /** The string resource corresponding to the name of this release type to show in the UI. */
-    abstract val stringRes: Int
+    val stringRes: Int
 
     /**
      * A plain album.
@@ -44,7 +44,7 @@ sealed class ReleaseType {
      * @param refinement A specification of what kind of performance this release is. If null, the
      *   release is considered "Plain".
      */
-    data class Album(override val refinement: Refinement?) : ReleaseType() {
+    data class Album(override val refinement: Refinement?) : ReleaseType {
         override val stringRes: Int
             get() =
                 when (refinement) {
@@ -61,7 +61,7 @@ sealed class ReleaseType {
      * @param refinement A specification of what kind of performance this release is. If null, the
      *   release is considered "Plain".
      */
-    data class EP(override val refinement: Refinement?) : ReleaseType() {
+    data class EP(override val refinement: Refinement?) : ReleaseType {
         override val stringRes: Int
             get() =
                 when (refinement) {
@@ -78,7 +78,7 @@ sealed class ReleaseType {
      * @param refinement A specification of what kind of performance this release is. If null, the
      *   release is considered "Plain".
      */
-    data class Single(override val refinement: Refinement?) : ReleaseType() {
+    data class Single(override val refinement: Refinement?) : ReleaseType {
         override val stringRes: Int
             get() =
                 when (refinement) {
@@ -95,7 +95,7 @@ sealed class ReleaseType {
      * @param refinement A specification of what kind of performance this release is. If null, the
      *   release is considered "Plain".
      */
-    data class Compilation(override val refinement: Refinement?) : ReleaseType() {
+    data class Compilation(override val refinement: Refinement?) : ReleaseType {
         override val stringRes: Int
             get() =
                 when (refinement) {
@@ -110,7 +110,7 @@ sealed class ReleaseType {
      * A soundtrack. Similar to a [Compilation], but created for a specific piece of (usually
      * visual) media.
      */
-    object Soundtrack : ReleaseType() {
+    object Soundtrack : ReleaseType {
         override val refinement: Refinement?
             get() = null
 
@@ -122,7 +122,7 @@ sealed class ReleaseType {
      * A (DJ) Mix. These are usually one large track consisting of the artist playing several
      * sub-tracks with smooth transitions between them.
      */
-    object Mix : ReleaseType() {
+    object Mix : ReleaseType {
         override val refinement: Refinement?
             get() = null
 
@@ -134,7 +134,7 @@ sealed class ReleaseType {
      * A Mix-tape. These are usually [EP]-sized releases of music made to promote an Artist or a
      * future release.
      */
-    object Mixtape : ReleaseType() {
+    object Mixtape : ReleaseType {
         override val refinement: Refinement?
             get() = null
 
