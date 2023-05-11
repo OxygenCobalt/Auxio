@@ -150,8 +150,7 @@ class HomeFragment :
         // --- VIEWMODEL SETUP ---
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
         collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
-        collectImmediately(
-            homeModel.songsList, homeModel.isFastScrolling, homeModel.currentTabMode, ::updateFab)
+        collectImmediately(homeModel.songsList, homeModel.isFastScrolling, ::updateFab)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
         collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
@@ -428,7 +427,7 @@ class HomeFragment :
         }
     }
 
-    private fun updateFab(songs: List<Song>, isFastScrolling: Boolean, currentTabMode: MusicMode) {
+    private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
         val binding = requireBinding()
         // If there are no songs, it's likely that the library has not been loaded, so
         // displaying the shuffle FAB makes no sense. We also don't want the fast scroll

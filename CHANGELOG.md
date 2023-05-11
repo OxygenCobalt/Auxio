@@ -10,6 +10,7 @@
 - Fixed issue where vorbis comments in the form of `metadata_block_picture` (lowercase) would not
 be parsed as images
 - Fixed issue where searches would match song file names case-sensitively
+- Fixed issue where the notification would not respond to changes in the album cover setting
 
 ## 3.0.5
 

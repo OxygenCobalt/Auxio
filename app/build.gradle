@@ -75,13 +75,14 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.4"
+
+    def coroutines_version = "1.7.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-guava:$coroutines_version"
 
     // --- SUPPORT ---
 
     // General
-    // 1.4.0 is used in order to avoid a ripple bug in material components
     implementation "androidx.appcompat:appcompat:1.6.1"
     implementation "androidx.core:core-ktx:1.10.1"
     implementation "androidx.activity:activity-ktx:1.7.1"
@@ -111,7 +112,7 @@ dependencies {
     implementation "androidx.preference:preference-ktx:1.2.0"
 
     // Database
-    def room_version = '2.5.1'
+    def room_version = '2.6.0-alpha01'
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
@@ -123,7 +124,7 @@ dependencies {
     implementation project(":media-lib-decoder-ffmpeg")
 
     // Image loading
-    implementation 'io.coil-kt:coil-base:2.2.2'
+    implementation 'io.coil-kt:coil-base:2.3.0'
 
     // Material
     // TODO: Stuck on 1.8.0-alpha01 until ripple bug with tab layout is actually available
@@ -133,9 +134,8 @@ dependencies {
     implementation "com.google.android.material:material:1.8.0-alpha01"
 
     // Dependency Injection
-    def dagger_version = '2.45'
-    implementation "com.google.dagger:dagger:$dagger_version"
-    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    implementation "com.google.dagger:dagger:$hilt_version"
+    kapt "com.google.dagger:dagger-compiler:$hilt_version"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
