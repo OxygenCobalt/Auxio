@@ -307,11 +307,6 @@ constructor(
                 .putText(MediaMetadataCompat.METADATA_KEY_AUTHOR, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_COMPOSER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_WRITER, artist)
-                .putText(
-                    // TODO: Remove in favor of METADATA_KEY_DISPLAY_DESCRIPTION
-                    METADATA_KEY_PARENT,
-                    parent?.run { name.resolve(context) }
-                        ?: context.getString(R.string.lbl_all_songs))
                 .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.genres.resolveNames(context))
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, artist)
@@ -444,11 +439,6 @@ constructor(
     }
 
     companion object {
-        /**
-         * An extended metadata key that stores the resolved name of the [MusicParent] that is
-         * currently being played from.
-         */
-        const val METADATA_KEY_PARENT = BuildConfig.APPLICATION_ID + ".metadata.PARENT"
         private val emptyMetadata = MediaMetadataCompat.Builder().build()
         private const val ACTIONS =
             PlaybackStateCompat.ACTION_PLAY or
