@@ -55,9 +55,10 @@ class MediaSessionComponent
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val bitmapProvider: BitmapProvider,
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
+    private val bitmapProvider: BitmapProvider,
+    private val imageSettings: ImageSettings
 ) :
     MediaSessionCompat.Callback(),
     PlaybackStateManager.Listener,
@@ -76,6 +77,7 @@ constructor(
     init {
         playbackManager.addListener(this)
         playbackSettings.registerListener(this)
+        imageSettings.registerListener(this)
         mediaSession.setCallback(this)
     }
 
@@ -105,6 +107,7 @@ constructor(
         listener = null
         bitmapProvider.release()
         playbackSettings.unregisterListener(this)
+        imageSettings.unregisterListener(this)
         playbackManager.removeListener(this)
         mediaSession.apply {
             isActive = false
