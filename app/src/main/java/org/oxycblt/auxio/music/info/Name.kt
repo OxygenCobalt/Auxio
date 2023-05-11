@@ -111,10 +111,11 @@ sealed interface Name : Comparable<Name> {
         companion object {
             /**
              * Create a new instance of [Name.Known]
+             *
              * @param raw The raw name obtained from the music item
              * @param sort The raw sort name obtained from the music item
              * @param musicSettings [MusicSettings] required to obtain user-preferred sorting
-             * configurations
+             *   configurations
              */
             fun from(raw: String, sort: String?, musicSettings: MusicSettings): Known =
                 if (musicSettings.intelligentSorting) {
@@ -148,6 +149,7 @@ private val PUNCT_REGEX = Regex("[\\p{Punct}+]")
 
 /**
  * Plain [Name.Known] implementation that is internationalization-safe.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 private data class SimpleKnownName(override val raw: String, override val sort: String?) :
@@ -165,6 +167,7 @@ private data class SimpleKnownName(override val raw: String, override val sort: 
 
 /**
  * [Name.Known] implementation that adds advanced sorting behavior at the cost of localization.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 private data class IntelligentKnownName(override val raw: String, override val sort: String?) :
@@ -192,23 +195,23 @@ private data class IntelligentKnownName(override val raw: String, override val s
         // individual lexicographic and numeric tokens and then individually compare them
         // with special logic.
         return TOKEN_REGEX.findAll(stripped).mapTo(mutableListOf()) { match ->
-                // Remove excess whitespace where possible
-                val token = match.value.trim().ifEmpty { match.value }
-                val collationKey: CollationKey
-                val type: SortToken.Type
-                // Separate each token into their numeric and lexicographic counterparts.
-                if (token.first().isDigit()) {
-                    // The digit string comparison breaks with preceding zero digits, remove those
-                    val digits = token.trimStart('0').ifEmpty { token }
-                    // Other languages have other types of digit strings, still use collation keys
-                    collationKey = COLLATOR.getCollationKey(digits)
-                    type = SortToken.Type.NUMERIC
-                } else {
-                    collationKey = COLLATOR.getCollationKey(token)
-                    type = SortToken.Type.LEXICOGRAPHIC
-                }
-                SortToken(collationKey, type)
+            // Remove excess whitespace where possible
+            val token = match.value.trim().ifEmpty { match.value }
+            val collationKey: CollationKey
+            val type: SortToken.Type
+            // Separate each token into their numeric and lexicographic counterparts.
+            if (token.first().isDigit()) {
+                // The digit string comparison breaks with preceding zero digits, remove those
+                val digits = token.trimStart('0').ifEmpty { token }
+                // Other languages have other types of digit strings, still use collation keys
+                collationKey = COLLATOR.getCollationKey(digits)
+                type = SortToken.Type.NUMERIC
+            } else {
+                collationKey = COLLATOR.getCollationKey(token)
+                type = SortToken.Type.LEXICOGRAPHIC
             }
+            SortToken(collationKey, type)
+        }
     }
 
     companion object {
