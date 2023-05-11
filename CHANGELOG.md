@@ -2,9 +2,14 @@
 
 ## dev
 
+#### What's Improved
+- Sorting now handles numbers of arbitrary length
+- Punctuation is now ignored in sorting with intelligent sort names disabled
+
 #### What's Fixed
 - Fixed issue where vorbis comments in the form of `metadata_block_picture` (lowercase) would not
 be parsed as images
+- Fixed issue where searches would match song file names case-sensitively
 
 ## 3.0.5
 

@@ -66,8 +66,7 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
         SearchEngine.Items(
             songs =
                 items.songs?.searchListImpl(query) { q, song ->
-                    // FIXME: Match case-insensitively
-                    song.path.name.contains(q)
+                    song.path.name.contains(q, ignoreCase = true)
                 },
             albums = items.albums?.searchListImpl(query),
             artists = items.artists?.searchListImpl(query),
