@@ -35,18 +35,6 @@ fun <T> unlikelyToBeNull(value: T?) =
     }
 
 /**
- * Maps a try expression to a [Result].
- * @param block The code to execute
- * @return A [Result] representing the outcome of [block]'s execution.
- */
-inline fun <reified R> fallible(block: () -> R) =
-    try {
-        Result.success(block())
-    } catch (e: Exception) {
-        Result.failure(e)
-    }
-
-/**
  * Aliases a check to ensure that the given number is non-zero.
  *
  * @return The given number if it's non-zero, null otherwise.

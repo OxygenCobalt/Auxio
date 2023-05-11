@@ -185,9 +185,10 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
          * A [Regex] that can parse a variable-precision ISO-8601 timestamp. Derived from
          * https://github.com/quodlibet/mutagen
          */
-        private val ISO8601_REGEX =
+        private val ISO8601_REGEX by lazy {
             Regex(
                 """^(\d{4})([-.](\d{2})([-.](\d{2})([T ](\d{2})([:.](\d{2})([:.](\d{2})(Z)?)?)?)?)?)?$""")
+        }
 
         /**
          * Create a [Date] from a year component.

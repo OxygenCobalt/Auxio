@@ -209,7 +209,7 @@ private fun String.parseId3v1Genre(): String? {
  * A [Regex] that implements parsing for ID3v2's genre format. Derived from mutagen:
  * https://github.com/quodlibet/mutagen
  */
-private val ID3V2_GENRE_RE = Regex("((?:\\((\\d+|RX|CR)\\))*)(.+)?")
+private val ID3V2_GENRE_RE by lazy { Regex("((?:\\((\\d+|RX|CR)\\))*)(.+)?") }
 
 /**
  * Parse an ID3v2 integer genre field, which has support for multiple genre values and combined

@@ -23,6 +23,8 @@ import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import java.util.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import org.oxycblt.auxio.R
@@ -32,12 +34,9 @@ import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.fs.MediaStoreExtractor
 import org.oxycblt.auxio.music.metadata.TagExtractor
 import org.oxycblt.auxio.music.user.UserLibrary
-import org.oxycblt.auxio.util.fallible
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Primary manager of music information and loading.
@@ -293,7 +292,7 @@ constructor(
         val incompleteSongs = Channel<RawSong>(Channel.UNLIMITED)
         val mediaStoreJob =
             worker.scope.tryAsync {
-                mediaStoreExtractor.consume(query, cache, incompleteSongs, completeSongs) }.also {
+                mediaStoreExtractor.consume(query, cache, incompleteSongs, completeSongs)
                 incompleteSongs.close()
             }
         val metadataJob =
@@ -326,7 +325,10 @@ constructor(
             worker.scope.tryAsync(Dispatchers.Main) {
                 deviceLibraryFactory.create(rawSongs).also { deviceLibraryChannel.send(it) }
             }
-        val userLibraryJob = worker.scope.tryAsync { userLibraryFactory.read(deviceLibraryChannel) }
+        val userLibraryJob =
+            worker.scope.tryAsync {
+                userLibraryFactory.read(deviceLibraryChannel).also { deviceLibraryChannel.close() }
+            }
         if (cache == null || cache.invalidated) {
             cacheRepository.writeCache(rawSongs)
         }

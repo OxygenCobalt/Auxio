@@ -35,7 +35,7 @@ sealed interface Name : Comparable<Name> {
     /**
      * A logical first character that can be used to collate a sorted list of music.
      *
-     * TODO: Move this to the home view
+     * TODO: Move this to the home package
      */
     val thumb: String
 
@@ -87,7 +87,7 @@ sealed interface Name : Comparable<Name> {
 
         final override val thumb: String
             get() =
-                // TODO: Remove these checks once you have real unit testing
+                // TODO: Remove these safety checks once you have real unit testing
                 sortTokens
                     .firstOrNull()
                     ?.run { collationKey.sourceString.firstOrNull() }
@@ -114,8 +114,7 @@ sealed interface Name : Comparable<Name> {
              *
              * @param raw The raw name obtained from the music item
              * @param sort The raw sort name obtained from the music item
-             * @param musicSettings [MusicSettings] required to obtain user-preferred sorting
-             *   configurations
+             * @param musicSettings [MusicSettings] required for name configuration.
              */
             fun from(raw: String, sort: String?, musicSettings: MusicSettings): Known =
                 if (musicSettings.intelligentSorting) {
@@ -145,7 +144,7 @@ sealed interface Name : Comparable<Name> {
 }
 
 private val COLLATOR: Collator = Collator.getInstance().apply { strength = Collator.PRIMARY }
-private val PUNCT_REGEX = Regex("[\\p{Punct}+]")
+private val PUNCT_REGEX by lazy { Regex("[\\p{Punct}+]") }
 
 /**
  * Plain [Name.Known] implementation that is internationalization-safe.
@@ -215,6 +214,6 @@ private data class IntelligentKnownName(override val raw: String, override val s
     }
 
     companion object {
-        private val TOKEN_REGEX = Regex("(\\d+)|(\\D+)")
+        private val TOKEN_REGEX by lazy { Regex("(\\d+)|(\\D+)") }
     }
 }

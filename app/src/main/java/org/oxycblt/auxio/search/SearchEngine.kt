@@ -125,7 +125,8 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
          * Converts the output of [Normalizer] to remove any junk characters added by it's
          * replacements, alongside punctuation.
          */
-        val NORMALIZE_POST_PROCESSING_REGEX =
+        val NORMALIZE_POST_PROCESSING_REGEX by lazy {
             Regex("(\\p{InCombiningDiacriticalMarks}+)|(\\p{Punct})")
+        }
     }
 }

@@ -47,6 +47,11 @@ private constructor(
      */
     inline fun edit(edits: MutableList<Song>.() -> Unit) = edit(songs.toMutableList().apply(edits))
 
+    override fun equals(other: Any?) =
+        other is PlaylistImpl && uid == other.uid && songs == other.songs
+
+    override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
+
     companion object {
         /**
          * Create a new instance with a novel UID.

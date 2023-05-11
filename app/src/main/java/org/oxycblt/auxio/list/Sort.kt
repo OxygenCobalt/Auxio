@@ -568,8 +568,8 @@ private inline fun <T : Music, K> compareByDynamic(
     }
 
 /**
- * Utility function to create a [Comparator] that sorts in ascending order based on the
- * given [Comparator], with a selector based on the item itself.
+ * Utility function to create a [Comparator] that sorts in ascending order based on the given
+ * [Comparator], with a selector based on the item itself.
  *
  * @param comparator The [Comparator] to wrap.
  * @return A new [Comparator] with the specified configuration.
@@ -581,8 +581,8 @@ private fun <T : Music> compareBy(comparator: Comparator<T>): Comparator<T> =
 /**
  * A [Comparator] that chains several other [Comparator]s together to form one comparison.
  *
- * @param comparators The [Comparator]s to chain. These will be iterated through in order
- *   during a comparison, with the first non-equal result becoming the result.
+ * @param comparators The [Comparator]s to chain. These will be iterated through in order during a
+ *   comparison, with the first non-equal result becoming the result.
  */
 private class MultiComparator<T>(vararg comparators: Comparator<T>) : Comparator<T> {
     private val _comparators = comparators
@@ -656,8 +656,8 @@ private class BasicComparator<T : Music> private constructor() : Comparator<T> {
 }
 
 /**
- * A [Comparator] that compares two possibly null values. Values will be considered lesser
- * if they are null, and greater if they are non-null.
+ * A [Comparator] that compares two possibly null values. Values will be considered lesser if they
+ * are null, and greater if they are non-null.
  */
 private class NullableComparator<T : Comparable<T>> private constructor() : Comparator<T?> {
     override fun compare(a: T?, b: T?) =

@@ -294,6 +294,6 @@ constructor(
          * Matches non-float information from ReplayGain adjustments. Derived from vanilla music:
          * https://github.com/vanilla-music/vanilla
          */
-        val REPLAYGAIN_ADJUSTMENT_FILTER_REGEX = Regex("[^\\d.-]")
+        val REPLAYGAIN_ADJUSTMENT_FILTER_REGEX by lazy { Regex("[^\\d.-]") }
     }
 }
