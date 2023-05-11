@@ -247,7 +247,8 @@ constructor(
             ?: userLibrary?.findPlaylist(uid))
 
     override fun createPlaylist(name: String, songs: List<Song>) {
-        userLibrary?.createPlaylist(name, songs)
+        val userLibrary = userLibrary ?: return
+        userLibrary.createPlaylist(name, songs)
         for (listener in updateListeners) {
             listener.onMusicChanges(
                 MusicRepository.Changes(deviceLibrary = false, userLibrary = true))

@@ -58,6 +58,10 @@ open class FakeMusicRepository : MusicRepository {
         throw NotImplementedError()
     }
 
+    override fun createPlaylist(name: String, songs: List<Song>) {
+        throw NotImplementedError()
+    }
+
     override fun requestIndex(withCache: Boolean) {
         throw NotImplementedError()
     }
