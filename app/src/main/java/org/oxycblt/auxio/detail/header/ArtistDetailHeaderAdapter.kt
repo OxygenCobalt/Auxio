@@ -63,7 +63,7 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
     fun bind(artist: Artist, listener: DetailHeaderAdapter.Listener) {
         binding.detailCover.bind(artist)
         binding.detailType.text = binding.context.getString(R.string.lbl_artist)
-        binding.detailName.text = artist.resolveName(binding.context)
+        binding.detailName.text = artist.name.resolve(binding.context)
 
         if (artist.songs.isNotEmpty()) {
             // Information about the artist's genre(s) map to the sub-head text

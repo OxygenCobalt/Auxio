@@ -32,7 +32,7 @@ import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.cache.Cache
 import org.oxycblt.auxio.music.device.RawSong
-import org.oxycblt.auxio.music.metadata.Date
+import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.metadata.parseId3v2PositionField
 import org.oxycblt.auxio.music.metadata.transformPositionField
 import org.oxycblt.auxio.util.getSystemServiceCompat

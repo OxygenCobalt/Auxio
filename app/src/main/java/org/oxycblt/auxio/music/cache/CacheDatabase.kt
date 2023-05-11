@@ -28,7 +28,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import org.oxycblt.auxio.music.device.RawSong
-import org.oxycblt.auxio.music.metadata.Date
+import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.metadata.correctWhitespace
 import org.oxycblt.auxio.music.metadata.splitEscaped
 

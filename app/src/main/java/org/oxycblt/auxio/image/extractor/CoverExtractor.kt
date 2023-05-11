@@ -46,7 +46,6 @@ constructor(
     private val imageSettings: ImageSettings,
     private val mediaSourceFactory: MediaSource.Factory
 ) {
-
     suspend fun extract(album: Album): InputStream? =
         try {
             when (imageSettings.coverMode) {

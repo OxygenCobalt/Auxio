@@ -194,7 +194,7 @@ class AlbumDetailFragment :
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailToolbar.title = album.resolveName(requireContext())
+        requireBinding().detailToolbar.title = album.name.resolve(requireContext())
         albumHeaderAdapter.setParent(album)
     }
 

@@ -147,7 +147,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         CoilUtils.dispose(this)
         imageLoader.enqueue(request)
         // Update the content description to the specified resource.
-        contentDescription = context.getString(descRes, music.resolveName(context))
+        contentDescription = context.getString(descRes, music.name.resolve(context))
     }
 
     /**

@@ -24,7 +24,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
-import org.oxycblt.auxio.music.metadata.Date
+import org.oxycblt.auxio.music.info.Date
 
 class DeviceMusicImplTest {
     @Test

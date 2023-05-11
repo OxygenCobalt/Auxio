@@ -36,9 +36,9 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.metadata.AudioInfo
-import org.oxycblt.auxio.music.metadata.Disc
-import org.oxycblt.auxio.music.metadata.ReleaseType
+import org.oxycblt.auxio.music.info.Disc
+import org.oxycblt.auxio.music.info.ReleaseType
+import org.oxycblt.auxio.music.metadata.AudioProperties
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.*
 
@@ -53,7 +53,7 @@ class DetailViewModel
 @Inject
 constructor(
     private val musicRepository: MusicRepository,
-    private val audioInfoFactory: AudioInfo.Factory,
+    private val audioPropertiesFactory: AudioProperties.Factory,
     private val musicSettings: MusicSettings,
     private val playbackSettings: PlaybackSettings
 ) : ViewModel(), MusicRepository.UpdateListener {
@@ -66,9 +66,9 @@ constructor(
     val currentSong: StateFlow<Song?>
         get() = _currentSong
 
-    private val _songAudioInfo = MutableStateFlow<AudioInfo?>(null)
-    /** The [AudioInfo] of the currently shown [Song]. Null if not loaded yet. */
-    val songAudioInfo: StateFlow<AudioInfo?> = _songAudioInfo
+    private val _songAudioProperties = MutableStateFlow<AudioProperties?>(null)
+    /** The [AudioProperties] of the currently shown [Song]. Null if not loaded yet. */
+    val songAudioProperties: StateFlow<AudioProperties?> = _songAudioProperties
 
     // --- ALBUM ---
 
@@ -225,7 +225,7 @@ constructor(
 
     /**
      * Set a new [currentSong] from it's [Music.UID]. If the [Music.UID] differs, [currentSong] and
-     * [songAudioInfo] will be updated to align with the new [Song].
+     * [songAudioProperties] will be updated to align with the new [Song].
      *
      * @param uid The UID of the [Song] to load. Must be valid.
      */
@@ -305,12 +305,12 @@ constructor(
     private fun refreshAudioInfo(song: Song) {
         // Clear any previous job in order to avoid stale data from appearing in the UI.
         currentSongJob?.cancel()
-        _songAudioInfo.value = null
+        _songAudioProperties.value = null
         currentSongJob =
             viewModelScope.launch(Dispatchers.IO) {
-                val info = audioInfoFactory.extract(song)
+                val info = audioPropertiesFactory.extract(song)
                 yield()
-                _songAudioInfo.value = info
+                _songAudioProperties.value = info
             }
     }
 

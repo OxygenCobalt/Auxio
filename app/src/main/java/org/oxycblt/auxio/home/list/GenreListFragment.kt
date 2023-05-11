@@ -92,7 +92,7 @@ class GenreListFragment :
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.getSortForTab(MusicMode.GENRES).mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> genre.sortName?.thumbString
+            is Sort.Mode.ByName -> genre.name.thumb
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> genre.durationMs.formatDurationMs(false)

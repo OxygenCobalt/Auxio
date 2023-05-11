@@ -85,7 +85,7 @@ class NavigationViewModel : ViewModel() {
             logD("Already navigating, not doing explore action")
             return
         }
-        logD("Navigating to ${music.rawName}")
+        logD("Navigating to ${music.name}")
         _exploreNavigationItem.put(music)
     }
 
@@ -118,7 +118,7 @@ class NavigationViewModel : ViewModel() {
         if (artists.size == 1) {
             exploreNavigateTo(artists[0])
         } else {
-            logD("Navigating to a choice of ${artists.map { it.rawName }}")
+            logD("Navigating to a choice of ${artists.map { it.name }}")
             _exploreArtistNavigationItem.put(item)
         }
     }

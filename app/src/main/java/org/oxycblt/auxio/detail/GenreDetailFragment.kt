@@ -196,7 +196,7 @@ class GenreDetailFragment :
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailToolbar.title = genre.resolveName(requireContext())
+        requireBinding().detailToolbar.title = genre.name.resolve(requireContext())
         genreHeaderAdapter.setParent(genre)
     }
 

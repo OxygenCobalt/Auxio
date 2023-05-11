@@ -62,7 +62,7 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
     fun bind(playlist: Playlist, listener: DetailHeaderAdapter.Listener) {
         binding.detailCover.bind(playlist)
         binding.detailType.text = binding.context.getString(R.string.lbl_playlist)
-        binding.detailName.text = playlist.resolveName(binding.context)
+        binding.detailName.text = playlist.name.resolve(binding.context)
         // Nothing about a playlist is applicable to the sub-head text.
         binding.detailSubhead.isVisible = false
         // The song count of the playlist maps to the info text.

@@ -81,7 +81,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
      * @param song The [Song] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, song: Song) {
-        logD("Launching new song menu: ${song.rawName}")
+        logD("Launching new song menu: ${song.name}")
 
         openMusicMenuImpl(anchor, menuRes) {
             when (it.itemId) {
@@ -120,7 +120,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
      * @param album The [Album] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, album: Album) {
-        logD("Launching new album menu: ${album.rawName}")
+        logD("Launching new album menu: ${album.name}")
 
         openMusicMenuImpl(anchor, menuRes) {
             when (it.itemId) {
@@ -157,7 +157,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
      * @param artist The [Artist] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, artist: Artist) {
-        logD("Launching new artist menu: ${artist.rawName}")
+        logD("Launching new artist menu: ${artist.name}")
 
         openMusicMenuImpl(anchor, menuRes) {
             when (it.itemId) {
@@ -191,7 +191,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
      * @param genre The [Genre] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, genre: Genre) {
-        logD("Launching new genre menu: ${genre.rawName}")
+        logD("Launching new genre menu: ${genre.name}")
 
         openMusicMenuImpl(anchor, menuRes) {
             when (it.itemId) {
@@ -225,7 +225,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
      * @param playlist The [Playlist] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, playlist: Playlist) {
-        logD("Launching new playlist menu: ${playlist.rawName}")
+        logD("Launching new playlist menu: ${playlist.name}")
 
         openMusicMenuImpl(anchor, menuRes) {
             when (it.itemId) {

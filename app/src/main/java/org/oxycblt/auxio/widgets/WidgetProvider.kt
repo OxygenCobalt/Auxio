@@ -248,7 +248,8 @@ class WidgetProvider : AppWidgetProvider() {
             setImageViewBitmap(R.id.widget_cover, state.cover)
             setContentDescription(
                 R.id.widget_cover,
-                context.getString(R.string.desc_album_cover, state.song.album.resolveName(context)))
+                context.getString(
+                    R.string.desc_album_cover, state.song.album.name.resolve(context)))
         } else {
             // We are unable to use the typical placeholder cover with the song item due to
             // limitations with the corner radius. Instead use a custom-made album icon as the
@@ -272,7 +273,7 @@ class WidgetProvider : AppWidgetProvider() {
         state: WidgetComponent.PlaybackState
     ): RemoteViews {
         setupCover(context, state)
-        setTextViewText(R.id.widget_song, state.song.resolveName(context))
+        setTextViewText(R.id.widget_song, state.song.name.resolve(context))
         setTextViewText(R.id.widget_artist, state.song.artists.resolveNames(context))
         return this
     }

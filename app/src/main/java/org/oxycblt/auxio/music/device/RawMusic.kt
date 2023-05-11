@@ -21,6 +21,8 @@ package org.oxycblt.auxio.music.device
 import java.util.UUID
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.fs.Directory
+import org.oxycblt.auxio.music.info.Date
+import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.music.metadata.*
 
 /**

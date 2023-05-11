@@ -289,12 +289,12 @@ constructor(
 
         // Populate MediaMetadataCompat. For efficiency, cache some fields that are re-used
         // several times.
-        val title = song.resolveName(context)
+        val title = song.name.resolve(context)
         val artist = song.artists.resolveNames(context)
         val builder =
             MediaMetadataCompat.Builder()
                 .putText(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                .putText(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.resolveName(context))
+                .putText(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.name.resolve(context))
                 // Note: We would leave the artist field null if it didn't exist and let downstream
                 // consumers handle it, but that would break the notification display.
                 .putText(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
@@ -305,14 +305,17 @@ constructor(
                 .putText(MediaMetadataCompat.METADATA_KEY_COMPOSER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_WRITER, artist)
                 .putText(
+                    // TODO: Remove in favor of METADATA_KEY_DISPLAY_DESCRIPTION
                     METADATA_KEY_PARENT,
-                    parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
+                    parent?.run { name.resolve(context) }
+                        ?: context.getString(R.string.lbl_all_songs))
                 .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.genres.resolveNames(context))
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, artist)
                 .putText(
                     MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION,
-                    parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
+                    parent?.run { name.resolve(context) }
+                        ?: context.getString(R.string.lbl_all_songs))
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
         // These fields are nullable and so we must check first before adding them to the fields.
         song.track?.let {
@@ -353,7 +356,7 @@ constructor(
                         // Media ID should not be the item index but rather the UID,
                         // as it's used to request a song to be played from the queue.
                         .setMediaId(song.uid.toString())
-                        .setTitle(song.resolveName(context))
+                        .setTitle(song.name.resolve(context))
                         .setSubtitle(song.artists.resolveNames(context))
                         // Since we usually have to load many songs into the queue, use the
                         // MediaStore URI instead of loading a bitmap.

@@ -27,6 +27,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.info.Name
 
 /**
  * Implements the fuzzy-ish searching algorithm used in the search view.
@@ -63,7 +64,11 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
     SearchEngine {
     override suspend fun search(items: SearchEngine.Items, query: String) =
         SearchEngine.Items(
-            songs = items.songs?.searchListImpl(query) { q, song -> song.path.name.contains(q) },
+            songs =
+                items.songs?.searchListImpl(query) { q, song ->
+                    // FIXME: Match case-insensitively
+                    song.path.name.contains(q)
+                },
             albums = items.albums?.searchListImpl(query),
             artists = items.artists?.searchListImpl(query),
             genres = items.genres?.searchListImpl(query))
@@ -84,17 +89,21 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
         filter {
                 // See if the plain resolved name matches the query. This works for most
                 // situations.
-                val name = it.resolveName(context)
-                if (name.contains(query, ignoreCase = true)) {
+                val name = it.name
+
+                val resolvedName = name.resolve(context)
+                if (resolvedName.contains(query, ignoreCase = true)) {
                     return@filter true
                 }
 
                 // See if the sort name matches. This can sometimes be helpful as certain
                 // libraries
                 // will tag sort names to have a alphabetized version of the title.
-                val sortName = it.rawSortName
-                if (sortName != null && sortName.contains(query, ignoreCase = true)) {
-                    return@filter true
+                if (name is Name.Known) {
+                    val sortName = name.sort
+                    if (sortName != null && sortName.contains(query, ignoreCase = true)) {
+                        return@filter true
+                    }
                 }
 
                 // As a last-ditch effort, see if the normalized name matches. This will replace
@@ -103,7 +112,7 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
                 // could make it match the query.
                 val normalizedName =
                     NORMALIZE_POST_PROCESSING_REGEX.replace(
-                        Normalizer.normalize(name, Normalizer.Form.NFKD), "")
+                        Normalizer.normalize(resolvedName, Normalizer.Form.NFKD), "")
                 if (normalizedName.contains(query, ignoreCase = true)) {
                     return@filter true
                 }

@@ -18,7 +18,6 @@
  
 package org.oxycblt.auxio.music.device
 
-import android.content.Context
 import androidx.annotation.VisibleForTesting
 import java.security.MessageDigest
 import java.util.*
@@ -29,9 +28,8 @@ import org.oxycblt.auxio.music.fs.MimeType
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.fs.toAudioUri
 import org.oxycblt.auxio.music.fs.toCoverUri
-import org.oxycblt.auxio.music.metadata.Date
-import org.oxycblt.auxio.music.metadata.Disc
-import org.oxycblt.auxio.music.metadata.ReleaseType
+import org.oxycblt.auxio.music.info.*
+import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.metadata.parseId3GenreNames
 import org.oxycblt.auxio.music.metadata.parseMultiValue
 import org.oxycblt.auxio.util.nonZeroOrNull
@@ -63,10 +61,11 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
                 update(rawSong.artistNames)
                 update(rawSong.albumArtistNames)
             }
-    override val rawName = requireNotNull(rawSong.name) { "Invalid raw: No title" }
-    override val rawSortName = rawSong.sortName
-    override val sortName = SortName((rawSortName ?: rawName), musicSettings)
-    override fun resolveName(context: Context) = rawName
+    override val name =
+        Name.Known.from(
+            requireNotNull(rawSong.name) { "Invalid raw: No title" },
+            rawSong.sortName,
+            musicSettings)
 
     override val track = rawSong.track
     override val disc = rawSong.disc?.let { Disc(it, rawSong.subtitle) }
@@ -239,10 +238,7 @@ class AlbumImpl(
                 update(rawAlbum.name)
                 update(rawAlbum.rawArtists.map { it.name })
             }
-    override val rawName = rawAlbum.name
-    override val rawSortName = rawAlbum.sortName
-    override val sortName = SortName((rawSortName ?: rawName), musicSettings)
-    override fun resolveName(context: Context) = rawName
+    override val name = Name.Known.from(rawAlbum.name, rawAlbum.sortName, musicSettings)
 
     override val dates = Date.Range.from(songs.mapNotNull { it.date })
     override val releaseType = rawAlbum.releaseType ?: ReleaseType.Album(null)
@@ -332,12 +328,11 @@ class ArtistImpl(
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         rawArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ARTISTS, it) }
             ?: createHashedUid(MusicMode.ARTISTS) { update(rawArtist.name) }
-    override val rawName = rawArtist.name
-    override val rawSortName = rawArtist.sortName
-    override val sortName = (rawSortName ?: rawName)?.let { SortName(it, musicSettings) }
-    override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
-    override val songs: List<Song>
+    override val name =
+        rawArtist.name?.let { Name.Known.from(it, rawArtist.sortName, musicSettings) }
+            ?: Name.Unknown(R.string.def_artist)
 
+    override val songs: List<Song>
     override val albums: List<Album>
     override val durationMs: Long?
     override val isCollaborator: Boolean
@@ -417,10 +412,9 @@ class GenreImpl(
     override val songs: List<SongImpl>
 ) : Genre {
     override val uid = createHashedUid(MusicMode.GENRES) { update(rawGenre.name) }
-    override val rawName = rawGenre.name
-    override val rawSortName = rawName
-    override val sortName = (rawSortName ?: rawName)?.let { SortName(it, musicSettings) }
-    override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
+    override val name =
+        rawGenre.name?.let { Name.Known.from(it, rawGenre.name, musicSettings) }
+            ?: Name.Unknown(R.string.def_genre)
 
     override val albums: List<Album>
     override val artists: List<Artist>

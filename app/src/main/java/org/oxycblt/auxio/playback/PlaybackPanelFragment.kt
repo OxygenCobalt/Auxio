@@ -188,9 +188,9 @@ class PlaybackPanelFragment :
         val binding = requireBinding()
         val context = requireContext()
         binding.playbackCover.bind(song)
-        binding.playbackSong.text = song.resolveName(context)
+        binding.playbackSong.text = song.name.resolve(context)
         binding.playbackArtist.text = song.artists.resolveNames(context)
-        binding.playbackAlbum.text = song.album.resolveName(context)
+        binding.playbackAlbum.text = song.album.name.resolve(context)
         binding.playbackSeekBar.durationDs = song.durationMs.msToDs()
     }
 
@@ -198,7 +198,7 @@ class PlaybackPanelFragment :
         val binding = requireBinding()
         val context = requireContext()
         binding.playbackToolbar.subtitle =
-            parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs)
+            parent?.run { name.resolve(context) } ?: context.getString(R.string.lbl_all_songs)
     }
 
     private fun updatePosition(positionDs: Long) {

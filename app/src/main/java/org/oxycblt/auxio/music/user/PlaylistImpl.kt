@@ -18,20 +18,17 @@
  
 package org.oxycblt.auxio.music.user
 
-import android.content.Context
 import java.util.*
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.device.DeviceLibrary
+import org.oxycblt.auxio.music.info.Name
 
 class PlaylistImpl
 private constructor(
     override val uid: Music.UID,
-    override val rawName: String,
-    override val sortName: SortName,
+    override val name: Name,
     override val songs: List<Song>
 ) : Playlist {
-    override fun resolveName(context: Context) = rawName
-    override val rawSortName = null
     override val durationMs = songs.sumOf { it.durationMs }
     override val albums =
         songs.groupBy { it.album }.entries.sortedByDescending { it.value.size }.map { it.key }
@@ -41,7 +38,7 @@ private constructor(
      *
      * @param songs The new [Song]s to use.
      */
-    fun edit(songs: List<Song>) = PlaylistImpl(uid, rawName, sortName, songs)
+    fun edit(songs: List<Song>) = PlaylistImpl(uid, name, songs)
 
     /**
      * Clone the data in this instance to a new [PlaylistImpl] with the given [edits].
@@ -58,11 +55,10 @@ private constructor(
          * @param songs The songs to initially populate the playlist with.
          * @param musicSettings [MusicSettings] required for name configuration.
          */
-        fun new(name: String, songs: List<Song>, musicSettings: MusicSettings) =
+        fun from(name: String, songs: List<Song>, musicSettings: MusicSettings) =
             PlaylistImpl(
                 Music.UID.auxio(MusicMode.PLAYLISTS, UUID.randomUUID()),
-                name,
-                SortName(name, musicSettings),
+                Name.Known.from(name, null, musicSettings),
                 songs)
 
         /**
@@ -79,8 +75,7 @@ private constructor(
         ) =
             PlaylistImpl(
                 rawPlaylist.playlistInfo.playlistUid,
-                rawPlaylist.playlistInfo.name,
-                SortName(rawPlaylist.playlistInfo.name, musicSettings),
+                Name.Known.from(rawPlaylist.playlistInfo.name, null, musicSettings),
                 rawPlaylist.songs.mapNotNull { deviceLibrary.findSong(it.songUid) })
     }
 }

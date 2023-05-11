@@ -63,7 +63,7 @@ private constructor(private val binding: ItemPickerChoiceBinding) :
             is Genre -> binding.pickerImage.bind(music)
             is Playlist -> binding.pickerImage.bind(music)
         }
-        binding.pickerName.text = music.resolveName(binding.context)
+        binding.pickerName.text = music.name.resolve(binding.context)
     }
 
     companion object {
@@ -81,7 +81,7 @@ private constructor(private val binding: ItemPickerChoiceBinding) :
         fun <T : Music> diffCallback() =
             object : SimpleDiffCallback<T>() {
                 override fun areContentsTheSame(oldItem: T, newItem: T) =
-                    oldItem.rawName == newItem.rawName
+                    oldItem.name == newItem.name
             }
     }
 }

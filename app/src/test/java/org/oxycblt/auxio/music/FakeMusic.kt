@@ -22,9 +22,9 @@ import android.content.Context
 import android.net.Uri
 import org.oxycblt.auxio.music.fs.MimeType
 import org.oxycblt.auxio.music.fs.Path
-import org.oxycblt.auxio.music.metadata.Date
-import org.oxycblt.auxio.music.metadata.Disc
-import org.oxycblt.auxio.music.metadata.ReleaseType
+import org.oxycblt.auxio.music.info.Date
+import org.oxycblt.auxio.music.info.Disc
+import org.oxycblt.auxio.music.info.ReleaseType
 
 open class FakeSong : Song {
     override val rawName: String?

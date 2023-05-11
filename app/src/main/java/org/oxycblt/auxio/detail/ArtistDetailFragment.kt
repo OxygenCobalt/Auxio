@@ -204,7 +204,7 @@ class ArtistDetailFragment :
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailToolbar.title = artist.resolveName(requireContext())
+        requireBinding().detailToolbar.title = artist.name.resolve(requireContext())
         artistHeaderAdapter.setParent(artist)
     }
 

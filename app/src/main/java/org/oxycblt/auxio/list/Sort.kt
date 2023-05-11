@@ -24,8 +24,8 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Sort.Mode
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.metadata.Date
-import org.oxycblt.auxio.music.metadata.Disc
+import org.oxycblt.auxio.music.info.Date
+import org.oxycblt.auxio.music.info.Disc
 
 /**
  * A sorting method.
@@ -566,16 +566,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
          * @see Music.collationKey
          */
         private class BasicComparator<T : Music> private constructor() : Comparator<T> {
-            override fun compare(a: T, b: T): Int {
-                val aKey = a.sortName
-                val bKey = b.sortName
-                return when {
-                    aKey != null && bKey != null -> aKey.compareTo(bKey)
-                    aKey == null && bKey != null -> -1 // a < b
-                    aKey == null && bKey == null -> 0 // a = b
-                    else -> 1 // a < b
-                }
-            }
+            override fun compare(a: T, b: T) = a.name.compareTo(b.name)
 
             companion object {
                 /** A re-usable instance configured for [Song]s. */

@@ -106,7 +106,7 @@ private class UserLibraryImpl(
 
     @Synchronized
     override fun createPlaylist(name: String, songs: List<Song>) {
-        val playlistImpl = PlaylistImpl.new(name, songs, musicSettings)
+        val playlistImpl = PlaylistImpl.from(name, songs, musicSettings)
         playlistMap[playlistImpl.uid] = playlistImpl
     }
 

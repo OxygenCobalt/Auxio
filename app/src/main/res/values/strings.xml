@@ -53,7 +53,7 @@
     <string name="lbl_compilation">Compilation</string>
     <!-- As in a compilation of live music -->
     <string name="lbl_compilation_live">Live compilation</string>
-    <string name="lbl_compilation_remix">Remix compilations</string>
+    <string name="lbl_compilation_remix">Remix compilation</string>
     <string name="lbl_soundtracks">Soundtracks</string>
     <string name="lbl_soundtrack">Soundtrack</string>
     <!-- As in the collection of music -->

@@ -187,7 +187,7 @@ class PlaylistDetailFragment :
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailToolbar.title = playlist.resolveName(requireContext())
+        requireBinding().detailToolbar.title = playlist.name.resolve(requireContext())
         playlistHeaderAdapter.setParent(playlist)
     }
 

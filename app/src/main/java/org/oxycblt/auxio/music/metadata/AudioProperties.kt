@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * AudioInfo.kt is part of Auxio.
+ * AudioProperties.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,32 +37,33 @@ import org.oxycblt.auxio.util.logW
  * @param resolvedMimeType The known mime type of the [Song] after it's file format was determined.
  * @author Alexander Capehart (OxygenCobalt)
  */
-data class AudioInfo(
+data class AudioProperties(
     val bitrateKbps: Int?,
     val sampleRateHz: Int?,
     val resolvedMimeType: MimeType
 ) {
-    /** Implements the process of extracting [AudioInfo] from a given [Song]. */
+    /** Implements the process of extracting [AudioProperties] from a given [Song]. */
     interface Factory {
         /**
-         * Extract the [AudioInfo] of a given [Song].
+         * Extract the [AudioProperties] of a given [Song].
          *
          * @param song The [Song] to read.
-         * @return The [AudioInfo] of the [Song], if possible to obtain.
+         * @return The [AudioProperties] of the [Song], if possible to obtain.
          */
-        suspend fun extract(song: Song): AudioInfo
+        suspend fun extract(song: Song): AudioProperties
     }
 }
 
 /**
- * A framework-backed implementation of [AudioInfo.Factory].
+ * A framework-backed implementation of [AudioProperties.Factory].
  *
  * @param context [Context] required to read audio files.
  */
-class AudioInfoFactoryImpl @Inject constructor(@ApplicationContext private val context: Context) :
-    AudioInfo.Factory {
+class AudioPropertiesFactoryImpl
+@Inject
+constructor(@ApplicationContext private val context: Context) : AudioProperties.Factory {
 
-    override suspend fun extract(song: Song): AudioInfo {
+    override suspend fun extract(song: Song): AudioProperties {
         // While we would use ExoPlayer to extract this information, it doesn't support
         // common data like bit rate in progressive data sources due to there being no
         // demand. Thus, we are stuck with the inferior OS-provided MediaExtractor.
@@ -76,7 +77,7 @@ class AudioInfoFactoryImpl @Inject constructor(@ApplicationContext private val c
             // that we can show.
             logW("Unable to extract song attributes.")
             logW(e.stackTraceToString())
-            return AudioInfo(null, null, song.mimeType)
+            return AudioProperties(null, null, song.mimeType)
         }
 
         // Get the first track from the extractor (This is basically always the only
@@ -122,6 +123,6 @@ class AudioInfoFactoryImpl @Inject constructor(@ApplicationContext private val c
 
         extractor.release()
 
-        return AudioInfo(bitrate, sampleRate, resolvedMimeType)
+        return AudioProperties(bitrate, sampleRate, resolvedMimeType)
     }
 }

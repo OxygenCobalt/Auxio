@@ -77,7 +77,7 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
         // The type text depends on the release type (Album, EP, Single, etc.)
         binding.detailType.text = binding.context.getString(album.releaseType.stringRes)
 
-        binding.detailName.text = album.resolveName(binding.context)
+        binding.detailName.text = album.name.resolve(binding.context)
 
         // Artist name maps to the subhead text
         binding.detailSubhead.apply {
