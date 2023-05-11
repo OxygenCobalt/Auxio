@@ -67,7 +67,7 @@
     <string name="lbl_equalizer">Еквалайзер</string>
     <string name="lbl_size">Розмір</string>
     <string name="lbl_indexer">Завантаження музики</string>
-    <string name="lbl_compilation_remix">Збірки реміксів</string>
+    <string name="lbl_compilation_remix">Збірка реміксів</string>
     <string name="lbl_bitrate">Бітрейт</string>
     <string name="lbl_observing">Моніторинг музичної бібліотеки</string>
     <string name="info_app_desc">Простий і раціональний музичний плеєр для Android.</string>
