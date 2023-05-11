@@ -33,6 +33,7 @@ import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.fs.MediaStoreExtractor
 import org.oxycblt.auxio.music.metadata.TagExtractor
+import org.oxycblt.auxio.music.user.MutableUserLibrary
 import org.oxycblt.auxio.music.user.UserLibrary
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -111,6 +112,14 @@ interface MusicRepository {
     fun find(uid: Music.UID): Music?
 
     /**
+     * Create a new [Playlist] of the given [Song]s.
+     *
+     * @param name The name of the new [Playlist]
+     * @param songs The songs to populate the new [Playlist] with.
+     */
+    fun createPlaylist(name: String, songs: List<Song>)
+
+    /**
      * Request that a music loading operation is started by the current [IndexingWorker]. Does
      * nothing if one is not available.
      *
@@ -183,7 +192,7 @@ constructor(
     private var indexingWorker: MusicRepository.IndexingWorker? = null
 
     override var deviceLibrary: DeviceLibrary? = null
-    override var userLibrary: UserLibrary? = null
+    override var userLibrary: MutableUserLibrary? = null
     private var previousCompletedState: IndexingState.Completed? = null
     private var currentIndexingState: IndexingState? = null
     override val indexingState: IndexingState?
@@ -236,6 +245,14 @@ constructor(
     override fun find(uid: Music.UID) =
         (deviceLibrary?.run { findSong(uid) ?: findAlbum(uid) ?: findArtist(uid) ?: findGenre(uid) }
             ?: userLibrary?.findPlaylist(uid))
+
+    override fun createPlaylist(name: String, songs: List<Song>) {
+        userLibrary?.createPlaylist(name, songs)
+        for (listener in updateListeners) {
+            listener.onMusicChanges(
+                MusicRepository.Changes(deviceLibrary = false, userLibrary = true))
+        }
+    }
 
     override fun requestIndex(withCache: Boolean) {
         indexingWorker?.requestIndex(withCache)
@@ -374,7 +391,7 @@ constructor(
     }
 
     @Synchronized
-    private fun emitData(deviceLibrary: DeviceLibrary, userLibrary: UserLibrary) {
+    private fun emitData(deviceLibrary: DeviceLibrary, userLibrary: MutableUserLibrary) {
         val deviceLibraryChanged = this.deviceLibrary != deviceLibrary
         val userLibraryChanged = this.userLibrary != userLibrary
         if (!deviceLibraryChanged && !userLibraryChanged) return

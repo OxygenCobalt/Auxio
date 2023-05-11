@@ -84,7 +84,7 @@ class MusicViewModel @Inject constructor(private val musicRepository: MusicRepos
      * @param name The name of the new playlist. If null, the user will be prompted for a name.
      */
     fun createPlaylist(name: String? = null) {
-        // TODO: Implement
+        musicRepository.createPlaylist(name ?: "New playlist", listOf())
     }
 
     /**
