@@ -210,7 +210,6 @@ private abstract class BaseMediaStoreExtractor(
         // Free the cursor and signal that no more incomplete songs will be produced by
         // this extractor.
         query.close()
-        incompleteSongs.close()
     }
 
     /**

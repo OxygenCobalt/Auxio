@@ -35,16 +35,16 @@ fun <T> unlikelyToBeNull(value: T?) =
     }
 
 /**
- * Require that the given data is a specific type [T].
- *
- * @param data The data to check.
- * @return A data casted to [T].
- * @throws IllegalStateException If the data cannot be casted to [T].
+ * Maps a try expression to a [Result].
+ * @param block The code to execute
+ * @return A [Result] representing the outcome of [block]'s execution.
  */
-inline fun <reified T> requireIs(data: Any?): T {
-    check(data is T) { "Unexpected datatype: ${data?.let { it::class.simpleName }}" }
-    return data
-}
+inline fun <reified R> fallible(block: () -> R) =
+    try {
+        Result.success(block())
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
 
 /**
  * Aliases a check to ensure that the given number is non-zero.

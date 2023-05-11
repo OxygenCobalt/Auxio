@@ -87,8 +87,6 @@ class TagExtractorImpl @Inject constructor(private val tagWorkerFactory: TagWork
                 }
             }
         } while (ongoingTasks)
-
-        completeSongs.close()
     }
 
     private companion object {

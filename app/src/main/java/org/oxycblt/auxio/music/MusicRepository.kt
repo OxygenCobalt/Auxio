@@ -25,15 +25,19 @@ import java.util.*
 import javax.inject.Inject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.cache.CacheRepository
 import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.device.RawSong
 import org.oxycblt.auxio.music.fs.MediaStoreExtractor
 import org.oxycblt.auxio.music.metadata.TagExtractor
 import org.oxycblt.auxio.music.user.UserLibrary
+import org.oxycblt.auxio.util.fallible
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Primary manager of music information and loading.
@@ -272,14 +276,14 @@ constructor(
 
         // Do the initial query of the cache and media databases in parallel.
         logD("Starting queries")
-        val mediaStoreQueryJob = worker.scope.async { mediaStoreExtractor.query() }
+        val mediaStoreQueryJob = worker.scope.tryAsync { mediaStoreExtractor.query() }
         val cache =
             if (withCache) {
                 cacheRepository.readCache()
             } else {
                 null
             }
-        val query = mediaStoreQueryJob.await()
+        val query = mediaStoreQueryJob.await().getOrThrow()
 
         // Now start processing the queried song information in parallel. Songs that can't be
         // received from the cache are consisted incomplete and pushed to a separate channel
@@ -288,11 +292,15 @@ constructor(
         val completeSongs = Channel<RawSong>(Channel.UNLIMITED)
         val incompleteSongs = Channel<RawSong>(Channel.UNLIMITED)
         val mediaStoreJob =
-            worker.scope.async {
-                mediaStoreExtractor.consume(query, cache, incompleteSongs, completeSongs)
+            worker.scope.tryAsync {
+                mediaStoreExtractor.consume(query, cache, incompleteSongs, completeSongs) }.also {
+                incompleteSongs.close()
             }
         val metadataJob =
-            worker.scope.async { tagExtractor.consume(incompleteSongs, completeSongs) }
+            worker.scope.tryAsync {
+                tagExtractor.consume(incompleteSongs, completeSongs)
+                completeSongs.close()
+            }
 
         // Await completed raw songs as they are processed.
         val rawSongs = LinkedList<RawSong>()
@@ -301,8 +309,8 @@ constructor(
             emitLoading(IndexingProgress.Songs(rawSongs.size, query.projectedTotal))
         }
         // These should be no-ops
-        mediaStoreJob.await()
-        metadataJob.await()
+        mediaStoreJob.await().getOrThrow()
+        metadataJob.await().getOrThrow()
 
         if (rawSongs.isEmpty()) {
             logE("Music library was empty")
@@ -315,20 +323,32 @@ constructor(
         emitLoading(IndexingProgress.Indeterminate)
         val deviceLibraryChannel = Channel<DeviceLibrary>()
         val deviceLibraryJob =
-            worker.scope.async(Dispatchers.Main) {
+            worker.scope.tryAsync(Dispatchers.Main) {
                 deviceLibraryFactory.create(rawSongs).also { deviceLibraryChannel.send(it) }
             }
-        val userLibraryJob = worker.scope.async { userLibraryFactory.read(deviceLibraryChannel) }
+        val userLibraryJob = worker.scope.tryAsync { userLibraryFactory.read(deviceLibraryChannel) }
         if (cache == null || cache.invalidated) {
             cacheRepository.writeCache(rawSongs)
         }
-        val deviceLibrary = deviceLibraryJob.await()
-        val userLibrary = userLibraryJob.await()
+        val deviceLibrary = deviceLibraryJob.await().getOrThrow()
+        val userLibrary = userLibraryJob.await().getOrThrow()
         withContext(Dispatchers.Main) {
             emitComplete(null)
             emitData(deviceLibrary, userLibrary)
         }
     }
+
+    private inline fun <R> CoroutineScope.tryAsync(
+        context: CoroutineContext = EmptyCoroutineContext,
+        crossinline block: suspend () -> R
+    ) =
+        async(context) {
+            try {
+                Result.success(block())
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
 
     private suspend fun emitLoading(progress: IndexingProgress) {
         yield()
