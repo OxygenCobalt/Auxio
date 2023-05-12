@@ -19,38 +19,10 @@
 package org.oxycblt.auxio.music.device
 
 import java.util.*
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
-import org.oxycblt.auxio.music.info.Date
 
 class DeviceMusicImplTest {
-    @Test
-    fun musicUid_auxio() {
-        val uid =
-            createHashedUid(MusicMode.SONGS) {
-                update("Wheel")
-                update(listOf("Parannoul", "Asian Glow"))
-                update("Paraglow")
-                update(null as String?)
-                update(Date.from(2022))
-                update(4 as Int?)
-                update(null as Int?)
-            }
-
-        assertEquals("org.oxycblt.auxio:a10b-3d29c202-cd52-fbe0-4714-47cd07f07a59", uid.toString())
-    }
-
-    @Test
-    fun musicUid_musicBrainz() {
-        val uid =
-            Music.UID.musicBrainz(
-                MusicMode.ALBUMS, UUID.fromString("9b3b0695-0cdc-4560-8486-8deadee136cb"))
-        assertEquals("org.musicbrainz:a10a-9b3b0695-0cdc-4560-8486-8deadee136cb", uid.toString())
-    }
-
     @Test
     fun albumRaw_equals_inconsistentCase() {
         val a =

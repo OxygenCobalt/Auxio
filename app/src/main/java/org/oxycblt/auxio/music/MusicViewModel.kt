@@ -114,7 +114,6 @@ class MusicViewModel @Inject constructor(private val musicRepository: MusicRepos
      * @param songs The [Song]s to be contained in the new playlist.
      */
     fun createPlaylist(name: String, songs: List<Song> = listOf()) {
-        // TODO: Default to something like "Playlist 1", "Playlist 2", etc.
         // TODO: Attempt to unify playlist creation flow with dialog model
         _pendingNewPlaylist.put(PendingName.Args(name, songs.map { it.uid }))
     }
