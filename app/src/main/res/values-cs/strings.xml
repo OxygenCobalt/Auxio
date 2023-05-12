@@ -237,7 +237,7 @@
     <string name="set_separators_comma">Čárka (,)</string>
     <string name="set_separators_semicolon">Středník (;)</string>
     <string name="set_separators_slash">Lomítko (/)</string>
-    <string name="lbl_compilation_remix">Remixové kompilace</string>
+    <string name="lbl_compilation_remix">Remixová kompilace</string>
     <string name="lbl_mixes">Mixy</string>
     <string name="lbl_compilation_live">Živá kompilace</string>
     <string name="lbl_mix">Mix</string>
