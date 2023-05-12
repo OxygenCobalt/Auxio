@@ -25,7 +25,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.dialog.PendingName
+import org.oxycblt.auxio.music.dialog.PendingPlaylist
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 
@@ -47,8 +47,8 @@ class MusicViewModel @Inject constructor(private val musicRepository: MusicRepos
     val statistics: StateFlow<Statistics?>
         get() = _statistics
 
-    private val _pendingNewPlaylist = MutableEvent<PendingName.Args?>()
-    val pendingNewPlaylist: Event<PendingName.Args?> = _pendingNewPlaylist
+    private val _pendingNewPlaylist = MutableEvent<PendingPlaylist?>()
+    val pendingNewPlaylist: Event<PendingPlaylist?> = _pendingNewPlaylist
 
     init {
         musicRepository.addUpdateListener(this)
@@ -115,7 +115,7 @@ class MusicViewModel @Inject constructor(private val musicRepository: MusicRepos
      */
     fun createPlaylist(name: String, songs: List<Song> = listOf()) {
         // TODO: Attempt to unify playlist creation flow with dialog model
-        _pendingNewPlaylist.put(PendingName.Args(name, songs.map { it.uid }))
+        _pendingNewPlaylist.put(PendingPlaylist(name, songs.map { it.uid }))
     }
 
     /**

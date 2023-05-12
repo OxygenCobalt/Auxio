@@ -22,13 +22,13 @@
             app:destination="@id/new_playlist_dialog" />
         <action
             android:id="@+id/action_pick_navigation_artist"
-            app:destination="@id/artist_navigation_picker_dialog" />
+            app:destination="@id/navigate_to_artist_dialog" />
         <action
             android:id="@+id/action_pick_playback_artist"
-            app:destination="@id/artist_playback_picker_dialog" />
+            app:destination="@id/play_from_artist_dialog" />
         <action
             android:id="@+id/action_pick_playback_genre"
-            app:destination="@id/genre_playback_picker_dialog" />
+            app:destination="@id/play_from_genre_dialog" />
     </fragment>
 
     <dialog
@@ -47,14 +47,14 @@
         android:label="new_playlist_dialog"
         tools:layout="@layout/dialog_playlist_name">
         <argument
-            android:name="pendingName"
-            app:argType="org.oxycblt.auxio.music.dialog.PendingName$Args" />
+            android:name="pendingPlaylist"
+            app:argType="org.oxycblt.auxio.music.dialog.PendingPlaylist" />
     </dialog>
 
     <dialog
-        android:id="@+id/artist_navigation_picker_dialog"
-        android:name="org.oxycblt.auxio.navigation.dialog.ArtistNavigationPickerDialog"
-        android:label="artist_navigation_picker_dialog"
+        android:id="@+id/navigate_to_artist_dialog"
+        android:name="org.oxycblt.auxio.navigation.dialog.NavigateToArtistDialog"
+        android:label="navigate_to_artist_dialog"
         tools:layout="@layout/dialog_music_picker">
         <argument
             android:name="artistUid"
@@ -62,9 +62,9 @@
     </dialog>
 
     <dialog
-        android:id="@+id/artist_playback_picker_dialog"
-        android:name="org.oxycblt.auxio.playback.dialog.ArtistPlaybackPickerDialog"
-        android:label="artist_playback_picker_dialog"
+        android:id="@+id/play_from_artist_dialog"
+        android:name="org.oxycblt.auxio.playback.dialog.PlayFromArtistDialog"
+        android:label="play_from_artist_dialog"
         tools:layout="@layout/dialog_music_picker">
         <argument
             android:name="artistUid"
@@ -72,9 +72,9 @@
     </dialog>
 
     <dialog
-        android:id="@+id/genre_playback_picker_dialog"
-        android:name="org.oxycblt.auxio.playback.dialog.GenrePlaybackPickerDialog"
-        android:label="genre_playback_picker_dialog"
+        android:id="@+id/play_from_genre_dialog"
+        android:name="org.oxycblt.auxio.playback.dialog.PlayFromGenreDialog"
+        android:label="play_from_genre_dialog"
         tools:layout="@layout/dialog_music_picker">
         <argument
             android:name="genreUid"

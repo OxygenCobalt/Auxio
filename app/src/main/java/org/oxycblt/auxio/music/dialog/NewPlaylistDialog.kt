@@ -23,13 +23,13 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPlaylistNameBinding
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A dialog allowing the name of a new/existing playlist to be edited.
@@ -44,7 +44,6 @@ class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>()
     // Information about what playlist to name for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel playlist information.
     private val args: NewPlaylistDialogArgs by navArgs()
-    private var initializedInput = false
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder
@@ -59,26 +58,20 @@ class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>()
     override fun onBindingCreated(binding: DialogPlaylistNameBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
-        binding.playlistName.addTextChangedListener {
-            dialogModel.updatePendingName(it?.toString())
+        binding.playlistName.apply {
+            hint = args.pendingPlaylist.name
+            addTextChangedListener {
+                dialogModel.updatePendingName(
+                    (if (it.isNullOrEmpty()) unlikelyToBeNull(hint) else it).toString())
+            }
         }
 
-        dialogModel.setPendingName(args.pendingName)
-        collectImmediately(dialogModel.currentPendingName, ::updatePendingName)
+        dialogModel.setPendingName(args.pendingPlaylist)
+        collectImmediately(dialogModel.pendingPlaylistValid, ::updateValid)
     }
 
-    private fun updatePendingName(pendingName: PendingName?) {
-        if (pendingName == null) {
-            findNavController().navigateUp()
-            return
-        }
-        // Make sure we initialize the TextView with the preferred name if we haven't already.
-        if (!initializedInput) {
-            requireBinding().playlistName.setText(pendingName.name)
-            initializedInput = true
-        }
+    private fun updateValid(valid: Boolean) {
         // Disable the OK button if the name is invalid (empty or whitespace)
-        (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled =
-            pendingName.valid
+        (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = valid
     }
 }

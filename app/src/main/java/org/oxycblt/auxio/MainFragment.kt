@@ -42,7 +42,7 @@ import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.dialog.PendingName
+import org.oxycblt.auxio.music.dialog.PendingPlaylist
 import org.oxycblt.auxio.navigation.MainNavigationAction
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
@@ -304,9 +304,10 @@ class MainFragment :
         }
     }
 
-    private fun handlePlaylistNaming(args: PendingName.Args?) {
-        if (args != null) {
-            findNavController().navigateSafe(MainFragmentDirections.actionNewPlaylist(args))
+    private fun handlePlaylistNaming(pendingPlaylist: PendingPlaylist?) {
+        if (pendingPlaylist != null) {
+            findNavController()
+                .navigateSafe(MainFragmentDirections.actionNewPlaylist(pendingPlaylist))
             musicModel.pendingNewPlaylist.consume()
         }
     }

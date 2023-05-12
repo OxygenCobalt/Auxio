@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
- * ArtistPlaybackPickerDialog.kt is part of Auxio.
+ * PlayFromArtistDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,13 +46,13 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class ArtistPlaybackPickerDialog :
+class PlayFromArtistDialog :
     ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<Artist> {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val pickerModel: PlaybackDialogViewModel by viewModels()
     // Information about what Song to show choices for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel a Song.
-    private val args: ArtistPlaybackPickerDialogArgs by navArgs()
+    private val args: PlayFromArtistDialogArgs by navArgs()
     private val choiceAdapter = ArtistChoiceAdapter(this)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {

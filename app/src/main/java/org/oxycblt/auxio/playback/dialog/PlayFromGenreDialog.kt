@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
- * ArtistNavigationPickerDialog.kt is part of Auxio.
+ * PlayFromGenreDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.navigation.dialog
+package org.oxycblt.auxio.playback.dialog
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -34,28 +34,29 @@ import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.list.recycler.ChoiceViewHolder
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.navigation.NavigationViewModel
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A picker [ViewBindingDialogFragment] intended for when [Artist] navigation is ambiguous.
+ * A picker [ViewBindingDialogFragment] intended for when [Genre] playback is ambiguous.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class ArtistNavigationPickerDialog :
-    ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<Artist> {
-    private val navigationModel: NavigationViewModel by activityViewModels()
-    private val pickerModel: NavigationDialogViewModel by viewModels()
-    // Information about what artists to show choices for is initially within the navigation
-    // arguments as UIDs, as that is the only safe way to parcel an artist.
-    private val args: ArtistNavigationPickerDialogArgs by navArgs()
-    private val choiceAdapter = ArtistChoiceAdapter(this)
+class PlayFromGenreDialog :
+    ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<Genre> {
+    private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val pickerModel: PlaybackDialogViewModel by viewModels()
+    // Information about what Song to show choices for is initially within the navigation arguments
+    // as UIDs, as that is the only safe way to parcel a Song.
+    private val args: PlayFromGenreDialogArgs by navArgs()
+    private val choiceAdapter = GenreChoiceAdapter(this)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
-        builder.setTitle(R.string.lbl_artists).setNegativeButton(R.string.lbl_cancel, null)
+        builder.setTitle(R.string.lbl_genres).setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -69,10 +70,10 @@ class ArtistNavigationPickerDialog :
             adapter = choiceAdapter
         }
 
-        pickerModel.setArtistChoiceUid(args.artistUid)
-        collectImmediately(pickerModel.currentArtistChoices) {
+        pickerModel.setPickerSongUid(args.genreUid)
+        collectImmediately(pickerModel.currentPickerSong) {
             if (it != null) {
-                choiceAdapter.update(it.choices, UpdateInstructions.Replace(0))
+                choiceAdapter.update(it.genres, UpdateInstructions.Replace(0))
             } else {
                 findNavController().navigateUp()
             }
@@ -84,20 +85,19 @@ class ArtistNavigationPickerDialog :
         choiceAdapter
     }
 
-    override fun onClick(item: Artist, viewHolder: RecyclerView.ViewHolder) {
-        // User made a choice, navigate to the artist.
-        navigationModel.exploreNavigateTo(item)
+    override fun onClick(item: Genre, viewHolder: RecyclerView.ViewHolder) {
+        // User made a choice, play the given song from that genre.
+        val song = unlikelyToBeNull(pickerModel.currentPickerSong.value)
+        playbackModel.playFromGenre(song, item)
         findNavController().navigateUp()
     }
 
-    private class ArtistChoiceAdapter(private val listener: ClickableListListener<Artist>) :
-        FlexibleListAdapter<Artist, ChoiceViewHolder<Artist>>(ChoiceViewHolder.diffCallback()) {
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int
-        ): ChoiceViewHolder<Artist> = ChoiceViewHolder.from(parent)
+    private class GenreChoiceAdapter(private val listener: ClickableListListener<Genre>) :
+        FlexibleListAdapter<Genre, ChoiceViewHolder<Genre>>(ChoiceViewHolder.diffCallback()) {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChoiceViewHolder<Genre> =
+            ChoiceViewHolder.from(parent)
 
-        override fun onBindViewHolder(holder: ChoiceViewHolder<Artist>, position: Int) {
+        override fun onBindViewHolder(holder: ChoiceViewHolder<Genre>, position: Int) {
             holder.bind(getItem(position), listener)
         }
     }
