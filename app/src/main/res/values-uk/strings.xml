@@ -67,10 +67,10 @@
     <string name="lbl_equalizer">Еквалайзер</string>
     <string name="lbl_size">Розмір</string>
     <string name="lbl_indexer">Завантаження музики</string>
-    <string name="lbl_compilation_remix">Збірки реміксів</string>
+    <string name="lbl_compilation_remix">Збірка реміксів</string>
     <string name="lbl_bitrate">Бітрейт</string>
     <string name="lbl_observing">Моніторинг музичної бібліотеки</string>
-    <string name="info_app_desc">Простий, раціональний музичний плеєр для Android.</string>
+    <string name="info_app_desc">Простий і раціональний музичний плеєр для Android.</string>
     <string name="lbl_indexing">Завантаження музики</string>
     <string name="lbl_album">Альбом</string>
     <string name="lbl_singles">Сингли</string>
@@ -82,7 +82,7 @@
     <string name="lbl_album_live">Концертний альбом</string>
     <string name="lbl_relative_path">Шлях до каталогу</string>
     <string name="set_display">Екран</string>
-    <string name="lbl_date">Дата</string>
+    <string name="lbl_date">Рік</string>
     <string name="lbl_play_selected">Відтворити вибране</string>
     <string name="set_cover_mode">Обкладинки альбомів</string>
     <string name="set_hide_collaborators">Приховати співавторів</string>
@@ -177,7 +177,7 @@
     <string name="set_dirs_mode_include_desc">Музика буде завантажена <b>тільки</b> з вибраних папок.</string>
     <string name="set_restore_desc">Відновити раніше збережений стан відтворення (якщо є)</string>
     <string name="set_pre_amp_with">Регулювання на основі тегів</string>
-    <string name="set_replay_gain_mode">Вирівнювання гучності (ReplayGain)</string>
+    <string name="set_replay_gain_mode">Налаштування ReplayGain</string>
     <string name="set_save_state">Зберегти стан відтворення</string>
     <string name="set_wipe_state">Очистити стан відтворення</string>
     <string name="set_restore_state">Відновити стан відтворення</string>
@@ -204,7 +204,7 @@
     <string name="desc_exit">Зупинити відтворення</string>
     <string name="cdc_flac">Вільний аудіокодек без втрат (FLAC)</string>
     <string name="clr_deep_purple">Темно-фіолетовий</string>
-    <string name="fmt_selected">%d Вибрано</string>
+    <string name="fmt_selected">Вибрано %d</string>
     <string name="fmt_indexing">Завантаження музичної бібліотеки… (%1$d/%2$d)</string>
     <string name="fmt_bitrate">%d кбіт/с</string>
     <string name="fmt_sample_rate">%d Гц</string>
@@ -265,14 +265,14 @@
     <string name="set_behavior">Поведінка</string>
     <string name="set_ui_desc">Змініть тему та кольори застосунку</string>
     <string name="set_personalize_desc">Налаштуйте елементи керування та поведінку інтерфейсу користувача</string>
-    <string name="set_content_desc">Керування завантаженням музики та зображень</string>
+    <string name="set_content_desc">Керуйте завантаженням музики та зображень</string>
     <string name="set_music">Музика</string>
     <string name="set_images">Зображення</string>
     <string name="set_playback">Відтворення</string>
     <string name="set_replay_gain">Вирівнювання гучності (ReplayGain)</string>
     <string name="set_library">Бібліотека</string>
-    <string name="set_state">Наполегливість</string>
-    <string name="set_audio_desc">Налаштування звуку і поведінки при відтворенні</string>
+    <string name="set_state">Стан відтворення</string>
+    <string name="set_audio_desc">Налаштуйте звук і поведінку при відтворенні</string>
     <string name="set_dirs_list">Папки</string>
     <string name="lbl_sort_dec">За спаданням</string>
     <string name="desc_playlist_image">Зображення списку відтворення для %s</string>
@@ -280,6 +280,8 @@
     <string name="lbl_playlists">Списки відтворення</string>
     <string name="lbl_none">Немає</string>
     <string name="set_intelligent_sorting">Інтелектуальне сортування</string>
-    <string name="set_intelligent_sorting_desc">Ігнорування таких слів, як \"the\", під час сортування за назвою (найкраще працює з англомовною музикою)</string>
+    <string name="set_intelligent_sorting_desc">Ігнорування таких слів, як \"the\", або цифр під час сортування за назвою (найкраще працює з англомовною музикою)</string>
     <string name="desc_new_playlist">Створити новий список відтворення</string>
+    <string name="lbl_new_playlist">Новий список відтворення</string>
+    <string name="fmt_def_playlist">Список відтворення %d</string>
 </resources>

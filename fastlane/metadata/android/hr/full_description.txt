@@ -4,17 +4,19 @@ Auxio je lokalni izvođač glazbe s brzim i pouzdanim korisničkim sučeljem/kor
 
 - Reprodukcija bazirana na ExoPlayeru
 - Brzo korisničko sučelje u skladu s najnovijim Materijal dizajnom
-- Korisničko iskustvo koje priorizira jednostavnost korištenja, nasuprot kompleksnim postavkama
-- Prilagodljive radnje aplikacije
-- Napredan čitač medija koji naglašava točnost metapodataka
-- Svjestan SD kartice, te tako oprezno raspoređuje mape
-- Izvođač na koji se možete osloniti da krenuti tamo gdje ste posljednji put stali
+- Korisničko iskustvo koje priorizira jednostavnost korištenja
+- Prilagodljive ponašanje aplikacije
+- Podrška za brojeve diskova, izvođače, vrste izdanja,
+precizne/izvorne datume, oznake razvrstavanje i još više
+- Napredni sustav izvođača koji ujedinjuje izvođače i izvođače albuma
+- Upravljanje mapama SD kartica
+- Pouzdana postojanost stanja reprodukcije
 - Potpuna ReplayGain podrška (Za MP3, MP4, FLAC, OGG, i OPUS formate)
-- Funkcionalnost eksternog ekvilajzera (u programima kao Wavelet)
+- Podrška za eksterne ekvilajzere (npr. Wavelet)
 - Prikaz od ruba do ruba
-- Podrška za ugrađene naslovnice
-- Pretražite svoju glazbu
+- Podrška za ugrađene omote
+- Pretražinje
 - Mogućnost pokretanja glazbe čim spojite slušalice
-- Stilizirani prečaci koji automatski prilagođavaju svoju veličinu
-- U potpunosti privatan i nije mu potreban internet
-- Nema zaobljenih naslovnica albuma (Osim ako ih želite. Onda ih možete imati.)
+- Stilizirani widgeti koji automatski prilagođavaju svoju veličinu
+- Potpuno privatan bez potrebe za internetskom vezom
+- Bez zaobljenih omota albuma (Osim ako ih želite. Onda ih možete imati.)

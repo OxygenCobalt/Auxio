@@ -248,7 +248,7 @@
     <string name="set_bar_action">Пользовательское поведение панели воспроизведения</string>
     <string name="set_rescan">Пересканировать музыку</string>
     <string name="set_rescan_desc">Очистить кеш тегов и полностью обновить библиотеку (медленно, но более эффективно)</string>
-    <string name="lbl_compilation_remix">Сборники ремиксов</string>
+    <string name="lbl_compilation_remix">Сборник ремиксов</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d исполнитель</item>
         <item quantity="few">%d исполнителя</item>
@@ -285,4 +285,6 @@
     <string name="set_intelligent_sorting_desc">Игнорировать такие слова, как «the», при сортировке по имени (лучше всего работает с англоязычной музыкой)</string>
     <string name="lbl_none">Откл.</string>
     <string name="desc_new_playlist">Создать новый плейлист</string>
+    <string name="lbl_new_playlist">Новый плейлист</string>
+    <string name="fmt_def_playlist">Плейлист %d</string>
 </resources>

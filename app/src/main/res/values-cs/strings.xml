@@ -191,7 +191,7 @@
     <string name="lbl_size">Velikost</string>
     <string name="lbl_bitrate">Přenosová rychlost</string>
     <string name="lbl_sample_rate">Vzorkovací frekvence</string>
-    <string name="set_dirs">Hudební složky</string>
+    <string name="set_dirs">Složky s hudbou</string>
     <string name="set_restore_state">Obnovit stav přehrávání</string>
     <string name="lbl_state_restored">Stav obnoven</string>
     <string name="set_restore_desc">Obnovit dříve uložený stav přehrávání (pokud existuje)</string>
@@ -237,7 +237,7 @@
     <string name="set_separators_comma">Čárka (,)</string>
     <string name="set_separators_semicolon">Středník (;)</string>
     <string name="set_separators_slash">Lomítko (/)</string>
-    <string name="lbl_compilation_remix">Remixové kompilace</string>
+    <string name="lbl_compilation_remix">Remixová kompilace</string>
     <string name="lbl_mixes">Mixy</string>
     <string name="lbl_compilation_live">Živá kompilace</string>
     <string name="lbl_mix">Mix</string>

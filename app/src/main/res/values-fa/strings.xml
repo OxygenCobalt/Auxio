@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lbl_indexer">بارگیری موسیقی</string>
+    <string name="info_app_desc">یک پخش کننده موسیقی ساده و منطقی برای اندروید.</string>
+    <string name="lbl_retry">تلاش دوباره</string>
+    <string name="lbl_grant">اجازه دادن</string>
+    <string name="lbl_album">آلبوم</string>
+    <string name="lbl_album_live">آلبوم زنده</string>
+    <string name="lbl_album_remix">آلبوم ریمیکس</string>
+    <string name="lbl_indexing">آماده‎سازی موسیقی</string>
+    <string name="lbl_observing">چک‎کردن کلکسیون موسیقی</string>
+    <string name="lbl_songs">ترانه‎ها</string>
+    <string name="lbl_all_songs">تمام ترانه‎ها</string>
+    <string name="lbl_albums">آلبوم‎ها</string>
+    <string name="lbl_eps">آلبوم‎های کوتاه</string>
+    <string name="lbl_ep">آلبوم کوتاه</string>
+    <string name="lbl_ep_live">آلبوم کوتاه زنده</string>
+    <string name="lbl_ep_remix">آلبوم کوتاه ریمیکس</string>
+    <string name="lbl_single">تک‎آهنگ</string>
+    <string name="lbl_singles">تک‎آهنگ‎ها</string>
+    <string name="lbl_single_live">تک‎آهنگ زنده</string>
+    <string name="lbl_soundtrack">موسیقی‎متن</string>
+    <string name="lbl_single_remix">ریمیکس زنده</string>
+    <string name="lbl_compilations">مجموعه‎ها</string>
+    <string name="lbl_compilation">مجموعه</string>
+    <string name="lbl_compilation_live">مجموعه زنده</string>
+    <string name="lbl_compilation_remix">مجموعه ریمیکس‎ها</string>
+    <string name="lbl_soundtracks">موسیقی‎‎های متن</string>
+</resources>

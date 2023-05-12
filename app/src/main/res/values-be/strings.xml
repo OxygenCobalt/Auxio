@@ -44,7 +44,7 @@
     <string name="set_theme_day">Светлая</string>
     <string name="lbl_single_live">Жывы сінгл</string>
     <string name="lbl_single_remix">Рэмікс сінгла</string>
-    <string name="lbl_compilation_remix">Зборнікі рэміксаў</string>
+    <string name="lbl_compilation_remix">Зборнік рэміксаў</string>
     <string name="lbl_soundtracks">Саўндтрэкі</string>
     <string name="lbl_mixtapes">Мікстэйпы</string>
     <string name="lbl_mixtape">Мікстэйп</string>
@@ -276,4 +276,6 @@
     <string name="lbl_playlists">Плэйлісты</string>
     <string name="lbl_none">Адкл.</string>
     <string name="desc_new_playlist">Стварыце новы плэйліст</string>
+    <string name="fmt_def_playlist">Плэйліст %d</string>
+    <string name="lbl_new_playlist">Новы плэйліст</string>
 </resources>

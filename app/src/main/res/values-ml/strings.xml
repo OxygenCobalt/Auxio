@@ -87,4 +87,14 @@
         <item quantity="one">%d പാട്ട്</item>
         <item quantity="other">%d പാട്ടുകൾ</item>
     </plurals>
+    <string name="lbl_go_artist">കലാകാരനിലേക്ക് പോകുക</string>
+    <string name="lbl_song_detail">സവിശേഷതകൾ കാണുക</string>
+    <string name="lbl_state_saved">സ്ഥിതി സംരക്ഷിച്ചു</string>
+    <string name="lbl_none">ഒന്നുമില്ല</string>
+    <string name="lbl_sort_dec">അവരോഹണം</string>
+    <string name="lbl_state_restored">സ്ഥിതി പുനഃസ്ഥാപിച്ചു</string>
+    <string name="lbl_wiki">വിക്കി</string>
+    <string name="lbl_state_wiped">സ്ഥിതി മായ്ച്ചു</string>
+    <string name="lbl_live_group">തത്സമയം</string>
+    <string name="lbl_compilation_live">തത്സമയ സമാഹാരം</string>
 </resources>
