@@ -183,9 +183,9 @@ private data class IntelligentKnownName(override val raw: String, override val s
                     // Strip any english articles like "the" or "an" from the start, as music
                     // sorting should ignore such when possible.
                     when {
-                        length > 5 && startsWith("the ", ignoreCase = true) -> substring(4)
-                        length > 4 && startsWith("an ", ignoreCase = true) -> substring(3)
-                        length > 3 && startsWith("a ", ignoreCase = true) -> substring(2)
+                        length > 4 && startsWith("the ", ignoreCase = true) -> substring(4)
+                        length > 3 && startsWith("an ", ignoreCase = true) -> substring(3)
+                        length > 2 && startsWith("a ", ignoreCase = true) -> substring(2)
                         else -> this
                     }
                 }
