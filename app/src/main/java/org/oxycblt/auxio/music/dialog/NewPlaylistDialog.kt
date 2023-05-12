@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * PlaylistNamingDialog.kt is part of Auxio.
+ * NewPlaylistDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.DialogPlaylistNamingBinding
+import org.oxycblt.auxio.databinding.DialogPlaylistNameBinding
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 
@@ -37,13 +37,13 @@ import org.oxycblt.auxio.util.collectImmediately
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class PlaylistNamingDialog : ViewBindingDialogFragment<DialogPlaylistNamingBinding>() {
+class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>() {
     // activityViewModels is intentional here as the ViewModel will do work that we
     // do not want to cancel after this dialog closes.
     private val dialogModel: PlaylistDialogViewModel by activityViewModels()
     // Information about what playlist to name for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel playlist information.
-    private val args: PlaylistNamingDialogArgs by navArgs()
+    private val args: NewPlaylistDialogArgs by navArgs()
     private var initializedInput = false
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
@@ -54,12 +54,9 @@ class PlaylistNamingDialog : ViewBindingDialogFragment<DialogPlaylistNamingBindi
     }
 
     override fun onCreateBinding(inflater: LayoutInflater) =
-        DialogPlaylistNamingBinding.inflate(inflater)
+        DialogPlaylistNameBinding.inflate(inflater)
 
-    override fun onBindingCreated(
-        binding: DialogPlaylistNamingBinding,
-        savedInstanceState: Bundle?
-    ) {
+    override fun onBindingCreated(binding: DialogPlaylistNameBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
         binding.playlistName.addTextChangedListener {
@@ -82,6 +79,6 @@ class PlaylistNamingDialog : ViewBindingDialogFragment<DialogPlaylistNamingBindi
         }
         // Disable the OK button if the name is invalid (empty or whitespace)
         (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled =
-            pendingName.name.isNotBlank()
+            pendingName.valid
     }
 }

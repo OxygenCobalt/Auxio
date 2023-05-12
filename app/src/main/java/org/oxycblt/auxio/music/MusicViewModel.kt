@@ -18,11 +18,13 @@
  
 package org.oxycblt.auxio.music
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.dialog.PendingName
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
@@ -45,8 +47,8 @@ class MusicViewModel @Inject constructor(private val musicRepository: MusicRepos
     val statistics: StateFlow<Statistics?>
         get() = _statistics
 
-    private val _pendingPlaylistNaming = MutableEvent<PendingName.Args?>()
-    val pendingPlaylistNaming: Event<PendingName.Args?> = _pendingPlaylistNaming
+    private val _pendingNewPlaylist = MutableEvent<PendingName.Args?>()
+    val pendingNewPlaylist: Event<PendingName.Args?> = _pendingNewPlaylist
 
     init {
         musicRepository.addUpdateListener(this)
@@ -85,15 +87,36 @@ class MusicViewModel @Inject constructor(private val musicRepository: MusicRepos
     }
 
     /**
+     * Create a new generic playlist. This will automatically generate a playlist name and then
+     * prompt the user to edit the name before the creation finished.
+     *
+     * @param context The [Context] required to generate the playlist name.
+     * @param songs The [Song]s to be contained in the new playlist.
+     */
+    fun createPlaylist(context: Context, songs: List<Song> = listOf()) {
+        val userLibrary = musicRepository.userLibrary ?: return
+        var i = 1
+        while (true) {
+            val possibleName = context.getString(R.string.fmt_def_playlist, i)
+            if (userLibrary.playlists.none { it.name.resolve(context) == possibleName }) {
+                createPlaylist(possibleName, songs)
+                return
+            }
+            ++i
+        }
+    }
+
+    /**
      * Create a new generic playlist. This will prompt the user to edit the name before the creation
      * finishes.
      *
      * @param name The preferred name of the new playlist.
+     * @param songs The [Song]s to be contained in the new playlist.
      */
     fun createPlaylist(name: String, songs: List<Song> = listOf()) {
         // TODO: Default to something like "Playlist 1", "Playlist 2", etc.
         // TODO: Attempt to unify playlist creation flow with dialog model
-        _pendingPlaylistNaming.put(PendingName.Args(name, songs.map { it.uid }))
+        _pendingNewPlaylist.put(PendingName.Args(name, songs.map { it.uid }))
     }
 
     /**

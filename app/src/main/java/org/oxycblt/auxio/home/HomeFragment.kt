@@ -321,7 +321,7 @@ class HomeFragment :
             }
         } else {
             binding.homeFab.flipTo(R.drawable.ic_add_24, R.string.desc_new_playlist) {
-                musicModel.createPlaylist("New playlist")
+                musicModel.createPlaylist(requireContext())
             }
         }
     }

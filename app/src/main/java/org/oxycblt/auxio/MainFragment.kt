@@ -135,7 +135,7 @@ class MainFragment :
         collect(navModel.mainNavigationAction.flow, ::handleMainNavigation)
         collect(navModel.exploreNavigationItem.flow, ::handleExploreNavigation)
         collect(navModel.exploreArtistNavigationItem.flow, ::handleArtistNavigationPicker)
-        collect(musicModel.pendingPlaylistNaming.flow, ::handlePlaylistNaming)
+        collect(musicModel.pendingNewPlaylist.flow, ::handlePlaylistNaming)
         collectImmediately(playbackModel.song, ::updateSong)
         collect(playbackModel.artistPickerSong.flow, ::handlePlaybackArtistPicker)
         collect(playbackModel.genrePickerSong.flow, ::handlePlaybackGenrePicker)
@@ -306,8 +306,8 @@ class MainFragment :
 
     private fun handlePlaylistNaming(args: PendingName.Args?) {
         if (args != null) {
-            findNavController().navigateSafe(MainFragmentDirections.actionNamePlaylist(args))
-            musicModel.pendingPlaylistNaming.consume()
+            findNavController().navigateSafe(MainFragmentDirections.actionNewPlaylist(args))
+            musicModel.pendingNewPlaylist.consume()
         }
     }
 

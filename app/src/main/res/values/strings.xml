@@ -376,6 +376,8 @@
 
     <!-- As in "Disc 1", "Disc 2", etc. in a set -->
     <string name="fmt_disc_no">Disc %d</string>
+    <!-- As in "Playlist 1", "Playlist 2", etc. -->
+    <string name="fmt_def_playlist">Playlist %d</string>
 
     <!-- Use your native country's abbreviation for decibel units. -->
     <string name="fmt_db_pos">+%.1f dB</string>

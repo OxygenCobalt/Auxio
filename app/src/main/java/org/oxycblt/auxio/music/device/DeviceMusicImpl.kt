@@ -18,8 +18,6 @@
  
 package org.oxycblt.auxio.music.device
 
-import androidx.annotation.VisibleForTesting
-import java.security.MessageDigest
 import java.util.*
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Sort
@@ -35,6 +33,7 @@ import org.oxycblt.auxio.music.metadata.parseMultiValue
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import org.oxycblt.auxio.util.update
 
 /**
  * Library-backed implementation of [Song].
@@ -47,7 +46,7 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         rawSong.musicBrainzId?.toUuidOrNull()?.let { Music.UID.musicBrainz(MusicMode.SONGS, it) }
-            ?: createHashedUid(MusicMode.SONGS) {
+            ?: Music.UID.auxio(MusicMode.SONGS) {
                 // Song UIDs are based on the raw data without parsing so that they remain
                 // consistent across music setting changes. Parents are not held up to the
                 // same standard since grouping is already inherently linked to settings.
@@ -231,7 +230,7 @@ class AlbumImpl(
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         rawAlbum.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ALBUMS, it) }
-            ?: createHashedUid(MusicMode.ALBUMS) {
+            ?: Music.UID.auxio(MusicMode.ALBUMS) {
                 // Hash based on only names despite the presence of a date to increase stability.
                 // I don't know if there is any situation where an artist will have two albums with
                 // the exact same name, but if there is, I would love to know.
@@ -327,7 +326,7 @@ class ArtistImpl(
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         rawArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ARTISTS, it) }
-            ?: createHashedUid(MusicMode.ARTISTS) { update(rawArtist.name) }
+            ?: Music.UID.auxio(MusicMode.ARTISTS) { update(rawArtist.name) }
     override val name =
         rawArtist.name?.let { Name.Known.from(it, rawArtist.sortName, musicSettings) }
             ?: Name.Unknown(R.string.def_artist)
@@ -411,7 +410,7 @@ class GenreImpl(
     musicSettings: MusicSettings,
     override val songs: List<SongImpl>
 ) : Genre {
-    override val uid = createHashedUid(MusicMode.GENRES) { update(rawGenre.name) }
+    override val uid = Music.UID.auxio(MusicMode.GENRES) { update(rawGenre.name) }
     override val name =
         rawGenre.name?.let { Name.Known.from(it, rawGenre.name, musicSettings) }
             ?: Name.Unknown(R.string.def_genre)
@@ -465,100 +464,5 @@ class GenreImpl(
     fun finalize(): Genre {
         check(songs.isNotEmpty()) { "Malformed genre: Empty" }
         return this
-    }
-}
-
-/**
- * Generate a [Music.UID] derived from the hash of objective music metadata.
- *
- * @param mode The analogous [MusicMode] of the item that created this [UID].
- * @param updates Block to update the [MessageDigest] hash with the metadata of the item. Make sure
- *   the metadata hashed semantically aligns with the format specification.
- * @return A new [Music.UID] of Auxio format whose [UUID] was derived from the SHA-256 hash of the
- *   metadata given.
- */
-@VisibleForTesting
-fun createHashedUid(mode: MusicMode, updates: MessageDigest.() -> Unit): Music.UID {
-    val digest =
-        MessageDigest.getInstance("SHA-256").run {
-            updates()
-            digest()
-        }
-    // Convert the digest to a UUID. This does cleave off some of the hash, but this
-    // is considered okay.
-    val uuid =
-        UUID(
-            digest[0]
-                .toLong()
-                .shl(56)
-                .or(digest[1].toLong().and(0xFF).shl(48))
-                .or(digest[2].toLong().and(0xFF).shl(40))
-                .or(digest[3].toLong().and(0xFF).shl(32))
-                .or(digest[4].toLong().and(0xFF).shl(24))
-                .or(digest[5].toLong().and(0xFF).shl(16))
-                .or(digest[6].toLong().and(0xFF).shl(8))
-                .or(digest[7].toLong().and(0xFF)),
-            digest[8]
-                .toLong()
-                .shl(56)
-                .or(digest[9].toLong().and(0xFF).shl(48))
-                .or(digest[10].toLong().and(0xFF).shl(40))
-                .or(digest[11].toLong().and(0xFF).shl(32))
-                .or(digest[12].toLong().and(0xFF).shl(24))
-                .or(digest[13].toLong().and(0xFF).shl(16))
-                .or(digest[14].toLong().and(0xFF).shl(8))
-                .or(digest[15].toLong().and(0xFF)))
-    return Music.UID.auxio(mode, uuid)
-}
-
-/**
- * Update a [MessageDigest] with a lowercase [String].
- *
- * @param string The [String] to hash. If null, it will not be hashed.
- */
-@VisibleForTesting
-fun MessageDigest.update(string: String?) {
-    if (string != null) {
-        update(string.lowercase().toByteArray())
-    } else {
-        update(0)
-    }
-}
-
-/**
- * Update a [MessageDigest] with the string representation of a [Date].
- *
- * @param date The [Date] to hash. If null, nothing will be done.
- */
-@VisibleForTesting
-fun MessageDigest.update(date: Date?) {
-    if (date != null) {
-        update(date.toString().toByteArray())
-    } else {
-        update(0)
-    }
-}
-
-/**
- * Update a [MessageDigest] with the lowercase versions of all of the input [String]s.
- *
- * @param strings The [String]s to hash. If a [String] is null, it will not be hashed.
- */
-@VisibleForTesting
-fun MessageDigest.update(strings: List<String?>) {
-    strings.forEach(::update)
-}
-
-/**
- * Update a [MessageDigest] with the little-endian bytes of a [Int].
- *
- * @param n The [Int] to write. If null, nothing will be done.
- */
-@VisibleForTesting
-fun MessageDigest.update(n: Int?) {
-    if (n != null) {
-        update(byteArrayOf(n.toByte(), n.shr(8).toByte(), n.shr(16).toByte(), n.shr(24).toByte()))
-    } else {
-        update(0)
     }
 }

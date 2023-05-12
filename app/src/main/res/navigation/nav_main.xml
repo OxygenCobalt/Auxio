@@ -18,8 +18,8 @@
             android:id="@+id/action_show_details"
             app:destination="@id/song_detail_dialog" />
         <action
-            android:id="@+id/action_name_playlist"
-            app:destination="@id/playlist_naming_dialog" />
+            android:id="@+id/action_new_playlist"
+            app:destination="@id/new_playlist_dialog" />
         <action
             android:id="@+id/action_pick_navigation_artist"
             app:destination="@id/artist_navigation_picker_dialog" />
@@ -42,10 +42,10 @@
     </dialog>
 
     <dialog
-        android:id="@+id/playlist_naming_dialog"
-        android:name="org.oxycblt.auxio.music.dialog.PlaylistNamingDialog"
-        android:label="playlist_naming_dialog"
-        tools:layout="@layout/dialog_song_detail">
+        android:id="@+id/new_playlist_dialog"
+        android:name="org.oxycblt.auxio.music.dialog.NewPlaylistDialog"
+        android:label="new_playlist_dialog"
+        tools:layout="@layout/dialog_playlist_name">
         <argument
             android:name="pendingName"
             app:argType="org.oxycblt.auxio.music.dialog.PendingName$Args" />

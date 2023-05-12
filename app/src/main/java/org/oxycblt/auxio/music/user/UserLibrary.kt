@@ -44,6 +44,14 @@ interface UserLibrary {
      */
     fun findPlaylist(uid: Music.UID): Playlist?
 
+    /**
+     * Finds a playlist by it's [name]. Since all [Playlist] names must be unique, this will always
+     * return at most 1 value.
+     *
+     * @param name The name [String] to search for.
+     */
+    fun findPlaylist(name: String): Playlist?
+
     /** Constructs a [UserLibrary] implementation in an asynchronous manner. */
     interface Factory {
         /**
@@ -103,6 +111,8 @@ private class UserLibraryImpl(
     }
 
     override fun findPlaylist(uid: Music.UID) = playlistMap[uid]
+
+    override fun findPlaylist(name: String) = playlistMap.values.find { it.name.raw == name }
 
     @Synchronized
     override fun createPlaylist(name: String, songs: List<Song>) {

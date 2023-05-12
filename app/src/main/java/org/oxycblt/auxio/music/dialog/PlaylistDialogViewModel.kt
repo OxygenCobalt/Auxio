@@ -31,6 +31,7 @@ import org.oxycblt.auxio.music.Song
 
 /**
  * A [ViewModel] managing the state of the playlist editing dialogs.
+ *
  * @author Alexander Capehart
  */
 @HiltViewModel
@@ -44,15 +45,25 @@ class PlaylistDialogViewModel @Inject constructor(private val musicRepository: M
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (!changes.deviceLibrary) return
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
-        // Update the pending name to reflect new information in the music library.
-        _currentPendingName.value =
-            _currentPendingName.value?.let { pendingName ->
-                PendingName(
-                    pendingName.name,
-                    pendingName.songs.mapNotNull { deviceLibrary.findSong(it.uid) })
+        val pendingName = _currentPendingName.value ?: return
+
+        val deviceLibrary = musicRepository.deviceLibrary
+        val newSongs =
+            if (changes.deviceLibrary && deviceLibrary != null) {
+                pendingName.songs.mapNotNull { deviceLibrary.findSong(it.uid) }
+            } else {
+                pendingName.songs
             }
+
+        val userLibrary = musicRepository.userLibrary
+        val newValid =
+            if (changes.userLibrary && userLibrary != null) {
+                validateName(pendingName.name)
+            } else {
+                pendingName.valid
+            }
+
+        _currentPendingName.value = PendingName(pendingName.name, newSongs, newValid)
     }
 
     override fun onCleared() {
@@ -61,17 +72,22 @@ class PlaylistDialogViewModel @Inject constructor(private val musicRepository: M
 
     /**
      * Update the current [PendingName] based on the given [PendingName.Args].
+     *
      * @param args The [PendingName.Args] to update with.
      */
     fun setPendingName(args: PendingName.Args) {
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         val name =
-            PendingName(args.preferredName, args.songUids.mapNotNull(deviceLibrary::findSong))
+            PendingName(
+                args.preferredName,
+                args.songUids.mapNotNull(deviceLibrary::findSong),
+                validateName(args.preferredName))
         _currentPendingName.value = name
     }
 
     /**
      * Update the current [PendingName] based on new user input.
+     *
      * @param name The new user-inputted name, directly from the UI.
      */
     fun updatePendingName(name: String?) {
@@ -79,25 +95,31 @@ class PlaylistDialogViewModel @Inject constructor(private val musicRepository: M
         // music items.
         val normalized = (name ?: return).trim()
         _currentPendingName.value =
-            _currentPendingName.value?.run { PendingName(normalized, songs) }
+            _currentPendingName.value?.run { PendingName(normalized, songs, validateName(name)) }
     }
 
-    /**
-     * Confirm the current [PendingName] operation and write it to the database.
-     */
+    /** Confirm the current [PendingName] operation and write it to the database. */
     fun confirmPendingName() {
         val pendingName = _currentPendingName.value ?: return
         musicRepository.createPlaylist(pendingName.name, pendingName.songs)
         _currentPendingName.value = null
     }
+
+    private fun validateName(name: String) =
+        name.isNotBlank() && musicRepository.userLibrary?.findPlaylist(name) == null
 }
 
 /**
- * Represents a name operation
+ * Represents the current state of a name operation.
+ *
+ * @param name The name of the playlist.
+ * @param songs Any songs that will be in the playlist when added.
+ * @param valid Whether the current configuration is valid.
  */
-data class PendingName(val name: String, val songs: List<Song>) {
+data class PendingName(val name: String, val songs: List<Song>, val valid: Boolean) {
     /**
      * A [Parcelable] version of [PendingName], to be used as a dialog argument.
+     *
      * @param preferredName The name to be used initially by the dialog.
      * @param songUids The [Music.UID] of any pending [Song]s that will be put in the playlist.
      */

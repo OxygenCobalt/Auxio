@@ -138,7 +138,6 @@ class PlaylistDetailFragment :
     }
 
     override fun onPlay() {
-        // TODO: Handle
         playbackModel.play(unlikelyToBeNull(detailModel.currentPlaylist.value))
     }
 

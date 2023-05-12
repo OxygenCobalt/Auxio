@@ -22,11 +22,12 @@ import java.util.*
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.info.Name
+import org.oxycblt.auxio.util.update
 
 class PlaylistImpl
 private constructor(
     override val uid: Music.UID,
-    override val name: Name,
+    override val name: Name.Known,
     override val songs: List<Song>
 ) : Playlist {
     override val durationMs = songs.sumOf { it.durationMs }
@@ -62,7 +63,7 @@ private constructor(
          */
         fun from(name: String, songs: List<Song>, musicSettings: MusicSettings) =
             PlaylistImpl(
-                Music.UID.auxio(MusicMode.PLAYLISTS, UUID.randomUUID()),
+                Music.UID.auxio(MusicMode.PLAYLISTS) { update(name) },
                 Name.Known.from(name, null, musicSettings),
                 songs)
 
