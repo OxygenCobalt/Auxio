@@ -282,6 +282,6 @@
     <string name="set_intelligent_sorting">Інтелектуальне сортування</string>
     <string name="set_intelligent_sorting_desc">Ігнорування таких слів, як \"the\", або цифр під час сортування за назвою (найкраще працює з англомовною музикою)</string>
     <string name="desc_new_playlist">Створити новий список відтворення</string>
-    <string name="lbl_new_playlist">Новий плейлист</string>
-    <string name="fmt_def_playlist">Плейлист %d</string>
+    <string name="lbl_new_playlist">Новий список відтворення</string>
+    <string name="fmt_def_playlist">Список відтворення %d</string>
 </resources>
