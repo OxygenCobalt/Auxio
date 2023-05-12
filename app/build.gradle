@@ -30,12 +30,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
         freeCompilerArgs += "-Xjvm-default=all"
     }
 
@@ -56,14 +56,15 @@ android {
             }
         }
     }
-
     packagingOptions {
-        exclude "DebugProbesKt.bin"
-        exclude "kotlin-tooling-metadata.json"
-        exclude "**/kotlin/**"
-        exclude "**/okhttp3/**"
-        exclude "META-INF/*.version"
+        jniLibs {
+            excludes += ['**/kotlin/**', '**/okhttp3/**']
+        }
+        resources {
+            excludes += ['DebugProbesKt.bin', 'kotlin-tooling-metadata.json', '**/kotlin/**', '**/okhttp3/**', 'META-INF/*.version']
+        }
     }
+
 
     buildFeatures {
         viewBinding true

@@ -28,7 +28,6 @@ import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewModel] managing the state of the playlist editing dialogs.
