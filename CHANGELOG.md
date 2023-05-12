@@ -11,6 +11,7 @@
 be parsed as images
 - Fixed issue where searches would match song file names case-sensitively
 - Fixed issue where the notification would not respond to changes in the album cover setting
+- Fixed issue where short names starting with an article would not be correctly sorted (ex. "the 1")
 
 ## 3.0.5
 

@@ -40,7 +40,9 @@ import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.dialog.PendingName
 import org.oxycblt.auxio.navigation.MainNavigationAction
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
@@ -60,8 +62,9 @@ class MainFragment :
     ViewBindingFragment<FragmentMainBinding>(),
     ViewTreeObserver.OnPreDrawListener,
     NavController.OnDestinationChangedListener {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val selectionModel: SelectionViewModel by activityViewModels()
     private val callback = DynamicBackPressedCallback()
     private var lastInsets: WindowInsets? = null
@@ -132,6 +135,7 @@ class MainFragment :
         collect(navModel.mainNavigationAction.flow, ::handleMainNavigation)
         collect(navModel.exploreNavigationItem.flow, ::handleExploreNavigation)
         collect(navModel.exploreArtistNavigationItem.flow, ::handleArtistNavigationPicker)
+        collect(musicModel.pendingPlaylistNaming.flow, ::handlePlaylistNaming)
         collectImmediately(playbackModel.song, ::updateSong)
         collect(playbackModel.artistPickerSong.flow, ::handlePlaybackArtistPicker)
         collect(playbackModel.genrePickerSong.flow, ::handlePlaybackGenrePicker)
@@ -297,6 +301,13 @@ class MainFragment :
             tryShowSheets()
         } else {
             tryHideAllSheets()
+        }
+    }
+
+    private fun handlePlaylistNaming(args: PendingName.Args?) {
+        if (args != null) {
+            findNavController().navigateSafe(MainFragmentDirections.actionNamePlaylist(args))
+            musicModel.pendingPlaylistNaming.consume()
         }
     }
 

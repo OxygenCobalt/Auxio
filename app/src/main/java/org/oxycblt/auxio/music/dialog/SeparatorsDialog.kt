@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.metadata
+package org.oxycblt.auxio.music.dialog
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -97,6 +97,19 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
         if (binding.separatorPlus.isChecked) separators += Separators.PLUS
         if (binding.separatorAnd.isChecked) separators += Separators.AND
         return separators
+    }
+
+    /**
+     * Defines the allowed separator characters that can be used to delimit multi-value tags.
+     *
+     * @author Alexander Capehart (OxygenCobalt)
+     */
+    private object Separators {
+        const val COMMA = ','
+        const val SEMICOLON = ';'
+        const val SLASH = '/'
+        const val PLUS = '+'
+        const val AND = '&'
     }
 
     private companion object {

@@ -78,10 +78,14 @@ constructor(
         // Avoid doing a flip if the given config is already being applied.
         if (tag == iconRes) return
         tag = iconRes
-        flipping = true
         pendingConfig = PendingConfig(iconRes, contentDescriptionRes, clickListener)
-        // We will re-show the FAB later, assuming that there was not a prior flip operation.
-        super.hide(FlipVisibilityListener())
+
+        // Already hiding for whatever reason, apply the configuration when the FAB is shown again.
+        if (!isOrWillBeHidden) {
+            flipping = true
+            // We will re-show the FAB later, assuming that there was not a prior flip operation.
+            super.hide(FlipVisibilityListener())
+        }
     }
 
     private data class PendingConfig(

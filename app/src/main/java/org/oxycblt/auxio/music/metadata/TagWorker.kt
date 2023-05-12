@@ -169,7 +169,9 @@ private class TagWorkerImpl(
         (textFrames["TCMP"]
                 ?: textFrames["TXXX:compilation"] ?: textFrames["TXXX:itunescompilation"])
             ?.let {
+                // Ignore invalid instances of this tag
                 if (it.size != 1 || it[0] != "1") return@let
+                // Change the metadata to be a compilation album made by "Various Artists"
                 rawSong.albumArtistNames =
                     rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
                 rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
@@ -262,7 +264,9 @@ private class TagWorkerImpl(
 
         // Compilation Flag
         (comments["compilation"] ?: comments["itunescompilation"])?.let {
+            // Ignore invalid instances of this tag
             if (it.size != 1 || it[0] != "1") return@let
+            // Change the metadata to be a compilation album made by "Various Artists"
             rawSong.albumArtistNames =
                 rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
             rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }

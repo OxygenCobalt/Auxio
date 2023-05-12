@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * NavigationPickerViewModel.kt is part of Auxio.
+ * NavigationDialogViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,12 @@ import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
 
 /**
- * A [ViewModel] that stores the current information required for [ArtistNavigationPickerDialog].
+ * A [ViewModel] that stores the current information required for navigation dialogs
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
-class NavigationPickerViewModel @Inject constructor(private val musicRepository: MusicRepository) :
+class NavigationDialogViewModel @Inject constructor(private val musicRepository: MusicRepository) :
     ViewModel(), MusicRepository.UpdateListener {
     private val _currentArtistChoices = MutableStateFlow<ArtistNavigationChoices?>(null)
     /** The current set of [Artist] choices to show in the picker, or null if to show nothing. */

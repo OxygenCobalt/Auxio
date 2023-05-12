@@ -49,7 +49,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 class GenrePlaybackPickerDialog :
     ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<Genre> {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val pickerModel: PlaybackPickerViewModel by viewModels()
+    private val pickerModel: PlaybackDialogViewModel by viewModels()
     // Information about what Song to show choices for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel a Song.
     private val args: GenrePlaybackPickerDialogArgs by navArgs()

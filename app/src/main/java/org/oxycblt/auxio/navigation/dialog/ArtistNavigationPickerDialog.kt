@@ -48,7 +48,7 @@ import org.oxycblt.auxio.util.collectImmediately
 class ArtistNavigationPickerDialog :
     ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<Artist> {
     private val navigationModel: NavigationViewModel by activityViewModels()
-    private val pickerModel: NavigationPickerViewModel by viewModels()
+    private val pickerModel: NavigationDialogViewModel by viewModels()
     // Information about what artists to show choices for is initially within the navigation
     // arguments as UIDs, as that is the only safe way to parcel an artist.
     private val args: ArtistNavigationPickerDialogArgs by navArgs()

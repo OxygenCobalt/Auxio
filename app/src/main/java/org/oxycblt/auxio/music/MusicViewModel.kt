@@ -23,6 +23,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.oxycblt.auxio.music.dialog.PendingName
+import org.oxycblt.auxio.util.Event
+import org.oxycblt.auxio.util.MutableEvent
 
 /**
  * A [ViewModel] providing data specific to the music loading process.
@@ -41,6 +44,9 @@ class MusicViewModel @Inject constructor(private val musicRepository: MusicRepos
     /** [Statistics] about the last completed music load. */
     val statistics: StateFlow<Statistics?>
         get() = _statistics
+
+    private val _pendingPlaylistNaming = MutableEvent<PendingName.Args?>()
+    val pendingPlaylistNaming: Event<PendingName.Args?> = _pendingPlaylistNaming
 
     init {
         musicRepository.addUpdateListener(this)
@@ -79,12 +85,15 @@ class MusicViewModel @Inject constructor(private val musicRepository: MusicRepos
     }
 
     /**
-     * Create a new generic playlist.
+     * Create a new generic playlist. This will prompt the user to edit the name before the creation
+     * finishes.
      *
-     * @param name The name of the new playlist. If null, the user will be prompted for a name.
+     * @param name The preferred name of the new playlist.
      */
-    fun createPlaylist(name: String? = null) {
-        musicRepository.createPlaylist(name ?: "New playlist", listOf())
+    fun createPlaylist(name: String, songs: List<Song> = listOf()) {
+        // TODO: Default to something like "Playlist 1", "Playlist 2", etc.
+        // TODO: Attempt to unify playlist creation flow with dialog model
+        _pendingPlaylistNaming.put(PendingName.Args(name, songs.map { it.uid }))
     }
 
     /**
