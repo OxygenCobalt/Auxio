@@ -276,4 +276,6 @@
     <string name="set_intelligent_sorting">排序时忽略冠词</string>
     <string name="set_intelligent_sorting_desc">按名称排序时忽略类似“the”这样的冠词（对英文歌曲的效果最好）</string>
     <string name="desc_new_playlist">创建新的播放列表</string>
+    <string name="lbl_new_playlist">新建播放列表</string>
+    <string name="fmt_def_playlist">播放列表 %d</string>
 </resources>
