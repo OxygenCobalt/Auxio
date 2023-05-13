@@ -282,4 +282,6 @@
     <string name="set_intelligent_sorting">Ignorar artículos al ordenar</string>
     <string name="set_intelligent_sorting_desc">Ignorar palabras como \"the\" al ordenar por nombre (funciona mejor con música en inglés)</string>
     <string name="desc_new_playlist">Crear una nueva lista de reproducción</string>
+    <string name="lbl_new_playlist">Nueva lista de reproducción</string>
+    <string name="fmt_def_playlist">Lista de reproducción %d</string>
 </resources>
