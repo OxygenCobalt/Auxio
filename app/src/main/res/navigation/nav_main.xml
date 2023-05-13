@@ -43,27 +43,27 @@
 
     <dialog
         android:id="@+id/new_playlist_dialog"
-        android:name="org.oxycblt.auxio.music.dialog.NewPlaylistDialog"
+        android:name="org.oxycblt.auxio.music.picker.NewPlaylistDialog"
         android:label="new_playlist_dialog"
         tools:layout="@layout/dialog_playlist_name">
         <argument
-            android:name="pendingPlaylist"
-            app:argType="org.oxycblt.auxio.music.dialog.PendingPlaylist" />
+            android:name="songUids"
+            app:argType="org.oxycblt.auxio.music.Music$UID[]" />
     </dialog>
 
     <dialog
         android:id="@+id/navigate_to_artist_dialog"
-        android:name="org.oxycblt.auxio.navigation.dialog.NavigateToArtistDialog"
+        android:name="org.oxycblt.auxio.navigation.picker.NavigateToArtistDialog"
         android:label="navigate_to_artist_dialog"
         tools:layout="@layout/dialog_music_picker">
         <argument
-            android:name="artistUid"
+            android:name="itemUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
 
     <dialog
         android:id="@+id/play_from_artist_dialog"
-        android:name="org.oxycblt.auxio.playback.dialog.PlayFromArtistDialog"
+        android:name="org.oxycblt.auxio.playback.picker.PlayFromArtistDialog"
         android:label="play_from_artist_dialog"
         tools:layout="@layout/dialog_music_picker">
         <argument
@@ -73,14 +73,13 @@
 
     <dialog
         android:id="@+id/play_from_genre_dialog"
-        android:name="org.oxycblt.auxio.playback.dialog.PlayFromGenreDialog"
+        android:name="org.oxycblt.auxio.playback.picker.PlayFromGenreDialog"
         android:label="play_from_genre_dialog"
         tools:layout="@layout/dialog_music_picker">
         <argument
             android:name="genreUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
-
 
     <fragment
         android:id="@+id/root_preferences_fragment"
@@ -156,12 +155,12 @@
         tools:layout="@layout/dialog_pre_amp" />
     <dialog
         android:id="@+id/music_dirs_dialog"
-        android:name="org.oxycblt.auxio.music.fs.MusicDirsDialog"
+        android:name="org.oxycblt.auxio.music.config.MusicDirsDialog"
         android:label="music_dirs_dialog"
         tools:layout="@layout/dialog_music_dirs" />
     <dialog
         android:id="@+id/separators_dialog"
-        android:name="org.oxycblt.auxio.music.dialog.SeparatorsDialog"
+        android:name="org.oxycblt.auxio.music.config.SeparatorsDialog"
         android:label="music_dirs_dialog"
         tools:layout="@layout/dialog_separators" />
 

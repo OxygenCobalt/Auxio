@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
- * PlayFromArtistDialog.kt is part of Auxio.
+ * NavigateToArtistDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.dialog
+package org.oxycblt.auxio.navigation.picker
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -35,24 +35,23 @@ import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.list.recycler.ChoiceViewHolder
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A picker [ViewBindingDialogFragment] intended for when [Artist] playback is ambiguous.
+ * A picker [ViewBindingDialogFragment] intended for when [Artist] navigation is ambiguous.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class PlayFromArtistDialog :
+class NavigateToArtistDialog :
     ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<Artist> {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val pickerModel: PlaybackDialogViewModel by viewModels()
-    // Information about what Song to show choices for is initially within the navigation arguments
-    // as UIDs, as that is the only safe way to parcel a Song.
-    private val args: PlayFromArtistDialogArgs by navArgs()
+    private val navigationModel: NavigationViewModel by activityViewModels()
+    private val pickerModel: NavigationPickerViewModel by viewModels()
+    // Information about what artists to show choices for is initially within the navigation
+    // arguments as UIDs, as that is the only safe way to parcel an artist.
+    private val args: NavigateToArtistDialogArgs by navArgs()
     private val choiceAdapter = ArtistChoiceAdapter(this)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
@@ -70,10 +69,10 @@ class PlayFromArtistDialog :
             adapter = choiceAdapter
         }
 
-        pickerModel.setPickerSongUid(args.artistUid)
-        collectImmediately(pickerModel.currentPickerSong) {
+        pickerModel.setArtistChoiceUid(args.itemUid)
+        collectImmediately(pickerModel.currentArtistChoices) {
             if (it != null) {
-                choiceAdapter.update(it.artists, UpdateInstructions.Replace(0))
+                choiceAdapter.update(it.choices, UpdateInstructions.Replace(0))
             } else {
                 findNavController().navigateUp()
             }
@@ -86,9 +85,8 @@ class PlayFromArtistDialog :
     }
 
     override fun onClick(item: Artist, viewHolder: RecyclerView.ViewHolder) {
-        // User made a choice, play the given song from that artist.
-        val song = unlikelyToBeNull(pickerModel.currentPickerSong.value)
-        playbackModel.playFromArtist(song, item)
+        // User made a choice, navigate to the artist.
+        navigationModel.exploreNavigateTo(item)
         findNavController().navigateUp()
     }
 

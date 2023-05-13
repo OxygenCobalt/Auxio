@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.dialog
+package org.oxycblt.auxio.playback.picker
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -49,7 +49,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 class PlayFromGenreDialog :
     ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<Genre> {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val pickerModel: PlaybackDialogViewModel by viewModels()
+    private val pickerModel: PlaybackPickerViewModel by viewModels()
     // Information about what Song to show choices for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel a Song.
     private val args: PlayFromGenreDialogArgs by navArgs()

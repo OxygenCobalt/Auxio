@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.fs
+package org.oxycblt.auxio.music.config
 
 import android.content.ActivityNotFoundException
 import android.net.Uri
@@ -35,6 +35,8 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
 import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.fs.Directory
+import org.oxycblt.auxio.music.fs.MusicDirectories
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.getSystemServiceCompat
 import org.oxycblt.auxio.util.logD

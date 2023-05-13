@@ -42,7 +42,6 @@ import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.dialog.PendingPlaylist
 import org.oxycblt.auxio.navigation.MainNavigationAction
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
@@ -135,7 +134,7 @@ class MainFragment :
         collect(navModel.mainNavigationAction.flow, ::handleMainNavigation)
         collect(navModel.exploreNavigationItem.flow, ::handleExploreNavigation)
         collect(navModel.exploreArtistNavigationItem.flow, ::handleArtistNavigationPicker)
-        collect(musicModel.pendingNewPlaylist.flow, ::handlePlaylistNaming)
+        collect(musicModel.newPlaylistSongs.flow, ::handleNewPlaylist)
         collectImmediately(playbackModel.song, ::updateSong)
         collect(playbackModel.artistPickerSong.flow, ::handlePlaybackArtistPicker)
         collect(playbackModel.genrePickerSong.flow, ::handlePlaybackGenrePicker)
@@ -304,11 +303,12 @@ class MainFragment :
         }
     }
 
-    private fun handlePlaylistNaming(pendingPlaylist: PendingPlaylist?) {
-        if (pendingPlaylist != null) {
+    private fun handleNewPlaylist(songs: List<Song>?) {
+        if (songs != null) {
             findNavController()
-                .navigateSafe(MainFragmentDirections.actionNewPlaylist(pendingPlaylist))
-            musicModel.pendingNewPlaylist.consume()
+                .navigateSafe(
+                    MainFragmentDirections.actionNewPlaylist(songs.map { it.uid }.toTypedArray()))
+            musicModel.newPlaylistSongs.consume()
         }
     }
 

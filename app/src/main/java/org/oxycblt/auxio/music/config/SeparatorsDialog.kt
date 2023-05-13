@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.dialog
+package org.oxycblt.auxio.music.config
 
 import android.os.Bundle
 import android.view.LayoutInflater

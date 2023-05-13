@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * NavigationDialogViewModel.kt is part of Auxio.
+ * NavigationPickerViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.navigation.dialog
+package org.oxycblt.auxio.navigation.picker
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,12 +26,12 @@ import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
 
 /**
- * A [ViewModel] that stores the current information required for navigation dialogs
+ * A [ViewModel] that stores the current information required for navigation picker dialogs
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
-class NavigationDialogViewModel @Inject constructor(private val musicRepository: MusicRepository) :
+class NavigationPickerViewModel @Inject constructor(private val musicRepository: MusicRepository) :
     ViewModel(), MusicRepository.UpdateListener {
     private val _currentArtistChoices = MutableStateFlow<ArtistNavigationChoices?>(null)
     /** The current set of [Artist] choices to show in the picker, or null if to show nothing. */
@@ -68,12 +68,12 @@ class NavigationDialogViewModel @Inject constructor(private val musicRepository:
     /**
      * Set the [Music.UID] of the item to show artist choices for.
      *
-     * @param uid The [Music.UID] of the item to show. Must be a [Song] or [Album].
+     * @param itemUid The [Music.UID] of the item to show. Must be a [Song] or [Album].
      */
-    fun setArtistChoiceUid(uid: Music.UID) {
+    fun setArtistChoiceUid(itemUid: Music.UID) {
         // Support Songs and Albums, which have parent artists.
         _currentArtistChoices.value =
-            when (val music = musicRepository.find(uid)) {
+            when (val music = musicRepository.find(itemUid)) {
                 is Song -> SongArtistNavigationChoices(music)
                 is Album -> AlbumArtistNavigationChoices(music)
                 else -> null

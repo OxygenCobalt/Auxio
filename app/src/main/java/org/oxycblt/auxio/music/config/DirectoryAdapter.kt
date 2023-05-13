@@ -16,13 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.fs
+package org.oxycblt.auxio.music.config
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemMusicDirBinding
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
+import org.oxycblt.auxio.music.fs.Directory
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 

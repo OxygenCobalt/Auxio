@@ -16,17 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.dialog
+package org.oxycblt.auxio.music.picker
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPlaylistNameBinding
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -38,9 +41,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 @AndroidEntryPoint
 class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>() {
-    // activityViewModels is intentional here as the ViewModel will do work that we
-    // do not want to cancel after this dialog closes.
-    private val dialogModel: PlaylistDialogViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
+    private val pickerModel: PlaylistPickerViewModel by viewModels()
     // Information about what playlist to name for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel playlist information.
     private val args: NewPlaylistDialogArgs by navArgs()
@@ -48,7 +50,16 @@ class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>()
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder
             .setTitle(R.string.lbl_new_playlist)
-            .setPositiveButton(R.string.lbl_ok) { _, _ -> dialogModel.confirmPendingName() }
+            .setPositiveButton(R.string.lbl_ok) { _, _ ->
+                val pendingPlaylist = unlikelyToBeNull(pickerModel.currentPendingPlaylist.value)
+                val name =
+                    when (val chosenName = pickerModel.chosenName.value) {
+                        is ChosenName.Valid -> chosenName.value
+                        is ChosenName.Empty -> pendingPlaylist.preferredName
+                        else -> throw IllegalStateException()
+                    }
+                musicModel.createPlaylist(name, pendingPlaylist.songs)
+            }
             .setNegativeButton(R.string.lbl_cancel, null)
     }
 
@@ -58,20 +69,24 @@ class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>()
     override fun onBindingCreated(binding: DialogPlaylistNameBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
-        binding.playlistName.apply {
-            hint = args.pendingPlaylist.name
-            addTextChangedListener {
-                dialogModel.updatePendingName(
-                    (if (it.isNullOrEmpty()) unlikelyToBeNull(hint) else it).toString())
-            }
-        }
+        binding.playlistName.addTextChangedListener { pickerModel.updateChosenName(it?.toString()) }
 
-        dialogModel.setPendingName(args.pendingPlaylist)
-        collectImmediately(dialogModel.pendingPlaylistValid, ::updateValid)
+        pickerModel.setPendingPlaylist(requireContext(), args.songUids)
+        collectImmediately(pickerModel.currentPendingPlaylist, ::updatePendingPlaylist)
+        collectImmediately(pickerModel.chosenName, ::handleChosenName)
     }
 
-    private fun updateValid(valid: Boolean) {
-        // Disable the OK button if the name is invalid (empty or whitespace)
-        (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = valid
+    private fun updatePendingPlaylist(pendingPlaylist: PendingPlaylist?) {
+        if (pendingPlaylist == null) {
+            findNavController().navigateUp()
+            return
+        }
+
+        requireBinding().playlistName.hint = pendingPlaylist.preferredName
+    }
+
+    private fun handleChosenName(chosenName: ChosenName) {
+        (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled =
+            chosenName is ChosenName.Valid || chosenName is ChosenName.Empty
     }
 }

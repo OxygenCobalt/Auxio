@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * PlaybackDialogViewModel.kt is part of Auxio.
+ * PlaybackPickerViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.dialog
+package org.oxycblt.auxio.playback.picker
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,7 +31,7 @@ import org.oxycblt.auxio.music.*
  * @author OxygenCobalt (Alexander Capehart)
  */
 @HiltViewModel
-class PlaybackDialogViewModel @Inject constructor(private val musicRepository: MusicRepository) :
+class PlaybackPickerViewModel @Inject constructor(private val musicRepository: MusicRepository) :
     ViewModel(), MusicRepository.UpdateListener {
     private val _currentPickerSong = MutableStateFlow<Song?>(null)
     /** The current set of [Artist] choices to show in the picker, or null if to show nothing. */

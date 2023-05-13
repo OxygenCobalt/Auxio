@@ -33,6 +33,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import java.lang.IllegalArgumentException
 
 /**
  * Get if this [View] contains the given [PointF], with optional leeway.
@@ -124,8 +125,10 @@ fun AppCompatButton.fixDoubleRipple() {
 fun NavController.navigateSafe(directions: NavDirections) =
     try {
         navigate(directions)
-    } catch (e: IllegalStateException) {
+    } catch (e: IllegalArgumentException) {
         // Nothing to do.
+        logE("Could not navigate from this destination.")
+        logE(e.stackTraceToString())
     }
 
 /**
