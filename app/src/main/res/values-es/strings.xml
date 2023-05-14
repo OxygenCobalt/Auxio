@@ -284,4 +284,8 @@
     <string name="desc_new_playlist">Crear una nueva lista de reproducción</string>
     <string name="lbl_new_playlist">Nueva lista de reproducción</string>
     <string name="fmt_def_playlist">Lista de reproducción %d</string>
+    <string name="lbl_playlist_add">Agregar a la lista de reproducción</string>
+    <string name="lng_playlist_added">Agregado a la lista de reproducción</string>
+    <string name="lng_playlist_created">Lista de reproducción creada</string>
+    <string name="def_song_count">No hay canciones</string>
 </resources>
