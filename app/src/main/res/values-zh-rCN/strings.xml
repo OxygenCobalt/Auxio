@@ -278,4 +278,8 @@
     <string name="desc_new_playlist">创建新的播放列表</string>
     <string name="lbl_new_playlist">新建播放列表</string>
     <string name="fmt_def_playlist">播放列表 %d</string>
+    <string name="lng_playlist_created">已创建播放列表</string>
+    <string name="lbl_playlist_add">添加到播放列表</string>
+    <string name="lng_playlist_added">已添加到播放列表</string>
+    <string name="def_song_count">无歌曲</string>
 </resources>
