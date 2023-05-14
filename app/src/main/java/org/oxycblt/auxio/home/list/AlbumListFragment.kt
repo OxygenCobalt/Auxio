@@ -56,6 +56,7 @@ class AlbumListFragment :
     private val homeModel: HomeViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     private val albumAdapter = AlbumAdapter(this)
     // Save memory by re-using the same formatter and string builder when creating popup text

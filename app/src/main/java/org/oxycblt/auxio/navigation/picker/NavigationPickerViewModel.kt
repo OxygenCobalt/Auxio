@@ -33,10 +33,10 @@ import org.oxycblt.auxio.music.*
 @HiltViewModel
 class NavigationPickerViewModel @Inject constructor(private val musicRepository: MusicRepository) :
     ViewModel(), MusicRepository.UpdateListener {
-    private val _currentArtistChoices = MutableStateFlow<ArtistNavigationChoices?>(null)
+    private val _artistChoices = MutableStateFlow<ArtistNavigationChoices?>(null)
     /** The current set of [Artist] choices to show in the picker, or null if to show nothing. */
-    val currentArtistChoices: StateFlow<ArtistNavigationChoices?>
-        get() = _currentArtistChoices
+    val artistChoices: StateFlow<ArtistNavigationChoices?>
+        get() = _artistChoices
 
     init {
         musicRepository.addUpdateListener(this)
@@ -46,8 +46,8 @@ class NavigationPickerViewModel @Inject constructor(private val musicRepository:
         if (!changes.deviceLibrary) return
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         // Need to sanitize different items depending on the current set of choices.
-        _currentArtistChoices.value =
-            when (val choices = _currentArtistChoices.value) {
+        _artistChoices.value =
+            when (val choices = _artistChoices.value) {
                 is SongArtistNavigationChoices ->
                     deviceLibrary.findSong(choices.song.uid)?.let {
                         SongArtistNavigationChoices(it)
@@ -72,7 +72,7 @@ class NavigationPickerViewModel @Inject constructor(private val musicRepository:
      */
     fun setArtistChoiceUid(itemUid: Music.UID) {
         // Support Songs and Albums, which have parent artists.
-        _currentArtistChoices.value =
+        _artistChoices.value =
             when (val music = musicRepository.find(itemUid)) {
                 is Song -> SongArtistNavigationChoices(music)
                 is Album -> AlbumArtistNavigationChoices(music)

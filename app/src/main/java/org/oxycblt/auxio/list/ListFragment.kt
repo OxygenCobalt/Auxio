@@ -99,6 +99,9 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                 R.id.action_go_album -> {
                     navModel.exploreNavigateTo(song.album)
                 }
+                R.id.action_playlist_add -> {
+                    musicModel.addToPlaylist(song)
+                }
                 R.id.action_song_detail -> {
                     navModel.mainNavigateTo(
                         MainNavigationAction.Directions(
@@ -141,6 +144,9 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                 R.id.action_go_artist -> {
                     navModel.exploreNavigateToParentArtist(album)
                 }
+                R.id.action_playlist_add -> {
+                    musicModel.addToPlaylist(album)
+                }
                 else -> {
                     error("Unexpected menu item selected")
                 }
@@ -175,6 +181,9 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                     playbackModel.addToQueue(artist)
                     requireContext().showToast(R.string.lng_queue_added)
                 }
+                R.id.action_playlist_add -> {
+                    musicModel.addToPlaylist(artist)
+                }
                 else -> {
                     error("Unexpected menu item selected")
                 }
@@ -208,6 +217,9 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                 R.id.action_queue_add -> {
                     playbackModel.addToQueue(genre)
                     requireContext().showToast(R.string.lng_queue_added)
+                }
+                R.id.action_playlist_add -> {
+                    musicModel.addToPlaylist(genre)
                 }
                 else -> {
                     error("Unexpected menu item selected")

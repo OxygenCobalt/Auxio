@@ -23,7 +23,6 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +31,7 @@ import org.oxycblt.auxio.databinding.DialogPlaylistNameBinding
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -42,7 +42,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 @AndroidEntryPoint
 class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>() {
     private val musicModel: MusicViewModel by activityViewModels()
-    private val pickerModel: PlaylistPickerViewModel by viewModels()
+    private val pickerModel: PlaylistPickerViewModel by activityViewModels()
     // Information about what playlist to name for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel playlist information.
     private val args: NewPlaylistDialogArgs by navArgs()
@@ -58,7 +58,10 @@ class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>()
                         is ChosenName.Empty -> pendingPlaylist.preferredName
                         else -> throw IllegalStateException()
                     }
+                // TODO: Navigate to playlist if there are songs in it
                 musicModel.createPlaylist(name, pendingPlaylist.songs)
+                pickerModel.confirmPlaylistCreation()
+                requireContext().showToast(R.string.lng_playlist_created)
             }
             .setNegativeButton(R.string.lbl_cancel, null)
     }
@@ -69,11 +72,13 @@ class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>()
     override fun onBindingCreated(binding: DialogPlaylistNameBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
+        // --- UI SETUP ---
         binding.playlistName.addTextChangedListener { pickerModel.updateChosenName(it?.toString()) }
 
+        // --- VIEWMODEL SETUP ---
         pickerModel.setPendingPlaylist(requireContext(), args.songUids)
         collectImmediately(pickerModel.currentPendingPlaylist, ::updatePendingPlaylist)
-        collectImmediately(pickerModel.chosenName, ::handleChosenName)
+        collectImmediately(pickerModel.chosenName, ::updateChosenName)
     }
 
     private fun updatePendingPlaylist(pendingPlaylist: PendingPlaylist?) {
@@ -85,7 +90,7 @@ class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>()
         requireBinding().playlistName.hint = pendingPlaylist.preferredName
     }
 
-    private fun handleChosenName(chosenName: ChosenName) {
+    private fun updateChosenName(chosenName: ChosenName) {
         (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled =
             chosenName is ChosenName.Valid || chosenName is ChosenName.Empty
     }

@@ -256,12 +256,11 @@ constructor(
     fun play(playlist: Playlist) = playImpl(null, playlist, false)
 
     /**
-     * Play a [Music] selection.
+     * Play a list of [Song]s.
      *
-     * @param selection The selection to play.
+     * @param songs The [Song]s to play.
      */
-    fun play(selection: List<Music>) =
-        playbackManager.play(null, null, selectionToSongs(selection), false)
+    fun play(songs: List<Song>) = playbackManager.play(null, null, songs, false)
 
     /**
      * Shuffle an [Album].
@@ -292,12 +291,11 @@ constructor(
     fun shuffle(playlist: Playlist) = playImpl(null, playlist, true)
 
     /**
-     * Shuffle a [Music] selection.
+     * Shuffle a list of [Song]s.
      *
-     * @param selection The selection to shuffle.
+     * @param songs The [Song]s to shuffle.
      */
-    fun shuffle(selection: List<Music>) =
-        playbackManager.play(null, null, selectionToSongs(selection), true)
+    fun shuffle(songs: List<Song>) = playbackManager.play(null, null, songs, true)
 
     private fun playImpl(
         song: Song?,
@@ -400,12 +398,12 @@ constructor(
     }
 
     /**
-     * Add a selection to the top of the queue.
+     * Add [Song]s to the top of the queue.
      *
-     * @param selection The [Music] selection to add.
+     * @param songs The [Song]s to add.
      */
-    fun playNext(selection: List<Music>) {
-        playbackManager.playNext(selectionToSongs(selection))
+    fun playNext(songs: List<Song>) {
+        playbackManager.playNext(songs)
     }
 
     /**
@@ -454,12 +452,12 @@ constructor(
     }
 
     /**
-     * Add a selection to the end of the queue.
+     * Add [Song]s to the end of the queue.
      *
-     * @param selection The [Music] selection to add.
+     * @param songs The [Song]s to add.
      */
-    fun addToQueue(selection: List<Music>) {
-        playbackManager.addToQueue(selectionToSongs(selection))
+    fun addToQueue(songs: List<Song>) {
+        playbackManager.addToQueue(songs)
     }
 
     // --- STATUS FUNCTIONS ---
@@ -520,25 +518,6 @@ constructor(
                 return@launch
             }
             onDone(false)
-        }
-    }
-
-    /**
-     * Convert the given selection to a list of [Song]s.
-     *
-     * @param selection The selection of [Music] to convert.
-     * @return A [Song] list containing the child items of any [MusicParent] instances in the list
-     *   alongside the unchanged [Song]s or the original selection.
-     */
-    private fun selectionToSongs(selection: List<Music>): List<Song> {
-        return selection.flatMap {
-            when (it) {
-                is Song -> listOf(it)
-                is Album -> musicSettings.albumSongSort.songs(it.songs)
-                is Artist -> musicSettings.artistSongSort.songs(it.songs)
-                is Genre -> musicSettings.genreSongSort.songs(it.songs)
-                is Playlist -> musicSettings.playlistSongSort.songs(it.songs)
-            }
         }
     }
 }

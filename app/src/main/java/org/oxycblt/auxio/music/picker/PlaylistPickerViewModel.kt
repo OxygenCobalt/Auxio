@@ -25,8 +25,11 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 
 /**
@@ -45,11 +48,20 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
     val chosenName: StateFlow<ChosenName>
         get() = _chosenName
 
+    private val _currentPendingSongs = MutableStateFlow<List<Song>?>(null)
+    val currentPendingSongs: StateFlow<List<Song>?>
+        get() = _currentPendingSongs
+
+    private val _playlistChoices = MutableStateFlow<List<PlaylistChoice>>(listOf())
+    val playlistChoices: StateFlow<List<PlaylistChoice>>
+        get() = _playlistChoices
+
     init {
         musicRepository.addUpdateListener(this)
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
+        var refreshChoicesWith: List<Song>? = null
         val deviceLibrary = musicRepository.deviceLibrary
         if (changes.deviceLibrary && deviceLibrary != null) {
             _currentPendingPlaylist.value =
@@ -57,6 +69,13 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
                     PendingPlaylist(
                         pendingPlaylist.preferredName,
                         pendingPlaylist.songs.mapNotNull { deviceLibrary.findSong(it.uid) })
+                }
+            _currentPendingSongs.value =
+                _currentPendingSongs.value?.let { pendingSongs ->
+                    pendingSongs
+                        .mapNotNull { deviceLibrary.findSong(it.uid) }
+                        .ifEmpty { null }
+                        .also { refreshChoicesWith = it }
                 }
         }
 
@@ -69,7 +88,10 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
                     // Nothing to do.
                 }
             }
+            refreshChoicesWith = refreshChoicesWith ?: _currentPendingSongs.value
         }
+
+        refreshChoicesWith?.let(::refreshPlaylistChoices)
     }
 
     override fun onCleared() {
@@ -80,7 +102,7 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
      * Update the current [PendingPlaylist]. Will do nothing if already equal.
      *
      * @param context [Context] required to generate a playlist name.
-     * @param songUids The list of [Music.UID] representing the songs to be present in the playlist.
+     * @param songUids The [Music.UID]s of songs to be present in the playlist.
      */
     fun setPendingPlaylist(context: Context, songUids: Array<Music.UID>) {
         if (currentPendingPlaylist.value?.songs?.map { it.uid } == songUids) {
@@ -89,8 +111,8 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
         }
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         val songs = songUids.mapNotNull(deviceLibrary::findSong)
-        val userLibrary = musicRepository.userLibrary ?: return
 
+        val userLibrary = musicRepository.userLibrary ?: return
         var i = 1
         while (true) {
             val possibleName = context.getString(R.string.fmt_def_playlist, i)
@@ -123,6 +145,43 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
                 }
             }
     }
+
+    /** Confirm the playlist creation process as completed. */
+    fun confirmPlaylistCreation() {
+        // Confirm any playlist additions if needed, as the creation process may have been started
+        // by it and is still waiting on a result.
+        confirmPlaylistAddition()
+        _currentPendingPlaylist.value = null
+        _chosenName.value = ChosenName.Empty
+    }
+
+    /**
+     * Update the current [Song]s that to show playlist add choices for. Will do nothing if already
+     * equal.
+     *
+     * @param songUids The [Music.UID]s of songs to add to a playlist.
+     */
+    fun setPendingSongs(songUids: Array<Music.UID>) {
+        if (currentPendingSongs.value?.map { it.uid } == songUids) return
+        val deviceLibrary = musicRepository.deviceLibrary ?: return
+        val songs = songUids.mapNotNull(deviceLibrary::findSong)
+        _currentPendingSongs.value = songs
+        refreshPlaylistChoices(songs)
+    }
+
+    /** Mark the addition process as complete. */
+    fun confirmPlaylistAddition() {
+        _currentPendingSongs.value = null
+    }
+
+    private fun refreshPlaylistChoices(songs: List<Song>) {
+        val userLibrary = musicRepository.userLibrary ?: return
+        _playlistChoices.value =
+            Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING).playlists(userLibrary.playlists).map {
+                val songSet = it.songs.toSet()
+                PlaylistChoice(it, songs.all(songSet::contains))
+            }
+    }
 }
 
 /**
@@ -149,3 +208,13 @@ sealed interface ChosenName {
     /** The current name only consists of whitespace. */
     object Blank : ChosenName
 }
+
+/**
+ * An individual [Playlist] choice to add [Song]s to.
+ *
+ * @param playlist The [Playlist] represented.
+ * @param alreadyAdded Whether the songs currently pending addition have already been added to the
+ *   [Playlist].
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+data class PlaylistChoice(val playlist: Playlist, val alreadyAdded: Boolean) : Item

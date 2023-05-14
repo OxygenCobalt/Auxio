@@ -353,6 +353,10 @@ class BasicHeaderViewHolder private constructor(private val binding: ItemHeaderB
 /**
  * A [DialogRecyclerView.ViewHolder] that displays a smaller variant of a typical [T] item, for use
  * in choice dialogs. Use [from] to create an instance.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Unwind this into specific impls
  */
 class ChoiceViewHolder<T : Music>
 private constructor(private val binding: ItemPickerChoiceBinding) :

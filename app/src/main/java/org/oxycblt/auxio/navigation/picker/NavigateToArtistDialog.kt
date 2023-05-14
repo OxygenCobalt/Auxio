@@ -70,7 +70,7 @@ class NavigateToArtistDialog :
         }
 
         pickerModel.setArtistChoiceUid(args.itemUid)
-        collectImmediately(pickerModel.currentArtistChoices) {
+        collectImmediately(pickerModel.artistChoices) {
             if (it != null) {
                 choiceAdapter.update(it.choices, UpdateInstructions.Replace(0))
             } else {

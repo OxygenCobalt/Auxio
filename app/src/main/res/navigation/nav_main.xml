@@ -21,6 +21,9 @@
             android:id="@+id/action_new_playlist"
             app:destination="@id/new_playlist_dialog" />
         <action
+            android:id="@+id/action_add_to_playlist"
+            app:destination="@id/add_to_playlist_dialog" />
+        <action
             android:id="@+id/action_pick_navigation_artist"
             app:destination="@id/navigate_to_artist_dialog" />
         <action
@@ -49,6 +52,19 @@
         <argument
             android:name="songUids"
             app:argType="org.oxycblt.auxio.music.Music$UID[]" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/add_to_playlist_dialog"
+        android:name="org.oxycblt.auxio.music.picker.AddToPlaylistDialog"
+        android:label="new_playlist_dialog"
+        tools:layout="@layout/dialog_playlist_name">
+        <argument
+            android:name="songUids"
+            app:argType="org.oxycblt.auxio.music.Music$UID[]" />
+        <action
+            android:id="@+id/action_new_playlist"
+            app:destination="@id/new_playlist_dialog" />
     </dialog>
 
     <dialog
@@ -155,12 +171,12 @@
         tools:layout="@layout/dialog_pre_amp" />
     <dialog
         android:id="@+id/music_dirs_dialog"
-        android:name="org.oxycblt.auxio.music.config.MusicDirsDialog"
+        android:name="org.oxycblt.auxio.music.fs.MusicDirsDialog"
         android:label="music_dirs_dialog"
         tools:layout="@layout/dialog_music_dirs" />
     <dialog
         android:id="@+id/separators_dialog"
-        android:name="org.oxycblt.auxio.music.config.SeparatorsDialog"
+        android:name="org.oxycblt.auxio.music.metadata.SeparatorsDialog"
         android:label="music_dirs_dialog"
         tools:layout="@layout/dialog_separators" />
 

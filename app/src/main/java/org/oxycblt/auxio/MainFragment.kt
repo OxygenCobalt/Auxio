@@ -135,6 +135,7 @@ class MainFragment :
         collect(navModel.exploreNavigationItem.flow, ::handleExploreNavigation)
         collect(navModel.exploreArtistNavigationItem.flow, ::handleArtistNavigationPicker)
         collect(musicModel.newPlaylistSongs.flow, ::handleNewPlaylist)
+        collect(musicModel.songsToAdd.flow, ::handleAddToPlaylist)
         collectImmediately(playbackModel.song, ::updateSong)
         collect(playbackModel.artistPickerSong.flow, ::handlePlaybackArtistPicker)
         collect(playbackModel.genrePickerSong.flow, ::handlePlaybackGenrePicker)
@@ -261,7 +262,7 @@ class MainFragment :
             initialNavDestinationChange = true
             return
         }
-        selectionModel.consume()
+        selectionModel.drop()
     }
 
     private fun handleMainNavigation(action: MainNavigationAction?) {
@@ -309,6 +310,15 @@ class MainFragment :
                 .navigateSafe(
                     MainFragmentDirections.actionNewPlaylist(songs.map { it.uid }.toTypedArray()))
             musicModel.newPlaylistSongs.consume()
+        }
+    }
+
+    private fun handleAddToPlaylist(songs: List<Song>?) {
+        if (songs != null) {
+            findNavController()
+                .navigateSafe(
+                    MainFragmentDirections.actionAddToPlaylist(songs.map { it.uid }.toTypedArray()))
+            musicModel.songsToAdd.consume()
         }
     }
 
@@ -430,7 +440,7 @@ class MainFragment :
             }
 
             // Clear out any prior selections.
-            if (selectionModel.consume().isNotEmpty()) {
+            if (selectionModel.drop()) {
                 return
             }
 

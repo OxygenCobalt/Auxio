@@ -111,6 +111,8 @@
     <string name="lbl_play_next">Play next</string>
     <string name="lbl_queue_add">Add to queue</string>
 
+    <string name="lbl_playlist_add">Add to playlist</string>
+
     <string name="lbl_go_artist">Go to artist</string>
     <string name="lbl_go_album">Go to album</string>
     <string name="lbl_song_detail">View properties</string>
@@ -160,6 +162,8 @@
     <string name="lng_indexing">Loading your music library…</string>
     <string name="lng_observing">Monitoring your music library for changes…</string>
     <string name="lng_queue_added">Added to queue</string>
+    <string name="lng_playlist_created">Playlist created</string>
+    <string name="lng_playlist_added">Added to playlist</string>
     <string name="lng_author">Developed by Alexander Capehart</string>
     <!-- As in music library -->
     <string name="lng_search_library">Search your library…</string>

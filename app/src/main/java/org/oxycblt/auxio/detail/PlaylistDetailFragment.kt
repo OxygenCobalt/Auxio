@@ -56,6 +56,7 @@ class PlaylistDetailFragment :
     private val detailModel: DetailViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     // Information about what playlist to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an playlist.
@@ -81,7 +82,7 @@ class PlaylistDetailFragment :
 
         // --- UI SETUP ---
         binding.detailToolbar.apply {
-            inflateMenu(R.menu.menu_parent_detail)
+            inflateMenu(R.menu.menu_playlist_detail)
             setNavigationOnClickListener { findNavController().navigateUp() }
             setOnMenuItemClickListener(this@PlaylistDetailFragment)
         }

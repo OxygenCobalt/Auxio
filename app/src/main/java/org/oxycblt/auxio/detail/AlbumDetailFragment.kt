@@ -43,6 +43,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -61,6 +62,7 @@ class AlbumDetailFragment :
     private val detailModel: DetailViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     // Information about what album to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an album.
@@ -134,6 +136,10 @@ class AlbumDetailFragment :
             }
             R.id.action_go_artist -> {
                 onNavigateToParentArtist()
+                true
+            }
+            R.id.action_playlist_add -> {
+                musicModel.addToPlaylist(currentAlbum)
                 true
             }
             else -> false

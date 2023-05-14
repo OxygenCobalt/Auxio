@@ -53,6 +53,7 @@ import org.oxycblt.auxio.util.*
 class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     private val searchModel: SearchViewModel by viewModels()
     private val searchAdapter = SearchAdapter(this)
@@ -150,7 +151,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             is Album -> openMusicMenu(anchor, R.menu.menu_album_actions, item)
             is Artist -> openMusicMenu(anchor, R.menu.menu_parent_actions, item)
             is Genre -> openMusicMenu(anchor, R.menu.menu_parent_actions, item)
-            is Playlist -> openMusicMenu(anchor, R.menu.menu_parent_actions, item)
+            is Playlist -> openMusicMenu(anchor, R.menu.menu_playlist_actions, item)
         }
     }
 

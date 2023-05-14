@@ -10,6 +10,9 @@
         android:id="@+id/action_go_album"
         android:title="@string/lbl_go_album" />
     <item
+        android:id="@+id/action_playlist_add"
+        android:title="@string/lbl_playlist_add" />
+    <item
         android:id="@+id/action_song_detail"
         android:title="@string/lbl_song_detail" />
 </menu>

@@ -56,6 +56,7 @@ class GenreDetailFragment :
     private val detailModel: DetailViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     // Information about what genre to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an genre.
@@ -123,6 +124,10 @@ class GenreDetailFragment :
             R.id.action_queue_add -> {
                 playbackModel.addToQueue(currentGenre)
                 requireContext().showToast(R.string.lng_queue_added)
+                true
+            }
+            R.id.action_playlist_add -> {
+                musicModel.addToPlaylist(currentGenre)
                 true
             }
             else -> false

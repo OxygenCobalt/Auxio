@@ -41,6 +41,7 @@ import org.oxycblt.auxio.music.*
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MusicKeyer : Keyer<Music> {
+    // TODO: Include hashcode of child songs for parents
     override fun key(data: Music, options: Options) =
         if (data is Song) {
             // Group up song covers with album covers for better caching

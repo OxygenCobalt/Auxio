@@ -23,6 +23,7 @@ import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.showToast
@@ -35,6 +36,7 @@ import org.oxycblt.auxio.util.showToast
 abstract class SelectionFragment<VB : ViewBinding> :
     ViewBindingFragment<VB>(), Toolbar.OnMenuItemClickListener {
     protected abstract val selectionModel: SelectionViewModel
+    protected abstract val musicModel: MusicViewModel
     protected abstract val playbackModel: PlaybackViewModel
 
     /**
@@ -50,7 +52,7 @@ abstract class SelectionFragment<VB : ViewBinding> :
         super.onBindingCreated(binding, savedInstanceState)
         getSelectionToolbar(binding)?.apply {
             // Add cancel and menu item listeners to manage what occurs with the selection.
-            setOnSelectionCancelListener { selectionModel.consume() }
+            setOnSelectionCancelListener { selectionModel.drop() }
             setOnMenuItemClickListener(this@SelectionFragment)
         }
     }
@@ -63,21 +65,25 @@ abstract class SelectionFragment<VB : ViewBinding> :
     override fun onMenuItemClick(item: MenuItem) =
         when (item.itemId) {
             R.id.action_selection_play_next -> {
-                playbackModel.playNext(selectionModel.consume())
+                playbackModel.playNext(selectionModel.take())
                 requireContext().showToast(R.string.lng_queue_added)
                 true
             }
             R.id.action_selection_queue_add -> {
-                playbackModel.addToQueue(selectionModel.consume())
+                playbackModel.addToQueue(selectionModel.take())
                 requireContext().showToast(R.string.lng_queue_added)
                 true
             }
+            R.id.action_selection_playlist_add -> {
+                musicModel.addToPlaylist(selectionModel.take())
+                true
+            }
             R.id.action_selection_play -> {
-                playbackModel.play(selectionModel.consume())
+                playbackModel.play(selectionModel.take())
                 true
             }
             R.id.action_selection_shuffle -> {
-                playbackModel.shuffle(selectionModel.consume())
+                playbackModel.shuffle(selectionModel.take())
                 true
             }
             else -> false

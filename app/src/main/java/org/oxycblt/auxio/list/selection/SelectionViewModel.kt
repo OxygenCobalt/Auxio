@@ -31,8 +31,12 @@ import org.oxycblt.auxio.music.*
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
-class SelectionViewModel @Inject constructor(private val musicRepository: MusicRepository) :
-    ViewModel(), MusicRepository.UpdateListener {
+class SelectionViewModel
+@Inject
+constructor(
+    private val musicRepository: MusicRepository,
+    private val musicSettings: MusicSettings
+) : ViewModel(), MusicRepository.UpdateListener {
     private val _selected = MutableStateFlow(listOf<Music>())
     /** the currently selected items. These are ordered in earliest selected and latest selected. */
     val selected: StateFlow<List<Music>>
@@ -80,9 +84,27 @@ class SelectionViewModel @Inject constructor(private val musicRepository: MusicR
     }
 
     /**
-     * Consume the current selection. This will clear any items that were selected prior.
+     * Clear the current selection and return it.
      *
-     * @return The list of selected items before it was cleared.
+     * @return A list of [Song]s collated from each item selected.
      */
-    fun consume() = _selected.value.also { _selected.value = listOf() }
+    fun take() =
+        _selected.value
+            .flatMap {
+                when (it) {
+                    is Song -> listOf(it)
+                    is Album -> musicSettings.albumSongSort.songs(it.songs)
+                    is Artist -> musicSettings.artistSongSort.songs(it.songs)
+                    is Genre -> musicSettings.genreSongSort.songs(it.songs)
+                    is Playlist -> musicSettings.playlistSongSort.songs(it.songs)
+                }
+            }
+            .also { drop() }
+
+    /**
+     * Clear the current selection.
+     *
+     * @return true if the prior selection was non-empty, false otherwise.
+     */
+    fun drop() = _selected.value.isNotEmpty().also { _selected.value = listOf() }
 }

@@ -68,8 +68,8 @@ class HomeFragment :
     SelectionFragment<FragmentHomeBinding>(), AppBarLayout.OnOffsetChangedListener {
     override val playbackModel: PlaybackViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
-    private val musicModel: MusicViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
 

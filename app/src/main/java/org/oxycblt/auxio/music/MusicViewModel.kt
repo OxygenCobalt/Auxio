@@ -32,8 +32,12 @@ import org.oxycblt.auxio.util.MutableEvent
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
-class MusicViewModel @Inject constructor(private val musicRepository: MusicRepository) :
-    ViewModel(), MusicRepository.UpdateListener, MusicRepository.IndexingListener {
+class MusicViewModel
+@Inject
+constructor(
+    private val musicRepository: MusicRepository,
+    private val musicSettings: MusicSettings
+) : ViewModel(), MusicRepository.UpdateListener, MusicRepository.IndexingListener {
 
     private val _indexingState = MutableStateFlow<IndexingState?>(null)
     /** The current music loading state, or null if no loading is going on. */
@@ -47,6 +51,10 @@ class MusicViewModel @Inject constructor(private val musicRepository: MusicRepos
     private val _newPlaylistSongs = MutableEvent<List<Song>?>()
     /** Flag for opening a dialog to create a playlist of the given [Song]s. */
     val newPlaylistSongs: Event<List<Song>?> = _newPlaylistSongs
+
+    private val _songsToAdd = MutableEvent<List<Song>?>()
+    /** Flag for opening a dialog to add the given [Song]s to a playlist. */
+    val songsToAdd: Event<List<Song>?> = _songsToAdd
 
     init {
         musicRepository.addUpdateListener(this)
@@ -85,23 +93,71 @@ class MusicViewModel @Inject constructor(private val musicRepository: MusicRepos
     }
 
     /**
-     * Create a new generic playlist. This will first open a dialog for the user to make a naming
-     * choice before committing the playlist to the database.
+     * Create a new generic [Playlist].
      *
+     * @param name The name of the new [Playlist]. If null, the user will be prompted for one.
      * @param songs The [Song]s to be contained in the new playlist.
      */
-    fun createPlaylist(songs: List<Song> = listOf()) {
-        _newPlaylistSongs.put(songs)
+    fun createPlaylist(name: String? = null, songs: List<Song> = listOf()) {
+        if (name != null) {
+            musicRepository.createPlaylist(name, songs)
+        } else {
+            _newPlaylistSongs.put(songs)
+        }
     }
 
     /**
-     * Create a new generic playlist. This will immediately commit the playlist to the database.
+     * Add a [Song] to a [Playlist].
      *
-     * @param name The name of the new playlist.
-     * @param songs The [Song]s to be contained in the new playlist.
+     * @param song The [Song] to add to the [Playlist].
+     * @param playlist The [Playlist] to add to. If null, the user will be prompted for one.
      */
-    fun createPlaylist(name: String, songs: List<Song> = listOf()) {
-        musicRepository.createPlaylist(name, songs)
+    fun addToPlaylist(song: Song, playlist: Playlist? = null) {
+        addToPlaylist(listOf(song), playlist)
+    }
+
+    /**
+     * Add an [Album] to a [Playlist].
+     *
+     * @param album The [Album] to add to the [Playlist].
+     * @param playlist The [Playlist] to add to. If null, the user will be prompted for one.
+     */
+    fun addToPlaylist(album: Album, playlist: Playlist? = null) {
+        addToPlaylist(musicSettings.albumSongSort.songs(album.songs), playlist)
+    }
+
+    /**
+     * Add an [Artist] to a [Playlist].
+     *
+     * @param artist The [Artist] to add to the [Playlist].
+     * @param playlist The [Playlist] to add to. If null, the user will be prompted for one.
+     */
+    fun addToPlaylist(artist: Artist, playlist: Playlist? = null) {
+        addToPlaylist(musicSettings.artistSongSort.songs(artist.songs), playlist)
+    }
+
+    /**
+     * Add a [Genre] to a [Playlist].
+     *
+     * @param genre The [Genre] to add to the [Playlist].
+     * @param playlist The [Playlist] to add to. If null, the user will be prompted for one.
+     */
+    fun addToPlaylist(genre: Genre, playlist: Playlist? = null) {
+        addToPlaylist(musicSettings.genreSongSort.songs(genre.songs), playlist)
+    }
+
+    /**
+     * Add [Song]s to a [Playlist].
+     *
+     * @param songs The [Song]s to add to the [Playlist].
+     * @param playlist The [Playlist] to add to. If null, the user will be prompted for one.
+     */
+    fun addToPlaylist(songs: List<Song>, playlist: Playlist? = null) {
+        if (playlist != null) {
+            musicRepository.addToPlaylist(songs, playlist)
+        } else {
+            _songsToAdd.put(songs)
+        }
     }
 
     /**

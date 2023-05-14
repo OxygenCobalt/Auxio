@@ -36,6 +36,7 @@ import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -50,6 +51,7 @@ class PlaylistListFragment :
     private val homeModel: HomeViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     private val playlistAdapter = PlaylistAdapter(this)
 
@@ -107,7 +109,7 @@ class PlaylistListFragment :
     }
 
     override fun onOpenMenu(item: Playlist, anchor: View) {
-        openMusicMenu(anchor, R.menu.menu_parent_actions, item)
+        openMusicMenu(anchor, R.menu.menu_playlist_actions, item)
     }
 
     private fun updatePlaylists(playlists: List<Playlist>) {

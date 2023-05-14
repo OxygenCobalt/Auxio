@@ -107,7 +107,7 @@ private class UserLibraryImpl(
 
     init {
         // TODO: Actually read playlists
-        createPlaylist("Playlist 1", deviceLibrary.songs.slice(58..100))
+        createPlaylist("Playlist 1", deviceLibrary.songs.slice(58..200))
     }
 
     override fun findPlaylist(uid: Music.UID) = playlistMap[uid]

@@ -114,10 +114,18 @@ interface MusicRepository {
     /**
      * Create a new [Playlist] of the given [Song]s.
      *
-     * @param name The name of the new [Playlist]
+     * @param name The name of the new [Playlist].
      * @param songs The songs to populate the new [Playlist] with.
      */
     fun createPlaylist(name: String, songs: List<Song>)
+
+    /**
+     * Add the given [Song]s to a [Playlist].
+     *
+     * @param songs The [Song]s to add to the [Playlist].
+     * @param playlist The [Playlist] to add to.
+     */
+    fun addToPlaylist(songs: List<Song>, playlist: Playlist)
 
     /**
      * Request that a music loading operation is started by the current [IndexingWorker]. Does
@@ -249,6 +257,15 @@ constructor(
     override fun createPlaylist(name: String, songs: List<Song>) {
         val userLibrary = userLibrary ?: return
         userLibrary.createPlaylist(name, songs)
+        for (listener in updateListeners) {
+            listener.onMusicChanges(
+                MusicRepository.Changes(deviceLibrary = false, userLibrary = true))
+        }
+    }
+
+    override fun addToPlaylist(songs: List<Song>, playlist: Playlist) {
+        val userLibrary = userLibrary ?: return
+        userLibrary.addToPlaylist(playlist, songs)
         for (listener in updateListeners) {
             listener.onMusicChanges(
                 MusicRepository.Changes(deviceLibrary = false, userLibrary = true))

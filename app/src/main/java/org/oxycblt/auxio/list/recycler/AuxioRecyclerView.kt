@@ -33,6 +33,8 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * - Adapter-based [SpanSizeLookup] implementation
  * - Automatic [setHasFixedSize] setup
  *
+ * FIXME: Broken span configuration
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 open class AuxioRecyclerView
