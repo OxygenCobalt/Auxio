@@ -350,7 +350,7 @@ interface Playlist : MusicParent {
 }
 
 /**
- * Run [Music.resolveName] on each instance in the given list and concatenate them into a [String]
+ * Run [Name.resolve] on each instance in the given list and concatenate them into a [String]
  * in a localized manner.
  *
  * @param context [Context] required

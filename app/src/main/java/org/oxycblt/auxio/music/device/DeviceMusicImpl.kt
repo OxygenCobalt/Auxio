@@ -18,7 +18,6 @@
  
 package org.oxycblt.auxio.music.device
 
-import java.util.*
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.*

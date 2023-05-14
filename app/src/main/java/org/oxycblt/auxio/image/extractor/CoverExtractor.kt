@@ -122,7 +122,6 @@ constructor(
         return stream
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun extractMediaStoreCover(album: Album) =
         // Eliminate any chance that this blocking call might mess up the loading process
         withContext(Dispatchers.IO) { context.contentResolver.openInputStream(album.coverUri) }

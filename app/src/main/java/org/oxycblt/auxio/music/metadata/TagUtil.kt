@@ -228,7 +228,7 @@ private fun String.parseId3v2Genre(): List<String>? {
     // Case 1: Genre IDs in the format (INT|RX|CR). If these exist, parse them as
     // ID3v1 tags.
     val genreIds = groups.getOrNull(1)
-    if (genreIds != null && genreIds.isNotEmpty()) {
+    if (!genreIds.isNullOrEmpty()) {
         val ids = genreIds.substring(1, genreIds.lastIndex).split(")(")
         for (id in ids) {
             id.parseId3v1Genre()?.let(genres::add)
@@ -238,7 +238,7 @@ private fun String.parseId3v2Genre(): List<String>? {
     // Case 2: Genre names as a normal string. The only case we have to look out for are
     // escaped strings formatted as ((genre).
     val genreName = groups.getOrNull(3)
-    if (genreName != null && genreName.isNotEmpty()) {
+    if (!genreName.isNullOrEmpty()) {
         if (genreName.startsWith("((")) {
             genres.add(genreName.substring(1))
         } else {

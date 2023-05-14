@@ -45,7 +45,7 @@ import org.oxycblt.auxio.util.logD
  *
  * Loading music is a time-consuming process that would likely be killed by the system before it
  * could complete if ran anywhere else. So, this [Service] manages the music loading process as an
- * instance of [Indexer.Controller].
+ * instance of [MusicRepository.IndexingWorker].
  *
  * This [Service] also handles automatic rescanning, as that is a similarly long-running background
  * operation that would be unsuitable elsewhere in the app.

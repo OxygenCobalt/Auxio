@@ -52,15 +52,15 @@ class RawSong(
     var extensionMimeType: String? = null,
     /** @see Music.UID */
     var musicBrainzId: String? = null,
-    /** @see Music.rawName */
+    /** @see Music.name */
     var name: String? = null,
-    /** @see Music.rawSortName */
+    /** @see Music.name */
     var sortName: String? = null,
     /** @see Song.track */
     var track: Int? = null,
-    /** @see Disc.number */
+    /** @see Song.disc */
     var disc: Int? = null,
-    /** @See Disc.name */
+    /** @See Song.disc */
     var subtitle: String? = null,
     /** @see Song.date */
     var date: Date? = null,
@@ -103,9 +103,9 @@ class RawAlbum(
     val mediaStoreId: Long,
     /** @see Music.uid */
     val musicBrainzId: UUID?,
-    /** @see Music.rawName */
+    /** @see Music.name */
     val name: String,
-    /** @see Music.rawSortName */
+    /** @see Music.name */
     val sortName: String?,
     /** @see Album.releaseType */
     val releaseType: ReleaseType?,
@@ -145,9 +145,9 @@ class RawAlbum(
 class RawArtist(
     /** @see Music.UID */
     val musicBrainzId: UUID? = null,
-    /** @see Music.rawName */
+    /** @see Music.name */
     val name: String? = null,
-    /** @see Music.rawSortName */
+    /** @see Music.name */
     val sortName: String? = null
 ) {
     // Artists are grouped as follows:
@@ -185,7 +185,7 @@ class RawArtist(
  * @author Alexander Capehart (OxygenCobalt)
  */
 class RawGenre(
-    /** @see Music.rawName */
+    /** @see Music.name */
     val name: String? = null
 ) {
 

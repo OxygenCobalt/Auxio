@@ -222,7 +222,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
         /**
          * Sort by the item's name.
          *
-         * @see Music.sortName
+         * @see Music.name
          */
         object ByName : Mode {
             override val intCode: Int
@@ -520,7 +520,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
 /**
  * Utility function to create a [Comparator] in a dynamic way determined by [direction].
  *
- * @param direction The [Direction] to sort in.
+ * @param direction The [Sort.Direction] to sort in.
  * @see compareBy
  * @see compareByDescending
  */
@@ -536,7 +536,7 @@ private inline fun <T : Music, K : Comparable<K>> compareByDynamic(
 /**
  * Utility function to create a [Comparator] in a dynamic way determined by [direction]
  *
- * @param direction The [Direction] to sort in.
+ * @param direction The [Sort.Direction] to sort in.
  * @param comparator A [Comparator] to wrap.
  * @return A new [Comparator] with the specified configuration.
  * @see compareBy
