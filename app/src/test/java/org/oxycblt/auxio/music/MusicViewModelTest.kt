@@ -32,7 +32,7 @@ class MusicViewModelTest {
             TestMusicRepository().apply {
                 indexingState = IndexingState.Indexing(IndexingProgress.Indeterminate)
             }
-        val musicViewModel = MusicViewModel(indexer)
+        val musicViewModel = MusicViewModel(indexer, FakeMusicSettings())
         assertTrue(indexer.updateListener is MusicViewModel)
         assertTrue(indexer.indexingListener is MusicViewModel)
         assertEquals(
@@ -47,7 +47,7 @@ class MusicViewModelTest {
     @Test
     fun statistics() {
         val musicRepository = TestMusicRepository()
-        val musicViewModel = MusicViewModel(musicRepository)
+        val musicViewModel = MusicViewModel(musicRepository, FakeMusicSettings())
         assertEquals(null, musicViewModel.statistics.value)
         musicRepository.deviceLibrary = TestDeviceLibrary()
         assertEquals(
@@ -64,7 +64,7 @@ class MusicViewModelTest {
     @Test
     fun requests() {
         val indexer = TestMusicRepository()
-        val musicViewModel = MusicViewModel(indexer)
+        val musicViewModel = MusicViewModel(indexer, FakeMusicSettings())
         musicViewModel.refresh()
         musicViewModel.rescan()
         assertEquals(listOf(true, false), indexer.requests)

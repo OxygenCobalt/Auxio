@@ -157,15 +157,14 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
         binding.parentImage.bind(artist)
         binding.parentName.text = artist.name.resolve(binding.context)
         binding.parentInfo.text =
-            if (artist.songs.isNotEmpty()) {
-                binding.context.getString(
-                    R.string.fmt_two,
-                    binding.context.getPlural(R.plurals.fmt_album_count, artist.albums.size),
-                    binding.context.getPlural(R.plurals.fmt_song_count, artist.songs.size))
-            } else {
-                // Artist has no songs, only display an album count.
-                binding.context.getPlural(R.plurals.fmt_album_count, artist.albums.size)
-            }
+            binding.context.getString(
+                R.string.fmt_two,
+                binding.context.getPlural(R.plurals.fmt_album_count, artist.albums.size),
+                if (artist.songs.isNotEmpty()) {
+                    binding.context.getPlural(R.plurals.fmt_song_count, artist.songs.size)
+                } else {
+                    binding.context.getString(R.string.def_song_count)
+                })
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -275,7 +274,11 @@ class PlaylistViewHolder private constructor(private val binding: ItemParentBind
         binding.parentImage.bind(playlist)
         binding.parentName.text = playlist.name.resolve(binding.context)
         binding.parentInfo.text =
-            binding.context.getPlural(R.plurals.fmt_song_count, playlist.songs.size)
+            if (playlist.songs.isNotEmpty()) {
+                binding.context.getPlural(R.plurals.fmt_song_count, playlist.songs.size)
+            } else {
+                binding.context.getString(R.string.def_song_count)
+            }
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {

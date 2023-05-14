@@ -46,6 +46,8 @@ import org.oxycblt.auxio.util.*
  * [ViewModel] that manages the Song, Album, Artist, and Genre detail views. Keeps track of the
  * current item they are showing, sub-data to display, and configuration.
  *
+ * FIXME: Need to do direct item comparison in equality checks, or reset on navigation.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
@@ -416,15 +418,16 @@ constructor(
 
     private fun refreshPlaylistList(playlist: Playlist, replace: Boolean = false) {
         logD("Refreshing playlist list")
+        var instructions: UpdateInstructions = UpdateInstructions.Diff
         val list = mutableListOf<Item>()
-        list.add(SortHeader(R.string.lbl_songs))
-        val instructions =
+
+        if (playlist.songs.isNotEmpty()) {
+            list.add(SortHeader(R.string.lbl_songs))
             if (replace) {
-                UpdateInstructions.Replace(list.size)
-            } else {
-                UpdateInstructions.Diff
+                instructions = UpdateInstructions.Replace(list.size)
             }
-        list.addAll(playlistSongSort.songs(playlist.songs))
+            list.addAll(playlistSongSort.songs(playlist.songs))
+        }
         _playlistInstructions.put(instructions)
         _playlistList.value = list
     }

@@ -65,11 +65,26 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
         binding.detailName.text = playlist.name.resolve(binding.context)
         // Nothing about a playlist is applicable to the sub-head text.
         binding.detailSubhead.isVisible = false
+
         // The song count of the playlist maps to the info text.
-        binding.detailInfo.text =
-            binding.context.getPlural(R.plurals.fmt_song_count, playlist.songs.size)
-        binding.detailPlayButton.setOnClickListener { listener.onPlay() }
-        binding.detailShuffleButton.setOnClickListener { listener.onShuffle() }
+        binding.detailInfo.apply {
+            isVisible = true
+            text =
+                if (playlist.songs.isNotEmpty()) {
+                    binding.context.getPlural(R.plurals.fmt_song_count, playlist.songs.size)
+                } else {
+                    binding.context.getString(R.string.def_song_count)
+                }
+        }
+
+        binding.detailPlayButton.apply {
+            isEnabled = playlist.songs.isNotEmpty()
+            setOnClickListener { listener.onPlay() }
+        }
+        binding.detailShuffleButton.apply {
+            isEnabled = playlist.songs.isNotEmpty()
+            setOnClickListener { listener.onShuffle() }
+        }
     }
 
     companion object {
