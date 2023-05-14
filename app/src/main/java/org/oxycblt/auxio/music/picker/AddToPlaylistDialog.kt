@@ -55,7 +55,7 @@ class AddToPlaylistDialog :
     private val footerAdapter = NewPlaylistFooterAdapter(this)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
-        builder.setTitle(R.string.lbl_playlist_add).setNegativeButton(R.string.lbl_cancel, null)
+        builder.setTitle(R.string.lbl_playlists).setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onCreateBinding(inflater: LayoutInflater) =

@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemDetailHeaderBinding
 import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
@@ -71,7 +72,10 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
             isVisible = true
             text =
                 if (playlist.songs.isNotEmpty()) {
-                    binding.context.getPlural(R.plurals.fmt_song_count, playlist.songs.size)
+                    binding.context.getString(
+                        R.string.fmt_two,
+                        binding.context.getPlural(R.plurals.fmt_song_count, playlist.songs.size),
+                        playlist.durationMs.formatDurationMs(true))
                 } else {
                     binding.context.getString(R.string.def_song_count)
                 }

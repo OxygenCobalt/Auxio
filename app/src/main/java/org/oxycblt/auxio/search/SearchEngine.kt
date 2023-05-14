@@ -33,6 +33,8 @@ import org.oxycblt.auxio.music.info.Name
  * Implements the fuzzy-ish searching algorithm used in the search view.
  *
  * @author Alexander Capehart
+ *
+ * TODO: Add playlists
  */
 interface SearchEngine {
     /**
