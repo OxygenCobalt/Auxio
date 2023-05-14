@@ -284,4 +284,8 @@
     <string name="desc_new_playlist">Створити новий список відтворення</string>
     <string name="lbl_new_playlist">Новий список відтворення</string>
     <string name="fmt_def_playlist">Список відтворення %d</string>
+    <string name="lbl_playlist_add">Додати до списку відтворення</string>
+    <string name="lng_playlist_added">Додано до списку відтворення</string>
+    <string name="lng_playlist_created">Список відтворення створено</string>
+    <string name="def_song_count">Немає пісень</string>
 </resources>
