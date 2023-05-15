@@ -283,4 +283,10 @@
     <string name="set_intelligent_sorting_desc">Ignoruj słowa takie jak „the” oraz numery w tytule podczas sortowania (działa najlepiej z utworami w języku angielskim)</string>
     <string name="lbl_none">Brak</string>
     <string name="desc_new_playlist">Utwórz nową playlistę</string>
+    <string name="lbl_new_playlist">Nowa playlista</string>
+    <string name="lbl_playlist_add">Dodaj do playlisty</string>
+    <string name="lng_playlist_created">Utworzono playlistę</string>
+    <string name="def_song_count">Brak utworów</string>
+    <string name="lng_playlist_added">Dodano do playlisty</string>
+    <string name="fmt_def_playlist">Playlista %d</string>
 </resources>
