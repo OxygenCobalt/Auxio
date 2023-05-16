@@ -287,4 +287,8 @@
     <string name="desc_new_playlist">Создать новый плейлист</string>
     <string name="lbl_new_playlist">Новый плейлист</string>
     <string name="fmt_def_playlist">Плейлист %d</string>
+    <string name="lbl_playlist_add">Добавить в плейлист</string>
+    <string name="def_song_count">Без треков</string>
+    <string name="lng_playlist_added">Добавлено в плейлист</string>
+    <string name="lng_playlist_created">Плейлист создан</string>
 </resources>
