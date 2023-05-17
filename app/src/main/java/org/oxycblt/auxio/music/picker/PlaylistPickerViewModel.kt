@@ -156,11 +156,6 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
         refreshPlaylistChoices(songs)
     }
 
-    /** Drop any pending songs to add since a playlist has already been found for them. */
-    fun dropPendingAddition() {
-        _currentPendingSongs.value = null
-    }
-
     private fun refreshPlaylistChoices(songs: List<Song>) {
         val userLibrary = musicRepository.userLibrary ?: return
         _playlistChoices.value =

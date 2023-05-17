@@ -61,7 +61,6 @@ class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>()
                     }
                 // TODO: Navigate to playlist if there are songs in it
                 musicModel.createPlaylist(name, pendingPlaylist.songs)
-                pickerModel.dropPendingAddition()
                 requireContext().showToast(R.string.lng_playlist_created)
                 findNavController().apply {
                     navigateUp()

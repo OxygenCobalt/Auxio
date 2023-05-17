@@ -34,10 +34,6 @@ import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.auxio.util.update
 
-// TODO: Entirely rework music equality such that it's not completely UID-focused and actually
-//  takes metadata into account
-// TODO: Reduce need for raw objects to save some memory
-
 /**
  * Library-backed implementation of [Song].
  *
@@ -45,7 +41,7 @@ import org.oxycblt.auxio.util.update
  * @param musicSettings [MusicSettings] to for user parsing configuration.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
+class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Song {
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         rawSong.musicBrainzId?.toUuidOrNull()?.let { Music.UID.musicBrainz(MusicMode.SONGS, it) }
@@ -89,9 +85,9 @@ class SongImpl(rawSong: RawSong, musicSettings: MusicSettings) : Song {
     override val album: Album
         get() = unlikelyToBeNull(_album)
 
-    // Note: Only compare by UID so songs that differ only in MBID are treated differently.
-    override fun hashCode() = uid.hashCode()
-    override fun equals(other: Any?) = other is Song && uid == other.uid
+    override fun hashCode() = 31 * uid.hashCode() + rawSong.hashCode()
+    override fun equals(other: Any?) =
+        other is SongImpl && uid == other.uid && rawSong == other.rawSong
 
     private val artistMusicBrainzIds = rawSong.artistMusicBrainzIds.parseMultiValue(musicSettings)
     private val artistNames = rawSong.artistNames.parseMultiValue(musicSettings)
@@ -248,11 +244,15 @@ class AlbumImpl(
     override val durationMs: Long
     override val dateAdded: Long
 
-    // Note: Append song contents to MusicParent equality so that Groups with
-    // the same UID but different contents are not equal.
-    override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
+    override fun hashCode(): Int {
+        var hashCode = uid.hashCode()
+        hashCode = 31 * hashCode + rawAlbum.hashCode()
+        hashCode = 31 * hashCode + songs.hashCode()
+        return hashCode
+    }
+
     override fun equals(other: Any?) =
-        other is AlbumImpl && uid == other.uid && songs == other.songs
+        other is AlbumImpl && uid == other.uid && rawAlbum == other.rawAlbum && songs == other.songs
 
     private val _artists = mutableListOf<ArtistImpl>()
     override val artists: List<Artist>
@@ -341,9 +341,18 @@ class ArtistImpl(
 
     // Note: Append song contents to MusicParent equality so that artists with
     // the same UID but different songs are not equal.
-    override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
+    override fun hashCode(): Int {
+        var hashCode = uid.hashCode()
+        hashCode = 31 * hashCode + rawArtist.hashCode()
+        hashCode = 31 * hashCode + songs.hashCode()
+        return hashCode
+    }
+
     override fun equals(other: Any?) =
-        other is ArtistImpl && uid == other.uid && songs == other.songs
+        other is ArtistImpl &&
+            uid == other.uid &&
+            rawArtist == other.rawArtist &&
+            songs == other.songs
 
     override lateinit var genres: List<Genre>
 
@@ -422,11 +431,15 @@ class GenreImpl(
     override val artists: List<Artist>
     override val durationMs: Long
 
-    // Note: Append song contents to MusicParent equality so that Groups with
-    // the same UID but different contents are not equal.
-    override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
+    override fun hashCode(): Int {
+        var hashCode = uid.hashCode()
+        hashCode = 31 * hashCode + rawGenre.hashCode()
+        hashCode = 31 * hashCode + songs.hashCode()
+        return hashCode
+    }
+
     override fun equals(other: Any?) =
-        other is GenreImpl && uid == other.uid && songs == other.songs
+        other is GenreImpl && uid == other.uid && rawGenre == other.rawGenre && songs == other.songs
 
     init {
         val distinctAlbums = mutableSetOf<Album>()

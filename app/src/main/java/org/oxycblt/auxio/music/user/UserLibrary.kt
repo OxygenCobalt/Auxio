@@ -112,11 +112,6 @@ private class UserLibraryImpl(
     override val playlists: List<Playlist>
         get() = playlistMap.values.toList()
 
-    init {
-        // TODO: Actually read playlists
-        createPlaylist("Playlist 1", deviceLibrary.songs.slice(58..200))
-    }
-
     override fun findPlaylist(uid: Music.UID) = playlistMap[uid]
 
     override fun findPlaylist(name: String) = playlistMap.values.find { it.name.raw == name }

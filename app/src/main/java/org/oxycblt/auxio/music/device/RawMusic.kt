@@ -30,7 +30,7 @@ import org.oxycblt.auxio.music.metadata.*
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class RawSong(
+data class RawSong(
     /**
      * The ID of the [SongImpl]'s audio file, obtained from MediaStore. Note that this ID is highly
      * unstable and should only be used for accessing the audio file.
@@ -95,7 +95,7 @@ class RawSong(
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class RawAlbum(
+data class RawAlbum(
     /**
      * The ID of the [AlbumImpl]'s grouping, obtained from MediaStore. Note that this ID is highly
      * unstable and should only be used for accessing the system-provided cover art.
@@ -142,7 +142,7 @@ class RawAlbum(
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class RawArtist(
+data class RawArtist(
     /** @see Music.UID */
     val musicBrainzId: UUID? = null,
     /** @see Music.name */
@@ -184,7 +184,7 @@ class RawArtist(
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class RawGenre(
+data class RawGenre(
     /** @see Music.name */
     val name: String? = null
 ) {
