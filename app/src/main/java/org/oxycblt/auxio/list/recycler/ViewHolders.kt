@@ -24,10 +24,8 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemHeaderBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
-import org.oxycblt.auxio.databinding.ItemPickerChoiceBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.list.BasicHeader
-import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
@@ -349,56 +347,6 @@ class BasicHeaderViewHolder private constructor(private val binding: ItemHeaderB
                     oldItem: BasicHeader,
                     newItem: BasicHeader
                 ): Boolean = oldItem.titleRes == newItem.titleRes
-            }
-    }
-}
-
-/**
- * A [DialogRecyclerView.ViewHolder] that displays a smaller variant of a typical [T] item, for use
- * in choice dialogs. Use [from] to create an instance.
- *
- * @author Alexander Capehart (OxygenCobalt)
- *
- * TODO: Unwind this into specific impls
- */
-class ChoiceViewHolder<T : Music>
-private constructor(private val binding: ItemPickerChoiceBinding) :
-    DialogRecyclerView.ViewHolder(binding.root) {
-    /**
-     * Bind new data to this instance.
-     *
-     * @param music The new [T] to bind.
-     * @param listener A [ClickableListListener] to bind interactions to.
-     */
-    fun bind(music: T, listener: ClickableListListener<T>) {
-        listener.bind(music, this)
-        // ImageGroup is not generic, so we must downcast to specific types for now.
-        when (music) {
-            is Song -> binding.pickerImage.bind(music)
-            is Album -> binding.pickerImage.bind(music)
-            is Artist -> binding.pickerImage.bind(music)
-            is Genre -> binding.pickerImage.bind(music)
-            is Playlist -> binding.pickerImage.bind(music)
-        }
-        binding.pickerName.text = music.name.resolve(binding.context)
-    }
-
-    companion object {
-
-        /**
-         * Create a new instance.
-         *
-         * @param parent The parent to inflate this instance from.
-         * @return A new instance.
-         */
-        fun <T : Music> from(parent: View) =
-            ChoiceViewHolder<T>(ItemPickerChoiceBinding.inflate(parent.context.inflater))
-
-        /** Get a comparator that can be used with DiffUtil. */
-        fun <T : Music> diffCallback() =
-            object : SimpleDiffCallback<T>() {
-                override fun areContentsTheSame(oldItem: T, newItem: T) =
-                    oldItem.name == newItem.name
             }
     }
 }

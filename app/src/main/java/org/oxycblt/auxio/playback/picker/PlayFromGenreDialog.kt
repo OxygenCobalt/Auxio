@@ -20,7 +20,6 @@ package org.oxycblt.auxio.playback.picker
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -29,11 +28,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
+import org.oxycblt.auxio.databinding.DialogMusicChoicesBinding
 import org.oxycblt.auxio.list.ClickableListListener
-import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.list.recycler.ChoiceViewHolder
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
@@ -47,25 +44,25 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 @AndroidEntryPoint
 class PlayFromGenreDialog :
-    ViewBindingDialogFragment<DialogMusicPickerBinding>(), ClickableListListener<Genre> {
+    ViewBindingDialogFragment<DialogMusicChoicesBinding>(), ClickableListListener<Genre> {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val pickerModel: PlaybackPickerViewModel by viewModels()
     // Information about what Song to show choices for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel a Song.
     private val args: PlayFromGenreDialogArgs by navArgs()
-    private val choiceAdapter = GenreChoiceAdapter(this)
+    private val choiceAdapter = GenrePlaybackChoiceAdapter(this)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder.setTitle(R.string.lbl_genres).setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onCreateBinding(inflater: LayoutInflater) =
-        DialogMusicPickerBinding.inflate(inflater)
+        DialogMusicChoicesBinding.inflate(inflater)
 
-    override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {
+    override fun onBindingCreated(binding: DialogMusicChoicesBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
-        binding.pickerChoiceRecycler.apply {
+        binding.choiceRecycler.apply {
             itemAnimator = null
             adapter = choiceAdapter
         }
@@ -80,7 +77,7 @@ class PlayFromGenreDialog :
         }
     }
 
-    override fun onDestroyBinding(binding: DialogMusicPickerBinding) {
+    override fun onDestroyBinding(binding: DialogMusicChoicesBinding) {
         super.onDestroyBinding(binding)
         choiceAdapter
     }
@@ -90,15 +87,5 @@ class PlayFromGenreDialog :
         val song = unlikelyToBeNull(pickerModel.currentPickerSong.value)
         playbackModel.playFromGenre(song, item)
         findNavController().navigateUp()
-    }
-
-    private class GenreChoiceAdapter(private val listener: ClickableListListener<Genre>) :
-        FlexibleListAdapter<Genre, ChoiceViewHolder<Genre>>(ChoiceViewHolder.diffCallback()) {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChoiceViewHolder<Genre> =
-            ChoiceViewHolder.from(parent)
-
-        override fun onBindViewHolder(holder: ChoiceViewHolder<Genre>, position: Int) {
-            holder.bind(getItem(position), listener)
-        }
     }
 }

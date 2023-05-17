@@ -71,7 +71,7 @@
         android:id="@+id/navigate_to_artist_dialog"
         android:name="org.oxycblt.auxio.navigation.picker.NavigateToArtistDialog"
         android:label="navigate_to_artist_dialog"
-        tools:layout="@layout/dialog_music_picker">
+        tools:layout="@layout/dialog_music_choices">
         <argument
             android:name="itemUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
@@ -81,7 +81,7 @@
         android:id="@+id/play_from_artist_dialog"
         android:name="org.oxycblt.auxio.playback.picker.PlayFromArtistDialog"
         android:label="play_from_artist_dialog"
-        tools:layout="@layout/dialog_music_picker">
+        tools:layout="@layout/dialog_music_choices">
         <argument
             android:name="artistUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
@@ -91,7 +91,7 @@
         android:id="@+id/play_from_genre_dialog"
         android:name="org.oxycblt.auxio.playback.picker.PlayFromGenreDialog"
         android:label="play_from_genre_dialog"
-        tools:layout="@layout/dialog_music_picker">
+        tools:layout="@layout/dialog_music_choices">
         <argument
             android:name="genreUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />

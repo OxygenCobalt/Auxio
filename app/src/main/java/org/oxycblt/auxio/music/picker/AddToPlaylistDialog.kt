@@ -29,7 +29,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.DialogMusicPickerBinding
+import org.oxycblt.auxio.databinding.DialogMusicChoicesBinding
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
@@ -44,7 +44,7 @@ import org.oxycblt.auxio.util.showToast
  */
 @AndroidEntryPoint
 class AddToPlaylistDialog :
-    ViewBindingDialogFragment<DialogMusicPickerBinding>(),
+    ViewBindingDialogFragment<DialogMusicChoicesBinding>(),
     ClickableListListener<PlaylistChoice>,
     NewPlaylistFooterAdapter.Listener {
     private val musicModel: MusicViewModel by activityViewModels()
@@ -60,12 +60,12 @@ class AddToPlaylistDialog :
     }
 
     override fun onCreateBinding(inflater: LayoutInflater) =
-        DialogMusicPickerBinding.inflate(inflater)
+        DialogMusicChoicesBinding.inflate(inflater)
 
-    override fun onBindingCreated(binding: DialogMusicPickerBinding, savedInstanceState: Bundle?) {
+    override fun onBindingCreated(binding: DialogMusicChoicesBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
-        binding.pickerChoiceRecycler.apply {
+        binding.choiceRecycler.apply {
             itemAnimator = null
             adapter = ConcatAdapter(choiceAdapter, footerAdapter)
         }
@@ -76,9 +76,9 @@ class AddToPlaylistDialog :
         collectImmediately(pickerModel.playlistChoices, ::updatePlaylistChoices)
     }
 
-    override fun onDestroyBinding(binding: DialogMusicPickerBinding) {
+    override fun onDestroyBinding(binding: DialogMusicChoicesBinding) {
         super.onDestroyBinding(binding)
-        binding.pickerChoiceRecycler.adapter = null
+        binding.choiceRecycler.adapter = null
     }
 
     override fun onClick(item: PlaylistChoice, viewHolder: RecyclerView.ViewHolder) {

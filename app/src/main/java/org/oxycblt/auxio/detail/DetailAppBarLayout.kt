@@ -44,9 +44,6 @@ import org.oxycblt.auxio.util.lazyReflectedField
  * and thus scrolling past them should make the toolbar show the name in order to give context on
  * where the user currently is.
  *
- * This task should nominally be accomplished with CollapsingToolbarLayout, but I have not figured
- * out how to get that working sensibly yet.
- *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class DetailAppBarLayout
