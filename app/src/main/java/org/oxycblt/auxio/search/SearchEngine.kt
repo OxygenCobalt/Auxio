@@ -26,6 +26,7 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Name
 
@@ -33,8 +34,6 @@ import org.oxycblt.auxio.music.info.Name
  * Implements the fuzzy-ish searching algorithm used in the search view.
  *
  * @author Alexander Capehart
- *
- * TODO: Add playlists
  */
 interface SearchEngine {
     /**
@@ -53,12 +52,14 @@ interface SearchEngine {
      * @param albums A list of [Album]s, null if empty.
      * @param artists A list of [Artist]s, null if empty.
      * @param genres A list of [Genre]s, null if empty.
+     * @param playlists A list of [Playlist], null if empty.
      */
     data class Items(
         val songs: List<Song>?,
         val albums: List<Album>?,
         val artists: List<Artist>?,
-        val genres: List<Genre>?
+        val genres: List<Genre>?,
+        val playlists: List<Playlist>?
     )
 }
 
@@ -72,7 +73,8 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
                 },
             albums = items.albums?.searchListImpl(query),
             artists = items.artists?.searchListImpl(query),
-            genres = items.genres?.searchListImpl(query))
+            genres = items.genres?.searchListImpl(query),
+            playlists = items.playlists?.searchListImpl(query))
 
     /**
      * Search a given [Music] list.

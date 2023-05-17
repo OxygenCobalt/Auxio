@@ -43,6 +43,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
             is Album -> AlbumViewHolder.VIEW_TYPE
             is Artist -> ArtistViewHolder.VIEW_TYPE
             is Genre -> GenreViewHolder.VIEW_TYPE
+            is Playlist -> PlaylistViewHolder.VIEW_TYPE
             is BasicHeader -> BasicHeaderViewHolder.VIEW_TYPE
             else -> super.getItemViewType(position)
         }
@@ -53,6 +54,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
             AlbumViewHolder.VIEW_TYPE -> AlbumViewHolder.from(parent)
             ArtistViewHolder.VIEW_TYPE -> ArtistViewHolder.from(parent)
             GenreViewHolder.VIEW_TYPE -> GenreViewHolder.from(parent)
+            PlaylistViewHolder.VIEW_TYPE -> PlaylistViewHolder.from(parent)
             BasicHeaderViewHolder.VIEW_TYPE -> BasicHeaderViewHolder.from(parent)
             else -> error("Invalid item type $viewType")
         }
@@ -64,6 +66,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
             is Album -> (holder as AlbumViewHolder).bind(item, listener)
             is Artist -> (holder as ArtistViewHolder).bind(item, listener)
             is Genre -> (holder as GenreViewHolder).bind(item, listener)
+            is Playlist -> (holder as PlaylistViewHolder).bind(item, listener)
             is BasicHeader -> (holder as BasicHeaderViewHolder).bind(item)
         }
     }

@@ -34,6 +34,7 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.device.DeviceLibrary
+import org.oxycblt.auxio.music.user.UserLibrary
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.logD
 
@@ -73,7 +74,7 @@ constructor(
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (changes.deviceLibrary && musicRepository.deviceLibrary != null) {
+        if (changes.deviceLibrary || changes.userLibrary) {
             search(lastQuery)
         }
     }
@@ -90,7 +91,8 @@ constructor(
         lastQuery = query
 
         val deviceLibrary = musicRepository.deviceLibrary
-        if (query.isNullOrEmpty() || deviceLibrary == null) {
+        val userLibrary = musicRepository.userLibrary
+        if (query.isNullOrEmpty() || deviceLibrary == null || userLibrary == null) {
             logD("Search query is not applicable.")
             _searchResults.value = listOf()
             return
@@ -101,11 +103,16 @@ constructor(
         // Searching is time-consuming, so do it in the background.
         currentSearchJob =
             viewModelScope.launch {
-                _searchResults.value = searchImpl(deviceLibrary, query).also { yield() }
+                _searchResults.value =
+                    searchImpl(deviceLibrary, userLibrary, query).also { yield() }
             }
     }
 
-    private suspend fun searchImpl(deviceLibrary: DeviceLibrary, query: String): List<Item> {
+    private suspend fun searchImpl(
+        deviceLibrary: DeviceLibrary,
+        userLibrary: UserLibrary,
+        query: String
+    ): List<Item> {
         val filterMode = searchSettings.searchFilterMode
 
         val items =
@@ -115,33 +122,40 @@ constructor(
                     deviceLibrary.songs,
                     deviceLibrary.albums,
                     deviceLibrary.artists,
-                    deviceLibrary.genres)
+                    deviceLibrary.genres,
+                    userLibrary.playlists)
             } else {
                 SearchEngine.Items(
                     songs = if (filterMode == MusicMode.SONGS) deviceLibrary.songs else null,
                     albums = if (filterMode == MusicMode.ALBUMS) deviceLibrary.albums else null,
                     artists = if (filterMode == MusicMode.ARTISTS) deviceLibrary.artists else null,
-                    genres = if (filterMode == MusicMode.GENRES) deviceLibrary.genres else null)
+                    genres = if (filterMode == MusicMode.GENRES) deviceLibrary.genres else null,
+                    playlists =
+                        if (filterMode == MusicMode.PLAYLISTS) userLibrary.playlists else null)
             }
 
         val results = searchEngine.search(items, query)
 
         return buildList {
-            results.artists?.let { artists ->
+            results.artists?.let {
                 add(BasicHeader(R.string.lbl_artists))
-                addAll(SORT.artists(artists))
+                addAll(SORT.artists(it))
             }
-            results.albums?.let { albums ->
+            results.albums?.let {
                 add(BasicHeader(R.string.lbl_albums))
-                addAll(SORT.albums(albums))
+                addAll(SORT.albums(it))
             }
-            results.genres?.let { genres ->
+            results.playlists?.let {
+                add(BasicHeader(R.string.lbl_playlists))
+                addAll(SORT.playlists(it))
+            }
+            results.genres?.let {
                 add(BasicHeader(R.string.lbl_genres))
-                addAll(SORT.genres(genres))
+                addAll(SORT.genres(it))
             }
-            results.songs?.let { songs ->
+            results.songs?.let {
                 add(BasicHeader(R.string.lbl_songs))
-                addAll(SORT.songs(songs))
+                addAll(SORT.songs(it))
             }
         }
     }
@@ -158,7 +172,7 @@ constructor(
             MusicMode.ALBUMS -> R.id.option_filter_albums
             MusicMode.ARTISTS -> R.id.option_filter_artists
             MusicMode.GENRES -> R.id.option_filter_genres
-            MusicMode.PLAYLISTS -> R.id.option_filter_all // TODO: Handle
+            MusicMode.PLAYLISTS -> R.id.option_filter_playlists
             // Null maps to filtering nothing.
             null -> R.id.option_filter_all
         }
@@ -175,6 +189,7 @@ constructor(
                 R.id.option_filter_albums -> MusicMode.ALBUMS
                 R.id.option_filter_artists -> MusicMode.ARTISTS
                 R.id.option_filter_genres -> MusicMode.GENRES
+                R.id.option_filter_playlists -> MusicMode.PLAYLISTS
                 // Null maps to filtering nothing.
                 R.id.option_filter_all -> null
                 else -> error("Invalid option ID provided")

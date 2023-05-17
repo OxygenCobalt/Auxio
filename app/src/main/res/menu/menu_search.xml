@@ -28,6 +28,10 @@
                     android:id="@+id/option_filter_genres"
                     android:title="@string/lbl_genres"
                     app:showAsAction="never" />
+                <item
+                    android:id="@+id/option_filter_playlists"
+                    android:title="@string/lbl_playlists"
+                    app:showAsAction="never" />
             </group>
         </menu>
     </item>
