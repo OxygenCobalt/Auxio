@@ -79,6 +79,7 @@
     <string name="lbl_playlist">Playlist</string>
     <string name="lbl_playlists">Playlists</string>
     <string name="lbl_new_playlist">New playlist</string>
+    <string name="lbl_delete">Delete</string>
 
     <!-- Search for music -->
     <string name="lbl_search">Search</string>

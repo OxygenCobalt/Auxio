@@ -81,6 +81,13 @@ interface MutableUserLibrary : UserLibrary {
     fun createPlaylist(name: String, songs: List<Song>)
 
     /**
+     * Delete a [Playlist].
+     *
+     * @param playlist The playlist to delete.
+     */
+    fun deletePlaylist(playlist: Playlist)
+
+    /**
      * Add [Song]s to a [Playlist].
      *
      * @param playlist The [Playlist] to add to. Must currently exist.
@@ -118,6 +125,11 @@ private class UserLibraryImpl(
     override fun createPlaylist(name: String, songs: List<Song>) {
         val playlistImpl = PlaylistImpl.from(name, songs, musicSettings)
         playlistMap[playlistImpl.uid] = playlistImpl
+    }
+
+    @Synchronized
+    override fun deletePlaylist(playlist: Playlist) {
+        playlistMap.remove(playlist.uid)
     }
 
     @Synchronized

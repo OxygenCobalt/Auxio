@@ -107,6 +107,17 @@ constructor(
     }
 
     /**
+     * Delete a [Playlist].
+     *
+     * @param playlist The playlist to delete.
+     *
+     * TODO: Prompt the user before deleting.
+     */
+    fun deletePlaylist(playlist: Playlist) {
+        musicRepository.deletePlaylist(playlist)
+    }
+
+    /**
      * Add a [Song] to a [Playlist].
      *
      * @param song The [Song] to add to the [Playlist].

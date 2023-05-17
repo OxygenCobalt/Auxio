@@ -210,6 +210,8 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
         albums: List<AlbumImpl>,
         settings: MusicSettings
     ): List<ArtistImpl> {
+        // TODO: Debug an issue with my current library config that results in two duplicate
+        //  artists.
         // Add every raw artist credited to each Song/Album to the grouping. This way,
         // different multi-artist combinations are not treated as different artists.
         val musicByArtist = mutableMapOf<RawArtist, MutableList<Music>>()

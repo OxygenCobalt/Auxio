@@ -255,6 +255,9 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                     playbackModel.addToQueue(playlist)
                     requireContext().showToast(R.string.lng_queue_added)
                 }
+                R.id.action_delete -> {
+                    musicModel.deletePlaylist(playlist)
+                }
                 else -> {
                     error("Unexpected menu item selected")
                 }

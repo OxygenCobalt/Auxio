@@ -119,6 +119,13 @@ interface MusicRepository {
     fun createPlaylist(name: String, songs: List<Song>)
 
     /**
+     * Delete a [Playlist].
+     *
+     * @param playlist The playlist to delete.
+     */
+    fun deletePlaylist(playlist: Playlist)
+
+    /**
      * Add the given [Song]s to a [Playlist].
      *
      * @param songs The [Song]s to add to the [Playlist].
@@ -256,6 +263,15 @@ constructor(
     override fun createPlaylist(name: String, songs: List<Song>) {
         val userLibrary = userLibrary ?: return
         userLibrary.createPlaylist(name, songs)
+        for (listener in updateListeners) {
+            listener.onMusicChanges(
+                MusicRepository.Changes(deviceLibrary = false, userLibrary = true))
+        }
+    }
+
+    override fun deletePlaylist(playlist: Playlist) {
+        val userLibrary = userLibrary ?: return
+        userLibrary.deletePlaylist(playlist)
         for (listener in updateListeners) {
             listener.onMusicChanges(
                 MusicRepository.Changes(deviceLibrary = false, userLibrary = true))

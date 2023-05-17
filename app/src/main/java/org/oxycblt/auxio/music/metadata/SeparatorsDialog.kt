@@ -99,11 +99,6 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
         return separators
     }
 
-    /**
-     * Defines the allowed separator characters that can be used to delimit multi-value tags.
-     *
-     * @author Alexander Capehart (OxygenCobalt)
-     */
     private object Separators {
         const val COMMA = ','
         const val SEMICOLON = ';'

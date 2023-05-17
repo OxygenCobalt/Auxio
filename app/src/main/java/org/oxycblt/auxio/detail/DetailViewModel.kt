@@ -186,42 +186,44 @@ constructor(
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (!changes.deviceLibrary) return
-        val deviceLibrary = musicRepository.deviceLibrary ?: return
-        val userLibrary = musicRepository.userLibrary ?: return
-
         // If we are showing any item right now, we will need to refresh it (and any information
         // related to it) with the new library in order to prevent stale items from showing up
         // in the UI.
+        val deviceLibrary = musicRepository.deviceLibrary
+        if (changes.deviceLibrary && deviceLibrary != null) {
+            val song = currentSong.value
+            if (song != null) {
+                _currentSong.value = deviceLibrary.findSong(song.uid)?.also(::refreshAudioInfo)
+                logD("Updated song to ${currentSong.value}")
+            }
 
-        val song = currentSong.value
-        if (song != null) {
-            _currentSong.value = deviceLibrary.findSong(song.uid)?.also(::refreshAudioInfo)
-            logD("Updated song to ${currentSong.value}")
+            val album = currentAlbum.value
+            if (album != null) {
+                _currentAlbum.value = deviceLibrary.findAlbum(album.uid)?.also(::refreshAlbumList)
+                logD("Updated album to ${currentAlbum.value}")
+            }
+
+            val artist = currentArtist.value
+            if (artist != null) {
+                _currentArtist.value =
+                    deviceLibrary.findArtist(artist.uid)?.also(::refreshArtistList)
+                logD("Updated artist to ${currentArtist.value}")
+            }
+
+            val genre = currentGenre.value
+            if (genre != null) {
+                _currentGenre.value = deviceLibrary.findGenre(genre.uid)?.also(::refreshGenreList)
+                logD("Updated genre to ${currentGenre.value}")
+            }
         }
 
-        val album = currentAlbum.value
-        if (album != null) {
-            _currentAlbum.value = deviceLibrary.findAlbum(album.uid)?.also(::refreshAlbumList)
-            logD("Updated album to ${currentAlbum.value}")
-        }
-
-        val artist = currentArtist.value
-        if (artist != null) {
-            _currentArtist.value = deviceLibrary.findArtist(artist.uid)?.also(::refreshArtistList)
-            logD("Updated artist to ${currentArtist.value}")
-        }
-
-        val genre = currentGenre.value
-        if (genre != null) {
-            _currentGenre.value = deviceLibrary.findGenre(genre.uid)?.also(::refreshGenreList)
-            logD("Updated genre to ${currentGenre.value}")
-        }
-
-        val playlist = currentPlaylist.value
-        if (playlist != null) {
-            _currentPlaylist.value =
-                userLibrary.findPlaylist(playlist.uid)?.also(::refreshPlaylistList)
+        val userLibrary = musicRepository.userLibrary
+        if (changes.userLibrary && userLibrary != null) {
+            val playlist = currentPlaylist.value
+            if (playlist != null) {
+                _currentPlaylist.value =
+                    userLibrary.findPlaylist(playlist.uid)?.also(::refreshPlaylistList)
+            }
         }
     }
 

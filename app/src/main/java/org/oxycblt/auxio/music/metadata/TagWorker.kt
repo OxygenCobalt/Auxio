@@ -130,6 +130,9 @@ private class TagWorkerImpl(
         // 3. ID3v2.4 Release Date, as it is the second most common date type
         // 4. ID3v2.3 Original Date, as it is like #1
         // 5. ID3v2.3 Release Year, as it is the most common date type
+        // TODO: Show original and normal dates side-by-side
+        // TODO: Handle dates that are in "January" because the actual specific release date
+        //  isn't known?
         (textFrames["TDOR"]?.run { Date.from(first()) }
                 ?: textFrames["TDRC"]?.run { Date.from(first()) }
                     ?: textFrames["TDRL"]?.run { Date.from(first()) }
