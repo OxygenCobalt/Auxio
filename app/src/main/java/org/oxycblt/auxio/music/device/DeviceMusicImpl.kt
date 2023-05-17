@@ -36,6 +36,7 @@ import org.oxycblt.auxio.util.update
 
 // TODO: Entirely rework music equality such that it's not completely UID-focused and actually
 //  takes metadata into account
+// TODO: Reduce need for raw objects to save some memory
 
 /**
  * Library-backed implementation of [Song].

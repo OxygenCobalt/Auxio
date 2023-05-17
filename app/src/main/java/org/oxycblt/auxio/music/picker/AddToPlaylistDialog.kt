@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
@@ -47,7 +48,7 @@ class AddToPlaylistDialog :
     ClickableListListener<PlaylistChoice>,
     NewPlaylistFooterAdapter.Listener {
     private val musicModel: MusicViewModel by activityViewModels()
-    private val pickerModel: PlaylistPickerViewModel by activityViewModels()
+    private val pickerModel: PlaylistPickerViewModel by viewModels()
     // Information about what playlist to name for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel playlist information.
     private val args: AddToPlaylistDialogArgs by navArgs()

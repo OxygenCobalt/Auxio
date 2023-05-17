@@ -127,7 +127,7 @@ class PlaylistDetailFragment :
                 true
             }
             R.id.action_delete -> {
-                musicModel.deletePlaylist(currentPlaylist)
+                musicModel.createPlaylist()
                 true
             }
             else -> false

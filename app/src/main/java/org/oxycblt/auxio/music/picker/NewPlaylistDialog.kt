@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,7 +43,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 @AndroidEntryPoint
 class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>() {
     private val musicModel: MusicViewModel by activityViewModels()
-    private val pickerModel: PlaylistPickerViewModel by activityViewModels()
+    private val pickerModel: PlaylistPickerViewModel by viewModels()
     // Information about what playlist to name for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel playlist information.
     private val args: NewPlaylistDialogArgs by navArgs()
@@ -62,6 +63,12 @@ class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>()
                 musicModel.createPlaylist(name, pendingPlaylist.songs)
                 pickerModel.dropPendingAddition()
                 requireContext().showToast(R.string.lng_playlist_created)
+                findNavController().apply {
+                    navigateUp()
+                    // Do an additional navigation away from the playlist addition dialog, if
+                    // needed. If that dialog isn't present, this should be a no-op. Hopefully.
+                    navigateUp()
+                }
             }
             .setNegativeButton(R.string.lbl_cancel, null)
     }
