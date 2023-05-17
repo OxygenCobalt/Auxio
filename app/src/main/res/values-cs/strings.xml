@@ -293,4 +293,5 @@
     <string name="def_song_count">Žádné skladby</string>
     <string name="lbl_new_playlist">Nový seznam skladeb</string>
     <string name="fmt_def_playlist">Seznam skladeb %d</string>
+    <string name="lbl_delete">Odstranit</string>
 </resources>
