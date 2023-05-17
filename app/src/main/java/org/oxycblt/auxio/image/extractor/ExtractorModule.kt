@@ -35,6 +35,8 @@ class ExtractorModule {
     @Provides
     fun imageLoader(
         @ApplicationContext context: Context,
+        songKeyer: SongKeyer,
+        parentKeyer: ParentKeyer,
         songFactory: AlbumCoverFetcher.SongFactory,
         albumFactory: AlbumCoverFetcher.AlbumFactory,
         artistFactory: ArtistImageFetcher.Factory,
@@ -44,7 +46,8 @@ class ExtractorModule {
         ImageLoader.Builder(context)
             .components {
                 // Add fetchers for Music components to make them usable with ImageRequest
-                add(MusicKeyer())
+                add(songKeyer)
+                add(parentKeyer)
                 add(songFactory)
                 add(albumFactory)
                 add(artistFactory)

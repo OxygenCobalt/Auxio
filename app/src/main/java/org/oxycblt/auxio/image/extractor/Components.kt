@@ -35,20 +35,13 @@ import okio.source
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.*
 
-/**
- * A [Keyer] implementation for [Music] data.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-class MusicKeyer : Keyer<Music> {
-    // TODO: Include hashcode of child songs for parents
-    override fun key(data: Music, options: Options) =
-        if (data is Song) {
-            // Group up song covers with album covers for better caching
-            data.album.uid.toString()
-        } else {
-            data.uid.toString()
-        }
+class SongKeyer @Inject constructor() : Keyer<Song> {
+    override fun key(data: Song, options: Options) =
+        "${data.album.uid}${data.album.songs.hashCode()}"
+}
+
+class ParentKeyer @Inject constructor() : Keyer<MusicParent> {
+    override fun key(data: MusicParent, options: Options) = "${data.uid}${data.songs.hashCode()}"
 }
 
 /**
