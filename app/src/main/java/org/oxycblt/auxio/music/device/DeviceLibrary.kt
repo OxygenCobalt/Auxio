@@ -170,7 +170,7 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
      */
     private fun buildSongs(rawSongs: List<RawSong>, settings: MusicSettings) =
         Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-            .songs(rawSongs.map { SongImpl(it, settings) }.distinct())
+            .songs(rawSongs.map { SongImpl(it, settings) }.distinctBy { it.uid })
 
     /**
      * Build a list of [Album]s from the given [Song]s.

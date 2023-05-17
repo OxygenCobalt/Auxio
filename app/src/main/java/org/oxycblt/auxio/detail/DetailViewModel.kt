@@ -46,8 +46,6 @@ import org.oxycblt.auxio.util.*
  * [ViewModel] that manages the Song, Album, Artist, and Genre detail views. Keeps track of the
  * current item they are showing, sub-data to display, and configuration.
  *
- * FIXME: Need to do direct item comparison in equality checks, or reset on navigation.
- *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
@@ -163,9 +161,7 @@ constructor(
     var playlistSongSort: Sort
         get() = musicSettings.playlistSongSort
         set(value) {
-            logD(value)
             musicSettings.playlistSongSort = value
-            logD(musicSettings.playlistSongSort)
             // Refresh the playlist list to reflect the new sort.
             currentPlaylist.value?.let { refreshPlaylistList(it, true) }
         }
@@ -234,10 +230,6 @@ constructor(
      * @param uid The UID of the [Song] to load. Must be valid.
      */
     fun setSongUid(uid: Music.UID) {
-        if (_currentSong.value?.uid == uid) {
-            // Nothing to do.
-            return
-        }
         logD("Opening Song [uid: $uid]")
         _currentSong.value = musicRepository.deviceLibrary?.findSong(uid)?.also(::refreshAudioInfo)
     }
@@ -249,10 +241,6 @@ constructor(
      * @param uid The [Music.UID] of the [Album] to update [currentAlbum] to. Must be valid.
      */
     fun setAlbumUid(uid: Music.UID) {
-        if (_currentAlbum.value?.uid == uid) {
-            // Nothing to do.
-            return
-        }
         logD("Opening Album [uid: $uid]")
         _currentAlbum.value =
             musicRepository.deviceLibrary?.findAlbum(uid)?.also(::refreshAlbumList)
@@ -265,10 +253,6 @@ constructor(
      * @param uid The [Music.UID] of the [Artist] to update [currentArtist] to. Must be valid.
      */
     fun setArtistUid(uid: Music.UID) {
-        if (_currentArtist.value?.uid == uid) {
-            // Nothing to do.
-            return
-        }
         logD("Opening Artist [uid: $uid]")
         _currentArtist.value =
             musicRepository.deviceLibrary?.findArtist(uid)?.also(::refreshArtistList)
@@ -281,10 +265,6 @@ constructor(
      * @param uid The [Music.UID] of the [Genre] to update [currentGenre] to. Must be valid.
      */
     fun setGenreUid(uid: Music.UID) {
-        if (_currentGenre.value?.uid == uid) {
-            // Nothing to do.
-            return
-        }
         logD("Opening Genre [uid: $uid]")
         _currentGenre.value =
             musicRepository.deviceLibrary?.findGenre(uid)?.also(::refreshGenreList)
@@ -297,10 +277,6 @@ constructor(
      * @param uid The [Music.UID] of the [Playlist] to update [currentPlaylist] to. Must be valid.
      */
     fun setPlaylistUid(uid: Music.UID) {
-        if (_currentPlaylist.value?.uid == uid) {
-            // Nothing to do.
-            return
-        }
         logD("Opening Playlist [uid: $uid]")
         _currentPlaylist.value =
             musicRepository.userLibrary?.findPlaylist(uid)?.also(::refreshPlaylistList)

@@ -62,6 +62,10 @@ open class FakeMusicRepository : MusicRepository {
         throw NotImplementedError()
     }
 
+    override fun deletePlaylist(playlist: Playlist) {
+        throw NotImplementedError()
+    }
+
     override fun addToPlaylist(songs: List<Song>, playlist: Playlist) {
         throw NotImplementedError()
     }

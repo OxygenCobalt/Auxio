@@ -82,7 +82,6 @@ class AddToPlaylistDialog :
 
     override fun onClick(item: PlaylistChoice, viewHolder: RecyclerView.ViewHolder) {
         musicModel.addToPlaylist(pickerModel.currentPendingSongs.value ?: return, item.playlist)
-        pickerModel.confirmPlaylistAddition()
         requireContext().showToast(R.string.lng_playlist_added)
         findNavController().navigateUp()
     }

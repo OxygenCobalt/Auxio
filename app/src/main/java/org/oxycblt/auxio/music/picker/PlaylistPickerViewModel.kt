@@ -105,10 +105,6 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
      * @param songUids The [Music.UID]s of songs to be present in the playlist.
      */
     fun setPendingPlaylist(context: Context, songUids: Array<Music.UID>) {
-        if (currentPendingPlaylist.value?.songs?.map { it.uid } == songUids) {
-            // Nothing to do.
-            return
-        }
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         val songs = songUids.mapNotNull(deviceLibrary::findSong)
 
@@ -146,15 +142,6 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
             }
     }
 
-    /** Confirm the playlist creation process as completed. */
-    fun confirmPlaylistCreation() {
-        // Confirm any playlist additions if needed, as the creation process may have been started
-        // by it and is still waiting on a result.
-        confirmPlaylistAddition()
-        _currentPendingPlaylist.value = null
-        _chosenName.value = ChosenName.Empty
-    }
-
     /**
      * Update the current [Song]s that to show playlist add choices for. Will do nothing if already
      * equal.
@@ -169,8 +156,8 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
         refreshPlaylistChoices(songs)
     }
 
-    /** Mark the addition process as complete. */
-    fun confirmPlaylistAddition() {
+    /** Drop any pending songs to add since a playlist has already been found for them. */
+    fun dropPendingAddition() {
         _currentPendingSongs.value = null
     }
 

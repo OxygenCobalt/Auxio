@@ -34,6 +34,9 @@ import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.auxio.util.update
 
+// TODO: Entirely rework music equality such that it's not completely UID-focused and actually
+//  takes metadata into account
+
 /**
  * Library-backed implementation of [Song].
  *
