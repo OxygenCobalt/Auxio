@@ -21,4 +21,8 @@
         android:id="@+id/action_selection_shuffle"
         android:title="@string/lbl_shuffle_selected"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_selection_share"
+        android:title="@string/lbl_share"
+        app:showAsAction="never"/>
 </menu>

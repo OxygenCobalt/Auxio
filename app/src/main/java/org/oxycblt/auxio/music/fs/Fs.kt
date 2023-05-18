@@ -212,4 +212,14 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
             MimeTypeMap.getSingleton().getExtensionFromMimeType(fromExtension)?.uppercase()
         }
     }
+
+    /**
+     * Return a mime-type such as "audio/ogg"
+     *
+     * @return A raw mime-type string. Will first try [fromFormat], then falling
+     *   back to [fromExtension], and then null if that fails.
+     */
+    fun getRawType(): String {
+        return fromFormat ?: fromExtension
+    }
 }

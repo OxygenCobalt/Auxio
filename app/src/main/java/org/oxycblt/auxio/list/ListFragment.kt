@@ -32,6 +32,7 @@ import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.navigation.MainNavigationAction
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.shareSong
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -98,6 +99,9 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                 }
                 R.id.action_go_album -> {
                     navModel.exploreNavigateTo(song.album)
+                }
+                R.id.action_song_share -> {
+                    requireContext().shareSong(song)
                 }
                 R.id.action_playlist_add -> {
                     musicModel.addToPlaylist(song)
