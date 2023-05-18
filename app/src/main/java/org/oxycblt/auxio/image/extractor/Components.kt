@@ -36,12 +36,11 @@ import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.*
 
 class SongKeyer @Inject constructor() : Keyer<Song> {
-    override fun key(data: Song, options: Options) =
-        "${data.album.uid}${data.album.songs.hashCode()}"
+    override fun key(data: Song, options: Options) = "${data.album.uid}${data.album.hashCode()}"
 }
 
 class ParentKeyer @Inject constructor() : Keyer<MusicParent> {
-    override fun key(data: MusicParent, options: Options) = "${data.uid}${data.songs.hashCode()}"
+    override fun key(data: MusicParent, options: Options) = "${data.uid}${data.hashCode()}"
 }
 
 /**

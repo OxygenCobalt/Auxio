@@ -14,6 +14,7 @@ be parsed as images
 - Fixed issue where short names starting with an article would not be correctly sorted (ex. "the 1")
 - Fixed incorrect item arrangement on landscape
 - Fixed disappearing dividers in search view
+- Reduced likelihood that images (eg. album covers) would not update when the music library changed
 
 #### Dev/Meta
 - Switched to androidx media3 (New Home of ExoPlayer) for backing player components
