@@ -24,6 +24,9 @@
             android:id="@+id/action_add_to_playlist"
             app:destination="@id/add_to_playlist_dialog" />
         <action
+            android:id="@+id/action_delete_playlist"
+            app:destination="@id/delete_playlist_dialog" />
+        <action
             android:id="@+id/action_pick_navigation_artist"
             app:destination="@id/navigate_to_artist_dialog" />
         <action
@@ -65,6 +68,16 @@
         <action
             android:id="@+id/action_new_playlist"
             app:destination="@id/new_playlist_dialog" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/delete_playlist_dialog"
+        android:name="org.oxycblt.auxio.music.picker.DeletePlaylistDialog"
+        android:label="delete_playlist_dialog"
+        tools:layout="@layout/dialog_playlist_name">
+        <argument
+            android:name="playlistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
 
     <dialog

@@ -224,47 +224,47 @@ constructor(
     }
 
     /**
-     * Set a new [currentSong] from it's [Music.UID]. If the [Music.UID] differs, [currentSong] and
-     * [songAudioProperties] will be updated to align with the new [Song].
+     * Set a new [currentSong] from it's [Music.UID]. [currentSong] and [songAudioProperties] will
+     * be updated to align with the new [Song].
      *
      * @param uid The UID of the [Song] to load. Must be valid.
      */
-    fun setSongUid(uid: Music.UID) {
+    fun setSong(uid: Music.UID) {
         logD("Opening Song [uid: $uid]")
         _currentSong.value = musicRepository.deviceLibrary?.findSong(uid)?.also(::refreshAudioInfo)
     }
 
     /**
-     * Set a new [currentAlbum] from it's [Music.UID]. If the [Music.UID] differs, [currentAlbum]
-     * and [albumList] will be updated to align with the new [Album].
+     * Set a new [currentAlbum] from it's [Music.UID]. [currentAlbum] and [albumList] will be
+     * updated to align with the new [Album].
      *
      * @param uid The [Music.UID] of the [Album] to update [currentAlbum] to. Must be valid.
      */
-    fun setAlbumUid(uid: Music.UID) {
+    fun setAlbum(uid: Music.UID) {
         logD("Opening Album [uid: $uid]")
         _currentAlbum.value =
             musicRepository.deviceLibrary?.findAlbum(uid)?.also(::refreshAlbumList)
     }
 
     /**
-     * Set a new [currentArtist] from it's [Music.UID]. If the [Music.UID] differs, [currentArtist]
-     * and [artistList] will be updated to align with the new [Artist].
+     * Set a new [currentArtist] from it's [Music.UID]. [currentArtist] and [artistList] will be
+     * updated to align with the new [Artist].
      *
      * @param uid The [Music.UID] of the [Artist] to update [currentArtist] to. Must be valid.
      */
-    fun setArtistUid(uid: Music.UID) {
+    fun setArtist(uid: Music.UID) {
         logD("Opening Artist [uid: $uid]")
         _currentArtist.value =
             musicRepository.deviceLibrary?.findArtist(uid)?.also(::refreshArtistList)
     }
 
     /**
-     * Set a new [currentGenre] from it's [Music.UID]. If the [Music.UID] differs, [currentGenre]
-     * and [genreList] will be updated to align with the new album.
+     * Set a new [currentGenre] from it's [Music.UID]. [currentGenre] and [genreList] will be
+     * updated to align with the new album.
      *
      * @param uid The [Music.UID] of the [Genre] to update [currentGenre] to. Must be valid.
      */
-    fun setGenreUid(uid: Music.UID) {
+    fun setGenre(uid: Music.UID) {
         logD("Opening Genre [uid: $uid]")
         _currentGenre.value =
             musicRepository.deviceLibrary?.findGenre(uid)?.also(::refreshGenreList)

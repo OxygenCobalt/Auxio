@@ -48,13 +48,17 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
     val chosenName: StateFlow<ChosenName>
         get() = _chosenName
 
-    private val _currentPendingSongs = MutableStateFlow<List<Song>?>(null)
-    val currentPendingSongs: StateFlow<List<Song>?>
-        get() = _currentPendingSongs
+    private val _currentSongsToAdd = MutableStateFlow<List<Song>?>(null)
+    val currentSongsToAdd: StateFlow<List<Song>?>
+        get() = _currentSongsToAdd
 
     private val _playlistChoices = MutableStateFlow<List<PlaylistChoice>>(listOf())
     val playlistChoices: StateFlow<List<PlaylistChoice>>
         get() = _playlistChoices
+
+    private val _currentPlaylistToDelete = MutableStateFlow<Playlist?>(null)
+    val currentPlaylistToDelete: StateFlow<Playlist?>
+        get() = _currentPlaylistToDelete
 
     init {
         musicRepository.addUpdateListener(this)
@@ -70,8 +74,8 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
                         pendingPlaylist.preferredName,
                         pendingPlaylist.songs.mapNotNull { deviceLibrary.findSong(it.uid) })
                 }
-            _currentPendingSongs.value =
-                _currentPendingSongs.value?.let { pendingSongs ->
+            _currentSongsToAdd.value =
+                _currentSongsToAdd.value?.let { pendingSongs ->
                     pendingSongs
                         .mapNotNull { deviceLibrary.findSong(it.uid) }
                         .ifEmpty { null }
@@ -88,7 +92,7 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
                     // Nothing to do.
                 }
             }
-            refreshChoicesWith = refreshChoicesWith ?: _currentPendingSongs.value
+            refreshChoicesWith = refreshChoicesWith ?: _currentSongsToAdd.value
         }
 
         refreshChoicesWith?.let(::refreshPlaylistChoices)
@@ -99,7 +103,7 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
     }
 
     /**
-     * Update the current [PendingPlaylist]. Will do nothing if already equal.
+     * Set a new [currentPendingPlaylist] from a new batch of pending [Song] [Music.UID]s.
      *
      * @param context [Context] required to generate a playlist name.
      * @param songUids The [Music.UID]s of songs to be present in the playlist.
@@ -121,7 +125,7 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
     }
 
     /**
-     * Update the current [ChosenName] based on new user input.
+     * Update the current [chosenName] based on new user input.
      *
      * @param name The new user-inputted name, or null if not present.
      */
@@ -143,16 +147,14 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
     }
 
     /**
-     * Update the current [Song]s that to show playlist add choices for. Will do nothing if already
-     * equal.
+     * Set a new [currentSongsToAdd] from a new batch of pending [Song] [Music.UID]s.
      *
      * @param songUids The [Music.UID]s of songs to add to a playlist.
      */
-    fun setPendingSongs(songUids: Array<Music.UID>) {
-        if (currentPendingSongs.value?.map { it.uid } == songUids) return
+    fun setSongsToAdd(songUids: Array<Music.UID>) {
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         val songs = songUids.mapNotNull(deviceLibrary::findSong)
-        _currentPendingSongs.value = songs
+        _currentSongsToAdd.value = songs
         refreshPlaylistChoices(songs)
     }
 
@@ -163,6 +165,15 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
                 val songSet = it.songs.toSet()
                 PlaylistChoice(it, songs.all(songSet::contains))
             }
+    }
+
+    /**
+     * Set a new [currentPendingPlaylist] from a new [Playlist] [Music.UID].
+     *
+     * @param playlistUid The [Music.UID] of the [Playlist] to delete.
+     */
+    fun setPlaylistToDelete(playlistUid: Music.UID) {
+        _currentPlaylistToDelete.value = musicRepository.userLibrary?.findPlaylist(playlistUid)
     }
 }
 

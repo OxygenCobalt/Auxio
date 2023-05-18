@@ -98,7 +98,7 @@ class ArtistDetailFragment :
 
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
-        detailModel.setArtistUid(args.artistUid)
+        detailModel.setArtist(args.artistUid)
         collectImmediately(detailModel.currentArtist, ::updateArtist)
         collectImmediately(detailModel.artistList, ::updateList)
         collectImmediately(

@@ -91,7 +91,7 @@ class GenreDetailFragment :
 
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
-        detailModel.setGenreUid(args.genreUid)
+        detailModel.setGenre(args.genreUid)
         collectImmediately(detailModel.currentGenre, ::updatePlaylist)
         collectImmediately(detailModel.genreList, ::updateList)
         collectImmediately(

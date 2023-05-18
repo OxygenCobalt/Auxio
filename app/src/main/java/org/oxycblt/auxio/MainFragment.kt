@@ -41,6 +41,7 @@ import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.MainNavigationAction
 import org.oxycblt.auxio.navigation.NavigationViewModel
@@ -136,6 +137,7 @@ class MainFragment :
         collect(navModel.exploreArtistNavigationItem.flow, ::handleArtistNavigationPicker)
         collect(musicModel.newPlaylistSongs.flow, ::handleNewPlaylist)
         collect(musicModel.songsToAdd.flow, ::handleAddToPlaylist)
+        collect(musicModel.playlistToDelete.flow, ::handleDeletePlaylist)
         collectImmediately(playbackModel.song, ::updateSong)
         collect(playbackModel.artistPickerSong.flow, ::handlePlaybackArtistPicker)
         collect(playbackModel.genrePickerSong.flow, ::handlePlaybackGenrePicker)
@@ -322,6 +324,13 @@ class MainFragment :
         }
     }
 
+    private fun handleDeletePlaylist(playlist: Playlist?) {
+        if (playlist != null) {
+            findNavController()
+                .navigateSafe(MainFragmentDirections.actionDeletePlaylist(playlist.uid))
+            musicModel.playlistToDelete.consume()
+        }
+    }
     private fun handlePlaybackArtistPicker(song: Song?) {
         if (song != null) {
             navModel.mainNavigateTo(

@@ -48,13 +48,18 @@ constructor(
     val statistics: StateFlow<Statistics?>
         get() = _statistics
 
-    private val _newPlaylistSongs = MutableEvent<List<Song>?>()
+    private val _newPlaylistSongs = MutableEvent<List<Song>>()
     /** Flag for opening a dialog to create a playlist of the given [Song]s. */
-    val newPlaylistSongs: Event<List<Song>?> = _newPlaylistSongs
+    val newPlaylistSongs: Event<List<Song>> = _newPlaylistSongs
 
-    private val _songsToAdd = MutableEvent<List<Song>?>()
+    private val _songsToAdd = MutableEvent<List<Song>>()
     /** Flag for opening a dialog to add the given [Song]s to a playlist. */
-    val songsToAdd: Event<List<Song>?> = _songsToAdd
+    val songsToAdd: Event<List<Song>> = _songsToAdd
+
+    private val _playlistToDelete = MutableEvent<Playlist>()
+    /** Flag for opening a dialog to confirm deletion of the given [Playlist]. */
+    val playlistToDelete: Event<Playlist>
+        get() = _playlistToDelete
 
     init {
         musicRepository.addUpdateListener(this)
@@ -110,11 +115,15 @@ constructor(
      * Delete a [Playlist].
      *
      * @param playlist The playlist to delete.
-     *
-     * TODO: Prompt the user before deleting.
+     * @param rude Whether to immediately delete the playlist or prompt the user first. This should
+     *   be false at almost all times.
      */
-    fun deletePlaylist(playlist: Playlist) {
-        musicRepository.deletePlaylist(playlist)
+    fun deletePlaylist(playlist: Playlist, rude: Boolean = false) {
+        if (rude) {
+            musicRepository.deletePlaylist(playlist)
+        } else {
+            _playlistToDelete.put(playlist)
+        }
     }
 
     /**

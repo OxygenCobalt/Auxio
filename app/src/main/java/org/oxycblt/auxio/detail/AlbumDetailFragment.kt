@@ -99,7 +99,7 @@ class AlbumDetailFragment :
 
         // -- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
-        detailModel.setAlbumUid(args.albumUid)
+        detailModel.setAlbum(args.albumUid)
         collectImmediately(detailModel.currentAlbum, ::updateAlbum)
         collectImmediately(detailModel.albumList, ::updateList)
         collectImmediately(

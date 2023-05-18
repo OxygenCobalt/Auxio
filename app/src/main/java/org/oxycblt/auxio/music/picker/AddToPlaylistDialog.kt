@@ -71,8 +71,8 @@ class AddToPlaylistDialog :
         }
 
         // --- VIEWMODEL SETUP ---
-        pickerModel.setPendingSongs(args.songUids)
-        collectImmediately(pickerModel.currentPendingSongs, ::updatePendingSongs)
+        pickerModel.setSongsToAdd(args.songUids)
+        collectImmediately(pickerModel.currentSongsToAdd, ::updatePendingSongs)
         collectImmediately(pickerModel.playlistChoices, ::updatePlaylistChoices)
     }
 
@@ -82,13 +82,13 @@ class AddToPlaylistDialog :
     }
 
     override fun onClick(item: PlaylistChoice, viewHolder: RecyclerView.ViewHolder) {
-        musicModel.addToPlaylist(pickerModel.currentPendingSongs.value ?: return, item.playlist)
+        musicModel.addToPlaylist(pickerModel.currentSongsToAdd.value ?: return, item.playlist)
         requireContext().showToast(R.string.lng_playlist_added)
         findNavController().navigateUp()
     }
 
     override fun onNewPlaylist() {
-        musicModel.createPlaylist(songs = pickerModel.currentPendingSongs.value ?: return)
+        musicModel.createPlaylist(songs = pickerModel.currentSongsToAdd.value ?: return)
     }
 
     private fun updatePendingSongs(songs: List<Song>?) {
