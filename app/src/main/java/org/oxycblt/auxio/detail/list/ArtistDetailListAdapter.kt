@@ -65,14 +65,6 @@ class ArtistDetailListAdapter(private val listener: Listener<Music>) :
         }
     }
 
-    override fun isItemFullWidth(position: Int): Boolean {
-        if (super.isItemFullWidth(position)) {
-            return true
-        }
-        // Artist headers should be full-width in all configurations.
-        return getItem(position) is Artist
-    }
-
     private companion object {
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =

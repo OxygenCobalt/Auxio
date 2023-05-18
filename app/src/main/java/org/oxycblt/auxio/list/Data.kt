@@ -40,3 +40,5 @@ interface Header : Item {
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class BasicHeader(@StringRes override val titleRes: Int) : Header
+
+data class Divider(val anchor: Header?) : Item

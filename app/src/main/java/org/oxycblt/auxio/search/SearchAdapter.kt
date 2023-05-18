@@ -34,8 +34,7 @@ import org.oxycblt.auxio.util.logD
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SearchAdapter(private val listener: SelectableListListener<Music>) :
-    SelectionIndicatorAdapter<Item, RecyclerView.ViewHolder>(DIFF_CALLBACK),
-    AuxioRecyclerView.SpanSizeLookup {
+    SelectionIndicatorAdapter<Item, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun getItemViewType(position: Int) =
         when (getItem(position)) {
@@ -44,6 +43,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
             is Artist -> ArtistViewHolder.VIEW_TYPE
             is Genre -> GenreViewHolder.VIEW_TYPE
             is Playlist -> PlaylistViewHolder.VIEW_TYPE
+            is Divider -> DividerViewHolder.VIEW_TYPE
             is BasicHeader -> BasicHeaderViewHolder.VIEW_TYPE
             else -> super.getItemViewType(position)
         }
@@ -55,6 +55,7 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
             ArtistViewHolder.VIEW_TYPE -> ArtistViewHolder.from(parent)
             GenreViewHolder.VIEW_TYPE -> GenreViewHolder.from(parent)
             PlaylistViewHolder.VIEW_TYPE -> PlaylistViewHolder.from(parent)
+            DividerViewHolder.VIEW_TYPE -> DividerViewHolder.from(parent)
             BasicHeaderViewHolder.VIEW_TYPE -> BasicHeaderViewHolder.from(parent)
             else -> error("Invalid item type $viewType")
         }
@@ -71,8 +72,6 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
         }
     }
 
-    override fun isItemFullWidth(position: Int) = getItem(position) is BasicHeader
-
     private companion object {
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
@@ -87,6 +86,10 @@ class SearchAdapter(private val listener: SelectableListListener<Music>) :
                             ArtistViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is Genre && newItem is Genre ->
                             GenreViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
+                        oldItem is Playlist && newItem is Playlist ->
+                            PlaylistViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
+                        oldItem is Divider && newItem is Divider ->
+                            DividerViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is BasicHeader && newItem is BasicHeader ->
                             BasicHeaderViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         else -> false

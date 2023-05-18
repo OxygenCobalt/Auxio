@@ -29,10 +29,13 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
+import org.oxycblt.auxio.list.Divider
+import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.selection.SelectionViewModel
@@ -104,7 +107,13 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             }
         }
 
-        binding.searchRecycler.adapter = searchAdapter
+        binding.searchRecycler.apply {
+            adapter = searchAdapter
+            (layoutManager as GridLayoutManager).setFullWidthLookup {
+                val item = searchModel.searchResults.value[it]
+                item is Divider || item is Header
+            }
+        }
 
         // --- VIEWMODEL SETUP ---
 

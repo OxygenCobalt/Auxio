@@ -26,6 +26,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
@@ -34,6 +35,8 @@ import org.oxycblt.auxio.detail.header.DetailHeaderAdapter
 import org.oxycblt.auxio.detail.header.PlaylistDetailHeaderAdapter
 import org.oxycblt.auxio.detail.list.DetailListAdapter
 import org.oxycblt.auxio.detail.list.PlaylistDetailListAdapter
+import org.oxycblt.auxio.list.Divider
+import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
@@ -87,7 +90,17 @@ class PlaylistDetailFragment :
             setOnMenuItemClickListener(this@PlaylistDetailFragment)
         }
 
-        binding.detailRecycler.adapter = ConcatAdapter(playlistHeaderAdapter, playlistListAdapter)
+        binding.detailRecycler.apply {
+            adapter = ConcatAdapter(playlistHeaderAdapter, playlistListAdapter)
+            (layoutManager as GridLayoutManager).setFullWidthLookup {
+                if (it != 0) {
+                    val item = detailModel.playlistList.value[it - 1]
+                    item is Divider || item is Header
+                } else {
+                    true
+                }
+            }
+        }
 
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.

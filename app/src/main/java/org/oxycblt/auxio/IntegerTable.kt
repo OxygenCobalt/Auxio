@@ -37,16 +37,18 @@ object IntegerTable {
     const val VIEW_TYPE_PLAYLIST = 0xA004
     /** BasicHeaderViewHolder */
     const val VIEW_TYPE_BASIC_HEADER = 0xA005
+    /** DividerViewHolder */
+    const val VIEW_TYPE_DIVIDER = 0xA006
     /** SortHeaderViewHolder */
-    const val VIEW_TYPE_SORT_HEADER = 0xA006
+    const val VIEW_TYPE_SORT_HEADER = 0xA007
     /** AlbumSongViewHolder */
-    const val VIEW_TYPE_ALBUM_SONG = 0xA007
+    const val VIEW_TYPE_ALBUM_SONG = 0xA008
     /** ArtistAlbumViewHolder */
-    const val VIEW_TYPE_ARTIST_ALBUM = 0xA008
+    const val VIEW_TYPE_ARTIST_ALBUM = 0xA009
     /** ArtistSongViewHolder */
-    const val VIEW_TYPE_ARTIST_SONG = 0xA009
+    const val VIEW_TYPE_ARTIST_SONG = 0xA00A
     /** DiscHeaderViewHolder */
-    const val VIEW_TYPE_DISC_HEADER = 0xA00A
+    const val VIEW_TYPE_DISC_HEADER = 0xA00B
     /** "Music playback" notification code */
     const val PLAYBACK_NOTIFICATION_CODE = 0xA0A0
     /** "Music loading" notification code */
