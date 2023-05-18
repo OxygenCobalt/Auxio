@@ -143,7 +143,7 @@ class AlbumDetailFragment :
                 true
             }
             R.id.action_share -> {
-                requireContext().shareSongs(currentAlbum.songs)
+                requireContext().share(currentAlbum)
                 true
             }
             else -> false

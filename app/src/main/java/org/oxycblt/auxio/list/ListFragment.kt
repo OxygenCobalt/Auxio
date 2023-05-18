@@ -32,8 +32,7 @@ import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.navigation.MainNavigationAction
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.shareSong
-import org.oxycblt.auxio.util.shareSongs
+import org.oxycblt.auxio.util.share
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -102,7 +101,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                     navModel.exploreNavigateTo(song.album)
                 }
                 R.id.action_share -> {
-                    requireContext().shareSong(song)
+                    requireContext().share(song)
                 }
                 R.id.action_playlist_add -> {
                     musicModel.addToPlaylist(song)
@@ -153,7 +152,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                     musicModel.addToPlaylist(album)
                 }
                 R.id.action_share -> {
-                    requireContext().shareSongs(album.songs)
+                    requireContext().share(album)
                 }
                 else -> {
                     error("Unexpected menu item selected")
@@ -193,7 +192,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                     musicModel.addToPlaylist(artist)
                 }
                 R.id.action_share -> {
-                    requireContext().shareSongs(artist.songs)
+                    requireContext().share(artist)
                 }
                 else -> {
                     error("Unexpected menu item selected")
@@ -233,7 +232,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                     musicModel.addToPlaylist(genre)
                 }
                 R.id.action_share -> {
-                    requireContext().shareSongs(genre.songs)
+                    requireContext().share(genre)
                 }
                 else -> {
                     error("Unexpected menu item selected")
@@ -273,7 +272,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                     musicModel.deletePlaylist(playlist)
                 }
                 R.id.action_share -> {
-                    requireContext().shareSongs(playlist.songs)
+                    requireContext().share(playlist)
                 }
                 else -> {
                     error("Unexpected menu item selected")

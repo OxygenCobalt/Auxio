@@ -131,7 +131,7 @@ class PlaylistDetailFragment :
                 true
             }
             R.id.action_share -> {
-                requireContext().shareSongs(currentPlaylist.songs)
+                requireContext().share(currentPlaylist)
                 true
             }
             else -> false

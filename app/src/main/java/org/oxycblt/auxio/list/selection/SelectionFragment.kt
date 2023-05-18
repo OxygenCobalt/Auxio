@@ -26,7 +26,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.shareSongs
+import org.oxycblt.auxio.util.share
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -88,7 +88,7 @@ abstract class SelectionFragment<VB : ViewBinding> :
                 true
             }
             R.id.action_selection_share -> {
-                requireContext().shareSongs(selectionModel.take())
+                requireContext().share(selectionModel.take())
                 true
             }
             else -> false

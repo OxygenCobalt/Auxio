@@ -147,6 +147,16 @@ data class MusicDirectories(val dirs: List<Directory>, val shouldInclude: Boolea
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class MimeType(val fromExtension: String, val fromFormat: String?) {
+
+    /**
+     * Return a mime-type such as "audio/ogg"
+     *
+     * @return A raw mime-type string. Will first try [fromFormat], then falling back to
+     *   [fromExtension], and then null if that fails.
+     */
+    val raw: String
+        get() = fromFormat ?: fromExtension
+
     /**
      * Resolve the mime type into a human-readable format name, such as "Ogg Vorbis".
      *
@@ -211,15 +221,5 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
             // Fall back to the extension if we can't find a special name for this format.
             MimeTypeMap.getSingleton().getExtensionFromMimeType(fromExtension)?.uppercase()
         }
-    }
-
-    /**
-     * Return a mime-type such as "audio/ogg"
-     *
-     * @return A raw mime-type string. Will first try [fromFormat], then falling back to
-     *   [fromExtension], and then null if that fails.
-     */
-    fun getRawType(): String {
-        return fromFormat ?: fromExtension
     }
 }

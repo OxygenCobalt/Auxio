@@ -138,7 +138,7 @@ class ArtistDetailFragment :
                 true
             }
             R.id.action_share -> {
-                requireContext().shareSongs(currentArtist.songs)
+                requireContext().share(currentArtist)
                 true
             }
             else -> false
