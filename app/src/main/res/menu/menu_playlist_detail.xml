@@ -7,9 +7,12 @@
         android:id="@+id/action_queue_add"
         android:title="@string/lbl_queue_add" />
     <item
-        android:id="@+id/action_share"
-        android:title="@string/lbl_share" />
+        android:id="@+id/action_rename"
+        android:title="@string/lbl_rename" />
     <item
         android:id="@+id/action_delete"
         android:title="@string/lbl_delete" />
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/lbl_share" />
 </menu>

@@ -32,6 +32,7 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -54,6 +55,7 @@ class DeletePlaylistDialog : ViewBindingDialogFragment<DialogDeletePlaylistBindi
                 // Now we can delete the playlist for-real this time.
                 musicModel.deletePlaylist(
                     unlikelyToBeNull(pickerModel.currentPlaylistToDelete.value), rude = true)
+                requireContext().showToast(R.string.lng_playlist_deleted)
             }
             .setNegativeButton(R.string.lbl_cancel, null)
     }

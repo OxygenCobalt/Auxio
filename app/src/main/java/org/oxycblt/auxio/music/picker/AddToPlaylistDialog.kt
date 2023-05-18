@@ -73,7 +73,7 @@ class AddToPlaylistDialog :
         // --- VIEWMODEL SETUP ---
         pickerModel.setSongsToAdd(args.songUids)
         collectImmediately(pickerModel.currentSongsToAdd, ::updatePendingSongs)
-        collectImmediately(pickerModel.playlistChoices, ::updatePlaylistChoices)
+        collectImmediately(pickerModel.playlistAddChoices, ::updatePlaylistChoices)
     }
 
     override fun onDestroyBinding(binding: DialogMusicChoicesBinding) {

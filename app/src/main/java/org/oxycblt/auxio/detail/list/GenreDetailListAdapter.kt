@@ -60,14 +60,6 @@ class GenreDetailListAdapter(private val listener: Listener<Music>) :
         }
     }
 
-    override fun isItemFullWidth(position: Int): Boolean {
-        if (super.isItemFullWidth(position)) {
-            return true
-        }
-        // Genre headers should be full-width in all configurations
-        return getItem(position) is Genre
-    }
-
     private companion object {
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<Item>() {

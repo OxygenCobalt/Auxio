@@ -70,6 +70,10 @@ open class FakeMusicRepository : MusicRepository {
         throw NotImplementedError()
     }
 
+    override fun renamePlaylist(playlist: Playlist, name: String) {
+        throw NotImplementedError()
+    }
+
     override fun requestIndex(withCache: Boolean) {
         throw NotImplementedError()
     }

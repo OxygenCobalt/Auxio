@@ -21,11 +21,14 @@
             android:id="@+id/action_new_playlist"
             app:destination="@id/new_playlist_dialog" />
         <action
-            android:id="@+id/action_add_to_playlist"
-            app:destination="@id/add_to_playlist_dialog" />
+            android:id="@+id/action_rename_playlist"
+            app:destination="@id/rename_playlist_dialog" />
         <action
             android:id="@+id/action_delete_playlist"
             app:destination="@id/delete_playlist_dialog" />
+        <action
+            android:id="@+id/action_add_to_playlist"
+            app:destination="@id/add_to_playlist_dialog" />
         <action
             android:id="@+id/action_pick_navigation_artist"
             app:destination="@id/navigate_to_artist_dialog" />
@@ -58,16 +61,13 @@
     </dialog>
 
     <dialog
-        android:id="@+id/add_to_playlist_dialog"
-        android:name="org.oxycblt.auxio.music.picker.AddToPlaylistDialog"
-        android:label="new_playlist_dialog"
+        android:id="@+id/rename_playlist_dialog"
+        android:name="org.oxycblt.auxio.music.picker.RenamePlaylistDialog"
+        android:label="rename_playlist_dialog"
         tools:layout="@layout/dialog_playlist_name">
         <argument
-            android:name="songUids"
-            app:argType="org.oxycblt.auxio.music.Music$UID[]" />
-        <action
-            android:id="@+id/action_new_playlist"
-            app:destination="@id/new_playlist_dialog" />
+            android:name="playlistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
 
     <dialog
@@ -78,6 +78,19 @@
         <argument
             android:name="playlistUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/add_to_playlist_dialog"
+        android:name="org.oxycblt.auxio.music.picker.AddToPlaylistDialog"
+        android:label="new_playlist_dialog"
+        tools:layout="@layout/dialog_playlist_name">
+        <argument
+            android:name="songUids"
+            app:argType="org.oxycblt.auxio.music.Music$UID[]" />
+        <action
+            android:id="@+id/action_new_playlist"
+            app:destination="@id/new_playlist_dialog" />
     </dialog>
 
     <dialog

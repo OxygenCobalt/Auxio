@@ -20,12 +20,14 @@ package org.oxycblt.auxio.list.recycler
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.divider.MaterialDivider
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemHeaderBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.list.BasicHeader
+import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
@@ -246,7 +248,7 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<Genre>() {
-                override fun areContentsTheSame(oldItem: Genre, newItem: Genre): Boolean =
+                override fun areContentsTheSame(oldItem: Genre, newItem: Genre) =
                     oldItem.name == newItem.name &&
                         oldItem.artists.size == newItem.artists.size &&
                         oldItem.songs.size == newItem.songs.size
@@ -304,7 +306,7 @@ class PlaylistViewHolder private constructor(private val binding: ItemParentBind
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<Playlist>() {
-                override fun areContentsTheSame(oldItem: Playlist, newItem: Playlist): Boolean =
+                override fun areContentsTheSame(oldItem: Playlist, newItem: Playlist) =
                     oldItem.name == newItem.name && oldItem.songs.size == newItem.songs.size
             }
     }
@@ -343,10 +345,37 @@ class BasicHeaderViewHolder private constructor(private val binding: ItemHeaderB
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<BasicHeader>() {
-                override fun areContentsTheSame(
-                    oldItem: BasicHeader,
-                    newItem: BasicHeader
-                ): Boolean = oldItem.titleRes == newItem.titleRes
+                override fun areContentsTheSame(oldItem: BasicHeader, newItem: BasicHeader) =
+                    oldItem.titleRes == newItem.titleRes
+            }
+    }
+}
+
+/**
+ * A [RecyclerView.ViewHolder] that displays a [Divider]. Use [from] to create an instance.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+class DividerViewHolder private constructor(divider: MaterialDivider) :
+    RecyclerView.ViewHolder(divider) {
+
+    companion object {
+        /** Unique ID for this ViewHolder type. */
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_DIVIDER
+
+        /**
+         * Create a new instance.
+         *
+         * @param parent The parent to inflate this instance from.
+         * @return A new instance.
+         */
+        fun from(parent: View) = DividerViewHolder(MaterialDivider(parent.context))
+
+        /** A comparator that can be used with DiffUtil. */
+        val DIFF_CALLBACK =
+            object : SimpleDiffCallback<Divider>() {
+                override fun areContentsTheSame(oldItem: Divider, newItem: Divider) =
+                    oldItem.anchor == newItem.anchor
             }
     }
 }

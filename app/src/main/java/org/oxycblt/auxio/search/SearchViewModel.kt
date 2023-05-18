@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.BasicHeader
+import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.*
@@ -138,23 +139,44 @@ constructor(
 
         return buildList {
             results.artists?.let {
-                add(BasicHeader(R.string.lbl_artists))
+                val header = BasicHeader(R.string.lbl_artists)
+                add(header)
                 addAll(SORT.artists(it))
             }
             results.albums?.let {
-                add(BasicHeader(R.string.lbl_albums))
+                val header = BasicHeader(R.string.lbl_albums)
+                if (isNotEmpty()) {
+                    add(Divider(header))
+                }
+
+                add(header)
                 addAll(SORT.albums(it))
             }
             results.playlists?.let {
-                add(BasicHeader(R.string.lbl_playlists))
+                val header = BasicHeader(R.string.lbl_playlists)
+                if (isNotEmpty()) {
+                    add(Divider(header))
+                }
+
+                add(header)
                 addAll(SORT.playlists(it))
             }
             results.genres?.let {
-                add(BasicHeader(R.string.lbl_genres))
+                val header = BasicHeader(R.string.lbl_genres)
+                if (isNotEmpty()) {
+                    add(Divider(header))
+                }
+
+                add(header)
                 addAll(SORT.genres(it))
             }
             results.songs?.let {
-                add(BasicHeader(R.string.lbl_songs))
+                val header = BasicHeader(R.string.lbl_songs)
+                if (isNotEmpty()) {
+                    add(Divider(header))
+                }
+
+                add(header)
                 addAll(SORT.songs(it))
             }
         }

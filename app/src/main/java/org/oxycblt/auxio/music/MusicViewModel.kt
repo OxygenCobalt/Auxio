@@ -52,14 +52,19 @@ constructor(
     /** Flag for opening a dialog to create a playlist of the given [Song]s. */
     val newPlaylistSongs: Event<List<Song>> = _newPlaylistSongs
 
-    private val _songsToAdd = MutableEvent<List<Song>>()
-    /** Flag for opening a dialog to add the given [Song]s to a playlist. */
-    val songsToAdd: Event<List<Song>> = _songsToAdd
+    private val _playlistToRename = MutableEvent<Playlist?>()
+    /** Flag for opening a dialog to rename the given [Playlist]. */
+    val playlistToRename: Event<Playlist?>
+        get() = _playlistToRename
 
     private val _playlistToDelete = MutableEvent<Playlist>()
     /** Flag for opening a dialog to confirm deletion of the given [Playlist]. */
     val playlistToDelete: Event<Playlist>
         get() = _playlistToDelete
+
+    private val _songsToAdd = MutableEvent<List<Song>>()
+    /** Flag for opening a dialog to add the given [Song]s to a playlist. */
+    val songsToAdd: Event<List<Song>> = _songsToAdd
 
     init {
         musicRepository.addUpdateListener(this)
@@ -108,6 +113,20 @@ constructor(
             musicRepository.createPlaylist(name, songs)
         } else {
             _newPlaylistSongs.put(songs)
+        }
+    }
+
+    /**
+     * Rename the given playlist.
+     *
+     * @param playlist The [Playlist] to rename,
+     * @param name The new name of the [Playlist]. If null, the user will be prompted for a name.
+     */
+    fun renamePlaylist(playlist: Playlist, name: String? = null) {
+        if (name != null) {
+            musicRepository.renamePlaylist(playlist, name)
+        } else {
+            _playlistToRename.put(playlist)
         }
     }
 

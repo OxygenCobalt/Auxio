@@ -136,8 +136,9 @@ class MainFragment :
         collect(navModel.exploreNavigationItem.flow, ::handleExploreNavigation)
         collect(navModel.exploreArtistNavigationItem.flow, ::handleArtistNavigationPicker)
         collect(musicModel.newPlaylistSongs.flow, ::handleNewPlaylist)
-        collect(musicModel.songsToAdd.flow, ::handleAddToPlaylist)
+        collect(musicModel.playlistToRename.flow, ::handleRenamePlaylist)
         collect(musicModel.playlistToDelete.flow, ::handleDeletePlaylist)
+        collect(musicModel.songsToAdd.flow, ::handleAddToPlaylist)
         collectImmediately(playbackModel.song, ::updateSong)
         collect(playbackModel.artistPickerSong.flow, ::handlePlaybackArtistPicker)
         collect(playbackModel.genrePickerSong.flow, ::handlePlaybackGenrePicker)
@@ -315,12 +316,11 @@ class MainFragment :
         }
     }
 
-    private fun handleAddToPlaylist(songs: List<Song>?) {
-        if (songs != null) {
+    private fun handleRenamePlaylist(playlist: Playlist?) {
+        if (playlist != null) {
             findNavController()
-                .navigateSafe(
-                    MainFragmentDirections.actionAddToPlaylist(songs.map { it.uid }.toTypedArray()))
-            musicModel.songsToAdd.consume()
+                .navigateSafe(MainFragmentDirections.actionRenamePlaylist(playlist.uid))
+            musicModel.playlistToRename.consume()
         }
     }
 
@@ -331,6 +331,16 @@ class MainFragment :
             musicModel.playlistToDelete.consume()
         }
     }
+
+    private fun handleAddToPlaylist(songs: List<Song>?) {
+        if (songs != null) {
+            findNavController()
+                .navigateSafe(
+                    MainFragmentDirections.actionAddToPlaylist(songs.map { it.uid }.toTypedArray()))
+            musicModel.songsToAdd.consume()
+        }
+    }
+
     private fun handlePlaybackArtistPicker(song: Song?) {
         if (song != null) {
             navModel.mainNavigateTo(

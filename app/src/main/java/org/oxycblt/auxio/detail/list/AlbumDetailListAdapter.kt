@@ -69,15 +69,6 @@ class AlbumDetailListAdapter(private val listener: Listener<Song>) :
         }
     }
 
-    override fun isItemFullWidth(position: Int): Boolean {
-        if (super.isItemFullWidth(position)) {
-            return true
-        }
-        // The album and disc headers should be full-width in all configurations.
-        val item = getItem(position)
-        return item is Album || item is Disc
-    }
-
     private companion object {
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =

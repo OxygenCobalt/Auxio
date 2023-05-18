@@ -26,6 +26,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +35,8 @@ import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.header.AlbumDetailHeaderAdapter
 import org.oxycblt.auxio.detail.list.AlbumDetailListAdapter
 import org.oxycblt.auxio.detail.list.DetailListAdapter
+import org.oxycblt.auxio.list.Divider
+import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
@@ -45,6 +48,7 @@ import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.*
@@ -95,7 +99,17 @@ class AlbumDetailFragment :
             setOnMenuItemClickListener(this@AlbumDetailFragment)
         }
 
-        binding.detailRecycler.adapter = ConcatAdapter(albumHeaderAdapter, albumListAdapter)
+        binding.detailRecycler.apply {
+            adapter = ConcatAdapter(albumHeaderAdapter, albumListAdapter)
+            (layoutManager as GridLayoutManager).setFullWidthLookup {
+                if (it != 0) {
+                    val item = detailModel.albumList.value[it - 1]
+                    item is Divider || item is Header || item is Disc
+                } else {
+                    true
+                }
+            }
+        }
 
         // -- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.

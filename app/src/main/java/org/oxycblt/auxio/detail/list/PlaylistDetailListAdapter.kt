@@ -56,14 +56,6 @@ class PlaylistDetailListAdapter(private val listener: Listener<Song>) :
         }
     }
 
-    override fun isItemFullWidth(position: Int): Boolean {
-        if (super.isItemFullWidth(position)) {
-            return true
-        }
-        // Playlist headers should be full-width in all configurations
-        return getItem(position) is Playlist
-    }
-
     companion object {
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<Item>() {

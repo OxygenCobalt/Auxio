@@ -32,6 +32,7 @@ import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import java.lang.IllegalArgumentException
@@ -110,6 +111,20 @@ val ViewBinding.context: Context
  * screen.
  */
 fun RecyclerView.canScroll() = computeVerticalScrollRange() > height
+
+/**
+ * Shortcut to easily set up a [GridLayoutManager.SpanSizeLookup].
+ *
+ * @param isItemFullWidth Mapping expression that returns true if the item should take up all spans
+ *   or just one.
+ */
+fun GridLayoutManager.setFullWidthLookup(isItemFullWidth: (Int) -> Boolean) {
+    spanSizeLookup =
+        object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int) =
+                if (isItemFullWidth(position)) spanCount else 1
+        }
+}
 
 /**
  * Fix the double ripple that appears in MaterialButton instances due to an issue with AppCompat 1.5

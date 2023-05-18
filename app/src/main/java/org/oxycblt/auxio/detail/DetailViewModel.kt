@@ -32,6 +32,7 @@ import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.list.SortHeader
 import org.oxycblt.auxio.list.BasicHeader
+import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
@@ -297,7 +298,9 @@ constructor(
     private fun refreshAlbumList(album: Album, replace: Boolean = false) {
         logD("Refreshing album list")
         val list = mutableListOf<Item>()
-        list.add(SortHeader(R.string.lbl_songs))
+        val header = SortHeader(R.string.lbl_songs)
+        list.add(Divider(header))
+        list.add(header)
         val instructions =
             if (replace) {
                 // Intentional so that the header item isn't replaced with the songs
@@ -355,7 +358,9 @@ constructor(
         logD("Release groups for this artist: ${byReleaseGroup.keys}")
 
         for (entry in byReleaseGroup.entries.sortedBy { it.key }) {
-            list.add(BasicHeader(entry.key.headerTitleRes))
+            val header = BasicHeader(entry.key.headerTitleRes)
+            list.add(Divider(header))
+            list.add(header)
             list.addAll(entry.value)
         }
 
@@ -363,7 +368,9 @@ constructor(
         var instructions: UpdateInstructions = UpdateInstructions.Diff
         if (artist.songs.isNotEmpty()) {
             logD("Songs present in this artist, adding header")
-            list.add(SortHeader(R.string.lbl_songs))
+            val header = SortHeader(R.string.lbl_songs)
+            list.add(Divider(header))
+            list.add(header)
             if (replace) {
                 // Intentional so that the header item isn't replaced with the songs
                 instructions = UpdateInstructions.Replace(list.size)
@@ -379,9 +386,14 @@ constructor(
         logD("Refreshing genre list")
         val list = mutableListOf<Item>()
         // Genre is guaranteed to always have artists and songs.
-        list.add(BasicHeader(R.string.lbl_artists))
+        val artistHeader = BasicHeader(R.string.lbl_artists)
+        list.add(Divider(artistHeader))
+        list.add(artistHeader)
         list.addAll(genre.artists)
-        list.add(SortHeader(R.string.lbl_songs))
+
+        val songHeader = SortHeader(R.string.lbl_songs)
+        list.add(Divider(songHeader))
+        list.add(songHeader)
         val instructions =
             if (replace) {
                 // Intentional so that the header item isn't replaced with the songs
@@ -400,7 +412,9 @@ constructor(
         val list = mutableListOf<Item>()
 
         if (playlist.songs.isNotEmpty()) {
-            list.add(SortHeader(R.string.lbl_songs))
+            val header = SortHeader(R.string.lbl_songs)
+            list.add(Divider(header))
+            list.add(header)
             if (replace) {
                 instructions = UpdateInstructions.Replace(list.size)
             }
