@@ -294,4 +294,6 @@
     <string name="lbl_new_playlist">Nový seznam skladeb</string>
     <string name="fmt_def_playlist">Seznam skladeb %d</string>
     <string name="lbl_delete">Odstranit</string>
+    <string name="lbl_confirm_delete_playlist">Odstranit seznam skladeb\?</string>
+    <string name="fmt_deletion_info">Odstranit seznam %s\? Tato akce je nevratná.</string>
 </resources>
