@@ -288,4 +288,7 @@
     <string name="lng_playlist_added">Додано до списку відтворення</string>
     <string name="lng_playlist_created">Список відтворення створено</string>
     <string name="def_song_count">Немає пісень</string>
+    <string name="lbl_delete">Видалити</string>
+    <string name="lbl_confirm_delete_playlist">Видалити список відтворення\?</string>
+    <string name="fmt_deletion_info">Видалити %s\? Цю дію не можна скасувати.</string>
 </resources>
