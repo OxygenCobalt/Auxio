@@ -119,6 +119,16 @@ sealed interface Music : Item {
 
         companion object {
             /**
+             * Creates an Auxio-style [UID] of random composition. Used if there is no
+             * non-subjective, unlikely-to-change metadata of the music.
+             *
+             * @param mode The analogous [MusicMode] of the item that created this [UID].
+             */
+            fun auxio(mode: MusicMode): UID {
+                return UID(Format.AUXIO, mode, UUID.randomUUID())
+            }
+
+            /**
              * Creates an Auxio-style [UID] with a [UUID] composed of a hash of the non-subjective,
              * unlikely-to-change metadata of the music.
              *

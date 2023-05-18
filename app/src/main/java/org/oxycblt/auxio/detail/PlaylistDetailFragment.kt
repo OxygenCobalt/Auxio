@@ -139,6 +139,10 @@ class PlaylistDetailFragment :
                 requireContext().showToast(R.string.lng_queue_added)
                 true
             }
+            R.id.action_rename -> {
+                musicModel.renamePlaylist(currentPlaylist)
+                true
+            }
             R.id.action_delete -> {
                 musicModel.deletePlaylist(currentPlaylist)
                 true

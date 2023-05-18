@@ -31,8 +31,6 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * - Automatic edge-to-edge support
  * - Automatic [setHasFixedSize] setup
  *
- * FIXME: Broken span configuration
- *
  * @author Alexander Capehart (OxygenCobalt)
  */
 open class AuxioRecyclerView

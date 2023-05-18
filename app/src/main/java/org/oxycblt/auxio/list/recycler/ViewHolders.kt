@@ -20,9 +20,9 @@ package org.oxycblt.auxio.list.recycler
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.divider.MaterialDivider
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.ItemDividerBinding
 import org.oxycblt.auxio.databinding.ItemHeaderBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
@@ -356,8 +356,8 @@ class BasicHeaderViewHolder private constructor(private val binding: ItemHeaderB
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class DividerViewHolder private constructor(private val binding: ItemDividerBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+class DividerViewHolder private constructor(divider: MaterialDivider) :
+    RecyclerView.ViewHolder(divider) {
 
     companion object {
         /** Unique ID for this ViewHolder type. */
@@ -369,8 +369,7 @@ class DividerViewHolder private constructor(private val binding: ItemDividerBind
          * @param parent The parent to inflate this instance from.
          * @return A new instance.
          */
-        fun from(parent: View) =
-            DividerViewHolder(ItemDividerBinding.inflate(parent.context.inflater))
+        fun from(parent: View) = DividerViewHolder(MaterialDivider(parent.context))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =

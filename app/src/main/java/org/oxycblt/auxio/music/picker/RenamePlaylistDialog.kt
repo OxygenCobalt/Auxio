@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * NewPlaylistDialog.kt is part of Auxio.
+ * RenamePlaylistDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPlaylistNameBinding
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.showToast
@@ -41,33 +42,23 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>() {
+class RenamePlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>() {
     private val musicModel: MusicViewModel by activityViewModels()
     private val pickerModel: PlaylistPickerViewModel by viewModels()
     // Information about what playlist to name for is initially within the navigation arguments
     // as UIDs, as that is the only safe way to parcel playlist information.
-    private val args: NewPlaylistDialogArgs by navArgs()
+    private val args: RenamePlaylistDialogArgs by navArgs()
+    private var initializedField = false
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder
-            .setTitle(R.string.lbl_new_playlist)
+            .setTitle(R.string.lbl_rename)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
-                val pendingPlaylist = unlikelyToBeNull(pickerModel.currentPendingPlaylist.value)
-                val name =
-                    when (val chosenName = pickerModel.chosenName.value) {
-                        is ChosenName.Valid -> chosenName.value
-                        is ChosenName.Empty -> pendingPlaylist.preferredName
-                        else -> throw IllegalStateException()
-                    }
-                // TODO: Navigate to playlist if there are songs in it
-                musicModel.createPlaylist(name, pendingPlaylist.songs)
-                requireContext().showToast(R.string.lng_playlist_created)
-                findNavController().apply {
-                    navigateUp()
-                    // Do an additional navigation away from the playlist addition dialog, if
-                    // needed. If that dialog isn't present, this should be a no-op. Hopefully.
-                    navigateUp()
-                }
+                val playlist = unlikelyToBeNull(pickerModel.currentPlaylistToRename.value)
+                val chosenName = pickerModel.chosenName.value as ChosenName.Valid
+                musicModel.renamePlaylist(playlist, chosenName.value)
+                requireContext().showToast(R.string.lng_playlist_renamed)
+                findNavController().navigateUp()
             }
             .setNegativeButton(R.string.lbl_cancel, null)
     }
@@ -82,22 +73,26 @@ class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>()
         binding.playlistName.addTextChangedListener { pickerModel.updateChosenName(it?.toString()) }
 
         // --- VIEWMODEL SETUP ---
-        pickerModel.setPendingPlaylist(requireContext(), args.songUids)
-        collectImmediately(pickerModel.currentPendingPlaylist, ::updatePendingPlaylist)
+        pickerModel.setPlaylistToRename(args.playlistUid)
+        collectImmediately(pickerModel.currentPlaylistToRename, ::updatePlaylistToRename)
         collectImmediately(pickerModel.chosenName, ::updateChosenName)
     }
 
-    private fun updatePendingPlaylist(pendingPlaylist: PendingPlaylist?) {
-        if (pendingPlaylist == null) {
+    private fun updatePlaylistToRename(playlist: Playlist?) {
+        if (playlist == null) {
+            // Nothing to rename anymore.
             findNavController().navigateUp()
             return
         }
 
-        requireBinding().playlistName.hint = pendingPlaylist.preferredName
+        if (!initializedField) {
+            requireBinding().playlistName.setText(playlist.name.resolve(requireContext()))
+            initializedField = true
+        }
     }
 
     private fun updateChosenName(chosenName: ChosenName) {
         (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled =
-            chosenName is ChosenName.Valid || chosenName is ChosenName.Empty
+            chosenName is ChosenName.Valid
     }
 }

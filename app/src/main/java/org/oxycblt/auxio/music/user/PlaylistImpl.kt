@@ -21,7 +21,6 @@ package org.oxycblt.auxio.music.user
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.info.Name
-import org.oxycblt.auxio.util.update
 
 class PlaylistImpl
 private constructor(
@@ -32,6 +31,15 @@ private constructor(
     override val durationMs = songs.sumOf { it.durationMs }
     override val albums =
         songs.groupBy { it.album }.entries.sortedByDescending { it.value.size }.map { it.key }
+
+    /**
+     * Clone the data in this instance to a new [PlaylistImpl] with the given [name].
+     *
+     * @param name The new name to use.
+     * @param musicSettings [MusicSettings] required for name configuration.
+     */
+    fun edit(name: String, musicSettings: MusicSettings) =
+        PlaylistImpl(uid, Name.Known.from(name, null, musicSettings), songs)
 
     /**
      * Clone the data in this instance to a new [PlaylistImpl] with the given [Song]s.
@@ -48,9 +56,14 @@ private constructor(
     inline fun edit(edits: MutableList<Song>.() -> Unit) = edit(songs.toMutableList().apply(edits))
 
     override fun equals(other: Any?) =
-        other is PlaylistImpl && uid == other.uid && songs == other.songs
+        other is PlaylistImpl && uid == other.uid && name == other.name && songs == other.songs
 
-    override fun hashCode() = 31 * uid.hashCode() + songs.hashCode()
+    override fun hashCode(): Int {
+        var hashCode = uid.hashCode()
+        hashCode = 31 * hashCode + name.hashCode()
+        hashCode = 31 * hashCode + songs.hashCode()
+        return hashCode
+    }
 
     companion object {
         /**
@@ -62,7 +75,7 @@ private constructor(
          */
         fun from(name: String, songs: List<Song>, musicSettings: MusicSettings) =
             PlaylistImpl(
-                Music.UID.auxio(MusicMode.PLAYLISTS) { update(name) },
+                Music.UID.auxio(MusicMode.PLAYLISTS),
                 Name.Known.from(name, null, musicSettings),
                 songs)
 

@@ -41,24 +41,34 @@ import org.oxycblt.auxio.music.Song
 class PlaylistPickerViewModel @Inject constructor(private val musicRepository: MusicRepository) :
     ViewModel(), MusicRepository.UpdateListener {
     private val _currentPendingPlaylist = MutableStateFlow<PendingPlaylist?>(null)
+    /** A new [Playlist] having it's name chosen by the user. Null if none yet. */
     val currentPendingPlaylist: StateFlow<PendingPlaylist?>
         get() = _currentPendingPlaylist
 
+    private val _currentPlaylistToRename = MutableStateFlow<Playlist?>(null)
+    /** An existing [Playlist] that is being renamed. Null if none yet. */
+    val currentPlaylistToRename: StateFlow<Playlist?>
+        get() = _currentPlaylistToRename
+
+    private val _currentPlaylistToDelete = MutableStateFlow<Playlist?>(null)
+    /** The current [Playlist] that needs it's deletion confirmed. Null if none yet. */
+    val currentPlaylistToDelete: StateFlow<Playlist?>
+        get() = _currentPlaylistToDelete
+
     private val _chosenName = MutableStateFlow<ChosenName>(ChosenName.Empty)
+    /** The users chosen name for [currentPendingPlaylist] or [currentPlaylistToRename]. */
     val chosenName: StateFlow<ChosenName>
         get() = _chosenName
 
     private val _currentSongsToAdd = MutableStateFlow<List<Song>?>(null)
+    /** A batch of [Song]s to add to a playlist chosen by the user. Null if none yet. */
     val currentSongsToAdd: StateFlow<List<Song>?>
         get() = _currentSongsToAdd
 
-    private val _playlistChoices = MutableStateFlow<List<PlaylistChoice>>(listOf())
-    val playlistChoices: StateFlow<List<PlaylistChoice>>
-        get() = _playlistChoices
-
-    private val _currentPlaylistToDelete = MutableStateFlow<Playlist?>(null)
-    val currentPlaylistToDelete: StateFlow<Playlist?>
-        get() = _currentPlaylistToDelete
+    private val _playlistAddChoices = MutableStateFlow<List<PlaylistChoice>>(listOf())
+    /** The [Playlist]s that [currentSongsToAdd] could be added to. */
+    val playlistAddChoices: StateFlow<List<PlaylistChoice>>
+        get() = _playlistAddChoices
 
     init {
         musicRepository.addUpdateListener(this)
@@ -125,6 +135,24 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
     }
 
     /**
+     * Set a new [currentPlaylistToRename] from a [Playlist] [Music.UID].
+     *
+     * @param playlistUid The [Music.UID]s of the [Playlist] to rename.
+     */
+    fun setPlaylistToRename(playlistUid: Music.UID) {
+        _currentPlaylistToRename.value = musicRepository.userLibrary?.findPlaylist(playlistUid)
+    }
+
+    /**
+     * Set a new [currentPendingPlaylist] from a new [Playlist] [Music.UID].
+     *
+     * @param playlistUid The [Music.UID] of the [Playlist] to delete.
+     */
+    fun setPlaylistToDelete(playlistUid: Music.UID) {
+        _currentPlaylistToDelete.value = musicRepository.userLibrary?.findPlaylist(playlistUid)
+    }
+
+    /**
      * Update the current [chosenName] based on new user input.
      *
      * @param name The new user-inputted name, or null if not present.
@@ -160,20 +188,11 @@ class PlaylistPickerViewModel @Inject constructor(private val musicRepository: M
 
     private fun refreshPlaylistChoices(songs: List<Song>) {
         val userLibrary = musicRepository.userLibrary ?: return
-        _playlistChoices.value =
+        _playlistAddChoices.value =
             Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING).playlists(userLibrary.playlists).map {
                 val songSet = it.songs.toSet()
                 PlaylistChoice(it, songs.all(songSet::contains))
             }
-    }
-
-    /**
-     * Set a new [currentPendingPlaylist] from a new [Playlist] [Music.UID].
-     *
-     * @param playlistUid The [Music.UID] of the [Playlist] to delete.
-     */
-    fun setPlaylistToDelete(playlistUid: Music.UID) {
-        _currentPlaylistToDelete.value = musicRepository.userLibrary?.findPlaylist(playlistUid)
     }
 }
 

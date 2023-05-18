@@ -81,6 +81,14 @@ interface MutableUserLibrary : UserLibrary {
     fun createPlaylist(name: String, songs: List<Song>)
 
     /**
+     * Rename a [Playlist].
+     *
+     * @param playlist The [Playlist] to rename.
+     * @param name The name of the new [Playlist].
+     */
+    fun renamePlaylist(playlist: Playlist, name: String)
+
+    /**
      * Delete a [Playlist].
      *
      * @param playlist The playlist to delete.
@@ -120,6 +128,13 @@ private class UserLibraryImpl(
     override fun createPlaylist(name: String, songs: List<Song>) {
         val playlistImpl = PlaylistImpl.from(name, songs, musicSettings)
         playlistMap[playlistImpl.uid] = playlistImpl
+    }
+
+    @Synchronized
+    override fun renamePlaylist(playlist: Playlist, name: String) {
+        val playlistImpl =
+            requireNotNull(playlistMap[playlist.uid]) { "Cannot rename invalid playlist" }
+        playlistMap[playlist.uid] = playlistImpl.edit(name, musicSettings)
     }
 
     @Synchronized
