@@ -36,6 +36,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A [ViewBindingDialogFragment] that asks the user to confirm the deletion of a [Playlist].
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint

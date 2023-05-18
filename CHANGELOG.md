@@ -13,6 +13,9 @@ be parsed as images
 - Fixed issue where the notification would not respond to changes in the album cover setting
 - Fixed issue where short names starting with an article would not be correctly sorted (ex. "the 1")
 
+#### Dev/Meta
+- Switched to androidx media3 (New Home of ExoPlayer) for backing player components
+
 ## 3.0.5
 
 #### What's Fixed
