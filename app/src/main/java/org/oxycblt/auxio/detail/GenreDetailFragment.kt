@@ -130,6 +130,10 @@ class GenreDetailFragment :
                 musicModel.addToPlaylist(currentGenre)
                 true
             }
+            R.id.action_share -> {
+                requireContext().shareSongs(currentGenre.songs)
+                true
+            }
             else -> false
         }
     }

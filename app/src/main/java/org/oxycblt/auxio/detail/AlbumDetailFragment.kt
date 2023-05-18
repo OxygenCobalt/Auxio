@@ -142,6 +142,10 @@ class AlbumDetailFragment :
                 musicModel.addToPlaylist(currentAlbum)
                 true
             }
+            R.id.action_share -> {
+                requireContext().shareSongs(currentAlbum.songs)
+                true
+            }
             else -> false
         }
     }

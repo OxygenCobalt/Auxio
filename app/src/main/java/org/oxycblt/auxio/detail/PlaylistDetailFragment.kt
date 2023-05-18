@@ -130,6 +130,10 @@ class PlaylistDetailFragment :
                 musicModel.deletePlaylist(currentPlaylist)
                 true
             }
+            R.id.action_share -> {
+                requireContext().shareSongs(currentPlaylist.songs)
+                true
+            }
             else -> false
         }
     }

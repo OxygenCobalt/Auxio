@@ -216,8 +216,8 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
     /**
      * Return a mime-type such as "audio/ogg"
      *
-     * @return A raw mime-type string. Will first try [fromFormat], then falling
-     *   back to [fromExtension], and then null if that fails.
+     * @return A raw mime-type string. Will first try [fromFormat], then falling back to
+     *   [fromExtension], and then null if that fails.
      */
     fun getRawType(): String {
         return fromFormat ?: fromExtension

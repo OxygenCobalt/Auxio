@@ -137,6 +137,10 @@ class ArtistDetailFragment :
                 musicModel.addToPlaylist(currentArtist)
                 true
             }
+            R.id.action_share -> {
+                requireContext().shareSongs(currentArtist.songs)
+                true
+            }
             else -> false
         }
     }
