@@ -147,7 +147,7 @@ private class UserLibraryImpl(
 
     @Synchronized
     override fun deletePlaylist(playlist: Playlist) {
-        playlistMap.remove(playlist.uid)
+        requireNotNull(playlistMap.remove(playlist.uid)) { "Cannot remove invalid playlist" }
     }
 
     @Synchronized

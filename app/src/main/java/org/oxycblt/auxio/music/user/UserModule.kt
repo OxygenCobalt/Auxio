@@ -36,12 +36,12 @@ interface UserModule {
 @Module
 @InstallIn(SingletonComponent::class)
 class UserRoomModule {
-    @Provides fun playlistDao(database: PlaylistDatabase) = database.playlistDao()
+    @Provides fun playlistDao(database: UserMusicDatabase) = database.playlistDao()
 
     @Provides
-    fun playlistDatabase(@ApplicationContext context: Context) =
+    fun userMusicDatabase(@ApplicationContext context: Context) =
         Room.databaseBuilder(
-                context.applicationContext, PlaylistDatabase::class.java, "playlists.db")
+                context.applicationContext, UserMusicDatabase::class.java, "user_music.db")
             .fallbackToDestructiveMigration()
             .fallbackToDestructiveMigrationFrom(0)
             .fallbackToDestructiveMigrationOnDowngrade()

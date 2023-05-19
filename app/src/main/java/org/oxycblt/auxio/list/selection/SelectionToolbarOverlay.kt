@@ -35,6 +35,8 @@ import org.oxycblt.auxio.util.logD
  * current selection state.
  *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Generalize this into a "view flipper" class and then derive it through other means?
  */
 class SelectionToolbarOverlay
 @JvmOverloads

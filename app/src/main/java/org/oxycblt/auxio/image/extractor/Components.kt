@@ -18,163 +18,31 @@
  
 package org.oxycblt.auxio.image.extractor
 
-import android.content.Context
 import coil.ImageLoader
-import coil.decode.DataSource
-import coil.decode.ImageSource
-import coil.fetch.FetchResult
 import coil.fetch.Fetcher
-import coil.fetch.SourceResult
 import coil.key.Keyer
 import coil.request.Options
 import coil.size.Size
 import javax.inject.Inject
-import kotlin.math.min
-import okio.buffer
-import okio.source
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.*
 
-class SongKeyer @Inject constructor() : Keyer<Song> {
-    override fun key(data: Song, options: Options) = "${data.album.uid}${data.album.hashCode()}"
+class SongKeyer @Inject constructor(private val coverExtractor: CoverExtractor) :
+    Keyer<List<Song>> {
+    override fun key(data: List<Song>, options: Options) =
+        "${coverExtractor.computeAlbumOrdering(data).hashCode()}"
 }
 
-// TODO: Key on the actual mosaic items used
-class ParentKeyer @Inject constructor() : Keyer<MusicParent> {
-    override fun key(data: MusicParent, options: Options) = "${data.uid}${data.hashCode()}"
-}
-
-/**
- * Generic [Fetcher] for [Album] covers. Works with both [Album] and [Song]. Use [SongFactory] or
- * [AlbumFactory] for instantiation.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-class AlbumCoverFetcher
+class SongCoverFetcher
 private constructor(
-    private val context: Context,
-    private val extractor: CoverExtractor,
-    private val album: Album
-) : Fetcher {
-    override suspend fun fetch(): FetchResult? =
-        extractor.extract(album)?.run {
-            SourceResult(
-                source = ImageSource(source().buffer(), context),
-                mimeType = null,
-                dataSource = DataSource.DISK)
-        }
-
-    class SongFactory @Inject constructor(private val coverExtractor: CoverExtractor) :
-        Fetcher.Factory<Song> {
-        override fun create(data: Song, options: Options, imageLoader: ImageLoader) =
-            AlbumCoverFetcher(options.context, coverExtractor, data.album)
-    }
-
-    class AlbumFactory @Inject constructor(private val coverExtractor: CoverExtractor) :
-        Fetcher.Factory<Album> {
-        override fun create(data: Album, options: Options, imageLoader: ImageLoader) =
-            AlbumCoverFetcher(options.context, coverExtractor, data)
-    }
-}
-
-/**
- * [Fetcher] for [Artist] images. Use [Factory] for instantiation.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-class ArtistImageFetcher
-private constructor(
-    private val context: Context,
-    private val extractor: CoverExtractor,
+    private val songs: List<Song>,
     private val size: Size,
-    private val artist: Artist
+    private val coverExtractor: CoverExtractor,
 ) : Fetcher {
-    override suspend fun fetch(): FetchResult? {
-        // Pick the "most prominent" albums (i.e albums with the most songs) to show in the image.
-        val albums = Sort(Sort.Mode.ByCount, Sort.Direction.DESCENDING).albums(artist.albums)
-        val results = albums.mapAtMostNotNull(4) { album -> extractor.extract(album) }
-        return Images.createMosaic(context, results, size)
+    override suspend fun fetch() = coverExtractor.extract(songs, size)
+
+    class Factory @Inject constructor(private val coverExtractor: CoverExtractor) :
+        Fetcher.Factory<List<Song>> {
+        override fun create(data: List<Song>, options: Options, imageLoader: ImageLoader) =
+            SongCoverFetcher(data, options.size, coverExtractor)
     }
-
-    class Factory @Inject constructor(private val extractor: CoverExtractor) :
-        Fetcher.Factory<Artist> {
-        override fun create(data: Artist, options: Options, imageLoader: ImageLoader) =
-            ArtistImageFetcher(options.context, extractor, options.size, data)
-    }
-}
-
-/**
- * [Fetcher] for [Genre] images. Use [Factory] for instantiation.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-class GenreImageFetcher
-private constructor(
-    private val context: Context,
-    private val extractor: CoverExtractor,
-    private val size: Size,
-    private val genre: Genre
-) : Fetcher {
-    override suspend fun fetch(): FetchResult? {
-        val results = genre.albums.mapAtMostNotNull(4) { album -> extractor.extract(album) }
-        return Images.createMosaic(context, results, size)
-    }
-
-    class Factory @Inject constructor(private val extractor: CoverExtractor) :
-        Fetcher.Factory<Genre> {
-        override fun create(data: Genre, options: Options, imageLoader: ImageLoader) =
-            GenreImageFetcher(options.context, extractor, options.size, data)
-    }
-}
-
-/**
- * [Fetcher] for [Playlist] images. Use [Factory] for instantiation.
- *
- * @author Alexander Capehart (OxygenCobalt)
- */
-class PlaylistImageFetcher
-private constructor(
-    private val context: Context,
-    private val extractor: CoverExtractor,
-    private val size: Size,
-    private val playlist: Playlist
-) : Fetcher {
-    override suspend fun fetch(): FetchResult? {
-        val results = playlist.albums.mapAtMostNotNull(4) { album -> extractor.extract(album) }
-        return Images.createMosaic(context, results, size)
-    }
-
-    class Factory @Inject constructor(private val extractor: CoverExtractor) :
-        Fetcher.Factory<Playlist> {
-        override fun create(data: Playlist, options: Options, imageLoader: ImageLoader) =
-            PlaylistImageFetcher(options.context, extractor, options.size, data)
-    }
-}
-
-/**
- * Map at most N [T] items a collection into a collection of [R], ignoring [T] that cannot be
- * transformed into [R].
- *
- * @param n The maximum amount of items to map.
- * @param transform The function that transforms data [T] from the original list into data [R] in
- *   the new list. Can return null if the [T] cannot be transformed into an [R].
- * @return A new list of at most N non-null [R] items.
- */
-private inline fun <T : Any, R : Any> Collection<T>.mapAtMostNotNull(
-    n: Int,
-    transform: (T) -> R?
-): List<R> {
-    val until = min(size, n)
-    val out = mutableListOf<R>()
-
-    for (item in this) {
-        if (out.size >= until) {
-            break
-        }
-
-        // Still have more data we can transform.
-        transform(item)?.let(out::add)
-    }
-
-    return out
 }

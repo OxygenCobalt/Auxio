@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * PlaylistDatabase.kt is part of Auxio.
+ * UserMusicDatabase.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import org.oxycblt.auxio.music.Music
     version = 28,
     exportSchema = false)
 @TypeConverters(Music.UID.TypeConverters::class)
-abstract class PlaylistDatabase : RoomDatabase() {
+abstract class UserMusicDatabase : RoomDatabase() {
     abstract fun playlistDao(): PlaylistDao
 }
 

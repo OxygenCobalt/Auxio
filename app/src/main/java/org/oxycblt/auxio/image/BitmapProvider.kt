@@ -95,7 +95,7 @@ constructor(
             target
                 .onConfigRequest(
                     ImageRequest.Builder(context)
-                        .data(song)
+                        .data(listOf(song))
                         // Use ORIGINAL sizing, as we are not loading into any View-like component.
                         .size(Size.ORIGINAL)
                         .transformations(SquareFrameTransform.INSTANCE))

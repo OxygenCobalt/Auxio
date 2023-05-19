@@ -96,7 +96,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      *
      * @param song The [Song] to bind.
      */
-    fun bind(song: Song) = bindImpl(song, R.drawable.ic_song_24, R.string.desc_album_cover)
+    fun bind(song: Song) = bind(song.album)
 
     /**
      * Bind an [Album]'s cover to this view, also updating the content description.
@@ -130,15 +130,15 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     /**
      * Internally bind a [Music]'s image to this view.
      *
-     * @param music The music to find.
+     * @param parent The music to bind, in the form of it's [MusicParent]s.
      * @param errorRes The error drawable resource to use if the music cannot be loaded.
      * @param descRes The content description string resource to use. The resource must have one
      *   field for the name of the [Music].
      */
-    private fun bindImpl(music: Music, @DrawableRes errorRes: Int, @StringRes descRes: Int) {
+    private fun bindImpl(parent: MusicParent, @DrawableRes errorRes: Int, @StringRes descRes: Int) {
         val request =
             ImageRequest.Builder(context)
-                .data(music)
+                .data(parent.songs)
                 .error(StyledDrawable(context, context.getDrawableCompat(errorRes)))
                 .transformations(SquareFrameTransform.INSTANCE)
                 .target(this)
@@ -147,7 +147,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         CoilUtils.dispose(this)
         imageLoader.enqueue(request)
         // Update the content description to the specified resource.
-        contentDescription = context.getString(descRes, music.name.resolve(context))
+        contentDescription = context.getString(descRes, parent.name.resolve(context))
     }
 
     /**
