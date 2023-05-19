@@ -282,12 +282,11 @@ class PlaylistDetailFragment :
         // TODO: Disable check item when no edits have been made
 
         // TODO: Massively improve how this UI is indicated:
-        //  - Make playlist header dynamically respond to song changes
-        //  - Disable play and pause buttons
         //  - Add an additional toolbar to indicate editing
         //  - Header should flip to re-sort button eventually
 
         playlistListAdapter.setEditing(editedPlaylist != null)
+        playlistHeaderAdapter.setEditedPlaylist(editedPlaylist)
     }
 
     private fun updateSelection(selected: List<Music>) {

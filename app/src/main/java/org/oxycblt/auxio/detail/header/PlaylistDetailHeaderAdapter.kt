@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemDetailHeaderBinding
 import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
@@ -38,11 +39,27 @@ import org.oxycblt.auxio.util.inflater
  */
 class PlaylistDetailHeaderAdapter(private val listener: Listener) :
     DetailHeaderAdapter<Playlist, PlaylistDetailHeaderViewHolder>() {
+    private var editedPlaylist: List<Song>? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         PlaylistDetailHeaderViewHolder.from(parent)
 
     override fun onBindHeader(holder: PlaylistDetailHeaderViewHolder, parent: Playlist) =
-        holder.bind(parent, listener)
+        holder.bind(parent, editedPlaylist, listener)
+
+    /**
+     * Indicate to this adapter that editing is ongoing with the current state of the editing
+     * process. This will make the header immediately update to reflect information about the edited
+     * playlist.
+     */
+    fun setEditedPlaylist(songs: List<Song>?) {
+        if (editedPlaylist == songs) {
+            // Nothing to do.
+            return
+        }
+        editedPlaylist = songs
+        rebindParent()
+    }
 }
 
 /**
@@ -58,35 +75,39 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
      * Bind new data to this instance.
      *
      * @param playlist The new [Playlist] to bind.
+     * @param editedPlaylist The current edited state of the playlist, if it exists.
      * @param listener A [DetailHeaderAdapter.Listener] to bind interactions to.
      */
-    fun bind(playlist: Playlist, listener: DetailHeaderAdapter.Listener) {
-        binding.detailCover.bind(playlist)
+    fun bind(
+        playlist: Playlist,
+        editedPlaylist: List<Song>?,
+        listener: DetailHeaderAdapter.Listener
+    ) {
+        binding.detailCover.bind(playlist, editedPlaylist)
         binding.detailType.text = binding.context.getString(R.string.lbl_playlist)
         binding.detailName.text = playlist.name.resolve(binding.context)
         // Nothing about a playlist is applicable to the sub-head text.
         binding.detailSubhead.isVisible = false
 
+        val songs = editedPlaylist ?: playlist.songs
+        val durationMs = editedPlaylist?.sumOf { it.durationMs } ?: playlist.durationMs
         // The song count of the playlist maps to the info text.
-        binding.detailInfo.apply {
-            isVisible = true
-            text =
-                if (playlist.songs.isNotEmpty()) {
-                    binding.context.getString(
-                        R.string.fmt_two,
-                        binding.context.getPlural(R.plurals.fmt_song_count, playlist.songs.size),
-                        playlist.durationMs.formatDurationMs(true))
-                } else {
-                    binding.context.getString(R.string.def_song_count)
-                }
-        }
+        binding.detailInfo.text =
+            if (songs.isNotEmpty()) {
+                binding.context.getString(
+                    R.string.fmt_two,
+                    binding.context.getPlural(R.plurals.fmt_song_count, songs.size),
+                    durationMs.formatDurationMs(true))
+            } else {
+                binding.context.getString(R.string.def_song_count)
+            }
 
         binding.detailPlayButton.apply {
-            isEnabled = playlist.songs.isNotEmpty()
+            isEnabled = playlist.songs.isNotEmpty() && editedPlaylist == null
             setOnClickListener { listener.onPlay() }
         }
         binding.detailShuffleButton.apply {
-            isEnabled = playlist.songs.isNotEmpty()
+            isEnabled = playlist.songs.isNotEmpty() && editedPlaylist == null
             setOnClickListener { listener.onShuffle() }
         }
     }
