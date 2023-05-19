@@ -296,4 +296,8 @@
     <string name="lbl_delete">Odstranit</string>
     <string name="lbl_confirm_delete_playlist">Odstranit seznam skladeb\?</string>
     <string name="fmt_deletion_info">Odstranit seznam %s\? Tato akce je nevratná.</string>
+    <string name="lbl_rename">Přejmenovat</string>
+    <string name="lng_playlist_renamed">Seznam skladeb přejmenován</string>
+    <string name="lng_playlist_deleted">Seznam skladeb odstraněn</string>
+    <string name="lbl_rename_playlist">Přejmenovat seznam skladeb</string>
 </resources>
