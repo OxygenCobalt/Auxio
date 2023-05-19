@@ -285,4 +285,8 @@
     <string name="lbl_delete">删除</string>
     <string name="lbl_confirm_delete_playlist">删除播放列表？</string>
     <string name="fmt_deletion_info">删除 %s 吗？此操作无法撤销。</string>
+    <string name="lbl_rename">重命名</string>
+    <string name="lbl_rename_playlist">重命名播放列表</string>
+    <string name="lng_playlist_renamed">已重命名播放列表</string>
+    <string name="lng_playlist_deleted">已删除播放列表</string>
 </resources>
