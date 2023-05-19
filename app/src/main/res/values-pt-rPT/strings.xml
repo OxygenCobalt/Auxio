@@ -98,7 +98,7 @@
     <string name="err_no_perms">O Auxio precisa de permissão para ler a sua biblioteca de músicas</string>
     <string name="err_no_dirs">Sem pastas</string>
     <string name="err_bad_dir">Esta pasta não é compatível</string>
-    <string name="desc_queue_handle">Mover esta música da fila</string>
+    <string name="desc_song_handle">Mover esta música da fila</string>
     <string name="desc_music_dir_delete">Remover pasta</string>
     <string name="lbl_compilation_remix">Compilações de remix</string>
     <string name="lbl_compilation_live">Compilação ao vivo</string>
@@ -195,7 +195,7 @@
     <string name="set_restore_desc">Restaurar o estado de reprodução salvo anteriormente (se houver)</string>
     <string name="desc_shuffle">Ativar ou desativar a reprodução aleatória</string>
     <string name="desc_shuffle_all">Embaralhar todas as músicas</string>
-    <string name="desc_clear_queue_item">Remover esta música de fila</string>
+    <string name="desc_remove_song">Remover esta música de fila</string>
     <string name="cdc_mka">Áudio Matroska</string>
     <string name="cdc_aac">Codificação de Audio Avançada (AAC)</string>
     <string name="lbl_album">Álbum</string>

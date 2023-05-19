@@ -26,9 +26,10 @@ import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.ItemQueueSongBinding
+import org.oxycblt.auxio.databinding.ItemEditableSongBinding
 import org.oxycblt.auxio.list.EditableListListener
 import org.oxycblt.auxio.list.adapter.*
+import org.oxycblt.auxio.list.recycler.MaterialDragCallback
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
@@ -96,34 +97,32 @@ class QueueAdapter(private val listener: EditableListListener<Song>) :
 }
 
 /**
- * A [PlayingIndicatorAdapter.ViewHolder] that displays a queue [Song]. Use [from] to create an
- * instance.
+ * A [PlayingIndicatorAdapter.ViewHolder] that displays an editable [Song] which can be re-ordered
+ * and removed. Use [from] to create an instance.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class QueueSongViewHolder private constructor(private val binding: ItemQueueSongBinding) :
-    PlayingIndicatorAdapter.ViewHolder(binding.root) {
-    /** The "body" view of this [QueueSongViewHolder] that shows the [Song] information. */
-    val bodyView: View
+class QueueSongViewHolder private constructor(private val binding: ItemEditableSongBinding) :
+    PlayingIndicatorAdapter.ViewHolder(binding.root), MaterialDragCallback.ViewHolder {
+    override val root: View
+        get() = binding.root
+
+    override val body: View
         get() = binding.body
 
-    /** The background view of this [QueueSongViewHolder] that shows the delete icon. */
-    val backgroundView: View
+    override val delete: View
         get() = binding.background
 
-    /** The actual background drawable of this [QueueSongViewHolder] that can be manipulated. */
-    val backgroundDrawable =
+    override val background =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
             fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
             elevation = binding.context.getDimen(R.dimen.elevation_normal) * 5
             alpha = 0
         }
 
-    /** If this queue item is considered "in the future" (i.e has not played yet). */
     var isFuture: Boolean
         get() = binding.songAlbumCover.isEnabled
         set(value) {
-            // Don't want to disable clicking, just indicate the body and handle is disabled
             binding.songAlbumCover.isEnabled = value
             binding.songName.isEnabled = value
             binding.songInfo.isEnabled = value
@@ -137,7 +136,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
                         fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
                         elevation = binding.context.getDimen(R.dimen.elevation_normal)
                     },
-                    backgroundDrawable))
+                    background))
     }
 
     /**
@@ -148,7 +147,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
      */
     @SuppressLint("ClickableViewAccessibility")
     fun bind(song: Song, listener: EditableListListener<Song>) {
-        listener.bind(song, this, bodyView, binding.songDragHandle)
+        listener.bind(song, this, body, binding.songDragHandle)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.name.resolve(binding.context)
         binding.songInfo.text = song.artists.resolveNames(binding.context)
@@ -170,7 +169,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemQueueSong
          * @return A new instance.
          */
         fun from(parent: View) =
-            QueueSongViewHolder(ItemQueueSongBinding.inflate(parent.context.inflater))
+            QueueSongViewHolder(ItemEditableSongBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK = SongViewHolder.DIFF_CALLBACK

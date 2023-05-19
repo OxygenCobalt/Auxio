@@ -10,7 +10,7 @@
         style="@style/Widget.Auxio.RecyclerView.Linear"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_queue_song" />
+        tools:listitem="@layout/item_editable_song" />
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/queue_divider"

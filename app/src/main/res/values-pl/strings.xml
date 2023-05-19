@@ -137,7 +137,7 @@
     <string name="set_headset_autoplay_desc">Automatycznie odtwórz muzykę po podłączeniu słuchawek (może nie działać na wszystkich urządzeniach)</string>
     <string name="set_reindex">Odśwież muzykę</string>
     <string name="set_reindex_desc">Odśwież bibliotekę muzyczną używając tagów z pamięci cache, jeśli są dostępne</string>
-    <string name="desc_clear_queue_item">Usuń utwór z kolejki</string>
+    <string name="desc_remove_song">Usuń utwór z kolejki</string>
     <string name="set_replay_gain_mode_album">Preferuj album</string>
     <string name="set_observing">Automatycznie odśwież</string>
     <string name="cdc_flac">FLAC</string>
@@ -173,7 +173,7 @@
     <string name="set_observing_desc">Automatycznie odśwież bibliotekę po wykryciu zmian (wymaga stałego powiadomienia)</string>
     <string name="set_dirs_mode_exclude">Wyklucz</string>
     <string name="set_dirs_mode_include">Zawrzyj</string>
-    <string name="desc_queue_handle">Zmień pozycję utworu w kolejce</string>
+    <string name="desc_song_handle">Zmień pozycję utworu w kolejce</string>
     <string name="desc_tab_handle">Przesuń kartę</string>
     <string name="desc_artist_image">Wizerunek wykonawcy dla %s</string>
     <string name="lng_indexing">Ładuję bibliotekę muzyczną…</string>

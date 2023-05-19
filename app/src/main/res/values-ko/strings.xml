@@ -107,8 +107,8 @@
     <string name="desc_change_repeat">반복 방식 변경</string>
     <string name="desc_shuffle">무작위 재생 켜기 또는 끄기</string>
     <string name="desc_shuffle_all">모든 곡 무작위 재생</string>
-    <string name="desc_clear_queue_item">이 대기열의 곡 제거</string>
-    <string name="desc_queue_handle">이 대기열의 곡 이동</string>
+    <string name="desc_remove_song">이 대기열의 곡 제거</string>
+    <string name="desc_song_handle">이 대기열의 곡 이동</string>
     <string name="desc_tab_handle">이 탭 이동</string>
     <string name="desc_clear_search">검색 기록 삭제</string>
     <string name="desc_music_dir_delete">폴더 제거</string>

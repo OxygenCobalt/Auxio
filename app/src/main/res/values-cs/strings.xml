@@ -109,8 +109,8 @@
     <string name="desc_change_repeat">Změnit režim opakování</string>
     <string name="desc_shuffle">Vypnout nebo zapnout náhodné přehrávání</string>
     <string name="desc_shuffle_all">Náhodně přehrávat vše</string>
-    <string name="desc_clear_queue_item">Odebrat tuto skladbu z fronty</string>
-    <string name="desc_queue_handle">Přesunout tuto skladbu ve frontě</string>
+    <string name="desc_remove_song">Odebrat tuto skladbu z fronty</string>
+    <string name="desc_song_handle">Přesunout tuto skladbu ve frontě</string>
     <string name="desc_tab_handle">Přesunout tuto kartu</string>
     <string name="desc_clear_search">Vymazat hledání</string>
     <string name="desc_music_dir_delete">Odebrat složku</string>

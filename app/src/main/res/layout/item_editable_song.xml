@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|center_vertical"
         android:layout_marginEnd="@dimen/spacing_small"
-        android:contentDescription="@string/desc_clear_queue_item"
+        android:contentDescription="@string/desc_remove_song"
         android:padding="@dimen/spacing_medium"
         android:src="@drawable/ic_delete_24"
         app:tint="?attr/colorOnError" />
@@ -79,7 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/spacing_mid_medium"
-                android:contentDescription="@string/desc_queue_handle"
+                android:contentDescription="@string/desc_song_handle"
                 app:icon="@drawable/ic_handle_24"
                 app:layout_constraintBottom_toBottomOf="@+id/song_album_cover"
                 app:layout_constraintEnd_toEndOf="parent"

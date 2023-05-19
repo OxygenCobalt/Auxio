@@ -93,8 +93,8 @@
     <string name="desc_change_repeat">更改重复播放模式</string>
     <string name="desc_shuffle">开启或关闭随机播放模式</string>
     <string name="desc_shuffle_all">随机播放所有曲目</string>
-    <string name="desc_clear_queue_item">移除队列曲目</string>
-    <string name="desc_queue_handle">移动队列曲目</string>
+    <string name="desc_remove_song">移除队列曲目</string>
+    <string name="desc_song_handle">移动队列曲目</string>
     <string name="desc_tab_handle">移动该标签</string>
     <string name="desc_clear_search">清除搜索队列</string>
     <string name="desc_music_dir_delete">移除文件夹</string>

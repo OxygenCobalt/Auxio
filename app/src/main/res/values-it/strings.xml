@@ -94,8 +94,8 @@
     <string name="desc_change_repeat">Cambia modalità ripetizione</string>
     <string name="desc_shuffle">Attiva o disattiva mescolamento</string>
     <string name="desc_shuffle_all">Mescola tutte le canzoni</string>
-    <string name="desc_clear_queue_item">Rimuove questa canzone della coda</string>
-    <string name="desc_queue_handle">Muove questa canzone della coda</string>
+    <string name="desc_remove_song">Rimuove questa canzone della coda</string>
+    <string name="desc_song_handle">Muove questa canzone della coda</string>
     <string name="desc_tab_handle">Muove questa scheda</string>
     <string name="desc_clear_search">Cancella la query di ricerca</string>
     <string name="desc_music_dir_delete">Rimuovi cartella</string>

@@ -123,7 +123,7 @@
     <string name="desc_skip_prev">Pular para a música anterior</string>
     <string name="desc_change_repeat">Alterar o modo de repetição</string>
     <string name="desc_shuffle_all">Aleatorizar todas das músicas</string>
-    <string name="desc_clear_queue_item">Remover esta música da fila</string>
+    <string name="desc_remove_song">Remover esta música da fila</string>
     <string name="desc_clear_search">Limpar histórico de pesquisa</string>
     <string name="desc_album_cover">Capa do álbum para %s</string>
     <string name="desc_tab_handle">Mover esta aba</string>
@@ -147,7 +147,7 @@
     <string name="cdc_mka">Áudio Matroska</string>
     <string name="cdc_aac">Codificação de Audio Avançada (AAC)</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
-    <string name="desc_queue_handle">Mover esta música da fila</string>
+    <string name="desc_song_handle">Mover esta música da fila</string>
     <string name="clr_dynamic">Dinâmico</string>
     <string name="fmt_lib_total_duration">Duração total: %s</string>
     <string name="fmt_indexing">Carregando sua biblioteca de músicas… (%1$d/%2$d)</string>

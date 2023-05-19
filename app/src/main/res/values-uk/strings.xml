@@ -218,8 +218,8 @@
     <string name="def_genre">Невідомий жанр</string>
     <string name="desc_queue_bar">Відкрити чергу</string>
     <string name="clr_yellow">Жовтий</string>
-    <string name="desc_queue_handle">Перемістити пісню в черзі</string>
-    <string name="desc_clear_queue_item">Видалити пісню з черги</string>
+    <string name="desc_song_handle">Перемістити пісню в черзі</string>
+    <string name="desc_remove_song">Видалити пісню з черги</string>
     <string name="clr_cyan">Блакитний</string>
     <string name="clr_teal">Зеленувато-блакитний</string>
     <string name="clr_purple">Фіолетовий</string>

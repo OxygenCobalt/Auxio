@@ -203,8 +203,8 @@
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="clr_red">Vermello</string>
-    <string name="desc_clear_queue_item">Quitar esta canción da cola</string>
-    <string name="desc_queue_handle">Mover está canción na cola</string>
+    <string name="desc_remove_song">Quitar esta canción da cola</string>
+    <string name="desc_song_handle">Mover está canción na cola</string>
     <string name="desc_tab_handle">Mover esta pestana</string>
     <string name="clr_pink">Rosa</string>
     <string name="clr_purple">Morado</string>

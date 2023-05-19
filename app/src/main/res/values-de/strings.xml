@@ -125,7 +125,7 @@
     <string name="set_repeat_pause">Pause bei Wiederholung</string>
     <string name="set_repeat_pause_desc">Pausieren, wenn ein Song wiederholt wird</string>
     <string name="desc_shuffle">Zufällig an- oder ausschalten</string>
-    <string name="desc_queue_handle">Lied in der Warteschlange verschieben</string>
+    <string name="desc_song_handle">Lied in der Warteschlange verschieben</string>
     <string name="desc_music_dir_delete">Verzechnis entfernen</string>
     <string name="desc_no_cover">Albumcover</string>
     <string name="def_playback">Keine Musik wird gespielt</string>
@@ -133,7 +133,7 @@
     <string name="set_lib_tabs_desc">Sichtbarkeit und Ordnung der Bibliotheksregisterkarten ändern</string>
     <string name="lbl_name">Name</string>
     <string name="desc_shuffle_all">Alle Lieder zufällig</string>
-    <string name="desc_clear_queue_item">Lied in der Warteschlange löschen</string>
+    <string name="desc_remove_song">Lied in der Warteschlange löschen</string>
     <string name="desc_tab_handle">Tab versetzen</string>
     <string name="def_artist">Unbekannter Künstler</string>
     <string name="lbl_duration">Dauer</string>

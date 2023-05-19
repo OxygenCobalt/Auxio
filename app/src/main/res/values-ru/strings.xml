@@ -93,8 +93,8 @@
     <string name="desc_change_repeat">Режим повтора</string>
     <string name="desc_shuffle">Перемешивание</string>
     <string name="desc_shuffle_all">Перемешать все треки</string>
-    <string name="desc_clear_queue_item">Удалить трек из очереди</string>
-    <string name="desc_queue_handle">Переместить трек в очереди</string>
+    <string name="desc_remove_song">Удалить трек из очереди</string>
+    <string name="desc_song_handle">Переместить трек в очереди</string>
     <string name="desc_tab_handle">Переместить вкладку</string>
     <string name="desc_clear_search">Очистить поисковый запрос</string>
     <string name="desc_music_dir_delete">Удалить папку</string>

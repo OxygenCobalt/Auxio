@@ -158,6 +158,8 @@ constructor(
     val playlistInstructions: Event<UpdateInstructions>
         get() = _playlistInstructions
 
+    private var isEditingPlaylist = false
+
     /** The current [Sort] used for [Song]s in [playlistList]. */
     var playlistSongSort: Sort
         get() = musicSettings.playlistSongSort
@@ -412,7 +414,7 @@ constructor(
         val list = mutableListOf<Item>()
 
         if (playlist.songs.isNotEmpty()) {
-            val header = SortHeader(R.string.lbl_songs)
+            val header = BasicHeader(R.string.lbl_songs)
             list.add(Divider(header))
             list.add(header)
             if (replace) {

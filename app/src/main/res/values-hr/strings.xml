@@ -107,8 +107,8 @@
     <string name="desc_track_number">Zvučni zapis %d</string>
     <string name="desc_shuffle">Omogućite ili onemogućite miješanje</string>
     <string name="desc_shuffle_all">Izmiješaj sve pjesme</string>
-    <string name="desc_clear_queue_item">Ukoni ovu pjesmu iz popisa pjesama</string>
-    <string name="desc_queue_handle">Premjesti ovu pjesmu u popisu pjesama</string>
+    <string name="desc_remove_song">Ukoni ovu pjesmu iz popisa pjesama</string>
+    <string name="desc_song_handle">Premjesti ovu pjesmu u popisu pjesama</string>
     <string name="desc_tab_handle">Pomakni ovu pločicu</string>
     <string name="desc_clear_search">Izbriši pretražene pojmove</string>
     <string name="desc_music_dir_delete">Ukloni mapu</string>
