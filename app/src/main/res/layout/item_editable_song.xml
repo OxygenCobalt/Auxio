@@ -85,6 +85,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/song_album_cover" />
 
+            <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                android:id="@+id/song_menu"
+                style="@style/Widget.Auxio.Button.Icon.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/desc_song_handle"
+                android:visibility="gone"
+                app:icon="@drawable/ic_more_24"
+                app:layout_constraintBottom_toBottomOf="@+id/song_drag_handle"
+                app:layout_constraintEnd_toEndOf="@+id/song_drag_handle"
+                app:layout_constraintStart_toStartOf="@id/song_drag_handle"
+                app:layout_constraintTop_toTopOf="@+id/song_drag_handle" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>

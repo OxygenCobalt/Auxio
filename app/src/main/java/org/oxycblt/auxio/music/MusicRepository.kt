@@ -142,6 +142,14 @@ interface MusicRepository {
     fun addToPlaylist(songs: List<Song>, playlist: Playlist)
 
     /**
+     * Update the [Song]s of a [Playlist].
+     *
+     * @param playlist The [Playlist] to update.
+     * @param songs The new [Song]s to be contained in the [Playlist].
+     */
+    fun rewritePlaylist(playlist: Playlist, songs: List<Song>)
+
+    /**
      * Request that a music loading operation is started by the current [IndexingWorker]. Does
      * nothing if one is not available.
      *
@@ -298,6 +306,15 @@ constructor(
     override fun addToPlaylist(songs: List<Song>, playlist: Playlist) {
         val userLibrary = userLibrary ?: return
         userLibrary.addToPlaylist(playlist, songs)
+        for (listener in updateListeners) {
+            listener.onMusicChanges(
+                MusicRepository.Changes(deviceLibrary = false, userLibrary = true))
+        }
+    }
+
+    override fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
+        val userLibrary = userLibrary ?: return
+        userLibrary.rewritePlaylist(playlist, songs)
         for (listener in updateListeners) {
             listener.onMusicChanges(
                 MusicRepository.Changes(deviceLibrary = false, userLibrary = true))

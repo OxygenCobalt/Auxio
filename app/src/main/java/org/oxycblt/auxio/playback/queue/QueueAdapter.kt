@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemEditableSongBinding
-import org.oxycblt.auxio.list.EditableListListener
+import org.oxycblt.auxio.list.EditClickListListener
 import org.oxycblt.auxio.list.adapter.*
 import org.oxycblt.auxio.list.recycler.MaterialDragCallback
 import org.oxycblt.auxio.list.recycler.SongViewHolder
@@ -38,10 +38,10 @@ import org.oxycblt.auxio.util.*
 /**
  * A [RecyclerView.Adapter] that shows an editable list of queue items.
  *
- * @param listener A [EditableListListener] to bind interactions to.
+ * @param listener A [EditClickListListener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class QueueAdapter(private val listener: EditableListListener<Song>) :
+class QueueAdapter(private val listener: EditClickListListener<Song>) :
     FlexibleListAdapter<Song, QueueSongViewHolder>(QueueSongViewHolder.DIFF_CALLBACK) {
     // Since PlayingIndicator adapter relies on an item value, we cannot use it for this
     // adapter, as one item can appear at several points in the UI. Use a similar implementation
@@ -97,22 +97,17 @@ class QueueAdapter(private val listener: EditableListListener<Song>) :
 }
 
 /**
- * A [PlayingIndicatorAdapter.ViewHolder] that displays an editable [Song] which can be re-ordered
- * and removed. Use [from] to create an instance.
+ * A [PlayingIndicatorAdapter.ViewHolder] that displays an queue [Song] which can be re-ordered and
+ * removed. Use [from] to create an instance.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class QueueSongViewHolder private constructor(private val binding: ItemEditableSongBinding) :
     PlayingIndicatorAdapter.ViewHolder(binding.root), MaterialDragCallback.ViewHolder {
-    override val root: View
-        get() = binding.root
-
-    override val body: View
-        get() = binding.body
-
-    override val delete: View
-        get() = binding.background
-
+    override val enabled = true
+    override val root = binding.root
+    override val body = binding.body
+    override val delete = binding.background
     override val background =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
             fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
@@ -143,10 +138,10 @@ class QueueSongViewHolder private constructor(private val binding: ItemEditableS
      * Bind new data to this instance.
      *
      * @param song The new [Song] to bind.
-     * @param listener A [EditableListListener] to bind interactions to.
+     * @param listener A [EditClickListListener] to bind interactions to.
      */
     @SuppressLint("ClickableViewAccessibility")
-    fun bind(song: Song, listener: EditableListListener<Song>) {
+    fun bind(song: Song, listener: EditClickListListener<Song>) {
         listener.bind(song, this, body, binding.songDragHandle)
         binding.songAlbumCover.bind(song)
         binding.songName.text = song.name.resolve(binding.context)

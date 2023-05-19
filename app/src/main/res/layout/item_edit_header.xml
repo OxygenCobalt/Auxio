@@ -19,13 +19,32 @@
         tools:text="Songs" />
 
     <org.oxycblt.auxio.ui.RippleFixMaterialButton
-        android:id="@+id/header_sort"
+        android:id="@+id/header_edit"
         style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_mid_medium"
-        android:contentDescription="@string/lbl_sort"
-        app:icon="@drawable/ic_sort_24"
+        android:contentDescription="@string/lbl_edit"
+        app:icon="@drawable/ic_edit_24"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <org.oxycblt.auxio.ui.RippleFixMaterialButton
+        android:id="@+id/header_confirm"
+        style="@style/Widget.Auxio.Button.Icon.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/lbl_ok"
+        app:icon="@drawable/ic_check_24"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <org.oxycblt.auxio.ui.RippleFixMaterialButton
+        android:id="@+id/header_cancel"
+        style="@style/Widget.Auxio.Button.Icon.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_mid_medium"
+        android:contentDescription="@string/lbl_cancel"
+        app:icon="@drawable/ic_close_24"
         app:layout_constraintEnd_toEndOf="parent" />
 
 </LinearLayout>

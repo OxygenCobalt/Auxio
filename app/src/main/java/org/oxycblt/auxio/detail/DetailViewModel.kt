@@ -22,6 +22,7 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.lang.Exception
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,6 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.detail.list.EditHeader
 import org.oxycblt.auxio.detail.list.SortHeader
 import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Divider
@@ -145,6 +147,7 @@ constructor(
         }
 
     // --- PLAYLIST ---
+
     private val _currentPlaylist = MutableStateFlow<Playlist?>(null)
     /** The current [Playlist] to display. Null if there is nothing to do. */
     val currentPlaylist: StateFlow<Playlist?>
@@ -158,16 +161,13 @@ constructor(
     val playlistInstructions: Event<UpdateInstructions>
         get() = _playlistInstructions
 
-    private var isEditingPlaylist = false
-
-    /** The current [Sort] used for [Song]s in [playlistList]. */
-    var playlistSongSort: Sort
-        get() = musicSettings.playlistSongSort
-        set(value) {
-            musicSettings.playlistSongSort = value
-            // Refresh the playlist list to reflect the new sort.
-            currentPlaylist.value?.let { refreshPlaylistList(it, true) }
-        }
+    private val _editedPlaylist = MutableStateFlow<List<Song>?>(null)
+    /**
+     * The new playlist songs created during the current editing session. Null if no editing session
+     * is occurring.
+     */
+    val editedPlaylist: StateFlow<List<Song>?>
+        get() = _editedPlaylist
 
     /**
      * The [MusicMode] to use when playing a [Song] from the UI, or null to play from the currently
@@ -220,6 +220,7 @@ constructor(
         if (changes.userLibrary && userLibrary != null) {
             val playlist = currentPlaylist.value
             if (playlist != null) {
+                logD("Updated playlist to ${currentPlaylist.value}")
                 _currentPlaylist.value =
                     userLibrary.findPlaylist(playlist.uid)?.also(::refreshPlaylistList)
             }
@@ -283,6 +284,71 @@ constructor(
         logD("Opening Playlist [uid: $uid]")
         _currentPlaylist.value =
             musicRepository.userLibrary?.findPlaylist(uid)?.also(::refreshPlaylistList)
+    }
+
+    /** Start a playlist editing session. Does nothing if a playlist is not being shown. */
+    fun startPlaylistEdit() {
+        val playlist = _currentPlaylist.value ?: return
+        logD("Starting playlist edit")
+        _editedPlaylist.value = playlist.songs
+        refreshPlaylistList(playlist)
+    }
+
+    /**
+     * End a playlist editing session and commits it to the database. Does nothing if there was no
+     * prior editing session.
+     */
+    fun confirmPlaylistEdit() {
+        val playlist = _currentPlaylist.value ?: return
+        val editedPlaylist = (_editedPlaylist.value ?: return).also { _editedPlaylist.value = null }
+        musicRepository.rewritePlaylist(playlist, editedPlaylist)
+    }
+
+    /**
+     * End a playlist editing session and keep the prior state. Does nothing if there was no prior
+     * editing session.
+     */
+    fun dropPlaylistEdit() {
+        val playlist = _currentPlaylist.value ?: return
+        _editedPlaylist.value = null
+        refreshPlaylistList(playlist)
+    }
+
+    /**
+     * (Visually) move a song in the current playlist. Does nothing if not in an editing session.
+     *
+     * @param from The start position, in the list adapter data.
+     * @param to The destination position, in the list adapter data.
+     */
+    fun movePlaylistSongs(from: Int, to: Int): Boolean {
+        val playlist = _currentPlaylist.value ?: return false
+        val editedPlaylist = (_editedPlaylist.value ?: return false).toMutableList()
+        val realFrom = from - 2
+        val realTo = to - 2
+        if (realFrom !in editedPlaylist.indices || realTo !in editedPlaylist.indices) {
+            return false
+        }
+        editedPlaylist.add(realFrom, editedPlaylist.removeAt(realTo))
+        _editedPlaylist.value = editedPlaylist
+        refreshPlaylistList(playlist, UpdateInstructions.Move(from, to))
+        return true
+    }
+
+    /**
+     * (Visually) remove a song in the current playlist. Does nothing if not in an editing session.
+     *
+     * @param at The position of the item to remove, in the list adapter data.
+     */
+    fun removePlaylistSong(at: Int) {
+        val playlist = _currentPlaylist.value ?: return
+        val editedPlaylist = (_editedPlaylist.value ?: return).toMutableList()
+        val realAt = at - 2
+        if (realAt !in editedPlaylist.indices) {
+            return
+        }
+        editedPlaylist.removeAt(realAt)
+        _editedPlaylist.value = editedPlaylist
+        refreshPlaylistList(playlist, UpdateInstructions.Remove(at))
     }
 
     private fun refreshAudioInfo(song: Song) {
@@ -408,21 +474,26 @@ constructor(
         _genreList.value = list
     }
 
-    private fun refreshPlaylistList(playlist: Playlist, replace: Boolean = false) {
+    private fun refreshPlaylistList(
+        playlist: Playlist,
+        instructions: UpdateInstructions = UpdateInstructions.Diff
+    ) {
+        logD(Exception().stackTraceToString())
         logD("Refreshing playlist list")
-        var instructions: UpdateInstructions = UpdateInstructions.Diff
         val list = mutableListOf<Item>()
 
-        if (playlist.songs.isNotEmpty()) {
-            val header = BasicHeader(R.string.lbl_songs)
-            list.add(Divider(header))
-            list.add(header)
-            if (replace) {
-                instructions = UpdateInstructions.Replace(list.size)
+        val newInstructions =
+            if (playlist.songs.isNotEmpty()) {
+                val header = EditHeader(R.string.lbl_songs)
+                list.add(Divider(header))
+                list.add(header)
+                list.addAll(_editedPlaylist.value ?: playlist.songs)
+                instructions
+            } else {
+                UpdateInstructions.Diff
             }
-            list.addAll(playlistSongSort.songs(playlist.songs))
-        }
-        _playlistInstructions.put(instructions)
+
+        _playlistInstructions.put(newInstructions)
         _playlistList.value = list
     }
 

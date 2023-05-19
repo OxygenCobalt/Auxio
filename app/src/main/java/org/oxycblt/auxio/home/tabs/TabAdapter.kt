@@ -24,7 +24,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemTabBinding
-import org.oxycblt.auxio.list.EditableListListener
+import org.oxycblt.auxio.list.EditClickListListener
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.util.inflater
@@ -32,9 +32,9 @@ import org.oxycblt.auxio.util.inflater
 /**
  * A [RecyclerView.Adapter] that displays an array of [Tab]s open for configuration.
  *
- * @param listener A [EditableListListener] for tab interactions.
+ * @param listener A [EditClickListListener] for tab interactions.
  */
-class TabAdapter(private val listener: EditableListListener<Tab>) :
+class TabAdapter(private val listener: EditClickListListener<Tab>) :
     RecyclerView.Adapter<TabViewHolder>() {
     /** The current array of [Tab]s. */
     var tabs = arrayOf<Tab>()
@@ -97,10 +97,10 @@ class TabViewHolder private constructor(private val binding: ItemTabBinding) :
      * Bind new data to this instance.
      *
      * @param tab The new [Tab] to bind.
-     * @param listener A [EditableListListener] to bind interactions to.
+     * @param listener A [EditClickListListener] to bind interactions to.
      */
     @SuppressLint("ClickableViewAccessibility")
-    fun bind(tab: Tab, listener: EditableListListener<Tab>) {
+    fun bind(tab: Tab, listener: EditClickListListener<Tab>) {
         listener.bind(tab, this, dragHandle = binding.tabDragHandle)
         binding.tabCheckBox.apply {
             // Update the CheckBox name to align with the mode

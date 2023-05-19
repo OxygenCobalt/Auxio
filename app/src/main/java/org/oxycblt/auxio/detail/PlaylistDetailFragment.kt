@@ -23,23 +23,26 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.header.DetailHeaderAdapter
 import org.oxycblt.auxio.detail.header.PlaylistDetailHeaderAdapter
-import org.oxycblt.auxio.detail.list.DetailListAdapter
 import org.oxycblt.auxio.detail.list.PlaylistDetailListAdapter
+import org.oxycblt.auxio.detail.list.PlaylistDragCallback
 import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.navigation.NavigationViewModel
@@ -55,7 +58,8 @@ import org.oxycblt.auxio.util.*
 class PlaylistDetailFragment :
     ListFragment<Song, FragmentDetailBinding>(),
     DetailHeaderAdapter.Listener,
-    DetailListAdapter.Listener<Song> {
+    PlaylistDetailListAdapter.Listener,
+    NavController.OnDestinationChangedListener {
     private val detailModel: DetailViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
@@ -66,6 +70,8 @@ class PlaylistDetailFragment :
     private val args: PlaylistDetailFragmentArgs by navArgs()
     private val playlistHeaderAdapter = PlaylistDetailHeaderAdapter(this)
     private val playlistListAdapter = PlaylistDetailListAdapter(this)
+    private var touchHelper: ItemTouchHelper? = null
+    private var initialNavDestinationChange = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +98,10 @@ class PlaylistDetailFragment :
 
         binding.detailRecycler.apply {
             adapter = ConcatAdapter(playlistHeaderAdapter, playlistListAdapter)
+            touchHelper =
+                ItemTouchHelper(PlaylistDragCallback(detailModel)).also {
+                    it.attachToRecyclerView(this)
+                }
             (layoutManager as GridLayoutManager).setFullWidthLookup {
                 if (it != 0) {
                     val item = detailModel.playlistList.value[it - 1]
@@ -107,19 +117,50 @@ class PlaylistDetailFragment :
         detailModel.setPlaylistUid(args.playlistUid)
         collectImmediately(detailModel.currentPlaylist, ::updatePlaylist)
         collectImmediately(detailModel.playlistList, ::updateList)
+        collectImmediately(detailModel.editedPlaylist, ::updateEditedPlaylist)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
+    override fun onStart() {
+        super.onStart()
+        // Once we add the destination change callback, we will receive another initialization call,
+        // so handle that by resetting the flag.
+        initialNavDestinationChange = false
+        findNavController().addOnDestinationChangedListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        findNavController().removeOnDestinationChangedListener(this)
+    }
+
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
         binding.detailToolbar.setOnMenuItemClickListener(null)
+        touchHelper = null
         binding.detailRecycler.adapter = null
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
         detailModel.playlistInstructions.consume()
+    }
+
+    override fun onDestinationChanged(
+        controller: NavController,
+        destination: NavDestination,
+        arguments: Bundle?
+    ) {
+        // Drop the initial call by NavController that simply provides us with the current
+        // destination. This would cause the selection state to be lost every time the device
+        // rotates.
+        if (!initialNavDestinationChange) {
+            initialNavDestinationChange = true
+            return
+        }
+        // Drop any pending playlist edits when navigating away.
+        detailModel.dropPlaylistEdit()
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -155,7 +196,12 @@ class PlaylistDetailFragment :
         playbackModel.playFromPlaylist(item, unlikelyToBeNull(detailModel.currentPlaylist.value))
     }
 
+    override fun onPickUp(viewHolder: RecyclerView.ViewHolder) {
+        requireNotNull(touchHelper) { "ItemTouchHelper was not available" }.startDrag(viewHolder)
+    }
+
     override fun onOpenMenu(item: Song, anchor: View) {
+        // TODO: Remove "Add to playlist" option, makes no sense
         openMusicMenu(anchor, R.menu.menu_song_actions, item)
     }
 
@@ -167,39 +213,21 @@ class PlaylistDetailFragment :
         playbackModel.shuffle(unlikelyToBeNull(detailModel.currentPlaylist.value))
     }
 
-    override fun onOpenSortMenu(anchor: View) {
-        openMenu(anchor, R.menu.menu_playlist_sort) {
-            // Select the corresponding sort mode option
-            val sort = detailModel.playlistSongSort
-            unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
-            // Select the corresponding sort direction option
-            val directionItemId =
-                when (sort.direction) {
-                    Sort.Direction.ASCENDING -> R.id.option_sort_asc
-                    Sort.Direction.DESCENDING -> R.id.option_sort_dec
-                }
-            unlikelyToBeNull(menu.findItem(directionItemId)).isChecked = true
-            // If there is no sort specified, disable the ascending/descending options, as
-            // they make no sense. We still do want to indicate the state however, in the case
-            // that the user wants to switch to a sort mode where they do make sense.
-            if (sort.mode is Sort.Mode.ByNone) {
-                menu.findItem(R.id.option_sort_dec).isEnabled = false
-                menu.findItem(R.id.option_sort_asc).isEnabled = false
-            }
+    override fun onStartEdit() {
+        selectionModel.drop()
+        detailModel.startPlaylistEdit()
+    }
 
-            setOnMenuItemClickListener { item ->
-                item.isChecked = !item.isChecked
-                detailModel.playlistSongSort =
-                    when (item.itemId) {
-                        // Sort direction options
-                        R.id.option_sort_asc -> sort.withDirection(Sort.Direction.ASCENDING)
-                        R.id.option_sort_dec -> sort.withDirection(Sort.Direction.DESCENDING)
-                        // Any other option is a sort mode
-                        else -> sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
-                    }
-                true
-            }
-        }
+    override fun onConfirmEdit() {
+        detailModel.confirmPlaylistEdit()
+    }
+
+    override fun onDropEdit() {
+        detailModel.dropPlaylistEdit()
+    }
+
+    override fun onOpenSortMenu(anchor: View) {
+        throw IllegalStateException()
     }
 
     private fun updatePlaylist(playlist: Playlist?) {
@@ -248,6 +276,12 @@ class PlaylistDetailFragment :
 
     private fun updateList(list: List<Item>) {
         playlistListAdapter.update(list, detailModel.playlistInstructions.consume())
+    }
+
+    private fun updateEditedPlaylist(editedPlaylist: List<Song>?) {
+        // TODO: Disable check item when no edits have been made
+        // TODO: Improve how this state change looks
+        playlistListAdapter.setEditing(editedPlaylist != null)
     }
 
     private fun updateSelection(selected: List<Music>) {

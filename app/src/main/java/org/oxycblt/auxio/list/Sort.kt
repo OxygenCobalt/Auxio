@@ -207,19 +207,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
         fun getPlaylistComparator(direction: Direction): Comparator<Playlist>? = null
 
         /**
-         * Sort by the item's natural order.
-         *
-         * @see Music.name
-         */
-        object ByNone : Mode {
-            override val intCode: Int
-                get() = IntegerTable.SORT_BY_NONE
-
-            override val itemId: Int
-                get() = R.id.option_sort_none
-        }
-
-        /**
          * Sort by the item's name.
          *
          * @see Music.name
@@ -455,7 +442,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
              */
             fun fromIntCode(intCode: Int) =
                 when (intCode) {
-                    ByNone.intCode -> ByNone
                     ByName.intCode -> ByName
                     ByArtist.intCode -> ByArtist
                     ByAlbum.intCode -> ByAlbum
@@ -477,7 +463,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
              */
             fun fromItemId(@IdRes itemId: Int) =
                 when (itemId) {
-                    ByNone.itemId -> ByNone
                     ByName.itemId -> ByName
                     ByAlbum.itemId -> ByAlbum
                     ByArtist.itemId -> ByArtist

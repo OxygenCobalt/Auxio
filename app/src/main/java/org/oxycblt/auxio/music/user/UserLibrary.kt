@@ -101,6 +101,14 @@ interface MutableUserLibrary : UserLibrary {
      * @param playlist The [Playlist] to add to. Must currently exist.
      */
     fun addToPlaylist(playlist: Playlist, songs: List<Song>)
+
+    /**
+     * Update the [Song]s of a [Playlist].
+     *
+     * @param playlist The [Playlist] to update.
+     * @param songs The new [Song]s to be contained in the [Playlist].
+     */
+    fun rewritePlaylist(playlist: Playlist, songs: List<Song>)
 }
 
 class UserLibraryFactoryImpl
@@ -147,5 +155,12 @@ private class UserLibraryImpl(
         val playlistImpl =
             requireNotNull(playlistMap[playlist.uid]) { "Cannot add to invalid playlist" }
         playlistMap[playlist.uid] = playlistImpl.edit { addAll(songs) }
+    }
+
+    @Synchronized
+    override fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
+        val playlistImpl =
+            requireNotNull(playlistMap[playlist.uid]) { "Cannot rewrite invalid playlist" }
+        playlistMap[playlist.uid] = playlistImpl.edit(songs)
     }
 }

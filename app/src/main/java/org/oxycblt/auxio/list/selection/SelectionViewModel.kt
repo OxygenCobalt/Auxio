@@ -96,7 +96,7 @@ constructor(
                     is Album -> musicSettings.albumSongSort.songs(it.songs)
                     is Artist -> musicSettings.artistSongSort.songs(it.songs)
                     is Genre -> musicSettings.genreSongSort.songs(it.songs)
-                    is Playlist -> musicSettings.playlistSongSort.songs(it.songs)
+                    is Playlist -> it.songs
                 }
             }
             .also { drop() }

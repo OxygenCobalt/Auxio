@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * ExtendedDragCallback.kt is part of Auxio.
+ * MaterialDragCallback.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ) =
-        if (viewHolder is ViewHolder) {
+        if (viewHolder is ViewHolder && viewHolder.enabled) {
             makeFlag(
                 ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN) or
                 makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)
@@ -138,6 +138,8 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
 
     /** Required [RecyclerView.ViewHolder] implementation that exposes the following. */
     interface ViewHolder {
+        /** Whether this [ViewHolder] can be moved right now. */
+        val enabled: Boolean
         /** The root view containing the delete scrim and information. */
         val root: View
         /** The body view containing music information. */

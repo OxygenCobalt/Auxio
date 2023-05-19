@@ -29,7 +29,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogTabsBinding
 import org.oxycblt.auxio.home.HomeSettings
-import org.oxycblt.auxio.list.EditableListListener
+import org.oxycblt.auxio.list.EditClickListListener
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.logD
 
@@ -40,7 +40,7 @@ import org.oxycblt.auxio.util.logD
  */
 @AndroidEntryPoint
 class TabCustomizeDialog :
-    ViewBindingDialogFragment<DialogTabsBinding>(), EditableListListener<Tab> {
+    ViewBindingDialogFragment<DialogTabsBinding>(), EditClickListListener<Tab> {
     private val tabAdapter = TabAdapter(this)
     private var touchHelper: ItemTouchHelper? = null
     @Inject lateinit var homeSettings: HomeSettings

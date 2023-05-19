@@ -50,11 +50,11 @@ interface ClickableListListener<in T> {
 }
 
 /**
- * An extension of [ClickableListListener] that enables list editing functionality.
+ * A listener for lists that can be edited.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-interface EditableListListener<in T> : ClickableListListener<T> {
+interface EditableListListener {
     /**
      * Called when a [RecyclerView.ViewHolder] requests that it should be dragged.
      *
@@ -62,6 +62,29 @@ interface EditableListListener<in T> : ClickableListListener<T> {
      */
     fun onPickUp(viewHolder: RecyclerView.ViewHolder)
 
+    /**
+     * Binds this instance to a list item.
+     *
+     * @param viewHolder The [RecyclerView.ViewHolder] to bind.
+     * @param dragHandle A touchable [View]. Any drag on this view will start a drag event.
+     */
+    fun bind(viewHolder: RecyclerView.ViewHolder, dragHandle: View) {
+        dragHandle.setOnTouchListener { _, motionEvent ->
+            dragHandle.performClick()
+            if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
+                onPickUp(viewHolder)
+                true
+            } else false
+        }
+    }
+}
+
+/**
+ * A listener for lists that can be clicked and edited at the same time.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+interface EditClickListListener<in T> : ClickableListListener<T>, EditableListListener {
     /**
      * Binds this instance to a list item.
      *
@@ -78,13 +101,7 @@ interface EditableListListener<in T> : ClickableListListener<T> {
         dragHandle: View
     ) {
         bind(item, viewHolder, bodyView)
-        dragHandle.setOnTouchListener { _, motionEvent ->
-            dragHandle.performClick()
-            if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
-                onPickUp(viewHolder)
-                true
-            } else false
-        }
+        bind(viewHolder, dragHandle)
     }
 }
 

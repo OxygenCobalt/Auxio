@@ -111,8 +111,8 @@ abstract class DetailListAdapter(
 data class SortHeader(@StringRes override val titleRes: Int) : Header
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [SortHeader], a variation on [BasicHeader] that adds
- * a button opening a menu for sorting. Use [from] to create an instance.
+ * A [RecyclerView.ViewHolder] that displays a [SortHeader] and it's actions. Use [from] to create
+ * an instance.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -126,7 +126,7 @@ private class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
      */
     fun bind(sortHeader: SortHeader, listener: DetailListAdapter.Listener<*>) {
         binding.headerTitle.text = binding.context.getString(sortHeader.titleRes)
-        binding.headerButton.apply {
+        binding.headerSort.apply {
             // Add a Tooltip based on the content description so that the purpose of this
             // button can be clear.
             TooltipCompat.setTooltipText(this, contentDescription)
