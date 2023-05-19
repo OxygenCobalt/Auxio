@@ -291,4 +291,8 @@
     <string name="lbl_delete">Видалити</string>
     <string name="lbl_confirm_delete_playlist">Видалити список відтворення\?</string>
     <string name="fmt_deletion_info">Видалити %s\? Цю дію не можна скасувати.</string>
+    <string name="lng_playlist_deleted">Список відтворення видалено</string>
+    <string name="lbl_rename">Перейменувати</string>
+    <string name="lbl_rename_playlist">Перейменувати список відтворення</string>
+    <string name="lng_playlist_renamed">Список відтворення перейменовано</string>
 </resources>
