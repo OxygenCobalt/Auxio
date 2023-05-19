@@ -287,4 +287,8 @@
     <string name="def_song_count">Keine Lieder</string>
     <string name="fmt_def_playlist">Wiedergabeliste %d</string>
     <string name="fmt_deletion_info">%s löschen\? Dies kann nicht rückgängig gemacht werden.</string>
+    <string name="lbl_rename">Umbenennen</string>
+    <string name="lbl_rename_playlist">Wiedergabeliste umbenennen</string>
+    <string name="lng_playlist_renamed">Wiedergabeliste umbenannt</string>
+    <string name="lng_playlist_deleted">Wiedergabeliste gelöscht</string>
 </resources>
