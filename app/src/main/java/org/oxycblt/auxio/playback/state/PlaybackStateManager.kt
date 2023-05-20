@@ -534,17 +534,24 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         val internalPlayer = internalPlayer ?: return
         logD("Restoring state $savedState")
 
+        val lastSong = queue.currentSong
         parent = savedState.parent
         queue.applySavedState(savedState.queueState)
         repeatMode = savedState.repeatMode
         notifyNewPlayback()
 
-        // Continuing playback while also possibly doing drastic state updates is
-        // a bad idea, so pause.
-        internalPlayer.loadSong(queue.currentSong, false)
-        if (queue.currentSong != null) {
-            // Internal player may have reloaded the media item, re-seek to the previous position
-            seekTo(savedState.positionMs)
+        // Check if we need to reload the player with a new music file, or if we can just leave
+        // it be. Specifically done so we don't pause on music updates that don't really change
+        // what's playing (ex. playlist editing)
+        if (lastSong != queue.currentSong) {
+            // Continuing playback while also possibly doing drastic state updates is
+            // a bad idea, so pause.
+            internalPlayer.loadSong(queue.currentSong, false)
+            if (queue.currentSong != null) {
+                // Internal player may have reloaded the media item, re-seek to the previous
+                // position
+                seekTo(savedState.positionMs)
+            }
         }
         isInitialized = true
     }

@@ -34,6 +34,7 @@ import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.navigation.MainNavigationAction
@@ -50,6 +51,8 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * available controls.
  *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Improve flickering situation on play button
  */
 @AndroidEntryPoint
 class PlaybackPanelFragment :
@@ -57,6 +60,7 @@ class PlaybackPanelFragment :
     Toolbar.OnMenuItemClickListener,
     StyledSeekBar.Listener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
 
@@ -162,6 +166,10 @@ class PlaybackPanelFragment :
             }
             R.id.action_go_album -> {
                 navigateToCurrentAlbum()
+                true
+            }
+            R.id.action_playlist_add -> {
+                playbackModel.song.value?.let(musicModel::addToPlaylist)
                 true
             }
             R.id.action_song_detail -> {

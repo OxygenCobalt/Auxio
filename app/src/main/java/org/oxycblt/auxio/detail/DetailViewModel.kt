@@ -348,7 +348,6 @@ constructor(
      * @param at The position of the item to remove, in the list adapter data.
      */
     fun removePlaylistSong(at: Int) {
-        // TODO: Remove header when empty
         val playlist = _currentPlaylist.value ?: return
         val editedPlaylist = (_editedPlaylist.value ?: return).toMutableList()
         val realAt = at - 2
@@ -357,7 +356,13 @@ constructor(
         }
         editedPlaylist.removeAt(realAt)
         _editedPlaylist.value = editedPlaylist
-        refreshPlaylistList(playlist, UpdateInstructions.Remove(at))
+        refreshPlaylistList(
+            playlist,
+            if (editedPlaylist.isNotEmpty()) {
+                UpdateInstructions.Remove(at, 1)
+            } else {
+                UpdateInstructions.Remove(at - 2, 3)
+            })
     }
 
     private fun refreshAudioInfo(song: Song) {
@@ -490,18 +495,15 @@ constructor(
         logD("Refreshing playlist list")
         val list = mutableListOf<Item>()
 
-        val newInstructions =
-            if (playlist.songs.isNotEmpty()) {
-                val header = EditHeader(R.string.lbl_songs)
-                list.add(Divider(header))
-                list.add(header)
-                list.addAll(_editedPlaylist.value ?: playlist.songs)
-                instructions
-            } else {
-                UpdateInstructions.Diff
-            }
+        val songs = editedPlaylist.value ?: playlist.songs
+        if (songs.isNotEmpty()) {
+            val header = EditHeader(R.string.lbl_songs)
+            list.add(Divider(header))
+            list.add(header)
+            list.addAll(songs)
+        }
 
-        _playlistInstructions.put(newInstructions)
+        _playlistInstructions.put(instructions)
         _playlistList.value = list
     }
 

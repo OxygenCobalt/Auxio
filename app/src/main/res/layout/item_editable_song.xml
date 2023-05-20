@@ -32,7 +32,7 @@
             android:id="@+id/interact_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground">
+            android:background="@drawable/ui_item_ripple">
 
             <org.oxycblt.auxio.image.ImageGroup
                 android:id="@+id/song_album_cover"

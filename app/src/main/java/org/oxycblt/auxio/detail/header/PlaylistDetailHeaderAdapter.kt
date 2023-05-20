@@ -83,6 +83,7 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
         editedPlaylist: List<Song>?,
         listener: DetailHeaderAdapter.Listener
     ) {
+        // TODO: Debug perpetually re-binding images
         binding.detailCover.bind(playlist, editedPlaylist)
         binding.detailType.text = binding.context.getString(R.string.lbl_playlist)
         binding.detailName.text = playlist.name.resolve(binding.context)

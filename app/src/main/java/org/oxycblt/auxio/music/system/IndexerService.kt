@@ -131,7 +131,6 @@ class IndexerService :
     override val scope = indexScope
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        // TODO: Do not pause when playlist changes
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         // Wipe possibly-invalidated outdated covers
         imageLoader.memoryCache?.clear()

@@ -99,7 +99,7 @@ class PlaylistDetailListAdapter(private val listener: Listener) :
             return
         }
         this.isEditing = editing
-        notifyItemRangeChanged(1, currentList.size - 2, PAYLOAD_EDITING_CHANGED)
+        notifyItemRangeChanged(1, currentList.size - 1, PAYLOAD_EDITING_CHANGED)
     }
 
     /** An extended [DetailListAdapter.Listener] for [PlaylistDetailListAdapter]. */
@@ -256,6 +256,7 @@ private constructor(private val binding: ItemEditableSongBinding) :
     }
 
     override fun updateSelectionIndicator(isSelected: Boolean) {
+        binding.interactBody.isActivated = isSelected
         binding.songAlbumCover.isActivated = isSelected
     }
 

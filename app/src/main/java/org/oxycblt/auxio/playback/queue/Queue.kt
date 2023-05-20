@@ -306,7 +306,7 @@ class EditableQueue : Queue {
                 else -> Queue.Change.Type.MAPPING
             }
         check()
-        return Queue.Change(type, UpdateInstructions.Remove(at))
+        return Queue.Change(type, UpdateInstructions.Remove(at, 1))
     }
 
     /**

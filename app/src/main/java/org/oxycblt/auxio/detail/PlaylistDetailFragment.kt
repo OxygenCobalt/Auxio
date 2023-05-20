@@ -211,8 +211,7 @@ class PlaylistDetailFragment :
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {
-        // TODO: Remove "Add to playlist" option, makes no sense
-        openMusicMenu(anchor, R.menu.menu_song_actions, item)
+        openMusicMenu(anchor, R.menu.menu_playlist_song_actions, item)
     }
 
     override fun onPlay() {
@@ -284,9 +283,11 @@ class PlaylistDetailFragment :
         playlistHeaderAdapter.setEditedPlaylist(editedPlaylist)
         selectionModel.drop()
 
-        logD(editedPlaylist == detailModel.currentPlaylist.value?.songs)
-        requireBinding().detailEditToolbar.menu.findItem(R.id.action_save).isEnabled =
-            editedPlaylist != detailModel.currentPlaylist.value?.songs
+        if (editedPlaylist != null) {
+            requireBinding().detailEditToolbar.menu.findItem(R.id.action_save).apply {
+                isEnabled = editedPlaylist != detailModel.currentPlaylist.value?.songs
+            }
+        }
 
         updateMultiToolbar()
     }

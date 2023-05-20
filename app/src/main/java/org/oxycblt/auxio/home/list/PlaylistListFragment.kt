@@ -44,6 +44,13 @@ import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 
+/**
+ * A [ListFragment] that shows a list of [Playlist]s.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Show a placeholder when there are no playlists.
+ */
 class PlaylistListFragment :
     ListFragment<Playlist, FragmentHomeListBinding>(),
     FastScrollRecyclerView.PopupProvider,
