@@ -24,7 +24,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.TooltipCompat
-import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -148,7 +147,11 @@ class PlaylistDetailListAdapter(private val listener: Listener) :
  */
 data class EditHeader(@StringRes override val titleRes: Int) : Header
 
-/** Displays an [EditHeader] and it's actions. Use [from] to create an instance. */
+/**
+ * Displays an [EditHeader] and it's actions. Use [from] to create an instance.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 private class EditHeaderViewHolder private constructor(private val binding: ItemEditHeaderBinding) :
     RecyclerView.ViewHolder(binding.root), PlaylistDetailListAdapter.ViewHolder {
     /**
@@ -165,21 +168,10 @@ private class EditHeaderViewHolder private constructor(private val binding: Item
             TooltipCompat.setTooltipText(this, contentDescription)
             setOnClickListener { listener.onStartEdit() }
         }
-        binding.headerSort.apply {
-            TooltipCompat.setTooltipText(this, contentDescription)
-            setOnClickListener(listener::onOpenSortMenu)
-        }
     }
 
     override fun updateEditing(editing: Boolean) {
-        binding.headerEdit.apply {
-            isGone = editing
-            jumpDrawablesToCurrentState()
-        }
-        binding.headerSort.apply {
-            isGone = !editing
-            jumpDrawablesToCurrentState()
-        }
+        binding.headerEdit.isEnabled = !editing
     }
 
     companion object {
