@@ -102,7 +102,7 @@ class HomeFragment :
 
         // --- UI SETUP ---
         binding.homeAppbar.addOnOffsetChangedListener(this)
-        binding.homeToolbar.apply {
+        binding.homeNormalToolbar.apply {
             setOnMenuItemClickListener(this@HomeFragment)
             MenuCompat.setGroupDividerEnabled(menu, true)
         }
@@ -169,7 +169,7 @@ class HomeFragment :
         super.onDestroyBinding(binding)
         storagePermissionLauncher = null
         binding.homeAppbar.removeOnOffsetChangedListener(this)
-        binding.homeToolbar.setOnMenuItemClickListener(null)
+        binding.homeNormalToolbar.setOnMenuItemClickListener(null)
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
@@ -178,8 +178,7 @@ class HomeFragment :
         // Fade out the toolbar as the AppBarLayout collapses. To prevent status bar overlap,
         // the alpha transition is shifted such that the Toolbar becomes fully transparent
         // when the AppBarLayout is only at half-collapsed.
-        binding.homeSelectionToolbar.alpha =
-            1f - (abs(verticalOffset.toFloat()) / (range.toFloat() / 2))
+        binding.homeToolbar.alpha = 1f - (abs(verticalOffset.toFloat()) / (range.toFloat() / 2))
         binding.homeContent.updatePadding(
             bottom = binding.homeAppbar.totalScrollRange + verticalOffset)
     }
@@ -243,7 +242,7 @@ class HomeFragment :
         binding.homePager.adapter =
             HomePagerAdapter(homeModel.currentTabModes, childFragmentManager, viewLifecycleOwner)
 
-        val toolbarParams = binding.homeSelectionToolbar.layoutParams as AppBarLayout.LayoutParams
+        val toolbarParams = binding.homeToolbar.layoutParams as AppBarLayout.LayoutParams
         if (homeModel.currentTabModes.size == 1) {
             // A single tab makes the tab layout redundant, hide it and disable the collapsing
             // behavior.
@@ -285,7 +284,7 @@ class HomeFragment :
             }
 
         val sortMenu =
-            unlikelyToBeNull(binding.homeToolbar.menu.findItem(R.id.submenu_sorting).subMenu)
+            unlikelyToBeNull(binding.homeNormalToolbar.menu.findItem(R.id.submenu_sorting).subMenu)
         val toHighlight = homeModel.getSortForTab(tabMode)
 
         for (option in sortMenu) {
@@ -456,11 +455,15 @@ class HomeFragment :
 
     private fun updateSelection(selected: List<Music>) {
         val binding = requireBinding()
-        if (binding.homeSelectionToolbar.updateSelectionAmount(selected.size) &&
-            selected.isNotEmpty()) {
-            // New selection started, show the AppBarLayout to indicate the new state.
-            logD("Significant selection occurred, expanding AppBar")
-            binding.homeAppbar.expandWithScrollingRecycler()
+        if (selected.isNotEmpty()) {
+            binding.homeSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
+            if (binding.homeToolbar.setVisible(R.id.home_selection_toolbar)) {
+                // New selection started, show the AppBarLayout to indicate the new state.
+                logD("Significant selection occurred, expanding AppBar")
+                binding.homeAppbar.expandWithScrollingRecycler()
+            }
+        } else {
+            binding.homeToolbar.setVisible(R.id.home_normal_toolbar)
         }
     }
 

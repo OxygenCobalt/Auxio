@@ -22,7 +22,6 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.lang.Exception
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -298,7 +297,7 @@ constructor(
      * End a playlist editing session and commits it to the database. Does nothing if there was no
      * prior editing session.
      */
-    fun confirmPlaylistEdit() {
+    fun savePlaylistEdit() {
         val playlist = _currentPlaylist.value ?: return
         val editedPlaylist = (_editedPlaylist.value ?: return).also { _editedPlaylist.value = null }
         musicRepository.rewritePlaylist(playlist, editedPlaylist)
@@ -307,11 +306,18 @@ constructor(
     /**
      * End a playlist editing session and keep the prior state. Does nothing if there was no prior
      * editing session.
+     *
+     * @return true if the session was ended, false otherwise.
      */
-    fun dropPlaylistEdit() {
-        val playlist = _currentPlaylist.value ?: return
+    fun dropPlaylistEdit(): Boolean {
+        val playlist = _currentPlaylist.value ?: return false
+        if (_editedPlaylist.value == null) {
+            // Nothing to do.
+            return false
+        }
         _editedPlaylist.value = null
         refreshPlaylistList(playlist)
+        return true
     }
 
     /**
@@ -319,8 +325,10 @@ constructor(
      *
      * @param from The start position, in the list adapter data.
      * @param to The destination position, in the list adapter data.
+     * @return true if the song was moved, false otherwise.
      */
     fun movePlaylistSongs(from: Int, to: Int): Boolean {
+        // TODO: Song re-sorting
         val playlist = _currentPlaylist.value ?: return false
         val editedPlaylist = (_editedPlaylist.value ?: return false).toMutableList()
         val realFrom = from - 2
@@ -340,6 +348,7 @@ constructor(
      * @param at The position of the item to remove, in the list adapter data.
      */
     fun removePlaylistSong(at: Int) {
+        // TODO: Remove header when empty
         val playlist = _currentPlaylist.value ?: return
         val editedPlaylist = (_editedPlaylist.value ?: return).toMutableList()
         val realAt = at - 2
@@ -478,7 +487,6 @@ constructor(
         playlist: Playlist,
         instructions: UpdateInstructions = UpdateInstructions.Diff
     ) {
-        logD(Exception().stackTraceToString())
         logD("Refreshing playlist list")
         val list = mutableListOf<Item>()
 

@@ -50,6 +50,7 @@ import okio.buffer
 import okio.source
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logD
@@ -66,10 +67,10 @@ constructor(
         val albums = computeAlbumOrdering(songs)
         val streams = mutableListOf<InputStream>()
         for (album in albums) {
+            openInputStream(album)?.let(streams::add)
             if (streams.size == 4) {
                 return createMosaic(streams, size)
             }
-            openInputStream(album)?.let(streams::add)
         }
 
         return streams.firstOrNull()?.let { stream ->
@@ -81,7 +82,7 @@ constructor(
     }
 
     fun computeAlbumOrdering(songs: List<Song>): Collection<Album> =
-        songs.groupByTo(sortedMapOf(compareByDescending { it.songs.size })) { it.album }.keys
+        Sort(Sort.Mode.ByCount, Sort.Direction.DESCENDING).albums(songs.groupBy { it.album }.keys)
 
     private suspend fun openInputStream(album: Album): InputStream? =
         try {

@@ -90,9 +90,14 @@ class PlaylistDetailFragment :
         super.onBindingCreated(binding, savedInstanceState)
 
         // --- UI SETUP ---
-        binding.detailToolbar.apply {
+        binding.detailNormalToolbar.apply {
             inflateMenu(R.menu.menu_playlist_detail)
             setNavigationOnClickListener { findNavController().navigateUp() }
+            setOnMenuItemClickListener(this@PlaylistDetailFragment)
+        }
+
+        binding.detailEditToolbar.apply {
+            setNavigationOnClickListener { detailModel.dropPlaylistEdit() }
             setOnMenuItemClickListener(this@PlaylistDetailFragment)
         }
 
@@ -139,7 +144,7 @@ class PlaylistDetailFragment :
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
-        binding.detailToolbar.setOnMenuItemClickListener(null)
+        binding.detailNormalToolbar.setOnMenuItemClickListener(null)
         touchHelper = null
         binding.detailRecycler.adapter = null
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
@@ -159,7 +164,8 @@ class PlaylistDetailFragment :
             initialNavDestinationChange = true
             return
         }
-        // Drop any pending playlist edits when navigating away.
+        // Drop any pending playlist edits when navigating away. This could actually happen
+        // if the user is quick enough.
         detailModel.dropPlaylistEdit()
     }
 
@@ -188,6 +194,10 @@ class PlaylistDetailFragment :
                 musicModel.deletePlaylist(currentPlaylist)
                 true
             }
+            R.id.action_save -> {
+                detailModel.savePlaylistEdit()
+                true
+            }
             else -> false
         }
     }
@@ -214,21 +224,10 @@ class PlaylistDetailFragment :
     }
 
     override fun onStartEdit() {
-        selectionModel.drop()
         detailModel.startPlaylistEdit()
     }
 
-    override fun onConfirmEdit() {
-        detailModel.confirmPlaylistEdit()
-    }
-
-    override fun onDropEdit() {
-        detailModel.dropPlaylistEdit()
-    }
-
-    override fun onOpenSortMenu(anchor: View) {
-        throw IllegalStateException()
-    }
+    override fun onOpenSortMenu(anchor: View) {}
 
     private fun updatePlaylist(playlist: Playlist?) {
         if (playlist == null) {
@@ -236,7 +235,9 @@ class PlaylistDetailFragment :
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailToolbar.title = playlist.name.resolve(requireContext())
+        val binding = requireBinding()
+        binding.detailNormalToolbar.title = playlist.name.resolve(requireContext())
+        binding.detailEditToolbar.title = "Editing ${playlist.name.resolve(requireContext())}"
         playlistHeaderAdapter.setParent(playlist)
     }
 
@@ -279,18 +280,35 @@ class PlaylistDetailFragment :
     }
 
     private fun updateEditedPlaylist(editedPlaylist: List<Song>?) {
-        // TODO: Disable check item when no edits have been made
-
-        // TODO: Massively improve how this UI is indicated:
-        //  - Add an additional toolbar to indicate editing
-        //  - Header should flip to re-sort button eventually
-
         playlistListAdapter.setEditing(editedPlaylist != null)
         playlistHeaderAdapter.setEditedPlaylist(editedPlaylist)
+        selectionModel.drop()
+
+        logD(editedPlaylist == detailModel.currentPlaylist.value?.songs)
+        requireBinding().detailEditToolbar.menu.findItem(R.id.action_save).isEnabled =
+            editedPlaylist != detailModel.currentPlaylist.value?.songs
+
+        updateMultiToolbar()
     }
 
     private fun updateSelection(selected: List<Music>) {
         playlistListAdapter.setSelected(selected.toSet())
-        requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
+
+        val binding = requireBinding()
+        if (selected.isNotEmpty()) {
+            binding.detailSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
+        }
+        updateMultiToolbar()
+    }
+
+    private fun updateMultiToolbar() {
+        val id =
+            when {
+                detailModel.editedPlaylist.value != null -> R.id.detail_edit_toolbar
+                selectionModel.selected.value.isNotEmpty() -> R.id.detail_selection_toolbar
+                else -> R.id.detail_normal_toolbar
+            }
+
+        requireBinding().detailToolbar.setVisible(id)
     }
 }

@@ -106,10 +106,6 @@ class PlaylistDetailListAdapter(private val listener: Listener) :
     interface Listener : DetailListAdapter.Listener<Song>, EditableListListener {
         /** Called when the "edit" option is selected in the edit header. */
         fun onStartEdit()
-        /** Called when the "confirm" option is selected in the edit header. */
-        fun onConfirmEdit()
-        /** Called when the "cancel" option is selected in the edit header. */
-        fun onDropEdit()
     }
 
     /**
@@ -169,13 +165,9 @@ private class EditHeaderViewHolder private constructor(private val binding: Item
             TooltipCompat.setTooltipText(this, contentDescription)
             setOnClickListener { listener.onStartEdit() }
         }
-        binding.headerConfirm.apply {
+        binding.headerSort.apply {
             TooltipCompat.setTooltipText(this, contentDescription)
-            setOnClickListener { listener.onConfirmEdit() }
-        }
-        binding.headerCancel.apply {
-            TooltipCompat.setTooltipText(this, contentDescription)
-            setOnClickListener { listener.onDropEdit() }
+            setOnClickListener(listener::onOpenSortMenu)
         }
     }
 
@@ -184,12 +176,8 @@ private class EditHeaderViewHolder private constructor(private val binding: Item
             isGone = editing
             jumpDrawablesToCurrentState()
         }
-        binding.headerConfirm.apply {
-            isVisible = editing
-            jumpDrawablesToCurrentState()
-        }
-        binding.headerCancel.apply {
-            isVisible = editing
+        binding.headerSort.apply {
+            isGone = !editing
             jumpDrawablesToCurrentState()
         }
     }
@@ -238,6 +226,7 @@ private constructor(private val binding: ItemEditableSongBinding) :
             elevation = binding.context.getDimen(R.dimen.elevation_normal)
             alpha = 0
         }
+
     init {
         binding.body.background =
             LayerDrawable(

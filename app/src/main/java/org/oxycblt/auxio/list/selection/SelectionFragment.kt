@@ -39,20 +39,13 @@ abstract class SelectionFragment<VB : ViewBinding> :
     protected abstract val musicModel: MusicViewModel
     protected abstract val playbackModel: PlaybackViewModel
 
-    /**
-     * Get the [SelectionToolbarOverlay] of the concrete Fragment to be automatically managed by
-     * [SelectionFragment].
-     *
-     * @return The [SelectionToolbarOverlay] of the concrete [SelectionFragment]'s [VB], or null if
-     *   there is not one.
-     */
-    open fun getSelectionToolbar(binding: VB): SelectionToolbarOverlay? = null
+    open fun getSelectionToolbar(binding: VB): Toolbar? = null
 
     override fun onBindingCreated(binding: VB, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
         getSelectionToolbar(binding)?.apply {
             // Add cancel and menu item listeners to manage what occurs with the selection.
-            setOnSelectionCancelListener { selectionModel.drop() }
+            setNavigationOnClickListener { selectionModel.drop() }
             setOnMenuItemClickListener(this@SelectionFragment)
         }
     }

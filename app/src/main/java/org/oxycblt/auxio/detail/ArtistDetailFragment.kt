@@ -91,7 +91,7 @@ class ArtistDetailFragment :
         super.onBindingCreated(binding, savedInstanceState)
 
         // --- UI SETUP ---
-        binding.detailToolbar.apply {
+        binding.detailNormalToolbar.apply {
             inflateMenu(R.menu.menu_parent_detail)
             setNavigationOnClickListener { findNavController().navigateUp() }
             setOnMenuItemClickListener(this@ArtistDetailFragment)
@@ -122,7 +122,7 @@ class ArtistDetailFragment :
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
-        binding.detailToolbar.setOnMenuItemClickListener(null)
+        binding.detailNormalToolbar.setOnMenuItemClickListener(null)
         binding.detailRecycler.adapter = null
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
@@ -223,7 +223,7 @@ class ArtistDetailFragment :
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailToolbar.title = artist.name.resolve(requireContext())
+        requireBinding().detailNormalToolbar.title = artist.name.resolve(requireContext())
         artistHeaderAdapter.setParent(artist)
     }
 
@@ -283,6 +283,13 @@ class ArtistDetailFragment :
 
     private fun updateSelection(selected: List<Music>) {
         artistListAdapter.setSelected(selected.toSet())
-        requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
+
+        val binding = requireBinding()
+        if (selected.isNotEmpty()) {
+            binding.detailSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
+            binding.detailToolbar.setVisible(R.id.detail_selection_toolbar)
+        } else {
+            binding.detailToolbar.setVisible(R.id.detail_normal_toolbar)
+        }
     }
 }
