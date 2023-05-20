@@ -299,8 +299,13 @@ constructor(
      */
     fun savePlaylistEdit() {
         val playlist = _currentPlaylist.value ?: return
-        val editedPlaylist = (_editedPlaylist.value ?: return).also { _editedPlaylist.value = null }
-        musicRepository.rewritePlaylist(playlist, editedPlaylist)
+        val editedPlaylist = _editedPlaylist.value ?: return
+        viewModelScope.launch {
+            musicRepository.rewritePlaylist(playlist, editedPlaylist)
+            // TODO: The user could probably press some kind of button if they were fast enough.
+            //  Think of a better way to handle this state.
+            _editedPlaylist.value = null
+        }
     }
 
     /**

@@ -116,7 +116,7 @@ interface MusicRepository {
      * @param name The name of the new [Playlist].
      * @param songs The songs to populate the new [Playlist] with.
      */
-    fun createPlaylist(name: String, songs: List<Song>)
+    suspend fun createPlaylist(name: String, songs: List<Song>)
 
     /**
      * Rename a [Playlist].
@@ -124,14 +124,14 @@ interface MusicRepository {
      * @param playlist The [Playlist] to rename.
      * @param name The name of the new [Playlist].
      */
-    fun renamePlaylist(playlist: Playlist, name: String)
+    suspend fun renamePlaylist(playlist: Playlist, name: String)
 
     /**
      * Delete a [Playlist].
      *
      * @param playlist The playlist to delete.
      */
-    fun deletePlaylist(playlist: Playlist)
+    suspend fun deletePlaylist(playlist: Playlist)
 
     /**
      * Add the given [Song]s to a [Playlist].
@@ -139,7 +139,7 @@ interface MusicRepository {
      * @param songs The [Song]s to add to the [Playlist].
      * @param playlist The [Playlist] to add to.
      */
-    fun addToPlaylist(songs: List<Song>, playlist: Playlist)
+    suspend fun addToPlaylist(songs: List<Song>, playlist: Playlist)
 
     /**
      * Update the [Song]s of a [Playlist].
@@ -147,7 +147,7 @@ interface MusicRepository {
      * @param playlist The [Playlist] to update.
      * @param songs The new [Song]s to be contained in the [Playlist].
      */
-    fun rewritePlaylist(playlist: Playlist, songs: List<Song>)
+    suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>)
 
     /**
      * Request that a music loading operation is started by the current [IndexingWorker]. Does
@@ -276,7 +276,7 @@ constructor(
         (deviceLibrary?.run { findSong(uid) ?: findAlbum(uid) ?: findArtist(uid) ?: findGenre(uid) }
             ?: userLibrary?.findPlaylist(uid))
 
-    override fun createPlaylist(name: String, songs: List<Song>) {
+    override suspend fun createPlaylist(name: String, songs: List<Song>) {
         val userLibrary = userLibrary ?: return
         userLibrary.createPlaylist(name, songs)
         for (listener in updateListeners) {
@@ -285,7 +285,7 @@ constructor(
         }
     }
 
-    override fun renamePlaylist(playlist: Playlist, name: String) {
+    override suspend fun renamePlaylist(playlist: Playlist, name: String) {
         val userLibrary = userLibrary ?: return
         userLibrary.renamePlaylist(playlist, name)
         for (listener in updateListeners) {
@@ -294,7 +294,7 @@ constructor(
         }
     }
 
-    override fun deletePlaylist(playlist: Playlist) {
+    override suspend fun deletePlaylist(playlist: Playlist) {
         val userLibrary = userLibrary ?: return
         userLibrary.deletePlaylist(playlist)
         for (listener in updateListeners) {
@@ -303,7 +303,7 @@ constructor(
         }
     }
 
-    override fun addToPlaylist(songs: List<Song>, playlist: Playlist) {
+    override suspend fun addToPlaylist(songs: List<Song>, playlist: Playlist) {
         val userLibrary = userLibrary ?: return
         userLibrary.addToPlaylist(playlist, songs)
         for (listener in updateListeners) {
@@ -312,7 +312,7 @@ constructor(
         }
     }
 
-    override fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
+    override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
         val userLibrary = userLibrary ?: return
         userLibrary.rewritePlaylist(playlist, songs)
         for (listener in updateListeners) {

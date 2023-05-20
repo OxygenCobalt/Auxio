@@ -21,6 +21,10 @@ package org.oxycblt.auxio.music.user
 import androidx.room.*
 import org.oxycblt.auxio.music.Music
 
+/**
+ * Raw playlist information persisted to [UserMusicDatabase].
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 data class RawPlaylist(
     @Embedded val playlistInfo: PlaylistInfo,
     @Relation(
@@ -30,12 +34,26 @@ data class RawPlaylist(
     val songs: List<PlaylistSong>
 )
 
+/**
+ * UID and name information corresponding to a [RawPlaylist] entry.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 @Entity data class PlaylistInfo(@PrimaryKey val playlistUid: Music.UID, val name: String)
 
+/**
+ * Song information corresponding to a [RawPlaylist] entry.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 @Entity data class PlaylistSong(@PrimaryKey val songUid: Music.UID)
 
-@Entity(primaryKeys = ["playlistUid", "songUid"])
+
+/**
+ * Links individual songs to a playlist entry.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+@Entity
 data class PlaylistSongCrossRef(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val playlistUid: Music.UID,
-    @ColumnInfo(index = true) val songUid: Music.UID
+    val songUid: Music.UID
 )

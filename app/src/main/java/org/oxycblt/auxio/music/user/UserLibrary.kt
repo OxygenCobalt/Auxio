@@ -57,11 +57,12 @@ interface UserLibrary {
         /**
          * Create a new [UserLibrary].
          *
-         * @param deviceLibrary Asynchronously populated [DeviceLibrary] that can be obtained later.
-         *   This allows database information to be read before the actual instance is constructed.
+         * @param deviceLibraryChannel Asynchronously populated [DeviceLibrary] that can be obtained
+         *   later. This allows database information to be read before the actual instance is
+         *   constructed.
          * @return A new [MutableUserLibrary] with the required implementation.
          */
-        suspend fun read(deviceLibrary: Channel<DeviceLibrary>): MutableUserLibrary
+        suspend fun read(deviceLibraryChannel: Channel<DeviceLibrary>): MutableUserLibrary
     }
 }
 
@@ -78,7 +79,7 @@ interface MutableUserLibrary : UserLibrary {
      * @param name The name of the [Playlist].
      * @param songs The songs to place in the [Playlist].
      */
-    fun createPlaylist(name: String, songs: List<Song>)
+    suspend fun createPlaylist(name: String, songs: List<Song>)
 
     /**
      * Rename a [Playlist].
@@ -86,21 +87,21 @@ interface MutableUserLibrary : UserLibrary {
      * @param playlist The [Playlist] to rename.
      * @param name The name of the new [Playlist].
      */
-    fun renamePlaylist(playlist: Playlist, name: String)
+    suspend fun renamePlaylist(playlist: Playlist, name: String)
 
     /**
      * Delete a [Playlist].
      *
      * @param playlist The playlist to delete.
      */
-    fun deletePlaylist(playlist: Playlist)
+    suspend fun deletePlaylist(playlist: Playlist)
 
     /**
      * Add [Song]s to a [Playlist].
      *
      * @param playlist The [Playlist] to add to. Must currently exist.
      */
-    fun addToPlaylist(playlist: Playlist, songs: List<Song>)
+    suspend fun addToPlaylist(playlist: Playlist, songs: List<Song>)
 
     /**
      * Update the [Song]s of a [Playlist].
@@ -108,23 +109,32 @@ interface MutableUserLibrary : UserLibrary {
      * @param playlist The [Playlist] to update.
      * @param songs The new [Song]s to be contained in the [Playlist].
      */
-    fun rewritePlaylist(playlist: Playlist, songs: List<Song>)
+    suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>)
 }
 
 class UserLibraryFactoryImpl
 @Inject
 constructor(private val playlistDao: PlaylistDao, private val musicSettings: MusicSettings) :
     UserLibrary.Factory {
-    override suspend fun read(deviceLibrary: Channel<DeviceLibrary>): MutableUserLibrary =
-        UserLibraryImpl(playlistDao, deviceLibrary.receive(), musicSettings)
+    override suspend fun read(deviceLibraryChannel: Channel<DeviceLibrary>): MutableUserLibrary {
+        // While were waiting for the library, read our playlists out.
+        val rawPlaylists = playlistDao.readRawPlaylists()
+        val deviceLibrary = deviceLibraryChannel.receive()
+        // Convert the database playlist information to actual usable playlists.
+        val playlistMap = mutableMapOf<Music.UID, PlaylistImpl>()
+        for (rawPlaylist in rawPlaylists) {
+            val playlistImpl = PlaylistImpl.fromRaw(rawPlaylist, deviceLibrary, musicSettings)
+            playlistMap[playlistImpl.uid] = playlistImpl
+        }
+        return UserLibraryImpl(playlistDao, playlistMap, musicSettings)
+    }
 }
 
 private class UserLibraryImpl(
     private val playlistDao: PlaylistDao,
-    private val deviceLibrary: DeviceLibrary,
+    private val playlistMap: MutableMap<Music.UID, PlaylistImpl>,
     private val musicSettings: MusicSettings
 ) : MutableUserLibrary {
-    private val playlistMap = mutableMapOf<Music.UID, PlaylistImpl>()
     override val playlists: List<Playlist>
         get() = playlistMap.values.toList()
 
@@ -132,35 +142,41 @@ private class UserLibraryImpl(
 
     override fun findPlaylist(name: String) = playlistMap.values.find { it.name.raw == name }
 
-    @Synchronized
-    override fun createPlaylist(name: String, songs: List<Song>) {
+    override suspend fun createPlaylist(name: String, songs: List<Song>) {
         val playlistImpl = PlaylistImpl.from(name, songs, musicSettings)
-        playlistMap[playlistImpl.uid] = playlistImpl
+        synchronized(this) { playlistMap[playlistImpl.uid] = playlistImpl }
+        val rawPlaylist =
+            RawPlaylist(
+                PlaylistInfo(playlistImpl.uid, playlistImpl.name.raw),
+                playlistImpl.songs.map { PlaylistSong(it.uid) })
+        playlistDao.insertPlaylist(rawPlaylist)
     }
 
-    @Synchronized
-    override fun renamePlaylist(playlist: Playlist, name: String) {
+    override suspend fun renamePlaylist(playlist: Playlist, name: String) {
         val playlistImpl =
             requireNotNull(playlistMap[playlist.uid]) { "Cannot rename invalid playlist" }
-        playlistMap[playlist.uid] = playlistImpl.edit(name, musicSettings)
+        synchronized(this) { playlistMap[playlist.uid] = playlistImpl.edit(name, musicSettings) }
+        playlistDao.replacePlaylistInfo(PlaylistInfo(playlist.uid, name))
     }
 
-    @Synchronized
-    override fun deletePlaylist(playlist: Playlist) {
-        requireNotNull(playlistMap.remove(playlist.uid)) { "Cannot remove invalid playlist" }
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        synchronized(this) {
+            requireNotNull(playlistMap.remove(playlist.uid)) { "Cannot remove invalid playlist" }
+        }
+        playlistDao.deletePlaylist(playlist.uid)
     }
 
-    @Synchronized
-    override fun addToPlaylist(playlist: Playlist, songs: List<Song>) {
+    override suspend fun addToPlaylist(playlist: Playlist, songs: List<Song>) {
         val playlistImpl =
             requireNotNull(playlistMap[playlist.uid]) { "Cannot add to invalid playlist" }
-        playlistMap[playlist.uid] = playlistImpl.edit { addAll(songs) }
+        synchronized(this) { playlistMap[playlist.uid] = playlistImpl.edit { addAll(songs) } }
+        playlistDao.insertPlaylistSongs(playlist.uid, songs.map { PlaylistSong(it.uid) })
     }
 
-    @Synchronized
-    override fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
+    override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
         val playlistImpl =
             requireNotNull(playlistMap[playlist.uid]) { "Cannot rewrite invalid playlist" }
-        playlistMap[playlist.uid] = playlistImpl.edit(songs)
+        synchronized(this) { playlistMap[playlist.uid] = playlistImpl.edit(songs) }
+        playlistDao.replacePlaylistSongs(playlist.uid, songs.map { PlaylistSong(it.uid) })
     }
 }

@@ -21,16 +21,112 @@ package org.oxycblt.auxio.music.user
 import androidx.room.*
 import org.oxycblt.auxio.music.Music
 
+/**
+ * Allows persistence of all user-created music information.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 @Database(
     entities = [PlaylistInfo::class, PlaylistSong::class, PlaylistSongCrossRef::class],
-    version = 28,
+    version = 30,
     exportSchema = false)
 @TypeConverters(Music.UID.TypeConverters::class)
 abstract class UserMusicDatabase : RoomDatabase() {
     abstract fun playlistDao(): PlaylistDao
 }
 
+// TODO: Handle playlist defragmentation? I really don't want dead songs to accumulate in this
+//  database.
+
+/**
+ * The DAO for persisted playlist information.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 @Dao
 interface PlaylistDao {
-    @Transaction @Query("SELECT * FROM PlaylistInfo") fun readRawPlaylists(): List<RawPlaylist>
+    /**
+     * Read out all playlists stored in the database.
+     * @return A list of [RawPlaylist] representing each playlist stored.
+     */
+    @Transaction
+    @Query("SELECT * FROM PlaylistInfo")
+    suspend fun readRawPlaylists(): List<RawPlaylist>
+
+    /**
+     * Create a new playlist.
+     * @param rawPlaylist The [RawPlaylist] to create.
+     */
+    @Transaction
+    suspend fun insertPlaylist(rawPlaylist: RawPlaylist) {
+        insertInfo(rawPlaylist.playlistInfo)
+        insertSongs(rawPlaylist.songs)
+        insertRefs(
+            rawPlaylist.songs.map {
+                PlaylistSongCrossRef(
+                    playlistUid = rawPlaylist.playlistInfo.playlistUid, songUid = it.songUid)
+            })
+    }
+
+    /**
+     * Replace the currently-stored [PlaylistInfo] for a playlist entry.
+     * @param playlistInfo The new [PlaylistInfo] to store.
+     */
+    @Transaction
+    suspend fun replacePlaylistInfo(playlistInfo: PlaylistInfo) {
+        deleteInfo(playlistInfo.playlistUid)
+        insertInfo(playlistInfo)
+    }
+
+    /**
+     * Delete a playlist entry's [PlaylistInfo] and [PlaylistSong].
+     * @param playlistUid The [Music.UID] of the playlist to delete.
+     */
+    @Transaction
+    suspend fun deletePlaylist(playlistUid: Music.UID) {
+        deleteInfo(playlistUid)
+        deleteRefs(playlistUid)
+    }
+
+    /**
+     * Insert new song entries into a playlist.
+     * @param playlistUid The [Music.UID] of the playlist to insert into.
+     * @param songs The [PlaylistSong] representing each song to put into the playlist.
+     */
+    @Transaction
+    suspend fun insertPlaylistSongs(playlistUid: Music.UID, songs: List<PlaylistSong>) {
+        insertSongs(songs)
+        insertRefs(
+            songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) })
+    }
+
+    /**
+     * Replace the currently-stored [Song]s of the current playlist entry.
+     * @param playlistUid The [Music.UID] of the playlist to update.
+     * @param songs The [PlaylistSong] representing the new list of songs to be placed in the playlist.
+     */
+    @Transaction
+    suspend fun replacePlaylistSongs(playlistUid: Music.UID, songs: List<PlaylistSong>) {
+        deleteRefs(playlistUid)
+        insertSongs(songs)
+        insertRefs(
+            songs.map { PlaylistSongCrossRef(playlistUid = playlistUid, songUid = it.songUid) })
+    }
+
+    /** Internal, do not use. */
+    @Insert(onConflict = OnConflictStrategy.ABORT) suspend fun insertInfo(info: PlaylistInfo)
+
+    /** Internal, do not use. */
+    @Query("DELETE FROM PlaylistInfo where playlistUid = :playlistUid")
+    suspend fun deleteInfo(playlistUid: Music.UID)
+
+    /** Internal, do not use. */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertSongs(songs: List<PlaylistSong>)
+
+    /** Internal, do not use. */
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insertRefs(refs: List<PlaylistSongCrossRef>)
+
+    /** Internal, do not use. */
+    @Query("DELETE FROM PlaylistSongCrossRef where playlistUid = :playlistUid")
+    suspend fun deleteRefs(playlistUid: Music.UID)
 }
