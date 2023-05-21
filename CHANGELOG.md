@@ -2,6 +2,9 @@
 
 ## dev
 
+#### What's New
+- **Playlists.** The long-awaited feature has arrived, with more functionality coming soon.
+
 #### What's Improved
 - Sorting now handles numbers of arbitrary length
 - Punctuation is now ignored in sorting with intelligent sort names disabled

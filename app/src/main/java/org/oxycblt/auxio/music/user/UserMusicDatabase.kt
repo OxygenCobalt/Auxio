@@ -23,6 +23,7 @@ import org.oxycblt.auxio.music.Music
 
 /**
  * Allows persistence of all user-created music information.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @Database(
@@ -39,12 +40,14 @@ abstract class UserMusicDatabase : RoomDatabase() {
 
 /**
  * The DAO for persisted playlist information.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @Dao
 interface PlaylistDao {
     /**
      * Read out all playlists stored in the database.
+     *
      * @return A list of [RawPlaylist] representing each playlist stored.
      */
     @Transaction
@@ -53,6 +56,7 @@ interface PlaylistDao {
 
     /**
      * Create a new playlist.
+     *
      * @param rawPlaylist The [RawPlaylist] to create.
      */
     @Transaction
@@ -68,6 +72,7 @@ interface PlaylistDao {
 
     /**
      * Replace the currently-stored [PlaylistInfo] for a playlist entry.
+     *
      * @param playlistInfo The new [PlaylistInfo] to store.
      */
     @Transaction
@@ -78,6 +83,7 @@ interface PlaylistDao {
 
     /**
      * Delete a playlist entry's [PlaylistInfo] and [PlaylistSong].
+     *
      * @param playlistUid The [Music.UID] of the playlist to delete.
      */
     @Transaction
@@ -88,6 +94,7 @@ interface PlaylistDao {
 
     /**
      * Insert new song entries into a playlist.
+     *
      * @param playlistUid The [Music.UID] of the playlist to insert into.
      * @param songs The [PlaylistSong] representing each song to put into the playlist.
      */
@@ -100,8 +107,10 @@ interface PlaylistDao {
 
     /**
      * Replace the currently-stored [Song]s of the current playlist entry.
+     *
      * @param playlistUid The [Music.UID] of the playlist to update.
-     * @param songs The [PlaylistSong] representing the new list of songs to be placed in the playlist.
+     * @param songs The [PlaylistSong] representing the new list of songs to be placed in the
+     *   playlist.
      */
     @Transaction
     suspend fun replacePlaylistSongs(playlistUid: Music.UID, songs: List<PlaylistSong>) {

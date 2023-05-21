@@ -23,6 +23,7 @@ import org.oxycblt.auxio.music.Music
 
 /**
  * Raw playlist information persisted to [UserMusicDatabase].
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class RawPlaylist(
@@ -36,19 +37,21 @@ data class RawPlaylist(
 
 /**
  * UID and name information corresponding to a [RawPlaylist] entry.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @Entity data class PlaylistInfo(@PrimaryKey val playlistUid: Music.UID, val name: String)
 
 /**
  * Song information corresponding to a [RawPlaylist] entry.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @Entity data class PlaylistSong(@PrimaryKey val songUid: Music.UID)
 
-
 /**
  * Links individual songs to a playlist entry.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @Entity
