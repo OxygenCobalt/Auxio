@@ -57,6 +57,6 @@ data class RawPlaylist(
 @Entity
 data class PlaylistSongCrossRef(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val playlistUid: Music.UID,
-    val songUid: Music.UID
+    @ColumnInfo(index = true) val playlistUid: Music.UID,
+    @ColumnInfo(index = true) val songUid: Music.UID
 )

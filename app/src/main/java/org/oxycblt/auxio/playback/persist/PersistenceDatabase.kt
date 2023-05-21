@@ -126,6 +126,7 @@ interface QueueDao {
     suspend fun insertMapping(mapping: List<QueueMappingItem>)
 }
 
+// TODO: Figure out how to get RepeatMode to map to an int instead of a string
 @Entity(tableName = PlaybackState.TABLE_NAME)
 data class PlaybackState(
     @PrimaryKey val id: Int,
