@@ -219,12 +219,12 @@ constructor(
 ) : MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
-    private var indexingWorker: MusicRepository.IndexingWorker? = null
+    @Volatile private var indexingWorker: MusicRepository.IndexingWorker? = null
 
-    override var deviceLibrary: DeviceLibrary? = null
-    override var userLibrary: MutableUserLibrary? = null
-    private var previousCompletedState: IndexingState.Completed? = null
-    private var currentIndexingState: IndexingState? = null
+    @Volatile override var deviceLibrary: DeviceLibrary? = null
+    @Volatile override var userLibrary: MutableUserLibrary? = null
+    @Volatile private var previousCompletedState: IndexingState.Completed? = null
+    @Volatile private var currentIndexingState: IndexingState? = null
     override val indexingState: IndexingState?
         get() = currentIndexingState ?: previousCompletedState
 
@@ -272,55 +272,50 @@ constructor(
         currentIndexingState = null
     }
 
+    @Synchronized
     override fun find(uid: Music.UID) =
         (deviceLibrary?.run { findSong(uid) ?: findAlbum(uid) ?: findArtist(uid) ?: findGenre(uid) }
             ?: userLibrary?.findPlaylist(uid))
 
     override suspend fun createPlaylist(name: String, songs: List<Song>) {
-        val userLibrary = userLibrary ?: return
+        val userLibrary = synchronized(this) { userLibrary ?: return }
         userLibrary.createPlaylist(name, songs)
-        for (listener in updateListeners) {
-            listener.onMusicChanges(
-                MusicRepository.Changes(deviceLibrary = false, userLibrary = true))
-        }
+        notifyUserLibraryChange()
     }
 
     override suspend fun renamePlaylist(playlist: Playlist, name: String) {
-        val userLibrary = userLibrary ?: return
+        val userLibrary = synchronized(this) { userLibrary ?: return }
         userLibrary.renamePlaylist(playlist, name)
-        for (listener in updateListeners) {
-            listener.onMusicChanges(
-                MusicRepository.Changes(deviceLibrary = false, userLibrary = true))
-        }
+        notifyUserLibraryChange()
     }
 
     override suspend fun deletePlaylist(playlist: Playlist) {
-        val userLibrary = userLibrary ?: return
+        val userLibrary = synchronized(this) { userLibrary ?: return }
         userLibrary.deletePlaylist(playlist)
-        for (listener in updateListeners) {
-            listener.onMusicChanges(
-                MusicRepository.Changes(deviceLibrary = false, userLibrary = true))
-        }
+        notifyUserLibraryChange()
     }
 
     override suspend fun addToPlaylist(songs: List<Song>, playlist: Playlist) {
-        val userLibrary = userLibrary ?: return
+        val userLibrary = synchronized(this) { userLibrary ?: return }
         userLibrary.addToPlaylist(playlist, songs)
-        for (listener in updateListeners) {
-            listener.onMusicChanges(
-                MusicRepository.Changes(deviceLibrary = false, userLibrary = true))
-        }
+        notifyUserLibraryChange()
     }
 
     override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
-        val userLibrary = userLibrary ?: return
+        val userLibrary = synchronized(this) { userLibrary ?: return }
         userLibrary.rewritePlaylist(playlist, songs)
+        notifyUserLibraryChange()
+    }
+
+    @Synchronized
+    private fun notifyUserLibraryChange() {
         for (listener in updateListeners) {
             listener.onMusicChanges(
                 MusicRepository.Changes(deviceLibrary = false, userLibrary = true))
         }
     }
 
+    @Synchronized
     override fun requestIndex(withCache: Boolean) {
         indexingWorker?.requestIndex(withCache)
     }
@@ -400,9 +395,10 @@ constructor(
             throw NoMusicException()
         }
 
-        // Successfully loaded the library, now save the cache and create the library in
-        // parallel.
+        // Successfully loaded the library, now save the cache, create the library, and
+        // read playlist information in parallel.
         logD("Discovered ${rawSongs.size} songs, starting finalization")
+        // TODO: Indicate playlist state in loading process?
         emitLoading(IndexingProgress.Indeterminate)
         val deviceLibraryChannel = Channel<DeviceLibrary>()
         val deviceLibraryJob =

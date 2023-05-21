@@ -26,6 +26,8 @@ import org.oxycblt.auxio.util.logE
  *
  * @param mode The type of list in the home view this instance corresponds to.
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Tab migration to playlists is busted and resets the config entirely. Need to fix.
  */
 sealed class Tab(open val mode: MusicMode) {
     /**
