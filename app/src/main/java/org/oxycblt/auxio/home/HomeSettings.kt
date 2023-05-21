@@ -71,10 +71,13 @@ class HomeSettingsImpl @Inject constructor(@ApplicationContext context: Context)
                 Tab.fromIntCode(sharedPreferences.getInt(OLD_KEY_LIB_TABS, Tab.SEQUENCE_DEFAULT))
                     ?: unlikelyToBeNull(Tab.fromIntCode(Tab.SEQUENCE_DEFAULT))
 
-            // Add the new playlist tab to old tab configurations
-            val correctedTabs = oldTabs + Tab.Visible(MusicMode.PLAYLISTS)
+            // The playlist tab is now parsed, but it needs to be made visible.
+            val playlistIndex = oldTabs.indexOfFirst { it.mode == MusicMode.PLAYLISTS }
+            if (playlistIndex > -1) { // Sanity check
+                oldTabs[playlistIndex] = Tab.Visible(MusicMode.PLAYLISTS)
+            }
             sharedPreferences.edit {
-                putInt(getString(R.string.set_key_home_tabs), Tab.toIntCode(correctedTabs))
+                putInt(getString(R.string.set_key_home_tabs), Tab.toIntCode(oldTabs))
                 remove(OLD_KEY_LIB_TABS)
             }
         }
