@@ -174,7 +174,7 @@
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="lbl_mix">믹스</string>
     <string name="lbl_compilation_live">라이브 컴필레이션</string>
-    <string name="lbl_compilation_remix">리믹스 컴필레이션</string>
+    <string name="lbl_compilation_remix">리믹스 편집</string>
     <string name="lbl_mixes">믹스</string>
     <string name="lbl_equalizer">이퀄라이저</string>
     <string name="lbl_shuffle_shortcut_short">셔플</string>
@@ -278,4 +278,10 @@
     <string name="set_intelligent_sorting_desc">이름으로 정렬할 때 \"the\"와 같은 단어 무시(영어 음악에서 가장 잘 작동함)</string>
     <string name="lbl_none">없음</string>
     <string name="desc_new_playlist">새 재생 목록 만들기</string>
+    <string name="lbl_new_playlist">새 재생목록</string>
+    <string name="lbl_playlist_add">재생목록에 추가</string>
+    <string name="lng_playlist_created">생성된 재생목록</string>
+    <string name="lng_playlist_added">재생목록에 추가됨</string>
+    <string name="fmt_def_playlist">재생목록 %d</string>
+    <string name="def_song_count">노래 없음</string>
 </resources>

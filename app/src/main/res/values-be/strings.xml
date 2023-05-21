@@ -278,4 +278,8 @@
     <string name="desc_new_playlist">Стварыце новы плэйліст</string>
     <string name="fmt_def_playlist">Плэйліст %d</string>
     <string name="lbl_new_playlist">Новы плэйліст</string>
+    <string name="lbl_playlist_add">Дадаць у плэйліст</string>
+    <string name="lng_playlist_created">Плэйліст створаны</string>
+    <string name="lng_playlist_added">Паведамленні ў плэйліст</string>
+    <string name="def_song_count">Без трэкаў</string>
 </resources>

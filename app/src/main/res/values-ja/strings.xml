@@ -43,7 +43,7 @@
     <string name="set_rewind_prev_desc">前の曲にスキップ前に曲を巻き戻す</string>
     <string name="set_dirs">音楽フォルダ</string>
     <string name="set_separators_plus">プラス (+)</string>
-    <string name="lbl_compilation_remix">リミックスオムニバス</string>
+    <string name="lbl_compilation_remix">リミックスコンピレーション</string>
     <string name="lbl_mixes">DJミックス</string>
     <string name="lbl_mix">DJミックス</string>
     <string name="lbl_disc">ディスク</string>
@@ -266,4 +266,11 @@
     <string name="lbl_playlists">プレイリスト</string>
     <string name="desc_playlist_image">%s のプレイリスト イメージ</string>
     <string name="lbl_none">無し</string>
+    <string name="lbl_new_playlist">新規プレイリスト</string>
+    <string name="lbl_playlist_add">プレイリストに追加する</string>
+    <string name="lng_playlist_created">プレイリストが作成されました</string>
+    <string name="lng_playlist_added">プレイリストに追加されました</string>
+    <string name="def_song_count">曲がありません</string>
+    <string name="fmt_def_playlist">プレイリスト %d</string>
+    <string name="desc_new_playlist">新しいプレイリストを作成する</string>
 </resources>

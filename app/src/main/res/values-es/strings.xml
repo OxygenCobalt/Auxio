@@ -282,4 +282,18 @@
     <string name="set_intelligent_sorting">Ignorar artículos al ordenar</string>
     <string name="set_intelligent_sorting_desc">Ignorar palabras como \"the\" al ordenar por nombre (funciona mejor con música en inglés)</string>
     <string name="desc_new_playlist">Crear una nueva lista de reproducción</string>
+    <string name="lbl_new_playlist">Nueva lista de reproducción</string>
+    <string name="fmt_def_playlist">Lista de reproducción %d</string>
+    <string name="lbl_playlist_add">Agregar a la lista de reproducción</string>
+    <string name="lng_playlist_added">Agregado a la lista de reproducción</string>
+    <string name="lng_playlist_created">Lista de reproducción creada</string>
+    <string name="def_song_count">No hay canciones</string>
+    <string name="lbl_delete">Borrar</string>
+    <string name="lbl_rename">Cambiar el nombre</string>
+    <string name="lbl_rename_playlist">Cambiar el nombre de la lista de reproducción</string>
+    <string name="lng_playlist_renamed">Lista de reproducción renombrada</string>
+    <string name="lng_playlist_deleted">Lista de reproducción borrada</string>
+    <string name="fmt_deletion_info">¿Borrar %s\? Esto no se puede deshacer.</string>
+    <string name="lbl_confirm_delete_playlist">¿Borrar la lista de reproducción\?</string>
+    <string name="lbl_edit">Editar</string>
 </resources>

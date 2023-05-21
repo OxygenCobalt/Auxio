@@ -276,4 +276,18 @@
     <string name="set_intelligent_sorting">排序时忽略冠词</string>
     <string name="set_intelligent_sorting_desc">按名称排序时忽略类似“the”这样的冠词（对英文歌曲的效果最好）</string>
     <string name="desc_new_playlist">创建新的播放列表</string>
+    <string name="lbl_new_playlist">新建播放列表</string>
+    <string name="fmt_def_playlist">播放列表 %d</string>
+    <string name="lng_playlist_created">已创建播放列表</string>
+    <string name="lbl_playlist_add">添加到播放列表</string>
+    <string name="lng_playlist_added">已添加到播放列表</string>
+    <string name="def_song_count">无歌曲</string>
+    <string name="lbl_delete">删除</string>
+    <string name="lbl_confirm_delete_playlist">删除播放列表？</string>
+    <string name="fmt_deletion_info">删除 %s 吗？此操作无法撤销。</string>
+    <string name="lbl_rename">重命名</string>
+    <string name="lbl_rename_playlist">重命名播放列表</string>
+    <string name="lng_playlist_renamed">已重命名播放列表</string>
+    <string name="lng_playlist_deleted">已删除播放列表</string>
+    <string name="lbl_edit">编辑</string>
 </resources>
