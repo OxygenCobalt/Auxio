@@ -139,7 +139,7 @@
     <string name="desc_artist_image">Gambar Artis untuk %s</string>
     <string name="set_detail_song_playback_mode">Saat diputar dari keterangan item</string>
     <string name="set_dirs_mode_exclude_desc">Musik <b>tidak</b> akan dimuat dari folder yang Anda tambahkan.</string>
-    <string name="desc_clear_queue_item">Hapus lagu antrian ini</string>
+    <string name="desc_remove_song">Hapus lagu antrian ini</string>
     <string name="desc_clear_search">Hapus kueri pencarian</string>
     <string name="set_pre_amp_without">Penyesuaian tanpa tag</string>
     <string name="set_dirs">Folder musik</string>
@@ -159,7 +159,7 @@
     <string name="desc_auxio_icon">Ikon Auxio</string>
     <string name="desc_no_cover">Sampul album</string>
     <string name="desc_shuffle">Aktifkan atau nonaktifkan acak</string>
-    <string name="desc_queue_handle">Pindahkan lagu antrian ini</string>
+    <string name="desc_song_handle">Pindahkan lagu antrian ini</string>
     <string name="def_playback">Tidak ada musik yang diputar</string>
     <string name="cdc_ogg">Audio Ogg</string>
     <string name="clr_brown">Cokelat</string>

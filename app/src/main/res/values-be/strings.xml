@@ -144,7 +144,7 @@
     <string name="err_bad_dir">Гэтая папка не падтрымліваецца</string>
     <string name="err_did_not_restore">Немагчыма аднавіць стан</string>
     <string name="desc_track_number">Кампазіцыя %d</string>
-    <string name="desc_queue_handle">Перамясціць песню ў чаргу</string>
+    <string name="desc_song_handle">Перамясціць песню ў чаргу</string>
     <string name="err_no_app">Не знойдзена прыкладання, якое можа справіцца з гэтай задачай</string>
     <string name="desc_play_pause">Прайграванне або прыпыненне</string>
     <string name="err_did_not_save">Немагчыма захаваць стан</string>
@@ -153,7 +153,7 @@
     <string name="desc_change_repeat">Змяніць рэжым паўтору</string>
     <string name="desc_auxio_icon">Значок Auxio</string>
     <string name="desc_shuffle">Уключыце або выключыце перамешванне</string>
-    <string name="desc_clear_queue_item">Выдаліць гэтую песню з чаргі</string>
+    <string name="desc_remove_song">Выдаліць гэтую песню з чаргі</string>
     <string name="desc_shuffle_all">Перамяшаць усе песні</string>
     <string name="desc_exit">Спыніць прайграванне</string>
     <string name="desc_queue_bar">Адкрыйце чаргу</string>
@@ -278,4 +278,8 @@
     <string name="desc_new_playlist">Стварыце новы плэйліст</string>
     <string name="fmt_def_playlist">Плэйліст %d</string>
     <string name="lbl_new_playlist">Новы плэйліст</string>
+    <string name="lbl_playlist_add">Дадаць у плэйліст</string>
+    <string name="lng_playlist_created">Плэйліст створаны</string>
+    <string name="lng_playlist_added">Паведамленні ў плэйліст</string>
+    <string name="def_song_count">Без трэкаў</string>
 </resources>

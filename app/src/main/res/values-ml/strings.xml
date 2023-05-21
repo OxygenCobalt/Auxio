@@ -65,8 +65,8 @@
     <string name="def_playback">സംഗീതം കളിക്കുന്നില്ല</string>
     <string name="clr_yellow">മഞ്ഞ</string>
     <string name="fmt_selected">%d തിരഞ്ഞെടുത്തു</string>
-    <string name="desc_clear_queue_item">വരിയിലെ ഈ ഗാനം നീക്കം ചെയ്യുക</string>
-    <string name="desc_queue_handle">വരിയിലെ ഈ ഗാനം നീക്കുക</string>
+    <string name="desc_remove_song">വരിയിലെ ഈ ഗാനം നീക്കം ചെയ്യുക</string>
+    <string name="desc_song_handle">വരിയിലെ ഈ ഗാനം നീക്കുക</string>
     <string name="lbl_reset">പുനഃസജ്ജമാക്കുക</string>
     <string name="clr_brown">തവിട്ട്</string>
     <string name="fmt_list">%1$s, %2$s</string>

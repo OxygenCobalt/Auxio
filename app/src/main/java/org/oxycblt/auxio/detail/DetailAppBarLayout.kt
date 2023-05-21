@@ -69,7 +69,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         // Assume that we have a Toolbar with a detail_toolbar ID, as this view is only
         // used within the detail layouts.
-        val toolbar = findViewById<Toolbar>(R.id.detail_toolbar)
+        val toolbar = findViewById<Toolbar>(R.id.detail_normal_toolbar)
 
         // The Toolbar's title view is actually hidden. To avoid having to create our own
         // title view, we just reflect into Toolbar and grab the hidden field.

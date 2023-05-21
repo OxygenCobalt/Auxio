@@ -38,6 +38,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicViewModel
@@ -66,6 +67,7 @@ class MainFragment :
     private val musicModel: MusicViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val selectionModel: SelectionViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private val callback = DynamicBackPressedCallback()
     private var lastInsets: WindowInsets? = null
     private var elevationNormal = 0f
@@ -458,6 +460,11 @@ class MainFragment :
                 return
             }
 
+            // Clear out pending playlist edits.
+            if (detailModel.dropPlaylistEdit()) {
+                return
+            }
+
             // Clear out any prior selections.
             if (selectionModel.drop()) {
                 return
@@ -487,6 +494,7 @@ class MainFragment :
             isEnabled =
                 queueSheetBehavior?.state == BackportBottomSheetBehavior.STATE_EXPANDED ||
                     playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED ||
+                    detailModel.editedPlaylist.value != null ||
                     selectionModel.selected.value.isNotEmpty() ||
                     exploreNavController.currentDestination?.id !=
                         exploreNavController.graph.startDestinationId

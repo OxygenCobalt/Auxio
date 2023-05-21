@@ -19,10 +19,13 @@
 package org.oxycblt.auxio.music
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 
@@ -110,7 +113,7 @@ constructor(
      */
     fun createPlaylist(name: String? = null, songs: List<Song> = listOf()) {
         if (name != null) {
-            musicRepository.createPlaylist(name, songs)
+            viewModelScope.launch(Dispatchers.IO) { musicRepository.createPlaylist(name, songs) }
         } else {
             _newPlaylistSongs.put(songs)
         }
@@ -124,7 +127,7 @@ constructor(
      */
     fun renamePlaylist(playlist: Playlist, name: String? = null) {
         if (name != null) {
-            musicRepository.renamePlaylist(playlist, name)
+            viewModelScope.launch(Dispatchers.IO) { musicRepository.renamePlaylist(playlist, name) }
         } else {
             _playlistToRename.put(playlist)
         }
@@ -139,7 +142,7 @@ constructor(
      */
     fun deletePlaylist(playlist: Playlist, rude: Boolean = false) {
         if (rude) {
-            musicRepository.deletePlaylist(playlist)
+            viewModelScope.launch(Dispatchers.IO) { musicRepository.deletePlaylist(playlist) }
         } else {
             _playlistToDelete.put(playlist)
         }
@@ -193,7 +196,7 @@ constructor(
      */
     fun addToPlaylist(songs: List<Song>, playlist: Playlist? = null) {
         if (playlist != null) {
-            musicRepository.addToPlaylist(songs, playlist)
+            viewModelScope.launch(Dispatchers.IO) { musicRepository.addToPlaylist(songs, playlist) }
         } else {
             _songsToAdd.put(songs)
         }

@@ -13,19 +13,38 @@
         app:liftOnScroll="true"
         app:liftOnScrollTargetViewId="@id/detail_recycler">
 
-        <org.oxycblt.auxio.list.selection.SelectionToolbarOverlay
-            android:id="@+id/detail_selection_toolbar"
+        <org.oxycblt.auxio.ui.MultiToolbar
+            android:id="@+id/detail_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/detail_toolbar"
+                android:id="@+id/detail_normal_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
                 app:navigationIcon="@drawable/ic_back_24" />
 
-        </org.oxycblt.auxio.list.selection.SelectionToolbarOverlay>
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/detail_selection_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                app:navigationIcon="@drawable/ic_close_24"
+                app:menu="@menu/menu_selection_actions" />
 
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/detail_edit_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                app:navigationIcon="@drawable/ic_close_24"
+                app:menu="@menu/menu_edit_actions" />
+
+        </org.oxycblt.auxio.ui.MultiToolbar>
 
     </org.oxycblt.auxio.detail.DetailAppBarLayout>
 

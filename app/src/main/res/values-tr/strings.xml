@@ -192,7 +192,7 @@
     <string name="lbl_date_added">Eklendiği tarih</string>
     <string name="lbl_album_remix">Remix albüm</string>
     <string name="lbl_album_live">Canlı albüm</string>
-    <string name="desc_clear_queue_item">Bu şarkıyı kuyruktan kaldır</string>
+    <string name="desc_remove_song">Bu şarkıyı kuyruktan kaldır</string>
     <string name="lbl_singles">Tekliler</string>
     <string name="lbl_single">Tekli</string>
     <string name="lbl_mixtape">Karışık kaset</string>
@@ -254,7 +254,7 @@
     <string name="set_exclude_non_music">Müzik olmayanları hariç tut</string>
     <string name="err_did_not_wipe">Durum temizlenemedi</string>
     <string name="set_replay_gain_mode">ReplayGain stratejisi</string>
-    <string name="desc_queue_handle">Bu şarkıyı kuyrukta taşı</string>
+    <string name="desc_song_handle">Bu şarkıyı kuyrukta taşı</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="set_content_desc">Müzik ve görüntülerin nasıl yükleneceğini denetleyin</string>
     <string name="set_music">Müzik</string>

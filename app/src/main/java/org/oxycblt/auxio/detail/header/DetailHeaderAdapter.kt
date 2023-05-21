@@ -48,6 +48,13 @@ abstract class DetailHeaderAdapter<T : MusicParent, VH : RecyclerView.ViewHolder
      */
     fun setParent(parent: T) {
         currentParent = parent
+        rebindParent()
+    }
+
+    /**
+     * Forces the parent [RecyclerView.ViewHolder] to rebind as soon as possible, with no animation.
+     */
+    protected fun rebindParent() {
         notifyItemChanged(0, PAYLOAD_UPDATE_HEADER)
     }
 

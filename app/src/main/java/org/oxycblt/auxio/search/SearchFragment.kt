@@ -81,7 +81,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
         imm = binding.context.getSystemServiceCompat(InputMethodManager::class)
 
-        binding.searchToolbar.apply {
+        binding.searchNormalToolbar.apply {
             // Initialize the current filtering mode.
             menu.findItem(searchModel.getFilterOptionId()).isChecked = true
 
@@ -110,7 +110,10 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         binding.searchRecycler.apply {
             adapter = searchAdapter
             (layoutManager as GridLayoutManager).setFullWidthLookup {
-                val item = searchModel.searchResults.value[it]
+                val item =
+                    searchModel.searchResults.value.getOrElse(it) {
+                        return@setFullWidthLookup false
+                    }
                 item is Divider || item is Header
             }
         }
@@ -126,7 +129,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     override fun onDestroyBinding(binding: FragmentSearchBinding) {
         super.onDestroyBinding(binding)
-        binding.searchToolbar.setOnMenuItemClickListener(null)
+        binding.searchNormalToolbar.setOnMenuItemClickListener(null)
         binding.searchRecycler.adapter = null
     }
 
@@ -198,10 +201,16 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     private fun updateSelection(selected: List<Music>) {
         searchAdapter.setSelected(selected.toSet())
-        if (requireBinding().searchSelectionToolbar.updateSelectionAmount(selected.size) &&
-            selected.isNotEmpty()) {
-            // Make selection of obscured items easier by hiding the keyboard.
-            hideKeyboard()
+        val binding = requireBinding()
+        if (selected.isNotEmpty()) {
+            binding.searchSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
+            if (binding.searchToolbar.setVisible(R.id.search_selection_toolbar)) {
+                // New selection started, show the keyboard to make selection easier.
+                logD("Significant selection occurred, hiding keyboard")
+                hideKeyboard()
+            }
+        } else {
+            binding.searchToolbar.setVisible(R.id.search_normal_toolbar)
         }
     }
 

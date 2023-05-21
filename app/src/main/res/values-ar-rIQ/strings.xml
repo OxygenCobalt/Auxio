@@ -89,8 +89,8 @@
     <string name="desc_change_repeat">تغيير وضع التكرار</string>
     <string name="desc_shuffle">تشغيل او اطفاء الخلط</string>
     <string name="desc_shuffle_all">خلط جميع الاغاني</string>
-    <string name="desc_clear_queue_item">إزالة اغنية من الطابور</string>
-    <string name="desc_queue_handle">نقل اغنية من الطابور</string>
+    <string name="desc_remove_song">إزالة اغنية من الطابور</string>
+    <string name="desc_song_handle">نقل اغنية من الطابور</string>
     <string name="desc_tab_handle">تحريك التبويت</string>
     <string name="desc_clear_search">إزالة كلمة البحث</string>
     <string name="desc_music_dir_delete">إزالة المجلد المستبعد</string>

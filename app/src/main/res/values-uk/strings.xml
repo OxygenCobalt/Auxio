@@ -218,8 +218,8 @@
     <string name="def_genre">Невідомий жанр</string>
     <string name="desc_queue_bar">Відкрити чергу</string>
     <string name="clr_yellow">Жовтий</string>
-    <string name="desc_queue_handle">Перемістити пісню в черзі</string>
-    <string name="desc_clear_queue_item">Видалити пісню з черги</string>
+    <string name="desc_song_handle">Перемістити пісню</string>
+    <string name="desc_remove_song">Видалити пісню</string>
     <string name="clr_cyan">Блакитний</string>
     <string name="clr_teal">Зеленувато-блакитний</string>
     <string name="clr_purple">Фіолетовий</string>
@@ -284,4 +284,16 @@
     <string name="desc_new_playlist">Створити новий список відтворення</string>
     <string name="lbl_new_playlist">Новий список відтворення</string>
     <string name="fmt_def_playlist">Список відтворення %d</string>
+    <string name="lbl_playlist_add">Додати до списку відтворення</string>
+    <string name="lng_playlist_added">Додано до списку відтворення</string>
+    <string name="lng_playlist_created">Список відтворення створено</string>
+    <string name="def_song_count">Немає пісень</string>
+    <string name="lbl_delete">Видалити</string>
+    <string name="lbl_confirm_delete_playlist">Видалити список відтворення\?</string>
+    <string name="fmt_deletion_info">Видалити %s\? Цю дію не можна скасувати.</string>
+    <string name="lng_playlist_deleted">Список відтворення видалено</string>
+    <string name="lbl_rename">Перейменувати</string>
+    <string name="lbl_rename_playlist">Перейменувати список відтворення</string>
+    <string name="lng_playlist_renamed">Список відтворення перейменовано</string>
+    <string name="lbl_edit">Редагувати</string>
 </resources>

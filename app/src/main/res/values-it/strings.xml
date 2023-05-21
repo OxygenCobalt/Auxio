@@ -94,8 +94,8 @@
     <string name="desc_change_repeat">Cambia modalità ripetizione</string>
     <string name="desc_shuffle">Attiva o disattiva mescolamento</string>
     <string name="desc_shuffle_all">Mescola tutte le canzoni</string>
-    <string name="desc_clear_queue_item">Rimuove questa canzone della coda</string>
-    <string name="desc_queue_handle">Muove questa canzone della coda</string>
+    <string name="desc_remove_song">Rimuove questa canzone della coda</string>
+    <string name="desc_song_handle">Muove questa canzone della coda</string>
     <string name="desc_tab_handle">Muove questa scheda</string>
     <string name="desc_clear_search">Cancella la query di ricerca</string>
     <string name="desc_music_dir_delete">Rimuovi cartella</string>
@@ -239,7 +239,7 @@
     <string name="set_separators_warning">Attenzione: potrebbero verificarsi degli errori nella interpretazione di alcuni tag con valori multipli. Puoi risolvere aggiungendo come prefisso la barra rovesciata (\\) ai separatori indesiderati.</string>
     <string name="set_separators_and">E commerciale (&amp;)</string>
     <string name="lbl_compilation_live">Raccolte live</string>
-    <string name="lbl_compilation_remix">Raccolte remix</string>
+    <string name="lbl_compilation_remix">Raccolta di remix</string>
     <string name="lbl_mixes">Mixes</string>
     <string name="lbl_mix">Mix</string>
     <string name="set_cover_mode_quality">Alta qualità</string>
@@ -281,4 +281,11 @@
     <string name="set_intelligent_sorting_desc">Ignora parole come \"the\" durante l\'ordinamento per nome (funziona meglio con la musica in lingua inglese)</string>
     <string name="desc_new_playlist">Crea una nuova playlist</string>
     <string name="desc_playlist_image">Immagine della playlist per %s</string>
+    <string name="lbl_new_playlist">Nuova playlist</string>
+    <string name="lbl_playlist_add">Aggiungi a playlist</string>
+    <string name="lng_playlist_created">Playlist creata</string>
+    <string name="lng_playlist_added">Aggiunto alla playlist</string>
+    <string name="def_song_count">Niente canzoni</string>
+    <string name="fmt_def_playlist">Playlist %d</string>
+    <string name="lbl_none">Nessuno</string>
 </resources>

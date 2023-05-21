@@ -116,7 +116,7 @@ interface MusicRepository {
      * @param name The name of the new [Playlist].
      * @param songs The songs to populate the new [Playlist] with.
      */
-    fun createPlaylist(name: String, songs: List<Song>)
+    suspend fun createPlaylist(name: String, songs: List<Song>)
 
     /**
      * Rename a [Playlist].
@@ -124,14 +124,14 @@ interface MusicRepository {
      * @param playlist The [Playlist] to rename.
      * @param name The name of the new [Playlist].
      */
-    fun renamePlaylist(playlist: Playlist, name: String)
+    suspend fun renamePlaylist(playlist: Playlist, name: String)
 
     /**
      * Delete a [Playlist].
      *
      * @param playlist The playlist to delete.
      */
-    fun deletePlaylist(playlist: Playlist)
+    suspend fun deletePlaylist(playlist: Playlist)
 
     /**
      * Add the given [Song]s to a [Playlist].
@@ -139,7 +139,15 @@ interface MusicRepository {
      * @param songs The [Song]s to add to the [Playlist].
      * @param playlist The [Playlist] to add to.
      */
-    fun addToPlaylist(songs: List<Song>, playlist: Playlist)
+    suspend fun addToPlaylist(songs: List<Song>, playlist: Playlist)
+
+    /**
+     * Update the [Song]s of a [Playlist].
+     *
+     * @param playlist The [Playlist] to update.
+     * @param songs The new [Song]s to be contained in the [Playlist].
+     */
+    suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>)
 
     /**
      * Request that a music loading operation is started by the current [IndexingWorker]. Does
@@ -211,12 +219,12 @@ constructor(
 ) : MusicRepository {
     private val updateListeners = mutableListOf<MusicRepository.UpdateListener>()
     private val indexingListeners = mutableListOf<MusicRepository.IndexingListener>()
-    private var indexingWorker: MusicRepository.IndexingWorker? = null
+    @Volatile private var indexingWorker: MusicRepository.IndexingWorker? = null
 
-    override var deviceLibrary: DeviceLibrary? = null
-    override var userLibrary: MutableUserLibrary? = null
-    private var previousCompletedState: IndexingState.Completed? = null
-    private var currentIndexingState: IndexingState? = null
+    @Volatile override var deviceLibrary: DeviceLibrary? = null
+    @Volatile override var userLibrary: MutableUserLibrary? = null
+    @Volatile private var previousCompletedState: IndexingState.Completed? = null
+    @Volatile private var currentIndexingState: IndexingState? = null
     override val indexingState: IndexingState?
         get() = currentIndexingState ?: previousCompletedState
 
@@ -264,46 +272,50 @@ constructor(
         currentIndexingState = null
     }
 
+    @Synchronized
     override fun find(uid: Music.UID) =
         (deviceLibrary?.run { findSong(uid) ?: findAlbum(uid) ?: findArtist(uid) ?: findGenre(uid) }
             ?: userLibrary?.findPlaylist(uid))
 
-    override fun createPlaylist(name: String, songs: List<Song>) {
-        val userLibrary = userLibrary ?: return
+    override suspend fun createPlaylist(name: String, songs: List<Song>) {
+        val userLibrary = synchronized(this) { userLibrary ?: return }
         userLibrary.createPlaylist(name, songs)
-        for (listener in updateListeners) {
-            listener.onMusicChanges(
-                MusicRepository.Changes(deviceLibrary = false, userLibrary = true))
-        }
+        notifyUserLibraryChange()
     }
 
-    override fun renamePlaylist(playlist: Playlist, name: String) {
-        val userLibrary = userLibrary ?: return
+    override suspend fun renamePlaylist(playlist: Playlist, name: String) {
+        val userLibrary = synchronized(this) { userLibrary ?: return }
         userLibrary.renamePlaylist(playlist, name)
-        for (listener in updateListeners) {
-            listener.onMusicChanges(
-                MusicRepository.Changes(deviceLibrary = false, userLibrary = true))
-        }
+        notifyUserLibraryChange()
     }
 
-    override fun deletePlaylist(playlist: Playlist) {
-        val userLibrary = userLibrary ?: return
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        val userLibrary = synchronized(this) { userLibrary ?: return }
         userLibrary.deletePlaylist(playlist)
-        for (listener in updateListeners) {
-            listener.onMusicChanges(
-                MusicRepository.Changes(deviceLibrary = false, userLibrary = true))
-        }
+        notifyUserLibraryChange()
     }
 
-    override fun addToPlaylist(songs: List<Song>, playlist: Playlist) {
-        val userLibrary = userLibrary ?: return
+    override suspend fun addToPlaylist(songs: List<Song>, playlist: Playlist) {
+        val userLibrary = synchronized(this) { userLibrary ?: return }
         userLibrary.addToPlaylist(playlist, songs)
+        notifyUserLibraryChange()
+    }
+
+    override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
+        val userLibrary = synchronized(this) { userLibrary ?: return }
+        userLibrary.rewritePlaylist(playlist, songs)
+        notifyUserLibraryChange()
+    }
+
+    @Synchronized
+    private fun notifyUserLibraryChange() {
         for (listener in updateListeners) {
             listener.onMusicChanges(
                 MusicRepository.Changes(deviceLibrary = false, userLibrary = true))
         }
     }
 
+    @Synchronized
     override fun requestIndex(withCache: Boolean) {
         indexingWorker?.requestIndex(withCache)
     }
@@ -383,9 +395,10 @@ constructor(
             throw NoMusicException()
         }
 
-        // Successfully loaded the library, now save the cache and create the library in
-        // parallel.
+        // Successfully loaded the library, now save the cache, create the library, and
+        // read playlist information in parallel.
         logD("Discovered ${rawSongs.size} songs, starting finalization")
+        // TODO: Indicate playlist state in loading process?
         emitLoading(IndexingProgress.Indeterminate)
         val deviceLibraryChannel = Channel<DeviceLibrary>()
         val deviceLibraryJob =

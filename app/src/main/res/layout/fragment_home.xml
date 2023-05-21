@@ -12,20 +12,29 @@
         android:id="@+id/home_appbar"
         style="@style/Widget.Auxio.AppBarLayout">
 
-        <org.oxycblt.auxio.list.selection.SelectionToolbarOverlay
-            android:id="@+id/home_selection_toolbar"
+        <org.oxycblt.auxio.ui.MultiToolbar
+            android:id="@+id/home_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/home_toolbar"
+                android:id="@+id/home_normal_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:menu="@menu/menu_home"
                 app:title="@string/info_app_name" />
 
-        </org.oxycblt.auxio.list.selection.SelectionToolbarOverlay>
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/home_selection_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                app:navigationIcon="@drawable/ic_close_24"
+                app:menu="@menu/menu_selection_actions" />
+
+        </org.oxycblt.auxio.ui.MultiToolbar>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/home_tabs"

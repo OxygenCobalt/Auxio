@@ -58,19 +58,23 @@ open class FakeMusicRepository : MusicRepository {
         throw NotImplementedError()
     }
 
-    override fun createPlaylist(name: String, songs: List<Song>) {
+    override suspend fun createPlaylist(name: String, songs: List<Song>) {
         throw NotImplementedError()
     }
 
-    override fun deletePlaylist(playlist: Playlist) {
+    override suspend fun renamePlaylist(playlist: Playlist, name: String) {
         throw NotImplementedError()
     }
 
-    override fun addToPlaylist(songs: List<Song>, playlist: Playlist) {
+    override suspend fun deletePlaylist(playlist: Playlist) {
         throw NotImplementedError()
     }
 
-    override fun renamePlaylist(playlist: Playlist, name: String) {
+    override suspend fun addToPlaylist(songs: List<Song>, playlist: Playlist) {
+        throw NotImplementedError()
+    }
+
+    override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
         throw NotImplementedError()
     }
 

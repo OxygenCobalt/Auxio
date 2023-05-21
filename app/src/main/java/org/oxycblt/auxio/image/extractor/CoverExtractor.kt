@@ -19,13 +19,26 @@
 package org.oxycblt.auxio.image.extractor
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.media.MediaMetadataRetriever
+import android.util.Size as AndroidSize
+import androidx.core.graphics.drawable.toDrawable
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.MetadataRetriever
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.extractor.metadata.flac.PictureFrame
 import androidx.media3.extractor.metadata.id3.ApicFrame
+import coil.decode.DataSource
+import coil.decode.ImageSource
+import coil.fetch.DrawableResult
+import coil.fetch.FetchResult
+import coil.fetch.SourceResult
+import coil.size.Dimension
+import coil.size.Size
+import coil.size.pxOrElse
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -33,9 +46,13 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.guava.asDeferred
 import kotlinx.coroutines.withContext
+import okio.buffer
+import okio.source
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
+import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -46,7 +63,28 @@ constructor(
     private val imageSettings: ImageSettings,
     private val mediaSourceFactory: MediaSource.Factory
 ) {
-    suspend fun extract(album: Album): InputStream? =
+    suspend fun extract(songs: List<Song>, size: Size): FetchResult? {
+        val albums = computeAlbumOrdering(songs)
+        val streams = mutableListOf<InputStream>()
+        for (album in albums) {
+            openInputStream(album)?.let(streams::add)
+            if (streams.size == 4) {
+                return createMosaic(streams, size)
+            }
+        }
+
+        return streams.firstOrNull()?.let { stream ->
+            SourceResult(
+                source = ImageSource(stream.source().buffer(), context),
+                mimeType = null,
+                dataSource = DataSource.DISK)
+        }
+    }
+
+    fun computeAlbumOrdering(songs: List<Song>): Collection<Album> =
+        Sort(Sort.Mode.ByCount, Sort.Direction.DESCENDING).albums(songs.groupBy { it.album }.keys)
+
+    private suspend fun openInputStream(album: Album): InputStream? =
         try {
             when (imageSettings.coverMode) {
                 CoverMode.OFF -> null
@@ -125,4 +163,58 @@ constructor(
     private suspend fun extractMediaStoreCover(album: Album) =
         // Eliminate any chance that this blocking call might mess up the loading process
         withContext(Dispatchers.IO) { context.contentResolver.openInputStream(album.coverUri) }
+
+    /** Derived from phonograph: https://github.com/kabouzeid/Phonograph */
+    private suspend fun createMosaic(streams: List<InputStream>, size: Size): FetchResult {
+        // Use whatever size coil gives us to create the mosaic.
+        val mosaicSize = AndroidSize(size.width.mosaicSize(), size.height.mosaicSize())
+        val mosaicFrameSize =
+            Size(Dimension(mosaicSize.width / 2), Dimension(mosaicSize.height / 2))
+
+        val mosaicBitmap =
+            Bitmap.createBitmap(mosaicSize.width, mosaicSize.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(mosaicBitmap)
+
+        var x = 0
+        var y = 0
+
+        // For each stream, create a bitmap scaled to 1/4th of the mosaics combined size
+        // and place it on a corner of the canvas.
+        for (stream in streams) {
+            if (y == mosaicSize.height) {
+                break
+            }
+
+            // Run the bitmap through a transform to reflect the configuration of other images.
+            val bitmap =
+                SquareFrameTransform.INSTANCE.transform(
+                    BitmapFactory.decodeStream(stream), mosaicFrameSize)
+            canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
+
+            x += bitmap.width
+            if (x == mosaicSize.width) {
+                x = 0
+                y += bitmap.height
+            }
+        }
+
+        // It's way easier to map this into a drawable then try to serialize it into an
+        // BufferedSource. Just make sure we mark it as "sampled" so Coil doesn't try to
+        // load low-res mosaics into high-res ImageViews.
+        return DrawableResult(
+            drawable = mosaicBitmap.toDrawable(context.resources),
+            isSampled = true,
+            dataSource = DataSource.DISK)
+    }
+
+    /**
+     * Get an image dimension suitable to create a mosaic with.
+     *
+     * @return A pixel dimension derived from the given [Dimension] that will always be even,
+     *   allowing it to be sub-divided.
+     */
+    private fun Dimension.mosaicSize(): Int {
+        val size = pxOrElse { 512 }
+        return if (size.mod(2) > 0) size + 1 else size
+    }
 }

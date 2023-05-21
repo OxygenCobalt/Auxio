@@ -96,49 +96,54 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      *
      * @param song The [Song] to bind.
      */
-    fun bind(song: Song) = bindImpl(song, R.drawable.ic_song_24, R.string.desc_album_cover)
+    fun bind(song: Song) = bind(song.album)
 
     /**
      * Bind an [Album]'s cover to this view, also updating the content description.
      *
      * @param album the [Album] to bind.
      */
-    fun bind(album: Album) = bindImpl(album, R.drawable.ic_album_24, R.string.desc_album_cover)
+    fun bind(album: Album) = bind(album, R.drawable.ic_album_24, R.string.desc_album_cover)
 
     /**
      * Bind an [Artist]'s image to this view, also updating the content description.
      *
      * @param artist the [Artist] to bind.
      */
-    fun bind(artist: Artist) = bindImpl(artist, R.drawable.ic_artist_24, R.string.desc_artist_image)
+    fun bind(artist: Artist) = bind(artist, R.drawable.ic_artist_24, R.string.desc_artist_image)
 
     /**
      * Bind an [Genre]'s image to this view, also updating the content description.
      *
      * @param genre the [Genre] to bind.
      */
-    fun bind(genre: Genre) = bindImpl(genre, R.drawable.ic_genre_24, R.string.desc_genre_image)
+    fun bind(genre: Genre) = bind(genre, R.drawable.ic_genre_24, R.string.desc_genre_image)
 
     /**
      * Bind a [Playlist]'s image to this view, also updating the content description.
      *
-     * @param playlist the [Playlist] to bind.
+     * @param playlist The [Playlist] to bind.
+     * @param songs [Song]s that can override the playlist image if it needs to differ for any
+     *   reason.
      */
-    fun bind(playlist: Playlist) =
-        bindImpl(playlist, R.drawable.ic_playlist_24, R.string.desc_playlist_image)
+    fun bind(playlist: Playlist, songs: List<Song>? = null) =
+        if (songs != null) {
+            bind(
+                songs,
+                context.getString(R.string.desc_playlist_image, playlist.name.resolve(context)),
+                R.drawable.ic_playlist_24)
+        } else {
+            bind(playlist, R.drawable.ic_playlist_24, R.string.desc_playlist_image)
+        }
 
-    /**
-     * Internally bind a [Music]'s image to this view.
-     *
-     * @param music The music to find.
-     * @param errorRes The error drawable resource to use if the music cannot be loaded.
-     * @param descRes The content description string resource to use. The resource must have one
-     *   field for the name of the [Music].
-     */
-    private fun bindImpl(music: Music, @DrawableRes errorRes: Int, @StringRes descRes: Int) {
+    private fun bind(parent: MusicParent, @DrawableRes errorRes: Int, @StringRes descRes: Int) {
+        bind(parent.songs, context.getString(descRes, parent.name.resolve(context)), errorRes)
+    }
+
+    private fun bind(songs: List<Song>, desc: String, @DrawableRes errorRes: Int) {
         val request =
             ImageRequest.Builder(context)
-                .data(music)
+                .data(songs)
                 .error(StyledDrawable(context, context.getDrawableCompat(errorRes)))
                 .transformations(SquareFrameTransform.INSTANCE)
                 .target(this)
@@ -146,8 +151,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // Dispose of any previous image request and load a new image.
         CoilUtils.dispose(this)
         imageLoader.enqueue(request)
-        // Update the content description to the specified resource.
-        contentDescription = context.getString(descRes, music.name.resolve(context))
+        contentDescription = desc
     }
 
     /**

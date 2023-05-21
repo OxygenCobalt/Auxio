@@ -138,7 +138,7 @@
     <string name="set_replay_gain_mode_dynamic">Pageidaujamas albumui, jei vienas groja</string>
     <string name="err_no_app">Jokių programų nerasta, kurios galėtų atlikti šią užduotį</string>
     <string name="desc_auxio_icon">„Auxio“ piktograma</string>
-    <string name="desc_queue_handle">Perkelti šią eilės dainą</string>
+    <string name="desc_song_handle">Perkelti šią eilės dainą</string>
     <string name="desc_tab_handle">Perkelti šį skirtuką</string>
     <string name="err_index_failed">Muzikos krovimas nepavyko</string>
     <string name="err_no_perms">„Auxio“ reikia leidimo skaityti jūsų muzikos biblioteką</string>
@@ -173,7 +173,7 @@
     <string name="desc_clear_search">Išvalyti paieškos užklausą</string>
     <string name="set_dirs_mode_exclude_desc">Muzika <b>nebus</b> įkeliama iš pridėtų aplankų jūs pridėsite.</string>
     <string name="set_dirs_mode_include">Įtraukti</string>
-    <string name="desc_clear_queue_item">Pašalinti šią eilės dainą</string>
+    <string name="desc_remove_song">Pašalinti šią eilės dainą</string>
     <string name="set_playback_mode_songs">Groti iš visų dainų</string>
     <string name="set_playback_mode_none">Groti iš parodyto elemento</string>
     <string name="set_playback_mode_album">Groti iš albumo</string>

@@ -93,8 +93,9 @@ sealed interface UpdateInstructions {
      * Remove an item.
      *
      * @param at The location that the item should be removed from.
+     * @param size The amount of items to add.
      */
-    data class Remove(val at: Int) : UpdateInstructions
+    data class Remove(val at: Int, val size: Int) : UpdateInstructions
 }
 
 /**
@@ -147,7 +148,7 @@ private class FlexibleListDiffer<T>(
             }
             is UpdateInstructions.Remove -> {
                 currentList = newList
-                updateCallback.onRemoved(instructions.at, 1)
+                updateCallback.onRemoved(instructions.at, instructions.size)
                 callback?.invoke()
             }
             is UpdateInstructions.Diff,

@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|center_vertical"
         android:layout_marginEnd="@dimen/spacing_small"
-        android:contentDescription="@string/desc_clear_queue_item"
+        android:contentDescription="@string/desc_remove_song"
         android:padding="@dimen/spacing_medium"
         android:src="@drawable/ic_delete_24"
         app:tint="?attr/colorOnError" />
@@ -32,7 +32,7 @@
             android:id="@+id/interact_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground">
+            android:background="@drawable/ui_item_ripple">
 
             <org.oxycblt.auxio.image.ImageGroup
                 android:id="@+id/song_album_cover"
@@ -79,11 +79,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/spacing_mid_medium"
-                android:contentDescription="@string/desc_queue_handle"
+                android:contentDescription="@string/desc_song_handle"
                 app:icon="@drawable/ic_handle_24"
                 app:layout_constraintBottom_toBottomOf="@+id/song_album_cover"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/song_album_cover" />
+
+            <org.oxycblt.auxio.ui.RippleFixMaterialButton
+                android:id="@+id/song_menu"
+                style="@style/Widget.Auxio.Button.Icon.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/desc_song_handle"
+                android:visibility="gone"
+                app:icon="@drawable/ic_more_24"
+                app:layout_constraintBottom_toBottomOf="@+id/song_drag_handle"
+                app:layout_constraintEnd_toEndOf="@+id/song_drag_handle"
+                app:layout_constraintStart_toStartOf="@id/song_drag_handle"
+                app:layout_constraintTop_toTopOf="@+id/song_drag_handle" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

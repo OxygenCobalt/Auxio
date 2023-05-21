@@ -306,16 +306,14 @@ constructor(
             "Song to play not in parent"
         }
         val deviceLibrary = musicRepository.deviceLibrary ?: return
-        val sort =
+        val queue =
             when (parent) {
-                is Genre -> musicSettings.genreSongSort
-                is Artist -> musicSettings.artistSongSort
-                is Album -> musicSettings.albumSongSort
-                is Playlist -> musicSettings.playlistSongSort
-                null -> musicSettings.songSort
+                is Genre -> musicSettings.genreSongSort.songs(parent.songs)
+                is Artist -> musicSettings.artistSongSort.songs(parent.songs)
+                is Album -> musicSettings.albumSongSort.songs(parent.songs)
+                is Playlist -> parent.songs
+                null -> musicSettings.songSort.songs(deviceLibrary.songs)
             }
-        val songs = parent?.songs ?: deviceLibrary.songs
-        val queue = sort.songs(songs)
         playbackManager.play(song, parent, queue, shuffled)
     }
 
@@ -394,7 +392,7 @@ constructor(
      * @param playlist The [Playlist] to add.
      */
     fun playNext(playlist: Playlist) {
-        playbackManager.playNext(musicSettings.playlistSongSort.songs(playlist.songs))
+        playbackManager.playNext(playlist.songs)
     }
 
     /**
@@ -448,7 +446,7 @@ constructor(
      * @param playlist The [Playlist] to add.
      */
     fun addToQueue(playlist: Playlist) {
-        playbackManager.addToQueue(musicSettings.playlistSongSort.songs(playlist.songs))
+        playbackManager.addToQueue(playlist.songs)
     }
 
     /**

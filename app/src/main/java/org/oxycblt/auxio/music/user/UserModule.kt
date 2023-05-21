@@ -30,18 +30,18 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 interface UserModule {
-    @Binds fun userLibaryFactory(factory: UserLibraryFactoryImpl): UserLibrary.Factory
+    @Binds fun userLibraryFactory(factory: UserLibraryFactoryImpl): UserLibrary.Factory
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
 class UserRoomModule {
-    @Provides fun playlistDao(database: PlaylistDatabase) = database.playlistDao()
+    @Provides fun playlistDao(database: UserMusicDatabase) = database.playlistDao()
 
     @Provides
-    fun playlistDatabase(@ApplicationContext context: Context) =
+    fun userMusicDatabase(@ApplicationContext context: Context) =
         Room.databaseBuilder(
-                context.applicationContext, PlaylistDatabase::class.java, "playlists.db")
+                context.applicationContext, UserMusicDatabase::class.java, "user_music.db")
             .fallbackToDestructiveMigration()
             .fallbackToDestructiveMigrationFrom(0)
             .fallbackToDestructiveMigrationOnDowngrade()

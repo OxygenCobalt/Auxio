@@ -83,6 +83,7 @@
     <string name="lbl_rename_playlist">Rename playlist</string>
     <string name="lbl_delete">Delete</string>
     <string name="lbl_confirm_delete_playlist">Delete playlist?</string>
+    <string name="lbl_edit">Edit</string>
 
     <!-- Search for music -->
     <string name="lbl_search">Search</string>
@@ -312,8 +313,8 @@
     <string name="desc_new_playlist">Create a new playlist</string>
     <string name="desc_exit">Stop playback</string>
 
-    <string name="desc_clear_queue_item">Remove this queue song</string>
-    <string name="desc_queue_handle">Move this queue song</string>
+    <string name="desc_remove_song">Remove this song</string>
+    <string name="desc_song_handle">Move this song</string>
     <string name="desc_queue_bar">Open the queue</string>
     <string name="desc_tab_handle">Move this tab</string>
     <string name="desc_clear_search">Clear search query</string>
@@ -335,6 +336,7 @@
     <string name="def_track">No track</string>
     <string name="def_song_count">No songs</string>
     <string name="def_playback">No music playing</string>
+    <string name="def_playlists">There\'s nothing here yet</string>
 
     <!-- Codec Namespace | Format names -->
     <eat-comment />

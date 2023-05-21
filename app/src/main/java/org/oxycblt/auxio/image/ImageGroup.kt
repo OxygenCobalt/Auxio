@@ -49,6 +49,9 @@ import org.oxycblt.auxio.util.getInteger
  * @author Alexander Capehart (OxygenCobalt)
  *
  * TODO: Rework content descriptions here
+ * TODO: Attempt unification with StyledImageView with some kind of dynamic configuration to avoid
+ *   superfluous elements
+ * TODO: Handle non-square covers by gracefully placing them in the layout
  */
 class ImageGroup
 @JvmOverloads
