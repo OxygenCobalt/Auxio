@@ -51,7 +51,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * TODO: Fix UID naming
  * TODO: Leverage FlexibleListAdapter more in dialogs (Disable item anims)
  * TODO: Add more logging
- * TODO: Try to move on from shared objs in synchronized and volatile
+ * TODO: Try to move on from synchronized and volatile in shared objs
  */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

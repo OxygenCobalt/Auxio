@@ -110,7 +110,10 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         binding.searchRecycler.apply {
             adapter = searchAdapter
             (layoutManager as GridLayoutManager).setFullWidthLookup {
-                val item = searchModel.searchResults.value[it]
+                val item =
+                    searchModel.searchResults.value.getOrElse(it) {
+                        return@setFullWidthLookup false
+                    }
                 item is Divider || item is Header
             }
         }

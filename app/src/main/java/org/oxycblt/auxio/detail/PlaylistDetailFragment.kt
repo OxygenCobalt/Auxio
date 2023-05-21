@@ -109,7 +109,10 @@ class PlaylistDetailFragment :
                 }
             (layoutManager as GridLayoutManager).setFullWidthLookup {
                 if (it != 0) {
-                    val item = detailModel.playlistList.value[it - 1]
+                    val item =
+                        detailModel.playlistList.value.getOrElse(it - 1) {
+                            return@setFullWidthLookup false
+                        }
                     item is Divider || item is Header
                 } else {
                     true

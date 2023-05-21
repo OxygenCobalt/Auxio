@@ -94,7 +94,10 @@ class GenreDetailFragment :
             adapter = ConcatAdapter(genreHeaderAdapter, genreListAdapter)
             (layoutManager as GridLayoutManager).setFullWidthLookup {
                 if (it != 0) {
-                    val item = detailModel.genreList.value[it - 1]
+                    val item =
+                        detailModel.genreList.value.getOrElse(it - 1) {
+                            return@setFullWidthLookup false
+                        }
                     item is Divider || item is Header
                 } else {
                     true
