@@ -3,7 +3,7 @@
 ## 3.1.0
 
 #### What's New
-- **Playlists.** The long-awaited feature has arrived, with more functionality coming soon.
+- Added playlist functionality
 
 #### What's Improved
 - Sorting now handles numbers of arbitrary length

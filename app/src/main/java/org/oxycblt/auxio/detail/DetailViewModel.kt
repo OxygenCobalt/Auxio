@@ -59,9 +59,9 @@ constructor(
     private val musicSettings: MusicSettings,
     private val playbackSettings: PlaybackSettings
 ) : ViewModel(), MusicRepository.UpdateListener {
-    private var currentSongJob: Job? = null
-
     // --- SONG ---
+    
+    private var currentSongJob: Job? = null
 
     private val _currentSong = MutableStateFlow<Song?>(null)
     /** The current [Song] to display. Null if there is nothing to show. */
@@ -279,7 +279,7 @@ constructor(
      *
      * @param uid The [Music.UID] of the [Playlist] to update [currentPlaylist] to. Must be valid.
      */
-    fun setPlaylistUid(uid: Music.UID) {
+    fun setPlaylist(uid: Music.UID) {
         logD("Opening Playlist [uid: $uid]")
         _currentPlaylist.value =
             musicRepository.userLibrary?.findPlaylist(uid)?.also(::refreshPlaylistList)

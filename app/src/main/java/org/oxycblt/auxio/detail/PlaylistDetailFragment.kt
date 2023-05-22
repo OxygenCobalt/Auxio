@@ -122,7 +122,7 @@ class PlaylistDetailFragment :
 
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
-        detailModel.setPlaylistUid(args.playlistUid)
+        detailModel.setPlaylist(args.playlistUid)
         collectImmediately(detailModel.currentPlaylist, ::updatePlaylist)
         collectImmediately(detailModel.playlistList, ::updateList)
         collectImmediately(detailModel.editedPlaylist, ::updateEditedPlaylist)
