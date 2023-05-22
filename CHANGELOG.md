@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## 3.1.0
 
 #### What's New
 - **Playlists.** The long-awaited feature has arrived, with more functionality coming soon.
