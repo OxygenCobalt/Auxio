@@ -287,5 +287,4 @@
     <string name="lng_playlist_added">Aggiunto alla playlist</string>
     <string name="def_song_count">Niente canzoni</string>
     <string name="fmt_def_playlist">Playlist %d</string>
-    <string name="lbl_none">Nessuno</string>
 </resources>

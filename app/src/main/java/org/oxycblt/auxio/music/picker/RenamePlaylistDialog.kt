@@ -52,8 +52,7 @@ class RenamePlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder
-            // TODO:
-            .setTitle(R.string.lbl_rename)
+            .setTitle(R.string.lbl_rename_playlist)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
                 val playlist = unlikelyToBeNull(pickerModel.currentPlaylistToRename.value)
                 val chosenName = pickerModel.chosenName.value as ChosenName.Valid

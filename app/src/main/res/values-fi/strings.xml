@@ -28,7 +28,6 @@
     <string name="lbl_search">Etsi</string>
     <string name="lbl_filter">Suodata</string>
     <string name="lbl_filter_all">Kaikki</string>
-    <string name="lbl_none">Ei mitään</string>
     <string name="lbl_name">Nimi</string>
     <string name="lbl_song_count">Kappalemäärä</string>
     <string name="lbl_disc">Levy</string>

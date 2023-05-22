@@ -206,7 +206,6 @@
     <string name="set_playback">Lecture</string>
     <string name="set_state">Persistance</string>
     <string name="set_wipe_state">Vider l\'état de lecture</string>
-    <string name="lbl_none">Aucun</string>
     <string name="set_headset_autoplay_desc">Toujours commencer la lecture lorsqu\'un périphérique audio est connecté (pourrait ne pas fonctionner sur tous les appareils)</string>
     <string name="set_replay_gain_mode">Stratégie de normalisation de volume</string>
     <string name="set_replay_gain_mode_track">Par chanson</string>

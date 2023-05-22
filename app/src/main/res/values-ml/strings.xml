@@ -90,7 +90,6 @@
     <string name="lbl_go_artist">കലാകാരനിലേക്ക് പോകുക</string>
     <string name="lbl_song_detail">സവിശേഷതകൾ കാണുക</string>
     <string name="lbl_state_saved">സ്ഥിതി സംരക്ഷിച്ചു</string>
-    <string name="lbl_none">ഒന്നുമില്ല</string>
     <string name="lbl_sort_dec">അവരോഹണം</string>
     <string name="lbl_state_restored">സ്ഥിതി പുനഃസ്ഥാപിച്ചു</string>
     <string name="lbl_wiki">വിക്കി</string>

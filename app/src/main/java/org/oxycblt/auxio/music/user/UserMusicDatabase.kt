@@ -106,7 +106,7 @@ interface PlaylistDao {
     }
 
     /**
-     * Replace the currently-stored [Song]s of the current playlist entry.
+     * Replace the currently stored songs of the given playlist entry.
      *
      * @param playlistUid The [Music.UID] of the playlist to update.
      * @param songs The [PlaylistSong] representing the new list of songs to be placed in the

@@ -23,7 +23,6 @@ import org.oxycblt.auxio.music.*
 import org.oxycblt.auxio.music.fs.Directory
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.ReleaseType
-import org.oxycblt.auxio.music.metadata.*
 
 /**
  * Raw information about a [SongImpl] obtained from the filesystem/Extractor instances.

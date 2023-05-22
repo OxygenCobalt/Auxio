@@ -269,7 +269,6 @@
     <string name="set_music">Glazba</string>
     <string name="desc_playlist_image">Slika popisa pjesama za %s</string>
     <string name="set_behavior">Ponašanje</string>
-    <string name="lbl_none">Ništa</string>
     <string name="set_intelligent_sorting">Pametno razvrstavanje</string>
     <string name="set_intelligent_sorting_desc">Ispravno razvrstaj imena koja počinju brojevima ili riječima poput „the” (najbolje radi s glazbom na engleskom jeziku)</string>
     <string name="desc_new_playlist">Stvori novi popis pjesama</string>

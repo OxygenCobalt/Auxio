@@ -139,8 +139,7 @@ class PlaylistDetailListAdapter(private val listener: Listener) :
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [SortHeader] and it's actions. Use [from] to create
- * an instance.
+ * A [Header] variant that displays an edit button.
  *
  * @param titleRes The string resource to use as the header title
  * @author Alexander Capehart (OxygenCobalt)
@@ -265,7 +264,7 @@ private constructor(private val binding: ItemEditableSongBinding) :
 
     companion object {
         /** A unique ID for this [RecyclerView.ViewHolder] type. */
-        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_EDITABLE_SONG
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_PLAYLIST_SONG
 
         /**
          * Create a new instance.

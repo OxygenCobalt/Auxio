@@ -142,7 +142,6 @@
     <string name="set_action_mode_next">Treceți la următoarea</string>
     <string name="set_playback_mode_artist">Redă de la artist</string>
     <string name="set_playback_mode_genre">Redă din genul</string>
-    <string name="lbl_none">Nu există</string>
     <string name="lbl_reset">Resetează</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="lng_widget">Vizualizați și controlați redarea muzicii</string>

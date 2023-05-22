@@ -281,7 +281,6 @@
     <string name="desc_playlist_image">Obraz playlisty %s</string>
     <string name="set_intelligent_sorting">Inteligentne sortowanie</string>
     <string name="set_intelligent_sorting_desc">Ignoruj słowa takie jak „the” oraz numery w tytule podczas sortowania (działa najlepiej z utworami w języku angielskim)</string>
-    <string name="lbl_none">Brak</string>
     <string name="desc_new_playlist">Utwórz nową playlistę</string>
     <string name="lbl_new_playlist">Nowa playlista</string>
     <string name="lbl_playlist_add">Dodaj do playlisty</string>
