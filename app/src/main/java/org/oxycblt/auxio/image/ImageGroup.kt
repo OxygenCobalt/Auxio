@@ -28,9 +28,14 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.AttrRes
 import androidx.core.view.updateMarginsRelative
+import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.getDimenPixels
@@ -80,7 +85,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             PlaybackIndicatorView(context).apply { cornerRadius = this@ImageGroup.cornerRadius }
         selectionIndicatorView =
             ImageView(context).apply {
-                imageTintList = context.getAttrColorCompat(R.attr.colorOnPrimary)
+                imageTintList = context.getAttrColorCompat(MR.attr.colorOnPrimary)
                 setImageResource(R.drawable.ic_check_20)
                 setBackgroundResource(R.drawable.ui_selection_badge_bg)
             }

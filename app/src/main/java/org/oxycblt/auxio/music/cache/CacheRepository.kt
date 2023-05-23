@@ -20,7 +20,7 @@ package org.oxycblt.auxio.music.cache
 
 import javax.inject.Inject
 import org.oxycblt.auxio.music.device.RawSong
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.logE
 
 /**
  * A repository allowing access to cached metadata obtained in prior music loading operations.

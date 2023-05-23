@@ -24,7 +24,7 @@ import coil.key.Keyer
 import coil.request.Options
 import coil.size.Size
 import javax.inject.Inject
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Song
 
 class SongKeyer @Inject constructor(private val coverExtractor: CoverExtractor) :
     Keyer<List<Song>> {

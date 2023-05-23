@@ -18,7 +18,7 @@
  
 package org.oxycblt.auxio.music.device
 
-import java.util.*
+import java.util.UUID
 import org.junit.Assert.assertTrue
 import org.junit.Test
 

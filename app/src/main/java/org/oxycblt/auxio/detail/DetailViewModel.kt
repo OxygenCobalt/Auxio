@@ -37,12 +37,22 @@ import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.music.metadata.AudioProperties
 import org.oxycblt.auxio.playback.PlaybackSettings
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.Event
+import org.oxycblt.auxio.util.MutableEvent
+import org.oxycblt.auxio.util.logD
 
 /**
  * [ViewModel] that manages the Song, Album, Artist, and Genre detail views. Keeps track of the
@@ -60,7 +70,7 @@ constructor(
     private val playbackSettings: PlaybackSettings
 ) : ViewModel(), MusicRepository.UpdateListener {
     // --- SONG ---
-    
+
     private var currentSongJob: Job? = null
 
     private val _currentSong = MutableStateFlow<Song?>(null)

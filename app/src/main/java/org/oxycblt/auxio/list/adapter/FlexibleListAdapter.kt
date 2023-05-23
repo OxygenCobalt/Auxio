@@ -20,7 +20,8 @@ package org.oxycblt.auxio.list.adapter
 
 import android.os.Handler
 import android.os.Looper
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.AdapterListUpdateCallback
+import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import java.util.concurrent.Executor

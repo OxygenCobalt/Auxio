@@ -28,8 +28,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
-import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.ArtistViewHolder

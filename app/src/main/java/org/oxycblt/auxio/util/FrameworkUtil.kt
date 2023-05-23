@@ -34,7 +34,6 @@ import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import java.lang.IllegalArgumentException
 
 /**
  * Get if this [View] contains the given [PointF], with optional leeway.

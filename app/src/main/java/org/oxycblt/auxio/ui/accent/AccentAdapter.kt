@@ -18,11 +18,12 @@
  
 package org.oxycblt.auxio.ui.accent
 
+import android.R as SR
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.R
+import com.google.android.material.R as MR
 import org.oxycblt.auxio.databinding.ItemAccentBinding
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.util.getAttrColorCompat
@@ -118,9 +119,9 @@ class AccentViewHolder private constructor(private val binding: ItemAccentBindin
         binding.accent.apply {
             iconTint =
                 if (isSelected) {
-                    context.getAttrColorCompat(R.attr.colorSurface)
+                    context.getAttrColorCompat(MR.attr.colorSurface)
                 } else {
-                    context.getColorCompat(android.R.color.transparent)
+                    context.getColorCompat(SR.color.transparent)
                 }
         }
     }

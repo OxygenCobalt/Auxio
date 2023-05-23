@@ -24,7 +24,8 @@ import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemSongPropertyBinding
 import org.oxycblt.auxio.list.Item
-import org.oxycblt.auxio.list.adapter.*
+import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
+import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater

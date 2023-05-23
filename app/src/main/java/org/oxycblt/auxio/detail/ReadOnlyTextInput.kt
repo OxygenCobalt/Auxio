@@ -22,8 +22,8 @@ import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import androidx.appcompat.R
 import com.google.android.material.textfield.TextInputEditText
-import org.oxycblt.auxio.R
 
 /**
  * A [TextInputEditText] that deliberately restricts all input except for selection. This will work

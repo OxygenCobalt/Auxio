@@ -46,16 +46,38 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
-import org.oxycblt.auxio.home.list.*
+import org.oxycblt.auxio.home.list.AlbumListFragment
+import org.oxycblt.auxio.home.list.ArtistListFragment
+import org.oxycblt.auxio.home.list.GenreListFragment
+import org.oxycblt.auxio.home.list.PlaylistListFragment
+import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.selection.SelectionFragment
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.IndexingProgress
+import org.oxycblt.auxio.music.IndexingState
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.NoAudioPermissionException
+import org.oxycblt.auxio.music.NoMusicException
+import org.oxycblt.auxio.music.PERMISSION_READ_AUDIO
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.MainNavigationAction
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.getColorCompat
+import org.oxycblt.auxio.util.lazyReflectedField
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The starting [SelectionFragment] of Auxio. Shows the user's music library and enables navigation

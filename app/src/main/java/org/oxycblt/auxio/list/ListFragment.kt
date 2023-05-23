@@ -28,7 +28,12 @@ import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.selection.SelectionFragment
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.MainNavigationAction
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.util.logD

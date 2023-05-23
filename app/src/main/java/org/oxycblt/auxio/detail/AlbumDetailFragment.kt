@@ -51,7 +51,14 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.canScroll
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.setFullWidthLookup
+import org.oxycblt.auxio.util.showToast
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A [ListFragment] that shows information about an [Album].

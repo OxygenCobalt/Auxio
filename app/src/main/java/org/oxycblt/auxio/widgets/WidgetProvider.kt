@@ -34,7 +34,9 @@ import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.ui.UISettings
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.newBroadcastPendingIntent
 
 /**
  * The [AppWidgetProvider] for the "Now Playing" widget. This widget shows the current playback

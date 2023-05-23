@@ -24,16 +24,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemEditableSongBinding
 import org.oxycblt.auxio.list.EditClickListListener
-import org.oxycblt.auxio.list.adapter.*
+import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
+import org.oxycblt.auxio.list.adapter.PlayingIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.MaterialDragCallback
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.getAttrColorCompat
+import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [RecyclerView.Adapter] that shows an editable list of queue items.
@@ -110,7 +116,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemEditableS
     override val delete = binding.background
     override val background =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
-            fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
+            fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurface)
             elevation = binding.context.getDimen(R.dimen.elevation_normal) * 5
             alpha = 0
         }
@@ -128,7 +134,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemEditableS
             LayerDrawable(
                 arrayOf(
                     MaterialShapeDrawable.createWithElevationOverlay(binding.context).apply {
-                        fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
+                        fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurface)
                         elevation = binding.context.getDimen(R.dimen.elevation_normal)
                     },
                     background))

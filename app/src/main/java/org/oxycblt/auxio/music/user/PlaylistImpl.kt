@@ -18,7 +18,11 @@
  
 package org.oxycblt.auxio.music.user
 
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.info.Name
 
