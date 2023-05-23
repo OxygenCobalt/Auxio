@@ -204,7 +204,7 @@
     <string name="desc_exit">Зупинити відтворення</string>
     <string name="cdc_flac">Вільний аудіокодек без втрат (FLAC)</string>
     <string name="clr_deep_purple">Темно-фіолетовий</string>
-    <string name="fmt_selected">Вибрано %d</string>
+    <string name="fmt_selected">Вибрано: %d</string>
     <string name="fmt_indexing">Завантаження музичної бібліотеки… (%1$d/%2$d)</string>
     <string name="fmt_bitrate">%d кбіт/с</string>
     <string name="fmt_sample_rate">%d Гц</string>
