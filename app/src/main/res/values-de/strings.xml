@@ -290,4 +290,6 @@
     <string name="lbl_rename_playlist">Wiedergabeliste umbenennen</string>
     <string name="lng_playlist_renamed">Wiedergabeliste umbenannt</string>
     <string name="lng_playlist_deleted">Wiedergabeliste gelöscht</string>
+    <string name="lbl_edit">Bearbeiten</string>
+    <string name="def_playlists">Hier ist noch nichts</string>
 </resources>
