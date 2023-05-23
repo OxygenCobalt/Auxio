@@ -48,6 +48,10 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * TODO: Use proper material attributes (Not the weird dimen attributes I currently have)
  * TODO: Migrate to material animation system
  * TODO: Unit testing
+ * TODO: Fix UID naming
+ * TODO: Leverage FlexibleListAdapter more in dialogs (Disable item anims)
+ * TODO: Add more logging
+ * TODO: Try to move on from synchronized and volatile in shared objs
  */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

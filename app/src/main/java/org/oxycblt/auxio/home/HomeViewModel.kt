@@ -27,7 +27,6 @@ import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.model.Library
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
@@ -46,7 +45,7 @@ constructor(
     private val playbackSettings: PlaybackSettings,
     private val musicRepository: MusicRepository,
     private val musicSettings: MusicSettings
-) : ViewModel(), MusicRepository.Listener, HomeSettings.Listener {
+) : ViewModel(), MusicRepository.UpdateListener, HomeSettings.Listener {
 
     private val _songsList = MutableStateFlow(listOf<Song>())
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
@@ -88,6 +87,15 @@ constructor(
     val genresInstructions: Event<UpdateInstructions>
         get() = _genresInstructions
 
+    private val _playlistsList = MutableStateFlow(listOf<Playlist>())
+    /** A list of [Playlist]s, sorted by the preferred [Sort], to be shown in the home view. */
+    val playlistsList: StateFlow<List<Playlist>>
+        get() = _playlistsList
+    private val _playlistsInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for how to update [genresList] in the UI. */
+    val playlistsInstructions: Event<UpdateInstructions>
+        get() = _playlistsInstructions
+
     /** The [MusicMode] to use when playing a [Song] from the UI. */
     val playbackMode: MusicMode
         get() = playbackSettings.inListPlaybackMode
@@ -117,37 +125,45 @@ constructor(
     val isFastScrolling: StateFlow<Boolean> = _isFastScrolling
 
     init {
-        musicRepository.addListener(this)
+        musicRepository.addUpdateListener(this)
         homeSettings.registerListener(this)
     }
 
     override fun onCleared() {
         super.onCleared()
-        musicRepository.removeListener(this)
+        musicRepository.removeUpdateListener(this)
         homeSettings.unregisterListener(this)
     }
 
-    override fun onLibraryChanged(library: Library?) {
-        if (library != null) {
-            logD("Library changed, refreshing library")
-            // FIXME: Sort name setting changes result in incorrect list updates
+    override fun onMusicChanges(changes: MusicRepository.Changes) {
+        val deviceLibrary = musicRepository.deviceLibrary
+        logD(changes.deviceLibrary)
+        if (changes.deviceLibrary && deviceLibrary != null) {
+            logD("Refreshing library")
             // Get the each list of items in the library to use as our list data.
             // Applying the preferred sorting to them.
             _songsInstructions.put(UpdateInstructions.Diff)
-            _songsList.value = musicSettings.songSort.songs(library.songs)
+            _songsList.value = musicSettings.songSort.songs(deviceLibrary.songs)
             _albumsInstructions.put(UpdateInstructions.Diff)
-            _albumsLists.value = musicSettings.albumSort.albums(library.albums)
+            _albumsLists.value = musicSettings.albumSort.albums(deviceLibrary.albums)
             _artistsInstructions.put(UpdateInstructions.Diff)
             _artistsList.value =
                 musicSettings.artistSort.artists(
                     if (homeSettings.shouldHideCollaborators) {
                         // Hide Collaborators is enabled, filter out collaborators.
-                        library.artists.filter { !it.isCollaborator }
+                        deviceLibrary.artists.filter { !it.isCollaborator }
                     } else {
-                        library.artists
+                        deviceLibrary.artists
                     })
             _genresInstructions.put(UpdateInstructions.Diff)
-            _genresList.value = musicSettings.genreSort.genres(library.genres)
+            _genresList.value = musicSettings.genreSort.genres(deviceLibrary.genres)
+        }
+
+        val userLibrary = musicRepository.userLibrary
+        if (changes.userLibrary && userLibrary != null) {
+            logD("Refreshing playlists")
+            _playlistsInstructions.put(UpdateInstructions.Diff)
+            _playlistsList.value = musicSettings.playlistSort.playlists(userLibrary.playlists)
         }
     }
 
@@ -160,7 +176,7 @@ constructor(
     override fun onHideCollaboratorsChanged() {
         // Changes in the hide collaborator setting will change the artist contents
         // of the library, consider it a library update.
-        onLibraryChanged(musicRepository.library)
+        onMusicChanges(MusicRepository.Changes(deviceLibrary = true, userLibrary = false))
     }
 
     /**
@@ -175,6 +191,7 @@ constructor(
             MusicMode.ALBUMS -> musicSettings.albumSort
             MusicMode.ARTISTS -> musicSettings.artistSort
             MusicMode.GENRES -> musicSettings.genreSort
+            MusicMode.PLAYLISTS -> musicSettings.playlistSort
         }
 
     /**
@@ -205,6 +222,11 @@ constructor(
                 musicSettings.genreSort = sort
                 _genresInstructions.put(UpdateInstructions.Replace(0))
                 _genresList.value = sort.genres(_genresList.value)
+            }
+            MusicMode.PLAYLISTS -> {
+                musicSettings.playlistSort = sort
+                _playlistsInstructions.put(UpdateInstructions.Replace(0))
+                _playlistsList.value = sort.playlists(_playlistsList.value)
             }
         }
     }

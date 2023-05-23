@@ -24,7 +24,6 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemDetailHeaderBinding
-import org.oxycblt.auxio.detail.list.DetailListAdapter
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
@@ -33,6 +32,7 @@ import org.oxycblt.auxio.util.inflater
 /**
  * A [DetailHeaderAdapter] that shows [Genre] information.
  *
+ * @param listener [DetailHeaderAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class GenreDetailHeaderAdapter(private val listener: Listener) :
@@ -57,15 +57,15 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
      * Bind new data to this instance.
      *
      * @param genre The new [Genre] to bind.
-     * @param listener A [DetailListAdapter.Listener] to bind interactions to.
+     * @param listener A [DetailHeaderAdapter.Listener] to bind interactions to.
      */
     fun bind(genre: Genre, listener: DetailHeaderAdapter.Listener) {
         binding.detailCover.bind(genre)
         binding.detailType.text = binding.context.getString(R.string.lbl_genre)
-        binding.detailName.text = genre.resolveName(binding.context)
+        binding.detailName.text = genre.name.resolve(binding.context)
         // Nothing about a genre is applicable to the sub-head text.
         binding.detailSubhead.isVisible = false
-        // The song count of the genre maps to the info text.
+        // The song and artist count of the genre maps to the info text.
         binding.detailInfo.text =
             binding.context.getString(
                 R.string.fmt_two,

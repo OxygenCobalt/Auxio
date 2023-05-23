@@ -162,8 +162,8 @@
     <string name="set_restore_state">Afspeelstatus herstellen</string>
     <string name="set_restore_desc">Herstel de eerder opgeslagen afspeelstatus (indien aanwezig)</string>
     <string name="err_did_not_restore">Geen staat kan hersteld worden</string>
-    <string name="desc_clear_queue_item">Verwijder dit wachtrij liedje</string>
-    <string name="desc_queue_handle">Verplaats dit wachtrij liedje</string>
+    <string name="desc_remove_song">Verwijder dit wachtrij liedje</string>
+    <string name="desc_song_handle">Verplaats dit wachtrij liedje</string>
     <string name="desc_tab_handle">Verplaats deze tab</string>
     <string name="desc_no_cover">Album cover</string>
     <string name="def_track">Geen tracknummer</string>

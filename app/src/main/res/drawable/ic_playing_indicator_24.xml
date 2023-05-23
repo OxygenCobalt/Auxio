@@ -3,9 +3,9 @@
     xmlns:aapt="http://schemas.android.com/aapt">
 
     <!--
-    Yes, this whole file is all 30 frames of Spotify's equalizer animation
-    merged with the material equalizer icon, with each vector inlined using
-    aapt:attr so that it does not clutter the drawable folder.
+    Yes, this whole file is the material equalizer icon influenced by Spotify's
+    equalizer animation with each vector inlined using aapt:attr so that it does
+    not clutter the drawable folder.
     -->
 
     <!-- Frame 1 -->

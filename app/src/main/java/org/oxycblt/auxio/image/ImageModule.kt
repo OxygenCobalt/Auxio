@@ -18,48 +18,14 @@
  
 package org.oxycblt.auxio.image
 
-import android.content.Context
-import coil.ImageLoader
-import coil.request.CachePolicy
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 import org.oxycblt.auxio.image.extractor.*
 
 @Module
 @InstallIn(SingletonComponent::class)
 interface ImageModule {
     @Binds fun settings(imageSettings: ImageSettingsImpl): ImageSettings
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-class CoilModule {
-    @Singleton
-    @Provides
-    fun imageLoader(
-        @ApplicationContext context: Context,
-        songFactory: AlbumCoverFetcher.SongFactory,
-        albumFactory: AlbumCoverFetcher.AlbumFactory,
-        artistFactory: ArtistImageFetcher.Factory,
-        genreFactory: GenreImageFetcher.Factory
-    ) =
-        ImageLoader.Builder(context)
-            .components {
-                // Add fetchers for Music components to make them usable with ImageRequest
-                add(MusicKeyer())
-                add(songFactory)
-                add(albumFactory)
-                add(artistFactory)
-                add(genreFactory)
-            }
-            // Use our own crossfade with error drawable support
-            .transitionFactory(ErrorCrossfadeTransitionFactory())
-            // Not downloading anything, so no disk-caching
-            .diskCachePolicy(CachePolicy.DISABLED)
-            .build()
 }

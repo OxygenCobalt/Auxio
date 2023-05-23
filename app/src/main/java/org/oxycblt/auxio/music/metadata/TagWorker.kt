@@ -19,14 +19,15 @@
 package org.oxycblt.auxio.music.metadata
 
 import androidx.core.text.isDigitsOnly
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.MetadataRetriever
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.TrackGroupArray
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.MetadataRetriever
+import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.exoplayer.source.TrackGroupArray
 import java.util.concurrent.Future
 import javax.inject.Inject
-import org.oxycblt.auxio.music.model.RawSong
-import org.oxycblt.auxio.music.storage.toAudioUri
+import org.oxycblt.auxio.music.device.RawSong
+import org.oxycblt.auxio.music.fs.toAudioUri
+import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -56,14 +57,26 @@ interface TagWorker {
     }
 }
 
-class TagWorkerImpl
-private constructor(private val rawSong: RawSong, private val future: Future<TrackGroupArray>) :
-    TagWorker {
-    /**
-     * Try to get a completed song from this [TagWorker], if it has finished processing.
-     *
-     * @return A [RawSong] instance if processing has completed, null otherwise.
-     */
+class TagWorkerFactoryImpl
+@Inject
+constructor(private val mediaSourceFactory: MediaSource.Factory) : TagWorker.Factory {
+    override fun create(rawSong: RawSong): TagWorker =
+        // Note that we do not leverage future callbacks. This is because errors in the
+        // (highly fallible) extraction process will not bubble up to Indexer when a
+        // listener is used, instead crashing the app entirely.
+        TagWorkerImpl(
+            rawSong,
+            MetadataRetriever.retrieveMetadata(
+                mediaSourceFactory,
+                MediaItem.fromUri(
+                    requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No id" }.toAudioUri())))
+}
+
+private class TagWorkerImpl(
+    private val rawSong: RawSong,
+    private val future: Future<TrackGroupArray>
+) : TagWorker {
+
     override fun poll(): RawSong? {
         if (!future.isDone) {
             // Not done yet, nothing to do.
@@ -95,12 +108,6 @@ private constructor(private val rawSong: RawSong, private val future: Future<Tra
         return rawSong
     }
 
-    /**
-     * Complete this instance's [RawSong] with ID3v2 Text Identification Frames.
-     *
-     * @param textFrames A mapping between ID3v2 Text Identification Frame IDs and one or more
-     *   values.
-     */
     private fun populateWithId3v2(textFrames: Map<String, List<String>>) {
         // Song
         textFrames["TXXX:musicbrainz release track id"]?.let { rawSong.musicBrainzId = it.first() }
@@ -123,6 +130,9 @@ private constructor(private val rawSong: RawSong, private val future: Future<Tra
         // 3. ID3v2.4 Release Date, as it is the second most common date type
         // 4. ID3v2.3 Original Date, as it is like #1
         // 5. ID3v2.3 Release Year, as it is the most common date type
+        // TODO: Show original and normal dates side-by-side
+        // TODO: Handle dates that are in "January" because the actual specific release date
+        //  isn't known?
         (textFrames["TDOR"]?.run { Date.from(first()) }
                 ?: textFrames["TDRC"]?.run { Date.from(first()) }
                     ?: textFrames["TDRL"]?.run { Date.from(first()) }
@@ -162,23 +172,15 @@ private constructor(private val rawSong: RawSong, private val future: Future<Tra
         (textFrames["TCMP"]
                 ?: textFrames["TXXX:compilation"] ?: textFrames["TXXX:itunescompilation"])
             ?.let {
+                // Ignore invalid instances of this tag
                 if (it.size != 1 || it[0] != "1") return@let
+                // Change the metadata to be a compilation album made by "Various Artists"
                 rawSong.albumArtistNames =
                     rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
                 rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
             }
     }
 
-    /**
-     * Parses the ID3v2.3 timestamp specification into a [Date] from the given Text Identification
-     * Frames.
-     *
-     * @param textFrames A mapping between ID3v2 Text Identification Frame IDs and one or more
-     *   values.
-     * @return A [Date] of a year value from TORY/TYER, a month and day value from TDAT, and a
-     *   hour/minute value from TIME. No second value is included. The latter two fields may not be
-     *   included in they cannot be parsed. Will be null if a year value could not be parsed.
-     */
     private fun parseId3v23Date(textFrames: Map<String, List<String>>): Date? {
         // Assume that TDAT/TIME can refer to TYER or TORY depending on if TORY
         // is present.
@@ -212,11 +214,6 @@ private constructor(private val rawSong: RawSong, private val future: Future<Tra
         }
     }
 
-    /**
-     * Complete this instance's [RawSong] with Vorbis comments.
-     *
-     * @param comments A mapping between vorbis comment names and one or more vorbis comment values.
-     */
     private fun populateWithVorbis(comments: Map<String, List<String>>) {
         // Song
         comments["musicbrainz_releasetrackid"]?.let { rawSong.musicBrainzId = it.first() }
@@ -270,26 +267,13 @@ private constructor(private val rawSong: RawSong, private val future: Future<Tra
 
         // Compilation Flag
         (comments["compilation"] ?: comments["itunescompilation"])?.let {
+            // Ignore invalid instances of this tag
             if (it.size != 1 || it[0] != "1") return@let
+            // Change the metadata to be a compilation album made by "Various Artists"
             rawSong.albumArtistNames =
                 rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
             rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
         }
-    }
-
-    class Factory @Inject constructor(private val mediaSourceFactory: MediaSource.Factory) :
-        TagWorker.Factory {
-        override fun create(rawSong: RawSong) =
-            // Note that we do not leverage future callbacks. This is because errors in the
-            // (highly fallible) extraction process will not bubble up to Indexer when a
-            // listener is used, instead crashing the app entirely.
-            TagWorkerImpl(
-                rawSong,
-                MetadataRetriever.retrieveMetadata(
-                    mediaSourceFactory,
-                    MediaItem.fromUri(
-                        requireNotNull(rawSong.mediaStoreId) { "Invalid raw: No id" }
-                            .toAudioUri())))
     }
 
     private companion object {

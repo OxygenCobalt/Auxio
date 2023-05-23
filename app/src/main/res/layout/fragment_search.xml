@@ -12,13 +12,13 @@
         app:liftOnScroll="true"
         app:liftOnScrollTargetViewId="@id/search_recycler">
 
-        <org.oxycblt.auxio.list.selection.SelectionToolbarOverlay
-            android:id="@+id/search_selection_toolbar"
+        <org.oxycblt.auxio.ui.MultiToolbar
+            android:id="@+id/search_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/search_toolbar"
+                android:id="@+id/search_normal_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:menu="@menu/menu_search"
@@ -49,7 +49,16 @@
 
             </com.google.android.material.appbar.MaterialToolbar>
 
-        </org.oxycblt.auxio.list.selection.SelectionToolbarOverlay>
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/search_selection_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                app:navigationIcon="@drawable/ic_close_24"
+                app:menu="@menu/menu_selection_actions" />
+
+        </org.oxycblt.auxio.ui.MultiToolbar>
 
     </org.oxycblt.auxio.ui.CoordinatorAppBarLayout>
 

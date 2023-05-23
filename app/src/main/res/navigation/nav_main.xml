@@ -18,45 +18,27 @@
             android:id="@+id/action_show_details"
             app:destination="@id/song_detail_dialog" />
         <action
-            android:id="@+id/action_pick_playback_artist"
-            app:destination="@id/artist_playback_picker_dialog" />
+            android:id="@+id/action_new_playlist"
+            app:destination="@id/new_playlist_dialog" />
+        <action
+            android:id="@+id/action_rename_playlist"
+            app:destination="@id/rename_playlist_dialog" />
+        <action
+            android:id="@+id/action_delete_playlist"
+            app:destination="@id/delete_playlist_dialog" />
+        <action
+            android:id="@+id/action_add_to_playlist"
+            app:destination="@id/add_to_playlist_dialog" />
         <action
             android:id="@+id/action_pick_navigation_artist"
-            app:destination="@id/artist_navigation_picker_dialog" />
+            app:destination="@id/navigate_to_artist_dialog" />
+        <action
+            android:id="@+id/action_pick_playback_artist"
+            app:destination="@id/play_from_artist_dialog" />
         <action
             android:id="@+id/action_pick_playback_genre"
-            app:destination="@id/genre_playback_picker_dialog" />
+            app:destination="@id/play_from_genre_dialog" />
     </fragment>
-
-    <dialog
-        android:id="@+id/artist_playback_picker_dialog"
-        android:name="org.oxycblt.auxio.picker.ArtistPlaybackPickerDialog"
-        android:label="artist_playback_picker_dialog"
-        tools:layout="@layout/dialog_music_picker">
-        <argument
-            android:name="itemUid"
-            app:argType="org.oxycblt.auxio.music.Music$UID" />
-    </dialog>
-
-    <dialog
-        android:id="@+id/artist_navigation_picker_dialog"
-        android:name="org.oxycblt.auxio.picker.ArtistNavigationPickerDialog"
-        android:label="artist_navigation_picker_dialog"
-        tools:layout="@layout/dialog_music_picker">
-        <argument
-            android:name="itemUid"
-            app:argType="org.oxycblt.auxio.music.Music$UID" />
-    </dialog>
-
-    <dialog
-        android:id="@+id/genre_playback_picker_dialog"
-        android:name="org.oxycblt.auxio.picker.GenrePlaybackPickerDialog"
-        android:label="genre_playback_picker_dialog"
-        tools:layout="@layout/dialog_music_picker">
-        <argument
-            android:name="itemUid"
-            app:argType="org.oxycblt.auxio.music.Music$UID" />
-    </dialog>
 
     <dialog
         android:id="@+id/song_detail_dialog"
@@ -64,10 +46,82 @@
         android:label="song_detail_dialog"
         tools:layout="@layout/dialog_song_detail">
         <argument
+            android:name="songUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/new_playlist_dialog"
+        android:name="org.oxycblt.auxio.music.picker.NewPlaylistDialog"
+        android:label="new_playlist_dialog"
+        tools:layout="@layout/dialog_playlist_name">
+        <argument
+            android:name="songUids"
+            app:argType="org.oxycblt.auxio.music.Music$UID[]" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/rename_playlist_dialog"
+        android:name="org.oxycblt.auxio.music.picker.RenamePlaylistDialog"
+        android:label="rename_playlist_dialog"
+        tools:layout="@layout/dialog_playlist_name">
+        <argument
+            android:name="playlistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/delete_playlist_dialog"
+        android:name="org.oxycblt.auxio.music.picker.DeletePlaylistDialog"
+        android:label="delete_playlist_dialog"
+        tools:layout="@layout/dialog_playlist_name">
+        <argument
+            android:name="playlistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/add_to_playlist_dialog"
+        android:name="org.oxycblt.auxio.music.picker.AddToPlaylistDialog"
+        android:label="new_playlist_dialog"
+        tools:layout="@layout/dialog_playlist_name">
+        <argument
+            android:name="songUids"
+            app:argType="org.oxycblt.auxio.music.Music$UID[]" />
+        <action
+            android:id="@+id/action_new_playlist"
+            app:destination="@id/new_playlist_dialog" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/navigate_to_artist_dialog"
+        android:name="org.oxycblt.auxio.navigation.picker.NavigateToArtistDialog"
+        android:label="navigate_to_artist_dialog"
+        tools:layout="@layout/dialog_music_choices">
+        <argument
             android:name="itemUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
 
+    <dialog
+        android:id="@+id/play_from_artist_dialog"
+        android:name="org.oxycblt.auxio.playback.picker.PlayFromArtistDialog"
+        android:label="play_from_artist_dialog"
+        tools:layout="@layout/dialog_music_choices">
+        <argument
+            android:name="artistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/play_from_genre_dialog"
+        android:name="org.oxycblt.auxio.playback.picker.PlayFromGenreDialog"
+        android:label="play_from_genre_dialog"
+        tools:layout="@layout/dialog_music_choices">
+        <argument
+            android:name="genreUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
 
     <fragment
         android:id="@+id/root_preferences_fragment"
@@ -143,7 +197,7 @@
         tools:layout="@layout/dialog_pre_amp" />
     <dialog
         android:id="@+id/music_dirs_dialog"
-        android:name="org.oxycblt.auxio.music.storage.MusicDirsDialog"
+        android:name="org.oxycblt.auxio.music.fs.MusicDirsDialog"
         android:label="music_dirs_dialog"
         tools:layout="@layout/dialog_music_dirs" />
     <dialog

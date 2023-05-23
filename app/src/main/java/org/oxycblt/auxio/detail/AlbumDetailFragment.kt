@@ -26,6 +26,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +35,8 @@ import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.header.AlbumDetailHeaderAdapter
 import org.oxycblt.auxio.detail.list.AlbumDetailListAdapter
 import org.oxycblt.auxio.detail.list.DetailListAdapter
+import org.oxycblt.auxio.list.Divider
+import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
@@ -43,9 +46,11 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.info.Disc
+import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.*
 
 /**
@@ -61,6 +66,7 @@ class AlbumDetailFragment :
     private val detailModel: DetailViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     // Information about what album to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an album.
@@ -87,17 +93,27 @@ class AlbumDetailFragment :
         super.onBindingCreated(binding, savedInstanceState)
 
         // --- UI SETUP --
-        binding.detailToolbar.apply {
+        binding.detailNormalToolbar.apply {
             inflateMenu(R.menu.menu_album_detail)
             setNavigationOnClickListener { findNavController().navigateUp() }
             setOnMenuItemClickListener(this@AlbumDetailFragment)
         }
 
-        binding.detailRecycler.adapter = ConcatAdapter(albumHeaderAdapter, albumListAdapter)
+        binding.detailRecycler.apply {
+            adapter = ConcatAdapter(albumHeaderAdapter, albumListAdapter)
+            (layoutManager as GridLayoutManager).setFullWidthLookup {
+                if (it != 0) {
+                    val item = detailModel.albumList.value[it - 1]
+                    item is Divider || item is Header || item is Disc
+                } else {
+                    true
+                }
+            }
+        }
 
         // -- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
-        detailModel.setAlbumUid(args.albumUid)
+        detailModel.setAlbum(args.albumUid)
         collectImmediately(detailModel.currentAlbum, ::updateAlbum)
         collectImmediately(detailModel.albumList, ::updateList)
         collectImmediately(
@@ -108,7 +124,7 @@ class AlbumDetailFragment :
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
-        binding.detailToolbar.setOnMenuItemClickListener(null)
+        binding.detailNormalToolbar.setOnMenuItemClickListener(null)
         binding.detailRecycler.adapter = null
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
@@ -136,6 +152,10 @@ class AlbumDetailFragment :
                 onNavigateToParentArtist()
                 true
             }
+            R.id.action_playlist_add -> {
+                musicModel.addToPlaylist(currentAlbum)
+                true
+            }
             else -> false
         }
     }
@@ -159,8 +179,10 @@ class AlbumDetailFragment :
 
     override fun onOpenSortMenu(anchor: View) {
         openMenu(anchor, R.menu.menu_album_sort) {
+            // Select the corresponding sort mode option
             val sort = detailModel.albumSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
+            // Select the corresponding sort direction option
             val directionItemId =
                 when (sort.direction) {
                     Sort.Direction.ASCENDING -> R.id.option_sort_asc
@@ -171,8 +193,10 @@ class AlbumDetailFragment :
                 item.isChecked = !item.isChecked
                 detailModel.albumSongSort =
                     when (item.itemId) {
+                        // Sort direction options
                         R.id.option_sort_asc -> sort.withDirection(Sort.Direction.ASCENDING)
                         R.id.option_sort_dec -> sort.withDirection(Sort.Direction.DESCENDING)
+                        // Any other option is a sort mode
                         else -> sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
                     }
                 true
@@ -190,7 +214,7 @@ class AlbumDetailFragment :
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailToolbar.title = album.resolveName(requireContext())
+        requireBinding().detailNormalToolbar.title = album.name.resolve(requireContext())
         albumHeaderAdapter.setParent(album)
     }
 
@@ -289,6 +313,13 @@ class AlbumDetailFragment :
 
     private fun updateSelection(selected: List<Music>) {
         albumListAdapter.setSelected(selected.toSet())
-        requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
+
+        val binding = requireBinding()
+        if (selected.isNotEmpty()) {
+            binding.detailSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
+            binding.detailToolbar.setVisible(R.id.detail_selection_toolbar)
+        } else {
+            binding.detailToolbar.setVisible(R.id.detail_normal_toolbar)
+        }
     }
 }

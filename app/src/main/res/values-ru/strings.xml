@@ -93,8 +93,8 @@
     <string name="desc_change_repeat">Режим повтора</string>
     <string name="desc_shuffle">Перемешивание</string>
     <string name="desc_shuffle_all">Перемешать все треки</string>
-    <string name="desc_clear_queue_item">Удалить трек из очереди</string>
-    <string name="desc_queue_handle">Переместить трек в очереди</string>
+    <string name="desc_remove_song">Удалить трек из очереди</string>
+    <string name="desc_song_handle">Переместить трек в очереди</string>
     <string name="desc_tab_handle">Переместить вкладку</string>
     <string name="desc_clear_search">Очистить поисковый запрос</string>
     <string name="desc_music_dir_delete">Удалить папку</string>
@@ -248,7 +248,7 @@
     <string name="set_bar_action">Пользовательское поведение панели воспроизведения</string>
     <string name="set_rescan">Пересканировать музыку</string>
     <string name="set_rescan_desc">Очистить кеш тегов и полностью обновить библиотеку (медленно, но более эффективно)</string>
-    <string name="lbl_compilation_remix">Сборники ремиксов</string>
+    <string name="lbl_compilation_remix">Сборник ремиксов</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d исполнитель</item>
         <item quantity="few">%d исполнителя</item>
@@ -278,6 +278,16 @@
     <string name="set_dirs_list">Папки</string>
     <string name="set_state">Состояние воспроизведения</string>
     <string name="lbl_sort_dec">По убыванию</string>
+    <string name="lbl_playlist">Плейлист</string>
+    <string name="lbl_playlists">Плейлисты</string>
+    <string name="desc_playlist_image">Обложка плейлиста для %s</string>
     <string name="set_intelligent_sorting">Игнорировать артикли при сортировке</string>
     <string name="set_intelligent_sorting_desc">Игнорировать такие слова, как «the», при сортировке по имени (лучше всего работает с англоязычной музыкой)</string>
+    <string name="desc_new_playlist">Создать новый плейлист</string>
+    <string name="lbl_new_playlist">Новый плейлист</string>
+    <string name="fmt_def_playlist">Плейлист %d</string>
+    <string name="lbl_playlist_add">Добавить в плейлист</string>
+    <string name="def_song_count">Без треков</string>
+    <string name="lng_playlist_added">Добавлено в плейлист</string>
+    <string name="lng_playlist_created">Плейлист создан</string>
 </resources>

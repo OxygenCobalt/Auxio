@@ -8,7 +8,7 @@
     <string name="lbl_duration">曲の長さ</string>
     <string name="set_save_desc">現在の再生状態を保存</string>
     <string name="desc_tab_handle">このタブを移動</string>
-    <string name="desc_queue_handle">この再生待ちの曲を移動</string>
+    <string name="desc_song_handle">この再生待ちの曲を移動</string>
     <string name="def_date">日付けがありません</string>
     <string name="lbl_songs">曲</string>
     <string name="lbl_all_songs">すべての曲</string>
@@ -43,7 +43,7 @@
     <string name="set_rewind_prev_desc">前の曲にスキップ前に曲を巻き戻す</string>
     <string name="set_dirs">音楽フォルダ</string>
     <string name="set_separators_plus">プラス (+)</string>
-    <string name="lbl_compilation_remix">リミックスオムニバス</string>
+    <string name="lbl_compilation_remix">リミックスコンピレーション</string>
     <string name="lbl_mixes">DJミックス</string>
     <string name="lbl_mix">DJミックス</string>
     <string name="lbl_disc">ディスク</string>
@@ -91,7 +91,7 @@
     <string name="err_did_not_restore">再生状態を復元できません</string>
     <string name="desc_track_number">トラック %d</string>
     <string name="desc_play_pause">再生またはポーズ</string>
-    <string name="desc_clear_queue_item">再生待ちの曲を除去</string>
+    <string name="desc_remove_song">再生待ちの曲を除去</string>
     <string name="desc_music_dir_delete">フォルダを除去</string>
     <string name="desc_auxio_icon">Auxio アイコン</string>
     <string name="desc_no_cover">アルバムカバー</string>
@@ -262,4 +262,14 @@
     <string name="set_pre_amp">ReplayGain プリアンプ</string>
     <string name="fmt_list">%1$s、%2$s</string>
     <string name="set_personalize_desc">UI コントロールと動作をカスタマイズする</string>
+    <string name="lbl_playlist">プレイリスト</string>
+    <string name="lbl_playlists">プレイリスト</string>
+    <string name="desc_playlist_image">%s のプレイリスト イメージ</string>
+    <string name="lbl_new_playlist">新規プレイリスト</string>
+    <string name="lbl_playlist_add">プレイリストに追加する</string>
+    <string name="lng_playlist_created">プレイリストが作成されました</string>
+    <string name="lng_playlist_added">プレイリストに追加されました</string>
+    <string name="def_song_count">曲がありません</string>
+    <string name="fmt_def_playlist">プレイリスト %d</string>
+    <string name="desc_new_playlist">新しいプレイリストを作成する</string>
 </resources>

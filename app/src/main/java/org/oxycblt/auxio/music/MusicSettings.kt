@@ -25,8 +25,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.music.storage.Directory
-import org.oxycblt.auxio.music.storage.MusicDirectories
+import org.oxycblt.auxio.music.fs.Directory
+import org.oxycblt.auxio.music.fs.MusicDirectories
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.getSystemServiceCompat
 
@@ -55,11 +55,13 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     var artistSort: Sort
     /** The [Sort] mode used in [Genre] lists. */
     var genreSort: Sort
+    /** The [Sort] mode used in [Playlist] lists. */
+    var playlistSort: Sort
     /** The [Sort] mode used in an [Album]'s [Song] list. */
     var albumSongSort: Sort
     /** The [Sort] mode used in an [Artist]'s [Song] list. */
     var artistSongSort: Sort
-    /** The [Sort] mode used in an [Genre]'s [Song] list. */
+    /** The [Sort] mode used in a [Genre]'s [Song] list. */
     var genreSongSort: Sort
 
     interface Listener {
@@ -162,6 +164,17 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context
             }
         }
 
+    override var playlistSort: Sort
+        get() =
+            Sort.fromIntCode(
+                sharedPreferences.getInt(getString(R.string.set_key_playlists_sort), Int.MIN_VALUE))
+                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+        set(value) {
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_playlists_sort), value.intCode)
+                apply()
+            }
+        }
     override var albumSongSort: Sort
         get() {
             var sort =

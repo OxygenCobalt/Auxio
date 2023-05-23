@@ -22,7 +22,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.internal.view.SupportMenu
 import androidx.core.view.MenuCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
@@ -30,8 +29,8 @@ import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.selection.SelectionFragment
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.ui.MainNavigationAction
-import org.oxycblt.auxio.ui.NavigationViewModel
+import org.oxycblt.auxio.navigation.MainNavigationAction
+import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 
@@ -59,7 +58,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
      */
     abstract fun onRealClick(item: T)
 
-    override fun onClick(item: T, viewHolder: RecyclerView.ViewHolder) {
+    final override fun onClick(item: T, viewHolder: RecyclerView.ViewHolder) {
         if (selectionModel.selected.value.isNotEmpty()) {
             // Map clicking an item to selecting an item when items are already selected.
             selectionModel.select(item)
@@ -69,7 +68,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
         }
     }
 
-    override fun onSelect(item: T) {
+    final override fun onSelect(item: T) {
         selectionModel.select(item)
     }
 
@@ -82,7 +81,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
      * @param song The [Song] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, song: Song) {
-        logD("Launching new song menu: ${song.rawName}")
+        logD("Launching new song menu: ${song.name}")
 
         openMusicMenuImpl(anchor, menuRes) {
             when (it.itemId) {
@@ -99,6 +98,9 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                 }
                 R.id.action_go_album -> {
                     navModel.exploreNavigateTo(song.album)
+                }
+                R.id.action_playlist_add -> {
+                    musicModel.addToPlaylist(song)
                 }
                 R.id.action_song_detail -> {
                     navModel.mainNavigateTo(
@@ -121,7 +123,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
      * @param album The [Album] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, album: Album) {
-        logD("Launching new album menu: ${album.rawName}")
+        logD("Launching new album menu: ${album.name}")
 
         openMusicMenuImpl(anchor, menuRes) {
             when (it.itemId) {
@@ -142,6 +144,9 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                 R.id.action_go_artist -> {
                     navModel.exploreNavigateToParentArtist(album)
                 }
+                R.id.action_playlist_add -> {
+                    musicModel.addToPlaylist(album)
+                }
                 else -> {
                     error("Unexpected menu item selected")
                 }
@@ -158,7 +163,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
      * @param artist The [Artist] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, artist: Artist) {
-        logD("Launching new artist menu: ${artist.rawName}")
+        logD("Launching new artist menu: ${artist.name}")
 
         openMusicMenuImpl(anchor, menuRes) {
             when (it.itemId) {
@@ -176,6 +181,9 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                     playbackModel.addToQueue(artist)
                     requireContext().showToast(R.string.lng_queue_added)
                 }
+                R.id.action_playlist_add -> {
+                    musicModel.addToPlaylist(artist)
+                }
                 else -> {
                     error("Unexpected menu item selected")
                 }
@@ -192,7 +200,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
      * @param genre The [Genre] to create the menu for.
      */
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, genre: Genre) {
-        logD("Launching new genre menu: ${genre.rawName}")
+        logD("Launching new genre menu: ${genre.name}")
 
         openMusicMenuImpl(anchor, menuRes) {
             when (it.itemId) {
@@ -209,6 +217,49 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                 R.id.action_queue_add -> {
                     playbackModel.addToQueue(genre)
                     requireContext().showToast(R.string.lng_queue_added)
+                }
+                R.id.action_playlist_add -> {
+                    musicModel.addToPlaylist(genre)
+                }
+                else -> {
+                    error("Unexpected menu item selected")
+                }
+            }
+        }
+    }
+
+    /**
+     * Opens a menu in the context of a [Playlist]. This menu will be managed by the Fragment and
+     * closed when the view is destroyed. If a menu is already opened, this call is ignored.
+     *
+     * @param anchor The [View] to anchor the menu to.
+     * @param menuRes The resource of the menu to load.
+     * @param playlist The [Playlist] to create the menu for.
+     */
+    protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, playlist: Playlist) {
+        logD("Launching new playlist menu: ${playlist.name}")
+
+        openMusicMenuImpl(anchor, menuRes) {
+            when (it.itemId) {
+                R.id.action_play -> {
+                    playbackModel.play(playlist)
+                }
+                R.id.action_shuffle -> {
+                    playbackModel.shuffle(playlist)
+                }
+                R.id.action_play_next -> {
+                    playbackModel.playNext(playlist)
+                    requireContext().showToast(R.string.lng_queue_added)
+                }
+                R.id.action_queue_add -> {
+                    playbackModel.addToQueue(playlist)
+                    requireContext().showToast(R.string.lng_queue_added)
+                }
+                R.id.action_rename -> {
+                    musicModel.renamePlaylist(playlist)
+                }
+                R.id.action_delete -> {
+                    musicModel.deletePlaylist(playlist)
                 }
                 else -> {
                     error("Unexpected menu item selected")
@@ -247,7 +298,6 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
         currentMenu =
             PopupMenu(requireContext(), anchor).apply {
                 inflate(menuRes)
-                logD(menu is SupportMenu)
                 MenuCompat.setGroupDividerEnabled(menu, true)
                 block()
                 setOnDismissListener { currentMenu = null }

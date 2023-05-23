@@ -30,7 +30,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 
 /**
- * An [DetailListAdapter] implementing the header and sub-items for the [Genre] detail view.
+ * A [DetailListAdapter] implementing the header and sub-items for the [Genre] detail view.
  *
  * @param listener A [DetailListAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
@@ -58,14 +58,6 @@ class GenreDetailListAdapter(private val listener: Listener<Music>) :
             is Artist -> (holder as ArtistViewHolder).bind(item, listener)
             is Song -> (holder as SongViewHolder).bind(item, listener)
         }
-    }
-
-    override fun isItemFullWidth(position: Int): Boolean {
-        if (super.isItemFullWidth(position)) {
-            return true
-        }
-        // Genre headers should be full-width in all configurations
-        return getItem(position) is Genre
     }
 
     private companion object {

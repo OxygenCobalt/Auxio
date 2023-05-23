@@ -2,8 +2,8 @@
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
-    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.0.5">
-        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.0.5&color=64B5F6&style=flat">
+    <a href="https://github.com/oxygencobalt/Auxio/releases/tag/v3.1.0">
+        <img alt="Latest Version" src="https://img.shields.io/static/v1?label=tag&message=v3.1.0&color=64B5F6&style=flat">
     </a>
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="Releases" src="https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg?color=4B95DE&style=flat">
@@ -21,7 +21,7 @@
 
 ## About
 
-Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of <a href="https://exoplayer.dev/">Exoplayer</a>, Auxio has superior library support and listening quality compared to other apps that use outdated android functionality. In short, **It plays music.**
+Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of [ExoPlayer](https://exoplayer.dev/), Auxio has superior library support and listening quality compared to other apps that use outdated android functionality. In short, **It plays music.**
 
 I primarily built Auxio for myself, but you can use it too, I guess.
 
@@ -42,7 +42,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 ## Features
 
-- [ExoPlayer](https://exoplayer.dev/) based playback
+- [ExoPlayer](https://exoplayer.dev/)-based playback
 - Snappy UI derived from the latest Material Design guidelines
 - Opinionated UX that prioritizes ease of use over edge cases
 - Customizable behavior
@@ -50,7 +50,8 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 precise/original dates, sort tags, and more
 - Advanced artist system that unifies artists and album artists
 - SD Card-aware folder management
-- Reliable playback state persistence
+- Reliable playlisting functionality
+- Playback state persistence
 - Full ReplayGain support (On MP3, FLAC, OGG, OPUS, and MP4 files)
 - External equalizer support (ex. Wavelet)
 - Edge-to-edge

@@ -99,6 +99,14 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
         return separators
     }
 
+    private object Separators {
+        const val COMMA = ','
+        const val SEMICOLON = ';'
+        const val SLASH = '/'
+        const val PLUS = '+'
+        const val AND = '&'
+    }
+
     private companion object {
         const val KEY_PENDING_SEPARATORS = BuildConfig.APPLICATION_ID + ".key.PENDING_SEPARATORS"
     }

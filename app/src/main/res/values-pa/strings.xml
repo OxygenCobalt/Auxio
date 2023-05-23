@@ -196,8 +196,8 @@
     <string name="set_library">ਲਾਇਬ੍ਰੇਰੀ</string>
     <string name="set_dirs">ਸੰਗੀਤ ਫੋਲਡਰ</string>
     <string name="desc_queue_bar">ਕਤਾਰ ਖੋਲ੍ਹੋ</string>
-    <string name="desc_clear_queue_item">ਇਸ ਕਤਾਰ ਗੀਤ ਨੂੰ ਹਟਾਓ</string>
-    <string name="desc_queue_handle">ਇਸ ਕਤਾਰ ਗੀਤ ਨੂੰ ਮੂਵ ਕਰੋ</string>
+    <string name="desc_remove_song">ਇਸ ਕਤਾਰ ਗੀਤ ਨੂੰ ਹਟਾਓ</string>
+    <string name="desc_song_handle">ਇਸ ਕਤਾਰ ਗੀਤ ਨੂੰ ਮੂਵ ਕਰੋ</string>
     <string name="desc_change_repeat">ਦੁਹਰਾਓ ਮੋਡ ਬਦਲੋ</string>
     <string name="desc_shuffle">ਸ਼ਫਲ ਚਾਲੂ ਜਾਂ ਬੰਦ ਕਰੋ</string>
     <string name="desc_shuffle_all">ਸਾਰੇ ਗੀਤਾਂ ਨੂੰ ਸ਼ਫਲ ਕਰੋ</string>

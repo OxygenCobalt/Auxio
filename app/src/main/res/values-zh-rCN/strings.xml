@@ -93,8 +93,8 @@
     <string name="desc_change_repeat">更改重复播放模式</string>
     <string name="desc_shuffle">开启或关闭随机播放模式</string>
     <string name="desc_shuffle_all">随机播放所有曲目</string>
-    <string name="desc_clear_queue_item">移除队列曲目</string>
-    <string name="desc_queue_handle">移动队列曲目</string>
+    <string name="desc_remove_song">移除队列曲目</string>
+    <string name="desc_song_handle">移动队列曲目</string>
     <string name="desc_tab_handle">移动该标签</string>
     <string name="desc_clear_search">清除搜索队列</string>
     <string name="desc_music_dir_delete">移除文件夹</string>
@@ -269,6 +269,24 @@
     <string name="set_music">音乐</string>
     <string name="set_audio_desc">配置声音和播放行为</string>
     <string name="lbl_sort_dec">降序</string>
+    <string name="lbl_playlist">播放列表</string>
+    <string name="lbl_playlists">播放列表</string>
+    <string name="desc_playlist_image">%s 的播放列表图片</string>
     <string name="set_intelligent_sorting">排序时忽略冠词</string>
     <string name="set_intelligent_sorting_desc">按名称排序时忽略类似“the”这样的冠词（对英文歌曲的效果最好）</string>
+    <string name="desc_new_playlist">创建新的播放列表</string>
+    <string name="lbl_new_playlist">新建播放列表</string>
+    <string name="fmt_def_playlist">播放列表 %d</string>
+    <string name="lng_playlist_created">已创建播放列表</string>
+    <string name="lbl_playlist_add">添加到播放列表</string>
+    <string name="lng_playlist_added">已添加到播放列表</string>
+    <string name="def_song_count">无歌曲</string>
+    <string name="lbl_delete">删除</string>
+    <string name="lbl_confirm_delete_playlist">删除播放列表？</string>
+    <string name="fmt_deletion_info">删除 %s 吗？此操作无法撤销。</string>
+    <string name="lbl_rename">重命名</string>
+    <string name="lbl_rename_playlist">重命名播放列表</string>
+    <string name="lng_playlist_renamed">已重命名播放列表</string>
+    <string name="lng_playlist_deleted">已删除播放列表</string>
+    <string name="lbl_edit">编辑</string>
 </resources>

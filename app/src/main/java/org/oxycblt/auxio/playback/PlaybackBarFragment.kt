@@ -26,9 +26,9 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
+import org.oxycblt.auxio.navigation.MainNavigationAction
+import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.ui.MainNavigationAction
-import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getAttrColorCompat
@@ -56,7 +56,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         // --- UI SETUP ---
         binding.root.apply {
-            setOnClickListener { navModel.mainNavigateTo(MainNavigationAction.Expand) }
+            setOnClickListener { navModel.mainNavigateTo(MainNavigationAction.OpenPlaybackPanel) }
             setOnLongClickListener {
                 playbackModel.song.value?.let(navModel::exploreNavigateTo)
                 true
@@ -124,7 +124,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
             val context = requireContext()
             val binding = requireBinding()
             binding.playbackCover.bind(song)
-            binding.playbackSong.text = song.resolveName(context)
+            binding.playbackSong.text = song.name.resolve(context)
             binding.playbackInfo.text = song.artists.resolveNames(context)
             binding.playbackProgressBar.max = song.durationMs.msToDs().toInt()
         }

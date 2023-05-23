@@ -18,9 +18,11 @@
  
 package org.oxycblt.auxio.util
 
+import java.security.MessageDigest
 import java.util.UUID
 import kotlin.reflect.KClass
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.music.info.Date
 
 /**
  * Sanitizes a value that is unlikely to be null. On debug builds, this aliases to [requireNotNull],
@@ -33,18 +35,6 @@ fun <T> unlikelyToBeNull(value: T?) =
     } else {
         value!!
     }
-
-/**
- * Require that the given data is a specific type [T].
- *
- * @param data The data to check.
- * @return A data casted to [T].
- * @throws IllegalStateException If the data cannot be casted to [T].
- */
-inline fun <reified T> requireIs(data: Any?): T {
-    check(data is T) { "Unexpected datatype: ${data?.let { it::class.simpleName }}" }
-    return data
-}
 
 /**
  * Aliases a check to ensure that the given number is non-zero.
@@ -101,3 +91,51 @@ fun String.toUuidOrNull(): UUID? =
     } catch (e: IllegalArgumentException) {
         null
     }
+
+/**
+ * Update a [MessageDigest] with a lowercase [String].
+ *
+ * @param string The [String] to hash. If null, it will not be hashed.
+ */
+fun MessageDigest.update(string: String?) {
+    if (string != null) {
+        update(string.lowercase().toByteArray())
+    } else {
+        update(0)
+    }
+}
+
+/**
+ * Update a [MessageDigest] with the string representation of a [Date].
+ *
+ * @param date The [Date] to hash. If null, nothing will be done.
+ */
+fun MessageDigest.update(date: Date?) {
+    if (date != null) {
+        update(date.toString().toByteArray())
+    } else {
+        update(0)
+    }
+}
+
+/**
+ * Update a [MessageDigest] with the lowercase versions of all of the input [String]s.
+ *
+ * @param strings The [String]s to hash. If a [String] is null, it will not be hashed.
+ */
+fun MessageDigest.update(strings: List<String?>) {
+    strings.forEach(::update)
+}
+
+/**
+ * Update a [MessageDigest] with the little-endian bytes of a [Int].
+ *
+ * @param n The [Int] to write. If null, nothing will be done.
+ */
+fun MessageDigest.update(n: Int?) {
+    if (n != null) {
+        update(byteArrayOf(n.toByte(), n.shr(8).toByte(), n.shr(16).toByte(), n.shr(24).toByte()))
+    } else {
+        update(0)
+    }
+}

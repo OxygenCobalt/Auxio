@@ -33,6 +33,7 @@ import org.oxycblt.auxio.util.inflater
 /**
  * A [DetailHeaderAdapter] that shows [Artist] information.
  *
+ * @param listener [DetailHeaderAdapter.Listener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
 class ArtistDetailHeaderAdapter(private val listener: Listener) :
@@ -62,7 +63,18 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
     fun bind(artist: Artist, listener: DetailHeaderAdapter.Listener) {
         binding.detailCover.bind(artist)
         binding.detailType.text = binding.context.getString(R.string.lbl_artist)
-        binding.detailName.text = artist.resolveName(binding.context)
+        binding.detailName.text = artist.name.resolve(binding.context)
+
+        // Song and album counts map to the info
+        binding.detailInfo.text =
+            binding.context.getString(
+                R.string.fmt_two,
+                binding.context.getPlural(R.plurals.fmt_album_count, artist.albums.size),
+                if (artist.songs.isNotEmpty()) {
+                    binding.context.getPlural(R.plurals.fmt_song_count, artist.songs.size)
+                } else {
+                    binding.context.getString(R.string.def_song_count)
+                })
 
         if (artist.songs.isNotEmpty()) {
             // Information about the artist's genre(s) map to the sub-head text
@@ -70,13 +82,6 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
                 isVisible = true
                 text = artist.genres.resolveNames(context)
             }
-
-            // Song and album counts map to the info
-            binding.detailInfo.text =
-                binding.context.getString(
-                    R.string.fmt_two,
-                    binding.context.getPlural(R.plurals.fmt_album_count, artist.albums.size),
-                    binding.context.getPlural(R.plurals.fmt_song_count, artist.songs.size))
 
             // In the case that this header used to he configured to have no songs,
             // we want to reset the visibility of all information that was hidden.
@@ -87,10 +92,8 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
             // ex. Play and Shuffle, Song Counts, and Genre Information.
             // Artists are always guaranteed to have albums however, so continue to show those.
             binding.detailSubhead.isVisible = false
-            binding.detailInfo.text =
-                binding.context.getPlural(R.plurals.fmt_album_count, artist.albums.size)
-            binding.detailPlayButton.isVisible = false
-            binding.detailShuffleButton.isVisible = false
+            binding.detailPlayButton.isEnabled = false
+            binding.detailShuffleButton.isEnabled = false
         }
 
         binding.detailPlayButton.setOnClickListener { listener.onPlay() }

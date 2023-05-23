@@ -39,11 +39,12 @@ import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.secsToMs
-import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.collectImmediately
 
 /**
@@ -59,6 +60,7 @@ class SongListFragment :
     private val homeModel: HomeViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     private val songAdapter = SongAdapter(this)
     // Save memory by re-using the same formatter and string builder when creating popup text
@@ -100,13 +102,13 @@ class SongListFragment :
         // based off the names of the parent objects and not the child objects.
         return when (homeModel.getSortForTab(MusicMode.SONGS).mode) {
             // Name -> Use name
-            is Sort.Mode.ByName -> song.sortName?.thumbString
+            is Sort.Mode.ByName -> song.name.thumb
 
             // Artist -> Use name of first artist
-            is Sort.Mode.ByArtist -> song.album.artists[0].sortName?.thumbString
+            is Sort.Mode.ByArtist -> song.album.artists[0].name.thumb
 
             // Album -> Use Album Name
-            is Sort.Mode.ByAlbum -> song.album.sortName?.thumbString
+            is Sort.Mode.ByAlbum -> song.album.name.thumb
 
             // Year -> Use Full Year
             is Sort.Mode.ByDate -> song.album.dates?.resolveDate(requireContext())

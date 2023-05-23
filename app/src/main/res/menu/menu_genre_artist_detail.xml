@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/action_play_next"
-        android:title="@string/lbl_play_next" />
-    <item
-        android:id="@+id/action_queue_add"
-        android:title="@string/lbl_queue_add" />
-</menu>

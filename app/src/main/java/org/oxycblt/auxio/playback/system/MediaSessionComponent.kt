@@ -30,7 +30,6 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
@@ -55,9 +54,10 @@ class MediaSessionComponent
 @Inject
 constructor(
     @ApplicationContext private val context: Context,
-    private val bitmapProvider: BitmapProvider,
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
+    private val bitmapProvider: BitmapProvider,
+    private val imageSettings: ImageSettings
 ) :
     MediaSessionCompat.Callback(),
     PlaybackStateManager.Listener,
@@ -76,6 +76,7 @@ constructor(
     init {
         playbackManager.addListener(this)
         playbackSettings.registerListener(this)
+        imageSettings.registerListener(this)
         mediaSession.setCallback(this)
     }
 
@@ -105,6 +106,7 @@ constructor(
         listener = null
         bitmapProvider.release()
         playbackSettings.unregisterListener(this)
+        imageSettings.unregisterListener(this)
         playbackManager.removeListener(this)
         mediaSession.apply {
             isActive = false
@@ -289,12 +291,12 @@ constructor(
 
         // Populate MediaMetadataCompat. For efficiency, cache some fields that are re-used
         // several times.
-        val title = song.resolveName(context)
+        val title = song.name.resolve(context)
         val artist = song.artists.resolveNames(context)
         val builder =
             MediaMetadataCompat.Builder()
                 .putText(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                .putText(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.resolveName(context))
+                .putText(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.name.resolve(context))
                 // Note: We would leave the artist field null if it didn't exist and let downstream
                 // consumers handle it, but that would break the notification display.
                 .putText(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
@@ -304,15 +306,13 @@ constructor(
                 .putText(MediaMetadataCompat.METADATA_KEY_AUTHOR, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_COMPOSER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_WRITER, artist)
-                .putText(
-                    METADATA_KEY_PARENT,
-                    parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
                 .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.genres.resolveNames(context))
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, artist)
                 .putText(
                     MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION,
-                    parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
+                    parent?.run { name.resolve(context) }
+                        ?: context.getString(R.string.lbl_all_songs))
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
         // These fields are nullable and so we must check first before adding them to the fields.
         song.track?.let {
@@ -353,7 +353,7 @@ constructor(
                         // Media ID should not be the item index but rather the UID,
                         // as it's used to request a song to be played from the queue.
                         .setMediaId(song.uid.toString())
-                        .setTitle(song.resolveName(context))
+                        .setTitle(song.name.resolve(context))
                         .setSubtitle(song.artists.resolveNames(context))
                         // Since we usually have to load many songs into the queue, use the
                         // MediaStore URI instead of loading a bitmap.
@@ -438,11 +438,6 @@ constructor(
     }
 
     companion object {
-        /**
-         * An extended metadata key that stores the resolved name of the [MusicParent] that is
-         * currently being played from.
-         */
-        const val METADATA_KEY_PARENT = BuildConfig.APPLICATION_ID + ".metadata.PARENT"
         private val emptyMetadata = MediaMetadataCompat.Builder().build()
         private const val ACTIONS =
             PlaybackStateCompat.ACTION_PLAY or

@@ -168,6 +168,7 @@ constructor(
      * - If [MusicMode.ALBUMS], the [Song] is played from it's [Album].
      * - If [MusicMode.ARTISTS], the [Song] is played from one of it's [Artist]s.
      * - If [MusicMode.GENRES], the [Song] is played from one of it's [Genre]s.
+     *   [MusicMode.PLAYLISTS] is disallowed here.
      *
      * @param song The [Song] to play.
      * @param playbackMode The [MusicMode] to play from.
@@ -178,6 +179,7 @@ constructor(
             MusicMode.ALBUMS -> playImpl(song, song.album)
             MusicMode.ARTISTS -> playFromArtist(song)
             MusicMode.GENRES -> playFromGenre(song)
+            MusicMode.PLAYLISTS -> error("Playing from a playlist is not supported.")
         }
     }
 
@@ -199,7 +201,7 @@ constructor(
     }
 
     /**
-     * PLay a [Song] from one of it's [Genre]s.
+     * Play a [Song] from one of it's [Genre]s.
      *
      * @param song The [Song] to play.
      * @param genre The [Genre] to play from. Must be linked to the [Song]. If null, the user will
@@ -213,6 +215,16 @@ constructor(
         } else {
             _genrePlaybackPickerSong.put(song)
         }
+    }
+
+    /**
+     * PLay a [Song] from one of it's [Playlist]s.
+     *
+     * @param song The [Song] to play.
+     * @param playlist The [Playlist] to play from. Must be linked to the [Song].
+     */
+    fun playFromPlaylist(song: Song, playlist: Playlist) {
+        playImpl(song, playlist)
     }
 
     /**
@@ -237,12 +249,18 @@ constructor(
     fun play(genre: Genre) = playImpl(null, genre, false)
 
     /**
-     * Play a [Music] selection.
+     * Play a [Playlist].
      *
-     * @param selection The selection to play.
+     * @param playlist The [Playlist] to play.
      */
-    fun play(selection: List<Music>) =
-        playbackManager.play(null, null, selectionToSongs(selection), false)
+    fun play(playlist: Playlist) = playImpl(null, playlist, false)
+
+    /**
+     * Play a list of [Song]s.
+     *
+     * @param songs The [Song]s to play.
+     */
+    fun play(songs: List<Song>) = playbackManager.play(null, null, songs, false)
 
     /**
      * Shuffle an [Album].
@@ -259,19 +277,25 @@ constructor(
     fun shuffle(artist: Artist) = playImpl(null, artist, true)
 
     /**
-     * Shuffle an [Genre].
+     * Shuffle a [Genre].
      *
      * @param genre The [Genre] to shuffle.
      */
     fun shuffle(genre: Genre) = playImpl(null, genre, true)
 
     /**
-     * Shuffle a [Music] selection.
+     * Shuffle a [Playlist].
      *
-     * @param selection The selection to shuffle.
+     * @param playlist The [Playlist] to shuffle.
      */
-    fun shuffle(selection: List<Music>) =
-        playbackManager.play(null, null, selectionToSongs(selection), true)
+    fun shuffle(playlist: Playlist) = playImpl(null, playlist, true)
+
+    /**
+     * Shuffle a list of [Song]s.
+     *
+     * @param songs The [Song]s to shuffle.
+     */
+    fun shuffle(songs: List<Song>) = playbackManager.play(null, null, songs, true)
 
     private fun playImpl(
         song: Song?,
@@ -281,15 +305,15 @@ constructor(
         check(song == null || parent == null || parent.songs.contains(song)) {
             "Song to play not in parent"
         }
-        val library = musicRepository.library ?: return
-        val sort =
+        val deviceLibrary = musicRepository.deviceLibrary ?: return
+        val queue =
             when (parent) {
-                is Genre -> musicSettings.genreSongSort
-                is Artist -> musicSettings.artistSongSort
-                is Album -> musicSettings.albumSongSort
-                null -> musicSettings.songSort
+                is Genre -> musicSettings.genreSongSort.songs(parent.songs)
+                is Artist -> musicSettings.artistSongSort.songs(parent.songs)
+                is Album -> musicSettings.albumSongSort.songs(parent.songs)
+                is Playlist -> parent.songs
+                null -> musicSettings.songSort.songs(deviceLibrary.songs)
             }
-        val queue = sort.songs(parent?.songs ?: library.songs)
         playbackManager.play(song, parent, queue, shuffled)
     }
 
@@ -363,12 +387,21 @@ constructor(
     }
 
     /**
-     * Add a selection to the top of the queue.
+     * Add a [Playlist] to the top of the queue.
      *
-     * @param selection The [Music] selection to add.
+     * @param playlist The [Playlist] to add.
      */
-    fun playNext(selection: List<Music>) {
-        playbackManager.playNext(selectionToSongs(selection))
+    fun playNext(playlist: Playlist) {
+        playbackManager.playNext(playlist.songs)
+    }
+
+    /**
+     * Add [Song]s to the top of the queue.
+     *
+     * @param songs The [Song]s to add.
+     */
+    fun playNext(songs: List<Song>) {
+        playbackManager.playNext(songs)
     }
 
     /**
@@ -408,12 +441,21 @@ constructor(
     }
 
     /**
-     * Add a selection to the end of the queue.
+     * Add a [Playlist] to the end of the queue.
      *
-     * @param selection The [Music] selection to add.
+     * @param playlist The [Playlist] to add.
      */
-    fun addToQueue(selection: List<Music>) {
-        playbackManager.addToQueue(selectionToSongs(selection))
+    fun addToQueue(playlist: Playlist) {
+        playbackManager.addToQueue(playlist.songs)
+    }
+
+    /**
+     * Add [Song]s to the end of the queue.
+     *
+     * @param songs The [Song]s to add.
+     */
+    fun addToQueue(songs: List<Song>) {
+        playbackManager.addToQueue(songs)
     }
 
     // --- STATUS FUNCTIONS ---
@@ -467,34 +509,13 @@ constructor(
      */
     fun tryRestorePlaybackState(onDone: (Boolean) -> Unit) {
         viewModelScope.launch {
-            val library = musicRepository.library
-            if (library != null) {
-                val savedState = persistenceRepository.readState(library)
-                if (savedState != null) {
-                    playbackManager.applySavedState(savedState, true)
-                    onDone(true)
-                    return@launch
-                }
+            val savedState = persistenceRepository.readState()
+            if (savedState != null) {
+                playbackManager.applySavedState(savedState, true)
+                onDone(true)
+                return@launch
             }
             onDone(false)
-        }
-    }
-
-    /**
-     * Convert the given selection to a list of [Song]s.
-     *
-     * @param selection The selection of [Music] to convert.
-     * @return A [Song] list containing the child items of any [MusicParent] instances in the list
-     *   alongside the unchanged [Song]s or the original selection.
-     */
-    private fun selectionToSongs(selection: List<Music>): List<Song> {
-        return selection.flatMap {
-            when (it) {
-                is Album -> musicSettings.albumSongSort.songs(it.songs)
-                is Artist -> musicSettings.artistSongSort.songs(it.songs)
-                is Genre -> musicSettings.genreSongSort.songs(it.songs)
-                is Song -> listOf(it)
-            }
         }
     }
 }

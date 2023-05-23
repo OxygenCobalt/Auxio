@@ -33,7 +33,9 @@ enum class MusicMode {
     /** Configure with respect to [Artist] instances. */
     ARTISTS,
     /** Configure with respect to [Genre] instances. */
-    GENRES;
+    GENRES,
+    /** Configure with respect to [Playlist] instances. */
+    PLAYLISTS;
 
     /**
      * The integer representation of this instance.
@@ -47,6 +49,7 @@ enum class MusicMode {
                 ALBUMS -> IntegerTable.MUSIC_MODE_ALBUMS
                 ARTISTS -> IntegerTable.MUSIC_MODE_ARTISTS
                 GENRES -> IntegerTable.MUSIC_MODE_GENRES
+                PLAYLISTS -> IntegerTable.MUSIC_MODE_PLAYLISTS
             }
 
     companion object {
@@ -63,6 +66,7 @@ enum class MusicMode {
                 IntegerTable.MUSIC_MODE_ALBUMS -> ALBUMS
                 IntegerTable.MUSIC_MODE_ARTISTS -> ARTISTS
                 IntegerTable.MUSIC_MODE_GENRES -> GENRES
+                IntegerTable.MUSIC_MODE_PLAYLISTS -> PLAYLISTS
                 else -> null
             }
     }

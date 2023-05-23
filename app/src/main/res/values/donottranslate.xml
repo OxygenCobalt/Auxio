@@ -9,7 +9,7 @@
     <string name="fmt_number" translatable="false">%d</string>
     <string name="fmt_zipped_names" translatable="false">%1$s (%2$s)</string>
     <string name="fmt_date_range" translatable="false">%s - %s</string>
-    <string name="fmt_path">%1$s/%2$s</string>
+    <string name="fmt_path" translatable="false">%1$s/%2$s</string>
 
     <!-- Codec Namespace | Format names -->
     <string name="cdc_vorbis">Vorbis</string>

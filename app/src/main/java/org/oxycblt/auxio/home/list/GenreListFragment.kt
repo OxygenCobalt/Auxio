@@ -38,9 +38,10 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
-import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 
@@ -57,6 +58,7 @@ class GenreListFragment :
     private val homeModel: HomeViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     private val genreAdapter = GenreAdapter(this)
 
@@ -92,7 +94,7 @@ class GenreListFragment :
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.getSortForTab(MusicMode.GENRES).mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> genre.sortName?.thumbString
+            is Sort.Mode.ByName -> genre.name.thumb
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> genre.durationMs.formatDurationMs(false)
@@ -114,7 +116,7 @@ class GenreListFragment :
     }
 
     override fun onOpenMenu(item: Genre, anchor: View) {
-        openMusicMenu(anchor, R.menu.menu_artist_actions, item)
+        openMusicMenu(anchor, R.menu.menu_parent_actions, item)
     }
 
     private fun updateGenres(genres: List<Genre>) {

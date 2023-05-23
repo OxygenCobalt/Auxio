@@ -58,6 +58,10 @@ class AdaptiveTabStrategy(context: Context, private val tabs: List<MusicMode>) :
                 icon = R.drawable.ic_genre_24
                 string = R.string.lbl_genres
             }
+            MusicMode.PLAYLISTS -> {
+                icon = R.drawable.ic_playlist_24
+                string = R.string.lbl_playlists
+            }
         }
 
         // Use expected sw* size thresholds when choosing a configuration.

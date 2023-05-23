@@ -34,12 +34,13 @@ import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
+import org.oxycblt.auxio.navigation.MainNavigationAction
+import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
-import org.oxycblt.auxio.ui.MainNavigationAction
-import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.showToast
@@ -50,6 +51,8 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * available controls.
  *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Improve flickering situation on play button
  */
 @AndroidEntryPoint
 class PlaybackPanelFragment :
@@ -57,6 +60,7 @@ class PlaybackPanelFragment :
     Toolbar.OnMenuItemClickListener,
     StyledSeekBar.Listener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
 
@@ -84,7 +88,9 @@ class PlaybackPanelFragment :
         }
 
         binding.playbackToolbar.apply {
-            setNavigationOnClickListener { navModel.mainNavigateTo(MainNavigationAction.Collapse) }
+            setNavigationOnClickListener {
+                navModel.mainNavigateTo(MainNavigationAction.ClosePlaybackPanel)
+            }
             setOnMenuItemClickListener(this@PlaybackPanelFragment)
         }
 
@@ -162,6 +168,10 @@ class PlaybackPanelFragment :
                 navigateToCurrentAlbum()
                 true
             }
+            R.id.action_playlist_add -> {
+                playbackModel.song.value?.let(musicModel::addToPlaylist)
+                true
+            }
             R.id.action_song_detail -> {
                 playbackModel.song.value?.let { song ->
                     navModel.mainNavigateTo(
@@ -186,9 +196,9 @@ class PlaybackPanelFragment :
         val binding = requireBinding()
         val context = requireContext()
         binding.playbackCover.bind(song)
-        binding.playbackSong.text = song.resolveName(context)
+        binding.playbackSong.text = song.name.resolve(context)
         binding.playbackArtist.text = song.artists.resolveNames(context)
-        binding.playbackAlbum.text = song.album.resolveName(context)
+        binding.playbackAlbum.text = song.album.name.resolve(context)
         binding.playbackSeekBar.durationDs = song.durationMs.msToDs()
     }
 
@@ -196,7 +206,7 @@ class PlaybackPanelFragment :
         val binding = requireBinding()
         val context = requireContext()
         binding.playbackToolbar.subtitle =
-            parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs)
+            parent?.run { name.resolve(context) } ?: context.getString(R.string.lbl_all_songs)
     }
 
     private fun updatePosition(positionDs: Long) {

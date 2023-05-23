@@ -65,8 +65,8 @@
     <string name="def_playback">സംഗീതം കളിക്കുന്നില്ല</string>
     <string name="clr_yellow">മഞ്ഞ</string>
     <string name="fmt_selected">%d തിരഞ്ഞെടുത്തു</string>
-    <string name="desc_clear_queue_item">വരിയിലെ ഈ ഗാനം നീക്കം ചെയ്യുക</string>
-    <string name="desc_queue_handle">വരിയിലെ ഈ ഗാനം നീക്കുക</string>
+    <string name="desc_remove_song">വരിയിലെ ഈ ഗാനം നീക്കം ചെയ്യുക</string>
+    <string name="desc_song_handle">വരിയിലെ ഈ ഗാനം നീക്കുക</string>
     <string name="lbl_reset">പുനഃസജ്ജമാക്കുക</string>
     <string name="clr_brown">തവിട്ട്</string>
     <string name="fmt_list">%1$s, %2$s</string>
@@ -87,4 +87,13 @@
         <item quantity="one">%d പാട്ട്</item>
         <item quantity="other">%d പാട്ടുകൾ</item>
     </plurals>
+    <string name="lbl_go_artist">കലാകാരനിലേക്ക് പോകുക</string>
+    <string name="lbl_song_detail">സവിശേഷതകൾ കാണുക</string>
+    <string name="lbl_state_saved">സ്ഥിതി സംരക്ഷിച്ചു</string>
+    <string name="lbl_sort_dec">അവരോഹണം</string>
+    <string name="lbl_state_restored">സ്ഥിതി പുനഃസ്ഥാപിച്ചു</string>
+    <string name="lbl_wiki">വിക്കി</string>
+    <string name="lbl_state_wiped">സ്ഥിതി മായ്ച്ചു</string>
+    <string name="lbl_live_group">തത്സമയം</string>
+    <string name="lbl_compilation_live">തത്സമയ സമാഹാരം</string>
 </resources>

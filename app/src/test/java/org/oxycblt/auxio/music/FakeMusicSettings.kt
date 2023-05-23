@@ -19,7 +19,7 @@
 package org.oxycblt.auxio.music
 
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.music.storage.MusicDirectories
+import org.oxycblt.auxio.music.fs.MusicDirectories
 
 open class FakeMusicSettings : MusicSettings {
     override fun registerListener(listener: MusicSettings.Listener) = throw NotImplementedError()
@@ -46,6 +46,9 @@ open class FakeMusicSettings : MusicSettings {
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
     override var genreSort: Sort
+        get() = throw NotImplementedError()
+        set(_) = throw NotImplementedError()
+    override var playlistSort: Sort
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
     override var albumSongSort: Sort

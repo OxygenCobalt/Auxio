@@ -35,6 +35,6 @@ class StubTest {
     @Test
     fun useAppContext() {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("org.oxycblt.auxio", appContext.packageName)
+        assertEquals("org.oxycblt.auxio.debug", appContext.packageName)
     }
 }

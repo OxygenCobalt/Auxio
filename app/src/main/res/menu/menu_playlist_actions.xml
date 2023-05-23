@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_play"
+        android:title="@string/lbl_play" />
+    <item
+        android:id="@+id/action_shuffle"
+        android:title="@string/lbl_shuffle" />
+    <item
+        android:id="@+id/action_play_next"
+        android:title="@string/lbl_play_next" />
+    <item
+        android:id="@+id/action_queue_add"
+        android:title="@string/lbl_queue_add" />
+    <item
+        android:id="@+id/action_rename"
+        android:title="@string/lbl_rename" />
+    <item
+        android:id="@+id/action_delete"
+        android:title="@string/lbl_delete" />
+</menu>

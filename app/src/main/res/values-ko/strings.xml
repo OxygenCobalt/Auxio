@@ -107,8 +107,8 @@
     <string name="desc_change_repeat">반복 방식 변경</string>
     <string name="desc_shuffle">무작위 재생 켜기 또는 끄기</string>
     <string name="desc_shuffle_all">모든 곡 무작위 재생</string>
-    <string name="desc_clear_queue_item">이 대기열의 곡 제거</string>
-    <string name="desc_queue_handle">이 대기열의 곡 이동</string>
+    <string name="desc_remove_song">이 대기열의 곡 제거</string>
+    <string name="desc_song_handle">이 대기열의 곡 이동</string>
     <string name="desc_tab_handle">이 탭 이동</string>
     <string name="desc_clear_search">검색 기록 삭제</string>
     <string name="desc_music_dir_delete">폴더 제거</string>
@@ -174,7 +174,7 @@
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="lbl_mix">믹스</string>
     <string name="lbl_compilation_live">라이브 컴필레이션</string>
-    <string name="lbl_compilation_remix">리믹스 컴필레이션</string>
+    <string name="lbl_compilation_remix">리믹스 편집</string>
     <string name="lbl_mixes">믹스</string>
     <string name="lbl_equalizer">이퀄라이저</string>
     <string name="lbl_shuffle_shortcut_short">셔플</string>
@@ -271,6 +271,16 @@
     <string name="set_behavior">동작</string>
     <string name="set_personalize_desc">UI 제어 및 동작 커스텀</string>
     <string name="lbl_sort_dec">내림차순</string>
+    <string name="lbl_playlist">재생목록</string>
+    <string name="lbl_playlists">재생목록</string>
+    <string name="desc_playlist_image">%s의 재생 목록 이미지</string>
     <string name="set_intelligent_sorting">정렬할 때 기사 무시</string>
     <string name="set_intelligent_sorting_desc">이름으로 정렬할 때 \"the\"와 같은 단어 무시(영어 음악에서 가장 잘 작동함)</string>
+    <string name="desc_new_playlist">새 재생 목록 만들기</string>
+    <string name="lbl_new_playlist">새 재생목록</string>
+    <string name="lbl_playlist_add">재생목록에 추가</string>
+    <string name="lng_playlist_created">생성된 재생목록</string>
+    <string name="lng_playlist_added">재생목록에 추가됨</string>
+    <string name="fmt_def_playlist">재생목록 %d</string>
+    <string name="def_song_count">노래 없음</string>
 </resources>

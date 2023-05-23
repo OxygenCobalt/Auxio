@@ -5,6 +5,7 @@
     <item name="home_album_recycler" type="id" />
     <item name="home_artist_recycler" type="id" />
     <item name="home_genre_recycler" type="id" />
+    <item name="home_playlist_recycler" type="id" />
 
     <integer name="anim_fade_enter_duration">200</integer>
     <integer name="anim_fade_exit_duration">100</integer>

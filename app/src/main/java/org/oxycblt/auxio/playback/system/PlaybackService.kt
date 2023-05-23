@@ -26,18 +26,14 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.os.IBinder
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.PlaybackException
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.RenderersFactory
-import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.audio.AudioCapabilities
-import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer
-import com.google.android.exoplayer2.ext.ffmpeg.FfmpegAudioRenderer
-import com.google.android.exoplayer2.mediacodec.MediaCodecSelector
-import com.google.android.exoplayer2.source.MediaSource
+import androidx.media3.common.*
+import androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.RenderersFactory
+import androidx.media3.exoplayer.audio.AudioCapabilities
+import androidx.media3.exoplayer.audio.MediaCodecAudioRenderer
+import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
+import androidx.media3.exoplayer.source.MediaSource
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -48,7 +44,6 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.model.Library
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
@@ -82,7 +77,7 @@ class PlaybackService :
     Player.Listener,
     InternalPlayer,
     MediaSessionComponent.Listener,
-    MusicRepository.Listener {
+    MusicRepository.UpdateListener {
     // Player components
     private lateinit var player: ExoPlayer
     @Inject lateinit var mediaSourceFactory: MediaSource.Factory
@@ -148,7 +143,7 @@ class PlaybackService :
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
         playbackManager.registerInternalPlayer(this)
-        musicRepository.addListener(this)
+        musicRepository.addUpdateListener(this)
         mediaSessionComponent.registerListener(this)
         registerReceiver(
             systemReceiver,
@@ -187,7 +182,7 @@ class PlaybackService :
         // Pause just in case this destruction was unexpected.
         playbackManager.setPlaying(false)
         playbackManager.unregisterInternalPlayer(this)
-        musicRepository.removeListener(this)
+        musicRepository.removeUpdateListener(this)
 
         unregisterReceiver(systemReceiver)
         serviceJob.cancel()
@@ -232,7 +227,7 @@ class PlaybackService :
             return
         }
 
-        logD("Loading ${song.rawName}")
+        logD("Loading ${song.name}")
         player.setMediaItem(MediaItem.fromUri(song.uri))
         player.prepare()
         player.playWhenReady = play
@@ -299,10 +294,8 @@ class PlaybackService :
         playbackManager.next()
     }
 
-    // --- MUSICSTORE OVERRIDES ---
-
-    override fun onLibraryChanged(library: Library?) {
-        if (library != null) {
+    override fun onMusicChanges(changes: MusicRepository.Changes) {
+        if (changes.deviceLibrary && musicRepository.deviceLibrary != null) {
             // We now have a library, see if we have anything we need to do.
             playbackManager.requestAction(this)
         }
@@ -331,8 +324,8 @@ class PlaybackService :
     }
 
     override fun performAction(action: InternalPlayer.Action): Boolean {
-        val library =
-            musicRepository.library
+        val deviceLibrary =
+            musicRepository.deviceLibrary
             // No library, cannot do anything.
             ?: return false
 
@@ -342,22 +335,23 @@ class PlaybackService :
             // Restore state -> Start a new restoreState job
             is InternalPlayer.Action.RestoreState -> {
                 restoreScope.launch {
-                    persistenceRepository.readState(library)?.let {
+                    persistenceRepository.readState()?.let {
                         playbackManager.applySavedState(it, false)
                     }
                 }
             }
             // Shuffle all -> Start new playback from all songs
             is InternalPlayer.Action.ShuffleAll -> {
-                playbackManager.play(null, null, musicSettings.songSort.songs(library.songs), true)
+                playbackManager.play(
+                    null, null, musicSettings.songSort.songs(deviceLibrary.songs), true)
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
             is InternalPlayer.Action.Open -> {
-                library.findSongForUri(application, action.uri)?.let { song ->
+                deviceLibrary.findSongForUri(application, action.uri)?.let { song ->
                     playbackManager.play(
                         song,
                         null,
-                        musicSettings.songSort.songs(library.songs),
+                        musicSettings.songSort.songs(deviceLibrary.songs),
                         playbackManager.queue.isShuffled && playbackSettings.keepShuffle)
                 }
             }

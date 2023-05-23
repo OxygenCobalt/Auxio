@@ -24,6 +24,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
+import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -64,10 +65,32 @@ class HomeSettingsImpl @Inject constructor(@ApplicationContext context: Context)
     override val shouldHideCollaborators: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_hide_collaborators), false)
 
+    override fun migrate() {
+        if (sharedPreferences.contains(OLD_KEY_LIB_TABS)) {
+            val oldTabs =
+                Tab.fromIntCode(sharedPreferences.getInt(OLD_KEY_LIB_TABS, Tab.SEQUENCE_DEFAULT))
+                    ?: unlikelyToBeNull(Tab.fromIntCode(Tab.SEQUENCE_DEFAULT))
+
+            // The playlist tab is now parsed, but it needs to be made visible.
+            val playlistIndex = oldTabs.indexOfFirst { it.mode == MusicMode.PLAYLISTS }
+            if (playlistIndex > -1) { // Sanity check
+                oldTabs[playlistIndex] = Tab.Visible(MusicMode.PLAYLISTS)
+            }
+            sharedPreferences.edit {
+                putInt(getString(R.string.set_key_home_tabs), Tab.toIntCode(oldTabs))
+                remove(OLD_KEY_LIB_TABS)
+            }
+        }
+    }
+
     override fun onSettingChanged(key: String, listener: HomeSettings.Listener) {
         when (key) {
             getString(R.string.set_key_home_tabs) -> listener.onTabsChanged()
             getString(R.string.set_key_hide_collaborators) -> listener.onHideCollaboratorsChanged()
         }
+    }
+
+    companion object {
+        const val OLD_KEY_LIB_TABS = "auxio_lib_tabs"
     }
 }

@@ -18,12 +18,12 @@
  
 package org.oxycblt.auxio.playback.replaygain
 
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.Format
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.Tracks
-import com.google.android.exoplayer2.audio.AudioProcessor
-import com.google.android.exoplayer2.audio.BaseAudioProcessor
+import androidx.media3.common.C
+import androidx.media3.common.Format
+import androidx.media3.common.Player
+import androidx.media3.common.Tracks
+import androidx.media3.common.audio.AudioProcessor
+import androidx.media3.exoplayer.audio.BaseAudioProcessor
 import java.nio.ByteBuffer
 import javax.inject.Inject
 import kotlin.math.pow
@@ -294,6 +294,6 @@ constructor(
          * Matches non-float information from ReplayGain adjustments. Derived from vanilla music:
          * https://github.com/vanilla-music/vanilla
          */
-        val REPLAYGAIN_ADJUSTMENT_FILTER_REGEX = Regex("[^\\d.-]")
+        val REPLAYGAIN_ADJUSTMENT_FILTER_REGEX by lazy { Regex("[^\\d.-]") }
     }
 }

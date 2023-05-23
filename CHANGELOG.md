@@ -1,5 +1,27 @@
 # Changelog
 
+## 3.1.0
+
+#### What's New
+- Added playlist functionality
+
+#### What's Improved
+- Sorting now handles numbers of arbitrary length
+- Punctuation is now ignored in sorting with intelligent sort names disabled
+
+#### What's Fixed
+- Fixed issue where vorbis comments in the form of `metadata_block_picture` (lowercase) would not
+be parsed as images
+- Fixed issue where searches would match song file names case-sensitively
+- Fixed issue where the notification would not respond to changes in the album cover setting
+- Fixed issue where short names starting with an article would not be correctly sorted (ex. "the 1")
+- Fixed incorrect item arrangement on landscape
+- Fixed disappearing dividers in search view
+- Reduced likelihood that images (eg. album covers) would not update when the music library changed
+
+#### Dev/Meta
+- Switched to androidx media3 (New Home of ExoPlayer) for backing player components
+
 ## 3.0.5
 
 #### What's Fixed
@@ -11,23 +33,23 @@ screen
 ## 3.0.4
 
 #### What's New
-- Added support for `COMPILATION` and `ITUNESCOMPILATION` flags.
+- Added support for `COMPILATION` and `ITUNESCOMPILATION` flags
 
 #### What's Improved
 - Accept `REPLAYGAIN_*` adjustment information on OPUS files alongside
 `R128_*` adjustments
 - List updates are now consistent across the app
 - Fixed jarring header update in detail view
-- Search view now trims search queries
+- Searching now ignores punctuation and trailing whitespace
 - Audio effect (equalizer) session is now broadcast when playing/pausing
 rather than on start/stop
-- Searching now ignores punctuation
 - Numeric names are now logically sorted (i.e 7 before 15)
 
 #### What's Fixed
 - Fixed MP4-AAC files not playing due to an accidental audio extractor
 deletion
 - Fix "format" not appearing in song properties view
+- Fix visual bugs when editing duplicate songs in the queue
 
 #### What's Changed
 - "Ignore articles when sorting" is now "Intelligent sorting"

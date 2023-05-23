@@ -1,0 +1,2 @@
+Auxio 3.1.0 introduces playlisting functionality, with more features coming soon.
+For more information, see https://github.com/OxygenCobalt/Auxio/releases/tag/v3.1.0.

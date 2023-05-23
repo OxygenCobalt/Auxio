@@ -18,10 +18,10 @@
  
 package org.oxycblt.auxio.music.metadata
 
-import com.google.android.exoplayer2.metadata.Metadata
-import com.google.android.exoplayer2.metadata.id3.InternalFrame
-import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
-import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
+import androidx.media3.common.Metadata
+import androidx.media3.extractor.metadata.id3.InternalFrame
+import androidx.media3.extractor.metadata.id3.TextInformationFrame
+import androidx.media3.extractor.metadata.vorbis.VorbisComment
 
 /**
  * Processing wrapper for [Metadata] that allows organized access to text-based audio tags.

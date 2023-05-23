@@ -26,6 +26,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
@@ -34,18 +35,15 @@ import org.oxycblt.auxio.detail.header.DetailHeaderAdapter
 import org.oxycblt.auxio.detail.header.GenreDetailHeaderAdapter
 import org.oxycblt.auxio.detail.list.DetailListAdapter
 import org.oxycblt.auxio.detail.list.GenreDetailListAdapter
+import org.oxycblt.auxio.list.Divider
+import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.*
 
 /**
@@ -61,6 +59,7 @@ class GenreDetailFragment :
     private val detailModel: DetailViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     // Information about what genre to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an genre.
@@ -85,18 +84,31 @@ class GenreDetailFragment :
         super.onBindingCreated(binding, savedInstanceState)
 
         // --- UI SETUP ---
-        binding.detailToolbar.apply {
-            inflateMenu(R.menu.menu_genre_artist_detail)
+        binding.detailNormalToolbar.apply {
+            inflateMenu(R.menu.menu_parent_detail)
             setNavigationOnClickListener { findNavController().navigateUp() }
             setOnMenuItemClickListener(this@GenreDetailFragment)
         }
 
-        binding.detailRecycler.adapter = ConcatAdapter(genreHeaderAdapter, genreListAdapter)
+        binding.detailRecycler.apply {
+            adapter = ConcatAdapter(genreHeaderAdapter, genreListAdapter)
+            (layoutManager as GridLayoutManager).setFullWidthLookup {
+                if (it != 0) {
+                    val item =
+                        detailModel.genreList.value.getOrElse(it - 1) {
+                            return@setFullWidthLookup false
+                        }
+                    item is Divider || item is Header
+                } else {
+                    true
+                }
+            }
+        }
 
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
-        detailModel.setGenreUid(args.genreUid)
-        collectImmediately(detailModel.currentGenre, ::updateItem)
+        detailModel.setGenre(args.genreUid)
+        collectImmediately(detailModel.currentGenre, ::updatePlaylist)
         collectImmediately(detailModel.genreList, ::updateList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -106,7 +118,7 @@ class GenreDetailFragment :
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
-        binding.detailToolbar.setOnMenuItemClickListener(null)
+        binding.detailNormalToolbar.setOnMenuItemClickListener(null)
         binding.detailRecycler.adapter = null
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
@@ -128,6 +140,10 @@ class GenreDetailFragment :
             R.id.action_queue_add -> {
                 playbackModel.addToQueue(currentGenre)
                 requireContext().showToast(R.string.lng_queue_added)
+                true
+            }
+            R.id.action_playlist_add -> {
+                musicModel.addToPlaylist(currentGenre)
                 true
             }
             else -> false
@@ -154,7 +170,7 @@ class GenreDetailFragment :
 
     override fun onOpenMenu(item: Music, anchor: View) {
         when (item) {
-            is Artist -> openMusicMenu(anchor, R.menu.menu_artist_actions, item)
+            is Artist -> openMusicMenu(anchor, R.menu.menu_parent_actions, item)
             is Song -> openMusicMenu(anchor, R.menu.menu_song_actions, item)
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
@@ -170,8 +186,10 @@ class GenreDetailFragment :
 
     override fun onOpenSortMenu(anchor: View) {
         openMenu(anchor, R.menu.menu_genre_sort) {
+            // Select the corresponding sort mode option
             val sort = detailModel.genreSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
+            // Select the corresponding sort direction option
             val directionItemId =
                 when (sort.direction) {
                     Sort.Direction.ASCENDING -> R.id.option_sort_asc
@@ -182,8 +200,10 @@ class GenreDetailFragment :
                 item.isChecked = !item.isChecked
                 detailModel.genreSongSort =
                     when (item.itemId) {
+                        // Sort direction options
                         R.id.option_sort_asc -> sort.withDirection(Sort.Direction.ASCENDING)
                         R.id.option_sort_dec -> sort.withDirection(Sort.Direction.DESCENDING)
+                        // Any other option is a sort mode
                         else -> sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
                     }
                 true
@@ -191,13 +211,13 @@ class GenreDetailFragment :
         }
     }
 
-    private fun updateItem(genre: Genre?) {
+    private fun updatePlaylist(genre: Genre?) {
         if (genre == null) {
             // Genre we were showing no longer exists.
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailToolbar.title = genre.resolveName(requireContext())
+        requireBinding().detailNormalToolbar.title = genre.name.resolve(requireContext())
         genreHeaderAdapter.setParent(genre)
     }
 
@@ -233,7 +253,7 @@ class GenreDetailFragment :
             is Genre -> {
                 navModel.exploreNavigationItem.consume()
             }
-            null -> {}
+            else -> {}
         }
     }
 
@@ -243,6 +263,13 @@ class GenreDetailFragment :
 
     private fun updateSelection(selected: List<Music>) {
         genreListAdapter.setSelected(selected.toSet())
-        requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
+
+        val binding = requireBinding()
+        if (selected.isNotEmpty()) {
+            binding.detailSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
+            binding.detailToolbar.setVisible(R.id.detail_selection_toolbar)
+        } else {
+            binding.detailToolbar.setVisible(R.id.detail_normal_toolbar)
+        }
     }
 }

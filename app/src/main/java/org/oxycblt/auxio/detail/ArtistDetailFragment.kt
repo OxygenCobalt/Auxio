@@ -26,6 +26,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
@@ -34,6 +35,8 @@ import org.oxycblt.auxio.detail.header.ArtistDetailHeaderAdapter
 import org.oxycblt.auxio.detail.header.DetailHeaderAdapter
 import org.oxycblt.auxio.detail.list.ArtistDetailListAdapter
 import org.oxycblt.auxio.detail.list.DetailListAdapter
+import org.oxycblt.auxio.list.Divider
+import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
@@ -42,9 +45,10 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.*
 
 /**
@@ -60,6 +64,7 @@ class ArtistDetailFragment :
     private val detailModel: DetailViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     // Information about what artist to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an artist.
@@ -86,18 +91,31 @@ class ArtistDetailFragment :
         super.onBindingCreated(binding, savedInstanceState)
 
         // --- UI SETUP ---
-        binding.detailToolbar.apply {
-            inflateMenu(R.menu.menu_genre_artist_detail)
+        binding.detailNormalToolbar.apply {
+            inflateMenu(R.menu.menu_parent_detail)
             setNavigationOnClickListener { findNavController().navigateUp() }
             setOnMenuItemClickListener(this@ArtistDetailFragment)
         }
 
-        binding.detailRecycler.adapter = ConcatAdapter(artistHeaderAdapter, artistListAdapter)
+        binding.detailRecycler.apply {
+            adapter = ConcatAdapter(artistHeaderAdapter, artistListAdapter)
+            (layoutManager as GridLayoutManager).setFullWidthLookup {
+                if (it != 0) {
+                    val item =
+                        detailModel.artistList.value.getOrElse(it - 1) {
+                            return@setFullWidthLookup false
+                        }
+                    item is Divider || item is Header
+                } else {
+                    true
+                }
+            }
+        }
 
         // --- VIEWMODEL SETUP ---
         // DetailViewModel handles most initialization from the navigation argument.
-        detailModel.setArtistUid(args.artistUid)
-        collectImmediately(detailModel.currentArtist, ::updateItem)
+        detailModel.setArtist(args.artistUid)
+        collectImmediately(detailModel.currentArtist, ::updateArtist)
         collectImmediately(detailModel.artistList, ::updateList)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -107,7 +125,7 @@ class ArtistDetailFragment :
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
-        binding.detailToolbar.setOnMenuItemClickListener(null)
+        binding.detailNormalToolbar.setOnMenuItemClickListener(null)
         binding.detailRecycler.adapter = null
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
@@ -129,6 +147,10 @@ class ArtistDetailFragment :
             R.id.action_queue_add -> {
                 playbackModel.addToQueue(currentArtist)
                 requireContext().showToast(R.string.lng_queue_added)
+                true
+            }
+            R.id.action_playlist_add -> {
+                musicModel.addToPlaylist(currentArtist)
                 true
             }
             else -> false
@@ -171,8 +193,10 @@ class ArtistDetailFragment :
 
     override fun onOpenSortMenu(anchor: View) {
         openMenu(anchor, R.menu.menu_artist_sort) {
+            // Select the corresponding sort mode option
             val sort = detailModel.artistSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
+            // Select the corresponding sort direction option
             val directionItemId =
                 when (sort.direction) {
                     Sort.Direction.ASCENDING -> R.id.option_sort_asc
@@ -184,8 +208,10 @@ class ArtistDetailFragment :
 
                 detailModel.artistSongSort =
                     when (item.itemId) {
+                        // Sort direction options
                         R.id.option_sort_asc -> sort.withDirection(Sort.Direction.ASCENDING)
                         R.id.option_sort_dec -> sort.withDirection(Sort.Direction.DESCENDING)
+                        // Any other option is a sort mode
                         else -> sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
                     }
 
@@ -194,13 +220,13 @@ class ArtistDetailFragment :
         }
     }
 
-    private fun updateItem(artist: Artist?) {
+    private fun updateArtist(artist: Artist?) {
         if (artist == null) {
             // Artist we were showing no longer exists.
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailToolbar.title = artist.resolveName(requireContext())
+        requireBinding().detailNormalToolbar.title = artist.name.resolve(requireContext())
         artistHeaderAdapter.setParent(artist)
     }
 
@@ -260,6 +286,13 @@ class ArtistDetailFragment :
 
     private fun updateSelection(selected: List<Music>) {
         artistListAdapter.setSelected(selected.toSet())
-        requireBinding().detailSelectionToolbar.updateSelectionAmount(selected.size)
+
+        val binding = requireBinding()
+        if (selected.isNotEmpty()) {
+            binding.detailSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
+            binding.detailToolbar.setVisible(R.id.detail_selection_toolbar)
+        } else {
+            binding.detailToolbar.setVisible(R.id.detail_normal_toolbar)
+        }
     }
 }

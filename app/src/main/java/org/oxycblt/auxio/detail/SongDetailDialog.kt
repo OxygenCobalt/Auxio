@@ -34,7 +34,8 @@ import org.oxycblt.auxio.detail.list.SongPropertyAdapter
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.metadata.AudioInfo
+import org.oxycblt.auxio.music.info.Name
+import org.oxycblt.auxio.music.metadata.AudioProperties
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
@@ -66,11 +67,11 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
         super.onBindingCreated(binding, savedInstanceState)
         binding.detailProperties.adapter = detailAdapter
         // DetailViewModel handles most initialization from the navigation argument.
-        detailModel.setSongUid(args.itemUid)
-        collectImmediately(detailModel.currentSong, detailModel.songAudioInfo, ::updateSong)
+        detailModel.setSong(args.songUid)
+        collectImmediately(detailModel.currentSong, detailModel.songAudioProperties, ::updateSong)
     }
 
-    private fun updateSong(song: Song?, info: AudioInfo?) {
+    private fun updateSong(song: Song?, info: AudioProperties?) {
         if (song == null) {
             // Song we were showing no longer exists.
             findNavController().navigateUp()
@@ -123,12 +124,14 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
         }
     }
 
-    private fun <T : Music> T.zipName(context: Context) =
-        if (rawSortName != null) {
-            getString(R.string.fmt_zipped_names, resolveName(context), rawSortName)
+    private fun <T : Music> T.zipName(context: Context): String {
+        val name = name
+        return if (name is Name.Known && name.sort != null) {
+            getString(R.string.fmt_zipped_names, name.resolve(context), name.sort)
         } else {
-            resolveName(context)
+            name.resolve(context)
         }
+    }
 
     private fun <T : Music> List<T>.zipNames(context: Context) =
         concatLocalized(context) { it.zipName(context) }

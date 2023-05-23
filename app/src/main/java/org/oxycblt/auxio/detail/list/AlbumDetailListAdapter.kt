@@ -33,7 +33,7 @@ import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.metadata.Disc
+import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
@@ -67,15 +67,6 @@ class AlbumDetailListAdapter(private val listener: Listener<Song>) :
             is Disc -> (holder as DiscViewHolder).bind(item)
             is Song -> (holder as AlbumSongViewHolder).bind(item, listener)
         }
-    }
-
-    override fun isItemFullWidth(position: Int): Boolean {
-        if (super.isItemFullWidth(position)) {
-            return true
-        }
-        // The album and disc headers should be full-width in all configurations.
-        val item = getItem(position)
-        return item is Album || item is Disc
     }
 
     private companion object {
@@ -171,7 +162,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
             }
         }
 
-        binding.songName.text = song.resolveName(binding.context)
+        binding.songName.text = song.name.resolve(binding.context)
 
         // Use duration instead of album or artist for each song, as this text would
         // be homogenous otherwise.
@@ -204,7 +195,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<Song>() {
                 override fun areContentsTheSame(oldItem: Song, newItem: Song) =
-                    oldItem.rawName == newItem.rawName && oldItem.durationMs == newItem.durationMs
+                    oldItem.name == newItem.name && oldItem.durationMs == newItem.durationMs
             }
     }
 }

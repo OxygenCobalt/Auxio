@@ -27,10 +27,10 @@ import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import org.oxycblt.auxio.music.metadata.Date
+import org.oxycblt.auxio.music.device.RawSong
+import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.metadata.correctWhitespace
 import org.oxycblt.auxio.music.metadata.splitEscaped
-import org.oxycblt.auxio.music.model.RawSong
 
 @Database(entities = [CachedSong::class], version = 27, exportSchema = false)
 abstract class CacheDatabase : RoomDatabase() {

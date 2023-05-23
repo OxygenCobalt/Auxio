@@ -18,11 +18,11 @@
  
 package org.oxycblt.auxio.music.metadata
 
-import com.google.android.exoplayer2.MetadataRetriever
+import androidx.media3.exoplayer.MetadataRetriever
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
-import org.oxycblt.auxio.music.model.RawSong
+import org.oxycblt.auxio.music.device.RawSong
 
 /**
  * The extractor that leverages ExoPlayer's [MetadataRetriever] API to parse metadata. This is the
@@ -87,8 +87,6 @@ class TagExtractorImpl @Inject constructor(private val tagWorkerFactory: TagWork
                 }
             }
         } while (ongoingTasks)
-
-        completeSongs.close()
     }
 
     private companion object {

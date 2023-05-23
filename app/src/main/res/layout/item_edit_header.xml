@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="?attr/colorSurface"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/header_title"
+        style="@style/Widget.Auxio.TextView.Header"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_mid_medium"
+        app:layout_constraintEnd_toStartOf="@+id/header_button"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Songs" />
+
+    <org.oxycblt.auxio.ui.RippleFixMaterialButton
+        android:id="@+id/header_edit"
+        style="@style/Widget.Auxio.Button.Icon.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_mid_medium"
+        android:contentDescription="@string/lbl_edit"
+        app:icon="@drawable/ic_edit_24"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+<!--    <org.oxycblt.auxio.ui.RippleFixMaterialButton-->
+<!--        android:id="@+id/header_sort"-->
+<!--        style="@style/Widget.Auxio.Button.Icon.Small"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="@dimen/spacing_mid_medium"-->
+<!--        android:contentDescription="@string/lbl_cancel"-->
+<!--        app:icon="@drawable/ic_sort_24"-->
+<!--        app:layout_constraintEnd_toEndOf="parent" />-->
+
+</LinearLayout>

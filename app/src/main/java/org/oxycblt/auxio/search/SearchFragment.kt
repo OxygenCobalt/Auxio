@@ -29,21 +29,19 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
+import org.oxycblt.auxio.list.Divider
+import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.*
 
 /**
@@ -58,6 +56,7 @@ import org.oxycblt.auxio.util.*
 class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     private val searchModel: SearchViewModel by viewModels()
     private val searchAdapter = SearchAdapter(this)
@@ -82,7 +81,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
         imm = binding.context.getSystemServiceCompat(InputMethodManager::class)
 
-        binding.searchToolbar.apply {
+        binding.searchNormalToolbar.apply {
             // Initialize the current filtering mode.
             menu.findItem(searchModel.getFilterOptionId()).isChecked = true
 
@@ -108,7 +107,16 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             }
         }
 
-        binding.searchRecycler.adapter = searchAdapter
+        binding.searchRecycler.apply {
+            adapter = searchAdapter
+            (layoutManager as GridLayoutManager).setFullWidthLookup {
+                val item =
+                    searchModel.searchResults.value.getOrElse(it) {
+                        return@setFullWidthLookup false
+                    }
+                item is Divider || item is Header
+            }
+        }
 
         // --- VIEWMODEL SETUP ---
 
@@ -121,7 +129,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     override fun onDestroyBinding(binding: FragmentSearchBinding) {
         super.onDestroyBinding(binding)
-        binding.searchToolbar.setOnMenuItemClickListener(null)
+        binding.searchNormalToolbar.setOnMenuItemClickListener(null)
         binding.searchRecycler.adapter = null
     }
 
@@ -153,8 +161,9 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         when (item) {
             is Song -> openMusicMenu(anchor, R.menu.menu_song_actions, item)
             is Album -> openMusicMenu(anchor, R.menu.menu_album_actions, item)
-            is Artist -> openMusicMenu(anchor, R.menu.menu_artist_actions, item)
-            is Genre -> openMusicMenu(anchor, R.menu.menu_artist_actions, item)
+            is Artist -> openMusicMenu(anchor, R.menu.menu_parent_actions, item)
+            is Genre -> openMusicMenu(anchor, R.menu.menu_parent_actions, item)
+            is Playlist -> openMusicMenu(anchor, R.menu.menu_playlist_actions, item)
         }
     }
 
@@ -182,7 +191,8 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                 is Album -> SearchFragmentDirections.actionShowAlbum(item.uid)
                 is Artist -> SearchFragmentDirections.actionShowArtist(item.uid)
                 is Genre -> SearchFragmentDirections.actionShowGenre(item.uid)
-                else -> return
+                is Playlist -> SearchFragmentDirections.actionShowPlaylist(item.uid)
+                null -> return
             }
         // Keyboard is no longer needed.
         hideKeyboard()
@@ -191,10 +201,16 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     private fun updateSelection(selected: List<Music>) {
         searchAdapter.setSelected(selected.toSet())
-        if (requireBinding().searchSelectionToolbar.updateSelectionAmount(selected.size) &&
-            selected.isNotEmpty()) {
-            // Make selection of obscured items easier by hiding the keyboard.
-            hideKeyboard()
+        val binding = requireBinding()
+        if (selected.isNotEmpty()) {
+            binding.searchSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
+            if (binding.searchToolbar.setVisible(R.id.search_selection_toolbar)) {
+                // New selection started, show the keyboard to make selection easier.
+                logD("Significant selection occurred, hiding keyboard")
+                hideKeyboard()
+            }
+        } else {
+            binding.searchToolbar.setVisible(R.id.search_normal_toolbar)
         }
     }
 

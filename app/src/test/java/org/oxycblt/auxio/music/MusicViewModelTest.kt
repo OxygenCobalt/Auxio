@@ -21,32 +21,35 @@ package org.oxycblt.auxio.music
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.oxycblt.auxio.music.model.FakeLibrary
-import org.oxycblt.auxio.music.system.FakeIndexer
-import org.oxycblt.auxio.music.system.Indexer
+import org.oxycblt.auxio.music.device.DeviceLibrary
+import org.oxycblt.auxio.music.device.FakeDeviceLibrary
 import org.oxycblt.auxio.util.forceClear
 
 class MusicViewModelTest {
     @Test
     fun indexerState() {
         val indexer =
-            TestIndexer().apply { state = Indexer.State.Indexing(Indexer.Indexing.Indeterminate) }
-        val musicViewModel = MusicViewModel(indexer)
-        assertTrue(indexer.listener is MusicViewModel)
+            TestMusicRepository().apply {
+                indexingState = IndexingState.Indexing(IndexingProgress.Indeterminate)
+            }
+        val musicViewModel = MusicViewModel(indexer, FakeMusicSettings())
+        assertTrue(indexer.updateListener is MusicViewModel)
+        assertTrue(indexer.indexingListener is MusicViewModel)
         assertEquals(
-            Indexer.Indexing.Indeterminate,
-            (musicViewModel.indexerState.value as Indexer.State.Indexing).indexing)
-        indexer.state = null
-        assertEquals(null, musicViewModel.indexerState.value)
+            IndexingProgress.Indeterminate,
+            (musicViewModel.indexingState.value as IndexingState.Indexing).progress)
+        indexer.indexingState = null
+        assertEquals(null, musicViewModel.indexingState.value)
         musicViewModel.forceClear()
-        assertTrue(indexer.listener == null)
+        assertTrue(indexer.indexingListener == null)
     }
 
     @Test
     fun statistics() {
-        val indexer =
-            TestIndexer().apply { state = Indexer.State.Complete(Result.success(TestLibrary())) }
-        val musicViewModel = MusicViewModel(indexer)
+        val musicRepository = TestMusicRepository()
+        val musicViewModel = MusicViewModel(musicRepository, FakeMusicSettings())
+        assertEquals(null, musicViewModel.statistics.value)
+        musicRepository.deviceLibrary = TestDeviceLibrary()
         assertEquals(
             MusicViewModel.Statistics(
                 2,
@@ -60,38 +63,55 @@ class MusicViewModelTest {
 
     @Test
     fun requests() {
-        val indexer = TestIndexer()
-        val musicViewModel = MusicViewModel(indexer)
+        val indexer = TestMusicRepository()
+        val musicViewModel = MusicViewModel(indexer, FakeMusicSettings())
         musicViewModel.refresh()
         musicViewModel.rescan()
         assertEquals(listOf(true, false), indexer.requests)
     }
 
-    private class TestIndexer : FakeIndexer() {
-        var listener: Indexer.Listener? = null
-        var state: Indexer.State? = null
+    private class TestMusicRepository : FakeMusicRepository() {
+        override var deviceLibrary: DeviceLibrary? = null
             set(value) {
                 field = value
-                listener?.onIndexerStateChanged(value)
+                updateListener?.onMusicChanges(
+                    MusicRepository.Changes(deviceLibrary = true, userLibrary = false))
+            }
+        override var indexingState: IndexingState? = null
+            set(value) {
+                field = value
+                indexingListener?.onIndexingStateChanged()
             }
 
+        var updateListener: MusicRepository.UpdateListener? = null
+        var indexingListener: MusicRepository.IndexingListener? = null
         val requests = mutableListOf<Boolean>()
 
-        override fun registerListener(listener: Indexer.Listener) {
-            this.listener = listener
-            listener.onIndexerStateChanged(state)
+        override fun addUpdateListener(listener: MusicRepository.UpdateListener) {
+            listener.onMusicChanges(
+                MusicRepository.Changes(deviceLibrary = true, userLibrary = false))
+            this.updateListener = listener
         }
 
-        override fun unregisterListener(listener: Indexer.Listener) {
-            this.listener = null
+        override fun removeUpdateListener(listener: MusicRepository.UpdateListener) {
+            this.updateListener = null
         }
 
-        override fun requestReindex(withCache: Boolean) {
+        override fun addIndexingListener(listener: MusicRepository.IndexingListener) {
+            listener.onIndexingStateChanged()
+            this.indexingListener = listener
+        }
+
+        override fun removeIndexingListener(listener: MusicRepository.IndexingListener) {
+            this.indexingListener = null
+        }
+
+        override fun requestIndex(withCache: Boolean) {
             requests.add(withCache)
         }
     }
 
-    private class TestLibrary : FakeLibrary() {
+    private class TestDeviceLibrary : FakeDeviceLibrary() {
         override val songs: List<Song>
             get() = listOf(TestSong(), TestSong())
         override val albums: List<Album>

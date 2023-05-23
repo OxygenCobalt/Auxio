@@ -30,10 +30,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.BasicHeader
+import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.model.Library
+import org.oxycblt.auxio.music.device.DeviceLibrary
+import org.oxycblt.auxio.music.user.UserLibrary
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.logD
 
@@ -50,7 +52,7 @@ constructor(
     private val searchEngine: SearchEngine,
     private val searchSettings: SearchSettings,
     private val playbackSettings: PlaybackSettings,
-) : ViewModel(), MusicRepository.Listener {
+) : ViewModel(), MusicRepository.UpdateListener {
     private var lastQuery: String? = null
     private var currentSearchJob: Job? = null
 
@@ -64,17 +66,16 @@ constructor(
         get() = playbackSettings.inListPlaybackMode
 
     init {
-        musicRepository.addListener(this)
+        musicRepository.addUpdateListener(this)
     }
 
     override fun onCleared() {
         super.onCleared()
-        musicRepository.removeListener(this)
+        musicRepository.removeUpdateListener(this)
     }
 
-    override fun onLibraryChanged(library: Library?) {
-        if (library != null) {
-            // Make sure our query is up to date with the music library.
+    override fun onMusicChanges(changes: MusicRepository.Changes) {
+        if (changes.deviceLibrary || changes.userLibrary) {
             search(lastQuery)
         }
     }
@@ -90,8 +91,9 @@ constructor(
         currentSearchJob?.cancel()
         lastQuery = query
 
-        val library = musicRepository.library
-        if (query.isNullOrEmpty() || library == null) {
+        val deviceLibrary = musicRepository.deviceLibrary
+        val userLibrary = musicRepository.userLibrary
+        if (query.isNullOrEmpty() || deviceLibrary == null || userLibrary == null) {
             logD("Search query is not applicable.")
             _searchResults.value = listOf()
             return
@@ -102,43 +104,80 @@ constructor(
         // Searching is time-consuming, so do it in the background.
         currentSearchJob =
             viewModelScope.launch {
-                _searchResults.value = searchImpl(library, query).also { yield() }
+                _searchResults.value =
+                    searchImpl(deviceLibrary, userLibrary, query).also { yield() }
             }
     }
 
-    private suspend fun searchImpl(library: Library, query: String): List<Item> {
+    private suspend fun searchImpl(
+        deviceLibrary: DeviceLibrary,
+        userLibrary: UserLibrary,
+        query: String
+    ): List<Item> {
         val filterMode = searchSettings.searchFilterMode
 
         val items =
             if (filterMode == null) {
                 // A nulled filter mode means to not filter anything.
-                SearchEngine.Items(library.songs, library.albums, library.artists, library.genres)
+                SearchEngine.Items(
+                    deviceLibrary.songs,
+                    deviceLibrary.albums,
+                    deviceLibrary.artists,
+                    deviceLibrary.genres,
+                    userLibrary.playlists)
             } else {
                 SearchEngine.Items(
-                    songs = if (filterMode == MusicMode.SONGS) library.songs else null,
-                    albums = if (filterMode == MusicMode.ALBUMS) library.albums else null,
-                    artists = if (filterMode == MusicMode.ARTISTS) library.artists else null,
-                    genres = if (filterMode == MusicMode.GENRES) library.genres else null)
+                    songs = if (filterMode == MusicMode.SONGS) deviceLibrary.songs else null,
+                    albums = if (filterMode == MusicMode.ALBUMS) deviceLibrary.albums else null,
+                    artists = if (filterMode == MusicMode.ARTISTS) deviceLibrary.artists else null,
+                    genres = if (filterMode == MusicMode.GENRES) deviceLibrary.genres else null,
+                    playlists =
+                        if (filterMode == MusicMode.PLAYLISTS) userLibrary.playlists else null)
             }
 
         val results = searchEngine.search(items, query)
 
         return buildList {
-            results.artists?.let { artists ->
-                add(BasicHeader(R.string.lbl_artists))
-                addAll(SORT.artists(artists))
+            results.artists?.let {
+                val header = BasicHeader(R.string.lbl_artists)
+                add(header)
+                addAll(SORT.artists(it))
             }
-            results.albums?.let { albums ->
-                add(BasicHeader(R.string.lbl_albums))
-                addAll(SORT.albums(albums))
+            results.albums?.let {
+                val header = BasicHeader(R.string.lbl_albums)
+                if (isNotEmpty()) {
+                    add(Divider(header))
+                }
+
+                add(header)
+                addAll(SORT.albums(it))
             }
-            results.genres?.let { genres ->
-                add(BasicHeader(R.string.lbl_genres))
-                addAll(SORT.genres(genres))
+            results.playlists?.let {
+                val header = BasicHeader(R.string.lbl_playlists)
+                if (isNotEmpty()) {
+                    add(Divider(header))
+                }
+
+                add(header)
+                addAll(SORT.playlists(it))
             }
-            results.songs?.let { songs ->
-                add(BasicHeader(R.string.lbl_songs))
-                addAll(SORT.songs(songs))
+            results.genres?.let {
+                val header = BasicHeader(R.string.lbl_genres)
+                if (isNotEmpty()) {
+                    add(Divider(header))
+                }
+
+                add(header)
+                addAll(SORT.genres(it))
+            }
+            results.songs?.let {
+                val header = BasicHeader(R.string.lbl_songs)
+                if (isNotEmpty()) {
+                    add(Divider(header))
+                }
+
+                add(header)
+                addAll(SORT.songs(it))
             }
         }
     }
@@ -155,6 +194,7 @@ constructor(
             MusicMode.ALBUMS -> R.id.option_filter_albums
             MusicMode.ARTISTS -> R.id.option_filter_artists
             MusicMode.GENRES -> R.id.option_filter_genres
+            MusicMode.PLAYLISTS -> R.id.option_filter_playlists
             // Null maps to filtering nothing.
             null -> R.id.option_filter_all
         }
@@ -171,6 +211,7 @@ constructor(
                 R.id.option_filter_albums -> MusicMode.ALBUMS
                 R.id.option_filter_artists -> MusicMode.ARTISTS
                 R.id.option_filter_genres -> MusicMode.GENRES
+                R.id.option_filter_playlists -> MusicMode.PLAYLISTS
                 // Null maps to filtering nothing.
                 R.id.option_filter_all -> null
                 else -> error("Invalid option ID provided")

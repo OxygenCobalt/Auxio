@@ -37,10 +37,10 @@ import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.AlbumViewHolder
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.secsToMs
-import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.collectImmediately
 
 /**
@@ -56,6 +56,7 @@ class AlbumListFragment :
     private val homeModel: HomeViewModel by activityViewModels()
     override val navModel: NavigationViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     private val albumAdapter = AlbumAdapter(this)
     // Save memory by re-using the same formatter and string builder when creating popup text
@@ -94,10 +95,10 @@ class AlbumListFragment :
         // Change how we display the popup depending on the current sort mode.
         return when (homeModel.getSortForTab(MusicMode.ALBUMS).mode) {
             // By Name -> Use Name
-            is Sort.Mode.ByName -> album.sortName?.thumbString
+            is Sort.Mode.ByName -> album.name.thumb
 
             // By Artist -> Use name of first artist
-            is Sort.Mode.ByArtist -> album.artists[0].sortName?.thumbString
+            is Sort.Mode.ByArtist -> album.artists[0].name.thumb
 
             // Date -> Use minimum date (Maximum dates are not sorted by, so showing them is odd)
             is Sort.Mode.ByDate -> album.dates?.run { min.resolveDate(requireContext()) }

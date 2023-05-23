@@ -209,7 +209,7 @@ private fun String.parseId3v1Genre(): String? {
  * A [Regex] that implements parsing for ID3v2's genre format. Derived from mutagen:
  * https://github.com/quodlibet/mutagen
  */
-private val ID3V2_GENRE_RE = Regex("((?:\\((\\d+|RX|CR)\\))*)(.+)?")
+private val ID3V2_GENRE_RE by lazy { Regex("((?:\\((\\d+|RX|CR)\\))*)(.+)?") }
 
 /**
  * Parse an ID3v2 integer genre field, which has support for multiple genre values and combined
@@ -228,7 +228,7 @@ private fun String.parseId3v2Genre(): List<String>? {
     // Case 1: Genre IDs in the format (INT|RX|CR). If these exist, parse them as
     // ID3v1 tags.
     val genreIds = groups.getOrNull(1)
-    if (genreIds != null && genreIds.isNotEmpty()) {
+    if (!genreIds.isNullOrEmpty()) {
         val ids = genreIds.substring(1, genreIds.lastIndex).split(")(")
         for (id in ids) {
             id.parseId3v1Genre()?.let(genres::add)
@@ -238,7 +238,7 @@ private fun String.parseId3v2Genre(): List<String>? {
     // Case 2: Genre names as a normal string. The only case we have to look out for are
     // escaped strings formatted as ((genre).
     val genreName = groups.getOrNull(3)
-    if (genreName != null && genreName.isNotEmpty()) {
+    if (!genreName.isNullOrEmpty()) {
         if (genreName.startsWith("((")) {
             genres.add(genreName.substring(1))
         } else {

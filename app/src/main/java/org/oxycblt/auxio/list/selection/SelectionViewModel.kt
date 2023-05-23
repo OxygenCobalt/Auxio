@@ -24,7 +24,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.model.Library
 
 /**
  * A [ViewModel] that manages the current selection.
@@ -32,38 +31,42 @@ import org.oxycblt.auxio.music.model.Library
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
-class SelectionViewModel @Inject constructor(private val musicRepository: MusicRepository) :
-    ViewModel(), MusicRepository.Listener {
+class SelectionViewModel
+@Inject
+constructor(
+    private val musicRepository: MusicRepository,
+    private val musicSettings: MusicSettings
+) : ViewModel(), MusicRepository.UpdateListener {
     private val _selected = MutableStateFlow(listOf<Music>())
     /** the currently selected items. These are ordered in earliest selected and latest selected. */
     val selected: StateFlow<List<Music>>
         get() = _selected
 
     init {
-        musicRepository.addListener(this)
+        musicRepository.addUpdateListener(this)
     }
 
-    override fun onLibraryChanged(library: Library?) {
-        if (library == null) {
-            return
-        }
-
+    override fun onMusicChanges(changes: MusicRepository.Changes) {
+        if (!changes.deviceLibrary) return
+        val deviceLibrary = musicRepository.deviceLibrary ?: return
+        val userLibrary = musicRepository.userLibrary ?: return
         // Sanitize the selection to remove items that no longer exist and thus
         // won't appear in any list.
         _selected.value =
             _selected.value.mapNotNull {
                 when (it) {
-                    is Song -> library.sanitize(it)
-                    is Album -> library.sanitize(it)
-                    is Artist -> library.sanitize(it)
-                    is Genre -> library.sanitize(it)
+                    is Song -> deviceLibrary.findSong(it.uid)
+                    is Album -> deviceLibrary.findAlbum(it.uid)
+                    is Artist -> deviceLibrary.findArtist(it.uid)
+                    is Genre -> deviceLibrary.findGenre(it.uid)
+                    is Playlist -> userLibrary.findPlaylist(it.uid)
                 }
             }
     }
 
     override fun onCleared() {
         super.onCleared()
-        musicRepository.removeListener(this)
+        musicRepository.removeUpdateListener(this)
     }
 
     /**
@@ -81,9 +84,27 @@ class SelectionViewModel @Inject constructor(private val musicRepository: MusicR
     }
 
     /**
-     * Consume the current selection. This will clear any items that were selected prior.
+     * Clear the current selection and return it.
      *
-     * @return The list of selected items before it was cleared.
+     * @return A list of [Song]s collated from each item selected.
      */
-    fun consume() = _selected.value.also { _selected.value = listOf() }
+    fun take() =
+        _selected.value
+            .flatMap {
+                when (it) {
+                    is Song -> listOf(it)
+                    is Album -> musicSettings.albumSongSort.songs(it.songs)
+                    is Artist -> musicSettings.artistSongSort.songs(it.songs)
+                    is Genre -> musicSettings.genreSongSort.songs(it.songs)
+                    is Playlist -> it.songs
+                }
+            }
+            .also { drop() }
+
+    /**
+     * Clear the current selection.
+     *
+     * @return true if the prior selection was non-empty, false otherwise.
+     */
+    fun drop() = _selected.value.isNotEmpty().also { _selected.value = listOf() }
 }

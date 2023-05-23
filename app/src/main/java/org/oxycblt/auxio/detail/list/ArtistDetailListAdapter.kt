@@ -65,14 +65,6 @@ class ArtistDetailListAdapter(private val listener: Listener<Music>) :
         }
     }
 
-    override fun isItemFullWidth(position: Int): Boolean {
-        if (super.isItemFullWidth(position)) {
-            return true
-        }
-        // Artist headers should be full-width in all configurations.
-        return getItem(position) is Artist
-    }
-
     private companion object {
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
@@ -106,7 +98,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
     fun bind(album: Album, listener: SelectableListListener<Album>) {
         listener.bind(album, this, menuButton = binding.parentMenu)
         binding.parentImage.bind(album)
-        binding.parentName.text = album.resolveName(binding.context)
+        binding.parentName.text = album.name.resolve(binding.context)
         binding.parentInfo.text =
             // Fall back to a friendlier "No date" text if the album doesn't have date information
             album.dates?.resolveDate(binding.context)
@@ -139,7 +131,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<Album>() {
                 override fun areContentsTheSame(oldItem: Album, newItem: Album) =
-                    oldItem.rawName == newItem.rawName && oldItem.dates == newItem.dates
+                    oldItem.name == newItem.name && oldItem.dates == newItem.dates
             }
     }
 }
@@ -161,8 +153,8 @@ private class ArtistSongViewHolder private constructor(private val binding: Item
     fun bind(song: Song, listener: SelectableListListener<Song>) {
         listener.bind(song, this, menuButton = binding.songMenu)
         binding.songAlbumCover.bind(song)
-        binding.songName.text = song.resolveName(binding.context)
-        binding.songInfo.text = song.album.resolveName(binding.context)
+        binding.songName.text = song.name.resolve(binding.context)
+        binding.songInfo.text = song.album.name.resolve(binding.context)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
@@ -191,8 +183,7 @@ private class ArtistSongViewHolder private constructor(private val binding: Item
         val DIFF_CALLBACK =
             object : SimpleDiffCallback<Song>() {
                 override fun areContentsTheSame(oldItem: Song, newItem: Song) =
-                    oldItem.rawName == newItem.rawName &&
-                        oldItem.album.rawName == newItem.album.rawName
+                    oldItem.name == newItem.name && oldItem.album.name == newItem.album.name
             }
     }
 }

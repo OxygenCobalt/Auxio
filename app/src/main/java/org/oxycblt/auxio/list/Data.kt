@@ -40,3 +40,11 @@ interface Header : Item {
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class BasicHeader(@StringRes override val titleRes: Int) : Header
+
+/**
+ * A divider decoration used to delimit groups of data.
+ *
+ * @param anchor The [Header] this divider should be next to in a list. Used as a way to preserve
+ *   divider continuity during list updates.
+ */
+data class Divider(val anchor: Header?) : Item

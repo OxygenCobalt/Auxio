@@ -53,7 +53,7 @@
     <string name="lbl_compilation">Compilation</string>
     <!-- As in a compilation of live music -->
     <string name="lbl_compilation_live">Live compilation</string>
-    <string name="lbl_compilation_remix">Remix compilations</string>
+    <string name="lbl_compilation_remix">Remix compilation</string>
     <string name="lbl_soundtracks">Soundtracks</string>
     <string name="lbl_soundtrack">Soundtrack</string>
     <!-- As in the collection of music -->
@@ -75,6 +75,15 @@
 
     <string name="lbl_genre">Genre</string>
     <string name="lbl_genres">Genres</string>
+
+    <string name="lbl_playlist">Playlist</string>
+    <string name="lbl_playlists">Playlists</string>
+    <string name="lbl_new_playlist">New playlist</string>
+    <string name="lbl_rename">Rename</string>
+    <string name="lbl_rename_playlist">Rename playlist</string>
+    <string name="lbl_delete">Delete</string>
+    <string name="lbl_confirm_delete_playlist">Delete playlist?</string>
+    <string name="lbl_edit">Edit</string>
 
     <!-- Search for music -->
     <string name="lbl_search">Search</string>
@@ -105,6 +114,8 @@
     <string name="lbl_queue">Queue</string>
     <string name="lbl_play_next">Play next</string>
     <string name="lbl_queue_add">Add to queue</string>
+
+    <string name="lbl_playlist_add">Add to playlist</string>
 
     <string name="lbl_go_artist">Go to artist</string>
     <string name="lbl_go_album">Go to album</string>
@@ -155,6 +166,10 @@
     <string name="lng_indexing">Loading your music library…</string>
     <string name="lng_observing">Monitoring your music library for changes…</string>
     <string name="lng_queue_added">Added to queue</string>
+    <string name="lng_playlist_created">Playlist created</string>
+    <string name="lng_playlist_renamed">Playlist renamed</string>
+    <string name="lng_playlist_deleted">Playlist deleted</string>
+    <string name="lng_playlist_added">Added to playlist</string>
     <string name="lng_author">Developed by Alexander Capehart</string>
     <!-- As in music library -->
     <string name="lng_search_library">Search your library…</string>
@@ -293,10 +308,11 @@
     <string name="desc_change_repeat">Change repeat mode</string>
     <string name="desc_shuffle">Turn shuffle on or off</string>
     <string name="desc_shuffle_all">Shuffle all songs</string>
+    <string name="desc_new_playlist">Create a new playlist</string>
     <string name="desc_exit">Stop playback</string>
 
-    <string name="desc_clear_queue_item">Remove this queue song</string>
-    <string name="desc_queue_handle">Move this queue song</string>
+    <string name="desc_remove_song">Remove this song</string>
+    <string name="desc_song_handle">Move this song</string>
     <string name="desc_queue_bar">Open the queue</string>
     <string name="desc_tab_handle">Move this tab</string>
     <string name="desc_clear_search">Clear search query</string>
@@ -307,6 +323,7 @@
     <string name="desc_album_cover">Album cover for %s</string>
     <string name="desc_artist_image">Artist image for %s</string>
     <string name="desc_genre_image">Genre image for %s</string>
+    <string name="desc_playlist_image">Playlist image for %s</string>
 
     <!-- Default Namespace | Placeholder values -->
     <eat-comment />
@@ -315,7 +332,9 @@
     <string name="def_genre">Unknown genre</string>
     <string name="def_date">No date</string>
     <string name="def_track">No track</string>
+    <string name="def_song_count">No songs</string>
     <string name="def_playback">No music playing</string>
+    <string name="def_playlists">There\'s nothing here yet</string>
 
     <!-- Codec Namespace | Format names -->
     <eat-comment />
@@ -369,6 +388,8 @@
 
     <!-- As in "Disc 1", "Disc 2", etc. in a set -->
     <string name="fmt_disc_no">Disc %d</string>
+    <!-- As in "Playlist 1", "Playlist 2", etc. -->
+    <string name="fmt_def_playlist">Playlist %d</string>
 
     <!-- Use your native country's abbreviation for decibel units. -->
     <string name="fmt_db_pos">+%.1f dB</string>
@@ -380,6 +401,7 @@
     <string name="fmt_sample_rate">%d Hz</string>
 
     <string name="fmt_indexing">Loading your music library… (%1$d/%2$d)</string>
+    <string name="fmt_deletion_info">Delete %s? This cannot be undone.</string>
 
     <string name="fmt_lib_song_count">Songs loaded: %d</string>
     <string name="fmt_lib_album_count">Albums loaded: %d</string>
