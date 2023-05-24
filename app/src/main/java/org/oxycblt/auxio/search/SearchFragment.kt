@@ -39,10 +39,23 @@ import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.getSystemServiceCompat
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.setFullWidthLookup
 
 /**
  * The [ListFragment] providing search functionality for the music library.

@@ -22,8 +22,8 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.google.android.material.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.logD
 
 /**

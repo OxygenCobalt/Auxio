@@ -26,6 +26,7 @@ import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.list.recycler.MaterialDragCallback.ViewHolder
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getInteger
 import org.oxycblt.auxio.util.logD

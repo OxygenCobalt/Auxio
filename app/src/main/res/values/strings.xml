@@ -92,7 +92,6 @@
     <!-- As in to not filter -->
     <string name="lbl_filter_all">All</string>
 
-    <string name="lbl_none">None</string>
     <string name="lbl_name">Name</string>
     <string name="lbl_date">Date</string>
     <string name="lbl_duration">Duration</string>

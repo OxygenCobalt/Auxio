@@ -20,7 +20,11 @@ package org.oxycblt.auxio.music.user
 
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
 
 /**

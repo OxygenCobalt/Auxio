@@ -50,7 +50,6 @@ import okio.buffer
 import okio.source
 import org.oxycblt.auxio.image.CoverMode
 import org.oxycblt.auxio.image.ImageSettings
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logD
@@ -81,8 +80,8 @@ constructor(
         }
     }
 
-    fun computeAlbumOrdering(songs: List<Song>): Collection<Album> =
-        Sort(Sort.Mode.ByCount, Sort.Direction.DESCENDING).albums(songs.groupBy { it.album }.keys)
+    fun computeAlbumOrdering(songs: List<Song>) =
+        songs.groupBy { it.album }.entries.sortedByDescending { it.value.size }.map { it.key }
 
     private suspend fun openInputStream(album: Album): InputStream? =
         try {

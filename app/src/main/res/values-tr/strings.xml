@@ -274,6 +274,5 @@
     <string name="lbl_playlists">çalma listeleri</string>
     <string name="set_intelligent_sorting">Sıralama yaparken makaleleri yoksay</string>
     <string name="set_intelligent_sorting_desc">Ada göre sıralarken \"the\" gibi kelimeleri yok sayın (en iyi ingilizce müzikle çalışır)</string>
-    <string name="lbl_none">Hiçbiri</string>
     <string name="desc_new_playlist">Yeni bir oynatma listesi oluştur</string>
 </resources>

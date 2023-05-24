@@ -23,7 +23,13 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import javax.inject.Inject
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.contentResolverSafe
 import org.oxycblt.auxio.music.fs.useQuery
 import org.oxycblt.auxio.util.logD

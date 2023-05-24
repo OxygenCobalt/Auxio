@@ -21,6 +21,7 @@ package org.oxycblt.auxio.playback
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.R as MR
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
@@ -95,7 +96,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 binding.playbackSecondaryAction.apply {
                     setIconResource(R.drawable.ic_skip_next_24)
                     contentDescription = getString(R.string.desc_skip_next)
-                    iconTint = context.getAttrColorCompat(R.attr.colorOnSurfaceVariant)
+                    iconTint = context.getAttrColorCompat(MR.attr.colorOnSurfaceVariant)
                     setOnClickListener { playbackModel.next() }
                 }
             }

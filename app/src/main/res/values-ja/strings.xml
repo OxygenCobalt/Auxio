@@ -265,7 +265,6 @@
     <string name="lbl_playlist">プレイリスト</string>
     <string name="lbl_playlists">プレイリスト</string>
     <string name="desc_playlist_image">%s のプレイリスト イメージ</string>
-    <string name="lbl_none">無し</string>
     <string name="lbl_new_playlist">新規プレイリスト</string>
     <string name="lbl_playlist_add">プレイリストに追加する</string>
     <string name="lng_playlist_created">プレイリストが作成されました</string>

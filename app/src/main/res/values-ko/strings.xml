@@ -276,7 +276,6 @@
     <string name="desc_playlist_image">%s의 재생 목록 이미지</string>
     <string name="set_intelligent_sorting">정렬할 때 기사 무시</string>
     <string name="set_intelligent_sorting_desc">이름으로 정렬할 때 \"the\"와 같은 단어 무시(영어 음악에서 가장 잘 작동함)</string>
-    <string name="lbl_none">없음</string>
     <string name="desc_new_playlist">새 재생 목록 만들기</string>
     <string name="lbl_new_playlist">새 재생목록</string>
     <string name="lbl_playlist_add">재생목록에 추가</string>

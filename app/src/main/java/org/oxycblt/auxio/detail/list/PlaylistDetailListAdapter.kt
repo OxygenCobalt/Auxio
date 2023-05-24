@@ -27,6 +27,7 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -139,8 +140,7 @@ class PlaylistDetailListAdapter(private val listener: Listener) :
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [SortHeader] and it's actions. Use [from] to create
- * an instance.
+ * A [Header] variant that displays an edit button.
  *
  * @param titleRes The string resource to use as the header title
  * @author Alexander Capehart (OxygenCobalt)
@@ -214,7 +214,7 @@ private constructor(private val binding: ItemEditableSongBinding) :
     override val delete = binding.background
     override val background =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
-            fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
+            fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurface)
             elevation = binding.context.getDimen(R.dimen.elevation_normal)
             alpha = 0
         }
@@ -224,7 +224,7 @@ private constructor(private val binding: ItemEditableSongBinding) :
             LayerDrawable(
                 arrayOf(
                     MaterialShapeDrawable.createWithElevationOverlay(binding.context).apply {
-                        fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
+                        fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurface)
                     },
                     background))
     }
@@ -265,7 +265,7 @@ private constructor(private val binding: ItemEditableSongBinding) :
 
     companion object {
         /** A unique ID for this [RecyclerView.ViewHolder] type. */
-        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_EDITABLE_SONG
+        const val VIEW_TYPE = IntegerTable.VIEW_TYPE_PLAYLIST_SONG
 
         /**
          * Create a new instance.

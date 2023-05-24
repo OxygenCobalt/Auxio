@@ -23,6 +23,8 @@ import kotlin.random.nextInt
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.queue.Queue.Change.Type
+import org.oxycblt.auxio.playback.queue.Queue.SavedState
 
 /**
  * A heap-backed play queue.

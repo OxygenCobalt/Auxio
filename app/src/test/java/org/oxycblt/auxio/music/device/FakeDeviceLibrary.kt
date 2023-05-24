@@ -20,7 +20,11 @@ package org.oxycblt.auxio.music.device
 
 import android.content.Context
 import android.net.Uri
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.Song
 
 open class FakeDeviceLibrary : DeviceLibrary {
     override val songs: List<Song>

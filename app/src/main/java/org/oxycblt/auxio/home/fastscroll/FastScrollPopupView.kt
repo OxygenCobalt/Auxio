@@ -33,6 +33,7 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
 import androidx.core.widget.TextViewCompat
+import com.google.android.material.R as MR
 import com.google.android.material.textview.MaterialTextView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getAttrColorCompat
@@ -53,7 +54,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0)
         minimumHeight = context.getDimenPixels(R.dimen.fast_scroll_popup_min_height)
 
         TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_HeadlineLarge)
-        setTextColor(context.getAttrColorCompat(R.attr.colorOnSecondary))
+        setTextColor(context.getAttrColorCompat(MR.attr.colorOnSecondary))
         ellipsize = TextUtils.TruncateAt.MIDDLE
         gravity = Gravity.CENTER
         includeFontPadding = false
@@ -67,7 +68,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0)
         private val paint: Paint =
             Paint().apply {
                 isAntiAlias = true
-                color = context.getAttrColorCompat(R.attr.colorSecondary).defaultColor
+                color =
+                    context
+                        .getAttrColorCompat(com.google.android.material.R.attr.colorSecondary)
+                        .defaultColor
                 style = Paint.Style.FILL
             }
 

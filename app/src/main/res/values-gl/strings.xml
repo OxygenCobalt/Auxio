@@ -268,5 +268,4 @@
     <string name="desc_playlist_image">Imaxe da lista de reprodución para %s</string>
     <string name="set_separators_and">ampersand</string>
     <string name="set_replay_gain">ganancia da repetición</string>
-    <string name="lbl_none">Ningún</string>
 </resources>

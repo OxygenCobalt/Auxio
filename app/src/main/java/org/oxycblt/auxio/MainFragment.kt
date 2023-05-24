@@ -31,6 +31,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.R as MR
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.transition.MaterialFadeThrough
@@ -50,7 +51,15 @@ import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.coordinatorLayoutBehavior
+import org.oxycblt.auxio.util.getAttrColorCompat
+import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.systemBarInsetsCompat
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls the more
@@ -122,7 +131,7 @@ class MainFragment :
                 // Emulate the elevated bottom sheet style.
                 background =
                     MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-                        fillColor = context.getAttrColorCompat(R.attr.colorSurface)
+                        fillColor = context.getAttrColorCompat(MR.attr.colorSurface)
                         elevation = context.getDimen(R.dimen.elevation_normal)
                     }
                 // Apply bar insets for the queue's RecyclerView to usee.

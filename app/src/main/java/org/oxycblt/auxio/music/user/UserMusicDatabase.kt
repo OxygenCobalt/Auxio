@@ -18,7 +18,14 @@
  
 package org.oxycblt.auxio.music.user
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Database
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.RoomDatabase
+import androidx.room.Transaction
+import androidx.room.TypeConverters
 import org.oxycblt.auxio.music.Music
 
 /**
@@ -106,7 +113,7 @@ interface PlaylistDao {
     }
 
     /**
-     * Replace the currently-stored [Song]s of the current playlist entry.
+     * Replace the currently stored songs of the given playlist entry.
      *
      * @param playlistUid The [Music.UID] of the playlist to update.
      * @param songs The [PlaylistSong] representing the new list of songs to be placed in the

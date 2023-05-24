@@ -20,13 +20,21 @@ package org.oxycblt.auxio.music.device
 
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.MimeType
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.fs.toAudioUri
 import org.oxycblt.auxio.music.fs.toCoverUri
-import org.oxycblt.auxio.music.info.*
 import org.oxycblt.auxio.music.info.Date
+import org.oxycblt.auxio.music.info.Disc
+import org.oxycblt.auxio.music.info.Name
+import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.music.metadata.parseId3GenreNames
 import org.oxycblt.auxio.music.metadata.parseMultiValue
 import org.oxycblt.auxio.util.nonZeroOrNull

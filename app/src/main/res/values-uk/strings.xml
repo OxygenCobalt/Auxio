@@ -278,7 +278,6 @@
     <string name="desc_playlist_image">Зображення списку відтворення для %s</string>
     <string name="lbl_playlist">Список відтворення</string>
     <string name="lbl_playlists">Списки відтворення</string>
-    <string name="lbl_none">Немає</string>
     <string name="set_intelligent_sorting">Інтелектуальне сортування</string>
     <string name="set_intelligent_sorting_desc">Ігнорування таких слів, як \"the\", або цифр під час сортування за назвою (найкраще працює з англомовною музикою)</string>
     <string name="desc_new_playlist">Створити новий список відтворення</string>

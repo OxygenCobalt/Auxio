@@ -51,10 +51,8 @@ object IntegerTable {
     const val VIEW_TYPE_DISC_HEADER = 0xA00B
     /** EditHeaderViewHolder */
     const val VIEW_TYPE_EDIT_HEADER = 0xA00C
-    /** ConfirmHeaderViewHolder */
-    const val VIEW_TYPE_CONFIRM_HEADER = 0xA00D
-    /** EditableSongViewHolder */
-    const val VIEW_TYPE_EDITABLE_SONG = 0xA00E
+    /** PlaylistSongViewHolder */
+    const val VIEW_TYPE_PLAYLIST_SONG = 0xA00E
     /** "Music playback" notification code */
     const val PLAYBACK_NOTIFICATION_CODE = 0xA0A0
     /** "Music loading" notification code */

@@ -25,8 +25,8 @@ import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceGroupAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.R
 import com.google.android.material.divider.BackportMaterialDividerItemDecoration
-import org.oxycblt.auxio.R
 
 /**
  * A [BackportMaterialDividerItemDecoration] that sets up the divider configuration to correctly

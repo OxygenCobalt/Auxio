@@ -52,7 +52,6 @@
     <string name="set_key_album_songs_sort" translatable="false">auxio_album_sort</string>
     <string name="set_key_artist_songs_sort" translatable="false">auxio_artist_sort</string>
     <string name="set_key_genre_songs_sort" translatable="false">auxio_genre_sort</string>
-    <string name="set_key_playlist_songs_sort" translatable="false">auxio_playlist_sort</string>
 
     <string-array name="entries_theme">
         <item>@string/set_theme_auto</item>
