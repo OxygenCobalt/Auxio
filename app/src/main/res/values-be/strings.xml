@@ -281,4 +281,13 @@
     <string name="lng_playlist_created">Плэйліст створаны</string>
     <string name="lng_playlist_added">Паведамленні ў плэйліст</string>
     <string name="def_song_count">Без трэкаў</string>
+    <string name="lbl_delete">Выдаліць</string>
+    <string name="fmt_deletion_info">Выдаліць %s\? Гэтае дзеянне не можа быць адменена.</string>
+    <string name="lbl_rename">Перайменаваць</string>
+    <string name="lbl_rename_playlist">Перайменаваць плэйліст</string>
+    <string name="lbl_confirm_delete_playlist">Выдаліць плэйліст\?</string>
+    <string name="lbl_edit">Змяніць</string>
+    <string name="lng_playlist_renamed">Плэйліст перайменаван</string>
+    <string name="lng_playlist_deleted">Плэйліст выдален</string>
+    <string name="def_playlists">Тут яшчэ нічога няма</string>
 </resources>
