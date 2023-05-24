@@ -7,7 +7,7 @@
     <string name="lbl_artists">Előadók</string>
     <string name="lbl_albums">Albumok</string>
     <string name="lbl_songs">Dalok</string>
-    <string name="lbl_all_songs">Összes Dalok</string>
+    <string name="lbl_all_songs">Összes dal</string>
     <string name="lbl_search">Keresés</string>
     <string name="lbl_filter">Filter</string>
     <string name="lbl_filter_all">Összes</string>
@@ -68,4 +68,8 @@
         <item quantity="one">%d Album</item>
         <item quantity="other">%d Albumok</item>
     </plurals>
+    <string name="lbl_eps">EP-k</string>
+    <string name="lbl_ep">EP</string>
+    <string name="lbl_ep_live">Élő EP</string>
+    <string name="lbl_ep_remix">Remix EP</string>
 </resources>
