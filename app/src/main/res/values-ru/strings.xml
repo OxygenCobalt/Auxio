@@ -290,4 +290,13 @@
     <string name="def_song_count">Без треков</string>
     <string name="lng_playlist_added">Добавлено в плейлист</string>
     <string name="lng_playlist_created">Плейлист создан</string>
+    <string name="lbl_delete">Удалить</string>
+    <string name="lbl_rename">Переименовать</string>
+    <string name="lbl_rename_playlist">Переименовать плейлист</string>
+    <string name="lbl_confirm_delete_playlist">Удалить плейлист\?</string>
+    <string name="lng_playlist_renamed">Плейлист переименован</string>
+    <string name="lng_playlist_deleted">Плейлист удалён</string>
+    <string name="lbl_edit">Редактировать</string>
+    <string name="fmt_deletion_info">Удалить %s\? Это действие не может быть отменено.</string>
+    <string name="def_playlists">Здесь пока ничего нет</string>
 </resources>
