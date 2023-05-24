@@ -7,6 +7,7 @@ plugins {
     id "dagger.hilt.android.plugin"
     id "kotlin-kapt"
     id 'org.jetbrains.kotlin.android'
+    id "com.starter.easylauncher" version "6.1.0"
 }
 
 android {
@@ -68,6 +69,14 @@ android {
 
     buildFeatures {
         viewBinding true
+    }
+}
+
+easylauncher {
+    buildTypes {
+        debug {
+            filters blueRibbonFilter()
+        }
     }
 }
 
