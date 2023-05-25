@@ -158,7 +158,7 @@ constructor(
                 musicSettings.artistSort.artists(
                     if (homeSettings.shouldHideCollaborators) {
                         // Hide Collaborators is enabled, filter out collaborators.
-                        deviceLibrary.artists.filter { !it.isCollaborator }
+                        deviceLibrary.artists.filter { it.explicitAlbums.isNotEmpty() }
                     } else {
                         deviceLibrary.artists
                     })

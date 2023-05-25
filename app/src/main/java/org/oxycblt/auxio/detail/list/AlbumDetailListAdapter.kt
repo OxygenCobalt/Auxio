@@ -89,6 +89,7 @@ class AlbumDetailListAdapter(private val listener: Listener<Song>) :
 
 /**
  * A wrapper around [Disc] signifying that a header should be shown for a disc group.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class DiscHeader(val inner: Disc?) : Item

@@ -428,32 +428,42 @@ constructor(
     private fun refreshArtistList(artist: Artist, replace: Boolean = false) {
         logD("Refreshing artist list")
         val list = mutableListOf<Item>()
-        val albums = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING).albums(artist.albums)
 
-        val byReleaseGroup =
-            albums.groupBy {
-                // Remap the complicated ReleaseType data structure into an easier
-                // "AlbumGrouping" enum that will automatically group and sort
-                // the artist's albums.
-                when (it.releaseType.refinement) {
-                    ReleaseType.Refinement.LIVE -> AlbumGrouping.LIVE
-                    ReleaseType.Refinement.REMIX -> AlbumGrouping.REMIXES
-                    null ->
-                        when (it.releaseType) {
-                            is ReleaseType.Album -> AlbumGrouping.ALBUMS
-                            is ReleaseType.EP -> AlbumGrouping.EPS
-                            is ReleaseType.Single -> AlbumGrouping.SINGLES
-                            is ReleaseType.Compilation -> AlbumGrouping.COMPILATIONS
-                            is ReleaseType.Soundtrack -> AlbumGrouping.SOUNDTRACKS
-                            is ReleaseType.Mix -> AlbumGrouping.MIXES
-                            is ReleaseType.Mixtape -> AlbumGrouping.MIXTAPES
-                        }
+        val grouping =
+            Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING)
+                .albums(artist.explicitAlbums)
+                .groupByTo(sortedMapOf()) {
+                    // Remap the complicated ReleaseType data structure into an easier
+                    // "AlbumGrouping" enum that will automatically group and sort
+                    // the artist's albums.
+                    when (it.releaseType.refinement) {
+                        ReleaseType.Refinement.LIVE -> AlbumGrouping.LIVE
+                        ReleaseType.Refinement.REMIX -> AlbumGrouping.REMIXES
+                        null ->
+                            when (it.releaseType) {
+                                is ReleaseType.Album -> AlbumGrouping.ALBUMS
+                                is ReleaseType.EP -> AlbumGrouping.EPS
+                                is ReleaseType.Single -> AlbumGrouping.SINGLES
+                                is ReleaseType.Compilation -> AlbumGrouping.COMPILATIONS
+                                is ReleaseType.Soundtrack -> AlbumGrouping.SOUNDTRACKS
+                                is ReleaseType.Mix -> AlbumGrouping.DJMIXES
+                                is ReleaseType.Mixtape -> AlbumGrouping.MIXTAPES
+                            }
+                    }
                 }
-            }
 
-        logD("Release groups for this artist: ${byReleaseGroup.keys}")
+        if (artist.implicitAlbums.isNotEmpty()) {
+            // groupByTo normally returns a mapping to a MutableList mapping. Since MutableList
+            // inherits list, we can cast upwards and save a copy by directly inserting the
+            // implicit album list into the mapping.
+            @Suppress("UNCHECKED_CAST")
+            (grouping as MutableMap<AlbumGrouping, List<Album>>)[AlbumGrouping.APPEARANCES] =
+                Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING).albums(artist.implicitAlbums)
+        }
 
-        for (entry in byReleaseGroup.entries.sortedBy { it.key }) {
+        logD("Release groups for this artist: ${grouping.keys}")
+
+        for (entry in grouping.entries) {
             val header = BasicHeader(entry.key.headerTitleRes)
             list.add(Divider(header))
             list.add(header)
@@ -533,8 +543,9 @@ constructor(
         SINGLES(R.string.lbl_singles),
         COMPILATIONS(R.string.lbl_compilations),
         SOUNDTRACKS(R.string.lbl_soundtracks),
-        MIXES(R.string.lbl_mixes),
+        DJMIXES(R.string.lbl_mixes),
         MIXTAPES(R.string.lbl_mixtapes),
+        APPEARANCES(R.string.lbl_appears_on),
         LIVE(R.string.lbl_live_group),
         REMIXES(R.string.lbl_remix_group),
     }

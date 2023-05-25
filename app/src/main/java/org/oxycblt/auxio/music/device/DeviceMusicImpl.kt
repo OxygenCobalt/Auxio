@@ -344,8 +344,9 @@ class ArtistImpl(
 
     override val songs: List<Song>
     override val albums: List<Album>
+    override val explicitAlbums: List<Album>
+    override val implicitAlbums: List<Album>
     override val durationMs: Long?
-    override val isCollaborator: Boolean
 
     // Note: Append song contents to MusicParent equality so that artists with
     // the same UID but different songs are not equal.
@@ -366,30 +367,30 @@ class ArtistImpl(
 
     init {
         val distinctSongs = mutableSetOf<Song>()
-        val distinctAlbums = mutableSetOf<Album>()
-
-        var noAlbums = true
+        val albumMap = mutableMapOf<Album, Boolean>()
 
         for (music in songAlbums) {
             when (music) {
                 is SongImpl -> {
                     music.link(this)
                     distinctSongs.add(music)
-                    distinctAlbums.add(music.album)
+                    if (albumMap[music.album] == null) {
+                        albumMap[music.album] = false
+                    }
                 }
                 is AlbumImpl -> {
                     music.link(this)
-                    distinctAlbums.add(music)
-                    noAlbums = false
+                    albumMap[music] = true
                 }
                 else -> error("Unexpected input music ${music::class.simpleName}")
             }
         }
 
         songs = distinctSongs.toList()
-        albums = distinctAlbums.toList()
+        albums = albumMap.keys.toList()
+        explicitAlbums = albumMap.entries.filter { it.value }.map { it.key }
+        implicitAlbums = albumMap.entries.filterNot { it.value }.map { it.key }
         durationMs = songs.sumOf { it.durationMs }.nonZeroOrNull()
-        isCollaborator = noAlbums
     }
 
     /**

@@ -5,6 +5,15 @@
 #### What's New
 - Added ability to share a track
 
+#### What's Improved
+- Tracks with no disc number now default to "No Disc" instead of "Disc 1"
+- Albums implicitly linked only via "artist" tags are now placed in a special
+"appears on" section in the artist view
+
+#### What's Fixed
+- Prevented options such as "Add to queue" from being selected on empty
+artists and playlists
+
 ## 3.1.0
 
 #### What's New

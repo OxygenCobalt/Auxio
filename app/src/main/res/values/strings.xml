@@ -61,14 +61,16 @@
     <!-- As in the collection of music -->
     <string name="lbl_mixtape">Mixtape</string>
     <!-- As in a compilation of several performances that blend into a single continuous flow of music (Also known as DJ Mixes) -->
-    <string name="lbl_mixes">Mixes</string>
+    <string name="lbl_mixes">DJ Mixes</string>
     <!-- As in a compilation of several performances that blend into a single continuous flow of music (Also known as DJ Mixes) -->
-    <string name="lbl_mix">Mix</string>
+    <string name="lbl_mix">DJ Mix</string>
 
     <!-- As in music that was performed live -->
     <string name="lbl_live_group">Live</string>
     <!-- As in remixed music -->
     <string name="lbl_remix_group">Remixes</string>
+    <!-- As in albums that an artist only partially contributed to -->
+    <string name="lbl_appears_on">Appears on</string>
 
     <string name="lbl_artist">Artist</string>
     <string name="lbl_artists">Artists</string>
