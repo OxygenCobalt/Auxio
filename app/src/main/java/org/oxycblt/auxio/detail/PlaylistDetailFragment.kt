@@ -255,8 +255,16 @@ class PlaylistDetailFragment :
             return
         }
         val binding = requireBinding()
-        binding.detailNormalToolbar.title = playlist.name.resolve(requireContext())
-        binding.detailEditToolbar.title = "Editing ${playlist.name.resolve(requireContext())}"
+        binding.detailNormalToolbar.apply {
+            title = playlist.name.resolve(requireContext())
+            // Disable options that make no sense with an empty playlist
+            val playable = playlist.songs.isNotEmpty()
+            menu.findItem(R.id.action_play_next).isEnabled = playable
+            menu.findItem(R.id.action_queue_add).isEnabled = playable
+            menu.findItem(R.id.action_share).isEnabled = playable
+        }
+        binding.detailEditToolbar.title =
+            getString(R.string.fmt_editing, playlist.name.resolve(requireContext()))
         playlistHeaderAdapter.setParent(playlist)
     }
 

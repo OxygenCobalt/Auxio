@@ -18,7 +18,6 @@
  
 package org.oxycblt.auxio.list
 
-import android.view.MenuItem
 import android.view.View
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
@@ -89,36 +88,39 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, song: Song) {
         logD("Launching new song menu: ${song.name}")
 
-        openMusicMenuImpl(anchor, menuRes) {
-            when (it.itemId) {
-                R.id.action_play_next -> {
-                    playbackModel.playNext(song)
-                    requireContext().showToast(R.string.lng_queue_added)
+        openMenu(anchor, menuRes) {
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_play_next -> {
+                        playbackModel.playNext(song)
+                        requireContext().showToast(R.string.lng_queue_added)
+                    }
+                    R.id.action_queue_add -> {
+                        playbackModel.addToQueue(song)
+                        requireContext().showToast(R.string.lng_queue_added)
+                    }
+                    R.id.action_go_artist -> {
+                        navModel.exploreNavigateToParentArtist(song)
+                    }
+                    R.id.action_go_album -> {
+                        navModel.exploreNavigateTo(song.album)
+                    }
+                    R.id.action_share -> {
+                        requireContext().share(song)
+                    }
+                    R.id.action_playlist_add -> {
+                        musicModel.addToPlaylist(song)
+                    }
+                    R.id.action_song_detail -> {
+                        navModel.mainNavigateTo(
+                            MainNavigationAction.Directions(
+                                MainFragmentDirections.actionShowDetails(song.uid)))
+                    }
+                    else -> {
+                        error("Unexpected menu item selected")
+                    }
                 }
-                R.id.action_queue_add -> {
-                    playbackModel.addToQueue(song)
-                    requireContext().showToast(R.string.lng_queue_added)
-                }
-                R.id.action_go_artist -> {
-                    navModel.exploreNavigateToParentArtist(song)
-                }
-                R.id.action_go_album -> {
-                    navModel.exploreNavigateTo(song.album)
-                }
-                R.id.action_share -> {
-                    requireContext().share(song)
-                }
-                R.id.action_playlist_add -> {
-                    musicModel.addToPlaylist(song)
-                }
-                R.id.action_song_detail -> {
-                    navModel.mainNavigateTo(
-                        MainNavigationAction.Directions(
-                            MainFragmentDirections.actionShowDetails(song.uid)))
-                }
-                else -> {
-                    error("Unexpected menu item selected")
-                }
+                true
             }
         }
     }
@@ -134,34 +136,37 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, album: Album) {
         logD("Launching new album menu: ${album.name}")
 
-        openMusicMenuImpl(anchor, menuRes) {
-            when (it.itemId) {
-                R.id.action_play -> {
-                    playbackModel.play(album)
+        openMenu(anchor, menuRes) {
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_play -> {
+                        playbackModel.play(album)
+                    }
+                    R.id.action_shuffle -> {
+                        playbackModel.shuffle(album)
+                    }
+                    R.id.action_play_next -> {
+                        playbackModel.playNext(album)
+                        requireContext().showToast(R.string.lng_queue_added)
+                    }
+                    R.id.action_queue_add -> {
+                        playbackModel.addToQueue(album)
+                        requireContext().showToast(R.string.lng_queue_added)
+                    }
+                    R.id.action_go_artist -> {
+                        navModel.exploreNavigateToParentArtist(album)
+                    }
+                    R.id.action_playlist_add -> {
+                        musicModel.addToPlaylist(album)
+                    }
+                    R.id.action_share -> {
+                        requireContext().share(album)
+                    }
+                    else -> {
+                        error("Unexpected menu item selected")
+                    }
                 }
-                R.id.action_shuffle -> {
-                    playbackModel.shuffle(album)
-                }
-                R.id.action_play_next -> {
-                    playbackModel.playNext(album)
-                    requireContext().showToast(R.string.lng_queue_added)
-                }
-                R.id.action_queue_add -> {
-                    playbackModel.addToQueue(album)
-                    requireContext().showToast(R.string.lng_queue_added)
-                }
-                R.id.action_go_artist -> {
-                    navModel.exploreNavigateToParentArtist(album)
-                }
-                R.id.action_playlist_add -> {
-                    musicModel.addToPlaylist(album)
-                }
-                R.id.action_share -> {
-                    requireContext().share(album)
-                }
-                else -> {
-                    error("Unexpected menu item selected")
-                }
+                true
             }
         }
     }
@@ -177,31 +182,42 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, artist: Artist) {
         logD("Launching new artist menu: ${artist.name}")
 
-        openMusicMenuImpl(anchor, menuRes) {
-            when (it.itemId) {
-                R.id.action_play -> {
-                    playbackModel.play(artist)
+        openMenu(anchor, menuRes) {
+            val playable = artist.songs.isNotEmpty()
+            menu.findItem(R.id.action_play).isEnabled = playable
+            menu.findItem(R.id.action_shuffle).isEnabled = playable
+            menu.findItem(R.id.action_play_next).isEnabled = playable
+            menu.findItem(R.id.action_queue_add).isEnabled = playable
+            menu.findItem(R.id.action_playlist_add).isEnabled = playable
+            menu.findItem(R.id.action_share).isEnabled = playable
+
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_play -> {
+                        playbackModel.play(artist)
+                    }
+                    R.id.action_shuffle -> {
+                        playbackModel.shuffle(artist)
+                    }
+                    R.id.action_play_next -> {
+                        playbackModel.playNext(artist)
+                        requireContext().showToast(R.string.lng_queue_added)
+                    }
+                    R.id.action_queue_add -> {
+                        playbackModel.addToQueue(artist)
+                        requireContext().showToast(R.string.lng_queue_added)
+                    }
+                    R.id.action_playlist_add -> {
+                        musicModel.addToPlaylist(artist)
+                    }
+                    R.id.action_share -> {
+                        requireContext().share(artist)
+                    }
+                    else -> {
+                        error("Unexpected menu item selected")
+                    }
                 }
-                R.id.action_shuffle -> {
-                    playbackModel.shuffle(artist)
-                }
-                R.id.action_play_next -> {
-                    playbackModel.playNext(artist)
-                    requireContext().showToast(R.string.lng_queue_added)
-                }
-                R.id.action_queue_add -> {
-                    playbackModel.addToQueue(artist)
-                    requireContext().showToast(R.string.lng_queue_added)
-                }
-                R.id.action_playlist_add -> {
-                    musicModel.addToPlaylist(artist)
-                }
-                R.id.action_share -> {
-                    requireContext().share(artist)
-                }
-                else -> {
-                    error("Unexpected menu item selected")
-                }
+                true
             }
         }
     }
@@ -217,31 +233,34 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, genre: Genre) {
         logD("Launching new genre menu: ${genre.name}")
 
-        openMusicMenuImpl(anchor, menuRes) {
-            when (it.itemId) {
-                R.id.action_play -> {
-                    playbackModel.play(genre)
+        openMenu(anchor, menuRes) {
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_play -> {
+                        playbackModel.play(genre)
+                    }
+                    R.id.action_shuffle -> {
+                        playbackModel.shuffle(genre)
+                    }
+                    R.id.action_play_next -> {
+                        playbackModel.playNext(genre)
+                        requireContext().showToast(R.string.lng_queue_added)
+                    }
+                    R.id.action_queue_add -> {
+                        playbackModel.addToQueue(genre)
+                        requireContext().showToast(R.string.lng_queue_added)
+                    }
+                    R.id.action_playlist_add -> {
+                        musicModel.addToPlaylist(genre)
+                    }
+                    R.id.action_share -> {
+                        requireContext().share(genre)
+                    }
+                    else -> {
+                        error("Unexpected menu item selected")
+                    }
                 }
-                R.id.action_shuffle -> {
-                    playbackModel.shuffle(genre)
-                }
-                R.id.action_play_next -> {
-                    playbackModel.playNext(genre)
-                    requireContext().showToast(R.string.lng_queue_added)
-                }
-                R.id.action_queue_add -> {
-                    playbackModel.addToQueue(genre)
-                    requireContext().showToast(R.string.lng_queue_added)
-                }
-                R.id.action_playlist_add -> {
-                    musicModel.addToPlaylist(genre)
-                }
-                R.id.action_share -> {
-                    requireContext().share(genre)
-                }
-                else -> {
-                    error("Unexpected menu item selected")
-                }
+                true
             }
         }
     }
@@ -257,46 +276,43 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
     protected fun openMusicMenu(anchor: View, @MenuRes menuRes: Int, playlist: Playlist) {
         logD("Launching new playlist menu: ${playlist.name}")
 
-        openMusicMenuImpl(anchor, menuRes) {
-            when (it.itemId) {
-                R.id.action_play -> {
-                    playbackModel.play(playlist)
-                }
-                R.id.action_shuffle -> {
-                    playbackModel.shuffle(playlist)
-                }
-                R.id.action_play_next -> {
-                    playbackModel.playNext(playlist)
-                    requireContext().showToast(R.string.lng_queue_added)
-                }
-                R.id.action_queue_add -> {
-                    playbackModel.addToQueue(playlist)
-                    requireContext().showToast(R.string.lng_queue_added)
-                }
-                R.id.action_rename -> {
-                    musicModel.renamePlaylist(playlist)
-                }
-                R.id.action_delete -> {
-                    musicModel.deletePlaylist(playlist)
-                }
-                R.id.action_share -> {
-                    requireContext().share(playlist)
-                }
-                else -> {
-                    error("Unexpected menu item selected")
-                }
-            }
-        }
-    }
-
-    private fun openMusicMenuImpl(
-        anchor: View,
-        @MenuRes menuRes: Int,
-        onMenuItemClick: (MenuItem) -> Unit
-    ) {
         openMenu(anchor, menuRes) {
-            setOnMenuItemClickListener { item ->
-                onMenuItemClick(item)
+            val playable = playlist.songs.isNotEmpty()
+            menu.findItem(R.id.action_play).isEnabled = playable
+            menu.findItem(R.id.action_shuffle).isEnabled = playable
+            menu.findItem(R.id.action_play_next).isEnabled = playable
+            menu.findItem(R.id.action_queue_add).isEnabled = playable
+            menu.findItem(R.id.action_share).isEnabled = playable
+
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_play -> {
+                        playbackModel.play(playlist)
+                    }
+                    R.id.action_shuffle -> {
+                        playbackModel.shuffle(playlist)
+                    }
+                    R.id.action_play_next -> {
+                        playbackModel.playNext(playlist)
+                        requireContext().showToast(R.string.lng_queue_added)
+                    }
+                    R.id.action_queue_add -> {
+                        playbackModel.addToQueue(playlist)
+                        requireContext().showToast(R.string.lng_queue_added)
+                    }
+                    R.id.action_rename -> {
+                        musicModel.renamePlaylist(playlist)
+                    }
+                    R.id.action_delete -> {
+                        musicModel.deletePlaylist(playlist)
+                    }
+                    R.id.action_share -> {
+                        requireContext().share(playlist)
+                    }
+                    else -> {
+                        error("Unexpected menu item selected")
+                    }
+                }
                 true
             }
         }

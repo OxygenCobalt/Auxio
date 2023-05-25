@@ -237,7 +237,16 @@ class ArtistDetailFragment :
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailNormalToolbar.title = artist.name.resolve(requireContext())
+        requireBinding().detailNormalToolbar.apply {
+            title = artist.name.resolve(requireContext())
+
+            // Disable options that make no sense with an empty artist
+            val playable = artist.songs.isNotEmpty()
+            menu.findItem(R.id.action_play_next).isEnabled = playable
+            menu.findItem(R.id.action_queue_add).isEnabled = playable
+            menu.findItem(R.id.action_playlist_add).isEnabled = playable
+            menu.findItem(R.id.action_share).isEnabled = playable
+        }
         artistHeaderAdapter.setParent(artist)
     }
 

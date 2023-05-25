@@ -284,6 +284,7 @@ fun Context.share(parent: MusicParent) = share(parent.songs)
 
 /**
  * Share an arbitrary list of [Song]s.
+ *
  * @param songs The [Song]s to share.
  */
 fun Context.share(songs: List<Song>) {
