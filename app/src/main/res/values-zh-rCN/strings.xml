@@ -231,8 +231,8 @@
     <string name="set_separators_semicolon">分号 (;)</string>
     <string name="lbl_compilation_remix">重混集</string>
     <string name="lbl_compilation_live">实况音乐集</string>
-    <string name="lbl_mixes">混音</string>
-    <string name="lbl_mix">混音</string>
+    <string name="lbl_mixes">DJ 混音</string>
+    <string name="lbl_mix">DJ 混音</string>
     <string name="set_separators_warning">警告：使用此设置可能会导致某些标签被错误地阐释为具有多个值。要解决这个问题，你可以在不想要的分隔符前加上反斜杠 (\\)。</string>
     <string name="set_exclude_non_music_desc">忽略不是音乐的音频文件，例如播客</string>
     <string name="set_exclude_non_music">排除非音乐</string>
@@ -290,4 +290,8 @@
     <string name="lng_playlist_deleted">已删除播放列表</string>
     <string name="lbl_edit">编辑</string>
     <string name="def_playlists">此处还什么都没有</string>
+    <string name="lbl_appears_on">出现于</string>
+    <string name="lbl_share">分享</string>
+    <string name="def_disc">无唱片</string>
+    <string name="fmt_editing">正在编辑 %s</string>
 </resources>
