@@ -39,6 +39,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
@@ -77,7 +78,8 @@ class GenreListFragment :
 
         collectImmediately(homeModel.genresList, ::updateGenres)
         collectImmediately(selectionModel.selected, ::updateSelection)
-        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+        collectImmediately(
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
     override fun onDestroyBinding(binding: FragmentHomeListBinding) {
@@ -127,9 +129,11 @@ class GenreListFragment :
         genreAdapter.setSelected(selection.filterIsInstanceTo(mutableSetOf()))
     }
 
-    private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
-        // If a genre is playing, highlight it within this adapter.
-        genreAdapter.setPlaying(parent as? Genre, isPlaying)
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        // Only highlight the genre if it is currently playing, and if the currently
+        // playing song is also contained within.
+        val playlist = (parent as? Genre)?.takeIf { song?.run { genres.contains(it) } ?: false }
+        genreAdapter.setPlaying(playlist, isPlaying)
     }
 
     /**

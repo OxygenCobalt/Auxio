@@ -239,15 +239,18 @@ class GenreDetailFragment :
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        var playingMusic: Music? = null
-        if (parent is Artist) {
-            playingMusic = parent
-        }
-        // Prefer songs that might be playing from this genre.
-        if (parent is Genre && parent.uid == unlikelyToBeNull(detailModel.currentGenre.value).uid) {
-            playingMusic = song
-        }
-        genreListAdapter.setPlaying(playingMusic, isPlaying)
+        val currentGenre = unlikelyToBeNull(detailModel.currentGenre.value)
+        val playingItem =
+            when (parent) {
+                // Always highlight a playing artist if it's from this genre, and if the currently
+                // playing song is contained within.
+                is Artist -> parent.takeIf { song?.run { artists.contains(it) } ?: false }
+                // If the parent is the artist itself, use the currently playing song.
+                currentGenre -> song
+                // Nothing is playing from this artist.
+                else -> null
+            }
+        genreListAdapter.setPlaying(playingItem, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {

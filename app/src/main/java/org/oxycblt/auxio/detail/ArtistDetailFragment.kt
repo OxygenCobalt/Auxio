@@ -254,14 +254,14 @@ class ArtistDetailFragment :
         val currentArtist = unlikelyToBeNull(detailModel.currentArtist.value)
         val playingItem =
             when (parent) {
-                // Always highlight a playing album if it's from this artist.
-                is Album -> parent
+                // Always highlight a playing album if it's from this artist, and if the currently
+                // playing song is contained within.
+                is Album -> parent.takeIf { song?.album == it }
                 // If the parent is the artist itself, use the currently playing song.
                 currentArtist -> song
                 // Nothing is playing from this artist.
                 else -> null
             }
-
         artistListAdapter.setPlaying(playingItem, isPlaying)
     }
 
