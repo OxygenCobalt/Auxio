@@ -29,6 +29,7 @@ import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [DetailHeaderAdapter] that shows [Artist] information.
@@ -91,6 +92,7 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
             // The artist does not have any songs, so hide functionality that makes no sense.
             // ex. Play and Shuffle, Song Counts, and Genre Information.
             // Artists are always guaranteed to have albums however, so continue to show those.
+            logD("Artist is empty, disabling genres and playback")
             binding.detailSubhead.isVisible = false
             binding.detailPlayButton.isEnabled = false
             binding.detailShuffleButton.isEnabled = false

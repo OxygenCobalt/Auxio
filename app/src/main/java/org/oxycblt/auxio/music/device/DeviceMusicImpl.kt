@@ -387,9 +387,9 @@ class ArtistImpl(
         }
 
         songs = distinctSongs.toList()
-        albums = albumMap.keys.toList()
-        explicitAlbums = albumMap.entries.filter { it.value }.map { it.key }
-        implicitAlbums = albumMap.entries.filterNot { it.value }.map { it.key }
+        albums = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING).albums(albumMap.keys)
+        explicitAlbums = albums.filter { unlikelyToBeNull(albumMap[it]) }
+        implicitAlbums = albums.filterNot { unlikelyToBeNull(albumMap[it]) }
         durationMs = songs.sumOf { it.durationMs }.nonZeroOrNull()
     }
 
@@ -436,7 +436,6 @@ class GenreImpl(
         rawGenre.name?.let { Name.Known.from(it, rawGenre.name, musicSettings) }
             ?: Name.Unknown(R.string.def_genre)
 
-    override val albums: List<Album>
     override val artists: List<Artist>
     override val durationMs: Long
 
@@ -462,10 +461,6 @@ class GenreImpl(
             totalDuration += song.durationMs
         }
 
-        albums =
-            Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-                .albums(distinctAlbums)
-                .sortedByDescending { album -> album.songs.count { it.genres.contains(this) } }
         artists = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING).artists(distinctArtists)
         durationMs = totalDuration
     }

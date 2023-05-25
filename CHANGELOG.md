@@ -11,8 +11,10 @@
 "appears on" section in the artist view
 
 #### What's Fixed
-- Prevented options such as "Add to queue" from being selected on empty
-artists and playlists
+- Prevented options such as "Add to queue" from being selected on empty artists and playlists
+- Fixed issue where an item would be indicated as "playing" after playback ended
+- Items should no longer be indicated as playing if the currently playing song is not contained
+within it
 
 ## 3.1.0
 

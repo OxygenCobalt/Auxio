@@ -341,8 +341,6 @@ interface Artist : MusicParent {
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Genre : MusicParent {
-    /** The albums indirectly linked to by the [Song]s of this [Genre]. */
-    val albums: List<Album>
     /** The artists indirectly linked to by the [Artist]s of this [Genre]. */
     val artists: List<Artist>
     /** The total duration of the songs in this genre, in milliseconds. */
@@ -355,8 +353,6 @@ interface Genre : MusicParent {
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Playlist : MusicParent {
-    /** The albums indirectly linked to by the [Song]s of this [Playlist]. */
-    val albums: List<Album>
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
 }

@@ -430,27 +430,25 @@ constructor(
         val list = mutableListOf<Item>()
 
         val grouping =
-            Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING)
-                .albums(artist.explicitAlbums)
-                .groupByTo(sortedMapOf()) {
-                    // Remap the complicated ReleaseType data structure into an easier
-                    // "AlbumGrouping" enum that will automatically group and sort
-                    // the artist's albums.
-                    when (it.releaseType.refinement) {
-                        ReleaseType.Refinement.LIVE -> AlbumGrouping.LIVE
-                        ReleaseType.Refinement.REMIX -> AlbumGrouping.REMIXES
-                        null ->
-                            when (it.releaseType) {
-                                is ReleaseType.Album -> AlbumGrouping.ALBUMS
-                                is ReleaseType.EP -> AlbumGrouping.EPS
-                                is ReleaseType.Single -> AlbumGrouping.SINGLES
-                                is ReleaseType.Compilation -> AlbumGrouping.COMPILATIONS
-                                is ReleaseType.Soundtrack -> AlbumGrouping.SOUNDTRACKS
-                                is ReleaseType.Mix -> AlbumGrouping.DJMIXES
-                                is ReleaseType.Mixtape -> AlbumGrouping.MIXTAPES
-                            }
-                    }
+            artist.explicitAlbums.groupByTo(sortedMapOf()) {
+                // Remap the complicated ReleaseType data structure into an easier
+                // "AlbumGrouping" enum that will automatically group and sort
+                // the artist's albums.
+                when (it.releaseType.refinement) {
+                    ReleaseType.Refinement.LIVE -> AlbumGrouping.LIVE
+                    ReleaseType.Refinement.REMIX -> AlbumGrouping.REMIXES
+                    null ->
+                        when (it.releaseType) {
+                            is ReleaseType.Album -> AlbumGrouping.ALBUMS
+                            is ReleaseType.EP -> AlbumGrouping.EPS
+                            is ReleaseType.Single -> AlbumGrouping.SINGLES
+                            is ReleaseType.Compilation -> AlbumGrouping.COMPILATIONS
+                            is ReleaseType.Soundtrack -> AlbumGrouping.SOUNDTRACKS
+                            is ReleaseType.Mix -> AlbumGrouping.DJMIXES
+                            is ReleaseType.Mixtape -> AlbumGrouping.MIXTAPES
+                        }
                 }
+            }
 
         if (artist.implicitAlbums.isNotEmpty()) {
             // groupByTo normally returns a mapping to a MutableList mapping. Since MutableList
@@ -458,7 +456,7 @@ constructor(
             // implicit album list into the mapping.
             @Suppress("UNCHECKED_CAST")
             (grouping as MutableMap<AlbumGrouping, List<Album>>)[AlbumGrouping.APPEARANCES] =
-                Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING).albums(artist.implicitAlbums)
+                artist.implicitAlbums
         }
 
         logD("Release groups for this artist: ${grouping.keys}")

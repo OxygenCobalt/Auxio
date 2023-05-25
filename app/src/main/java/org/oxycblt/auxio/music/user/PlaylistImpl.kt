@@ -33,8 +33,6 @@ private constructor(
     override val songs: List<Song>
 ) : Playlist {
     override val durationMs = songs.sumOf { it.durationMs }
-    override val albums =
-        songs.groupBy { it.album }.entries.sortedByDescending { it.value.size }.map { it.key }
 
     /**
      * Clone the data in this instance to a new [PlaylistImpl] with the given [name].
