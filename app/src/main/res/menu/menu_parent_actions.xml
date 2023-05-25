@@ -13,6 +13,9 @@
         android:id="@+id/action_queue_add"
         android:title="@string/lbl_queue_add" />
     <item
+        android:id="@+id/action_share"
+        android:title="@string/lbl_share" />
+    <item
         android:id="@+id/action_playlist_add"
         android:title="@string/lbl_playlist_add" />
 </menu>

@@ -43,6 +43,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.share
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -178,6 +179,10 @@ class PlaybackPanelFragment :
                         MainNavigationAction.Directions(
                             MainFragmentDirections.actionShowDetails(song.uid)))
                 }
+                true
+            }
+            R.id.action_share -> {
+                playbackModel.song.value?.let { requireContext().share(it) }
                 true
             }
             else -> false

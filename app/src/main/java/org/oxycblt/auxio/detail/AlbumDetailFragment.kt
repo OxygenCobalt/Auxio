@@ -57,6 +57,7 @@ import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.setFullWidthLookup
+import org.oxycblt.auxio.util.share
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -161,6 +162,10 @@ class AlbumDetailFragment :
             }
             R.id.action_playlist_add -> {
                 musicModel.addToPlaylist(currentAlbum)
+                true
+            }
+            R.id.action_share -> {
+                requireContext().share(currentAlbum)
                 true
             }
             else -> false

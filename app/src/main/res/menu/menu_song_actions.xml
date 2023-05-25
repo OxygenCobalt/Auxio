@@ -16,6 +16,9 @@
         android:id="@+id/action_playlist_add"
         android:title="@string/lbl_playlist_add" />
     <item
+        android:id="@+id/action_share"
+        android:title="@string/lbl_share" />
+    <item
         android:id="@+id/action_song_detail"
         android:title="@string/lbl_song_detail" />
 </menu>

@@ -26,6 +26,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.share
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -77,6 +78,10 @@ abstract class SelectionFragment<VB : ViewBinding> :
             }
             R.id.action_selection_shuffle -> {
                 playbackModel.shuffle(selectionModel.take())
+                true
+            }
+            R.id.action_selection_share -> {
+                requireContext().share(selectionModel.take())
                 true
             }
             else -> false

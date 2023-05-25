@@ -120,6 +120,7 @@
     <string name="lbl_go_artist">Go to artist</string>
     <string name="lbl_go_album">Go to album</string>
     <string name="lbl_song_detail">View properties</string>
+    <string name="lbl_share">Share</string>
 
     <string name="lbl_props">Song properties</string>
     <string name="lbl_file_name">File name</string>

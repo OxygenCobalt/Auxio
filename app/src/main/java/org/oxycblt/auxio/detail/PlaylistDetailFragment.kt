@@ -58,6 +58,7 @@ import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.setFullWidthLookup
+import org.oxycblt.auxio.util.share
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -207,6 +208,10 @@ class PlaylistDetailFragment :
             }
             R.id.action_delete -> {
                 musicModel.deletePlaylist(currentPlaylist)
+                true
+            }
+            R.id.action_share -> {
+                requireContext().share(currentPlaylist)
                 true
             }
             R.id.action_save -> {

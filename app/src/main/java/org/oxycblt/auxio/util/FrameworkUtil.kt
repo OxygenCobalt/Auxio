@@ -27,6 +27,7 @@ import android.view.WindowInsets
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.app.ShareCompat
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.navigation.NavController
@@ -34,6 +35,12 @@ import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import java.lang.IllegalArgumentException
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.Song
+
+private const val MIME_TYPE_FALLBACK = "audio/*"
 
 /**
  * Get if this [View] contains the given [PointF], with optional leeway.
@@ -261,4 +268,38 @@ fun WindowInsets.replaceSystemBarInsetsCompat(
             @Suppress("DEPRECATION") replaceSystemWindowInsets(left, top, right, bottom)
         }
     }
+}
+
+/**
+ * Show system share sheet to share songs
+ *
+ * @param music the [Music] to share
+ */
+fun Context.share(music: Music) = share(
+    when (music) {
+        is Song -> listOf(music)
+        is MusicParent -> music.songs
+    }
+)
+
+/**
+ * Show system share sheet to share multiple song
+ *
+ * @param songs the collection of [Song] to share
+ */
+fun Context.share(songs: Collection<Song>) {
+    if (songs.isEmpty()) {
+        return
+    }
+    val type = songs.mapTo(HashSet(songs.size)) {
+        it.mimeType.raw
+    }.singleOrNull() ?: MIME_TYPE_FALLBACK
+    ShareCompat.IntentBuilder(this)
+        .apply {
+            for (song in songs) {
+                addStream(song.uri)
+            }
+        }
+        .setType(type)
+        .startChooser()
 }
