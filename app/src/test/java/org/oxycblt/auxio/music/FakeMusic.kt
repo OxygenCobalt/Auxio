@@ -83,9 +83,11 @@ open class FakeArtist : Artist {
         get() = throw NotImplementedError()
     override val albums: List<Album>
         get() = throw NotImplementedError()
-    override val genres: List<Genre>
+    override val explicitAlbums: List<Album>
         get() = throw NotImplementedError()
-    override val isCollaborator: Boolean
+    override val implicitAlbums: List<Album>
+        get() = throw NotImplementedError()
+    override val genres: List<Genre>
         get() = throw NotImplementedError()
     override val durationMs: Long
         get() = throw NotImplementedError()

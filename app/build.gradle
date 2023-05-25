@@ -125,7 +125,7 @@ dependencies {
     implementation project(":media-lib-decoder-ffmpeg")
 
     // Image loading
-    implementation 'io.coil-kt:coil-base:2.3.0'
+    implementation 'io.coil-kt:coil-base:2.4.0'
 
     // Material
     // TODO: Stuck on 1.8.0-alpha01 until ripple bug with tab layout is actually available
