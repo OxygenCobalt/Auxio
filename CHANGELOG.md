@@ -1,5 +1,10 @@
 # Changelog
 
+## dev
+
+#### What's New
+- Added ability to share a track
+
 ## 3.1.0
 
 #### What's New

@@ -36,11 +36,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import java.lang.IllegalArgumentException
-import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-
-private const val MIME_TYPE_FALLBACK = "audio/*"
 
 /**
  * Get if this [View] contains the given [PointF], with optional leeway.
@@ -271,35 +269,31 @@ fun WindowInsets.replaceSystemBarInsetsCompat(
 }
 
 /**
- * Show system share sheet to share songs
+ * Share a single [Song].
  *
- * @param music the [Music] to share
+ * @param song
  */
-fun Context.share(music: Music) = share(
-    when (music) {
-        is Song -> listOf(music)
-        is MusicParent -> music.songs
-    }
-)
+fun Context.share(song: Song) = share(listOf(song))
 
 /**
- * Show system share sheet to share multiple song
+ * Share all songs in a [MusicParent].
  *
- * @param songs the collection of [Song] to share
+ * @param parent The [MusicParent] to share.
  */
-fun Context.share(songs: Collection<Song>) {
-    if (songs.isEmpty()) {
-        return
+fun Context.share(parent: MusicParent) = share(parent.songs)
+
+/**
+ * Share an arbitrary list of [Song]s.
+ * @param songs The [Song]s to share.
+ */
+fun Context.share(songs: List<Song>) {
+    if (songs.isEmpty()) return
+    val builder = ShareCompat.IntentBuilder(this)
+    val mimeTypes = mutableSetOf<String>()
+    for (song in songs) {
+        builder.addStream(song.uri)
+        mimeTypes.add(song.mimeType.fromFormat ?: song.mimeType.fromExtension)
     }
-    val type = songs.mapTo(HashSet(songs.size)) {
-        it.mimeType.raw
-    }.singleOrNull() ?: MIME_TYPE_FALLBACK
-    ShareCompat.IntentBuilder(this)
-        .apply {
-            for (song in songs) {
-                addStream(song.uri)
-            }
-        }
-        .setType(type)
-        .startChooser()
+
+    builder.setType(mimeTypes.singleOrNull() ?: "audio/*").startChooser()
 }
