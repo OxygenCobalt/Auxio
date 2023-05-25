@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.detail.list.DiscHeader
 import org.oxycblt.auxio.detail.list.EditHeader
 import org.oxycblt.auxio.detail.list.SortHeader
 import org.oxycblt.auxio.list.BasicHeader
@@ -46,7 +47,6 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.music.metadata.AudioProperties
 import org.oxycblt.auxio.playback.PlaybackSettings
@@ -409,12 +409,11 @@ constructor(
         // To create a good user experience regarding disc numbers, we group the album's
         // songs up by disc and then delimit the groups by a disc header.
         val songs = albumSongSort.songs(album.songs)
-        // Songs without disc tags become part of Disc 1.
-        val byDisc = songs.groupBy { it.disc ?: Disc(1, null) }
+        val byDisc = songs.groupBy { it.disc }
         if (byDisc.size > 1) {
             logD("Album has more than one disc, interspersing headers")
             for (entry in byDisc.entries) {
-                list.add(entry.key)
+                list.add(DiscHeader(entry.key))
                 list.addAll(entry.value)
             }
         } else {

@@ -332,6 +332,7 @@
     <string name="def_artist">Unknown artist</string>
     <string name="def_genre">Unknown genre</string>
     <string name="def_date">No date</string>
+    <string name="def_disc">No disc</string>
     <string name="def_track">No track</string>
     <string name="def_song_count">No songs</string>
     <string name="def_playback">No music playing</string>
