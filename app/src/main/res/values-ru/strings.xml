@@ -234,11 +234,11 @@
     <string name="set_separators_semicolon">Точка с запятой (;)</string>
     <string name="set_separators_plus">Плюс (+)</string>
     <string name="set_separators_and">Амперсанд (&amp;)</string>
-    <string name="lbl_mixes">Миксы</string>
+    <string name="lbl_mixes">DJ Миксы</string>
     <string name="desc_exit">Остановить воспроизведение</string>
     <string name="set_exclude_non_music_desc">Игнорировать аудиофайлы, которые не являются музыкой. Например, подкасты</string>
     <string name="set_cover_mode">Обложки альбомов</string>
-    <string name="lbl_mix">Микс</string>
+    <string name="lbl_mix">DJ Микс</string>
     <string name="set_pre_amp_with">Изменение по тегам</string>
     <string name="set_pre_amp_without">Изменения без тегов</string>
     <string name="set_cover_mode_off">Отключены</string>
@@ -299,4 +299,8 @@
     <string name="lbl_edit">Редактировать</string>
     <string name="fmt_deletion_info">Удалить %s\? Это действие не может быть отменено.</string>
     <string name="def_playlists">Здесь пока ничего нет</string>
+    <string name="lbl_appears_on">Появляется на</string>
+    <string name="fmt_editing">Редактирование %s</string>
+    <string name="def_disc">Нет диска</string>
+    <string name="lbl_share">Поделиться</string>
 </resources>
