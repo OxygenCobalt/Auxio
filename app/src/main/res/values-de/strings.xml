@@ -224,8 +224,8 @@
     <string name="desc_exit">Wiedergabe anhalten</string>
     <string name="lbl_compilation_live">Live-Kompilation</string>
     <string name="lbl_compilation_remix">Remix-Kompilation</string>
-    <string name="lbl_mixes">Mixes</string>
-    <string name="lbl_mix">Mix</string>
+    <string name="lbl_mixes">DJ-Mixes</string>
+    <string name="lbl_mix">DJ-Mix</string>
     <string name="set_separators">Mehrfachwert-Trenner</string>
     <string name="set_separators_desc">Zeichen ändern, welche mehrere Tag-Werte trennt</string>
     <string name="set_separators_and">Und-Zeichen (&amp;)</string>
@@ -292,4 +292,8 @@
     <string name="lng_playlist_deleted">Wiedergabeliste gelöscht</string>
     <string name="lbl_edit">Bearbeiten</string>
     <string name="def_playlists">Hier ist noch nichts</string>
+    <string name="lbl_share">Teilen</string>
+    <string name="def_disc">Keine Disc</string>
+    <string name="lbl_appears_on">Erscheint in</string>
+    <string name="fmt_editing">%s bearbeiten</string>
 </resources>
