@@ -288,4 +288,17 @@
     <string name="def_song_count">Brak utworów</string>
     <string name="lng_playlist_added">Dodano do playlisty</string>
     <string name="fmt_def_playlist">Playlista %d</string>
+    <string name="lbl_delete">Usuwać</string>
+    <string name="fmt_deletion_info">Usunąć %s\? Tego nie da się cofnąć.</string>
+    <string name="lbl_rename">Przemianować</string>
+    <string name="lbl_rename_playlist">Przemianować playlistę</string>
+    <string name="lbl_confirm_delete_playlist">Usunąć playlistę\?</string>
+    <string name="lbl_edit">Edytować</string>
+    <string name="def_playlists">Jeszcze nic tu nie ma</string>
+    <string name="lbl_appears_on">Pojawia się</string>
+    <string name="lbl_share">Udział</string>
+    <string name="lng_playlist_renamed">Zmieniono nazwę playlisty</string>
+    <string name="lng_playlist_deleted">Playlista usunięta</string>
+    <string name="def_disc">Brak dysku</string>
+    <string name="fmt_editing">Edytowanie %s</string>
 </resources>
