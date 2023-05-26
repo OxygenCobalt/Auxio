@@ -238,9 +238,9 @@
     <string name="set_separators_semicolon">Středník (;)</string>
     <string name="set_separators_slash">Lomítko (/)</string>
     <string name="lbl_compilation_remix">Remixová kompilace</string>
-    <string name="lbl_mixes">Mixy</string>
+    <string name="lbl_mixes">DJ mixy</string>
     <string name="lbl_compilation_live">Živá kompilace</string>
-    <string name="lbl_mix">Mix</string>
+    <string name="lbl_mix">DJ mix</string>
     <string name="set_separators_warning">Varování: Při použití tohoto nastavení mohou být některé značky nesprávně interpretovány jako vícehodnotové. Tento problém můžete vyřešit přidáním zpětného lomítka (\\) před nechtěné oddělovací znaky.</string>
     <string name="set_exclude_non_music">Vyloučit nehudební obsah</string>
     <string name="set_exclude_non_music_desc">Ignorovat zvukové soubory, které nejsou hudbou, například podcasty</string>
@@ -301,4 +301,8 @@
     <string name="lbl_rename_playlist">Přejmenovat seznam skladeb</string>
     <string name="lbl_edit">Upravit</string>
     <string name="def_playlists">Zatím tu nic není</string>
+    <string name="lbl_appears_on">Také v</string>
+    <string name="def_disc">Žádný disk</string>
+    <string name="fmt_editing">Úprava seznamu %s</string>
+    <string name="lbl_share">Sdílet</string>
 </resources>
