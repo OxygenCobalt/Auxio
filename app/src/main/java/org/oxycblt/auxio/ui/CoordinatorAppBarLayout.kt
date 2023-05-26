@@ -30,6 +30,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
+import org.oxycblt.auxio.util.logD
 
 /**
  * An [AppBarLayout] that resolves two issues with the default implementation:
@@ -75,6 +76,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     fun expandWithScrollingRecycler() {
         setExpanded(true)
         (findScrollingChild() as? RecyclerView)?.let {
+            logD("Found RecyclerView, expanding with it")
             addOnOffsetChangedListener(ExpansionHackListener(it))
         }
     }

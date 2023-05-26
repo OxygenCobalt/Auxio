@@ -44,7 +44,6 @@ import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
@@ -123,7 +122,7 @@ class ArtistListFragment :
     }
 
     private fun updateArtists(artists: List<Artist>) {
-        artistAdapter.update(artists, homeModel.artistsInstructions.consume().also { logD(it) })
+        artistAdapter.update(artists, homeModel.artistsInstructions.consume())
     }
 
     private fun updateSelection(selection: List<Music>) {
@@ -133,8 +132,8 @@ class ArtistListFragment :
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         // Only highlight the artist if it is currently playing, and if the currently
         // playing song is also contained within.
-        val playlist = (parent as? Artist)?.takeIf { song?.run { artists.contains(it) } ?: false }
-        artistAdapter.setPlaying(playlist, isPlaying)
+        val artist = (parent as? Artist)?.takeIf { song?.run { artists.contains(it) } ?: false }
+        artistAdapter.setPlaying(artist, isPlaying)
     }
 
     /**

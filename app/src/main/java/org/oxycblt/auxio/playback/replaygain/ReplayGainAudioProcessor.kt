@@ -125,14 +125,22 @@ constructor(
                     when (playbackSettings.replayGainMode) {
                         // User wants track gain to be preferred. Default to album gain only if
                         // there is no track gain.
-                        ReplayGainMode.TRACK -> gain.track == 0f
+                        ReplayGainMode.TRACK -> {
+                            logD("Using track strategy")
+                            gain.track == 0f
+                        }
                         // User wants album gain to be preferred. Default to track gain only if
                         // here is no album gain.
-                        ReplayGainMode.ALBUM -> gain.album != 0f
+                        ReplayGainMode.ALBUM -> {
+                            logD("Using album strategy")
+                            gain.album != 0f
+                        }
                         // User wants album gain to be used when in an album, track gain otherwise.
-                        ReplayGainMode.DYNAMIC ->
+                        ReplayGainMode.DYNAMIC -> {
+                            logD("Using dynamic strategy")
                             playbackManager.parent is Album &&
                                 playbackManager.queue.currentSong?.album == playbackManager.parent
+                        }
                     }
 
                 val resolvedGain =
@@ -184,6 +192,7 @@ constructor(
         textTags.vorbis[TAG_RG_TRACK_GAIN]
             ?.run { first().parseReplayGainAdjustment() }
             ?.let { albumGain = it }
+
         // Opus has it's own "r128_*_gain" ReplayGain specification, which requires dividing the
         // adjustment by 256 to get the gain. This is used alongside the base adjustment
         // intrinsic to the format to create the normalized adjustment. This is normally the only

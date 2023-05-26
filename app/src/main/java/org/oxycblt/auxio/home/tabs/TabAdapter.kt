@@ -28,6 +28,7 @@ import org.oxycblt.auxio.list.EditClickListListener
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [RecyclerView.Adapter] that displays an array of [Tab]s open for configuration.
@@ -52,6 +53,7 @@ class TabAdapter(private val listener: EditClickListListener<Tab>) :
      * @param newTabs The new array of tabs to show.
      */
     fun submitTabs(newTabs: Array<Tab>) {
+        logD("Force-updating tab information")
         tabs = newTabs
         @Suppress("NotifyDatasetChanged") notifyDataSetChanged()
     }
@@ -63,6 +65,7 @@ class TabAdapter(private val listener: EditClickListListener<Tab>) :
      * @param tab The new tab.
      */
     fun setTab(at: Int, tab: Tab) {
+        logD("Updating tab [at: $at, tab: $tab]")
         tabs[at] = tab
         // Use a payload to avoid an item change animation.
         notifyItemChanged(at, PAYLOAD_TAB_CHANGED)
@@ -75,6 +78,7 @@ class TabAdapter(private val listener: EditClickListListener<Tab>) :
      * @param b The position of the second tab to swap.
      */
     fun swapTabs(a: Int, b: Int) {
+        logD("Swapping tabs [a: $a, b: $b]")
         val tmp = tabs[b]
         tabs[b] = tabs[a]
         tabs[a] = tmp

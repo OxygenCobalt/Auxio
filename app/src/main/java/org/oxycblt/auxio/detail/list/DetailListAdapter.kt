@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemSortHeaderBinding
-import org.oxycblt.auxio.detail.list.DetailListAdapter.Listener
 import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Header

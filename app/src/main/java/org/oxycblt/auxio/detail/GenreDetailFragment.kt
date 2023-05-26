@@ -53,6 +53,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.setFullWidthLookup
 import org.oxycblt.auxio.util.share
@@ -163,7 +164,10 @@ class GenreDetailFragment :
                 requireContext().share(currentGenre)
                 true
             }
-            else -> false
+            else -> {
+                logW("Unexpected menu item selected")
+                false
+            }
         }
     }
 
@@ -230,7 +234,7 @@ class GenreDetailFragment :
 
     private fun updatePlaylist(genre: Genre?) {
         if (genre == null) {
-            // Genre we were showing no longer exists.
+            logD("No genre to show, navigating away")
             findNavController().navigateUp()
             return
         }

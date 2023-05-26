@@ -27,6 +27,7 @@ import org.oxycblt.auxio.list.Item
  * @param name The name of the disc group, if any. Null if not present.
  */
 class Disc(val number: Int, val name: String?) : Item, Comparable<Disc> {
+    // We don't want to group discs by differing subtitles, so only compare by the number
     override fun equals(other: Any?) = other is Disc && number == other.number
     override fun hashCode() = number.hashCode()
     override fun compareTo(other: Disc) = number.compareTo(other.number)

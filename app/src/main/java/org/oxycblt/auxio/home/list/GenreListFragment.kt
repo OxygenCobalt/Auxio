@@ -44,7 +44,6 @@ import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 
 /**
  * A [ListFragment] that shows a list of [Genre]s.
@@ -122,7 +121,7 @@ class GenreListFragment :
     }
 
     private fun updateGenres(genres: List<Genre>) {
-        genreAdapter.update(genres, homeModel.genresInstructions.consume().also { logD(it) })
+        genreAdapter.update(genres, homeModel.genresInstructions.consume())
     }
 
     private fun updateSelection(selection: List<Music>) {
@@ -132,8 +131,8 @@ class GenreListFragment :
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         // Only highlight the genre if it is currently playing, and if the currently
         // playing song is also contained within.
-        val playlist = (parent as? Genre)?.takeIf { song?.run { genres.contains(it) } ?: false }
-        genreAdapter.setPlaying(playlist, isPlaying)
+        val genre = (parent as? Genre)?.takeIf { song?.run { genres.contains(it) } ?: false }
+        genreAdapter.setPlaying(genre, isPlaying)
     }
 
     /**

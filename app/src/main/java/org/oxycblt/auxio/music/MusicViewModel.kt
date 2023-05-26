@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewModel] providing data specific to the music loading process.
@@ -89,6 +90,7 @@ constructor(
                 deviceLibrary.artists.size,
                 deviceLibrary.genres.size,
                 deviceLibrary.songs.sumOf { it.durationMs })
+        logD("Updated statistics: ${_statistics.value}")
     }
 
     override fun onIndexingStateChanged() {
@@ -97,11 +99,13 @@ constructor(
 
     /** Requests that the music library should be re-loaded while leveraging the cache. */
     fun refresh() {
+        logD("Refreshing library")
         musicRepository.requestIndex(true)
     }
 
     /** Requests that the music library be re-loaded without the cache. */
     fun rescan() {
+        logD("Rescanning library")
         musicRepository.requestIndex(false)
     }
 
@@ -113,8 +117,10 @@ constructor(
      */
     fun createPlaylist(name: String? = null, songs: List<Song> = listOf()) {
         if (name != null) {
+            logD("Creating $name with ${songs.size} songs]")
             viewModelScope.launch(Dispatchers.IO) { musicRepository.createPlaylist(name, songs) }
         } else {
+            logD("Launching creation dialog for ${songs.size} songs")
             _newPlaylistSongs.put(songs)
         }
     }
@@ -127,8 +133,10 @@ constructor(
      */
     fun renamePlaylist(playlist: Playlist, name: String? = null) {
         if (name != null) {
+            logD("Renaming $playlist to $name")
             viewModelScope.launch(Dispatchers.IO) { musicRepository.renamePlaylist(playlist, name) }
         } else {
+            logD("Launching rename dialog for $playlist")
             _playlistToRename.put(playlist)
         }
     }
@@ -142,8 +150,10 @@ constructor(
      */
     fun deletePlaylist(playlist: Playlist, rude: Boolean = false) {
         if (rude) {
+            logD("Deleting $playlist")
             viewModelScope.launch(Dispatchers.IO) { musicRepository.deletePlaylist(playlist) }
         } else {
+            logD("Launching deletion dialog for $playlist")
             _playlistToDelete.put(playlist)
         }
     }
@@ -155,6 +165,7 @@ constructor(
      * @param playlist The [Playlist] to add to. If null, the user will be prompted for one.
      */
     fun addToPlaylist(song: Song, playlist: Playlist? = null) {
+        logD("Adding $song to playlist")
         addToPlaylist(listOf(song), playlist)
     }
 
@@ -165,6 +176,7 @@ constructor(
      * @param playlist The [Playlist] to add to. If null, the user will be prompted for one.
      */
     fun addToPlaylist(album: Album, playlist: Playlist? = null) {
+        logD("Adding $album to playlist")
         addToPlaylist(musicSettings.albumSongSort.songs(album.songs), playlist)
     }
 
@@ -175,6 +187,7 @@ constructor(
      * @param playlist The [Playlist] to add to. If null, the user will be prompted for one.
      */
     fun addToPlaylist(artist: Artist, playlist: Playlist? = null) {
+        logD("Adding $artist to playlist")
         addToPlaylist(musicSettings.artistSongSort.songs(artist.songs), playlist)
     }
 
@@ -185,6 +198,7 @@ constructor(
      * @param playlist The [Playlist] to add to. If null, the user will be prompted for one.
      */
     fun addToPlaylist(genre: Genre, playlist: Playlist? = null) {
+        logD("Adding $genre to playlist")
         addToPlaylist(musicSettings.genreSongSort.songs(genre.songs), playlist)
     }
 
@@ -196,8 +210,10 @@ constructor(
      */
     fun addToPlaylist(songs: List<Song>, playlist: Playlist? = null) {
         if (playlist != null) {
+            logD("Adding ${songs.size} songs to $playlist")
             viewModelScope.launch(Dispatchers.IO) { musicRepository.addToPlaylist(songs, playlist) }
         } else {
+            logD("Launching addition dialog for songs=${songs.size}")
             _songsToAdd.put(songs)
         }
     }

@@ -53,8 +53,7 @@ import org.oxycblt.auxio.image.ImageSettings
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.logE
 
 class CoverExtractor
 @Inject
@@ -97,7 +96,7 @@ constructor(
                 CoverMode.QUALITY -> extractQualityCover(album)
             }
         } catch (e: Exception) {
-            logW("Unable to extract album cover due to an error: $e")
+            logE("Unable to extract album cover due to an error: $e")
             null
         }
 
@@ -154,7 +153,6 @@ constructor(
             }
 
             if (type == MediaMetadata.PICTURE_TYPE_FRONT_COVER) {
-                logD("Front cover found")
                 stream = ByteArrayInputStream(pic)
                 break
             } else if (stream == null) {

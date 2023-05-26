@@ -31,8 +31,7 @@ import kotlin.math.min
  * @author Alexander Capehart (OxygenCobalt)
  */
 class SquareFrameTransform : Transformation {
-    override val cacheKey: String
-        get() = "SquareFrameTransform"
+    override val cacheKey = "SquareFrameTransform"
 
     override suspend fun transform(input: Bitmap, size: Size): Bitmap {
         // Find the smaller dimension and then take a center portion of the image that

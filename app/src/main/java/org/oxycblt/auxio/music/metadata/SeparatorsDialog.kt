@@ -30,12 +30,15 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSeparatorsBinding
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.util.logW
 
 /**
  * A [ViewBindingDialogFragment] that allows the user to configure the separator characters used to
  * split tags with multiple values.
  *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Replace with unsplit names dialog
  */
 @AndroidEntryPoint
 class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
@@ -74,7 +77,7 @@ class SeparatorsDialog : ViewBindingDialogFragment<DialogSeparatorsBinding>() {
                     Separators.SLASH -> binding.separatorSlash.isChecked = true
                     Separators.PLUS -> binding.separatorPlus.isChecked = true
                     Separators.AND -> binding.separatorAnd.isChecked = true
-                    else -> error("Unexpected separator in settings data")
+                    else -> logW("Unexpected separator in settings data")
                 }
             }
     }

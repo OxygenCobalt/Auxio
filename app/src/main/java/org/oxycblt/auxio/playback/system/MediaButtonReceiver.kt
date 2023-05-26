@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [BroadcastReceiver] that forwards [Intent.ACTION_MEDIA_BUTTON] [Intent]s to [PlaybackService].
@@ -43,6 +44,7 @@ class MediaButtonReceiver : BroadcastReceiver() {
             // stupid this is with the state of foreground services on modern android. One
             // wrong action at the wrong time will result in the app crashing, and there is
             // nothing I can do about it.
+            logD("Delivering media button intent $intent")
             intent.component = ComponentName(context, PlaybackService::class.java)
             ContextCompat.startForegroundService(context, intent)
         }

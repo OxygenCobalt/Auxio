@@ -20,6 +20,7 @@ package org.oxycblt.auxio.home.tabs
 
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.util.logE
+import org.oxycblt.auxio.util.logW
 
 /**
  * A representation of a library tab suitable for configuration.
@@ -84,6 +85,10 @@ sealed class Tab(open val mode: MusicMode) {
         fun toIntCode(tabs: Array<Tab>): Int {
             // Like when deserializing, make sure there are no duplicate tabs for whatever reason.
             val distinct = tabs.distinctBy { it.mode }
+            if (tabs.size != distinct.size) {
+                logW(
+                    "Tab sequences should not have duplicates [old: ${tabs.size} new: ${distinct.size}]")
+            }
 
             var sequence = 0
             var shift = MAX_SEQUENCE_IDX * 4
@@ -127,6 +132,10 @@ sealed class Tab(open val mode: MusicMode) {
 
             // Make sure there are no duplicate tabs
             val distinct = tabs.distinctBy { it.mode }
+            if (tabs.size != distinct.size) {
+                logW(
+                    "Tab sequences should not have duplicates [old: ${tabs.size} new: ${distinct.size}]")
+            }
 
             // For safety, return null if we have an empty or larger-than-expected tab array.
             if (distinct.isEmpty() || distinct.size < MAX_SEQUENCE_IDX) {

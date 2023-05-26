@@ -96,6 +96,7 @@ class UISettingsImpl @Inject constructor(@ApplicationContext context: Context) :
 
     override fun onSettingChanged(key: String, listener: UISettings.Listener) {
         if (key == getString(R.string.set_key_round_mode)) {
+            logD("Dispatching round mode setting change")
             listener.onRoundModeChanged()
         }
     }

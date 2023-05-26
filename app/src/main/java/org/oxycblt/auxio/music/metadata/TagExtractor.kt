@@ -23,6 +23,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.device.RawSong
+import org.oxycblt.auxio.util.logD
 
 /**
  * The extractor that leverages ExoPlayer's [MetadataRetriever] API to parse metadata. This is the
@@ -52,6 +53,8 @@ class TagExtractorImpl @Inject constructor(private val tagWorkerFactory: TagWork
         // producing similar throughput's to other kinds of manual metadata extraction.
         val tagWorkerPool: Array<TagWorker?> = arrayOfNulls(TASK_CAPACITY)
 
+        logD("Beginning primary extraction loop")
+
         for (incompleteRawSong in incompleteSongs) {
             spin@ while (true) {
                 for (i in tagWorkerPool.indices) {
@@ -70,6 +73,8 @@ class TagExtractorImpl @Inject constructor(private val tagWorkerFactory: TagWork
                 }
             }
         }
+
+        logD("All incomplete songs exhausted, starting cleanup loop")
 
         do {
             var ongoingTasks = false

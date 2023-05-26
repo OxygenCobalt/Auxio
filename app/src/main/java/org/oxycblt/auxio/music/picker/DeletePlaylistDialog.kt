@@ -32,6 +32,7 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -76,7 +77,7 @@ class DeletePlaylistDialog : ViewBindingDialogFragment<DialogDeletePlaylistBindi
 
     private fun updatePlaylistToDelete(playlist: Playlist?) {
         if (playlist == null) {
-            // Playlist does not exist anymore, leave
+            logD("No playlist to delete, navigating away")
             findNavController().navigateUp()
             return
         }

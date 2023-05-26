@@ -107,7 +107,7 @@ class AlbumListFragment :
             is Sort.Mode.ByArtist -> album.artists[0].name.thumb
 
             // Date -> Use minimum date (Maximum dates are not sorted by, so showing them is odd)
-            is Sort.Mode.ByDate -> album.dates?.run { min.resolveDate(requireContext()) }
+            is Sort.Mode.ByDate -> album.dates?.run { min.resolve(requireContext()) }
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> album.durationMs.formatDurationMs(false)
@@ -156,8 +156,8 @@ class AlbumListFragment :
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         // Only highlight the album if it is currently playing, and if the currently
         // playing song is also contained within.
-        val playlist = (parent as? Album)?.takeIf { song?.album == it }
-        albumAdapter.setPlaying(playlist, isPlaying)
+        val album = (parent as? Album)?.takeIf { song?.album == it }
+        albumAdapter.setPlaying(album, isPlaying)
     }
 
     /**

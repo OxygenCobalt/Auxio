@@ -20,6 +20,7 @@ package org.oxycblt.auxio.detail.header
 
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [RecyclerView.Adapter] that implements shared behavior between each parent header view.
@@ -47,6 +48,7 @@ abstract class DetailHeaderAdapter<T : MusicParent, VH : RecyclerView.ViewHolder
      * @param parent The new [MusicParent] to show.
      */
     fun setParent(parent: T) {
+        logD("Updating parent [old: $currentParent new: $parent]")
         currentParent = parent
         rebindParent()
     }
@@ -55,6 +57,7 @@ abstract class DetailHeaderAdapter<T : MusicParent, VH : RecyclerView.ViewHolder
      * Forces the parent [RecyclerView.ViewHolder] to rebind as soon as possible, with no animation.
      */
     protected fun rebindParent() {
+        logD("Rebinding parent")
         notifyItemChanged(0, PAYLOAD_UPDATE_HEADER)
     }
 

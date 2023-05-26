@@ -52,6 +52,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.setFullWidthLookup
 import org.oxycblt.auxio.util.share
@@ -164,7 +165,10 @@ class ArtistDetailFragment :
                 requireContext().share(currentArtist)
                 true
             }
-            else -> false
+            else -> {
+                logW("Unexpected menu item selected")
+                false
+            }
         }
     }
 
@@ -233,7 +237,7 @@ class ArtistDetailFragment :
 
     private fun updateArtist(artist: Artist?) {
         if (artist == null) {
-            // Artist we were showing no longer exists.
+            logD("No artist to show, navigating away")
             findNavController().navigateUp()
             return
         }
@@ -242,6 +246,9 @@ class ArtistDetailFragment :
 
             // Disable options that make no sense with an empty artist
             val playable = artist.songs.isNotEmpty()
+            if (!playable) {
+                logD("Artist is empty, disabling playback/playlist/share options")
+            }
             menu.findItem(R.id.action_play_next).isEnabled = playable
             menu.findItem(R.id.action_queue_add).isEnabled = playable
             menu.findItem(R.id.action_playlist_add).isEnabled = playable

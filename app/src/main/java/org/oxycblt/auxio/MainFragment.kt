@@ -57,6 +57,7 @@ import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -66,6 +67,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * high-level navigation features.
  *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Break up the god navigation setup going on here
  */
 @AndroidEntryPoint
 class MainFragment :
@@ -115,9 +118,11 @@ class MainFragment :
         val queueSheetBehavior =
             binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
         if (queueSheetBehavior != null) {
-            // Bottom sheet mode, set up click listeners.
+            // In portrait mode, set up click listeners on the stacked sheets.
+            logD("Configuring stacked bottom sheets")
             val playbackSheetBehavior =
                 binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
+            // TODO: Use the material handle
             unlikelyToBeNull(binding.handleWrapper).setOnClickListener {
                 if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
                     queueSheetBehavior.state == BackportBottomSheetBehavior.STATE_COLLAPSED) {
@@ -127,6 +132,7 @@ class MainFragment :
             }
         } else {
             // Dual-pane mode, manually style the static queue sheet.
+            logD("Configuring dual-pane bottom sheet")
             binding.queueSheet.apply {
                 // Emulate the elevated bottom sheet style.
                 background =
@@ -280,19 +286,15 @@ class MainFragment :
     }
 
     private fun handleMainNavigation(action: MainNavigationAction?) {
-        if (action == null) {
-            // Nothing to do.
-            return
+        if (action != null) {
+            when (action) {
+                is MainNavigationAction.OpenPlaybackPanel -> tryOpenPlaybackPanel()
+                is MainNavigationAction.ClosePlaybackPanel -> tryClosePlaybackPanel()
+                is MainNavigationAction.Directions ->
+                    findNavController().navigateSafe(action.directions)
+            }
+            navModel.mainNavigationAction.consume()
         }
-
-        when (action) {
-            is MainNavigationAction.OpenPlaybackPanel -> tryOpenPlaybackPanel()
-            is MainNavigationAction.ClosePlaybackPanel -> tryClosePlaybackPanel()
-            is MainNavigationAction.Directions ->
-                findNavController().navigateSafe(action.directions)
-        }
-
-        navModel.mainNavigationAction.consume()
     }
 
     private fun handleExploreNavigation(item: Music?) {
@@ -377,6 +379,7 @@ class MainFragment :
 
         if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_COLLAPSED) {
             // Playback sheet is not expanded and not hidden, we can expand it.
+            logD("Expanding playback sheet")
             playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_EXPANDED
             return
         }
@@ -387,6 +390,7 @@ class MainFragment :
             queueSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED) {
             // Queue sheet and playback sheet is expanded, close the queue sheet so the
             // playback panel can eb shown.
+            logD("Collapsing queue sheet")
             queueSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
         }
     }
@@ -397,6 +401,7 @@ class MainFragment :
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
         if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED) {
             // Playback sheet (and possibly queue) needs to be collapsed.
+            logD("Closing playback and queue sheets")
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
             playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
@@ -409,6 +414,7 @@ class MainFragment :
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
         if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_HIDDEN) {
+            logD("Unhiding and enabling playback sheet")
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
             // Queue sheet behavior is either collapsed or expanded, no hiding needed
@@ -428,6 +434,8 @@ class MainFragment :
         if (playbackSheetBehavior.state != BackportBottomSheetBehavior.STATE_HIDDEN) {
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
+
+            logD("Hiding and disabling playback and queue sheets")
 
             // Make both bottom sheets non-draggable so the user can't halt the hiding event.
             queueSheetBehavior?.apply {
@@ -458,6 +466,7 @@ class MainFragment :
             if (queueSheetBehavior != null &&
                 queueSheetBehavior.state != BackportBottomSheetBehavior.STATE_COLLAPSED &&
                 playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED) {
+                logD("Hiding queue sheet")
                 queueSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
                 return
             }
@@ -465,21 +474,25 @@ class MainFragment :
             // If expanded, collapse the playback sheet next.
             if (playbackSheetBehavior.state != BackportBottomSheetBehavior.STATE_COLLAPSED &&
                 playbackSheetBehavior.state != BackportBottomSheetBehavior.STATE_HIDDEN) {
+                logD("Hiding playback sheet")
                 playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
                 return
             }
 
             // Clear out pending playlist edits.
             if (detailModel.dropPlaylistEdit()) {
+                logD("Dropping playlist edits")
                 return
             }
 
             // Clear out any prior selections.
             if (selectionModel.drop()) {
+                logD("Dropping selection")
                 return
             }
 
             // Then try to navigate out of the explore navigation fragments (i.e Detail Views)
+            logD("Navigate away from explore view")
             binding.exploreNavHost.findNavController().navigateUp()
         }
 
@@ -499,6 +512,10 @@ class MainFragment :
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
             val exploreNavController = binding.exploreNavHost.findNavController()
+
+            // TODO: Debug why this fails sometimes on the playback sheet
+            // TODO: Add playlist editing
+            // TODO: Can this be split up?
 
             isEnabled =
                 queueSheetBehavior?.state == BackportBottomSheetBehavior.STATE_EXPANDED ||

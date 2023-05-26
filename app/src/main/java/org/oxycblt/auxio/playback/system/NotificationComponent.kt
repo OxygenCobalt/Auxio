@@ -31,6 +31,7 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.service.ForegroundServiceNotification
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 
@@ -73,6 +74,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
      * @param metadata The [MediaMetadataCompat] to display in this notification.
      */
     fun updateMetadata(metadata: MediaMetadataCompat) {
+        logD("Updating shown metadata")
         setLargeIcon(metadata.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART))
         setContentTitle(metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
         setContentText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ARTIST))
@@ -81,8 +83,10 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
         // content text to being above the title. Use an appropriate field for both.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             // Display description -> Parent in which playback is occurring
+            logD("API 24+, showing parent information")
             setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION))
         } else {
+            logD("API 24 or lower, showing album information")
             setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ALBUM))
         }
     }
@@ -93,6 +97,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
      * @param isPlaying Whether playback should be indicated as ongoing or paused.
      */
     fun updatePlaying(isPlaying: Boolean) {
+        logD("Updating playing state: $isPlaying")
         mActions[2] = buildPlayPauseAction(context, isPlaying)
     }
 
@@ -102,6 +107,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
      * @param repeatMode The current [RepeatMode].
      */
     fun updateRepeatMode(repeatMode: RepeatMode) {
+        logD("Applying repeat mode action: $repeatMode")
         mActions[0] = buildRepeatAction(context, repeatMode)
     }
 
@@ -111,6 +117,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
      * @param isShuffled Whether the queue is currently shuffled or not.
      */
     fun updateShuffled(isShuffled: Boolean) {
+        logD("Applying shuffle action: $isShuffled")
         mActions[0] = buildShuffleAction(context, isShuffled)
     }
 

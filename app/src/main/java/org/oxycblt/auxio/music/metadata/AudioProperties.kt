@@ -104,25 +104,23 @@ constructor(@ApplicationContext private val context: Context) : AudioProperties.
                 null
             }
 
-        val resolvedMimeType =
-            if (song.mimeType.fromFormat != null) {
-                // ExoPlayer was already able to populate the format.
-                song.mimeType
-            } else {
-                // ExoPlayer couldn't populate the format somehow, populate it here.
-                val formatMimeType =
-                    try {
-                        format.getString(MediaFormat.KEY_MIME)
-                    } catch (e: NullPointerException) {
-                        logE("Unable to extract mime type field")
-                        null
-                    }
-
-                MimeType(song.mimeType.fromExtension, formatMimeType)
+        // The song's mime type won't have a populated format field right now, try to
+        // extract it ourselves.
+        val formatMimeType =
+            try {
+                format.getString(MediaFormat.KEY_MIME)
+            } catch (e: NullPointerException) {
+                logE("Unable to extract mime type field")
+                null
             }
 
         extractor.release()
 
-        return AudioProperties(bitrate, sampleRate, resolvedMimeType)
+        logD("Finished extracting audio properties")
+
+        return AudioProperties(
+            bitrate,
+            sampleRate,
+            MimeType(fromExtension = song.mimeType.fromExtension, fromFormat = formatMimeType))
     }
 }

@@ -48,6 +48,7 @@ import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [DetailListAdapter] implementing the header, sub-items, and editing state for the [Playlist]
@@ -98,6 +99,7 @@ class PlaylistDetailListAdapter(private val listener: Listener) :
             // Nothing to do.
             return
         }
+        logD("Updating editing state [old: $isEditing new: $editing]")
         this.isEditing = editing
         notifyItemRangeChanged(1, currentList.size - 1, PAYLOAD_EDITING_CHANGED)
     }

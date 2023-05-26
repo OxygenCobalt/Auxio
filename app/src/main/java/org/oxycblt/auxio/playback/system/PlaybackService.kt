@@ -56,6 +56,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.service.ForegroundManager
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
 
@@ -243,6 +244,7 @@ class PlaybackService :
     }
 
     override fun setPlaying(isPlaying: Boolean) {
+        logD("Updating player state to $isPlaying")
         player.playWhenReady = isPlaying
     }
 
@@ -254,14 +256,17 @@ class PlaybackService :
             if (player.playWhenReady) {
                 // Mark that we have started playing so that the notification can now be posted.
                 hasPlayed = true
+                logD("Player has started playing")
                 if (!openAudioEffectSession) {
                     // Convention to start an audioeffect session on play/pause rather than
                     // start/stop
+                    logD("Opening audio effect session")
                     broadcastAudioEffectAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
                     openAudioEffectSession = true
                 }
             } else if (openAudioEffectSession) {
                 // Make sure to close the audio session when we stop playback.
+                logD("Closing audio effect session")
                 broadcastAudioEffectAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION)
                 openAudioEffectSession = false
             }
@@ -273,6 +278,7 @@ class PlaybackService :
             Player.EVENT_PLAY_WHEN_READY_CHANGED,
             Player.EVENT_IS_PLAYING_CHANGED,
             Player.EVENT_POSITION_DISCONTINUITY)) {
+            logD("Player state changed, must synchronize state")
             playbackManager.synchronizeState(this)
         }
     }
@@ -281,12 +287,15 @@ class PlaybackService :
         if (state == Player.STATE_ENDED) {
             // Player ended, repeat the current track if we are configured to.
             if (playbackManager.repeatMode == RepeatMode.TRACK) {
+                logD("Looping current track")
                 playbackManager.rewind()
                 // May be configured to pause when we repeat a track.
                 if (playbackSettings.pauseOnRepeat) {
+                    logD("Pausing track on loop")
                     playbackManager.setPlaying(false)
                 }
             } else {
+                logD("Track ended, moving to next track")
                 playbackManager.next()
             }
         }
@@ -295,12 +304,15 @@ class PlaybackService :
     override fun onPlayerError(error: PlaybackException) {
         // TODO: Replace with no skipping and a notification instead
         // If there's any issue, just go to the next song.
+        logE("Player error occured")
+        logE(error.stackTraceToString())
         playbackManager.next()
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         if (changes.deviceLibrary && musicRepository.deviceLibrary != null) {
             // We now have a library, see if we have anything we need to do.
+            logD("Library obtained, requesting action")
             playbackManager.requestAction(this)
         }
     }
@@ -308,6 +320,7 @@ class PlaybackService :
     // --- OTHER FUNCTIONS ---
 
     private fun broadcastAudioEffectAction(event: String) {
+        logD("Broadcasting AudioEffect event: $event")
         sendBroadcast(
             Intent(event)
                 .putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
@@ -333,11 +346,10 @@ class PlaybackService :
             // No library, cannot do anything.
             ?: return false
 
-        logD("Performing action: $action")
-
         when (action) {
             // Restore state -> Start a new restoreState job
             is InternalPlayer.Action.RestoreState -> {
+                logD("Restoring playback state")
                 restoreScope.launch {
                     persistenceRepository.readState()?.let {
                         playbackManager.applySavedState(it, false)
@@ -346,11 +358,13 @@ class PlaybackService :
             }
             // Shuffle all -> Start new playback from all songs
             is InternalPlayer.Action.ShuffleAll -> {
+                logD("Shuffling all tracks")
                 playbackManager.play(
                     null, null, musicSettings.songSort.songs(deviceLibrary.songs), true)
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
             is InternalPlayer.Action.Open -> {
+                logD("Opening specified file")
                 deviceLibrary.findSongForUri(application, action.uri)?.let { song ->
                     playbackManager.play(
                         song,
@@ -371,8 +385,9 @@ class PlaybackService :
         // where changing a setting would cause the notification to appear in an unfriendly
         // manner.
         if (hasPlayed) {
-            logD("Updating notification")
+            logD("Played before, starting foreground state")
             if (!foregroundManager.tryStartForeground(notification)) {
+                logD("Notification changed, re-posting")
                 notification.post()
             }
         }
@@ -397,6 +412,7 @@ class PlaybackService :
                 // 3. Some internal framework thing that also handles bluetooth headsets
                 // Just use ACTION_HEADSET_PLUG.
                 AudioManager.ACTION_HEADSET_PLUG -> {
+                    logD("Received headset plug event")
                     when (intent.getIntExtra("state", -1)) {
                         0 -> pauseFromHeadsetPlug()
                         1 -> playFromHeadsetPlug()
@@ -404,21 +420,41 @@ class PlaybackService :
 
                     initialHeadsetPlugEventHandled = true
                 }
-                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromHeadsetPlug()
+                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
+                    logD("Received Headset noise event")
+                    pauseFromHeadsetPlug()
+                }
 
                 // --- AUXIO EVENTS ---
-                ACTION_PLAY_PAUSE ->
+                ACTION_PLAY_PAUSE -> {
+                    logD("Received play event")
                     playbackManager.setPlaying(!playbackManager.playerState.isPlaying)
-                ACTION_INC_REPEAT_MODE ->
+                }
+                ACTION_INC_REPEAT_MODE -> {
+                    logD("Received repeat mode event")
                     playbackManager.repeatMode = playbackManager.repeatMode.increment()
-                ACTION_INVERT_SHUFFLE -> playbackManager.reorder(!playbackManager.queue.isShuffled)
-                ACTION_SKIP_PREV -> playbackManager.prev()
-                ACTION_SKIP_NEXT -> playbackManager.next()
+                }
+                ACTION_INVERT_SHUFFLE -> {
+                    logD("Received shuffle event")
+                    playbackManager.reorder(!playbackManager.queue.isShuffled)
+                }
+                ACTION_SKIP_PREV -> {
+                    logD("Received skip previous event")
+                    playbackManager.prev()
+                }
+                ACTION_SKIP_NEXT -> {
+                    logD("Received skip next event")
+                    playbackManager.next()
+                }
                 ACTION_EXIT -> {
+                    logD("Received exit event")
                     playbackManager.setPlaying(false)
                     stopAndSave()
                 }
-                WidgetProvider.ACTION_WIDGET_UPDATE -> widgetComponent.update()
+                WidgetProvider.ACTION_WIDGET_UPDATE -> {
+                    logD("Received widget update event")
+                    widgetComponent.update()
+                }
             }
         }
 

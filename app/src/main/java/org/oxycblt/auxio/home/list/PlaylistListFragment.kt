@@ -43,7 +43,6 @@ import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 
 /**
  * A [ListFragment] that shows a list of [Playlist]s.
@@ -120,8 +119,7 @@ class PlaylistListFragment :
     }
 
     private fun updatePlaylists(playlists: List<Playlist>) {
-        playlistAdapter.update(
-            playlists, homeModel.playlistsInstructions.consume().also { logD(it) })
+        playlistAdapter.update(playlists, homeModel.playlistsInstructions.consume())
     }
 
     private fun updateSelection(selection: List<Music>) {

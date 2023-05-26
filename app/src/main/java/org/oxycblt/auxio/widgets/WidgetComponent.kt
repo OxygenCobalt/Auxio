@@ -76,6 +76,7 @@ constructor(
         val repeatMode = playbackManager.repeatMode
         val isShuffled = playbackManager.queue.isShuffled
 
+        logD("Updating widget with new playback state")
         bitmapProvider.load(
             song,
             object : BitmapProvider.Target {
@@ -83,12 +84,15 @@ constructor(
                     val cornerRadius =
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                             // Android 12, always round the cover with the widget's inner radius
+                            logD("Using android 12 corner radius")
                             context.getDimenPixels(android.R.dimen.system_app_widget_inner_radius)
                         } else if (uiSettings.roundMode) {
                             // < Android 12, but the user still enabled round mode.
+                            logD("Using default corner radius")
                             context.getDimenPixels(R.dimen.size_corners_medium)
                         } else {
                             // User did not enable round mode.
+                            logD("Using no corner radius")
                             0
                         }
 
@@ -107,6 +111,7 @@ constructor(
 
                 override fun onCompleted(bitmap: Bitmap?) {
                     val state = PlaybackState(song, bitmap, isPlaying, repeatMode, isShuffled)
+                    logD("Bitmap loaded, uploading state $state")
                     widgetProvider.update(context, uiSettings, state)
                 }
             })

@@ -96,6 +96,7 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
     override fun hashCode() = 31 * uid.hashCode() + rawSong.hashCode()
     override fun equals(other: Any?) =
         other is SongImpl && uid == other.uid && rawSong == other.rawSong
+    override fun toString() = "Song(uid=$uid, name=$name)"
 
     private val artistMusicBrainzIds = rawSong.artistMusicBrainzIds.parseMultiValue(musicSettings)
     private val artistNames = rawSong.artistNames.parseMultiValue(musicSettings)
@@ -262,6 +263,8 @@ class AlbumImpl(
     override fun equals(other: Any?) =
         other is AlbumImpl && uid == other.uid && rawAlbum == other.rawAlbum && songs == other.songs
 
+    override fun toString() = "Album(uid=$uid, name=$name)"
+
     private val _artists = mutableListOf<ArtistImpl>()
     override val artists: List<Artist>
         get() = _artists
@@ -363,6 +366,8 @@ class ArtistImpl(
             rawArtist == other.rawArtist &&
             songs == other.songs
 
+    override fun toString() = "Artist(uid=$uid, name=$name)"
+
     override lateinit var genres: List<Genre>
 
     init {
@@ -448,6 +453,8 @@ class GenreImpl(
 
     override fun equals(other: Any?) =
         other is GenreImpl && uid == other.uid && rawGenre == other.rawGenre && songs == other.songs
+
+    override fun toString() = "Genre(uid=$uid, name=$name)"
 
     init {
         val distinctAlbums = mutableSetOf<Album>()

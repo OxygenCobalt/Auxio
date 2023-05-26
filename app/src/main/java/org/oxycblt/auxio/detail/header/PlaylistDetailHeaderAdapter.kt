@@ -30,6 +30,7 @@ import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [DetailHeaderAdapter] that shows [Playlist] information.
@@ -57,6 +58,7 @@ class PlaylistDetailHeaderAdapter(private val listener: Listener) :
             // Nothing to do.
             return
         }
+        logD("Updating editing state [old: ${editedPlaylist?.size} new: ${songs?.size}")
         editedPlaylist = songs
         rebindParent()
     }
@@ -102,12 +104,17 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
                 binding.context.getString(R.string.def_song_count)
             }
 
+        val playable = playlist.songs.isNotEmpty() && editedPlaylist == null
+        if (!playable) {
+            logD("Playlist is being edited or is empty, disabling playback options")
+        }
+
         binding.detailPlayButton.apply {
-            isEnabled = playlist.songs.isNotEmpty() && editedPlaylist == null
+            isEnabled = playable
             setOnClickListener { listener.onPlay() }
         }
         binding.detailShuffleButton.apply {
-            isEnabled = playlist.songs.isNotEmpty() && editedPlaylist == null
+            isEnabled = playable
             setOnClickListener { listener.onShuffle() }
         }
     }

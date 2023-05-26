@@ -37,6 +37,7 @@ import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 
 /**
  * An [DetailListAdapter] implementing the header and sub-items for the [Album] detail view.
@@ -116,6 +117,7 @@ private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
                 isGone = text == null
             }
         } else {
+            logD("Disc is null, defaulting to no disc")
             binding.discNumber.text = binding.context.getString(R.string.def_disc)
             binding.discName.isGone = true
         }

@@ -34,6 +34,7 @@ import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewBindingFragment] that shows the current playback state in a compact manner.
@@ -93,6 +94,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     private fun setupSecondaryActions(binding: FragmentPlaybackBarBinding, actionMode: ActionMode) {
         when (actionMode) {
             ActionMode.NEXT -> {
+                logD("Setting up skip next action")
                 binding.playbackSecondaryAction.apply {
                     setIconResource(R.drawable.ic_skip_next_24)
                     contentDescription = getString(R.string.desc_skip_next)
@@ -101,6 +103,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 }
             }
             ActionMode.REPEAT -> {
+                logD("Setting up repeat mode action")
                 binding.playbackSecondaryAction.apply {
                     contentDescription = getString(R.string.desc_change_repeat)
                     iconTint = context.getColorCompat(R.color.sel_activatable_icon)
@@ -109,6 +112,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 }
             }
             ActionMode.SHUFFLE -> {
+                logD("Setting up shuffle action")
                 binding.playbackSecondaryAction.apply {
                     setIconResource(R.drawable.sel_shuffle_state_24)
                     contentDescription = getString(R.string.desc_shuffle)
@@ -121,14 +125,17 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     }
 
     private fun updateSong(song: Song?) {
-        if (song != null) {
-            val context = requireContext()
-            val binding = requireBinding()
-            binding.playbackCover.bind(song)
-            binding.playbackSong.text = song.name.resolve(context)
-            binding.playbackInfo.text = song.artists.resolveNames(context)
-            binding.playbackProgressBar.max = song.durationMs.msToDs().toInt()
+        if (song == null) {
+            // Nothing to do.
+            return
         }
+
+        val context = requireContext()
+        val binding = requireBinding()
+        binding.playbackCover.bind(song)
+        binding.playbackSong.text = song.name.resolve(context)
+        binding.playbackInfo.text = song.artists.resolveNames(context)
+        binding.playbackProgressBar.max = song.durationMs.msToDs().toInt()
     }
 
     private fun updatePlaying(isPlaying: Boolean) {

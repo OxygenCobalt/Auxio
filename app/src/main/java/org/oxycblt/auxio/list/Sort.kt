@@ -22,8 +22,6 @@ import androidx.annotation.IdRes
 import kotlin.math.max
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.list.Sort.Direction
-import org.oxycblt.auxio.list.Sort.Mode
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre

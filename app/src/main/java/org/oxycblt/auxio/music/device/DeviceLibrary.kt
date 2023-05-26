@@ -149,6 +149,9 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
         return hashCode
     }
 
+    override fun toString() =
+        "DeviceLibrary(songs=${songs.size}, albums=${albums.size}, artists=${artists.size}, genres=${genres.size})"
+
     override fun findSong(uid: Music.UID) = songUidMap[uid]
     override fun findAlbum(uid: Music.UID) = albumUidMap[uid]
     override fun findArtist(uid: Music.UID) = artistUidMap[uid]

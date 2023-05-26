@@ -36,7 +36,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import java.lang.IllegalArgumentException
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 
@@ -289,6 +288,7 @@ fun Context.share(parent: MusicParent) = share(parent.songs)
  */
 fun Context.share(songs: List<Song>) {
     if (songs.isEmpty()) return
+    logD("Showing sharesheet for ${songs.size} songs")
     val builder = ShareCompat.IntentBuilder(this)
     val mimeTypes = mutableSetOf<String>()
     for (song in songs) {

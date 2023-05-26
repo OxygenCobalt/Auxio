@@ -81,6 +81,7 @@ class WidgetProvider : AppWidgetProvider() {
     fun update(context: Context, uiSettings: UISettings, state: WidgetComponent.PlaybackState?) {
         if (state == null) {
             // No state, use the default widget.
+            logD("No state provided, returning to default")
             reset(context)
             return
         }
@@ -101,6 +102,7 @@ class WidgetProvider : AppWidgetProvider() {
         val component = ComponentName(context, this::class.java)
         try {
             awm.updateAppWidgetCompat(context, component, views)
+            logD("Successfully updated RemoteViews layout")
         } catch (e: Exception) {
             // Layout update failed, gracefully degrade to the default widget.
             logW("Unable to update widget: $e")

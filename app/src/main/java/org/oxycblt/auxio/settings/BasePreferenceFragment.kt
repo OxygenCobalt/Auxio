@@ -107,9 +107,10 @@ abstract class BasePreferenceFragment(@XmlRes private val screen: Int) :
         when (preference) {
             is IntListPreference -> {
                 // Copy the built-in preference dialog launching code into our project so
-                // we can automatically use the provided preference class.
+                // we can automatically use the provided preference class. The deprecated code
+                // is largely unavoidable.
                 val dialog = IntListPreferenceDialog.from(preference)
-                dialog.setTargetFragment(this, 0)
+                @Suppress("DEPRECATION") dialog.setTargetFragment(this, 0)
                 dialog.show(parentFragmentManager, IntListPreferenceDialog.TAG)
             }
             is WrappedDialogPreference -> {
@@ -128,6 +129,7 @@ abstract class BasePreferenceFragment(@XmlRes private val screen: Int) :
         }
 
         if (preference is PreferenceCategory) {
+            // Recurse into preference children to make sure they are set up as well
             preference.children.forEach(::setupPreference)
             return
         }

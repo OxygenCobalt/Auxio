@@ -78,6 +78,7 @@ constructor(
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         if (changes.deviceLibrary || changes.userLibrary) {
+            logD("Music changed, re-searching library")
             search(lastQuery)
         }
     }
@@ -96,14 +97,13 @@ constructor(
         val deviceLibrary = musicRepository.deviceLibrary
         val userLibrary = musicRepository.userLibrary
         if (query.isNullOrEmpty() || deviceLibrary == null || userLibrary == null) {
-            logD("Search query is not applicable.")
+            logD("Cannot search for the current query, aborting")
             _searchResults.value = listOf()
             return
         }
 
-        logD("Searching music library for $query")
-
         // Searching is time-consuming, so do it in the background.
+        logD("Searching music library for $query")
         currentSearchJob =
             viewModelScope.launch {
                 _searchResults.value =
@@ -121,6 +121,7 @@ constructor(
         val items =
             if (filterMode == null) {
                 // A nulled filter mode means to not filter anything.
+                logD("No filter mode specified, using entire library")
                 SearchEngine.Items(
                     deviceLibrary.songs,
                     deviceLibrary.albums,
@@ -128,6 +129,7 @@ constructor(
                     deviceLibrary.genres,
                     userLibrary.playlists)
             } else {
+                logD("Filter mode specified, filtering library")
                 SearchEngine.Items(
                     songs = if (filterMode == MusicMode.SONGS) deviceLibrary.songs else null,
                     albums = if (filterMode == MusicMode.ALBUMS) deviceLibrary.albums else null,
@@ -141,11 +143,13 @@ constructor(
 
         return buildList {
             results.artists?.let {
+                logD("Adding ${it.size} artists to search results")
                 val header = BasicHeader(R.string.lbl_artists)
                 add(header)
                 addAll(SORT.artists(it))
             }
             results.albums?.let {
+                logD("Adding ${it.size} albums to search results")
                 val header = BasicHeader(R.string.lbl_albums)
                 if (isNotEmpty()) {
                     add(Divider(header))
@@ -155,6 +159,7 @@ constructor(
                 addAll(SORT.albums(it))
             }
             results.playlists?.let {
+                logD("Adding ${it.size} playlists to search results")
                 val header = BasicHeader(R.string.lbl_playlists)
                 if (isNotEmpty()) {
                     add(Divider(header))
@@ -164,6 +169,7 @@ constructor(
                 addAll(SORT.playlists(it))
             }
             results.genres?.let {
+                logD("Adding ${it.size} genres to search results")
                 val header = BasicHeader(R.string.lbl_genres)
                 if (isNotEmpty()) {
                     add(Divider(header))
@@ -173,6 +179,7 @@ constructor(
                 addAll(SORT.genres(it))
             }
             results.songs?.let {
+                logD("Adding ${it.size} songs to search results")
                 val header = BasicHeader(R.string.lbl_songs)
                 if (isNotEmpty()) {
                     add(Divider(header))

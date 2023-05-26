@@ -29,6 +29,7 @@ import org.oxycblt.auxio.music.fs.Directory
 import org.oxycblt.auxio.music.fs.MusicDirectories
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.getSystemServiceCompat
+import org.oxycblt.auxio.util.logD
 
 /**
  * User configuration specific to music system.
@@ -231,8 +232,14 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context
             getString(R.string.set_key_music_dirs),
             getString(R.string.set_key_music_dirs_include),
             getString(R.string.set_key_separators),
-            getString(R.string.set_key_auto_sort_names) -> listener.onIndexingSettingChanged()
-            getString(R.string.set_key_observing) -> listener.onObservingChanged()
+            getString(R.string.set_key_auto_sort_names) -> {
+                logD("Dispatching indexing setting change for $key")
+                listener.onIndexingSettingChanged()
+            }
+            getString(R.string.set_key_observing) -> {
+                logD("Dispatching observing setting change")
+                listener.onObservingChanged()
+            }
         }
     }
 }

@@ -43,6 +43,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
+import org.oxycblt.auxio.util.logD
 
 /**
  * An [ViewModel] that provides a safe UI frontend for the current playback state.
@@ -124,27 +125,32 @@ constructor(
     }
 
     override fun onIndexMoved(queue: Queue) {
+        logD("Index moved, updating current song")
         _song.value = queue.currentSong
     }
 
     override fun onQueueChanged(queue: Queue, change: Queue.Change) {
         // Other types of queue changes preserve the current song.
         if (change.type == Queue.Change.Type.SONG) {
+            logD("Queue changed, updating current song")
             _song.value = queue.currentSong
         }
     }
 
     override fun onQueueReordered(queue: Queue) {
+        logD("Queue completely changed, updating current song")
         _isShuffled.value = queue.isShuffled
     }
 
     override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
+        logD("New playback started, updating playback information")
         _song.value = queue.currentSong
         _parent.value = parent
         _isShuffled.value = queue.isShuffled
     }
 
     override fun onStateChanged(state: InternalPlayer.State) {
+        logD("Player state changed, starting new position polling")
         _isPlaying.value = state.isPlaying
         // Still need to update the position now due to co-routine launch delays
         _positionDs.value = state.calculateElapsedPositionMs().msToDs()
@@ -169,6 +175,7 @@ constructor(
 
     /** Shuffle all songs in the music library. */
     fun shuffleAll() {
+        logD("Shuffling all songs")
         playImpl(null, null, true)
     }
 
@@ -184,6 +191,7 @@ constructor(
      * @param playbackMode The [MusicMode] to play from.
      */
     fun playFrom(song: Song, playbackMode: MusicMode) {
+        logD("Playing $song from $playbackMode")
         when (playbackMode) {
             MusicMode.SONGS -> playImpl(song, null)
             MusicMode.ALBUMS -> playImpl(song, song.album)
@@ -202,10 +210,13 @@ constructor(
      */
     fun playFromArtist(song: Song, artist: Artist? = null) {
         if (artist != null) {
+            logD("Playing $song from $artist")
             playImpl(song, artist)
         } else if (song.artists.size == 1) {
+            logD("$song has one artist, playing from it")
             playImpl(song, song.artists[0])
         } else {
+            logD("$song has multiple artists, showing choice dialog")
             _artistPlaybackPickerSong.put(song)
         }
     }
@@ -219,10 +230,13 @@ constructor(
      */
     fun playFromGenre(song: Song, genre: Genre? = null) {
         if (genre != null) {
+            logD("Playing $song from $genre")
             playImpl(song, genre)
         } else if (song.genres.size == 1) {
+            logD("$song has one genre, playing from it")
             playImpl(song, song.genres[0])
         } else {
+            logD("$song has multiple genres, showing choice dialog")
             _genrePlaybackPickerSong.put(song)
         }
     }
@@ -234,6 +248,7 @@ constructor(
      * @param playlist The [Playlist] to play from. Must be linked to the [Song].
      */
     fun playFromPlaylist(song: Song, playlist: Playlist) {
+        logD("Playing $song from $playlist")
         playImpl(song, playlist)
     }
 
@@ -242,70 +257,100 @@ constructor(
      *
      * @param album The [Album] to play.
      */
-    fun play(album: Album) = playImpl(null, album, false)
+    fun play(album: Album) {
+        logD("Playing $album")
+        playImpl(null, album, false)
+    }
 
     /**
      * Play an [Artist].
      *
      * @param artist The [Artist] to play.
      */
-    fun play(artist: Artist) = playImpl(null, artist, false)
+    fun play(artist: Artist) {
+        logD("Playing $artist")
+        playImpl(null, artist, false)
+    }
 
     /**
      * Play a [Genre].
      *
      * @param genre The [Genre] to play.
      */
-    fun play(genre: Genre) = playImpl(null, genre, false)
+    fun play(genre: Genre) {
+        logD("Playing $genre")
+        playImpl(null, genre, false)
+    }
 
     /**
      * Play a [Playlist].
      *
      * @param playlist The [Playlist] to play.
      */
-    fun play(playlist: Playlist) = playImpl(null, playlist, false)
+    fun play(playlist: Playlist) {
+        logD("Playing $playlist")
+        playImpl(null, playlist, false)
+    }
 
     /**
      * Play a list of [Song]s.
      *
      * @param songs The [Song]s to play.
      */
-    fun play(songs: List<Song>) = playbackManager.play(null, null, songs, false)
+    fun play(songs: List<Song>) {
+        logD("Playing ${songs.size} songs")
+        playbackManager.play(null, null, songs, false)
+    }
 
     /**
      * Shuffle an [Album].
      *
      * @param album The [Album] to shuffle.
      */
-    fun shuffle(album: Album) = playImpl(null, album, true)
+    fun shuffle(album: Album) {
+        logD("Shuffling $album")
+        playImpl(null, album, true)
+    }
 
     /**
      * Shuffle an [Artist].
      *
      * @param artist The [Artist] to shuffle.
      */
-    fun shuffle(artist: Artist) = playImpl(null, artist, true)
+    fun shuffle(artist: Artist) {
+        logD("Shuffling $artist")
+        playImpl(null, artist, true)
+    }
 
     /**
      * Shuffle a [Genre].
      *
      * @param genre The [Genre] to shuffle.
      */
-    fun shuffle(genre: Genre) = playImpl(null, genre, true)
+    fun shuffle(genre: Genre) {
+        logD("Shuffling $genre")
+        playImpl(null, genre, true)
+    }
 
     /**
      * Shuffle a [Playlist].
      *
      * @param playlist The [Playlist] to shuffle.
      */
-    fun shuffle(playlist: Playlist) = playImpl(null, playlist, true)
+    fun shuffle(playlist: Playlist) {
+        logD("Shuffling $playlist")
+        playImpl(null, playlist, true)
+    }
 
     /**
      * Shuffle a list of [Song]s.
      *
      * @param songs The [Song]s to shuffle.
      */
-    fun shuffle(songs: List<Song>) = playbackManager.play(null, null, songs, true)
+    fun shuffle(songs: List<Song>) {
+        logD("Shuffling ${songs.size} songs")
+        playbackManager.play(null, null, songs, true)
+    }
 
     private fun playImpl(
         song: Song?,
@@ -334,6 +379,7 @@ constructor(
      * @param action The [InternalPlayer.Action] to perform eventually.
      */
     fun startAction(action: InternalPlayer.Action) {
+        logD("Starting action $action")
         playbackManager.startAction(action)
     }
 
@@ -345,6 +391,7 @@ constructor(
      * @param positionDs The position to seek to, in deci-seconds (1/10th of a second).
      */
     fun seekTo(positionDs: Long) {
+        logD("Seeking to ${positionDs}ds")
         playbackManager.seekTo(positionDs.dsToMs())
     }
 
@@ -352,11 +399,13 @@ constructor(
 
     /** Skip to the next [Song]. */
     fun next() {
+        logD("Skipping to next song")
         playbackManager.next()
     }
 
     /** Skip to the previous [Song]. */
     fun prev() {
+        logD("Skipping to previous song")
         playbackManager.prev()
     }
 
@@ -366,6 +415,7 @@ constructor(
      * @param song The [Song] to add.
      */
     fun playNext(song: Song) {
+        logD("Playing $song next")
         playbackManager.playNext(song)
     }
 
@@ -375,6 +425,7 @@ constructor(
      * @param album The [Album] to add.
      */
     fun playNext(album: Album) {
+        logD("Playing $album next")
         playbackManager.playNext(musicSettings.albumSongSort.songs(album.songs))
     }
 
@@ -384,6 +435,7 @@ constructor(
      * @param artist The [Artist] to add.
      */
     fun playNext(artist: Artist) {
+        logD("Playing $artist next")
         playbackManager.playNext(musicSettings.artistSongSort.songs(artist.songs))
     }
 
@@ -393,6 +445,7 @@ constructor(
      * @param genre The [Genre] to add.
      */
     fun playNext(genre: Genre) {
+        logD("Playing $genre next")
         playbackManager.playNext(musicSettings.genreSongSort.songs(genre.songs))
     }
 
@@ -402,6 +455,7 @@ constructor(
      * @param playlist The [Playlist] to add.
      */
     fun playNext(playlist: Playlist) {
+        logD("Playing $playlist next")
         playbackManager.playNext(playlist.songs)
     }
 
@@ -411,6 +465,7 @@ constructor(
      * @param songs The [Song]s to add.
      */
     fun playNext(songs: List<Song>) {
+        logD("Playing ${songs.size} songs next")
         playbackManager.playNext(songs)
     }
 
@@ -420,6 +475,7 @@ constructor(
      * @param song The [Song] to add.
      */
     fun addToQueue(song: Song) {
+        logD("Adding $song to queue")
         playbackManager.addToQueue(song)
     }
 
@@ -429,6 +485,7 @@ constructor(
      * @param album The [Album] to add.
      */
     fun addToQueue(album: Album) {
+        logD("Adding $album to queue")
         playbackManager.addToQueue(musicSettings.albumSongSort.songs(album.songs))
     }
 
@@ -438,6 +495,7 @@ constructor(
      * @param artist The [Artist] to add.
      */
     fun addToQueue(artist: Artist) {
+        logD("Adding $artist to queue")
         playbackManager.addToQueue(musicSettings.artistSongSort.songs(artist.songs))
     }
 
@@ -447,6 +505,7 @@ constructor(
      * @param genre The [Genre] to add.
      */
     fun addToQueue(genre: Genre) {
+        logD("Adding $genre to queue")
         playbackManager.addToQueue(musicSettings.genreSongSort.songs(genre.songs))
     }
 
@@ -456,6 +515,7 @@ constructor(
      * @param playlist The [Playlist] to add.
      */
     fun addToQueue(playlist: Playlist) {
+        logD("Adding $playlist to queue")
         playbackManager.addToQueue(playlist.songs)
     }
 
@@ -465,6 +525,7 @@ constructor(
      * @param songs The [Song]s to add.
      */
     fun addToQueue(songs: List<Song>) {
+        logD("Adding ${songs.size} songs to queue")
         playbackManager.addToQueue(songs)
     }
 
@@ -472,11 +533,13 @@ constructor(
 
     /** Toggle [isPlaying] (i.e from playing to paused) */
     fun togglePlaying() {
+        logD("Toggling playing state")
         playbackManager.setPlaying(!playbackManager.playerState.isPlaying)
     }
 
     /** Toggle [isShuffled] (ex. from on to off) */
     fun toggleShuffled() {
+        logD("Toggling shuffled state")
         playbackManager.reorder(!playbackManager.queue.isShuffled)
     }
 
@@ -486,6 +549,7 @@ constructor(
      * @see RepeatMode.increment
      */
     fun toggleRepeatMode() {
+        logD("Toggling repeat mode")
         playbackManager.repeatMode = playbackManager.repeatMode.increment()
     }
 
@@ -497,6 +561,7 @@ constructor(
      * @param onDone Called when the save is completed with true if successful, and false otherwise.
      */
     fun savePlaybackState(onDone: (Boolean) -> Unit) {
+        logD("Saving playback state")
         viewModelScope.launch {
             onDone(persistenceRepository.saveState(playbackManager.toSavedState()))
         }
@@ -508,6 +573,7 @@ constructor(
      * @param onDone Called when the wipe is completed with true if successful, and false otherwise.
      */
     fun wipePlaybackState(onDone: (Boolean) -> Unit) {
+        logD("Wiping playback state")
         viewModelScope.launch { onDone(persistenceRepository.saveState(null)) }
     }
 
@@ -518,6 +584,7 @@ constructor(
      *   otherwise.
      */
     fun tryRestorePlaybackState(onDone: (Boolean) -> Unit) {
+        logD("Force-restoring playback state")
         viewModelScope.launch {
             val savedState = persistenceRepository.readState()
             if (savedState != null) {

@@ -115,6 +115,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
             if (!launchedKeyboard) {
                 // Auto-open the keyboard when this view is shown
+                this@SearchFragment.logD("Keyboard is not shown yet")
                 showKeyboard(this)
                 launchedKeyboard = true
             }
@@ -155,6 +156,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         if (item.itemId != R.id.submenu_filtering) {
             // Is a change in filter mode and not just a junk submenu click, update
             // the filtering within SearchViewModel.
+            logD("Filter mode selected")
             item.isChecked = true
             searchModel.setFilterOptionId(item.itemId)
             return true
@@ -189,6 +191,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             // I would make it so that the position is only scrolled back to the top when
             // the query actually changes instead of once every re-creation event, but sadly
             // that doesn't seem possible.
+            logD("Update finished, scrolling to top")
             binding.searchRecycler.scrollToPosition(0)
         }
     }
@@ -233,6 +236,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
      * @param view The [View] to focus the keyboard on.
      */
     private fun showKeyboard(view: View) {
+        logD("Launching keyboard")
         view.apply {
             requestFocus()
             postDelayed(200) {
@@ -244,6 +248,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     /** Safely hide the keyboard from this view. */
     private fun hideKeyboard() {
+        logD("Hiding keyboard")
         requireNotNull(imm) { "InputMethodManager was not available" }
             .hideSoftInputFromWindow(requireView().windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }

@@ -55,6 +55,7 @@ import org.oxycblt.auxio.util.canScroll
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.setFullWidthLookup
 import org.oxycblt.auxio.util.share
@@ -168,7 +169,10 @@ class AlbumDetailFragment :
                 requireContext().share(currentAlbum)
                 true
             }
-            else -> false
+            else -> {
+                logW("Unexpected menu item selected")
+                false
+            }
         }
     }
 
@@ -222,7 +226,7 @@ class AlbumDetailFragment :
 
     private fun updateAlbum(album: Album?) {
         if (album == null) {
-            // Album we were showing no longer exists.
+            logD("No album to show, navigating away")
             findNavController().navigateUp()
             return
         }
@@ -231,12 +235,8 @@ class AlbumDetailFragment :
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        if (parent is Album && parent == unlikelyToBeNull(detailModel.currentAlbum.value)) {
-            albumListAdapter.setPlaying(song, isPlaying)
-        } else {
-            // Clear the ViewHolders if the mode isn't ALL_SONGS
-            albumListAdapter.setPlaying(null, isPlaying)
-        }
+        albumListAdapter.setPlaying(
+            song.takeIf { parent == detailModel.currentAlbum.value }, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {
@@ -303,7 +303,7 @@ class AlbumDetailFragment :
                             boxStart: Int,
                             boxEnd: Int,
                             snapPreference: Int
-                        ): Int =
+                        ) =
                             (boxStart + (boxEnd - boxStart) / 2) -
                                 (viewStart + (viewEnd - viewStart) / 2)
                     }

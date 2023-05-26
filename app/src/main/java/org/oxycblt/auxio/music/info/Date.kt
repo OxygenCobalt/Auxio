@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat
 import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.inRangeOrNull
+import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
@@ -51,27 +52,25 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
      *   2020") will be returned. Otherwise, a plain year value (ex. "2020") is returned. Dates will
      *   be properly localized.
      */
-    fun resolveDate(context: Context): String {
-        if (month != null) {
-            // Parse a date format from an ISO-ish format
-            val format = (SimpleDateFormat.getDateInstance() as SimpleDateFormat)
-            format.applyPattern("yyyy-MM")
-            val date =
-                try {
-                    format.parse("$year-$month")
-                } catch (e: ParseException) {
-                    null
-                }
-
-            if (date != null) {
-                // Reformat as a readable month and year
-                format.applyPattern("MMM yyyy")
-                return format.format(date)
-            }
-        }
-
+    fun resolve(context: Context) =
         // Unable to create fine-grained date, just format as a year.
-        return context.getString(R.string.fmt_number, year)
+        month?.let { resolveFineGrained() } ?: context.getString(R.string.fmt_number, year)
+
+    private fun resolveFineGrained(): String? {
+        // We can't directly load a date with our own
+        val format = (SimpleDateFormat.getDateInstance() as SimpleDateFormat)
+        format.applyPattern("yyyy-MM")
+        val date =
+            try {
+                format.parse("$year-$month")
+            } catch (e: ParseException) {
+                logE("Unable to parse fine-grained date: $e")
+                return null
+            }
+
+        // Reformat as a readable month and year
+        format.applyPattern("MMM yyyy")
+        return format.format(date)
     }
 
     override fun hashCode() = tokens.hashCode()
@@ -139,9 +138,9 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
         fun resolveDate(context: Context) =
             if (min != max) {
                 context.getString(
-                    R.string.fmt_date_range, min.resolveDate(context), max.resolveDate(context))
+                    R.string.fmt_date_range, min.resolve(context), max.resolve(context))
             } else {
-                min.resolveDate(context)
+                min.resolve(context)
             }
 
         override fun equals(other: Any?) = other is Range && min == other.min && max == other.max

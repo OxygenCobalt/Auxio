@@ -56,6 +56,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.setFullWidthLookup
 import org.oxycblt.auxio.util.share
@@ -218,7 +219,10 @@ class PlaylistDetailFragment :
                 detailModel.savePlaylistEdit()
                 true
             }
-            else -> false
+            else -> {
+                logW("Unexpected menu item selected")
+                false
+            }
         }
     }
 
@@ -259,6 +263,9 @@ class PlaylistDetailFragment :
             title = playlist.name.resolve(requireContext())
             // Disable options that make no sense with an empty playlist
             val playable = playlist.songs.isNotEmpty()
+            if (!playable) {
+                logD("Playlist is empty, disabling playback/share options")
+            }
             menu.findItem(R.id.action_play_next).isEnabled = playable
             menu.findItem(R.id.action_queue_add).isEnabled = playable
             menu.findItem(R.id.action_share).isEnabled = playable
@@ -269,13 +276,9 @@ class PlaylistDetailFragment :
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        // Prefer songs that might be playing from this playlist.
-        if (parent is Playlist &&
-            parent.uid == unlikelyToBeNull(detailModel.currentPlaylist.value).uid) {
-            playlistListAdapter.setPlaying(song, isPlaying)
-        } else {
-            playlistListAdapter.setPlaying(null, isPlaying)
-        }
+        // Prefer songs that are playing from this playlist.
+        playlistListAdapter.setPlaying(
+            song.takeIf { parent == detailModel.currentPlaylist.value }, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {
@@ -312,6 +315,7 @@ class PlaylistDetailFragment :
         selectionModel.drop()
 
         if (editedPlaylist != null) {
+            logD("Updating save button state")
             requireBinding().detailEditToolbar.menu.findItem(R.id.action_save).apply {
                 isEnabled = editedPlaylist != detailModel.currentPlaylist.value?.songs
             }
@@ -333,9 +337,18 @@ class PlaylistDetailFragment :
     private fun updateMultiToolbar() {
         val id =
             when {
-                detailModel.editedPlaylist.value != null -> R.id.detail_edit_toolbar
-                selectionModel.selected.value.isNotEmpty() -> R.id.detail_selection_toolbar
-                else -> R.id.detail_normal_toolbar
+                detailModel.editedPlaylist.value != null -> {
+                    logD("Currently editing playlist, showing edit toolbar")
+                    R.id.detail_edit_toolbar
+                }
+                selectionModel.selected.value.isNotEmpty() -> {
+                    logD("Currently selecting, showing selection toolbar")
+                    R.id.detail_selection_toolbar
+                }
+                else -> {
+                    logD("Using normal toolbar")
+                    R.id.detail_normal_toolbar
+                }
             }
 
         requireBinding().detailToolbar.setVisible(id)

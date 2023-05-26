@@ -25,6 +25,7 @@ import org.oxycblt.auxio.databinding.ItemMusicDirBinding
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 
 /**
  * [RecyclerView.Adapter] that manages a list of [Directory] instances.
@@ -54,10 +55,8 @@ class DirectoryAdapter(private val listener: Listener) :
      * @param dir The [Directory] to add.
      */
     fun add(dir: Directory) {
-        if (_dirs.contains(dir)) {
-            return
-        }
-
+        if (_dirs.contains(dir)) return
+        logD("Adding $dir")
         _dirs.add(dir)
         notifyItemInserted(_dirs.lastIndex)
     }
@@ -65,9 +64,10 @@ class DirectoryAdapter(private val listener: Listener) :
     /**
      * Add a list of [Directory] instances to the end of the list.
      *
-     * @param dirs The [Directory instances to add.
+     * @param dirs The [Directory] instances to add.
      */
     fun addAll(dirs: List<Directory>) {
+        logD("Adding ${dirs.size} directories")
         val oldLastIndex = dirs.lastIndex
         _dirs.addAll(dirs)
         notifyItemRangeInserted(oldLastIndex, dirs.size)
@@ -79,6 +79,7 @@ class DirectoryAdapter(private val listener: Listener) :
      * @param dir The [Directory] to remove. Must exist in the list.
      */
     fun remove(dir: Directory) {
+        logD("Removing $dir")
         val idx = _dirs.indexOf(dir)
         _dirs.removeAt(idx)
         notifyItemRemoved(idx)
@@ -86,6 +87,7 @@ class DirectoryAdapter(private val listener: Listener) :
 
     /** A Listener for [DirectoryAdapter] interactions. */
     interface Listener {
+        /** Called when the delete button on a directory item is clicked. */
         fun onRemoveDirectory(dir: Directory)
     }
 }

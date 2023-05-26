@@ -198,8 +198,14 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
         when (key) {
             getString(R.string.set_key_replay_gain),
             getString(R.string.set_key_pre_amp_with),
-            getString(R.string.set_key_pre_amp_without) -> listener.onReplayGainSettingsChanged()
-            getString(R.string.set_key_notif_action) -> listener.onNotificationActionChanged()
+            getString(R.string.set_key_pre_amp_without) -> {
+                logD("Dispatching ReplayGain setting change")
+                listener.onReplayGainSettingsChanged()
+            }
+            getString(R.string.set_key_notif_action) -> {
+                logD("Dispatching notification setting change")
+                listener.onNotificationActionChanged()
+            }
         }
     }
 

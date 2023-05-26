@@ -73,6 +73,7 @@ class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context
 
     override fun onSettingChanged(key: String, listener: ImageSettings.Listener) {
         if (key == getString(R.string.set_key_cover_mode)) {
+            logD("Dispatching cover mode setting change")
             listener.onCoverModeChanged()
         }
     }

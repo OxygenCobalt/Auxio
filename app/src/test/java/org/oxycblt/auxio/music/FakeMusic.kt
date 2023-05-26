@@ -100,8 +100,6 @@ open class FakeArtist : Artist {
 open class FakeGenre : Genre {
     override val name: Name
         get() = throw NotImplementedError()
-    override val albums: List<Album>
-        get() = throw NotImplementedError()
     override val artists: List<Artist>
         get() = throw NotImplementedError()
     override val durationMs: Long

@@ -67,6 +67,8 @@ private constructor(
         return hashCode
     }
 
+    override fun toString() = "Playlist(uid=$uid, name=$name)"
+
     companion object {
         /**
          * Create a new instance with a novel UID.

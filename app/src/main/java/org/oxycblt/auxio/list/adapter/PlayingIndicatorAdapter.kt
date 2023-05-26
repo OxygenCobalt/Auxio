@@ -58,6 +58,8 @@ abstract class PlayingIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
      * @param isPlaying Whether playback is ongoing or paused.
      */
     fun setPlaying(item: T?, isPlaying: Boolean) {
+        logD("Updating playing item [old: $currentItem new: $item]")
+
         var updatedItem = false
         if (currentItem != item) {
             val oldItem = currentItem

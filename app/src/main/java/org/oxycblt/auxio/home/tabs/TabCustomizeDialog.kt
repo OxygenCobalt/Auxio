@@ -91,14 +91,15 @@ class TabCustomizeDialog :
         // We will need the exact index of the tab to update on in order to
         // notify the adapter of the change.
         val index = tabAdapter.tabs.indexOfFirst { it.mode == item.mode }
-        val tab = tabAdapter.tabs[index]
-        tabAdapter.setTab(
-            index,
-            when (tab) {
+        val old = tabAdapter.tabs[index]
+        val new =
+            when (old) {
                 // Invert the visibility of the tab
-                is Tab.Visible -> Tab.Invisible(tab.mode)
-                is Tab.Invisible -> Tab.Visible(tab.mode)
-            })
+                is Tab.Visible -> Tab.Invisible(old.mode)
+                is Tab.Invisible -> Tab.Visible(old.mode)
+            }
+        logD("Flipping tab visibility [from: $old to: $new]")
+        tabAdapter.setTab(index, new)
 
         // Prevent the user from saving if all the tabs are Invisible, as that's an invalid state.
         (requireDialog() as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =

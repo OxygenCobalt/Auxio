@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music.cache
 
 import javax.inject.Inject
 import org.oxycblt.auxio.music.device.RawSong
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
 /**
@@ -49,7 +50,9 @@ class CacheRepositoryImpl @Inject constructor(private val cachedSongsDao: Cached
         try {
             // Faster to load the whole database into memory than do a query on each
             // populate call.
-            CacheImpl(cachedSongsDao.readSongs())
+            val songs = cachedSongsDao.readSongs()
+            logD("Successfully read ${songs.size} songs from cache")
+            CacheImpl(songs)
         } catch (e: Exception) {
             logE("Unable to load cache database.")
             logE(e.stackTraceToString())
@@ -60,7 +63,9 @@ class CacheRepositoryImpl @Inject constructor(private val cachedSongsDao: Cached
         try {
             // Still write out whatever data was extracted.
             cachedSongsDao.nukeSongs()
+            logD("Successfully deleted old cache")
             cachedSongsDao.insertSongs(rawSongs.map(CachedSong::fromRaw))
+            logD("Successfully wrote ${rawSongs.size} songs to cache")
         } catch (e: Exception) {
             logE("Unable to save cache database.")
             logE(e.stackTraceToString())
@@ -96,7 +101,6 @@ private class CacheImpl(cachedSongs: List<CachedSong>) : Cache {
 
     override var invalidated = false
     override fun populate(rawSong: RawSong): Boolean {
-
         // For a cached raw song to be used, it must exist within the cache and have matching
         // addition and modification timestamps. Technically the addition timestamp doesn't
         // exist, but to safeguard against possible OEM-specific timestamp incoherence, we

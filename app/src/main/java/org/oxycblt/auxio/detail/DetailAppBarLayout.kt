@@ -35,6 +35,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.CoordinatorAppBarLayout
 import org.oxycblt.auxio.util.getInteger
 import org.oxycblt.auxio.util.lazyReflectedField
+import org.oxycblt.auxio.util.logD
 
 /**
  * An [CoordinatorAppBarLayout] that displays the title of a hidden [Toolbar] when the scrolling
@@ -77,7 +78,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             (TOOLBAR_TITLE_TEXT_FIELD.get(toolbar) as TextView).apply {
                 // We can never properly initialize the title view's state before draw time,
                 // so we just set it's alpha to 0f to produce a less jarring initialization
-                // animation..
+                // animation.
                 alpha = 0f
             }
 
@@ -101,12 +102,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         if (titleShown == visible) return
         titleShown = visible
 
-        val titleAnimator = titleAnimator
-        if (titleAnimator != null) {
-            titleAnimator.cancel()
-            this.titleAnimator = null
-        }
-
         // Emulate the AppBarLayout lift animation (Linear, alpha 0f -> 1f), but now with
         // the title view's alpha instead of the AppBarLayout's elevation.
         val titleView = findTitleView()
@@ -126,7 +121,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             return
         }
 
-        this.titleAnimator =
+        logD("Changing title visibility [from: $from to: $to]")
+        titleAnimator?.cancel()
+        titleAnimator =
             ValueAnimator.ofFloat(from, to).apply {
                 addUpdateListener { titleView.alpha = it.animatedValue as Float }
                 duration =
