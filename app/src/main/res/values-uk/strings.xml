@@ -95,8 +95,8 @@
     <string name="lbl_mixtapes">Мікстейпи</string>
     <string name="lbl_artist">Виконавець</string>
     <string name="lbl_duration">Тривалість</string>
-    <string name="lbl_mixes">Мікси</string>
-    <string name="lbl_mix">Мікс</string>
+    <string name="lbl_mixes">DJ мікси</string>
+    <string name="lbl_mix">DJ мікс</string>
     <string name="set_round_mode">Заокруглені обкладинки</string>
     <string name="fmt_lib_genre_count">Завантажено жанрів: %d</string>
     <string name="lbl_props">Властивості пісні</string>
@@ -296,4 +296,8 @@
     <string name="lng_playlist_renamed">Список відтворення перейменовано</string>
     <string name="lbl_edit">Редагувати</string>
     <string name="def_playlists">Тут поки що нічого немає</string>
+    <string name="lbl_share">Поділитись</string>
+    <string name="fmt_editing">Редагування %s</string>
+    <string name="def_disc">Немає диску</string>
+    <string name="lbl_appears_on">З\'являється на</string>
 </resources>
