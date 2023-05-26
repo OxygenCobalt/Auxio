@@ -295,7 +295,6 @@
     <string name="fmt_deletion_info">¿Borrar %s\? Esto no se puede deshacer.</string>
     <string name="lbl_confirm_delete_playlist">¿Borrar la lista de reproducción\?</string>
     <string name="lbl_edit">Editar</string>
-    <string name="def_playlists">No hay nada aquí todavía</string>
     <string name="fmt_editing">Editando %s</string>
     <string name="lbl_appears_on">Aparece en</string>
     <string name="lbl_share">Compartir</string>

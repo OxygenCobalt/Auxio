@@ -295,7 +295,6 @@
     <string name="lbl_rename_playlist">Перейменувати список відтворення</string>
     <string name="lng_playlist_renamed">Список відтворення перейменовано</string>
     <string name="lbl_edit">Редагувати</string>
-    <string name="def_playlists">Тут поки що нічого немає</string>
     <string name="lbl_share">Поділитись</string>
     <string name="fmt_editing">Редагування %s</string>
     <string name="def_disc">Немає диску</string>

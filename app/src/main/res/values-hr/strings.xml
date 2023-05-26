@@ -286,5 +286,4 @@
     <string name="lng_playlist_added">Dodano u popis pjesama</string>
     <string name="lbl_edit">Uredi</string>
     <string name="fmt_deletion_info">Izbrisati %s\? To je nepovratna radnja.</string>
-    <string name="def_playlists">Ovdje još nema ničega</string>
 </resources>

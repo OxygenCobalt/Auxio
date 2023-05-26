@@ -291,7 +291,6 @@
     <string name="lng_playlist_renamed">Wiedergabeliste umbenannt</string>
     <string name="lng_playlist_deleted">Wiedergabeliste gelöscht</string>
     <string name="lbl_edit">Bearbeiten</string>
-    <string name="def_playlists">Hier ist noch nichts</string>
     <string name="lbl_share">Teilen</string>
     <string name="def_disc">Keine Disc</string>
     <string name="lbl_appears_on">Erscheint in</string>

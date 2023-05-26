@@ -300,7 +300,6 @@
     <string name="lng_playlist_deleted">Seznam skladeb odstraněn</string>
     <string name="lbl_rename_playlist">Přejmenovat seznam skladeb</string>
     <string name="lbl_edit">Upravit</string>
-    <string name="def_playlists">Zatím tu nic není</string>
     <string name="lbl_appears_on">Také v</string>
     <string name="def_disc">Žádný disk</string>
     <string name="fmt_editing">Úprava seznamu %s</string>

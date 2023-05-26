@@ -289,7 +289,6 @@
     <string name="lbl_rename_playlist">재생목록 이름 바꾸기</string>
     <string name="lbl_confirm_delete_playlist">재생목록을 삭제하시겠습니까\?</string>
     <string name="lbl_edit">편집하다</string>
-    <string name="def_playlists">아직 아무것도 없습니다</string>
     <string name="lbl_appears_on">에 나타납니다</string>
     <string name="lbl_share">공유하다</string>
     <string name="lng_playlist_renamed">재생목록의 이름이 변경됨</string>

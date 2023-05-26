@@ -292,7 +292,6 @@
     <string name="lbl_rename">Rinomina</string>
     <string name="lbl_rename_playlist">Rinomina playlist</string>
     <string name="lbl_edit">Modifica</string>
-    <string name="def_playlists">Non c\'è ancora niente qui</string>
     <string name="fmt_deletion_info">Eliminare %s\? L\'operazione non può essere annullata.</string>
     <string name="lng_playlist_deleted">Playlist eliminata</string>
     <string name="lng_playlist_renamed">Playlist rinominata</string>

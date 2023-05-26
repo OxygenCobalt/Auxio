@@ -298,7 +298,6 @@
     <string name="lng_playlist_deleted">Плейлист удалён</string>
     <string name="lbl_edit">Редактировать</string>
     <string name="fmt_deletion_info">Удалить %s\? Это действие не может быть отменено.</string>
-    <string name="def_playlists">Здесь пока ничего нет</string>
     <string name="lbl_appears_on">Появляется на</string>
     <string name="fmt_editing">Редактирование %s</string>
     <string name="def_disc">Нет диска</string>

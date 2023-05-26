@@ -294,7 +294,6 @@
     <string name="lbl_rename_playlist">Przemianować playlistę</string>
     <string name="lbl_confirm_delete_playlist">Usunąć playlistę\?</string>
     <string name="lbl_edit">Edytować</string>
-    <string name="def_playlists">Jeszcze nic tu nie ma</string>
     <string name="lbl_appears_on">Pojawia się</string>
     <string name="lbl_share">Udział</string>
     <string name="lng_playlist_renamed">Zmieniono nazwę playlisty</string>
