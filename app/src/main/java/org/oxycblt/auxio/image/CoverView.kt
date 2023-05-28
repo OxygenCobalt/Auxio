@@ -199,7 +199,18 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun invalidatePlaybackIndicatorAlpha(playbackIndicator: ImageView) {
-        playbackIndicator.alpha = if (isSelected) 1f else 0f
+        // Occasionally content can bleed through the rounded corners and result in a seam
+        // on the playing indicator, prevent that from occurring by disabling the visibility of
+        // all views below the playback indicator.
+        for (child in children) {
+            child.alpha =
+                when (child) {
+                    // Selection badge is above the playback indicator, do nothing
+                    selectionBadge -> child.alpha
+                    playbackIndicator -> if (isSelected) 1f else 0f
+                    else -> if (isSelected) 0f else 1f
+                }
+        }
     }
 
     private fun invalidateSelectionIndicatorAlpha(selectionBadge: ImageView) {
