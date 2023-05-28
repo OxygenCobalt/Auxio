@@ -55,6 +55,11 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logE
 
+/**
+ * Provides functionality for extracting album cover information. Meant for internal use only.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 class CoverExtractor
 @Inject
 constructor(
@@ -62,25 +67,56 @@ constructor(
     private val imageSettings: ImageSettings,
     private val mediaSourceFactory: MediaSource.Factory
 ) {
+    /**
+     * Extract an image (in the form of [FetchResult]) to represent the given [Song]s.
+     *
+     * @param songs The [Song]s to load.
+     * @param size The [Size] of the image to load.
+     * @return If four distinct album covers could be extracted from the [Song]s, a [DrawableResult]
+     *   will be returned of a mosaic composed of four album covers ordered by
+     *   [computeCoverOrdering]. Otherwise, a [SourceResult] of one album cover will be returned.
+     */
     suspend fun extract(songs: List<Song>, size: Size): FetchResult? {
-        val albums = computeAlbumOrdering(songs)
+        val albums = computeCoverOrdering(songs)
         val streams = mutableListOf<InputStream>()
         for (album in albums) {
-            openInputStream(album)?.let(streams::add)
+            openCoverInputStream(album)?.let(streams::add)
+            // We don't immediately check for mosaic feasibility from album count alone, as that
+            // does not factor in InputStreams failing to load. Instead, only check once we
+            // definitely have image data to use.
             if (streams.size == 4) {
-                return createMosaic(streams, size)
+                // Make sure we free the InputStreams once we've transformed them into a mosaic.
+                return createMosaic(streams, size).also {
+                    withContext(Dispatchers.IO) { streams.forEach(InputStream::close) }
+                }
             }
         }
 
-        return streams.firstOrNull()?.let { stream ->
-            SourceResult(
-                source = ImageSource(stream.source().buffer(), context),
-                mimeType = null,
-                dataSource = DataSource.DISK)
+        // Not enough covers for a mosaic, take the first one (if that even exists)
+        val first = streams.firstOrNull() ?: return null
+
+        // All but the first stream will be unused, free their resources
+        withContext(Dispatchers.IO) {
+            for (i in 1 until streams.size) {
+                streams[i].close()
+            }
         }
+
+        return SourceResult(
+            source = ImageSource(first.source().buffer(), context),
+            mimeType = null,
+            dataSource = DataSource.DISK)
     }
 
-    fun computeAlbumOrdering(songs: List<Song>) =
+    /**
+     * Creates an [Album] list representing the order that album covers would be used in [extract].
+     *
+     * @param songs A hypothetical list of [Song]s that would be used in [extract].
+     * @return A list of [Album]s first ordered by the "representation" within the [Song]s, and then
+     *   by their names. "Representation" is defined by how many [Song]s were found to be linked to
+     *   the given [Album] in the given [Song] list.
+     */
+    fun computeCoverOrdering(songs: List<Song>) =
         Sort(Sort.Mode.ByAlbum, Sort.Direction.ASCENDING)
             .songs(songs)
             .groupBy { it.album }
@@ -88,7 +124,7 @@ constructor(
             .sortedByDescending { it.value.size }
             .map { it.key }
 
-    private suspend fun openInputStream(album: Album): InputStream? =
+    private suspend fun openCoverInputStream(album: Album) =
         try {
             when (imageSettings.coverMode) {
                 CoverMode.OFF -> null
@@ -210,13 +246,9 @@ constructor(
             dataSource = DataSource.DISK)
     }
 
-    /**
-     * Get an image dimension suitable to create a mosaic with.
-     *
-     * @return A pixel dimension derived from the given [Dimension] that will always be even,
-     *   allowing it to be sub-divided.
-     */
     private fun Dimension.mosaicSize(): Int {
+        // Since we want the mosaic to be perfectly divisible into two, we need to round any
+        // odd image sizes upwards to prevent the mosaic creation from failing.
         val size = pxOrElse { 512 }
         return if (size.mod(2) > 0) size + 1 else size
     }

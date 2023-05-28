@@ -29,7 +29,7 @@ import org.oxycblt.auxio.music.Song
 class SongKeyer @Inject constructor(private val coverExtractor: CoverExtractor) :
     Keyer<List<Song>> {
     override fun key(data: List<Song>, options: Options) =
-        "${coverExtractor.computeAlbumOrdering(data).hashCode()}"
+        "${coverExtractor.computeCoverOrdering(data).hashCode()}"
 }
 
 class SongCoverFetcher
