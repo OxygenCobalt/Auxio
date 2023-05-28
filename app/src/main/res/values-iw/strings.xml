@@ -2,7 +2,7 @@
 <resources>
     <string name="lbl_indexer">מוזיקה נטענת</string>
     <string name="lbl_indexing">מוזיקה נטענת</string>
-    <string name="lbl_retry">נסה~י שוב</string>
+    <string name="lbl_retry">לנסות שוב</string>
     <string name="lbl_observing">מפקח על ספריית המוזיקה</string>
     <string name="lbl_all_songs">כל השירים</string>
     <string name="lbl_albums">אלבומים</string>
@@ -26,8 +26,8 @@
     <string name="lbl_remix_group">רמיקסים</string>
     <string name="lbl_artist">אומן</string>
     <string name="lbl_artists">אומנים</string>
-    <string name="lbl_genre">ז\'אנר</string>
-    <string name="lbl_genres">ז\'אנרים</string>
+    <string name="lbl_genre">סוגה</string>
+    <string name="lbl_genres">סוגות</string>
     <string name="lbl_filter">סינון</string>
     <string name="lbl_filter_all">הכל</string>
     <string name="lbl_date">תאריך</string>
@@ -37,14 +37,14 @@
     <string name="lbl_sort">מיון</string>
     <string name="lbl_sort_asc">עולה</string>
     <string name="lbl_sort_dec">יורד</string>
-    <string name="lbl_playback">מנוגן כעת</string>
+    <string name="lbl_playback">מושמע כעת</string>
     <string name="lbl_equalizer">איקוולייזר</string>
-    <string name="lbl_play">נגנ~י</string>
-    <string name="lbl_play_selected">נגנ~י נבחרים</string>
+    <string name="lbl_play">ניגון</string>
+    <string name="lbl_play_selected">ניגון הנבחרים</string>
     <string name="lbl_shuffle">ערבוב</string>
-    <string name="lbl_shuffle_selected">ערבוב נבחרים</string>
-    <string name="lbl_play_next">נגנ~י את הבא</string>
-    <string name="lbl_queue_add">הוספ~י לתור</string>
+    <string name="lbl_shuffle_selected">ערבוב הנבחרים</string>
+    <string name="lbl_play_next">ניגון הבא</string>
+    <string name="lbl_queue_add">הוספה לתור</string>
     <string name="lbl_go_album">מעבר לאלבום</string>
     <string name="lbl_song_detail">הצגת מאפיינים</string>
     <string name="lbl_props">מאפייני שיר</string>
@@ -128,7 +128,7 @@
     <string name="lbl_single_remix">סינגל רמיקס</string>
     <string name="lbl_mixes">מיקסים</string>
     <string name="lbl_search">חיפוש</string>
-    <string name="lbl_duration">אורך</string>
+    <string name="lbl_duration">משך</string>
     <string name="lbl_name">שם</string>
     <string name="lbl_track">רצועה</string>
     <string name="lbl_queue">תור</string>
@@ -159,4 +159,14 @@
     <string name="set_replay_gain_mode_dynamic">העדפ~י אלבום אם אחד מופעל</string>
     <string name="set_pre_amp_without">התאמה ללא תגיות</string>
     <string name="set_pre_amp_desc">המגבר מוחל על ההתאמה הקיימת בזמן השמעה</string>
+    <string name="lbl_new_playlist">רשימת השמעה חדשה</string>
+    <string name="lbl_playlist_add">הוספה לרשימת השמעה</string>
+    <string name="lbl_grant">לתת</string>
+    <string name="lbl_playlist">רשימת השמעה</string>
+    <string name="lbl_playlists">רשימות השמעה</string>
+    <string name="lbl_delete">מחיקה</string>
+    <string name="lbl_rename">שינוי שם</string>
+    <string name="lbl_rename_playlist">שינוי שם רשימת השמעה</string>
+    <string name="lbl_confirm_delete_playlist">למחוק את רשימת ההשמעה\?</string>
+    <string name="lbl_edit">עריכה</string>
 </resources>
