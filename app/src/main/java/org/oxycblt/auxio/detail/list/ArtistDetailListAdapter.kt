@@ -110,7 +110,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
-        binding.parentImage.isPlaying = isPlaying
+        binding.parentImage.setPlaying(isPlaying)
     }
 
     override fun updateSelectionIndicator(isSelected: Boolean) {
@@ -162,7 +162,7 @@ private class ArtistSongViewHolder private constructor(private val binding: Item
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
-        binding.songAlbumCover.isPlaying = isPlaying
+        binding.songAlbumCover.setPlaying(isPlaying)
     }
 
     override fun updateSelectionIndicator(isSelected: Boolean) {

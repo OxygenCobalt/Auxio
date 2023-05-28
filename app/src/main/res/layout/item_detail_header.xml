@@ -10,14 +10,15 @@
     android:paddingEnd="@dimen/spacing_medium"
     android:paddingBottom="@dimen/spacing_mid_medium">
 
-    <org.oxycblt.auxio.image.StyledImageView
+    <org.oxycblt.auxio.image.CoverView
         android:id="@+id/detail_cover"
+        app:enablePlaybackIndicator="false"
+        app:enableSelectionBadge="false"
         style="@style/Widget.Auxio.Image.MidHuge"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription"
-        tools:staticIcon="@drawable/ic_song_24" />
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/detail_type"

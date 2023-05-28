@@ -85,7 +85,16 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
         editedPlaylist: List<Song>?,
         listener: DetailHeaderAdapter.Listener
     ) {
-        binding.detailCover.bind(playlist, editedPlaylist)
+        if (editedPlaylist != null) {
+            logD("Binding edited playlist image")
+            binding.detailCover.bind(
+                editedPlaylist,
+                binding.context.getString(R.string.desc_playlist_image, playlist.name),
+                R.drawable.ic_playlist_24)
+        } else {
+            binding.detailCover.bind(playlist)
+        }
+
         binding.detailType.text = binding.context.getString(R.string.lbl_playlist)
         binding.detailName.text = playlist.name.resolve(binding.context)
         // Nothing about a playlist is applicable to the sub-head text.

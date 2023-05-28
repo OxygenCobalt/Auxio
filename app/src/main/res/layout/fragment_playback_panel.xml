@@ -16,16 +16,17 @@
         app:title="@string/lbl_playback"
         tools:subtitle="@string/lbl_all_songs" />
 
-    <org.oxycblt.auxio.image.StyledImageView
+    <org.oxycblt.auxio.image.CoverView
         android:id="@+id/playback_cover"
         style="@style/Widget.Auxio.Image.Full"
         android:layout_marginStart="@dimen/spacing_medium"
         android:layout_marginTop="@dimen/spacing_medium"
+        app:enablePlaybackIndicator="false"
+        app:enableSelectionBadge="false"
         app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:staticIcon="@drawable/ic_song_24" />
+        app:layout_constraintVertical_chainStyle="packed" />
 
 
     <!-- Playback information is wrapped in a container so that marquee doesn't break -->

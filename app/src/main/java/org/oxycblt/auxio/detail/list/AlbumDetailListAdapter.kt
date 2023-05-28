@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -162,31 +163,33 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
     fun bind(song: Song, listener: SelectableListListener<Song>) {
         listener.bind(song, this, menuButton = binding.songMenu)
 
-        binding.songTrack.apply {
-            if (song.track != null) {
-                // Instead of an album cover, we show the track number, as the song list
-                // within the album detail view would have homogeneous album covers otherwise.
+        val track = song.track
+        if (track != null) {
+            binding.songTrackCover.contentDescription =
+                binding.context.getString(R.string.desc_track_number, track)
+            binding.songTrackText.apply {
+                isVisible = true
                 text = context.getString(R.string.fmt_number, song.track)
-                isInvisible = false
-                contentDescription = context.getString(R.string.desc_track_number, song.track)
-            } else {
-                // No track, do not show a number, instead showing a generic icon.
-                text = ""
-                isInvisible = true
-                contentDescription = context.getString(R.string.def_track)
             }
+            binding.songTrackPlaceholder.isInvisible = true
+        } else {
+            binding.songTrackCover.contentDescription =
+                binding.context.getString(R.string.def_track)
+            binding.songTrackText.apply {
+                isInvisible = true
+                text = null
+            }
+            binding.songTrackPlaceholder.isVisible = true
         }
 
         binding.songName.text = song.name.resolve(binding.context)
-
-        // Use duration instead of album or artist for each song, as this text would
-        // be homogenous otherwise.
+        // Use duration instead of album or artist for each song to be more contextually relevant.
         binding.songDuration.text = song.durationMs.formatDurationMs(false)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
-        binding.songTrackBg.isPlaying = isPlaying
+        binding.songTrackCover.setPlaying(isPlaying)
     }
 
     override fun updateSelectionIndicator(isSelected: Boolean) {

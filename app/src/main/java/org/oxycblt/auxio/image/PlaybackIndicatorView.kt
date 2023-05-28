@@ -26,12 +26,9 @@ import android.util.AttributeSet
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.widget.ImageViewCompat
-import com.google.android.material.shape.MaterialShapeDrawable
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlin.math.max
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getColorCompat
 import org.oxycblt.auxio.util.getDrawableCompat
 
@@ -39,8 +36,8 @@ import org.oxycblt.auxio.util.getDrawableCompat
  * A view that displays an activation (i.e playback) indicator, with an accented styling and an
  * animated equalizer icon.
  *
- * This is only meant for use with [ImageGroup]. Due to limitations with [AnimationDrawable]
- * instances within custom views, this cannot be merged with [ImageGroup].
+ * This is only meant for use with [CoverView]. Due to limitations with [AnimationDrawable]
+ * instances within custom views, this cannot be merged with [CoverView].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -56,39 +53,16 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private val indicatorMatrix = Matrix()
     private val indicatorMatrixSrc = RectF()
     private val indicatorMatrixDst = RectF()
-    @Inject lateinit var uiSettings: UISettings
 
-    /**
-     * The corner radius of this view. This allows the outer ImageGroup to apply it's corner radius
-     * to this view without any attribute hacks.
-     */
-    var cornerRadius = 0f
-        set(value) {
-            field = value
-            (background as? MaterialShapeDrawable)?.let { bg ->
-                if (uiSettings.roundMode) {
-                    bg.setCornerSize(value)
-                } else {
-                    bg.setCornerSize(0f)
-                }
-            }
+    fun setPlaying(isPlaying: Boolean) {
+        if (isPlaying) {
+            playingIndicatorDrawable.start()
+            setImageDrawable(playingIndicatorDrawable)
+        } else {
+            playingIndicatorDrawable.stop()
+            setImageDrawable(pausedIndicatorDrawable)
         }
-
-    /**
-     * Whether this view should be indicated to have ongoing playback or not. If true, the animated
-     * playing icon will be shown. If false, the static paused icon will be shown.
-     */
-    var isPlaying: Boolean
-        get() = drawable == playingIndicatorDrawable
-        set(value) {
-            if (value) {
-                playingIndicatorDrawable.start()
-                setImageDrawable(playingIndicatorDrawable)
-            } else {
-                playingIndicatorDrawable.stop()
-                setImageDrawable(pausedIndicatorDrawable)
-            }
-        }
+    }
 
     init {
         // We will need to manually re-scale the playing/paused drawables to align with
@@ -96,19 +70,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         scaleType = ScaleType.MATRIX
         // Tint the playing/paused drawables so they are harmonious with the background.
         ImageViewCompat.setImageTintList(this, context.getColorCompat(R.color.sel_on_cover_bg))
-
-        // Use clipToOutline and a background drawable to crop images. While Coil's transformation
-        // could theoretically be used to round corners, the corner radius is dependent on the
-        // dimensions of the image, which will result in inconsistent corners across different
-        // album covers unless we resize all covers to be the same size. clipToOutline is both
-        // cheaper and more elegant. As a side-note, this also allows us to re-use the same
-        // background for both the tonal background color and the corner rounding.
-        clipToOutline = true
-        background =
-            MaterialShapeDrawable().apply {
-                fillColor = context.getColorCompat(R.color.sel_cover_bg)
-                setCornerSize(cornerRadius)
-            }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

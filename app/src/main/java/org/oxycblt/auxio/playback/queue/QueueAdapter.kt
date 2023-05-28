@@ -167,7 +167,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemEditableS
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.interactBody.isSelected = isActive
-        binding.songAlbumCover.isPlaying = isPlaying
+        binding.songAlbumCover.setPlaying(isPlaying)
     }
 
     companion object {

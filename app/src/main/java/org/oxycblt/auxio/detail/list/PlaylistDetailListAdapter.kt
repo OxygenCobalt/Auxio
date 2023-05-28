@@ -256,7 +256,7 @@ private constructor(private val binding: ItemEditableSongBinding) :
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.interactBody.isSelected = isActive
-        binding.songAlbumCover.isPlaying = isPlaying
+        binding.songAlbumCover.setPlaying(isPlaying)
     }
 
     override fun updateEditing(editing: Boolean) {

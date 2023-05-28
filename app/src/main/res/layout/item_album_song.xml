@@ -16,15 +16,25 @@
     with us only overlaying the track number (and other elements) onto it.
     -->
 
-    <org.oxycblt.auxio.image.ImageGroup
-        android:id="@+id/song_track_bg"
+    <org.oxycblt.auxio.image.CoverView
+        android:id="@+id/song_track_cover"
         style="@style/Widget.Auxio.Image.Small"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:staticIcon="@drawable/ic_song_24">
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/song_track_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_song_24"
+            android:scaleType="center"
+            android:contentDescription="@string/def_track"
+            android:visibility="invisible"
+            app:tint="@color/sel_on_cover_bg"
+            tools:ignore="ContentDescription" />
 
         <TextView
-            android:id="@+id/song_track"
+            android:id="@+id/song_track_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ellipsize="end"
@@ -44,7 +54,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="16" />
 
-    </org.oxycblt.auxio.image.ImageGroup>
+    </org.oxycblt.auxio.image.CoverView>
 
 
     <TextView
@@ -56,8 +66,8 @@
         android:textColor="@color/sel_selectable_text_primary"
         app:layout_constraintBottom_toTopOf="@+id/song_duration"
         app:layout_constraintEnd_toStartOf="@+id/song_menu"
-        app:layout_constraintStart_toEndOf="@+id/song_track_bg"
-        app:layout_constraintTop_toTopOf="@+id/song_track_bg"
+        app:layout_constraintStart_toEndOf="@+id/song_track_cover"
+        app:layout_constraintTop_toTopOf="@+id/song_track_cover"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Song Name" />
 
@@ -68,9 +78,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_mid_medium"
         android:textColor="?android:attr/textColorSecondary"
-        app:layout_constraintBottom_toBottomOf="@+id/song_track_bg"
+        app:layout_constraintBottom_toBottomOf="@+id/song_track_cover"
         app:layout_constraintEnd_toStartOf="@+id/song_menu"
-        app:layout_constraintStart_toEndOf="@+id/song_track_bg"
+        app:layout_constraintStart_toEndOf="@+id/song_track_cover"
         app:layout_constraintTop_toBottomOf="@+id/song_name"
         tools:text="16:16" />
 

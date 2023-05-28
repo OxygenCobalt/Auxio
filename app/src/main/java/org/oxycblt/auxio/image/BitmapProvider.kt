@@ -97,16 +97,14 @@ constructor(
                     ImageRequest.Builder(context)
                         .data(listOf(song))
                         // Use ORIGINAL sizing, as we are not loading into any View-like component.
-                        .size(Size.ORIGINAL)
-                        .transformations(SquareFrameTransform.INSTANCE))
+                        .size(Size.ORIGINAL))
                 // Override the target in order to deliver the bitmap to the given
                 // listener.
+                .transformations(SquareFrameTransform.INSTANCE)
                 .target(
                     onSuccess = {
                         synchronized(this) {
                             if (currentHandle == handle) {
-                                // Has not been superseded by a new request, can deliver
-                                // this result.
                                 target.onCompleted(it.toBitmap())
                             }
                         }
@@ -114,8 +112,6 @@ constructor(
                     onError = {
                         synchronized(this) {
                             if (currentHandle == handle) {
-                                // Has not been superseded by a new request, can deliver
-                                // this result.
                                 target.onCompleted(null)
                             }
                         }
