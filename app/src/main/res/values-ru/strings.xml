@@ -191,7 +191,7 @@
     <string name="lbl_album_live">Концертный альбом</string>
     <string name="lbl_live_group">Концертный</string>
     <string name="lng_observing">Мониторинг изменений в музыкальной библиотеке…</string>
-    <string name="lbl_state_wiped">Позиция очищена</string>
+    <string name="lbl_state_wiped">Позиция сброшена</string>
     <string name="set_dirs">Папки с музыкой</string>
     <string name="set_dirs_mode_include">Включить</string>
     <string name="lbl_album_remix">Альбом ремиксов</string>
