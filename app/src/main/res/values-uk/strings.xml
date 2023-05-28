@@ -27,7 +27,7 @@
     <string name="lbl_licenses">Ліцензії</string>
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_root_title">Налаштування</string>
-    <string name="set_ui">Вигляд і поведінка</string>
+    <string name="set_ui">Вигляд</string>
     <string name="set_theme">Тема</string>
     <string name="set_theme_day">Світла</string>
     <string name="set_theme_night">Темна</string>
