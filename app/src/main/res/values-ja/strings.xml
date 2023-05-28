@@ -272,4 +272,16 @@
     <string name="def_song_count">曲がありません</string>
     <string name="fmt_def_playlist">プレイリスト %d</string>
     <string name="desc_new_playlist">新しいプレイリストを作成する</string>
+    <string name="lbl_delete">消去</string>
+    <string name="lbl_rename">名前の変更</string>
+    <string name="lbl_rename_playlist">プレイリストの名前を変更する</string>
+    <string name="lbl_confirm_delete_playlist">プレイリストを削除しますか\?</string>
+    <string name="lng_playlist_deleted">プレイリストが削除されました</string>
+    <string name="lbl_edit">編集</string>
+    <string name="lng_playlist_renamed">プレイリストの名前が変更されました</string>
+    <string name="fmt_deletion_info">%sを削除しますか\? この操作は元に戻すことができません。</string>
+    <string name="lbl_share">共有</string>
+    <string name="def_disc">ディスクがありません</string>
+    <string name="fmt_editing">%sを編集中</string>
+    <string name="lbl_appears_on">に登場します</string>
 </resources>
