@@ -5,8 +5,8 @@
     <string name="lbl_grant">Engedélyez</string>
     <string name="lbl_genres">Műfajok</string>
     <string name="lbl_artists">Előadók</string>
-    <string name="lbl_albums">Album</string>
-    <string name="lbl_songs">Dal</string>
+    <string name="lbl_albums">Albumok</string>
+    <string name="lbl_songs">Dalok</string>
     <string name="lbl_all_songs">Összes dal</string>
     <string name="lbl_search">Keresés</string>
     <string name="lbl_filter">Szűrő</string>
