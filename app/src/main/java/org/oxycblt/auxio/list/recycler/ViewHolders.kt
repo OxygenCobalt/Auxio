@@ -41,7 +41,6 @@ import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logD
 
 /**
  * A [RecyclerView.ViewHolder] that displays a [Song]. Use [from] to create an instance.
@@ -331,7 +330,6 @@ class BasicHeaderViewHolder private constructor(private val binding: ItemHeaderB
      * @param basicHeader The new [BasicHeader] to bind.
      */
     fun bind(basicHeader: BasicHeader) {
-        logD(binding.context.getString(basicHeader.titleRes))
         binding.title.text = binding.context.getString(basicHeader.titleRes)
     }
 

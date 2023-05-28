@@ -35,6 +35,8 @@ import org.oxycblt.auxio.util.logD
  * Implements the fuzzy-ish searching algorithm used in the search view.
  *
  * @author Alexander Capehart
+ *
+ * TODO: Handle locale changes
  */
 interface SearchEngine {
     /**

@@ -232,7 +232,7 @@ class PlaybackService :
             return
         }
 
-        logD("Loading ${song.name}")
+        logD("Loading $song")
         player.setMediaItem(MediaItem.fromUri(song.uri))
         player.prepare()
         player.playWhenReady = play

@@ -343,7 +343,7 @@ class HomeFragment :
             // the current sort of the tab.
             if (isCurrentMode || isCurrentlyAscending || isCurrentlyDescending) {
                 logD(
-                    "Checking $option [mode: $isCurrentMode asc: $$isCurrentlyAscending dec: $isCurrentlyDescending]")
+                    "Checking $option option [mode: $isCurrentMode asc: $isCurrentlyAscending dec: $isCurrentlyDescending]")
                 // Note: We cannot inline this boolean assignment since it unchecks all other radio
                 // buttons (even when setting it to false), which would result in nothing being
                 // selected.
@@ -353,7 +353,7 @@ class HomeFragment :
             // Disable options that are not allowed by the isVisible lambda
             option.isVisible = isVisible(option.itemId)
             if (!option.isVisible) {
-                logD("Hiding $option")
+                logD("Hiding $option option")
             }
         }
 
@@ -467,13 +467,11 @@ class HomeFragment :
 
         when (progress) {
             is IndexingProgress.Indeterminate -> {
-                logD("Showing generic progress")
                 // In a query/initialization state, show a generic loading status.
                 binding.homeIndexingStatus.text = getString(R.string.lng_indexing)
                 binding.homeIndexingProgress.isIndeterminate = true
             }
             is IndexingProgress.Songs -> {
-                logD("Showing song progress")
                 // Actively loading songs, show the current progress.
                 binding.homeIndexingStatus.text =
                     getString(R.string.fmt_indexing, progress.current, progress.total)
@@ -492,7 +490,7 @@ class HomeFragment :
         // displaying the shuffle FAB makes no sense. We also don't want the fast scroll
         // popup to overlap with the FAB, so we hide the FAB when fast scrolling too.
         if (songs.isEmpty() || isFastScrolling) {
-            logD("Hiding fab: [empty: ${songs.isEmpty()} scrolling: $isFastScrolling")
+            logD("Hiding fab: [empty: ${songs.isEmpty()} scrolling: $isFastScrolling]")
             binding.homeFab.hide()
         } else {
             logD("Showing fab")

@@ -53,7 +53,8 @@ import org.oxycblt.auxio.util.logW
  *
  * @author Alexander Capehart (OxygenCobalt)
  *
- * TODO: Switch listener to set
+ * TODO: Switch listeners to set when you can confirm there are no order-dependent listener
+ *   configurations
  */
 interface MusicRepository {
     /** The current music information found on the device. */

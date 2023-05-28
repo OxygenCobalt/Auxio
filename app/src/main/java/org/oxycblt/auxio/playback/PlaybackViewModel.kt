@@ -49,6 +49,8 @@ import org.oxycblt.auxio.util.logD
  * An [ViewModel] that provides a safe UI frontend for the current playback state.
  *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Debug subtle backwards movement of position on pause
  */
 @HiltViewModel
 class PlaybackViewModel

@@ -143,7 +143,6 @@ constructor(
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         val deviceLibrary = musicRepository.deviceLibrary
-        logD(changes.deviceLibrary)
         if (changes.deviceLibrary && deviceLibrary != null) {
             logD("Refreshing library")
             // Get the each list of items in the library to use as our list data.

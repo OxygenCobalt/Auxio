@@ -33,10 +33,17 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class AnimatedMaterialButton
-@JvmOverloads
-constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-    RippleFixMaterialButton(context, attrs, defStyleAttr) {
+class AnimatedMaterialButton : RippleFixMaterialButton {
+    constructor(context: Context) : super(context)
+
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+
+    constructor(
+        context: Context,
+        attrs: AttributeSet,
+        defStyleAttr: Int
+    ) : super(context, attrs, defStyleAttr)
+
     private var currentCornerRadiusRatio = 0f
     private var animator: ValueAnimator? = null
 
