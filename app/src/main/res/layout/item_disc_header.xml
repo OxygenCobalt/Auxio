@@ -25,7 +25,7 @@
             android:id="@+id/disc_icon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_add_24"
+            android:src="@drawable/ic_album_24"
             android:scaleType="center"
             app:tint="@color/sel_on_cover_bg"
             tools:ignore="ContentDescription" />

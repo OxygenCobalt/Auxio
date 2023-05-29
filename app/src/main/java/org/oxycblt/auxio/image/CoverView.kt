@@ -42,7 +42,6 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.image.extractor.SquareFrameTransform
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -63,8 +62,6 @@ import org.oxycblt.auxio.util.getInteger
  * itself can be overridden if populated like a normal [FrameLayout].
  *
  * @author Alexander Capehart (OxygenCobalt)
- *
- * TODO: Enable non-square covers as soon as I can confirm that my workaround is okay
  */
 @AndroidEntryPoint
 class CoverView
@@ -142,7 +139,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             child.apply {
                 // If there are rounded corners, we want to make sure view content will be cropped
                 // with it.
-                clipToOutline = true
+                clipToOutline = this != image
                 background =
                     MaterialShapeDrawable().apply {
                         fillColor = context.getColorCompat(R.color.sel_cover_bg)
@@ -316,7 +313,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             ImageRequest.Builder(context)
                 .data(songs)
                 .error(StyledDrawable(context, context.getDrawableCompat(errorRes)))
-                .transformations(SquareFrameTransform.INSTANCE)
+                .transformations(RoundedCornersTransformation(cornerRadius))
                 .target(image)
                 .build()
         // Dispose of any previous image request and load a new image.
@@ -335,8 +332,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         override fun draw(canvas: Canvas) {
             // Resize the drawable such that it's always 1/4 the size of the image and
             // centered in the middle of the canvas.
-            val adjustWidth = bounds.width() / 4
-            val adjustHeight = bounds.height() / 4
+            val adjustWidth = inner.bounds.width() / 4
+            val adjustHeight = inner.bounds.height() / 4
             inner.bounds.set(
                 adjustWidth,
                 adjustHeight,

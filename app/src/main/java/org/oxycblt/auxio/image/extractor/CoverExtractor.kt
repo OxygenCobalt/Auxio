@@ -43,6 +43,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import javax.inject.Inject
+import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.guava.asDeferred
 import kotlinx.coroutines.withContext
@@ -224,10 +225,9 @@ constructor(
                 break
             }
 
-            // Run the bitmap through a transform to reflect the configuration of other images.
-            val bitmap =
-                SquareFrameTransform.INSTANCE.transform(
-                    BitmapFactory.decodeStream(stream), mosaicFrameSize)
+            // Crop the bitmap down to a square so it leaves no empty space
+            // TODO: Work around this
+            val bitmap = cropBitmap(BitmapFactory.decodeStream(stream), mosaicFrameSize)
             canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
 
             x += bitmap.width
@@ -251,5 +251,22 @@ constructor(
         // odd image sizes upwards to prevent the mosaic creation from failing.
         val size = pxOrElse { 512 }
         return if (size.mod(2) > 0) size + 1 else size
+    }
+
+    private fun cropBitmap(input: Bitmap, size: Size): Bitmap {
+        // Find the smaller dimension and then take a center portion of the image that
+        // has that size.
+        val dstSize = min(input.width, input.height)
+        val x = (input.width - dstSize) / 2
+        val y = (input.height - dstSize) / 2
+        val dst = Bitmap.createBitmap(input, x, y, dstSize, dstSize)
+
+        val desiredWidth = size.width.pxOrElse { dstSize }
+        val desiredHeight = size.height.pxOrElse { dstSize }
+        if (dstSize != desiredWidth || dstSize != desiredHeight) {
+            // Image is not the desired size, upscale it.
+            return Bitmap.createScaledBitmap(dst, desiredWidth, desiredHeight, true)
+        }
+        return dst
     }
 }

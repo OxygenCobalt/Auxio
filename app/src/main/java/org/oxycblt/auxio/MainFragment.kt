@@ -514,7 +514,7 @@ class MainFragment :
             val exploreNavController = binding.exploreNavHost.findNavController()
 
             // TODO: Debug why this fails sometimes on the playback sheet
-            // TODO: Add playlist editing
+            // TODO: Add playlist editing to enabled check
             // TODO: Can this be split up?
 
             isEnabled =

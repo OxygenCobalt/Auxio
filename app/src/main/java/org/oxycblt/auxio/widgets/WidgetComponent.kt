@@ -22,13 +22,12 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
 import coil.request.ImageRequest
-import coil.transform.RoundedCornersTransformation
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.ImageSettings
-import org.oxycblt.auxio.image.extractor.SquareFrameTransform
+import org.oxycblt.auxio.image.RoundedCornersTransformation
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.queue.Queue
@@ -101,9 +100,7 @@ constructor(
                         // rounded corners.
                         builder
                             .size(getSafeRemoteViewsImageSize(context, 10f))
-                            .transformations(
-                                SquareFrameTransform.INSTANCE,
-                                RoundedCornersTransformation(cornerRadius.toFloat()))
+                            .transformations(RoundedCornersTransformation(cornerRadius.toFloat()))
                     } else {
                         builder.size(getSafeRemoteViewsImageSize(context))
                     }
