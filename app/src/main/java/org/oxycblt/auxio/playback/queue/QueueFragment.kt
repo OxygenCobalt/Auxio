@@ -105,9 +105,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditClickList
     private fun updateQueue(queue: List<Song>, index: Int, isPlaying: Boolean) {
         val binding = requireBinding()
 
-        // Replace or diff the queue depending on the type of change it is.
         queueAdapter.update(queue, queueModel.queueInstructions.consume())
-        // Update position in list (and thus past/future items)
         queueAdapter.setPosition(index, isPlaying)
 
         // If requested, scroll to a new item (occurs when the index moves)

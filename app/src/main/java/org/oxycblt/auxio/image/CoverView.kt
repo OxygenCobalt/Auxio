@@ -89,7 +89,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private val selectionBadge: ImageView?
 
     @DimenRes private val iconSizeRes: Int?
-    @DimenRes private val cornerRadiusRes: Int
+    @DimenRes private val cornerRadiusRes: Int?
 
     private var fadeAnimator: ValueAnimator? = null
     private val indicatorMatrix = Matrix()
@@ -103,7 +103,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         val sizing = styledAttrs.getIntOrThrow(R.styleable.CoverView_sizing)
         iconSizeRes = SIZING_ICON_SIZE[sizing]
-        cornerRadiusRes = SIZING_CORNER_RADII[sizing]
+        cornerRadiusRes =
+            if (uiSettings.roundMode) {
+                SIZING_CORNER_RADII[sizing]
+            } else {
+                null
+            }
 
         val playbackIndicatorEnabled =
             styledAttrs.getBoolean(R.styleable.CoverView_enablePlaybackIndicator, true)
@@ -162,7 +167,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 background =
                     MaterialShapeDrawable().apply {
                         fillColor = context.getColorCompat(R.color.sel_cover_bg)
-                        setCornerSize(context.getDimen(cornerRadiusRes))
+                        setCornerSize(cornerRadiusRes?.let(context::getDimen) ?: 0f)
                     }
             }
         }
@@ -220,6 +225,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         invalidateSelectionIndicatorAlpha(selectionBadge ?: return)
     }
 
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        invalidateRootAlpha()
+    }
+
     override fun setSelected(selected: Boolean) {
         super.setSelected(selected)
         invalidateRootAlpha()
@@ -249,7 +259,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun invalidateRootAlpha() {
-        alpha = if (isSelected || isEnabled) 1f else 0.5f
+        alpha = if (isEnabled || isSelected) 1f else 0.5f
     }
 
     private fun invalidatePlaybackIndicatorAlpha(playbackIndicator: PlaybackIndicator) {
@@ -370,7 +380,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             ImageRequest.Builder(context)
                 .data(songs)
                 .error(StyledDrawable(context, context.getDrawableCompat(errorRes), iconSizeRes))
-                .transformations(RoundedCornersTransformation(context.getDimen(cornerRadiusRes)))
+                .transformations(
+                    RoundedCornersTransformation(cornerRadiusRes?.let(context::getDimen) ?: 0f))
                 .target(image)
                 .build()
         // Dispose of any previous image request and load a new image.
