@@ -240,24 +240,32 @@ constructor(
 
     @Synchronized
     override fun addUpdateListener(listener: MusicRepository.UpdateListener) {
+        logD("Adding $listener to update listeners")
         updateListeners.add(listener)
         listener.onMusicChanges(MusicRepository.Changes(deviceLibrary = true, userLibrary = true))
     }
 
     @Synchronized
     override fun removeUpdateListener(listener: MusicRepository.UpdateListener) {
-        updateListeners.remove(listener)
+        logD("Removing $listener to update listeners")
+        if (!updateListeners.remove(listener)) {
+            logW("Update listener $listener was not added prior, cannot remove")
+        }
     }
 
     @Synchronized
     override fun addIndexingListener(listener: MusicRepository.IndexingListener) {
+        logD("Adding $listener to indexing listeners")
         indexingListeners.add(listener)
         listener.onIndexingStateChanged()
     }
 
     @Synchronized
     override fun removeIndexingListener(listener: MusicRepository.IndexingListener) {
-        indexingListeners.remove(listener)
+        logD("Removing $listener from indexing listeners")
+        if (!indexingListeners.remove(listener)) {
+            logW("Indexing listener $listener was not added prior, cannot remove")
+        }
     }
 
     @Synchronized
@@ -266,6 +274,7 @@ constructor(
             logW("Worker is already registered")
             return
         }
+        logD("Registering worker $worker")
         indexingWorker = worker
         if (indexingState == null) {
             worker.requestIndex(true)
@@ -278,6 +287,7 @@ constructor(
             logW("Given worker did not match current worker")
             return
         }
+        logD("Unregistering worker $worker")
         indexingWorker = null
         currentIndexingState = null
     }

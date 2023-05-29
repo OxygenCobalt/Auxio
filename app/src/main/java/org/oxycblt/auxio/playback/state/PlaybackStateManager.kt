@@ -323,6 +323,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     @Synchronized
     override fun addListener(listener: PlaybackStateManager.Listener) {
+        logD("Adding $listener to listeners")
         if (isInitialized) {
             listener.onNewPlayback(queue, parent)
             listener.onRepeatChanged(repeatMode)
@@ -334,7 +335,10 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     @Synchronized
     override fun removeListener(listener: PlaybackStateManager.Listener) {
-        listeners.remove(listener)
+        logD("Removing $listener from listeners")
+        if (!listeners.remove(listener)) {
+            logW("Listener $listener was not added prior, cannot remove")
+        }
     }
 
     @Synchronized
@@ -343,6 +347,8 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             logW("Internal player is already registered")
             return
         }
+
+        logD("Registering internal player $internalPlayer")
 
         if (isInitialized) {
             internalPlayer.loadSong(queue.currentSong, playerState.isPlaying)
@@ -362,6 +368,8 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             logW("Given internal player did not match current internal player")
             return
         }
+
+        logD("Unregistering internal player $internalPlayer")
 
         this.internalPlayer = null
     }
