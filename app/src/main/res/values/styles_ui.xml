@@ -34,38 +34,38 @@
     <style name="Widget.Auxio.Image.Small" parent="">
         <item name="android:layout_width">@dimen/size_cover_compact</item>
         <item name="android:layout_height">@dimen/size_cover_compact</item>
-        <item name="cornerRadius">@dimen/size_corners_small</item>
+        <item name="sizing">small</item>
     </style>
 
     <style name="Widget.Auxio.Image.Medium" parent="">
         <item name="android:layout_width">@dimen/size_cover_normal</item>
         <item name="android:layout_height">@dimen/size_cover_normal</item>
-        <item name="cornerRadius">@dimen/size_corners_small</item>
+        <item name="sizing">medium</item>
     </style>
 
     <style name="Widget.Auxio.Image.Large" parent="">
         <item name="android:layout_width">@dimen/size_cover_large</item>
         <item name="android:layout_height">@dimen/size_cover_large</item>
-        <item name="cornerRadius">@dimen/size_corners_medium</item>
+        <item name="sizing">large</item>
     </style>
 
     <style name="Widget.Auxio.Image.MidHuge" parent="">
         <item name="android:layout_width">@dimen/size_cover_mid_huge</item>
         <item name="android:layout_height">@dimen/size_cover_mid_huge</item>
-        <item name="cornerRadius">@dimen/size_corners_medium</item>
+        <item name="sizing">large</item>
     </style>
 
     <style name="Widget.Auxio.Image.Huge" parent="">
         <item name="android:layout_width">@dimen/size_cover_huge</item>
         <item name="android:layout_height">@dimen/size_cover_huge</item>
-        <item name="cornerRadius">@dimen/size_corners_medium</item>
+        <item name="sizing">large</item>
     </style>
 
     <style name="Widget.Auxio.Image.Full" parent="">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
         <item name="layout_constraintDimensionRatio">1</item>
-        <item name="cornerRadius">@dimen/size_corners_medium</item>
+        <item name="sizing">large</item>
     </style>
 
     <style name="Widget.Auxio.RecyclerView.Linear" parent="">
@@ -221,7 +221,7 @@
     </style>
 
     <style name="Widget.Auxio.Button.Icon.Large" parent="Widget.Auxio.Button.Icon.Base">
-        <item name="iconSize">@dimen/size_icon_large</item>
+        <item name="iconSize">@dimen/size_icon_medium</item>
         <item name="android:minWidth">@dimen/size_btn</item>
         <item name="android:minHeight">@dimen/size_btn</item>
         <item name="android:insetTop">0dp</item>
@@ -238,7 +238,7 @@
     <style name="Widget.Auxio.Button.PlayPause" parent="Widget.Material3.Button.IconButton.Filled.Tonal">
         <item name="android:minWidth">@dimen/size_play_pause_button</item>
         <item name="android:minHeight">@dimen/size_play_pause_button</item>
-        <item name="iconSize">@dimen/size_icon_large</item>
+        <item name="iconSize">@dimen/size_icon_medium</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="android:insetLeft">0dp</item>

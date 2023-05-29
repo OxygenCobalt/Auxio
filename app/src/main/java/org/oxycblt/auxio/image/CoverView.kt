@@ -23,17 +23,23 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.ColorFilter
+import android.graphics.Matrix
 import android.graphics.PixelFormat
+import android.graphics.RectF
+import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.AttrRes
+import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
+import androidx.core.content.res.getIntOrThrow
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.children
 import androidx.core.view.updateMarginsRelative
+import androidx.core.widget.ImageViewCompat
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.util.CoilUtils
@@ -50,6 +56,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getColorCompat
+import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getDimenPixels
 import org.oxycblt.auxio.util.getDrawableCompat
 import org.oxycblt.auxio.util.getInteger
@@ -72,29 +79,34 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     @Inject lateinit var uiSettings: UISettings
 
     private val image: ImageView
-    private val playbackIndicator: PlaybackIndicatorView?
+
+    data class PlaybackIndicator(
+        val view: ImageView,
+        val playingDrawable: AnimationDrawable,
+        val pausedDrawable: Drawable
+    )
+    private val playbackIndicator: PlaybackIndicator?
     private val selectionBadge: ImageView?
-    private val cornerRadius: Float
+
+    @DimenRes private val iconSizeRes: Int?
+    @DimenRes private val cornerRadiusRes: Int
 
     private var fadeAnimator: ValueAnimator? = null
+    private val indicatorMatrix = Matrix()
+    private val indicatorMatrixSrc = RectF()
+    private val indicatorMatrixDst = RectF()
 
     init {
         // Obtain some StyledImageView attributes to use later when theming the custom view.
         @SuppressLint("CustomViewStyleable")
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.CoverView)
 
-        // Keep track of our corner radius so that we can apply the same attributes to the custom
-        // view.
-        cornerRadius =
-            if (uiSettings.roundMode) {
-                styledAttrs.getDimension(R.styleable.CoverView_cornerRadius, 0f)
-            } else {
-                0f
-            }
+        val sizing = styledAttrs.getIntOrThrow(R.styleable.CoverView_sizing)
+        iconSizeRes = SIZING_ICON_SIZE[sizing]
+        cornerRadiusRes = SIZING_CORNER_RADII[sizing]
 
         val playbackIndicatorEnabled =
             styledAttrs.getBoolean(R.styleable.CoverView_enablePlaybackIndicator, true)
-
         val selectionBadgeEnabled =
             styledAttrs.getBoolean(R.styleable.CoverView_enableSelectionBadge, true)
 
@@ -105,7 +117,15 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // Initialize the playback indicator if enabled.
         playbackIndicator =
             if (playbackIndicatorEnabled) {
-                PlaybackIndicatorView(context)
+                PlaybackIndicator(
+                    ImageView(context).apply {
+                        scaleType = ImageView.ScaleType.MATRIX
+                        ImageViewCompat.setImageTintList(
+                            this, context.getColorCompat(R.color.sel_on_cover_bg))
+                    },
+                    context.getDrawableCompat(R.drawable.ic_playing_indicator_24)
+                        as AnimationDrawable,
+                    context.getDrawableCompat(R.drawable.ic_paused_indicator_24))
             } else {
                 null
             }
@@ -131,10 +151,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             addView(image)
         }
 
-        playbackIndicator?.let(::addView)
+        playbackIndicator?.run { addView(view) }
 
-        // Add backgrounds to each children. This creates visual consistency between each view,
-        // and also enables views to be hidden without clunky visibility changes.
+        // Add backgrounds to each child for visual consistency
         for (child in children) {
             child.apply {
                 // If there are rounded corners, we want to make sure view content will be cropped
@@ -143,7 +162,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 background =
                     MaterialShapeDrawable().apply {
                         fillColor = context.getColorCompat(R.color.sel_cover_bg)
-                        setCornerSize(cornerRadius)
+                        setCornerSize(context.getDimen(cornerRadiusRes))
                     }
             }
         }
@@ -161,6 +180,36 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     val spacing = context.getDimenPixels(R.dimen.spacing_tiny)
                     updateMarginsRelative(bottom = spacing, end = spacing)
                 })
+        }
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
+        // AnimatedVectorDrawable cannot be placed in a StyledDrawable, we must replicate the
+        // behavior with a matrix.
+        val playbackIndicator = (playbackIndicator ?: return).view
+        val iconSize = iconSizeRes?.let(context::getDimenPixels) ?: (measuredWidth / 2)
+        playbackIndicator.apply {
+            imageMatrix =
+                indicatorMatrix.apply {
+                    reset()
+                    drawable?.let { drawable ->
+                        // First scale the icon up to the desired size.
+                        indicatorMatrixSrc.set(
+                            0f,
+                            0f,
+                            drawable.intrinsicWidth.toFloat(),
+                            drawable.intrinsicHeight.toFloat())
+                        indicatorMatrixDst.set(0f, 0f, iconSize.toFloat(), iconSize.toFloat())
+                        indicatorMatrix.setRectToRect(
+                            indicatorMatrixSrc, indicatorMatrixDst, Matrix.ScaleToFit.CENTER)
+
+                        // Then actually center it into the icon.
+                        indicatorMatrix.postTranslate(
+                            (measuredWidth - iconSize) / 2f, (measuredHeight - iconSize) / 2f)
+                    }
+                }
         }
     }
 
@@ -185,17 +234,25 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     /**
      * Set if the playback indicator should be indicated ongoing or paused playback.
      *
-     * @param playing Whether playback is ongoing or paused.
+     * @param isPlaying Whether playback is ongoing or paused.
      */
-    fun setPlaying(playing: Boolean) {
-        playbackIndicator?.setPlaying(playing)
+    fun setPlaying(isPlaying: Boolean) {
+        playbackIndicator?.run {
+            if (isPlaying) {
+                playingDrawable.start()
+                view.setImageDrawable(playingDrawable)
+            } else {
+                playingDrawable.stop()
+                view.setImageDrawable(pausedDrawable)
+            }
+        }
     }
 
     private fun invalidateRootAlpha() {
         alpha = if (isSelected || isEnabled) 1f else 0.5f
     }
 
-    private fun invalidatePlaybackIndicatorAlpha(playbackIndicator: ImageView) {
+    private fun invalidatePlaybackIndicatorAlpha(playbackIndicator: PlaybackIndicator) {
         // Occasionally content can bleed through the rounded corners and result in a seam
         // on the playing indicator, prevent that from occurring by disabling the visibility of
         // all views below the playback indicator.
@@ -204,7 +261,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 when (child) {
                     // Selection badge is above the playback indicator, do nothing
                     selectionBadge -> child.alpha
-                    playbackIndicator -> if (isSelected) 1f else 0f
+                    playbackIndicator.view -> if (isSelected) 1f else 0f
                     else -> if (isSelected) 0f else 1f
                 }
         }
@@ -312,8 +369,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val request =
             ImageRequest.Builder(context)
                 .data(songs)
-                .error(StyledDrawable(context, context.getDrawableCompat(errorRes)))
-                .transformations(RoundedCornersTransformation(cornerRadius))
+                .error(StyledDrawable(context, context.getDrawableCompat(errorRes), iconSizeRes))
+                .transformations(RoundedCornersTransformation(context.getDimen(cornerRadiusRes)))
                 .target(image)
                 .build()
         // Dispose of any previous image request and load a new image.
@@ -322,23 +379,28 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         contentDescription = desc
     }
 
-    private class StyledDrawable(context: Context, private val inner: Drawable) : Drawable() {
+    /**
+     * Since the error drawable must also share a view with an image, any kind of transform or tint
+     * must occur within a custom dialog, which is implemented here.
+     */
+    private class StyledDrawable(
+        context: Context,
+        private val inner: Drawable,
+        @DimenRes iconSizeRes: Int?
+    ) : Drawable() {
         init {
             // Re-tint the drawable to use the analogous "on surface" color for
             // StyledImageView.
             DrawableCompat.setTintList(inner, context.getColorCompat(R.color.sel_on_cover_bg))
         }
 
+        private val dimen = iconSizeRes?.let(context::getDimenPixels)
+
         override fun draw(canvas: Canvas) {
             // Resize the drawable such that it's always 1/4 the size of the image and
             // centered in the middle of the canvas.
-            val adjustWidth = inner.bounds.width() / 4
-            val adjustHeight = inner.bounds.height() / 4
-            inner.bounds.set(
-                adjustWidth,
-                adjustHeight,
-                bounds.width() - adjustWidth,
-                bounds.height() - adjustHeight)
+            val adj = dimen?.let { (bounds.width() - it) / 2 } ?: (bounds.width() / 4)
+            inner.bounds.set(adj, adj, bounds.width() - adj, bounds.height() - adj)
             inner.draw(canvas)
         }
 
@@ -353,5 +415,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+    }
+
+    companion object {
+        val SIZING_CORNER_RADII =
+            arrayOf(
+                R.dimen.size_corners_small, R.dimen.size_corners_small, R.dimen.size_corners_medium)
+        val SIZING_ICON_SIZE = arrayOf(R.dimen.size_icon_small, R.dimen.size_icon_medium, null)
     }
 }

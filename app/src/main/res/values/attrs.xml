@@ -12,6 +12,11 @@
 
     <declare-styleable name="CoverView">
         <attr name="cornerRadius" format="dimension" />
+        <attr name="sizing" format="enum">
+            <enum name="small" value="0" />
+            <enum name="medium" value="1" />
+            <enum name="large" value="2" />
+        </attr>
         <attr name="enablePlaybackIndicator" format="boolean" />
         <attr name="enableSelectionBadge" format="boolean" />
     </declare-styleable>
