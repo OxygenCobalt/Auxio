@@ -16,6 +16,7 @@
 - Fixed issue where an item would be indicated as "playing" after playback ended
 - Items should no longer be indicated as playing if the currently playing song is not contained
 within it
+- Fixed blurry playing indicator in album/artist/genre/playlist items
 
 ## 3.1.0
 
