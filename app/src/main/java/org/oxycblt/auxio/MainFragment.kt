@@ -512,14 +512,15 @@ class MainFragment :
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
             val exploreNavController = binding.exploreNavHost.findNavController()
 
-            // TODO: Debug why this fails sometimes on the playback sheet
-            // TODO: Add playlist editing to enabled check
             // TODO: Chain these listeners in some way instead of keeping them all here,
             //  assuming listeners added later have more priority
 
             isEnabled =
-                queueSheetBehavior?.state == BackportBottomSheetBehavior.STATE_EXPANDED ||
-                    playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED ||
+                (queueSheetBehavior != null &&
+                    queueSheetBehavior.state != BackportBottomSheetBehavior.STATE_COLLAPSED &&
+                    playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED) ||
+                    (playbackSheetBehavior.state != BackportBottomSheetBehavior.STATE_COLLAPSED &&
+                        playbackSheetBehavior.state != BackportBottomSheetBehavior.STATE_HIDDEN) ||
                     detailModel.editedPlaylist.value != null ||
                     selectionModel.selected.value.isNotEmpty() ||
                     exploreNavController.currentDestination?.id !=
