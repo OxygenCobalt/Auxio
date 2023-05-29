@@ -201,13 +201,15 @@ class EditableQueue : Queue {
     }
 
     /**
-     * Add [Song]s to the top of the queue. Will start playback if nothing is playing.
+     * Add [Song]s to the "top" of the queue (right next to the currently playing song). Will start
+     * playback if nothing is playing.
      *
      * @param songs The [Song]s to add.
      * @return A [Queue.Change] instance that reflects the changes made.
      */
-    fun playNext(songs: List<Song>): Queue.Change {
+    fun addToTop(songs: List<Song>): Queue.Change {
         logD("Adding ${songs.size} songs to the front of the queue")
+        val insertAt = index + 1
         val heapIndices = songs.map(::addSongToHeap)
         if (shuffledMapping.isNotEmpty()) {
             // Add the new songs in front of the current index in the shuffled mapping and in front
@@ -215,15 +217,14 @@ class EditableQueue : Queue {
             logD("Must append songs to shuffled mapping")
             val orderedIndex = orderedMapping.indexOf(shuffledMapping[index])
             orderedMapping.addAll(orderedIndex + 1, heapIndices)
-            shuffledMapping.addAll(index + 1, heapIndices)
+            shuffledMapping.addAll(insertAt, heapIndices)
         } else {
             // Add the new song in front of the current index in the ordered mapping.
             logD("Only appending songs to ordered mapping")
-            orderedMapping.addAll(index + 1, heapIndices)
+            orderedMapping.addAll(insertAt, heapIndices)
         }
         check()
-        return Queue.Change(
-            Queue.Change.Type.MAPPING, UpdateInstructions.Add(index + 1, songs.size))
+        return Queue.Change(Queue.Change.Type.MAPPING, UpdateInstructions.Add(insertAt, songs.size))
     }
 
     /**
@@ -232,9 +233,9 @@ class EditableQueue : Queue {
      * @param songs The [Song]s to add.
      * @return A [Queue.Change] instance that reflects the changes made.
      */
-    fun addToQueue(songs: List<Song>): Queue.Change {
+    fun addToBottom(songs: List<Song>): Queue.Change {
         logD("Adding ${songs.size} songs to the back of the queue")
-        val point = orderedMapping.size
+        val insertAt = orderedMapping.size
         val heapIndices = songs.map(::addSongToHeap)
         // Can simple append the new songs to the end of both mappings.
         orderedMapping.addAll(heapIndices)
@@ -243,7 +244,7 @@ class EditableQueue : Queue {
             shuffledMapping.addAll(heapIndices)
         }
         check()
-        return Queue.Change(Queue.Change.Type.MAPPING, UpdateInstructions.Add(point, songs.size))
+        return Queue.Change(Queue.Change.Type.MAPPING, UpdateInstructions.Add(insertAt, songs.size))
     }
 
     /**
@@ -367,7 +368,7 @@ class EditableQueue : Queue {
             }
         }
 
-        logD("Serialized heap [max shift=$currentShift]")
+        logD("Created adjustment mapping [max shift=$currentShift]")
 
         heap = savedState.heap.filterNotNull().toMutableList()
         orderedMapping =

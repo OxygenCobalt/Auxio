@@ -122,8 +122,7 @@ class MainFragment :
             logD("Configuring stacked bottom sheets")
             val playbackSheetBehavior =
                 binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
-            // TODO: Use the material handle
-            unlikelyToBeNull(binding.handleWrapper).setOnClickListener {
+            unlikelyToBeNull(binding.queueHandleWrapper).setOnClickListener {
                 if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
                     queueSheetBehavior.state == BackportBottomSheetBehavior.STATE_COLLAPSED) {
                     // Playback sheet is expanded and queue sheet is collapsed, we can expand it.
@@ -515,7 +514,8 @@ class MainFragment :
 
             // TODO: Debug why this fails sometimes on the playback sheet
             // TODO: Add playlist editing to enabled check
-            // TODO: Can this be split up?
+            // TODO: Chain these listeners in some way instead of keeping them all here,
+            //  assuming listeners added later have more priority
 
             isEnabled =
                 queueSheetBehavior?.state == BackportBottomSheetBehavior.STATE_EXPANDED ||

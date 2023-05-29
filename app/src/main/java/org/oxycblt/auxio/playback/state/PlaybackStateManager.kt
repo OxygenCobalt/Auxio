@@ -444,7 +444,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             play(songs[0], null, songs, false)
         } else {
             logD("Adding ${songs.size} songs to start of queue")
-            notifyQueueChanged(queue.playNext(songs))
+            notifyQueueChanged(queue.addToTop(songs))
         }
     }
 
@@ -455,7 +455,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             play(songs[0], null, songs, false)
         } else {
             logD("Adding ${songs.size} songs to end of queue")
-            notifyQueueChanged(queue.addToQueue(songs))
+            notifyQueueChanged(queue.addToBottom(songs))
         }
     }
 
