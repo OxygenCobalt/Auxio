@@ -50,8 +50,14 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
+        <!-- Fix dumb default android behavior -->
+        <item name="colorControlHighlight">@color/sel_compat_ripple</item>
         <item name="colorControlNormal">?attr/colorOnSurfaceVariant</item>
         <item name="colorControlActivated">?attr/colorPrimary</item>
+
+        <!-- Work around hard-coded text highlight colors in the default Material3 theme -->
+        <item name="android:textColorHighlight">@color/overlay_text_highlight</item>
+        <item name="android:textColorHighlightInverse">@color/overlay_text_highlight_inverse</item>
 
         <item name="preferenceTheme">@style/PreferenceTheme.Auxio</item>
         <item name="preferenceStyle">@style/Preference.Auxio</item>

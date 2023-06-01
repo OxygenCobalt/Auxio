@@ -19,6 +19,9 @@ within it
 - Fixed blurry playing indicator in album/artist/genre/playlist items
 - Fixed incorrect songs being displayed when adding albums to the end of the queue
 
+#### What's Changed
+- Android Lollipop and Marshmallow support have been dropped
+
 ## 3.1.0
 
 #### What's New
