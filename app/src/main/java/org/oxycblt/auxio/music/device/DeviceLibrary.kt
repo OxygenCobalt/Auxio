@@ -193,8 +193,8 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
     private fun buildAlbums(songs: List<SongImpl>, settings: MusicSettings): List<AlbumImpl> {
         // Group songs by their singular raw album, then map the raw instances and their
         // grouped songs to Album values. Album.Raw will handle the actual grouping rules.
-        val songsByAlbum = songs.groupBy { it.rawAlbum }
-        val albums = songsByAlbum.map { AlbumImpl(it.key, settings, it.value) }
+        val songsByAlbum = songs.groupBy { it.rawAlbum.key }
+        val albums = songsByAlbum.map { AlbumImpl(it.key.value, settings, it.value) }
         logD("Successfully built ${albums.size} albums")
         return albums
     }
@@ -221,22 +221,22 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
     ): List<ArtistImpl> {
         // Add every raw artist credited to each Song/Album to the grouping. This way,
         // different multi-artist combinations are not treated as different artists.
-        val musicByArtist = mutableMapOf<RawArtist, MutableList<Music>>()
+        val musicByArtist = mutableMapOf<RawArtist.Key, MutableList<Music>>()
 
         for (song in songs) {
             for (rawArtist in song.rawArtists) {
-                musicByArtist.getOrPut(rawArtist) { mutableListOf() }.add(song)
+                musicByArtist.getOrPut(rawArtist.key) { mutableListOf() }.add(song)
             }
         }
 
         for (album in albums) {
             for (rawArtist in album.rawArtists) {
-                musicByArtist.getOrPut(rawArtist) { mutableListOf() }.add(album)
+                musicByArtist.getOrPut(rawArtist.key) { mutableListOf() }.add(album)
             }
         }
 
         // Convert the combined mapping into artist instances.
-        val artists = musicByArtist.map { ArtistImpl(it.key, settings, it.value) }
+        val artists = musicByArtist.map { ArtistImpl(it.key.value, settings, it.value) }
         logD("Successfully built ${artists.size} artists")
         return artists
     }
@@ -253,15 +253,15 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
     private fun buildGenres(songs: List<SongImpl>, settings: MusicSettings): List<GenreImpl> {
         // Add every raw genre credited to each Song to the grouping. This way,
         // different multi-genre combinations are not treated as different genres.
-        val songsByGenre = mutableMapOf<RawGenre, MutableList<SongImpl>>()
+        val songsByGenre = mutableMapOf<RawGenre.Key, MutableList<SongImpl>>()
         for (song in songs) {
             for (rawGenre in song.rawGenres) {
-                songsByGenre.getOrPut(rawGenre) { mutableListOf() }.add(song)
+                songsByGenre.getOrPut(rawGenre.key) { mutableListOf() }.add(song)
             }
         }
 
         // Convert the mapping into genre instances.
-        val genres = songsByGenre.map { GenreImpl(it.key, settings, it.value) }
+        val genres = songsByGenre.map { GenreImpl(it.key.value, settings, it.value) }
         logD("Successfully built ${genres.size} genres")
         return genres
     }

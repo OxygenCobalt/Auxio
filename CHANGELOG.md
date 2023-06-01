@@ -18,6 +18,8 @@
 within it
 - Fixed blurry playing indicator in album/artist/genre/playlist items
 - Fixed incorrect songs being displayed when adding albums to the end of the queue
+- Fixed freezing occuring when scrolling through large music libraries
+- Fixed app not responding once music loading completes for large libraries
 
 #### What's Changed
 - Android Lollipop and Marshmallow support have been dropped

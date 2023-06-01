@@ -32,7 +32,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.music.cache.CacheRepository
 import org.oxycblt.auxio.music.device.DeviceLibrary
@@ -301,44 +300,35 @@ constructor(
         val userLibrary = synchronized(this) { userLibrary ?: return }
         logD("Creating playlist $name with ${songs.size} songs")
         userLibrary.createPlaylist(name, songs)
-        notifyUserLibraryChange()
+        emitLibraryChange(device = false, user = true)
     }
 
     override suspend fun renamePlaylist(playlist: Playlist, name: String) {
         val userLibrary = synchronized(this) { userLibrary ?: return }
         logD("Renaming $playlist to $name")
         userLibrary.renamePlaylist(playlist, name)
-        notifyUserLibraryChange()
+        emitLibraryChange(device = false, user = true)
     }
 
     override suspend fun deletePlaylist(playlist: Playlist) {
         val userLibrary = synchronized(this) { userLibrary ?: return }
         logD("Deleting $playlist")
         userLibrary.deletePlaylist(playlist)
-        notifyUserLibraryChange()
+        emitLibraryChange(device = false, user = true)
     }
 
     override suspend fun addToPlaylist(songs: List<Song>, playlist: Playlist) {
         val userLibrary = synchronized(this) { userLibrary ?: return }
         logD("Adding ${songs.size} songs to $playlist")
         userLibrary.addToPlaylist(playlist, songs)
-        notifyUserLibraryChange()
+        emitLibraryChange(device = false, user = true)
     }
 
     override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
         val userLibrary = synchronized(this) { userLibrary ?: return }
         logD("Rewriting $playlist with ${songs.size} songs")
         userLibrary.rewritePlaylist(playlist, songs)
-        notifyUserLibraryChange()
-    }
-
-    @Synchronized
-    private fun notifyUserLibraryChange() {
-        logD("Dispatching user library change")
-        for (listener in updateListeners) {
-            listener.onMusicChanges(
-                MusicRepository.Changes(deviceLibrary = false, userLibrary = true))
-        }
+        emitLibraryChange(device = false, user = true)
     }
 
     @Synchronized
@@ -435,7 +425,7 @@ constructor(
         val deviceLibraryChannel = Channel<DeviceLibrary>()
         logD("Starting DeviceLibrary creation")
         val deviceLibraryJob =
-            worker.scope.tryAsync(Dispatchers.Main) {
+            worker.scope.tryAsync(Dispatchers.Default) {
                 deviceLibraryFactory.create(rawSongs).also { deviceLibraryChannel.send(it) }
             }
         logD("Starting UserLibrary creation")
@@ -452,10 +442,22 @@ constructor(
         val userLibrary = userLibraryJob.await().getOrThrow()
 
         logD("Successfully indexed music library [device=$deviceLibrary user=$userLibrary]")
-        withContext(Dispatchers.Main) {
-            emitComplete(null)
-            emitData(deviceLibrary, userLibrary)
+        emitComplete(null)
+
+        // Comparing the library instances is obscenely expensive, do it within the library
+        val deviceLibraryChanged = this.deviceLibrary != deviceLibrary
+        val userLibraryChanged = this.userLibrary != userLibrary
+        if (!deviceLibraryChanged && !userLibraryChanged) {
+            logD("Library has not changed, skipping update")
+            return
         }
+
+        synchronized(this) {
+            this.deviceLibrary = deviceLibrary
+            this.userLibrary = userLibrary
+        }
+
+        emitLibraryChange(deviceLibraryChanged, userLibraryChanged)
     }
 
     /**
@@ -497,14 +499,8 @@ constructor(
     }
 
     @Synchronized
-    private fun emitData(deviceLibrary: DeviceLibrary, userLibrary: MutableUserLibrary) {
-        val deviceLibraryChanged = this.deviceLibrary != deviceLibrary
-        val userLibraryChanged = this.userLibrary != userLibrary
-        if (!deviceLibraryChanged && !userLibraryChanged) return
-
-        this.deviceLibrary = deviceLibrary
-        this.userLibrary = userLibrary
-        val changes = MusicRepository.Changes(deviceLibraryChanged, userLibraryChanged)
+    private fun emitLibraryChange(device: Boolean, user: Boolean) {
+        val changes = MusicRepository.Changes(device, user)
         logD("Dispatching library change [changes=$changes]")
         for (listener in updateListeners) {
             listener.onMusicChanges(changes)

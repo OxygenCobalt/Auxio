@@ -118,6 +118,7 @@ constructor(
      *   the given [Album] in the given [Song] list.
      */
     fun computeCoverOrdering(songs: List<Song>): List<Album> {
+        // TODO: Start short-circuiting in more places
         if (songs.isEmpty()) return listOf()
         if (songs.size == 1) return listOf(songs.first().album)
 

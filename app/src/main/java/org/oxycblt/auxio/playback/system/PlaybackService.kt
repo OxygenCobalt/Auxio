@@ -107,8 +107,8 @@ class PlaybackService :
 
     // Coroutines
     private val serviceJob = Job()
-    private val restoreScope = CoroutineScope(serviceJob + Dispatchers.Main)
-    private val saveScope = CoroutineScope(serviceJob + Dispatchers.Main)
+    private val restoreScope = CoroutineScope(serviceJob + Dispatchers.IO)
+    private val saveScope = CoroutineScope(serviceJob + Dispatchers.IO)
 
     // --- SERVICE OVERRIDES ---
 

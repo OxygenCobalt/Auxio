@@ -113,28 +113,35 @@ data class RawAlbum(
     /** @see RawArtist.name */
     val rawArtists: List<RawArtist>
 ) {
-    // Albums are grouped as follows:
-    // - If we have a MusicBrainz ID, only group by it. This allows different Albums with the
-    // same name to be differentiated, which is common in large libraries.
-    // - If we do not have a MusicBrainz ID, compare by the lowercase album name and lowercase
-    // artist name. This allows for case-insensitive artist/album grouping, which can be common
-    // for albums/artists that have different naming (ex. "RAMMSTEIN" vs. "Rammstein").
+    val key = Key(this)
 
-    // Cache the hash-code for HashMap efficiency.
-    private val hashCode =
-        musicBrainzId?.hashCode() ?: (31 * name.lowercase().hashCode() + rawArtists.hashCode())
+    /** Exposed information that denotes [RawAlbum] uniqueness. */
+    data class Key(val value: RawAlbum) {
+        // Albums are grouped as follows:
+        // - If we have a MusicBrainz ID, only group by it. This allows different Albums with the
+        // same name to be differentiated, which is common in large libraries.
+        // - If we do not have a MusicBrainz ID, compare by the lowercase album name and lowercase
+        // artist name. This allows for case-insensitive artist/album grouping, which can be common
+        // for albums/artists that have different naming (ex. "RAMMSTEIN" vs. "Rammstein").
 
-    override fun hashCode() = hashCode
+        // Cache the hash-code for HashMap efficiency.
+        private val hashCode =
+            value.musicBrainzId?.hashCode()
+                ?: (31 * value.name.lowercase().hashCode() + value.rawArtists.hashCode())
 
-    override fun equals(other: Any?) =
-        other is RawAlbum &&
-            when {
-                musicBrainzId != null && other.musicBrainzId != null ->
-                    musicBrainzId == other.musicBrainzId
-                musicBrainzId == null && other.musicBrainzId == null ->
-                    name.equals(other.name, true) && rawArtists == other.rawArtists
-                else -> false
-            }
+        override fun hashCode() = hashCode
+
+        override fun equals(other: Any?) =
+            other is Key &&
+                when {
+                    value.musicBrainzId != null && other.value.musicBrainzId != null ->
+                        value.musicBrainzId == other.value.musicBrainzId
+                    value.musicBrainzId == null && other.value.musicBrainzId == null ->
+                        other.value.name.equals(other.value.name, true) &&
+                            other.value.rawArtists == other.value.rawArtists
+                    else -> false
+                }
+    }
 }
 
 /**
@@ -151,33 +158,42 @@ data class RawArtist(
     /** @see Music.name */
     val sortName: String? = null
 ) {
-    // Artists are grouped as follows:
-    // - If we have a MusicBrainz ID, only group by it. This allows different Artists with the
-    // same name to be differentiated, which is common in large libraries.
-    // - If we do not have a MusicBrainz ID, compare by the lowercase name. This allows artist
-    // grouping to be case-insensitive.
+    val key = Key(this)
 
-    // Cache the hashCode for HashMap efficiency.
-    private val hashCode = musicBrainzId?.hashCode() ?: name?.lowercase().hashCode()
+    /**
+     * Allows [RawArtist]s to be compared by "fundamental" information that is unlikely to change on
+     * an item-by-item
+     */
+    data class Key(val value: RawArtist) {
+        // Artists are grouped as follows:
+        // - If we have a MusicBrainz ID, only group by it. This allows different Artists with the
+        // same name to be differentiated, which is common in large libraries.
+        // - If we do not have a MusicBrainz ID, compare by the lowercase name. This allows artist
+        // grouping to be case-insensitive.
 
-    // Compare names and MusicBrainz IDs in order to differentiate artists with the
-    // same name in large libraries.
+        // Cache the hashCode for HashMap efficiency.
+        private val hashCode = value.musicBrainzId?.hashCode() ?: value.name?.lowercase().hashCode()
 
-    override fun hashCode() = hashCode
+        // Compare names and MusicBrainz IDs in order to differentiate artists with the
+        // same name in large libraries.
 
-    override fun equals(other: Any?) =
-        other is RawArtist &&
-            when {
-                musicBrainzId != null && other.musicBrainzId != null ->
-                    musicBrainzId == other.musicBrainzId
-                musicBrainzId == null && other.musicBrainzId == null ->
-                    when {
-                        name != null && other.name != null -> name.equals(other.name, true)
-                        name == null && other.name == null -> true
-                        else -> false
-                    }
-                else -> false
-            }
+        override fun hashCode() = hashCode
+
+        override fun equals(other: Any?) =
+            other is Key &&
+                when {
+                    value.musicBrainzId != null && other.value.musicBrainzId != null ->
+                        value.musicBrainzId == other.value.musicBrainzId
+                    value.musicBrainzId == null && other.value.musicBrainzId == null ->
+                        when {
+                            value.name != null && other.value.name != null ->
+                                value.name.equals(other.value.name, true)
+                            value.name == null && other.value.name == null -> true
+                            else -> false
+                        }
+                    else -> false
+                }
+    }
 }
 
 /**
@@ -189,20 +205,24 @@ data class RawGenre(
     /** @see Music.name */
     val name: String? = null
 ) {
+    val key = Key(this)
 
-    // Cache the hashCode for HashMap efficiency.
-    private val hashCode = name?.lowercase().hashCode()
+    data class Key(val value: RawGenre) {
+        // Cache the hashCode for HashMap efficiency.
+        private val hashCode = value.name?.lowercase().hashCode()
 
-    // Only group by the lowercase genre name. This allows Genre grouping to be
-    // case-insensitive, which may be helpful in some libraries with different ways of
-    // formatting genres.
-    override fun hashCode() = hashCode
+        // Only group by the lowercase genre name. This allows Genre grouping to be
+        // case-insensitive, which may be helpful in some libraries with different ways of
+        // formatting genres.
+        override fun hashCode() = hashCode
 
-    override fun equals(other: Any?) =
-        other is RawGenre &&
-            when {
-                name != null && other.name != null -> name.equals(other.name, true)
-                name == null && other.name == null -> true
-                else -> false
-            }
+        override fun equals(other: Any?) =
+            other is Key &&
+                when {
+                    value.name != null && other.value.name != null ->
+                        value.name.equals(other.value.name, true)
+                    value.name == null && other.value.name == null -> true
+                    else -> false
+                }
+    }
 }

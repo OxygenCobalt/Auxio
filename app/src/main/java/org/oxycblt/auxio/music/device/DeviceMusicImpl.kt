@@ -407,7 +407,8 @@ class ArtistImpl(
      *   [RawArtist] will be within the list.
      * @return The index of the [Artist]'s [RawArtist] within the list.
      */
-    fun getOriginalPositionIn(rawArtists: List<RawArtist>) = rawArtists.indexOf(rawArtist)
+    fun getOriginalPositionIn(rawArtists: List<RawArtist>) =
+        rawArtists.indexOfFirst { it.key == rawArtist.key }
 
     /**
      * Perform final validation and organization on this instance.
@@ -481,7 +482,8 @@ class GenreImpl(
      *   [RawGenre] will be within the list.
      * @return The index of the [Genre]'s [RawGenre] within the list.
      */
-    fun getOriginalPositionIn(rawGenres: List<RawGenre>) = rawGenres.indexOf(rawGenre)
+    fun getOriginalPositionIn(rawGenres: List<RawGenre>) =
+        rawGenres.indexOfFirst { it.key == rawGenre.key }
 
     /**
      * Perform final validation and organization on this instance.
