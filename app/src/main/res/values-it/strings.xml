@@ -240,8 +240,8 @@
     <string name="set_separators_and">E commerciale (&amp;)</string>
     <string name="lbl_compilation_live">Raccolte live</string>
     <string name="lbl_compilation_remix">Raccolta di remix</string>
-    <string name="lbl_mixes">Mixes</string>
-    <string name="lbl_mix">Mix</string>
+    <string name="lbl_mixes">Mix DJ</string>
+    <string name="lbl_mix">Mix DJ</string>
     <string name="set_cover_mode_quality">Alta qualità</string>
     <string name="set_separators_comma">Virgola (,)</string>
     <string name="set_separators_semicolon">Punto e virgola (;)</string>
