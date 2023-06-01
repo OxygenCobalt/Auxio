@@ -117,13 +117,17 @@ constructor(
      *   by their names. "Representation" is defined by how many [Song]s were found to be linked to
      *   the given [Album] in the given [Song] list.
      */
-    fun computeCoverOrdering(songs: List<Song>) =
-        Sort(Sort.Mode.ByAlbum, Sort.Direction.ASCENDING)
-            .songs(songs)
-            .groupBy { it.album }
-            .entries
-            .sortedByDescending { it.value.size }
-            .map { it.key }
+    fun computeCoverOrdering(songs: List<Song>): List<Album> {
+        if (songs.isEmpty()) return listOf()
+        if (songs.size == 1) return listOf(songs.first().album)
+
+        val sortedMap =
+            sortedMapOf<Album, Int>(Sort.Mode.ByName.getAlbumComparator(Sort.Direction.ASCENDING))
+        for (song in songs) {
+            sortedMap[song.album] = (sortedMap[song.album] ?: 0) + 1
+        }
+        return sortedMap.keys.sortedByDescending { sortedMap[it] }
+    }
 
     private suspend fun openCoverInputStream(album: Album) =
         try {
@@ -205,7 +209,7 @@ constructor(
         withContext(Dispatchers.IO) { context.contentResolver.openInputStream(album.coverUri) }
 
     /** Derived from phonograph: https://github.com/kabouzeid/Phonograph */
-    private suspend fun createMosaic(streams: List<InputStream>, size: Size): FetchResult {
+    private fun createMosaic(streams: List<InputStream>, size: Size): FetchResult {
         // Use whatever size coil gives us to create the mosaic.
         val mosaicSize = AndroidSize(size.width.mosaicSize(), size.height.mosaicSize())
         val mosaicFrameSize =

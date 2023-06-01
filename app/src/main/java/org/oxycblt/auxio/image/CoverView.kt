@@ -322,7 +322,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      *
      * @param song The [Song] to bind to the view.
      */
-    fun bind(song: Song) = bind(song.album)
+    fun bind(song: Song) =
+        bind(
+            listOf(song),
+            context.getString(R.string.desc_album_cover, song.album.name),
+            R.drawable.ic_album_24)
 
     /**
      * Bind an [Album]'s image to this view.

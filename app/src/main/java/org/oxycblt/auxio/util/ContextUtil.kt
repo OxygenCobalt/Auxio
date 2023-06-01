@@ -23,7 +23,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.os.Build
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.Toast
