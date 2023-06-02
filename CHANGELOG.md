@@ -10,6 +10,7 @@
 - Albums implicitly linked only via "artist" tags are now placed in a special
 "appears on" section in the artist view
 - Album covers that are not 1:1 aspect ratio are no longer cropped
+- Optimized library creation phase of the music loading process
 
 #### What's Fixed
 - Prevented options such as "Add to queue" from being selected on empty artists and playlists

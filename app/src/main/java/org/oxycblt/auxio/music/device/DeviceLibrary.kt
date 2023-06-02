@@ -177,9 +177,12 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
      * @return A sorted list of [SongImpl]s derived from the [RawSong] that should be suitable for
      *   grouping.
      */
-    private fun buildSongs(rawSongs: List<RawSong>, settings: MusicSettings) =
-        Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+    private fun buildSongs(rawSongs: List<RawSong>, settings: MusicSettings): List<Song> {
+        val songs = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
             .songs(rawSongs.map { SongImpl(it, settings) }.distinctBy { it.uid })
+        logD("Successfully built ${songs.size} songs")
+        return songs
+    }
 
     /**
      * Build a list of [Album]s from the given [Song]s.

@@ -174,6 +174,8 @@ private data class IntelligentKnownName(override val raw: String, override val s
     override val sortTokens = parseTokens(sort ?: raw)
 
     private fun parseTokens(name: String): List<SortToken> {
+        // TODO: This routine is consuming much of the song building runtime, find a way to
+        //  optimize it
         val stripped =
             name
                 // Remove excess punctuation from the string, as those u
