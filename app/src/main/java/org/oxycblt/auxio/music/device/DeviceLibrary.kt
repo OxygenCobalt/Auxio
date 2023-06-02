@@ -169,30 +169,14 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
                 songs.find { it.path.name == displayName && it.size == size }
             }
 
-    /**
-     * Build a list [SongImpl]s from the given [RawSong].
-     *
-     * @param rawSongs The [RawSong]s to build the [SongImpl]s from.
-     * @param settings [MusicSettings] to obtain user parsing configuration.
-     * @return A sorted list of [SongImpl]s derived from the [RawSong] that should be suitable for
-     *   grouping.
-     */
-    private fun buildSongs(rawSongs: List<RawSong>, settings: MusicSettings): List<Song> {
-        val songs = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-            .songs(rawSongs.map { SongImpl(it, settings) }.distinctBy { it.uid })
+    private fun buildSongs(rawSongs: List<RawSong>, settings: MusicSettings): List<SongImpl> {
+        val songs =
+            Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
+                .songs(rawSongs.map { SongImpl(it, settings) }.distinctBy { it.uid })
         logD("Successfully built ${songs.size} songs")
         return songs
     }
 
-    /**
-     * Build a list of [Album]s from the given [Song]s.
-     *
-     * @param songs The [Song]s to build [Album]s from. These will be linked with their respective
-     *   [Album]s when created.
-     * @param settings [MusicSettings] to obtain user parsing configuration.
-     * @return A non-empty list of [Album]s. These [Album]s will be incomplete and must be linked
-     *   with parent [Artist] instances in order to be usable.
-     */
     private fun buildAlbums(songs: List<SongImpl>, settings: MusicSettings): List<AlbumImpl> {
         // Group songs by their singular raw album, then map the raw instances and their
         // grouped songs to Album values. Album.Raw will handle the actual grouping rules.
@@ -202,21 +186,6 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
         return albums
     }
 
-    /**
-     * Group up [Song]s and [Album]s into [Artist] instances. Both of these items are required as
-     * they group into [Artist] instances much differently, with [Song]s being grouped primarily by
-     * artist names, and [Album]s being grouped primarily by album artist names.
-     *
-     * @param songs The [Song]s to build [Artist]s from. One [Song] can result in the creation of
-     *   one or more [Artist] instances. These will be linked with their respective [Artist]s when
-     *   created.
-     * @param albums The [Album]s to build [Artist]s from. One [Album] can result in the creation of
-     *   one or more [Artist] instances. These will be linked with their respective [Artist]s when
-     *   created.
-     * @param settings [MusicSettings] to obtain user parsing configuration.
-     * @return A non-empty list of [Artist]s. These [Artist]s will consist of the combined groupings
-     *   of [Song]s and [Album]s.
-     */
     private fun buildArtists(
         songs: List<SongImpl>,
         albums: List<AlbumImpl>,
@@ -224,6 +193,7 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
     ): List<ArtistImpl> {
         // Add every raw artist credited to each Song/Album to the grouping. This way,
         // different multi-artist combinations are not treated as different artists.
+        // Songs and albums are grouped by artist and album artist respectively.
         val musicByArtist = mutableMapOf<RawArtist.Key, MutableList<Music>>()
 
         for (song in songs) {
@@ -244,15 +214,6 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
         return artists
     }
 
-    /**
-     * Group up [Song]s into [Genre] instances.
-     *
-     * @param [songs] The [Song]s to build [Genre]s from. One [Song] can result in the creation of
-     *   one or more [Genre] instances. These will be linked with their respective [Genre]s when
-     *   created.
-     * @param settings [MusicSettings] to obtain user parsing configuration.
-     * @return A non-empty list of [Genre]s.
-     */
     private fun buildGenres(songs: List<SongImpl>, settings: MusicSettings): List<GenreImpl> {
         // Add every raw genre credited to each Song to the grouping. This way,
         // different multi-genre combinations are not treated as different genres.
