@@ -226,8 +226,11 @@ class PlaybackService :
         if (song == null) {
             // No song, stop playback and foreground state.
             logD("Nothing playing, stopping playback")
+            // For some reason the player does not mark playWhenReady as false when stopped,
+            // which then completely breaks any re-initialization if playback starts again.
+            // So we manually set it to false here.
+            player.playWhenReady = false
             player.stop()
-
             stopAndSave()
             return
         }

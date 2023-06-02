@@ -22,7 +22,7 @@ within it
 - Fixed freezing occuring when scrolling through large music libraries
 - Fixed app not responding once music loading completes for large libraries
 - Fixed crash when the last song of the queue gets removed while playing
-- Fixed playback UI not re-appearing after playback ends
+- Fixed playback UI and notification not re-appearing after playback ends
 
 #### What's Changed
 - Android Lollipop and Marshmallow support have been dropped
