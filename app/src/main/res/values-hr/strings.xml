@@ -149,10 +149,10 @@
     <string name="fmt_bitrate">%d kbps</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="fmt_indexing">Učitavanje tvoje zbirke blazbe … (%1$d/%2$d)</string>
-    <string name="fmt_lib_song_count">Učitano pjesama: %d</string>
-    <string name="fmt_lib_album_count">Učitano albuma: %d</string>
-    <string name="fmt_lib_artist_count">Učitanih izvođača: %d</string>
-    <string name="fmt_lib_genre_count">Učitano žanrova: %d</string>
+    <string name="fmt_lib_song_count">Broj učitanih pjesama: %d</string>
+    <string name="fmt_lib_album_count">Broj učitanih albuma: %d</string>
+    <string name="fmt_lib_artist_count">Broj učitanih izvođača: %d</string>
+    <string name="fmt_lib_genre_count">Broj učitanih žanrova: %d</string>
     <string name="fmt_lib_total_duration">Ukupno trajanje: %s</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d pjesma</item>
@@ -215,13 +215,13 @@
     <string name="set_separators_and">Ampersand (&amp;)</string>
     <string name="lbl_compilation_live">Kompilacija uživo</string>
     <string name="lbl_compilation_remix">Kompilacija remiksa</string>
-    <string name="lbl_mixes">Kompilacije</string>
+    <string name="lbl_mixes">DJ kompilacije</string>
     <string name="set_separators">Znakovi odjeljivanja vrijednosti</string>
     <string name="desc_exit">Prekini reprodukciju</string>
     <string name="set_separators_desc">Konfiguriraj znakove koji označavaju višestruke vrijednosti oznaka</string>
     <string name="set_separators_slash">Kosa crta (/)</string>
     <string name="set_separators_plus">Plus (+)</string>
-    <string name="lbl_mix">Kompilacija</string>
+    <string name="lbl_mix">DJ kompilacija</string>
     <string name="set_separators_semicolon">Točka-zarez (;)</string>
     <string name="set_bar_action">Prilagođena radnja trake reprodukcije</string>
     <string name="lbl_equalizer">Ekvilajzer</string>
@@ -286,4 +286,8 @@
     <string name="lng_playlist_added">Dodano u popis pjesama</string>
     <string name="lbl_edit">Uredi</string>
     <string name="fmt_deletion_info">Izbrisati %s\? To je nepovratna radnja.</string>
+    <string name="fmt_editing">Uređivanje popisa pjesama %s</string>
+    <string name="lbl_appears_on">Sudjelovanja:</string>
+    <string name="lbl_share">Dijeli</string>
+    <string name="def_disc">Nema diska</string>
 </resources>
