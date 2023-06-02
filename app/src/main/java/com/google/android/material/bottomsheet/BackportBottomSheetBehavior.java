@@ -1336,6 +1336,19 @@ public class BackportBottomSheetBehavior<V extends View> extends CoordinatorLayo
     return state;
   }
 
+  /**
+   * Gets the target state of the bottom sheet if currently attempting to settle, or the current
+   * state otherwise.
+   * @return One of {@link #STATE_EXPANDED}, {@link #STATE_HALF_EXPANDED}, {@link #STATE_COLLAPSED},
+   *     or {@link #STATE_DRAGGING}
+   */
+  public int getTargetState() {
+    if (state != STATE_SETTLING) {
+      return state;
+    }
+    return stateSettlingTracker.targetState;
+  }
+
   void setStateInternal(@State int state) {
     if (this.state == state) {
       return;

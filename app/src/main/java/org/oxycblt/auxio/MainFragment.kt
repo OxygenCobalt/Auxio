@@ -160,7 +160,7 @@ class MainFragment :
                         fillColor = context.getAttrColorCompat(MR.attr.colorSurface)
                         elevation = context.getDimen(R.dimen.elevation_normal)
                     }
-                // Apply bar insets for the queue's RecyclerView to usee.
+                // Apply bar insets for the queue's RecyclerView to use.
                 setOnApplyWindowInsetsListener { v, insets ->
                     v.updatePadding(top = insets.systemBarInsetsCompat.top)
                     insets
@@ -436,7 +436,7 @@ class MainFragment :
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
-        if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_HIDDEN) {
+        if (playbackSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_HIDDEN) {
             logD("Unhiding and enabling playback sheet")
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
@@ -454,7 +454,7 @@ class MainFragment :
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
-        if (playbackSheetBehavior.state != BackportBottomSheetBehavior.STATE_HIDDEN) {
+        if (playbackSheetBehavior.targetState != BackportBottomSheetBehavior.STATE_HIDDEN) {
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
 
@@ -472,6 +472,8 @@ class MainFragment :
             }
         }
     }
+
+    // TODO: Use targetState more
 
     private class SheetBackPressedCallback(
         private val playbackSheetBehavior: PlaybackBottomSheetBehavior<*>,
@@ -499,13 +501,13 @@ class MainFragment :
         }
 
         private fun playbackSheetShown() =
-            playbackSheetBehavior.state != BackportBottomSheetBehavior.STATE_COLLAPSED &&
-                playbackSheetBehavior.state != BackportBottomSheetBehavior.STATE_HIDDEN
+            playbackSheetBehavior.targetState != BackportBottomSheetBehavior.STATE_COLLAPSED &&
+                playbackSheetBehavior.targetState != BackportBottomSheetBehavior.STATE_HIDDEN
 
         private fun queueSheetShown() =
             queueSheetBehavior != null &&
-                queueSheetBehavior.state != BackportBottomSheetBehavior.STATE_COLLAPSED &&
-                playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED
+                playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
+                queueSheetBehavior.targetState != BackportBottomSheetBehavior.STATE_COLLAPSED
     }
 
     private class DetailBackPressedCallback(private val detailModel: DetailViewModel) :
