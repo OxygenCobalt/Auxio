@@ -186,8 +186,8 @@ private abstract class BaseMediaStoreExtractor(
                         }
                 }
             }
-        logD("Read ${genreNamesMap.size} genres from MediaStore")
 
+        logD("Read ${genreNamesMap.values.distinct().size} genres from MediaStore")
         logD("Finished initialization in ${System.currentTimeMillis() - start}ms")
         return wrapQuery(cursor, genreNamesMap)
     }

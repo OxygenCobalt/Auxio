@@ -93,7 +93,9 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
     override val album: Album
         get() = unlikelyToBeNull(_album)
 
-    override fun hashCode() = 31 * uid.hashCode() + rawSong.hashCode()
+    private val hashCode = 31 * uid.hashCode() + rawSong.hashCode()
+
+    override fun hashCode() = hashCode
     override fun equals(other: Any?) =
         other is SongImpl && uid == other.uid && rawSong == other.rawSong
     override fun toString() = "Song(uid=$uid, name=$name)"
@@ -253,21 +255,11 @@ class AlbumImpl(
     override val durationMs: Long
     override val dateAdded: Long
 
-    override fun hashCode(): Int {
-        var hashCode = uid.hashCode()
-        hashCode = 31 * hashCode + rawAlbum.hashCode()
-        hashCode = 31 * hashCode + songs.hashCode()
-        return hashCode
-    }
-
-    override fun equals(other: Any?) =
-        other is AlbumImpl && uid == other.uid && rawAlbum == other.rawAlbum && songs == other.songs
-
-    override fun toString() = "Album(uid=$uid, name=$name)"
-
     private val _artists = mutableListOf<ArtistImpl>()
     override val artists: List<Artist>
         get() = _artists
+
+    private var hashCode = uid.hashCode()
 
     init {
         var totalDuration: Long = 0
@@ -284,7 +276,15 @@ class AlbumImpl(
 
         durationMs = totalDuration
         dateAdded = earliestDateAdded
+
+        hashCode = 31 * hashCode + rawAlbum.hashCode()
+        hashCode = 31 * hashCode + songs.hashCode()
     }
+
+    override fun hashCode() = hashCode
+    override fun equals(other: Any?) =
+        other is AlbumImpl && uid == other.uid && rawAlbum == other.rawAlbum && songs == other.songs
+    override fun toString() = "Album(uid=$uid, name=$name)"
 
     /**
      * The [RawArtist] instances collated by the [Album]. The album artists of the song take
@@ -351,24 +351,9 @@ class ArtistImpl(
     override val implicitAlbums: List<Album>
     override val durationMs: Long?
 
-    // Note: Append song contents to MusicParent equality so that artists with
-    // the same UID but different songs are not equal.
-    override fun hashCode(): Int {
-        var hashCode = uid.hashCode()
-        hashCode = 31 * hashCode + rawArtist.hashCode()
-        hashCode = 31 * hashCode + songs.hashCode()
-        return hashCode
-    }
-
-    override fun equals(other: Any?) =
-        other is ArtistImpl &&
-            uid == other.uid &&
-            rawArtist == other.rawArtist &&
-            songs == other.songs
-
-    override fun toString() = "Artist(uid=$uid, name=$name)"
-
     override lateinit var genres: List<Genre>
+
+    private var hashCode = uid.hashCode()
 
     init {
         val distinctSongs = mutableSetOf<Song>()
@@ -396,7 +381,22 @@ class ArtistImpl(
         explicitAlbums = albums.filter { unlikelyToBeNull(albumMap[it]) }
         implicitAlbums = albums.filterNot { unlikelyToBeNull(albumMap[it]) }
         durationMs = songs.sumOf { it.durationMs }.nonZeroOrNull()
+
+        hashCode = 31 * hashCode + rawArtist.hashCode()
+        hashCode = 31 * hashCode + songs.hashCode()
     }
+
+    // Note: Append song contents to MusicParent equality so that artists with
+    // the same UID but different songs are not equal.
+    override fun hashCode() = hashCode
+
+    override fun equals(other: Any?) =
+        other is ArtistImpl &&
+            uid == other.uid &&
+            rawArtist == other.rawArtist &&
+            songs == other.songs
+
+    override fun toString() = "Artist(uid=$uid, name=$name)"
 
     /**
      * Returns the original position of this [Artist]'s [RawArtist] within the given [RawArtist]
@@ -445,17 +445,7 @@ class GenreImpl(
     override val artists: List<Artist>
     override val durationMs: Long
 
-    override fun hashCode(): Int {
-        var hashCode = uid.hashCode()
-        hashCode = 31 * hashCode + rawGenre.hashCode()
-        hashCode = 31 * hashCode + songs.hashCode()
-        return hashCode
-    }
-
-    override fun equals(other: Any?) =
-        other is GenreImpl && uid == other.uid && rawGenre == other.rawGenre && songs == other.songs
-
-    override fun toString() = "Genre(uid=$uid, name=$name)"
+    private var hashCode = uid.hashCode()
 
     init {
         val distinctAlbums = mutableSetOf<Album>()
@@ -471,7 +461,16 @@ class GenreImpl(
 
         artists = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING).artists(distinctArtists)
         durationMs = totalDuration
+        hashCode = 31 * hashCode + rawGenre.hashCode()
+        hashCode = 31 * hashCode + songs.hashCode()
     }
+
+    override fun hashCode() = hashCode
+
+    override fun equals(other: Any?) =
+        other is GenreImpl && uid == other.uid && rawGenre == other.rawGenre && songs == other.songs
+
+    override fun toString() = "Genre(uid=$uid, name=$name)"
 
     /**
      * Returns the original position of this [Genre]'s [RawGenre] within the given [RawGenre] list.
