@@ -248,8 +248,7 @@ class AlbumImpl(
                 update(rawAlbum.rawArtists.map { it.name })
             }
     override val name = Name.Known.from(rawAlbum.name, rawAlbum.sortName, musicSettings)
-
-    override val dates = Date.Range.from(songs.mapNotNull { it.date })
+    override val dates: Date.Range?
     override val releaseType = rawAlbum.releaseType ?: ReleaseType.Album(null)
     override val coverUri = rawAlbum.mediaStoreId.toCoverUri()
     override val durationMs: Long
@@ -263,17 +262,35 @@ class AlbumImpl(
 
     init {
         var totalDuration: Long = 0
+        var minDate: Date? = null
+        var maxDate: Date? = null
         var earliestDateAdded: Long = Long.MAX_VALUE
 
         // Do linking and value generation in the same loop for efficiency.
         for (song in songs) {
             song.link(this)
+
+            if (song.date != null) {
+                val min = minDate
+                if (min == null || song.date < min) {
+                    minDate = song.date
+                }
+
+                val max = maxDate
+                if (max == null || song.date > max) {
+                    maxDate = song.date
+                }
+            }
+
             if (song.dateAdded < earliestDateAdded) {
                 earliestDateAdded = song.dateAdded
             }
             totalDuration += song.durationMs
         }
 
+        val min = minDate
+        val max = maxDate
+        dates = if (min != null && max != null) Date.Range(min, max) else null
         durationMs = totalDuration
         dateAdded = earliestDateAdded
 

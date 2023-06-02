@@ -116,13 +116,15 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
      *
      * @author Alexander Capehart
      */
-    class Range
-    private constructor(
+    class Range(
         /** The earliest [Date] in the range. */
         val min: Date,
         /** the latest [Date] in the range. May be the same as [min]. ] */
         val max: Date
     ) : Comparable<Range> {
+        init {
+            check(min <= max) { "Min date must be <= max date" }
+        }
 
         /**
          * Resolve this instance into a human-readable date range.
@@ -145,35 +147,6 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
         override fun hashCode() = 31 * max.hashCode() + min.hashCode()
 
         override fun compareTo(other: Range) = min.compareTo(other.min)
-
-        companion object {
-            /**
-             * Create a [Range] from the given list of [Date]s.
-             *
-             * @param dates The [Date]s to use.
-             * @return A [Range] based on the minimum and maximum [Date]s. If there are no [Date]s,
-             *   null is returned.
-             */
-            fun from(dates: List<Date>): Range? {
-                if (dates.isEmpty()) {
-                    // Nothing to do.
-                    return null
-                }
-                // Simultaneously find the minimum and maximum values in the given range.
-                // If this list has only one item, then that one date is the minimum and maximum.
-                var min = dates.first()
-                var max = min
-                for (i in 1..dates.lastIndex) {
-                    if (dates[i] < min) {
-                        min = dates[i]
-                    }
-                    if (dates[i] > max) {
-                        max = dates[i]
-                    }
-                }
-                return Range(min, max)
-            }
-        }
     }
 
     companion object {

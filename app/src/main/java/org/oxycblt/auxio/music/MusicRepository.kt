@@ -365,10 +365,6 @@ constructor(
             throw NoAudioPermissionException()
         }
 
-        // TODO: Parallelize this even more aggressively. I can hypothetically connect all
-        //  finalization steps (library, cache, playlists) into a single pipeline would need
-        //  to change how I indicate progress however
-
         // Start initializing the extractors. Use an indeterminate state, as there is no ETA on
         // how long a media database query will take.
         emitLoading(IndexingProgress.Indeterminate)

@@ -218,7 +218,6 @@
         <item quantity="one">אומן אחד</item>
         <item quantity="two">שני אומנים</item>
         <item quantity="many">%d אומנים</item>
-        <item quantity="other"></item>
     </plurals>
     <string name="set_dirs_mode_include">לכלול</string>
     <string name="set_reindex">רענון מוזיקה</string>
@@ -230,13 +229,11 @@
         <item quantity="one">שיר אחד</item>
         <item quantity="two">שני שירים</item>
         <item quantity="many">%d שירים</item>
-        <item quantity="other"></item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">אלבום אחד</item>
         <item quantity="two">שני אלבומים</item>
         <item quantity="many">%d אלבומים</item>
-        <item quantity="other"></item>
     </plurals>
     <string name="lng_playlist_renamed">שונה שם לרשימת השמעה</string>
     <string name="lng_playlist_deleted">רשימת השמעה נמחקה</string>

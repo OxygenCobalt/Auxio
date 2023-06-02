@@ -20,7 +20,6 @@ package org.oxycblt.auxio.playback.system
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.DrawableRes
@@ -78,17 +77,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
         setLargeIcon(metadata.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART))
         setContentTitle(metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
         setContentText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ARTIST))
-
-        // Starting in API 24, the subtext field changed semantics from being below the
-        // content text to being above the title. Use an appropriate field for both.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            // Display description -> Parent in which playback is occurring
-            logD("API 24+, showing parent information")
-            setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION))
-        } else {
-            logD("API 24 or lower, showing album information")
-            setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ALBUM))
-        }
+        setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION))
     }
 
     /**
