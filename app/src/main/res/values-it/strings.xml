@@ -8,7 +8,7 @@
     <string name="lbl_grant">Permetti</string>
     <string name="lbl_genres">Generi</string>
     <string name="lbl_artists">Artisti</string>
-    <string name="lbl_albums">Dischi</string>
+    <string name="lbl_albums">Album</string>
     <string name="lbl_songs">Canzoni</string>
     <string name="lbl_all_songs">Tutte le canzoni</string>
     <string name="lbl_search">Cerca</string>
@@ -17,21 +17,21 @@
     <string name="lbl_sort">Ordine</string>
     <string name="lbl_name">Nome</string>
     <string name="lbl_artist">Artista</string>
-    <string name="lbl_album">Disco</string>
+    <string name="lbl_album">Album</string>
     <string name="lbl_date">Anno</string>
     <string name="lbl_sort_asc">Ascendente</string>
     <string name="lbl_playback">Ora in riproduzione</string>
     <string name="lbl_play">Riproduci</string>
     <string name="lbl_shuffle">Mescola</string>
     <string name="set_playback_mode_songs">Riproduci da tutte le canzoni</string>
-    <string name="set_playback_mode_album">Riproduci dal disco</string>
+    <string name="set_playback_mode_album">Riproduci dall\'album</string>
     <string name="set_playback_mode_artist">Riproduci dall\'artista</string>
     <string name="lbl_queue">Coda</string>
     <string name="lbl_play_next">Riproduci successivo</string>
     <string name="lbl_queue_add">Accoda</string>
     <string name="lng_queue_added">Accodato</string>
     <string name="lbl_go_artist">Vai all\'artista</string>
-    <string name="lbl_go_album">Vai al disco</string>
+    <string name="lbl_go_album">Vai all\'album</string>
     <string name="lbl_state_saved">Stato salvato</string>
     <string name="lbl_add">Aggiungi</string>
     <string name="lbl_save">Salva</string>
@@ -100,8 +100,8 @@
     <string name="desc_clear_search">Cancella la query di ricerca</string>
     <string name="desc_music_dir_delete">Rimuovi cartella</string>
     <string name="desc_auxio_icon">Icona Auxio</string>
-    <string name="desc_no_cover">Copertina disco</string>
-    <string name="desc_album_cover">Copertina disco per %s</string>
+    <string name="desc_no_cover">Copertina album</string>
+    <string name="desc_album_cover">Copertina album per %s</string>
     <string name="desc_artist_image">Immagine artista per %s</string>
     <string name="desc_genre_image">Immagine genere per %s</string>
     <!-- Default Namespace | Placeholder values -->
@@ -129,7 +129,7 @@
     <string name="clr_grey">Grigio</string>
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_lib_song_count">Canzoni trovate: %d</string>
-    <string name="fmt_lib_album_count">Dischi trovati: %d</string>
+    <string name="fmt_lib_album_count">Album trovati: %d</string>
     <string name="fmt_lib_artist_count">Artisti trovati: %d</string>
     <string name="fmt_lib_genre_count">Generi trovati: %d</string>
     <string name="fmt_lib_total_duration">Durata totale: %s</string>
@@ -139,9 +139,9 @@
         <item quantity="other">%d canzoni</item>
     </plurals>
     <plurals name="fmt_album_count">
-        <item quantity="one">%d disco</item>
-        <item quantity="many">%d dischi</item>
-        <item quantity="other">%d dischi</item>
+        <item quantity="one">%d album</item>
+        <item quantity="many">%d album</item>
+        <item quantity="other">%d album</item>
     </plurals>
     <string name="set_dirs_mode">Modo</string>
     <string name="set_dirs_mode_exclude_desc">La musica <b>non</b> sarà caricata dalle cartelle che aggiungi.</string>
@@ -295,4 +295,6 @@
     <string name="fmt_deletion_info">Eliminare %s\? L\'operazione non può essere annullata.</string>
     <string name="lng_playlist_deleted">Playlist eliminata</string>
     <string name="lng_playlist_renamed">Playlist rinominata</string>
+    <string name="lbl_share">Condividi</string>
+    <string name="def_disc">Nessun disco</string>
 </resources>
