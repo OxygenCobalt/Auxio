@@ -107,7 +107,7 @@ interface Queue {
     }
 }
 
-class EditableQueue : Queue {
+class MutableQueue : Queue {
     @Volatile private var heap = mutableListOf<Song>()
     @Volatile private var orderedMapping = mutableListOf<Int>()
     @Volatile private var shuffledMapping = mutableListOf<Int>()
@@ -302,6 +302,7 @@ class EditableQueue : Queue {
      * @return A [Queue.Change] instance that reflects the changes made.
      */
     fun remove(at: Int): Queue.Change {
+        val lastIndex = orderedMapping.lastIndex
         if (shuffledMapping.isNotEmpty()) {
             // Remove the specified index in the shuffled mapping and the analogous song in the
             // ordered mapping.
@@ -321,12 +322,16 @@ class EditableQueue : Queue {
                 // We just removed the currently playing song.
                 index == at -> {
                     logD("Removed current song")
+                    if (lastIndex == index) {
+                        logD("Current song at end of queue, shift back")
+                        --index
+                    }
                     Queue.Change.Type.SONG
                 }
                 // Index was ahead of removed song, shift back to preserve consistency.
                 index > at -> {
                     logD("Removed before current song, shift back")
-                    index -= 1
+                    --index
                     Queue.Change.Type.INDEX
                 }
                 // Nothing to do

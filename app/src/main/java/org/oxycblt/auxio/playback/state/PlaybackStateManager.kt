@@ -22,7 +22,7 @@ import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.queue.EditableQueue
+import org.oxycblt.auxio.playback.queue.MutableQueue
 import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
@@ -305,7 +305,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Volatile private var pendingAction: InternalPlayer.Action? = null
     @Volatile private var isInitialized = false
 
-    override val queue = EditableQueue()
+    override val queue = MutableQueue()
     @Volatile
     override var parent: MusicParent? = null
         private set
