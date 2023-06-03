@@ -22,6 +22,7 @@ import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 
 /**
  * A [RecyclerView.Adapter] that supports indicating the playback status of a particular item.
@@ -71,7 +72,7 @@ abstract class PlayingIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
                 if (pos > -1) {
                     notifyItemChanged(pos, PAYLOAD_PLAYING_INDICATOR_CHANGED)
                 } else {
-                    logD("oldItem was not in adapter data")
+                    logW("oldItem was not in adapter data")
                 }
             }
 
@@ -81,7 +82,7 @@ abstract class PlayingIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
                 if (pos > -1) {
                     notifyItemChanged(pos, PAYLOAD_PLAYING_INDICATOR_CHANGED)
                 } else {
-                    logD("newItem was not in adapter data")
+                    logW("newItem was not in adapter data")
                 }
             }
 
@@ -99,7 +100,7 @@ abstract class PlayingIndicatorAdapter<T, VH : RecyclerView.ViewHolder>(
                 if (pos > -1) {
                     notifyItemChanged(pos, PAYLOAD_PLAYING_INDICATOR_CHANGED)
                 } else {
-                    logD("newItem was not in adapter data")
+                    logW("newItem was not in adapter data")
                 }
             }
         }

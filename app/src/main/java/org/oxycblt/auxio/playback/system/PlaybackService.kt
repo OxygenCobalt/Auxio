@@ -44,6 +44,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
@@ -355,7 +356,9 @@ class PlaybackService :
                 logD("Restoring playback state")
                 restoreScope.launch {
                     persistenceRepository.readState()?.let {
-                        playbackManager.applySavedState(it, false)
+                        // Apply the saved state on the main thread to prevent code expecting
+                        // state updates on the main thread from crashing.
+                        withContext(Dispatchers.Main) { playbackManager.applySavedState(it, false) }
                     }
                 }
             }

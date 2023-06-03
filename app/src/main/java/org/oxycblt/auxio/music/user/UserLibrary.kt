@@ -161,6 +161,7 @@ private class UserLibraryImpl(
     override fun findPlaylist(name: String) = playlistMap.values.find { it.name.raw == name }
 
     override suspend fun createPlaylist(name: String, songs: List<Song>) {
+        // TODO: Use synchronized with value access too
         val playlistImpl = PlaylistImpl.from(name, songs, musicSettings)
         synchronized(this) { playlistMap[playlistImpl.uid] = playlistImpl }
         val rawPlaylist =

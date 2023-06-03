@@ -236,13 +236,11 @@ class PlaybackPanelFragment :
         requireBinding().playbackShuffle.isActivated = isShuffled
     }
 
-    /** Navigate to one of the currently playing [Song]'s Artists. */
     private fun navigateToCurrentArtist() {
         val song = playbackModel.song.value ?: return
         navModel.exploreNavigateToParentArtist(song)
     }
 
-    /** Navigate to the currently playing [Song]'s albums. */
     private fun navigateToCurrentAlbum() {
         val song = playbackModel.song.value ?: return
         navModel.exploreNavigateTo(song.album)
