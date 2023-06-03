@@ -129,7 +129,7 @@ class PlaylistListFragment :
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         // Only highlight the playlist if it is currently playing, and if the currently
         // playing song is also contained within.
-        val playlist = (parent as? Playlist)?.takeIf { it.songs.contains(song) } ?: return
+        val playlist = (parent as? Playlist)?.takeIf { it.songs.contains(song) }
         playlistAdapter.setPlaying(playlist, isPlaying)
     }
 
