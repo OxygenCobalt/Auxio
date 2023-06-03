@@ -81,10 +81,10 @@ class MainFragment :
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val selectionModel: SelectionViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
-    private lateinit var sheetBackCallback: SheetBackPressedCallback
-    private lateinit var detailBackCallback: DetailBackPressedCallback
-    private lateinit var selectionBackCallback: SelectionBackPressedCallback
-    private lateinit var exploreBackCallback: ExploreBackPressedCallback
+    private var sheetBackCallback: SheetBackPressedCallback? = null
+    private var detailBackCallback: DetailBackPressedCallback? = null
+    private var selectionBackCallback: SelectionBackPressedCallback? = null
+    private var exploreBackCallback: ExploreBackPressedCallback? = null
     private var lastInsets: WindowInsets? = null
     private var elevationNormal = 0f
     private var initialNavDestinationChange = true
@@ -110,13 +110,17 @@ class MainFragment :
         // Currently all back press callbacks are handled in MainFragment, as it's not guaranteed
         // that instantiating these callbacks in their respective fragments would result in the
         // correct order.
-        sheetBackCallback =
+        val sheetBackCallback =
             SheetBackPressedCallback(
-                playbackSheetBehavior = playbackSheetBehavior,
-                queueSheetBehavior = queueSheetBehavior)
-        detailBackCallback = DetailBackPressedCallback(detailModel)
-        selectionBackCallback = SelectionBackPressedCallback(selectionModel)
-        exploreBackCallback = ExploreBackPressedCallback(binding.exploreNavHost)
+                    playbackSheetBehavior = playbackSheetBehavior,
+                    queueSheetBehavior = queueSheetBehavior)
+                .also { sheetBackCallback = it }
+        val detailBackCallback =
+            DetailBackPressedCallback(detailModel).also { detailBackCallback = it }
+        val selectionBackCallback =
+            SelectionBackPressedCallback(selectionModel).also { selectionBackCallback = it }
+        val exploreBackCallback =
+            ExploreBackPressedCallback(binding.exploreNavHost).also { exploreBackCallback = it }
 
         // --- UI SETUP ---
         val context = requireActivity()
@@ -200,6 +204,14 @@ class MainFragment :
         val binding = requireBinding()
         binding.exploreNavHost.findNavController().removeOnDestinationChangedListener(this)
         binding.playbackSheet.viewTreeObserver.removeOnPreDrawListener(this)
+    }
+
+    override fun onDestroyBinding(binding: FragmentMainBinding) {
+        super.onDestroyBinding(binding)
+        sheetBackCallback = null
+        detailBackCallback = null
+        selectionBackCallback = null
+        exploreBackCallback = null
     }
 
     override fun onPreDraw(): Boolean {
@@ -287,7 +299,8 @@ class MainFragment :
 
         // Since the navigation listener is also reliant on the bottom sheets, we must also update
         // it every frame.
-        sheetBackCallback.invalidateEnabled()
+        requireNotNull(sheetBackCallback) { "SheetBackPressedCallback was not available" }
+            .invalidateEnabled()
 
         return true
     }
@@ -300,7 +313,8 @@ class MainFragment :
         // Drop the initial call by NavController that simply provides us with the current
         // destination. This would cause the selection state to be lost every time the device
         // rotates.
-        exploreBackCallback.invalidateEnabled()
+        requireNotNull(exploreBackCallback) { "ExploreBackPressedCallback was not available" }
+            .invalidateEnabled()
         if (!initialNavDestinationChange) {
             initialNavDestinationChange = true
             return
