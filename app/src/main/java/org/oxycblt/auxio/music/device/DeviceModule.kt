@@ -26,5 +26,5 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 interface DeviceModule {
-    @Binds fun deviceLibraryProvider(factory: DeviceLibraryFactoryImpl): DeviceLibrary.Factory
+    @Binds fun deviceLibraryFactory(factory: DeviceLibraryFactoryImpl): DeviceLibrary.Factory
 }

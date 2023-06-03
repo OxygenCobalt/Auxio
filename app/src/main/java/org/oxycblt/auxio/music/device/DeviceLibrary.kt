@@ -134,21 +134,9 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
     private val artistUidMap = buildMap { artists.forEach { put(it.uid, it.finalize()) } }
     private val genreUidMap = buildMap { genres.forEach { put(it.uid, it.finalize()) } }
 
-    override fun equals(other: Any?) =
-        other is DeviceLibrary &&
-            other.songs == songs &&
-            other.albums == albums &&
-            other.artists == artists &&
-            other.genres == genres
-
-    override fun hashCode(): Int {
-        var hashCode = songs.hashCode()
-        hashCode = hashCode * 31 + albums.hashCode()
-        hashCode = hashCode * 31 + artists.hashCode()
-        hashCode = hashCode * 31 + genres.hashCode()
-        return hashCode
-    }
-
+    // All other music is built from songs, so comparison only needs to check songs.
+    override fun equals(other: Any?) = other is DeviceLibrary && other.songs == songs
+    override fun hashCode() = songs.hashCode()
     override fun toString() =
         "DeviceLibrary(songs=${songs.size}, albums=${albums.size}, artists=${artists.size}, genres=${genres.size})"
 
