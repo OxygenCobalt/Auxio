@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat
 import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.inRangeOrNull
+import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
@@ -51,33 +52,30 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
      *   2020") will be returned. Otherwise, a plain year value (ex. "2020") is returned. Dates will
      *   be properly localized.
      */
-    fun resolveDate(context: Context): String {
-        if (month != null) {
-            // Parse a date format from an ISO-ish format
-            val format = (SimpleDateFormat.getDateInstance() as SimpleDateFormat)
-            format.applyPattern("yyyy-MM")
-            val date =
-                try {
-                    format.parse("$year-$month")
-                } catch (e: ParseException) {
-                    null
-                }
-
-            if (date != null) {
-                // Reformat as a readable month and year
-                format.applyPattern("MMM yyyy")
-                return format.format(date)
-            }
-        }
-
+    fun resolve(context: Context) =
         // Unable to create fine-grained date, just format as a year.
-        return context.getString(R.string.fmt_number, year)
+        month?.let { resolveFineGrained() } ?: context.getString(R.string.fmt_number, year)
+
+    private fun resolveFineGrained(): String? {
+        // We can't directly load a date with our own
+        val format = (SimpleDateFormat.getDateInstance() as SimpleDateFormat)
+        format.applyPattern("yyyy-MM")
+        val date =
+            try {
+                format.parse("$year-$month")
+            } catch (e: ParseException) {
+                logE("Unable to parse fine-grained date: $e")
+                return null
+            }
+
+        // Reformat as a readable month and year
+        format.applyPattern("MMM yyyy")
+        return format.format(date)
     }
 
-    override fun hashCode() = tokens.hashCode()
-
     override fun equals(other: Any?) = other is Date && compareTo(other) == 0
-
+    override fun hashCode() = tokens.hashCode()
+    override fun toString() = StringBuilder().appendDate().toString()
     override fun compareTo(other: Date): Int {
         for (i in 0 until max(tokens.size, other.tokens.size)) {
             val ai = tokens.getOrNull(i)
@@ -97,8 +95,6 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
 
         return 0
     }
-
-    override fun toString() = StringBuilder().appendDate().toString()
 
     private fun StringBuilder.appendDate(): StringBuilder {
         // Construct an ISO-8601 date, dropping precision that doesn't exist.
@@ -120,13 +116,15 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
      *
      * @author Alexander Capehart
      */
-    class Range
-    private constructor(
+    class Range(
         /** The earliest [Date] in the range. */
         val min: Date,
         /** the latest [Date] in the range. May be the same as [min]. ] */
         val max: Date
     ) : Comparable<Range> {
+        init {
+            check(min <= max) { "Min date must be <= max date" }
+        }
 
         /**
          * Resolve this instance into a human-readable date range.
@@ -139,9 +137,9 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
         fun resolveDate(context: Context) =
             if (min != max) {
                 context.getString(
-                    R.string.fmt_date_range, min.resolveDate(context), max.resolveDate(context))
+                    R.string.fmt_date_range, min.resolve(context), max.resolve(context))
             } else {
-                min.resolveDate(context)
+                min.resolve(context)
             }
 
         override fun equals(other: Any?) = other is Range && min == other.min && max == other.max
@@ -149,35 +147,6 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
         override fun hashCode() = 31 * max.hashCode() + min.hashCode()
 
         override fun compareTo(other: Range) = min.compareTo(other.min)
-
-        companion object {
-            /**
-             * Create a [Range] from the given list of [Date]s.
-             *
-             * @param dates The [Date]s to use.
-             * @return A [Range] based on the minimum and maximum [Date]s. If there are no [Date]s,
-             *   null is returned.
-             */
-            fun from(dates: List<Date>): Range? {
-                if (dates.isEmpty()) {
-                    // Nothing to do.
-                    return null
-                }
-                // Simultaneously find the minimum and maximum values in the given range.
-                // If this list has only one item, then that one date is the minimum and maximum.
-                var min = dates.first()
-                var max = min
-                for (i in 1..dates.lastIndex) {
-                    if (dates[i] < min) {
-                        min = dates[i]
-                    }
-                    if (dates[i] > max) {
-                        max = dates[i]
-                    }
-                }
-                return Range(min, max)
-            }
-        }
     }
 
     companion object {

@@ -23,7 +23,7 @@
     <string name="lbl_playback">Сейчас играет</string>
     <string name="lbl_play">Играть</string>
     <string name="lbl_shuffle">Перемешать</string>
-    <string name="set_playback_mode_songs">Играть все треки</string>
+    <string name="set_playback_mode_songs">Играть все композиции</string>
     <string name="set_playback_mode_album">Играть альбом</string>
     <string name="set_playback_mode_artist">Играть исполнителя</string>
     <string name="lbl_queue">Очередь</string>
@@ -55,7 +55,7 @@
     <string name="set_lib_tabs">Вкладки</string>
     <string name="set_lib_tabs_desc">Изменить видимость и порядок вкладок</string>
     <string name="set_round_mode">Скруглённые обложки</string>
-    <string name="set_round_mode_desc">Включить скруглённые края на некоторых элементах интерфейса</string>
+    <string name="set_round_mode_desc">Скруглить края на некоторых элементах интерфейса</string>
     <string name="set_notif_action">Кнопка в уведомлении</string>
     <string name="set_audio">Звук</string>
     <string name="set_headset_autoplay">Воспроизводить при подключении</string>
@@ -63,7 +63,7 @@
     <string name="set_replay_gain_mode">Выравнивание громкости</string>
     <string name="set_replay_gain_mode_track">По треку</string>
     <string name="set_replay_gain_mode_album">По альбому</string>
-    <string name="set_replay_gain_mode_dynamic">Предпочитать альбом, если он воспроизводится</string>
+    <string name="set_replay_gain_mode_dynamic">Предпочитать по альбому, если он воспроизводится</string>
     <string name="set_personalize">Поведение</string>
     <string name="set_library_song_playback_mode">При воспроизведении из библиотеки</string>
     <string name="set_keep_shuffle">Запоминать перемешивание</string>
@@ -76,7 +76,7 @@
     <string name="set_save_state">Запоминать позицию</string>
     <string name="set_save_desc">Запоминать позицию в треке</string>
     <string name="set_reindex">Обновить музыку</string>
-    <string name="set_reindex_desc">Обновлять библиотеку, при возможности используя кеш тегов</string>
+    <string name="set_reindex_desc">Обновлять библиотеку, при возможности используя кэш тегов</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Треков нет</string>
     <string name="err_index_failed">Ошибка чтения библиотеки</string>
@@ -106,13 +106,13 @@
     <!-- Default Namespace | Placeholder values -->
     <string name="def_artist">Неизвестный исполнитель</string>
     <string name="def_genre">Неизвестный жанр</string>
-    <string name="def_date">Дата отсутствует</string>
+    <string name="def_date">Дата не указана</string>
     <string name="def_playback">Музыка не играет</string>
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Красный</string>
     <string name="clr_pink">Розовый</string>
     <string name="clr_purple">Пурпурный</string>
-    <string name="clr_deep_purple">Темно-фиолетовый</string>
+    <string name="clr_deep_purple">Тёмно-фиолетовый</string>
     <string name="clr_indigo">Индиго</string>
     <string name="clr_blue">Синий</string>
     <string name="clr_deep_blue">Тёмно-синий</string>
@@ -126,7 +126,7 @@
     <string name="clr_brown">Коричневый</string>
     <string name="clr_grey">Серый</string>
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_lib_song_count">Всего композиций: %d</string>
+    <string name="fmt_lib_song_count">Композиций загружено: %d</string>
     <plurals name="fmt_song_count">
         <item quantity="one">%d трек</item>
         <item quantity="few">%d трека</item>
@@ -152,16 +152,16 @@
     <string name="lbl_bitrate">Битрейт</string>
     <string name="lbl_disc">Диск</string>
     <string name="lbl_track">Трек</string>
-    <string name="lbl_state_restored">Состояние восстановлено</string>
+    <string name="lbl_state_restored">Позиция восстановлена</string>
     <string name="lbl_cancel">Отмена</string>
-    <string name="set_pre_amp_warning">Внимание: Изменение предусилителя на большое положительное значение может привести к появлению искажений на некоторых звуковых дорожках.</string>
+    <string name="set_pre_amp_warning">Внимание: Изменение предусиления на большое положительное значение может привести к появлению искажений на некоторых звуковых дорожках.</string>
     <string name="lbl_song_detail">Свойства</string>
     <string name="lbl_props">Свойства песни</string>
     <string name="lbl_relative_path">Путь</string>
     <string name="lbl_format">Формат</string>
     <string name="lbl_size">Размер</string>
     <string name="lbl_sample_rate">Частота дискретизации</string>
-    <string name="set_pre_amp_desc">Предусилитель применяется к существующей настройке во время воспроизведения</string>
+    <string name="set_pre_amp_desc">Предусиление применяется к существующей настройке во время воспроизведения</string>
     <string name="lbl_library_counts">Статистика библиотеки</string>
     <string name="set_restore_state">Восстановить состояние воспроизведения</string>
     <string name="lbl_duration">Продолжительность</string>
@@ -171,12 +171,12 @@
     <string name="lbl_single">Сингл</string>
     <string name="lbl_date_added">Дата добавления</string>
     <string name="lbl_singles">Синглы</string>
-    <string name="set_pre_amp">Предусилитель ReplayGain</string>
+    <string name="set_pre_amp">Предусиление ReplayGain</string>
     <string name="set_dirs_mode_exclude">Исключить</string>
     <string name="cdc_aac">AAC</string>
     <string name="set_wipe_state">Очистить состояние воспроизведения</string>
     <string name="set_dirs_mode_exclude_desc">Музыка <b>не</b> будет загружена из указанных папок.</string>
-    <string name="set_dirs_desc">Укажите, откуда загружать музыку</string>
+    <string name="set_dirs_desc">Укажите, откуда надо загружать музыку</string>
     <string name="fmt_bitrate">%d кбит/с</string>
     <string name="set_observing">Автоматическая перезагрузка</string>
     <string name="cdc_mp3">MPEG-1</string>
@@ -191,7 +191,7 @@
     <string name="lbl_album_live">Концертный альбом</string>
     <string name="lbl_live_group">Концертный</string>
     <string name="lng_observing">Мониторинг изменений в музыкальной библиотеке…</string>
-    <string name="lbl_state_wiped">Состояние очищено</string>
+    <string name="lbl_state_wiped">Позиция очищена</string>
     <string name="set_dirs">Папки с музыкой</string>
     <string name="set_dirs_mode_include">Включить</string>
     <string name="lbl_album_remix">Альбом ремиксов</string>
@@ -203,7 +203,7 @@
     <string name="lbl_compilations">Сборники</string>
     <string name="set_wipe_desc">Очистить ранее сохраненное состояние воспроизведения (если есть)</string>
     <string name="set_observing_desc">Перезагружать библиотеку при изменении (требует постоянное уведомление)</string>
-    <string name="fmt_db_neg">-%.1f дБ</string>
+    <string name="fmt_db_neg">−%.1f дБ</string>
     <string name="fmt_lib_genre_count">Жанров загружено: %d</string>
     <string name="set_restore_desc">Восстановить предыдущее состояние воспроизведения (если есть)</string>
     <string name="set_dirs_mode">Режим</string>
@@ -234,20 +234,20 @@
     <string name="set_separators_semicolon">Точка с запятой (;)</string>
     <string name="set_separators_plus">Плюс (+)</string>
     <string name="set_separators_and">Амперсанд (&amp;)</string>
-    <string name="lbl_mixes">Миксы</string>
+    <string name="lbl_mixes">DJ Миксы</string>
     <string name="desc_exit">Остановить воспроизведение</string>
-    <string name="set_exclude_non_music_desc">Игнорировать аудиофайлы, которые не являются музыкой, например, подкасты</string>
+    <string name="set_exclude_non_music_desc">Игнорировать аудиофайлы, которые не являются музыкой. Например, подкасты</string>
     <string name="set_cover_mode">Обложки альбомов</string>
-    <string name="lbl_mix">Микс</string>
+    <string name="lbl_mix">DJ Микс</string>
     <string name="set_pre_amp_with">Изменение по тегам</string>
     <string name="set_pre_amp_without">Изменения без тегов</string>
     <string name="set_cover_mode_off">Отключены</string>
     <string name="set_cover_mode_media_store">Исходные (Быстрая загрузка)</string>
     <string name="set_cover_mode_quality">Повышенного качества (Медленная загрузка)</string>
-    <string name="lbl_compilation_live">Подборка в реальном времени</string>
+    <string name="lbl_compilation_live">Сборник концертных записей</string>
     <string name="set_bar_action">Пользовательское поведение панели воспроизведения</string>
     <string name="set_rescan">Пересканировать музыку</string>
-    <string name="set_rescan_desc">Очистить кеш тегов и полностью обновить библиотеку (медленно, но более эффективно)</string>
+    <string name="set_rescan_desc">Очистить кэш тегов и полностью обновить библиотеку (медленно, но более точно)</string>
     <string name="lbl_compilation_remix">Сборник ремиксов</string>
     <plurals name="fmt_artist_count">
         <item quantity="one">%d исполнитель</item>
@@ -260,7 +260,7 @@
     <string name="set_separators_warning">Предупреждение: Использование этой настройки может привести к тому, что некоторые теги будут неправильно интерпретироваться как имеющие несколько значений. Вы можете решить эту проблему, добавив к нежелательным символам-разделителям обратную косую черту (\\).</string>
     <string name="lbl_play_selected">Воспроизвести выбранное</string>
     <string name="lbl_shuffle_selected">Перемешать выбранное</string>
-    <string name="fmt_selected">%d Выбрано</string>
+    <string name="fmt_selected">%d выбрано</string>
     <string name="lbl_wiki">Вики</string>
     <string name="lbl_reset">Сбросить</string>
     <string name="fmt_list">%1$s,%2$s</string>
@@ -271,7 +271,7 @@
     <string name="set_images">Изображения</string>
     <string name="set_library">Библиотека</string>
     <string name="set_ui_desc">Настройка темы и цветов приложения</string>
-    <string name="set_personalize_desc">Настройка элементов управления и поведения пользовательского интерфейса</string>
+    <string name="set_personalize_desc">Настроить элементы управления и поведение интерфейса</string>
     <string name="set_content_desc">Управляйте загрузкой музыки и изображений</string>
     <string name="set_audio_desc">Настройка звука и поведения при воспроизведении</string>
     <string name="set_playback">Воспроизведение</string>
@@ -290,4 +290,16 @@
     <string name="def_song_count">Без треков</string>
     <string name="lng_playlist_added">Добавлено в плейлист</string>
     <string name="lng_playlist_created">Плейлист создан</string>
+    <string name="lbl_delete">Удалить</string>
+    <string name="lbl_rename">Переименовать</string>
+    <string name="lbl_rename_playlist">Переименовать плейлист</string>
+    <string name="lbl_confirm_delete_playlist">Удалить плейлист\?</string>
+    <string name="lng_playlist_renamed">Плейлист переименован</string>
+    <string name="lng_playlist_deleted">Плейлист удалён</string>
+    <string name="lbl_edit">Редактировать</string>
+    <string name="fmt_deletion_info">Удалить %s\? Это действие не может быть отменено.</string>
+    <string name="lbl_appears_on">Появляется на</string>
+    <string name="fmt_editing">Редактирование %s</string>
+    <string name="def_disc">Нет диска</string>
+    <string name="lbl_share">Поделиться</string>
 </resources>

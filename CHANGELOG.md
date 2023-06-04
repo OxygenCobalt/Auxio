@@ -1,5 +1,32 @@
 # Changelog
 
+## 3.1.1
+
+#### What's New
+- Added ability to share a track
+
+#### What's Improved
+- Tracks with no disc number now default to "No Disc" instead of "Disc 1"
+- Albums implicitly linked only via "artist" tags are now placed in a special
+"appears on" section in the artist view
+- Album covers that are not 1:1 aspect ratio are no longer cropped
+- Optimized library creation phase of the music loading process
+
+#### What's Fixed
+- Prevented options such as "Add to queue" from being selected on empty artists and playlists
+- Fixed issue where an item would be indicated as "playing" after playback ended
+- Items should no longer be indicated as playing if the currently playing song is not contained
+within it
+- Fixed blurry playing indicator in album/artist/genre/playlist items
+- Fixed incorrect songs being displayed when adding albums to the end of the queue
+- Fixed freezing occuring when scrolling through large music libraries
+- Fixed app not responding once music loading completes for large libraries
+- Fixed crash when the last song of the queue gets removed while playing
+- Fixed playback UI and notification not re-appearing after playback ends
+
+#### What's Changed
+- Android Lollipop and Marshmallow support have been dropped
+
 ## 3.1.0
 
 #### What's New

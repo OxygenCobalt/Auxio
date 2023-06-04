@@ -27,7 +27,6 @@ import coil.request.ImageRequest
 import coil.size.Size
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import org.oxycblt.auxio.image.extractor.SquareFrameTransform
 import org.oxycblt.auxio.music.Song
 
 /**
@@ -97,16 +96,11 @@ constructor(
                     ImageRequest.Builder(context)
                         .data(listOf(song))
                         // Use ORIGINAL sizing, as we are not loading into any View-like component.
-                        .size(Size.ORIGINAL)
-                        .transformations(SquareFrameTransform.INSTANCE))
-                // Override the target in order to deliver the bitmap to the given
-                // listener.
+                        .size(Size.ORIGINAL))
                 .target(
                     onSuccess = {
                         synchronized(this) {
                             if (currentHandle == handle) {
-                                // Has not been superseded by a new request, can deliver
-                                // this result.
                                 target.onCompleted(it.toBitmap())
                             }
                         }
@@ -114,8 +108,6 @@ constructor(
                     onError = {
                         synchronized(this) {
                             if (currentHandle == handle) {
-                                // Has not been superseded by a new request, can deliver
-                                // this result.
                                 target.onCompleted(null)
                             }
                         }

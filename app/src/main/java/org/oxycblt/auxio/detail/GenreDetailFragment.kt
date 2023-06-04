@@ -41,10 +41,24 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.setFullWidthLookup
+import org.oxycblt.auxio.util.share
+import org.oxycblt.auxio.util.showToast
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A [ListFragment] that shows information for a particular [Genre].
@@ -146,7 +160,14 @@ class GenreDetailFragment :
                 musicModel.addToPlaylist(currentGenre)
                 true
             }
-            else -> false
+            R.id.action_share -> {
+                requireContext().share(currentGenre)
+                true
+            }
+            else -> {
+                logW("Unexpected menu item selected")
+                false
+            }
         }
     }
 
@@ -213,7 +234,7 @@ class GenreDetailFragment :
 
     private fun updatePlaylist(genre: Genre?) {
         if (genre == null) {
-            // Genre we were showing no longer exists.
+            logD("No genre to show, navigating away")
             findNavController().navigateUp()
             return
         }
@@ -222,15 +243,18 @@ class GenreDetailFragment :
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        var playingMusic: Music? = null
-        if (parent is Artist) {
-            playingMusic = parent
-        }
-        // Prefer songs that might be playing from this genre.
-        if (parent is Genre && parent.uid == unlikelyToBeNull(detailModel.currentGenre.value).uid) {
-            playingMusic = song
-        }
-        genreListAdapter.setPlaying(playingMusic, isPlaying)
+        val currentGenre = unlikelyToBeNull(detailModel.currentGenre.value)
+        val playingItem =
+            when (parent) {
+                // Always highlight a playing artist if it's from this genre, and if the currently
+                // playing song is contained within.
+                is Artist -> parent.takeIf { song?.run { artists.contains(it) } ?: false }
+                // If the parent is the artist itself, use the currently playing song.
+                currentGenre -> song
+                // Nothing is playing from this artist.
+                else -> null
+            }
+        genreListAdapter.setPlaying(playingItem, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {

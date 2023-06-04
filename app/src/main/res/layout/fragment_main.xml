@@ -46,20 +46,16 @@
             app:layout_behavior="org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/handle_wrapper"
+                android:id="@+id/queue_handle_wrapper"
+                android:contentDescription="@string/desc_queue_bar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/size_bottom_sheet_bar">
 
-                <ImageView
-                    android:id="@+id/handle"
+                <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+                    android:id="@+id/queue_handle"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/size_btn"
-                    android:contentDescription="@string/desc_queue_bar"
-                    android:paddingBottom="@dimen/spacing_mid_large"
-                    android:scaleType="center"
-                    android:src="@drawable/ui_queue_drag_handle"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="?attr/colorOnSurfaceVariant" />
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/queue_title"
@@ -68,8 +64,8 @@
                     android:text="@string/lbl_queue"
                     android:textAppearance="@style/TextAppearance.Auxio.LabelLarge"
                     android:textColor="?attr/colorOnSurfaceVariant"
-                    app:layout_constraintBottom_toBottomOf="@+id/handle"
-                    app:layout_constraintEnd_toEndOf="@+id/handle"
+                    app:layout_constraintBottom_toBottomOf="@+id/queue_handle"
+                    app:layout_constraintEnd_toEndOf="@+id/queue_handle"
                     app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

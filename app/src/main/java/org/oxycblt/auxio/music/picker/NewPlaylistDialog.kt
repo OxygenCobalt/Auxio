@@ -32,6 +32,7 @@ import org.oxycblt.auxio.databinding.DialogPlaylistNameBinding
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -89,6 +90,7 @@ class NewPlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>()
 
     private fun updatePendingPlaylist(pendingPlaylist: PendingPlaylist?) {
         if (pendingPlaylist == null) {
+            logD("No playlist to create, leaving")
             findNavController().navigateUp()
             return
         }

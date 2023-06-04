@@ -31,8 +31,10 @@ import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
-import org.oxycblt.auxio.list.adapter.*
-import org.oxycblt.auxio.list.recycler.*
+import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
+import org.oxycblt.auxio.list.recycler.BasicHeaderViewHolder
+import org.oxycblt.auxio.list.recycler.DividerViewHolder
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater

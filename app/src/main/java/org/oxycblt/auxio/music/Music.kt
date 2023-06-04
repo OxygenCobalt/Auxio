@@ -314,21 +314,23 @@ interface Album : MusicParent {
  */
 interface Artist : MusicParent {
     /**
-     * All of the [Album]s this artist is credited to. Note that any [Song] credited to this artist
-     * will have it's [Album] considered to be "indirectly" linked to this [Artist], and thus
-     * included in this list.
+     * All of the [Album]s this artist is credited to from [explicitAlbums] and [implicitAlbums].
+     * Note that any [Song] credited to this artist will have it's [Album] considered to be
+     * "indirectly" linked to this [Artist], and thus included in this list.
      */
     val albums: List<Album>
+
+    /** Albums directly credited to this [Artist] via a "Album Artist" tag. */
+    val explicitAlbums: List<Album>
+
+    /** Albums indirectly credited to this [Artist] via an "Artist" tag. */
+    val implicitAlbums: List<Album>
+
     /**
      * The duration of all [Song]s in the artist, in milliseconds. Will be null if there are no
      * songs.
      */
     val durationMs: Long?
-    /**
-     * Whether this artist is considered a "collaborator", i.e it is not directly credited on any
-     * [Album].
-     */
-    val isCollaborator: Boolean
     /** The [Genre]s of this artist. */
     val genres: List<Genre>
 }
@@ -339,8 +341,6 @@ interface Artist : MusicParent {
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Genre : MusicParent {
-    /** The albums indirectly linked to by the [Song]s of this [Genre]. */
-    val albums: List<Album>
     /** The artists indirectly linked to by the [Artist]s of this [Genre]. */
     val artists: List<Artist>
     /** The total duration of the songs in this genre, in milliseconds. */
@@ -353,8 +353,6 @@ interface Genre : MusicParent {
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Playlist : MusicParent {
-    /** The albums indirectly linked to by the [Song]s of this [Playlist]. */
-    val albums: List<Album>
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
 }

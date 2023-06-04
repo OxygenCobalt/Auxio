@@ -30,6 +30,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
 
@@ -64,18 +65,22 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
         //  do one.
         when (preference.key) {
             getString(R.string.set_key_ui) -> {
+                logD("Navigating to UI preferences")
                 findNavController()
                     .navigateSafe(RootPreferenceFragmentDirections.goToUiPreferences())
             }
             getString(R.string.set_key_personalize) -> {
+                logD("Navigating to personalization preferences")
                 findNavController()
                     .navigateSafe(RootPreferenceFragmentDirections.goToPersonalizePreferences())
             }
             getString(R.string.set_key_music) -> {
+                logD("Navigating to music preferences")
                 findNavController()
                     .navigateSafe(RootPreferenceFragmentDirections.goToMusicPreferences())
             }
             getString(R.string.set_key_audio) -> {
+                logD("Navigating to audio preferences")
                 findNavController()
                     .navigateSafe(RootPreferenceFragmentDirections.goToAudioPreferences())
             }
@@ -85,6 +90,7 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
                 playbackModel.savePlaybackState { saved ->
                     // Use the nullable context, as we could try to show a toast when this
                     // fragment is no longer attached.
+                    logD("Showing saving confirmation")
                     if (saved) {
                         context?.showToast(R.string.lbl_state_saved)
                     } else {
@@ -94,6 +100,7 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
             }
             getString(R.string.set_key_wipe_state) -> {
                 playbackModel.wipePlaybackState { wiped ->
+                    logD("Showing wipe confirmation")
                     if (wiped) {
                         // Use the nullable context, as we could try to show a toast when this
                         // fragment is no longer attached.
@@ -105,6 +112,7 @@ class RootPreferenceFragment : BasePreferenceFragment(R.xml.preferences_root) {
             }
             getString(R.string.set_key_restore_state) ->
                 playbackModel.tryRestorePlaybackState { restored ->
+                    logD("Showing restore confirmation")
                     if (restored) {
                         // Use the nullable context, as we could try to show a toast when this
                         // fragment is no longer attached.

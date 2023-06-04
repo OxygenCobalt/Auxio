@@ -24,16 +24,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemEditableSongBinding
 import org.oxycblt.auxio.list.EditClickListListener
-import org.oxycblt.auxio.list.adapter.*
+import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
+import org.oxycblt.auxio.list.adapter.PlayingIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.MaterialDragCallback
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.getAttrColorCompat
+import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [RecyclerView.Adapter] that shows an editable list of queue items.
@@ -82,9 +88,13 @@ class QueueAdapter(private val listener: EditClickListListener<Song>) :
 
         // Have to update not only the currently playing item, but also all items marked
         // as playing.
+        // TODO: Optimize this by only updating the range between old and new indices?
+        // TODO: Don't update when the index has not moved.
         if (currentIndex < lastIndex) {
+            logD("Moved backwards, must update items above last index")
             notifyItemRangeChanged(0, lastIndex + 1, PAYLOAD_UPDATE_POSITION)
         } else {
+            logD("Moved forwards, update items after index")
             notifyItemRangeChanged(0, currentIndex + 1, PAYLOAD_UPDATE_POSITION)
         }
 
@@ -110,11 +120,15 @@ class QueueSongViewHolder private constructor(private val binding: ItemEditableS
     override val delete = binding.background
     override val background =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
-            fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
+            fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurface)
             elevation = binding.context.getDimen(R.dimen.elevation_normal) * 5
             alpha = 0
         }
 
+    /**
+     * Whether this ViewHolder should be full-opacity to represent a future item, or greyed out to
+     * represent a past item. True if former, false if latter.
+     */
     var isFuture: Boolean
         get() = binding.songAlbumCover.isEnabled
         set(value) {
@@ -128,7 +142,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemEditableS
             LayerDrawable(
                 arrayOf(
                     MaterialShapeDrawable.createWithElevationOverlay(binding.context).apply {
-                        fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
+                        fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurface)
                         elevation = binding.context.getDimen(R.dimen.elevation_normal)
                     },
                     background))
@@ -153,7 +167,7 @@ class QueueSongViewHolder private constructor(private val binding: ItemEditableS
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.interactBody.isSelected = isActive
-        binding.songAlbumCover.isPlaying = isPlaying
+        binding.songAlbumCover.setPlaying(isPlaying)
     }
 
     companion object {

@@ -33,6 +33,7 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -86,7 +87,9 @@ class RenamePlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding
         }
 
         if (!initializedField) {
-            requireBinding().playlistName.setText(playlist.name.resolve(requireContext()))
+            val default = playlist.name.resolve(requireContext())
+            logD("Name input is not initialized, setting to $default")
+            requireBinding().playlistName.setText(default)
             initializedField = true
         }
     }

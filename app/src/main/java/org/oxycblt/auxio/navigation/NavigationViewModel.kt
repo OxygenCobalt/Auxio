@@ -32,7 +32,7 @@ import org.oxycblt.auxio.util.logD
  *
  * @author Alexander Capehart (OxygenCobalt)
  *
- * TODO: This whole system is very jankily designed, perhaps it's time for a refactor?
+ * TODO: Unwind this into ViewModel-specific actions, and then reference those.
  */
 class NavigationViewModel : ViewModel() {
     private val _mainNavigationAction = MutableEvent<MainNavigationAction>()
@@ -96,6 +96,7 @@ class NavigationViewModel : ViewModel() {
      *   dialog will be shown.
      */
     fun exploreNavigateToParentArtist(song: Song) {
+        logD("Navigating to parent artist of $song")
         exploreNavigateToParentArtistImpl(song, song.artists)
     }
 
@@ -106,6 +107,7 @@ class NavigationViewModel : ViewModel() {
      *   dialog will be shown.
      */
     fun exploreNavigateToParentArtist(album: Album) {
+        logD("Navigating to parent artist of $album")
         exploreNavigateToParentArtistImpl(album, album.artists)
     }
 

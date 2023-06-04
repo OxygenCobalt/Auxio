@@ -26,7 +26,14 @@ import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
@@ -68,8 +75,7 @@ constructor(
     private val _artistsList = MutableStateFlow(listOf<Artist>())
     /**
      * A list of [Artist]s, sorted by the preferred [Sort], to be shown in the home view. Note that
-     * if "Hide collaborators" is on, this list will not include [Artist]s where
-     * [Artist.isCollaborator] is true.
+     * if "Hide collaborators" is on, this list will not include collaborator [Artist]s.
      */
     val artistsList: MutableStateFlow<List<Artist>>
         get() = _artistsList
@@ -137,7 +143,6 @@ constructor(
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         val deviceLibrary = musicRepository.deviceLibrary
-        logD(changes.deviceLibrary)
         if (changes.deviceLibrary && deviceLibrary != null) {
             logD("Refreshing library")
             // Get the each list of items in the library to use as our list data.
@@ -150,9 +155,11 @@ constructor(
             _artistsList.value =
                 musicSettings.artistSort.artists(
                     if (homeSettings.shouldHideCollaborators) {
+                        logD("Filtering collaborator artists")
                         // Hide Collaborators is enabled, filter out collaborators.
-                        deviceLibrary.artists.filter { !it.isCollaborator }
+                        deviceLibrary.artists.filter { it.explicitAlbums.isNotEmpty() }
                     } else {
+                        logD("Using all artists")
                         deviceLibrary.artists
                     })
             _genresInstructions.put(UpdateInstructions.Diff)
@@ -170,12 +177,14 @@ constructor(
     override fun onTabsChanged() {
         // Tabs changed, update  the current tabs and set up a re-create event.
         currentTabModes = makeTabModes()
+        logD("Updating tabs: ${currentTabMode.value}")
         _shouldRecreate.put(Unit)
     }
 
     override fun onHideCollaboratorsChanged() {
         // Changes in the hide collaborator setting will change the artist contents
         // of the library, consider it a library update.
+        logD("Collaborator setting changed, forwarding update")
         onMusicChanges(MusicRepository.Changes(deviceLibrary = true, userLibrary = false))
     }
 
@@ -200,30 +209,34 @@ constructor(
      * @param sort The new [Sort] to apply. Assumed to be an allowed sort for the current [Tab].
      */
     fun setSortForCurrentTab(sort: Sort) {
-        logD("Updating ${_currentTabMode.value} sort to $sort")
         // Can simply re-sort the current list of items without having to access the library.
-        when (_currentTabMode.value) {
+        when (val mode = _currentTabMode.value) {
             MusicMode.SONGS -> {
+                logD("Updating song [$mode] sort mode to $sort")
                 musicSettings.songSort = sort
                 _songsInstructions.put(UpdateInstructions.Replace(0))
                 _songsList.value = sort.songs(_songsList.value)
             }
             MusicMode.ALBUMS -> {
+                logD("Updating album [$mode] sort mode to $sort")
                 musicSettings.albumSort = sort
                 _albumsInstructions.put(UpdateInstructions.Replace(0))
                 _albumsLists.value = sort.albums(_albumsLists.value)
             }
             MusicMode.ARTISTS -> {
+                logD("Updating artist [$mode] sort mode to $sort")
                 musicSettings.artistSort = sort
                 _artistsInstructions.put(UpdateInstructions.Replace(0))
                 _artistsList.value = sort.artists(_artistsList.value)
             }
             MusicMode.GENRES -> {
+                logD("Updating genre [$mode] sort mode to $sort")
                 musicSettings.genreSort = sort
                 _genresInstructions.put(UpdateInstructions.Replace(0))
                 _genresList.value = sort.genres(_genresList.value)
             }
             MusicMode.PLAYLISTS -> {
+                logD("Updating playlist [$mode] sort mode to $sort")
                 musicSettings.playlistSort = sort
                 _playlistsInstructions.put(UpdateInstructions.Replace(0))
                 _playlistsList.value = sort.playlists(_playlistsList.value)

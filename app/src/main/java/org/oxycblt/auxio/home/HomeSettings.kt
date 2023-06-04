@@ -26,6 +26,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -67,15 +68,18 @@ class HomeSettingsImpl @Inject constructor(@ApplicationContext context: Context)
 
     override fun migrate() {
         if (sharedPreferences.contains(OLD_KEY_LIB_TABS)) {
+            logD("Migrating tab setting")
             val oldTabs =
                 Tab.fromIntCode(sharedPreferences.getInt(OLD_KEY_LIB_TABS, Tab.SEQUENCE_DEFAULT))
                     ?: unlikelyToBeNull(Tab.fromIntCode(Tab.SEQUENCE_DEFAULT))
+            logD("Old tabs: $oldTabs")
 
             // The playlist tab is now parsed, but it needs to be made visible.
             val playlistIndex = oldTabs.indexOfFirst { it.mode == MusicMode.PLAYLISTS }
-            if (playlistIndex > -1) { // Sanity check
-                oldTabs[playlistIndex] = Tab.Visible(MusicMode.PLAYLISTS)
-            }
+            check(playlistIndex > -1) // This should exist, otherwise we are in big trouble
+            oldTabs[playlistIndex] = Tab.Visible(MusicMode.PLAYLISTS)
+            logD("New tabs: $oldTabs")
+
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_home_tabs), Tab.toIntCode(oldTabs))
                 remove(OLD_KEY_LIB_TABS)
@@ -85,8 +89,14 @@ class HomeSettingsImpl @Inject constructor(@ApplicationContext context: Context)
 
     override fun onSettingChanged(key: String, listener: HomeSettings.Listener) {
         when (key) {
-            getString(R.string.set_key_home_tabs) -> listener.onTabsChanged()
-            getString(R.string.set_key_hide_collaborators) -> listener.onHideCollaboratorsChanged()
+            getString(R.string.set_key_home_tabs) -> {
+                logD("Dispatching tab setting change")
+                listener.onTabsChanged()
+            }
+            getString(R.string.set_key_hide_collaborators) -> {
+                logD("Dispatching collaborator setting change")
+                listener.onHideCollaboratorsChanged()
+            }
         }
     }
 

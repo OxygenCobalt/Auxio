@@ -10,10 +10,15 @@
     <integer name="anim_fade_enter_duration">200</integer>
     <integer name="anim_fade_exit_duration">100</integer>
 
-    <declare-styleable name="StyledImageView">
+    <declare-styleable name="CoverView">
         <attr name="cornerRadius" format="dimension" />
-        <attr name="staticIcon" format="reference" />
-        <attr name="useLargeIcon" format="boolean" />
+        <attr name="sizing" format="enum">
+            <enum name="small" value="0" />
+            <enum name="medium" value="1" />
+            <enum name="large" value="2" />
+        </attr>
+        <attr name="enablePlaybackIndicator" format="boolean" />
+        <attr name="enableSelectionBadge" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="IntListPreference">

@@ -6,14 +6,15 @@
     android:layout_height="wrap_content"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-    <org.oxycblt.auxio.image.StyledImageView
+    <org.oxycblt.auxio.image.CoverView
         android:id="@+id/playback_cover"
         style="@style/Widget.Auxio.Image.Small"
         android:layout_margin="@dimen/spacing_small"
+        app:enablePlaybackIndicator="false"
+        app:enableSelectionBadge="false"
         app:layout_constraintBottom_toTopOf="@+id/playback_progress_container"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:staticIcon="@drawable/ic_song_24" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/playback_song"

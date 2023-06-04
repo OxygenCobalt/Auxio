@@ -10,15 +10,27 @@
     android:paddingEnd="@dimen/spacing_medium"
     android:paddingBottom="@dimen/spacing_mid_medium">
 
-    <org.oxycblt.auxio.image.StyledImageView
-        android:id="@+id/disc_icon"
+    <org.oxycblt.auxio.image.CoverView
+        android:id="@+id/disc_cover"
         style="@style/Widget.Auxio.Image.Small"
         android:scaleType="matrix"
+        app:enablePlaybackIndicator="false"
+        app:enableSelectionBadge="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:staticIcon="@drawable/ic_album_24"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription">
+
+        <ImageView
+            android:id="@+id/disc_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_album_24"
+            android:scaleType="center"
+            app:tint="@color/sel_on_cover_bg"
+            tools:ignore="ContentDescription" />
+
+    </org.oxycblt.auxio.image.CoverView>
 
     <TextView
         android:id="@+id/disc_number"
@@ -29,7 +41,7 @@
         android:textColor="@color/sel_selectable_text_primary"
         app:layout_constraintBottom_toTopOf="@+id/disc_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/disc_icon"
+        app:layout_constraintStart_toEndOf="@+id/disc_cover"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Disc 1" />
@@ -43,7 +55,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:visibility="gone"
-        app:layout_constraintStart_toEndOf="@+id/disc_icon"
+        app:layout_constraintStart_toEndOf="@+id/disc_cover"
         app:layout_constraintTop_toBottomOf="@+id/disc_number"
         tools:text="Part 1" />
 

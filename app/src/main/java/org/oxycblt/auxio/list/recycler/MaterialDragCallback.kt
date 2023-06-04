@@ -26,6 +26,7 @@ import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.list.recycler.MaterialDragCallback.ViewHolder
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.getInteger
 import org.oxycblt.auxio.util.logD
@@ -67,7 +68,7 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         // this is only done once when the item is initially picked up.
         // TODO: I think this is possible to improve with a raw ValueAnimator.
         if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-            logD("Lifting item")
+            logD("Lifting ViewHolder")
 
             val bg = holder.background
             val elevation = recyclerView.context.getDimen(R.dimen.elevation_normal)
@@ -109,7 +110,7 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
         // This function can be called multiple times, so only start the animation when the view's
         // translationZ is already non-zero.
         if (holder.root.translationZ != 0f) {
-            logD("Dropping item")
+            logD("Lifting ViewHolder")
 
             val bg = holder.background
             val elevation = recyclerView.context.getDimen(R.dimen.elevation_normal)
@@ -136,7 +137,7 @@ abstract class MaterialDragCallback : ItemTouchHelper.Callback() {
     // Long-press events are too buggy, only allow dragging with the handle.
     final override fun isLongPressDragEnabled() = false
 
-    /** Required [RecyclerView.ViewHolder] implementation that exposes the following. */
+    /** Required [RecyclerView.ViewHolder] implementation that exposes required fields */
     interface ViewHolder {
         /** Whether this [ViewHolder] can be moved right now. */
         val enabled: Boolean

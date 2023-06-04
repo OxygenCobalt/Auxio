@@ -20,13 +20,21 @@ package org.oxycblt.auxio.music.device
 
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.MimeType
 import org.oxycblt.auxio.music.fs.Path
 import org.oxycblt.auxio.music.fs.toAudioUri
 import org.oxycblt.auxio.music.fs.toCoverUri
-import org.oxycblt.auxio.music.info.*
 import org.oxycblt.auxio.music.info.Date
+import org.oxycblt.auxio.music.info.Disc
+import org.oxycblt.auxio.music.info.Name
+import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.music.metadata.parseId3GenreNames
 import org.oxycblt.auxio.music.metadata.parseMultiValue
 import org.oxycblt.auxio.util.nonZeroOrNull
@@ -85,9 +93,12 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
     override val album: Album
         get() = unlikelyToBeNull(_album)
 
-    override fun hashCode() = 31 * uid.hashCode() + rawSong.hashCode()
+    private val hashCode = 31 * uid.hashCode() + rawSong.hashCode()
+
+    override fun hashCode() = hashCode
     override fun equals(other: Any?) =
         other is SongImpl && uid == other.uid && rawSong == other.rawSong
+    override fun toString() = "Song(uid=$uid, name=$name)"
 
     private val artistMusicBrainzIds = rawSong.artistMusicBrainzIds.parseMultiValue(musicSettings)
     private val artistNames = rawSong.artistNames.parseMultiValue(musicSettings)
@@ -237,43 +248,60 @@ class AlbumImpl(
                 update(rawAlbum.rawArtists.map { it.name })
             }
     override val name = Name.Known.from(rawAlbum.name, rawAlbum.sortName, musicSettings)
-
-    override val dates = Date.Range.from(songs.mapNotNull { it.date })
+    override val dates: Date.Range?
     override val releaseType = rawAlbum.releaseType ?: ReleaseType.Album(null)
     override val coverUri = rawAlbum.mediaStoreId.toCoverUri()
     override val durationMs: Long
     override val dateAdded: Long
 
-    override fun hashCode(): Int {
-        var hashCode = uid.hashCode()
-        hashCode = 31 * hashCode + rawAlbum.hashCode()
-        hashCode = 31 * hashCode + songs.hashCode()
-        return hashCode
-    }
-
-    override fun equals(other: Any?) =
-        other is AlbumImpl && uid == other.uid && rawAlbum == other.rawAlbum && songs == other.songs
-
     private val _artists = mutableListOf<ArtistImpl>()
     override val artists: List<Artist>
         get() = _artists
 
+    private var hashCode = uid.hashCode()
+
     init {
         var totalDuration: Long = 0
+        var minDate: Date? = null
+        var maxDate: Date? = null
         var earliestDateAdded: Long = Long.MAX_VALUE
 
         // Do linking and value generation in the same loop for efficiency.
         for (song in songs) {
             song.link(this)
+
+            if (song.date != null) {
+                val min = minDate
+                if (min == null || song.date < min) {
+                    minDate = song.date
+                }
+
+                val max = maxDate
+                if (max == null || song.date > max) {
+                    maxDate = song.date
+                }
+            }
+
             if (song.dateAdded < earliestDateAdded) {
                 earliestDateAdded = song.dateAdded
             }
             totalDuration += song.durationMs
         }
 
+        val min = minDate
+        val max = maxDate
+        dates = if (min != null && max != null) Date.Range(min, max) else null
         durationMs = totalDuration
         dateAdded = earliestDateAdded
+
+        hashCode = 31 * hashCode + rawAlbum.hashCode()
+        hashCode = 31 * hashCode + songs.hashCode()
     }
+
+    override fun hashCode() = hashCode
+    override fun equals(other: Any?) =
+        other is AlbumImpl && uid == other.uid && rawAlbum == other.rawAlbum && songs == other.songs
+    override fun toString() = "Album(uid=$uid, name=$name)"
 
     /**
      * The [RawArtist] instances collated by the [Album]. The album artists of the song take
@@ -336,17 +364,48 @@ class ArtistImpl(
 
     override val songs: List<Song>
     override val albums: List<Album>
+    override val explicitAlbums: List<Album>
+    override val implicitAlbums: List<Album>
     override val durationMs: Long?
-    override val isCollaborator: Boolean
+
+    override lateinit var genres: List<Genre>
+
+    private var hashCode = uid.hashCode()
+
+    init {
+        val distinctSongs = mutableSetOf<Song>()
+        val albumMap = mutableMapOf<Album, Boolean>()
+
+        for (music in songAlbums) {
+            when (music) {
+                is SongImpl -> {
+                    music.link(this)
+                    distinctSongs.add(music)
+                    if (albumMap[music.album] == null) {
+                        albumMap[music.album] = false
+                    }
+                }
+                is AlbumImpl -> {
+                    music.link(this)
+                    albumMap[music] = true
+                }
+                else -> error("Unexpected input music ${music::class.simpleName}")
+            }
+        }
+
+        songs = distinctSongs.toList()
+        albums = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING).albums(albumMap.keys)
+        explicitAlbums = albums.filter { unlikelyToBeNull(albumMap[it]) }
+        implicitAlbums = albums.filterNot { unlikelyToBeNull(albumMap[it]) }
+        durationMs = songs.sumOf { it.durationMs }.nonZeroOrNull()
+
+        hashCode = 31 * hashCode + rawArtist.hashCode()
+        hashCode = 31 * hashCode + songs.hashCode()
+    }
 
     // Note: Append song contents to MusicParent equality so that artists with
     // the same UID but different songs are not equal.
-    override fun hashCode(): Int {
-        var hashCode = uid.hashCode()
-        hashCode = 31 * hashCode + rawArtist.hashCode()
-        hashCode = 31 * hashCode + songs.hashCode()
-        return hashCode
-    }
+    override fun hashCode() = hashCode
 
     override fun equals(other: Any?) =
         other is ArtistImpl &&
@@ -354,35 +413,7 @@ class ArtistImpl(
             rawArtist == other.rawArtist &&
             songs == other.songs
 
-    override lateinit var genres: List<Genre>
-
-    init {
-        val distinctSongs = mutableSetOf<Song>()
-        val distinctAlbums = mutableSetOf<Album>()
-
-        var noAlbums = true
-
-        for (music in songAlbums) {
-            when (music) {
-                is SongImpl -> {
-                    music.link(this)
-                    distinctSongs.add(music)
-                    distinctAlbums.add(music.album)
-                }
-                is AlbumImpl -> {
-                    music.link(this)
-                    distinctAlbums.add(music)
-                    noAlbums = false
-                }
-                else -> error("Unexpected input music ${music::class.simpleName}")
-            }
-        }
-
-        songs = distinctSongs.toList()
-        albums = distinctAlbums.toList()
-        durationMs = songs.sumOf { it.durationMs }.nonZeroOrNull()
-        isCollaborator = noAlbums
-    }
+    override fun toString() = "Artist(uid=$uid, name=$name)"
 
     /**
      * Returns the original position of this [Artist]'s [RawArtist] within the given [RawArtist]
@@ -393,7 +424,8 @@ class ArtistImpl(
      *   [RawArtist] will be within the list.
      * @return The index of the [Artist]'s [RawArtist] within the list.
      */
-    fun getOriginalPositionIn(rawArtists: List<RawArtist>) = rawArtists.indexOf(rawArtist)
+    fun getOriginalPositionIn(rawArtists: List<RawArtist>) =
+        rawArtists.indexOfFirst { it.key == rawArtist.key }
 
     /**
      * Perform final validation and organization on this instance.
@@ -427,19 +459,10 @@ class GenreImpl(
         rawGenre.name?.let { Name.Known.from(it, rawGenre.name, musicSettings) }
             ?: Name.Unknown(R.string.def_genre)
 
-    override val albums: List<Album>
     override val artists: List<Artist>
     override val durationMs: Long
 
-    override fun hashCode(): Int {
-        var hashCode = uid.hashCode()
-        hashCode = 31 * hashCode + rawGenre.hashCode()
-        hashCode = 31 * hashCode + songs.hashCode()
-        return hashCode
-    }
-
-    override fun equals(other: Any?) =
-        other is GenreImpl && uid == other.uid && rawGenre == other.rawGenre && songs == other.songs
+    private var hashCode = uid.hashCode()
 
     init {
         val distinctAlbums = mutableSetOf<Album>()
@@ -453,13 +476,18 @@ class GenreImpl(
             totalDuration += song.durationMs
         }
 
-        albums =
-            Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-                .albums(distinctAlbums)
-                .sortedByDescending { album -> album.songs.count { it.genres.contains(this) } }
         artists = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING).artists(distinctArtists)
         durationMs = totalDuration
+        hashCode = 31 * hashCode + rawGenre.hashCode()
+        hashCode = 31 * hashCode + songs.hashCode()
     }
+
+    override fun hashCode() = hashCode
+
+    override fun equals(other: Any?) =
+        other is GenreImpl && uid == other.uid && rawGenre == other.rawGenre && songs == other.songs
+
+    override fun toString() = "Genre(uid=$uid, name=$name)"
 
     /**
      * Returns the original position of this [Genre]'s [RawGenre] within the given [RawGenre] list.
@@ -470,7 +498,8 @@ class GenreImpl(
      *   [RawGenre] will be within the list.
      * @return The index of the [Genre]'s [RawGenre] within the list.
      */
-    fun getOriginalPositionIn(rawGenres: List<RawGenre>) = rawGenres.indexOf(rawGenre)
+    fun getOriginalPositionIn(rawGenres: List<RawGenre>) =
+        rawGenres.indexOfFirst { it.key == rawGenre.key }
 
     /**
      * Perform final validation and organization on this instance.

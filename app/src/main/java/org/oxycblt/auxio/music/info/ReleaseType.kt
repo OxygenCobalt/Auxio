@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.music.info
 
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.info.ReleaseType.Album
 
 /**
  * The type of release an [Album] is considered. This includes EPs, Singles, Compilations, etc.

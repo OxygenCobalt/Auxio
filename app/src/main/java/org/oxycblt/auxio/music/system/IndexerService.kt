@@ -28,12 +28,17 @@ import android.os.PowerManager
 import android.provider.MediaStore
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.Runnable
-import java.util.*
 import javax.inject.Inject
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.IndexingProgress
+import org.oxycblt.auxio.music.IndexingState
+import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.fs.contentResolverSafe
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.service.ForegroundManager
@@ -119,6 +124,7 @@ class IndexerService :
     // --- CONTROLLER CALLBACKS ---
 
     override fun requestIndex(withCache: Boolean) {
+        logD("Starting new indexing job")
         // Cancel the previous music loading job.
         currentIndexJob?.cancel()
         // Start a new music loading job on a co-routine.
@@ -132,6 +138,7 @@ class IndexerService :
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         val deviceLibrary = musicRepository.deviceLibrary ?: return
+        logD("Music changed, updating shared objects")
         // Wipe possibly-invalidated outdated covers
         imageLoader.memoryCache?.clear()
         // Clear invalid models from PlaybackStateManager. This is not connected
@@ -187,11 +194,14 @@ class IndexerService :
             // and thus the music library will not be updated at all.
             // TODO: Assuming I unify this with PlaybackService, it's possible that I won't need
             //  this anymore, or at least I only have to use it when the app task is not removed.
+            logD("Need to observe, staying in foreground")
             if (!foregroundManager.tryStartForeground(observingNotification)) {
+                logD("Notification changed, re-posting notification")
                 observingNotification.post()
             }
         } else {
             // Not observing and done loading, exit foreground.
+            logD("Exiting foreground")
             foregroundManager.tryStopForeground()
         }
         // Release our wake lock (if we were using it)
@@ -232,6 +242,7 @@ class IndexerService :
         // setting changed. In such a case, the state will still be updated when
         // the music loading process ends.
         if (currentIndexJob == null) {
+            logD("Not loading, updating idle session")
             updateIdleSession()
         }
     }
@@ -269,6 +280,7 @@ class IndexerService :
             // Check here if we should even start a reindex. This is much less bug-prone than
             // registering and de-registering this component as this setting changes.
             if (musicSettings.shouldBeObserving) {
+                logD("MediaStore changed, starting re-index")
                 requestIndex(true)
             }
         }

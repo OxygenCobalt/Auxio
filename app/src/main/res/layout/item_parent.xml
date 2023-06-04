@@ -10,13 +10,12 @@
     android:paddingEnd="@dimen/spacing_mid_medium"
     android:paddingBottom="@dimen/spacing_mid_medium">
 
-    <org.oxycblt.auxio.image.ImageGroup
+    <org.oxycblt.auxio.image.CoverView
         android:id="@+id/parent_image"
         style="@style/Widget.Auxio.Image.Medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:staticIcon="@drawable/ic_artist_24" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/parent_name"

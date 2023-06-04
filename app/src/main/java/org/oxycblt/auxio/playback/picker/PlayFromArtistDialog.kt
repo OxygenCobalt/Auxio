@@ -35,6 +35,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -72,6 +73,7 @@ class PlayFromArtistDialog :
             if (it != null) {
                 choiceAdapter.update(it.artists, UpdateInstructions.Replace(0))
             } else {
+                logD("No song to show choices for, navigating away")
                 findNavController().navigateUp()
             }
         }

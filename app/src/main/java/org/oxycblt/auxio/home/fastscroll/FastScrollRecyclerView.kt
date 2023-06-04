@@ -37,7 +37,12 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.recycler.AuxioRecyclerView
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.getDimenPixels
+import org.oxycblt.auxio.util.getDrawableCompat
+import org.oxycblt.auxio.util.getInteger
+import org.oxycblt.auxio.util.isRtl
+import org.oxycblt.auxio.util.isUnder
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A [RecyclerView] that enables better fast-scrolling. This is fundamentally a implementation of

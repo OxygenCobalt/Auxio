@@ -15,4 +15,7 @@
     <item
         android:id="@+id/action_song_detail"
         android:title="@string/lbl_song_detail" />
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/lbl_share" />
 </menu>

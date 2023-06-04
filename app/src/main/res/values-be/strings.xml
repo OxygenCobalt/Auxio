@@ -40,7 +40,7 @@
     <string name="lbl_compilations">Зборнікі</string>
     <string name="lbl_compilation">Зборнік</string>
     <string name="lbl_compilation_live">Жывая зборка</string>
-    <string name="lbl_mixes">Міксы</string>
+    <string name="lbl_mixes">DJ Міксы</string>
     <string name="set_theme_day">Светлая</string>
     <string name="lbl_single_live">Жывы сінгл</string>
     <string name="lbl_single_remix">Рэмікс сінгла</string>
@@ -48,7 +48,7 @@
     <string name="lbl_soundtracks">Саўндтрэкі</string>
     <string name="lbl_mixtapes">Мікстэйпы</string>
     <string name="lbl_mixtape">Мікстэйп</string>
-    <string name="lbl_mix">Мікс</string>
+    <string name="lbl_mix">DJ Мікс</string>
     <string name="set_theme_night">Цёмная</string>
     <string name="lbl_live_group">Канцэрт</string>
     <string name="lbl_artist">Выканаўца</string>
@@ -281,4 +281,16 @@
     <string name="lng_playlist_created">Плэйліст створаны</string>
     <string name="lng_playlist_added">Паведамленні ў плэйліст</string>
     <string name="def_song_count">Без трэкаў</string>
+    <string name="lbl_delete">Выдаліць</string>
+    <string name="fmt_deletion_info">Выдаліць %s\? Гэтае дзеянне не можа быць адменена.</string>
+    <string name="lbl_rename">Перайменаваць</string>
+    <string name="lbl_rename_playlist">Перайменаваць плэйліст</string>
+    <string name="lbl_confirm_delete_playlist">Выдаліць плэйліст\?</string>
+    <string name="lbl_edit">Змяніць</string>
+    <string name="lng_playlist_renamed">Плэйліст перайменаван</string>
+    <string name="lng_playlist_deleted">Плэйліст выдален</string>
+    <string name="lbl_share">Падзяліцца</string>
+    <string name="def_disc">Няма дыска</string>
+    <string name="lbl_appears_on">З\'яўляецца на</string>
+    <string name="fmt_editing">Рэдагаванне %s</string>
 </resources>

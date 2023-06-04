@@ -108,6 +108,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
             // Android 11 seems to now handle the app chooser situations on its own now
             // [along with adding a new permission that breaks the old manual code], so
             // we just do a typical activity launch.
+            logD("Using API 30+ chooser")
             try {
                 context.startActivity(browserIntent)
             } catch (e: ActivityNotFoundException) {
@@ -119,6 +120,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
             // not work in all cases, especially when no default app was set. If that is the
             // case, we will try to manually handle these cases before we try to launch the
             // browser.
+            logD("Resolving browser activity for chooser")
             @Suppress("DEPRECATION")
             val pkgName =
                 context.packageManager
@@ -128,16 +130,17 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
             if (pkgName != null) {
                 if (pkgName == "android") {
                     // No default browser [Must open app chooser, may not be supported]
+                    logD("No default browser found")
                     openAppChooser(browserIntent)
-                } else
-                    try {
-                        browserIntent.setPackage(pkgName)
-                        startActivity(browserIntent)
-                    } catch (e: ActivityNotFoundException) {
-                        // Not a browser but an app chooser
-                        browserIntent.setPackage(null)
-                        openAppChooser(browserIntent)
-                    }
+                } else logD("Opening browser intent")
+                try {
+                    browserIntent.setPackage(pkgName)
+                    startActivity(browserIntent)
+                } catch (e: ActivityNotFoundException) {
+                    // Not a browser but an app chooser
+                    browserIntent.setPackage(null)
+                    openAppChooser(browserIntent)
+                }
             } else {
                 // No app installed to open the link
                 context.showToast(R.string.err_no_app)
@@ -151,6 +154,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
      * @param intent The [Intent] to show an app chooser for.
      */
     private fun openAppChooser(intent: Intent) {
+        logD("Opening app chooser for ${intent.action}")
         val chooserIntent =
             Intent(Intent.ACTION_CHOOSER)
                 .putExtra(Intent.EXTRA_INTENT, intent)

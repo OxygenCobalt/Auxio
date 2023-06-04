@@ -29,11 +29,14 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Name
+import org.oxycblt.auxio.util.logD
 
 /**
  * Implements the fuzzy-ish searching algorithm used in the search view.
  *
  * @author Alexander Capehart
+ *
+ * TODO: Handle locale changes
  */
 interface SearchEngine {
     /**
@@ -65,8 +68,9 @@ interface SearchEngine {
 
 class SearchEngineImpl @Inject constructor(@ApplicationContext private val context: Context) :
     SearchEngine {
-    override suspend fun search(items: SearchEngine.Items, query: String) =
-        SearchEngine.Items(
+    override suspend fun search(items: SearchEngine.Items, query: String): SearchEngine.Items {
+        logD("Launching search for $query")
+        return SearchEngine.Items(
             songs =
                 items.songs?.searchListImpl(query) { q, song ->
                     song.path.name.contains(q, ignoreCase = true)
@@ -75,6 +79,7 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
             artists = items.artists?.searchListImpl(query),
             genres = items.genres?.searchListImpl(query),
             playlists = items.playlists?.searchListImpl(query))
+    }
 
     /**
      * Search a given [Music] list.

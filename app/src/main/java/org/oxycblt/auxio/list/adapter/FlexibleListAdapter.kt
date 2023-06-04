@@ -20,10 +20,12 @@ package org.oxycblt.auxio.list.adapter
 
 import android.os.Handler
 import android.os.Looper
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.AdapterListUpdateCallback
+import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import java.util.concurrent.Executor
+import org.oxycblt.auxio.util.logD
 
 /**
  * A variant of ListDiffer with more flexible updates.
@@ -45,15 +47,18 @@ abstract class FlexibleListAdapter<T, VH : RecyclerView.ViewHolder>(
     /**
      * Update the adapter with new data.
      *
-     * @param newData The new list of data to update with.
+     * @param newList The new list of data to update with.
      * @param instructions The [UpdateInstructions] to visually update the list with.
      * @param callback Called when the update is completed. May be done asynchronously.
      */
     fun update(
-        newData: List<T>,
+        newList: List<T>,
         instructions: UpdateInstructions?,
         callback: (() -> Unit)? = null
-    ) = differ.update(newData, instructions, callback)
+    ) {
+        logD("Updating list to ${newList.size} items with $instructions")
+        differ.update(newList, instructions, callback)
+    }
 }
 
 /**
@@ -164,6 +169,7 @@ private class FlexibleListDiffer<T>(
     ) {
         // fast simple remove all
         if (newList.isEmpty()) {
+            logD("Short-circuiting diff to remove all")
             val countRemoved = oldList.size
             currentList = emptyList()
             // notify last, after list is updated
@@ -174,6 +180,7 @@ private class FlexibleListDiffer<T>(
 
         // fast simple first insert
         if (oldList.isEmpty()) {
+            logD("Short-circuiting diff to insert all")
             currentList = newList
             // notify last, after list is updated
             updateCallback.onInserted(0, newList.size)
@@ -232,8 +239,10 @@ private class FlexibleListDiffer<T>(
                             throw AssertionError()
                         }
                     })
+
             mainThreadExecutor.execute {
                 if (maxScheduledGeneration == runGeneration) {
+                    logD("Applying calculated diff")
                     currentList = newList
                     result.dispatchUpdatesTo(updateCallback)
                     callback?.invoke()

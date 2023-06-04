@@ -23,7 +23,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewModel] that stores the current information required for navigation picker dialogs
@@ -58,6 +63,7 @@ class NavigationPickerViewModel @Inject constructor(private val musicRepository:
                     }
                 else -> null
             }
+        logD("Updated artist choices: ${_artistChoices.value}")
     }
 
     override fun onCleared() {
@@ -71,12 +77,22 @@ class NavigationPickerViewModel @Inject constructor(private val musicRepository:
      * @param itemUid The [Music.UID] of the item to show. Must be a [Song] or [Album].
      */
     fun setArtistChoiceUid(itemUid: Music.UID) {
+        logD("Opening navigation choices for $itemUid")
         // Support Songs and Albums, which have parent artists.
         _artistChoices.value =
             when (val music = musicRepository.find(itemUid)) {
-                is Song -> SongArtistNavigationChoices(music)
-                is Album -> AlbumArtistNavigationChoices(music)
-                else -> null
+                is Song -> {
+                    logD("Creating navigation choices for song")
+                    SongArtistNavigationChoices(music)
+                }
+                is Album -> {
+                    logD("Creating navigation choices for album")
+                    AlbumArtistNavigationChoices(music)
+                }
+                else -> {
+                    logD("Given song/album UID was invalid")
+                    null
+                }
             }
     }
 }

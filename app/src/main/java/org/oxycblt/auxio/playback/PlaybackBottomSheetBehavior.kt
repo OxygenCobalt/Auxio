@@ -24,6 +24,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.BaseBottomSheetBehavior
@@ -39,7 +40,7 @@ class PlaybackBottomSheetBehavior<V : View>(context: Context, attributeSet: Attr
     BaseBottomSheetBehavior<V>(context, attributeSet) {
     val sheetBackgroundDrawable =
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-            fillColor = context.getAttrColorCompat(R.attr.colorSurface)
+            fillColor = context.getAttrColorCompat(MR.attr.colorSurface)
             elevation = context.getDimen(R.dimen.elevation_normal)
         }
 

@@ -30,6 +30,7 @@ import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [DetailHeaderAdapter] that shows [Playlist] information.
@@ -57,6 +58,7 @@ class PlaylistDetailHeaderAdapter(private val listener: Listener) :
             // Nothing to do.
             return
         }
+        logD("Updating editing state [old: ${editedPlaylist?.size} new: ${songs?.size}")
         editedPlaylist = songs
         rebindParent()
     }
@@ -83,8 +85,16 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
         editedPlaylist: List<Song>?,
         listener: DetailHeaderAdapter.Listener
     ) {
-        // TODO: Debug perpetually re-binding images
-        binding.detailCover.bind(playlist, editedPlaylist)
+        if (editedPlaylist != null) {
+            logD("Binding edited playlist image")
+            binding.detailCover.bind(
+                editedPlaylist,
+                binding.context.getString(R.string.desc_playlist_image, playlist.name),
+                R.drawable.ic_playlist_24)
+        } else {
+            binding.detailCover.bind(playlist)
+        }
+
         binding.detailType.text = binding.context.getString(R.string.lbl_playlist)
         binding.detailName.text = playlist.name.resolve(binding.context)
         // Nothing about a playlist is applicable to the sub-head text.
@@ -103,12 +113,17 @@ private constructor(private val binding: ItemDetailHeaderBinding) :
                 binding.context.getString(R.string.def_song_count)
             }
 
+        val playable = playlist.songs.isNotEmpty() && editedPlaylist == null
+        if (!playable) {
+            logD("Playlist is being edited or is empty, disabling playback options")
+        }
+
         binding.detailPlayButton.apply {
-            isEnabled = playlist.songs.isNotEmpty() && editedPlaylist == null
+            isEnabled = playable
             setOnClickListener { listener.onPlay() }
         }
         binding.detailShuffleButton.apply {
-            isEnabled = playlist.songs.isNotEmpty() && editedPlaylist == null
+            isEnabled = playable
             setOnClickListener { listener.onShuffle() }
         }
     }

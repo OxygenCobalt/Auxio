@@ -49,7 +49,15 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.setFullWidthLookup
+import org.oxycblt.auxio.util.share
+import org.oxycblt.auxio.util.showToast
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A [ListFragment] that shows information about an [Artist].
@@ -153,7 +161,14 @@ class ArtistDetailFragment :
                 musicModel.addToPlaylist(currentArtist)
                 true
             }
-            else -> false
+            R.id.action_share -> {
+                requireContext().share(currentArtist)
+                true
+            }
+            else -> {
+                logW("Unexpected menu item selected")
+                false
+            }
         }
     }
 
@@ -222,11 +237,23 @@ class ArtistDetailFragment :
 
     private fun updateArtist(artist: Artist?) {
         if (artist == null) {
-            // Artist we were showing no longer exists.
+            logD("No artist to show, navigating away")
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailNormalToolbar.title = artist.name.resolve(requireContext())
+        requireBinding().detailNormalToolbar.apply {
+            title = artist.name.resolve(requireContext())
+
+            // Disable options that make no sense with an empty artist
+            val playable = artist.songs.isNotEmpty()
+            if (!playable) {
+                logD("Artist is empty, disabling playback/playlist/share options")
+            }
+            menu.findItem(R.id.action_play_next).isEnabled = playable
+            menu.findItem(R.id.action_queue_add).isEnabled = playable
+            menu.findItem(R.id.action_playlist_add).isEnabled = playable
+            menu.findItem(R.id.action_share).isEnabled = playable
+        }
         artistHeaderAdapter.setParent(artist)
     }
 
@@ -234,14 +261,14 @@ class ArtistDetailFragment :
         val currentArtist = unlikelyToBeNull(detailModel.currentArtist.value)
         val playingItem =
             when (parent) {
-                // Always highlight a playing album if it's from this artist.
-                is Album -> parent
+                // Always highlight a playing album if it's from this artist, and if the currently
+                // playing song is contained within.
+                is Album -> parent.takeIf { song?.album == it }
                 // If the parent is the artist itself, use the currently playing song.
                 currentArtist -> song
                 // Nothing is playing from this artist.
                 else -> null
             }
-
         artistListAdapter.setPlaying(playingItem, isPlaying)
     }
 

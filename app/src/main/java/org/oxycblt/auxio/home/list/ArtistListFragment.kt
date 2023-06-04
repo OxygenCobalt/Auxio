@@ -28,8 +28,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
-import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.ArtistViewHolder
@@ -39,11 +39,11 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
@@ -78,7 +78,8 @@ class ArtistListFragment :
 
         collectImmediately(homeModel.artistsList, ::updateArtists)
         collectImmediately(selectionModel.selected, ::updateSelection)
-        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+        collectImmediately(
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
     override fun onDestroyBinding(binding: FragmentHomeListBinding) {
@@ -121,16 +122,18 @@ class ArtistListFragment :
     }
 
     private fun updateArtists(artists: List<Artist>) {
-        artistAdapter.update(artists, homeModel.artistsInstructions.consume().also { logD(it) })
+        artistAdapter.update(artists, homeModel.artistsInstructions.consume())
     }
 
     private fun updateSelection(selection: List<Music>) {
         artistAdapter.setSelected(selection.filterIsInstanceTo(mutableSetOf()))
     }
 
-    private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
-        // If an artist is playing, highlight it within this adapter.
-        artistAdapter.setPlaying(parent as? Artist, isPlaying)
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        // Only highlight the artist if it is currently playing, and if the currently
+        // playing song is also contained within.
+        val artist = (parent as? Artist)?.takeIf { song?.run { artists.contains(it) } ?: false }
+        artistAdapter.setPlaying(artist, isPlaying)
     }
 
     /**

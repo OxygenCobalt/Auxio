@@ -29,7 +29,10 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
@@ -107,7 +110,7 @@ private class ArtistAlbumViewHolder private constructor(private val binding: Ite
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
-        binding.parentImage.isPlaying = isPlaying
+        binding.parentImage.setPlaying(isPlaying)
     }
 
     override fun updateSelectionIndicator(isSelected: Boolean) {
@@ -159,7 +162,7 @@ private class ArtistSongViewHolder private constructor(private val binding: Item
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
-        binding.songAlbumCover.isPlaying = isPlaying
+        binding.songAlbumCover.setPlaying(isPlaying)
     }
 
     override fun updateSelectionIndicator(isSelected: Boolean) {

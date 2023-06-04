@@ -174,6 +174,8 @@ private data class IntelligentKnownName(override val raw: String, override val s
     override val sortTokens = parseTokens(sort ?: raw)
 
     private fun parseTokens(name: String): List<SortToken> {
+        // TODO: This routine is consuming much of the song building runtime, find a way to
+        //  optimize it
         val stripped =
             name
                 // Remove excess punctuation from the string, as those u
@@ -201,6 +203,7 @@ private data class IntelligentKnownName(override val raw: String, override val s
             // Separate each token into their numeric and lexicographic counterparts.
             if (token.first().isDigit()) {
                 // The digit string comparison breaks with preceding zero digits, remove those
+                // TODO: Handle zero digits in other languages
                 val digits = token.trimStart('0').ifEmpty { token }
                 // Other languages have other types of digit strings, still use collation keys
                 collationKey = COLLATOR.getCollationKey(digits)

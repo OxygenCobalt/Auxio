@@ -10,13 +10,12 @@
     android:paddingEnd="@dimen/spacing_large"
     android:paddingBottom="@dimen/spacing_mid_medium">
 
-    <org.oxycblt.auxio.image.ImageGroup
+    <org.oxycblt.auxio.image.CoverView
         android:id="@+id/picker_image"
         style="@style/Widget.Auxio.Image.Small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:staticIcon="@drawable/ic_song_24" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/picker_name"

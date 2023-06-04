@@ -36,6 +36,7 @@ import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
@@ -50,8 +51,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * TODO: Unit testing
  * TODO: Fix UID naming
  * TODO: Leverage FlexibleListAdapter more in dialogs (Disable item anims)
- * TODO: Add more logging
- * TODO: Try to move on from synchronized and volatile in shared objs
+ * TODO: Improve multi-threading support in shared objects
  */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -121,6 +121,7 @@ class MainActivity : AppCompatActivity() {
     private fun startIntentAction(intent: Intent?): Boolean {
         if (intent == null) {
             // Nothing to do.
+            logD("No intent to handle")
             return false
         }
 
@@ -129,6 +130,7 @@ class MainActivity : AppCompatActivity() {
             // This is because onStart can run multiple times, and thus we really don't
             // want to return false and override the original delayed action with a
             // RestoreState action.
+            logD("Already used this intent")
             return true
         }
         intent.putExtra(KEY_INTENT_USED, true)
@@ -137,8 +139,12 @@ class MainActivity : AppCompatActivity() {
             when (intent.action) {
                 Intent.ACTION_VIEW -> InternalPlayer.Action.Open(intent.data ?: return false)
                 Auxio.INTENT_KEY_SHORTCUT_SHUFFLE -> InternalPlayer.Action.ShuffleAll
-                else -> return false
+                else -> {
+                    logW("Unexpected intent ${intent.action}")
+                    return false
+                }
             }
+        logD("Translated intent to $action")
         playbackModel.startAction(action)
         return true
     }

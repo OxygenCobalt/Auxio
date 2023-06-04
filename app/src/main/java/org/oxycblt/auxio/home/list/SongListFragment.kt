@@ -30,8 +30,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
-import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SongViewHolder
@@ -155,12 +155,8 @@ class SongListFragment :
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        if (parent == null) {
-            songAdapter.setPlaying(song, isPlaying)
-        } else {
-            // Ignore playback that is not from all songs
-            songAdapter.setPlaying(null, isPlaying)
-        }
+        // Only indicate playback that is from all songs
+        songAdapter.setPlaying(song.takeIf { parent == null }, isPlaying)
     }
 
     /**

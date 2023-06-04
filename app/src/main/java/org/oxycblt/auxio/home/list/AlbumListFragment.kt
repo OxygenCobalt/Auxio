@@ -30,13 +30,18 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
-import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.AlbumViewHolder
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
@@ -78,7 +83,8 @@ class AlbumListFragment :
 
         collectImmediately(homeModel.albumsList, ::updateAlbums)
         collectImmediately(selectionModel.selected, ::updateSelection)
-        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+        collectImmediately(
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
     override fun onDestroyBinding(binding: FragmentHomeListBinding) {
@@ -101,7 +107,7 @@ class AlbumListFragment :
             is Sort.Mode.ByArtist -> album.artists[0].name.thumb
 
             // Date -> Use minimum date (Maximum dates are not sorted by, so showing them is odd)
-            is Sort.Mode.ByDate -> album.dates?.run { min.resolveDate(requireContext()) }
+            is Sort.Mode.ByDate -> album.dates?.run { min.resolve(requireContext()) }
 
             // Duration -> Use formatted duration
             is Sort.Mode.ByDuration -> album.durationMs.formatDurationMs(false)
@@ -147,9 +153,11 @@ class AlbumListFragment :
         albumAdapter.setSelected(selection.filterIsInstanceTo(mutableSetOf()))
     }
 
-    private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
-        // If an album is playing, highlight it within this adapter.
-        albumAdapter.setPlaying(parent as? Album, isPlaying)
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        // Only highlight the album if it is currently playing, and if the currently
+        // playing song is also contained within.
+        val album = (parent as? Album)?.takeIf { song?.album == it }
+        albumAdapter.setPlaying(album, isPlaying)
     }
 
     /**

@@ -229,8 +229,8 @@
     <string name="set_separators_slash">Barra oblicua (/)</string>
     <string name="lbl_compilation_live">Recopilación en directo</string>
     <string name="lbl_compilation_remix">Compilaciones de remezclas</string>
-    <string name="lbl_mixes">Mezclas</string>
-    <string name="lbl_mix">Mezcla</string>
+    <string name="lbl_mixes">Mezclas del DJ</string>
+    <string name="lbl_mix">Mezclas del DJ</string>
     <string name="lbl_equalizer">Ecualizador</string>
     <string name="set_cover_mode">Portadas de álbumes</string>
     <string name="set_cover_mode_off">Apagado</string>
@@ -295,4 +295,8 @@
     <string name="fmt_deletion_info">¿Borrar %s\? Esto no se puede deshacer.</string>
     <string name="lbl_confirm_delete_playlist">¿Borrar la lista de reproducción\?</string>
     <string name="lbl_edit">Editar</string>
+    <string name="fmt_editing">Editando %s</string>
+    <string name="lbl_appears_on">Aparece en</string>
+    <string name="lbl_share">Compartir</string>
+    <string name="def_disc">Sin disco</string>
 </resources>

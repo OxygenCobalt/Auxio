@@ -3,19 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="?attr/selectableItemBackground"
     android:paddingStart="@dimen/spacing_large"
     android:paddingTop="@dimen/spacing_mid_medium"
     android:paddingEnd="@dimen/spacing_large"
     android:paddingBottom="@dimen/spacing_mid_medium">
 
-    <org.oxycblt.auxio.image.ImageGroup
+    <org.oxycblt.auxio.image.CoverView
         android:id="@+id/picker_image"
         style="@style/Widget.Auxio.Image.Small"
+        android:contentDescription="@string/lbl_new_playlist"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:staticIcon="@drawable/ic_add_24" />
+        app:enablePlaybackIndicator="false"
+        app:enableSelectionBadge="false">
+
+        <ImageView
+            android:id="@+id/picker_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_add_24"
+            android:scaleType="center"
+            app:tint="@color/sel_on_cover_bg"
+            tools:ignore="ContentDescription" />
+
+    </org.oxycblt.auxio.image.CoverView>
 
     <TextView
         android:id="@+id/picker_name"

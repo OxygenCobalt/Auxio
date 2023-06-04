@@ -33,6 +33,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewBindingFragment] that displays an editable queue.
@@ -104,9 +105,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditClickList
     private fun updateQueue(queue: List<Song>, index: Int, isPlaying: Boolean) {
         val binding = requireBinding()
 
-        // Replace or diff the queue depending on the type of change it is.
         queueAdapter.update(queue, queueModel.queueInstructions.consume())
-        // Update position in list (and thus past/future items)
         queueAdapter.setPosition(index, isPlaying)
 
         // If requested, scroll to a new item (occurs when the index moves)
@@ -122,13 +121,15 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), EditClickList
             // dependent on where we have to scroll to get to the currently playing song.
             if (notInitialized || scrollTo < start) {
                 // We need to scroll upwards, or initialize the scroll, no need to offset
+                logD("Not scrolling downwards, no offset needed")
                 binding.queueRecycler.scrollToPosition(scrollTo)
             } else if (scrollTo > end) {
                 // We need to scroll downwards, we need to offset by a screen of songs.
                 // This does have some error due to how many completely visible items on-screen
                 // can vary. This is considered okay.
-                binding.queueRecycler.scrollToPosition(
-                    min(queue.lastIndex, scrollTo + (end - start)))
+                val offset = scrollTo + (end - start)
+                logD("Scrolling downwards, offsetting by $offset")
+                binding.queueRecycler.scrollToPosition(min(queue.lastIndex, offset))
             }
         }
     }

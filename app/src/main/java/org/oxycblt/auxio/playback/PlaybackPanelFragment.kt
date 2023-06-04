@@ -43,6 +43,8 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.share
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -141,6 +143,7 @@ class PlaybackPanelFragment :
         when (item.itemId) {
             R.id.action_open_equalizer -> {
                 // Launch the system equalizer app, if possible.
+                logD("Launching equalizer")
                 val equalizerIntent =
                     Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
                         // Provide audio session ID so the equalizer can show options for this app
@@ -180,6 +183,10 @@ class PlaybackPanelFragment :
                 }
                 true
             }
+            R.id.action_share -> {
+                playbackModel.song.value?.let { requireContext().share(it) }
+                true
+            }
             else -> false
         }
 
@@ -195,6 +202,7 @@ class PlaybackPanelFragment :
 
         val binding = requireBinding()
         val context = requireContext()
+        logD("Updating song display: $song")
         binding.playbackCover.bind(song)
         binding.playbackSong.text = song.name.resolve(context)
         binding.playbackArtist.text = song.artists.resolveNames(context)
@@ -228,13 +236,11 @@ class PlaybackPanelFragment :
         requireBinding().playbackShuffle.isActivated = isShuffled
     }
 
-    /** Navigate to one of the currently playing [Song]'s Artists. */
     private fun navigateToCurrentArtist() {
         val song = playbackModel.song.value ?: return
         navModel.exploreNavigateToParentArtist(song)
     }
 
-    /** Navigate to the currently playing [Song]'s albums. */
     private fun navigateToCurrentAlbum() {
         val song = playbackModel.song.value ?: return
         navModel.exploreNavigateTo(song.album)

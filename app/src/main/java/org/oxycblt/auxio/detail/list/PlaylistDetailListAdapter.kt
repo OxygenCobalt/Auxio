@@ -27,6 +27,7 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.R as MR
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -47,6 +48,7 @@ import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [DetailListAdapter] implementing the header, sub-items, and editing state for the [Playlist]
@@ -97,6 +99,7 @@ class PlaylistDetailListAdapter(private val listener: Listener) :
             // Nothing to do.
             return
         }
+        logD("Updating editing state [old: $isEditing new: $editing]")
         this.isEditing = editing
         notifyItemRangeChanged(1, currentList.size - 1, PAYLOAD_EDITING_CHANGED)
     }
@@ -213,7 +216,7 @@ private constructor(private val binding: ItemEditableSongBinding) :
     override val delete = binding.background
     override val background =
         MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
-            fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
+            fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurface)
             elevation = binding.context.getDimen(R.dimen.elevation_normal)
             alpha = 0
         }
@@ -223,7 +226,7 @@ private constructor(private val binding: ItemEditableSongBinding) :
             LayerDrawable(
                 arrayOf(
                     MaterialShapeDrawable.createWithElevationOverlay(binding.context).apply {
-                        fillColor = binding.context.getAttrColorCompat(R.attr.colorSurface)
+                        fillColor = binding.context.getAttrColorCompat(MR.attr.colorSurface)
                     },
                     background))
     }
@@ -253,7 +256,7 @@ private constructor(private val binding: ItemEditableSongBinding) :
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.interactBody.isSelected = isActive
-        binding.songAlbumCover.isPlaying = isPlaying
+        binding.songAlbumCover.setPlaying(isPlaying)
     }
 
     override fun updateEditing(editing: Boolean) {

@@ -61,7 +61,7 @@ constructor(
             heap = queueDao.getHeap()
             mapping = queueDao.getMapping()
         } catch (e: Exception) {
-            logE("Unable to load playback state data")
+            logE("Unable read playback state")
             logE(e.stackTraceToString())
             return null
         }
@@ -74,7 +74,7 @@ constructor(
         }
 
         val parent = playbackState.parentUid?.let { musicRepository.find(it) as? MusicParent }
-        logD("Read playback state")
+        logD("Successfully read playback state")
 
         return PlaybackStateManager.SavedState(
             parent = parent,
@@ -90,8 +90,6 @@ constructor(
     }
 
     override suspend fun saveState(state: PlaybackStateManager.SavedState?): Boolean {
-        // Only bother saving a state if a song is actively playing from one.
-        // This is not the case with a null state.
         try {
             playbackStateDao.nukeState()
             queueDao.nukeHeap()
@@ -101,7 +99,8 @@ constructor(
             logE(e.stackTraceToString())
             return false
         }
-        logD("Cleared state")
+
+        logD("Successfully cleared previous state")
         if (state != null) {
             // Transform saved state into raw state, which can then be written to the database.
             val playbackState =
@@ -118,12 +117,14 @@ constructor(
                 state.queueState.heap.mapIndexed { i, song ->
                     QueueHeapItem(i, requireNotNull(song).uid)
                 }
+
             val mapping =
                 state.queueState.orderedMapping.zip(state.queueState.shuffledMapping).mapIndexed {
                     i,
                     pair ->
                     QueueMappingItem(i, pair.first, pair.second)
                 }
+
             try {
                 playbackStateDao.insertState(playbackState)
                 queueDao.insertHeap(heap)
@@ -133,8 +134,10 @@ constructor(
                 logE(e.stackTraceToString())
                 return false
             }
-            logD("Wrote state")
+
+            logD("Successfully wrote new state")
         }
+
         return true
     }
 }

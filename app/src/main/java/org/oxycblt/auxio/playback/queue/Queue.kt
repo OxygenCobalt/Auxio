@@ -23,6 +23,7 @@ import kotlin.random.nextInt
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.logD
 
 /**
  * A heap-backed play queue.
@@ -106,7 +107,7 @@ interface Queue {
     }
 }
 
-class EditableQueue : Queue {
+class MutableQueue : Queue {
     @Volatile private var heap = mutableListOf<Song>()
     @Volatile private var orderedMapping = mutableListOf<Int>()
     @Volatile private var shuffledMapping = mutableListOf<Int>()
@@ -174,6 +175,8 @@ class EditableQueue : Queue {
             return
         }
 
+        logD("Reordering queue [shuffled=$shuffled]")
+
         if (shuffled) {
             val trueIndex =
                 if (shuffledMapping.isNotEmpty()) {
@@ -190,7 +193,7 @@ class EditableQueue : Queue {
             shuffledMapping.add(0, shuffledMapping.removeAt(shuffledMapping.indexOf(trueIndex)))
             index = 0
         } else if (shuffledMapping.isNotEmpty()) {
-            // Un-shuffling, song to preserve is in the shuffled mapping.
+            // Ordering queue, song to preserve is in the shuffled mapping.
             index = orderedMapping.indexOf(shuffledMapping[index])
             shuffledMapping = mutableListOf()
         }
@@ -198,26 +201,30 @@ class EditableQueue : Queue {
     }
 
     /**
-     * Add [Song]s to the top of the queue. Will start playback if nothing is playing.
+     * Add [Song]s to the "top" of the queue (right next to the currently playing song). Will start
+     * playback if nothing is playing.
      *
      * @param songs The [Song]s to add.
      * @return A [Queue.Change] instance that reflects the changes made.
      */
-    fun playNext(songs: List<Song>): Queue.Change {
+    fun addToTop(songs: List<Song>): Queue.Change {
+        logD("Adding ${songs.size} songs to the front of the queue")
+        val insertAt = index + 1
         val heapIndices = songs.map(::addSongToHeap)
         if (shuffledMapping.isNotEmpty()) {
             // Add the new songs in front of the current index in the shuffled mapping and in front
             // of the analogous list song in the ordered mapping.
+            logD("Must append songs to shuffled mapping")
             val orderedIndex = orderedMapping.indexOf(shuffledMapping[index])
             orderedMapping.addAll(orderedIndex + 1, heapIndices)
-            shuffledMapping.addAll(index + 1, heapIndices)
+            shuffledMapping.addAll(insertAt, heapIndices)
         } else {
             // Add the new song in front of the current index in the ordered mapping.
-            orderedMapping.addAll(index + 1, heapIndices)
+            logD("Only appending songs to ordered mapping")
+            orderedMapping.addAll(insertAt, heapIndices)
         }
         check()
-        return Queue.Change(
-            Queue.Change.Type.MAPPING, UpdateInstructions.Add(index + 1, songs.size))
+        return Queue.Change(Queue.Change.Type.MAPPING, UpdateInstructions.Add(insertAt, songs.size))
     }
 
     /**
@@ -226,16 +233,18 @@ class EditableQueue : Queue {
      * @param songs The [Song]s to add.
      * @return A [Queue.Change] instance that reflects the changes made.
      */
-    fun addToQueue(songs: List<Song>): Queue.Change {
+    fun addToBottom(songs: List<Song>): Queue.Change {
+        logD("Adding ${songs.size} songs to the back of the queue")
+        val insertAt = orderedMapping.size
         val heapIndices = songs.map(::addSongToHeap)
         // Can simple append the new songs to the end of both mappings.
         orderedMapping.addAll(heapIndices)
         if (shuffledMapping.isNotEmpty()) {
+            logD("Appending songs to shuffled mapping")
             shuffledMapping.addAll(heapIndices)
         }
         check()
-        return Queue.Change(
-            Queue.Change.Type.MAPPING, UpdateInstructions.Add(index + 1, songs.size))
+        return Queue.Change(Queue.Change.Type.MAPPING, UpdateInstructions.Add(insertAt, songs.size))
     }
 
     /**
@@ -255,19 +264,33 @@ class EditableQueue : Queue {
             orderedMapping.add(dst, orderedMapping.removeAt(src))
         }
 
+        val oldIndex = index
         when (index) {
             // We are moving the currently playing song, correct the index to it's new position.
-            src -> index = dst
+            src -> {
+                logD("Moving current song, shifting index")
+                index = dst
+            }
             // We have moved an song from behind the playing song to in front, shift back.
-            in (src + 1)..dst -> index -= 1
+            in (src + 1)..dst -> {
+                logD("Moving song from behind -> front, shift backwards")
+                index -= 1
+            }
             // We have moved an song from in front of the playing song to behind, shift forward.
-            in dst until src -> index += 1
+            in dst until src -> {
+                logD("Moving song from front -> behind, shift forward")
+                index += 1
+            }
             else -> {
                 // Nothing to do.
+                logD("Move preserved index")
                 check()
                 return Queue.Change(Queue.Change.Type.MAPPING, UpdateInstructions.Move(src, dst))
             }
         }
+
+        logD("Move changed index: $oldIndex -> $index")
+
         check()
         return Queue.Change(Queue.Change.Type.INDEX, UpdateInstructions.Move(src, dst))
     }
@@ -279,6 +302,7 @@ class EditableQueue : Queue {
      * @return A [Queue.Change] instance that reflects the changes made.
      */
     fun remove(at: Int): Queue.Change {
+        val lastIndex = orderedMapping.lastIndex
         if (shuffledMapping.isNotEmpty()) {
             // Remove the specified index in the shuffled mapping and the analogous song in the
             // ordered mapping.
@@ -296,15 +320,27 @@ class EditableQueue : Queue {
         val type =
             when {
                 // We just removed the currently playing song.
-                index == at -> Queue.Change.Type.SONG
+                index == at -> {
+                    logD("Removed current song")
+                    if (lastIndex == index) {
+                        logD("Current song at end of queue, shift back")
+                        --index
+                    }
+                    Queue.Change.Type.SONG
+                }
                 // Index was ahead of removed song, shift back to preserve consistency.
                 index > at -> {
-                    index -= 1
+                    logD("Removed before current song, shift back")
+                    --index
                     Queue.Change.Type.INDEX
                 }
                 // Nothing to do
-                else -> Queue.Change.Type.MAPPING
+                else -> {
+                    logD("Removal preserved index")
+                    Queue.Change.Type.MAPPING
+                }
             }
+        logD("Committing change of type $type")
         check()
         return Queue.Change(type, UpdateInstructions.Remove(at, 1))
     }
@@ -337,6 +373,8 @@ class EditableQueue : Queue {
             }
         }
 
+        logD("Created adjustment mapping [max shift=$currentShift]")
+
         heap = savedState.heap.filterNotNull().toMutableList()
         orderedMapping =
             savedState.orderedMapping.mapNotNullTo(mutableListOf()) { heapIndex ->
@@ -352,6 +390,7 @@ class EditableQueue : Queue {
         while (currentSong?.uid != savedState.songUid && index > -1) {
             index--
         }
+        logD("Corrected index: ${savedState.index} -> $index")
         check()
     }
 
@@ -371,13 +410,17 @@ class EditableQueue : Queue {
                     orphanCandidates.add(entry.index)
                 }
             }
+            logD("Found orphans: ${orphanCandidates.map { heap[it] }}")
             orphanCandidates.removeAll(currentMapping.toSet())
             if (orphanCandidates.isNotEmpty()) {
+                val orphan = orphanCandidates.first()
+                logD("Found an orphan that could be re-used: ${heap[orphan]}")
                 // There are orphaned songs, return the first one we find.
-                return orphanCandidates.first()
+                return orphan
             }
         }
         // Nothing to re-use, add this song to the queue
+        logD("No orphan could be re-used")
         heap.add(song)
         return heap.lastIndex
     }

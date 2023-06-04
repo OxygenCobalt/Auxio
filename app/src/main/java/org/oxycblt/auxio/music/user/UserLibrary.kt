@@ -18,10 +18,17 @@
  
 package org.oxycblt.auxio.music.user
 
+import java.lang.Exception
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 
 /**
  * Organized library information controlled by the user.
@@ -118,7 +125,14 @@ constructor(private val playlistDao: PlaylistDao, private val musicSettings: Mus
     UserLibrary.Factory {
     override suspend fun read(deviceLibraryChannel: Channel<DeviceLibrary>): MutableUserLibrary {
         // While were waiting for the library, read our playlists out.
-        val rawPlaylists = playlistDao.readRawPlaylists()
+        val rawPlaylists =
+            try {
+                playlistDao.readRawPlaylists()
+            } catch (e: Exception) {
+                logE("Unable to read playlists: $e")
+                return UserLibraryImpl(playlistDao, mutableMapOf(), musicSettings)
+            }
+        logD("Successfully read ${rawPlaylists.size} playlists")
         val deviceLibrary = deviceLibraryChannel.receive()
         // Convert the database playlist information to actual usable playlists.
         val playlistMap = mutableMapOf<Music.UID, PlaylistImpl>()
@@ -135,6 +149,10 @@ private class UserLibraryImpl(
     private val playlistMap: MutableMap<Music.UID, PlaylistImpl>,
     private val musicSettings: MusicSettings
 ) : MutableUserLibrary {
+    override fun hashCode() = playlistMap.hashCode()
+    override fun equals(other: Any?) = other is UserLibraryImpl && other.playlistMap == playlistMap
+    override fun toString() = "UserLibrary(playlists=${playlists.size})"
+
     override val playlists: List<Playlist>
         get() = playlistMap.values.toList()
 
@@ -143,40 +161,81 @@ private class UserLibraryImpl(
     override fun findPlaylist(name: String) = playlistMap.values.find { it.name.raw == name }
 
     override suspend fun createPlaylist(name: String, songs: List<Song>) {
+        // TODO: Use synchronized with value access too
         val playlistImpl = PlaylistImpl.from(name, songs, musicSettings)
         synchronized(this) { playlistMap[playlistImpl.uid] = playlistImpl }
         val rawPlaylist =
             RawPlaylist(
                 PlaylistInfo(playlistImpl.uid, playlistImpl.name.raw),
                 playlistImpl.songs.map { PlaylistSong(it.uid) })
-        playlistDao.insertPlaylist(rawPlaylist)
+        try {
+            playlistDao.insertPlaylist(rawPlaylist)
+            logD("Successfully created playlist $name with ${songs.size} songs")
+        } catch (e: Exception) {
+            logE("Unable to create playlist $name with ${songs.size} songs")
+            logE(e.stackTraceToString())
+            synchronized(this) { playlistMap.remove(playlistImpl.uid) }
+            return
+        }
     }
 
     override suspend fun renamePlaylist(playlist: Playlist, name: String) {
         val playlistImpl =
             requireNotNull(playlistMap[playlist.uid]) { "Cannot rename invalid playlist" }
         synchronized(this) { playlistMap[playlist.uid] = playlistImpl.edit(name, musicSettings) }
-        playlistDao.replacePlaylistInfo(PlaylistInfo(playlist.uid, name))
+        try {
+            playlistDao.replacePlaylistInfo(PlaylistInfo(playlist.uid, name))
+            logD("Successfully renamed $playlist to $name")
+        } catch (e: Exception) {
+            logE("Unable to rename $playlist to $name: $e")
+            logE(e.stackTraceToString())
+            synchronized(this) { playlistMap[playlistImpl.uid] = playlistImpl }
+            return
+        }
     }
 
     override suspend fun deletePlaylist(playlist: Playlist) {
-        synchronized(this) {
-            requireNotNull(playlistMap.remove(playlist.uid)) { "Cannot remove invalid playlist" }
+        val playlistImpl =
+            requireNotNull(playlistMap[playlist.uid]) { "Cannot remove invalid playlist" }
+        synchronized(this) { playlistMap.remove(playlistImpl.uid) }
+        try {
+            playlistDao.deletePlaylist(playlist.uid)
+            logD("Successfully deleted $playlist")
+        } catch (e: Exception) {
+            logE("Unable to delete $playlist: $e")
+            logE(e.stackTraceToString())
+            synchronized(this) { playlistMap[playlistImpl.uid] = playlistImpl }
+            return
         }
-        playlistDao.deletePlaylist(playlist.uid)
     }
 
     override suspend fun addToPlaylist(playlist: Playlist, songs: List<Song>) {
         val playlistImpl =
             requireNotNull(playlistMap[playlist.uid]) { "Cannot add to invalid playlist" }
         synchronized(this) { playlistMap[playlist.uid] = playlistImpl.edit { addAll(songs) } }
-        playlistDao.insertPlaylistSongs(playlist.uid, songs.map { PlaylistSong(it.uid) })
+        try {
+            playlistDao.insertPlaylistSongs(playlist.uid, songs.map { PlaylistSong(it.uid) })
+            logD("Successfully added ${songs.size} songs to $playlist")
+        } catch (e: Exception) {
+            logE("Unable to add ${songs.size}  songs to $playlist: $e")
+            logE(e.stackTraceToString())
+            synchronized(this) { playlistMap[playlistImpl.uid] = playlistImpl }
+            return
+        }
     }
 
     override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
         val playlistImpl =
             requireNotNull(playlistMap[playlist.uid]) { "Cannot rewrite invalid playlist" }
         synchronized(this) { playlistMap[playlist.uid] = playlistImpl.edit(songs) }
-        playlistDao.replacePlaylistSongs(playlist.uid, songs.map { PlaylistSong(it.uid) })
+        try {
+            playlistDao.replacePlaylistSongs(playlist.uid, songs.map { PlaylistSong(it.uid) })
+            logD("Successfully rewrote $playlist with ${songs.size} songs")
+        } catch (e: Exception) {
+            logE("Unable to rewrite $playlist with ${songs.size} songs: $e")
+            logE(e.stackTraceToString())
+            synchronized(this) { playlistMap[playlistImpl.uid] = playlistImpl }
+            return
+        }
     }
 }

@@ -28,8 +28,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
-import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.GenreViewHolder
@@ -39,11 +39,11 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 
 /**
  * A [ListFragment] that shows a list of [Genre]s.
@@ -77,7 +77,8 @@ class GenreListFragment :
 
         collectImmediately(homeModel.genresList, ::updateGenres)
         collectImmediately(selectionModel.selected, ::updateSelection)
-        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+        collectImmediately(
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
     override fun onDestroyBinding(binding: FragmentHomeListBinding) {
@@ -120,16 +121,18 @@ class GenreListFragment :
     }
 
     private fun updateGenres(genres: List<Genre>) {
-        genreAdapter.update(genres, homeModel.genresInstructions.consume().also { logD(it) })
+        genreAdapter.update(genres, homeModel.genresInstructions.consume())
     }
 
     private fun updateSelection(selection: List<Music>) {
         genreAdapter.setSelected(selection.filterIsInstanceTo(mutableSetOf()))
     }
 
-    private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
-        // If a genre is playing, highlight it within this adapter.
-        genreAdapter.setPlaying(parent as? Genre, isPlaying)
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        // Only highlight the genre if it is currently playing, and if the currently
+        // playing song is also contained within.
+        val genre = (parent as? Genre)?.takeIf { song?.run { genres.contains(it) } ?: false }
+        genreAdapter.setPlaying(genre, isPlaying)
     }
 
     /**

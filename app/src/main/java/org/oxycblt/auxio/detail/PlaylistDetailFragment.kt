@@ -44,10 +44,24 @@ import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.setFullWidthLookup
+import org.oxycblt.auxio.util.share
+import org.oxycblt.auxio.util.showToast
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A [ListFragment] that shows information for a particular [Playlist].
@@ -197,11 +211,18 @@ class PlaylistDetailFragment :
                 musicModel.deletePlaylist(currentPlaylist)
                 true
             }
+            R.id.action_share -> {
+                requireContext().share(currentPlaylist)
+                true
+            }
             R.id.action_save -> {
                 detailModel.savePlaylistEdit()
                 true
             }
-            else -> false
+            else -> {
+                logW("Unexpected menu item selected")
+                false
+            }
         }
     }
 
@@ -238,19 +259,26 @@ class PlaylistDetailFragment :
             return
         }
         val binding = requireBinding()
-        binding.detailNormalToolbar.title = playlist.name.resolve(requireContext())
-        binding.detailEditToolbar.title = "Editing ${playlist.name.resolve(requireContext())}"
+        binding.detailNormalToolbar.apply {
+            title = playlist.name.resolve(requireContext())
+            // Disable options that make no sense with an empty playlist
+            val playable = playlist.songs.isNotEmpty()
+            if (!playable) {
+                logD("Playlist is empty, disabling playback/share options")
+            }
+            menu.findItem(R.id.action_play_next).isEnabled = playable
+            menu.findItem(R.id.action_queue_add).isEnabled = playable
+            menu.findItem(R.id.action_share).isEnabled = playable
+        }
+        binding.detailEditToolbar.title =
+            getString(R.string.fmt_editing, playlist.name.resolve(requireContext()))
         playlistHeaderAdapter.setParent(playlist)
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        // Prefer songs that might be playing from this playlist.
-        if (parent is Playlist &&
-            parent.uid == unlikelyToBeNull(detailModel.currentPlaylist.value).uid) {
-            playlistListAdapter.setPlaying(song, isPlaying)
-        } else {
-            playlistListAdapter.setPlaying(null, isPlaying)
-        }
+        // Prefer songs that are playing from this playlist.
+        playlistListAdapter.setPlaying(
+            song.takeIf { parent == detailModel.currentPlaylist.value }, isPlaying)
     }
 
     private fun handleNavigation(item: Music?) {
@@ -287,6 +315,7 @@ class PlaylistDetailFragment :
         selectionModel.drop()
 
         if (editedPlaylist != null) {
+            logD("Updating save button state")
             requireBinding().detailEditToolbar.menu.findItem(R.id.action_save).apply {
                 isEnabled = editedPlaylist != detailModel.currentPlaylist.value?.songs
             }
@@ -308,9 +337,18 @@ class PlaylistDetailFragment :
     private fun updateMultiToolbar() {
         val id =
             when {
-                detailModel.editedPlaylist.value != null -> R.id.detail_edit_toolbar
-                selectionModel.selected.value.isNotEmpty() -> R.id.detail_selection_toolbar
-                else -> R.id.detail_normal_toolbar
+                detailModel.editedPlaylist.value != null -> {
+                    logD("Currently editing playlist, showing edit toolbar")
+                    R.id.detail_edit_toolbar
+                }
+                selectionModel.selected.value.isNotEmpty() -> {
+                    logD("Currently selecting, showing selection toolbar")
+                    R.id.detail_selection_toolbar
+                }
+                else -> {
+                    logD("Using normal toolbar")
+                    R.id.detail_normal_toolbar
+                }
             }
 
         requireBinding().detailToolbar.setVisible(id)

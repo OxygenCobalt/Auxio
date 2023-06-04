@@ -51,6 +51,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     fun setVisible(@IdRes viewId: Int): Boolean {
         val index = children.indexOfFirst { it.id == viewId }
         if (index == currentlyVisible) return false
+        logD("Switching toolbar visibility from $currentlyVisible -> $index")
         return animateToolbarsVisibility(currentlyVisible, index).also { currentlyVisible = index }
     }
 
@@ -61,13 +62,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val targetFromAlpha = 0f
         val targetToAlpha = 1f
         val targetDuration =
+            // Since this view starts with the lowest toolbar index,
             if (from < to) {
+                logD("Moving higher, use an entrance animation")
                 context.getInteger(R.integer.anim_fade_enter_duration).toLong()
             } else {
+                logD("Moving lower, use an exit animation")
                 context.getInteger(R.integer.anim_fade_exit_duration).toLong()
             }
-
-        logD(targetDuration)
 
         val fromView = getChildAt(from) as Toolbar
         val toView = getChildAt(to) as Toolbar
@@ -80,15 +82,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         if (!isLaidOut) {
             // Not laid out, just change it immediately while are not shown to the user.
             // This is an initialization, so we return false despite changing.
+            logD("Not laid out, immediately updating visibility")
             setToolbarsAlpha(fromView, toView, targetFromAlpha)
             return false
         }
 
-        if (fadeThroughAnimator != null) {
-            fadeThroughAnimator?.cancel()
-            fadeThroughAnimator = null
-        }
-
+        logD("Changing toolbar visibility $from -> 0f, $to -> 1f")
+        fadeThroughAnimator?.cancel()
         fadeThroughAnimator =
             ValueAnimator.ofFloat(fromView.alpha, targetFromAlpha).apply {
                 duration = targetDuration
@@ -100,7 +100,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun setToolbarsAlpha(from: Toolbar, to: Toolbar, innerAlpha: Float) {
-        logD("${to.id == R.id.detail_edit_toolbar} ${1 - innerAlpha}")
         from.apply {
             alpha = innerAlpha
             isInvisible = innerAlpha == 0f

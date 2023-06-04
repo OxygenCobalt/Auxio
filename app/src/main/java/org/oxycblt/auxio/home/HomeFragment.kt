@@ -46,16 +46,39 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
-import org.oxycblt.auxio.home.list.*
+import org.oxycblt.auxio.home.list.AlbumListFragment
+import org.oxycblt.auxio.home.list.ArtistListFragment
+import org.oxycblt.auxio.home.list.GenreListFragment
+import org.oxycblt.auxio.home.list.PlaylistListFragment
+import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.selection.SelectionFragment
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.IndexingProgress
+import org.oxycblt.auxio.music.IndexingState
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.NoAudioPermissionException
+import org.oxycblt.auxio.music.NoMusicException
+import org.oxycblt.auxio.music.PERMISSION_READ_AUDIO
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.MainNavigationAction
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.getColorCompat
+import org.oxycblt.auxio.util.lazyReflectedField
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The starting [SelectionFragment] of Auxio. Shows the user's music library and enables navigation
@@ -188,54 +211,65 @@ class HomeFragment :
             return true
         }
 
-        when (item.itemId) {
+        return when (item.itemId) {
             // Handle main actions (Search, Settings, About)
             R.id.action_search -> {
                 logD("Navigating to search")
                 setupAxisTransitions(MaterialSharedAxis.Z)
                 findNavController().navigateSafe(HomeFragmentDirections.actionShowSearch())
+                true
             }
             R.id.action_settings -> {
                 logD("Navigating to settings")
                 navModel.mainNavigateTo(
                     MainNavigationAction.Directions(MainFragmentDirections.actionShowSettings()))
+                true
             }
             R.id.action_about -> {
                 logD("Navigating to about")
                 navModel.mainNavigateTo(
                     MainNavigationAction.Directions(MainFragmentDirections.actionShowAbout()))
+                true
             }
 
             // Handle sort menu
             R.id.submenu_sorting -> {
                 // Junk click event when opening the menu
+                true
             }
             R.id.option_sort_asc -> {
+                logD("Switching to ascending sorting")
                 item.isChecked = true
                 homeModel.setSortForCurrentTab(
                     homeModel
                         .getSortForTab(homeModel.currentTabMode.value)
                         .withDirection(Sort.Direction.ASCENDING))
+                true
             }
             R.id.option_sort_dec -> {
+                logD("Switching to descending sorting")
                 item.isChecked = true
                 homeModel.setSortForCurrentTab(
                     homeModel
                         .getSortForTab(homeModel.currentTabMode.value)
                         .withDirection(Sort.Direction.DESCENDING))
+                true
             }
             else -> {
-                // Sorting option was selected, mark it as selected and update the mode
-                item.isChecked = true
-                homeModel.setSortForCurrentTab(
-                    homeModel
-                        .getSortForTab(homeModel.currentTabMode.value)
-                        .withMode(requireNotNull(Sort.Mode.fromItemId(item.itemId))))
+                val newMode = Sort.Mode.fromItemId(item.itemId)
+                if (newMode != null) {
+                    // Sorting option was selected, mark it as selected and update the mode
+                    logD("Updating sort mode")
+                    item.isChecked = true
+                    homeModel.setSortForCurrentTab(
+                        homeModel.getSortForTab(homeModel.currentTabMode.value).withMode(newMode))
+                    true
+                } else {
+                    logW("Unexpected menu item selected")
+                    false
+                }
             }
         }
-
-        // Always handling it one way or another, so always return true
-        return true
     }
 
     private fun setupPager(binding: FragmentHomeBinding) {
@@ -246,6 +280,7 @@ class HomeFragment :
         if (homeModel.currentTabModes.size == 1) {
             // A single tab makes the tab layout redundant, hide it and disable the collapsing
             // behavior.
+            logD("Single tab shown, disabling TabLayout")
             binding.homeTabs.isVisible = false
             binding.homeAppbar.setExpanded(true, false)
             toolbarParams.scrollFlags = 0
@@ -270,17 +305,26 @@ class HomeFragment :
         val isVisible: (Int) -> Boolean =
             when (tabMode) {
                 // Disallow sorting by count for songs
-                MusicMode.SONGS -> { id -> id != R.id.option_sort_count }
+                MusicMode.SONGS -> {
+                    logD("Using song-specific menu options")
+                    ({ id -> id != R.id.option_sort_count })
+                }
                 // Disallow sorting by album for albums
-                MusicMode.ALBUMS -> { id -> id != R.id.option_sort_album }
+                MusicMode.ALBUMS -> {
+                    logD("Using album-specific menu options")
+                    ({ id -> id != R.id.option_sort_album })
+                }
                 // Only allow sorting by name, count, and duration for parents
-                else -> { id ->
+                else -> {
+                    logD("Using parent-specific menu options")
+                    ({ id ->
                         id == R.id.option_sort_asc ||
                             id == R.id.option_sort_dec ||
                             id == R.id.option_sort_name ||
                             id == R.id.option_sort_count ||
                             id == R.id.option_sort_duration
-                    }
+                    })
+                }
             }
 
         val sortMenu =
@@ -288,18 +332,29 @@ class HomeFragment :
         val toHighlight = homeModel.getSortForTab(tabMode)
 
         for (option in sortMenu) {
-            // Check the ascending option and corresponding sort option to align with
+            val isCurrentMode = option.itemId == toHighlight.mode.itemId
+            val isCurrentlyAscending =
+                option.itemId == R.id.option_sort_asc &&
+                    toHighlight.direction == Sort.Direction.ASCENDING
+            val isCurrentlyDescending =
+                option.itemId == R.id.option_sort_dec &&
+                    toHighlight.direction == Sort.Direction.DESCENDING
+            // Check the corresponding direction and mode sort options to align with
             // the current sort of the tab.
-            if (option.itemId == toHighlight.mode.itemId ||
-                (option.itemId == R.id.option_sort_asc &&
-                    toHighlight.direction == Sort.Direction.ASCENDING) ||
-                (option.itemId == R.id.option_sort_dec &&
-                    toHighlight.direction == Sort.Direction.DESCENDING)) {
+            if (isCurrentMode || isCurrentlyAscending || isCurrentlyDescending) {
+                logD(
+                    "Checking $option option [mode: $isCurrentMode asc: $isCurrentlyAscending dec: $isCurrentlyDescending]")
+                // Note: We cannot inline this boolean assignment since it unchecks all other radio
+                // buttons (even when setting it to false), which would result in nothing being
+                // selected.
                 option.isChecked = true
             }
 
             // Disable options that are not allowed by the isVisible lambda
             option.isVisible = isVisible(option.itemId)
+            if (!option.isVisible) {
+                logD("Hiding $option option")
+            }
         }
 
         // Update the scrolling view in AppBarLayout to align with the current tab's
@@ -315,10 +370,12 @@ class HomeFragment :
             }
 
         if (tabMode != MusicMode.PLAYLISTS) {
+            logD("Flipping to shuffle button")
             binding.homeFab.flipTo(R.drawable.ic_shuffle_off_24, R.string.desc_shuffle_all) {
                 playbackModel.shuffleAll()
             }
         } else {
+            logD("Flipping to playlist button")
             binding.homeFab.flipTo(R.drawable.ic_add_24, R.string.desc_new_playlist) {
                 musicModel.createPlaylist()
             }
@@ -328,6 +385,7 @@ class HomeFragment :
     private fun handleRecreate(recreate: Unit?) {
         if (recreate == null) return
         val binding = requireBinding()
+        logD("Recreating ViewPager")
         // Move back to position zero, as there must be a tab there.
         binding.homePager.currentItem = 0
         // Make sure tabs are set up to also follow the new ViewPager configuration.
@@ -364,7 +422,7 @@ class HomeFragment :
         binding.homeIndexingProgress.visibility = View.INVISIBLE
         when (error) {
             is NoAudioPermissionException -> {
-                logD("Updating UI to permission request state")
+                logD("Showing permission prompt")
                 binding.homeIndexingStatus.text = context.getString(R.string.err_no_perms)
                 // Configure the action to act as a permission launcher.
                 binding.homeIndexingAction.apply {
@@ -379,7 +437,7 @@ class HomeFragment :
                 }
             }
             is NoMusicException -> {
-                logD("Updating UI to no music state")
+                logD("Showing no music error")
                 binding.homeIndexingStatus.text = context.getString(R.string.err_no_music)
                 // Configure the action to act as a reload trigger.
                 binding.homeIndexingAction.apply {
@@ -389,7 +447,7 @@ class HomeFragment :
                 }
             }
             else -> {
-                logD("Updating UI to error state")
+                logD("Showing generic error")
                 binding.homeIndexingStatus.text = context.getString(R.string.err_index_failed)
                 // Configure the action to act as a reload trigger.
                 binding.homeIndexingAction.apply {
@@ -432,8 +490,10 @@ class HomeFragment :
         // displaying the shuffle FAB makes no sense. We also don't want the fast scroll
         // popup to overlap with the FAB, so we hide the FAB when fast scrolling too.
         if (songs.isEmpty() || isFastScrolling) {
+            logD("Hiding fab: [empty: ${songs.isEmpty()} scrolling: $isFastScrolling]")
             binding.homeFab.hide()
         } else {
+            logD("Showing fab")
             binding.homeFab.show()
         }
     }

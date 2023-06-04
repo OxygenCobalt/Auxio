@@ -81,6 +81,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             // zero, use 1 instead and disable the SeekBar.
             val to = max(value, 1)
             isEnabled = value > 0
+            logD("Value sanitization finished [to=$to, enabled=$isEnabled]")
             // Sanity check 2: If the current value exceeds the new duration value, clamp it
             // down so that we don't crash and instead have an annoying visual flicker.
             if (positionDs > to) {

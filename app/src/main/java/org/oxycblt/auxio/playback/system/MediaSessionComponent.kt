@@ -86,6 +86,7 @@ constructor(
      * @param intent The [Intent.ACTION_MEDIA_BUTTON] [Intent] to forward.
      */
     fun handleMediaButtonIntent(intent: Intent) {
+        logD("Forwarding $intent to MediaButtonReciever")
         MediaButtonReceiver.handleIntent(mediaSession, intent)
     }
 
@@ -283,8 +284,10 @@ constructor(
      *   playback is currently occuring from all songs.
      */
     private fun updateMediaMetadata(song: Song?, parent: MusicParent?) {
+        logD("Updating media metadata to $song with $parent")
         if (song == null) {
             // Nothing playing, reset the MediaSession and close the notification.
+            logD("Nothing playing, resetting media session")
             mediaSession.setMetadata(emptyMetadata)
             return
         }
@@ -316,12 +319,17 @@ constructor(
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
         // These fields are nullable and so we must check first before adding them to the fields.
         song.track?.let {
+            logD("Adding track information")
             builder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, it.toLong())
         }
         song.disc?.let {
+            logD("Adding disc information")
             builder.putLong(MediaMetadataCompat.METADATA_KEY_DISC_NUMBER, it.number.toLong())
         }
-        song.date?.let { builder.putString(MediaMetadataCompat.METADATA_KEY_DATE, it.toString()) }
+        song.date?.let {
+            logD("Adding date information")
+            builder.putString(MediaMetadataCompat.METADATA_KEY_DATE, it.toString())
+        }
 
         // We are normally supposed to use URIs for album art, but that removes some of the
         // nice things we can do like square cropping or high quality covers. Instead,
@@ -330,6 +338,8 @@ constructor(
             song,
             object : BitmapProvider.Target {
                 override fun onCompleted(bitmap: Bitmap?) {
+                    this@MediaSessionComponent.logD(
+                        "Bitmap loaded, applying media " + "session and posting notification")
                     builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap)
                     builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
                     val metadata = builder.build()
@@ -364,6 +374,7 @@ constructor(
                 // playback state.
                 MediaSessionCompat.QueueItem(description, i.toLong())
             }
+        logD("Uploading ${queueItems.size} songs to MediaSession queue")
         mediaSession.setQueue(queueItems)
     }
 
@@ -384,7 +395,8 @@ constructor(
         // Add the secondary action (either repeat/shuffle depending on the configuration)
         val secondaryAction =
             when (playbackSettings.notificationAction) {
-                ActionMode.SHUFFLE ->
+                ActionMode.SHUFFLE -> {
+                    logD("Using shuffle MediaSession action")
                     PlaybackStateCompat.CustomAction.Builder(
                         PlaybackService.ACTION_INVERT_SHUFFLE,
                         context.getString(R.string.desc_shuffle),
@@ -393,11 +405,14 @@ constructor(
                         } else {
                             R.drawable.ic_shuffle_off_24
                         })
-                else ->
+                }
+                else -> {
+                    logD("Using repeat mode MediaSession action")
                     PlaybackStateCompat.CustomAction.Builder(
                         PlaybackService.ACTION_INC_REPEAT_MODE,
                         context.getString(R.string.desc_change_repeat),
                         playbackManager.repeatMode.icon)
+                }
             }
         state.addCustomAction(secondaryAction.build())
 
@@ -415,14 +430,22 @@ constructor(
 
     /** Invalidate the "secondary" action (i.e shuffle/repeat mode). */
     private fun invalidateSecondaryAction() {
+        logD("Invalidating secondary action")
         invalidateSessionState()
 
         when (playbackSettings.notificationAction) {
-            ActionMode.SHUFFLE -> notification.updateShuffled(playbackManager.queue.isShuffled)
-            else -> notification.updateRepeatMode(playbackManager.repeatMode)
+            ActionMode.SHUFFLE -> {
+                logD("Using shuffle notification action")
+                notification.updateShuffled(playbackManager.queue.isShuffled)
+            }
+            else -> {
+                logD("Using repeat mode notification action")
+                notification.updateRepeatMode(playbackManager.repeatMode)
+            }
         }
 
         if (!bitmapProvider.isBusy) {
+            logD("Not loading a bitmap, post the notification")
             listener?.onPostNotification(notification)
         }
     }

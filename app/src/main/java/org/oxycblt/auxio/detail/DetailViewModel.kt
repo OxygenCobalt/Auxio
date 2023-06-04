@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.detail.list.DiscHeader
 import org.oxycblt.auxio.detail.list.EditHeader
 import org.oxycblt.auxio.detail.list.SortHeader
 import org.oxycblt.auxio.list.BasicHeader
@@ -37,12 +38,22 @@ import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.music.*
-import org.oxycblt.auxio.music.info.Disc
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.music.metadata.AudioProperties
 import org.oxycblt.auxio.playback.PlaybackSettings
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.Event
+import org.oxycblt.auxio.util.MutableEvent
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 
 /**
  * [ViewModel] that manages the Song, Album, Artist, and Genre detail views. Keeps track of the
@@ -60,7 +71,7 @@ constructor(
     private val playbackSettings: PlaybackSettings
 ) : ViewModel(), MusicRepository.UpdateListener {
     // --- SONG ---
-    
+
     private var currentSongJob: Job? = null
 
     private val _currentSong = MutableStateFlow<Song?>(null)
@@ -219,9 +230,9 @@ constructor(
         if (changes.userLibrary && userLibrary != null) {
             val playlist = currentPlaylist.value
             if (playlist != null) {
-                logD("Updated playlist to ${currentPlaylist.value}")
                 _currentPlaylist.value =
                     userLibrary.findPlaylist(playlist.uid)?.also(::refreshPlaylistList)
+                logD("Updated playlist to ${currentPlaylist.value}")
             }
         }
     }
@@ -233,8 +244,11 @@ constructor(
      * @param uid The UID of the [Song] to load. Must be valid.
      */
     fun setSong(uid: Music.UID) {
-        logD("Opening Song [uid: $uid]")
+        logD("Opening song $uid")
         _currentSong.value = musicRepository.deviceLibrary?.findSong(uid)?.also(::refreshAudioInfo)
+        if (_currentSong.value == null) {
+            logW("Given song UID was invalid")
+        }
     }
 
     /**
@@ -244,9 +258,12 @@ constructor(
      * @param uid The [Music.UID] of the [Album] to update [currentAlbum] to. Must be valid.
      */
     fun setAlbum(uid: Music.UID) {
-        logD("Opening Album [uid: $uid]")
+        logD("Opening album $uid")
         _currentAlbum.value =
             musicRepository.deviceLibrary?.findAlbum(uid)?.also(::refreshAlbumList)
+        if (_currentAlbum.value == null) {
+            logW("Given album UID was invalid")
+        }
     }
 
     /**
@@ -256,9 +273,12 @@ constructor(
      * @param uid The [Music.UID] of the [Artist] to update [currentArtist] to. Must be valid.
      */
     fun setArtist(uid: Music.UID) {
-        logD("Opening Artist [uid: $uid]")
+        logD("Opening artist $uid")
         _currentArtist.value =
             musicRepository.deviceLibrary?.findArtist(uid)?.also(::refreshArtistList)
+        if (_currentArtist.value == null) {
+            logW("Given artist UID was invalid")
+        }
     }
 
     /**
@@ -268,9 +288,12 @@ constructor(
      * @param uid The [Music.UID] of the [Genre] to update [currentGenre] to. Must be valid.
      */
     fun setGenre(uid: Music.UID) {
-        logD("Opening Genre [uid: $uid]")
+        logD("Opening genre $uid")
         _currentGenre.value =
             musicRepository.deviceLibrary?.findGenre(uid)?.also(::refreshGenreList)
+        if (_currentGenre.value == null) {
+            logW("Given genre UID was invalid")
+        }
     }
 
     /**
@@ -280,9 +303,12 @@ constructor(
      * @param uid The [Music.UID] of the [Playlist] to update [currentPlaylist] to. Must be valid.
      */
     fun setPlaylist(uid: Music.UID) {
-        logD("Opening Playlist [uid: $uid]")
+        logD("Opening playlist $uid")
         _currentPlaylist.value =
             musicRepository.userLibrary?.findPlaylist(uid)?.also(::refreshPlaylistList)
+        if (_currentPlaylist.value == null) {
+            logW("Given playlist UID was invalid")
+        }
     }
 
     /** Start a playlist editing session. Does nothing if a playlist is not being shown. */
@@ -300,6 +326,7 @@ constructor(
     fun savePlaylistEdit() {
         val playlist = _currentPlaylist.value ?: return
         val editedPlaylist = _editedPlaylist.value ?: return
+        logD("Committing playlist edits")
         viewModelScope.launch {
             musicRepository.rewritePlaylist(playlist, editedPlaylist)
             // TODO: The user could probably press some kind of button if they were fast enough.
@@ -320,6 +347,7 @@ constructor(
             // Nothing to do.
             return false
         }
+        logD("Discarding playlist edits")
         _editedPlaylist.value = null
         refreshPlaylistList(playlist)
         return true
@@ -341,6 +369,7 @@ constructor(
         if (realFrom !in editedPlaylist.indices || realTo !in editedPlaylist.indices) {
             return false
         }
+        logD("Moving playlist song from $realFrom [$from] to $realTo [$to]")
         editedPlaylist.add(realFrom, editedPlaylist.removeAt(realTo))
         _editedPlaylist.value = editedPlaylist
         refreshPlaylistList(playlist, UpdateInstructions.Move(from, to))
@@ -359,6 +388,7 @@ constructor(
         if (realAt !in editedPlaylist.indices) {
             return
         }
+        logD("Removing playlist song at $realAt [$at]")
         editedPlaylist.removeAt(realAt)
         _editedPlaylist.value = editedPlaylist
         refreshPlaylistList(
@@ -366,11 +396,13 @@ constructor(
             if (editedPlaylist.isNotEmpty()) {
                 UpdateInstructions.Remove(at, 1)
             } else {
+                logD("Playlist will be empty after removal, removing header")
                 UpdateInstructions.Remove(at - 2, 3)
             })
     }
 
     private fun refreshAudioInfo(song: Song) {
+        logD("Refreshing audio info")
         // Clear any previous job in order to avoid stale data from appearing in the UI.
         currentSongJob?.cancel()
         _songAudioProperties.value = null
@@ -378,6 +410,7 @@ constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 val info = audioPropertiesFactory.extract(song)
                 yield()
+                logD("Updating audio info to $info")
                 _songAudioProperties.value = info
             }
     }
@@ -399,12 +432,11 @@ constructor(
         // To create a good user experience regarding disc numbers, we group the album's
         // songs up by disc and then delimit the groups by a disc header.
         val songs = albumSongSort.songs(album.songs)
-        // Songs without disc tags become part of Disc 1.
-        val byDisc = songs.groupBy { it.disc ?: Disc(1, null) }
+        val byDisc = songs.groupBy { it.disc }
         if (byDisc.size > 1) {
             logD("Album has more than one disc, interspersing headers")
             for (entry in byDisc.entries) {
-                list.add(entry.key)
+                list.add(DiscHeader(entry.key))
                 list.addAll(entry.value)
             }
         } else {
@@ -412,6 +444,7 @@ constructor(
             list.addAll(songs)
         }
 
+        logD("Update album list to ${list.size} items with $instructions")
         _albumInstructions.put(instructions)
         _albumList.value = list
     }
@@ -419,10 +452,9 @@ constructor(
     private fun refreshArtistList(artist: Artist, replace: Boolean = false) {
         logD("Refreshing artist list")
         val list = mutableListOf<Item>()
-        val albums = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING).albums(artist.albums)
 
-        val byReleaseGroup =
-            albums.groupBy {
+        val grouping =
+            artist.explicitAlbums.groupByTo(sortedMapOf()) {
                 // Remap the complicated ReleaseType data structure into an easier
                 // "AlbumGrouping" enum that will automatically group and sort
                 // the artist's albums.
@@ -436,15 +468,25 @@ constructor(
                             is ReleaseType.Single -> AlbumGrouping.SINGLES
                             is ReleaseType.Compilation -> AlbumGrouping.COMPILATIONS
                             is ReleaseType.Soundtrack -> AlbumGrouping.SOUNDTRACKS
-                            is ReleaseType.Mix -> AlbumGrouping.MIXES
+                            is ReleaseType.Mix -> AlbumGrouping.DJMIXES
                             is ReleaseType.Mixtape -> AlbumGrouping.MIXTAPES
                         }
                 }
             }
 
-        logD("Release groups for this artist: ${byReleaseGroup.keys}")
+        if (artist.implicitAlbums.isNotEmpty()) {
+            // groupByTo normally returns a mapping to a MutableList mapping. Since MutableList
+            // inherits list, we can cast upwards and save a copy by directly inserting the
+            // implicit album list into the mapping.
+            logD("Implicit albums present, adding to list")
+            @Suppress("UNCHECKED_CAST")
+            (grouping as MutableMap<AlbumGrouping, List<Album>>)[AlbumGrouping.APPEARANCES] =
+                artist.implicitAlbums
+        }
 
-        for (entry in byReleaseGroup.entries.sortedBy { it.key }) {
+        logD("Release groups for this artist: ${grouping.keys}")
+
+        for (entry in grouping.entries) {
             val header = BasicHeader(entry.key.headerTitleRes)
             list.add(Divider(header))
             list.add(header)
@@ -465,6 +507,7 @@ constructor(
             list.addAll(artistSongSort.songs(artist.songs))
         }
 
+        logD("Updating artist list to ${list.size} items with $instructions")
         _artistInstructions.put(instructions)
         _artistList.value = list.toList()
     }
@@ -483,12 +526,14 @@ constructor(
         list.add(songHeader)
         val instructions =
             if (replace) {
-                // Intentional so that the header item isn't replaced with the songs
+                // Intentional so that the header item isn't replaced alongside the songs
                 UpdateInstructions.Replace(list.size)
             } else {
                 UpdateInstructions.Diff
             }
         list.addAll(genreSongSort.songs(genre.songs))
+
+        logD("Updating genre list to ${list.size} items with $instructions")
         _genreInstructions.put(instructions)
         _genreList.value = list
     }
@@ -508,6 +553,7 @@ constructor(
             list.addAll(songs)
         }
 
+        logD("Updating playlist list to ${list.size} items with $instructions")
         _playlistInstructions.put(instructions)
         _playlistList.value = list
     }
@@ -524,8 +570,9 @@ constructor(
         SINGLES(R.string.lbl_singles),
         COMPILATIONS(R.string.lbl_compilations),
         SOUNDTRACKS(R.string.lbl_soundtracks),
-        MIXES(R.string.lbl_mixes),
+        DJMIXES(R.string.lbl_mixes),
         MIXTAPES(R.string.lbl_mixtapes),
+        APPEARANCES(R.string.lbl_appears_on),
         LIVE(R.string.lbl_live_group),
         REMIXES(R.string.lbl_remix_group),
     }

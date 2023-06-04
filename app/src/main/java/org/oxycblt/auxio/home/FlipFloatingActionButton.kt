@@ -22,8 +22,8 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.google.android.material.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -44,23 +44,32 @@ constructor(
 
     override fun show() {
         // Will already show eventually, need to do nothing.
-        if (flipping) return
+        if (flipping) {
+            logD("Already flipping, aborting show")
+            return
+        }
         // Apply the new configuration possibly set in flipTo. This should occur even if
         // a flip was canceled by a hide.
         pendingConfig?.run {
+            this@FlipFloatingActionButton.logD("Applying pending configuration")
             setImageResource(iconRes)
             contentDescription = context.getString(contentDescriptionRes)
             setOnClickListener(clickListener)
         }
         pendingConfig = null
+        logD("Beginning show")
         super.show()
     }
 
     override fun hide() {
+        if (flipping) {
+            logD("Hide was called, aborting flip")
+        }
         // Not flipping anymore, disable the flag so that the FAB is not re-shown.
         flipping = false
         // Don't pass any kind of listener so that future flip operations will not be able
         // to show the FAB again.
+        logD("Beginning hide")
         super.hide()
     }
 
@@ -82,9 +91,12 @@ constructor(
 
         // Already hiding for whatever reason, apply the configuration when the FAB is shown again.
         if (!isOrWillBeHidden) {
+            logD("Starting hide for flip")
             flipping = true
             // We will re-show the FAB later, assuming that there was not a prior flip operation.
             super.hide(FlipVisibilityListener())
+        } else {
+            logD("Already hiding, will apply config later")
         }
     }
 
@@ -97,7 +109,7 @@ constructor(
     private inner class FlipVisibilityListener : OnVisibilityChangedListener() {
         override fun onHidden(fab: FloatingActionButton) {
             if (!flipping) return
-            logD("Showing for a flip operation")
+            logD("Starting show for flip")
             flipping = false
             show()
         }

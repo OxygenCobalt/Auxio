@@ -89,12 +89,8 @@ private class TagWorkerImpl(
             } catch (e: Exception) {
                 logW("Unable to extract metadata for ${rawSong.name}")
                 logW(e.stackTraceToString())
-                null
+                return rawSong
             }
-        if (format == null) {
-            logD("Nothing could be extracted for ${rawSong.name}")
-            return rawSong
-        }
 
         val metadata = format.metadata
         if (metadata != null) {

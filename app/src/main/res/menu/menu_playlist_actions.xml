@@ -18,4 +18,7 @@
     <item
         android:id="@+id/action_delete"
         android:title="@string/lbl_delete" />
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/lbl_share" />
 </menu>

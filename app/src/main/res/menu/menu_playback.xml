@@ -21,4 +21,7 @@
         android:id="@+id/action_song_detail"
         android:title="@string/lbl_song_detail"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/lbl_share" />
 </menu>

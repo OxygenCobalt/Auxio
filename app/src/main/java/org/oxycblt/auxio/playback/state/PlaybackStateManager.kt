@@ -22,7 +22,7 @@ import javax.inject.Inject
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.queue.EditableQueue
+import org.oxycblt.auxio.playback.queue.MutableQueue
 import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
@@ -305,10 +305,9 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Volatile private var pendingAction: InternalPlayer.Action? = null
     @Volatile private var isInitialized = false
 
-    override val queue = EditableQueue()
+    override val queue = MutableQueue()
     @Volatile
-    override var parent: MusicParent? =
-        null // FIXME: Parent is interpreted wrong when nothing is playing.
+    override var parent: MusicParent? = null
         private set
     @Volatile
     override var playerState = InternalPlayer.State.from(isPlaying = false, isAdvancing = false, 0)
@@ -324,6 +323,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     @Synchronized
     override fun addListener(listener: PlaybackStateManager.Listener) {
+        logD("Adding $listener to listeners")
         if (isInitialized) {
             listener.onNewPlayback(queue, parent)
             listener.onRepeatChanged(repeatMode)
@@ -335,7 +335,10 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     @Synchronized
     override fun removeListener(listener: PlaybackStateManager.Listener) {
-        listeners.remove(listener)
+        logD("Removing $listener from listeners")
+        if (!listeners.remove(listener)) {
+            logW("Listener $listener was not added prior, cannot remove")
+        }
     }
 
     @Synchronized
@@ -344,6 +347,8 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             logW("Internal player is already registered")
             return
         }
+
+        logD("Registering internal player $internalPlayer")
 
         if (isInitialized) {
             internalPlayer.loadSong(queue.currentSong, playerState.isPlaying)
@@ -364,6 +369,8 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
             return
         }
 
+        logD("Unregistering internal player $internalPlayer")
+
         this.internalPlayer = null
     }
 
@@ -372,6 +379,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun play(song: Song?, parent: MusicParent?, queue: List<Song>, shuffled: Boolean) {
         val internalPlayer = internalPlayer ?: return
+        logD("Playing $song from $parent in ${queue.size}-song queue [shuffled=$shuffled]")
         // Set up parent and queue
         this.parent = parent
         this.queue.start(song, queue, shuffled)
@@ -391,6 +399,9 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         if (!queue.goto(queue.index + 1)) {
             queue.goto(0)
             play = repeatMode == RepeatMode.ALL
+            logD("At end of queue, wrapping around to position 0 [play=$play]")
+        } else {
+            logD("Moving to next song")
         }
         notifyIndexMoved()
         internalPlayer.loadSong(queue.currentSong, play)
@@ -399,12 +410,13 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     @Synchronized
     override fun prev() {
         val internalPlayer = internalPlayer ?: return
-
         // If enabled, rewind before skipping back if the position is past 3 seconds [3000ms]
         if (internalPlayer.shouldRewindWithPrev) {
+            logD("Rewinding current song")
             rewind()
             setPlaying(true)
         } else {
+            logD("Moving to previous song")
             if (!queue.goto(queue.index - 1)) {
                 queue.goto(0)
             }
@@ -417,26 +429,33 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     override fun goto(index: Int) {
         val internalPlayer = internalPlayer ?: return
         if (queue.goto(index)) {
+            logD("Moving to $index")
             notifyIndexMoved()
             internalPlayer.loadSong(queue.currentSong, true)
+        } else {
+            logW("$index was not in bounds, could not move to it")
         }
     }
 
     @Synchronized
     override fun playNext(songs: List<Song>) {
         if (queue.currentSong == null) {
+            logD("Nothing playing, short-circuiting to new playback")
             play(songs[0], null, songs, false)
         } else {
-            notifyQueueChanged(queue.playNext(songs))
+            logD("Adding ${songs.size} songs to start of queue")
+            notifyQueueChanged(queue.addToTop(songs))
         }
     }
 
     @Synchronized
     override fun addToQueue(songs: List<Song>) {
         if (queue.currentSong == null) {
+            logD("Nothing playing, short-circuiting to new playback")
             play(songs[0], null, songs, false)
         } else {
-            notifyQueueChanged(queue.addToQueue(songs))
+            logD("Adding ${songs.size} songs to end of queue")
+            notifyQueueChanged(queue.addToBottom(songs))
         }
     }
 
@@ -459,6 +478,7 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     @Synchronized
     override fun reorder(shuffled: Boolean) {
+        logD("Reordering queue [shuffled=$shuffled]")
         queue.reorder(shuffled)
         notifyQueueReordered()
     }
@@ -503,11 +523,13 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
 
     @Synchronized
     override fun setPlaying(isPlaying: Boolean) {
+        logD("Updating playing state to $isPlaying")
         internalPlayer?.setPlaying(isPlaying)
     }
 
     @Synchronized
     override fun seekTo(positionMs: Long) {
+        logD("Seeking to ${positionMs}ms")
         internalPlayer?.seekTo(positionMs)
     }
 
@@ -529,10 +551,11 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         destructive: Boolean
     ) {
         if (isInitialized && !destructive) {
+            logW("Already initialized, cannot apply saved  state")
             return
         }
         val internalPlayer = internalPlayer ?: return
-        logD("Restoring state $savedState")
+        logD("Applying state $savedState")
 
         val lastSong = queue.currentSong
         parent = savedState.parent
@@ -544,10 +567,12 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
         // it be. Specifically done so we don't pause on music updates that don't really change
         // what's playing (ex. playlist editing)
         if (lastSong != queue.currentSong) {
+            logD("Song changed, must reload player")
             // Continuing playback while also possibly doing drastic state updates is
             // a bad idea, so pause.
             internalPlayer.loadSong(queue.currentSong, false)
             if (queue.currentSong != null) {
+                logD("Seeking to saved position ${savedState.positionMs}ms")
                 // Internal player may have reloaded the media item, re-seek to the previous
                 // position
                 seekTo(savedState.positionMs)
@@ -559,36 +584,42 @@ class PlaybackStateManagerImpl @Inject constructor() : PlaybackStateManager {
     // --- CALLBACKS ---
 
     private fun notifyIndexMoved() {
+        logD("Dispatching index change")
         for (callback in listeners) {
             callback.onIndexMoved(queue)
         }
     }
 
     private fun notifyQueueChanged(change: Queue.Change) {
+        logD("Dispatching queue change $change")
         for (callback in listeners) {
             callback.onQueueChanged(queue, change)
         }
     }
 
     private fun notifyQueueReordered() {
+        logD("Dispatching queue reordering")
         for (callback in listeners) {
             callback.onQueueReordered(queue)
         }
     }
 
     private fun notifyNewPlayback() {
+        logD("Dispatching new playback")
         for (callback in listeners) {
             callback.onNewPlayback(queue, parent)
         }
     }
 
     private fun notifyStateChanged() {
+        logD("Dispatching player state change")
         for (callback in listeners) {
             callback.onStateChanged(playerState)
         }
     }
 
     private fun notifyRepeatModeChanged() {
+        logD("Dispatching repeat mode change")
         for (callback in listeners) {
             callback.onRepeatChanged(repeatMode)
         }

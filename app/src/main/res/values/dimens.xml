@@ -20,13 +20,14 @@
     <dimen name="size_corners_medium">16dp</dimen>
     <dimen name="size_corners_mid_large">24dp</dimen>
 
+
     <dimen name="size_btn">48dp</dimen>
     <dimen name="size_accent_item">56dp</dimen>
     <dimen name="size_bottom_sheet_bar">64dp</dimen>
     <dimen name="size_play_pause_button">72dp</dimen>
 
     <dimen name="size_icon_small">24dp</dimen>
-    <dimen name="size_icon_large">32dp</dimen>
+    <dimen name="size_icon_medium">32dp</dimen>
 
     <dimen name="size_pre_amp_ticker">56dp</dimen>
 

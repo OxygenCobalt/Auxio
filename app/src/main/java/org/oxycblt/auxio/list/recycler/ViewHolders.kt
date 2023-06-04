@@ -31,11 +31,16 @@ import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.areNamesTheSame
+import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logD
 
 /**
  * A [RecyclerView.ViewHolder] that displays a [Song]. Use [from] to create an instance.
@@ -59,7 +64,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
-        binding.songAlbumCover.isPlaying = isPlaying
+        binding.songAlbumCover.setPlaying(isPlaying)
     }
 
     override fun updateSelectionIndicator(isSelected: Boolean) {
@@ -109,7 +114,7 @@ class AlbumViewHolder private constructor(private val binding: ItemParentBinding
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
-        binding.parentImage.isPlaying = isPlaying
+        binding.parentImage.setPlaying(isPlaying)
     }
 
     override fun updateSelectionIndicator(isSelected: Boolean) {
@@ -169,7 +174,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
-        binding.parentImage.isPlaying = isPlaying
+        binding.parentImage.setPlaying(isPlaying)
     }
 
     override fun updateSelectionIndicator(isSelected: Boolean) {
@@ -226,7 +231,7 @@ class GenreViewHolder private constructor(private val binding: ItemParentBinding
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
-        binding.parentImage.isPlaying = isPlaying
+        binding.parentImage.setPlaying(isPlaying)
     }
 
     override fun updateSelectionIndicator(isSelected: Boolean) {
@@ -283,7 +288,7 @@ class PlaylistViewHolder private constructor(private val binding: ItemParentBind
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
-        binding.parentImage.isPlaying = isPlaying
+        binding.parentImage.setPlaying(isPlaying)
     }
 
     override fun updateSelectionIndicator(isSelected: Boolean) {
@@ -325,7 +330,6 @@ class BasicHeaderViewHolder private constructor(private val binding: ItemHeaderB
      * @param basicHeader The new [BasicHeader] to bind.
      */
     fun bind(basicHeader: BasicHeader) {
-        logD(binding.context.getString(basicHeader.titleRes))
         binding.title.text = binding.context.getString(basicHeader.titleRes)
     }
 

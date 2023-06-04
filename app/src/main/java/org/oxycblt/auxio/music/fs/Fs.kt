@@ -145,6 +145,8 @@ data class MusicDirectories(val dirs: List<Directory>, val shouldInclude: Boolea
  * @param fromFormat The mime type obtained by analyzing the file format. Null if could not be
  *   obtained.
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Get around to simplifying this
  */
 data class MimeType(val fromExtension: String, val fromFormat: String?) {
     /**

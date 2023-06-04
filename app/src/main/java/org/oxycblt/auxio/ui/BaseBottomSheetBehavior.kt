@@ -28,6 +28,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemGestureInsetsCompat
 
 /**
@@ -82,6 +83,7 @@ abstract class BaseBottomSheetBehavior<V : View>(context: Context, attributeSet:
         val layout = super.onLayoutChild(parent, child, layoutDirection)
         // Don't repeat redundant initialization.
         if (!initalized) {
+            logD("Not initialized, setting up child")
             child.apply {
                 // Set up compat elevation attributes. These are only shown below API 28.
                 translationZ = context.getDimen(R.dimen.elevation_normal)

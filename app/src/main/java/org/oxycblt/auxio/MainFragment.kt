@@ -26,11 +26,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.updatePadding
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.R as MR
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.transition.MaterialFadeThrough
@@ -50,13 +52,24 @@ import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.coordinatorLayoutBehavior
+import org.oxycblt.auxio.util.getAttrColorCompat
+import org.oxycblt.auxio.util.getDimen
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.systemBarInsetsCompat
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls the more
  * high-level navigation features.
  *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Break up the god navigation setup going on here
  */
 @AndroidEntryPoint
 class MainFragment :
@@ -68,7 +81,10 @@ class MainFragment :
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val selectionModel: SelectionViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
-    private val callback = DynamicBackPressedCallback()
+    private var sheetBackCallback: SheetBackPressedCallback? = null
+    private var detailBackCallback: DetailBackPressedCallback? = null
+    private var selectionBackCallback: SelectionBackPressedCallback? = null
+    private var exploreBackCallback: ExploreBackPressedCallback? = null
     private var lastInsets: WindowInsets? = null
     private var elevationNormal = 0f
     private var initialNavDestinationChange = true
@@ -84,13 +100,38 @@ class MainFragment :
     override fun onBindingCreated(binding: FragmentMainBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
 
+        val playbackSheetBehavior =
+            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
+        val queueSheetBehavior =
+            binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
+
         elevationNormal = binding.context.getDimen(R.dimen.elevation_normal)
+
+        // Currently all back press callbacks are handled in MainFragment, as it's not guaranteed
+        // that instantiating these callbacks in their respective fragments would result in the
+        // correct order.
+        val sheetBackCallback =
+            SheetBackPressedCallback(
+                    playbackSheetBehavior = playbackSheetBehavior,
+                    queueSheetBehavior = queueSheetBehavior)
+                .also { sheetBackCallback = it }
+        val detailBackCallback =
+            DetailBackPressedCallback(detailModel).also { detailBackCallback = it }
+        val selectionBackCallback =
+            SelectionBackPressedCallback(selectionModel).also { selectionBackCallback = it }
+        val exploreBackCallback =
+            ExploreBackPressedCallback(binding.exploreNavHost).also { exploreBackCallback = it }
 
         // --- UI SETUP ---
         val context = requireActivity()
         // Override the back pressed listener so we can map back navigation to collapsing
         // navigation, navigation out of detail views, etc.
-        context.onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+        context.onBackPressedDispatcher.apply {
+            addCallback(viewLifecycleOwner, exploreBackCallback)
+            addCallback(viewLifecycleOwner, selectionBackCallback)
+            addCallback(viewLifecycleOwner, detailBackCallback)
+            addCallback(viewLifecycleOwner, sheetBackCallback)
+        }
 
         binding.root.setOnApplyWindowInsetsListener { _, insets ->
             lastInsets = insets
@@ -103,13 +144,10 @@ class MainFragment :
         ViewCompat.setAccessibilityPaneTitle(
             binding.queueSheet, context.getString(R.string.lbl_queue))
 
-        val queueSheetBehavior =
-            binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
         if (queueSheetBehavior != null) {
-            // Bottom sheet mode, set up click listeners.
-            val playbackSheetBehavior =
-                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
-            unlikelyToBeNull(binding.handleWrapper).setOnClickListener {
+            // In portrait mode, set up click listeners on the stacked sheets.
+            logD("Configuring stacked bottom sheets")
+            unlikelyToBeNull(binding.queueHandleWrapper).setOnClickListener {
                 if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
                     queueSheetBehavior.state == BackportBottomSheetBehavior.STATE_COLLAPSED) {
                     // Playback sheet is expanded and queue sheet is collapsed, we can expand it.
@@ -118,14 +156,15 @@ class MainFragment :
             }
         } else {
             // Dual-pane mode, manually style the static queue sheet.
+            logD("Configuring dual-pane bottom sheet")
             binding.queueSheet.apply {
                 // Emulate the elevated bottom sheet style.
                 background =
                     MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-                        fillColor = context.getAttrColorCompat(R.attr.colorSurface)
+                        fillColor = context.getAttrColorCompat(MR.attr.colorSurface)
                         elevation = context.getDimen(R.dimen.elevation_normal)
                     }
-                // Apply bar insets for the queue's RecyclerView to usee.
+                // Apply bar insets for the queue's RecyclerView to use.
                 setOnApplyWindowInsetsListener { v, insets ->
                     v.updatePadding(top = insets.systemBarInsetsCompat.top)
                     insets
@@ -134,13 +173,15 @@ class MainFragment :
         }
 
         // --- VIEWMODEL SETUP ---
-        collect(navModel.mainNavigationAction.flow, ::handleMainNavigation)
-        collect(navModel.exploreNavigationItem.flow, ::handleExploreNavigation)
-        collect(navModel.exploreArtistNavigationItem.flow, ::handleArtistNavigationPicker)
+        collectImmediately(detailModel.editedPlaylist, detailBackCallback::invalidateEnabled)
+        collectImmediately(selectionModel.selected, selectionBackCallback::invalidateEnabled)
         collect(musicModel.newPlaylistSongs.flow, ::handleNewPlaylist)
         collect(musicModel.playlistToRename.flow, ::handleRenamePlaylist)
         collect(musicModel.playlistToDelete.flow, ::handleDeletePlaylist)
         collect(musicModel.songsToAdd.flow, ::handleAddToPlaylist)
+        collect(navModel.mainNavigationAction.flow, ::handleMainNavigation)
+        collect(navModel.exploreNavigationItem.flow, ::handleExploreNavigation)
+        collect(navModel.exploreArtistNavigationItem.flow, ::handleArtistNavigationPicker)
         collectImmediately(playbackModel.song, ::updateSong)
         collect(playbackModel.artistPickerSong.flow, ::handlePlaybackArtistPicker)
         collect(playbackModel.genrePickerSong.flow, ::handlePlaybackGenrePicker)
@@ -163,6 +204,14 @@ class MainFragment :
         val binding = requireBinding()
         binding.exploreNavHost.findNavController().removeOnDestinationChangedListener(this)
         binding.playbackSheet.viewTreeObserver.removeOnPreDrawListener(this)
+    }
+
+    override fun onDestroyBinding(binding: FragmentMainBinding) {
+        super.onDestroyBinding(binding)
+        sheetBackCallback = null
+        detailBackCallback = null
+        selectionBackCallback = null
+        exploreBackCallback = null
     }
 
     override fun onPreDraw(): Boolean {
@@ -250,7 +299,8 @@ class MainFragment :
 
         // Since the navigation listener is also reliant on the bottom sheets, we must also update
         // it every frame.
-        callback.invalidateEnabled()
+        requireNotNull(sheetBackCallback) { "SheetBackPressedCallback was not available" }
+            .invalidateEnabled()
 
         return true
     }
@@ -263,6 +313,8 @@ class MainFragment :
         // Drop the initial call by NavController that simply provides us with the current
         // destination. This would cause the selection state to be lost every time the device
         // rotates.
+        requireNotNull(exploreBackCallback) { "ExploreBackPressedCallback was not available" }
+            .invalidateEnabled()
         if (!initialNavDestinationChange) {
             initialNavDestinationChange = true
             return
@@ -271,19 +323,15 @@ class MainFragment :
     }
 
     private fun handleMainNavigation(action: MainNavigationAction?) {
-        if (action == null) {
-            // Nothing to do.
-            return
+        if (action != null) {
+            when (action) {
+                is MainNavigationAction.OpenPlaybackPanel -> tryOpenPlaybackPanel()
+                is MainNavigationAction.ClosePlaybackPanel -> tryClosePlaybackPanel()
+                is MainNavigationAction.Directions ->
+                    findNavController().navigateSafe(action.directions)
+            }
+            navModel.mainNavigationAction.consume()
         }
-
-        when (action) {
-            is MainNavigationAction.OpenPlaybackPanel -> tryOpenPlaybackPanel()
-            is MainNavigationAction.ClosePlaybackPanel -> tryClosePlaybackPanel()
-            is MainNavigationAction.Directions ->
-                findNavController().navigateSafe(action.directions)
-        }
-
-        navModel.mainNavigationAction.consume()
     }
 
     private fun handleExploreNavigation(item: Music?) {
@@ -368,6 +416,7 @@ class MainFragment :
 
         if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_COLLAPSED) {
             // Playback sheet is not expanded and not hidden, we can expand it.
+            logD("Expanding playback sheet")
             playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_EXPANDED
             return
         }
@@ -378,6 +427,7 @@ class MainFragment :
             queueSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED) {
             // Queue sheet and playback sheet is expanded, close the queue sheet so the
             // playback panel can eb shown.
+            logD("Collapsing queue sheet")
             queueSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
         }
     }
@@ -388,6 +438,7 @@ class MainFragment :
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
         if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED) {
             // Playback sheet (and possibly queue) needs to be collapsed.
+            logD("Collapsing playback and queue sheets")
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
             playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
@@ -399,7 +450,8 @@ class MainFragment :
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
-        if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_HIDDEN) {
+        if (playbackSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_HIDDEN) {
+            logD("Unhiding and enabling playback sheet")
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
             // Queue sheet behavior is either collapsed or expanded, no hiding needed
@@ -416,9 +468,11 @@ class MainFragment :
         val binding = requireBinding()
         val playbackSheetBehavior =
             binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
-        if (playbackSheetBehavior.state != BackportBottomSheetBehavior.STATE_HIDDEN) {
+        if (playbackSheetBehavior.targetState != BackportBottomSheetBehavior.STATE_HIDDEN) {
             val queueSheetBehavior =
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
+
+            logD("Hiding and disabling playback and queue sheets")
 
             // Make both bottom sheets non-draggable so the user can't halt the hiding event.
             queueSheetBehavior?.apply {
@@ -433,71 +487,86 @@ class MainFragment :
         }
     }
 
-    /**
-     * A [OnBackPressedCallback] that overrides the back button to first navigate out of internal
-     * app components, such as the Bottom Sheets or Explore Navigation.
-     */
-    private inner class DynamicBackPressedCallback : OnBackPressedCallback(false) {
-        override fun handleOnBackPressed() {
-            val binding = requireBinding()
-            val playbackSheetBehavior =
-                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
-            val queueSheetBehavior =
-                binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
+    // TODO: Use targetState more
 
+    private class SheetBackPressedCallback(
+        private val playbackSheetBehavior: PlaybackBottomSheetBehavior<*>,
+        private val queueSheetBehavior: QueueBottomSheetBehavior<*>?
+    ) : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
             // If expanded, collapse the queue sheet first.
-            if (queueSheetBehavior != null &&
-                queueSheetBehavior.state != BackportBottomSheetBehavior.STATE_COLLAPSED &&
-                playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED) {
-                queueSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
+            if (queueSheetShown()) {
+                unlikelyToBeNull(queueSheetBehavior).state =
+                    BackportBottomSheetBehavior.STATE_COLLAPSED
+                logD("Collapsed queue sheet")
                 return
             }
 
             // If expanded, collapse the playback sheet next.
-            if (playbackSheetBehavior.state != BackportBottomSheetBehavior.STATE_COLLAPSED &&
-                playbackSheetBehavior.state != BackportBottomSheetBehavior.STATE_HIDDEN) {
+            if (playbackSheetShown()) {
                 playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
+                logD("Collapsed playback sheet")
                 return
             }
-
-            // Clear out pending playlist edits.
-            if (detailModel.dropPlaylistEdit()) {
-                return
-            }
-
-            // Clear out any prior selections.
-            if (selectionModel.drop()) {
-                return
-            }
-
-            // Then try to navigate out of the explore navigation fragments (i.e Detail Views)
-            binding.exploreNavHost.findNavController().navigateUp()
         }
 
-        /**
-         * Force this instance to update whether it's enabled or not. If there are no app components
-         * that the back button should close first, the instance is disabled and back navigation is
-         * delegated to the system.
-         *
-         * Normally, this listener would have just called the [MainActivity.onBackPressed] if there
-         * were no components to close, but that prevents adaptive back navigation from working on
-         * Android 14+, so we must do it this way.
-         */
         fun invalidateEnabled() {
-            val binding = requireBinding()
-            val playbackSheetBehavior =
-                binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
-            val queueSheetBehavior =
-                binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
-            val exploreNavController = binding.exploreNavHost.findNavController()
+            isEnabled = queueSheetShown() || playbackSheetShown()
+        }
 
+        private fun playbackSheetShown() =
+            playbackSheetBehavior.targetState != BackportBottomSheetBehavior.STATE_COLLAPSED &&
+                playbackSheetBehavior.targetState != BackportBottomSheetBehavior.STATE_HIDDEN
+
+        private fun queueSheetShown() =
+            queueSheetBehavior != null &&
+                playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
+                queueSheetBehavior.targetState != BackportBottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    private class DetailBackPressedCallback(private val detailModel: DetailViewModel) :
+        OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            if (detailModel.dropPlaylistEdit()) {
+                logD("Dropped playlist edits")
+            }
+        }
+
+        fun invalidateEnabled(playlistEdit: List<Song>?) {
+            isEnabled = playlistEdit != null
+        }
+    }
+
+    private inner class SelectionBackPressedCallback(
+        private val selectionModel: SelectionViewModel
+    ) : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            if (selectionModel.drop()) {
+                logD("Dropped selection")
+            }
+        }
+
+        fun invalidateEnabled(selection: List<Music>) {
+            isEnabled = selection.isNotEmpty()
+        }
+    }
+
+    private inner class ExploreBackPressedCallback(
+        private val exploreNavHost: FragmentContainerView
+    ) : OnBackPressedCallback(false) {
+        // Note: We cannot cache the NavController in a variable since it's current destination
+        // value goes stale for some reason.
+
+        override fun handleOnBackPressed() {
+            exploreNavHost.findNavController().navigateUp()
+            logD("Forwarded back navigation to explore nav host")
+        }
+
+        fun invalidateEnabled() {
+            val exploreNavController = exploreNavHost.findNavController()
             isEnabled =
-                queueSheetBehavior?.state == BackportBottomSheetBehavior.STATE_EXPANDED ||
-                    playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED ||
-                    detailModel.editedPlaylist.value != null ||
-                    selectionModel.selected.value.isNotEmpty() ||
-                    exploreNavController.currentDestination?.id !=
-                        exploreNavController.graph.startDestinationId
+                exploreNavController.currentDestination?.id !=
+                    exploreNavController.graph.startDestinationId
         }
     }
 }

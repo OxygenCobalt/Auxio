@@ -41,6 +41,7 @@ import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.concatLocalized
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewBindingDialogFragment] that shows information about a Song.
@@ -73,7 +74,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
     private fun updateSong(song: Song?, info: AudioProperties?) {
         if (song == null) {
-            // Song we were showing no longer exists.
+            logD("No song to show, navigating away")
             findNavController().navigateUp()
             return
         }
@@ -86,7 +87,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
                     add(SongProperty(R.string.lbl_album, song.album.zipName(context)))
                     add(SongProperty(R.string.lbl_artists, song.artists.zipNames(context)))
                     add(SongProperty(R.string.lbl_genres, song.genres.resolveNames(context)))
-                    song.date?.let { add(SongProperty(R.string.lbl_date, it.resolveDate(context))) }
+                    song.date?.let { add(SongProperty(R.string.lbl_date, it.resolve(context))) }
                     song.track?.let {
                         add(SongProperty(R.string.lbl_track, getString(R.string.fmt_number, it)))
                     }

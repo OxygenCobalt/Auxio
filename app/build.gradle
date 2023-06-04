@@ -20,10 +20,10 @@ android {
 
     defaultConfig {
         applicationId namespace
-        versionName "3.1.0"
-        versionCode 30
+        versionName "3.1.1"
+        versionCode 31
 
-        minSdk 21
+        minSdk 24
         targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -86,13 +86,13 @@ dependencies {
     // General
     implementation "androidx.appcompat:appcompat:1.6.1"
     implementation "androidx.core:core-ktx:1.10.1"
-    implementation "androidx.activity:activity-ktx:1.7.1"
+    implementation "androidx.activity:activity-ktx:1.7.2"
     implementation "androidx.fragment:fragment-ktx:1.5.7"
 
     // UI
     implementation "androidx.recyclerview:recyclerview:1.3.0"
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
-    implementation "androidx.viewpager2:viewpager2:1.1.0-beta01"
+    implementation "androidx.viewpager2:viewpager2:1.1.0-beta02"
     implementation 'androidx.core:core-ktx:1.10.1'
 
     // Lifecycle
@@ -125,7 +125,7 @@ dependencies {
     implementation project(":media-lib-decoder-ffmpeg")
 
     // Image loading
-    implementation 'io.coil-kt:coil-base:2.3.0'
+    implementation 'io.coil-kt:coil-base:2.4.0'
 
     // Material
     // TODO: Stuck on 1.8.0-alpha01 until ripple bug with tab layout is actually available

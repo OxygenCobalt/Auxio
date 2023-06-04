@@ -27,6 +27,7 @@ import android.view.WindowInsets
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.app.ShareCompat
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.navigation.NavController
@@ -35,6 +36,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import java.lang.IllegalArgumentException
+import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.Song
 
 /**
  * Get if this [View] contains the given [PointF], with optional leeway.
@@ -262,4 +265,36 @@ fun WindowInsets.replaceSystemBarInsetsCompat(
             @Suppress("DEPRECATION") replaceSystemWindowInsets(left, top, right, bottom)
         }
     }
+}
+
+/**
+ * Share a single [Song].
+ *
+ * @param song
+ */
+fun Context.share(song: Song) = share(listOf(song))
+
+/**
+ * Share all songs in a [MusicParent].
+ *
+ * @param parent The [MusicParent] to share.
+ */
+fun Context.share(parent: MusicParent) = share(parent.songs)
+
+/**
+ * Share an arbitrary list of [Song]s.
+ *
+ * @param songs The [Song]s to share.
+ */
+fun Context.share(songs: List<Song>) {
+    if (songs.isEmpty()) return
+    logD("Showing sharesheet for ${songs.size} songs")
+    val builder = ShareCompat.IntentBuilder(this)
+    val mimeTypes = mutableSetOf<String>()
+    for (song in songs) {
+        builder.addStream(song.uri)
+        mimeTypes.add(song.mimeType.fromFormat ?: song.mimeType.fromExtension)
+    }
+
+    builder.setType(mimeTypes.singleOrNull() ?: "audio/*").startChooser()
 }

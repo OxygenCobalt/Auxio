@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -37,6 +38,7 @@ import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 
 /**
  * An [DetailListAdapter] implementing the header and sub-items for the [Album] detail view.
@@ -49,14 +51,14 @@ class AlbumDetailListAdapter(private val listener: Listener<Song>) :
     override fun getItemViewType(position: Int) =
         when (getItem(position)) {
             // Support sub-headers for each disc, and special album songs.
-            is Disc -> DiscViewHolder.VIEW_TYPE
+            is DiscHeader -> DiscHeaderViewHolder.VIEW_TYPE
             is Song -> AlbumSongViewHolder.VIEW_TYPE
             else -> super.getItemViewType(position)
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         when (viewType) {
-            DiscViewHolder.VIEW_TYPE -> DiscViewHolder.from(parent)
+            DiscHeaderViewHolder.VIEW_TYPE -> DiscHeaderViewHolder.from(parent)
             AlbumSongViewHolder.VIEW_TYPE -> AlbumSongViewHolder.from(parent)
             else -> super.onCreateViewHolder(parent, viewType)
         }
@@ -64,7 +66,7 @@ class AlbumDetailListAdapter(private val listener: Listener<Song>) :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
         when (val item = getItem(position)) {
-            is Disc -> (holder as DiscViewHolder).bind(item)
+            is DiscHeader -> (holder as DiscHeaderViewHolder).bind(item)
             is Song -> (holder as AlbumSongViewHolder).bind(item, listener)
         }
     }
@@ -76,7 +78,7 @@ class AlbumDetailListAdapter(private val listener: Listener<Song>) :
                 override fun areContentsTheSame(oldItem: Item, newItem: Item) =
                     when {
                         oldItem is Disc && newItem is Disc ->
-                            DiscViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
+                            DiscHeaderViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
                         oldItem is Song && newItem is Song ->
                             AlbumSongViewHolder.DIFF_CALLBACK.areContentsTheSame(oldItem, newItem)
 
@@ -88,23 +90,37 @@ class AlbumDetailListAdapter(private val listener: Listener<Song>) :
 }
 
 /**
- * A [RecyclerView.ViewHolder] that displays a [Disc] to delimit different disc groups. Use [from]
- * to create an instance.
+ * A wrapper around [Disc] signifying that a header should be shown for a disc group.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-private class DiscViewHolder(private val binding: ItemDiscHeaderBinding) :
+data class DiscHeader(val inner: Disc?) : Item
+
+/**
+ * A [RecyclerView.ViewHolder] that displays a [DiscHeader] to delimit different disc groups. Use
+ * [from] to create an instance.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
+private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
     RecyclerView.ViewHolder(binding.root) {
     /**
      * Bind new data to this instance.
      *
-     * @param disc The new [disc] to bind.
+     * @param discHeader The new [DiscHeader] to bind.
      */
-    fun bind(disc: Disc) {
-        binding.discNumber.text = binding.context.getString(R.string.fmt_disc_no, disc.number)
-        binding.discName.apply {
-            text = disc.name
-            isGone = disc.name == null
+    fun bind(discHeader: DiscHeader) {
+        val disc = discHeader.inner
+        if (disc != null) {
+            binding.discNumber.text = binding.context.getString(R.string.fmt_disc_no, disc.number)
+            binding.discName.apply {
+                text = disc.name
+                isGone = text == null
+            }
+        } else {
+            logD("Disc is null, defaulting to no disc")
+            binding.discNumber.text = binding.context.getString(R.string.def_disc)
+            binding.discName.isGone = true
         }
     }
 
@@ -119,7 +135,7 @@ private class DiscViewHolder(private val binding: ItemDiscHeaderBinding) :
          * @return A new instance.
          */
         fun from(parent: View) =
-            DiscViewHolder(ItemDiscHeaderBinding.inflate(parent.context.inflater))
+            DiscHeaderViewHolder(ItemDiscHeaderBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
@@ -147,31 +163,33 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
     fun bind(song: Song, listener: SelectableListListener<Song>) {
         listener.bind(song, this, menuButton = binding.songMenu)
 
-        binding.songTrack.apply {
-            if (song.track != null) {
-                // Instead of an album cover, we show the track number, as the song list
-                // within the album detail view would have homogeneous album covers otherwise.
+        val track = song.track
+        if (track != null) {
+            binding.songTrackCover.contentDescription =
+                binding.context.getString(R.string.desc_track_number, track)
+            binding.songTrackText.apply {
+                isVisible = true
                 text = context.getString(R.string.fmt_number, song.track)
-                isInvisible = false
-                contentDescription = context.getString(R.string.desc_track_number, song.track)
-            } else {
-                // No track, do not show a number, instead showing a generic icon.
-                text = ""
-                isInvisible = true
-                contentDescription = context.getString(R.string.def_track)
             }
+            binding.songTrackPlaceholder.isInvisible = true
+        } else {
+            binding.songTrackCover.contentDescription =
+                binding.context.getString(R.string.def_track)
+            binding.songTrackText.apply {
+                isInvisible = true
+                text = null
+            }
+            binding.songTrackPlaceholder.isVisible = true
         }
 
         binding.songName.text = song.name.resolve(binding.context)
-
-        // Use duration instead of album or artist for each song, as this text would
-        // be homogenous otherwise.
+        // Use duration instead of album or artist for each song to be more contextually relevant.
         binding.songDuration.text = song.durationMs.formatDurationMs(false)
     }
 
     override fun updatePlayingIndicator(isActive: Boolean, isPlaying: Boolean) {
         binding.root.isSelected = isActive
-        binding.songTrackBg.isPlaying = isPlaying
+        binding.songTrackCover.setPlaying(isPlaying)
     }
 
     override fun updateSelectionIndicator(isSelected: Boolean) {

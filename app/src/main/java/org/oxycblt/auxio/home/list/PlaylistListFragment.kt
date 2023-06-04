@@ -27,8 +27,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
-import org.oxycblt.auxio.list.*
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.PlaylistViewHolder
@@ -38,18 +38,16 @@ import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 
 /**
  * A [ListFragment] that shows a list of [Playlist]s.
  *
  * @author Alexander Capehart (OxygenCobalt)
- *
- * TODO: Show a placeholder when there are no playlists.
  */
 class PlaylistListFragment :
     ListFragment<Playlist, FragmentHomeListBinding>(),
@@ -77,7 +75,8 @@ class PlaylistListFragment :
 
         collectImmediately(homeModel.playlistsList, ::updatePlaylists)
         collectImmediately(selectionModel.selected, ::updateSelection)
-        collectImmediately(playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+        collectImmediately(
+            playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
 
     override fun onDestroyBinding(binding: FragmentHomeListBinding) {
@@ -120,17 +119,18 @@ class PlaylistListFragment :
     }
 
     private fun updatePlaylists(playlists: List<Playlist>) {
-        playlistAdapter.update(
-            playlists, homeModel.playlistsInstructions.consume().also { logD(it) })
+        playlistAdapter.update(playlists, homeModel.playlistsInstructions.consume())
     }
 
     private fun updateSelection(selection: List<Music>) {
         playlistAdapter.setSelected(selection.filterIsInstanceTo(mutableSetOf()))
     }
 
-    private fun updatePlayback(parent: MusicParent?, isPlaying: Boolean) {
-        // If a playlist is playing, highlight it within this adapter.
-        playlistAdapter.setPlaying(parent as? Playlist, isPlaying)
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        // Only highlight the playlist if it is currently playing, and if the currently
+        // playing song is also contained within.
+        val playlist = (parent as? Playlist)?.takeIf { it.songs.contains(song) }
+        playlistAdapter.setPlaying(playlist, isPlaying)
     }
 
     /**

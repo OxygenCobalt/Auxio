@@ -78,7 +78,7 @@ class NavigateToArtistDialog :
 
     override fun onDestroyBinding(binding: DialogMusicChoicesBinding) {
         super.onDestroyBinding(binding)
-        choiceAdapter
+        binding.choiceRecycler.adapter = null
     }
 
     override fun onClick(item: Artist, viewHolder: RecyclerView.ViewHolder) {

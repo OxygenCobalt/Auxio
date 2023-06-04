@@ -28,6 +28,7 @@ import org.oxycblt.auxio.settings.BasePreferenceFragment
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.ui.UISettings
 import org.oxycblt.auxio.util.isNight
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.navigateSafe
 
 /**
@@ -41,6 +42,7 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
 
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_accent)) {
+            logD("Navigating to accent dialog")
             findNavController().navigateSafe(UIPreferenceFragmentDirections.goToAccentDialog())
         }
     }
@@ -48,20 +50,25 @@ class UIPreferenceFragment : BasePreferenceFragment(R.xml.preferences_ui) {
     override fun onSetupPreference(preference: Preference) {
         when (preference.key) {
             getString(R.string.set_key_theme) -> {
+                logD("Configuring theme setting")
                 preference.onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { _, value ->
+                        logD("Theme changed, recreating")
                         AppCompatDelegate.setDefaultNightMode(value as Int)
                         true
                     }
             }
             getString(R.string.set_key_accent) -> {
+                logD("Configuring accent setting")
                 preference.summary = getString(uiSettings.accent.name)
             }
             getString(R.string.set_key_black_theme) -> {
+                logD("Configuring black theme setting")
                 preference.onPreferenceChangeListener =
                     Preference.OnPreferenceChangeListener { _, _ ->
                         val activity = requireActivity()
                         if (activity.isNight) {
+                            logD("Black theme changed in night mode, recreating")
                             activity.recreate()
                         }
 

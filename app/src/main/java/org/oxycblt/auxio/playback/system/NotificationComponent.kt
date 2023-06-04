@@ -20,7 +20,6 @@ package org.oxycblt.auxio.playback.system
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.DrawableRes
@@ -31,6 +30,7 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.service.ForegroundServiceNotification
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 
@@ -73,18 +73,11 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
      * @param metadata The [MediaMetadataCompat] to display in this notification.
      */
     fun updateMetadata(metadata: MediaMetadataCompat) {
+        logD("Updating shown metadata")
         setLargeIcon(metadata.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART))
         setContentTitle(metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
         setContentText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ARTIST))
-
-        // Starting in API 24, the subtext field changed semantics from being below the
-        // content text to being above the title. Use an appropriate field for both.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            // Display description -> Parent in which playback is occurring
-            setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION))
-        } else {
-            setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ALBUM))
-        }
+        setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_DISPLAY_DESCRIPTION))
     }
 
     /**
@@ -93,6 +86,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
      * @param isPlaying Whether playback should be indicated as ongoing or paused.
      */
     fun updatePlaying(isPlaying: Boolean) {
+        logD("Updating playing state: $isPlaying")
         mActions[2] = buildPlayPauseAction(context, isPlaying)
     }
 
@@ -102,6 +96,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
      * @param repeatMode The current [RepeatMode].
      */
     fun updateRepeatMode(repeatMode: RepeatMode) {
+        logD("Applying repeat mode action: $repeatMode")
         mActions[0] = buildRepeatAction(context, repeatMode)
     }
 
@@ -111,6 +106,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
      * @param isShuffled Whether the queue is currently shuffled or not.
      */
     fun updateShuffled(isShuffled: Boolean) {
+        logD("Applying shuffle action: $isShuffled")
         mActions[0] = buildShuffleAction(context, isShuffled)
     }
 

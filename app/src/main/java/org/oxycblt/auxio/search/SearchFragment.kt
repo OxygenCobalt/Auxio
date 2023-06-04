@@ -39,10 +39,23 @@ import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.*
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.getSystemServiceCompat
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.setFullWidthLookup
 
 /**
  * The [ListFragment] providing search functionality for the music library.
@@ -102,6 +115,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
             if (!launchedKeyboard) {
                 // Auto-open the keyboard when this view is shown
+                this@SearchFragment.logD("Keyboard is not shown yet")
                 showKeyboard(this)
                 launchedKeyboard = true
             }
@@ -142,6 +156,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         if (item.itemId != R.id.submenu_filtering) {
             // Is a change in filter mode and not just a junk submenu click, update
             // the filtering within SearchViewModel.
+            logD("Filter mode selected")
             item.isChecked = true
             searchModel.setFilterOptionId(item.itemId)
             return true
@@ -176,6 +191,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             // I would make it so that the position is only scrolled back to the top when
             // the query actually changes instead of once every re-creation event, but sadly
             // that doesn't seem possible.
+            logD("Update finished, scrolling to top")
             binding.searchRecycler.scrollToPosition(0)
         }
     }
@@ -220,6 +236,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
      * @param view The [View] to focus the keyboard on.
      */
     private fun showKeyboard(view: View) {
+        logD("Launching keyboard")
         view.apply {
             requestFocus()
             postDelayed(200) {
@@ -231,6 +248,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     /** Safely hide the keyboard from this view. */
     private fun hideKeyboard() {
+        logD("Hiding keyboard")
         requireNotNull(imm) { "InputMethodManager was not available" }
             .hideSoftInputFromWindow(requireView().windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }

@@ -120,6 +120,7 @@ private abstract class BaseMediaStoreExtractor(
         if (dirs.dirs.isNotEmpty()) {
             selector += " AND "
             if (!dirs.shouldInclude) {
+                logD("Excluding directories in selector")
                 // Without a NOT, the query will be restricted to the specified paths, resulting
                 // in the "Include" mode. With a NOT, the specified paths will not be included,
                 // resulting in the "Exclude" mode.
@@ -144,14 +145,14 @@ private abstract class BaseMediaStoreExtractor(
         }
 
         // Now we can actually query MediaStore.
-        logD("Starting song query [proj: ${projection.toList()}, selector: $selector, args: $args]")
+        logD("Starting song query [proj=${projection.toList()}, selector=$selector, args=$args]")
         val cursor =
             context.contentResolverSafe.safeQuery(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 selector,
                 args.toTypedArray())
-        logD("Song query succeeded [Projected total: ${cursor.count}]")
+        logD("Successfully queried for ${cursor.count} songs")
 
         val genreNamesMap = mutableMapOf<Long, String>()
 
@@ -186,6 +187,7 @@ private abstract class BaseMediaStoreExtractor(
                 }
             }
 
+        logD("Read ${genreNamesMap.values.distinct().size} genres from MediaStore")
         logD("Finished initialization in ${System.currentTimeMillis() - start}ms")
         return wrapQuery(cursor, genreNamesMap)
     }

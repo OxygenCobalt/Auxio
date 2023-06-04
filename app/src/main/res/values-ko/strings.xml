@@ -172,10 +172,10 @@
     <string name="cdc_ogg">Ogg 오디오</string>
     <string name="cdc_mka">마트로스카 오디오</string>
     <string name="fmt_sample_rate">%d Hz</string>
-    <string name="lbl_mix">믹스</string>
+    <string name="lbl_mix">DJ믹스</string>
     <string name="lbl_compilation_live">라이브 컴필레이션</string>
     <string name="lbl_compilation_remix">리믹스 편집</string>
-    <string name="lbl_mixes">믹스</string>
+    <string name="lbl_mixes">DJ믹스</string>
     <string name="lbl_equalizer">이퀄라이저</string>
     <string name="lbl_shuffle_shortcut_short">셔플</string>
     <string name="set_playback_mode_none">표시된 항목에서 재생</string>
@@ -283,4 +283,16 @@
     <string name="lng_playlist_added">재생목록에 추가됨</string>
     <string name="fmt_def_playlist">재생목록 %d</string>
     <string name="def_song_count">노래 없음</string>
+    <string name="lbl_delete">삭제</string>
+    <string name="fmt_deletion_info">%s를 삭제하시겠습니까\? 이 취소 할 수 없습니다.</string>
+    <string name="lbl_rename">이름 바꾸기</string>
+    <string name="lbl_rename_playlist">재생목록 이름 바꾸기</string>
+    <string name="lbl_confirm_delete_playlist">재생목록을 삭제하시겠습니까\?</string>
+    <string name="lbl_edit">편집하다</string>
+    <string name="lbl_appears_on">에 나타납니다</string>
+    <string name="lbl_share">공유하다</string>
+    <string name="lng_playlist_renamed">재생목록의 이름이 변경됨</string>
+    <string name="def_disc">디스크 없음</string>
+    <string name="lng_playlist_deleted">재생목록이 삭제되었습니다</string>
+    <string name="fmt_editing">%s 수정 중</string>
 </resources>

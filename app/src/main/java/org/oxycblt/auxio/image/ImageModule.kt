@@ -22,7 +22,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.oxycblt.auxio.image.extractor.*
 
 @Module
 @InstallIn(SingletonComponent::class)

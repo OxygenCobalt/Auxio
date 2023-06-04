@@ -39,6 +39,8 @@ fun List<String>.parseMultiValue(settings: MusicSettings) =
         this
     }
 
+// TODO: Remove the escaping checks, it's too expensive to do this for every single tag.
+
 /**
  * Split a [String] by the given selector, automatically handling escaped characters that satisfy
  * the selector.
@@ -106,7 +108,7 @@ fun List<String>.correctWhitespace() = mapNotNull { it.correctWhitespace() }
  * @return A list of one or more [String]s that were split up by the user-defined separators.
  */
 private fun String.maybeParseBySeparators(settings: MusicSettings): List<String> {
-    // Get the separators the user desires. If null, there's nothing to do.
+    if (settings.multiValueSeparators.isEmpty()) return listOf(this)
     return splitEscaped { settings.multiValueSeparators.contains(it) }.correctWhitespace()
 }
 

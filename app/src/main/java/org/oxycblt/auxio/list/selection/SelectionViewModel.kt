@@ -23,7 +23,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.oxycblt.auxio.music.*
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [ViewModel] that manages the current selection.
@@ -76,10 +85,19 @@ constructor(
      * @param music The [Music] item to select.
      */
     fun select(music: Music) {
+        if (music is MusicParent && music.songs.isEmpty()) {
+            logD("Cannot select empty parent, ignoring operation")
+            return
+        }
+
         val selected = _selected.value.toMutableList()
         if (!selected.remove(music)) {
+            logD("Adding $music to selection")
             selected.add(music)
+        } else {
+            logD("Removed $music from selection")
         }
+
         _selected.value = selected
     }
 
@@ -88,8 +106,9 @@ constructor(
      *
      * @return A list of [Song]s collated from each item selected.
      */
-    fun take() =
-        _selected.value
+    fun take(): List<Song> {
+        logD("Taking selection")
+        return _selected.value
             .flatMap {
                 when (it) {
                     is Song -> listOf(it)
@@ -99,12 +118,16 @@ constructor(
                     is Playlist -> it.songs
                 }
             }
-            .also { drop() }
+            .also { _selected.value = listOf() }
+    }
 
     /**
      * Clear the current selection.
      *
      * @return true if the prior selection was non-empty, false otherwise.
      */
-    fun drop() = _selected.value.isNotEmpty().also { _selected.value = listOf() }
+    fun drop(): Boolean {
+        logD("Dropping selection [empty=${_selected.value.isEmpty()}]")
+        return _selected.value.isNotEmpty().also { _selected.value = listOf() }
+    }
 }
