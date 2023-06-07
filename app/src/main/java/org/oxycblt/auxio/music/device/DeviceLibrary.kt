@@ -21,8 +21,8 @@ package org.oxycblt.auxio.music.device
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import java.util.LinkedList
 import javax.inject.Inject
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -33,6 +33,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.contentResolverSafe
 import org.oxycblt.auxio.music.fs.useQuery
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 
 /**
  * Organized music library information obtained from device storage.
@@ -159,19 +160,44 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
 
     private fun buildSongs(rawSongs: List<RawSong>, settings: MusicSettings): List<SongImpl> {
         val start = System.currentTimeMillis()
-        val songs =
-            Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-                .songs(rawSongs.map { SongImpl(it, settings) }.distinctBy { it.uid })
+        val uidSet = LinkedHashSet<Music.UID>(rawSongs.size)
+        val songs = LinkedList<SongImpl>()
+        for (rawSong in rawSongs) {
+            val song = SongImpl(rawSong, settings)
+            if (uidSet.add(song.uid)) {
+                songs.add(song)
+            } else {
+                logW("Duplicate song found: $song")
+            }
+        }
         logD("Successfully built ${songs.size} songs in ${System.currentTimeMillis() - start}ms")
         return songs
     }
 
     private fun buildAlbums(songs: List<SongImpl>, settings: MusicSettings): List<AlbumImpl> {
         val start = System.currentTimeMillis()
+        val albumGrouping = mutableMapOf<RawAlbum.Key, Grouping<RawAlbum, SongImpl, SongImpl>>()
+        for (song in songs) {
+            val key = RawAlbum.Key(song.rawAlbum)
+            val body = albumGrouping[key]
+            if (body != null) {
+                body.music.add(song)
+                val dominantSong = body.dominantRaw.derived
+                val dominates =
+                    song.track != null &&
+                        (dominantSong.track == null || song.track < dominantSong.track)
+                if (dominates) {
+                    body.dominantRaw = DominantRaw(song.rawAlbum, song)
+                }
+            } else {
+                albumGrouping[key] = Grouping(DominantRaw(song.rawAlbum, song), mutableListOf(song))
+            }
+        }
+
         // Group songs by their singular raw album, then map the raw instances and their
         // grouped songs to Album values. Album.Raw will handle the actual grouping rules.
-        val songsByAlbum = songs.groupBy { it.rawAlbum.key }
-        val albums = songsByAlbum.map { AlbumImpl(it.key.value, settings, it.value) }
+        val albums =
+            albumGrouping.values.map { AlbumImpl(it.dominantRaw.inner, settings, it.music) }
         logD("Successfully built ${albums.size} albums in ${System.currentTimeMillis() - start}ms")
         return albums
     }
@@ -185,22 +211,44 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
         // Add every raw artist credited to each Song/Album to the grouping. This way,
         // different multi-artist combinations are not treated as different artists.
         // Songs and albums are grouped by artist and album artist respectively.
-        val musicByArtist = mutableMapOf<RawArtist.Key, MutableList<Music>>()
+        val artistGrouping = mutableMapOf<RawArtist.Key, Grouping<RawArtist, AlbumImpl, Music>>()
 
         for (song in songs) {
             for (rawArtist in song.rawArtists) {
-                musicByArtist.getOrPut(rawArtist.key) { mutableListOf() }.add(song)
+                val key = RawArtist.Key(rawArtist)
+                val body = artistGrouping[key]
+                if (body != null) {
+                    body.music.add(song)
+                } else {
+                    artistGrouping[key] =
+                        Grouping(DominantRaw(rawArtist, albums.first()), mutableListOf(song))
+                }
             }
         }
 
         for (album in albums) {
             for (rawArtist in album.rawArtists) {
-                musicByArtist.getOrPut(rawArtist.key) { mutableListOf() }.add(album)
+                val key = RawArtist.Key(rawArtist)
+                val body = artistGrouping[key]
+                if (body != null) {
+                    body.music.add(album)
+                    val dominantAlbum = body.dominantRaw.derived
+                    val dominates =
+                        album.dates != null &&
+                            (dominantAlbum.dates == null || album.dates < dominantAlbum.dates)
+                    if (dominates) {
+                        body.dominantRaw = DominantRaw(rawArtist, album)
+                    }
+                } else {
+                    artistGrouping[key] =
+                        Grouping(DominantRaw(rawArtist, album), mutableListOf(album))
+                }
             }
         }
 
         // Convert the combined mapping into artist instances.
-        val artists = musicByArtist.map { ArtistImpl(it.key.value, settings, it.value) }
+        val artists =
+            artistGrouping.values.map { ArtistImpl(it.dominantRaw.inner, settings, it.music) }
         logD(
             "Successfully built ${artists.size} artists in ${System.currentTimeMillis() - start}ms")
         return artists
@@ -210,16 +258,34 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
         val start = System.currentTimeMillis()
         // Add every raw genre credited to each Song to the grouping. This way,
         // different multi-genre combinations are not treated as different genres.
-        val songsByGenre = mutableMapOf<RawGenre.Key, MutableList<SongImpl>>()
+        val songsByGenre = mutableMapOf<RawGenre.Key, Grouping<RawGenre, SongImpl, SongImpl>>()
         for (song in songs) {
             for (rawGenre in song.rawGenres) {
-                songsByGenre.getOrPut(rawGenre.key) { mutableListOf() }.add(song)
+                val key = RawGenre.Key(rawGenre)
+                val body = songsByGenre[key]
+                if (body != null) {
+                    body.music.add(song)
+                    val dominantSong = body.dominantRaw.derived
+                    if (song.date != null && song.name < dominantSong.name) {
+                        body.dominantRaw = DominantRaw(rawGenre, song)
+                    }
+                } else {
+                    songsByGenre[key] = Grouping(DominantRaw(rawGenre, song), mutableListOf(song))
+                }
             }
         }
 
         // Convert the mapping into genre instances.
-        val genres = songsByGenre.map { GenreImpl(it.key.value, settings, it.value) }
+        val genres =
+            songsByGenre.map { GenreImpl(it.value.dominantRaw.inner, settings, it.value.music) }
         logD("Successfully built ${genres.size} genres in ${System.currentTimeMillis() - start}ms")
         return genres
     }
+
+    data class DominantRaw<R, M : Music>(val inner: R, val derived: M)
+
+    data class Grouping<R, D : Music, M : Music>(
+        var dominantRaw: DominantRaw<R, D>,
+        val music: MutableList<M>
+    )
 }
