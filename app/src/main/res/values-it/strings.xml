@@ -169,7 +169,7 @@
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="fmt_disc_no">Disco %d</string>
-    <string name="fmt_bitrate">%d kbps</string>
+    <string name="fmt_bitrate">%d kB/s</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="lbl_indexer">Caricamento musica</string>
     <string name="lng_indexing">Caricamento libreria musicale…</string>
