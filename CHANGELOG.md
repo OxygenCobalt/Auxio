@@ -1,5 +1,10 @@
 # Changelog
 
+## dev
+
+#### What's Fixed
+- Disc number is no longer mis-aligned when no subtitle is present
+
 ## 3.1.1
 
 #### What's New
