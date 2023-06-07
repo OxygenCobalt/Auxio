@@ -146,9 +146,8 @@ private class TagWorkerImpl(
         // Artist
         textFrames["TXXX:musicbrainz artist id"]?.let { rawSong.artistMusicBrainzIds = it }
         (textFrames["TXXX:artists"] ?: textFrames["TPE1"])?.let { rawSong.artistNames = it }
-        (textFrames["TXXX:artists_sort"] ?: textFrames["TSOP"])?.let {
-            rawSong.artistSortNames = it
-        }
+        (textFrames["TXXX:artistssort"] ?: textFrames["TXXX:artists_sort"] ?: textFrames["TSOP"])
+            ?.let { rawSong.artistSortNames = it }
 
         // Album artist
         textFrames["TXXX:musicbrainz album artist id"]?.let {
@@ -157,9 +156,9 @@ private class TagWorkerImpl(
         (textFrames["TXXX:albumartists"] ?: textFrames["TPE2"])?.let {
             rawSong.albumArtistNames = it
         }
-        (textFrames["TXXX:albumartists_sort"] ?: textFrames["TSO2"])?.let {
-            rawSong.albumArtistSortNames = it
-        }
+        (textFrames["TXXX:albumartistssort"] ?: textFrames["TXXX:albumartists_sort"]
+                 ?: textFrames["TSO2"])
+            ?.let { rawSong.albumArtistSortNames = it }
 
         // Genre
         textFrames["TCON"]?.let { rawSong.genreNames = it }
@@ -249,14 +248,15 @@ private class TagWorkerImpl(
         // Artist
         comments["musicbrainz_artistid"]?.let { rawSong.artistMusicBrainzIds = it }
         (comments["artists"] ?: comments["artist"])?.let { rawSong.artistNames = it }
-        (comments["artists_sort"] ?: comments["artistsort"])?.let { rawSong.artistSortNames = it }
+        (comments["artistssort"] ?: comments["artists_sort"] ?: comments["artistsort"] )?.let {
+            rawSong.artistSortNames = it
+        }
 
         // Album artist
         comments["musicbrainz_albumartistid"]?.let { rawSong.albumArtistMusicBrainzIds = it }
         (comments["albumartists"] ?: comments["albumartist"])?.let { rawSong.albumArtistNames = it }
-        (comments["albumartists_sort"] ?: comments["albumartistsort"])?.let {
-            rawSong.albumArtistSortNames = it
-        }
+        (comments["albumartistssort"] ?: comments["albumartists_sort"] ?: comments["albumartistsort"])
+            ?.let { rawSong.albumArtistSortNames = it }
 
         // Genre
         comments["genre"]?.let { rawSong.genreNames = it }
