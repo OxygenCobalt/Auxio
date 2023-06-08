@@ -161,7 +161,6 @@ private class UserLibraryImpl(
     override fun findPlaylist(name: String) = playlistMap.values.find { it.name.raw == name }
 
     override suspend fun createPlaylist(name: String, songs: List<Song>) {
-        // TODO: Use synchronized with value access too
         val playlistImpl = PlaylistImpl.from(name, songs, musicSettings)
         synchronized(this) { playlistMap[playlistImpl.uid] = playlistImpl }
         val rawPlaylist =
@@ -181,8 +180,11 @@ private class UserLibraryImpl(
 
     override suspend fun renamePlaylist(playlist: Playlist, name: String) {
         val playlistImpl =
-            requireNotNull(playlistMap[playlist.uid]) { "Cannot rename invalid playlist" }
-        synchronized(this) { playlistMap[playlist.uid] = playlistImpl.edit(name, musicSettings) }
+            synchronized(this) {
+                requireNotNull(playlistMap[playlist.uid]) { "Cannot rename invalid playlist" }.also {
+                    playlistMap[it.uid] = it.edit(name, musicSettings)
+                }
+            }
         try {
             playlistDao.replacePlaylistInfo(PlaylistInfo(playlist.uid, name))
             logD("Successfully renamed $playlist to $name")
@@ -195,9 +197,11 @@ private class UserLibraryImpl(
     }
 
     override suspend fun deletePlaylist(playlist: Playlist) {
-        val playlistImpl =
-            requireNotNull(playlistMap[playlist.uid]) { "Cannot remove invalid playlist" }
-        synchronized(this) { playlistMap.remove(playlistImpl.uid) }
+        val playlistImpl = synchronized(this) {
+            requireNotNull(playlistMap[playlist.uid]) { "Cannot remove invalid playlist" }.also {
+                playlistMap.remove(it.uid)
+            }
+        }
         try {
             playlistDao.deletePlaylist(playlist.uid)
             logD("Successfully deleted $playlist")
@@ -210,9 +214,12 @@ private class UserLibraryImpl(
     }
 
     override suspend fun addToPlaylist(playlist: Playlist, songs: List<Song>) {
-        val playlistImpl =
-            requireNotNull(playlistMap[playlist.uid]) { "Cannot add to invalid playlist" }
-        synchronized(this) { playlistMap[playlist.uid] = playlistImpl.edit { addAll(songs) } }
+        val playlistImpl = synchronized(this) {
+            requireNotNull(playlistMap[playlist.uid]) { "Cannot add to invalid playlist" }.also {
+                playlistMap[it.uid] = it.edit { addAll(songs) }
+            }
+        }
+
         try {
             playlistDao.insertPlaylistSongs(playlist.uid, songs.map { PlaylistSong(it.uid) })
             logD("Successfully added ${songs.size} songs to $playlist")
@@ -225,9 +232,12 @@ private class UserLibraryImpl(
     }
 
     override suspend fun rewritePlaylist(playlist: Playlist, songs: List<Song>) {
-        val playlistImpl =
-            requireNotNull(playlistMap[playlist.uid]) { "Cannot rewrite invalid playlist" }
-        synchronized(this) { playlistMap[playlist.uid] = playlistImpl.edit(songs) }
+        val playlistImpl = synchronized(this) {
+            requireNotNull(playlistMap[playlist.uid]) { "Cannot rewrite invalid playlist" }.also {
+                playlistMap[it.uid] = it.edit(songs)
+            }
+        }
+
         try {
             playlistDao.replacePlaylistSongs(playlist.uid, songs.map { PlaylistSong(it.uid) })
             logD("Successfully rewrote $playlist with ${songs.size} songs")

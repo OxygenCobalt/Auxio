@@ -429,7 +429,6 @@ constructor(
         // Successfully loaded the library, now save the cache and read playlist information
         // in parallel.
         logD("Discovered ${rawSongs.size} songs, starting finalization")
-        // TODO: Indicate playlist state in loading process?
         emitLoading(IndexingProgress.Indeterminate)
         logD("Starting UserLibrary query")
         if (cache == null || cache.invalidated) {

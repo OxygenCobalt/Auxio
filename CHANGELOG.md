@@ -4,6 +4,7 @@
 
 #### What's Improved
 - Tags formatted as `artistssort` or `albumartistssort` are now recognized by Auxio
+- Reduced visual loading time
 
 #### What's Fixed
 - Disc number is no longer mis-aligned when no subtitle is present
