@@ -56,6 +56,7 @@ android {
             }
         }
     }
+
     packagingOptions {
         jniLibs {
             excludes += ['**/kotlin/**', '**/okhttp3/**']
@@ -64,7 +65,6 @@ android {
             excludes += ['DebugProbesKt.bin', 'kotlin-tooling-metadata.json', '**/kotlin/**', '**/okhttp3/**', 'META-INF/*.version']
         }
     }
-
 
     buildFeatures {
         viewBinding true
