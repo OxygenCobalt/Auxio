@@ -203,8 +203,7 @@ private data class IntelligentKnownName(override val raw: String, override val s
             // Separate each token into their numeric and lexicographic counterparts.
             if (token.first().isDigit()) {
                 // The digit string comparison breaks with preceding zero digits, remove those
-                // TODO: Handle zero digits in other languages
-                val digits = token.trimStart('0').ifEmpty { token }
+                val digits = token.trimStart { Character.getNumericValue(it) == 0 }.ifEmpty { token }
                 // Other languages have other types of digit strings, still use collation keys
                 collationKey = COLLATOR.getCollationKey(digits)
                 type = SortToken.Type.NUMERIC
