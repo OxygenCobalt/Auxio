@@ -50,26 +50,26 @@
     <string name="clr_purple">Violet</string>
     <string name="clr_indigo">Indigo</string>
     <string name="clr_blue">Bleu</string>
-    <string name="clr_deep_blue">Bleu Clair</string>
+    <string name="clr_deep_blue">Bleu foncé</string>
     <string name="clr_teal">Bleu Vert</string>
     <string name="clr_green">Vert</string>
-    <string name="clr_deep_green">Vert Clair</string>
+    <string name="clr_deep_green">Vert foncé</string>
     <string name="clr_lime">Vert Citron</string>
     <string name="clr_yellow">Jaune</string>
     <string name="clr_orange">Orange</string>
     <string name="clr_brown">Brun</string>
     <string name="clr_grey">Gris</string>
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_lib_song_count">Titres chargés: %d</string>
+    <string name="fmt_lib_song_count">Titres chargés : %d</string>
     <plurals name="fmt_song_count">
-        <item quantity="one">%s Titre</item>
-        <item quantity="many">%s Titres</item>
-        <item quantity="other">%s Titres</item>
+        <item quantity="one">%d titre</item>
+        <item quantity="many">%d titres</item>
+        <item quantity="other">%d titres</item>
     </plurals>
     <plurals name="fmt_album_count">
-        <item quantity="one">%s Album</item>
-        <item quantity="many">%s Albums</item>
-        <item quantity="other">%s Albums</item>
+        <item quantity="one">%d album</item>
+        <item quantity="many">%d albums</item>
+        <item quantity="other">%d albums</item>
     </plurals>
     <string name="lbl_format">Format</string>
     <string name="lbl_state_saved">État sauvegardé</string>
@@ -106,7 +106,7 @@
     <string name="lbl_song_detail">Voir les propriétés</string>
     <string name="lbl_props">Propriétés de la chanson</string>
     <string name="lbl_ep_live">EP live</string>
-    <string name="lbl_ep_remix">EP de remixes</string>
+    <string name="lbl_ep_remix">EP de remix</string>
     <string name="lbl_single_live">Single live</string>
     <string name="lbl_single_remix">Single remixé</string>
     <string name="lbl_compilations">Compilations</string>
@@ -114,7 +114,7 @@
     <string name="lbl_live_group">Live</string>
     <string name="lbl_indexing">Chargement de la musique</string>
     <string name="lbl_observing">Suivre la librairie musicale</string>
-    <string name="lbl_eps">EPs</string>
+    <string name="lbl_eps">EP</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_singles">Singles</string>
     <string name="lbl_single">Single</string>
@@ -125,7 +125,7 @@
     <string name="lbl_remix_group">Remix</string>
     <string name="lbl_date_added">Date d\'ajout</string>
     <string name="lbl_album_live">Album live</string>
-    <string name="lbl_album_remix">Album de remixes</string>
+    <string name="lbl_album_remix">Album de remix</string>
     <string name="lbl_genre">Genre</string>
     <string name="lbl_equalizer">Égaliseur</string>
     <string name="desc_shuffle_all">Lecture aléatoire de tous les titres</string>
@@ -194,7 +194,7 @@
     <string name="set_separators_comma">Virgule (,)</string>
     <string name="set_separators_semicolon">Point-virgule (;)</string>
     <string name="set_exclude_non_music_desc">Ignorer les fichiers audio qui ne sont pas de la musique, tels que les podcasts</string>
-    <string name="set_separators_warning">Avertissement: L\'utilisation de ce paramètre peut entraîner l\'interprétation incorrecte de certaines balises comme ayant plusieurs valeurs. Vous pouvez résoudre ce problème en préfixant les caractères de séparation indésirables avec une barre oblique inverse (\\).</string>
+    <string name="set_separators_warning">Avertissement : L\'utilisation de ce paramètre peut entraîner l\'interprétation incorrecte de certaines balises comme ayant plusieurs valeurs. Vous pouvez résoudre ce problème en préfixant les caractères de séparation indésirables avec une barre oblique inverse (\\).</string>
     <string name="set_exclude_non_music">Exclure non-musique</string>
     <string name="set_playback_mode_album">Lire depuis l\'album</string>
     <string name="set_separators_slash">Barre oblique (/)</string>
@@ -291,4 +291,10 @@
     <string name="def_song_count">Aucune chanson</string>
     <string name="fmt_editing">Modification de %s</string>
     <string name="fmt_lib_genre_count">Genres chargés&amp;nbsp;: %d</string>
+    <string name="desc_genre_image">Image de genre pour %s</string>
+    <string name="cdc_flac">Codec audio gratuit sans perte (FLAC)</string>
+    <string name="fmt_selected">%d sélectionnés</string>
+    <string name="cdc_aac">Codage audio avancé (AAC)</string>
+    <string name="def_disc">Aucun disque</string>
+    <string name="fmt_list">%1$s, %2$s</string>
 </resources>
