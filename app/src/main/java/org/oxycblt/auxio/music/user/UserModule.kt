@@ -43,7 +43,5 @@ class UserRoomModule {
         Room.databaseBuilder(
                 context.applicationContext, UserMusicDatabase::class.java, "user_music.db")
             .fallbackToDestructiveMigration()
-            .fallbackToDestructiveMigrationFrom(0)
-            .fallbackToDestructiveMigrationOnDowngrade()
             .build()
 }
