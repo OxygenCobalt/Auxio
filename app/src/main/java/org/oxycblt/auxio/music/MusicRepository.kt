@@ -372,6 +372,7 @@ constructor(
         // Do the initial query of the cache and media databases in parallel.
         logD("Starting MediaStore query")
         val mediaStoreQueryJob = worker.scope.tryAsync { mediaStoreExtractor.query() }
+        val userLibraryQueryJob = worker.scope.tryAsync { userLibraryFactory.query() }
         val cache =
             if (withCache) {
                 logD("Reading cache")
@@ -388,6 +389,7 @@ constructor(
         logD("Starting song discovery")
         val completeSongs = Channel<RawSong>(Channel.UNLIMITED)
         val incompleteSongs = Channel<RawSong>(Channel.UNLIMITED)
+        val processedSongs = Channel<RawSong>(Channel.UNLIMITED)
         logD("Started MediaStore discovery")
         val mediaStoreJob =
             worker.scope.tryAsync {
@@ -400,10 +402,17 @@ constructor(
                 tagExtractor.consume(incompleteSongs, completeSongs)
                 completeSongs.close()
             }
+        logD("Starting DeviceLibrary creation")
+        val deviceLibraryJob =
+            worker.scope.tryAsync(Dispatchers.Default) {
+                deviceLibraryFactory.create(completeSongs, processedSongs).also {
+                    processedSongs.close()
+                }
+            }
 
         // Await completed raw songs as they are processed.
         val rawSongs = LinkedList<RawSong>()
-        for (rawSong in completeSongs) {
+        for (rawSong in processedSongs) {
             rawSongs.add(rawSong)
             emitLoading(IndexingProgress.Songs(rawSongs.size, query.projectedTotal))
         }
@@ -417,29 +426,22 @@ constructor(
             throw NoMusicException()
         }
 
-        // Successfully loaded the library, now save the cache, create the library, and
-        // read playlist information in parallel.
+        // Successfully loaded the library, now save the cache and read playlist information
+        // in parallel.
         logD("Discovered ${rawSongs.size} songs, starting finalization")
         // TODO: Indicate playlist state in loading process?
         emitLoading(IndexingProgress.Indeterminate)
-        val deviceLibraryChannel = Channel<DeviceLibrary>()
-        logD("Starting DeviceLibrary creation")
-        val deviceLibraryJob =
-            worker.scope.tryAsync(Dispatchers.Default) {
-                deviceLibraryFactory.create(rawSongs).also { deviceLibraryChannel.send(it) }
-            }
-        logD("Starting UserLibrary creation")
-        val userLibraryJob =
-            worker.scope.tryAsync {
-                userLibraryFactory.read(deviceLibraryChannel).also { deviceLibraryChannel.close() }
-            }
+        logD("Starting UserLibrary query")
         if (cache == null || cache.invalidated) {
             logD("Writing cache [why=${cache?.invalidated}]")
             cacheRepository.writeCache(rawSongs)
         }
-        logD("Awaiting library creation")
+        logD("Awaiting UserLibrary query")
+        val rawPlaylists = userLibraryQueryJob.await().getOrThrow()
+        logD("Awaiting DeviceLibrary creation")
         val deviceLibrary = deviceLibraryJob.await().getOrThrow()
-        val userLibrary = userLibraryJob.await().getOrThrow()
+        logD("Starting UserLibrary creation")
+        val userLibrary = userLibraryFactory.create(rawPlaylists, deviceLibrary)
 
         logD("Successfully indexed music library [device=$deviceLibrary user=$userLibrary]")
         emitComplete(null)

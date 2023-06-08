@@ -20,7 +20,6 @@ package org.oxycblt.auxio.music.user
 
 import java.lang.Exception
 import javax.inject.Inject
-import kotlinx.coroutines.channels.Channel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
@@ -36,6 +35,8 @@ import org.oxycblt.auxio.util.logE
  * Unlike [DeviceLibrary], [UserLibrary]s can be mutated without needing to clone the instance. It
  * is also not backed by library information, rather an app database with in-memory caching. It is
  * generally not expected to create this yourself, and instead rely on MusicRepository.
+ *
+ * TODO: Communicate errors
  *
  * @author Alexander Capehart
  */
@@ -61,15 +62,12 @@ interface UserLibrary {
 
     /** Constructs a [UserLibrary] implementation in an asynchronous manner. */
     interface Factory {
-        /**
-         * Create a new [UserLibrary].
-         *
-         * @param deviceLibraryChannel Asynchronously populated [DeviceLibrary] that can be obtained
-         *   later. This allows database information to be read before the actual instance is
-         *   constructed.
-         * @return A new [MutableUserLibrary] with the required implementation.
-         */
-        suspend fun read(deviceLibraryChannel: Channel<DeviceLibrary>): MutableUserLibrary
+        suspend fun query(): List<RawPlaylist>
+
+        suspend fun create(
+            rawPlaylists: List<RawPlaylist>,
+            deviceLibrary: DeviceLibrary
+        ): MutableUserLibrary
     }
 }
 
@@ -123,17 +121,19 @@ class UserLibraryFactoryImpl
 @Inject
 constructor(private val playlistDao: PlaylistDao, private val musicSettings: MusicSettings) :
     UserLibrary.Factory {
-    override suspend fun read(deviceLibraryChannel: Channel<DeviceLibrary>): MutableUserLibrary {
-        // While were waiting for the library, read our playlists out.
-        val rawPlaylists =
-            try {
-                playlistDao.readRawPlaylists()
-            } catch (e: Exception) {
-                logE("Unable to read playlists: $e")
-                return UserLibraryImpl(playlistDao, mutableMapOf(), musicSettings)
-            }
+    override suspend fun query() =
+        try {
+            playlistDao.readRawPlaylists()
+        } catch (e: Exception) {
+            logE("Unable to read playlists: $e")
+            listOf()
+        }
+
+    override suspend fun create(
+        rawPlaylists: List<RawPlaylist>,
+        deviceLibrary: DeviceLibrary
+    ): MutableUserLibrary {
         logD("Successfully read ${rawPlaylists.size} playlists")
-        val deviceLibrary = deviceLibraryChannel.receive()
         // Convert the database playlist information to actual usable playlists.
         val playlistMap = mutableMapOf<Music.UID, PlaylistImpl>()
         for (rawPlaylist in rawPlaylists) {

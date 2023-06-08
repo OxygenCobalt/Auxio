@@ -58,11 +58,11 @@ interface SearchEngine {
      * @param playlists A list of [Playlist], null if empty.
      */
     data class Items(
-        val songs: List<Song>?,
-        val albums: List<Album>?,
-        val artists: List<Artist>?,
-        val genres: List<Genre>?,
-        val playlists: List<Playlist>?
+        val songs: Collection<Song>?,
+        val albums: Collection<Album>?,
+        val artists: Collection<Artist>?,
+        val genres: Collection<Genre>?,
+        val playlists: Collection<Playlist>?
     )
 }
 
@@ -90,7 +90,7 @@ class SearchEngineImpl @Inject constructor(@ApplicationContext private val conte
      *   initially. This can be used to compare against additional attributes to improve search
      *   result quality.
      */
-    private inline fun <T : Music> List<T>.searchListImpl(
+    private inline fun <T : Music> Collection<T>.searchListImpl(
         query: String,
         fallback: (String, T) -> Boolean = { _, _ -> false }
     ) =

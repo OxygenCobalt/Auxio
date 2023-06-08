@@ -156,8 +156,8 @@ private class TagWorkerImpl(
         (textFrames["TXXX:albumartists"] ?: textFrames["TPE2"])?.let {
             rawSong.albumArtistNames = it
         }
-        (textFrames["TXXX:albumartistssort"] ?: textFrames["TXXX:albumartists_sort"]
-                 ?: textFrames["TSO2"])
+        (textFrames["TXXX:albumartistssort"]
+                ?: textFrames["TXXX:albumartists_sort"] ?: textFrames["TSO2"])
             ?.let { rawSong.albumArtistSortNames = it }
 
         // Genre
@@ -248,14 +248,15 @@ private class TagWorkerImpl(
         // Artist
         comments["musicbrainz_artistid"]?.let { rawSong.artistMusicBrainzIds = it }
         (comments["artists"] ?: comments["artist"])?.let { rawSong.artistNames = it }
-        (comments["artistssort"] ?: comments["artists_sort"] ?: comments["artistsort"] )?.let {
+        (comments["artistssort"] ?: comments["artists_sort"] ?: comments["artistsort"])?.let {
             rawSong.artistSortNames = it
         }
 
         // Album artist
         comments["musicbrainz_albumartistid"]?.let { rawSong.albumArtistMusicBrainzIds = it }
         (comments["albumartists"] ?: comments["albumartist"])?.let { rawSong.albumArtistNames = it }
-        (comments["albumartistssort"] ?: comments["albumartists_sort"] ?: comments["albumartistsort"])
+        (comments["albumartistssort"]
+                ?: comments["albumartists_sort"] ?: comments["albumartistsort"])
             ?.let { rawSong.albumArtistSortNames = it }
 
         // Genre
