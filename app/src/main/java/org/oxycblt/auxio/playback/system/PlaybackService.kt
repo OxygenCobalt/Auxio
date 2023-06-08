@@ -144,7 +144,6 @@ class PlaybackService :
                     true)
                 .build()
                 .also { it.addListener(this) }
-        replayGainProcessor.addToListeners(player)
         foregroundManager = ForegroundManager(this)
         // Initialize any listener-dependent components last as we wouldn't want a listener race
         // condition to cause us to load music before we were fully initialize.
@@ -196,7 +195,7 @@ class PlaybackService :
         widgetComponent.release()
         mediaSessionComponent.release()
 
-        replayGainProcessor.releaseFromListeners(player)
+        replayGainProcessor.release()
         player.release()
         if (openAudioEffectSession) {
             // Make sure to close the audio session when we release the player.

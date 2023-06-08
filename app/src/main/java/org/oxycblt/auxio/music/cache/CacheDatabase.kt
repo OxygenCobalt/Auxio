@@ -32,19 +32,19 @@ import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.metadata.correctWhitespace
 import org.oxycblt.auxio.music.metadata.splitEscaped
 
-@Database(entities = [CachedSong::class], version = 27, exportSchema = false)
+@Database(entities = [CachedSong::class], version = 32, exportSchema = false)
 abstract class CacheDatabase : RoomDatabase() {
     abstract fun cachedSongsDao(): CachedSongsDao
 }
 
 @Dao
 interface CachedSongsDao {
-    @Query("SELECT * FROM ${CachedSong.TABLE_NAME}") suspend fun readSongs(): List<CachedSong>
-    @Query("DELETE FROM ${CachedSong.TABLE_NAME}") suspend fun nukeSongs()
+    @Query("SELECT * FROM CachedSong") suspend fun readSongs(): List<CachedSong>
+    @Query("DELETE FROM CachedSong") suspend fun nukeSongs()
     @Insert suspend fun insertSongs(songs: List<CachedSong>)
 }
 
-@Entity(tableName = CachedSong.TABLE_NAME)
+@Entity
 @TypeConverters(CachedSong.Converters::class)
 data class CachedSong(
     /**
@@ -60,6 +60,10 @@ data class CachedSong(
     var size: Long? = null,
     /** @see RawSong */
     var durationMs: Long,
+    /** @see RawSong.replayGainTrackAdjustment */
+    val replayGainTrackAdjustment: Float?,
+    /** @see RawSong.replayGainAlbumAdjustment */
+    val replayGainAlbumAdjustment: Float?,
     /** @see RawSong.musicBrainzId */
     var musicBrainzId: String? = null,
     /** @see RawSong.name */
@@ -97,13 +101,16 @@ data class CachedSong(
     /** @see RawSong.genreNames */
     var genreNames: List<String> = listOf()
 ) {
-    fun copyToRaw(rawSong: RawSong): CachedSong {
+    fun copyToRaw(rawSong: RawSong) {
         rawSong.musicBrainzId = musicBrainzId
         rawSong.name = name
         rawSong.sortName = sortName
 
         rawSong.size = size
         rawSong.durationMs = durationMs
+
+        rawSong.replayGainTrackAdjustment = replayGainTrackAdjustment
+        rawSong.replayGainAlbumAdjustment = replayGainAlbumAdjustment
 
         rawSong.track = track
         rawSong.disc = disc
@@ -124,7 +131,6 @@ data class CachedSong(
         rawSong.albumArtistSortNames = albumArtistSortNames
 
         rawSong.genreNames = genreNames
-        return this
     }
 
     object Converters {
@@ -141,8 +147,6 @@ data class CachedSong(
     }
 
     companion object {
-        const val TABLE_NAME = "cached_songs"
-
         fun fromRaw(rawSong: RawSong) =
             CachedSong(
                 mediaStoreId =
@@ -155,6 +159,8 @@ data class CachedSong(
                 sortName = rawSong.sortName,
                 size = rawSong.size,
                 durationMs = requireNotNull(rawSong.durationMs) { "Invalid raw: No duration" },
+                replayGainTrackAdjustment = rawSong.replayGainTrackAdjustment,
+                replayGainAlbumAdjustment = rawSong.replayGainAlbumAdjustment,
                 track = rawSong.track,
                 disc = rawSong.disc,
                 subtitle = rawSong.subtitle,

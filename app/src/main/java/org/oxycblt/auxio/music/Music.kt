@@ -34,6 +34,7 @@ import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.info.ReleaseType
+import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.auxio.util.toUuidOrNull
 
@@ -255,6 +256,8 @@ interface Song : Music {
     val size: Long
     /** The duration of the audio file, in milliseconds. */
     val durationMs: Long
+    /** The ReplayGain adjustment to apply during playback. */
+    val replayGainAdjustment: ReplayGainAdjustment?
     /** The date the audio file was added to the device, as a unix epoch timestamp. */
     val dateAdded: Long
     /**

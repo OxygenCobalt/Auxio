@@ -51,6 +51,13 @@ fun Int.nonZeroOrNull() = if (this > 0) this else null
 fun Long.nonZeroOrNull() = if (this > 0) this else null
 
 /**
+ * Aliases a check to ensure that the given number is non-zero.
+ *
+ * @return The same number if it's non-zero, null otherwise.
+ */
+fun Float.nonZeroOrNull() = if (this > 0) this else null
+
+/**
  * Aliases a check to ensure a given value is in a specified range.
  *
  * @param range The valid range of values for this number.

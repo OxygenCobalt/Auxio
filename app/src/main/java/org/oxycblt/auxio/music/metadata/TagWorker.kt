@@ -174,6 +174,13 @@ private class TagWorkerImpl(
                     rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
                 rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
             }
+        // ReplayGain information
+        textFrames["TXXX:replaygain_track_gain"]?.parseReplayGainAdjustment()?.let {
+            rawSong.replayGainTrackAdjustment = it
+        }
+        textFrames["TXXX:replaygain_album_gain"]?.parseReplayGainAdjustment()?.let {
+            rawSong.replayGainAlbumAdjustment = it
+        }
     }
 
     private fun parseId3v23Date(textFrames: Map<String, List<String>>): Date? {
@@ -271,10 +278,38 @@ private class TagWorkerImpl(
                 rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
             rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
         }
+
+        // ReplayGain information
+        // Most ReplayGain tags are formatted as a simple decibel adjustment in a custom
+        // replaygain_*_gain tag, but opus has it's own "r128_*_gain" ReplayGain specification,
+        // which requires dividing the adjustment by 256 to get the gain. This is used alongside
+        // the base adjustment intrinsic to the format to create the normalized adjustment. This is
+        // normally the only tag used for opus files, but some software still writes replay gain
+        // tags anyway.
+        (comments["r128_track_gain"]?.parseReplayGainAdjustment()?.div(256)
+                ?: comments["replaygain_track_gain"]?.parseReplayGainAdjustment())
+            ?.let { rawSong.replayGainTrackAdjustment = it }
+        (comments["r128_album_gain"]?.parseReplayGainAdjustment()?.div(256)
+                ?: comments["replaygain_album_gain"]?.parseReplayGainAdjustment())
+            ?.let { rawSong.replayGainAlbumAdjustment = it }
     }
+
+    /**
+     * Parse a ReplayGain adjustment into a float value.
+     *
+     * @return A parsed adjustment float, or null if the adjustment had invalid formatting.
+     */
+    private fun List<String>.parseReplayGainAdjustment() =
+        first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()
 
     private companion object {
         val COMPILATION_ALBUM_ARTISTS = listOf("Various Artists")
         val COMPILATION_RELEASE_TYPES = listOf("compilation")
+
+        /**
+         * Matches non-float information from ReplayGain adjustments. Derived from vanilla music:
+         * https://github.com/vanilla-music/vanilla
+         */
+        val REPLAYGAIN_ADJUSTMENT_FILTER_REGEX by lazy { Regex("[^\\d.-]") }
     }
 }

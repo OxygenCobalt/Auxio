@@ -51,6 +51,10 @@ data class RawSong(
     var durationMs: Long? = null,
     /** @see Song.mimeType */
     var extensionMimeType: String? = null,
+    /** @see Song.replayGainAdjustment */
+    var replayGainTrackAdjustment: Float? = null,
+    /** @see Song.replayGainAdjustment */
+    var replayGainAlbumAdjustment: Float? = null,
     /** @see Music.UID */
     var musicBrainzId: String? = null,
     /** @see Music.name */
