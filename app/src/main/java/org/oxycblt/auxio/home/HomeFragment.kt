@@ -52,6 +52,7 @@ import org.oxycblt.auxio.home.list.GenreListFragment
 import org.oxycblt.auxio.home.list.PlaylistListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
+import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.selection.SelectionFragment
 import org.oxycblt.auxio.list.selection.SelectionViewModel
@@ -152,9 +153,10 @@ class HomeFragment :
             setOnApplyWindowInsetsListener { _, insets -> insets }
 
             // We know that there will only be a fixed amount of tabs, so we manually set this
-            // limit to that. This also prevents the appbar lift state from being confused during
-            // page transitions.
-            offscreenPageLimit = homeModel.currentTabModes.size
+            // limit to the maximum amount possible. This will prevent the tab ripple from
+            // bugging out due to dynamically inflating each fragment, at the cost of slower
+            // debug UI performance.
+            offscreenPageLimit = Tab.MAX_SEQUENCE_IDX + 1
 
             // By default, ViewPager2's sensitivity is high enough to result in vertical scroll
             // events being registered as horizontal scroll events. Reflect into the internal

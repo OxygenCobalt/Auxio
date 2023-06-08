@@ -59,7 +59,7 @@ sealed class Tab(open val mode: MusicMode) {
         // MusicMode for this tab.
 
         /** The maximum index that a well-formed tab sequence should be. */
-        private const val MAX_SEQUENCE_IDX = 4
+        const val MAX_SEQUENCE_IDX = 4
 
         /**
          * The default tab sequence, in integer form. This represents a set of four visible tabs
