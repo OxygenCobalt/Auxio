@@ -27,6 +27,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.playback.state.RepeatMode
 
@@ -37,7 +38,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
  */
 @Database(
     entities = [PlaybackState::class, QueueHeapItem::class, QueueMappingItem::class],
-    version = 27,
+    version = 32,
     exportSchema = false)
 @TypeConverters(Music.UID.TypeConverters::class)
 abstract class PersistenceDatabase : RoomDatabase() {
@@ -54,6 +55,16 @@ abstract class PersistenceDatabase : RoomDatabase() {
      * @return A [QueueDao] providing control of the database's queue tables.
      */
     abstract fun queueDao(): QueueDao
+
+    companion object {
+        val MIGRATION_27_32 =
+            Migration(27, 32) {
+                // Switched from custom names to just letting room pick the names
+                it.execSQL("ALTER TABLE playback_state RENAME TO PlaybackState")
+                it.execSQL("ALTER TABLE queue_heap RENAME TO QueueHeapItem")
+                it.execSQL("ALTER TABLE queue_mapping RENAME TO QueueMappingItem")
+            }
+    }
 }
 
 /**
@@ -68,11 +79,10 @@ interface PlaybackStateDao {
      *
      * @return The previously persisted [PlaybackState], or null if one was not present.
      */
-    @Query("SELECT * FROM ${PlaybackState.TABLE_NAME} WHERE id = 0")
-    suspend fun getState(): PlaybackState?
+    @Query("SELECT * FROM PlaybackState WHERE id = 0") suspend fun getState(): PlaybackState?
 
     /** Delete any previously persisted [PlaybackState]s. */
-    @Query("DELETE FROM ${PlaybackState.TABLE_NAME}") suspend fun nukeState()
+    @Query("DELETE FROM PlaybackState") suspend fun nukeState()
 
     /**
      * Insert a new [PlaybackState] into the database.
@@ -94,21 +104,20 @@ interface QueueDao {
      *
      * @return A list of persisted [QueueHeapItem]s wrapping each heap item.
      */
-    @Query("SELECT * FROM ${QueueHeapItem.TABLE_NAME}") suspend fun getHeap(): List<QueueHeapItem>
+    @Query("SELECT * FROM QueueHeapItem") suspend fun getHeap(): List<QueueHeapItem>
 
     /**
      * Get the previously persisted queue mapping.
      *
      * @return A list of persisted [QueueMappingItem]s wrapping each heap item.
      */
-    @Query("SELECT * FROM ${QueueMappingItem.TABLE_NAME}")
-    suspend fun getMapping(): List<QueueMappingItem>
+    @Query("SELECT * FROM QueueMappingItem") suspend fun getMapping(): List<QueueMappingItem>
 
     /** Delete any previously persisted queue heap entries. */
-    @Query("DELETE FROM ${QueueHeapItem.TABLE_NAME}") suspend fun nukeHeap()
+    @Query("DELETE FROM QueueHeapItem") suspend fun nukeHeap()
 
     /** Delete any previously persisted queue mapping entries. */
-    @Query("DELETE FROM ${QueueMappingItem.TABLE_NAME}") suspend fun nukeMapping()
+    @Query("DELETE FROM QueueMappingItem") suspend fun nukeMapping()
 
     /**
      * Insert new heap entries into the database.
@@ -128,7 +137,7 @@ interface QueueDao {
 
 // TODO: Figure out how to get RepeatMode to map to an int instead of a string
 // TODO: Use intrinsic table names rather than custom names
-@Entity(tableName = PlaybackState.TABLE_NAME)
+@Entity
 data class PlaybackState(
     @PrimaryKey val id: Int,
     val index: Int,
@@ -136,26 +145,9 @@ data class PlaybackState(
     val repeatMode: RepeatMode,
     val songUid: Music.UID,
     val parentUid: Music.UID?
-) {
-    companion object {
-        const val TABLE_NAME = "playback_state"
-    }
-}
+)
 
-@Entity(tableName = QueueHeapItem.TABLE_NAME)
-data class QueueHeapItem(@PrimaryKey val id: Int, val uid: Music.UID) {
-    companion object {
-        const val TABLE_NAME = "queue_heap"
-    }
-}
+@Entity data class QueueHeapItem(@PrimaryKey val id: Int, val uid: Music.UID)
 
-@Entity(tableName = QueueMappingItem.TABLE_NAME)
-data class QueueMappingItem(
-    @PrimaryKey val id: Int,
-    val orderedIndex: Int,
-    val shuffledIndex: Int
-) {
-    companion object {
-        const val TABLE_NAME = "queue_mapping"
-    }
-}
+@Entity
+data class QueueMappingItem(@PrimaryKey val id: Int, val orderedIndex: Int, val shuffledIndex: Int)
