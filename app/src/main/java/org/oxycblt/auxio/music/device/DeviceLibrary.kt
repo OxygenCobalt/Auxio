@@ -97,6 +97,14 @@ interface DeviceLibrary {
 
     /** Constructs a [DeviceLibrary] implementation in an asynchronous manner. */
     interface Factory {
+        /**
+         * Creates a new [DeviceLibrary] instance asynchronously based on the incoming stream of
+         * [RawSong] instances.
+         *
+         * @param rawSongs A stream of [RawSong] instances to process.
+         * @param processedSongs A stream of [RawSong] instances that will have been processed by
+         *   the instance.
+         */
         suspend fun create(
             rawSongs: Channel<RawSong>,
             processedSongs: Channel<RawSong>
@@ -123,8 +131,11 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
             // causing severe issues elsewhere.
             if (songGrouping.containsKey(song.uid)) {
                 logW(
-                    "Duplicate song found: ${song.path} in " +
+                    "Duplicate song found: ${song.path} " +
                         "collides with ${unlikelyToBeNull(songGrouping[song.uid]).path}")
+                // We still want to say that we "processed" the song so that the user doesn't
+                // get confused at why the bar was only partly filled by the end of the loading
+                // process.
                 processedSongs.send(rawSong)
                 continue
             }
@@ -140,9 +151,9 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
                 // use for album information to ensure consistent metadata and UIDs. Fall back to
                 // the name otherwise.
                 val trackLower =
-                    song.track != null && (prioritized.track == null || song.track < prioritized.track)
-                val nameLower =
-                    song.name < prioritized.name
+                    song.track != null &&
+                        (prioritized.track == null || song.track < prioritized.track)
+                val nameLower = song.name < prioritized.name
                 if (trackLower || nameLower) {
                     albumBody.raw = PrioritizedRaw(song.rawAlbum, song)
                 }
@@ -192,8 +203,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
 
         // Now that all songs are processed, also process albums and group them into their
         // respective artists.
-        val albums =
-            albumGrouping.values.map { AlbumImpl(it.raw.inner, musicSettings, it.music) }
+        val albums = albumGrouping.values.map { AlbumImpl(it.raw.inner, musicSettings, it.music) }
         for (album in albums) {
             for (rawArtist in album.rawArtists) {
                 val key = RawArtist.Key(rawArtist)
@@ -204,13 +214,14 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
                         // Immediately replace any songs that initially held the priority position.
                         is SongImpl -> body.raw = PrioritizedRaw(rawArtist, album)
                         is AlbumImpl -> {
-                            // Album information from later dates is prioritized, as it is more likely to
+                            // Album information from later dates is prioritized, as it is more
+                            // likely to
                             // contain the "modern" name of the artist if the information really is
                             // in-consistent. Fall back to the name otherwise.
                             val dateEarlier =
-                                album.dates != null && (prioritized.dates == null || album.dates < prioritized.dates)
-                            val nameLower =
-                                album.name < prioritized.name
+                                album.dates != null &&
+                                    (prioritized.dates == null || album.dates < prioritized.dates)
+                            val nameLower = album.name < prioritized.name
                             if (dateEarlier || nameLower) {
                                 body.raw = PrioritizedRaw(rawArtist, album)
                             }
@@ -228,8 +239,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
         // Artists and genres do not need to be grouped and can be processed immediately.
         val artists =
             artistGrouping.values.map { ArtistImpl(it.raw.inner, musicSettings, it.music) }
-        val genres =
-            genreGrouping.values.map { GenreImpl(it.raw.inner, musicSettings, it.music) }
+        val genres = genreGrouping.values.map { GenreImpl(it.raw.inner, musicSettings, it.music) }
 
         return DeviceLibraryImpl(songGrouping.values, albums, artists, genres)
     }
@@ -259,7 +269,7 @@ class DeviceLibraryImpl(
     override fun hashCode() = songs.hashCode()
     override fun toString() =
         "DeviceLibrary(songs=${songs.size}, albums=${albums.size}, " +
-                "artists=${artists.size}, genres=${genres.size})"
+            "artists=${artists.size}, genres=${genres.size})"
 
     override fun findSong(uid: Music.UID): Song? = songUidMap[uid]
     override fun findAlbum(uid: Music.UID): Album? = albumUidMap[uid]

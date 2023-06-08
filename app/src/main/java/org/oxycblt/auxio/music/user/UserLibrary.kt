@@ -36,9 +36,9 @@ import org.oxycblt.auxio.util.logE
  * is also not backed by library information, rather an app database with in-memory caching. It is
  * generally not expected to create this yourself, and instead rely on MusicRepository.
  *
- * TODO: Communicate errors
- *
  * @author Alexander Capehart
+ *
+ * TODO: Communicate errors
  */
 interface UserLibrary {
     /** The current user-defined playlists. */

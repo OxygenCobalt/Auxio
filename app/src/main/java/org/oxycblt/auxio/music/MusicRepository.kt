@@ -372,7 +372,6 @@ constructor(
         // Do the initial query of the cache and media databases in parallel.
         logD("Starting MediaStore query")
         val mediaStoreQueryJob = worker.scope.tryAsync { mediaStoreExtractor.query() }
-        val userLibraryQueryJob = worker.scope.tryAsync { userLibraryFactory.query() }
         val cache =
             if (withCache) {
                 logD("Reading cache")
@@ -431,6 +430,7 @@ constructor(
         logD("Discovered ${rawSongs.size} songs, starting finalization")
         emitLoading(IndexingProgress.Indeterminate)
         logD("Starting UserLibrary query")
+        val userLibraryQueryJob = worker.scope.tryAsync { userLibraryFactory.query() }
         if (cache == null || cache.invalidated) {
             logD("Writing cache [why=${cache?.invalidated}]")
             cacheRepository.writeCache(rawSongs)
