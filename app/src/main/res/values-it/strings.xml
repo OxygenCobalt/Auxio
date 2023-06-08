@@ -257,7 +257,7 @@
     <string name="err_did_not_wipe">Impossibile svuotare</string>
     <string name="lbl_shuffle_selected">Mescola selezionati</string>
     <string name="lbl_play_selected">Riproduci selezionati</string>
-    <string name="fmt_selected">%d Selezionati</string>
+    <string name="fmt_selected">%d selezionati</string>
     <string name="set_playback_mode_genre">Riproduci dal genere</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
@@ -297,4 +297,6 @@
     <string name="lng_playlist_renamed">Playlist rinominata</string>
     <string name="lbl_share">Condividi</string>
     <string name="def_disc">Nessun disco</string>
+    <string name="lbl_appears_on">Appare su</string>
+    <string name="fmt_editing">Modifica di %s</string>
 </resources>
