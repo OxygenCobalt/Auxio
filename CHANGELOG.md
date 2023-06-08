@@ -8,6 +8,7 @@
 
 #### What's Fixed
 - Disc number is no longer mis-aligned when no subtitle is present
+- Fixed selection not updating when playlists are changed
 
 ## 3.1.1
 

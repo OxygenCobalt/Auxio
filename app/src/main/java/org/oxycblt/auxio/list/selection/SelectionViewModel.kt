@@ -56,7 +56,6 @@ constructor(
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        if (!changes.deviceLibrary) return
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         val userLibrary = musicRepository.userLibrary ?: return
         // Sanitize the selection to remove items that no longer exist and thus
