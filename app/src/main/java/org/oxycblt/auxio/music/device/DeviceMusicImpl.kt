@@ -38,7 +38,6 @@ import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.music.metadata.parseId3GenreNames
 import org.oxycblt.auxio.music.metadata.parseMultiValue
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -92,16 +91,13 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
     override val durationMs = requireNotNull(rawSong.durationMs) { "Invalid raw: No duration" }
     override val replayGainAdjustment =
         if (rawSong.replayGainTrackAdjustment != null &&
-                rawSong.replayGainAlbumAdjustment != null) {
-                ReplayGainAdjustment(
-                    track = unlikelyToBeNull(rawSong.replayGainTrackAdjustment),
-                    album = unlikelyToBeNull(rawSong.replayGainAlbumAdjustment))
-            } else {
-                null
-            }
-            .also {
-                logD("${rawSong.replayGainTrackAdjustment} ${rawSong.replayGainAlbumAdjustment}}")
-            }
+            rawSong.replayGainAlbumAdjustment != null) {
+            ReplayGainAdjustment(
+                track = unlikelyToBeNull(rawSong.replayGainTrackAdjustment),
+                album = unlikelyToBeNull(rawSong.replayGainAlbumAdjustment))
+        } else {
+            null
+        }
     override val dateAdded = requireNotNull(rawSong.dateAdded) { "Invalid raw: No date added" }
     private var _album: AlbumImpl? = null
     override val album: Album
