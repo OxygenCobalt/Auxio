@@ -53,10 +53,11 @@ enum class ReplayGainMode {
 /**
  * Represents a ReplayGain adjustment to apply during song playback.
  *
- * @param track The track-specific adjustment that should be applied.
- * @param album A more general album-specific adjustment that should be applied.
+ * @param track The track-specific adjustment that should be applied. Null if not available.
+ * @param album A more general album-specific adjustment that should be applied. Null if not
+ *   available.
  */
-data class ReplayGainAdjustment(val track: Float, val album: Float)
+data class ReplayGainAdjustment(val track: Float?, val album: Float?)
 
 /**
  * The current ReplayGain pre-amp configuration.

@@ -90,14 +90,9 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
     override val size = requireNotNull(rawSong.size) { "Invalid raw: No size" }
     override val durationMs = requireNotNull(rawSong.durationMs) { "Invalid raw: No duration" }
     override val replayGainAdjustment =
-        if (rawSong.replayGainTrackAdjustment != null &&
-            rawSong.replayGainAlbumAdjustment != null) {
-            ReplayGainAdjustment(
-                track = unlikelyToBeNull(rawSong.replayGainTrackAdjustment),
-                album = unlikelyToBeNull(rawSong.replayGainAlbumAdjustment))
-        } else {
-            null
-        }
+        ReplayGainAdjustment(
+            track = rawSong.replayGainTrackAdjustment, album = rawSong.replayGainAlbumAdjustment)
+
     override val dateAdded = requireNotNull(rawSong.dateAdded) { "Invalid raw: No date added" }
     private var _album: AlbumImpl? = null
     override val album: Album

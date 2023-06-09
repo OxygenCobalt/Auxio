@@ -128,7 +128,6 @@ data class RawAlbum(
         // - If we do not have a MusicBrainz ID, compare by the lowercase album name and lowercase
         // artist name. This allows for case-insensitive artist/album grouping, which can be common
         // for albums/artists that have different naming (ex. "RAMMSTEIN" vs. "Rammstein").
-
         private val artistKeys = inner.rawArtists.map { it.key }
 
         // Cache the hash-code for HashMap efficiency.

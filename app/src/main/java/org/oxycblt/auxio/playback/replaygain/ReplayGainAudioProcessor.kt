@@ -99,58 +99,58 @@ constructor(
      * @param song The [Format] of the currently playing track, or null if nothing is playing.
      */
     private fun applyReplayGain(song: Song?) {
+        if (song == null) {
+            logD("Nothing playing, disabling adjustment")
+            volume = 1f
+            return
+        }
+
         logD("Applying ReplayGain adjustment for $song")
-        val gain = song?.replayGainAdjustment
+
+        val gain = song.replayGainAdjustment
         val preAmp = playbackSettings.replayGainPreAmp
 
-        val adjust =
-            if (gain != null) {
-                logD("Found ReplayGain adjustment $gain")
-                // ReplayGain is configurable, so determine what to do based off of the mode.
-                val useAlbumGain =
-                    when (playbackSettings.replayGainMode) {
-                        // User wants track gain to be preferred. Default to album gain only if
-                        // there is no track gain.
-                        ReplayGainMode.TRACK -> {
-                            logD("Using track strategy")
-                            gain.track == 0f
-                        }
-                        // User wants album gain to be preferred. Default to track gain only if
-                        // here is no album gain.
-                        ReplayGainMode.ALBUM -> {
-                            logD("Using album strategy")
-                            gain.album != 0f
-                        }
-                        // User wants album gain to be used when in an album, track gain otherwise.
-                        ReplayGainMode.DYNAMIC -> {
-                            logD("Using dynamic strategy")
-                            playbackManager.parent is Album &&
-                                playbackManager.queue.currentSong?.album == playbackManager.parent
-                        }
+        // ReplayGain is configurable, so determine what to do based off of the mode.
+        val resolvedAdjustment =
+            when (playbackSettings.replayGainMode) {
+                // User wants track gain to be preferred. Default to album gain only if
+                // there is no track gain.
+                ReplayGainMode.TRACK -> {
+                    logD("Using track strategy")
+                    gain.track ?: gain.album
+                }
+                // User wants album gain to be preferred. Default to track gain only if
+                // here is no album gain.
+                ReplayGainMode.ALBUM -> {
+                    logD("Using album strategy")
+                    gain.album ?: gain.track
+                }
+                // User wants album gain to be used when in an album, track gain otherwise.
+                ReplayGainMode.DYNAMIC -> {
+                    logD("Using dynamic strategy")
+                    gain.album?.takeIf {
+                        playbackManager.parent is Album &&
+                            playbackManager.queue.currentSong?.album == playbackManager.parent
                     }
+                        ?: gain.track
+                }
+            }
 
-                val resolvedGain =
-                    if (useAlbumGain) {
-                        logD("Using album gain")
-                        gain.album
-                    } else {
-                        logD("Using track gain")
-                        gain.track
-                    }
-
-                // Apply the adjustment specified when there is ReplayGain tags.
-                resolvedGain + preAmp.with
+        val amplifiedAdjustment =
+            if (resolvedAdjustment != null) {
+                // Successfully resolved an adjustment, apply the corresponding pre-amp
+                logD("Applying with pre-amp")
+                resolvedAdjustment + preAmp.with
             } else {
-                // No ReplayGain tags existed, or no tags were parsable, or there was no metadata
-                // in the first place. Return the gain to use when there is no ReplayGain value.
-                logD("No ReplayGain tags present")
+                // No adjustment found, use the corresponding user-defined pre-amp
+                logD("Applying without pre-amp")
                 preAmp.without
             }
 
-        logD("Applying ReplayGain adjustment ${adjust}db")
+        logD("Applying ReplayGain adjustment ${amplifiedAdjustment}db")
 
         // Final adjustment along the volume curve.
-        volume = 10f.pow(adjust / 20f)
+        volume = 10f.pow(amplifiedAdjustment / 20f)
     }
 
     // --- AUDIO PROCESSOR IMPLEMENTATION ---

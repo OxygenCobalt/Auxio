@@ -257,7 +257,7 @@ interface Song : Music {
     /** The duration of the audio file, in milliseconds. */
     val durationMs: Long
     /** The ReplayGain adjustment to apply during playback. */
-    val replayGainAdjustment: ReplayGainAdjustment?
+    val replayGainAdjustment: ReplayGainAdjustment
     /** The date the audio file was added to the device, as a unix epoch timestamp. */
     val dateAdded: Long
     /**

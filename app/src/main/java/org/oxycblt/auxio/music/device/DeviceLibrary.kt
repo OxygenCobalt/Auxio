@@ -215,9 +215,8 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
                         is SongImpl -> body.raw = PrioritizedRaw(rawArtist, album)
                         is AlbumImpl -> {
                             // Album information from later dates is prioritized, as it is more
-                            // likely to
-                            // contain the "modern" name of the artist if the information really is
-                            // in-consistent. Fall back to the name otherwise.
+                            // likely to contain the "modern" name of the artist if the information
+                            // really is in-consistent. Fall back to the name otherwise.
                             val dateEarlier =
                                 album.dates != null &&
                                     (prioritized.dates == null || album.dates < prioritized.dates)

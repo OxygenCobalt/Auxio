@@ -28,6 +28,8 @@ import androidx.media3.extractor.metadata.vorbis.VorbisComment
  *
  * @param metadata The [Metadata] to wrap.
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Merge with TagWorker
  */
 class TextTags(metadata: Metadata) {
     private val _id3v2 = mutableMapOf<String, List<String>>()
