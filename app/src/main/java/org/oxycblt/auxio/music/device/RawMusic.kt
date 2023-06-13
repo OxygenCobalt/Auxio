@@ -121,7 +121,7 @@ data class RawAlbum(
 
     /**
      * Allows [RawAlbum]s to be compared by "fundamental" information that is unlikely to change on
-     * an item-by-item basis.
+     * an item-by-item
      */
     data class Key(private val inner: RawAlbum) {
         // Albums are grouped as follows:
@@ -169,7 +169,7 @@ data class RawArtist(
 
     /**
      * Allows [RawArtist]s to be compared by "fundamental" information that is unlikely to change on
-     * an item-by-item basis.
+     * an item-by-item
      */
     data class Key(private val inner: RawArtist) {
         // Artists are grouped as follows:
@@ -216,7 +216,7 @@ data class RawGenre(
 
     /**
      * Allows [RawGenre]s to be compared by "fundamental" information that is unlikely to change on
-     * an item-by-item basis.
+     * an item-by-item
      */
     data class Key(private val inner: RawGenre) {
         // Cache the hashCode for HashMap efficiency.

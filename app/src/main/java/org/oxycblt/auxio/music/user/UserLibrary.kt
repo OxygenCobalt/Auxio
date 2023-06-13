@@ -42,7 +42,7 @@ import org.oxycblt.auxio.util.logE
  */
 interface UserLibrary {
     /** The current user-defined playlists. */
-    val playlists: List<Playlist>
+    val playlists: Collection<Playlist>
 
     /**
      * Find a [Playlist] instance corresponding to the given [Music.UID].
@@ -173,8 +173,8 @@ private class UserLibraryImpl(
     override fun equals(other: Any?) = other is UserLibraryImpl && other.playlistMap == playlistMap
     override fun toString() = "UserLibrary(playlists=${playlists.size})"
 
-    override val playlists: List<Playlist>
-        get() = playlistMap.values.toList()
+    override val playlists: Collection<Playlist>
+        get() = playlistMap.values.toSet()
 
     override fun findPlaylist(uid: Music.UID) = playlistMap[uid]
 

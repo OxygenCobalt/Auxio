@@ -203,7 +203,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
 
         // Now that all songs are processed, also process albums and group them into their
         // respective artists.
-        val albums = albumGrouping.values.map { AlbumImpl(it, musicSettings) }
+        val albums = albumGrouping.values.mapTo(mutableSetOf()) { AlbumImpl(it, musicSettings) }
         for (album in albums) {
             for (rawArtist in album.rawArtists) {
                 val key = RawArtist.Key(rawArtist)
@@ -236,18 +236,18 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
         }
 
         // Artists and genres do not need to be grouped and can be processed immediately.
-        val artists = artistGrouping.values.map { ArtistImpl(it, musicSettings) }
-        val genres = genreGrouping.values.map { GenreImpl(it, musicSettings) }
+        val artists = artistGrouping.values.mapTo(mutableSetOf()) { ArtistImpl(it, musicSettings) }
+        val genres = genreGrouping.values.mapTo(mutableSetOf()) { GenreImpl(it, musicSettings) }
 
-        return DeviceLibraryImpl(songGrouping.values, albums, artists, genres)
+        return DeviceLibraryImpl(songGrouping.values.toSet(), albums, artists, genres)
     }
 }
 
 class DeviceLibraryImpl(
-    override val songs: Collection<SongImpl>,
-    override val albums: Collection<AlbumImpl>,
-    override val artists: Collection<ArtistImpl>,
-    override val genres: Collection<GenreImpl>
+    override val songs: Set<SongImpl>,
+    override val albums: Set<AlbumImpl>,
+    override val artists: Set<ArtistImpl>,
+    override val genres: Set<GenreImpl>
 ) : DeviceLibrary {
     // Use a mapping to make finding information based on it's UID much faster.
     private val songUidMap = buildMap { songs.forEach { put(it.uid, it.finalize()) } }

@@ -298,7 +298,7 @@ class AlbumImpl(
         dates = if (min != null && max != null) Date.Range(min, max) else null
         durationMs = totalDuration
         dateAdded = earliestDateAdded
-        songs = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING).songs(grouping.music)
+        songs = Sort(Sort.Mode.ByTrack, Sort.Direction.ASCENDING).songs(grouping.music)
 
         hashCode = 31 * hashCode + rawAlbum.hashCode()
         hashCode = 31 * hashCode + songs.hashCode()
@@ -394,7 +394,7 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSetti
             }
         }
 
-        songs = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING).songs(distinctSongs)
+        songs = Sort(Sort.Mode.ByDate, Sort.Direction.ASCENDING).songs(distinctSongs)
         albums = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING).albums(albumMap.keys)
         explicitAlbums = albums.filter { unlikelyToBeNull(albumMap[it]) }
         implicitAlbums = albums.filterNot { unlikelyToBeNull(albumMap[it]) }
