@@ -160,7 +160,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
             } else {
                 // Need to initialize this grouping.
                 albumGrouping[albumKey] =
-                    Grouping(PrioritizedRaw(song.rawAlbum, song), mutableListOf(song))
+                    Grouping(PrioritizedRaw(song.rawAlbum, song), mutableSetOf(song))
             }
 
             // Group the song into each of it's artists.
@@ -174,7 +174,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
                 } else {
                     // Need to initialize this grouping.
                     artistGrouping[artistKey] =
-                        Grouping(PrioritizedRaw(rawArtist, song), mutableListOf(song))
+                        Grouping(PrioritizedRaw(rawArtist, song), mutableSetOf(song))
                 }
             }
 
@@ -194,7 +194,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
                 } else {
                     // Need to initialize this grouping.
                     genreGrouping[genreKey] =
-                        Grouping(PrioritizedRaw(rawGenre, song), mutableListOf(song))
+                        Grouping(PrioritizedRaw(rawGenre, song), mutableSetOf(song))
                 }
             }
 
@@ -230,7 +230,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
                 } else {
                     // Need to initialize this grouping.
                     artistGrouping[key] =
-                        Grouping(PrioritizedRaw(rawArtist, album), mutableListOf(album))
+                        Grouping(PrioritizedRaw(rawArtist, album), mutableSetOf(album))
                 }
             }
         }

@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.music.device
 
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.image.extractor.CoverUri
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -254,14 +255,15 @@ class AlbumImpl(
     override val name = Name.Known.from(rawAlbum.name, rawAlbum.sortName, musicSettings)
     override val dates: Date.Range?
     override val releaseType = rawAlbum.releaseType ?: ReleaseType.Album(null)
-    override val coverUri = rawAlbum.mediaStoreId.toCoverUri()
+    override val coverUri = CoverUri(rawAlbum.mediaStoreId.toCoverUri(), grouping.raw.src.uri)
     override val durationMs: Long
     override val dateAdded: Long
 
-    override val songs: List<Song>
     private val _artists = mutableListOf<ArtistImpl>()
     override val artists: List<Artist>
         get() = _artists
+
+    override val songs: Set<Song> = grouping.music
 
     private var hashCode = uid.hashCode()
 
@@ -298,7 +300,6 @@ class AlbumImpl(
         dates = if (min != null && max != null) Date.Range(min, max) else null
         durationMs = totalDuration
         dateAdded = earliestDateAdded
-        songs = Sort(Sort.Mode.ByTrack, Sort.Direction.ASCENDING).songs(grouping.music)
 
         hashCode = 31 * hashCode + rawAlbum.hashCode()
         hashCode = 31 * hashCode + songs.hashCode()
@@ -363,10 +364,10 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSetti
         rawArtist.name?.let { Name.Known.from(it, rawArtist.sortName, musicSettings) }
             ?: Name.Unknown(R.string.def_artist)
 
-    override val songs: List<Song>
-    override val albums: List<Album>
-    override val explicitAlbums: List<Album>
-    override val implicitAlbums: List<Album>
+    override val songs: Set<Song>
+    override val albums: Set<Album>
+    override val explicitAlbums: Set<Album>
+    override val implicitAlbums: Set<Album>
     override val durationMs: Long?
 
     override lateinit var genres: List<Genre>
@@ -394,10 +395,10 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSetti
             }
         }
 
-        songs = Sort(Sort.Mode.ByDate, Sort.Direction.ASCENDING).songs(distinctSongs)
-        albums = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING).albums(albumMap.keys)
-        explicitAlbums = albums.filter { unlikelyToBeNull(albumMap[it]) }
-        implicitAlbums = albums.filterNot { unlikelyToBeNull(albumMap[it]) }
+        songs = distinctSongs
+        albums = albumMap.keys
+        explicitAlbums = albums.filterTo(mutableSetOf()) { albumMap[it] == true }
+        implicitAlbums = albums.filterNotTo(mutableSetOf()) { albumMap[it] == true }
         durationMs = songs.sumOf { it.durationMs }.nonZeroOrNull()
 
         hashCode = 31 * hashCode + rawArtist.hashCode()
@@ -457,8 +458,8 @@ class GenreImpl(grouping: Grouping<RawGenre, SongImpl>, musicSettings: MusicSett
         rawGenre.name?.let { Name.Known.from(it, rawGenre.name, musicSettings) }
             ?: Name.Unknown(R.string.def_genre)
 
-    override val songs: List<Song>
-    override val artists: List<Artist>
+    override val songs: Set<Song>
+    override val artists: Set<Artist>
     override val durationMs: Long
 
     private var hashCode = uid.hashCode()
@@ -473,8 +474,8 @@ class GenreImpl(grouping: Grouping<RawGenre, SongImpl>, musicSettings: MusicSett
             totalDuration += song.durationMs
         }
 
-        songs = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING).songs(grouping.music)
-        artists = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING).artists(distinctArtists)
+        songs = grouping.music
+        artists = distinctArtists
         durationMs = totalDuration
 
         hashCode = 31 * hashCode + rawGenre.hashCode()
@@ -510,7 +511,3 @@ class GenreImpl(grouping: Grouping<RawGenre, SongImpl>, musicSettings: MusicSett
         return this
     }
 }
-
-data class Grouping<R, M : Music>(var raw: PrioritizedRaw<R, M>, val music: MutableList<M>)
-
-data class PrioritizedRaw<R, M : Music>(val inner: R, val src: M)

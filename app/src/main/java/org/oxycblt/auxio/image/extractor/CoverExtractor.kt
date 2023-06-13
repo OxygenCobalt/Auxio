@@ -77,7 +77,7 @@ constructor(
      *   will be returned of a mosaic composed of four album covers ordered by
      *   [computeCoverOrdering]. Otherwise, a [SourceResult] of one album cover will be returned.
      */
-    suspend fun extract(songs: List<Song>, size: Size): FetchResult? {
+    suspend fun extract(songs: Collection<Song>, size: Size): FetchResult? {
         val albums = computeCoverOrdering(songs)
         val streams = mutableListOf<InputStream>()
         for (album in albums) {
@@ -117,7 +117,7 @@ constructor(
      *   by their names. "Representation" is defined by how many [Song]s were found to be linked to
      *   the given [Album] in the given [Song] list.
      */
-    fun computeCoverOrdering(songs: List<Song>): List<Album> {
+    fun computeCoverOrdering(songs: Collection<Song>): List<Album> {
         // TODO: Start short-circuiting in more places
         if (songs.isEmpty()) return listOf()
         if (songs.size == 1) return listOf(songs.first().album)
@@ -150,7 +150,7 @@ constructor(
         MediaMetadataRetriever().run {
             // This call is time-consuming but it also doesn't seem to hold up the main thread,
             // so it's probably fine not to wrap it.rmt
-            setDataSource(context, album.songs[0].uri)
+            setDataSource(context, album.coverUri.song)
 
             // Get the embedded picture from MediaMetadataRetriever, which will return a full
             // ByteArray of the cover without any compression artifacts.
@@ -161,7 +161,7 @@ constructor(
     private suspend fun extractExoplayerCover(album: Album): InputStream? {
         val tracks =
             MetadataRetriever.retrieveMetadata(
-                    mediaSourceFactory, MediaItem.fromUri(album.songs[0].uri))
+                    mediaSourceFactory, MediaItem.fromUri(album.coverUri.song))
                 .asDeferred()
                 .await()
 
@@ -207,7 +207,9 @@ constructor(
 
     private suspend fun extractMediaStoreCover(album: Album) =
         // Eliminate any chance that this blocking call might mess up the loading process
-        withContext(Dispatchers.IO) { context.contentResolver.openInputStream(album.coverUri) }
+        withContext(Dispatchers.IO) {
+            context.contentResolver.openInputStream(album.coverUri.mediaStore)
+        }
 
     /** Derived from phonograph: https://github.com/kabouzeid/Phonograph */
     private fun createMosaic(streams: List<InputStream>, size: Size): FetchResult {

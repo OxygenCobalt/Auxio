@@ -237,3 +237,21 @@ data class RawGenre(
                 }
     }
 }
+
+/**
+ * Represents grouped music information and the prioritized raw information to eventually derive a
+ * [Music] implementation instance from.
+ *
+ * @param raw The current [PrioritizedRaw] that will be used for the finalized music information.
+ * @param music The child [Music] instances of the music information to be created.
+ */
+data class Grouping<R, M : Music>(var raw: PrioritizedRaw<R, M>, val music: MutableSet<M>)
+
+/**
+ * Represents a [RawAlbum], [RawArtist], or [RawGenre] specifically chosen to create a [Music]
+ * instance from due to it being the most likely source of truth.
+ *
+ * @param inner The raw music instance that will be used.
+ * @param src The [Music] instance that the raw information was derived from.
+ */
+data class PrioritizedRaw<R, M : Music>(val inner: R, val src: M)
