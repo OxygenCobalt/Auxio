@@ -203,7 +203,7 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
 
         // Now that all songs are processed, also process albums and group them into their
         // respective artists.
-        val albums = albumGrouping.values.map { AlbumImpl(it.raw.inner, musicSettings, it.music) }
+        val albums = albumGrouping.values.map { AlbumImpl(it, musicSettings) }
         for (album in albums) {
             for (rawArtist in album.rawArtists) {
                 val key = RawArtist.Key(rawArtist)
@@ -236,19 +236,11 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
         }
 
         // Artists and genres do not need to be grouped and can be processed immediately.
-        val artists =
-            artistGrouping.values.map { ArtistImpl(it.raw.inner, musicSettings, it.music) }
-        val genres = genreGrouping.values.map { GenreImpl(it.raw.inner, musicSettings, it.music) }
+        val artists = artistGrouping.values.map { ArtistImpl(it, musicSettings) }
+        val genres = genreGrouping.values.map { GenreImpl(it, musicSettings) }
 
         return DeviceLibraryImpl(songGrouping.values, albums, artists, genres)
     }
-
-    private data class Grouping<R, M : Music>(
-        var raw: PrioritizedRaw<R, M>,
-        val music: MutableList<M>
-    )
-
-    private data class PrioritizedRaw<R, M : Music>(val inner: R, val src: M)
 }
 
 class DeviceLibraryImpl(

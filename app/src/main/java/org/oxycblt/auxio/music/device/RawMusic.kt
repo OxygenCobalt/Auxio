@@ -25,7 +25,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.Directory
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.ReleaseType
-import org.oxycblt.auxio.util.logD
 
 /**
  * Raw information about a [SongImpl] obtained from the filesystem/Extractor instances.
@@ -120,7 +119,10 @@ data class RawAlbum(
 ) {
     val key = Key(this)
 
-    /** Exposed information that denotes [RawAlbum] uniqueness. */
+    /**
+     * Allows [RawAlbum]s to be compared by "fundamental" information that is unlikely to change on
+     * an item-by-item basis.
+     */
     data class Key(private val inner: RawAlbum) {
         // Albums are grouped as follows:
         // - If we have a MusicBrainz ID, only group by it. This allows different Albums with the
@@ -167,7 +169,7 @@ data class RawArtist(
 
     /**
      * Allows [RawArtist]s to be compared by "fundamental" information that is unlikely to change on
-     * an item-by-item
+     * an item-by-item basis.
      */
     data class Key(private val inner: RawArtist) {
         // Artists are grouped as follows:
@@ -178,10 +180,6 @@ data class RawArtist(
 
         // Cache the hashCode for HashMap efficiency.
         val hashCode = inner.musicBrainzId?.hashCode() ?: inner.name?.lowercase().hashCode()
-
-        init {
-            logD("${inner.name} ${inner.name?.lowercase().hashCode()} $hashCode")
-        }
 
         // Compare names and MusicBrainz IDs in order to differentiate artists with the
         // same name in large libraries.
@@ -216,6 +214,10 @@ data class RawGenre(
 ) {
     val key = Key(this)
 
+    /**
+     * Allows [RawGenre]s to be compared by "fundamental" information that is unlikely to change on
+     * an item-by-item basis.
+     */
     data class Key(private val inner: RawGenre) {
         // Cache the hashCode for HashMap efficiency.
         private val hashCode = inner.name?.lowercase().hashCode()
