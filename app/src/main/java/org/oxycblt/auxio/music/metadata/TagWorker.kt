@@ -30,6 +30,7 @@ import org.oxycblt.auxio.music.fs.toAudioUri
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
  * An processing abstraction over the [MetadataRetriever] and [TextTags] workflow that operates on
@@ -300,7 +301,7 @@ private class TagWorkerImpl(
      * @return A parsed adjustment float, or null if the adjustment had invalid formatting.
      */
     private fun List<String>.parseReplayGainAdjustment() =
-        first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()
+        first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.nonZeroOrNull()
 
     private companion object {
         val COMPILATION_ALBUM_ARTISTS = listOf("Various Artists")

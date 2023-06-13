@@ -11,6 +11,7 @@
 - Disc number is no longer mis-aligned when no subtitle is present
 - Fixed selection not updating when playlists are changed
 - Fixed duplicate albums appearing in certain cases
+- Fixed ReplayGain adjustment not applying at the start of a song in certain cases
 
 ## 3.1.1
 
