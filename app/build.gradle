@@ -10,7 +10,7 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
     // NDK is not used in Auxio explicitly (used in the ffmpeg extension), but we need to specify
     // it here so that binary stripping will work.
     // TODO: Eventually you might just want to start vendoring the FFMpeg extension so the
@@ -24,7 +24,7 @@ android {
         versionCode 31
 
         minSdk 24
-        targetSdk 33
+        targetSdk 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -87,7 +87,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:1.6.1"
     implementation "androidx.core:core-ktx:1.10.1"
     implementation "androidx.activity:activity-ktx:1.7.2"
-    implementation "androidx.fragment:fragment-ktx:1.5.7"
+    implementation "androidx.fragment:fragment-ktx:1.6.0"
 
     // UI
     implementation "androidx.recyclerview:recyclerview:1.3.0"
@@ -132,7 +132,7 @@ dependencies {
     //  in a version that I can build with
     // TODO: Exactly figure out the conditions that the 1.7.0 ripple bug occurred so you can just
     //  PR a fix.
-    implementation "com.google.android.material:material:1.8.0-alpha01"
+    implementation "com.google.android.material:material:1.10.0-alpha04"
 
     // Dependency Injection
     implementation "com.google.dagger:dagger:$hilt_version"
