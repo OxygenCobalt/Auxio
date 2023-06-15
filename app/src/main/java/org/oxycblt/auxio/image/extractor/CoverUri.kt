@@ -23,9 +23,10 @@ import android.net.Uri
 /**
  * Bundle of [Uri] information used in [CoverExtractor] to ensure consistent [Uri] use when loading
  * images.
+ *
  * @param mediaStore The album cover [Uri] obtained from MediaStore.
- * @param song The [Uri] of the first song (by track) of the album, which can also be used to
- * obtain an album cover.
+ * @param song The [Uri] of the first song (by track) of the album, which can also be used to obtain
+ *   an album cover.
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class CoverUri(val mediaStore: Uri, val song: Uri)

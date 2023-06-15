@@ -3,8 +3,8 @@
 ## dev
 
 #### What's Improved
-- Tags formatted as `artistssort` or `albumartistssort` are now recognized by Auxio
-- Non-english digit strings are now sorted better
+- `artistssort`, `albumartistssort`, and `album_artists` tags are now recognized
+- Non-english digit strings are sorted more correctly
 - Reduced visual loading time
 
 #### What's Fixed
@@ -12,6 +12,7 @@
 - Fixed selection not updating when playlists are changed
 - Fixed duplicate albums appearing in certain cases
 - Fixed ReplayGain adjustment not applying at the start of a song in certain cases
+- Music cache is no longer migrated between devices
 
 ## 3.1.1
 

@@ -123,6 +123,8 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
         val artistGrouping = mutableMapOf<RawArtist.Key, Grouping<RawArtist, Music>>()
         val genreGrouping = mutableMapOf<RawGenre.Key, Grouping<RawGenre, SongImpl>>()
 
+        // TODO: Use comparators here
+
         // All music information is grouped as it is indexed by other components.
         for (rawSong in rawSongs) {
             val song = SongImpl(rawSong, musicSettings)
@@ -150,11 +152,13 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
                 // Since albums are grouped fuzzily, we pick the song with the earliest track to
                 // use for album information to ensure consistent metadata and UIDs. Fall back to
                 // the name otherwise.
-                val trackLower =
+                val higherPriority =
                     song.track != null &&
-                        (prioritized.track == null || song.track < prioritized.track)
-                val nameLower = song.name < prioritized.name
-                if (trackLower || nameLower) {
+                        (prioritized.track == null ||
+                            song.track < prioritized.track ||
+                            (song.track == prioritized.track && song.name < prioritized.name))
+
+                if (higherPriority) {
                     albumBody.raw = PrioritizedRaw(song.rawAlbum, song)
                 }
             } else {
@@ -187,8 +191,8 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
                     // Genre information from higher songs in ascending alphabetical order are
                     // prioritized.
                     val prioritized = genreBody.raw.src
-                    val nameLower = song.name < prioritized.name
-                    if (nameLower) {
+                    val higherPriority = song.name < prioritized.name
+                    if (higherPriority) {
                         genreBody.raw = PrioritizedRaw(rawGenre, song)
                     }
                 } else {
@@ -217,11 +221,14 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
                             // Album information from later dates is prioritized, as it is more
                             // likely to contain the "modern" name of the artist if the information
                             // really is in-consistent. Fall back to the name otherwise.
-                            val dateEarlier =
+                            val prioritize =
                                 album.dates != null &&
-                                    (prioritized.dates == null || album.dates < prioritized.dates)
-                            val nameLower = album.name < prioritized.name
-                            if (dateEarlier || nameLower) {
+                                    (prioritized.dates == null ||
+                                        album.dates > prioritized.dates ||
+                                        (album.dates == prioritized.dates &&
+                                            album.name < prioritized.name))
+
+                            if (prioritize) {
                                 body.raw = PrioritizedRaw(rawArtist, album)
                             }
                         }
@@ -242,6 +249,8 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
         return DeviceLibraryImpl(songGrouping.values.toSet(), albums, artists, genres)
     }
 }
+
+// TODO: Avoid redundant data creation
 
 class DeviceLibraryImpl(
     override val songs: Set<SongImpl>,
