@@ -275,4 +275,9 @@
     <string name="set_intelligent_sorting">Sıralama yaparken makaleleri yoksay</string>
     <string name="set_intelligent_sorting_desc">Ada göre sıralarken \"the\" gibi kelimeleri yok sayın (en iyi ingilizce müzikle çalışır)</string>
     <string name="desc_new_playlist">Yeni bir oynatma listesi oluştur</string>
+    <string name="lbl_new_playlist">Yeni Oynatma Listesi</string>
+    <string name="lbl_delete">Sil</string>
+    <string name="lbl_rename">Yeniden Adlandır</string>
+    <string name="lbl_rename_playlist">Oynatma Listesini Yeniden Adlandır</string>
+    <string name="lbl_confirm_delete_playlist">Oynatma listesini silmek istiyor musun\?</string>
 </resources>
