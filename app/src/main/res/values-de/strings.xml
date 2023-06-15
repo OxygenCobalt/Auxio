@@ -169,7 +169,7 @@
     <string name="cdc_mka">Matroska-Audio</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
-    <string name="fmt_bitrate">%d kbps</string>
+    <string name="fmt_bitrate">%d kB/s</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="fmt_indexing">Lade deine Musikbibliothek… (%1$d/%2$d)</string>
     <string name="lbl_shuffle_shortcut_short">Mischen</string>

@@ -1,22 +1,23 @@
-Auxio je lokalni izvođač glazbe s brzim i pouzdanim korisničkim sučeljem/korisničkim iskustvom bez nepotrebnih značajki koje su prisutne u ostalim izvođačima glazbe. Kreiran od Exoplayera, Auxio ima vrhunsku podršku za biblioteke i kvalitetu slušanja u usporedbi s drugim aplikacijama koje koriste zastarjelu funkcionalnost Androida. Ukratko, <b>reproducira glazbu.</b>
+Auxio je lokalni glazbeni player s brzim, pouzdanim UI/UX bez mnogih beskorisnih značajki prisutnih u drugim glazbenim playerima. Izgrađen na temelju ExoPlayera, Auxio ima vrhunsku podršku za biblioteku i kvalitetu slušanja u usporedbi s drugim aplikacijama koje koriste zastarjelu funkcionalnost Androida. Ukratko, <b>Reproducira glazbu</b>.
 
 <b>Značajke</b>
 
-- Reprodukcija bazirana na ExoPlayeru
-- Brzo korisničko sučelje u skladu s najnovijim Materijal dizajnom
-- Korisničko iskustvo koje priorizira jednostavnost korištenja
-- Prilagodljive ponašanje aplikacije
-- Podrška za brojeve diskova, izvođače, vrste izdanja,
-precizne/izvorne datume, oznake razvrstavanje i još više
+- Reprodukcija temeljena na ExoPlayeru
+- Snappy UI izvedeno iz najnovijih smjernica za materijalni dizajn
+- Iskustveni korisnički doživljaj koji daje prednost jednostavnosti upotrebe u odnosu na rubne slučajeve
+- Prilagodljivo ponašanje
+- Podrška za brojeve diskova, više izvođača, vrste izdanja,
+precizni/izvorni datumi, sortiranje oznaka i više
 - Napredni sustav izvođača koji ujedinjuje izvođače i izvođače albuma
-- Upravljanje mapama SD kartica
-- Pouzdana postojanost stanja reprodukcije
-- Potpuna ReplayGain podrška (Za MP3, MP4, FLAC, OGG, i OPUS formate)
-- Podrška za eksterne ekvilajzere (npr. Wavelet)
-- Prikaz od ruba do ruba
-- Podrška za ugrađene omote
-- Pretražinje
-- Mogućnost pokretanja glazbe čim spojite slušalice
-- Stilizirani widgeti koji automatski prilagođavaju svoju veličinu
-- Potpuno privatan bez potrebe za internetskom vezom
-- Bez zaobljenih omota albuma (Osim ako ih želite. Onda ih možete imati.)
+- Upravljanje mapama koje podržava SD karticu
+- Pouzdana funkcija popisa pjesama
+- Postojanost stanja reprodukcije
+- Puna podrška za ReplayGain (na MP3, FLAC, OGG, OPUS i MP4 datotekama)
+- Podrška za vanjski ekvilizator (npr. Wavelet)
+- Od ruba do ruba
+- Podrška za ugrađene naslovnice
+- Funkcionalnost pretraživanja
+- Automatska reprodukcija slušalica
+- Elegantni widgeti koji se automatski prilagođavaju njihovoj veličini
+- Potpuno privatno i izvan mreže
+- Nema zaobljenih naslovnica albuma (Osim ako ih ne želite. Onda možete.)
