@@ -29,8 +29,8 @@ import com.google.android.material.R
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
 /**
- * A [MaterialDividerItemDecoration] that sets up the divider configuration to correctly
- * separate preference categories.
+ * A [MaterialDividerItemDecoration] that sets up the divider configuration to correctly separate
+ * preference categories.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
