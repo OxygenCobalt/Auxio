@@ -1,11 +1,12 @@
 # Changelog
 
-## dev
+## 3.1.2
 
 #### What's Improved
 - `artistssort`, `albumartistssort`, and `album_artists` tags are now recognized
 - Non-english digit strings are sorted more correctly
 - Reduced visual loading time
+- Genre/artist/album information is now obtained by specific child items
 
 #### What's Fixed
 - Disc number is no longer mis-aligned when no subtitle is present
