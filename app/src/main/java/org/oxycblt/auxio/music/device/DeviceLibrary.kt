@@ -218,13 +218,13 @@ class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: Mu
                         // Immediately replace any songs that initially held the priority position.
                         is SongImpl -> body.raw = PrioritizedRaw(rawArtist, album)
                         is AlbumImpl -> {
-                            // Album information from later dates is prioritized, as it is more
-                            // likely to contain the "modern" name of the artist if the information
-                            // really is in-consistent. Fall back to the name otherwise.
+                            // Album artist information from earlier dates is prioritized, as it is
+                            // less likely to change with the addition of new tracks. Fall back to
+                            // the name otherwise.
                             val prioritize =
                                 album.dates != null &&
                                     (prioritized.dates == null ||
-                                        album.dates > prioritized.dates ||
+                                        album.dates < prioritized.dates ||
                                         (album.dates == prioritized.dates &&
                                             album.name < prioritized.name))
 
