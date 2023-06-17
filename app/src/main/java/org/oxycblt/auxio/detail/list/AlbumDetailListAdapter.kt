@@ -115,7 +115,7 @@ private class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
             binding.discNumber.text = binding.context.getString(R.string.fmt_disc_no, disc.number)
             binding.discName.apply {
                 text = disc.name
-                isGone = text == null
+                isGone = disc.name == null
             }
         } else {
             logD("Disc is null, defaulting to no disc")

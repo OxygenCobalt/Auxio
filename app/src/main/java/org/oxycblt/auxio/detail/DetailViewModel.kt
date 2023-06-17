@@ -480,7 +480,7 @@ constructor(
             // implicit album list into the mapping.
             logD("Implicit albums present, adding to list")
             @Suppress("UNCHECKED_CAST")
-            (grouping as MutableMap<AlbumGrouping, List<Album>>)[AlbumGrouping.APPEARANCES] =
+            (grouping as MutableMap<AlbumGrouping, Collection<Album>>)[AlbumGrouping.APPEARANCES] =
                 artist.implicitAlbums
         }
 
@@ -490,7 +490,7 @@ constructor(
             val header = BasicHeader(entry.key.headerTitleRes)
             list.add(Divider(header))
             list.add(header)
-            list.addAll(entry.value)
+            list.addAll(ARTIST_ALBUM_SORT.albums(entry.value))
         }
 
         // Artists may not be linked to any songs, only include a header entry if we have any.
@@ -519,7 +519,7 @@ constructor(
         val artistHeader = BasicHeader(R.string.lbl_artists)
         list.add(Divider(artistHeader))
         list.add(artistHeader)
-        list.addAll(genre.artists)
+        list.addAll(GENRE_ARTIST_SORT.artists(genre.artists))
 
         val songHeader = SortHeader(R.string.lbl_songs)
         list.add(Divider(songHeader))
@@ -575,5 +575,10 @@ constructor(
         APPEARANCES(R.string.lbl_appears_on),
         LIVE(R.string.lbl_live_group),
         REMIXES(R.string.lbl_remix_group),
+    }
+
+    private companion object {
+        val ARTIST_ALBUM_SORT = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING)
+        val GENRE_ARTIST_SORT = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
     }
 }

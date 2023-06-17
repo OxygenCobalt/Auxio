@@ -21,15 +21,16 @@ package org.oxycblt.auxio.playback.replaygain
 import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.Player
-import androidx.media3.common.Tracks
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.exoplayer.audio.BaseAudioProcessor
 import java.nio.ByteBuffer
 import javax.inject.Inject
 import kotlin.math.pow
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.metadata.TextTags
+import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackSettings
+import org.oxycblt.auxio.playback.queue.Queue
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.logD
 
@@ -48,9 +49,7 @@ class ReplayGainAudioProcessor
 constructor(
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings
-) : BaseAudioProcessor(), Player.Listener, PlaybackSettings.Listener {
-    private var lastFormat: Format? = null
-
+) : BaseAudioProcessor(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
     private var volume = 1f
         set(value) {
             field = value
@@ -58,51 +57,38 @@ constructor(
             flush()
         }
 
-    /**
-     * Add this instance to the components required for it to function correctly.
-     *
-     * @param player The [Player] to attach to. Should already have this instance as an audio
-     *   processor.
-     */
-    fun addToListeners(player: Player) {
-        player.addListener(this)
+    init {
+        playbackManager.addListener(this)
         playbackSettings.registerListener(this)
     }
 
-    /**
-     * Remove this instance from the components required for it to function correctly.
-     *
-     * @param player The [Player] to detach from. Should already have this instance as an audio
-     *   processor.
-     */
-    fun releaseFromListeners(player: Player) {
-        player.removeListener(this)
+    /** Remove this instance from the components required for it to function correctly. */
+    fun release() {
+        playbackManager.removeListener(this)
         playbackSettings.unregisterListener(this)
     }
 
     // --- OVERRIDES ---
 
-    override fun onTracksChanged(tracks: Tracks) {
-        super.onTracksChanged(tracks)
-        // Try to find the currently playing track so we can update the ReplayGain adjustment
-        // based on it.
-        for (group in tracks.groups) {
-            if (group.isSelected) {
-                for (i in 0 until group.length) {
-                    if (group.isTrackSelected(i)) {
-                        applyReplayGain(group.getTrackFormat(i))
-                        return
-                    }
-                }
-            }
+    override fun onIndexMoved(queue: Queue) {
+        logD("Index moved, updating current song")
+        applyReplayGain(queue.currentSong)
+    }
+
+    override fun onQueueChanged(queue: Queue, change: Queue.Change) {
+        // Other types of queue changes preserve the current song.
+        if (change.type == Queue.Change.Type.SONG) {
+            applyReplayGain(queue.currentSong)
         }
-        // Nothing selected, apply nothing
-        applyReplayGain(null)
+    }
+    override fun onNewPlayback(queue: Queue, parent: MusicParent?) {
+        logD("New playback started, updating playback information")
+        applyReplayGain(queue.currentSong)
     }
 
     override fun onReplayGainSettingsChanged() {
         // ReplayGain config changed, we need to set it up again.
-        applyReplayGain(lastFormat)
+        applyReplayGain(playbackManager.queue.currentSong)
     }
 
     // --- REPLAYGAIN PARSING ---
@@ -110,114 +96,62 @@ constructor(
     /**
      * Updates the volume adjustment based on the given [Format].
      *
-     * @param format The [Format] of the currently playing track, or null if nothing is playing.
+     * @param song The [Format] of the currently playing track, or null if nothing is playing.
      */
-    private fun applyReplayGain(format: Format?) {
-        lastFormat = format
-        val gain = parseReplayGain(format ?: return)
+    private fun applyReplayGain(song: Song?) {
+        if (song == null) {
+            logD("Nothing playing, disabling adjustment")
+            volume = 1f
+            return
+        }
+
+        logD("Applying ReplayGain adjustment for $song")
+
+        val gain = song.replayGainAdjustment
         val preAmp = playbackSettings.replayGainPreAmp
 
-        val adjust =
-            if (gain != null) {
-                logD("Found ReplayGain adjustment $gain")
-                // ReplayGain is configurable, so determine what to do based off of the mode.
-                val useAlbumGain =
-                    when (playbackSettings.replayGainMode) {
-                        // User wants track gain to be preferred. Default to album gain only if
-                        // there is no track gain.
-                        ReplayGainMode.TRACK -> {
-                            logD("Using track strategy")
-                            gain.track == 0f
-                        }
-                        // User wants album gain to be preferred. Default to track gain only if
-                        // here is no album gain.
-                        ReplayGainMode.ALBUM -> {
-                            logD("Using album strategy")
-                            gain.album != 0f
-                        }
-                        // User wants album gain to be used when in an album, track gain otherwise.
-                        ReplayGainMode.DYNAMIC -> {
-                            logD("Using dynamic strategy")
-                            playbackManager.parent is Album &&
-                                playbackManager.queue.currentSong?.album == playbackManager.parent
-                        }
+        // ReplayGain is configurable, so determine what to do based off of the mode.
+        val resolvedAdjustment =
+            when (playbackSettings.replayGainMode) {
+                // User wants track gain to be preferred. Default to album gain only if
+                // there is no track gain.
+                ReplayGainMode.TRACK -> {
+                    logD("Using track strategy")
+                    gain.track ?: gain.album
+                }
+                // User wants album gain to be preferred. Default to track gain only if
+                // here is no album gain.
+                ReplayGainMode.ALBUM -> {
+                    logD("Using album strategy")
+                    gain.album ?: gain.track
+                }
+                // User wants album gain to be used when in an album, track gain otherwise.
+                ReplayGainMode.DYNAMIC -> {
+                    logD("Using dynamic strategy")
+                    gain.album?.takeIf {
+                        playbackManager.parent is Album &&
+                            playbackManager.queue.currentSong?.album == playbackManager.parent
                     }
+                        ?: gain.track
+                }
+            }
 
-                val resolvedGain =
-                    if (useAlbumGain) {
-                        logD("Using album gain")
-                        gain.album
-                    } else {
-                        logD("Using track gain")
-                        gain.track
-                    }
-
-                // Apply the adjustment specified when there is ReplayGain tags.
-                resolvedGain + preAmp.with
+        val amplifiedAdjustment =
+            if (resolvedAdjustment != null) {
+                // Successfully resolved an adjustment, apply the corresponding pre-amp
+                logD("Applying with pre-amp")
+                resolvedAdjustment + preAmp.with
             } else {
-                // No ReplayGain tags existed, or no tags were parsable, or there was no metadata
-                // in the first place. Return the gain to use when there is no ReplayGain value.
-                logD("No ReplayGain tags present")
+                // No adjustment found, use the corresponding user-defined pre-amp
+                logD("Applying without pre-amp")
                 preAmp.without
             }
 
-        logD("Applying ReplayGain adjustment ${adjust}db")
+        logD("Applying ReplayGain adjustment ${amplifiedAdjustment}db")
 
         // Final adjustment along the volume curve.
-        volume = 10f.pow(adjust / 20f)
+        volume = 10f.pow(amplifiedAdjustment / 20f)
     }
-
-    /**
-     * Parse ReplayGain information from the given [Format].
-     *
-     * @param format The [Format] to parse.
-     * @return A [Adjustment] adjustment, or null if there were no valid adjustments.
-     */
-    private fun parseReplayGain(format: Format): Adjustment? {
-        val textTags = TextTags(format.metadata ?: return null)
-        var trackGain = 0f
-        var albumGain = 0f
-
-        // Most ReplayGain tags are formatted as a simple decibel adjustment in a custom
-        // replaygain_*_gain tag.
-        textTags.id3v2["TXXX:$TAG_RG_TRACK_GAIN"]
-            ?.run { first().parseReplayGainAdjustment() }
-            ?.let { trackGain = it }
-        textTags.id3v2["TXXX:$TAG_RG_ALBUM_GAIN"]
-            ?.run { first().parseReplayGainAdjustment() }
-            ?.let { albumGain = it }
-        textTags.vorbis[TAG_RG_ALBUM_GAIN]
-            ?.run { first().parseReplayGainAdjustment() }
-            ?.let { trackGain = it }
-        textTags.vorbis[TAG_RG_TRACK_GAIN]
-            ?.run { first().parseReplayGainAdjustment() }
-            ?.let { albumGain = it }
-
-        // Opus has it's own "r128_*_gain" ReplayGain specification, which requires dividing the
-        // adjustment by 256 to get the gain. This is used alongside the base adjustment
-        // intrinsic to the format to create the normalized adjustment. This is normally the only
-        // tag used for opus files, but some software still writes replay gain tags anyway.
-        textTags.vorbis[TAG_R128_TRACK_GAIN]
-            ?.run { first().parseReplayGainAdjustment() }
-            ?.let { trackGain = it / 256f }
-        textTags.vorbis[TAG_R128_ALBUM_GAIN]
-            ?.run { first().parseReplayGainAdjustment() }
-            ?.let { albumGain = it / 256f }
-
-        return if (trackGain != 0f || albumGain != 0f) {
-            Adjustment(trackGain, albumGain)
-        } else {
-            null
-        }
-    }
-
-    /**
-     * Parse a ReplayGain adjustment into a float value.
-     *
-     * @return A parsed adjustment float, or null if the adjustment had invalid formatting.
-     */
-    private fun String.parseReplayGainAdjustment() =
-        replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()
 
     // --- AUDIO PROCESSOR IMPLEMENTATION ---
 
@@ -283,26 +217,5 @@ constructor(
     private fun ByteBuffer.putLeShort(short: Short) {
         put(short.toByte())
         put(short.toInt().shr(8).toByte())
-    }
-
-    /**
-     * The resolved ReplayGain adjustment for a file.
-     *
-     * @param track The track adjustment (in dB), or 0 if it is not present.
-     * @param album The album adjustment (in dB), or 0 if it is not present.
-     */
-    private data class Adjustment(val track: Float, val album: Float)
-
-    private companion object {
-        const val TAG_RG_TRACK_GAIN = "replaygain_track_gain"
-        const val TAG_RG_ALBUM_GAIN = "replaygain_album_gain"
-        const val TAG_R128_TRACK_GAIN = "r128_track_gain"
-        const val TAG_R128_ALBUM_GAIN = "r128_album_gain"
-
-        /**
-         * Matches non-float information from ReplayGain adjustments. Derived from vanilla music:
-         * https://github.com/vanilla-music/vanilla
-         */
-        val REPLAYGAIN_ADJUSTMENT_FILTER_REGEX by lazy { Regex("[^\\d.-]") }
     }
 }

@@ -1,2 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<full-backup-content />
+<full-backup-content>
+    <!-- Cache databases are useless between devices, drop them -->
+    <exclude domain="database" path="music_cache.db" />
+</full-backup-content>

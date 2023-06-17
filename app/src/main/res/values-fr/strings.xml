@@ -41,7 +41,7 @@
     <string name="err_no_music">Pas de musique trouvée</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Morceau %d</string>
-    <string name="desc_play_pause">Lecture/Pause</string>
+    <string name="desc_play_pause">Lecture ou pause</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Recherche dans votre bibliothèque…</string>
     <!-- Color Label namespace | Accent names -->
@@ -50,26 +50,26 @@
     <string name="clr_purple">Violet</string>
     <string name="clr_indigo">Indigo</string>
     <string name="clr_blue">Bleu</string>
-    <string name="clr_deep_blue">Bleu Clair</string>
+    <string name="clr_deep_blue">Bleu foncé</string>
     <string name="clr_teal">Bleu Vert</string>
     <string name="clr_green">Vert</string>
-    <string name="clr_deep_green">Vert Clair</string>
+    <string name="clr_deep_green">Vert foncé</string>
     <string name="clr_lime">Vert Citron</string>
     <string name="clr_yellow">Jaune</string>
     <string name="clr_orange">Orange</string>
     <string name="clr_brown">Brun</string>
     <string name="clr_grey">Gris</string>
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_lib_song_count">Titres chargés: %d</string>
+    <string name="fmt_lib_song_count">Titres chargés : %d</string>
     <plurals name="fmt_song_count">
-        <item quantity="one">%s Titre</item>
-        <item quantity="many">%s Titres</item>
-        <item quantity="other">%s Titres</item>
+        <item quantity="one">%d titre</item>
+        <item quantity="many">%d titres</item>
+        <item quantity="other">%d titres</item>
     </plurals>
     <plurals name="fmt_album_count">
-        <item quantity="one">%s Album</item>
-        <item quantity="many">%s Albums</item>
-        <item quantity="other">%s Albums</item>
+        <item quantity="one">%d album</item>
+        <item quantity="many">%d albums</item>
+        <item quantity="other">%d albums</item>
     </plurals>
     <string name="lbl_format">Format</string>
     <string name="lbl_state_saved">État sauvegardé</string>
@@ -92,7 +92,7 @@
     <string name="set_display">Affichage</string>
     <string name="set_lib_tabs">Onglets de la bibliothèque</string>
     <string name="info_app_desc">Un lecteur de musique simple et rationnel pour Android.</string>
-    <string name="lbl_indexer">Chargement de musique</string>
+    <string name="lbl_indexer">Chargement de la musique</string>
     <string name="lng_widget">Afficher et contrôler la lecture de la musique</string>
     <string name="lng_indexing">Chargement de votre bibliothèque musicale…</string>
     <string name="lbl_name">Nom</string>
@@ -106,7 +106,7 @@
     <string name="lbl_song_detail">Voir les propriétés</string>
     <string name="lbl_props">Propriétés de la chanson</string>
     <string name="lbl_ep_live">EP live</string>
-    <string name="lbl_ep_remix">EP de remixes</string>
+    <string name="lbl_ep_remix">EP de remix</string>
     <string name="lbl_single_live">Single live</string>
     <string name="lbl_single_remix">Single remixé</string>
     <string name="lbl_compilations">Compilations</string>
@@ -114,7 +114,7 @@
     <string name="lbl_live_group">Live</string>
     <string name="lbl_indexing">Chargement de la musique</string>
     <string name="lbl_observing">Suivre la librairie musicale</string>
-    <string name="lbl_eps">EPs</string>
+    <string name="lbl_eps">EP</string>
     <string name="lbl_ep">EP</string>
     <string name="lbl_singles">Singles</string>
     <string name="lbl_single">Single</string>
@@ -125,7 +125,7 @@
     <string name="lbl_remix_group">Remix</string>
     <string name="lbl_date_added">Date d\'ajout</string>
     <string name="lbl_album_live">Album live</string>
-    <string name="lbl_album_remix">Album de remixes</string>
+    <string name="lbl_album_remix">Album de remix</string>
     <string name="lbl_genre">Genre</string>
     <string name="lbl_equalizer">Égaliseur</string>
     <string name="desc_shuffle_all">Lecture aléatoire de tous les titres</string>
@@ -140,9 +140,9 @@
     <string name="desc_music_dir_delete">Supprimer le dossier</string>
     <string name="def_artist">Artiste inconnu</string>
     <string name="lbl_compilation_live">Compilation en direct</string>
-    <string name="lbl_compilation_remix">Compilations de remix</string>
-    <string name="lbl_mixes">Mixes</string>
-    <string name="lbl_mix">Mix</string>
+    <string name="lbl_compilation_remix">Compilation de remix</string>
+    <string name="lbl_mixes">Mix DJ</string>
+    <string name="lbl_mix">Mix DJ</string>
     <string name="err_bad_dir">Ce dossier n\'est pas pris en charge</string>
     <string name="lbl_reset">Réinitialiser</string>
     <string name="cdc_ogg">Ogg audio</string>
@@ -194,7 +194,7 @@
     <string name="set_separators_comma">Virgule (,)</string>
     <string name="set_separators_semicolon">Point-virgule (;)</string>
     <string name="set_exclude_non_music_desc">Ignorer les fichiers audio qui ne sont pas de la musique, tels que les podcasts</string>
-    <string name="set_separators_warning">Avertissement: L\'utilisation de ce paramètre peut entraîner l\'interprétation incorrecte de certaines balises comme ayant plusieurs valeurs. Vous pouvez résoudre ce problème en préfixant les caractères de séparation indésirables avec une barre oblique inverse (\\).</string>
+    <string name="set_separators_warning">Avertissement : L\'utilisation de ce paramètre peut entraîner l\'interprétation incorrecte de certaines balises comme ayant plusieurs valeurs. Vous pouvez résoudre ce problème en préfixant les caractères de séparation indésirables avec une barre oblique inverse (\\).</string>
     <string name="set_exclude_non_music">Exclure non-musique</string>
     <string name="set_playback_mode_album">Lire depuis l\'album</string>
     <string name="set_separators_slash">Barre oblique (/)</string>
@@ -236,4 +236,65 @@
     <string name="set_reindex_desc">Recharger la bibliothèque musicale en utilisant si possible les étiquettes en cache</string>
     <string name="set_dirs_mode">Mode</string>
     <string name="set_dirs_mode_exclude">Exclure</string>
+    <string name="lbl_new_playlist">Nouvelle liste de lecture</string>
+    <string name="desc_skip_next">Passer à la chanson suivante</string>
+    <string name="desc_shuffle">Activer ou désactiver la lecture aléatoire</string>
+    <string name="fmt_sample_rate">%d Hz</string>
+    <string name="desc_skip_prev">Passer à la dernière chanson</string>
+    <string name="lbl_playlist_add">Ajouter à la liste de lecture</string>
+    <string name="desc_new_playlist">Créer une nouvelle liste de lecture</string>
+    <string name="cdc_mka">Audio Matroska</string>
+    <string name="fmt_lib_artist_count">Artistes chargés&amp;nbsp;: %d</string>
+    <string name="set_rewind_prev">Rembobiner avant de revenir en arrière</string>
+    <string name="desc_artist_image">Image d\'artiste pour %s</string>
+    <string name="def_track">Aucune piste</string>
+    <string name="def_playback">Aucune musique en cours de lecture</string>
+    <string name="lbl_delete">Supprimer</string>
+    <string name="set_repeat_pause_desc">Pause quand une chanson se répète</string>
+    <string name="desc_tab_handle">Déplacer cet onglet</string>
+    <string name="lbl_rename">Renommer</string>
+    <string name="err_did_not_wipe">Impossible d\'effacer l\'état</string>
+    <string name="desc_change_repeat">Modifier le mode de répétition</string>
+    <string name="fmt_lib_album_count">Albums chargés&amp;nbsp;: %d</string>
+    <string name="fmt_lib_total_duration">Durée totale&amp;nbsp;: %s</string>
+    <string name="desc_clear_search">Effacer la requête de recherche</string>
+    <string name="desc_playlist_image">Image de la liste de lecture pour %s</string>
+    <string name="fmt_disc_no">Disque %d</string>
+    <string name="fmt_indexing">Chargement de votre bibliothèque musicale… (%1$d/%2$d)</string>
+    <plurals name="fmt_artist_count">
+        <item quantity="one">%d artiste</item>
+        <item quantity="many">%d artistes</item>
+        <item quantity="other">%d artistes</item>
+    </plurals>
+    <string name="lbl_edit">Modifier</string>
+    <string name="set_repeat_pause">Pause en cas de répétition</string>
+    <string name="set_rewind_prev_desc">Rembobiner avant de passer à la chanson précédente</string>
+    <string name="desc_exit">Arrêter la lecture</string>
+    <string name="lng_playlist_created">Liste de lecture créée</string>
+    <string name="lng_playlist_renamed">Liste de lecture renommée</string>
+    <string name="lng_playlist_deleted">Liste de lecture supprimée</string>
+    <string name="lng_playlist_added">Ajouté à la liste de lecture</string>
+    <string name="fmt_bitrate">%d ko/s</string>
+    <string name="fmt_db_pos">+%.1f dB</string>
+    <string name="fmt_db_neg">-%.1f dB</string>
+    <string name="fmt_deletion_info">Supprimer %s&amp;nbsp;\? Cette opération ne peut pas être annulée.</string>
+    <string name="set_pre_amp_warning">Avertissement&amp;nbsp;: Le fait de régler le préamplificateur sur une valeur positive élevée peut entraîner l\'apparition des distortions sur certaines pistes audio.</string>
+    <string name="fmt_def_playlist">Liste de lecture %d</string>
+    <string name="lbl_appears_on">Apparaît sur</string>
+    <string name="lbl_rename_playlist">Renommer la liste de lecture</string>
+    <string name="lbl_confirm_delete_playlist">Supprimer la liste de lecture&amp;nbsp;\?</string>
+    <string name="lbl_share">Partager</string>
+    <string name="desc_remove_song">Retirer cette chanson</string>
+    <string name="desc_song_handle">Déplacer cette chanson</string>
+    <string name="desc_queue_bar">Ouvrir la file d\'attente</string>
+    <string name="err_did_not_save">Impossible de sauvegarder l\'état</string>
+    <string name="def_song_count">Aucune chanson</string>
+    <string name="fmt_editing">Modification de %s</string>
+    <string name="fmt_lib_genre_count">Genres chargés&amp;nbsp;: %d</string>
+    <string name="desc_genre_image">Image de genre pour %s</string>
+    <string name="cdc_flac">Codec audio gratuit sans perte (FLAC)</string>
+    <string name="fmt_selected">%d sélectionnés</string>
+    <string name="cdc_aac">Codage audio avancé (AAC)</string>
+    <string name="def_disc">Aucun disque</string>
+    <string name="fmt_list">%1$s, %2$s</string>
 </resources>

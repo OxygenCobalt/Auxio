@@ -51,6 +51,10 @@ data class RawSong(
     var durationMs: Long? = null,
     /** @see Song.mimeType */
     var extensionMimeType: String? = null,
+    /** @see Song.replayGainAdjustment */
+    var replayGainTrackAdjustment: Float? = null,
+    /** @see Song.replayGainAdjustment */
+    var replayGainAlbumAdjustment: Float? = null,
     /** @see Music.UID */
     var musicBrainzId: String? = null,
     /** @see Music.name */
@@ -115,30 +119,33 @@ data class RawAlbum(
 ) {
     val key = Key(this)
 
-    /** Exposed information that denotes [RawAlbum] uniqueness. */
-    data class Key(val value: RawAlbum) {
+    /**
+     * Allows [RawAlbum]s to be compared by "fundamental" information that is unlikely to change on
+     * an item-by-item
+     */
+    data class Key(private val inner: RawAlbum) {
         // Albums are grouped as follows:
         // - If we have a MusicBrainz ID, only group by it. This allows different Albums with the
         // same name to be differentiated, which is common in large libraries.
         // - If we do not have a MusicBrainz ID, compare by the lowercase album name and lowercase
         // artist name. This allows for case-insensitive artist/album grouping, which can be common
         // for albums/artists that have different naming (ex. "RAMMSTEIN" vs. "Rammstein").
+        private val artistKeys = inner.rawArtists.map { it.key }
 
         // Cache the hash-code for HashMap efficiency.
         private val hashCode =
-            value.musicBrainzId?.hashCode()
-                ?: (31 * value.name.lowercase().hashCode() + value.rawArtists.hashCode())
+            inner.musicBrainzId?.hashCode()
+                ?: (31 * inner.name.lowercase().hashCode() + artistKeys.hashCode())
 
         override fun hashCode() = hashCode
 
         override fun equals(other: Any?) =
             other is Key &&
                 when {
-                    value.musicBrainzId != null && other.value.musicBrainzId != null ->
-                        value.musicBrainzId == other.value.musicBrainzId
-                    value.musicBrainzId == null && other.value.musicBrainzId == null ->
-                        other.value.name.equals(other.value.name, true) &&
-                            other.value.rawArtists == other.value.rawArtists
+                    inner.musicBrainzId != null && other.inner.musicBrainzId != null ->
+                        inner.musicBrainzId == other.inner.musicBrainzId
+                    inner.musicBrainzId == null && other.inner.musicBrainzId == null ->
+                        inner.name.equals(other.inner.name, true) && artistKeys == other.artistKeys
                     else -> false
                 }
     }
@@ -164,7 +171,7 @@ data class RawArtist(
      * Allows [RawArtist]s to be compared by "fundamental" information that is unlikely to change on
      * an item-by-item
      */
-    data class Key(val value: RawArtist) {
+    data class Key(private val inner: RawArtist) {
         // Artists are grouped as follows:
         // - If we have a MusicBrainz ID, only group by it. This allows different Artists with the
         // same name to be differentiated, which is common in large libraries.
@@ -172,7 +179,7 @@ data class RawArtist(
         // grouping to be case-insensitive.
 
         // Cache the hashCode for HashMap efficiency.
-        private val hashCode = value.musicBrainzId?.hashCode() ?: value.name?.lowercase().hashCode()
+        val hashCode = inner.musicBrainzId?.hashCode() ?: inner.name?.lowercase().hashCode()
 
         // Compare names and MusicBrainz IDs in order to differentiate artists with the
         // same name in large libraries.
@@ -182,13 +189,13 @@ data class RawArtist(
         override fun equals(other: Any?) =
             other is Key &&
                 when {
-                    value.musicBrainzId != null && other.value.musicBrainzId != null ->
-                        value.musicBrainzId == other.value.musicBrainzId
-                    value.musicBrainzId == null && other.value.musicBrainzId == null ->
+                    inner.musicBrainzId != null && other.inner.musicBrainzId != null ->
+                        inner.musicBrainzId == other.inner.musicBrainzId
+                    inner.musicBrainzId == null && other.inner.musicBrainzId == null ->
                         when {
-                            value.name != null && other.value.name != null ->
-                                value.name.equals(other.value.name, true)
-                            value.name == null && other.value.name == null -> true
+                            inner.name != null && other.inner.name != null ->
+                                inner.name.equals(other.inner.name, true)
+                            inner.name == null && other.inner.name == null -> true
                             else -> false
                         }
                     else -> false
@@ -207,9 +214,13 @@ data class RawGenre(
 ) {
     val key = Key(this)
 
-    data class Key(val value: RawGenre) {
+    /**
+     * Allows [RawGenre]s to be compared by "fundamental" information that is unlikely to change on
+     * an item-by-item
+     */
+    data class Key(private val inner: RawGenre) {
         // Cache the hashCode for HashMap efficiency.
-        private val hashCode = value.name?.lowercase().hashCode()
+        private val hashCode = inner.name?.lowercase().hashCode()
 
         // Only group by the lowercase genre name. This allows Genre grouping to be
         // case-insensitive, which may be helpful in some libraries with different ways of
@@ -219,10 +230,28 @@ data class RawGenre(
         override fun equals(other: Any?) =
             other is Key &&
                 when {
-                    value.name != null && other.value.name != null ->
-                        value.name.equals(other.value.name, true)
-                    value.name == null && other.value.name == null -> true
+                    inner.name != null && other.inner.name != null ->
+                        inner.name.equals(other.inner.name, true)
+                    inner.name == null && other.inner.name == null -> true
                     else -> false
                 }
     }
 }
+
+/**
+ * Represents grouped music information and the prioritized raw information to eventually derive a
+ * [Music] implementation instance from.
+ *
+ * @param raw The current [PrioritizedRaw] that will be used for the finalized music information.
+ * @param music The child [Music] instances of the music information to be created.
+ */
+data class Grouping<R, M : Music>(var raw: PrioritizedRaw<R, M>, val music: MutableSet<M>)
+
+/**
+ * Represents a [RawAlbum], [RawArtist], or [RawGenre] specifically chosen to create a [Music]
+ * instance from due to it being the most likely source of truth.
+ *
+ * @param inner The raw music instance that will be used.
+ * @param src The [Music] instance that the raw information was derived from.
+ */
+data class PrioritizedRaw<R, M : Music>(val inner: R, val src: M)

@@ -379,7 +379,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * @param desc The content description to describe the bound data.
      * @param errorRes The resource of the error drawable to use if the cover cannot be loaded.
      */
-    fun bind(songs: List<Song>, desc: String, @DrawableRes errorRes: Int) {
+    fun bind(songs: Collection<Song>, desc: String, @DrawableRes errorRes: Int) {
         val request =
             ImageRequest.Builder(context)
                 .data(songs)

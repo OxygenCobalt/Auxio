@@ -30,6 +30,7 @@ import org.oxycblt.auxio.music.fs.toAudioUri
 import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.nonZeroOrNull
 
 /**
  * An processing abstraction over the [MetadataRetriever] and [TextTags] workflow that operates on
@@ -140,15 +141,16 @@ private class TagWorkerImpl(
         textFrames["TALB"]?.let { rawSong.albumName = it.first() }
         textFrames["TSOA"]?.let { rawSong.albumSortName = it.first() }
         (textFrames["TXXX:musicbrainz album type"]
-                ?: textFrames["TXXX:releasetype"] ?: textFrames["GRP1"])
+                ?: textFrames["TXXX:releasetype"] ?:
+                // This is a non-standard iTunes extension
+                textFrames["GRP1"])
             ?.let { rawSong.releaseTypes = it }
 
         // Artist
         textFrames["TXXX:musicbrainz artist id"]?.let { rawSong.artistMusicBrainzIds = it }
         (textFrames["TXXX:artists"] ?: textFrames["TPE1"])?.let { rawSong.artistNames = it }
-        (textFrames["TXXX:artists_sort"] ?: textFrames["TSOP"])?.let {
-            rawSong.artistSortNames = it
-        }
+        (textFrames["TXXX:artistssort"] ?: textFrames["TXXX:artists_sort"] ?: textFrames["TSOP"])
+            ?.let { rawSong.artistSortNames = it }
 
         // Album artist
         textFrames["TXXX:musicbrainz album artist id"]?.let {
@@ -157,16 +159,18 @@ private class TagWorkerImpl(
         (textFrames["TXXX:albumartists"] ?: textFrames["TPE2"])?.let {
             rawSong.albumArtistNames = it
         }
-        (textFrames["TXXX:albumartists_sort"] ?: textFrames["TSO2"])?.let {
-            rawSong.albumArtistSortNames = it
-        }
+        (textFrames["TXXX:albumartistssort"]
+                ?: textFrames["TXXX:albumartists_sort"] ?: textFrames["TXXX:albumartistsort"]
+                // This is a non-standard iTunes extension
+                ?: textFrames["TSO2"])
+            ?.let { rawSong.albumArtistSortNames = it }
 
         // Genre
         textFrames["TCON"]?.let { rawSong.genreNames = it }
 
         // Compilation Flag
-        (textFrames["TCMP"]
-                ?: textFrames["TXXX:compilation"] ?: textFrames["TXXX:itunescompilation"])
+        (textFrames["TCMP"] // This is a non-standard itunes extension
+             ?: textFrames["TXXX:compilation"] ?: textFrames["TXXX:itunescompilation"])
             ?.let {
                 // Ignore invalid instances of this tag
                 if (it.size != 1 || it[0] != "1") return@let
@@ -175,6 +179,14 @@ private class TagWorkerImpl(
                     rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
                 rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
             }
+
+        // ReplayGain information
+        textFrames["TXXX:replaygain_track_gain"]?.parseReplayGainAdjustment()?.let {
+            rawSong.replayGainTrackAdjustment = it
+        }
+        textFrames["TXXX:replaygain_album_gain"]?.parseReplayGainAdjustment()?.let {
+            rawSong.replayGainAlbumAdjustment = it
+        }
     }
 
     private fun parseId3v23Date(textFrames: Map<String, List<String>>): Date? {
@@ -249,14 +261,18 @@ private class TagWorkerImpl(
         // Artist
         comments["musicbrainz_artistid"]?.let { rawSong.artistMusicBrainzIds = it }
         (comments["artists"] ?: comments["artist"])?.let { rawSong.artistNames = it }
-        (comments["artists_sort"] ?: comments["artistsort"])?.let { rawSong.artistSortNames = it }
+        (comments["artistssort"] ?: comments["artists_sort"] ?: comments["artistsort"])?.let {
+            rawSong.artistSortNames = it
+        }
 
         // Album artist
         comments["musicbrainz_albumartistid"]?.let { rawSong.albumArtistMusicBrainzIds = it }
-        (comments["albumartists"] ?: comments["albumartist"])?.let { rawSong.albumArtistNames = it }
-        (comments["albumartists_sort"] ?: comments["albumartistsort"])?.let {
-            rawSong.albumArtistSortNames = it
+        (comments["albumartists"] ?: comments["album_artists"] ?: comments["albumartist"])?.let {
+            rawSong.albumArtistNames = it
         }
+        (comments["albumartistssort"]
+                ?: comments["albumartists_sort"] ?: comments["albumartistsort"])
+            ?.let { rawSong.albumArtistSortNames = it }
 
         // Genre
         comments["genre"]?.let { rawSong.genreNames = it }
@@ -270,10 +286,38 @@ private class TagWorkerImpl(
                 rawSong.albumArtistNames.ifEmpty { COMPILATION_ALBUM_ARTISTS }
             rawSong.releaseTypes = rawSong.releaseTypes.ifEmpty { COMPILATION_RELEASE_TYPES }
         }
+
+        // ReplayGain information
+        // Most ReplayGain tags are formatted as a simple decibel adjustment in a custom
+        // replaygain_*_gain tag, but opus has it's own "r128_*_gain" ReplayGain specification,
+        // which requires dividing the adjustment by 256 to get the gain. This is used alongside
+        // the base adjustment intrinsic to the format to create the normalized adjustment. This is
+        // normally the only tag used for opus files, but some software still writes replay gain
+        // tags anyway.
+        (comments["r128_track_gain"]?.parseReplayGainAdjustment()?.div(256)
+                ?: comments["replaygain_track_gain"]?.parseReplayGainAdjustment())
+            ?.let { rawSong.replayGainTrackAdjustment = it }
+        (comments["r128_album_gain"]?.parseReplayGainAdjustment()?.div(256)
+                ?: comments["replaygain_album_gain"]?.parseReplayGainAdjustment())
+            ?.let { rawSong.replayGainAlbumAdjustment = it }
     }
+
+    /**
+     * Parse a ReplayGain adjustment into a float value.
+     *
+     * @return A parsed adjustment float, or null if the adjustment had invalid formatting.
+     */
+    private fun List<String>.parseReplayGainAdjustment() =
+        first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.nonZeroOrNull()
 
     private companion object {
         val COMPILATION_ALBUM_ARTISTS = listOf("Various Artists")
         val COMPILATION_RELEASE_TYPES = listOf("compilation")
+
+        /**
+         * Matches non-float information from ReplayGain adjustments. Derived from vanilla music:
+         * https://github.com/vanilla-music/vanilla
+         */
+        val REPLAYGAIN_ADJUSTMENT_FILTER_REGEX by lazy { Regex("[^\\d.-]") }
     }
 }

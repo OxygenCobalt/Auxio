@@ -20,8 +20,8 @@ android {
 
     defaultConfig {
         applicationId namespace
-        versionName "3.1.1"
-        versionCode 31
+        versionName "3.1.2"
+        versionCode 32
 
         minSdk 24
         targetSdk 33
@@ -56,6 +56,7 @@ android {
             }
         }
     }
+
     packagingOptions {
         jniLibs {
             excludes += ['**/kotlin/**', '**/okhttp3/**']
@@ -64,7 +65,6 @@ android {
             excludes += ['DebugProbesKt.bin', 'kotlin-tooling-metadata.json', '**/kotlin/**', '**/okhttp3/**', 'META-INF/*.version']
         }
     }
-
 
     buildFeatures {
         viewBinding true

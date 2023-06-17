@@ -45,8 +45,7 @@ class PersistenceRoomModule {
                 PersistenceDatabase::class.java,
                 "playback_persistence.db")
             .fallbackToDestructiveMigration()
-            .fallbackToDestructiveMigrationFrom(1)
-            .fallbackToDestructiveMigrationOnDowngrade()
+            .addMigrations(PersistenceDatabase.MIGRATION_27_32)
             .build()
 
     @Provides fun playbackStateDao(database: PersistenceDatabase) = database.playbackStateDao()

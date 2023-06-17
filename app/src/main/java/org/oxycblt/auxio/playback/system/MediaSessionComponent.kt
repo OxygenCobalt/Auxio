@@ -367,7 +367,7 @@ constructor(
                         .setSubtitle(song.artists.resolveNames(context))
                         // Since we usually have to load many songs into the queue, use the
                         // MediaStore URI instead of loading a bitmap.
-                        .setIconUri(song.album.coverUri)
+                        .setIconUri(song.album.coverUri.mediaStore)
                         .setMediaUri(song.uri)
                         .build()
                 // Store the item index so we can then use the analogous index in the

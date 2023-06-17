@@ -22,7 +22,7 @@ import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
 import javax.inject.Inject
-import org.oxycblt.auxio.list.Sort
+import kotlinx.coroutines.channels.Channel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -32,7 +32,8 @@ import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.fs.contentResolverSafe
 import org.oxycblt.auxio.music.fs.useQuery
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * Organized music library information obtained from device storage.
@@ -45,13 +46,13 @@ import org.oxycblt.auxio.util.logD
  */
 interface DeviceLibrary {
     /** All [Song]s in this [DeviceLibrary]. */
-    val songs: List<Song>
+    val songs: Collection<Song>
     /** All [Album]s in this [DeviceLibrary]. */
-    val albums: List<Album>
+    val albums: Collection<Album>
     /** All [Artist]s in this [DeviceLibrary]. */
-    val artists: List<Artist>
+    val artists: Collection<Artist>
     /** All [Genre]s in this [DeviceLibrary]. */
-    val genres: List<Genre>
+    val genres: Collection<Genre>
 
     /**
      * Find a [Song] instance corresponding to the given [Music.UID].
@@ -97,37 +98,166 @@ interface DeviceLibrary {
     /** Constructs a [DeviceLibrary] implementation in an asynchronous manner. */
     interface Factory {
         /**
-         * Create a new [DeviceLibrary].
+         * Creates a new [DeviceLibrary] instance asynchronously based on the incoming stream of
+         * [RawSong] instances.
          *
-         * @param rawSongs [RawSong] instances to create a [DeviceLibrary] from.
+         * @param rawSongs A stream of [RawSong] instances to process.
+         * @param processedSongs A stream of [RawSong] instances that will have been processed by
+         *   the instance.
          */
-        suspend fun create(rawSongs: List<RawSong>): DeviceLibrary
-    }
-
-    companion object {
-        /**
-         * Create an instance of [DeviceLibrary].
-         *
-         * @param rawSongs [RawSong]s to create the library out of.
-         * @param settings [MusicSettings] required.
-         */
-        fun from(rawSongs: List<RawSong>, settings: MusicSettings): DeviceLibrary =
-            DeviceLibraryImpl(rawSongs, settings)
+        suspend fun create(
+            rawSongs: Channel<RawSong>,
+            processedSongs: Channel<RawSong>
+        ): DeviceLibraryImpl
     }
 }
 
 class DeviceLibraryFactoryImpl @Inject constructor(private val musicSettings: MusicSettings) :
     DeviceLibrary.Factory {
-    override suspend fun create(rawSongs: List<RawSong>): DeviceLibrary =
-        DeviceLibraryImpl(rawSongs, musicSettings)
+    override suspend fun create(
+        rawSongs: Channel<RawSong>,
+        processedSongs: Channel<RawSong>
+    ): DeviceLibraryImpl {
+        val songGrouping = mutableMapOf<Music.UID, SongImpl>()
+        val albumGrouping = mutableMapOf<RawAlbum.Key, Grouping<RawAlbum, SongImpl>>()
+        val artistGrouping = mutableMapOf<RawArtist.Key, Grouping<RawArtist, Music>>()
+        val genreGrouping = mutableMapOf<RawGenre.Key, Grouping<RawGenre, SongImpl>>()
+
+        // TODO: Use comparators here
+
+        // All music information is grouped as it is indexed by other components.
+        for (rawSong in rawSongs) {
+            val song = SongImpl(rawSong, musicSettings)
+            // At times the indexer produces duplicate songs, try to filter these. Comparing by
+            // UID is sufficient for something like this, and also prevents collisions from
+            // causing severe issues elsewhere.
+            if (songGrouping.containsKey(song.uid)) {
+                logW(
+                    "Duplicate song found: ${song.path} " +
+                        "collides with ${unlikelyToBeNull(songGrouping[song.uid]).path}")
+                // We still want to say that we "processed" the song so that the user doesn't
+                // get confused at why the bar was only partly filled by the end of the loading
+                // process.
+                processedSongs.send(rawSong)
+                continue
+            }
+            songGrouping[song.uid] = song
+
+            // Group the new song into an album.
+            val albumKey = song.rawAlbum.key
+            val albumBody = albumGrouping[albumKey]
+            if (albumBody != null) {
+                albumBody.music.add(song)
+                val prioritized = albumBody.raw.src
+                // Since albums are grouped fuzzily, we pick the song with the earliest track to
+                // use for album information to ensure consistent metadata and UIDs. Fall back to
+                // the name otherwise.
+                val higherPriority =
+                    song.track != null &&
+                        (prioritized.track == null ||
+                            song.track < prioritized.track ||
+                            (song.track == prioritized.track && song.name < prioritized.name))
+
+                if (higherPriority) {
+                    albumBody.raw = PrioritizedRaw(song.rawAlbum, song)
+                }
+            } else {
+                // Need to initialize this grouping.
+                albumGrouping[albumKey] =
+                    Grouping(PrioritizedRaw(song.rawAlbum, song), mutableSetOf(song))
+            }
+
+            // Group the song into each of it's artists.
+            for (rawArtist in song.rawArtists) {
+                val artistKey = rawArtist.key
+                val artistBody = artistGrouping[artistKey]
+                if (artistBody != null) {
+                    // Since artists are not guaranteed to have songs, song artist information is
+                    // de-prioritized compared to album artist information.
+                    artistBody.music.add(song)
+                } else {
+                    // Need to initialize this grouping.
+                    artistGrouping[artistKey] =
+                        Grouping(PrioritizedRaw(rawArtist, song), mutableSetOf(song))
+                }
+            }
+
+            // Group the song into each of it's genres.
+            for (rawGenre in song.rawGenres) {
+                val genreKey = rawGenre.key
+                val genreBody = genreGrouping[genreKey]
+                if (genreBody != null) {
+                    genreBody.music.add(song)
+                    // Genre information from higher songs in ascending alphabetical order are
+                    // prioritized.
+                    val prioritized = genreBody.raw.src
+                    val higherPriority = song.name < prioritized.name
+                    if (higherPriority) {
+                        genreBody.raw = PrioritizedRaw(rawGenre, song)
+                    }
+                } else {
+                    // Need to initialize this grouping.
+                    genreGrouping[genreKey] =
+                        Grouping(PrioritizedRaw(rawGenre, song), mutableSetOf(song))
+                }
+            }
+
+            processedSongs.send(rawSong)
+        }
+
+        // Now that all songs are processed, also process albums and group them into their
+        // respective artists.
+        val albums = albumGrouping.values.mapTo(mutableSetOf()) { AlbumImpl(it, musicSettings) }
+        for (album in albums) {
+            for (rawArtist in album.rawArtists) {
+                val key = RawArtist.Key(rawArtist)
+                val body = artistGrouping[key]
+                if (body != null) {
+                    body.music.add(album)
+                    when (val prioritized = body.raw.src) {
+                        // Immediately replace any songs that initially held the priority position.
+                        is SongImpl -> body.raw = PrioritizedRaw(rawArtist, album)
+                        is AlbumImpl -> {
+                            // Album artist information from earlier dates is prioritized, as it is
+                            // less likely to change with the addition of new tracks. Fall back to
+                            // the name otherwise.
+                            val prioritize =
+                                album.dates != null &&
+                                    (prioritized.dates == null ||
+                                        album.dates < prioritized.dates ||
+                                        (album.dates == prioritized.dates &&
+                                            album.name < prioritized.name))
+
+                            if (prioritize) {
+                                body.raw = PrioritizedRaw(rawArtist, album)
+                            }
+                        }
+                        else -> throw IllegalStateException()
+                    }
+                } else {
+                    // Need to initialize this grouping.
+                    artistGrouping[key] =
+                        Grouping(PrioritizedRaw(rawArtist, album), mutableSetOf(album))
+                }
+            }
+        }
+
+        // Artists and genres do not need to be grouped and can be processed immediately.
+        val artists = artistGrouping.values.mapTo(mutableSetOf()) { ArtistImpl(it, musicSettings) }
+        val genres = genreGrouping.values.mapTo(mutableSetOf()) { GenreImpl(it, musicSettings) }
+
+        return DeviceLibraryImpl(songGrouping.values.toSet(), albums, artists, genres)
+    }
 }
 
-private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings) : DeviceLibrary {
-    override val songs = buildSongs(rawSongs, settings)
-    override val albums = buildAlbums(songs, settings)
-    override val artists = buildArtists(songs, albums, settings)
-    override val genres = buildGenres(songs, settings)
+// TODO: Avoid redundant data creation
 
+class DeviceLibraryImpl(
+    override val songs: Set<SongImpl>,
+    override val albums: Set<AlbumImpl>,
+    override val artists: Set<ArtistImpl>,
+    override val genres: Set<GenreImpl>
+) : DeviceLibrary {
     // Use a mapping to make finding information based on it's UID much faster.
     private val songUidMap = buildMap { songs.forEach { put(it.uid, it.finalize()) } }
     private val albumUidMap = buildMap { albums.forEach { put(it.uid, it.finalize()) } }
@@ -138,12 +268,13 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
     override fun equals(other: Any?) = other is DeviceLibrary && other.songs == songs
     override fun hashCode() = songs.hashCode()
     override fun toString() =
-        "DeviceLibrary(songs=${songs.size}, albums=${albums.size}, artists=${artists.size}, genres=${genres.size})"
+        "DeviceLibrary(songs=${songs.size}, albums=${albums.size}, " +
+            "artists=${artists.size}, genres=${genres.size})"
 
-    override fun findSong(uid: Music.UID) = songUidMap[uid]
-    override fun findAlbum(uid: Music.UID) = albumUidMap[uid]
-    override fun findArtist(uid: Music.UID) = artistUidMap[uid]
-    override fun findGenre(uid: Music.UID) = genreUidMap[uid]
+    override fun findSong(uid: Music.UID): Song? = songUidMap[uid]
+    override fun findAlbum(uid: Music.UID): Album? = albumUidMap[uid]
+    override fun findArtist(uid: Music.UID): Artist? = artistUidMap[uid]
+    override fun findGenre(uid: Music.UID): Genre? = genreUidMap[uid]
 
     override fun findSongForUri(context: Context, uri: Uri) =
         context.contentResolverSafe.useQuery(
@@ -156,70 +287,4 @@ private class DeviceLibraryImpl(rawSongs: List<RawSong>, settings: MusicSettings
                 val size = cursor.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE))
                 songs.find { it.path.name == displayName && it.size == size }
             }
-
-    private fun buildSongs(rawSongs: List<RawSong>, settings: MusicSettings): List<SongImpl> {
-        val start = System.currentTimeMillis()
-        val songs =
-            Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-                .songs(rawSongs.map { SongImpl(it, settings) }.distinctBy { it.uid })
-        logD("Successfully built ${songs.size} songs in ${System.currentTimeMillis() - start}ms")
-        return songs
-    }
-
-    private fun buildAlbums(songs: List<SongImpl>, settings: MusicSettings): List<AlbumImpl> {
-        val start = System.currentTimeMillis()
-        // Group songs by their singular raw album, then map the raw instances and their
-        // grouped songs to Album values. Album.Raw will handle the actual grouping rules.
-        val songsByAlbum = songs.groupBy { it.rawAlbum.key }
-        val albums = songsByAlbum.map { AlbumImpl(it.key.value, settings, it.value) }
-        logD("Successfully built ${albums.size} albums in ${System.currentTimeMillis() - start}ms")
-        return albums
-    }
-
-    private fun buildArtists(
-        songs: List<SongImpl>,
-        albums: List<AlbumImpl>,
-        settings: MusicSettings
-    ): List<ArtistImpl> {
-        val start = System.currentTimeMillis()
-        // Add every raw artist credited to each Song/Album to the grouping. This way,
-        // different multi-artist combinations are not treated as different artists.
-        // Songs and albums are grouped by artist and album artist respectively.
-        val musicByArtist = mutableMapOf<RawArtist.Key, MutableList<Music>>()
-
-        for (song in songs) {
-            for (rawArtist in song.rawArtists) {
-                musicByArtist.getOrPut(rawArtist.key) { mutableListOf() }.add(song)
-            }
-        }
-
-        for (album in albums) {
-            for (rawArtist in album.rawArtists) {
-                musicByArtist.getOrPut(rawArtist.key) { mutableListOf() }.add(album)
-            }
-        }
-
-        // Convert the combined mapping into artist instances.
-        val artists = musicByArtist.map { ArtistImpl(it.key.value, settings, it.value) }
-        logD(
-            "Successfully built ${artists.size} artists in ${System.currentTimeMillis() - start}ms")
-        return artists
-    }
-
-    private fun buildGenres(songs: List<SongImpl>, settings: MusicSettings): List<GenreImpl> {
-        val start = System.currentTimeMillis()
-        // Add every raw genre credited to each Song to the grouping. This way,
-        // different multi-genre combinations are not treated as different genres.
-        val songsByGenre = mutableMapOf<RawGenre.Key, MutableList<SongImpl>>()
-        for (song in songs) {
-            for (rawGenre in song.rawGenres) {
-                songsByGenre.getOrPut(rawGenre.key) { mutableListOf() }.add(song)
-            }
-        }
-
-        // Convert the mapping into genre instances.
-        val genres = songsByGenre.map { GenreImpl(it.key.value, settings, it.value) }
-        logD("Successfully built ${genres.size} genres in ${System.currentTimeMillis() - start}ms")
-        return genres
-    }
 }

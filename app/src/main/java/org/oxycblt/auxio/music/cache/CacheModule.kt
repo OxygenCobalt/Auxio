@@ -43,8 +43,6 @@ class CacheRoomModule {
         Room.databaseBuilder(
                 context.applicationContext, CacheDatabase::class.java, "music_cache.db")
             .fallbackToDestructiveMigration()
-            .fallbackToDestructiveMigrationFrom(0)
-            .fallbackToDestructiveMigrationOnDowngrade()
             .build()
 
     @Provides fun cachedSongsDao(database: CacheDatabase) = database.cachedSongsDao()

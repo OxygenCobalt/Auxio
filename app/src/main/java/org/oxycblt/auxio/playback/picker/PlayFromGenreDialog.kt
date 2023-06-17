@@ -81,7 +81,7 @@ class PlayFromGenreDialog :
 
     override fun onDestroyBinding(binding: DialogMusicChoicesBinding) {
         super.onDestroyBinding(binding)
-        choiceAdapter
+        binding.choiceRecycler.adapter = null
     }
 
     override fun onClick(item: Genre, viewHolder: RecyclerView.ViewHolder) {

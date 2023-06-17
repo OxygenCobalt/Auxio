@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.music.device
 
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.image.extractor.CoverUri
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -37,6 +38,7 @@ import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.music.metadata.parseId3GenreNames
 import org.oxycblt.auxio.music.metadata.parseMultiValue
+import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -88,6 +90,10 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
             fromFormat = null)
     override val size = requireNotNull(rawSong.size) { "Invalid raw: No size" }
     override val durationMs = requireNotNull(rawSong.durationMs) { "Invalid raw: No duration" }
+    override val replayGainAdjustment =
+        ReplayGainAdjustment(
+            track = rawSong.replayGainTrackAdjustment, album = rawSong.replayGainAlbumAdjustment)
+
     override val dateAdded = requireNotNull(rawSong.dateAdded) { "Invalid raw: No date added" }
     private var _album: AlbumImpl? = null
     override val album: Album
@@ -226,17 +232,16 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
 /**
  * Library-backed implementation of [Album].
  *
- * @param rawAlbum The [RawAlbum] to derive the member data from.
+ * @param grouping [Grouping] to derive the member data from.
  * @param musicSettings [MusicSettings] to for user parsing configuration.
- * @param songs The [Song]s that are a part of this [Album]. These items will be linked to this
- *   [Album].
  * @author Alexander Capehart (OxygenCobalt)
  */
 class AlbumImpl(
-    private val rawAlbum: RawAlbum,
+    grouping: Grouping<RawAlbum, SongImpl>,
     musicSettings: MusicSettings,
-    override val songs: List<SongImpl>
 ) : Album {
+    private val rawAlbum = grouping.raw.inner
+
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         rawAlbum.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ALBUMS, it) }
@@ -250,13 +255,15 @@ class AlbumImpl(
     override val name = Name.Known.from(rawAlbum.name, rawAlbum.sortName, musicSettings)
     override val dates: Date.Range?
     override val releaseType = rawAlbum.releaseType ?: ReleaseType.Album(null)
-    override val coverUri = rawAlbum.mediaStoreId.toCoverUri()
+    override val coverUri = CoverUri(rawAlbum.mediaStoreId.toCoverUri(), grouping.raw.src.uri)
     override val durationMs: Long
     override val dateAdded: Long
 
     private val _artists = mutableListOf<ArtistImpl>()
     override val artists: List<Artist>
         get() = _artists
+
+    override val songs: Set<Song> = grouping.music
 
     private var hashCode = uid.hashCode()
 
@@ -267,7 +274,7 @@ class AlbumImpl(
         var earliestDateAdded: Long = Long.MAX_VALUE
 
         // Do linking and value generation in the same loop for efficiency.
-        for (song in songs) {
+        for (song in grouping.music) {
             song.link(this)
 
             if (song.date != null) {
@@ -342,18 +349,13 @@ class AlbumImpl(
 /**
  * Library-backed implementation of [Artist].
  *
- * @param rawArtist The [RawArtist] to derive the member data from.
+ * @param grouping [Grouping] to derive the member data from.
  * @param musicSettings [MusicSettings] to for user parsing configuration.
- * @param songAlbums A list of the [Song]s and [Album]s that are a part of this [Artist] , either
- *   through artist or album artist tags. Providing [Song]s to the artist is optional. These
- *   instances will be linked to this [Artist].
  * @author Alexander Capehart (OxygenCobalt)
  */
-class ArtistImpl(
-    private val rawArtist: RawArtist,
-    musicSettings: MusicSettings,
-    songAlbums: List<Music>
-) : Artist {
+class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSettings) : Artist {
+    private val rawArtist = grouping.raw.inner
+
     override val uid =
         // Attempt to use a MusicBrainz ID first before falling back to a hashed UID.
         rawArtist.musicBrainzId?.let { Music.UID.musicBrainz(MusicMode.ARTISTS, it) }
@@ -362,10 +364,10 @@ class ArtistImpl(
         rawArtist.name?.let { Name.Known.from(it, rawArtist.sortName, musicSettings) }
             ?: Name.Unknown(R.string.def_artist)
 
-    override val songs: List<Song>
-    override val albums: List<Album>
-    override val explicitAlbums: List<Album>
-    override val implicitAlbums: List<Album>
+    override val songs: Set<Song>
+    override val albums: Set<Album>
+    override val explicitAlbums: Set<Album>
+    override val implicitAlbums: Set<Album>
     override val durationMs: Long?
 
     override lateinit var genres: List<Genre>
@@ -376,7 +378,7 @@ class ArtistImpl(
         val distinctSongs = mutableSetOf<Song>()
         val albumMap = mutableMapOf<Album, Boolean>()
 
-        for (music in songAlbums) {
+        for (music in grouping.music) {
             when (music) {
                 is SongImpl -> {
                     music.link(this)
@@ -393,10 +395,10 @@ class ArtistImpl(
             }
         }
 
-        songs = distinctSongs.toList()
-        albums = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING).albums(albumMap.keys)
-        explicitAlbums = albums.filter { unlikelyToBeNull(albumMap[it]) }
-        implicitAlbums = albums.filterNot { unlikelyToBeNull(albumMap[it]) }
+        songs = distinctSongs
+        albums = albumMap.keys
+        explicitAlbums = albums.filterTo(mutableSetOf()) { albumMap[it] == true }
+        implicitAlbums = albums.filterNotTo(mutableSetOf()) { albumMap[it] == true }
         durationMs = songs.sumOf { it.durationMs }.nonZeroOrNull()
 
         hashCode = 31 * hashCode + rawArtist.hashCode()
@@ -444,40 +446,38 @@ class ArtistImpl(
 /**
  * Library-backed implementation of [Genre].
  *
- * @param rawGenre [RawGenre] to derive the member data from.
+ * @param grouping [Grouping] to derive the member data from.
  * @param musicSettings [MusicSettings] to for user parsing configuration.
- * @param songs Child [SongImpl]s of this instance.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class GenreImpl(
-    private val rawGenre: RawGenre,
-    musicSettings: MusicSettings,
-    override val songs: List<SongImpl>
-) : Genre {
+class GenreImpl(grouping: Grouping<RawGenre, SongImpl>, musicSettings: MusicSettings) : Genre {
+    private val rawGenre = grouping.raw.inner
+
     override val uid = Music.UID.auxio(MusicMode.GENRES) { update(rawGenre.name) }
     override val name =
         rawGenre.name?.let { Name.Known.from(it, rawGenre.name, musicSettings) }
             ?: Name.Unknown(R.string.def_genre)
 
-    override val artists: List<Artist>
+    override val songs: Set<Song>
+    override val artists: Set<Artist>
     override val durationMs: Long
 
     private var hashCode = uid.hashCode()
 
     init {
-        val distinctAlbums = mutableSetOf<Album>()
         val distinctArtists = mutableSetOf<Artist>()
         var totalDuration = 0L
 
-        for (song in songs) {
+        for (song in grouping.music) {
             song.link(this)
-            distinctAlbums.add(song.album)
             distinctArtists.addAll(song.artists)
             totalDuration += song.durationMs
         }
 
-        artists = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING).artists(distinctArtists)
+        songs = grouping.music
+        artists = distinctArtists
         durationMs = totalDuration
+
         hashCode = 31 * hashCode + rawGenre.hashCode()
         hashCode = 31 * hashCode + songs.hashCode()
     }

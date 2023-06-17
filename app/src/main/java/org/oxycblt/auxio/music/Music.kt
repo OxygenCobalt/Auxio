@@ -27,6 +27,7 @@ import java.util.UUID
 import kotlin.math.max
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
+import org.oxycblt.auxio.image.extractor.CoverUri
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.music.fs.MimeType
 import org.oxycblt.auxio.music.fs.Path
@@ -34,6 +35,7 @@ import org.oxycblt.auxio.music.info.Date
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.music.info.Name
 import org.oxycblt.auxio.music.info.ReleaseType
+import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
 import org.oxycblt.auxio.util.concatLocalized
 import org.oxycblt.auxio.util.toUuidOrNull
 
@@ -224,7 +226,7 @@ sealed interface Music : Item {
  */
 sealed interface MusicParent : Music {
     /** The child [Song]s of this [MusicParent]. */
-    val songs: List<Song>
+    val songs: Collection<Song>
 }
 
 /**
@@ -255,6 +257,8 @@ interface Song : Music {
     val size: Long
     /** The duration of the audio file, in milliseconds. */
     val durationMs: Long
+    /** The ReplayGain adjustment to apply during playback. */
+    val replayGainAdjustment: ReplayGainAdjustment
     /** The date the audio file was added to the device, as a unix epoch timestamp. */
     val dateAdded: Long
     /**
@@ -293,7 +297,7 @@ interface Album : MusicParent {
      * The URI to a MediaStore-provided album cover. These images will be fast to load, but at the
      * cost of image quality.
      */
-    val coverUri: Uri
+    val coverUri: CoverUri
     /** The duration of all songs in the album, in milliseconds. */
     val durationMs: Long
     /** The earliest date a song in this album was added, as a unix epoch timestamp. */
@@ -318,14 +322,11 @@ interface Artist : MusicParent {
      * Note that any [Song] credited to this artist will have it's [Album] considered to be
      * "indirectly" linked to this [Artist], and thus included in this list.
      */
-    val albums: List<Album>
-
+    val albums: Collection<Album>
     /** Albums directly credited to this [Artist] via a "Album Artist" tag. */
-    val explicitAlbums: List<Album>
-
+    val explicitAlbums: Collection<Album>
     /** Albums indirectly credited to this [Artist] via an "Artist" tag. */
-    val implicitAlbums: List<Album>
-
+    val implicitAlbums: Collection<Album>
     /**
      * The duration of all [Song]s in the artist, in milliseconds. Will be null if there are no
      * songs.
@@ -342,7 +343,7 @@ interface Artist : MusicParent {
  */
 interface Genre : MusicParent {
     /** The artists indirectly linked to by the [Artist]s of this [Genre]. */
-    val artists: List<Artist>
+    val artists: Collection<Artist>
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
 }
@@ -353,6 +354,7 @@ interface Genre : MusicParent {
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface Playlist : MusicParent {
+    override val songs: List<Song>
     /** The total duration of the songs in this genre, in milliseconds. */
     val durationMs: Long
 }

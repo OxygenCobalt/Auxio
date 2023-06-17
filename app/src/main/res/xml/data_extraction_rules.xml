@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data-extraction-rules>
-    <cloud-backup />
-    <device-transfer />
+    <!-- Cache databases are useless between devices, drop them -->
+    <cloud-backup>
+        <exclude domain="database" path="music_cache.db" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="database" path="music_cache.db" />
+    </device-transfer>
 </data-extraction-rules>

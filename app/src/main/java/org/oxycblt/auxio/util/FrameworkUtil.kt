@@ -286,7 +286,7 @@ fun Context.share(parent: MusicParent) = share(parent.songs)
  *
  * @param songs The [Song]s to share.
  */
-fun Context.share(songs: List<Song>) {
+fun Context.share(songs: Collection<Song>) {
     if (songs.isEmpty()) return
     logD("Showing sharesheet for ${songs.size} songs")
     val builder = ShareCompat.IntentBuilder(this)
