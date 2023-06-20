@@ -136,7 +136,6 @@
     <string name="set_exclude_non_music_desc">Ignorera ljudfiler som inte är musik, t.ex. podkaster</string>
     <string name="set_separators">Värdeavskiljare</string>
     <string name="set_separators_plus">Plus (+)</string>
-    <string name="set_separators_and"></string>
     <string name="set_intelligent_sorting">Intelligent sortering</string>
     <string name="set_intelligent_sorting_desc">Sorterar namn som börjar med siffror eller ord som \"the\" korrekt (fungerar bäst med engelskspråkig music)</string>
     <string name="set_hide_collaborators">Dölj medarbetare</string>
