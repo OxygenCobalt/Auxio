@@ -1,5 +1,10 @@
 # Changelog
 
+## dev
+
+#### What's New
+- Updated to Android 14
+
 ## 3.1.2
 
 #### What's Improved
