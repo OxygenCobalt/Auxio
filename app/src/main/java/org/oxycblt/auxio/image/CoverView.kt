@@ -48,6 +48,8 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.image.extractor.RoundedRectTransformation
+import org.oxycblt.auxio.image.extractor.SquareCropTransformation
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -77,6 +79,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     FrameLayout(context, attrs, defStyleAttr) {
     @Inject lateinit var imageLoader: ImageLoader
     @Inject lateinit var uiSettings: UISettings
+    @Inject lateinit var imageSettings: ImageSettings
 
     private val image: ImageView
 
@@ -384,13 +387,19 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             ImageRequest.Builder(context)
                 .data(songs)
                 .error(StyledDrawable(context, context.getDrawableCompat(errorRes), iconSizeRes))
-                .transformations(
-                    RoundedCornersTransformation(cornerRadiusRes?.let(context::getDimen) ?: 0f))
                 .target(image)
-                .build()
+
+        val cornersTransformation =
+            RoundedRectTransformation(cornerRadiusRes?.let(context::getDimen) ?: 0f)
+        if (imageSettings.forceSquareCovers) {
+            request.transformations(SquareCropTransformation.INSTANCE, cornersTransformation)
+        } else {
+            request.transformations(cornersTransformation)
+        }
+
         // Dispose of any previous image request and load a new image.
         CoilUtils.dispose(image)
-        imageLoader.enqueue(request)
+        imageLoader.enqueue(request.build())
         contentDescription = desc
     }
 

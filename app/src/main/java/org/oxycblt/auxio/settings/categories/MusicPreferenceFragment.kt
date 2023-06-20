@@ -47,7 +47,8 @@ class MusicPreferenceFragment : BasePreferenceFragment(R.xml.preferences_music) 
     }
 
     override fun onSetupPreference(preference: Preference) {
-        if (preference.key == getString(R.string.set_key_cover_mode)) {
+        if (preference.key == getString(R.string.set_key_cover_mode) ||
+            preference.key == getString(R.string.set_key_square_covers)) {
             logD("Configuring cover mode setting")
             preference.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { _, _ ->

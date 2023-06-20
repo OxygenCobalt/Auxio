@@ -43,5 +43,11 @@
             app:key="@string/set_key_cover_mode"
             app:title="@string/set_cover_mode" />
 
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="@string/set_key_square_covers"
+            app:summary="@string/set_square_covers_desc"
+            app:title="@string/set_square_covers" />
+
     </PreferenceCategory>
 </PreferenceScreen>

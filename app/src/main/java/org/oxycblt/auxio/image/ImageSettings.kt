@@ -34,6 +34,8 @@ import org.oxycblt.auxio.util.logD
 interface ImageSettings : Settings<ImageSettings.Listener> {
     /** The strategy to use when loading album covers. */
     val coverMode: CoverMode
+    /** Whether to force all album covers to have a 1:1 aspect ratio. */
+    val forceSquareCovers: Boolean
 
     interface Listener {
         /** Called when [coverMode] changes. */
@@ -48,6 +50,9 @@ class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context
             CoverMode.fromIntCode(
                 sharedPreferences.getInt(getString(R.string.set_key_cover_mode), Int.MIN_VALUE))
                 ?: CoverMode.MEDIA_STORE
+
+    override val forceSquareCovers: Boolean
+        get() = sharedPreferences.getBoolean(getString(R.string.set_key_square_covers), false)
 
     override fun migrate() {
         // Show album covers and Ignore MediaStore covers were unified in 3.0.0

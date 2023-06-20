@@ -43,7 +43,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import javax.inject.Inject
-import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.guava.asDeferred
 import kotlinx.coroutines.withContext
@@ -155,7 +154,7 @@ constructor(
             // Get the embedded picture from MediaMetadataRetriever, which will return a full
             // ByteArray of the cover without any compression artifacts.
             // If its null [i.e there is no embedded cover], than just ignore it and move on
-            return embeddedPicture?.let { ByteArrayInputStream(it) }.also { release() }
+            embeddedPicture?.let { ByteArrayInputStream(it) }.also { release() }
         }
 
     private suspend fun extractExoplayerCover(album: Album): InputStream? {
@@ -212,7 +211,7 @@ constructor(
         }
 
     /** Derived from phonograph: https://github.com/kabouzeid/Phonograph */
-    private fun createMosaic(streams: List<InputStream>, size: Size): FetchResult {
+    private suspend fun createMosaic(streams: List<InputStream>, size: Size): FetchResult {
         // Use whatever size coil gives us to create the mosaic.
         val mosaicSize = AndroidSize(size.width.mosaicSize(), size.height.mosaicSize())
         val mosaicFrameSize =
@@ -234,7 +233,9 @@ constructor(
 
             // Crop the bitmap down to a square so it leaves no empty space
             // TODO: Work around this
-            val bitmap = cropBitmap(BitmapFactory.decodeStream(stream), mosaicFrameSize)
+            val bitmap =
+                SquareCropTransformation.INSTANCE.transform(
+                    BitmapFactory.decodeStream(stream), mosaicFrameSize)
             canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
 
             x += bitmap.width
@@ -258,22 +259,5 @@ constructor(
         // odd image sizes upwards to prevent the mosaic creation from failing.
         val size = pxOrElse { 512 }
         return if (size.mod(2) > 0) size + 1 else size
-    }
-
-    private fun cropBitmap(input: Bitmap, size: Size): Bitmap {
-        // Find the smaller dimension and then take a center portion of the image that
-        // has that size.
-        val dstSize = min(input.width, input.height)
-        val x = (input.width - dstSize) / 2
-        val y = (input.height - dstSize) / 2
-        val dst = Bitmap.createBitmap(input, x, y, dstSize, dstSize)
-
-        val desiredWidth = size.width.pxOrElse { dstSize }
-        val desiredHeight = size.height.pxOrElse { dstSize }
-        if (dstSize != desiredWidth || dstSize != desiredHeight) {
-            // Image is not the desired size, upscale it.
-            return Bitmap.createScaledBitmap(dst, desiredWidth, desiredHeight, true)
-        }
-        return dst
     }
 }
