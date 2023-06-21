@@ -4,6 +4,11 @@
 
 #### What's New
 - Updated to Android 14
+- Added option to re-enable old album cover cropping behavior
+
+#### What's Fixed
+- Fixed an issue where the queue sheet would not collapse when scrolling
+the song list in some cases
 
 ## 3.1.2
 
