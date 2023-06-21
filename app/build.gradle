@@ -23,7 +23,7 @@ android {
         versionName "3.1.2"
         versionCode 32
 
-        minSdk 21
+        minSdk 24
         targetSdk 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -80,7 +80,6 @@ dependencies {
     def coroutines_version = '1.7.1'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-guava:$coroutines_version"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1'
 
     // --- SUPPORT ---
 
