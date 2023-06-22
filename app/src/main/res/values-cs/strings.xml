@@ -55,9 +55,9 @@
     <string name="set_root_title">Nastavení</string>
     <string name="set_ui">Vzhled a chování</string>
     <string name="set_theme">Motiv</string>
-    <string name="set_theme_auto">Automatické</string>
-    <string name="set_theme_day">Světlé</string>
-    <string name="set_theme_night">Tmavé</string>
+    <string name="set_theme_auto">Automaticky</string>
+    <string name="set_theme_day">Světlý</string>
+    <string name="set_theme_night">Tmavý</string>
     <string name="set_accent">Barevné schéma</string>
     <string name="set_black_mode">Černý motiv</string>
     <string name="set_black_mode_desc">Použít kompletně černý tmavý motiv</string>
@@ -304,4 +304,6 @@
     <string name="def_disc">Žádný disk</string>
     <string name="fmt_editing">Úprava seznamu %s</string>
     <string name="lbl_share">Sdílet</string>
+    <string name="set_square_covers">Vynutit čtvercové obaly alb</string>
+    <string name="set_square_covers_desc">Oříznout všechny covery alb na poměr stran 1:1</string>
 </resources>
