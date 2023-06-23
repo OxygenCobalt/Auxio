@@ -290,4 +290,6 @@
     <string name="lbl_appears_on">Sudjelovanja:</string>
     <string name="lbl_share">Dijeli</string>
     <string name="def_disc">Nema diska</string>
+    <string name="set_square_covers">Prisili kvadratične omote albuma</string>
+    <string name="set_square_covers_desc">Odreži sve omote albuma na omjer 1:1</string>
 </resources>
