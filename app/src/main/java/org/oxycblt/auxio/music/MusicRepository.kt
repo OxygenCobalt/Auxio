@@ -372,7 +372,14 @@ constructor(
 
         // Do the initial query of the cache and media databases in parallel.
         logD("Starting MediaStore query")
-        val mediaStoreQueryJob = worker.scope.tryAsync { mediaStoreExtractor.query() }
+        val mediaStoreQueryJob = worker.scope.async {
+            val query = try {
+                mediaStoreExtractor.query()
+            } catch (e: Exception) {
+                return@async Result.failure(e)
+            }
+            Result.success(query)
+        }
         val cache =
             if (withCache) {
                 logD("Reading cache")
@@ -392,22 +399,39 @@ constructor(
         val processedSongs = Channel<RawSong>(Channel.UNLIMITED)
         logD("Started MediaStore discovery")
         val mediaStoreJob =
-            worker.scope.tryAsync {
-                mediaStoreExtractor.consume(query, cache, incompleteSongs, completeSongs)
+            worker.scope.async {
+                try {
+                    mediaStoreExtractor.consume(query, cache, incompleteSongs, completeSongs)
+                } catch (e: Exception) {
+                    incompleteSongs.close(e)
+                    return@async
+                }
                 incompleteSongs.close()
             }
-        logD("Started ExoPlayer discovery")
+
+        logD("Started ExoPlayer tag extraction")
         val metadataJob =
-            worker.scope.tryAsync {
-                tagExtractor.consume(incompleteSongs, completeSongs)
+            worker.scope.async {
+                try {
+                    tagExtractor.consume(incompleteSongs, completeSongs)
+                } catch (e: Exception) {
+                    completeSongs.close(e)
+                    return@async
+                }
                 completeSongs.close()
             }
+
         logD("Starting DeviceLibrary creation")
         val deviceLibraryJob =
-            worker.scope.tryAsync(Dispatchers.Default) {
-                deviceLibraryFactory.create(completeSongs, processedSongs).also {
-                    processedSongs.close()
+            worker.scope.async(Dispatchers.Default) {
+                val deviceLibrary = try {
+                    deviceLibraryFactory.create(completeSongs, processedSongs)
+                } catch (e: Exception) {
+                    processedSongs.close(e)
+                    return@async Result.failure(e)
                 }
+                processedSongs.close()
+                Result.success(deviceLibrary)
             }
 
         // Await completed raw songs as they are processed.
@@ -418,8 +442,8 @@ constructor(
         }
         logD("Awaiting discovery completion")
         // These should be no-ops, but we need the error state to see if we should keep going.
-        mediaStoreJob.await().getOrThrow()
-        metadataJob.await().getOrThrow()
+        mediaStoreJob.await()
+        metadataJob.await()
 
         if (rawSongs.isEmpty()) {
             logE("Music library was empty")
@@ -431,7 +455,14 @@ constructor(
         logD("Discovered ${rawSongs.size} songs, starting finalization")
         emitIndexingProgress(IndexingProgress.Indeterminate)
         logD("Starting UserLibrary query")
-        val userLibraryQueryJob = worker.scope.tryAsync { userLibraryFactory.query() }
+        val userLibraryQueryJob = worker.scope.async {
+            val rawPlaylists = try {
+                userLibraryFactory.query()
+            } catch (e: Exception) {
+                return@async Result.failure(e)
+            }
+            Result.success(rawPlaylists)
+        }
         if (cache == null || cache.invalidated) {
             logD("Writing cache [why=${cache?.invalidated}]")
             cacheRepository.writeCache(rawSongs)
@@ -445,8 +476,6 @@ constructor(
 
         logD("Successfully indexed music library [device=$deviceLibrary user=$userLibrary]")
         emitIndexingCompletion(null)
-
-        // Comparing the library instances is obscenely expensive, do it within the library
 
         val deviceLibraryChanged: Boolean
         val userLibraryChanged: Boolean
@@ -462,26 +491,11 @@ constructor(
             this.userLibrary = userLibrary
         }
 
+        // Listeners are expecting a callback in the main thread, switch
         withContext(Dispatchers.Main) {
             dispatchLibraryChange(deviceLibraryChanged, userLibraryChanged)
         }
     }
-
-    /**
-     * An extension of [async] that forces the outcome to a [Result] to allow exceptions to bubble
-     * upwards instead of crashing the entire app.
-     */
-    private inline fun <R> CoroutineScope.tryAsync(
-        context: CoroutineContext = EmptyCoroutineContext,
-        crossinline block: suspend () -> R
-    ) =
-        async(context) {
-            try {
-                Result.success(block())
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
 
     private suspend fun emitIndexingProgress(progress: IndexingProgress) {
         yield()
