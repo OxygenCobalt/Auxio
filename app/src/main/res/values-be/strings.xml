@@ -293,4 +293,6 @@
     <string name="def_disc">Няма дыска</string>
     <string name="lbl_appears_on">З\'яўляецца на</string>
     <string name="fmt_editing">Рэдагаванне %s</string>
+    <string name="set_square_covers">Выкарыстоўваць квадратныя вокладкі альбомаў</string>
+    <string name="set_square_covers_desc">Абрэзаць усе вокладкі альбомаў да суадносін бакоў 1:1</string>
 </resources>
