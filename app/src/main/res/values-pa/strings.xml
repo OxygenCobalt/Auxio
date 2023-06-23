@@ -180,7 +180,7 @@
     <string name="set_separators_comma">ਕੌਮਾ (,)</string>
     <string name="set_separators_semicolon">ਸੈਮੀਕੋਲਨ (;)</string>
     <string name="set_separators_slash">ਸਲੈਸ਼ (/)</string>
-    <string name="set_separators_and">Ampersand (&amp;)</string>
+    <string name="set_separators_and">ਐਂਪਰਸੈਂਡ (&amp;)</string>
     <string name="set_hide_collaborators">ਸਹਿਯੋਗੀਆਂ ਨੂੰ ਲੁਕਾਓ</string>
     <string name="set_audio_desc">ਆਵਾਜ਼ ਅਤੇ ਪਲੇਬੈਕ ਵਿਵਹਾਰ ਦੀ ਸੰਰਚਨਾ ਕਰੋ</string>
     <string name="set_playback">ਪਲੇਅਬੈਕ</string>
@@ -219,7 +219,7 @@
     <string name="cdc_mka">Matroska ਆਡੀਓ</string>
     <string name="clr_deep_purple">ਗੂੜ੍ਹਾ ਜ੍ਹਾਮਣੀ</string>
     <string name="cdc_ogg">Ogg ਆਡੀਓ</string>
-    <string name="fmt_lib_song_count">% d: ਗੀਤ ਲੋਡ ਕੀਤੇ</string>
+    <string name="fmt_lib_song_count">%d: ਗੀਤ ਲੋਡ ਕੀਤੇ</string>
     <plurals name="fmt_album_count">
         <item quantity="one">%d ਐਲਬਮ</item>
         <item quantity="other">%d ਐਲਬਮਾਂ</item>
@@ -287,4 +287,6 @@
     <string name="clr_dynamic">ਡਾਇਨੈਮਿਕ</string>
     <string name="fmt_editing">%s ਸੋਧ ਰਿਹਾ</string>
     <string name="fmt_indexing">ਤੁਹਾਡੀ ਸੰਗੀਤ ਲਾਇਬਰੇਰੀ ਲੋਡ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ… (%1$d/%2$d)</string>
+    <string name="set_square_covers">ਵਰਗੀਕ੍ਰਿਤ ਐਲਬਮ ਕਵਰ ਫੋਰਸ ਕਰੋ</string>
+    <string name="set_square_covers_desc">ਸਾਰੇ ਐਲਬਮ ਕਵਰਾਂ ਨੂੰ 1:1 ਦੇ ਆਕਾਰ ਅਨੁਪਾਤ ਤੱਕ ਕਾਂਟ-ਛਾਂਟ ਕਰੋ</string>
 </resources>
