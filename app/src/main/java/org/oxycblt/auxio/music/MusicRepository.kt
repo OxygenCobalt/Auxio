@@ -23,8 +23,6 @@ import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import java.util.LinkedList
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -372,14 +370,16 @@ constructor(
 
         // Do the initial query of the cache and media databases in parallel.
         logD("Starting MediaStore query")
-        val mediaStoreQueryJob = worker.scope.async {
-            val query = try {
-                mediaStoreExtractor.query()
-            } catch (e: Exception) {
-                return@async Result.failure(e)
+        val mediaStoreQueryJob =
+            worker.scope.async {
+                val query =
+                    try {
+                        mediaStoreExtractor.query()
+                    } catch (e: Exception) {
+                        return@async Result.failure(e)
+                    }
+                Result.success(query)
             }
-            Result.success(query)
-        }
         val cache =
             if (withCache) {
                 logD("Reading cache")
@@ -424,12 +424,13 @@ constructor(
         logD("Starting DeviceLibrary creation")
         val deviceLibraryJob =
             worker.scope.async(Dispatchers.Default) {
-                val deviceLibrary = try {
-                    deviceLibraryFactory.create(completeSongs, processedSongs)
-                } catch (e: Exception) {
-                    processedSongs.close(e)
-                    return@async Result.failure(e)
-                }
+                val deviceLibrary =
+                    try {
+                        deviceLibraryFactory.create(completeSongs, processedSongs)
+                    } catch (e: Exception) {
+                        processedSongs.close(e)
+                        return@async Result.failure(e)
+                    }
                 processedSongs.close()
                 Result.success(deviceLibrary)
             }
@@ -455,14 +456,16 @@ constructor(
         logD("Discovered ${rawSongs.size} songs, starting finalization")
         emitIndexingProgress(IndexingProgress.Indeterminate)
         logD("Starting UserLibrary query")
-        val userLibraryQueryJob = worker.scope.async {
-            val rawPlaylists = try {
-                userLibraryFactory.query()
-            } catch (e: Exception) {
-                return@async Result.failure(e)
+        val userLibraryQueryJob =
+            worker.scope.async {
+                val rawPlaylists =
+                    try {
+                        userLibraryFactory.query()
+                    } catch (e: Exception) {
+                        return@async Result.failure(e)
+                    }
+                Result.success(rawPlaylists)
             }
-            Result.success(rawPlaylists)
-        }
         if (cache == null || cache.invalidated) {
             logD("Writing cache [why=${cache?.invalidated}]")
             cacheRepository.writeCache(rawSongs)
