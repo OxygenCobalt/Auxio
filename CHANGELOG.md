@@ -12,6 +12,7 @@
 #### What's Fixed
 - Fixed an issue where the queue sheet would not collapse when scrolling
 the song list in some cases
+- Fixed music loading hanging if it encountered an error in certain places
 
 ## 3.1.2
 
