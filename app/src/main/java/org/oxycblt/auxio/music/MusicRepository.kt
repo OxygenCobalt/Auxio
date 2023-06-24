@@ -468,7 +468,7 @@ constructor(
         // Note that DeviceLibrary might still actually be doing work (specifically parent
         // processing), so we don't check if it's deadlocked.
         check(!mediaStoreJob.isActive) { "MediaStore discovery is deadlocked" }
-        check(!tagJob.isActive)  { "Tag extraction is deadlocked" }
+        check(!tagJob.isActive) { "Tag extraction is deadlocked" }
 
         // Deliberately done after the involved initialization step to make it less likely
         // that the short-circuit occurs so quickly as to break the UI.
@@ -519,6 +519,12 @@ constructor(
         logD("Starting UserLibrary creation")
         val userLibrary = userLibraryFactory.create(rawPlaylists, deviceLibrary)
 
+        // Loading process is functionally done, indicate such
+        logD(
+            "Successfully indexed music library [device=$deviceLibrary " +
+                "user=$userLibrary time=${System.currentTimeMillis() - start}]")
+        emitIndexingCompletion(null)
+
         val deviceLibraryChanged: Boolean
         val userLibraryChanged: Boolean
         // We want to make sure that all reads and writes are synchronized due to the sheer
@@ -538,11 +544,6 @@ constructor(
             this.userLibrary = userLibrary
         }
 
-        // We are finally done. Indicate that loading is no longer occurring, and dispatch the
-        // results of the loading process to consumers.
-        logD("Successfully indexed music library [device=$deviceLibrary " +
-                "user=$userLibrary time=${System.currentTimeMillis() - start}]")
-        emitIndexingCompletion(null)
         // Consumers expect their updates to be on the main thread (notably PlaybackService),
         // so switch to it.
         withContext(Dispatchers.Main) {
