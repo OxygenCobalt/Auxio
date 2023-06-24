@@ -216,7 +216,7 @@
         <item name="android:paddingEnd">@dimen/spacing_small</item>
         <item name="android:paddingTop">@dimen/spacing_small</item>
         <item name="android:paddingBottom">@dimen/spacing_small</item>
-        <!-- Intentional to prevent button from spamming the log console over -->
+        <!-- Intentional to prevent button from spamming the log console -->
         <item name="iconTint">@color/m3_text_button_foreground_color_selector</item>
     </style>
 

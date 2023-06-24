@@ -364,7 +364,7 @@ private class Api21MediaStoreExtractor(context: Context, musicSettings: MusicSet
                 arrayOf(
                     MediaStore.Audio.AudioColumns.TRACK,
                     // Below API 29, we are restricted to the absolute path (Called DATA by
-                    // MedaStore) when working with audio files.
+                    // MediaStore) when working with audio files.
                     MediaStore.Audio.AudioColumns.DATA)
 
     // The selector should be configured to convert the given directories instances to their

@@ -39,6 +39,7 @@ import org.oxycblt.auxio.util.logE
  * @author Alexander Capehart
  *
  * TODO: Communicate errors
+ * TODO: How to handle empty playlists that appear because all of their songs have disappeared?
  */
 interface UserLibrary {
     /** The current user-defined playlists. */

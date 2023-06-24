@@ -39,6 +39,7 @@ import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.music.metadata.parseId3GenreNames
 import org.oxycblt.auxio.music.metadata.parseMultiValue
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.nonZeroOrNull
 import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -217,6 +218,7 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
         }
 
         check(_genres.isNotEmpty()) { "Malformed song: No genres" }
+        logD("$this $rawGenres $_genres]")
         for (i in _genres.indices) {
             // Non-destructively reorder the linked genres so that they align with
             // the genre ordering within the song metadata.
