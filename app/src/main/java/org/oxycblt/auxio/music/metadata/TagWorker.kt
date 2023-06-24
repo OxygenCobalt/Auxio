@@ -149,18 +149,22 @@ private class TagWorkerImpl(
         // Artist
         textFrames["TXXX:musicbrainz artist id"]?.let { rawSong.artistMusicBrainzIds = it }
         (textFrames["TXXX:artists"] ?: textFrames["TPE1"])?.let { rawSong.artistNames = it }
-        (textFrames["TXXX:artistssort"] ?: textFrames["TXXX:artists_sort"] ?: textFrames["TSOP"])
+        (textFrames["TXXX:artistssort"]
+                ?: textFrames["TXXX:artists_sort"] ?: textFrames["TXXX:artists sort"]
+                    ?: textFrames["TSOP"])
             ?.let { rawSong.artistSortNames = it }
 
         // Album artist
         textFrames["TXXX:musicbrainz album artist id"]?.let {
             rawSong.albumArtistMusicBrainzIds = it
         }
-        (textFrames["TXXX:albumartists"] ?: textFrames["TPE2"])?.let {
-            rawSong.albumArtistNames = it
-        }
+        (textFrames["TXXX:albumartists"]
+                ?: textFrames["TXXX:album_artists"] ?: textFrames["TXXX:album artists"]
+                    ?: textFrames["TPE2"])
+            ?.let { rawSong.albumArtistNames = it }
         (textFrames["TXXX:albumartistssort"]
-                ?: textFrames["TXXX:albumartists_sort"] ?: textFrames["TXXX:albumartistsort"]
+                ?: textFrames["TXXX:albumartists_sort"] ?: textFrames["TXXX:albumartists sort"]
+                    ?: textFrames["TXXX:albumartistsort"]
                 // This is a non-standard iTunes extension
                 ?: textFrames["TSO2"])
             ?.let { rawSong.albumArtistSortNames = it }
@@ -261,17 +265,19 @@ private class TagWorkerImpl(
         // Artist
         comments["musicbrainz_artistid"]?.let { rawSong.artistMusicBrainzIds = it }
         (comments["artists"] ?: comments["artist"])?.let { rawSong.artistNames = it }
-        (comments["artistssort"] ?: comments["artists_sort"] ?: comments["artistsort"])?.let {
-            rawSong.artistSortNames = it
-        }
+        (comments["artistssort"]
+                ?: comments["artists_sort"] ?: comments["artists sort"] ?: comments["artistsort"])
+            ?.let { rawSong.artistSortNames = it }
 
         // Album artist
         comments["musicbrainz_albumartistid"]?.let { rawSong.albumArtistMusicBrainzIds = it }
-        (comments["albumartists"] ?: comments["album_artists"] ?: comments["albumartist"])?.let {
-            rawSong.albumArtistNames = it
-        }
+        (comments["albumartists"]
+                ?: comments["album_artists"] ?: comments["album artists"]
+                    ?: comments["albumartist"])
+            ?.let { rawSong.albumArtistNames = it }
         (comments["albumartistssort"]
-                ?: comments["albumartists_sort"] ?: comments["albumartistsort"])
+                ?: comments["albumartists_sort"] ?: comments["albumartists sort"]
+                    ?: comments["albumartistsort"])
             ?.let { rawSong.albumArtistSortNames = it }
 
         // Genre

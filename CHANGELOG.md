@@ -6,6 +6,9 @@
 - Updated to Android 14
 - Added option to re-enable old album cover cropping behavior
 
+#### What's Improved
+- `album artists` and `(album)artists sort` are now recognized
+
 #### What's Fixed
 - Fixed an issue where the queue sheet would not collapse when scrolling
 the song list in some cases
