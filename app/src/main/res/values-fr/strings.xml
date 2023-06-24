@@ -297,4 +297,6 @@
     <string name="cdc_aac">Codage audio avancé (AAC)</string>
     <string name="def_disc">Aucun disque</string>
     <string name="fmt_list">%1$s, %2$s</string>
+    <string name="set_square_covers">Forcer les pochettes d\'album carrées</string>
+    <string name="set_square_covers_desc">Recadrer toutes les pochettes d\'album au format 1:1</string>
 </resources>
