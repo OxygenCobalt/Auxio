@@ -40,7 +40,7 @@
     <string name="err_no_music">Nie znaleziono utworów</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Utwór %d</string>
-    <string name="desc_play_pause">Odtwórz bądź zapauzuj</string>
+    <string name="desc_play_pause">Odtwórz albo zapauzuj</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Szukaj w bibliotece…</string>
     <!-- Color Label namespace | Accent names -->
