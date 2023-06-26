@@ -8,6 +8,7 @@
 
 #### What's Improved
 - `album artists` and `(album)artists sort` are now recognized
+- Increased distinction from shuffle on/off icons
 
 #### What's Fixed
 - Fixed an issue where the queue sheet would not collapse when scrolling
