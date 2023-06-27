@@ -293,4 +293,6 @@
     <string name="lbl_share">分享</string>
     <string name="def_disc">无唱片</string>
     <string name="fmt_editing">正在编辑 %s</string>
+    <string name="set_square_covers">强制使用方形专辑封面</string>
+    <string name="set_square_covers_desc">将所有专辑封面裁剪至 1:1 宽高比</string>
 </resources>
