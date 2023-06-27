@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## 3.1.3
 
 #### What's New
 - Updated to Android 14
