@@ -221,7 +221,7 @@
     <string name="lbl_observing">Zene könyvtár figyelése</string>
     <string name="lbl_state_saved">Állapot mentve</string>
     <string name="desc_exit">Lejátszás megállítása</string>
-    <string name="info_app_desc">Egyszerű, racionális zene lejátszó androidra.</string>
+    <string name="info_app_desc">Egyszerű, racionális zenelejátszó androidra.</string>
     <string name="cdc_mka">Matroska hang</string>
     <string name="lbl_album">Album</string>
     <string name="lbl_singles">Kislemezek</string>
@@ -246,7 +246,7 @@
         <item quantity="other">%d előadó</item>
     </plurals>
     <string name="lbl_equalizer">Equalizer</string>
-    <string name="lbl_library_counts">Könyvtári statisztika</string>
+    <string name="lbl_library_counts">Könyvtár statisztika</string>
     <string name="lng_playlist_renamed">Playlista átnevezve</string>
     <string name="lng_playlist_deleted">Playlista törölve</string>
     <string name="set_action_mode_next">Ugrás a következőre</string>
@@ -294,4 +294,6 @@
     <string name="desc_auxio_icon">Auxio ikon</string>
     <string name="def_disc">Nincs lemez</string>
     <string name="fmt_editing">%s szerkesztése</string>
+    <string name="set_square_covers">Kényszerített négyzet alakú albumborítók</string>
+    <string name="set_square_covers_desc">Az összes albumborító 1:1 arányra vágása</string>
 </resources>
