@@ -34,6 +34,8 @@ import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
+import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.detail.Show
 import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
@@ -47,7 +49,6 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -67,7 +68,7 @@ import org.oxycblt.auxio.util.setFullWidthLookup
  */
 @AndroidEntryPoint
 class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
-    override val navModel: NavigationViewModel by activityViewModels()
+    override val detailModel: DetailViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
@@ -137,7 +138,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         collectImmediately(searchModel.searchResults, ::updateSearchResults)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
-        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
+        collect(detailModel.toShow.flow, ::handleShow)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
@@ -167,8 +168,11 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     override fun onRealClick(item: Music) {
         when (item) {
-            is MusicParent -> navModel.exploreNavigateTo(item)
             is Song -> playbackModel.playFrom(item, searchModel.playbackMode)
+            is Album -> detailModel.showAlbum(item)
+            is Artist -> detailModel.showArtist(item)
+            is Genre -> detailModel.showGenre(item)
+            is Playlist -> detailModel.showPlaylist(item)
         }
     }
 
@@ -200,19 +204,57 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         searchAdapter.setPlaying(parent ?: song, isPlaying)
     }
 
-    private fun handleNavigation(item: Music?) {
-        val action =
-            when (item) {
-                is Song -> SearchFragmentDirections.actionShowAlbum(item.album.uid)
-                is Album -> SearchFragmentDirections.actionShowAlbum(item.uid)
-                is Artist -> SearchFragmentDirections.actionShowArtist(item.uid)
-                is Genre -> SearchFragmentDirections.actionShowGenre(item.uid)
-                is Playlist -> SearchFragmentDirections.actionShowPlaylist(item.uid)
-                null -> return
+    private fun handleShow(show: Show?) {
+        when (show) {
+            is Show.SongDetails -> {
+                logD("Navigating to ${show.song}")
+                findNavController().navigateSafe(SearchFragmentDirections.showSong(show.song.uid))
             }
+
+            // Songs should be scrolled to if the album matches, or a new detail
+            // fragment should be launched otherwise.
+            is Show.SongAlbumDetails -> {
+                logD("Navigating to the album of ${show.song}")
+                findNavController()
+                    .navigateSafe(SearchFragmentDirections.showAlbum(show.song.album.uid))
+            }
+
+            // If the album matches, no need to do anything. Otherwise launch a new
+            // detail fragment.
+            is Show.AlbumDetails -> {
+                logD("Navigating to ${show.album}")
+                findNavController().navigateSafe(SearchFragmentDirections.showAlbum(show.album.uid))
+            }
+
+            // Always launch a new ArtistDetailFragment.
+            is Show.ArtistDetails -> {
+                logD("Navigating to ${show.artist}")
+                findNavController()
+                    .navigateSafe(SearchFragmentDirections.showArtist(show.artist.uid))
+            }
+            is Show.SongArtistDetails -> {
+                logD("Navigating to artist choices for ${show.song}")
+                findNavController().navigateSafe(SearchFragmentDirections.showArtist(show.song.uid))
+            }
+            is Show.AlbumArtistDetails -> {
+                logD("Navigating to artist choices for ${show.album}")
+                findNavController()
+                    .navigateSafe(SearchFragmentDirections.showArtist(show.album.uid))
+            }
+            is Show.GenreDetails -> {
+                logD("Navigating to ${show.genre}")
+                findNavController().navigateSafe(SearchFragmentDirections.showGenre(show.genre.uid))
+            }
+            is Show.PlaylistDetails -> {
+                logD("Navigating to ${show.playlist}")
+                findNavController()
+                    .navigateSafe(SearchFragmentDirections.showGenre(show.playlist.uid))
+            }
+            null -> {}
+        }
+
         // Keyboard is no longer needed.
         hideKeyboard()
-        findNavController().navigateSafe(action)
     }
 
     private fun updateSelection(selected: List<Music>) {

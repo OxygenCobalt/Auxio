@@ -89,6 +89,10 @@ constructor(
     val isShuffled: StateFlow<Boolean>
         get() = _isShuffled
 
+    private val _openPanel = MutableEvent<Panel>()
+    val openPanel: Event<Panel>
+        get() = _openPanel
+
     private val _artistPlaybackPickerSong = MutableEvent<Song>()
     /**
      * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing a
@@ -555,6 +559,20 @@ constructor(
         playbackManager.repeatMode = playbackManager.repeatMode.increment()
     }
 
+    // --- UI CONTROL ---
+    fun openMain() = openImpl(Panel.Main)
+    fun openPlayback() = openImpl(Panel.Playback)
+    fun openQueue() = openImpl(Panel.Queue)
+
+    private fun openImpl(panel: Panel) {
+        val existing = openPanel.flow.value
+        if (existing != null) {
+            logD("Already opening $existing, ignoring opening $panel")
+            return
+        }
+        _openPanel.put(panel)
+    }
+
     // --- SAVE/RESTORE FUNCTIONS ---
 
     /**
@@ -597,4 +615,10 @@ constructor(
             onDone(false)
         }
     }
+}
+
+sealed interface Panel {
+    object Main : Panel
+    object Playback : Panel
+    object Queue : Panel
 }

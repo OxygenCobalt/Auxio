@@ -24,8 +24,8 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.selection.SelectionFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -33,8 +33,6 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.navigation.MainNavigationAction
-import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.share
@@ -47,7 +45,7 @@ import org.oxycblt.auxio.util.showToast
  */
 abstract class ListFragment<in T : Music, VB : ViewBinding> :
     SelectionFragment<VB>(), SelectableListListener<T> {
-    protected abstract val navModel: NavigationViewModel
+    protected abstract val detailModel: DetailViewModel
     private var currentMenu: PopupMenu? = null
 
     override fun onDestroyBinding(binding: VB) {
@@ -103,11 +101,11 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                         true
                     }
                     R.id.action_go_artist -> {
-                        navModel.exploreNavigateToParentArtist(song)
+                        detailModel.showArtist(song)
                         true
                     }
                     R.id.action_go_album -> {
-                        navModel.exploreNavigateTo(song.album)
+                        detailModel.showAlbum(song.album)
                         true
                     }
                     R.id.action_share -> {
@@ -119,9 +117,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                         true
                     }
                     R.id.action_song_detail -> {
-                        navModel.mainNavigateTo(
-                            MainNavigationAction.Directions(
-                                MainFragmentDirections.actionShowDetails(song.uid)))
+                        detailModel.showSong(song)
                         true
                     }
                     else -> {
@@ -166,7 +162,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
                         true
                     }
                     R.id.action_go_artist -> {
-                        navModel.exploreNavigateToParentArtist(album)
+                        detailModel.showArtist(album)
                         true
                     }
                     R.id.action_playlist_add -> {

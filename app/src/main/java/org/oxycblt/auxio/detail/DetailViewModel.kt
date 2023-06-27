@@ -70,6 +70,10 @@ constructor(
     private val musicSettings: MusicSettings,
     private val playbackSettings: PlaybackSettings
 ) : ViewModel(), MusicRepository.UpdateListener {
+    private val _toShow = MutableEvent<Show>()
+    val toShow: Event<Show>
+        get() = _toShow
+
     // --- SONG ---
 
     private var currentSongJob: Job? = null
@@ -235,6 +239,43 @@ constructor(
                 logD("Updated playlist to ${currentPlaylist.value}")
             }
         }
+    }
+
+    fun showSong(song: Song) = showImpl(Show.SongDetails(song))
+
+    fun showAlbum(song: Song) = showImpl(Show.SongAlbumDetails(song))
+
+    fun showAlbum(album: Album) = showImpl(Show.AlbumDetails(album))
+
+    fun showArtist(song: Song) =
+        showImpl(
+            if (song.artists.size > 1) {
+                Show.SongArtistDetails(song)
+            } else {
+                Show.ArtistDetails(song.artists.first())
+            })
+
+    fun showArtist(album: Album) =
+        showImpl(
+            if (album.artists.size > 1) {
+                Show.AlbumArtistDetails(album)
+            } else {
+                Show.ArtistDetails(album.artists.first())
+            })
+
+    fun showArtist(artist: Artist) = showImpl(Show.ArtistDetails(artist))
+
+    fun showGenre(genre: Genre) = showImpl(Show.GenreDetails(genre))
+
+    fun showPlaylist(playlist: Playlist) = showImpl(Show.PlaylistDetails(playlist))
+
+    private fun showImpl(show: Show) {
+        val existing = toShow.flow.value
+        if (existing != null) {
+            logD("Already have pending show command $existing, ignoring $show")
+            return
+        }
+        _toShow.put(show)
     }
 
     /**
@@ -581,4 +622,15 @@ constructor(
         val ARTIST_ALBUM_SORT = Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING)
         val GENRE_ARTIST_SORT = Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
     }
+}
+
+sealed interface Show {
+    data class SongDetails(val song: Song) : Show
+    data class AlbumDetails(val album: Album) : Show
+    data class SongAlbumDetails(val song: Song) : Show
+    data class ArtistDetails(val artist: Artist) : Show
+    data class SongArtistDetails(val song: Song) : Show
+    data class AlbumArtistDetails(val album: Album) : Show
+    data class GenreDetails(val genre: Genre) : Show
+    data class PlaylistDetails(val playlist: Playlist) : Show
 }

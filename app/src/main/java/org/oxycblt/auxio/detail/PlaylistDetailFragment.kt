@@ -44,14 +44,11 @@ import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -74,11 +71,10 @@ class PlaylistDetailFragment :
     DetailHeaderAdapter.Listener,
     PlaylistDetailListAdapter.Listener,
     NavController.OnDestinationChangedListener {
-    private val detailModel: DetailViewModel by activityViewModels()
-    override val navModel: NavigationViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by activityViewModels()
-    override val musicModel: MusicViewModel by activityViewModels()
+    override val detailModel: DetailViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
     // Information about what playlist to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an playlist.
     private val args: PlaylistDetailFragmentArgs by navArgs()
@@ -139,10 +135,12 @@ class PlaylistDetailFragment :
         detailModel.setPlaylist(args.playlistUid)
         collectImmediately(detailModel.currentPlaylist, ::updatePlaylist)
         collectImmediately(detailModel.playlistList, ::updateList)
-        collectImmediately(detailModel.editedPlaylist, ::updateEditedPlaylist)
+        collectImmediately(detailModel.editedPlaylist, ::updateEditedList)
+        collect(detailModel.toShow.flow, ::handleShow)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
-        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
+        collect(playbackModel.artistPickerSong.flow, ::handlePlayFromArtist)
+        collect(playbackModel.genrePickerSong.flow, ::handlePlayFromGenre)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
@@ -275,41 +273,11 @@ class PlaylistDetailFragment :
         playlistHeaderAdapter.setParent(playlist)
     }
 
-    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        // Prefer songs that are playing from this playlist.
-        playlistListAdapter.setPlaying(
-            song.takeIf { parent == detailModel.currentPlaylist.value }, isPlaying)
-    }
-
-    private fun handleNavigation(item: Music?) {
-        when (item) {
-            is Song -> {
-                logD("Navigating to another song")
-                findNavController()
-                    .navigateSafe(PlaylistDetailFragmentDirections.actionShowAlbum(item.album.uid))
-            }
-            is Album -> {
-                logD("Navigating to another album")
-                findNavController()
-                    .navigateSafe(PlaylistDetailFragmentDirections.actionShowAlbum(item.uid))
-            }
-            is Artist -> {
-                logD("Navigating to another artist")
-                findNavController()
-                    .navigateSafe(PlaylistDetailFragmentDirections.actionShowArtist(item.uid))
-            }
-            is Playlist -> {
-                navModel.exploreNavigationItem.consume()
-            }
-            else -> {}
-        }
-    }
-
     private fun updateList(list: List<Item>) {
         playlistListAdapter.update(list, detailModel.playlistInstructions.consume())
     }
 
-    private fun updateEditedPlaylist(editedPlaylist: List<Song>?) {
+    private fun updateEditedList(editedPlaylist: List<Song>?) {
         playlistListAdapter.setEditing(editedPlaylist != null)
         playlistHeaderAdapter.setEditedPlaylist(editedPlaylist)
         selectionModel.drop()
@@ -322,6 +290,74 @@ class PlaylistDetailFragment :
         }
 
         updateMultiToolbar()
+    }
+
+    private fun handleShow(show: Show?) {
+        when (show) {
+            is Show.SongDetails -> {
+                logD("Navigating to ${show.song}")
+                findNavController()
+                    .navigateSafe(PlaylistDetailFragmentDirections.showSong(show.song.uid))
+            }
+
+            // Songs should be scrolled to if the album matches, or a new detail
+            // fragment should be launched otherwise.
+            is Show.SongAlbumDetails -> {
+                logD("Navigating to the album of ${show.song}")
+                findNavController()
+                    .navigateSafe(PlaylistDetailFragmentDirections.showAlbum(show.song.album.uid))
+            }
+
+            // If the album matches, no need to do anything. Otherwise launch a new
+            // detail fragment.
+            is Show.AlbumDetails -> {
+                logD("Navigating to ${show.album}")
+                findNavController()
+                    .navigateSafe(PlaylistDetailFragmentDirections.showAlbum(show.album.uid))
+            }
+
+            // Always launch a new ArtistDetailFragment.
+            is Show.ArtistDetails -> {
+                logD("Navigating to ${show.artist}")
+                findNavController()
+                    .navigateSafe(PlaylistDetailFragmentDirections.showArtist(show.artist.uid))
+            }
+            is Show.SongArtistDetails -> {
+                logD("Navigating to artist choices for ${show.song}")
+                findNavController()
+                    .navigateSafe(PlaylistDetailFragmentDirections.showArtist(show.song.uid))
+            }
+            is Show.AlbumArtistDetails -> {
+                logD("Navigating to artist choices for ${show.album}")
+                findNavController()
+                    .navigateSafe(PlaylistDetailFragmentDirections.showArtist(show.album.uid))
+            }
+            is Show.PlaylistDetails -> {
+                logD("Navigated to this playlist")
+            }
+            is Show.GenreDetails -> {
+                error("Unexpected show command $show")
+            }
+            null -> {}
+        }
+    }
+
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        // Prefer songs that are playing from this playlist.
+        playlistListAdapter.setPlaying(
+            song.takeIf { parent == detailModel.currentPlaylist.value }, isPlaying)
+    }
+
+    private fun handlePlayFromArtist(song: Song?) {
+        if (song == null) return
+        logD("Launching play from artist dialog for $song")
+        findNavController().navigateSafe(AlbumDetailFragmentDirections.playFromArtist(song.uid))
+    }
+
+    private fun handlePlayFromGenre(song: Song?) {
+        if (song == null) return
+        logD("Launching play from genre dialog for $song")
+        findNavController().navigateSafe(AlbumDetailFragmentDirections.playFromGenre(song.uid))
     }
 
     private fun updateSelection(selected: List<Music>) {

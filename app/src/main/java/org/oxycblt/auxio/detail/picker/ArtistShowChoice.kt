@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * ArtistNavigationChoiceAdapter.kt is part of Auxio.
+ * ArtistShowChoice.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.navigation.picker
+package org.oxycblt.auxio.detail.picker
 
 import android.view.View
 import android.view.ViewGroup
@@ -31,11 +31,11 @@ import org.oxycblt.auxio.util.inflater
 
 /**
  * A [FlexibleListAdapter] that displays a list of [Artist] navigation choices, for use with
- * [NavigateToArtistDialog].
+ * [ShowArtistDialog].
  *
  * @param listener A [ClickableListListener] to bind interactions to.
  */
-class ArtistNavigationChoiceAdapter(private val listener: ClickableListListener<Artist>) :
+class ArtistShowChoice(private val listener: ClickableListListener<Artist>) :
     FlexibleListAdapter<Artist, ArtistNavigationChoiceViewHolder>(
         ArtistNavigationChoiceViewHolder.DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -48,7 +48,7 @@ class ArtistNavigationChoiceAdapter(private val listener: ClickableListListener<
 
 /**
  * A [DialogRecyclerView.ViewHolder] that displays a smaller variant of a typical [Artist] item, for
- * use [ArtistNavigationChoiceAdapter]. Use [from] to create an instance.
+ * use [ArtistShowChoice]. Use [from] to create an instance.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */

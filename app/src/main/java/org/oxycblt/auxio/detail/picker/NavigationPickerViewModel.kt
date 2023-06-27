@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.navigation.picker
+package org.oxycblt.auxio.detail.picker
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +28,9 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 
 /**
  * A [ViewModel] that stores the current information required for navigation picker dialogs
@@ -38,9 +40,9 @@ import org.oxycblt.auxio.util.logD
 @HiltViewModel
 class NavigationPickerViewModel @Inject constructor(private val musicRepository: MusicRepository) :
     ViewModel(), MusicRepository.UpdateListener {
-    private val _artistChoices = MutableStateFlow<ArtistNavigationChoices?>(null)
+    private val _artistChoices = MutableStateFlow<ArtistShowChoices?>(null)
     /** The current set of [Artist] choices to show in the picker, or null if to show nothing. */
-    val artistChoices: StateFlow<ArtistNavigationChoices?>
+    val artistChoices: StateFlow<ArtistShowChoices?>
         get() = _artistChoices
 
     init {
@@ -51,18 +53,7 @@ class NavigationPickerViewModel @Inject constructor(private val musicRepository:
         if (!changes.deviceLibrary) return
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         // Need to sanitize different items depending on the current set of choices.
-        _artistChoices.value =
-            when (val choices = _artistChoices.value) {
-                is SongArtistNavigationChoices ->
-                    deviceLibrary.findSong(choices.song.uid)?.let {
-                        SongArtistNavigationChoices(it)
-                    }
-                is AlbumArtistNavigationChoices ->
-                    deviceLibrary.findAlbum(choices.album.uid)?.let {
-                        AlbumArtistNavigationChoices(it)
-                    }
-                else -> null
-            }
+        _artistChoices.value = _artistChoices.value?.sanitize(deviceLibrary)
         logD("Updated artist choices: ${_artistChoices.value}")
     }
 
@@ -83,14 +74,14 @@ class NavigationPickerViewModel @Inject constructor(private val musicRepository:
             when (val music = musicRepository.find(itemUid)) {
                 is Song -> {
                     logD("Creating navigation choices for song")
-                    SongArtistNavigationChoices(music)
+                    ArtistShowChoices.FromSong(music)
                 }
                 is Album -> {
                     logD("Creating navigation choices for album")
-                    AlbumArtistNavigationChoices(music)
+                    ArtistShowChoices.FromAlbum(music)
                 }
                 else -> {
-                    logD("Given song/album UID was invalid")
+                    logW("Given song/album UID was invalid")
                     null
                 }
             }
@@ -102,20 +93,29 @@ class NavigationPickerViewModel @Inject constructor(private val musicRepository:
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-sealed interface ArtistNavigationChoices {
+sealed interface ArtistShowChoices {
+    /** The UID of the item. */
+    val uid: Music.UID
     /** The current [Artist] choices. */
     val choices: List<Artist>
-}
+    /** Sanitize this instance with a [DeviceLibrary]. */
+    fun sanitize(newLibrary: DeviceLibrary): ArtistShowChoices?
 
-/** Backing implementation of [ArtistNavigationChoices] that is based on a [Song]. */
-private data class SongArtistNavigationChoices(val song: Song) : ArtistNavigationChoices {
-    override val choices = song.artists
-}
+    /** Backing implementation of [ArtistShowChoices] that is based on a [Song]. */
+    class FromSong(val song: Song) : ArtistShowChoices {
+        override val uid = song.uid
+        override val choices = song.artists
+        override fun sanitize(newLibrary: DeviceLibrary) =
+            newLibrary.findSong(uid)?.let { FromSong(it) }
+    }
 
-/**
- * Backing implementation of [ArtistNavigationChoices] that is based on an
- * [AlbumArtistNavigationChoices].
- */
-private data class AlbumArtistNavigationChoices(val album: Album) : ArtistNavigationChoices {
-    override val choices = album.artists
+    /**
+     * Backing implementation of [ArtistShowChoices] that is based on an [AlbumArtistShowChoices].
+     */
+    data class FromAlbum(val album: Album) : ArtistShowChoices {
+        override val uid = album.uid
+        override val choices = album.artists
+        override fun sanitize(newLibrary: DeviceLibrary) =
+            newLibrary.findAlbum(uid)?.let { FromAlbum(it) }
+    }
 }

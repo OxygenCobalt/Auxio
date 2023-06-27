@@ -47,7 +47,6 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -69,11 +68,10 @@ class ArtistDetailFragment :
     ListFragment<Music, FragmentDetailBinding>(),
     DetailHeaderAdapter.Listener,
     DetailListAdapter.Listener<Music> {
-    private val detailModel: DetailViewModel by activityViewModels()
-    override val navModel: NavigationViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by activityViewModels()
-    override val musicModel: MusicViewModel by activityViewModels()
+    override val detailModel: DetailViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
     // Information about what artist to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an artist.
     private val args: ArtistDetailFragmentArgs by navArgs()
@@ -125,9 +123,11 @@ class ArtistDetailFragment :
         detailModel.setArtist(args.artistUid)
         collectImmediately(detailModel.currentArtist, ::updateArtist)
         collectImmediately(detailModel.artistList, ::updateList)
+        collect(detailModel.toShow.flow, ::handleShow)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
-        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
+        collect(playbackModel.artistPickerSong.flow, ::handlePlayFromArtist)
+        collect(playbackModel.genrePickerSong.flow, ::handlePlayFromGenre)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
@@ -174,7 +174,7 @@ class ArtistDetailFragment :
 
     override fun onRealClick(item: Music) {
         when (item) {
-            is Album -> navModel.exploreNavigateTo(item)
+            is Album -> detailModel.showAlbum(item)
             is Song -> {
                 val playbackMode = detailModel.playbackMode
                 if (playbackMode != null) {
@@ -257,6 +257,57 @@ class ArtistDetailFragment :
         artistHeaderAdapter.setParent(artist)
     }
 
+    private fun updateList(list: List<Item>) {
+        artistListAdapter.update(list, detailModel.artistInstructions.consume())
+    }
+
+    private fun handleShow(show: Show?) {
+        val binding = requireBinding()
+        when (show) {
+            is Show.SongDetails -> {
+                logD("Navigating to ${show.song}")
+                findNavController()
+                    .navigateSafe(ArtistDetailFragmentDirections.showSong(show.song.uid))
+            }
+
+            // Songs should be shown in their album, not in their artist.
+            is Show.SongAlbumDetails -> {
+                logD("Navigating to the album of ${show.song}")
+                findNavController()
+                    .navigateSafe(ArtistDetailFragmentDirections.showAlbum(show.song.album.uid))
+            }
+
+            // Launch a new detail view for an album, even if it is part of
+            // this artist.
+            is Show.AlbumDetails -> {
+                logD("Navigating to ${show.album}")
+                findNavController()
+                    .navigateSafe(ArtistDetailFragmentDirections.showAlbum(show.album.uid))
+            }
+
+            // If the artist that should be navigated to is this artist, then
+            // scroll back to the top. Otherwise launch a new detail view.
+            is Show.ArtistDetails -> {
+                if (show.artist == detailModel.currentArtist.value) {
+                    logD("Navigating to the top of this artist")
+                    binding.detailRecycler.scrollToPosition(0)
+                    detailModel.toShow.consume()
+                } else {
+                    logD("Navigating to ${show.artist}")
+                    findNavController()
+                        .navigateSafe(ArtistDetailFragmentDirections.showArtist(show.artist.uid))
+                }
+            }
+            is Show.SongArtistDetails,
+            is Show.AlbumArtistDetails,
+            is Show.GenreDetails,
+            is Show.PlaylistDetails -> {
+                error("Unexpected show command $show")
+            }
+            null -> {}
+        }
+    }
+
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         val currentArtist = unlikelyToBeNull(detailModel.currentArtist.value)
         val playingItem =
@@ -272,43 +323,16 @@ class ArtistDetailFragment :
         artistListAdapter.setPlaying(playingItem, isPlaying)
     }
 
-    private fun handleNavigation(item: Music?) {
-        val binding = requireBinding()
-
-        when (item) {
-            // Songs should be shown in their album, not in their artist.
-            is Song -> {
-                logD("Navigating to another album")
-                findNavController()
-                    .navigateSafe(ArtistDetailFragmentDirections.actionShowAlbum(item.album.uid))
-            }
-            // Launch a new detail view for an album, even if it is part of
-            // this artist.
-            is Album -> {
-                logD("Navigating to another album")
-                findNavController()
-                    .navigateSafe(ArtistDetailFragmentDirections.actionShowAlbum(item.uid))
-            }
-            // If the artist that should be navigated to is this artist, then
-            // scroll back to the top. Otherwise launch a new detail view.
-            is Artist -> {
-                if (item.uid == detailModel.currentArtist.value?.uid) {
-                    logD("Navigating to the top of this artist")
-                    binding.detailRecycler.scrollToPosition(0)
-                    navModel.exploreNavigationItem.consume()
-                } else {
-                    logD("Navigating to another artist")
-                    findNavController()
-                        .navigateSafe(ArtistDetailFragmentDirections.actionShowArtist(item.uid))
-                }
-            }
-            null -> {}
-            else -> error("Unexpected datatype: ${item::class.java}")
-        }
+    private fun handlePlayFromArtist(song: Song?) {
+        if (song == null) return
+        logD("Launching play from artist dialog for $song")
+        findNavController().navigateSafe(AlbumDetailFragmentDirections.playFromArtist(song.uid))
     }
 
-    private fun updateList(list: List<Item>) {
-        artistListAdapter.update(list, detailModel.artistInstructions.consume())
+    private fun handlePlayFromGenre(song: Song?) {
+        if (song == null) return
+        logD("Launching play from genre dialog for $song")
+        findNavController().navigateSafe(AlbumDetailFragmentDirections.playFromGenre(song.uid))
     }
 
     private fun updateSelection(selected: List<Music>) {

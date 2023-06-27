@@ -34,8 +34,7 @@ class PersonalizePreferenceFragment : BasePreferenceFragment(R.xml.preferences_p
     override fun onOpenDialogPreference(preference: WrappedDialogPreference) {
         if (preference.key == getString(R.string.set_key_home_tabs)) {
             logD("Navigating to home tab dialog")
-            findNavController()
-                .navigateSafe(PersonalizePreferenceFragmentDirections.goToTabDialog())
+            findNavController().navigateSafe(PersonalizePreferenceFragmentDirections.tabSettings())
         }
     }
 }

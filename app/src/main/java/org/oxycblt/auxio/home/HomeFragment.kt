@@ -43,9 +43,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Field
 import kotlin.math.abs
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
+import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.detail.Show
 import org.oxycblt.auxio.home.list.AlbumListFragment
 import org.oxycblt.auxio.home.list.ArtistListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
@@ -56,9 +57,6 @@ import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.selection.SelectionFragment
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.IndexingProgress
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.Music
@@ -67,10 +65,7 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.NoAudioPermissionException
 import org.oxycblt.auxio.music.NoMusicException
 import org.oxycblt.auxio.music.PERMISSION_READ_AUDIO
-import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.navigation.MainNavigationAction
-import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -94,7 +89,7 @@ class HomeFragment :
     override val selectionModel: SelectionViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
-    private val navModel: NavigationViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -177,7 +172,7 @@ class HomeFragment :
         collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
         collectImmediately(homeModel.songsList, homeModel.isFastScrolling, ::updateFab)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
-        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
+        collect(detailModel.toShow.flow, ::handleShow)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
@@ -218,19 +213,17 @@ class HomeFragment :
             R.id.action_search -> {
                 logD("Navigating to search")
                 setupAxisTransitions(MaterialSharedAxis.Z)
-                findNavController().navigateSafe(HomeFragmentDirections.actionShowSearch())
+                findNavController().navigateSafe(HomeFragmentDirections.search())
                 true
             }
             R.id.action_settings -> {
-                logD("Navigating to settings")
-                navModel.mainNavigateTo(
-                    MainNavigationAction.Directions(MainFragmentDirections.actionShowSettings()))
+                logD("Navigating to preferences")
+                findNavController().navigateSafe(HomeFragmentDirections.preferences())
                 true
             }
             R.id.action_about -> {
                 logD("Navigating to about")
-                navModel.mainNavigateTo(
-                    MainNavigationAction.Directions(MainFragmentDirections.actionShowAbout()))
+                findNavController().navigateSafe(HomeFragmentDirections.about())
                 true
             }
 
@@ -500,19 +493,55 @@ class HomeFragment :
         }
     }
 
-    private fun handleNavigation(item: Music?) {
-        val action =
-            when (item) {
-                is Song -> HomeFragmentDirections.actionShowAlbum(item.album.uid)
-                is Album -> HomeFragmentDirections.actionShowAlbum(item.uid)
-                is Artist -> HomeFragmentDirections.actionShowArtist(item.uid)
-                is Genre -> HomeFragmentDirections.actionShowGenre(item.uid)
-                is Playlist -> HomeFragmentDirections.actionShowPlaylist(item.uid)
-                null -> return
+    private fun handleShow(show: Show?) {
+        when (show) {
+            is Show.SongDetails -> {
+                logD("Navigating to ${show.song}")
+                findNavController().navigateSafe(HomeFragmentDirections.showSong(show.song.uid))
             }
 
-        setupAxisTransitions(MaterialSharedAxis.X)
-        findNavController().navigateSafe(action)
+            // Songs should be scrolled to if the album matches, or a new detail
+            // fragment should be launched otherwise.
+            is Show.SongAlbumDetails -> {
+                logD("Navigating to the album of ${show.song}")
+                setupAxisTransitions(MaterialSharedAxis.X)
+                findNavController()
+                    .navigateSafe(HomeFragmentDirections.showAlbum(show.song.album.uid))
+            }
+
+            // If the album matches, no need to do anything. Otherwise launch a new
+            // detail fragment.
+            is Show.AlbumDetails -> {
+                logD("Navigating to ${show.album}")
+                setupAxisTransitions(MaterialSharedAxis.X)
+                findNavController().navigateSafe(HomeFragmentDirections.showAlbum(show.album.uid))
+            }
+
+            // Always launch a new ArtistDetailFragment.
+            is Show.ArtistDetails -> {
+                logD("Navigating to ${show.artist}")
+                setupAxisTransitions(MaterialSharedAxis.X)
+                findNavController().navigateSafe(HomeFragmentDirections.showArtist(show.artist.uid))
+            }
+            is Show.SongArtistDetails -> {
+                logD("Navigating to artist choices for ${show.song}")
+                findNavController().navigateSafe(HomeFragmentDirections.showArtist(show.song.uid))
+            }
+            is Show.AlbumArtistDetails -> {
+                logD("Navigating to artist choices for ${show.album}")
+                findNavController().navigateSafe(HomeFragmentDirections.showArtist(show.album.uid))
+            }
+            is Show.GenreDetails -> {
+                logD("Navigating to ${show.genre}")
+                findNavController().navigateSafe(HomeFragmentDirections.showGenre(show.genre.uid))
+            }
+            is Show.PlaylistDetails -> {
+                logD("Navigating to ${show.playlist}")
+                findNavController()
+                    .navigateSafe(HomeFragmentDirections.showGenre(show.playlist.uid))
+            }
+            null -> {}
+        }
     }
 
     private fun updateSelection(selected: List<Music>) {

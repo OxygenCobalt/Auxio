@@ -28,6 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.Formatter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.ListFragment
@@ -42,7 +43,6 @@ import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.playback.secsToMs
@@ -59,7 +59,7 @@ class AlbumListFragment :
     FastScrollRecyclerView.Listener,
     FastScrollRecyclerView.PopupProvider {
     private val homeModel: HomeViewModel by activityViewModels()
-    override val navModel: NavigationViewModel by activityViewModels()
+    override val detailModel: DetailViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
@@ -138,7 +138,7 @@ class AlbumListFragment :
     }
 
     override fun onRealClick(item: Album) {
-        navModel.exploreNavigateTo(item)
+        detailModel.showAlbum(item)
     }
 
     override fun onOpenMenu(item: Album, anchor: View) {

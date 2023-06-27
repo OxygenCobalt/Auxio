@@ -30,15 +30,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
-import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
-import org.oxycblt.auxio.navigation.MainNavigationAction
-import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.ui.ViewBindingFragment
@@ -63,7 +61,7 @@ class PlaybackPanelFragment :
     StyledSeekBar.Listener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
-    private val navModel: NavigationViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -90,9 +88,7 @@ class PlaybackPanelFragment :
         }
 
         binding.playbackToolbar.apply {
-            setNavigationOnClickListener {
-                navModel.mainNavigateTo(MainNavigationAction.ClosePlaybackPanel)
-            }
+            setNavigationOnClickListener { playbackModel.openMain() }
             setOnMenuItemClickListener(this@PlaybackPanelFragment)
         }
 
@@ -100,7 +96,7 @@ class PlaybackPanelFragment :
         // respective item.
         binding.playbackSong.apply {
             isSelected = true
-            setOnClickListener { playbackModel.song.value?.let(navModel::exploreNavigateTo) }
+            setOnClickListener { playbackModel.song.value?.let(detailModel::showAlbum) }
         }
         binding.playbackArtist.apply {
             isSelected = true
@@ -176,11 +172,7 @@ class PlaybackPanelFragment :
                 true
             }
             R.id.action_song_detail -> {
-                playbackModel.song.value?.let { song ->
-                    navModel.mainNavigateTo(
-                        MainNavigationAction.Directions(
-                            MainFragmentDirections.actionShowDetails(song.uid)))
-                }
+                playbackModel.song.value?.let(detailModel::showSong)
                 true
             }
             R.id.action_share -> {
@@ -237,12 +229,10 @@ class PlaybackPanelFragment :
     }
 
     private fun navigateToCurrentArtist() {
-        val song = playbackModel.song.value ?: return
-        navModel.exploreNavigateToParentArtist(song)
+        playbackModel.song.value?.let(detailModel::showArtist)
     }
 
     private fun navigateToCurrentAlbum() {
-        val song = playbackModel.song.value ?: return
-        navModel.exploreNavigateTo(song.album)
+        playbackModel.song.value?.let(detailModel::showAlbum)
     }
 }

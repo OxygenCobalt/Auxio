@@ -42,14 +42,12 @@ import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Disc
-import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.canScroll
 import org.oxycblt.auxio.util.collect
@@ -72,11 +70,10 @@ class AlbumDetailFragment :
     ListFragment<Song, FragmentDetailBinding>(),
     AlbumDetailHeaderAdapter.Listener,
     DetailListAdapter.Listener<Song> {
-    private val detailModel: DetailViewModel by activityViewModels()
-    override val navModel: NavigationViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by activityViewModels()
-    override val musicModel: MusicViewModel by activityViewModels()
+    override val detailModel: DetailViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
     // Information about what album to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an album.
     private val args: AlbumDetailFragmentArgs by navArgs()
@@ -125,10 +122,12 @@ class AlbumDetailFragment :
         detailModel.setAlbum(args.albumUid)
         collectImmediately(detailModel.currentAlbum, ::updateAlbum)
         collectImmediately(detailModel.albumList, ::updateList)
+        collect(detailModel.toShow.flow, ::handleShow)
+        collectImmediately(selectionModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
-        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
-        collectImmediately(selectionModel.selected, ::updateSelection)
+        collect(playbackModel.artistPickerSong.flow, ::handlePlayFromArtist)
+        collect(playbackModel.genrePickerSong.flow, ::handlePlayFromGenre)
     }
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
@@ -221,7 +220,7 @@ class AlbumDetailFragment :
     }
 
     override fun onNavigateToParentArtist() {
-        navModel.exploreNavigateToParentArtist(unlikelyToBeNull(detailModel.currentAlbum.value))
+        detailModel.showAlbum(unlikelyToBeNull(detailModel.currentAlbum.value))
     }
 
     private fun updateAlbum(album: Album?) {
@@ -234,51 +233,86 @@ class AlbumDetailFragment :
         albumHeaderAdapter.setParent(album)
     }
 
-    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        albumListAdapter.setPlaying(
-            song.takeIf { parent == detailModel.currentAlbum.value }, isPlaying)
+    private fun updateList(list: List<Item>) {
+        albumListAdapter.update(list, detailModel.albumInstructions.consume())
     }
 
-    private fun handleNavigation(item: Music?) {
+    private fun handleShow(show: Show?) {
         val binding = requireBinding()
-        when (item) {
+        when (show) {
+            is Show.SongDetails -> {
+                logD("Navigating to ${show.song}")
+                findNavController()
+                    .navigateSafe(AlbumDetailFragmentDirections.showSong(show.song.uid))
+            }
+
             // Songs should be scrolled to if the album matches, or a new detail
             // fragment should be launched otherwise.
-            is Song -> {
-                if (unlikelyToBeNull(detailModel.currentAlbum.value) == item.album) {
-                    logD("Navigating to a song in this album")
-                    scrollToAlbumSong(item)
-                    navModel.exploreNavigationItem.consume()
+            is Show.SongAlbumDetails -> {
+                if (unlikelyToBeNull(detailModel.currentAlbum.value) == show.song.album) {
+                    logD("Navigating to a ${show.song} in this album")
+                    scrollToAlbumSong(show.song)
+                    detailModel.toShow.consume()
                 } else {
-                    logD("Navigating to another album")
+                    logD("Navigating to the album of ${show.song}")
                     findNavController()
-                        .navigateSafe(AlbumDetailFragmentDirections.actionShowAlbum(item.album.uid))
+                        .navigateSafe(AlbumDetailFragmentDirections.showAlbum(show.song.album.uid))
                 }
             }
 
             // If the album matches, no need to do anything. Otherwise launch a new
             // detail fragment.
-            is Album -> {
-                if (unlikelyToBeNull(detailModel.currentAlbum.value) == item) {
+            is Show.AlbumDetails -> {
+                if (unlikelyToBeNull(detailModel.currentAlbum.value) == show.album) {
                     logD("Navigating to the top of this album")
                     binding.detailRecycler.scrollToPosition(0)
-                    navModel.exploreNavigationItem.consume()
+                    detailModel.toShow.consume()
                 } else {
-                    logD("Navigating to another album")
+                    logD("Navigating to ${show.album}")
                     findNavController()
-                        .navigateSafe(AlbumDetailFragmentDirections.actionShowAlbum(item.uid))
+                        .navigateSafe(AlbumDetailFragmentDirections.showAlbum(show.album.uid))
                 }
             }
 
             // Always launch a new ArtistDetailFragment.
-            is Artist -> {
-                logD("Navigating to another artist")
+            is Show.ArtistDetails -> {
+                logD("Navigating to ${show.artist}")
                 findNavController()
-                    .navigateSafe(AlbumDetailFragmentDirections.actionShowArtist(item.uid))
+                    .navigateSafe(AlbumDetailFragmentDirections.showArtist(show.artist.uid))
+            }
+            is Show.SongArtistDetails -> {
+                logD("Navigating to artist choices for ${show.song}")
+                findNavController()
+                    .navigateSafe(AlbumDetailFragmentDirections.showArtist(show.song.uid))
+            }
+            is Show.AlbumArtistDetails -> {
+                logD("Navigating to artist choices for ${show.album}")
+                findNavController()
+                    .navigateSafe(AlbumDetailFragmentDirections.showArtist(show.album.uid))
+            }
+            is Show.GenreDetails,
+            is Show.PlaylistDetails -> {
+                error("Unexpected show command $show")
             }
             null -> {}
-            else -> error("Unexpected datatype: ${item::class.java}")
         }
+    }
+
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        albumListAdapter.setPlaying(
+            song.takeIf { parent == detailModel.currentAlbum.value }, isPlaying)
+    }
+
+    private fun handlePlayFromArtist(song: Song?) {
+        if (song == null) return
+        logD("Launching play from artist dialog for $song")
+        findNavController().navigateSafe(AlbumDetailFragmentDirections.playFromArtist(song.uid))
+    }
+
+    private fun handlePlayFromGenre(song: Song?) {
+        if (song == null) return
+        logD("Launching play from genre dialog for $song")
+        findNavController().navigateSafe(AlbumDetailFragmentDirections.playFromGenre(song.uid))
     }
 
     private fun scrollToAlbumSong(song: Song) {
@@ -317,10 +351,6 @@ class AlbumDetailFragment :
                 binding.detailAppbar.isLifted = binding.detailRecycler.canScroll()
             }
         }
-    }
-
-    private fun updateList(list: List<Item>) {
-        albumListAdapter.update(list, detailModel.albumInstructions.consume())
     }
 
     private fun updateSelection(selected: List<Music>) {

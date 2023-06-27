@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="org.oxycblt.auxio.ui.BottomSheetContentBehavior"
-        app:navGraph="@navigation/nav_explore"
+        app:navGraph="@navigation/main"
+        app:defaultNavHost="true"
         tools:layout="@layout/fragment_home" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

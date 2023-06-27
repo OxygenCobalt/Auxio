@@ -25,10 +25,9 @@ import com.google.android.material.R as MR
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
-import org.oxycblt.auxio.navigation.MainNavigationAction
-import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
@@ -44,7 +43,7 @@ import org.oxycblt.auxio.util.logD
 @AndroidEntryPoint
 class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val navModel: NavigationViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackBarBinding.inflate(inflater)
@@ -58,9 +57,9 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         // --- UI SETUP ---
         binding.root.apply {
-            setOnClickListener { navModel.mainNavigateTo(MainNavigationAction.OpenPlaybackPanel) }
+            setOnClickListener { playbackModel.openPlayback() }
             setOnLongClickListener {
-                playbackModel.song.value?.let(navModel::exploreNavigateTo)
+                playbackModel.song.value?.let(detailModel::showAlbum)
                 true
             }
         }

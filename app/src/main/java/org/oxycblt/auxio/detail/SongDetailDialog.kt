@@ -70,6 +70,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setSong(args.songUid)
         collectImmediately(detailModel.currentSong, detailModel.songAudioProperties, ::updateSong)
+        collectImmediately(detailModel.toShow.flow, ::handleShow)
     }
 
     private fun updateSong(song: Song?, info: AudioProperties?) {
@@ -122,6 +123,15 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
                     }
                 },
                 UpdateInstructions.Replace(0))
+        }
+    }
+
+    private fun handleShow(show: Show?) {
+        if (show == null) return
+        if (show is Show.SongDetails) {
+            logD("Navigated to this song")
+        } else {
+            error("Unexpected show command $show")
         }
     }
 

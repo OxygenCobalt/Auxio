@@ -31,7 +31,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.R as MR
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -43,23 +42,18 @@ import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.navigation.MainNavigationAction
-import org.oxycblt.auxio.navigation.NavigationViewModel
+import org.oxycblt.auxio.playback.Panel
 import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -76,8 +70,6 @@ class MainFragment :
     ViewBindingFragment<FragmentMainBinding>(),
     ViewTreeObserver.OnPreDrawListener,
     NavController.OnDestinationChangedListener {
-    private val navModel: NavigationViewModel by activityViewModels()
-    private val musicModel: MusicViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val selectionModel: SelectionViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
@@ -148,11 +140,7 @@ class MainFragment :
             // In portrait mode, set up click listeners on the stacked sheets.
             logD("Configuring stacked bottom sheets")
             unlikelyToBeNull(binding.queueHandleWrapper).setOnClickListener {
-                if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
-                    queueSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_COLLAPSED) {
-                    // Playback sheet is expanded and queue sheet is collapsed, we can expand it.
-                    queueSheetBehavior.state = BackportBottomSheetBehavior.STATE_EXPANDED
-                }
+                playbackModel.openQueue()
             }
         } else {
             // Dual-pane mode, manually style the static queue sheet.
@@ -175,16 +163,8 @@ class MainFragment :
         // --- VIEWMODEL SETUP ---
         collectImmediately(detailModel.editedPlaylist, detailBackCallback::invalidateEnabled)
         collectImmediately(selectionModel.selected, selectionBackCallback::invalidateEnabled)
-        collect(musicModel.newPlaylistSongs.flow, ::handleNewPlaylist)
-        collect(musicModel.playlistToRename.flow, ::handleRenamePlaylist)
-        collect(musicModel.playlistToDelete.flow, ::handleDeletePlaylist)
-        collect(musicModel.songsToAdd.flow, ::handleAddToPlaylist)
-        collect(navModel.mainNavigationAction.flow, ::handleMainNavigation)
-        collect(navModel.exploreNavigationItem.flow, ::handleExploreNavigation)
-        collect(navModel.exploreArtistNavigationItem.flow, ::handleArtistNavigationPicker)
         collectImmediately(playbackModel.song, ::updateSong)
-        collect(playbackModel.artistPickerSong.flow, ::handlePlaybackArtistPicker)
-        collect(playbackModel.genrePickerSong.flow, ::handlePlaybackGenrePicker)
+        collectImmediately(playbackModel.openPanel.flow, ::handlePanel)
     }
 
     override fun onStart() {
@@ -322,33 +302,6 @@ class MainFragment :
         selectionModel.drop()
     }
 
-    private fun handleMainNavigation(action: MainNavigationAction?) {
-        if (action != null) {
-            when (action) {
-                is MainNavigationAction.OpenPlaybackPanel -> tryOpenPlaybackPanel()
-                is MainNavigationAction.ClosePlaybackPanel -> tryClosePlaybackPanel()
-                is MainNavigationAction.Directions ->
-                    findNavController().navigateSafe(action.directions)
-            }
-            navModel.mainNavigationAction.consume()
-        }
-    }
-
-    private fun handleExploreNavigation(item: Music?) {
-        if (item != null) {
-            tryClosePlaybackPanel()
-        }
-    }
-
-    private fun handleArtistNavigationPicker(item: Music?) {
-        if (item != null) {
-            navModel.mainNavigateTo(
-                MainNavigationAction.Directions(
-                    MainFragmentDirections.actionPickNavigationArtist(item.uid)))
-            navModel.exploreArtistNavigationItem.consume()
-        }
-    }
-
     private fun updateSong(song: Song?) {
         if (song != null) {
             tryShowSheets()
@@ -357,56 +310,15 @@ class MainFragment :
         }
     }
 
-    private fun handleNewPlaylist(songs: List<Song>?) {
-        if (songs != null) {
-            findNavController()
-                .navigateSafe(
-                    MainFragmentDirections.actionNewPlaylist(songs.map { it.uid }.toTypedArray()))
-            musicModel.newPlaylistSongs.consume()
+    private fun handlePanel(panel: Panel?) {
+        if (panel == null) return
+        logD("Trying to update panel to $panel")
+        when (panel) {
+            is Panel.Main -> tryClosePlaybackPanel()
+            is Panel.Playback -> tryOpenPlaybackPanel()
+            is Panel.Queue -> tryOpenQueuePanel()
         }
-    }
-
-    private fun handleRenamePlaylist(playlist: Playlist?) {
-        if (playlist != null) {
-            findNavController()
-                .navigateSafe(MainFragmentDirections.actionRenamePlaylist(playlist.uid))
-            musicModel.playlistToRename.consume()
-        }
-    }
-
-    private fun handleDeletePlaylist(playlist: Playlist?) {
-        if (playlist != null) {
-            findNavController()
-                .navigateSafe(MainFragmentDirections.actionDeletePlaylist(playlist.uid))
-            musicModel.playlistToDelete.consume()
-        }
-    }
-
-    private fun handleAddToPlaylist(songs: List<Song>?) {
-        if (songs != null) {
-            findNavController()
-                .navigateSafe(
-                    MainFragmentDirections.actionAddToPlaylist(songs.map { it.uid }.toTypedArray()))
-            musicModel.songsToAdd.consume()
-        }
-    }
-
-    private fun handlePlaybackArtistPicker(song: Song?) {
-        if (song != null) {
-            navModel.mainNavigateTo(
-                MainNavigationAction.Directions(
-                    MainFragmentDirections.actionPickPlaybackArtist(song.uid)))
-            playbackModel.artistPickerSong.consume()
-        }
-    }
-
-    private fun handlePlaybackGenrePicker(song: Song?) {
-        if (song != null) {
-            navModel.mainNavigateTo(
-                MainNavigationAction.Directions(
-                    MainFragmentDirections.actionPickPlaybackGenre(song.uid)))
-            playbackModel.genrePickerSong.consume()
-        }
+        playbackModel.openPanel.consume()
     }
 
     private fun tryOpenPlaybackPanel() {
@@ -443,6 +355,19 @@ class MainFragment :
                 binding.queueSheet.coordinatorLayoutBehavior as QueueBottomSheetBehavior?
             playbackSheetBehavior.state = BackportBottomSheetBehavior.STATE_COLLAPSED
             queueSheetBehavior?.state = BackportBottomSheetBehavior.STATE_COLLAPSED
+        }
+    }
+
+    private fun tryOpenQueuePanel() {
+        val binding = requireBinding()
+        val playbackSheetBehavior =
+            binding.playbackSheet.coordinatorLayoutBehavior as PlaybackBottomSheetBehavior
+        val queueSheetBehavior =
+            (binding.queueSheet.coordinatorLayoutBehavior ?: return) as QueueBottomSheetBehavior
+        if (playbackSheetBehavior.state == BackportBottomSheetBehavior.STATE_EXPANDED &&
+            queueSheetBehavior.targetState == BackportBottomSheetBehavior.STATE_COLLAPSED) {
+            // Playback sheet is expanded and queue sheet is collapsed, we can expand it.
+            queueSheetBehavior.state = BackportBottomSheetBehavior.STATE_EXPANDED
         }
     }
 

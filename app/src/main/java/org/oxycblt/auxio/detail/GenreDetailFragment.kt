@@ -41,14 +41,12 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.selection.SelectionViewModel
-import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.navigation.NavigationViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -70,11 +68,10 @@ class GenreDetailFragment :
     ListFragment<Music, FragmentDetailBinding>(),
     DetailHeaderAdapter.Listener,
     DetailListAdapter.Listener<Music> {
-    private val detailModel: DetailViewModel by activityViewModels()
-    override val navModel: NavigationViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by activityViewModels()
-    override val musicModel: MusicViewModel by activityViewModels()
+    override val detailModel: DetailViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
     // Information about what genre to display is initially within the navigation arguments
     // as a UID, as that is the only safe way to parcel an genre.
     private val args: GenreDetailFragmentArgs by navArgs()
@@ -124,9 +121,11 @@ class GenreDetailFragment :
         detailModel.setGenre(args.genreUid)
         collectImmediately(detailModel.currentGenre, ::updatePlaylist)
         collectImmediately(detailModel.genreList, ::updateList)
+        collect(detailModel.toShow.flow, ::handleShow)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
-        collect(navModel.exploreNavigationItem.flow, ::handleNavigation)
+        collect(playbackModel.artistPickerSong.flow, ::handlePlayFromArtist)
+        collect(playbackModel.genrePickerSong.flow, ::handlePlayFromGenre)
         collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
@@ -173,7 +172,7 @@ class GenreDetailFragment :
 
     override fun onRealClick(item: Music) {
         when (item) {
-            is Artist -> navModel.exploreNavigateTo(item)
+            is Artist -> detailModel.showArtist(item)
             is Song -> {
                 val playbackMode = detailModel.playbackMode
                 if (playbackMode != null) {
@@ -242,6 +241,60 @@ class GenreDetailFragment :
         genreHeaderAdapter.setParent(genre)
     }
 
+    private fun updateList(list: List<Item>) {
+        genreListAdapter.update(list, detailModel.genreInstructions.consume())
+    }
+
+    private fun handleShow(show: Show?) {
+        when (show) {
+            is Show.SongDetails -> {
+                logD("Navigating to ${show.song}")
+                findNavController()
+                    .navigateSafe(GenreDetailFragmentDirections.showSong(show.song.uid))
+            }
+
+            // Songs should be scrolled to if the album matches, or a new detail
+            // fragment should be launched otherwise.
+            is Show.SongAlbumDetails -> {
+                logD("Navigating to the album of ${show.song}")
+                findNavController()
+                    .navigateSafe(GenreDetailFragmentDirections.showAlbum(show.song.album.uid))
+            }
+
+            // If the album matches, no need to do anything. Otherwise launch a new
+            // detail fragment.
+            is Show.AlbumDetails -> {
+                logD("Navigating to ${show.album}")
+                findNavController()
+                    .navigateSafe(GenreDetailFragmentDirections.showAlbum(show.album.uid))
+            }
+
+            // Always launch a new ArtistDetailFragment.
+            is Show.ArtistDetails -> {
+                logD("Navigating to ${show.artist}")
+                findNavController()
+                    .navigateSafe(GenreDetailFragmentDirections.showArtist(show.artist.uid))
+            }
+            is Show.SongArtistDetails -> {
+                logD("Navigating to artist choices for ${show.song}")
+                findNavController()
+                    .navigateSafe(GenreDetailFragmentDirections.showArtist(show.song.uid))
+            }
+            is Show.AlbumArtistDetails -> {
+                logD("Navigating to artist choices for ${show.album}")
+                findNavController()
+                    .navigateSafe(GenreDetailFragmentDirections.showArtist(show.album.uid))
+            }
+            is Show.GenreDetails -> {
+                logD("Navigated to this genre")
+            }
+            is Show.PlaylistDetails -> {
+                error("Unexpected show command $show")
+            }
+            null -> {}
+        }
+    }
+
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         val currentGenre = unlikelyToBeNull(detailModel.currentGenre.value)
         val playingItem =
@@ -257,32 +310,16 @@ class GenreDetailFragment :
         genreListAdapter.setPlaying(playingItem, isPlaying)
     }
 
-    private fun handleNavigation(item: Music?) {
-        when (item) {
-            is Song -> {
-                logD("Navigating to another song")
-                findNavController()
-                    .navigateSafe(GenreDetailFragmentDirections.actionShowAlbum(item.album.uid))
-            }
-            is Album -> {
-                logD("Navigating to another album")
-                findNavController()
-                    .navigateSafe(GenreDetailFragmentDirections.actionShowAlbum(item.uid))
-            }
-            is Artist -> {
-                logD("Navigating to another artist")
-                findNavController()
-                    .navigateSafe(GenreDetailFragmentDirections.actionShowArtist(item.uid))
-            }
-            is Genre -> {
-                navModel.exploreNavigationItem.consume()
-            }
-            else -> {}
-        }
+    private fun handlePlayFromArtist(song: Song?) {
+        if (song == null) return
+        logD("Launching play from artist dialog for $song")
+        findNavController().navigateSafe(AlbumDetailFragmentDirections.playFromArtist(song.uid))
     }
 
-    private fun updateList(list: List<Item>) {
-        genreListAdapter.update(list, detailModel.genreInstructions.consume())
+    private fun handlePlayFromGenre(song: Song?) {
+        if (song == null) return
+        logD("Launching play from genre dialog for $song")
+        findNavController().navigateSafe(AlbumDetailFragmentDirections.playFromGenre(song.uid))
     }
 
     private fun updateSelection(selected: List<Music>) {
