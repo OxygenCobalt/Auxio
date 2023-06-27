@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * RoundedCornersTransformation.kt is part of Auxio.
+ * RoundedRectTransformation.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.image
+package org.oxycblt.auxio.image.extractor
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.createBitmap
@@ -43,7 +43,7 @@ import kotlin.math.roundToInt
  *
  * @author Coil Team, Alexander Capehart (OxygenCobalt)
  */
-class RoundedCornersTransformation(
+class RoundedRectTransformation(
     @Px private val topLeft: Float = 0f,
     @Px private val topRight: Float = 0f,
     @Px private val bottomLeft: Float = 0f,
@@ -122,7 +122,7 @@ class RoundedCornersTransformation(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        return other is RoundedCornersTransformation &&
+        return other is RoundedRectTransformation &&
             topLeft == other.topLeft &&
             topRight == other.topRight &&
             bottomLeft == other.bottomLeft &&

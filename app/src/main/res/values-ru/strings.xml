@@ -302,4 +302,6 @@
     <string name="fmt_editing">Редактирование %s</string>
     <string name="def_disc">Нет диска</string>
     <string name="lbl_share">Поделиться</string>
+    <string name="set_square_covers">Использовать квадратные обложки альбомов</string>
+    <string name="set_square_covers_desc">Обрезать все обложки альбомов до соотношения сторон 1:1</string>
 </resources>

@@ -295,4 +295,6 @@
     <string name="def_disc">Keine Disc</string>
     <string name="lbl_appears_on">Erscheint in</string>
     <string name="fmt_editing">%s bearbeiten</string>
+    <string name="set_square_covers">Quadratische Album-Cover erzwingen</string>
+    <string name="set_square_covers_desc">Alle Album-Cover auf ein Seitenverhältnis von 1:1 zuschneiden</string>
 </resources>

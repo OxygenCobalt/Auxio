@@ -40,7 +40,7 @@
     <string name="err_no_music">Nie znaleziono utworów</string>
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Utwór %d</string>
-    <string name="desc_play_pause">Odtwórz bądź zapauzuj</string>
+    <string name="desc_play_pause">Odtwórz albo zapauzuj</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="lng_search_library">Szukaj w bibliotece…</string>
     <!-- Color Label namespace | Accent names -->
@@ -102,7 +102,7 @@
     <string name="lbl_ep_live">Minialbum koncertowy</string>
     <string name="lbl_ep_remix">Minialbum z remiksami</string>
     <string name="lbl_single_live">Koncertowy singiel</string>
-    <string name="lbl_single_remix">Remiks</string>
+    <string name="lbl_single_remix">Remix</string>
     <string name="lbl_compilations">Kompilacje</string>
     <string name="lbl_compilation">Kompilacja</string>
     <string name="lbl_soundtracks">Ścieżki dźwiękowe</string>
@@ -139,7 +139,7 @@
     <string name="set_reindex_desc">Odśwież bibliotekę muzyczną używając tagów z pamięci cache, jeśli są dostępne</string>
     <string name="desc_remove_song">Usuń utwór z kolejki</string>
     <string name="set_replay_gain_mode_album">Preferuj album</string>
-    <string name="set_observing">Automatycznie odśwież</string>
+    <string name="set_observing">Automatyczne odświeżanie</string>
     <string name="cdc_flac">FLAC</string>
     <string name="set_separators_and">Et (&amp;)</string>
     <string name="err_index_failed">Nie udało się zaimportować utworów</string>
@@ -243,7 +243,7 @@
     <string name="set_cover_mode_off">Wyłączone</string>
     <string name="set_cover_mode_media_store">Niska jakość</string>
     <string name="set_cover_mode_quality">Wysoka jakość</string>
-    <string name="set_separators_warning">Uwaga: To ustawienie może powodować nieprawidłowe przetwarzenie tagów - tak, jakby posiadały wiele wartości. Problem ten należy rozwiązać stawiając ukośnik wsteczny (\\) przed niepożądanymi znakami traktowanymi jako oddzielające.</string>
+    <string name="set_separators_warning">Uwaga: To ustawienie może powodować nieprawidłowe przetwarzenie tagów (tak, jakby posiadały wiele wartości). Problem ten należy rozwiązać stawiając ukośnik wsteczny (\\) przed niepożądanymi znakami oddzielającymi.</string>
     <string name="set_ui_desc">Dostosuj motyw i kolory aplikacji</string>
     <string name="set_hide_collaborators">Ukryj wykonawców uczestniczących</string>
     <string name="set_content_desc">Zarządzaj importowaniem muzyki i obrazów</string>
@@ -254,7 +254,7 @@
     <string name="set_dirs_list">Foldery</string>
     <string name="set_state">Stan odtwarzania</string>
     <string name="set_images">Obrazy</string>
-    <string name="set_audio_desc">Zarządzanie dźwiękiem i odtwarzaniem muzyki</string>
+    <string name="set_audio_desc">Zarządzaj dźwiękiem i odtwarzaniem muzyki</string>
     <string name="lbl_play_selected">Odtwórz wybrane</string>
     <string name="lbl_shuffle_selected">Wybrane losowo</string>
     <string name="fmt_selected">Wybrano %d</string>
@@ -288,16 +288,18 @@
     <string name="def_song_count">Brak utworów</string>
     <string name="lng_playlist_added">Dodano do playlisty</string>
     <string name="fmt_def_playlist">Playlista %d</string>
-    <string name="lbl_delete">Usuwać</string>
+    <string name="lbl_delete">Usuń</string>
     <string name="fmt_deletion_info">Usunąć %s\? Tego nie da się cofnąć.</string>
-    <string name="lbl_rename">Przemianować</string>
-    <string name="lbl_rename_playlist">Przemianować playlistę</string>
+    <string name="lbl_rename">Zmień nazwę</string>
+    <string name="lbl_rename_playlist">Zmień nazwę playlisty</string>
     <string name="lbl_confirm_delete_playlist">Usunąć playlistę\?</string>
-    <string name="lbl_edit">Edytować</string>
-    <string name="lbl_appears_on">Pojawia się</string>
-    <string name="lbl_share">Udział</string>
+    <string name="lbl_edit">Edytuj</string>
+    <string name="lbl_appears_on">Pojawia się na</string>
+    <string name="lbl_share">Udostępnij</string>
     <string name="lng_playlist_renamed">Zmieniono nazwę playlisty</string>
-    <string name="lng_playlist_deleted">Playlista usunięta</string>
-    <string name="def_disc">Brak dysku</string>
+    <string name="lng_playlist_deleted">Usunięto playlistę</string>
+    <string name="def_disc">Brak nr. płyty</string>
     <string name="fmt_editing">Edytowanie %s</string>
+    <string name="set_square_covers_desc">Przytnij okładki do formatu 1:1</string>
+    <string name="set_square_covers">Wymuś kwadratowe okładki</string>
 </resources>

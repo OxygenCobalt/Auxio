@@ -23,8 +23,6 @@ import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import java.util.LinkedList
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -339,40 +337,56 @@ constructor(
     }
 
     override fun index(worker: MusicRepository.IndexingWorker, withCache: Boolean) =
-        worker.scope.launch {
-            try {
-                val start = System.currentTimeMillis()
-                indexImpl(worker, withCache)
-                logD(
-                    "Music indexing completed successfully in " +
-                        "${System.currentTimeMillis() - start}ms")
-            } catch (e: CancellationException) {
-                // Got cancelled, propagate upwards to top-level co-routine.
-                logD("Loading routine was cancelled")
-                throw e
-            } catch (e: Exception) {
-                // Music loading process failed due to something we have not handled.
-                logE("Music indexing failed")
-                logE(e.stackTraceToString())
-                emitIndexingCompletion(e)
-            }
+        worker.scope.launch { indexWrapper(worker, withCache) }
+
+    private suspend fun indexWrapper(worker: MusicRepository.IndexingWorker, withCache: Boolean) {
+        try {
+            indexImpl(worker, withCache)
+        } catch (e: CancellationException) {
+            // Got cancelled, propagate upwards to top-level co-routine.
+            logD("Loading routine was cancelled")
+            throw e
+        } catch (e: Exception) {
+            // Music loading process failed due to something we have not handled.
+            // TODO: Still want to display this error eventually
+            logE("Music indexing failed")
+            logE(e.stackTraceToString())
+            emitIndexingCompletion(e)
         }
+    }
 
     private suspend fun indexImpl(worker: MusicRepository.IndexingWorker, withCache: Boolean) {
+        val start = System.currentTimeMillis()
+        // Make sure we have permissions before going forward. Theoretically this would be better
+        // done at the UI level, but that intertwines logic and display too much.
         if (ContextCompat.checkSelfPermission(worker.context, PERMISSION_READ_AUDIO) ==
             PackageManager.PERMISSION_DENIED) {
             logE("Permissions were not granted")
-            // No permissions, signal that we can't do anything.
             throw NoAudioPermissionException()
         }
 
-        // Start initializing the extractors. Use an indeterminate state, as there is no ETA on
-        // how long a media database query will take.
-        emitIndexingProgress(IndexingProgress.Indeterminate)
-
-        // Do the initial query of the cache and media databases in parallel.
+        // Begin with querying MediaStore and the music cache. The former is needed for Auxio
+        // to figure out what songs are (probably) on the device, and the latter will be needed
+        // for discovery (described later). These have no shared state, so they are done in
+        // parallel.
         logD("Starting MediaStore query")
-        val mediaStoreQueryJob = worker.scope.tryAsync { mediaStoreExtractor.query() }
+        emitIndexingProgress(IndexingProgress.Indeterminate)
+        val mediaStoreQueryJob =
+            worker.scope.async {
+                val query =
+                    try {
+                        mediaStoreExtractor.query()
+                    } catch (e: Exception) {
+                        // Normally, errors in an async call immediately bubble up to the Looper
+                        // and crash the app. Thus, we have to wrap any error into a Result
+                        // and then manually forward it to the try block that indexImpl is
+                        // called from.
+                        return@async Result.failure(e)
+                    }
+                Result.success(query)
+            }
+        // Since this main thread is a co-routine, we can do operations in parallel in a way
+        // identical to calling async.
         val cache =
             if (withCache) {
                 logD("Reading cache")
@@ -383,59 +397,121 @@ constructor(
         logD("Awaiting MediaStore query")
         val query = mediaStoreQueryJob.await().getOrThrow()
 
-        // Now start processing the queried song information in parallel. Songs that can't be
-        // received from the cache are consisted incomplete and pushed to a separate channel
-        // that will eventually be processed into completed raw songs.
-        logD("Starting song discovery")
-        val completeSongs = Channel<RawSong>(Channel.UNLIMITED)
-        val incompleteSongs = Channel<RawSong>(Channel.UNLIMITED)
-        val processedSongs = Channel<RawSong>(Channel.UNLIMITED)
-        logD("Started MediaStore discovery")
+        // We now have all the information required to start the "discovery" process. This
+        // is the point at which Auxio starts scanning each file given from MediaStore and
+        // transforming it into a music library. MediaStore normally
+        logD("Starting discovery")
+        val incompleteSongs = Channel<RawSong>(Channel.UNLIMITED) // Not fully populated w/metadata
+        val completeSongs = Channel<RawSong>(Channel.UNLIMITED) // Populated with quality metadata
+        val processedSongs = Channel<RawSong>(Channel.UNLIMITED) // Transformed into SongImpl
+
+        // MediaStoreExtractor discovers all music on the device, and forwards them to either
+        // DeviceLibrary if cached metadata exists for it, or TagExtractor if cached metadata
+        // does not exist. In the latter situation, it also applies it's own (inferior) metadata.
+        logD("Starting MediaStore discovery")
         val mediaStoreJob =
-            worker.scope.tryAsync {
-                mediaStoreExtractor.consume(query, cache, incompleteSongs, completeSongs)
+            worker.scope.async {
+                try {
+                    mediaStoreExtractor.consume(query, cache, incompleteSongs, completeSongs)
+                } catch (e: Exception) {
+                    // To prevent a deadlock, we want to close the channel with an exception
+                    // to cascade to and cancel all other routines before finally bubbling up
+                    // to the main extractor loop.
+                    incompleteSongs.close(e)
+                    return@async
+                }
                 incompleteSongs.close()
             }
-        logD("Started ExoPlayer discovery")
-        val metadataJob =
-            worker.scope.tryAsync {
-                tagExtractor.consume(incompleteSongs, completeSongs)
+
+        // TagExtractor takes the incomplete songs from MediaStoreExtractor, parses up-to-date
+        // metadata for them, and then forwards it to DeviceLibrary.
+        logD("Starting tag extraction")
+        val tagJob =
+            worker.scope.async {
+                try {
+                    tagExtractor.consume(incompleteSongs, completeSongs)
+                } catch (e: Exception) {
+                    completeSongs.close(e)
+                    return@async
+                }
                 completeSongs.close()
             }
+
+        // DeviceLibrary constructs music parent instances as song information is provided,
+        // and then forwards them to the primary loading loop.
         logD("Starting DeviceLibrary creation")
         val deviceLibraryJob =
-            worker.scope.tryAsync(Dispatchers.Default) {
-                deviceLibraryFactory.create(completeSongs, processedSongs).also {
-                    processedSongs.close()
-                }
+            worker.scope.async(Dispatchers.Default) {
+                val deviceLibrary =
+                    try {
+                        deviceLibraryFactory.create(completeSongs, processedSongs)
+                    } catch (e: Exception) {
+                        processedSongs.close(e)
+                        return@async Result.failure(e)
+                    }
+                processedSongs.close()
+                Result.success(deviceLibrary)
             }
 
-        // Await completed raw songs as they are processed.
+        // We could keep track of a total here, but we also need to collate this RawSong information
+        // for when we write the cache later on in the finalization step.
         val rawSongs = LinkedList<RawSong>()
         for (rawSong in processedSongs) {
             rawSongs.add(rawSong)
+            // Since discovery takes up the bulk of the music loading process, we switch to
+            // indicating a defined amount of loaded songs in comparison to the projected amount
+            // of songs that were queried.
             emitIndexingProgress(IndexingProgress.Songs(rawSongs.size, query.projectedTotal))
         }
-        logD("Awaiting discovery completion")
-        // These should be no-ops, but we need the error state to see if we should keep going.
-        mediaStoreJob.await().getOrThrow()
-        metadataJob.await().getOrThrow()
 
+        // This shouldn't occur, but keep them around just in case there's a regression.
+        // Note that DeviceLibrary might still actually be doing work (specifically parent
+        // processing), so we don't check if it's deadlocked.
+        check(!mediaStoreJob.isActive) { "MediaStore discovery is deadlocked" }
+        check(!tagJob.isActive) { "Tag extraction is deadlocked" }
+
+        // Deliberately done after the involved initialization step to make it less likely
+        // that the short-circuit occurs so quickly as to break the UI.
+        // TODO: Do not error, instead just wipe the entire library.
         if (rawSongs.isEmpty()) {
             logE("Music library was empty")
             throw NoMusicException()
         }
 
-        // Successfully loaded the library, now save the cache and read playlist information
-        // in parallel.
+        // Now that the library is effectively loaded, we can start the finalization step, which
+        // involves writing new cache information and creating more music data that is derived
+        // from the library (e.g playlists)
         logD("Discovered ${rawSongs.size} songs, starting finalization")
+
+        // We have no idea how long the cache will take, and the playlist construction
+        // will be too fast to indicate, so switch back to an indeterminate state.
         emitIndexingProgress(IndexingProgress.Indeterminate)
+
+        // The UserLibrary job is split into a query and construction step, a la MediaStore.
+        // This way, we can start working on playlists even as DeviceLibrary might still be
+        // working on parent information.
         logD("Starting UserLibrary query")
-        val userLibraryQueryJob = worker.scope.tryAsync { userLibraryFactory.query() }
+        val userLibraryQueryJob =
+            worker.scope.async {
+                val rawPlaylists =
+                    try {
+                        userLibraryFactory.query()
+                    } catch (e: Exception) {
+                        return@async Result.failure(e)
+                    }
+                Result.success(rawPlaylists)
+            }
+
+        // The cache might not exist, or we might have encountered a song not present in it.
+        // Both situations require us to rewrite the cache in bulk. This is also done parallel
+        // since the playlist read will probably take some time.
+        // TODO: Read/write from the cache incrementally instead of in bulk?
         if (cache == null || cache.invalidated) {
             logD("Writing cache [why=${cache?.invalidated}]")
             cacheRepository.writeCache(rawSongs)
         }
+
+        // Create UserLibrary once we finally get the required components for it.
         logD("Awaiting UserLibrary query")
         val rawPlaylists = userLibraryQueryJob.await().getOrThrow()
         logD("Awaiting DeviceLibrary creation")
@@ -443,14 +519,20 @@ constructor(
         logD("Starting UserLibrary creation")
         val userLibrary = userLibraryFactory.create(rawPlaylists, deviceLibrary)
 
-        logD("Successfully indexed music library [device=$deviceLibrary user=$userLibrary]")
+        // Loading process is functionally done, indicate such
+        logD(
+            "Successfully indexed music library [device=$deviceLibrary " +
+                "user=$userLibrary time=${System.currentTimeMillis() - start}]")
         emitIndexingCompletion(null)
-
-        // Comparing the library instances is obscenely expensive, do it within the library
 
         val deviceLibraryChanged: Boolean
         val userLibraryChanged: Boolean
+        // We want to make sure that all reads and writes are synchronized due to the sheer
+        // amount of consumers of MusicRepository.
+        // TODO: Would Atomics not be a better fit here?
         synchronized(this) {
+            // It's possible that this reload might have changed nothing, so make sure that
+            // hasn't happened before dispatching a change to all consumers.
             deviceLibraryChanged = this.deviceLibrary != deviceLibrary
             userLibraryChanged = this.userLibrary != userLibrary
             if (!deviceLibraryChanged && !userLibraryChanged) {
@@ -462,26 +544,12 @@ constructor(
             this.userLibrary = userLibrary
         }
 
+        // Consumers expect their updates to be on the main thread (notably PlaybackService),
+        // so switch to it.
         withContext(Dispatchers.Main) {
             dispatchLibraryChange(deviceLibraryChanged, userLibraryChanged)
         }
     }
-
-    /**
-     * An extension of [async] that forces the outcome to a [Result] to allow exceptions to bubble
-     * upwards instead of crashing the entire app.
-     */
-    private inline fun <R> CoroutineScope.tryAsync(
-        context: CoroutineContext = EmptyCoroutineContext,
-        crossinline block: suspend () -> R
-    ) =
-        async(context) {
-            try {
-                Result.success(block())
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
 
     private suspend fun emitIndexingProgress(progress: IndexingProgress) {
         yield()

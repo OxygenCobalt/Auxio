@@ -299,4 +299,6 @@
     <string name="lbl_appears_on">Aparece en</string>
     <string name="lbl_share">Compartir</string>
     <string name="def_disc">Sin disco</string>
+    <string name="set_square_covers">Carátula del álbum Force Square</string>
+    <string name="set_square_covers_desc">Recorta todas las portadas de los álbumes a una relación de aspecto 1:1</string>
 </resources>

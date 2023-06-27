@@ -25,6 +25,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
+import android.os.Build
 import android.os.IBinder
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -150,8 +151,8 @@ class PlaybackService :
         playbackManager.registerInternalPlayer(this)
         musicRepository.addUpdateListener(this)
         mediaSessionComponent.registerListener(this)
-        registerReceiver(
-            systemReceiver,
+
+        val intentFilter =
             IntentFilter().apply {
                 addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
                 addAction(AudioManager.ACTION_HEADSET_PLUG)
@@ -162,7 +163,20 @@ class PlaybackService :
                 addAction(ACTION_SKIP_NEXT)
                 addAction(ACTION_EXIT)
                 addAction(WidgetProvider.ACTION_WIDGET_UPDATE)
-            })
+            }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            registerReceiver(
+                systemReceiver,
+                intentFilter,
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    RECEIVER_NOT_EXPORTED
+                } else {
+                    0
+                })
+        } else {
+            registerReceiver(systemReceiver, intentFilter)
+        }
 
         logD("Service created")
     }

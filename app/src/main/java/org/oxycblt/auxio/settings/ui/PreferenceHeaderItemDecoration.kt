@@ -26,11 +26,11 @@ import androidx.preference.PreferenceGroupAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.R
-import com.google.android.material.divider.BackportMaterialDividerItemDecoration
+import com.google.android.material.divider.MaterialDividerItemDecoration
 
 /**
- * A [BackportMaterialDividerItemDecoration] that sets up the divider configuration to correctly
- * separate preference categories.
+ * A [MaterialDividerItemDecoration] that sets up the divider configuration to correctly separate
+ * preference categories.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -41,7 +41,7 @@ constructor(
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = R.attr.materialDividerStyle,
     orientation: Int = LinearLayoutManager.VERTICAL
-) : BackportMaterialDividerItemDecoration(context, attributeSet, defStyleAttr, orientation) {
+) : MaterialDividerItemDecoration(context, attributeSet, defStyleAttr, orientation) {
     @SuppressLint("RestrictedApi")
     override fun shouldDrawDivider(position: Int, adapter: RecyclerView.Adapter<*>?) =
         try {

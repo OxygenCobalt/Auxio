@@ -151,6 +151,7 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
             rawArtists =
                 rawAlbumArtists
                     .ifEmpty { rawIndividualArtists }
+                    .distinctBy { it.key }
                     .ifEmpty { listOf(RawArtist(null, null)) })
 
     /**
@@ -159,7 +160,10 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
      * [RawArtist]. This can be used to group up [Song]s into an [Artist].
      */
     val rawArtists =
-        rawIndividualArtists.ifEmpty { rawAlbumArtists }.ifEmpty { listOf(RawArtist()) }
+        rawIndividualArtists
+            .ifEmpty { rawAlbumArtists }
+            .distinctBy { it.key }
+            .ifEmpty { listOf(RawArtist()) }
 
     /**
      * The [RawGenre] instances collated by the [Song]. This can be used to group up [Song]s into a
@@ -169,6 +173,7 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
         rawSong.genreNames
             .parseId3GenreNames(musicSettings)
             .map { RawGenre(it) }
+            .distinctBy { it.key }
             .ifEmpty { listOf(RawGenre()) }
 
     /**
@@ -207,6 +212,7 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
         checkNotNull(_album) { "Malformed song: No album" }
 
         check(_artists.isNotEmpty()) { "Malformed song: No artists" }
+        check(_artists.size == rawArtists.size) { "Malformed song: Artist grouping mismatch" }
         for (i in _artists.indices) {
             // Non-destructively reorder the linked artists so that they align with
             // the artist ordering within the song metadata.
@@ -217,6 +223,7 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
         }
 
         check(_genres.isNotEmpty()) { "Malformed song: No genres" }
+        check(_genres.size == rawGenres.size) { "Malformed song: Genre grouping mismatch" }
         for (i in _genres.indices) {
             // Non-destructively reorder the linked genres so that they align with
             // the genre ordering within the song metadata.
@@ -334,6 +341,7 @@ class AlbumImpl(
     fun finalize(): Album {
         check(songs.isNotEmpty()) { "Malformed album: Empty" }
         check(_artists.isNotEmpty()) { "Malformed album: No artists" }
+        check(_artists.size == rawArtists.size) { "Malformed album: Artist grouping mismatch" }
         for (i in _artists.indices) {
             // Non-destructively reorder the linked artists so that they align with
             // the artist ordering within the song metadata.

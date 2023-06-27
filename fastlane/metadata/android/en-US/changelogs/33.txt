@@ -1,0 +1,4 @@
+Auxio 3.1.0 introduces playlisting functionality, with more features coming soon.
+This release fixes an issue where some users would experience an infinite loading
+screen, along other quality-of-life improvements.
+For more information, see https://github.com/OxygenCobalt/Auxio/releases/tag/v3.1.3.
