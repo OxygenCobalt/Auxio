@@ -336,6 +336,7 @@ class PlaylistDetailFragment :
             }
             is Show.PlaylistDetails -> {
                 logD("Navigated to this playlist")
+                detailModel.toShow.consume()
             }
             is Show.GenreDetails -> {
                 error("Unexpected show command $show")
@@ -359,19 +360,18 @@ class PlaylistDetailFragment :
         when (decision) {
             is PlaylistDecision.Rename -> {
                 logD("Renaming ${decision.playlist}")
-                findNavController().navigateSafe(
-                    PlaylistDetailFragmentDirections.renamePlaylist(decision.playlist.uid)
-                )
+                findNavController()
+                    .navigateSafe(
+                        PlaylistDetailFragmentDirections.renamePlaylist(decision.playlist.uid))
             }
-
             is PlaylistDecision.Delete -> {
                 logD("Deleting ${decision.playlist}")
-                findNavController().navigateSafe(
-                    PlaylistDetailFragmentDirections.deletePlaylist(decision.playlist.uid)
-                )
+                findNavController()
+                    .navigateSafe(
+                        PlaylistDetailFragmentDirections.deletePlaylist(decision.playlist.uid))
             }
-
-            is PlaylistDecision.Add, is PlaylistDecision.New -> error("Unexpected decision $decision")
+            is PlaylistDecision.Add,
+            is PlaylistDecision.New -> error("Unexpected decision $decision")
         }
         musicModel.playlistDecision.consume()
     }

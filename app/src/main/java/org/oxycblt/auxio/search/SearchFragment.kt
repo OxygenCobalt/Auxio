@@ -34,7 +34,6 @@ import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
-import org.oxycblt.auxio.detail.ArtistDetailFragmentDirections
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.detail.Show
 import org.oxycblt.auxio.home.HomeFragmentDirections
@@ -204,8 +203,6 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         }
     }
 
-
-
     private fun handleShow(show: Show?) {
         when (show) {
             is Show.SongDetails -> {
@@ -259,35 +256,32 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         hideKeyboard()
     }
 
-
     private fun handleDecision(decision: PlaylistDecision?) {
         if (decision == null) return
         when (decision) {
             is PlaylistDecision.New -> {
                 logD("Creating new playlist")
-                findNavController().navigateSafe(
-                    HomeFragmentDirections.newPlaylist(decision.songs.map { it.uid }.toTypedArray()))
+                findNavController()
+                    .navigateSafe(
+                        HomeFragmentDirections.newPlaylist(
+                            decision.songs.map { it.uid }.toTypedArray()))
             }
-
             is PlaylistDecision.Rename -> {
                 logD("Renaming ${decision.playlist}")
-                findNavController().navigateSafe(
-                    HomeFragmentDirections.renamePlaylist(decision.playlist.uid)
-                )
+                findNavController()
+                    .navigateSafe(HomeFragmentDirections.renamePlaylist(decision.playlist.uid))
             }
-
             is PlaylistDecision.Delete -> {
                 logD("Deleting ${decision.playlist}")
-                findNavController().navigateSafe(
-                    SearchFragmentDirections.deletePlaylist(decision.playlist.uid)
-                )
+                findNavController()
+                    .navigateSafe(SearchFragmentDirections.deletePlaylist(decision.playlist.uid))
             }
-
             is PlaylistDecision.Add -> {
                 logD("Adding ${decision.songs.size} to a playlist")
-                findNavController().navigateSafe(
-                    HomeFragmentDirections.addToPlaylist(decision.songs.map { it.uid }.toTypedArray())
-                )
+                findNavController()
+                    .navigateSafe(
+                        HomeFragmentDirections.addToPlaylist(
+                            decision.songs.map { it.uid }.toTypedArray()))
             }
         }
         musicModel.playlistDecision.consume()

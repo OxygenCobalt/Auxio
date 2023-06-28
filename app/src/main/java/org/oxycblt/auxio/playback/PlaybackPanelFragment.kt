@@ -96,7 +96,12 @@ class PlaybackPanelFragment :
         // respective item.
         binding.playbackSong.apply {
             isSelected = true
-            setOnClickListener { playbackModel.song.value?.let(detailModel::showAlbum) }
+            setOnClickListener {
+                playbackModel.song.value?.let {
+                    detailModel.showAlbum(it)
+                    playbackModel.openMain()
+                }
+            }
         }
         binding.playbackArtist.apply {
             isSelected = true
@@ -229,10 +234,16 @@ class PlaybackPanelFragment :
     }
 
     private fun navigateToCurrentArtist() {
-        playbackModel.song.value?.let(detailModel::showArtist)
+        playbackModel.song.value?.let {
+            detailModel.showArtist(it)
+            playbackModel.openMain()
+        }
     }
 
     private fun navigateToCurrentAlbum() {
-        playbackModel.song.value?.let(detailModel::showAlbum)
+        playbackModel.song.value?.let {
+            detailModel.showAlbum(it.album)
+            playbackModel.openMain()
+        }
     }
 }

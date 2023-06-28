@@ -486,29 +486,27 @@ class HomeFragment :
         when (decision) {
             is PlaylistDecision.New -> {
                 logD("Creating new playlist")
-                findNavController().navigateSafe(
-                    HomeFragmentDirections.newPlaylist(decision.songs.map { it.uid }.toTypedArray()))
+                findNavController()
+                    .navigateSafe(
+                        HomeFragmentDirections.newPlaylist(
+                            decision.songs.map { it.uid }.toTypedArray()))
             }
-
             is PlaylistDecision.Rename -> {
                 logD("Renaming ${decision.playlist}")
-                findNavController().navigateSafe(
-                    HomeFragmentDirections.renamePlaylist(decision.playlist.uid)
-                )
+                findNavController()
+                    .navigateSafe(HomeFragmentDirections.renamePlaylist(decision.playlist.uid))
             }
-
             is PlaylistDecision.Delete -> {
                 logD("Deleting ${decision.playlist}")
-                findNavController().navigateSafe(
-                    HomeFragmentDirections.deletePlaylist(decision.playlist.uid)
-                )
+                findNavController()
+                    .navigateSafe(HomeFragmentDirections.deletePlaylist(decision.playlist.uid))
             }
-
             is PlaylistDecision.Add -> {
                 logD("Adding ${decision.songs.size} to a playlist")
-                findNavController().navigateSafe(
-                    HomeFragmentDirections.addToPlaylist(decision.songs.map { it.uid }.toTypedArray())
-                )
+                findNavController()
+                    .navigateSafe(
+                        HomeFragmentDirections.addToPlaylist(
+                            decision.songs.map { it.uid }.toTypedArray()))
             }
         }
         musicModel.playlistDecision.consume()
@@ -560,11 +558,11 @@ class HomeFragment :
             }
             is Show.SongArtistDetails -> {
                 logD("Navigating to artist choices for ${show.song}")
-                findNavController().navigateSafe(HomeFragmentDirections.showArtist(show.song.uid))
+                findNavController().navigateSafe(HomeFragmentDirections.showArtists(show.song.uid))
             }
             is Show.AlbumArtistDetails -> {
                 logD("Navigating to artist choices for ${show.album}")
-                findNavController().navigateSafe(HomeFragmentDirections.showArtist(show.album.uid))
+                findNavController().navigateSafe(HomeFragmentDirections.showArtists(show.album.uid))
             }
             is Show.GenreDetails -> {
                 logD("Navigating to ${show.genre}")
@@ -573,7 +571,7 @@ class HomeFragment :
             is Show.PlaylistDetails -> {
                 logD("Navigating to ${show.playlist}")
                 findNavController()
-                    .navigateSafe(HomeFragmentDirections.showGenre(show.playlist.uid))
+                    .navigateSafe(HomeFragmentDirections.showPlaylist(show.playlist.uid))
             }
             null -> {}
         }

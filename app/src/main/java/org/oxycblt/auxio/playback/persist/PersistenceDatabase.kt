@@ -136,7 +136,6 @@ interface QueueDao {
 }
 
 // TODO: Figure out how to get RepeatMode to map to an int instead of a string
-// TODO: Use intrinsic table names rather than custom names
 @Entity
 data class PlaybackState(
     @PrimaryKey val id: Int,

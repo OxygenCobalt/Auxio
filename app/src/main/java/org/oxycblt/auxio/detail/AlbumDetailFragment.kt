@@ -222,7 +222,7 @@ class AlbumDetailFragment :
     }
 
     override fun onNavigateToParentArtist() {
-        detailModel.showAlbum(unlikelyToBeNull(detailModel.currentAlbum.value))
+        detailModel.showArtist(unlikelyToBeNull(detailModel.currentAlbum.value))
     }
 
     private fun updateAlbum(album: Album?) {
@@ -314,18 +314,17 @@ class AlbumDetailFragment :
 
     private fun handleDecision(decision: PlaylistDecision?) {
         when (decision) {
-            is PlaylistDecision.Add ->{
+            is PlaylistDecision.Add -> {
                 logD("Adding ${decision.songs.size} songs to a playlist")
-                findNavController().navigateSafe(
-                    AlbumDetailFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray())
-                )
+                findNavController()
+                    .navigateSafe(
+                        AlbumDetailFragmentDirections.addToPlaylist(
+                            decision.songs.map { it.uid }.toTypedArray()))
                 musicModel.playlistDecision.consume()
             }
-
-            is PlaylistDecision.New, is PlaylistDecision.Rename, is PlaylistDecision.Delete ->
-                error("Unexpected decision $decision")
-
+            is PlaylistDecision.New,
+            is PlaylistDecision.Rename,
+            is PlaylistDecision.Delete -> error("Unexpected decision $decision")
             null -> {}
         }
     }

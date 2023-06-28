@@ -324,18 +324,17 @@ class ArtistDetailFragment :
 
     private fun handleDecision(decision: PlaylistDecision?) {
         when (decision) {
-            is PlaylistDecision.Add ->{
+            is PlaylistDecision.Add -> {
                 logD("Adding ${decision.songs.size} songs to a playlist")
-                findNavController().navigateSafe(
-                    ArtistDetailFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray())
-                )
+                findNavController()
+                    .navigateSafe(
+                        ArtistDetailFragmentDirections.addToPlaylist(
+                            decision.songs.map { it.uid }.toTypedArray()))
                 musicModel.playlistDecision.consume()
             }
-
-            is PlaylistDecision.New, is PlaylistDecision.Rename, is PlaylistDecision.Delete ->
-                error("Unexpected decision $decision")
-
+            is PlaylistDecision.New,
+            is PlaylistDecision.Rename,
+            is PlaylistDecision.Delete -> error("Unexpected decision $decision")
             null -> {}
         }
     }

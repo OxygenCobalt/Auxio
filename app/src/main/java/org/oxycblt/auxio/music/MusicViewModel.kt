@@ -53,7 +53,8 @@ constructor(
         get() = _statistics
 
     private val _playlistDecision = MutableEvent<PlaylistDecision>()
-    val playlistDecision: Event<PlaylistDecision> get() = _playlistDecision
+    val playlistDecision: Event<PlaylistDecision>
+        get() = _playlistDecision
 
     init {
         musicRepository.addUpdateListener(this)
