@@ -46,6 +46,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Disc
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -124,6 +125,7 @@ class AlbumDetailFragment :
         collectImmediately(detailModel.albumList, ::updateList)
         collect(detailModel.toShow.flow, ::handleShow)
         collectImmediately(selectionModel.selected, ::updateSelection)
+        collect(musicModel.playlistDecision.flow, ::handleDecision)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(playbackModel.artistPickerSong.flow, ::handlePlayFromArtist)
@@ -298,6 +300,36 @@ class AlbumDetailFragment :
         }
     }
 
+    private fun updateSelection(selected: List<Music>) {
+        albumListAdapter.setSelected(selected.toSet())
+
+        val binding = requireBinding()
+        if (selected.isNotEmpty()) {
+            binding.detailSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
+            binding.detailToolbar.setVisible(R.id.detail_selection_toolbar)
+        } else {
+            binding.detailToolbar.setVisible(R.id.detail_normal_toolbar)
+        }
+    }
+
+    private fun handleDecision(decision: PlaylistDecision?) {
+        when (decision) {
+            is PlaylistDecision.Add ->{
+                logD("Adding ${decision.songs.size} songs to a playlist")
+                findNavController().navigateSafe(
+                    AlbumDetailFragmentDirections.addToPlaylist(
+                        decision.songs.map { it.uid }.toTypedArray())
+                )
+                musicModel.playlistDecision.consume()
+            }
+
+            is PlaylistDecision.New, is PlaylistDecision.Rename, is PlaylistDecision.Delete ->
+                error("Unexpected decision $decision")
+
+            null -> {}
+        }
+    }
+
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         albumListAdapter.setPlaying(
             song.takeIf { parent == detailModel.currentAlbum.value }, isPlaying)
@@ -350,18 +382,6 @@ class AlbumDetailFragment :
                 // that case.
                 binding.detailAppbar.isLifted = binding.detailRecycler.canScroll()
             }
-        }
-    }
-
-    private fun updateSelection(selected: List<Music>) {
-        albumListAdapter.setSelected(selected.toSet())
-
-        val binding = requireBinding()
-        if (selected.isNotEmpty()) {
-            binding.detailSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
-            binding.detailToolbar.setVisible(R.id.detail_selection_toolbar)
-        } else {
-            binding.detailToolbar.setVisible(R.id.detail_normal_toolbar)
         }
     }
 }

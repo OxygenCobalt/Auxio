@@ -34,8 +34,10 @@ import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
+import org.oxycblt.auxio.detail.ArtistDetailFragmentDirections
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.detail.Show
+import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
@@ -48,6 +50,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
+import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
@@ -136,10 +139,11 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         // --- VIEWMODEL SETUP ---
 
         collectImmediately(searchModel.searchResults, ::updateSearchResults)
+        collectImmediately(selectionModel.selected, ::updateSelection)
+        collect(musicModel.playlistDecision.flow, ::handleDecision)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(detailModel.toShow.flow, ::handleShow)
-        collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
     override fun onDestroyBinding(binding: FragmentSearchBinding) {
@@ -200,9 +204,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         }
     }
 
-    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        searchAdapter.setPlaying(parent ?: song, isPlaying)
-    }
+
 
     private fun handleShow(show: Show?) {
         when (show) {
@@ -255,6 +257,44 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
         // Keyboard is no longer needed.
         hideKeyboard()
+    }
+
+
+    private fun handleDecision(decision: PlaylistDecision?) {
+        if (decision == null) return
+        when (decision) {
+            is PlaylistDecision.New -> {
+                logD("Creating new playlist")
+                findNavController().navigateSafe(
+                    HomeFragmentDirections.newPlaylist(decision.songs.map { it.uid }.toTypedArray()))
+            }
+
+            is PlaylistDecision.Rename -> {
+                logD("Renaming ${decision.playlist}")
+                findNavController().navigateSafe(
+                    HomeFragmentDirections.renamePlaylist(decision.playlist.uid)
+                )
+            }
+
+            is PlaylistDecision.Delete -> {
+                logD("Deleting ${decision.playlist}")
+                findNavController().navigateSafe(
+                    SearchFragmentDirections.deletePlaylist(decision.playlist.uid)
+                )
+            }
+
+            is PlaylistDecision.Add -> {
+                logD("Adding ${decision.songs.size} to a playlist")
+                findNavController().navigateSafe(
+                    HomeFragmentDirections.addToPlaylist(decision.songs.map { it.uid }.toTypedArray())
+                )
+            }
+        }
+        musicModel.playlistDecision.consume()
+    }
+
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        searchAdapter.setPlaying(parent ?: song, isPlaying)
     }
 
     private fun updateSelection(selected: List<Music>) {

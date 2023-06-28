@@ -130,6 +130,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
         if (show == null) return
         if (show is Show.SongDetails) {
             logD("Navigated to this song")
+            detailModel.toShow.consume()
         } else {
             error("Unexpected show command $show")
         }

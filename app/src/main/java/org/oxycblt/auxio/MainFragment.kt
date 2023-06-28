@@ -62,8 +62,6 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * high-level navigation features.
  *
  * @author Alexander Capehart (OxygenCobalt)
- *
- * TODO: Break up the god navigation setup going on here
  */
 @AndroidEntryPoint
 class MainFragment :

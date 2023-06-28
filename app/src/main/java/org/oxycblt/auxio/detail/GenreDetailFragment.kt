@@ -46,6 +46,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
@@ -122,11 +123,12 @@ class GenreDetailFragment :
         collectImmediately(detailModel.currentGenre, ::updatePlaylist)
         collectImmediately(detailModel.genreList, ::updateList)
         collect(detailModel.toShow.flow, ::handleShow)
+        collectImmediately(selectionModel.selected, ::updateSelection)
+        collect(musicModel.playlistDecision.flow, ::handleDecision)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
         collect(playbackModel.artistPickerSong.flow, ::handlePlayFromArtist)
         collect(playbackModel.genrePickerSong.flow, ::handlePlayFromGenre)
-        collectImmediately(selectionModel.selected, ::updateSelection)
     }
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
@@ -295,6 +297,36 @@ class GenreDetailFragment :
         }
     }
 
+    private fun updateSelection(selected: List<Music>) {
+        genreListAdapter.setSelected(selected.toSet())
+
+        val binding = requireBinding()
+        if (selected.isNotEmpty()) {
+            binding.detailSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
+            binding.detailToolbar.setVisible(R.id.detail_selection_toolbar)
+        } else {
+            binding.detailToolbar.setVisible(R.id.detail_normal_toolbar)
+        }
+    }
+
+    private fun handleDecision(decision: PlaylistDecision?) {
+        when (decision) {
+            is PlaylistDecision.Add ->{
+                logD("Adding ${decision.songs.size} songs to a playlist")
+                findNavController().navigateSafe(
+                    GenreDetailFragmentDirections.addToPlaylist(
+                        decision.songs.map { it.uid }.toTypedArray())
+                )
+                musicModel.playlistDecision.consume()
+            }
+
+            is PlaylistDecision.New, is PlaylistDecision.Rename, is PlaylistDecision.Delete ->
+                error("Unexpected decision $decision")
+
+            null -> {}
+        }
+    }
+
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
         val currentGenre = unlikelyToBeNull(detailModel.currentGenre.value)
         val playingItem =
@@ -320,17 +352,5 @@ class GenreDetailFragment :
         if (song == null) return
         logD("Launching play from genre dialog for $song")
         findNavController().navigateSafe(AlbumDetailFragmentDirections.playFromGenre(song.uid))
-    }
-
-    private fun updateSelection(selected: List<Music>) {
-        genreListAdapter.setSelected(selected.toSet())
-
-        val binding = requireBinding()
-        if (selected.isNotEmpty()) {
-            binding.detailSelectionToolbar.title = getString(R.string.fmt_selected, selected.size)
-            binding.detailToolbar.setVisible(R.id.detail_selection_toolbar)
-        } else {
-            binding.detailToolbar.setVisible(R.id.detail_normal_toolbar)
-        }
     }
 }

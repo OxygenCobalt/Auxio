@@ -65,6 +65,7 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.NoAudioPermissionException
 import org.oxycblt.auxio.music.NoMusicException
 import org.oxycblt.auxio.music.PERMISSION_READ_AUDIO
+import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
@@ -85,9 +86,9 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 @AndroidEntryPoint
 class HomeFragment :
     SelectionFragment<FragmentHomeBinding>(), AppBarLayout.OnOffsetChangedListener {
-    override val playbackModel: PlaybackViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
@@ -171,9 +172,10 @@ class HomeFragment :
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
         collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
         collectImmediately(homeModel.songsList, homeModel.isFastScrolling, ::updateFab)
-        collectImmediately(musicModel.indexingState, ::updateIndexerState)
-        collect(detailModel.toShow.flow, ::handleShow)
         collectImmediately(selectionModel.selected, ::updateSelection)
+        collectImmediately(musicModel.indexingState, ::updateIndexerState)
+        collect(musicModel.playlistDecision.flow, ::handleDecision)
+        collect(detailModel.toShow.flow, ::handleShow)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -477,6 +479,39 @@ class HomeFragment :
                 }
             }
         }
+    }
+
+    private fun handleDecision(decision: PlaylistDecision?) {
+        if (decision == null) return
+        when (decision) {
+            is PlaylistDecision.New -> {
+                logD("Creating new playlist")
+                findNavController().navigateSafe(
+                    HomeFragmentDirections.newPlaylist(decision.songs.map { it.uid }.toTypedArray()))
+            }
+
+            is PlaylistDecision.Rename -> {
+                logD("Renaming ${decision.playlist}")
+                findNavController().navigateSafe(
+                    HomeFragmentDirections.renamePlaylist(decision.playlist.uid)
+                )
+            }
+
+            is PlaylistDecision.Delete -> {
+                logD("Deleting ${decision.playlist}")
+                findNavController().navigateSafe(
+                    HomeFragmentDirections.deletePlaylist(decision.playlist.uid)
+                )
+            }
+
+            is PlaylistDecision.Add -> {
+                logD("Adding ${decision.songs.size} to a playlist")
+                findNavController().navigateSafe(
+                    HomeFragmentDirections.addToPlaylist(decision.songs.map { it.uid }.toTypedArray())
+                )
+            }
+        }
+        musicModel.playlistDecision.consume()
     }
 
     private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {

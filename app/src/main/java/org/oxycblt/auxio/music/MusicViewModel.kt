@@ -52,23 +52,8 @@ constructor(
     val statistics: StateFlow<Statistics?>
         get() = _statistics
 
-    private val _newPlaylistSongs = MutableEvent<List<Song>>()
-    /** Flag for opening a dialog to create a playlist of the given [Song]s. */
-    val newPlaylistSongs: Event<List<Song>> = _newPlaylistSongs
-
-    private val _playlistToRename = MutableEvent<Playlist?>()
-    /** Flag for opening a dialog to rename the given [Playlist]. */
-    val playlistToRename: Event<Playlist?>
-        get() = _playlistToRename
-
-    private val _playlistToDelete = MutableEvent<Playlist>()
-    /** Flag for opening a dialog to confirm deletion of the given [Playlist]. */
-    val playlistToDelete: Event<Playlist>
-        get() = _playlistToDelete
-
-    private val _songsToAdd = MutableEvent<List<Song>>()
-    /** Flag for opening a dialog to add the given [Song]s to a playlist. */
-    val songsToAdd: Event<List<Song>> = _songsToAdd
+    private val _playlistDecision = MutableEvent<PlaylistDecision>()
+    val playlistDecision: Event<PlaylistDecision> get() = _playlistDecision
 
     init {
         musicRepository.addUpdateListener(this)
@@ -121,7 +106,7 @@ constructor(
             viewModelScope.launch(Dispatchers.IO) { musicRepository.createPlaylist(name, songs) }
         } else {
             logD("Launching creation dialog for ${songs.size} songs")
-            _newPlaylistSongs.put(songs)
+            _playlistDecision.put(PlaylistDecision.New(songs))
         }
     }
 
@@ -137,7 +122,7 @@ constructor(
             viewModelScope.launch(Dispatchers.IO) { musicRepository.renamePlaylist(playlist, name) }
         } else {
             logD("Launching rename dialog for $playlist")
-            _playlistToRename.put(playlist)
+            _playlistDecision.put(PlaylistDecision.Rename(playlist))
         }
     }
 
@@ -154,7 +139,7 @@ constructor(
             viewModelScope.launch(Dispatchers.IO) { musicRepository.deletePlaylist(playlist) }
         } else {
             logD("Launching deletion dialog for $playlist")
-            _playlistToDelete.put(playlist)
+            _playlistDecision.put(PlaylistDecision.Delete(playlist))
         }
     }
 
@@ -214,7 +199,7 @@ constructor(
             viewModelScope.launch(Dispatchers.IO) { musicRepository.addToPlaylist(songs, playlist) }
         } else {
             logD("Launching addition dialog for songs=${songs.size}")
-            _songsToAdd.put(songs)
+            _playlistDecision.put(PlaylistDecision.Add(songs))
         }
     }
 
@@ -234,4 +219,11 @@ constructor(
         val genres: Int,
         val durationMs: Long
     )
+}
+
+sealed interface PlaylistDecision {
+    data class New(val songs: List<Song>) : PlaylistDecision
+    data class Rename(val playlist: Playlist) : PlaylistDecision
+    data class Delete(val playlist: Playlist) : PlaylistDecision
+    data class Add(val songs: List<Song>) : PlaylistDecision
 }
