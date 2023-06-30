@@ -73,7 +73,7 @@ import org.oxycblt.auxio.util.getInteger
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class CoverView
+open class CoverView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     FrameLayout(context, attrs, defStyleAttr) {

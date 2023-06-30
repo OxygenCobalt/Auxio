@@ -39,6 +39,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
+import org.oxycblt.auxio.playback.ui.SwipeCoverView
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
@@ -58,7 +59,8 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 class PlaybackPanelFragment :
     ViewBindingFragment<FragmentPlaybackPanelBinding>(),
     Toolbar.OnMenuItemClickListener,
-    StyledSeekBar.Listener {
+    StyledSeekBar.Listener,
+    SwipeCoverView.OnSwipeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
@@ -111,7 +113,7 @@ class PlaybackPanelFragment :
             isSelected = true
             setOnClickListener { navigateToCurrentAlbum() }
         }
-
+        binding.playbackCover.onSwipeListener = this
         binding.playbackSeekBar.listener = this
 
         // Set up actions
@@ -189,6 +191,14 @@ class PlaybackPanelFragment :
 
     override fun onSeekConfirmed(positionDs: Long) {
         playbackModel.seekTo(positionDs)
+    }
+
+    override fun onSwipePrevious() {
+        playbackModel.prev()
+    }
+
+    override fun onSwipeNext() {
+        playbackModel.next()
     }
 
     private fun updateSong(song: Song?) {
