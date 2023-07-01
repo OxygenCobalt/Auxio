@@ -102,7 +102,7 @@ class PlaylistDetailFragment :
 
         // --- UI SETUP ---
         binding.detailNormalToolbar.apply {
-            inflateMenu(R.menu.menu_playlist_detail)
+            inflateMenu(R.menu.toolbar_playlist)
             setNavigationOnClickListener { findNavController().navigateUp() }
             setOnMenuItemClickListener(this@PlaylistDetailFragment)
         }
@@ -235,7 +235,7 @@ class PlaylistDetailFragment :
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {
-        openMusicMenu(anchor, R.menu.menu_playlist_song_actions, item)
+        openMusicMenu(anchor, R.menu.item_playlist_song, item)
     }
 
     override fun onPlay() {

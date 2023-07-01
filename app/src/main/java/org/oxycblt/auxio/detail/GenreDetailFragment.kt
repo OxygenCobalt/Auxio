@@ -97,7 +97,7 @@ class GenreDetailFragment :
 
         // --- UI SETUP ---
         binding.detailNormalToolbar.apply {
-            inflateMenu(R.menu.menu_parent_detail)
+            inflateMenu(R.menu.toolbar_parent)
             setNavigationOnClickListener { findNavController().navigateUp() }
             setOnMenuItemClickListener(this@GenreDetailFragment)
         }
@@ -192,8 +192,8 @@ class GenreDetailFragment :
 
     override fun onOpenMenu(item: Music, anchor: View) {
         when (item) {
-            is Artist -> openMusicMenu(anchor, R.menu.menu_parent_actions, item)
-            is Song -> openMusicMenu(anchor, R.menu.menu_song_actions, item)
+            is Artist -> openMusicMenu(anchor, R.menu.item_parent, item)
+            is Song -> openMusicMenu(anchor, R.menu.item_song, item)
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
@@ -207,7 +207,7 @@ class GenreDetailFragment :
     }
 
     override fun onOpenSortMenu(anchor: View) {
-        openMenu(anchor, R.menu.menu_genre_sort) {
+        openMenu(anchor, R.menu.sort_genre) {
             // Select the corresponding sort mode option
             val sort = detailModel.genreSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true

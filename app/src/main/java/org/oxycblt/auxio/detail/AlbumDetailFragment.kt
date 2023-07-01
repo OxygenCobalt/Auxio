@@ -101,7 +101,7 @@ class AlbumDetailFragment :
 
         // --- UI SETUP --
         binding.detailNormalToolbar.apply {
-            inflateMenu(R.menu.menu_album_detail)
+            inflateMenu(R.menu.toolbar_album)
             setNavigationOnClickListener { findNavController().navigateUp() }
             setOnMenuItemClickListener(this@AlbumDetailFragment)
         }
@@ -183,7 +183,7 @@ class AlbumDetailFragment :
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {
-        openMusicMenu(anchor, R.menu.menu_album_song_actions, item)
+        openMusicMenu(anchor, R.menu.item_album_song, item)
     }
 
     override fun onPlay() {
@@ -195,7 +195,7 @@ class AlbumDetailFragment :
     }
 
     override fun onOpenSortMenu(anchor: View) {
-        openMenu(anchor, R.menu.menu_album_sort) {
+        openMenu(anchor, R.menu.sort_album) {
             // Select the corresponding sort mode option
             val sort = detailModel.albumSongSort
             unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true

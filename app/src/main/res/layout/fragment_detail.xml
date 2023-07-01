@@ -33,7 +33,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 app:navigationIcon="@drawable/ic_close_24"
-                app:menu="@menu/menu_selection_actions" />
+                app:menu="@menu/toolbar_selection" />
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/detail_edit_toolbar"
@@ -42,7 +42,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 app:navigationIcon="@drawable/ic_close_24"
-                app:menu="@menu/menu_edit_actions" />
+                app:menu="@menu/toolbar_edit" />
 
         </org.oxycblt.auxio.ui.MultiToolbar>
 

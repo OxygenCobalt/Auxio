@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/menu_playback"
+        app:menu="@menu/toolbar_playback"
         app:navigationIcon="@drawable/ic_down_24"
         app:title="@string/lbl_playback"
         tools:subtitle="@string/lbl_all_songs" />
