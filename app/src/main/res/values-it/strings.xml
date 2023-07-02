@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Info namespace | App labels -->
-    <string name="info_app_desc">Un semplice, razionale lettore musicale per android.</string>
+    <string name="info_app_desc">Semplice e razionale lettore musicale per android.</string>
     <string name="lng_widget">Vedi e gestisci la riproduzione musicale</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Riprova</string>
@@ -231,7 +231,7 @@
     <string name="set_cover_mode">Copertine album</string>
     <string name="set_cover_mode_off">Off</string>
     <string name="set_cover_mode_media_store">Veloce</string>
-    <string name="set_exclude_non_music">Escludi non-musica</string>
+    <string name="set_exclude_non_music">Escludi file non musicali</string>
     <string name="set_exclude_non_music_desc">Ignora file audio non musicali, come i podcast</string>
     <string name="set_separators">Separatori multi-valore</string>
     <string name="set_separators_desc">Configura caratteri che indicano valori multipli di tag</string>
@@ -299,4 +299,6 @@
     <string name="def_disc">Nessun disco</string>
     <string name="lbl_appears_on">Appare su</string>
     <string name="fmt_editing">Modifica di %s</string>
+    <string name="set_square_covers">Forza copertine album quadrate</string>
+    <string name="set_square_covers_desc">Adatta tutte le copertine degli album ad una visualizzazione 1:1</string>
 </resources>
