@@ -301,4 +301,5 @@
     <string name="lbl_appears_on">З\'являється на</string>
     <string name="set_square_covers_desc">Обрізання обкладинок альбомів до співвідношення сторін 1:1</string>
     <string name="set_square_covers">Примусові квадратні обкладинки</string>
+    <string name="lbl_song">Пісня</string>
 </resources>
