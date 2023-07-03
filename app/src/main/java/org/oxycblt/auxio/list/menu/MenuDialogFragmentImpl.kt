@@ -26,6 +26,7 @@ import org.oxycblt.auxio.databinding.DialogMenuBinding
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
@@ -36,13 +37,15 @@ class SongMenuDialogFragment : MenuDialogFragment<Song>() {
     override val menuModel: MenuViewModel by viewModels()
     private val args: SongMenuDialogFragmentArgs by navArgs()
 
-    override val menuRes = args.menuRes
-    override val uid = args.songUid
+    override val menuRes: Int
+        get() = args.menuRes
+    override val uid: Music.UID
+        get() = args.songUid
 
     override fun updateMusic(binding: DialogMenuBinding, music: Song) {
         val context = requireContext()
         binding.menuCover.bind(music)
-        binding.menuInfo.text = getString(R.string.lbl_song)
+        binding.menuType.text = getString(R.string.lbl_song)
         binding.menuName.text = music.name.resolve(context)
         binding.menuInfo.text = music.artists.resolveNames(context)
     }
@@ -55,13 +58,15 @@ class AlbumMenuDialogFragment : MenuDialogFragment<Album>() {
     override val menuModel: MenuViewModel by viewModels()
     private val args: AlbumMenuDialogFragmentArgs by navArgs()
 
-    override val menuRes = args.menuRes
-    override val uid = args.albumUid
+    override val menuRes: Int
+        get() = args.menuRes
+    override val uid: Music.UID
+        get() = args.albumUid
 
     override fun updateMusic(binding: DialogMenuBinding, music: Album) {
         val context = requireContext()
         binding.menuCover.bind(music)
-        binding.menuInfo.text = getString(music.releaseType.stringRes)
+        binding.menuType.text = getString(music.releaseType.stringRes)
         binding.menuName.text = music.name.resolve(context)
         binding.menuInfo.text = music.artists.resolveNames(context)
     }
@@ -74,13 +79,15 @@ class ArtistMenuDialogFragment : MenuDialogFragment<Artist>() {
     override val menuModel: MenuViewModel by viewModels()
     private val args: ArtistMenuDialogFragmentArgs by navArgs()
 
-    override val menuRes = args.menuRes
-    override val uid = args.artistUid
+    override val menuRes: Int
+        get() = args.menuRes
+    override val uid: Music.UID
+        get() = args.artistUid
 
     override fun updateMusic(binding: DialogMenuBinding, music: Artist) {
         val context = requireContext()
         binding.menuCover.bind(music)
-        binding.menuInfo.text = getString(R.string.lbl_artist)
+        binding.menuType.text = getString(R.string.lbl_artist)
         binding.menuName.text = music.name.resolve(context)
         binding.menuInfo.text =
             getString(
@@ -101,13 +108,15 @@ class GenreMenuDialogFragment : MenuDialogFragment<Genre>() {
     override val menuModel: MenuViewModel by viewModels()
     private val args: GenreMenuDialogFragmentArgs by navArgs()
 
-    override val menuRes = args.menuRes
-    override val uid = args.genreUid
+    override val menuRes: Int
+        get() = args.menuRes
+    override val uid: Music.UID
+        get() = args.genreUid
 
     override fun updateMusic(binding: DialogMenuBinding, music: Genre) {
         val context = requireContext()
         binding.menuCover.bind(music)
-        binding.menuInfo.text = getString(R.string.lbl_genre)
+        binding.menuType.text = getString(R.string.lbl_genre)
         binding.menuName.text = music.name.resolve(context)
         binding.menuInfo.text =
             getString(
@@ -124,13 +133,15 @@ class PlaylistMenuDialogFragment : MenuDialogFragment<Playlist>() {
     override val menuModel: MenuViewModel by viewModels()
     private val args: PlaylistMenuDialogFragmentArgs by navArgs()
 
-    override val menuRes = args.menuRes
-    override val uid = args.playlistUid
+    override val menuRes: Int
+        get() = args.menuRes
+    override val uid: Music.UID
+        get() = args.playlistUid
 
     override fun updateMusic(binding: DialogMenuBinding, music: Playlist) {
         val context = requireContext()
         binding.menuCover.bind(music)
-        binding.menuInfo.text = getString(R.string.lbl_genre)
+        binding.menuType.text = getString(R.string.lbl_playlist)
         binding.menuName.text = music.name.resolve(context)
         binding.menuInfo.text = context.getPlural(R.plurals.fmt_song_count, music.songs.size)
     }

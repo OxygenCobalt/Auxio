@@ -39,7 +39,7 @@ class MenuOptionAdapter(private val listener: ClickableListListener<MenuItem>) :
         MenuOptionViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: MenuOptionViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), listener)
     }
 }
 
@@ -50,7 +50,8 @@ class MenuOptionAdapter(private val listener: ClickableListListener<MenuItem>) :
  */
 class MenuOptionViewHolder private constructor(private val binding: ItemMenuOptionBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
-    fun bind(item: MenuItem) {
+    fun bind(item: MenuItem, listener: ClickableListListener<MenuItem>) {
+        listener.bind(item, this)
         binding.title.text = item.title
     }
 

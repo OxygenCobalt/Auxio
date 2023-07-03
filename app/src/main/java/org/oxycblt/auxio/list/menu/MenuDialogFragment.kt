@@ -58,6 +58,8 @@ abstract class MenuDialogFragment<T : Music> :
         super.onBindingCreated(binding, savedInstanceState)
 
         // --- UI SETUP ---
+        binding.menuName.isSelected = true
+        binding.menuInfo.isSelected = true
         binding.menuOptionRecycler.apply {
             adapter = menuAdapter
             itemAnimator = null
@@ -75,6 +77,8 @@ abstract class MenuDialogFragment<T : Music> :
 
     override fun onDestroyBinding(binding: DialogMenuBinding) {
         super.onDestroyBinding(binding)
+        binding.menuName.isSelected = false
+        binding.menuInfo.isSelected = false
         binding.menuOptionRecycler.adapter = null
     }
 
@@ -87,6 +91,7 @@ abstract class MenuDialogFragment<T : Music> :
     }
 
     final override fun onClick(item: MenuItem, viewHolder: RecyclerView.ViewHolder) {
+        findNavController().navigateUp()
         @Suppress("UNCHECKED_CAST") onClick(menuModel.currentMusic.value as T, item.itemId)
     }
 }
