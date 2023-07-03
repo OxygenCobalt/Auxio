@@ -31,9 +31,6 @@
             android:id="@+id/show_genre"
             app:destination="@id/genre_detail_fragment" />
         <action
-            android:id="@+id/open_menu"
-            app:destination="@id/menu_dialog" />
-        <action
             android:id="@+id/show_playlist"
             app:destination="@id/playlist_detail_fragment" />
         <action
@@ -301,10 +298,69 @@
     </dialog>
 
     <dialog
-        android:id="@+id/menu_dialog"
-        android:name="org.oxycblt.auxio.list.menu.MenuDialogFragment"
-        android:label="menu_dialog"
-        tools:layout="@layout/dialog_menu" />
+        android:id="@+id/song_menu_dialog"
+        android:name="org.oxycblt.auxio.list.menu.SongMenuDialogFragment"
+        android:label="song_menu_dialog"
+        tools:layout="@layout/dialog_menu">
+        <argument
+            android:name="menuRes"
+            app:argType="integer" />
+        <argument
+            android:name="songUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/album_menu_dialog"
+        android:name="org.oxycblt.auxio.list.menu.AlbumMenuDialogFragment"
+        android:label="album_menu_dialog"
+        tools:layout="@layout/dialog_menu">
+        <argument
+            android:name="menuRes"
+            app:argType="integer"/>
+        <argument
+            android:name="albumUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/artist_menu_dialog"
+        android:name="org.oxycblt.auxio.list.menu.ArtistMenuDialogFragment"
+        android:label="artist_menu_dialog"
+        tools:layout="@layout/dialog_menu">
+        <argument
+            android:name="menuRes"
+            app:argType="integer" />
+        <argument
+            android:name="artistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/genre_menu_dialog"
+        android:name="org.oxycblt.auxio.list.menu.GenreMenuDialogFragment"
+        android:label="genre_menu_dialog"
+        tools:layout="@layout/dialog_menu">
+        <argument
+            android:name="menuRes"
+            app:argType="integer" />
+        <argument
+            android:name="genreUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/playlist_menu_dialog"
+        android:name="org.oxycblt.auxio.list.menu.PlaylistMenuDialogFragment"
+        android:label="playlist_menu_dialog"
+        tools:layout="@layout/dialog_menu">
+        <argument
+            android:name="menuRes"
+            app:argType="integer" />
+        <argument
+            android:name="playlistUid"
+            app:argType="org.oxycblt.auxio.music.Music$UID" />
+    </dialog>
 
     <fragment
         android:id="@+id/root_preferences_fragment"

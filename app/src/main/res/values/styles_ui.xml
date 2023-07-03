@@ -60,8 +60,14 @@
     </style>
 
     <style name="Widget.Auxio.Image.Medium" parent="">
-        <item name="android:layout_width">@dimen/size_cover_normal</item>
-        <item name="android:layout_height">@dimen/size_cover_normal</item>
+        <item name="android:layout_width">@dimen/size_cover_medium</item>
+        <item name="android:layout_height">@dimen/size_cover_medium</item>
+        <item name="sizing">medium</item>
+    </style>
+
+    <style name="Widget.Auxio.Image.MidLarge" parent="">
+        <item name="android:layout_width">@dimen/size_cover_mid_large</item>
+        <item name="android:layout_height">@dimen/size_cover_mid_large</item>
         <item name="sizing">medium</item>
     </style>
 

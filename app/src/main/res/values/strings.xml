@@ -20,6 +20,7 @@
     <string name="lbl_grant">Grant</string>
 
     <string name="lbl_songs">Songs</string>
+    <string name="lbl_song">Song</string>
     <string name="lbl_all_songs">All songs</string>
 
     <string name="lbl_albums">Albums</string>

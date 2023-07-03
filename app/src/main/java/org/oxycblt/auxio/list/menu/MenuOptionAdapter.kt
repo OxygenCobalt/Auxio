@@ -22,15 +22,18 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import org.oxycblt.auxio.databinding.ItemMenuOptionBinding
+import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.util.inflater
 
 /**
  * Displays a list of [MenuItem]s as custom list items.
+ *
+ * @param listener A [MenuOptionAdapter] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MenuOptionAdapter :
+class MenuOptionAdapter(private val listener: ClickableListListener<MenuItem>) :
     FlexibleListAdapter<MenuItem, MenuOptionViewHolder>(MenuOptionViewHolder.DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         MenuOptionViewHolder.from(parent)
@@ -42,6 +45,7 @@ class MenuOptionAdapter :
 
 /**
  * A [DialogRecyclerView.ViewHolder] that displays a list of menu options based on [MenuItem].
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 class MenuOptionViewHolder private constructor(private val binding: ItemMenuOptionBinding) :
