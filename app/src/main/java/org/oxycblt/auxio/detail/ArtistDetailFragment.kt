@@ -40,6 +40,8 @@ import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.Sort
+import org.oxycblt.auxio.list.menu.MenuViewModel
+import org.oxycblt.auxio.list.menu.PendingMenu
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -70,6 +72,7 @@ class ArtistDetailFragment :
     DetailHeaderAdapter.Listener,
     DetailListAdapter.Listener<Music> {
     override val detailModel: DetailViewModel by activityViewModels()
+    private val menuModel: MenuViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
@@ -125,6 +128,7 @@ class ArtistDetailFragment :
         collectImmediately(detailModel.currentArtist, ::updateArtist)
         collectImmediately(detailModel.artistList, ::updateList)
         collect(detailModel.toShow.flow, ::handleShow)
+        collect(menuModel.pendingMenu.flow, ::handleMenu)
         collectImmediately(selectionModel.selected, ::updateSelection)
         collect(musicModel.playlistDecision.flow, ::handleDecision)
         collectImmediately(
@@ -194,8 +198,8 @@ class ArtistDetailFragment :
 
     override fun onOpenMenu(item: Music, anchor: View) {
         when (item) {
-            is Song -> openMusicMenu(anchor, R.menu.item_artist_song, item)
-            is Album -> openMusicMenu(anchor, R.menu.item_artist_album, item)
+            is Song -> menuModel.openMenu(R.menu.item_artist_song, item)
+            is Album -> menuModel.openMenu(R.menu.item_artist_album, item)
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
@@ -308,6 +312,24 @@ class ArtistDetailFragment :
             }
             null -> {}
         }
+    }
+
+    private fun handleMenu(pendingMenu: PendingMenu?) {
+        if (pendingMenu == null) return
+        val directions =
+            when (pendingMenu) {
+                is PendingMenu.ForSong ->
+                    ArtistDetailFragmentDirections.openSongMenu(
+                        pendingMenu.menuRes, pendingMenu.music.uid)
+                is PendingMenu.ForAlbum ->
+                    ArtistDetailFragmentDirections.openAlbumMenu(
+                        pendingMenu.menuRes, pendingMenu.music.uid)
+                is PendingMenu.ForArtist,
+                is PendingMenu.ForGenre,
+                is PendingMenu.ForPlaylist -> error("Unexpected menu $pendingMenu")
+            }
+        findNavController().navigateSafe(directions)
+        menuModel.pendingMenu.consume()
     }
 
     private fun updateSelection(selected: List<Music>) {

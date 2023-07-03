@@ -18,7 +18,7 @@
  
 package org.oxycblt.auxio.list.menu
 
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
@@ -34,7 +34,7 @@ import org.oxycblt.auxio.util.getPlural
 
 @AndroidEntryPoint
 class SongMenuDialogFragment : MenuDialogFragment<Song>() {
-    override val menuModel: MenuViewModel by viewModels()
+    override val menuModel: MenuViewModel by activityViewModels()
     private val args: SongMenuDialogFragmentArgs by navArgs()
 
     override val menuRes: Int
@@ -55,7 +55,7 @@ class SongMenuDialogFragment : MenuDialogFragment<Song>() {
 
 @AndroidEntryPoint
 class AlbumMenuDialogFragment : MenuDialogFragment<Album>() {
-    override val menuModel: MenuViewModel by viewModels()
+    override val menuModel: MenuViewModel by activityViewModels()
     private val args: AlbumMenuDialogFragmentArgs by navArgs()
 
     override val menuRes: Int
@@ -76,7 +76,7 @@ class AlbumMenuDialogFragment : MenuDialogFragment<Album>() {
 
 @AndroidEntryPoint
 class ArtistMenuDialogFragment : MenuDialogFragment<Artist>() {
-    override val menuModel: MenuViewModel by viewModels()
+    override val menuModel: MenuViewModel by activityViewModels()
     private val args: ArtistMenuDialogFragmentArgs by navArgs()
 
     override val menuRes: Int
@@ -105,7 +105,7 @@ class ArtistMenuDialogFragment : MenuDialogFragment<Artist>() {
 
 @AndroidEntryPoint
 class GenreMenuDialogFragment : MenuDialogFragment<Genre>() {
-    override val menuModel: MenuViewModel by viewModels()
+    override val menuModel: MenuViewModel by activityViewModels()
     private val args: GenreMenuDialogFragmentArgs by navArgs()
 
     override val menuRes: Int
@@ -130,7 +130,7 @@ class GenreMenuDialogFragment : MenuDialogFragment<Genre>() {
 
 @AndroidEntryPoint
 class PlaylistMenuDialogFragment : MenuDialogFragment<Playlist>() {
-    override val menuModel: MenuViewModel by viewModels()
+    override val menuModel: MenuViewModel by activityViewModels()
     private val args: PlaylistMenuDialogFragmentArgs by navArgs()
 
     override val menuRes: Int

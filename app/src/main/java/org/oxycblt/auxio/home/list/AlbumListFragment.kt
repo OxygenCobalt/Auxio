@@ -35,6 +35,7 @@ import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.menu.MenuViewModel
 import org.oxycblt.auxio.list.recycler.AlbumViewHolder
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Album
@@ -60,9 +61,10 @@ class AlbumListFragment :
     FastScrollRecyclerView.PopupProvider {
     private val homeModel: HomeViewModel by activityViewModels()
     override val detailModel: DetailViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by activityViewModels()
-    override val musicModel: MusicViewModel by activityViewModels()
+    private val menuModel: MenuViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
     private val albumAdapter = AlbumAdapter(this)
     // Save memory by re-using the same formatter and string builder when creating popup text
     private val formatterSb = StringBuilder(64)

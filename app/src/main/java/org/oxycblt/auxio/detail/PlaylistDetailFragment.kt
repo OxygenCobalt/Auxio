@@ -43,6 +43,8 @@ import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.menu.MenuViewModel
+import org.oxycblt.auxio.list.menu.PendingMenu
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
@@ -73,6 +75,7 @@ class PlaylistDetailFragment :
     PlaylistDetailListAdapter.Listener,
     NavController.OnDestinationChangedListener {
     override val detailModel: DetailViewModel by activityViewModels()
+    private val menuModel: MenuViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
@@ -138,6 +141,7 @@ class PlaylistDetailFragment :
         collectImmediately(detailModel.playlistList, ::updateList)
         collectImmediately(detailModel.editedPlaylist, ::updateEditedList)
         collect(detailModel.toShow.flow, ::handleShow)
+        collect(menuModel.pendingMenu.flow, ::handleMenu)
         collectImmediately(selectionModel.selected, ::updateSelection)
         collect(musicModel.playlistDecision.flow, ::handleDecision)
         collectImmediately(
@@ -235,7 +239,7 @@ class PlaylistDetailFragment :
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {
-        openMusicMenu(anchor, R.menu.item_playlist_song, item)
+        menuModel.openMenu(R.menu.item_playlist_song, item)
     }
 
     override fun onPlay() {
@@ -343,6 +347,22 @@ class PlaylistDetailFragment :
             }
             null -> {}
         }
+    }
+
+    private fun handleMenu(pendingMenu: PendingMenu?) {
+        if (pendingMenu == null) return
+        val directions =
+            when (pendingMenu) {
+                is PendingMenu.ForSong ->
+                    PlaylistDetailFragmentDirections.openSongMenu(
+                        pendingMenu.menuRes, pendingMenu.music.uid)
+                is PendingMenu.ForArtist,
+                is PendingMenu.ForAlbum,
+                is PendingMenu.ForGenre,
+                is PendingMenu.ForPlaylist -> error("Unexpected menu $pendingMenu")
+            }
+        findNavController().navigateSafe(directions)
+        menuModel.pendingMenu.consume()
     }
 
     private fun updateSelection(selected: List<Music>) {

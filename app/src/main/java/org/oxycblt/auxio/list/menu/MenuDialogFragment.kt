@@ -71,7 +71,7 @@ abstract class MenuDialogFragment<T : Music> :
         menuAdapter.update(builder.children.toList(), UpdateInstructions.Diff)
 
         // --- VIEWMODEL SETUP ---
-        menuModel.setMusic(uid)
+        menuModel.setCurrentMenu(uid)
         collectImmediately(menuModel.currentMusic, this::updateMusic)
     }
 

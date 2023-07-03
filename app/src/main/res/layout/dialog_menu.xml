@@ -2,26 +2,28 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Widget.Auxio.RecyclerView.Linear"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <org.oxycblt.auxio.image.CoverView
         android:id="@+id/menu_cover"
-        style="@style/Widget.Auxio.Image.MidLarge"
-        android:layout_margin="@dimen/spacing_medium"
+        style="@style/Widget.Auxio.Image.Full"
+        android:layout_marginVertical="@dimen/spacing_medium"
+        android:layout_marginStart="@dimen/spacing_medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/menu_type"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.Auxio.LabelLarge"
+        android:layout_marginHorizontal="@dimen/spacing_medium"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:textAppearance="@style/TextAppearance.Auxio.LabelMedium"
         android:textColor="?attr/colorSecondary"
-        android:layout_marginStart="@dimen/spacing_medium"
         app:layout_constraintBottom_toTopOf="@+id/menu_name"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/menu_cover"
         app:layout_constraintTop_toTopOf="@+id/menu_cover"
         app:layout_constraintVertical_chainStyle="packed"
@@ -29,32 +31,42 @@
 
     <TextView
         android:id="@+id/menu_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.Auxio.TitleLarge"
-        android:textColor="?android:attr/textColorPrimary"
+        style="@style/Widget.Auxio.TextView.Primary"
         app:layout_constraintBottom_toTopOf="@+id/menu_info"
+        app:layout_constraintEnd_toEndOf="@+id/menu_type"
         app:layout_constraintStart_toStartOf="@+id/menu_type"
         app:layout_constraintTop_toBottomOf="@+id/menu_type"
         tools:text="Name" />
 
     <TextView
         android:id="@+id/menu_info"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.Auxio.TitleMedium"
+        style="@style/Widget.Auxio.TextView.Secondary.Marquee"
         android:textColor="?android:attr/textColorSecondary"
-        app:layout_constraintBottom_toBottomOf="@+id/menu_cover"
+        app:layout_constraintEnd_toEndOf="@+id/menu_type"
         app:layout_constraintStart_toStartOf="@+id/menu_name"
         app:layout_constraintTop_toBottomOf="@+id/menu_name"
+        app:layout_constraintBottom_toBottomOf="@+id/menu_cover"
+        android:layout_marginBottom="@dimen/spacing_small"
         tools:text="Info A" />
 
-    <org.oxycblt.auxio.list.recycler.DialogRecyclerView
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/materialDivider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        app:layout_constraintTop_toBottomOf="@+id/menu_cover" />
+
+    <org.oxycblt.auxio.list.recycler.AuxioRecyclerView
         android:id="@+id/menu_option_recycler"
         style="@style/Widget.Auxio.RecyclerView.Linear"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/menu_cover"
+        android:overScrollMode="never"
+        app:layout_constraintTop_toBottomOf="@+id/materialDivider"
         tools:listitem="@layout/item_menu_option" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

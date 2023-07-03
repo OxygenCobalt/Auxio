@@ -33,6 +33,7 @@ import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
+import org.oxycblt.auxio.list.menu.MenuViewModel
 import org.oxycblt.auxio.list.recycler.ArtistViewHolder
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Artist
@@ -58,9 +59,10 @@ class ArtistListFragment :
     FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
     override val detailModel: DetailViewModel by activityViewModels()
-    override val playbackModel: PlaybackViewModel by activityViewModels()
-    override val musicModel: MusicViewModel by activityViewModels()
+    private val menuModel: MenuViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
+    override val musicModel: MusicViewModel by activityViewModels()
+    override val playbackModel: PlaybackViewModel by activityViewModels()
     private val artistAdapter = ArtistAdapter(this)
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -118,7 +120,7 @@ class ArtistListFragment :
     }
 
     override fun onOpenMenu(item: Artist, anchor: View) {
-        openMusicMenu(anchor, R.menu.item_parent, item)
+        menuModel.openMenu(R.menu.item_parent, item)
     }
 
     private fun updateArtists(artists: List<Artist>) {
