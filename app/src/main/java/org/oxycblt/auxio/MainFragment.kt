@@ -34,7 +34,6 @@ import androidx.navigation.findNavController
 import com.google.android.material.R as MR
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import com.google.android.material.shape.MaterialShapeDrawable
-import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.max
 import kotlin.math.min
@@ -78,12 +77,6 @@ class MainFragment :
     private var lastInsets: WindowInsets? = null
     private var elevationNormal = 0f
     private var initialNavDestinationChange = true
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enterTransition = MaterialFadeThrough()
-        exitTransition = MaterialFadeThrough()
-    }
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentMainBinding.inflate(inflater)
 

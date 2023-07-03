@@ -38,6 +38,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Field
@@ -100,9 +101,11 @@ class HomeFragment :
             // Orientation change will wipe whatever transition we were using prior, which will
             // result in no transition when the user navigates back. Make sure we re-initialize
             // our transitions.
-            val axis = savedInstanceState.getInt(KEY_LAST_TRANSITION_AXIS, -1)
-            if (axis > -1) {
-                setupAxisTransitions(axis)
+            val id = savedInstanceState.getInt(KEY_LAST_TRANSITION_ID, -2)
+            when (id) {
+                -2 -> {}
+                -1 -> applyFadeTransition()
+                else -> applyAxisTransition(id)
             }
         }
     }
@@ -179,9 +182,9 @@ class HomeFragment :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        val enter = enterTransition
-        if (enter is MaterialSharedAxis) {
-            outState.putInt(KEY_LAST_TRANSITION_AXIS, enter.axis)
+        when (val transition = enterTransition) {
+            is MaterialFadeThrough -> outState.putInt(KEY_LAST_TRANSITION_ID, -1)
+            is MaterialSharedAxis -> outState.putInt(KEY_LAST_TRANSITION_ID, transition.axis)
         }
 
         super.onSaveInstanceState(outState)
@@ -214,17 +217,19 @@ class HomeFragment :
             // Handle main actions (Search, Settings, About)
             R.id.action_search -> {
                 logD("Navigating to search")
-                setupAxisTransitions(MaterialSharedAxis.Z)
+                applyAxisTransition(MaterialSharedAxis.Z)
                 findNavController().navigateSafe(HomeFragmentDirections.search())
                 true
             }
             R.id.action_settings -> {
                 logD("Navigating to preferences")
+                applyFadeTransition()
                 findNavController().navigateSafe(HomeFragmentDirections.preferences())
                 true
             }
             R.id.action_about -> {
                 logD("Navigating to about")
+                applyFadeTransition()
                 findNavController().navigateSafe(HomeFragmentDirections.about())
                 true
             }
@@ -537,7 +542,7 @@ class HomeFragment :
             // fragment should be launched otherwise.
             is Show.SongAlbumDetails -> {
                 logD("Navigating to the album of ${show.song}")
-                setupAxisTransitions(MaterialSharedAxis.X)
+                applyAxisTransition(MaterialSharedAxis.X)
                 findNavController()
                     .navigateSafe(HomeFragmentDirections.showAlbum(show.song.album.uid))
             }
@@ -546,14 +551,14 @@ class HomeFragment :
             // detail fragment.
             is Show.AlbumDetails -> {
                 logD("Navigating to ${show.album}")
-                setupAxisTransitions(MaterialSharedAxis.X)
+                applyAxisTransition(MaterialSharedAxis.X)
                 findNavController().navigateSafe(HomeFragmentDirections.showAlbum(show.album.uid))
             }
 
             // Always launch a new ArtistDetailFragment.
             is Show.ArtistDetails -> {
                 logD("Navigating to ${show.artist}")
-                setupAxisTransitions(MaterialSharedAxis.X)
+                applyAxisTransition(MaterialSharedAxis.X)
                 findNavController().navigateSafe(HomeFragmentDirections.showArtist(show.artist.uid))
             }
             is Show.SongArtistDetails -> {
@@ -566,10 +571,12 @@ class HomeFragment :
             }
             is Show.GenreDetails -> {
                 logD("Navigating to ${show.genre}")
+                applyAxisTransition(MaterialSharedAxis.X)
                 findNavController().navigateSafe(HomeFragmentDirections.showGenre(show.genre.uid))
             }
             is Show.PlaylistDetails -> {
                 logD("Navigating to ${show.playlist}")
+                applyAxisTransition(MaterialSharedAxis.X)
                 findNavController()
                     .navigateSafe(HomeFragmentDirections.showPlaylist(show.playlist.uid))
             }
@@ -591,7 +598,7 @@ class HomeFragment :
         }
     }
 
-    private fun setupAxisTransitions(axis: Int) {
+    private fun applyAxisTransition(axis: Int) {
         // Sanity check to avoid in-correct axis transitions
         check(axis == MaterialSharedAxis.X || axis == MaterialSharedAxis.Z) {
             "Not expecting Y axis transition"
@@ -601,6 +608,13 @@ class HomeFragment :
         returnTransition = MaterialSharedAxis(axis, false)
         exitTransition = MaterialSharedAxis(axis, true)
         reenterTransition = MaterialSharedAxis(axis, false)
+    }
+
+    private fun applyFadeTransition() {
+        enterTransition = MaterialFadeThrough()
+        returnTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+        reenterTransition = MaterialFadeThrough()
     }
 
     /**
@@ -630,7 +644,6 @@ class HomeFragment :
     private companion object {
         val VP_RECYCLER_FIELD: Field by lazyReflectedField(ViewPager2::class, "mRecyclerView")
         val RV_TOUCH_SLOP_FIELD: Field by lazyReflectedField(RecyclerView::class, "mTouchSlop")
-        const val KEY_LAST_TRANSITION_AXIS =
-            BuildConfig.APPLICATION_ID + ".key.LAST_TRANSITION_AXIS"
+        const val KEY_LAST_TRANSITION_ID = BuildConfig.APPLICATION_ID + ".key.LAST_TRANSITION_AXIS"
     }
 }
