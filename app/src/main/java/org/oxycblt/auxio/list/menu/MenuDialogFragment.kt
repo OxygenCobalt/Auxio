@@ -23,7 +23,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuInflater
 import android.view.MenuItem
-import androidx.annotation.IdRes
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.view.children
 import androidx.navigation.fragment.findNavController
@@ -41,6 +40,8 @@ import org.oxycblt.auxio.util.logD
  * options.
  *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Handle enabled/disabled states
  */
 abstract class MenuDialogFragment<T : Music> :
     ViewBindingBottomSheetDialogFragment<DialogMenuBinding>(), ClickableListListener<MenuItem> {
@@ -50,7 +51,7 @@ abstract class MenuDialogFragment<T : Music> :
     abstract val menuRes: Int
     abstract val uid: Music.UID
     abstract fun updateMusic(binding: DialogMenuBinding, music: T)
-    abstract fun onClick(music: T, @IdRes optionId: Int)
+    abstract fun onClick(music: T, item: MenuItem)
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogMenuBinding.inflate(inflater)
 
@@ -65,7 +66,7 @@ abstract class MenuDialogFragment<T : Music> :
             itemAnimator = null
         }
 
-        // Avoid having to use a dummy view and rely on what AndroidX Toolbar uses.
+        // Avoid having to use a dummy view and just rely on what AndroidX Toolbar uses.
         @SuppressLint("RestrictedApi") val builder = MenuBuilder(requireContext())
         MenuInflater(requireContext()).inflate(menuRes, builder)
         menuAdapter.update(builder.children.toList(), UpdateInstructions.Diff)
@@ -92,6 +93,6 @@ abstract class MenuDialogFragment<T : Music> :
 
     final override fun onClick(item: MenuItem, viewHolder: RecyclerView.ViewHolder) {
         findNavController().navigateUp()
-        @Suppress("UNCHECKED_CAST") onClick(menuModel.currentMusic.value as T, item.itemId)
+        @Suppress("UNCHECKED_CAST") onClick(menuModel.currentMusic.value as T, item)
     }
 }

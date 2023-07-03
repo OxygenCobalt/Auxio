@@ -18,23 +18,32 @@
  
 package org.oxycblt.auxio.list.menu
 
+import android.view.MenuItem
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMenuBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.getPlural
+import org.oxycblt.auxio.util.share
+import org.oxycblt.auxio.util.showToast
 
 @AndroidEntryPoint
 class SongMenuDialogFragment : MenuDialogFragment<Song>() {
     override val menuModel: MenuViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val args: SongMenuDialogFragmentArgs by navArgs()
 
     override val menuRes: Int
@@ -50,12 +59,32 @@ class SongMenuDialogFragment : MenuDialogFragment<Song>() {
         binding.menuInfo.text = music.artists.resolveNames(context)
     }
 
-    override fun onClick(music: Song, optionId: Int) {}
+    override fun onClick(music: Song, item: MenuItem) {
+        when (item.itemId) {
+            R.id.action_play_next -> {
+                playbackModel.playNext(music)
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_queue_add -> {
+                playbackModel.addToQueue(music)
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_go_artist -> detailModel.showArtist(music)
+            R.id.action_go_album -> detailModel.showAlbum(music)
+            R.id.action_share -> requireContext().share(music)
+            R.id.action_playlist_add -> musicModel.addToPlaylist(music)
+            R.id.action_song_detail -> detailModel.showSong(music)
+            else -> error("Unexpected menu item selected $item")
+        }
+    }
 }
 
 @AndroidEntryPoint
 class AlbumMenuDialogFragment : MenuDialogFragment<Album>() {
     override val menuModel: MenuViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val args: AlbumMenuDialogFragmentArgs by navArgs()
 
     override val menuRes: Int
@@ -71,12 +100,31 @@ class AlbumMenuDialogFragment : MenuDialogFragment<Album>() {
         binding.menuInfo.text = music.artists.resolveNames(context)
     }
 
-    override fun onClick(music: Album, optionId: Int) {}
+    override fun onClick(music: Album, item: MenuItem) {
+        when (item.itemId) {
+            R.id.action_play -> playbackModel.play(music)
+            R.id.action_shuffle -> playbackModel.shuffle(music)
+            R.id.action_play_next -> {
+                playbackModel.playNext(music)
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_queue_add -> {
+                playbackModel.addToQueue(music)
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_go_artist -> detailModel.showArtist(music)
+            R.id.action_playlist_add -> musicModel.addToPlaylist(music)
+            R.id.action_share -> requireContext().share(music)
+            else -> error("Unexpected menu item selected $item")
+        }
+    }
 }
 
 @AndroidEntryPoint
 class ArtistMenuDialogFragment : MenuDialogFragment<Artist>() {
     override val menuModel: MenuViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val args: ArtistMenuDialogFragmentArgs by navArgs()
 
     override val menuRes: Int
@@ -100,12 +148,30 @@ class ArtistMenuDialogFragment : MenuDialogFragment<Artist>() {
                 })
     }
 
-    override fun onClick(music: Artist, optionId: Int) {}
+    override fun onClick(music: Artist, item: MenuItem) {
+        when (item.itemId) {
+            R.id.action_play -> playbackModel.play(music)
+            R.id.action_shuffle -> playbackModel.shuffle(music)
+            R.id.action_play_next -> {
+                playbackModel.playNext(music)
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_queue_add -> {
+                playbackModel.addToQueue(music)
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_playlist_add -> musicModel.addToPlaylist(music)
+            R.id.action_share -> requireContext().share(music)
+            else -> error("Unexpected menu item $item")
+        }
+    }
 }
 
 @AndroidEntryPoint
 class GenreMenuDialogFragment : MenuDialogFragment<Genre>() {
     override val menuModel: MenuViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val args: GenreMenuDialogFragmentArgs by navArgs()
 
     override val menuRes: Int
@@ -125,12 +191,30 @@ class GenreMenuDialogFragment : MenuDialogFragment<Genre>() {
                 context.getPlural(R.plurals.fmt_song_count, music.songs.size))
     }
 
-    override fun onClick(music: Genre, optionId: Int) {}
+    override fun onClick(music: Genre, item: MenuItem) {
+        when (item.itemId) {
+            R.id.action_play -> playbackModel.play(music)
+            R.id.action_shuffle -> playbackModel.shuffle(music)
+            R.id.action_play_next -> {
+                playbackModel.playNext(music)
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_queue_add -> {
+                playbackModel.addToQueue(music)
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_playlist_add -> musicModel.addToPlaylist(music)
+            R.id.action_share -> requireContext().share(music)
+            else -> error("Unexpected menu item $item")
+        }
+    }
 }
 
 @AndroidEntryPoint
 class PlaylistMenuDialogFragment : MenuDialogFragment<Playlist>() {
     override val menuModel: MenuViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val args: PlaylistMenuDialogFragmentArgs by navArgs()
 
     override val menuRes: Int
@@ -146,5 +230,22 @@ class PlaylistMenuDialogFragment : MenuDialogFragment<Playlist>() {
         binding.menuInfo.text = context.getPlural(R.plurals.fmt_song_count, music.songs.size)
     }
 
-    override fun onClick(music: Playlist, optionId: Int) {}
+    override fun onClick(music: Playlist, item: MenuItem) {
+        when (item.itemId) {
+            R.id.action_play -> playbackModel.play(music)
+            R.id.action_shuffle -> playbackModel.shuffle(music)
+            R.id.action_play_next -> {
+                playbackModel.playNext(music)
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_queue_add -> {
+                playbackModel.addToQueue(music)
+                requireContext().showToast(R.string.lng_queue_added)
+            }
+            R.id.action_rename -> musicModel.renamePlaylist(music)
+            R.id.action_delete -> musicModel.deletePlaylist(music)
+            R.id.action_share -> requireContext().share(music)
+            else -> error("Unexpected menu item $item")
+        }
+    }
 }
