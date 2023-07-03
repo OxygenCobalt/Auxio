@@ -31,6 +31,28 @@
         <item name="trackCornerRadius">@dimen/size_corners_medium</item>
     </style>
 
+    <style name="Widget.Auxio.BottomSheet" parent="Widget.Material3.BottomSheet">
+        <item name="marginLeftSystemWindowInsets">false</item>
+        <item name="marginRightSystemWindowInsets">false</item>
+        <item name="paddingBottomSystemWindowInsets">false</item>
+        <item name="paddingTopSystemWindowInsets">false</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.None</item>
+        <item name="shouldRemoveExpandedCorners">true</item>
+    </style>
+
+    <style name="Widget.Auxio.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="marginLeftSystemWindowInsets">false</item>
+        <item name="marginRightSystemWindowInsets">false</item>
+        <item name="paddingBottomSystemWindowInsets">false</item>
+        <item name="paddingTopSystemWindowInsets">false</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.None</item>
+        <item name="shouldRemoveExpandedCorners">true</item>
+    </style>
+
+    <style name="Widget.Auxio.BottomSheet.Dialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+    <item name="bottomSheetStyle">@style/Widget.Auxio.BottomSheet.Modal</item>
+    </style>
+
     <style name="Widget.Auxio.Image.Small" parent="">
         <item name="android:layout_width">@dimen/size_cover_compact</item>
         <item name="android:layout_height">@dimen/size_cover_compact</item>

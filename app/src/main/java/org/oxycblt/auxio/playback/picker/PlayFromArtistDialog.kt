@@ -33,19 +33,19 @@ import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A picker [ViewBindingDialogFragment] intended for when [Artist] playback is ambiguous.
+ * A picker [ViewBindingMaterialDialogFragment] intended for when [Artist] playback is ambiguous.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
 class PlayFromArtistDialog :
-    ViewBindingDialogFragment<DialogMusicChoicesBinding>(), ClickableListListener<Artist> {
+    ViewBindingMaterialDialogFragment<DialogMusicChoicesBinding>(), ClickableListListener<Artist> {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val pickerModel: PlaybackPickerViewModel by viewModels()
     // Information about what Song to show choices for is initially within the navigation arguments

@@ -33,7 +33,7 @@ import org.oxycblt.auxio.databinding.DialogMusicChoicesBinding
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
@@ -45,7 +45,7 @@ import org.oxycblt.auxio.util.showToast
  */
 @AndroidEntryPoint
 class AddToPlaylistDialog :
-    ViewBindingDialogFragment<DialogMusicChoicesBinding>(),
+    ViewBindingMaterialDialogFragment<DialogMusicChoicesBinding>(),
     ClickableListListener<PlaylistChoice>,
     NewPlaylistFooterAdapter.Listener {
     private val musicModel: MusicViewModel by activityViewModels()

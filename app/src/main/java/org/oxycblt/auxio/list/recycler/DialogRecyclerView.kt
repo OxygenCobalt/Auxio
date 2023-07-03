@@ -22,6 +22,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import androidx.annotation.AttrRes
 import androidx.core.view.isInvisible
 import androidx.core.view.updatePadding
@@ -31,6 +32,7 @@ import com.google.android.material.divider.MaterialDivider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView.ViewHolder
 import org.oxycblt.auxio.util.getDimenPixels
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A [RecyclerView] intended for use in Dialogs, adding features such as:
@@ -72,6 +74,13 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         bottomDivider.layout(l, measuredHeight - bottomDivider.measuredHeight, r, b)
         // Make sure we initialize the dividers here before we start drawing.
         invalidateDividers()
+    }
+
+    override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        // Update the RecyclerView's padding such that the bottom insets are applied
+        // while still preserving bottom padding.
+        updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
+        return insets
     }
 
     override fun onScrolled(dx: Int, dy: Int) {

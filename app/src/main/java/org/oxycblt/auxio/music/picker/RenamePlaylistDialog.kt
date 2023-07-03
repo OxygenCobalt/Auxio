@@ -31,7 +31,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPlaylistNameBinding
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
@@ -43,7 +43,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class RenamePlaylistDialog : ViewBindingDialogFragment<DialogPlaylistNameBinding>() {
+class RenamePlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNameBinding>() {
     private val musicModel: MusicViewModel by activityViewModels()
     private val pickerModel: PlaylistPickerViewModel by viewModels()
     // Information about what playlist to name for is initially within the navigation arguments

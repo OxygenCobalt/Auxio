@@ -30,19 +30,19 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogDeletePlaylistBinding
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
-import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A [ViewBindingDialogFragment] that asks the user to confirm the deletion of a [Playlist].
+ * A [ViewBindingMaterialDialogFragment] that asks the user to confirm the deletion of a [Playlist].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class DeletePlaylistDialog : ViewBindingDialogFragment<DialogDeletePlaylistBinding>() {
+class DeletePlaylistDialog : ViewBindingMaterialDialogFragment<DialogDeletePlaylistBinding>() {
     private val pickerModel: PlaylistPickerViewModel by viewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     // Information about what playlist to name for is initially within the navigation arguments

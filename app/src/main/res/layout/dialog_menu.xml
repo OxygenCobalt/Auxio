@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Auxio.RecyclerView.Linear"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_medium"
+        android:paddingHorizontal="@dimen/spacing_medium"
+        android:textAppearance="@style/TextAppearance.Auxio.HeadlineSmall"
+        android:text="TODO: Put info here" />
+
+    <org.oxycblt.auxio.list.recycler.DialogRecyclerView
+        android:id="@+id/menu_recycler"
+        style="@style/Widget.Auxio.RecyclerView.Linear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_menu_option" />
+
+</LinearLayout>

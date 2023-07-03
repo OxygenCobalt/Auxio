@@ -30,17 +30,18 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogTabsBinding
 import org.oxycblt.auxio.home.HomeSettings
 import org.oxycblt.auxio.list.EditClickListListener
-import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.logD
 
 /**
- * A [ViewBindingDialogFragment] that allows the user to modify the home [Tab] configuration.
+ * A [ViewBindingMaterialDialogFragment] that allows the user to modify the home [Tab]
+ * configuration.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
 class TabCustomizeDialog :
-    ViewBindingDialogFragment<DialogTabsBinding>(), EditClickListListener<Tab> {
+    ViewBindingMaterialDialogFragment<DialogTabsBinding>(), EditClickListListener<Tab> {
     private val tabAdapter = TabAdapter(this)
     private var touchHelper: ItemTouchHelper? = null
     @Inject lateinit var homeSettings: HomeSettings

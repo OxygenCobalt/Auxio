@@ -33,17 +33,17 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 
 /**
- * A picker [ViewBindingDialogFragment] intended for when the [Artist] to show is ambiguous.
+ * A picker [ViewBindingMaterialDialogFragment] intended for when the [Artist] to show is ambiguous.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
 class ShowArtistDialog :
-    ViewBindingDialogFragment<DialogMusicChoicesBinding>(), ClickableListListener<Artist> {
+    ViewBindingMaterialDialogFragment<DialogMusicChoicesBinding>(), ClickableListListener<Artist> {
     private val detailModel: DetailViewModel by activityViewModels()
     private val pickerModel: NavigationPickerViewModel by viewModels()
     // Information about what artists to show choices for is initially within the navigation

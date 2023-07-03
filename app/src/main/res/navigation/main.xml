@@ -31,6 +31,9 @@
             android:id="@+id/show_genre"
             app:destination="@id/genre_detail_fragment" />
         <action
+            android:id="@+id/open_menu"
+            app:destination="@id/menu_dialog" />
+        <action
             android:id="@+id/show_playlist"
             app:destination="@id/playlist_detail_fragment" />
         <action
@@ -296,6 +299,12 @@
             android:name="genreUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
     </dialog>
+
+    <dialog
+        android:id="@+id/menu_dialog"
+        android:name="org.oxycblt.auxio.list.menu.MenuDialogFragment"
+        android:label="menu_dialog"
+        tools:layout="@layout/dialog_menu" />
 
     <fragment
         android:id="@+id/root_preferences_fragment"

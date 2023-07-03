@@ -23,6 +23,8 @@
         <item name="materialAlertDialogTheme">@style/Theme.Auxio.Dialog</item>
         <item name="sliderStyle">@style/Widget.Auxio.Slider</item>
         <item name="linearProgressIndicatorStyle">@style/Widget.Auxio.LinearProgressIndicator</item>
+        <item name="bottomSheetStyle">@style/Widget.Auxio.BottomSheet</item>
+        <item name="bottomSheetDialogTheme">@style/Widget.Auxio.BottomSheet.Dialog</item>
 
         <item name="textAppearanceDisplayLarge">@style/TextAppearance.Auxio.DisplayLarge</item>
         <item name="textAppearanceDisplayMedium">@style/TextAppearance.Auxio.DisplayMedium</item>
