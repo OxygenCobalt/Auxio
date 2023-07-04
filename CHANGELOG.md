@@ -1,5 +1,18 @@
 # Changelog
 
+## dev
+
+#### What's New
+- Menus have been refreshed with a cleaner look
+
+#### What's Fixed
+- Fixed issue where one could not navigate to settings after navigating
+elsewhere
+- Fixed the queue list being non-scrollable in certain cases
+
+#### Dev/Meta
+- Unified navigation graph
+
 ## 3.1.3
 
 #### What's New

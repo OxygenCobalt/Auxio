@@ -1671,9 +1671,8 @@ public class BackportBottomSheetBehavior<V extends View> extends CoordinatorLayo
   @Nullable
   @VisibleForTesting
   View findScrollingChild(View view) {
-    if (view.getVisibility() != View.VISIBLE) {
-      return null;
-    }
+    // MODIFICATION: Remove visibility check that broke nested scrolling in the queue sheet
+    // due to it being set to invisible when completely hidden
     if (ViewCompat.isNestedScrollingEnabled(view)) {
       return view;
     }
