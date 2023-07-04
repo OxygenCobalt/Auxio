@@ -5,6 +5,9 @@
 #### What's New
 - Menus have been refreshed with a cleaner look
 
+#### What's Improved
+- Made "Add to Playlist" action more prominent in selection toolbar
+
 #### What's Fixed
 - Fixed issue where one could not navigate to settings after navigating elsewhere
 - Fixed the queue list being non-scrollable in certain cases

@@ -63,13 +63,13 @@ abstract class SelectionFragment<VB : ViewBinding> :
                 requireContext().showToast(R.string.lng_queue_added)
                 true
             }
+            R.id.action_selection_playlist_add -> {
+                musicModel.addToPlaylist(selectionModel.take())
+                true
+            }
             R.id.action_selection_queue_add -> {
                 playbackModel.addToQueue(selectionModel.take())
                 requireContext().showToast(R.string.lng_queue_added)
-                true
-            }
-            R.id.action_selection_playlist_add -> {
-                musicModel.addToPlaylist(selectionModel.take())
                 true
             }
             R.id.action_selection_play -> {
