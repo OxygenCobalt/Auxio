@@ -2,16 +2,10 @@
 
 ## dev
 
-#### What's New
-- Menus have been refreshed with a cleaner look
-
 #### What's Fixed
-- Fixed issue where one could not navigate to settings after navigating
-elsewhere
+- Fixed issue where one could not navigate to settings after navigating elsewhere
 - Fixed the queue list being non-scrollable in certain cases
-
-#### Dev/Meta
-- Unified navigation graph
+- Fixed negative ReplayGain adjustments not being applied
 
 ## 3.1.3
 
