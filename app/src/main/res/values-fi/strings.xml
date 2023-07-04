@@ -41,7 +41,7 @@
     <string name="lbl_shuffle">Sekoita</string>
     <string name="lbl_queue">Jono</string>
     <string name="lbl_queue_add">Lisää jonoon</string>
-    <string name="lbl_go_album">Siirry albumiin</string>
+    <string name="lbl_album_details">Siirry albumiin</string>
     <string name="lbl_song_detail">Näytä ominaisuudet</string>
     <string name="lbl_props">Kappaleen ominaisuudet</string>
     <string name="lbl_file_name">Tiedostonimi</string>
@@ -211,7 +211,7 @@
     </plurals>
     <string name="lbl_sort_asc">Nousevasti</string>
     <string name="lbl_play_next">Toista seuraava</string>
-    <string name="lbl_go_artist">Siirry esittäjään</string>
+    <string name="lbl_artist_details">Siirry esittäjään</string>
     <string name="set_content">Sisältö</string>
     <string name="set_music">Musiikki</string>
     <string name="set_images">Kuvat</string>

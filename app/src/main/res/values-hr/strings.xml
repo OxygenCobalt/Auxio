@@ -179,8 +179,8 @@
     <string name="lbl_queue_add">Dodaj u popis pjesama</string>
     <string name="lng_queue_added">Dodano u popis pjesama</string>
     <string name="lbl_song_detail">Prikaži svojstva</string>
-    <string name="lbl_go_artist">Idi na izvođača</string>
-    <string name="lbl_go_album">Idi na album</string>
+    <string name="lbl_artist_details">Idi na izvođača</string>
+    <string name="lbl_album_details">Idi na album</string>
     <string name="set_keep_shuffle_desc">Ostavi miješanje omogućeno kada se druga pjesma reproducira</string>
     <string name="set_root_title">Postavke</string>
     <string name="set_theme">Tema</string>

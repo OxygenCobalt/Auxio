@@ -48,8 +48,8 @@
     <string name="lbl_queue">Kö</string>
     <string name="lbl_play_next">Spela nästa</string>
     <string name="lbl_playlist_add">Lägg till spellista</string>
-    <string name="lbl_go_artist">Gå till konstnär</string>
-    <string name="lbl_go_album">Gå till album</string>
+    <string name="lbl_artist_details">Gå till konstnär</string>
+    <string name="lbl_album_details">Gå till album</string>
     <string name="lbl_song_detail">Visa egenskaper</string>
     <string name="lbl_share">Dela</string>
     <string name="lbl_props">Egenskaper för låt</string>

@@ -19,8 +19,8 @@
     <string name="lbl_play_next">Відтворити наступним</string>
     <string name="lbl_queue_add">Додати в чергу</string>
     <string name="lng_queue_added">Додано в чергу</string>
-    <string name="lbl_go_artist">Перейти до виконавця</string>
-    <string name="lbl_go_album">Перейти до альбому</string>
+    <string name="lbl_artist_details">Перейти до виконавця</string>
+    <string name="lbl_album_details">Перейти до альбому</string>
     <string name="lbl_about">Про застосунок</string>
     <string name="lbl_version">Версія</string>
     <string name="lbl_code">Вихідний код</string>

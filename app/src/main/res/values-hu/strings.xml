@@ -20,8 +20,8 @@
     <string name="lbl_play_next">Következő lejátszása</string>
     <string name="lbl_queue_add">Várósorhoz ad</string>
     <string name="lng_queue_added">Sorbaállítva</string>
-    <string name="lbl_go_artist">Ugrás előadóhoz</string>
-    <string name="lbl_go_album">Ugrás albumhoz</string>
+    <string name="lbl_artist_details">Ugrás előadóhoz</string>
+    <string name="lbl_album_details">Ugrás albumhoz</string>
     <string name="lbl_about">Rólunk</string>
     <string name="lbl_version">Verzió</string>
     <string name="lbl_code">Forráskód</string>

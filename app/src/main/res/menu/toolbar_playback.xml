@@ -7,18 +7,18 @@
         android:title="@string/lbl_equalizer"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_go_artist"
-        android:title="@string/lbl_go_artist"
+        android:id="@+id/action_artist_details"
+        android:title="@string/lbl_artist_details"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_go_album"
-        android:title="@string/lbl_go_album"
+        android:id="@+id/action_album_details"
+        android:title="@string/lbl_album_details"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_playlist_add"
         android:title="@string/lbl_playlist_add" />
     <item
-        android:id="@+id/action_song_detail"
+        android:id="@+id/action_detail"
         android:title="@string/lbl_song_detail"
         app:showAsAction="never" />
     <item

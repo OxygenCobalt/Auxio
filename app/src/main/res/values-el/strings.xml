@@ -19,8 +19,8 @@
     <string name="lbl_play_next">Επόμενο</string>
     <string name="lbl_queue_add">Προσθήκη στην ουρά αναπ/γής</string>
     <string name="lng_queue_added">Προστέθηκε ένας τίτλος στην ουρά αναπαραγωγής</string>
-    <string name="lbl_go_artist">Πήγαινε στον καλλιτέχνη</string>
-    <string name="lbl_go_album">Πήγαινε στο άλμπουμ</string>
+    <string name="lbl_artist_details">Πήγαινε στον καλλιτέχνη</string>
+    <string name="lbl_album_details">Πήγαινε στο άλμπουμ</string>
     <string name="lbl_about">Σχετικά με</string>
     <string name="lbl_version">Έκδοση</string>
     <string name="lbl_code">Πηγαίος κώδικας</string>

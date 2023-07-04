@@ -32,7 +32,7 @@
     <string name="lbl_single_live">Sinxelo en directo</string>
     <string name="lbl_compilation_live">Compilación en directo</string>
     <string name="lbl_mixes">Mesturas</string>
-    <string name="lbl_go_album">Ir ao álbum</string>
+    <string name="lbl_album_details">Ir ao álbum</string>
     <string name="lbl_genres">Xéneros</string>
     <string name="lbl_genre">Xénero</string>
     <string name="lbl_filter">Filtro</string>
@@ -53,7 +53,7 @@
     <string name="lbl_queue">Cola</string>
     <string name="lbl_queue_add">Engadir á cola</string>
     <string name="set_exclude_non_music">Excluir o que non é música</string>
-    <string name="lbl_go_artist">Ir ao artista</string>
+    <string name="lbl_artist_details">Ir ao artista</string>
     <string name="lbl_file_name">Nome do arquivo</string>
     <string name="lbl_shuffle_shortcut_short">Mesturar</string>
     <string name="lbl_shuffle_shortcut_long">Mesturar todo</string>

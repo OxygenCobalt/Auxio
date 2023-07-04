@@ -22,8 +22,8 @@
     <string name="lbl_play_next">Als Nächstes abspielen</string>
     <string name="lbl_queue_add">Zur Warteschlange hinzufügen</string>
     <string name="lng_queue_added">Der Warteschlange hinzugefügt</string>
-    <string name="lbl_go_artist">Zum Künstler gehen</string>
-    <string name="lbl_go_album">Zum Album gehen</string>
+    <string name="lbl_artist_details">Zum Künstler gehen</string>
+    <string name="lbl_album_details">Zum Album gehen</string>
     <string name="lbl_state_saved">Wiedergabezustand gespeichert</string>
     <string name="lbl_add">Hinzufügen</string>
     <string name="lbl_save">Speichern</string>

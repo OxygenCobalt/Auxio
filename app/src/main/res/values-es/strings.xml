@@ -30,8 +30,8 @@
     <string name="lbl_play_next">Reproducir siguiente</string>
     <string name="lbl_queue_add">Agregar a la cola</string>
     <string name="lng_queue_added">Agregado a la cola</string>
-    <string name="lbl_go_artist">Ir al artista</string>
-    <string name="lbl_go_album">Ir al álbum</string>
+    <string name="lbl_artist_details">Ir al artista</string>
+    <string name="lbl_album_details">Ir al álbum</string>
     <string name="lbl_state_saved">Estado guardado</string>
     <string name="lbl_add">Agregar</string>
     <string name="lbl_save">Guardar</string>

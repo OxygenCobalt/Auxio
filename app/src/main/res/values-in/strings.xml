@@ -20,8 +20,8 @@
     <string name="lbl_play_next">Putar berikutnya</string>
     <string name="lbl_queue_add">Tambahkan ke antrean</string>
     <string name="lng_queue_added">Ditambahkan ke antrean</string>
-    <string name="lbl_go_artist">Buka artis</string>
-    <string name="lbl_go_album">Buka album</string>
+    <string name="lbl_artist_details">Buka artis</string>
+    <string name="lbl_album_details">Buka album</string>
     <string name="lbl_about">Tentang</string>
     <string name="lbl_version">Versi</string>
     <string name="lbl_code">Kode sumber</string>

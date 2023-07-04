@@ -83,8 +83,8 @@
     <string name="lbl_equalizer">Эквалайзер</string>
     <string name="lbl_play_selected">Гуляць выбрана</string>
     <string name="lbl_queue">Чарга</string>
-    <string name="lbl_go_album">Перайсці да альбома</string>
-    <string name="lbl_go_artist">Перайсці да выканаўцы</string>
+    <string name="lbl_album_details">Перайсці да альбома</string>
+    <string name="lbl_artist_details">Перайсці да выканаўцы</string>
     <string name="lbl_file_name">Імя файла</string>
     <string name="lbl_song_detail">Праглядзіце ўласцівасці</string>
     <string name="lbl_props">Уласцівасці песні</string>

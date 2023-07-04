@@ -25,8 +25,8 @@
     <string name="lbl_play_next">Afspelen als volgende</string>
     <string name="lbl_queue_add">Toevoegen aan wachtrij</string>
     <string name="lng_queue_added">Toegevoegd aan de wachtrij</string>
-    <string name="lbl_go_artist">Ga naar artiest</string>
-    <string name="lbl_go_album">Ga naar album</string>
+    <string name="lbl_artist_details">Ga naar artiest</string>
+    <string name="lbl_album_details">Ga naar album</string>
     <string name="lbl_state_saved">Staat gered</string>
     <string name="lbl_add">Toevoegen</string>
     <string name="lbl_save">Opslaan</string>

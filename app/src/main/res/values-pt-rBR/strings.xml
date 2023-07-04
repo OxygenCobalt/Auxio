@@ -19,8 +19,8 @@
     <string name="lbl_play_next">Reproduzir próxima</string>
     <string name="lbl_queue_add">Adicionar à fila</string>
     <string name="lng_queue_added">Adicionada à fila</string>
-    <string name="lbl_go_artist">Ir para o artista</string>
-    <string name="lbl_go_album">Ir para o álbum</string>
+    <string name="lbl_artist_details">Ir para o artista</string>
+    <string name="lbl_album_details">Ir para o álbum</string>
     <string name="lbl_about">Sobre</string>
     <string name="lbl_version">Versão</string>
     <string name="lbl_code">Código-fonte</string>

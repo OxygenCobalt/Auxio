@@ -13,8 +13,8 @@
     <string name="lbl_sort">क्रमबद्ध</string>
     <string name="lbl_play">चलाएं</string>
     <string name="lbl_shuffle">शफ़ल</string>
-    <string name="lbl_go_artist">कलाकार पर जाएं</string>
-    <string name="lbl_go_album">एल्बम पर जाएं</string>
+    <string name="lbl_artist_details">कलाकार पर जाएं</string>
+    <string name="lbl_album_details">एल्बम पर जाएं</string>
     <string name="lbl_queue">पंक्ति</string>
     <string name="lbl_queue_add">क़तार में जोड़ें</string>
     <string name="lng_queue_added">कतार में जोड़ा गया</string>

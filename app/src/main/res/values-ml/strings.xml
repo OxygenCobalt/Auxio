@@ -87,7 +87,7 @@
         <item quantity="one">%d പാട്ട്</item>
         <item quantity="other">%d പാട്ടുകൾ</item>
     </plurals>
-    <string name="lbl_go_artist">കലാകാരനിലേക്ക് പോകുക</string>
+    <string name="lbl_artist_details">കലാകാരനിലേക്ക് പോകുക</string>
     <string name="lbl_song_detail">സവിശേഷതകൾ കാണുക</string>
     <string name="lbl_state_saved">സ്ഥിതി സംരക്ഷിച്ചു</string>
     <string name="lbl_sort_dec">അവരോഹണം</string>

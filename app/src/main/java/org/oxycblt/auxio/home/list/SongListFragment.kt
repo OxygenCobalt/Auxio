@@ -145,7 +145,7 @@ class SongListFragment :
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {
-        menuModel.openMenu(R.menu.item_song, item)
+        menuModel.open(R.menu.item_song, item)
     }
 
     private fun updateSongs(songs: List<Song>) {

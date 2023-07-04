@@ -30,8 +30,8 @@
     <string name="lbl_play_next">Играть далее</string>
     <string name="lbl_queue_add">Добавить в очередь</string>
     <string name="lng_queue_added">Добавлено в очередь</string>
-    <string name="lbl_go_artist">Перейти к исполнителю</string>
-    <string name="lbl_go_album">Перейти к альбому</string>
+    <string name="lbl_artist_details">Перейти к исполнителю</string>
+    <string name="lbl_album_details">Перейти к альбому</string>
     <string name="lbl_state_saved">Позиция сохранена</string>
     <string name="lbl_add">Добавить</string>
     <string name="lbl_save">Сохранить</string>

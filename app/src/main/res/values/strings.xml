@@ -120,9 +120,11 @@
 
     <string name="lbl_playlist_add">Add to playlist</string>
 
-    <string name="lbl_go_artist">Go to artist</string>
-    <string name="lbl_go_album">Go to album</string>
+
+    <string name="lbl_artist_details">Go to artist</string>
+    <string name="lbl_album_details">Go to album</string>
     <string name="lbl_song_detail">View properties</string>
+    <string name="lbl_parent_detail">View</string>
     <string name="lbl_share">Share</string>
 
     <string name="lbl_props">Song properties</string>

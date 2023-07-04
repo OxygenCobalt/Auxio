@@ -4,21 +4,29 @@
     <item
         android:id="@+id/action_play"
         android:title="@string/lbl_play"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_play_24" />
     <item
         android:id="@+id/action_shuffle"
         android:title="@string/lbl_shuffle"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_shuffle_off_24"/>
+    <item
+        android:id="@+id/action_detail"
+        android:title="@string/lbl_parent_detail"
+        android:icon="@drawable/ic_details_24" />
     <item
         android:id="@+id/action_play_next"
-        android:title="@string/lbl_play_next" />
+        android:title="@string/lbl_play_next"
+        android:icon="@drawable/ic_play_next_24"/>
     <item
         android:id="@+id/action_queue_add"
-        android:title="@string/lbl_queue_add" />
+        android:title="@string/lbl_queue_add"
+        android:icon="@drawable/ic_queue_add_24"/>
     <item
         android:id="@+id/action_playlist_add"
-        android:title="@string/lbl_playlist_add" />
+        android:title="@string/lbl_playlist_add"
+        android:icon="@drawable/ic_playlist_add_24"/>
     <item
         android:id="@+id/action_share"
-        android:title="@string/lbl_share" />
+        android:title="@string/lbl_share"
+        android:icon="@drawable/ic_share_24"/>
 </menu>

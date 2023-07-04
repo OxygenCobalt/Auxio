@@ -20,8 +20,8 @@
     <string name="lbl_play_next">Odtwórz następny</string>
     <string name="lbl_queue_add">Dodaj do kolejki</string>
     <string name="lng_queue_added">Dodano do kolejki</string>
-    <string name="lbl_go_artist">Przejdź do wykonawcy</string>
-    <string name="lbl_go_album">Przejdź do albumu</string>
+    <string name="lbl_artist_details">Przejdź do wykonawcy</string>
+    <string name="lbl_album_details">Przejdź do albumu</string>
     <string name="lbl_about">O aplikacji</string>
     <string name="lbl_version">Wersja</string>
     <string name="lbl_code">Kod źródłowy</string>

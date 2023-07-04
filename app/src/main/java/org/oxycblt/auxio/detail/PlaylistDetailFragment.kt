@@ -239,7 +239,7 @@ class PlaylistDetailFragment :
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {
-        menuModel.openMenu(R.menu.item_playlist_song, item)
+        menuModel.open(R.menu.item_playlist_song, item)
     }
 
     override fun onPlay() {

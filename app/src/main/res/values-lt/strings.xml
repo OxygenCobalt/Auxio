@@ -16,8 +16,8 @@
     <string name="lbl_play_next">Groti kitą</string>
     <string name="lbl_queue_add">Pridėti į eilę</string>
     <string name="lbl_queue">Eilė</string>
-    <string name="lbl_go_artist">Eiti į atlikėją</string>
-    <string name="lbl_go_album">Eiti į albumą</string>
+    <string name="lbl_artist_details">Eiti į atlikėją</string>
+    <string name="lbl_album_details">Eiti į albumą</string>
     <string name="lbl_song_detail">Peržiūrėti ypatybes</string>
     <string name="lbl_size">Dydis</string>
     <string name="lbl_bitrate">Bitų srautas</string>

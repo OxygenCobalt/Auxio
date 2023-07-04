@@ -116,8 +116,8 @@
     <plurals name="fmt_artist_count">
         <item quantity="other">%d 人のアーティスト</item>
     </plurals>
-    <string name="lbl_go_artist">アーティストに移動</string>
-    <string name="lbl_go_album">アルバムに移動</string>
+    <string name="lbl_artist_details">アーティストに移動</string>
+    <string name="lbl_album_details">アルバムに移動</string>
     <string name="lbl_props">曲のプロパティ</string>
     <string name="lng_queue_added">再生待ちに追加</string>
     <string name="lng_author">開発者 アレクサンダー・ケイプハート (Alexander Capehart)</string>

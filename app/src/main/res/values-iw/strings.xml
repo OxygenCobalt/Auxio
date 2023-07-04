@@ -45,7 +45,7 @@
     <string name="lbl_shuffle_selected">ערבוב הנבחרים</string>
     <string name="lbl_play_next">ניגון הבא</string>
     <string name="lbl_queue_add">הוספה לתור</string>
-    <string name="lbl_go_album">מעבר לאלבום</string>
+    <string name="lbl_album_details">מעבר לאלבום</string>
     <string name="lbl_song_detail">הצגת מאפיינים</string>
     <string name="lbl_props">מאפייני שיר</string>
     <string name="lbl_format">תבנית</string>
@@ -132,7 +132,7 @@
     <string name="lbl_name">שם</string>
     <string name="lbl_track">רצועה</string>
     <string name="lbl_queue">תור</string>
-    <string name="lbl_go_artist">מעבר לאומן</string>
+    <string name="lbl_artist_details">מעבר לאומן</string>
     <string name="lbl_file_name">שם קובץ</string>
     <string name="lbl_shuffle_shortcut_short">ערבוב</string>
     <string name="lbl_state_restored">המצב שוחזר</string>

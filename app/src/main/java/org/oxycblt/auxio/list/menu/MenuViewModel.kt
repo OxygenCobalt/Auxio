@@ -56,22 +56,19 @@ class MenuViewModel @Inject constructor(private val musicRepository: MusicReposi
         musicRepository.removeUpdateListener(this)
     }
 
-    fun openMenu(@MenuRes menuRes: Int, song: Song) =
-        openMenuImpl(PendingMenu.ForSong(menuRes, song))
+    fun open(@MenuRes menuRes: Int, song: Song) = openImpl(PendingMenu.ForSong(menuRes, song))
 
-    fun openMenu(@MenuRes menuRes: Int, album: Album) =
-        openMenuImpl(PendingMenu.ForAlbum(menuRes, album))
+    fun open(@MenuRes menuRes: Int, album: Album) = openImpl(PendingMenu.ForAlbum(menuRes, album))
 
-    fun openMenu(@MenuRes menuRes: Int, artist: Artist) =
-        openMenuImpl(PendingMenu.ForArtist(menuRes, artist))
+    fun open(@MenuRes menuRes: Int, artist: Artist) =
+        openImpl(PendingMenu.ForArtist(menuRes, artist))
 
-    fun openMenu(@MenuRes menuRes: Int, genre: Genre) =
-        openMenuImpl(PendingMenu.ForGenre(menuRes, genre))
+    fun open(@MenuRes menuRes: Int, genre: Genre) = openImpl(PendingMenu.ForGenre(menuRes, genre))
 
-    fun openMenu(@MenuRes menuRes: Int, playlist: Playlist) =
-        openMenuImpl(PendingMenu.ForPlaylist(menuRes, playlist))
+    fun open(@MenuRes menuRes: Int, playlist: Playlist) =
+        openImpl(PendingMenu.ForPlaylist(menuRes, playlist))
 
-    private fun openMenuImpl(pendingMenu: PendingMenu) {
+    private fun openImpl(pendingMenu: PendingMenu) {
         val existing = _pendingMenu.flow.value
         if (existing != null) {
             logW("Already opening $existing, ignoring $pendingMenu")

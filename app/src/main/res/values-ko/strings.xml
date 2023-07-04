@@ -34,8 +34,8 @@
     <string name="lbl_play_next">다음 곡 재생</string>
     <string name="lbl_queue_add">대기열에 추가</string>
     <string name="lng_queue_added">대기열에 추가됨</string>
-    <string name="lbl_go_artist">아티스트로 이동</string>
-    <string name="lbl_go_album">앨범으로 이동</string>
+    <string name="lbl_artist_details">아티스트로 이동</string>
+    <string name="lbl_album_details">앨범으로 이동</string>
     <string name="lbl_state_saved">상태 저장됨</string>
     <!-- Actual string: Ok -->
     <string name="lbl_ok">확인</string>

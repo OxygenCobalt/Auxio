@@ -7,8 +7,8 @@
         android:id="@+id/action_queue_add"
         android:title="@string/lbl_queue_add" />
     <item
-        android:id="@+id/action_go_artist"
-        android:title="@string/lbl_go_artist" />
+        android:id="@+id/action_artist_details"
+        android:title="@string/lbl_artist_details" />
     <item
         android:id="@+id/action_playlist_add"
         android:title="@string/lbl_playlist_add" />

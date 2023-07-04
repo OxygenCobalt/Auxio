@@ -164,11 +164,11 @@ class PlaybackPanelFragment :
                 }
                 true
             }
-            R.id.action_go_artist -> {
+            R.id.action_artist_details -> {
                 navigateToCurrentArtist()
                 true
             }
-            R.id.action_go_album -> {
+            R.id.action_album_details -> {
                 navigateToCurrentAlbum()
                 true
             }
@@ -176,7 +176,7 @@ class PlaybackPanelFragment :
                 playbackModel.song.value?.let(musicModel::addToPlaylist)
                 true
             }
-            R.id.action_song_detail -> {
+            R.id.action_detail -> {
                 playbackModel.song.value?.let(detailModel::showSong)
                 true
             }

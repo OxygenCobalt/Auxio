@@ -162,7 +162,7 @@ class AlbumDetailFragment :
                 requireContext().showToast(R.string.lng_queue_added)
                 true
             }
-            R.id.action_go_artist -> {
+            R.id.action_artist_details -> {
                 onNavigateToParentArtist()
                 true
             }
@@ -187,7 +187,7 @@ class AlbumDetailFragment :
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {
-        menuModel.openMenu(R.menu.item_album_song, item)
+        menuModel.open(R.menu.item_album_song, item)
     }
 
     override fun onPlay() {

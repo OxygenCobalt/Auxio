@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * MenuOptionAdapter.kt is part of Auxio.
+ * MenuItemAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,15 +30,15 @@ import org.oxycblt.auxio.util.inflater
 /**
  * Displays a list of [MenuItem]s as custom list items.
  *
- * @param listener A [MenuOptionAdapter] to bind interactions to.
+ * @param listener A [ClickableListListener] to bind interactions to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MenuOptionAdapter(private val listener: ClickableListListener<MenuItem>) :
-    FlexibleListAdapter<MenuItem, MenuOptionViewHolder>(MenuOptionViewHolder.DIFF_CALLBACK) {
+class MenuItemAdapter(private val listener: ClickableListListener<MenuItem>) :
+    FlexibleListAdapter<MenuItem, MenuItemViewHolder>(MenuItemViewHolder.DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        MenuOptionViewHolder.from(parent)
+        MenuItemViewHolder.from(parent)
 
-    override fun onBindViewHolder(holder: MenuOptionViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MenuItemViewHolder, position: Int) {
         holder.bind(getItem(position), listener)
     }
 }
@@ -48,11 +48,21 @@ class MenuOptionAdapter(private val listener: ClickableListListener<MenuItem>) :
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class MenuOptionViewHolder private constructor(private val binding: ItemMenuOptionBinding) :
+class MenuItemViewHolder private constructor(private val binding: ItemMenuOptionBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
+    /**
+     * Bind new data to this instance.
+     *
+     * @param item The new [MenuItem] to bind.
+     * @param listener An [ClickableListListener] to bind interactions to.
+     */
     fun bind(item: MenuItem, listener: ClickableListListener<MenuItem>) {
         listener.bind(item, this)
-        binding.title.text = item.title
+        binding.title.apply {
+            text = item.title
+            setCompoundDrawablesRelativeWithIntrinsicBounds(item.icon, null, null, null)
+            isEnabled = item.isEnabled
+        }
     }
 
     companion object {
@@ -63,7 +73,7 @@ class MenuOptionViewHolder private constructor(private val binding: ItemMenuOpti
          * @return A new instance.
          */
         fun from(parent: ViewGroup) =
-            MenuOptionViewHolder(ItemMenuOptionBinding.inflate(parent.context.inflater))
+            MenuItemViewHolder(ItemMenuOptionBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =

@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_selection_play_next"
         android:title="@string/lbl_play_next"
-        android:icon="@drawable/ic_play_next"
+        android:icon="@drawable/ic_play_next_24"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_selection_queue_add"

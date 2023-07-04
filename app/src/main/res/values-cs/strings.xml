@@ -36,8 +36,8 @@
     <string name="lbl_play_next">Přehrát další</string>
     <string name="lbl_queue_add">Přidat do fronty</string>
     <string name="lng_queue_added">Přidáno do fronty</string>
-    <string name="lbl_go_artist">Přejít na umělce</string>
-    <string name="lbl_go_album">Přejít na album</string>
+    <string name="lbl_artist_details">Přejít na umělce</string>
+    <string name="lbl_album_details">Přejít na album</string>
     <string name="lbl_state_saved">Stav uložen</string>
     <!-- Actual string: Ok -->
     <string name="lbl_ok">OK</string>

@@ -51,6 +51,8 @@ class SongMenuDialogFragment : MenuDialogFragment<Song>() {
     override val uid: Music.UID
         get() = args.songUid
 
+    override fun getDisabledItemIds(music: Song) = setOf<Int>()
+
     override fun updateMusic(binding: DialogMenuBinding, music: Song) {
         val context = requireContext()
         binding.menuCover.bind(music)
@@ -59,7 +61,7 @@ class SongMenuDialogFragment : MenuDialogFragment<Song>() {
         binding.menuInfo.text = music.artists.resolveNames(context)
     }
 
-    override fun onClick(music: Song, item: MenuItem) {
+    override fun onClick(item: MenuItem, music: Song) {
         when (item.itemId) {
             R.id.action_play_next -> {
                 playbackModel.playNext(music)
@@ -69,11 +71,11 @@ class SongMenuDialogFragment : MenuDialogFragment<Song>() {
                 playbackModel.addToQueue(music)
                 requireContext().showToast(R.string.lng_queue_added)
             }
-            R.id.action_go_artist -> detailModel.showArtist(music)
-            R.id.action_go_album -> detailModel.showAlbum(music)
+            R.id.action_artist_details -> detailModel.showArtist(music)
+            R.id.action_album_details -> detailModel.showAlbum(music)
             R.id.action_share -> requireContext().share(music)
             R.id.action_playlist_add -> musicModel.addToPlaylist(music)
-            R.id.action_song_detail -> detailModel.showSong(music)
+            R.id.action_detail -> detailModel.showSong(music)
             else -> error("Unexpected menu item selected $item")
         }
     }
@@ -92,6 +94,8 @@ class AlbumMenuDialogFragment : MenuDialogFragment<Album>() {
     override val uid: Music.UID
         get() = args.albumUid
 
+    override fun getDisabledItemIds(music: Album) = setOf<Int>()
+
     override fun updateMusic(binding: DialogMenuBinding, music: Album) {
         val context = requireContext()
         binding.menuCover.bind(music)
@@ -100,10 +104,11 @@ class AlbumMenuDialogFragment : MenuDialogFragment<Album>() {
         binding.menuInfo.text = music.artists.resolveNames(context)
     }
 
-    override fun onClick(music: Album, item: MenuItem) {
+    override fun onClick(item: MenuItem, music: Album) {
         when (item.itemId) {
             R.id.action_play -> playbackModel.play(music)
             R.id.action_shuffle -> playbackModel.shuffle(music)
+            R.id.action_detail -> detailModel.showAlbum(music)
             R.id.action_play_next -> {
                 playbackModel.playNext(music)
                 requireContext().showToast(R.string.lng_queue_added)
@@ -112,7 +117,7 @@ class AlbumMenuDialogFragment : MenuDialogFragment<Album>() {
                 playbackModel.addToQueue(music)
                 requireContext().showToast(R.string.lng_queue_added)
             }
-            R.id.action_go_artist -> detailModel.showArtist(music)
+            R.id.action_artist_details -> detailModel.showArtist(music)
             R.id.action_playlist_add -> musicModel.addToPlaylist(music)
             R.id.action_share -> requireContext().share(music)
             else -> error("Unexpected menu item selected $item")
@@ -123,6 +128,7 @@ class AlbumMenuDialogFragment : MenuDialogFragment<Album>() {
 @AndroidEntryPoint
 class ArtistMenuDialogFragment : MenuDialogFragment<Artist>() {
     override val menuModel: MenuViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val args: ArtistMenuDialogFragmentArgs by navArgs()
@@ -131,6 +137,19 @@ class ArtistMenuDialogFragment : MenuDialogFragment<Artist>() {
         get() = args.menuRes
     override val uid: Music.UID
         get() = args.artistUid
+
+    override fun getDisabledItemIds(music: Artist) =
+        if (music.songs.isEmpty()) {
+            setOf(
+                R.id.action_play,
+                R.id.action_shuffle,
+                R.id.action_play_next,
+                R.id.action_queue_add,
+                R.id.action_playlist_add,
+                R.id.action_share)
+        } else {
+            setOf()
+        }
 
     override fun updateMusic(binding: DialogMenuBinding, music: Artist) {
         val context = requireContext()
@@ -148,10 +167,11 @@ class ArtistMenuDialogFragment : MenuDialogFragment<Artist>() {
                 })
     }
 
-    override fun onClick(music: Artist, item: MenuItem) {
+    override fun onClick(item: MenuItem, music: Artist) {
         when (item.itemId) {
             R.id.action_play -> playbackModel.play(music)
             R.id.action_shuffle -> playbackModel.shuffle(music)
+            R.id.action_detail -> detailModel.showArtist(music)
             R.id.action_play_next -> {
                 playbackModel.playNext(music)
                 requireContext().showToast(R.string.lng_queue_added)
@@ -170,6 +190,7 @@ class ArtistMenuDialogFragment : MenuDialogFragment<Artist>() {
 @AndroidEntryPoint
 class GenreMenuDialogFragment : MenuDialogFragment<Genre>() {
     override val menuModel: MenuViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val args: GenreMenuDialogFragmentArgs by navArgs()
@@ -178,6 +199,8 @@ class GenreMenuDialogFragment : MenuDialogFragment<Genre>() {
         get() = args.menuRes
     override val uid: Music.UID
         get() = args.genreUid
+
+    override fun getDisabledItemIds(music: Genre) = setOf<Int>()
 
     override fun updateMusic(binding: DialogMenuBinding, music: Genre) {
         val context = requireContext()
@@ -191,10 +214,11 @@ class GenreMenuDialogFragment : MenuDialogFragment<Genre>() {
                 context.getPlural(R.plurals.fmt_song_count, music.songs.size))
     }
 
-    override fun onClick(music: Genre, item: MenuItem) {
+    override fun onClick(item: MenuItem, music: Genre) {
         when (item.itemId) {
             R.id.action_play -> playbackModel.play(music)
             R.id.action_shuffle -> playbackModel.shuffle(music)
+            R.id.action_detail -> detailModel.showGenre(music)
             R.id.action_play_next -> {
                 playbackModel.playNext(music)
                 requireContext().showToast(R.string.lng_queue_added)
@@ -213,6 +237,7 @@ class GenreMenuDialogFragment : MenuDialogFragment<Genre>() {
 @AndroidEntryPoint
 class PlaylistMenuDialogFragment : MenuDialogFragment<Playlist>() {
     override val menuModel: MenuViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val args: PlaylistMenuDialogFragmentArgs by navArgs()
@@ -222,18 +247,37 @@ class PlaylistMenuDialogFragment : MenuDialogFragment<Playlist>() {
     override val uid: Music.UID
         get() = args.playlistUid
 
+    override fun getDisabledItemIds(music: Playlist) =
+        if (music.songs.isEmpty()) {
+            setOf(
+                R.id.action_play,
+                R.id.action_shuffle,
+                R.id.action_play_next,
+                R.id.action_queue_add,
+                R.id.action_playlist_add,
+                R.id.action_share)
+        } else {
+            setOf()
+        }
+
     override fun updateMusic(binding: DialogMenuBinding, music: Playlist) {
         val context = requireContext()
         binding.menuCover.bind(music)
         binding.menuType.text = getString(R.string.lbl_playlist)
         binding.menuName.text = music.name.resolve(context)
-        binding.menuInfo.text = context.getPlural(R.plurals.fmt_song_count, music.songs.size)
+        binding.menuInfo.text =
+            if (music.songs.isNotEmpty()) {
+                context.getPlural(R.plurals.fmt_song_count, music.songs.size)
+            } else {
+                getString(R.string.def_song_count)
+            }
     }
 
-    override fun onClick(music: Playlist, item: MenuItem) {
+    override fun onClick(item: MenuItem, music: Playlist) {
         when (item.itemId) {
             R.id.action_play -> playbackModel.play(music)
             R.id.action_shuffle -> playbackModel.shuffle(music)
+            R.id.action_detail -> detailModel.showPlaylist(music)
             R.id.action_play_next -> {
                 playbackModel.playNext(music)
                 requireContext().showToast(R.string.lng_queue_added)

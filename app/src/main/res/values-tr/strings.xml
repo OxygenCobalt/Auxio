@@ -20,8 +20,8 @@
     <string name="lbl_play_next">Sonraki şarkı</string>
     <string name="lbl_queue_add">Kuyruğa ekle</string>
     <string name="lng_queue_added">Kuyruğa eklendi</string>
-    <string name="lbl_go_artist">Sanatçıya git</string>
-    <string name="lbl_go_album">Albüme git</string>
+    <string name="lbl_artist_details">Sanatçıya git</string>
+    <string name="lbl_album_details">Albüme git</string>
     <string name="lbl_about">Hakkında</string>
     <string name="lbl_version">Sürüm</string>
     <string name="lbl_code">Kaynak kodu</string>

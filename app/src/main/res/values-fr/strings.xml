@@ -20,8 +20,8 @@
     <string name="lbl_play_next">Jouer ensuite</string>
     <string name="lbl_queue_add">Ajouter à la file d\'attente</string>
     <string name="lng_queue_added">Ajouté à la file d\'attente</string>
-    <string name="lbl_go_album">Aller à l\'album</string>
-    <string name="lbl_go_artist">Aller à l\'artiste</string>
+    <string name="lbl_album_details">Aller à l\'album</string>
+    <string name="lbl_artist_details">Aller à l\'artiste</string>
     <string name="lbl_about">À propos</string>
     <string name="lbl_version">Version</string>
     <string name="lbl_code">Code source</string>

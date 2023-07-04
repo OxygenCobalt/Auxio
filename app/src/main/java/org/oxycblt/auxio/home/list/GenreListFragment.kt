@@ -119,7 +119,7 @@ class GenreListFragment :
     }
 
     override fun onOpenMenu(item: Genre, anchor: View) {
-        menuModel.openMenu(R.menu.item_parent, item)
+        menuModel.open(R.menu.item_parent, item)
     }
 
     private fun updateGenres(genres: List<Genre>) {
