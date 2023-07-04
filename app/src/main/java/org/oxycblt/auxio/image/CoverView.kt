@@ -76,14 +76,14 @@ import org.oxycblt.auxio.util.getInteger
 class CoverView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
-    FrameLayout(context, attrs, defStyleAttr) {
+    FrameLayout(context, attrs, defStyleAttr), ImageSettings.Listener, UISettings.Listener {
     @Inject lateinit var imageLoader: ImageLoader
     @Inject lateinit var uiSettings: UISettings
     @Inject lateinit var imageSettings: ImageSettings
 
     private val image: ImageView
 
-    data class PlaybackIndicator(
+    private data class PlaybackIndicator(
         val view: ImageView,
         val playingDrawable: AnimationDrawable,
         val pausedDrawable: Drawable
@@ -91,27 +91,30 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private val playbackIndicator: PlaybackIndicator?
     private val selectionBadge: ImageView?
 
+    private val sizing: Int
     @DimenRes private val iconSizeRes: Int?
-    @DimenRes private val cornerRadiusRes: Int?
+    @DimenRes private var cornerRadiusRes: Int?
 
     private var fadeAnimator: ValueAnimator? = null
     private val indicatorMatrix = Matrix()
     private val indicatorMatrixSrc = RectF()
     private val indicatorMatrixDst = RectF()
 
+    private data class Cover(
+        val songs: Collection<Song>,
+        val desc: String,
+        @DrawableRes val errorRes: Int
+    )
+    private var currentCover: Cover? = null
+
     init {
         // Obtain some StyledImageView attributes to use later when theming the custom view.
         @SuppressLint("CustomViewStyleable")
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.CoverView)
 
-        val sizing = styledAttrs.getIntOrThrow(R.styleable.CoverView_sizing)
+        sizing = styledAttrs.getIntOrThrow(R.styleable.CoverView_sizing)
         iconSizeRes = SIZING_ICON_SIZE[sizing]
-        cornerRadiusRes =
-            if (uiSettings.roundMode) {
-                SIZING_CORNER_RADII[sizing]
-            } else {
-                null
-            }
+        cornerRadiusRes = getCornerRadiusRes()
 
         val playbackIndicatorEnabled =
             styledAttrs.getBoolean(R.styleable.CoverView_enablePlaybackIndicator, true)
@@ -149,6 +152,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             } else {
                 null
             }
+
+        imageSettings.registerListener(this)
+        uiSettings.registerListener(this)
     }
 
     override fun onFinishInflate() {
@@ -161,19 +167,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         playbackIndicator?.run { addView(view) }
 
-        // Add backgrounds to each child for visual consistency
-        for (child in children) {
-            child.apply {
-                // If there are rounded corners, we want to make sure view content will be cropped
-                // with it.
-                clipToOutline = this != image
-                background =
-                    MaterialShapeDrawable().apply {
-                        fillColor = context.getColorCompat(R.color.sel_cover_bg)
-                        setCornerSize(cornerRadiusRes?.let(context::getDimen) ?: 0f)
-                    }
-            }
-        }
+        applyBackgroundsToChildren()
 
         // The selection badge has it's own background we don't want overridden, add it after
         // all other elements.
@@ -189,6 +183,24 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     updateMarginsRelative(bottom = spacing, end = spacing)
                 })
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        imageSettings.unregisterListener(this)
+    }
+
+    override fun onImageSettingsChanged() {
+        val cover = currentCover ?: return
+        bind(cover.songs, cover.desc, cover.errorRes)
+    }
+
+    override fun onRoundModeChanged() {
+        // TODO: Make this a recreate as soon as you can make the bottom sheet stop freaking out
+        cornerRadiusRes = getCornerRadiusRes()
+        applyBackgroundsToChildren()
+        val cover = currentCover ?: return
+        bind(cover.songs, cover.desc, cover.errorRes)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -257,6 +269,29 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             } else {
                 playingDrawable.stop()
                 view.setImageDrawable(pausedDrawable)
+            }
+        }
+    }
+
+    private fun getCornerRadiusRes() =
+        if (uiSettings.roundMode) {
+            SIZING_CORNER_RADII[sizing]
+        } else {
+            null
+        }
+
+    private fun applyBackgroundsToChildren() {
+        // Add backgrounds to each child for visual consistency
+        for (child in children) {
+            child.apply {
+                // If there are rounded corners, we want to make sure view content will be cropped
+                // with it.
+                clipToOutline = this != image
+                background =
+                    MaterialShapeDrawable().apply {
+                        fillColor = context.getColorCompat(R.color.sel_cover_bg)
+                        setCornerSize(cornerRadiusRes?.let(context::getDimen) ?: 0f)
+                    }
             }
         }
     }
@@ -401,6 +436,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         CoilUtils.dispose(image)
         imageLoader.enqueue(request.build())
         contentDescription = desc
+        currentCover = Cover(songs, desc, errorRes)
     }
 
     /**

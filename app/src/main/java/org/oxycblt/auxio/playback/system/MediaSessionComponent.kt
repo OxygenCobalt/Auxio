@@ -173,7 +173,7 @@ constructor(
 
     // --- SETTINGS OVERRIDES ---
 
-    override fun onCoverModeChanged() {
+    override fun onImageSettingsChanged() {
         // Need to reload the metadata cover.
         updateMediaMetadata(playbackManager.queue.currentSong, playbackManager.parent)
     }

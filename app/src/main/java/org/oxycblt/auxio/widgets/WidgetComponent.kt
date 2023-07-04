@@ -144,7 +144,7 @@ constructor(
 
     // Respond to settings changes that will affect the widget
     override fun onRoundModeChanged() = update()
-    override fun onCoverModeChanged() = update()
+    override fun onImageSettingsChanged() = update()
 
     /**
      * A condensed form of the playback state that is safe to use in AppWidgets.

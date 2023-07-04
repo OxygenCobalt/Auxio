@@ -39,7 +39,7 @@ interface ImageSettings : Settings<ImageSettings.Listener> {
 
     interface Listener {
         /** Called when [coverMode] changes. */
-        fun onCoverModeChanged() {}
+        fun onImageSettingsChanged() {}
     }
 }
 
@@ -77,9 +77,10 @@ class ImageSettingsImpl @Inject constructor(@ApplicationContext context: Context
     }
 
     override fun onSettingChanged(key: String, listener: ImageSettings.Listener) {
-        if (key == getString(R.string.set_key_cover_mode)) {
-            logD("Dispatching cover mode setting change")
-            listener.onCoverModeChanged()
+        if (key == getString(R.string.set_key_cover_mode) ||
+            key == getString(R.string.set_key_square_covers)) {
+            logD("Dispatching image setting change")
+            listener.onImageSettingsChanged()
         }
     }
 
