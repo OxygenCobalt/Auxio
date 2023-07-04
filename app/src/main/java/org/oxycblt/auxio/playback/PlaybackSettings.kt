@@ -68,6 +68,8 @@ interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
         fun onReplayGainSettingsChanged() {}
         /** Called when [notificationAction] has changed. */
         fun onNotificationActionChanged() {}
+        /** Called when [barAction] has changed. */
+        fun onBarActionChanged() {}
     }
 }
 
@@ -205,6 +207,10 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
             getString(R.string.set_key_notif_action) -> {
                 logD("Dispatching notification setting change")
                 listener.onNotificationActionChanged()
+            }
+            getString(R.string.set_key_bar_action) -> {
+                logD("Dispatching bar action change")
+                listener.onBarActionChanged()
             }
         }
     }

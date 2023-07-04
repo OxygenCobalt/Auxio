@@ -61,7 +61,7 @@ constructor(
     private val persistenceRepository: PersistenceRepository,
     private val musicRepository: MusicRepository,
     private val musicSettings: MusicSettings
-) : ViewModel(), PlaybackStateManager.Listener {
+) : ViewModel(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
     private var lastPositionJob: Job? = null
 
     private val _song = MutableStateFlow<Song?>(null)
@@ -89,7 +89,9 @@ constructor(
     val isShuffled: StateFlow<Boolean>
         get() = _isShuffled
 
-    val currentBarAction: ActionMode = playbackSettings.barAction
+    private val _currentBarAction = MutableStateFlow(playbackSettings.barAction)
+    val currentBarAction: StateFlow<ActionMode>
+        get() = _currentBarAction
 
     private val _openPanel = MutableEvent<OpenPanel>()
     val openPanel: Event<OpenPanel>
@@ -108,10 +110,12 @@ constructor(
 
     init {
         playbackManager.addListener(this)
+        playbackSettings.registerListener(this)
     }
 
     override fun onCleared() {
         playbackManager.removeListener(this)
+        playbackSettings.unregisterListener(this)
     }
 
     override fun onIndexMoved(queue: Queue) {
@@ -159,6 +163,10 @@ constructor(
 
     override fun onRepeatChanged(repeatMode: RepeatMode) {
         _repeatMode.value = repeatMode
+    }
+
+    override fun onBarActionChanged() {
+        _currentBarAction.value = playbackSettings.barAction
     }
 
     // --- PLAYING FUNCTIONS ---

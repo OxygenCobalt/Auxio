@@ -238,10 +238,10 @@ class PlaybackPanelFragment :
 
     private fun handleShow(show: Show?) {
         when (show) {
+            is Show.SongAlbumDetails,
             is Show.ArtistDetails,
             is Show.AlbumDetails -> playbackModel.openMain()
             is Show.SongDetails,
-            is Show.SongAlbumDetails,
             is Show.SongArtistDetails,
             is Show.AlbumArtistDetails,
             is Show.GenreDetails,
