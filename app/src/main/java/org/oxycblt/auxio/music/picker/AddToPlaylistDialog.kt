@@ -32,10 +32,13 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicChoicesBinding
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
+import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -72,8 +75,8 @@ class AddToPlaylistDialog :
         }
 
         // --- VIEWMODEL SETUP ---
-        musicModel.playlistDecision.consume()
         pickerModel.setSongsToAdd(args.songUids)
+        collect(musicModel.playlistDecision.flow, ::handleDecision)
         collectImmediately(pickerModel.currentSongsToAdd, ::updatePendingSongs)
         collectImmediately(pickerModel.playlistAddChoices, ::updatePlaylistChoices)
     }
@@ -91,6 +94,25 @@ class AddToPlaylistDialog :
 
     override fun onNewPlaylist() {
         musicModel.createPlaylist(songs = pickerModel.currentSongsToAdd.value ?: return)
+    }
+
+    private fun handleDecision(decision: PlaylistDecision?) {
+        when (decision) {
+            is PlaylistDecision.Add -> {
+                logD("Navigated to playlist add dialog")
+                musicModel.playlistDecision.consume()
+            }
+            is PlaylistDecision.New -> {
+                logD("Navigating to new playlist dialog")
+                findNavController()
+                    .navigateSafe(
+                        AddToPlaylistDialogDirections.newPlaylist(
+                            decision.songs.map { it.uid }.toTypedArray()))
+            }
+            is PlaylistDecision.Rename,
+            is PlaylistDecision.Delete -> error("Unexpected decision $decision")
+            null -> {}
+        }
     }
 
     private fun updatePendingSongs(songs: List<Song>?) {

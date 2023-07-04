@@ -46,7 +46,7 @@ import org.oxycblt.auxio.util.logD
 class ShowArtistDialog :
     ViewBindingMaterialDialogFragment<DialogMusicChoicesBinding>(), ClickableListListener<Artist> {
     private val detailModel: DetailViewModel by activityViewModels()
-    private val pickerModel: NavigationPickerViewModel by viewModels()
+    private val pickerModel: DetailPickerViewModel by viewModels()
     // Information about what artists to show choices for is initially within the navigation
     // arguments as UIDs, as that is the only safe way to parcel an artist.
     private val args: ShowArtistDialogArgs by navArgs()

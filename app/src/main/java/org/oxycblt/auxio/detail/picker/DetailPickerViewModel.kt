@@ -33,12 +33,13 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
 /**
- * A [ViewModel] that stores the current information required for navigation picker dialogs
+ * A [ViewModel] that stores choice information for [ShowArtistDialog], and possibly others in the
+ * future.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
-class NavigationPickerViewModel @Inject constructor(private val musicRepository: MusicRepository) :
+class DetailPickerViewModel @Inject constructor(private val musicRepository: MusicRepository) :
     ViewModel(), MusicRepository.UpdateListener {
     private val _artistChoices = MutableStateFlow<ArtistShowChoices?>(null)
     /** The current set of [Artist] choices to show in the picker, or null if to show nothing. */
