@@ -10,6 +10,7 @@
 - Fixed the queue list being non-scrollable in certain cases
 - Fixed notification album covers not updating after changing the cover
 aspect ratio setting 
+- Fixed negative ReplayGain adjustments not being applied
 
 #### Dev/Meta
 - Unified navigation graph
