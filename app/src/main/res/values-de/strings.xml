@@ -60,7 +60,7 @@
     <string name="set_keep_shuffle">Zufällig-Einstellung merken</string>
     <string name="set_keep_shuffle_desc">Zufällig anlassen, wenn ein neues Lied abgespielt wird</string>
     <string name="set_rewind_prev" tools:ignore="Typos">Zurückspulen, bevor das Lied zurück geändert wird</string>
-    <string name="set_rewind_prev_desc">Zurückspulen, bevor zum vorheriger Lied gewechselt wird</string>
+    <string name="set_rewind_prev_desc">Zurückspulen, bevor zum vorherigen Lied gewechselt wird</string>
     <string name="set_content">Inhalt</string>
     <string name="set_save_state">Wiedergabezustand speichern</string>
     <string name="set_save_desc">Den aktuellen Wiedergabezustand speichern</string>
@@ -297,4 +297,5 @@
     <string name="fmt_editing">%s bearbeiten</string>
     <string name="set_square_covers">Quadratische Album-Cover erzwingen</string>
     <string name="set_square_covers_desc">Alle Album-Cover auf ein Seitenverhältnis von 1:1 zuschneiden</string>
+    <string name="lbl_song">Lied</string>
 </resources>
