@@ -33,6 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.detail.Show
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
@@ -40,6 +41,7 @@ import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.share
@@ -129,6 +131,7 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.repeatMode, ::updateRepeat)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.isShuffled, ::updateShuffled)
+        collect(detailModel.toShow.flow, ::handleShow)
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
@@ -233,17 +236,25 @@ class PlaybackPanelFragment :
         requireBinding().playbackShuffle.isActivated = isShuffled
     }
 
-    private fun navigateToCurrentArtist() {
-        playbackModel.song.value?.let {
-            detailModel.showArtist(it)
-            playbackModel.openMain()
+    private fun handleShow(show: Show?) {
+        when (show) {
+            is Show.ArtistDetails,
+            is Show.AlbumDetails -> playbackModel.openMain()
+            is Show.SongDetails,
+            is Show.SongAlbumDetails,
+            is Show.SongArtistDetails,
+            is Show.AlbumArtistDetails,
+            is Show.GenreDetails,
+            is Show.PlaylistDetails,
+            null -> {}
         }
     }
 
+    private fun navigateToCurrentArtist() {
+        playbackModel.song.value?.let(detailModel::showArtist)
+    }
+
     private fun navigateToCurrentAlbum() {
-        playbackModel.song.value?.let {
-            detailModel.showAlbum(it.album)
-            playbackModel.openMain()
-        }
+        playbackModel.song.value?.let { detailModel.showAlbum(it.album) }
     }
 }

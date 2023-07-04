@@ -52,6 +52,7 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -145,6 +146,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         collect(musicModel.playlistDecision.flow, ::handleDecision)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
+        collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
         collect(detailModel.toShow.flow, ::handleShow)
     }
 
@@ -260,34 +262,6 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         hideKeyboard()
     }
 
-    private fun handleDecision(decision: PlaylistDecision?) {
-        if (decision == null) return
-        val directions =
-            when (decision) {
-                is PlaylistDecision.Rename -> {
-                    logD("Renaming ${decision.playlist}")
-                    SearchFragmentDirections.renamePlaylist(decision.playlist.uid)
-                }
-                is PlaylistDecision.Delete -> {
-                    logD("Deleting ${decision.playlist}")
-                    SearchFragmentDirections.deletePlaylist(decision.playlist.uid)
-                }
-                is PlaylistDecision.Add -> {
-                    logD("Adding ${decision.songs.size} to a playlist")
-                    SearchFragmentDirections.addToPlaylist(
-                        decision.songs.map { it.uid }.toTypedArray())
-                }
-                is PlaylistDecision.New -> {
-                    error("Unexpected decision $decision")
-                }
-            }
-        findNavController().navigateSafe(directions)
-    }
-
-    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
-        searchAdapter.setPlaying(parent ?: song, isPlaying)
-    }
-
     private fun handleMenu(pendingMenu: PendingMenu?) {
         if (pendingMenu == null) return
         val directions =
@@ -324,6 +298,50 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         } else {
             binding.searchToolbar.setVisible(R.id.search_normal_toolbar)
         }
+    }
+
+    private fun handleDecision(decision: PlaylistDecision?) {
+        if (decision == null) return
+        val directions =
+            when (decision) {
+                is PlaylistDecision.Rename -> {
+                    logD("Renaming ${decision.playlist}")
+                    SearchFragmentDirections.renamePlaylist(decision.playlist.uid)
+                }
+                is PlaylistDecision.Delete -> {
+                    logD("Deleting ${decision.playlist}")
+                    SearchFragmentDirections.deletePlaylist(decision.playlist.uid)
+                }
+                is PlaylistDecision.Add -> {
+                    logD("Adding ${decision.songs.size} to a playlist")
+                    SearchFragmentDirections.addToPlaylist(
+                        decision.songs.map { it.uid }.toTypedArray())
+                }
+                is PlaylistDecision.New -> {
+                    error("Unexpected decision $decision")
+                }
+            }
+        findNavController().navigateSafe(directions)
+    }
+
+    private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
+        searchAdapter.setPlaying(parent ?: song, isPlaying)
+    }
+
+    private fun handlePlaybackDecision(decision: PlaybackDecision?) {
+        if (decision == null) return
+        val directions =
+            when (decision) {
+                is PlaybackDecision.PlayFromArtist -> {
+                    logD("Launching play from artist dialog for $decision")
+                    SearchFragmentDirections.playFromArtist(decision.song.uid)
+                }
+                is PlaybackDecision.PlayFromGenre -> {
+                    logD("Launching play from artist dialog for $decision")
+                    SearchFragmentDirections.playFromGenre(decision.song.uid)
+                }
+            }
+        findNavController().navigateSafe(directions)
     }
 
     /**

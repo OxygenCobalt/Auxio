@@ -50,6 +50,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.PlaylistDecision
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaybackDecision
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -130,11 +131,10 @@ class ArtistDetailFragment :
         collect(detailModel.toShow.flow, ::handleShow)
         collect(menuModel.pendingMenu.flow, ::handleMenu)
         collectImmediately(selectionModel.selected, ::updateSelection)
-        collect(musicModel.playlistDecision.flow, ::handleDecision)
+        collect(musicModel.playlistDecision.flow, ::handlePlaylistDecision)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
-        collect(playbackModel.artistPickerSong.flow, ::handlePlayFromArtist)
-        collect(playbackModel.genrePickerSong.flow, ::handlePlayFromGenre)
+        collect(playbackModel.playbackDecision.flow, ::handlePlaybackDecision)
     }
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
@@ -343,7 +343,7 @@ class ArtistDetailFragment :
         }
     }
 
-    private fun handleDecision(decision: PlaylistDecision?) {
+    private fun handlePlaylistDecision(decision: PlaylistDecision?) {
         if (decision == null) return
         val directions =
             when (decision) {
@@ -354,7 +354,7 @@ class ArtistDetailFragment :
                 }
                 is PlaylistDecision.New,
                 is PlaylistDecision.Rename,
-                is PlaylistDecision.Delete -> error("Unexpected decision $decision")
+                is PlaylistDecision.Delete -> error("Unexpected playlist decision $decision")
             }
         findNavController().navigateSafe(directions)
     }
@@ -374,15 +374,17 @@ class ArtistDetailFragment :
         artistListAdapter.setPlaying(playingItem, isPlaying)
     }
 
-    private fun handlePlayFromArtist(song: Song?) {
-        if (song == null) return
-        logD("Launching play from artist dialog for $song")
-        findNavController().navigateSafe(AlbumDetailFragmentDirections.playFromArtist(song.uid))
-    }
-
-    private fun handlePlayFromGenre(song: Song?) {
-        if (song == null) return
-        logD("Launching play from genre dialog for $song")
-        findNavController().navigateSafe(AlbumDetailFragmentDirections.playFromGenre(song.uid))
+    private fun handlePlaybackDecision(decision: PlaybackDecision?) {
+        if (decision == null) return
+        val directions =
+            when (decision) {
+                is PlaybackDecision.PlayFromArtist ->
+                    error("Unexpected playback decision $decision")
+                is PlaybackDecision.PlayFromGenre -> {
+                    logD("Launching play from artist dialog for $decision")
+                    ArtistDetailFragmentDirections.playFromGenre(decision.song.uid)
+                }
+            }
+        findNavController().navigateSafe(directions)
     }
 }

@@ -69,7 +69,7 @@ class ShowArtistDialog :
 
         detailModel.toShow.consume()
         pickerModel.setArtistChoiceUid(args.itemUid)
-        collectImmediately(pickerModel.artistChoices, ::handleChoices)
+        collectImmediately(pickerModel.artistChoices, ::updateChoices)
     }
 
     override fun onDestroyBinding(binding: DialogMusicChoicesBinding) {
@@ -83,7 +83,7 @@ class ShowArtistDialog :
         detailModel.showArtist(item)
     }
 
-    private fun handleChoices(choices: ArtistShowChoices?) {
+    private fun updateChoices(choices: ArtistShowChoices?) {
         if (choices == null) {
             logD("No choices to show, navigating away")
             findNavController().navigateUp()

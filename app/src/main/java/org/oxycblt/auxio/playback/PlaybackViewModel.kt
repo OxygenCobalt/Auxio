@@ -89,31 +89,15 @@ constructor(
     val isShuffled: StateFlow<Boolean>
         get() = _isShuffled
 
-    private val _openPanel = MutableEvent<Panel>()
-    val openPanel: Event<Panel>
+    val currentBarAction: ActionMode = playbackSettings.barAction
+
+    private val _openPanel = MutableEvent<OpenPanel>()
+    val openPanel: Event<OpenPanel>
         get() = _openPanel
 
-    private val _artistPlaybackPickerSong = MutableEvent<Song>()
-    /**
-     * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing a
-     * [Song] from one of it's [Artist]s.
-     *
-     * @see playFromArtist
-     */
-    val artistPickerSong: Event<Song>
-        get() = _artistPlaybackPickerSong
-
-    private val _genrePlaybackPickerSong = MutableEvent<Song>()
-    /**
-     * Flag signaling to open a picker dialog in order to resolve an ambiguous choice when playing a
-     * [Song] from one of it's [Genre]s.
-     */
-    val genrePickerSong: Event<Song>
-        get() = _genrePlaybackPickerSong
-
-    /** The current action to show on the playback bar. */
-    val currentBarAction: ActionMode
-        get() = playbackSettings.barAction
+    private val _playbackDecision = MutableEvent<PlaybackDecision>()
+    val playbackDecision: Event<PlaybackDecision>
+        get() = _playbackDecision
 
     /**
      * The current audio session ID of the internal player. Null if no [InternalPlayer] is
@@ -223,7 +207,7 @@ constructor(
             playImpl(song, song.artists[0])
         } else {
             logD("$song has multiple artists, showing choice dialog")
-            _artistPlaybackPickerSong.put(song)
+            startPlaybackDecisionImpl(PlaybackDecision.PlayFromArtist(song))
         }
     }
 
@@ -243,8 +227,17 @@ constructor(
             playImpl(song, song.genres[0])
         } else {
             logD("$song has multiple genres, showing choice dialog")
-            _genrePlaybackPickerSong.put(song)
+            startPlaybackDecisionImpl(PlaybackDecision.PlayFromGenre(song))
         }
+    }
+
+    private fun startPlaybackDecisionImpl(decision: PlaybackDecision) {
+        val existing = _playbackDecision.flow.value
+        if (existing != null) {
+            logD("Already handling decision $existing, ignoring $decision")
+            return
+        }
+        _playbackDecision.put(decision)
     }
 
     /**
@@ -560,11 +553,11 @@ constructor(
     }
 
     // --- UI CONTROL ---
-    fun openMain() = openImpl(Panel.Main)
-    fun openPlayback() = openImpl(Panel.Playback)
-    fun openQueue() = openImpl(Panel.Queue)
+    fun openMain() = openImpl(OpenPanel.Main)
+    fun openPlayback() = openImpl(OpenPanel.Playback)
+    fun openQueue() = openImpl(OpenPanel.Queue)
 
-    private fun openImpl(panel: Panel) {
+    private fun openImpl(panel: OpenPanel) {
         val existing = openPanel.flow.value
         if (existing != null) {
             logD("Already opening $existing, ignoring opening $panel")
@@ -617,8 +610,15 @@ constructor(
     }
 }
 
-sealed interface Panel {
-    object Main : Panel
-    object Playback : Panel
-    object Queue : Panel
+sealed interface OpenPanel {
+    object Main : OpenPanel
+    object Playback : OpenPanel
+    object Queue : OpenPanel
+}
+
+sealed interface PlaybackDecision {
+    val song: Song
+
+    class PlayFromArtist(override val song: Song) : PlaybackDecision
+    class PlayFromGenre(override val song: Song) : PlaybackDecision
 }

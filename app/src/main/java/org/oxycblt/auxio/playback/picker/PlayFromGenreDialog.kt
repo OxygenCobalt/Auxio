@@ -32,6 +32,7 @@ import org.oxycblt.auxio.databinding.DialogMusicChoicesBinding
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
@@ -68,15 +69,9 @@ class PlayFromGenreDialog :
             adapter = choiceAdapter
         }
 
+        playbackModel.playbackDecision.consume()
         pickerModel.setPickerSongUid(args.genreUid)
-        collectImmediately(pickerModel.currentPickerSong) {
-            if (it != null) {
-                choiceAdapter.update(it.genres, UpdateInstructions.Replace(0))
-            } else {
-                logD("No song to show choices for, navigating away")
-                findNavController().navigateUp()
-            }
-        }
+        collectImmediately(pickerModel.currentPickerSong, ::updateSong)
     }
 
     override fun onDestroyBinding(binding: DialogMusicChoicesBinding) {
@@ -89,5 +84,14 @@ class PlayFromGenreDialog :
         val song = unlikelyToBeNull(pickerModel.currentPickerSong.value)
         playbackModel.playFromGenre(song, item)
         findNavController().navigateUp()
+    }
+
+    private fun updateSong(song: Song?) {
+        if (song == null) {
+            logD("No song to show choices for, navigating away")
+            findNavController().navigateUp()
+            return
+        }
+        choiceAdapter.update(song.genres, UpdateInstructions.Replace(0))
     }
 }

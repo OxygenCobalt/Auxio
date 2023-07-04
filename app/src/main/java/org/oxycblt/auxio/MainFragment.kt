@@ -42,7 +42,7 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.Panel
+import org.oxycblt.auxio.playback.OpenPanel
 import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior
@@ -300,13 +300,13 @@ class MainFragment :
         }
     }
 
-    private fun handlePanel(panel: Panel?) {
+    private fun handlePanel(panel: OpenPanel?) {
         if (panel == null) return
         logD("Trying to update panel to $panel")
         when (panel) {
-            is Panel.Main -> tryClosePlaybackPanel()
-            is Panel.Playback -> tryOpenPlaybackPanel()
-            is Panel.Queue -> tryOpenQueuePanel()
+            is OpenPanel.Main -> tryClosePlaybackPanel()
+            is OpenPanel.Playback -> tryOpenPlaybackPanel()
+            is OpenPanel.Queue -> tryOpenQueuePanel()
         }
         playbackModel.openPanel.consume()
     }
