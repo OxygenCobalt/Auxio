@@ -298,4 +298,5 @@
     <string name="set_square_covers">Quadratische Album-Cover erzwingen</string>
     <string name="set_square_covers_desc">Alle Album-Cover auf ein Seitenverhältnis von 1:1 zuschneiden</string>
     <string name="lbl_song">Lied</string>
+    <string name="lbl_parent_detail">Ansehen</string>
 </resources>
