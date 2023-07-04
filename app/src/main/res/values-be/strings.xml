@@ -295,4 +295,5 @@
     <string name="fmt_editing">Рэдагаванне %s</string>
     <string name="set_square_covers">Выкарыстоўваць квадратныя вокладкі альбомаў</string>
     <string name="set_square_covers_desc">Абрэзаць усе вокладкі альбомаў да суадносін бакоў 1:1</string>
+    <string name="lbl_song">Песня</string>
 </resources>
