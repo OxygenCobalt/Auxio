@@ -492,33 +492,27 @@ class HomeFragment :
 
     private fun handleDecision(decision: PlaylistDecision?) {
         if (decision == null) return
-        when (decision) {
-            is PlaylistDecision.New -> {
-                logD("Creating new playlist")
-                findNavController()
-                    .navigateSafe(
-                        HomeFragmentDirections.newPlaylist(
-                            decision.songs.map { it.uid }.toTypedArray()))
+        val directions =
+            when (decision) {
+                is PlaylistDecision.New -> {
+                    logD("Creating new playlist")
+                    HomeFragmentDirections.newPlaylist(decision.songs.map { it.uid }.toTypedArray())
+                }
+                is PlaylistDecision.Rename -> {
+                    logD("Renaming ${decision.playlist}")
+                    HomeFragmentDirections.renamePlaylist(decision.playlist.uid)
+                }
+                is PlaylistDecision.Delete -> {
+                    logD("Deleting ${decision.playlist}")
+                    HomeFragmentDirections.deletePlaylist(decision.playlist.uid)
+                }
+                is PlaylistDecision.Add -> {
+                    logD("Adding ${decision.songs.size} to a playlist")
+                    HomeFragmentDirections.addToPlaylist(
+                        decision.songs.map { it.uid }.toTypedArray())
+                }
             }
-            is PlaylistDecision.Rename -> {
-                logD("Renaming ${decision.playlist}")
-                findNavController()
-                    .navigateSafe(HomeFragmentDirections.renamePlaylist(decision.playlist.uid))
-            }
-            is PlaylistDecision.Delete -> {
-                logD("Deleting ${decision.playlist}")
-                findNavController()
-                    .navigateSafe(HomeFragmentDirections.deletePlaylist(decision.playlist.uid))
-            }
-            is PlaylistDecision.Add -> {
-                logD("Adding ${decision.songs.size} to a playlist")
-                findNavController()
-                    .navigateSafe(
-                        HomeFragmentDirections.addToPlaylist(
-                            decision.songs.map { it.uid }.toTypedArray()))
-            }
-        }
-        musicModel.playlistDecision.consume()
+        findNavController().navigateSafe(directions)
     }
 
     private fun updateFab(songs: List<Song>, isFastScrolling: Boolean) {
@@ -606,7 +600,6 @@ class HomeFragment :
                         pendingMenu.menuRes, pendingMenu.music.uid)
             }
         findNavController().navigateSafe(directions)
-        menuModel.pendingMenu.consume()
     }
 
     private fun updateSelection(selected: List<Music>) {

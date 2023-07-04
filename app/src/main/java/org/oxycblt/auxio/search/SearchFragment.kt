@@ -71,12 +71,12 @@ import org.oxycblt.auxio.util.setFullWidthLookup
  */
 @AndroidEntryPoint
 class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
-    override val detailModel: DetailViewModel by activityViewModels()
+    private val searchModel: SearchViewModel by viewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private val menuModel: MenuViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
-    private val searchModel: SearchViewModel by viewModels()
     private val searchAdapter = SearchAdapter(this)
     private var imm: InputMethodManager? = null
     private var launchedKeyboard = false
@@ -236,12 +236,13 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
             }
             is Show.SongArtistDetails -> {
                 logD("Navigating to artist choices for ${show.song}")
-                findNavController().navigateSafe(SearchFragmentDirections.showArtist(show.song.uid))
+                findNavController()
+                    .navigateSafe(SearchFragmentDirections.showArtists(show.song.uid))
             }
             is Show.AlbumArtistDetails -> {
                 logD("Navigating to artist choices for ${show.album}")
                 findNavController()
-                    .navigateSafe(SearchFragmentDirections.showArtist(show.album.uid))
+                    .navigateSafe(SearchFragmentDirections.showArtists(show.album.uid))
             }
             is Show.GenreDetails -> {
                 logD("Navigating to ${show.genre}")
@@ -281,7 +282,6 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                 }
             }
         findNavController().navigateSafe(directions)
-        musicModel.playlistDecision.consume()
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {
@@ -309,7 +309,6 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                         pendingMenu.menuRes, pendingMenu.music.uid)
             }
         findNavController().navigateSafe(directions)
-        menuModel.pendingMenu.consume()
     }
 
     private fun updateSelection(selected: List<Music>) {

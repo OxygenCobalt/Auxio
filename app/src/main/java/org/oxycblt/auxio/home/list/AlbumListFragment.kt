@@ -60,7 +60,7 @@ class AlbumListFragment :
     FastScrollRecyclerView.Listener,
     FastScrollRecyclerView.PopupProvider {
     private val homeModel: HomeViewModel by activityViewModels()
-    override val detailModel: DetailViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private val menuModel: MenuViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()

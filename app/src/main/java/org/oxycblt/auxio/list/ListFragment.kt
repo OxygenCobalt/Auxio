@@ -24,7 +24,6 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.selection.SelectionFragment
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.logD
@@ -36,7 +35,6 @@ import org.oxycblt.auxio.util.logD
  */
 abstract class ListFragment<in T : Music, VB : ViewBinding> :
     SelectionFragment<VB>(), SelectableListListener<T> {
-    protected abstract val detailModel: DetailViewModel
     private var currentMenu: PopupMenu? = null
 
     override fun onDestroyBinding(binding: VB) {

@@ -71,6 +71,7 @@ class DeletePlaylistDialog : ViewBindingMaterialDialogFragment<DialogDeletePlayl
         super.onBindingCreated(binding, savedInstanceState)
 
         // --- VIEWMODEL SETUP ---
+        musicModel.playlistDecision.consume()
         pickerModel.setPlaylistToDelete(args.playlistUid)
         collectImmediately(pickerModel.currentPlaylistToDelete, ::updatePlaylistToDelete)
     }

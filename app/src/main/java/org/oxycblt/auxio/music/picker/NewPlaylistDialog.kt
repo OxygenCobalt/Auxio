@@ -32,7 +32,6 @@ import org.oxycblt.auxio.databinding.DialogPlaylistNameBinding
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -83,19 +82,9 @@ class NewPlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNameBi
         binding.playlistName.addTextChangedListener { pickerModel.updateChosenName(it?.toString()) }
 
         // --- VIEWMODEL SETUP ---
+        musicModel.playlistDecision.consume()
         pickerModel.setPendingPlaylist(requireContext(), args.songUids)
-        collectImmediately(pickerModel.currentPendingPlaylist, ::updatePendingPlaylist)
         collectImmediately(pickerModel.chosenName, ::updateChosenName)
-    }
-
-    private fun updatePendingPlaylist(pendingPlaylist: PendingPlaylist?) {
-        if (pendingPlaylist == null) {
-            logD("No playlist to create, leaving")
-            findNavController().navigateUp()
-            return
-        }
-
-        requireBinding().playlistName.hint = pendingPlaylist.preferredName
     }
 
     private fun updateChosenName(chosenName: ChosenName) {

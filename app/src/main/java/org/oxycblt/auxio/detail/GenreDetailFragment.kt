@@ -71,7 +71,7 @@ class GenreDetailFragment :
     ListFragment<Music, FragmentDetailBinding>(),
     DetailHeaderAdapter.Listener,
     DetailListAdapter.Listener<Music> {
-    override val detailModel: DetailViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private val menuModel: MenuViewModel by activityViewModels()
     override val selectionModel: SelectionViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
@@ -317,7 +317,6 @@ class GenreDetailFragment :
                 is PendingMenu.ForPlaylist -> error("Unexpected menu $pendingMenu")
             }
         findNavController().navigateSafe(directions)
-        menuModel.pendingMenu.consume()
     }
 
     private fun updateSelection(selected: List<Music>) {
@@ -333,20 +332,19 @@ class GenreDetailFragment :
     }
 
     private fun handleDecision(decision: PlaylistDecision?) {
-        when (decision) {
-            is PlaylistDecision.Add -> {
-                logD("Adding ${decision.songs.size} songs to a playlist")
-                findNavController()
-                    .navigateSafe(
-                        GenreDetailFragmentDirections.addToPlaylist(
-                            decision.songs.map { it.uid }.toTypedArray()))
-                musicModel.playlistDecision.consume()
+        if (decision == null) return
+        val directions =
+            when (decision) {
+                is PlaylistDecision.Add -> {
+                    logD("Adding ${decision.songs.size} songs to a playlist")
+                    ArtistDetailFragmentDirections.addToPlaylist(
+                        decision.songs.map { it.uid }.toTypedArray())
+                }
+                is PlaylistDecision.New,
+                is PlaylistDecision.Rename,
+                is PlaylistDecision.Delete -> error("Unexpected decision $decision")
             }
-            is PlaylistDecision.New,
-            is PlaylistDecision.Rename,
-            is PlaylistDecision.Delete -> error("Unexpected decision $decision")
-            null -> {}
-        }
+        findNavController().navigateSafe(directions)
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?, isPlaying: Boolean) {

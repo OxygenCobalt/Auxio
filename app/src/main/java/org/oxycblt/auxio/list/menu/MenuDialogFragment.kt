@@ -66,6 +66,7 @@ abstract class MenuDialogFragment<T : Music> :
         }
 
         // --- VIEWMODEL SETUP ---
+        menuModel.pendingMenu.consume()
         menuModel.setCurrentMenu(uid)
         collectImmediately(menuModel.currentMusic, this::updateMusic)
     }

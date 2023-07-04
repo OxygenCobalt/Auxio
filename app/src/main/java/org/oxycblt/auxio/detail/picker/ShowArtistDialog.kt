@@ -35,6 +35,7 @@ import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.logD
 
 /**
  * A picker [ViewBindingMaterialDialogFragment] intended for when the [Artist] to show is ambiguous.
@@ -66,14 +67,9 @@ class ShowArtistDialog :
             adapter = choiceAdapter
         }
 
+        detailModel.toShow.consume()
         pickerModel.setArtistChoiceUid(args.itemUid)
-        collectImmediately(pickerModel.artistChoices) {
-            if (it != null) {
-                choiceAdapter.update(it.choices, UpdateInstructions.Replace(0))
-            } else {
-                findNavController().navigateUp()
-            }
-        }
+        collectImmediately(pickerModel.artistChoices, ::handleChoices)
     }
 
     override fun onDestroyBinding(binding: DialogMusicChoicesBinding) {
@@ -82,8 +78,17 @@ class ShowArtistDialog :
     }
 
     override fun onClick(item: Artist, viewHolder: RecyclerView.ViewHolder) {
+        findNavController().navigateUp()
         // User made a choice, navigate to the artist.
         detailModel.showArtist(item)
-        findNavController().navigateUp()
+    }
+
+    private fun handleChoices(choices: ArtistShowChoices?) {
+        if (choices == null) {
+            logD("No choices to show, navigating away")
+            findNavController().navigateUp()
+            return
+        }
+        choiceAdapter.update(choices.choices, UpdateInstructions.Diff)
     }
 }

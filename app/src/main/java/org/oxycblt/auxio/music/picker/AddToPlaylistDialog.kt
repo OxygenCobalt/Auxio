@@ -72,6 +72,7 @@ class AddToPlaylistDialog :
         }
 
         // --- VIEWMODEL SETUP ---
+        musicModel.playlistDecision.consume()
         pickerModel.setSongsToAdd(args.songUids)
         collectImmediately(pickerModel.currentSongsToAdd, ::updatePendingSongs)
         collectImmediately(pickerModel.playlistAddChoices, ::updatePlaylistChoices)

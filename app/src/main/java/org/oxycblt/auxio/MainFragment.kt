@@ -57,8 +57,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A wrapper around the home fragment that shows the playback fragment and controls the more
- * high-level navigation features.
+ * A wrapper around the home fragment that shows the playback fragment and high-level navigation.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */

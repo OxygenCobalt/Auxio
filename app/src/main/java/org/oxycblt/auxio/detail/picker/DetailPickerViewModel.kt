@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * NavigationPickerViewModel.kt is part of Auxio.
+ * DetailPickerViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,17 +49,17 @@ class NavigationPickerViewModel @Inject constructor(private val musicRepository:
         musicRepository.addUpdateListener(this)
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        musicRepository.removeUpdateListener(this)
+    }
+
     override fun onMusicChanges(changes: MusicRepository.Changes) {
         if (!changes.deviceLibrary) return
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         // Need to sanitize different items depending on the current set of choices.
         _artistChoices.value = _artistChoices.value?.sanitize(deviceLibrary)
         logD("Updated artist choices: ${_artistChoices.value}")
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        musicRepository.removeUpdateListener(this)
     }
 
     /**

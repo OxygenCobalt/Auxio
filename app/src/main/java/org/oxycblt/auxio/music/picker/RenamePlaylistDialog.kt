@@ -74,6 +74,7 @@ class RenamePlaylistDialog : ViewBindingMaterialDialogFragment<DialogPlaylistNam
         binding.playlistName.addTextChangedListener { pickerModel.updateChosenName(it?.toString()) }
 
         // --- VIEWMODEL SETUP ---
+        musicModel.playlistDecision.consume()
         pickerModel.setPlaylistToRename(args.playlistUid)
         collectImmediately(pickerModel.currentPlaylistToRename, ::updatePlaylistToRename)
         collectImmediately(pickerModel.chosenName, ::updateChosenName)
