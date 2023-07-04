@@ -301,4 +301,6 @@
     <string name="fmt_editing">Modifica di %s</string>
     <string name="set_square_covers">Forza copertine album quadrate</string>
     <string name="set_square_covers_desc">Adatta tutte le copertine degli album ad una visualizzazione 1:1</string>
+    <string name="lbl_song">Canzone</string>
+    <string name="lbl_parent_detail">Visualizza</string>
 </resources>
