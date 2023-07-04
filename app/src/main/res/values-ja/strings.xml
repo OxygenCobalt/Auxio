@@ -284,4 +284,7 @@
     <string name="def_disc">ディスクがありません</string>
     <string name="fmt_editing">%sを編集中</string>
     <string name="lbl_appears_on">に登場します</string>
+    <string name="lbl_song">曲</string>
+    <string name="set_square_covers">フォーススクエアのアルバムカバー</string>
+    <string name="set_square_covers_desc">すべてのアルバム カバーを 1:1 のアスペクト比にトリミングします</string>
 </resources>
