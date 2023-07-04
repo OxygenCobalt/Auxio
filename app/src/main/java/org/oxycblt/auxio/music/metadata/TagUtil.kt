@@ -19,7 +19,7 @@
 package org.oxycblt.auxio.music.metadata
 
 import org.oxycblt.auxio.music.MusicSettings
-import org.oxycblt.auxio.util.nonZeroOrNull
+import org.oxycblt.auxio.util.positiveOrNull
 
 /// --- GENERIC PARSING ---
 
@@ -154,7 +154,7 @@ fun parseVorbisPositionField(pos: String?, total: String?) =
  * - The position was zeroed AND the total value was not present/zeroed
  */
 fun transformPositionField(pos: Int?, total: Int?) =
-    if (pos != null && (pos > 0 || (total?.nonZeroOrNull() != null))) {
+    if (pos != null && (pos > 0 || (total?.positiveOrNull() != null))) {
         pos
     } else {
         null

@@ -45,7 +45,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.formatDurationMs
 import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.nonZeroOrNull
+import org.oxycblt.auxio.util.positiveOrNull
 
 /**
  * A [ListFragment] that shows a list of [Artist]s.
@@ -104,7 +104,7 @@ class ArtistListFragment :
             is Sort.Mode.ByDuration -> artist.durationMs?.formatDurationMs(false)
 
             // Count -> Use song count
-            is Sort.Mode.ByCount -> artist.songs.size.nonZeroOrNull()?.toString()
+            is Sort.Mode.ByCount -> artist.songs.size.positiveOrNull()?.toString()
 
             // Unsupported sort, error gracefully
             else -> null

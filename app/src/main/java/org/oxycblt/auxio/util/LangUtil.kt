@@ -41,14 +41,14 @@ fun <T> unlikelyToBeNull(value: T?) =
  *
  * @return The given number if it's non-zero, null otherwise.
  */
-fun Int.nonZeroOrNull() = if (this > 0) this else null
+fun Int.positiveOrNull() = if (this > 0) this else null
 
 /**
  * Aliases a check to ensure that the given number is non-zero.
  *
  * @return The same number if it's non-zero, null otherwise.
  */
-fun Long.nonZeroOrNull() = if (this > 0) this else null
+fun Long.positiveOrNull() = if (this > 0) this else null
 
 /**
  * Aliases a check to ensure that the given number is non-zero.

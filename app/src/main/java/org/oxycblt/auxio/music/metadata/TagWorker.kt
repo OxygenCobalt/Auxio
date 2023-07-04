@@ -314,11 +314,7 @@ private class TagWorkerImpl(
      * @return A parsed adjustment float, or null if the adjustment had invalid formatting.
      */
     private fun List<String>.parseReplayGainAdjustment() =
-        first()
-            .replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "")
-            .toFloatOrNull()
-            ?.nonZeroOrNull()
-            .also { logD(it) }
+        first().replace(REPLAYGAIN_ADJUSTMENT_FILTER_REGEX, "").toFloatOrNull()?.nonZeroOrNull()
 
     private companion object {
         val COMPILATION_ALBUM_ARTISTS = listOf("Various Artists")

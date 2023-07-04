@@ -39,7 +39,7 @@ import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.music.metadata.parseId3GenreNames
 import org.oxycblt.auxio.music.metadata.parseMultiValue
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAdjustment
-import org.oxycblt.auxio.util.nonZeroOrNull
+import org.oxycblt.auxio.util.positiveOrNull
 import org.oxycblt.auxio.util.toUuidOrNull
 import org.oxycblt.auxio.util.unlikelyToBeNull
 import org.oxycblt.auxio.util.update
@@ -407,7 +407,7 @@ class ArtistImpl(grouping: Grouping<RawArtist, Music>, musicSettings: MusicSetti
         albums = albumMap.keys
         explicitAlbums = albums.filterTo(mutableSetOf()) { albumMap[it] == true }
         implicitAlbums = albums.filterNotTo(mutableSetOf()) { albumMap[it] == true }
-        durationMs = songs.sumOf { it.durationMs }.nonZeroOrNull()
+        durationMs = songs.sumOf { it.durationMs }.positiveOrNull()
 
         hashCode = 31 * hashCode + rawArtist.hashCode()
         hashCode = 31 * hashCode + songs.hashCode()
