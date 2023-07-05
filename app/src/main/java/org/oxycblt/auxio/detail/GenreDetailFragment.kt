@@ -39,10 +39,9 @@ import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.ListViewModel
+import org.oxycblt.auxio.list.Menu
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.list.menu.MenuViewModel
-import org.oxycblt.auxio.list.menu.PendingMenu
-import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
@@ -73,8 +72,7 @@ class GenreDetailFragment :
     DetailHeaderAdapter.Listener,
     DetailListAdapter.Listener<Music> {
     private val detailModel: DetailViewModel by activityViewModels()
-    private val menuModel: MenuViewModel by activityViewModels()
-    override val selectionModel: SelectionViewModel by activityViewModels()
+    override val listModel: ListViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     // Information about what genre to display is initially within the navigation arguments
@@ -127,8 +125,8 @@ class GenreDetailFragment :
         collectImmediately(detailModel.currentGenre, ::updatePlaylist)
         collectImmediately(detailModel.genreList, ::updateList)
         collect(detailModel.toShow.flow, ::handleShow)
-        collect(menuModel.pendingMenu.flow, ::handleMenu)
-        collectImmediately(selectionModel.selected, ::updateSelection)
+        collect(listModel.menu.flow, ::handleMenu)
+        collectImmediately(listModel.selected, ::updateSelection)
         collect(musicModel.playlistDecision.flow, ::handleDecision)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -196,8 +194,8 @@ class GenreDetailFragment :
 
     override fun onOpenMenu(item: Music, anchor: View) {
         when (item) {
-            is Artist -> menuModel.open(R.menu.item_parent, item)
-            is Song -> menuModel.open(R.menu.item_song, item)
+            is Artist -> listModel.openMenu(R.menu.item_parent, item)
+            is Song -> listModel.openMenu(R.menu.item_song, item)
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }
@@ -302,19 +300,17 @@ class GenreDetailFragment :
         }
     }
 
-    private fun handleMenu(pendingMenu: PendingMenu?) {
-        if (pendingMenu == null) return
+    private fun handleMenu(menu: Menu?) {
+        if (menu == null) return
         val directions =
-            when (pendingMenu) {
-                is PendingMenu.ForSong ->
-                    GenreDetailFragmentDirections.openSongMenu(
-                        pendingMenu.menuRes, pendingMenu.music.uid)
-                is PendingMenu.ForArtist ->
-                    GenreDetailFragmentDirections.openArtistMenu(
-                        pendingMenu.menuRes, pendingMenu.music.uid)
-                is PendingMenu.ForAlbum,
-                is PendingMenu.ForGenre,
-                is PendingMenu.ForPlaylist -> error("Unexpected menu $pendingMenu")
+            when (menu) {
+                is Menu.ForSong ->
+                    GenreDetailFragmentDirections.openSongMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForArtist ->
+                    GenreDetailFragmentDirections.openArtistMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForAlbum,
+                is Menu.ForGenre,
+                is Menu.ForPlaylist -> error("Unexpected menu $menu")
             }
         findNavController().navigateSafe(directions)
     }

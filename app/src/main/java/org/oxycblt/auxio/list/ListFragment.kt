@@ -24,7 +24,6 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import org.oxycblt.auxio.list.selection.SelectionFragment
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.util.logD
 
@@ -52,9 +51,9 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
     abstract fun onRealClick(item: T)
 
     final override fun onClick(item: T, viewHolder: RecyclerView.ViewHolder) {
-        if (selectionModel.selected.value.isNotEmpty()) {
+        if (listModel.selected.value.isNotEmpty()) {
             // Map clicking an item to selecting an item when items are already selected.
-            selectionModel.select(item)
+            listModel.select(item)
         } else {
             // Delegate to the concrete implementation when we don't select the item.
             onRealClick(item)
@@ -62,7 +61,7 @@ abstract class ListFragment<in T : Music, VB : ViewBinding> :
     }
 
     final override fun onSelect(item: T) {
-        selectionModel.select(item)
+        listModel.select(item)
     }
 
     /**

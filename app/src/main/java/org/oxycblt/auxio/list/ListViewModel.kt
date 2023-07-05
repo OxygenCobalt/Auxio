@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2022 Auxio Project
- * SelectionViewModel.kt is part of Auxio.
+ * Copyright (c) 2023 Auxio Project
+ * ListViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.list.selection
+package org.oxycblt.auxio.list
 
+import androidx.annotation.MenuRes
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -32,15 +33,18 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.Event
+import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 
 /**
- * A [ViewModel] that manages the current selection.
+ * A [ViewModel] that orchestrates menu dialogs and selection state.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
-class SelectionViewModel
+class ListViewModel
 @Inject
 constructor(
     private val musicRepository: MusicRepository,
@@ -50,6 +54,9 @@ constructor(
     /** the currently selected items. These are ordered in earliest selected and latest selected. */
     val selected: StateFlow<List<Music>>
         get() = _selected
+
+    private val _Menu = MutableEvent<Menu>()
+    val menu: Event<Menu> = _Menu
 
     init {
         musicRepository.addUpdateListener(this)
@@ -105,7 +112,7 @@ constructor(
      *
      * @return A list of [Song]s collated from each item selected.
      */
-    fun take(): List<Song> {
+    fun takeSelection(): List<Song> {
         logD("Taking selection")
         return _selected.value
             .flatMap {
@@ -125,8 +132,88 @@ constructor(
      *
      * @return true if the prior selection was non-empty, false otherwise.
      */
-    fun drop(): Boolean {
+    fun dropSelection(): Boolean {
         logD("Dropping selection [empty=${_selected.value.isEmpty()}]")
         return _selected.value.isNotEmpty().also { _selected.value = listOf() }
     }
+
+    /**
+     * Open a menu for a [Song]. This is not a popup menu, instead actually a dialog of menu options
+     * with additional information.
+     *
+     * @param menuRes The resource of the menu to use.
+     * @param song The [Song] to show.
+     */
+    fun openMenu(@MenuRes menuRes: Int, song: Song) {
+        logD("Opening menu for $song")
+        openImpl(Menu.ForSong(menuRes, song))
+    }
+
+    /**
+     * Open a menu for a [Album]. This is not a popup menu, instead actually a dialog of menu
+     * options with additional information.
+     *
+     * @param menuRes The resource of the menu to use.
+     * @param album The [Album] to show.
+     */
+    fun openMenu(@MenuRes menuRes: Int, album: Album) {
+        logD("Opening menu for $album")
+        openImpl(Menu.ForAlbum(menuRes, album))
+    }
+
+    /**
+     * Open a menu for a [Artist]. This is not a popup menu, instead actually a dialog of menu
+     * options with additional information.
+     *
+     * @param menuRes The resource of the menu to use.
+     * @param artist The [Artist] to show.
+     */
+    fun openMenu(@MenuRes menuRes: Int, artist: Artist) {
+        logD("Opening menu for $artist")
+        openImpl(Menu.ForArtist(menuRes, artist))
+    }
+
+    /**
+     * Open a menu for a [Genre]. This is not a popup menu, instead actually a dialog of menu
+     * options with additional information.
+     *
+     * @param menuRes The resource of the menu to use.
+     * @param genre The [Genre] to show.
+     */
+    fun openMenu(@MenuRes menuRes: Int, genre: Genre) {
+        logD("Opening menu for $genre")
+        openImpl(Menu.ForGenre(menuRes, genre))
+    }
+
+    /**
+     * Open a menu for a [Playlist]. This is not a popup menu, instead actually a dialog of menu
+     * options with additional information.
+     *
+     * @param menuRes The resource of the menu to use.
+     * @param playlist The [Playlist] to show.
+     */
+    fun openMenu(@MenuRes menuRes: Int, playlist: Playlist) {
+        logD("Opening menu for $playlist")
+        openImpl(Menu.ForPlaylist(menuRes, playlist))
+    }
+
+    private fun openImpl(menu: Menu) {
+        val existing = _Menu.flow.value
+        if (existing != null) {
+            logW("Already opening $existing, ignoring $menu")
+            return
+        }
+        _Menu.put(menu)
+    }
+}
+
+sealed interface Menu {
+    val menuRes: Int
+    val music: Music
+
+    class ForSong(@MenuRes override val menuRes: Int, override val music: Song) : Menu
+    class ForAlbum(@MenuRes override val menuRes: Int, override val music: Album) : Menu
+    class ForArtist(@MenuRes override val menuRes: Int, override val music: Artist) : Menu
+    class ForGenre(@MenuRes override val menuRes: Int, override val music: Genre) : Menu
+    class ForPlaylist(@MenuRes override val menuRes: Int, override val music: Playlist) : Menu
 }

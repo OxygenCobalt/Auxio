@@ -20,11 +20,13 @@ package org.oxycblt.auxio.list.menu
 
 import android.view.MenuItem
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMenuBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -41,6 +43,7 @@ import org.oxycblt.auxio.util.showToast
 @AndroidEntryPoint
 class SongMenuDialogFragment : MenuDialogFragment<Song>() {
     override val menuModel: MenuViewModel by activityViewModels()
+    override val listModel: ListViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -83,7 +86,8 @@ class SongMenuDialogFragment : MenuDialogFragment<Song>() {
 
 @AndroidEntryPoint
 class AlbumMenuDialogFragment : MenuDialogFragment<Album>() {
-    override val menuModel: MenuViewModel by activityViewModels()
+    override val menuModel: MenuViewModel by viewModels()
+    override val listModel: ListViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -127,7 +131,8 @@ class AlbumMenuDialogFragment : MenuDialogFragment<Album>() {
 
 @AndroidEntryPoint
 class ArtistMenuDialogFragment : MenuDialogFragment<Artist>() {
-    override val menuModel: MenuViewModel by activityViewModels()
+    override val menuModel: MenuViewModel by viewModels()
+    override val listModel: ListViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -189,7 +194,8 @@ class ArtistMenuDialogFragment : MenuDialogFragment<Artist>() {
 
 @AndroidEntryPoint
 class GenreMenuDialogFragment : MenuDialogFragment<Genre>() {
-    override val menuModel: MenuViewModel by activityViewModels()
+    override val menuModel: MenuViewModel by viewModels()
+    override val listModel: ListViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -236,7 +242,8 @@ class GenreMenuDialogFragment : MenuDialogFragment<Genre>() {
 
 @AndroidEntryPoint
 class PlaylistMenuDialogFragment : MenuDialogFragment<Playlist>() {
-    override val menuModel: MenuViewModel by activityViewModels()
+    override val menuModel: MenuViewModel by viewModels()
+    override val listModel: ListViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()

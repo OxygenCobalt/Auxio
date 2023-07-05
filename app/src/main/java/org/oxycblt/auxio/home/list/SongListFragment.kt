@@ -31,12 +31,11 @@ import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
-import org.oxycblt.auxio.list.menu.MenuViewModel
 import org.oxycblt.auxio.list.recycler.SongViewHolder
-import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
@@ -58,8 +57,7 @@ class SongListFragment :
     FastScrollRecyclerView.PopupProvider,
     FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
-    private val menuModel: MenuViewModel by activityViewModels()
-    override val selectionModel: SelectionViewModel by activityViewModels()
+    override val listModel: ListViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     private val songAdapter = SongAdapter(this)
@@ -81,7 +79,7 @@ class SongListFragment :
         }
 
         collectImmediately(homeModel.songsList, ::updateSongs)
-        collectImmediately(selectionModel.selected, ::updateSelection)
+        collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
@@ -143,7 +141,7 @@ class SongListFragment :
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {
-        menuModel.open(R.menu.item_song, item)
+        listModel.openMenu(R.menu.item_song, item)
     }
 
     private fun updateSongs(songs: List<Song>) {

@@ -29,12 +29,11 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.list.ListFragment
+import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.SelectableListListener
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
-import org.oxycblt.auxio.list.menu.MenuViewModel
 import org.oxycblt.auxio.list.recycler.PlaylistViewHolder
-import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
@@ -56,8 +55,7 @@ class PlaylistListFragment :
     FastScrollRecyclerView.Listener {
     private val homeModel: HomeViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
-    private val menuModel: MenuViewModel by activityViewModels()
-    override val selectionModel: SelectionViewModel by activityViewModels()
+    override val listModel: ListViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     private val playlistAdapter = PlaylistAdapter(this)
@@ -76,7 +74,7 @@ class PlaylistListFragment :
         }
 
         collectImmediately(homeModel.playlistsList, ::updatePlaylists)
-        collectImmediately(selectionModel.selected, ::updateSelection)
+        collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
     }
@@ -117,7 +115,7 @@ class PlaylistListFragment :
     }
 
     override fun onOpenMenu(item: Playlist, anchor: View) {
-        menuModel.open(R.menu.item_playlist, item)
+        listModel.openMenu(R.menu.item_playlist, item)
     }
 
     private fun updatePlaylists(playlists: List<Playlist>) {

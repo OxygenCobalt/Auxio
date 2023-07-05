@@ -29,6 +29,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.DialogMenuBinding
 import org.oxycblt.auxio.list.ClickableListListener
+import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.ui.ViewBindingBottomSheetDialogFragment
@@ -44,6 +45,7 @@ import org.oxycblt.auxio.util.logD
 abstract class MenuDialogFragment<T : Music> :
     ViewBindingBottomSheetDialogFragment<DialogMenuBinding>(), ClickableListListener<MenuItem> {
     protected abstract val menuModel: MenuViewModel
+    protected abstract val listModel: ListViewModel
     private val menuAdapter = MenuItemAdapter(@Suppress("LeakingThis") this)
 
     abstract val menuRes: Int
@@ -66,7 +68,7 @@ abstract class MenuDialogFragment<T : Music> :
         }
 
         // --- VIEWMODEL SETUP ---
-        menuModel.pendingMenu.consume()
+        listModel.menu.consume()
         menuModel.setCurrentMenu(uid)
         collectImmediately(menuModel.currentMusic, this::updateMusic)
     }

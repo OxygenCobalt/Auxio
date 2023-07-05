@@ -55,11 +55,10 @@ import org.oxycblt.auxio.home.list.PlaylistListFragment
 import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
 import org.oxycblt.auxio.home.tabs.Tab
+import org.oxycblt.auxio.list.ListViewModel
+import org.oxycblt.auxio.list.Menu
+import org.oxycblt.auxio.list.SelectionFragment
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.list.menu.MenuViewModel
-import org.oxycblt.auxio.list.menu.PendingMenu
-import org.oxycblt.auxio.list.selection.SelectionFragment
-import org.oxycblt.auxio.list.selection.SelectionViewModel
 import org.oxycblt.auxio.music.IndexingProgress
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.Music
@@ -89,8 +88,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 @AndroidEntryPoint
 class HomeFragment :
     SelectionFragment<FragmentHomeBinding>(), AppBarLayout.OnOffsetChangedListener {
-    private val menuModel: MenuViewModel by activityViewModels()
-    override val selectionModel: SelectionViewModel by activityViewModels()
+    override val listModel: ListViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
@@ -104,8 +102,7 @@ class HomeFragment :
             // Orientation change will wipe whatever transition we were using prior, which will
             // result in no transition when the user navigates back. Make sure we re-initialize
             // our transitions.
-            val id = savedInstanceState.getInt(KEY_LAST_TRANSITION_ID, -2)
-            when (id) {
+            when (val id = savedInstanceState.getInt(KEY_LAST_TRANSITION_ID, -2)) {
                 -2 -> {}
                 -1 -> applyFadeTransition()
                 else -> applyAxisTransition(id)
@@ -178,8 +175,8 @@ class HomeFragment :
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
         collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
         collectImmediately(homeModel.songsList, homeModel.isFastScrolling, ::updateFab)
-        collect(menuModel.pendingMenu.flow, ::handleMenu)
-        collectImmediately(selectionModel.selected, ::updateSelection)
+        collect(listModel.menu.flow, ::handleMenu)
+        collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
         collect(musicModel.playlistDecision.flow, ::handleDecision)
         collect(detailModel.toShow.flow, ::handleShow)
@@ -582,22 +579,19 @@ class HomeFragment :
         }
     }
 
-    private fun handleMenu(pendingMenu: PendingMenu?) {
-        if (pendingMenu == null) return
+    private fun handleMenu(menu: Menu?) {
+        if (menu == null) return
         val directions =
-            when (pendingMenu) {
-                is PendingMenu.ForSong ->
-                    HomeFragmentDirections.openSongMenu(pendingMenu.menuRes, pendingMenu.music.uid)
-                is PendingMenu.ForAlbum ->
-                    HomeFragmentDirections.openAlbumMenu(pendingMenu.menuRes, pendingMenu.music.uid)
-                is PendingMenu.ForArtist ->
-                    HomeFragmentDirections.openArtistMenu(
-                        pendingMenu.menuRes, pendingMenu.music.uid)
-                is PendingMenu.ForGenre ->
-                    HomeFragmentDirections.openGenreMenu(pendingMenu.menuRes, pendingMenu.music.uid)
-                is PendingMenu.ForPlaylist ->
-                    HomeFragmentDirections.openPlaylistMenu(
-                        pendingMenu.menuRes, pendingMenu.music.uid)
+            when (menu) {
+                is Menu.ForSong -> HomeFragmentDirections.openSongMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForAlbum ->
+                    HomeFragmentDirections.openAlbumMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForArtist ->
+                    HomeFragmentDirections.openArtistMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForGenre ->
+                    HomeFragmentDirections.openGenreMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForPlaylist ->
+                    HomeFragmentDirections.openPlaylistMenu(menu.menuRes, menu.music.uid)
             }
         findNavController().navigateSafe(directions)
     }

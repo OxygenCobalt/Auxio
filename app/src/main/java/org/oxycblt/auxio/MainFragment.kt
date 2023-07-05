@@ -39,7 +39,7 @@ import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.list.selection.SelectionViewModel
+import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.OpenPanel
@@ -67,7 +67,7 @@ class MainFragment :
     ViewTreeObserver.OnPreDrawListener,
     NavController.OnDestinationChangedListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val selectionModel: SelectionViewModel by activityViewModels()
+    private val listModel: ListViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private var sheetBackCallback: SheetBackPressedCallback? = null
     private var detailBackCallback: DetailBackPressedCallback? = null
@@ -100,7 +100,7 @@ class MainFragment :
         val detailBackCallback =
             DetailBackPressedCallback(detailModel).also { detailBackCallback = it }
         val selectionBackCallback =
-            SelectionBackPressedCallback(selectionModel).also { selectionBackCallback = it }
+            SelectionBackPressedCallback(listModel).also { selectionBackCallback = it }
         val exploreBackCallback =
             ExploreBackPressedCallback(binding.exploreNavHost).also { exploreBackCallback = it }
 
@@ -152,7 +152,7 @@ class MainFragment :
 
         // --- VIEWMODEL SETUP ---
         collectImmediately(detailModel.editedPlaylist, detailBackCallback::invalidateEnabled)
-        collectImmediately(selectionModel.selected, selectionBackCallback::invalidateEnabled)
+        collectImmediately(listModel.selected, selectionBackCallback::invalidateEnabled)
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.openPanel.flow, ::handlePanel)
     }
@@ -289,7 +289,7 @@ class MainFragment :
             initialNavDestinationChange = true
             return
         }
-        selectionModel.drop()
+        listModel.dropSelection()
     }
 
     private fun updateSong(song: Song?) {
@@ -450,11 +450,10 @@ class MainFragment :
         }
     }
 
-    private inner class SelectionBackPressedCallback(
-        private val selectionModel: SelectionViewModel
-    ) : OnBackPressedCallback(false) {
+    private inner class SelectionBackPressedCallback(private val listModel: ListViewModel) :
+        OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
-            if (selectionModel.drop()) {
+            if (listModel.dropSelection()) {
                 logD("Dropped selection")
             }
         }

@@ -43,9 +43,8 @@ import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.menu.MenuViewModel
-import org.oxycblt.auxio.list.menu.PendingMenu
-import org.oxycblt.auxio.list.selection.SelectionViewModel
+import org.oxycblt.auxio.list.ListViewModel
+import org.oxycblt.auxio.list.Menu
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
@@ -76,8 +75,7 @@ class PlaylistDetailFragment :
     PlaylistDetailListAdapter.Listener,
     NavController.OnDestinationChangedListener {
     private val detailModel: DetailViewModel by activityViewModels()
-    private val menuModel: MenuViewModel by activityViewModels()
-    override val selectionModel: SelectionViewModel by activityViewModels()
+    override val listModel: ListViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     // Information about what playlist to display is initially within the navigation arguments
@@ -142,8 +140,8 @@ class PlaylistDetailFragment :
         collectImmediately(detailModel.playlistList, ::updateList)
         collectImmediately(detailModel.editedPlaylist, ::updateEditedList)
         collect(detailModel.toShow.flow, ::handleShow)
-        collect(menuModel.pendingMenu.flow, ::handleMenu)
-        collectImmediately(selectionModel.selected, ::updateSelection)
+        collect(listModel.menu.flow, ::handleMenu)
+        collectImmediately(listModel.selected, ::updateSelection)
         collect(musicModel.playlistDecision.flow, ::handleDecision)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -239,7 +237,7 @@ class PlaylistDetailFragment :
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {
-        menuModel.open(R.menu.item_playlist_song, item)
+        listModel.openMenu(R.menu.item_playlist_song, item)
     }
 
     override fun onPlay() {
@@ -286,7 +284,7 @@ class PlaylistDetailFragment :
     private fun updateEditedList(editedPlaylist: List<Song>?) {
         playlistListAdapter.setEditing(editedPlaylist != null)
         playlistHeaderAdapter.setEditedPlaylist(editedPlaylist)
-        selectionModel.drop()
+        listModel.dropSelection()
 
         if (editedPlaylist != null) {
             logD("Updating save button state")
@@ -349,17 +347,16 @@ class PlaylistDetailFragment :
         }
     }
 
-    private fun handleMenu(pendingMenu: PendingMenu?) {
-        if (pendingMenu == null) return
+    private fun handleMenu(menu: Menu?) {
+        if (menu == null) return
         val directions =
-            when (pendingMenu) {
-                is PendingMenu.ForSong ->
-                    PlaylistDetailFragmentDirections.openSongMenu(
-                        pendingMenu.menuRes, pendingMenu.music.uid)
-                is PendingMenu.ForArtist,
-                is PendingMenu.ForAlbum,
-                is PendingMenu.ForGenre,
-                is PendingMenu.ForPlaylist -> error("Unexpected menu $pendingMenu")
+            when (menu) {
+                is Menu.ForSong ->
+                    PlaylistDetailFragmentDirections.openSongMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForArtist,
+                is Menu.ForAlbum,
+                is Menu.ForGenre,
+                is Menu.ForPlaylist -> error("Unexpected menu $menu")
             }
         findNavController().navigateSafe(directions)
     }
@@ -421,7 +418,7 @@ class PlaylistDetailFragment :
                     logD("Currently editing playlist, showing edit toolbar")
                     R.id.detail_edit_toolbar
                 }
-                selectionModel.selected.value.isNotEmpty() -> {
+                listModel.selected.value.isNotEmpty() -> {
                     logD("Currently selecting, showing selection toolbar")
                     R.id.detail_selection_toolbar
                 }

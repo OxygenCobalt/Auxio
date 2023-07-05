@@ -40,9 +40,8 @@ import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Header
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
-import org.oxycblt.auxio.list.menu.MenuViewModel
-import org.oxycblt.auxio.list.menu.PendingMenu
-import org.oxycblt.auxio.list.selection.SelectionViewModel
+import org.oxycblt.auxio.list.ListViewModel
+import org.oxycblt.auxio.list.Menu
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -74,8 +73,7 @@ import org.oxycblt.auxio.util.setFullWidthLookup
 class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
     private val searchModel: SearchViewModel by viewModels()
     private val detailModel: DetailViewModel by activityViewModels()
-    private val menuModel: MenuViewModel by activityViewModels()
-    override val selectionModel: SelectionViewModel by activityViewModels()
+    override val listModel: ListViewModel by activityViewModels()
     override val playbackModel: PlaybackViewModel by activityViewModels()
     override val musicModel: MusicViewModel by activityViewModels()
     private val searchAdapter = SearchAdapter(this)
@@ -141,8 +139,8 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         // --- VIEWMODEL SETUP ---
 
         collectImmediately(searchModel.searchResults, ::updateSearchResults)
-        collect(menuModel.pendingMenu.flow, ::handleMenu)
-        collectImmediately(selectionModel.selected, ::updateSelection)
+        collectImmediately(listModel.selected, ::updateSelection)
+        collect(listModel.menu.flow, ::handleMenu)
         collect(musicModel.playlistDecision.flow, ::handleDecision)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -186,11 +184,11 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     override fun onOpenMenu(item: Music, anchor: View) {
         when (item) {
-            is Song -> menuModel.open(R.menu.item_song, item)
-            is Album -> menuModel.open(R.menu.item_album, item)
-            is Artist -> menuModel.open(R.menu.item_parent, item)
-            is Genre -> menuModel.open(R.menu.item_parent, item)
-            is Playlist -> menuModel.open(R.menu.item_playlist, item)
+            is Song -> listModel.openMenu(R.menu.item_song, item)
+            is Album -> listModel.openMenu(R.menu.item_album, item)
+            is Artist -> listModel.openMenu(R.menu.item_parent, item)
+            is Genre -> listModel.openMenu(R.menu.item_parent, item)
+            is Playlist -> listModel.openMenu(R.menu.item_playlist, item)
         }
     }
 
@@ -262,25 +260,20 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         hideKeyboard()
     }
 
-    private fun handleMenu(pendingMenu: PendingMenu?) {
-        if (pendingMenu == null) return
+    private fun handleMenu(menu: Menu?) {
+        if (menu == null) return
         val directions =
-            when (pendingMenu) {
-                is PendingMenu.ForSong ->
-                    SearchFragmentDirections.openSongMenu(
-                        pendingMenu.menuRes, pendingMenu.music.uid)
-                is PendingMenu.ForAlbum ->
-                    SearchFragmentDirections.openAlbumMenu(
-                        pendingMenu.menuRes, pendingMenu.music.uid)
-                is PendingMenu.ForArtist ->
-                    SearchFragmentDirections.openArtistMenu(
-                        pendingMenu.menuRes, pendingMenu.music.uid)
-                is PendingMenu.ForGenre ->
-                    SearchFragmentDirections.openGenreMenu(
-                        pendingMenu.menuRes, pendingMenu.music.uid)
-                is PendingMenu.ForPlaylist ->
-                    SearchFragmentDirections.openPlaylistMenu(
-                        pendingMenu.menuRes, pendingMenu.music.uid)
+            when (menu) {
+                is Menu.ForSong ->
+                    SearchFragmentDirections.openSongMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForAlbum ->
+                    SearchFragmentDirections.openAlbumMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForArtist ->
+                    SearchFragmentDirections.openArtistMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForGenre ->
+                    SearchFragmentDirections.openGenreMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForPlaylist ->
+                    SearchFragmentDirections.openPlaylistMenu(menu.menuRes, menu.music.uid)
             }
         findNavController().navigateSafe(directions)
     }

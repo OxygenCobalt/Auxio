@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.list.selection
+package org.oxycblt.auxio.list
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -36,7 +36,7 @@ import org.oxycblt.auxio.util.showToast
  */
 abstract class SelectionFragment<VB : ViewBinding> :
     ViewBindingFragment<VB>(), Toolbar.OnMenuItemClickListener {
-    protected abstract val selectionModel: SelectionViewModel
+    protected abstract val listModel: ListViewModel
     protected abstract val musicModel: MusicViewModel
     protected abstract val playbackModel: PlaybackViewModel
 
@@ -46,7 +46,7 @@ abstract class SelectionFragment<VB : ViewBinding> :
         super.onBindingCreated(binding, savedInstanceState)
         getSelectionToolbar(binding)?.apply {
             // Add cancel and menu item listeners to manage what occurs with the selection.
-            setNavigationOnClickListener { selectionModel.drop() }
+            setNavigationOnClickListener { listModel.dropSelection() }
             setOnMenuItemClickListener(this@SelectionFragment)
         }
     }
@@ -59,29 +59,29 @@ abstract class SelectionFragment<VB : ViewBinding> :
     override fun onMenuItemClick(item: MenuItem) =
         when (item.itemId) {
             R.id.action_selection_play_next -> {
-                playbackModel.playNext(selectionModel.take())
+                playbackModel.playNext(listModel.takeSelection())
                 requireContext().showToast(R.string.lng_queue_added)
                 true
             }
             R.id.action_selection_playlist_add -> {
-                musicModel.addToPlaylist(selectionModel.take())
+                musicModel.addToPlaylist(listModel.takeSelection())
                 true
             }
             R.id.action_selection_queue_add -> {
-                playbackModel.addToQueue(selectionModel.take())
+                playbackModel.addToQueue(listModel.takeSelection())
                 requireContext().showToast(R.string.lng_queue_added)
                 true
             }
             R.id.action_selection_play -> {
-                playbackModel.play(selectionModel.take())
+                playbackModel.play(listModel.takeSelection())
                 true
             }
             R.id.action_selection_shuffle -> {
-                playbackModel.shuffle(selectionModel.take())
+                playbackModel.shuffle(listModel.takeSelection())
                 true
             }
             R.id.action_selection_share -> {
-                requireContext().share(selectionModel.take())
+                requireContext().share(listModel.takeSelection())
                 true
             }
             else -> false
