@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## 3.1.4
 
 #### What's Fixed
 - Fixed issue where one could not navigate to settings after navigating elsewhere
