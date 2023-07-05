@@ -296,4 +296,6 @@
     <string name="fmt_editing">%s szerkesztése</string>
     <string name="set_square_covers">Kényszerített négyzet alakú albumborítók</string>
     <string name="set_square_covers_desc">Az összes albumborító 1:1 arányra vágása</string>
+    <string name="lbl_song">Dal</string>
+    <string name="lbl_parent_detail">Megnéz</string>
 </resources>
