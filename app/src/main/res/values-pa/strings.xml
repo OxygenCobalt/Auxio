@@ -289,4 +289,6 @@
     <string name="fmt_indexing">ਤੁਹਾਡੀ ਸੰਗੀਤ ਲਾਇਬਰੇਰੀ ਲੋਡ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ… (%1$d/%2$d)</string>
     <string name="set_square_covers">ਵਰਗੀਕ੍ਰਿਤ ਐਲਬਮ ਕਵਰ ਫੋਰਸ ਕਰੋ</string>
     <string name="set_square_covers_desc">ਸਾਰੇ ਐਲਬਮ ਕਵਰਾਂ ਨੂੰ 1:1 ਦੇ ਆਕਾਰ ਅਨੁਪਾਤ ਤੱਕ ਕਾਂਟ-ਛਾਂਟ ਕਰੋ</string>
+    <string name="lbl_song">ਗੀਤ</string>
+    <string name="lbl_parent_detail">ਵੇਖੋ</string>
 </resources>
