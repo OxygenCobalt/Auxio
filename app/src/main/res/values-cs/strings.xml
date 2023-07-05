@@ -306,4 +306,6 @@
     <string name="lbl_share">Sdílet</string>
     <string name="set_square_covers">Vynutit čtvercové obaly alb</string>
     <string name="set_square_covers_desc">Oříznout všechny covery alb na poměr stran 1:1</string>
+    <string name="lbl_song">Skladba</string>
+    <string name="lbl_parent_detail">Zobrazit</string>
 </resources>
