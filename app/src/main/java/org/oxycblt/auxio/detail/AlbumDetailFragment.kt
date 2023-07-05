@@ -277,22 +277,20 @@ class AlbumDetailFragment :
                         .navigateSafe(AlbumDetailFragmentDirections.showAlbum(show.album.uid))
                 }
             }
-
-            // Always launch a new ArtistDetailFragment.
             is Show.ArtistDetails -> {
                 logD("Navigating to ${show.artist}")
                 findNavController()
                     .navigateSafe(AlbumDetailFragmentDirections.showArtist(show.artist.uid))
             }
-            is Show.SongArtistDetails -> {
+            is Show.SongArtistDecision -> {
                 logD("Navigating to artist choices for ${show.song}")
                 findNavController()
-                    .navigateSafe(AlbumDetailFragmentDirections.showArtist(show.song.uid))
+                    .navigateSafe(AlbumDetailFragmentDirections.showArtistChoices(show.song.uid))
             }
-            is Show.AlbumArtistDetails -> {
+            is Show.AlbumArtistDecision -> {
                 logD("Navigating to artist choices for ${show.album}")
                 findNavController()
-                    .navigateSafe(AlbumDetailFragmentDirections.showArtist(show.album.uid))
+                    .navigateSafe(AlbumDetailFragmentDirections.showArtistChoices(show.album.uid))
             }
             is Show.GenreDetails,
             is Show.PlaylistDetails -> {

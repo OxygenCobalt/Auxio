@@ -242,8 +242,8 @@ class PlaybackPanelFragment :
             is Show.ArtistDetails,
             is Show.AlbumDetails -> playbackModel.openMain()
             is Show.SongDetails,
-            is Show.SongArtistDetails,
-            is Show.AlbumArtistDetails,
+            is Show.SongArtistDecision,
+            is Show.AlbumArtistDecision,
             is Show.GenreDetails,
             is Show.PlaylistDetails,
             null -> {}

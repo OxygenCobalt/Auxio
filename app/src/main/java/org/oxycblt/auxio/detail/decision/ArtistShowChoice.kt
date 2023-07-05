@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.detail.picker
+package org.oxycblt.auxio.detail.decision
 
 import android.view.View
 import android.view.ViewGroup

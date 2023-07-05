@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
- * ShowArtistDialog.kt is part of Auxio.
+ * PlayFromArtistDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.detail.picker
+package org.oxycblt.auxio.playback.decision
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,28 +29,30 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicChoicesBinding
-import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingMaterialDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * A picker [ViewBindingMaterialDialogFragment] intended for when the [Artist] to show is ambiguous.
+ * A picker [ViewBindingMaterialDialogFragment] intended for when [Artist] playback is ambiguous.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class ShowArtistDialog :
+class PlayFromArtistDialog :
     ViewBindingMaterialDialogFragment<DialogMusicChoicesBinding>(), ClickableListListener<Artist> {
-    private val detailModel: DetailViewModel by activityViewModels()
-    private val pickerModel: DetailPickerViewModel by viewModels()
-    // Information about what artists to show choices for is initially within the navigation
-    // arguments as UIDs, as that is the only safe way to parcel an artist.
-    private val args: ShowArtistDialogArgs by navArgs()
-    private val choiceAdapter = ArtistShowChoice(this)
+    private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val pickerModel: PlaybackPickerViewModel by viewModels()
+    // Information about what Song to show choices for is initially within the navigation arguments
+    // as UIDs, as that is the only safe way to parcel a Song.
+    private val args: PlayFromArtistDialogArgs by navArgs()
+    private val choiceAdapter = ArtistPlaybackChoiceAdapter(this)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder.setTitle(R.string.lbl_artists).setNegativeButton(R.string.lbl_cancel, null)
@@ -67,9 +69,9 @@ class ShowArtistDialog :
             adapter = choiceAdapter
         }
 
-        detailModel.toShow.consume()
-        pickerModel.setArtistChoiceUid(args.itemUid)
-        collectImmediately(pickerModel.artistChoices, ::updateChoices)
+        playbackModel.playbackDecision.consume()
+        pickerModel.setPickerSongUid(args.artistUid)
+        collectImmediately(pickerModel.currentPickerSong, ::updateSong)
     }
 
     override fun onDestroyBinding(binding: DialogMusicChoicesBinding) {
@@ -78,17 +80,18 @@ class ShowArtistDialog :
     }
 
     override fun onClick(item: Artist, viewHolder: RecyclerView.ViewHolder) {
+        // User made a choice, play the given song from that artist.
+        val song = unlikelyToBeNull(pickerModel.currentPickerSong.value)
+        playbackModel.playFromArtist(song, item)
         findNavController().navigateUp()
-        // User made a choice, navigate to the artist.
-        detailModel.showArtist(item)
     }
 
-    private fun updateChoices(choices: ArtistShowChoices?) {
-        if (choices == null) {
-            logD("No choices to show, navigating away")
+    private fun updateSong(song: Song?) {
+        if (song == null) {
+            logD("No song to show choices for, navigating away")
             findNavController().navigateUp()
             return
         }
-        choiceAdapter.update(choices.choices, UpdateInstructions.Diff)
+        choiceAdapter.update(song.artists, UpdateInstructions.Replace(0))
     }
 }

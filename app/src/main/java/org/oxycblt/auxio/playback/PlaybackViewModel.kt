@@ -90,14 +90,23 @@ constructor(
         get() = _isShuffled
 
     private val _currentBarAction = MutableStateFlow(playbackSettings.barAction)
+    /** The current secondary action to show alongside the play button in the playback bar. */
     val currentBarAction: StateFlow<ActionMode>
         get() = _currentBarAction
 
     private val _openPanel = MutableEvent<OpenPanel>()
+    /**
+     * A [OpenPanel] command that is awaiting a view capable of responding to it. Null if none
+     * currently.
+     */
     val openPanel: Event<OpenPanel>
         get() = _openPanel
 
     private val _playbackDecision = MutableEvent<PlaybackDecision>()
+    /**
+     * A [PlaybackDecision] command that is awaiting a view capable of responding to it. Null if
+     * none currently.
+     */
     val playbackDecision: Event<PlaybackDecision>
         get() = _playbackDecision
 
@@ -561,8 +570,17 @@ constructor(
     }
 
     // --- UI CONTROL ---
+
+    /** Open the main panel, closing all other panels. */
     fun openMain() = openImpl(OpenPanel.Main)
+
+    /** Open the playback panel, closing the queue panel if needed. */
     fun openPlayback() = openImpl(OpenPanel.Playback)
+
+    /**
+     * Open the queue panel, assuming that it exists in the current layout, is collapsed, and with
+     * the playback panel already being expanded.
+     */
     fun openQueue() = openImpl(OpenPanel.Queue)
 
     private fun openImpl(panel: OpenPanel) {
@@ -618,15 +636,33 @@ constructor(
     }
 }
 
+/**
+ * Command for controlling the main playback panel UI.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 sealed interface OpenPanel {
+    /** Open the main view, collapsing all other panels. */
     object Main : OpenPanel
+    /** Open the playback panel, collapsing the queue panel if applicable. */
     object Playback : OpenPanel
+    /**
+     * Open the queue panel, assuming that it exists in the current layout, is collapsed, and with
+     * the playback panel already being expanded. Do nothing if these conditions are not met.
+     */
     object Queue : OpenPanel
 }
 
+/**
+ * Command for opening decision dialogs when playback from a [Song] is ambiguous.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 sealed interface PlaybackDecision {
+    /** The [Song] currently attempting to be played from. */
     val song: Song
-
+    /** Navigate to a dialog to determine which [Artist] a [Song] should be played from. */
     class PlayFromArtist(override val song: Song) : PlaybackDecision
+    /** Navigate to a dialog to determine which [Genre] a [Song] should be played from. */
     class PlayFromGenre(override val song: Song) : PlaybackDecision
 }

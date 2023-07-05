@@ -303,38 +303,31 @@ class PlaylistDetailFragment :
                 findNavController()
                     .navigateSafe(PlaylistDetailFragmentDirections.showSong(show.song.uid))
             }
-
-            // Songs should be scrolled to if the album matches, or a new detail
-            // fragment should be launched otherwise.
             is Show.SongAlbumDetails -> {
                 logD("Navigating to the album of ${show.song}")
                 findNavController()
                     .navigateSafe(PlaylistDetailFragmentDirections.showAlbum(show.song.album.uid))
             }
-
-            // If the album matches, no need to do anything. Otherwise launch a new
-            // detail fragment.
             is Show.AlbumDetails -> {
                 logD("Navigating to ${show.album}")
                 findNavController()
                     .navigateSafe(PlaylistDetailFragmentDirections.showAlbum(show.album.uid))
             }
-
-            // Always launch a new ArtistDetailFragment.
             is Show.ArtistDetails -> {
                 logD("Navigating to ${show.artist}")
                 findNavController()
                     .navigateSafe(PlaylistDetailFragmentDirections.showArtist(show.artist.uid))
             }
-            is Show.SongArtistDetails -> {
+            is Show.SongArtistDecision -> {
                 logD("Navigating to artist choices for ${show.song}")
                 findNavController()
-                    .navigateSafe(PlaylistDetailFragmentDirections.showArtist(show.song.uid))
+                    .navigateSafe(PlaylistDetailFragmentDirections.showArtistChoices(show.song.uid))
             }
-            is Show.AlbumArtistDetails -> {
+            is Show.AlbumArtistDecision -> {
                 logD("Navigating to artist choices for ${show.album}")
                 findNavController()
-                    .navigateSafe(PlaylistDetailFragmentDirections.showArtist(show.album.uid))
+                    .navigateSafe(
+                        PlaylistDetailFragmentDirections.showArtistChoices(show.album.uid))
             }
             is Show.PlaylistDetails -> {
                 logD("Navigated to this playlist")

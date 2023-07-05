@@ -279,15 +279,15 @@ class GenreDetailFragment :
                 findNavController()
                     .navigateSafe(GenreDetailFragmentDirections.showArtist(show.artist.uid))
             }
-            is Show.SongArtistDetails -> {
+            is Show.SongArtistDecision -> {
                 logD("Navigating to artist choices for ${show.song}")
                 findNavController()
-                    .navigateSafe(GenreDetailFragmentDirections.showArtist(show.song.uid))
+                    .navigateSafe(GenreDetailFragmentDirections.showArtistChoices(show.song.uid))
             }
-            is Show.AlbumArtistDetails -> {
+            is Show.AlbumArtistDecision -> {
                 logD("Navigating to artist choices for ${show.album}")
                 findNavController()
-                    .navigateSafe(GenreDetailFragmentDirections.showArtist(show.album.uid))
+                    .navigateSafe(GenreDetailFragmentDirections.showArtistChoices(show.album.uid))
             }
             is Show.GenreDetails -> {
                 logD("Navigated to this genre")

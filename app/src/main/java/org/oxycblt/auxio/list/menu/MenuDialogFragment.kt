@@ -41,6 +41,8 @@ import org.oxycblt.auxio.util.logD
  * options.
  *
  * @author Alexander Capehart (OxygenCobalt)
+ *
+ * TODO: Extend the amount of music info shown in the dialog
  */
 abstract class MenuDialogFragment<T : Music> :
     ViewBindingBottomSheetDialogFragment<DialogMenuBinding>(), ClickableListListener<MenuItem> {
@@ -48,10 +50,33 @@ abstract class MenuDialogFragment<T : Music> :
     protected abstract val listModel: ListViewModel
     private val menuAdapter = MenuItemAdapter(@Suppress("LeakingThis") this)
 
+    /** The android resource ID of the menu options to display in the dialog. */
     abstract val menuRes: Int
+
+    /** The [Music.UID] of the [T] to display menu options for. */
     abstract val uid: Music.UID
+
+    /**
+     * Get the options to disable in the context of the currently shown [T].
+     *
+     * @param music The currently-shown music [T].
+     */
     abstract fun getDisabledItemIds(music: T): Set<Int>
+
+    /**
+     * Update the displayed information about the currently shown [T].
+     *
+     * @param binding The [DialogMenuBinding] to bind information to.
+     * @param music The currently-shown music [T].
+     */
     abstract fun updateMusic(binding: DialogMenuBinding, music: T)
+
+    /**
+     * Forward the clicked [MenuItem] to it's corresponding handler in another module.
+     *
+     * @param item The [MenuItem] that was clicked.
+     * @param music The currently-shown music [T].
+     */
     abstract fun onClick(item: MenuItem, music: T)
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogMenuBinding.inflate(inflater)
@@ -69,7 +94,7 @@ abstract class MenuDialogFragment<T : Music> :
 
         // --- VIEWMODEL SETUP ---
         listModel.menu.consume()
-        menuModel.setCurrentMenu(uid)
+        menuModel.setMusic(uid)
         collectImmediately(menuModel.currentMusic, this::updateMusic)
     }
 

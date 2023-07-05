@@ -71,6 +71,9 @@ constructor(
     private val playbackSettings: PlaybackSettings
 ) : ViewModel(), MusicRepository.UpdateListener {
     private val _toShow = MutableEvent<Show>()
+    /**
+     * A [Show] command that is awaiting a view capable of responding to it. Null if none currently.
+     */
     val toShow: Event<Show>
         get() = _toShow
 
@@ -241,32 +244,74 @@ constructor(
         }
     }
 
+    /**
+     * Navigate to the details (properties) of a [Song].
+     *
+     * @param song The [Song] to navigate with.
+     */
     fun showSong(song: Song) = showImpl(Show.SongDetails(song))
 
+    /**
+     * Navigate to the [Album] details of the given [Song], scrolling to the given [Song] as well.
+     *
+     * @param song The [Song] to navigate with.
+     */
     fun showAlbum(song: Song) = showImpl(Show.SongAlbumDetails(song))
 
+    /**
+     * Navigate to the details of an [Album].
+     *
+     * @param album The [Album] to navigate with.
+     */
     fun showAlbum(album: Album) = showImpl(Show.AlbumDetails(album))
 
+    /**
+     * Navigate to the details of one of the [Artist]s of a [Song] using the corresponding choice
+     * dialog. If there is only one artist, this call is identical to [showArtist].
+     *
+     * @param song The [Song] to navigate with.
+     */
     fun showArtist(song: Song) =
         showImpl(
             if (song.artists.size > 1) {
-                Show.SongArtistDetails(song)
+                Show.SongArtistDecision(song)
             } else {
                 Show.ArtistDetails(song.artists.first())
             })
 
+    /**
+     * Navigate to the details of one of the [Artist]s of an [Album] using the corresponding choice
+     * dialog. If there is only one artist, this call is identical to [showArtist].
+     *
+     * @param album The [Album] to navigate with.
+     */
     fun showArtist(album: Album) =
         showImpl(
             if (album.artists.size > 1) {
-                Show.AlbumArtistDetails(album)
+                Show.AlbumArtistDecision(album)
             } else {
                 Show.ArtistDetails(album.artists.first())
             })
 
+    /**
+     * Navigate to the details of an [Artist].
+     *
+     * @param artist The [Artist] to navigate with.
+     */
     fun showArtist(artist: Artist) = showImpl(Show.ArtistDetails(artist))
 
+    /**
+     * Navigate to the details of a [Genre].
+     *
+     * @param genre The [Genre] to navigate with.
+     */
     fun showGenre(genre: Genre) = showImpl(Show.GenreDetails(genre))
 
+    /**
+     * Navigate to the details of a [Playlist].
+     *
+     * @param playlist The [Playlist] to navigate with.
+     */
     fun showPlaylist(playlist: Playlist) = showImpl(Show.PlaylistDetails(playlist))
 
     private fun showImpl(show: Show) {
@@ -624,13 +669,68 @@ constructor(
     }
 }
 
+/**
+ * A command for navigation to detail views. These can be handled partially if a certain command
+ * cannot occur in a specific view.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 sealed interface Show {
+    /**
+     * Navigate to the details (properties) of a [Song].
+     *
+     * @param song The [Song] to navigate with.
+     */
     data class SongDetails(val song: Song) : Show
+
+    /**
+     * Navigate to the details of an [Album].
+     *
+     * @param album The [Album] to navigate with.
+     */
     data class AlbumDetails(val album: Album) : Show
+
+    /**
+     * Navigate to the [Album] details of the given [Song], scrolling to the given [Song] as well.
+     *
+     * @param song The [Song] to navigate with.
+     */
     data class SongAlbumDetails(val song: Song) : Show
+
+    /**
+     * Navigate to the details of an [Artist].
+     *
+     * @param artist The [Artist] to navigate with.
+     */
     data class ArtistDetails(val artist: Artist) : Show
-    data class SongArtistDetails(val song: Song) : Show
-    data class AlbumArtistDetails(val album: Album) : Show
+
+    /**
+     * Navigate to the details of one of the [Artist]s of a [Song] using the corresponding choice
+     * dialog.
+     *
+     * @param song The [Song] to navigate with.
+     */
+    data class SongArtistDecision(val song: Song) : Show
+
+    /**
+     * Navigate to the details of one of the [Artist]s of an [Album] using the corresponding
+     * decision dialog.
+     *
+     * @param album The [Album] to navigate with.
+     */
+    data class AlbumArtistDecision(val album: Album) : Show
+
+    /**
+     * Navigate to the details of a [Genre].
+     *
+     * @param genre The [Genre] to navigate with.
+     */
     data class GenreDetails(val genre: Genre) : Show
+
+    /**
+     * Navigate to the details of a [Playlist].
+     *
+     * @param playlist The [Playlist] to navigate with.
+     */
     data class PlaylistDetails(val playlist: Playlist) : Show
 }

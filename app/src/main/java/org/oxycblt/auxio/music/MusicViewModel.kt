@@ -53,6 +53,10 @@ constructor(
         get() = _statistics
 
     private val _playlistDecision = MutableEvent<PlaylistDecision>()
+    /**
+     * A [PlaylistDecision] command that is awaiting a view capable of responding to it. Null if
+     * none currently.
+     */
     val playlistDecision: Event<PlaylistDecision>
         get() = _playlistDecision
 
@@ -222,9 +226,37 @@ constructor(
     )
 }
 
+/**
+ * Navigation command for when a [Playlist] must have some operation performed on it by the user.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 sealed interface PlaylistDecision {
+    /**
+     * Navigate to a dialog that allows a user to pick a name for a new [Playlist].
+     *
+     * @param songs The [Song]s to contain in the new [Playlist].
+     */
     data class New(val songs: List<Song>) : PlaylistDecision
+
+    /**
+     * Navigate to a dialog that allows a user to rename an existing [Playlist].
+     *
+     * @param playlist The playlist to act on.
+     */
     data class Rename(val playlist: Playlist) : PlaylistDecision
+
+    /**
+     * Navigate to a dialog that confirms the deletion of an existing [Playlist].
+     *
+     * @param playlist The playlist to act on.
+     */
     data class Delete(val playlist: Playlist) : PlaylistDecision
+
+    /**
+     * Navigate to a dialog that allows the user to add [Song]s to a [Playlist].
+     *
+     * @param songs The [Song]s to add to the chosen [Playlist].
+     */
     data class Add(val songs: List<Song>) : PlaylistDecision
 }

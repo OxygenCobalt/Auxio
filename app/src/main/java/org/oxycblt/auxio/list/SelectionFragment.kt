@@ -86,4 +86,6 @@ abstract class SelectionFragment<VB : ViewBinding> :
             }
             else -> false
         }
+
+    // TODO: Re-add the automatic selection handling
 }

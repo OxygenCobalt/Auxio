@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * PlaylistChoiceAdapter.kt is part of Auxio.
+ * ArtistPlaybackChoiceAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.picker
+package org.oxycblt.auxio.playback.decision
 
 import android.view.View
 import android.view.ViewGroup
@@ -25,44 +25,50 @@ import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
 import org.oxycblt.auxio.list.adapter.SimpleDiffCallback
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 
 /**
- * A [FlexibleListAdapter] that displays a list of [PlaylistChoice] options to select from in
- * [AddToPlaylistDialog].
+ * A [FlexibleListAdapter] that displays a list of [Artist] playback choices, for use with
+ * [PlayFromArtistDialog].
  *
- * @param listener [ClickableListListener] to bind interactions to.
+ * @param listener A [ClickableListListener] to bind interactions to.
  */
-class PlaylistChoiceAdapter(val listener: ClickableListListener<PlaylistChoice>) :
-    FlexibleListAdapter<PlaylistChoice, PlaylistChoiceViewHolder>(
-        PlaylistChoiceViewHolder.DIFF_CALLBACK) {
+class ArtistPlaybackChoiceAdapter(private val listener: ClickableListListener<Artist>) :
+    FlexibleListAdapter<Artist, ArtistPlaybackChoiceViewHolder>(
+        ArtistPlaybackChoiceViewHolder.DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        PlaylistChoiceViewHolder.from(parent)
+        ArtistPlaybackChoiceViewHolder.from(parent)
 
-    override fun onBindViewHolder(holder: PlaylistChoiceViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ArtistPlaybackChoiceViewHolder, position: Int) {
         holder.bind(getItem(position), listener)
     }
 }
 
 /**
- * A [DialogRecyclerView.ViewHolder] that displays an individual playlist choice. Use [from] to
- * create an instance.
+ * A [DialogRecyclerView.ViewHolder] that displays a smaller variant of a typical [Artist] item, for
+ * use [ArtistPlaybackChoiceAdapter]. Use [from] to create an instance.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-class PlaylistChoiceViewHolder private constructor(private val binding: ItemPickerChoiceBinding) :
+class ArtistPlaybackChoiceViewHolder
+private constructor(private val binding: ItemPickerChoiceBinding) :
     DialogRecyclerView.ViewHolder(binding.root) {
-    fun bind(choice: PlaylistChoice, listener: ClickableListListener<PlaylistChoice>) {
-        listener.bind(choice, this)
-        binding.pickerImage.apply {
-            bind(choice.playlist)
-            isActivated = choice.alreadyAdded
-        }
-        binding.pickerName.text = choice.playlist.name.resolve(binding.context)
+    /**
+     * Bind new data to this instance.
+     *
+     * @param artist The new [Artist] to bind.
+     * @param listener A [ClickableListListener] to bind interactions to.
+     */
+    fun bind(artist: Artist, listener: ClickableListListener<Artist>) {
+        listener.bind(artist, this)
+        binding.pickerImage.bind(artist)
+        binding.pickerName.text = artist.name.resolve(binding.context)
     }
 
     companion object {
+
         /**
          * Create a new instance.
          *
@@ -70,14 +76,13 @@ class PlaylistChoiceViewHolder private constructor(private val binding: ItemPick
          * @return A new instance.
          */
         fun from(parent: View) =
-            PlaylistChoiceViewHolder(ItemPickerChoiceBinding.inflate(parent.context.inflater))
+            ArtistPlaybackChoiceViewHolder(ItemPickerChoiceBinding.inflate(parent.context.inflater))
 
         /** A comparator that can be used with DiffUtil. */
         val DIFF_CALLBACK =
-            object : SimpleDiffCallback<PlaylistChoice>() {
-                override fun areContentsTheSame(oldItem: PlaylistChoice, newItem: PlaylistChoice) =
-                    oldItem.playlist.name == newItem.playlist.name &&
-                        oldItem.alreadyAdded == newItem.alreadyAdded
+            object : SimpleDiffCallback<Artist>() {
+                override fun areContentsTheSame(oldItem: Artist, newItem: Artist) =
+                    oldItem.name == newItem.name
             }
     }
 }

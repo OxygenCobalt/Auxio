@@ -27,10 +27,15 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.util.logW
 
+/**
+ * Manages the state information for [MenuDialogFragment] implementations.
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 @HiltViewModel
 class MenuViewModel @Inject constructor(private val musicRepository: MusicRepository) :
     ViewModel(), MusicRepository.UpdateListener {
     private val _currentMusic = MutableStateFlow<Music?>(null)
+    /** The current [Music] information being shown in a menu dialog. */
     val currentMusic: StateFlow<Music?> = _currentMusic
 
     init {
@@ -45,7 +50,13 @@ class MenuViewModel @Inject constructor(private val musicRepository: MusicReposi
         musicRepository.removeUpdateListener(this)
     }
 
-    fun setCurrentMenu(uid: Music.UID) {
+    /**
+     * Set a new [currentMusic] from it's [Music.UID]. [currentMusic] will be updated to align with
+     * the new album.
+     *
+     * @param uid The [Music.UID] of the [Music] to update [currentMusic] to. Must be valid.
+     */
+    fun setMusic(uid: Music.UID) {
         _currentMusic.value = musicRepository.find(uid)
         if (_currentMusic.value == null) {
             logW("Given Music UID to show was invalid")

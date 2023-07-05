@@ -302,8 +302,8 @@ class ArtistDetailFragment :
                         .navigateSafe(ArtistDetailFragmentDirections.showArtist(show.artist.uid))
                 }
             }
-            is Show.SongArtistDetails,
-            is Show.AlbumArtistDetails,
+            is Show.SongArtistDecision,
+            is Show.AlbumArtistDecision,
             is Show.GenreDetails,
             is Show.PlaylistDetails -> {
                 error("Unexpected show command $show")

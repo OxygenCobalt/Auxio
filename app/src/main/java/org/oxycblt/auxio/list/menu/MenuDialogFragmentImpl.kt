@@ -40,6 +40,11 @@ import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.share
 import org.oxycblt.auxio.util.showToast
 
+/**
+ * [MenuDialogFragment] implementation for a [Song].
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 @AndroidEntryPoint
 class SongMenuDialogFragment : MenuDialogFragment<Song>() {
     override val menuModel: MenuViewModel by activityViewModels()
@@ -54,6 +59,7 @@ class SongMenuDialogFragment : MenuDialogFragment<Song>() {
     override val uid: Music.UID
         get() = args.songUid
 
+    // Nothing to disable in song menus.
     override fun getDisabledItemIds(music: Song) = setOf<Int>()
 
     override fun updateMusic(binding: DialogMenuBinding, music: Song) {
@@ -66,6 +72,7 @@ class SongMenuDialogFragment : MenuDialogFragment<Song>() {
 
     override fun onClick(item: MenuItem, music: Song) {
         when (item.itemId) {
+            // TODO: Song play and shuffle as soon as PlaybackMode is refactored
             R.id.action_play_next -> {
                 playbackModel.playNext(music)
                 requireContext().showToast(R.string.lng_queue_added)
@@ -84,6 +91,11 @@ class SongMenuDialogFragment : MenuDialogFragment<Song>() {
     }
 }
 
+/**
+ * [MenuDialogFragment] implementation for a [AlbumMenuDialogFragment].
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 @AndroidEntryPoint
 class AlbumMenuDialogFragment : MenuDialogFragment<Album>() {
     override val menuModel: MenuViewModel by viewModels()
@@ -98,6 +110,7 @@ class AlbumMenuDialogFragment : MenuDialogFragment<Album>() {
     override val uid: Music.UID
         get() = args.albumUid
 
+    // Nothing to disable in album menus.
     override fun getDisabledItemIds(music: Album) = setOf<Int>()
 
     override fun updateMusic(binding: DialogMenuBinding, music: Album) {
@@ -129,6 +142,11 @@ class AlbumMenuDialogFragment : MenuDialogFragment<Album>() {
     }
 }
 
+/**
+ * [MenuDialogFragment] implementation for a [Artist].
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 @AndroidEntryPoint
 class ArtistMenuDialogFragment : MenuDialogFragment<Artist>() {
     override val menuModel: MenuViewModel by viewModels()
@@ -145,6 +163,8 @@ class ArtistMenuDialogFragment : MenuDialogFragment<Artist>() {
 
     override fun getDisabledItemIds(music: Artist) =
         if (music.songs.isEmpty()) {
+            // Disable any operations that require some kind of songs to work with, as there won't
+            // be any in an empty artist.
             setOf(
                 R.id.action_play,
                 R.id.action_shuffle,
@@ -192,6 +212,11 @@ class ArtistMenuDialogFragment : MenuDialogFragment<Artist>() {
     }
 }
 
+/**
+ * [MenuDialogFragment] implementation for a [Genre].
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 @AndroidEntryPoint
 class GenreMenuDialogFragment : MenuDialogFragment<Genre>() {
     override val menuModel: MenuViewModel by viewModels()
@@ -240,6 +265,11 @@ class GenreMenuDialogFragment : MenuDialogFragment<Genre>() {
     }
 }
 
+/**
+ * [MenuDialogFragment] implementation for a [Playlist].
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 @AndroidEntryPoint
 class PlaylistMenuDialogFragment : MenuDialogFragment<Playlist>() {
     override val menuModel: MenuViewModel by viewModels()
@@ -256,6 +286,8 @@ class PlaylistMenuDialogFragment : MenuDialogFragment<Playlist>() {
 
     override fun getDisabledItemIds(music: Playlist) =
         if (music.songs.isEmpty()) {
+            // Disable any operations that require some kind of songs to work with, as there won't
+            // be any in an empty playlist.
             setOf(
                 R.id.action_play,
                 R.id.action_shuffle,

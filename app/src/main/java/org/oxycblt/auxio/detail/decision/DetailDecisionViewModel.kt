@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * DetailPickerViewModel.kt is part of Auxio.
+ * DetailDecisionViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.detail.picker
+package org.oxycblt.auxio.detail.decision
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

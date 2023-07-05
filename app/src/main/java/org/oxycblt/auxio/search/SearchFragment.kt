@@ -212,37 +212,29 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                 logD("Navigating to ${show.song}")
                 findNavController().navigateSafe(SearchFragmentDirections.showSong(show.song.uid))
             }
-
-            // Songs should be scrolled to if the album matches, or a new detail
-            // fragment should be launched otherwise.
             is Show.SongAlbumDetails -> {
                 logD("Navigating to the album of ${show.song}")
                 findNavController()
                     .navigateSafe(SearchFragmentDirections.showAlbum(show.song.album.uid))
             }
-
-            // If the album matches, no need to do anything. Otherwise launch a new
-            // detail fragment.
             is Show.AlbumDetails -> {
                 logD("Navigating to ${show.album}")
                 findNavController().navigateSafe(SearchFragmentDirections.showAlbum(show.album.uid))
             }
-
-            // Always launch a new ArtistDetailFragment.
             is Show.ArtistDetails -> {
                 logD("Navigating to ${show.artist}")
                 findNavController()
                     .navigateSafe(SearchFragmentDirections.showArtist(show.artist.uid))
             }
-            is Show.SongArtistDetails -> {
+            is Show.SongArtistDecision -> {
                 logD("Navigating to artist choices for ${show.song}")
                 findNavController()
-                    .navigateSafe(SearchFragmentDirections.showArtists(show.song.uid))
+                    .navigateSafe(SearchFragmentDirections.showArtistChoices(show.song.uid))
             }
-            is Show.AlbumArtistDetails -> {
+            is Show.AlbumArtistDecision -> {
                 logD("Navigating to artist choices for ${show.album}")
                 findNavController()
-                    .navigateSafe(SearchFragmentDirections.showArtists(show.album.uid))
+                    .navigateSafe(SearchFragmentDirections.showArtistChoices(show.album.uid))
             }
             is Show.GenreDetails -> {
                 logD("Navigating to ${show.genre}")
@@ -276,6 +268,8 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
                     SearchFragmentDirections.openPlaylistMenu(menu.menuRes, menu.music.uid)
             }
         findNavController().navigateSafe(directions)
+        // Keyboard is no longer needed.
+        hideKeyboard()
     }
 
     private fun updateSelection(selected: List<Music>) {

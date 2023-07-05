@@ -532,37 +532,31 @@ class HomeFragment :
                 logD("Navigating to ${show.song}")
                 findNavController().navigateSafe(HomeFragmentDirections.showSong(show.song.uid))
             }
-
-            // Songs should be scrolled to if the album matches, or a new detail
-            // fragment should be launched otherwise.
             is Show.SongAlbumDetails -> {
                 logD("Navigating to the album of ${show.song}")
                 applyAxisTransition(MaterialSharedAxis.X)
                 findNavController()
                     .navigateSafe(HomeFragmentDirections.showAlbum(show.song.album.uid))
             }
-
-            // If the album matches, no need to do anything. Otherwise launch a new
-            // detail fragment.
             is Show.AlbumDetails -> {
                 logD("Navigating to ${show.album}")
                 applyAxisTransition(MaterialSharedAxis.X)
                 findNavController().navigateSafe(HomeFragmentDirections.showAlbum(show.album.uid))
             }
-
-            // Always launch a new ArtistDetailFragment.
             is Show.ArtistDetails -> {
                 logD("Navigating to ${show.artist}")
                 applyAxisTransition(MaterialSharedAxis.X)
                 findNavController().navigateSafe(HomeFragmentDirections.showArtist(show.artist.uid))
             }
-            is Show.SongArtistDetails -> {
+            is Show.SongArtistDecision -> {
                 logD("Navigating to artist choices for ${show.song}")
-                findNavController().navigateSafe(HomeFragmentDirections.showArtists(show.song.uid))
+                findNavController()
+                    .navigateSafe(HomeFragmentDirections.showArtistChoices(show.song.uid))
             }
-            is Show.AlbumArtistDetails -> {
+            is Show.AlbumArtistDecision -> {
                 logD("Navigating to artist choices for ${show.album}")
-                findNavController().navigateSafe(HomeFragmentDirections.showArtists(show.album.uid))
+                findNavController()
+                    .navigateSafe(HomeFragmentDirections.showArtistChoices(show.album.uid))
             }
             is Show.GenreDetails -> {
                 logD("Navigating to ${show.genre}")

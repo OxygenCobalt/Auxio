@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.picker
+package org.oxycblt.auxio.music.decision
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

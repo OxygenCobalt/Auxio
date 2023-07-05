@@ -51,12 +51,15 @@ constructor(
     private val musicSettings: MusicSettings
 ) : ViewModel(), MusicRepository.UpdateListener {
     private val _selected = MutableStateFlow(listOf<Music>())
-    /** the currently selected items. These are ordered in earliest selected and latest selected. */
+    /** The currently selected items. These are ordered in earliest selected and latest selected. */
     val selected: StateFlow<List<Music>>
         get() = _selected
 
-    private val _Menu = MutableEvent<Menu>()
-    val menu: Event<Menu> = _Menu
+    private val _menu = MutableEvent<Menu>()
+    /**
+     * A [Menu] command that is awaiting a view capable of responding to it. Null if none currently.
+     */
+    val menu: Event<Menu> = _menu
 
     init {
         musicRepository.addUpdateListener(this)
@@ -198,22 +201,34 @@ constructor(
     }
 
     private fun openImpl(menu: Menu) {
-        val existing = _Menu.flow.value
+        val existing = _menu.flow.value
         if (existing != null) {
             logW("Already opening $existing, ignoring $menu")
             return
         }
-        _Menu.put(menu)
+        _menu.put(menu)
     }
 }
 
+/**
+ * Command to navigate to a specific menu dialog configuration.
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 sealed interface Menu {
+    /** The android resource ID of the menu options to display in the dialog. */
     val menuRes: Int
+    /** The [Music] that the menu should act on. */
     val music: Music
 
+    /** Navigate to a [Song] menu dialog. */
     class ForSong(@MenuRes override val menuRes: Int, override val music: Song) : Menu
+    /** Navigate to a [Album] menu dialog. */
     class ForAlbum(@MenuRes override val menuRes: Int, override val music: Album) : Menu
+    /** Navigate to a [Artist] menu dialog. */
     class ForArtist(@MenuRes override val menuRes: Int, override val music: Artist) : Menu
+    /** Navigate to a [Genre] menu dialog. */
     class ForGenre(@MenuRes override val menuRes: Int, override val music: Genre) : Menu
+    /** Navigate to a [Playlist] menu dialog. */
     class ForPlaylist(@MenuRes override val menuRes: Int, override val music: Playlist) : Menu
 }
