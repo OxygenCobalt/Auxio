@@ -7,16 +7,18 @@
 
 #### What's Improved
 - Made "Add to Playlist" action more prominent in selection toolbar
+- Fixed notification album covers not updating after changing the cover
+aspect ratio setting 
+
+#### Dev/Meta
+- Unified navigation graph
+
+## 3.1.4
 
 #### What's Fixed
 - Fixed issue where one could not navigate to settings after navigating elsewhere
 - Fixed the queue list being non-scrollable in certain cases
-- Fixed notification album covers not updating after changing the cover
-aspect ratio setting 
 - Fixed negative ReplayGain adjustments not being applied
-
-#### Dev/Meta
-- Unified navigation graph
 
 ## 3.1.3
 
