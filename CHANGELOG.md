@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.1.4
+
+#### What's Fixed
+- Fixed issue where one could not navigate to settings after navigating elsewhere
+- Fixed the queue list being non-scrollable in certain cases
+- Fixed negative ReplayGain adjustments not being applied
+
 ## 3.1.3
 
 #### What's New
