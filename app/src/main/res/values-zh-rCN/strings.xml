@@ -296,4 +296,5 @@
     <string name="set_square_covers">强制使用方形专辑封面</string>
     <string name="set_square_covers_desc">将所有专辑封面裁剪至 1:1 宽高比</string>
     <string name="lbl_song">歌曲</string>
+    <string name="lbl_parent_detail">查看</string>
 </resources>
