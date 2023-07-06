@@ -1,1 +1,1 @@
-A simple, rational music player
+Egyszerű, praktikus zenelejátszó

@@ -304,4 +304,5 @@
     <string name="lbl_share">Поделиться</string>
     <string name="set_square_covers">Использовать квадратные обложки альбомов</string>
     <string name="set_square_covers_desc">Обрезать все обложки альбомов до соотношения сторон 1:1</string>
+    <string name="lbl_song">Песня</string>
 </resources>
