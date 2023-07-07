@@ -304,9 +304,9 @@ class MainFragment :
         if (panel == null) return
         logD("Trying to update panel to $panel")
         when (panel) {
-            is OpenPanel.Main -> tryClosePlaybackPanel()
-            is OpenPanel.Playback -> tryOpenPlaybackPanel()
-            is OpenPanel.Queue -> tryOpenQueuePanel()
+            OpenPanel.MAIN -> tryClosePlaybackPanel()
+            OpenPanel.PLAYBACK -> tryOpenPlaybackPanel()
+            OpenPanel.QUEUE -> tryOpenQueuePanel()
         }
         playbackModel.openPanel.consume()
     }

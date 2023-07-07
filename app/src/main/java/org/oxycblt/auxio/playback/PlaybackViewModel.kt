@@ -572,16 +572,16 @@ constructor(
     // --- UI CONTROL ---
 
     /** Open the main panel, closing all other panels. */
-    fun openMain() = openImpl(OpenPanel.Main)
+    fun openMain() = openImpl(OpenPanel.MAIN)
 
     /** Open the playback panel, closing the queue panel if needed. */
-    fun openPlayback() = openImpl(OpenPanel.Playback)
+    fun openPlayback() = openImpl(OpenPanel.PLAYBACK)
 
     /**
      * Open the queue panel, assuming that it exists in the current layout, is collapsed, and with
      * the playback panel already being expanded.
      */
-    fun openQueue() = openImpl(OpenPanel.Queue)
+    fun openQueue() = openImpl(OpenPanel.QUEUE)
 
     private fun openImpl(panel: OpenPanel) {
         val existing = openPanel.flow.value
@@ -641,16 +641,16 @@ constructor(
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-sealed interface OpenPanel {
+enum class OpenPanel {
     /** Open the main view, collapsing all other panels. */
-    object Main : OpenPanel
+    MAIN,
     /** Open the playback panel, collapsing the queue panel if applicable. */
-    object Playback : OpenPanel
+    PLAYBACK,
     /**
      * Open the queue panel, assuming that it exists in the current layout, is collapsed, and with
      * the playback panel already being expanded. Do nothing if these conditions are not met.
      */
-    object Queue : OpenPanel
+    QUEUE
 }
 
 /**
