@@ -180,8 +180,12 @@ class AlbumDetailFragment :
     }
 
     override fun onRealClick(item: Song) {
-        // There can only be one album, so a null mode and an ALBUMS mode will function the same.
-        playbackModel.playFrom(item, detailModel.playbackMode ?: MusicMode.ALBUMS)
+        val mode = detailModel.playbackMode
+        if (mode != null) {
+            playbackModel.play(item, detailModel.playbackMode ?: MusicMode.ALBUMS)
+        } else {
+            playbackModel.playFromAlbum(item)
+        }
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {

@@ -180,7 +180,7 @@ class GenreDetailFragment :
             is Song -> {
                 val playbackMode = detailModel.playbackMode
                 if (playbackMode != null) {
-                    playbackModel.playFrom(item, playbackMode)
+                    playbackModel.play(item, playbackMode)
                 } else {
                     // When configured to play from the selected item, we already have an Genre
                     // to play from.

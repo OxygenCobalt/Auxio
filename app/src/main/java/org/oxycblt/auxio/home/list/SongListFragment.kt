@@ -137,7 +137,7 @@ class SongListFragment :
     }
 
     override fun onRealClick(item: Song) {
-        playbackModel.playFrom(item, homeModel.playbackMode)
+        playbackModel.play(item, homeModel.playbackMode)
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {
