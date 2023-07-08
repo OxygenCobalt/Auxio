@@ -29,7 +29,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -38,6 +42,8 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
+import org.oxycblt.auxio.playback.carousel.CoverCarouselAdapter
+import org.oxycblt.auxio.playback.queue.QueueViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.ui.ViewBindingFragment
@@ -64,7 +70,9 @@ class PlaybackPanelFragment :
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
+    private val queueModel: QueueViewModel by activityViewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
+    private var coverAdapter: CoverCarouselAdapter? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackPanelBinding.inflate(inflater)
@@ -92,6 +100,13 @@ class PlaybackPanelFragment :
         binding.playbackToolbar.apply {
             setNavigationOnClickListener { playbackModel.openMain() }
             setOnMenuItemClickListener(this@PlaybackPanelFragment)
+        }
+
+        // cover carousel adapter
+        coverAdapter = CoverCarouselAdapter()
+        binding.playbackCoverPager.apply {
+            adapter = coverAdapter
+            registerOnPageChangeCallback(OnCoverChangedCallback(queueModel))
         }
 
         // Set up marquee on song information, alongside click handlers that navigate to each
@@ -131,11 +146,14 @@ class PlaybackPanelFragment :
         collectImmediately(playbackModel.repeatMode, ::updateRepeat)
         collectImmediately(playbackModel.isPlaying, ::updatePlaying)
         collectImmediately(playbackModel.isShuffled, ::updateShuffled)
+        collectImmediately(queueModel.queue, ::updateQueue)
+        collectImmediately(queueModel.index, ::updateQueuePosition)
         collect(detailModel.toShow.flow, ::handleShow)
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
         equalizerLauncher = null
+        coverAdapter = null
         binding.playbackToolbar.setOnMenuItemClickListener(null)
         // Marquee elements leak if they are not disabled when the views are destroyed.
         binding.playbackSong.isSelected = false
@@ -194,6 +212,18 @@ class PlaybackPanelFragment :
         playbackModel.seekTo(positionDs)
     }
 
+    private fun updateQueue(queue: List<Song>) {
+        coverAdapter?.update(queue, queueModel.queueInstructions.flow.value)
+    }
+
+    private fun updateQueuePosition(position: Int) {
+        val pager = requireBinding().playbackCoverPager
+        val distance = abs(pager.currentItem - position)
+        if (distance != 0) {
+            pager.setCurrentItem(position, distance == 1)
+        }
+    }
+
     private fun updateSong(song: Song?) {
         if (song == null) {
             // Nothing to do.
@@ -203,7 +233,7 @@ class PlaybackPanelFragment :
         val binding = requireBinding()
         val context = requireContext()
         logD("Updating song display: $song")
-        binding.playbackCover.bind(song)
+        //        binding.playbackCover.bind(song)
         binding.playbackSong.text = song.name.resolve(context)
         binding.playbackArtist.text = song.artists.resolveNames(context)
         binding.playbackAlbum.text = song.album.name.resolve(context)
@@ -256,5 +286,25 @@ class PlaybackPanelFragment :
 
     private fun navigateToCurrentAlbum() {
         playbackModel.song.value?.let { detailModel.showAlbum(it.album) }
+    }
+
+    private class OnCoverChangedCallback(private val viewModel: QueueViewModel) :
+        OnPageChangeCallback() {
+
+        private var targetPosition = RecyclerView.NO_POSITION
+
+        override fun onPageSelected(position: Int) {
+            super.onPageSelected(position)
+            targetPosition = position
+        }
+
+        override fun onPageScrollStateChanged(state: Int) {
+            super.onPageScrollStateChanged(state)
+            if (state == ViewPager2.SCROLL_STATE_IDLE &&
+                targetPosition != RecyclerView.NO_POSITION &&
+                targetPosition != viewModel.index.value) {
+                viewModel.goto(targetPosition)
+            }
+        }
     }
 }

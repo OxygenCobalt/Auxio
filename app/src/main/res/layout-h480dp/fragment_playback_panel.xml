@@ -16,12 +16,9 @@
         app:title="@string/lbl_playback"
         tools:subtitle="@string/lbl_all_songs" />
 
-    <org.oxycblt.auxio.image.CoverView
-        android:id="@+id/playback_cover"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/playback_cover_pager"
         style="@style/Widget.Auxio.Image.Full"
-        android:layout_margin="@dimen/spacing_medium"
-        app:enablePlaybackIndicator="false"
-        app:enableSelectionBadge="false"
         app:layout_constraintBottom_toTopOf="@+id/playback_song"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

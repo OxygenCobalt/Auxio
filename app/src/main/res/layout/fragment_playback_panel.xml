@@ -16,18 +16,13 @@
         app:title="@string/lbl_playback"
         tools:subtitle="@string/lbl_all_songs" />
 
-    <org.oxycblt.auxio.image.CoverView
-        android:id="@+id/playback_cover"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/playback_cover_pager"
         style="@style/Widget.Auxio.Image.Full"
-        android:layout_marginStart="@dimen/spacing_medium"
-        android:layout_marginTop="@dimen/spacing_medium"
-        app:enablePlaybackIndicator="false"
-        app:enableSelectionBadge="false"
         app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
         app:layout_constraintVertical_chainStyle="packed" />
-
 
     <!-- Playback information is wrapped in a container so that marquee doesn't break -->
 
@@ -35,14 +30,13 @@
         android:id="@+id/playback_info_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_medium"
         android:layout_marginEnd="@dimen/spacing_medium"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/playback_cover"
-        app:layout_constraintTop_toTopOf="@+id/playback_cover"
+        app:layout_constraintStart_toEndOf="@+id/playback_cover_pager"
+        app:layout_constraintTop_toTopOf="@+id/playback_cover_pager"
         app:layout_constraintVertical_chainStyle="packed">
 
         <TextView
