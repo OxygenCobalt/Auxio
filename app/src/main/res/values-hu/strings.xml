@@ -86,7 +86,7 @@
     <string name="set_replay_gain">Visszajátszás</string>
     <string name="lbl_relative_path">Szülő útvonal</string>
     <string name="desc_music_dir_delete">Mappa eltávolítása</string>
-    <string name="lbl_playlist_add">Playlistához ad</string>
+    <string name="lbl_playlist_add">Lejátszólistához ad</string>
     <string name="lbl_format">Formátum</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="lbl_ok">OK</string>
@@ -102,8 +102,8 @@
     <string name="def_track">Nincs hangsáv</string>
     <string name="set_save_desc">Az aktuális lejátszási állapot mentése most</string>
     <string name="def_song_count">Nincs dal</string>
-    <string name="cdc_mp3">MPEG-1 hang</string>
-    <string name="cdc_mp4">MPEG-4 hang</string>
+    <string name="cdc_mp3">MPEG-1 audio</string>
+    <string name="cdc_mp4">MPEG-4 audio</string>
     <string name="desc_genre_image">%s műfaj képe</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="set_separators">Többértékű elválasztók</string>
@@ -122,13 +122,13 @@
     <string name="set_rewind_prev_desc">Visszatekerés az előző dalra való ugrás előtt</string>
     <string name="set_pre_amp_warning">Figyelem: Az előerősítő magas pozitív értékre módosítása egyes hangsávoknál csúcsosodást eredményezhet.</string>
     <string name="set_library">Könyvtár</string>
-    <string name="set_state">Kitartás</string>
+    <string name="set_state">Állapot</string>
     <string name="lbl_playlist">Lejátszólista</string>
     <string name="lbl_playlists">Lejátszólisták</string>
     <string name="lbl_delete">Töröl</string>
     <string name="lng_widget">Zenelejátszás megtekintése és vezérlése</string>
     <string name="lng_indexing">Zenei könyvtár betöltése…</string>
-    <string name="lng_playlist_added">Playlistához adva</string>
+    <string name="lng_playlist_added">Lejátszólistához adva</string>
     <string name="set_rewind_prev">Visszatekerés visszaugrás előtt</string>
     <string name="set_repeat_pause">Ismétlés szünet</string>
     <string name="fmt_deletion_info">%s törlése\? Ez nem fordítható vissza.</string>
@@ -200,12 +200,12 @@
     <string name="err_did_not_wipe">Állapot törlés nem lehetséges</string>
     <string name="err_did_not_save">Állapot mentés nem lehetséges</string>
     <string name="desc_shuffle_all">Keverés minden dalból</string>
-    <string name="cdc_ogg">Ogg hang</string>
+    <string name="cdc_ogg">Ogg audio</string>
     <string name="set_display">Megjelenítés</string>
     <string name="lbl_track">Hangsáv</string>
     <string name="lbl_edit">Szerkeszt</string>
     <string name="lbl_disc">Lemez</string>
-    <string name="lng_playlist_created">Playlista létrehozva</string>
+    <string name="lng_playlist_created">Lejátszólista létrehozva</string>
     <string name="set_black_mode">Fekete téma</string>
     <string name="set_round_mode_desc">Lekerekített sarkok engedélyezése további UI elemeken (az albumborítók lekerekítése szükséges)</string>
     <string name="set_lib_tabs">Könyvtár fülek</string>
@@ -222,7 +222,7 @@
     <string name="lbl_state_saved">Állapot mentve</string>
     <string name="desc_exit">Lejátszás megállítása</string>
     <string name="info_app_desc">Egyszerű, praktikus zenelejátszó androidra.</string>
-    <string name="cdc_mka">Matroska hang</string>
+    <string name="cdc_mka">Matroska audio</string>
     <string name="lbl_album">Album</string>
     <string name="lbl_singles">Kislemezek</string>
     <string name="lbl_single">Kislemez</string>
@@ -255,7 +255,7 @@
     <string name="set_exclude_non_music_desc">A nem zenei fájlok, például podcastok figyelmen kívül hagyása</string>
     <string name="set_separators_desc">Több címkeértéket jelölő karakterek konfigurálása</string>
     <string name="set_separators_comma">Vessző (,)</string>
-    <string name="set_separators_semicolon">Ponosvessző (;)</string>
+    <string name="set_separators_semicolon">Pontosvessző (;)</string>
     <string name="set_separators_and">És (&amp;)</string>
     <string name="set_intelligent_sorting">Intelligens rendezés</string>
     <string name="set_hide_collaborators">Közreműködők elrejtése</string>
@@ -294,7 +294,7 @@
     <string name="desc_auxio_icon">Auxio ikon</string>
     <string name="def_disc">Nincs lemez</string>
     <string name="fmt_editing">%s szerkesztése</string>
-    <string name="set_square_covers">Kényszerített négyzet alakú albumborítók</string>
+    <string name="set_square_covers">Négyzet alakú albumborítók</string>
     <string name="set_square_covers_desc">Az összes albumborító 1:1 arányra vágása</string>
     <string name="lbl_song">Dal</string>
     <string name="lbl_parent_detail">Megnéz</string>
