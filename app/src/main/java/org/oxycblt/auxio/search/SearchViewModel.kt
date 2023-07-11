@@ -33,8 +33,8 @@ import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.Sort
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.user.UserLibrary
@@ -117,12 +117,12 @@ constructor(
         userLibrary: UserLibrary,
         query: String
     ): List<Item> {
-        val filterMode = searchSettings.searchFilterMode
+        val filter = searchSettings.filterTo
 
         val items =
-            if (filterMode == null) {
-                // A nulled filter mode means to not filter anything.
-                logD("No filter mode specified, using entire library")
+            if (filter == null) {
+                // A nulled filter type means to not filter anything.
+                logD("No filter specified, using entire library")
                 SearchEngine.Items(
                     deviceLibrary.songs,
                     deviceLibrary.albums,
@@ -130,14 +130,13 @@ constructor(
                     deviceLibrary.genres,
                     userLibrary.playlists)
             } else {
-                logD("Filter mode specified, filtering library")
+                logD("Filter specified, reducing library")
                 SearchEngine.Items(
-                    songs = if (filterMode == MusicMode.SONGS) deviceLibrary.songs else null,
-                    albums = if (filterMode == MusicMode.ALBUMS) deviceLibrary.albums else null,
-                    artists = if (filterMode == MusicMode.ARTISTS) deviceLibrary.artists else null,
-                    genres = if (filterMode == MusicMode.GENRES) deviceLibrary.genres else null,
-                    playlists =
-                        if (filterMode == MusicMode.PLAYLISTS) userLibrary.playlists else null)
+                    songs = if (filter == MusicType.SONGS) deviceLibrary.songs else null,
+                    albums = if (filter == MusicType.ALBUMS) deviceLibrary.albums else null,
+                    artists = if (filter == MusicType.ARTISTS) deviceLibrary.artists else null,
+                    genres = if (filter == MusicType.GENRES) deviceLibrary.genres else null,
+                    playlists = if (filter == MusicType.PLAYLISTS) userLibrary.playlists else null)
             }
 
         val results = searchEngine.search(items, query)
@@ -199,35 +198,35 @@ constructor(
      */
     @IdRes
     fun getFilterOptionId() =
-        when (searchSettings.searchFilterMode) {
-            MusicMode.SONGS -> R.id.option_filter_songs
-            MusicMode.ALBUMS -> R.id.option_filter_albums
-            MusicMode.ARTISTS -> R.id.option_filter_artists
-            MusicMode.GENRES -> R.id.option_filter_genres
-            MusicMode.PLAYLISTS -> R.id.option_filter_playlists
+        when (searchSettings.filterTo) {
+            MusicType.SONGS -> R.id.option_filter_songs
+            MusicType.ALBUMS -> R.id.option_filter_albums
+            MusicType.ARTISTS -> R.id.option_filter_artists
+            MusicType.GENRES -> R.id.option_filter_genres
+            MusicType.PLAYLISTS -> R.id.option_filter_playlists
             // Null maps to filtering nothing.
             null -> R.id.option_filter_all
         }
 
     /**
-     * Update the filter mode with the newly-selected filter option.
+     * Update the filter type with the newly-selected filter option.
      *
      * @return A menu item ID of the new filtering option selected.
      */
     fun setFilterOptionId(@IdRes id: Int) {
-        val newFilterMode =
+        val newFilter =
             when (id) {
-                R.id.option_filter_songs -> MusicMode.SONGS
-                R.id.option_filter_albums -> MusicMode.ALBUMS
-                R.id.option_filter_artists -> MusicMode.ARTISTS
-                R.id.option_filter_genres -> MusicMode.GENRES
-                R.id.option_filter_playlists -> MusicMode.PLAYLISTS
+                R.id.option_filter_songs -> MusicType.SONGS
+                R.id.option_filter_albums -> MusicType.ALBUMS
+                R.id.option_filter_artists -> MusicType.ARTISTS
+                R.id.option_filter_genres -> MusicType.GENRES
+                R.id.option_filter_playlists -> MusicType.PLAYLISTS
                 // Null maps to filtering nothing.
                 R.id.option_filter_all -> null
                 else -> error("Invalid option ID provided")
             }
-        logD("Updating filter mode to $newFilterMode")
-        searchSettings.searchFilterMode = newFilterMode
+        logD("Updating filter type to $newFilter")
+        searchSettings.filterTo = newFilter
         search(lastQuery)
     }
 

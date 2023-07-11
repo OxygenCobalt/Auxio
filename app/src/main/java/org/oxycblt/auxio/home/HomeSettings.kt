@@ -24,7 +24,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
-import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -75,9 +75,9 @@ class HomeSettingsImpl @Inject constructor(@ApplicationContext context: Context)
             logD("Old tabs: $oldTabs")
 
             // The playlist tab is now parsed, but it needs to be made visible.
-            val playlistIndex = oldTabs.indexOfFirst { it.mode == MusicMode.PLAYLISTS }
+            val playlistIndex = oldTabs.indexOfFirst { it.type == MusicType.PLAYLISTS }
             check(playlistIndex > -1) // This should exist, otherwise we are in big trouble
-            oldTabs[playlistIndex] = Tab.Visible(MusicMode.PLAYLISTS)
+            oldTabs[playlistIndex] = Tab.Visible(MusicType.PLAYLISTS)
             logD("New tabs: $oldTabs")
 
             sharedPreferences.edit {

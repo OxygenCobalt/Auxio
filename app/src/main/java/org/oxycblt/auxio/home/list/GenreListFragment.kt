@@ -37,8 +37,8 @@ import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.GenreViewHolder
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -93,7 +93,7 @@ class GenreListFragment :
     override fun getPopup(pos: Int): String? {
         val genre = homeModel.genresList.value[pos]
         // Change how we display the popup depending on the current sort mode.
-        return when (homeModel.getSortForTab(MusicMode.GENRES).mode) {
+        return when (homeModel.getSortForTab(MusicType.GENRES).mode) {
             // By Name -> Use Name
             is Sort.Mode.ByName -> genre.name.thumb
 

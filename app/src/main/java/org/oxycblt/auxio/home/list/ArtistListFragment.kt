@@ -37,8 +37,8 @@ import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.ArtistViewHolder
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -94,7 +94,7 @@ class ArtistListFragment :
     override fun getPopup(pos: Int): String? {
         val artist = homeModel.artistsList.value[pos]
         // Change how we display the popup depending on the current sort mode.
-        return when (homeModel.getSortForTab(MusicMode.ARTISTS).mode) {
+        return when (homeModel.getSortForTab(MusicType.ARTISTS).mode) {
             // By Name -> Use Name
             is Sort.Mode.ByName -> artist.name.thumb
 

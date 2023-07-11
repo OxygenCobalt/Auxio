@@ -23,7 +23,7 @@ import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.settings.Settings
 
 /**
@@ -32,19 +32,21 @@ import org.oxycblt.auxio.settings.Settings
  * @author Alexander Capehart (OxygenCobalt)
  */
 interface SearchSettings : Settings<Nothing> {
-    /** The type of Music the search view is currently filtering to. */
-    var searchFilterMode: MusicMode?
+    /** The type of Music the search view is should filter to. */
+    var filterTo: MusicType?
 }
 
 class SearchSettingsImpl @Inject constructor(@ApplicationContext context: Context) :
     Settings.Impl<Nothing>(context), SearchSettings {
-    override var searchFilterMode: MusicMode?
+    override var filterTo: MusicType?
         get() =
-            MusicMode.fromIntCode(
-                sharedPreferences.getInt(getString(R.string.set_key_search_filter), Int.MIN_VALUE))
+            MusicType.fromIntCode(
+                sharedPreferences.getInt(
+                    getString(R.string.set_key_search_filter_to), Int.MIN_VALUE))
         set(value) {
             sharedPreferences.edit {
-                putInt(getString(R.string.set_key_search_filter), value?.intCode ?: Int.MIN_VALUE)
+                putInt(
+                    getString(R.string.set_key_search_filter_to), value?.intCode ?: Int.MIN_VALUE)
                 apply()
             }
         }

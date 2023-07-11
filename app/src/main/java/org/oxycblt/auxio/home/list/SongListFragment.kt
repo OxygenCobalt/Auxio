@@ -37,8 +37,8 @@ import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.SelectionIndicatorAdapter
 import org.oxycblt.auxio.list.recycler.SongViewHolder
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -98,7 +98,7 @@ class SongListFragment :
         // Change how we display the popup depending on the current sort mode.
         // Note: We don't use the more correct individual artist name here, as sorts are largely
         // based off the names of the parent objects and not the child objects.
-        return when (homeModel.getSortForTab(MusicMode.SONGS).mode) {
+        return when (homeModel.getSortForTab(MusicType.SONGS).mode) {
             // Name -> Use name
             is Sort.Mode.ByName -> song.name.thumb
 

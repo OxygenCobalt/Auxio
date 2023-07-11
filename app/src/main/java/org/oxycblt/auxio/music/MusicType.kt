@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2022 Auxio Project
- * MusicMode.kt is part of Auxio.
+ * MusicType.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,20 +21,20 @@ package org.oxycblt.auxio.music
 import org.oxycblt.auxio.IntegerTable
 
 /**
- * Represents a data configuration corresponding to a specific type of [Music],
+ * General configuration enum to control what kind of music is being worked with.
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
-enum class MusicMode {
-    /** Configure with respect to [Song] instances. */
+enum class MusicType {
+    /** @see Song */
     SONGS,
-    /** Configure with respect to [Album] instances. */
+    /** @see Album */
     ALBUMS,
-    /** Configure with respect to [Artist] instances. */
+    /** @see Artist */
     ARTISTS,
-    /** Configure with respect to [Genre] instances. */
+    /** @see Genre */
     GENRES,
-    /** Configure with respect to [Playlist] instances. */
+    /** @see Playlist */
     PLAYLISTS;
 
     /**
@@ -54,11 +54,11 @@ enum class MusicMode {
 
     companion object {
         /**
-         * Convert a [MusicMode] integer representation into an instance.
+         * Convert a [MusicType] integer representation into an instance.
          *
-         * @param intCode An integer representation of a [MusicMode]
-         * @return The corresponding [MusicMode], or null if the [MusicMode] is invalid.
-         * @see MusicMode.intCode
+         * @param intCode An integer representation of a [MusicType]
+         * @return The corresponding [MusicType], or null if the [MusicType] is invalid.
+         * @see MusicType.intCode
          */
         fun fromIntCode(intCode: Int) =
             when (intCode) {

@@ -18,30 +18,30 @@
  
 package org.oxycblt.auxio.home.tabs
 
-import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logW
 
 /**
  * A representation of a library tab suitable for configuration.
  *
- * @param mode The type of list in the home view this instance corresponds to.
+ * @param type The type of list in the home view this instance corresponds to.
  * @author Alexander Capehart (OxygenCobalt)
  */
-sealed class Tab(open val mode: MusicMode) {
+sealed class Tab(open val type: MusicType) {
     /**
      * A visible tab. This will be visible in the home and tab configuration views.
      *
-     * @param mode The type of list in the home view this instance corresponds to.
+     * @param type The type of list in the home view this instance corresponds to.
      */
-    data class Visible(override val mode: MusicMode) : Tab(mode)
+    data class Visible(override val type: MusicType) : Tab(type)
 
     /**
      * A visible tab. This will be visible in the tab configuration view, but not in the home view.
      *
-     * @param mode The type of list in the home view this instance corresponds to.
+     * @param type The type of list in the home view this instance corresponds to.
      */
-    data class Invisible(override val mode: MusicMode) : Tab(mode)
+    data class Invisible(override val type: MusicType) : Tab(type)
 
     companion object {
         // Like other IO-bound datatypes in Auxio, tabs are stored in a binary format. However, tabs
@@ -67,14 +67,14 @@ sealed class Tab(open val mode: MusicMode) {
          */
         const val SEQUENCE_DEFAULT = 0b1000_1001_1010_1011_1100
 
-        /** Maps between the integer code in the tab sequence and it's [MusicMode]. */
+        /** Maps between the integer code in the tab sequence and it's [MusicType]. */
         private val MODE_TABLE =
             arrayOf(
-                MusicMode.SONGS,
-                MusicMode.ALBUMS,
-                MusicMode.ARTISTS,
-                MusicMode.GENRES,
-                MusicMode.PLAYLISTS)
+                MusicType.SONGS,
+                MusicType.ALBUMS,
+                MusicType.ARTISTS,
+                MusicType.GENRES,
+                MusicType.PLAYLISTS)
 
         /**
          * Convert an array of [Tab]s into it's integer representation.
@@ -84,7 +84,7 @@ sealed class Tab(open val mode: MusicMode) {
          */
         fun toIntCode(tabs: Array<Tab>): Int {
             // Like when deserializing, make sure there are no duplicate tabs for whatever reason.
-            val distinct = tabs.distinctBy { it.mode }
+            val distinct = tabs.distinctBy { it.type }
             if (tabs.size != distinct.size) {
                 logW(
                     "Tab sequences should not have duplicates [old: ${tabs.size} new: ${distinct.size}]")
@@ -95,8 +95,8 @@ sealed class Tab(open val mode: MusicMode) {
             for (tab in distinct) {
                 val bin =
                     when (tab) {
-                        is Visible -> 1.shl(3) or MODE_TABLE.indexOf(tab.mode)
-                        is Invisible -> MODE_TABLE.indexOf(tab.mode)
+                        is Visible -> 1.shl(3) or MODE_TABLE.indexOf(tab.type)
+                        is Invisible -> MODE_TABLE.indexOf(tab.type)
                     }
 
                 sequence = sequence or bin.shl(shift)
@@ -131,7 +131,7 @@ sealed class Tab(open val mode: MusicMode) {
             }
 
             // Make sure there are no duplicate tabs
-            val distinct = tabs.distinctBy { it.mode }
+            val distinct = tabs.distinctBy { it.type }
             if (tabs.size != distinct.size) {
                 logW(
                     "Tab sequences should not have duplicates [old: ${tabs.size} new: ${distinct.size}]")

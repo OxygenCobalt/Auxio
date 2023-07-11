@@ -29,9 +29,9 @@ import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaySong
@@ -108,15 +108,15 @@ constructor(
         get() = playbackSettings.playInListWith
 
     /**
-     * A list of [MusicMode] corresponding to the current [Tab] configuration, excluding invisible
+     * A list of [MusicType] corresponding to the current [Tab] configuration, excluding invisible
      * [Tab]s.
      */
-    var currentTabModes = makeTabModes()
+    var currentTabTypes = makeTabTypes()
         private set
 
-    private val _currentTabMode = MutableStateFlow(currentTabModes[0])
-    /** The [MusicMode] of the currently shown [Tab]. */
-    val currentTabMode: StateFlow<MusicMode> = _currentTabMode
+    private val _currentTabType = MutableStateFlow(currentTabTypes[0])
+    /** The [MusicType] of the currently shown [Tab]. */
+    val currentTabType: StateFlow<MusicType> = _currentTabType
 
     private val _shouldRecreate = MutableEvent<Unit>()
     /**
@@ -177,8 +177,8 @@ constructor(
 
     override fun onTabsChanged() {
         // Tabs changed, update  the current tabs and set up a re-create event.
-        currentTabModes = makeTabModes()
-        logD("Updating tabs: ${currentTabMode.value}")
+        currentTabTypes = makeTabTypes()
+        logD("Updating tabs: ${currentTabType.value}")
         _shouldRecreate.put(Unit)
     }
 
@@ -192,16 +192,16 @@ constructor(
     /**
      * Get the preferred [Sort] for a given [Tab].
      *
-     * @param tabMode The [MusicMode] of the [Tab] desired.
+     * @param tabType The [MusicType] of the [Tab] desired.
      * @return The [Sort] preferred for that [Tab]
      */
-    fun getSortForTab(tabMode: MusicMode) =
-        when (tabMode) {
-            MusicMode.SONGS -> musicSettings.songSort
-            MusicMode.ALBUMS -> musicSettings.albumSort
-            MusicMode.ARTISTS -> musicSettings.artistSort
-            MusicMode.GENRES -> musicSettings.genreSort
-            MusicMode.PLAYLISTS -> musicSettings.playlistSort
+    fun getSortForTab(tabType: MusicType) =
+        when (tabType) {
+            MusicType.SONGS -> musicSettings.songSort
+            MusicType.ALBUMS -> musicSettings.albumSort
+            MusicType.ARTISTS -> musicSettings.artistSort
+            MusicType.GENRES -> musicSettings.genreSort
+            MusicType.PLAYLISTS -> musicSettings.playlistSort
         }
 
     /**
@@ -211,33 +211,33 @@ constructor(
      */
     fun setSortForCurrentTab(sort: Sort) {
         // Can simply re-sort the current list of items without having to access the library.
-        when (val mode = _currentTabMode.value) {
-            MusicMode.SONGS -> {
-                logD("Updating song [$mode] sort mode to $sort")
+        when (val type = _currentTabType.value) {
+            MusicType.SONGS -> {
+                logD("Updating song [$type] sort mode to $sort")
                 musicSettings.songSort = sort
                 _songsInstructions.put(UpdateInstructions.Replace(0))
                 _songsList.value = sort.songs(_songsList.value)
             }
-            MusicMode.ALBUMS -> {
-                logD("Updating album [$mode] sort mode to $sort")
+            MusicType.ALBUMS -> {
+                logD("Updating album [$type] sort mode to $sort")
                 musicSettings.albumSort = sort
                 _albumsInstructions.put(UpdateInstructions.Replace(0))
                 _albumsLists.value = sort.albums(_albumsLists.value)
             }
-            MusicMode.ARTISTS -> {
-                logD("Updating artist [$mode] sort mode to $sort")
+            MusicType.ARTISTS -> {
+                logD("Updating artist [$type] sort mode to $sort")
                 musicSettings.artistSort = sort
                 _artistsInstructions.put(UpdateInstructions.Replace(0))
                 _artistsList.value = sort.artists(_artistsList.value)
             }
-            MusicMode.GENRES -> {
-                logD("Updating genre [$mode] sort mode to $sort")
+            MusicType.GENRES -> {
+                logD("Updating genre [$type] sort mode to $sort")
                 musicSettings.genreSort = sort
                 _genresInstructions.put(UpdateInstructions.Replace(0))
                 _genresList.value = sort.genres(_genresList.value)
             }
-            MusicMode.PLAYLISTS -> {
-                logD("Updating playlist [$mode] sort mode to $sort")
+            MusicType.PLAYLISTS -> {
+                logD("Updating playlist [$type] sort mode to $sort")
                 musicSettings.playlistSort = sort
                 _playlistsInstructions.put(UpdateInstructions.Replace(0))
                 _playlistsList.value = sort.playlists(_playlistsList.value)
@@ -246,13 +246,13 @@ constructor(
     }
 
     /**
-     * Update [currentTabMode] to reflect a new ViewPager2 position
+     * Update [currentTabType] to reflect a new ViewPager2 position
      *
      * @param pagerPos The new position of the ViewPager2 instance.
      */
     fun synchronizeTabPosition(pagerPos: Int) {
-        logD("Updating current tab to ${currentTabModes[pagerPos]}")
-        _currentTabMode.value = currentTabModes[pagerPos]
+        logD("Updating current tab to ${currentTabTypes[pagerPos]}")
+        _currentTabType.value = currentTabTypes[pagerPos]
     }
 
     /**
@@ -266,11 +266,11 @@ constructor(
     }
 
     /**
-     * Create a list of [MusicMode]s representing a simpler version of the [Tab] configuration.
+     * Create a list of [MusicType]s representing a simpler version of the [Tab] configuration.
      *
-     * @return A list of the [MusicMode]s for each visible [Tab] in the configuration, ordered in
+     * @return A list of the [MusicType]s for each visible [Tab] in the configuration, ordered in
      *   the same way as the configuration.
      */
-    private fun makeTabModes() =
-        homeSettings.homeTabs.filterIsInstance<Tab.Visible>().map { it.mode }
+    private fun makeTabTypes() =
+        homeSettings.homeTabs.filterIsInstance<Tab.Visible>().map { it.type }
 }

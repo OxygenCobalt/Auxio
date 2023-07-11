@@ -24,9 +24,9 @@ import org.junit.Test
 class MusicModeTest {
     @Test
     fun intCode() {
-        assertEquals(MusicMode.SONGS, MusicMode.fromIntCode(MusicMode.SONGS.intCode))
-        assertEquals(MusicMode.ALBUMS, MusicMode.fromIntCode(MusicMode.ALBUMS.intCode))
-        assertEquals(MusicMode.ARTISTS, MusicMode.fromIntCode(MusicMode.ARTISTS.intCode))
-        assertEquals(MusicMode.GENRES, MusicMode.fromIntCode(MusicMode.GENRES.intCode))
+        assertEquals(MusicType.SONGS, MusicType.fromIntCode(MusicType.SONGS.intCode))
+        assertEquals(MusicType.ALBUMS, MusicType.fromIntCode(MusicType.ALBUMS.intCode))
+        assertEquals(MusicType.ARTISTS, MusicType.fromIntCode(MusicType.ARTISTS.intCode))
+        assertEquals(MusicType.GENRES, MusicType.fromIntCode(MusicType.GENRES.intCode))
     }
 }

@@ -62,7 +62,7 @@ import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.IndexingProgress
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
+import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.NoAudioPermissionException
 import org.oxycblt.auxio.music.NoMusicException
@@ -173,7 +173,7 @@ class HomeFragment :
 
         // --- VIEWMODEL SETUP ---
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
-        collectImmediately(homeModel.currentTabMode, ::updateCurrentTab)
+        collectImmediately(homeModel.currentTabType, ::updateCurrentTab)
         collectImmediately(homeModel.songsList, homeModel.isFastScrolling, ::updateFab)
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
@@ -245,7 +245,7 @@ class HomeFragment :
                 item.isChecked = true
                 homeModel.setSortForCurrentTab(
                     homeModel
-                        .getSortForTab(homeModel.currentTabMode.value)
+                        .getSortForTab(homeModel.currentTabType.value)
                         .withDirection(Sort.Direction.ASCENDING))
                 true
             }
@@ -254,7 +254,7 @@ class HomeFragment :
                 item.isChecked = true
                 homeModel.setSortForCurrentTab(
                     homeModel
-                        .getSortForTab(homeModel.currentTabMode.value)
+                        .getSortForTab(homeModel.currentTabType.value)
                         .withDirection(Sort.Direction.DESCENDING))
                 true
             }
@@ -265,7 +265,7 @@ class HomeFragment :
                     logD("Updating sort mode")
                     item.isChecked = true
                     homeModel.setSortForCurrentTab(
-                        homeModel.getSortForTab(homeModel.currentTabMode.value).withMode(newMode))
+                        homeModel.getSortForTab(homeModel.currentTabType.value).withMode(newMode))
                     true
                 } else {
                     logW("Unexpected menu item selected")
@@ -277,10 +277,10 @@ class HomeFragment :
 
     private fun setupPager(binding: FragmentHomeBinding) {
         binding.homePager.adapter =
-            HomePagerAdapter(homeModel.currentTabModes, childFragmentManager, viewLifecycleOwner)
+            HomePagerAdapter(homeModel.currentTabTypes, childFragmentManager, viewLifecycleOwner)
 
         val toolbarParams = binding.homeToolbar.layoutParams as AppBarLayout.LayoutParams
-        if (homeModel.currentTabModes.size == 1) {
+        if (homeModel.currentTabTypes.size == 1) {
             // A single tab makes the tab layout redundant, hide it and disable the collapsing
             // behavior.
             logD("Single tab shown, disabling TabLayout")
@@ -298,22 +298,22 @@ class HomeFragment :
         TabLayoutMediator(
                 binding.homeTabs,
                 binding.homePager,
-                AdaptiveTabStrategy(requireContext(), homeModel.currentTabModes))
+                AdaptiveTabStrategy(requireContext(), homeModel.currentTabTypes))
             .attach()
     }
 
-    private fun updateCurrentTab(tabMode: MusicMode) {
+    private fun updateCurrentTab(tabType: MusicType) {
         val binding = requireBinding()
         // Update the sort options to align with those allowed by the tab
         val isVisible: (Int) -> Boolean =
-            when (tabMode) {
+            when (tabType) {
                 // Disallow sorting by count for songs
-                MusicMode.SONGS -> {
+                MusicType.SONGS -> {
                     logD("Using song-specific menu options")
                     ({ id -> id != R.id.option_sort_count })
                 }
                 // Disallow sorting by album for albums
-                MusicMode.ALBUMS -> {
+                MusicType.ALBUMS -> {
                     logD("Using album-specific menu options")
                     ({ id -> id != R.id.option_sort_album })
                 }
@@ -332,7 +332,7 @@ class HomeFragment :
 
         val sortMenu =
             unlikelyToBeNull(binding.homeNormalToolbar.menu.findItem(R.id.submenu_sorting).subMenu)
-        val toHighlight = homeModel.getSortForTab(tabMode)
+        val toHighlight = homeModel.getSortForTab(tabType)
 
         for (option in sortMenu) {
             val isCurrentMode = option.itemId == toHighlight.mode.itemId
@@ -364,15 +364,15 @@ class HomeFragment :
         // scrolling state. This prevents the lift state from being confused as one
         // goes between different tabs.
         binding.homeAppbar.liftOnScrollTargetViewId =
-            when (tabMode) {
-                MusicMode.SONGS -> R.id.home_song_recycler
-                MusicMode.ALBUMS -> R.id.home_album_recycler
-                MusicMode.ARTISTS -> R.id.home_artist_recycler
-                MusicMode.GENRES -> R.id.home_genre_recycler
-                MusicMode.PLAYLISTS -> R.id.home_playlist_recycler
+            when (tabType) {
+                MusicType.SONGS -> R.id.home_song_recycler
+                MusicType.ALBUMS -> R.id.home_album_recycler
+                MusicType.ARTISTS -> R.id.home_artist_recycler
+                MusicType.GENRES -> R.id.home_genre_recycler
+                MusicType.PLAYLISTS -> R.id.home_playlist_recycler
             }
 
-        if (tabMode != MusicMode.PLAYLISTS) {
+        if (tabType != MusicType.PLAYLISTS) {
             logD("Flipping to shuffle button")
             binding.homeFab.flipTo(R.drawable.ic_shuffle_off_24, R.string.desc_shuffle_all) {
                 playbackModel.shuffleAll()
@@ -632,18 +632,18 @@ class HomeFragment :
      *   [FragmentStateAdapter].
      */
     private class HomePagerAdapter(
-        private val tabs: List<MusicMode>,
+        private val tabs: List<MusicType>,
         fragmentManager: FragmentManager,
         lifecycleOwner: LifecycleOwner
     ) : FragmentStateAdapter(fragmentManager, lifecycleOwner.lifecycle) {
         override fun getItemCount() = tabs.size
         override fun createFragment(position: Int): Fragment =
             when (tabs[position]) {
-                MusicMode.SONGS -> SongListFragment()
-                MusicMode.ALBUMS -> AlbumListFragment()
-                MusicMode.ARTISTS -> ArtistListFragment()
-                MusicMode.GENRES -> GenreListFragment()
-                MusicMode.PLAYLISTS -> PlaylistListFragment()
+                MusicType.SONGS -> SongListFragment()
+                MusicType.ALBUMS -> AlbumListFragment()
+                MusicType.ARTISTS -> ArtistListFragment()
+                MusicType.GENRES -> GenreListFragment()
+                MusicType.PLAYLISTS -> PlaylistListFragment()
             }
     }
 

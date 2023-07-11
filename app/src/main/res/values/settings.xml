@@ -42,7 +42,7 @@
     <string name="set_key_bar_action" translatable="false">auxio_bar_action</string>
     <string name="set_key_notif_action" translatable="false">auxio_notif_action</string>
 
-    <string name="set_key_search_filter" translatable="false">KEY_SEARCH_FILTER</string>
+    <string name="set_key_search_filter_to" translatable="false">KEY_SEARCH_FILTER</string>
 
     <string name="set_key_songs_sort" translatable="false">auxio_songs_sort</string>
     <string name="set_key_albums_sort" translatable="false">auxio_albums_sort</string>

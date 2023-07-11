@@ -91,13 +91,13 @@ class TabCustomizeDialog :
     override fun onClick(item: Tab, viewHolder: RecyclerView.ViewHolder) {
         // We will need the exact index of the tab to update on in order to
         // notify the adapter of the change.
-        val index = tabAdapter.tabs.indexOfFirst { it.mode == item.mode }
+        val index = tabAdapter.tabs.indexOfFirst { it.type == item.type }
         val old = tabAdapter.tabs[index]
         val new =
             when (old) {
                 // Invert the visibility of the tab
-                is Tab.Visible -> Tab.Invisible(old.mode)
-                is Tab.Invisible -> Tab.Visible(old.mode)
+                is Tab.Visible -> Tab.Invisible(old.type)
+                is Tab.Invisible -> Tab.Visible(old.type)
             }
         logD("Flipping tab visibility [from: $old to: $new]")
         tabAdapter.setTab(index, new)
