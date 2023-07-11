@@ -351,11 +351,8 @@
         android:label="song_menu_dialog"
         tools:layout="@layout/dialog_menu">
         <argument
-            android:name="menuRes"
-            app:argType="integer" />
-        <argument
-            android:name="songUid"
-            app:argType="org.oxycblt.auxio.music.Music$UID" />
+            android:name="parcel"
+            app:argType="org.oxycblt.auxio.list.Menu$ForSong$Parcel" />
     </dialog>
 
     <dialog
@@ -364,11 +361,8 @@
         android:label="album_menu_dialog"
         tools:layout="@layout/dialog_menu">
         <argument
-            android:name="menuRes"
-            app:argType="integer"/>
-        <argument
-            android:name="albumUid"
-            app:argType="org.oxycblt.auxio.music.Music$UID" />
+            android:name="parcel"
+            app:argType="org.oxycblt.auxio.list.Menu$ForAlbum$Parcel" />
     </dialog>
 
     <dialog
@@ -377,11 +371,8 @@
         android:label="artist_menu_dialog"
         tools:layout="@layout/dialog_menu">
         <argument
-            android:name="menuRes"
-            app:argType="integer" />
-        <argument
-            android:name="artistUid"
-            app:argType="org.oxycblt.auxio.music.Music$UID" />
+            android:name="parcel"
+            app:argType="org.oxycblt.auxio.list.Menu$ForArtist$Parcel" />
     </dialog>
 
     <dialog
@@ -390,11 +381,8 @@
         android:label="genre_menu_dialog"
         tools:layout="@layout/dialog_menu">
         <argument
-            android:name="menuRes"
-            app:argType="integer" />
-        <argument
-            android:name="genreUid"
-            app:argType="org.oxycblt.auxio.music.Music$UID" />
+            android:name="parcel"
+            app:argType="org.oxycblt.auxio.list.Menu$ForGenre$Parcel" />
     </dialog>
 
     <dialog
@@ -403,11 +391,8 @@
         android:label="playlist_menu_dialog"
         tools:layout="@layout/dialog_menu">
         <argument
-            android:name="menuRes"
-            app:argType="integer" />
-        <argument
-            android:name="playlistUid"
-            app:argType="org.oxycblt.auxio.music.Music$UID" />
+            android:name="parcel"
+            app:argType="org.oxycblt.auxio.list.Menu$ForPlaylist$Parcel" />
     </dialog>
 
     <fragment

@@ -183,7 +183,7 @@ class AlbumDetailFragment :
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {
-        listModel.openMenu(R.menu.item_album_song, item)
+        listModel.openMenu(R.menu.item_album_song, item, detailModel.playInAlbumWith)
     }
 
     override fun onPlay() {
@@ -302,8 +302,7 @@ class AlbumDetailFragment :
         if (menu == null) return
         val directions =
             when (menu) {
-                is Menu.ForSong ->
-                    AlbumDetailFragmentDirections.openSongMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForSong -> AlbumDetailFragmentDirections.openSongMenu(menu.parcel)
                 is Menu.ForAlbum,
                 is Menu.ForArtist,
                 is Menu.ForGenre,

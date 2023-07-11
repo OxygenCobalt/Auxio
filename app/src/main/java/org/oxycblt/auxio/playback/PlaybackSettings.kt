@@ -75,17 +75,14 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
         get() =
             PlaySong.fromIntCode(
                 sharedPreferences.getInt(
-                    getString(R.string.set_key_play_in_list_with), Int.MIN_VALUE),
-                null)
+                    getString(R.string.set_key_play_in_list_with), Int.MIN_VALUE))
                 ?: PlaySong.FromAll
 
     override val inParentPlaybackMode: PlaySong?
         get() =
             PlaySong.fromIntCode(
-                sharedPreferences
-                    .getInt(getString(R.string.set_key_play_in_parent_with), Int.MIN_VALUE)
-                    .also { logD(it) },
-                null)
+                sharedPreferences.getInt(
+                    getString(R.string.set_key_play_in_parent_with), Int.MIN_VALUE))
 
     override val barAction: ActionMode
         get() =

@@ -186,7 +186,8 @@ class ArtistDetailFragment :
 
     override fun onOpenMenu(item: Music, anchor: View) {
         when (item) {
-            is Song -> listModel.openMenu(R.menu.item_artist_song, item)
+            is Song ->
+                listModel.openMenu(R.menu.item_artist_song, item, detailModel.playInArtistWith)
             is Album -> listModel.openMenu(R.menu.item_artist_album, item)
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
@@ -306,10 +307,8 @@ class ArtistDetailFragment :
         if (menu == null) return
         val directions =
             when (menu) {
-                is Menu.ForSong ->
-                    ArtistDetailFragmentDirections.openSongMenu(menu.menuRes, menu.music.uid)
-                is Menu.ForAlbum ->
-                    ArtistDetailFragmentDirections.openAlbumMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForSong -> ArtistDetailFragmentDirections.openSongMenu(menu.parcel)
+                is Menu.ForAlbum -> ArtistDetailFragmentDirections.openAlbumMenu(menu.parcel)
                 is Menu.ForArtist,
                 is Menu.ForGenre,
                 is Menu.ForPlaylist -> error("Unexpected menu $menu")

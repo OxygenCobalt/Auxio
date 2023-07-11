@@ -121,16 +121,16 @@ object IntegerTable {
     const val COVER_MODE_MEDIA_STORE = 0xA11D
     /** CoverMode.Quality */
     const val COVER_MODE_QUALITY = 0xA11E
-    /** PlaySong.ByItself */
-    const val PLAY_SONG_BY_ITSELF = 0xA11F
     /** PlaySong.FromAll */
-    const val PLAY_SONG_FROM_ALL = 0xA120
+    const val PLAY_SONG_FROM_ALL = 0xA11F
     /** PlaySong.FromAlbum */
-    const val PLAY_SONG_FROM_ALBUM = 0xA121
+    const val PLAY_SONG_FROM_ALBUM = 0xA120
     /** PlaySong.FromArtist */
-    const val PLAY_SONG_FROM_ARTIST = 0xA122
+    const val PLAY_SONG_FROM_ARTIST = 0xA121
     /** PlaySong.FromGenre */
-    const val PLAY_SONG_FROM_GENRE = 0xA123
+    const val PLAY_SONG_FROM_GENRE = 0xA122
     /** PlaySong.FromPlaylist */
-    const val PLAY_SONG_FROM_PLAYLIST = 0xA124
+    const val PLAY_SONG_FROM_PLAYLIST = 0xA123
+    /** PlaySong.ByItself */
+    const val PLAY_SONG_BY_ITSELF = 0xA124
 }

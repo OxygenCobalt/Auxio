@@ -18,12 +18,14 @@
  
 package org.oxycblt.auxio.list
 
+import android.os.Parcelable
 import androidx.annotation.MenuRes
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.parcelize.Parcelize
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -33,6 +35,7 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
@@ -146,10 +149,12 @@ constructor(
      *
      * @param menuRes The resource of the menu to use.
      * @param song The [Song] to show.
+     * @param playWith A [PlaySong] command to give context to what "Play" and "Shuffle" actions
+     *   should do.
      */
-    fun openMenu(@MenuRes menuRes: Int, song: Song) {
+    fun openMenu(@MenuRes menuRes: Int, song: Song, playWith: PlaySong) {
         logD("Opening menu for $song")
-        openImpl(Menu.ForSong(menuRes, song))
+        openImpl(Menu.ForSong(menuRes, song, playWith))
     }
 
     /**
@@ -216,19 +221,63 @@ constructor(
  * @author Alexander Capehart (OxygenCobalt)
  */
 sealed interface Menu {
-    /** The android resource ID of the menu options to display in the dialog. */
-    val menuRes: Int
-    /** The [Music] that the menu should act on. */
-    val music: Music
+    /** The menu resource to inflate in the menu dialog. */
+    @get:MenuRes val res: Int
+    /** A [Parcel] version of this instance that can be used as a navigation argument. */
+    val parcel: Parcel
+    sealed interface Parcel : Parcelable
 
     /** Navigate to a [Song] menu dialog. */
-    class ForSong(@MenuRes override val menuRes: Int, override val music: Song) : Menu
+    class ForSong(@MenuRes override val res: Int, val song: Song, val playWith: PlaySong) : Menu {
+        override val parcel: Parcel
+            get() {
+                val playWithUid =
+                    when (playWith) {
+                        is PlaySong.FromArtist -> playWith.which?.uid
+                        is PlaySong.FromGenre -> playWith.which?.uid
+                        is PlaySong.FromPlaylist -> playWith.which.uid
+                        is PlaySong.FromAll,
+                        is PlaySong.FromAlbum,
+                        is PlaySong.ByItself -> null
+                    }
+
+                return Parcel(res, song.uid, playWith.intCode, playWithUid)
+            }
+
+        @Parcelize
+        data class Parcel(
+            val res: Int,
+            val songUid: Music.UID,
+            val playWithCode: Int,
+            val playWithUid: Music.UID?
+        ) : Menu.Parcel
+    }
+
     /** Navigate to a [Album] menu dialog. */
-    class ForAlbum(@MenuRes override val menuRes: Int, override val music: Album) : Menu
+    class ForAlbum(@MenuRes override val res: Int, val album: Album) : Menu {
+        override val parcel
+            get() = Parcel(res, album.uid)
+        @Parcelize data class Parcel(val res: Int, val albumUid: Music.UID) : Menu.Parcel
+    }
+
     /** Navigate to a [Artist] menu dialog. */
-    class ForArtist(@MenuRes override val menuRes: Int, override val music: Artist) : Menu
+    class ForArtist(@MenuRes override val res: Int, val artist: Artist) : Menu {
+        override val parcel
+            get() = Parcel(res, artist.uid)
+        @Parcelize data class Parcel(val res: Int, val artistUid: Music.UID) : Menu.Parcel
+    }
+
     /** Navigate to a [Genre] menu dialog. */
-    class ForGenre(@MenuRes override val menuRes: Int, override val music: Genre) : Menu
+    class ForGenre(@MenuRes override val res: Int, val genre: Genre) : Menu {
+        override val parcel
+            get() = Parcel(res, genre.uid)
+        @Parcelize data class Parcel(val res: Int, val genreUid: Music.UID) : Menu.Parcel
+    }
+
     /** Navigate to a [Playlist] menu dialog. */
-    class ForPlaylist(@MenuRes override val menuRes: Int, override val music: Playlist) : Menu
+    class ForPlaylist(@MenuRes override val res: Int, val playlist: Playlist) : Menu {
+        override val parcel
+            get() = Parcel(res, playlist.uid)
+        @Parcelize data class Parcel(val res: Int, val playlistUid: Music.UID) : Menu.Parcel
+    }
 }

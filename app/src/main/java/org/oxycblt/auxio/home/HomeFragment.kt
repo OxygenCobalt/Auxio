@@ -577,15 +577,11 @@ class HomeFragment :
         if (menu == null) return
         val directions =
             when (menu) {
-                is Menu.ForSong -> HomeFragmentDirections.openSongMenu(menu.menuRes, menu.music.uid)
-                is Menu.ForAlbum ->
-                    HomeFragmentDirections.openAlbumMenu(menu.menuRes, menu.music.uid)
-                is Menu.ForArtist ->
-                    HomeFragmentDirections.openArtistMenu(menu.menuRes, menu.music.uid)
-                is Menu.ForGenre ->
-                    HomeFragmentDirections.openGenreMenu(menu.menuRes, menu.music.uid)
-                is Menu.ForPlaylist ->
-                    HomeFragmentDirections.openPlaylistMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForSong -> HomeFragmentDirections.openSongMenu(menu.parcel)
+                is Menu.ForAlbum -> HomeFragmentDirections.openAlbumMenu(menu.parcel)
+                is Menu.ForArtist -> HomeFragmentDirections.openArtistMenu(menu.parcel)
+                is Menu.ForGenre -> HomeFragmentDirections.openGenreMenu(menu.parcel)
+                is Menu.ForPlaylist -> HomeFragmentDirections.openPlaylistMenu(menu.parcel)
             }
         findNavController().navigateSafe(directions)
     }

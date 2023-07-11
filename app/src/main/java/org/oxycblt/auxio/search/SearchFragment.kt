@@ -184,7 +184,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     override fun onOpenMenu(item: Music, anchor: View) {
         when (item) {
-            is Song -> listModel.openMenu(R.menu.item_song, item)
+            is Song -> listModel.openMenu(R.menu.item_song, item, searchModel.playWith)
             is Album -> listModel.openMenu(R.menu.item_album, item)
             is Artist -> listModel.openMenu(R.menu.item_parent, item)
             is Genre -> listModel.openMenu(R.menu.item_parent, item)
@@ -256,16 +256,11 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         if (menu == null) return
         val directions =
             when (menu) {
-                is Menu.ForSong ->
-                    SearchFragmentDirections.openSongMenu(menu.menuRes, menu.music.uid)
-                is Menu.ForAlbum ->
-                    SearchFragmentDirections.openAlbumMenu(menu.menuRes, menu.music.uid)
-                is Menu.ForArtist ->
-                    SearchFragmentDirections.openArtistMenu(menu.menuRes, menu.music.uid)
-                is Menu.ForGenre ->
-                    SearchFragmentDirections.openGenreMenu(menu.menuRes, menu.music.uid)
-                is Menu.ForPlaylist ->
-                    SearchFragmentDirections.openPlaylistMenu(menu.menuRes, menu.music.uid)
+                is Menu.ForSong -> SearchFragmentDirections.openSongMenu(menu.parcel)
+                is Menu.ForAlbum -> SearchFragmentDirections.openAlbumMenu(menu.parcel)
+                is Menu.ForArtist -> SearchFragmentDirections.openArtistMenu(menu.parcel)
+                is Menu.ForGenre -> SearchFragmentDirections.openGenreMenu(menu.parcel)
+                is Menu.ForPlaylist -> SearchFragmentDirections.openPlaylistMenu(menu.parcel)
             }
         findNavController().navigateSafe(directions)
         // Keyboard is no longer needed.

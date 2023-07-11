@@ -108,8 +108,8 @@
 
     <string-array name="entries_play_in_list_with">
         <item>@string/set_play_song_from_all</item>
-        <item>@string/set_play_song_from_artist</item>
         <item>@string/set_play_song_from_album</item>
+        <item>@string/set_play_song_from_artist</item>
         <item>@string/set_play_song_from_genre</item>
         <item>@string/set_play_song_by_itself</item>
     </string-array>
@@ -119,14 +119,14 @@
         <item>@integer/play_song_from_album</item>
         <item>@integer/play_song_from_artist</item>
         <item>@integer/play_song_from_genre</item>
-        <item>@integer/play_song_itself</item>
+        <item>@integer/play_song_by_itself</item>
     </integer-array>
 
     <string-array name="entries_play_in_parent_with">
         <item>@string/set_play_song_none</item>
         <item>@string/set_play_song_from_all</item>
-        <item>@string/set_play_song_from_artist</item>
         <item>@string/set_play_song_from_album</item>
+        <item>@string/set_play_song_from_artist</item>
         <item>@string/set_play_song_from_genre</item>
         <item>@string/set_play_song_by_itself</item>
     </string-array>
@@ -137,7 +137,7 @@
         <item>@integer/play_song_from_album</item>
         <item>@integer/play_song_from_artist</item>
         <item>@integer/play_song_from_genre</item>
-        <item>@integer/play_song_itself</item>
+        <item>@integer/play_song_by_itself</item>
     </integer-array>
 
     <string-array name="entries_replay_gain">
@@ -157,11 +157,12 @@
     <integer name="theme_dark">2</integer>
 
     <integer name="play_song_none">-2147483648</integer>
-    <integer name="play_song_itself">0xA11F</integer>
-    <integer name="play_song_from_all">0xA120</integer>
-    <integer name="play_song_from_album">0xA121</integer>
-    <integer name="play_song_from_artist">0xA122</integer>
-    <integer name="play_song_from_genre">0xA123</integer>
+    <integer name="play_song_from_all">0xA11F</integer>
+    <integer name="play_song_from_album">0xA120</integer>
+    <integer name="play_song_from_artist">0xA121</integer>
+    <integer name="play_song_from_genre">0xA122</integer>
+    <integer name="play_song_from_playlist">0xA123</integer>
+    <integer name="play_song_by_itself">0xA124</integer>
 
     <integer name="replay_gain_track">0xA111</integer>
     <integer name="replay_gain_album">0xA112</integer>

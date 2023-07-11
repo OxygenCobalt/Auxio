@@ -30,8 +30,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.DialogMenuBinding
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.ListViewModel
+import org.oxycblt.auxio.list.Menu
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
-import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.ui.ViewBindingBottomSheetDialogFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
@@ -44,40 +44,36 @@ import org.oxycblt.auxio.util.logD
  *
  * TODO: Extend the amount of music info shown in the dialog
  */
-abstract class MenuDialogFragment<T : Music> :
+abstract class MenuDialogFragment<M : Menu> :
     ViewBindingBottomSheetDialogFragment<DialogMenuBinding>(), ClickableListListener<MenuItem> {
     protected abstract val menuModel: MenuViewModel
     protected abstract val listModel: ListViewModel
     private val menuAdapter = MenuItemAdapter(@Suppress("LeakingThis") this)
 
-    /** The android resource ID of the menu options to display in the dialog. */
-    abstract val menuRes: Int
-
-    /** The [Music.UID] of the [T] to display menu options for. */
-    abstract val uid: Music.UID
+    abstract val parcel: Menu.Parcel
 
     /**
-     * Get the options to disable in the context of the currently shown [T].
+     * Get the options to disable in the context of the currently shown [M].
      *
-     * @param music The currently-shown music [T].
+     * @param menu The currently-shown menu [M].
      */
-    abstract fun getDisabledItemIds(music: T): Set<Int>
+    abstract fun getDisabledItemIds(menu: M): Set<Int>
 
     /**
-     * Update the displayed information about the currently shown [T].
+     * Update the displayed information about the currently shown [M].
      *
      * @param binding The [DialogMenuBinding] to bind information to.
-     * @param music The currently-shown music [T].
+     * @param menu The currently-shown menu [M].
      */
-    abstract fun updateMusic(binding: DialogMenuBinding, music: T)
+    abstract fun updateMenu(binding: DialogMenuBinding, menu: M)
 
     /**
      * Forward the clicked [MenuItem] to it's corresponding handler in another module.
      *
      * @param item The [MenuItem] that was clicked.
-     * @param music The currently-shown music [T].
+     * @param menu The currently-shown menu [M].
      */
-    abstract fun onClick(item: MenuItem, music: T)
+    abstract fun onClick(item: MenuItem, menu: M)
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogMenuBinding.inflate(inflater)
 
@@ -94,8 +90,8 @@ abstract class MenuDialogFragment<T : Music> :
 
         // --- VIEWMODEL SETUP ---
         listModel.menu.consume()
-        menuModel.setMusic(uid)
-        collectImmediately(menuModel.currentMusic, this::updateMusic)
+        menuModel.setMenu(parcel)
+        collectImmediately(menuModel.currentMenu, this::updateMenu)
     }
 
     override fun onDestroyBinding(binding: DialogMenuBinding) {
@@ -105,23 +101,25 @@ abstract class MenuDialogFragment<T : Music> :
         binding.menuOptionRecycler.adapter = null
     }
 
-    private fun updateMusic(music: Music?) {
-        if (music == null) {
-            logD("No music to show, navigating away")
+    private fun updateMenu(menu: Menu?) {
+        if (menu == null) {
+            logD("No menu to show, navigating away")
             findNavController().navigateUp()
+            return
         }
 
-        @Suppress("UNCHECKED_CAST") val castedMusic = music as T
+        @Suppress("UNCHECKED_CAST") val casted = menu as? M
+        check(casted != null) { "Unexpected menu instance ${menu::class.simpleName}" }
 
-        // We need to inflate the menu on every music update since it might have changed
+        // We need to inflate the menu on every menu update since it might have changed
         // what options are available (ex. if an artist with no songs has had new songs added).
         // Since we don't have (and don't want) a dummy view to inflate this menu, just
         // depend on the AndroidX Toolbar internal API and hope for the best.
         @SuppressLint("RestrictedApi") val builder = MenuBuilder(requireContext())
-        MenuInflater(requireContext()).inflate(menuRes, builder)
+        MenuInflater(requireContext()).inflate(casted.res, builder)
 
         // Disable any menu options as specified by the impl
-        val disabledIds = getDisabledItemIds(castedMusic)
+        val disabledIds = getDisabledItemIds(casted)
         val visible =
             builder.children.mapTo(mutableListOf()) {
                 it.isEnabled = !disabledIds.contains(it.itemId)
@@ -130,7 +128,7 @@ abstract class MenuDialogFragment<T : Music> :
         menuAdapter.update(visible, UpdateInstructions.Diff)
 
         // Delegate to impl how to show music
-        updateMusic(requireBinding(), castedMusic)
+        updateMenu(requireBinding(), casted)
     }
 
     final override fun onClick(item: MenuItem, viewHolder: RecyclerView.ViewHolder) {
@@ -138,6 +136,6 @@ abstract class MenuDialogFragment<T : Music> :
         // TODO: This should change if the app is 100% migrated to menu dialogs
         findNavController().navigateUp()
         // Delegate to impl on how to handle items
-        @Suppress("UNCHECKED_CAST") onClick(item, menuModel.currentMusic.value as T)
+        @Suppress("UNCHECKED_CAST") onClick(item, menuModel.currentMenu.value as M)
     }
 }

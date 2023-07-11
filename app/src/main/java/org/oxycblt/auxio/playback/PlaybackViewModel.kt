@@ -184,13 +184,13 @@ constructor(
         playWithImpl(song, with, isImplicitlyShuffled())
     }
 
-    //    fun playExplicit(song: Song, with: PlaySong) {
-    //        playWithImpl(song, with, false)
-    //    }
-    //
-    //    fun shuffleExplicit(song: Song, with: PlaySong) {
-    //        playWithImpl(song, with, true)
-    //    }
+    fun playExplicit(song: Song, with: PlaySong) {
+        playWithImpl(song, with, false)
+    }
+
+    fun shuffleExplicit(song: Song, with: PlaySong) {
+        playWithImpl(song, with, true)
+    }
 
     /** Shuffle all songs in the music library. */
     fun shuffleAll() {

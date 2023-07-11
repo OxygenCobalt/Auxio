@@ -23,8 +23,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.list.Menu
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
+import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.util.logW
 
 /**
@@ -35,32 +37,62 @@ import org.oxycblt.auxio.util.logW
 @HiltViewModel
 class MenuViewModel @Inject constructor(private val musicRepository: MusicRepository) :
     ViewModel(), MusicRepository.UpdateListener {
-    private val _currentMusic = MutableStateFlow<Music?>(null)
-    /** The current [Music] information being shown in a menu dialog. */
-    val currentMusic: StateFlow<Music?> = _currentMusic
+    private val _currentMenu = MutableStateFlow<Menu?>(null)
+    /** The current [Menu] information being shown in a dialog. */
+    val currentMenu: StateFlow<Menu?> = _currentMenu
 
     init {
         musicRepository.addUpdateListener(this)
     }
 
     override fun onMusicChanges(changes: MusicRepository.Changes) {
-        _currentMusic.value = _currentMusic.value?.let { musicRepository.find(it.uid) }
+        _currentMenu.value = _currentMenu.value?.let { unpackParcel(it.parcel) }
     }
 
     override fun onCleared() {
         musicRepository.removeUpdateListener(this)
     }
 
-    /**
-     * Set a new [currentMusic] from it's [Music.UID]. [currentMusic] will be updated to align with
-     * the new album.
-     *
-     * @param uid The [Music.UID] of the [Music] to update [currentMusic] to. Must be valid.
-     */
-    fun setMusic(uid: Music.UID) {
-        _currentMusic.value = musicRepository.find(uid)
-        if (_currentMusic.value == null) {
-            logW("Given Music UID to show was invalid")
+    fun setMenu(parcel: Menu.Parcel) {
+        _currentMenu.value = unpackParcel(parcel)
+        if (_currentMenu.value == null) {
+            logW("Given menu parcel $parcel was invalid")
         }
+    }
+
+    private fun unpackParcel(parcel: Menu.Parcel) =
+        when (parcel) {
+            is Menu.ForSong.Parcel -> unpackSongParcel(parcel)
+            is Menu.ForAlbum.Parcel -> unpackAlbumParcel(parcel)
+            is Menu.ForArtist.Parcel -> unpackArtistParcel(parcel)
+            is Menu.ForGenre.Parcel -> unpackGenreParcel(parcel)
+            is Menu.ForPlaylist.Parcel -> unpackPlaylistParcel(parcel)
+        }
+
+    private fun unpackSongParcel(parcel: Menu.ForSong.Parcel): Menu.ForSong? {
+        val song = musicRepository.deviceLibrary?.findSong(parcel.songUid) ?: return null
+        val parent = parcel.playWithUid?.let(musicRepository::find) as MusicParent?
+        val playWith = PlaySong.fromIntCode(parcel.playWithCode, parent) ?: return null
+        return Menu.ForSong(parcel.res, song, playWith)
+    }
+
+    private fun unpackAlbumParcel(parcel: Menu.ForAlbum.Parcel): Menu.ForAlbum? {
+        val album = musicRepository.deviceLibrary?.findAlbum(parcel.albumUid) ?: return null
+        return Menu.ForAlbum(parcel.res, album)
+    }
+
+    private fun unpackArtistParcel(parcel: Menu.ForArtist.Parcel): Menu.ForArtist? {
+        val artist = musicRepository.deviceLibrary?.findArtist(parcel.artistUid) ?: return null
+        return Menu.ForArtist(parcel.res, artist)
+    }
+
+    private fun unpackGenreParcel(parcel: Menu.ForGenre.Parcel): Menu.ForGenre? {
+        val genre = musicRepository.deviceLibrary?.findGenre(parcel.genreUid) ?: return null
+        return Menu.ForGenre(parcel.res, genre)
+    }
+
+    private fun unpackPlaylistParcel(parcel: Menu.ForPlaylist.Parcel): Menu.ForPlaylist? {
+        val playlist = musicRepository.userLibrary?.findPlaylist(parcel.playlistUid) ?: return null
+        return Menu.ForPlaylist(parcel.res, playlist)
     }
 }

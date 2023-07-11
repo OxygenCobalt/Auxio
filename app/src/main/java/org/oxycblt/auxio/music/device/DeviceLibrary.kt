@@ -75,7 +75,7 @@ interface DeviceLibrary {
      * Find a [Album] instance corresponding to the given [Music.UID].
      *
      * @param uid The [Music.UID] to search for.
-     * @return The corresponding [Song], or null if one was not found.
+     * @return The corresponding [Album], or null if one was not found.
      */
     fun findAlbum(uid: Music.UID): Album?
 
@@ -83,7 +83,7 @@ interface DeviceLibrary {
      * Find a [Artist] instance corresponding to the given [Music.UID].
      *
      * @param uid The [Music.UID] to search for.
-     * @return The corresponding [Song], or null if one was not found.
+     * @return The corresponding [Artist], or null if one was not found.
      */
     fun findArtist(uid: Music.UID): Artist?
 
@@ -91,7 +91,7 @@ interface DeviceLibrary {
      * Find a [Genre] instance corresponding to the given [Music.UID].
      *
      * @param uid The [Music.UID] to search for.
-     * @return The corresponding [Song], or null if one was not found.
+     * @return The corresponding [Genre], or null if one was not found.
      */
     fun findGenre(uid: Music.UID): Genre?
 
