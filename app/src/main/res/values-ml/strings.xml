@@ -96,7 +96,6 @@
     <string name="lbl_state_wiped">സ്ഥിതി മായ്ച്ചു</string>
     <string name="lbl_live_group">തത്സമയം</string>
     <string name="lbl_compilation_live">തത്സമയ സമാഹാരം</string>
-    <string name="set_playback_mode_songs">എല്ലാ പാട്ടുകളിൽ നിന്നും കളിക്കുക</string>
     <string name="lbl_song">ഗീതം</string>
     <string name="lbl_delete">ഇല്ലാതാക്കുക</string>
     <string name="lbl_rename">പേരുമാറ്റുക</string>
