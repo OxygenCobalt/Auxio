@@ -42,18 +42,19 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.ReleaseType
 import org.oxycblt.auxio.music.metadata.AudioProperties
+import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * [ViewModel] that manages the Song, Album, Artist, and Genre detail views. Keeps track of the
@@ -115,6 +116,10 @@ constructor(
             currentAlbum.value?.let { refreshAlbumList(it, true) }
         }
 
+    /** The [PlaySong] instructions to use when playing a [Song] from [Album] details. */
+    val playInAlbumWith
+        get() = playbackSettings.inParentPlaybackMode ?: PlaySong.FromAlbum
+
     // --- ARTIST ---
 
     private val _currentArtist = MutableStateFlow<Artist?>(null)
@@ -138,6 +143,10 @@ constructor(
             // Refresh the artist list to reflect the new sort.
             currentArtist.value?.let { refreshArtistList(it, true) }
         }
+
+    /** The [PlaySong] instructions to use when playing a [Song] from [Artist] details. */
+    val playInArtistWith
+        get() = playbackSettings.inParentPlaybackMode ?: PlaySong.FromArtist(currentArtist.value)
 
     // --- GENRE ---
 
@@ -163,6 +172,10 @@ constructor(
             currentGenre.value?.let { refreshGenreList(it, true) }
         }
 
+    /** The [PlaySong] instructions to use when playing a [Song] from [Genre] details. */
+    val playInGenreWith
+        get() = playbackSettings.inParentPlaybackMode ?: PlaySong.FromGenre(currentGenre.value)
+
     // --- PLAYLIST ---
 
     private val _currentPlaylist = MutableStateFlow<Playlist?>(null)
@@ -186,12 +199,11 @@ constructor(
     val editedPlaylist: StateFlow<List<Song>?>
         get() = _editedPlaylist
 
-    /**
-     * The [MusicMode] to use when playing a [Song] from the UI, or null to play from the currently
-     * shown item.
-     */
-    val playbackMode: MusicMode?
-        get() = playbackSettings.inParentPlaybackMode
+    /** The [PlaySong] instructions to use when playing a [Song] from [Genre] details. */
+    val playInPlaylistWith
+        get() =
+            playbackSettings.inParentPlaybackMode
+                ?: PlaySong.FromPlaylist(unlikelyToBeNull(currentPlaylist.value))
 
     init {
         musicRepository.addUpdateListener(this)

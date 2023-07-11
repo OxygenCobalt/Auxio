@@ -30,7 +30,6 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
@@ -180,10 +179,6 @@ constructor(
 
     // --- PLAYING FUNCTIONS ---
 
-    fun play(song: Song, playbackMode: MusicMode) {
-        play(song, PlaySong.fromPlaybackModeTemporary(playbackMode))
-    }
-
     fun play(song: Song, with: PlaySong) {
         logD("Playing $song with $with")
         playWithImpl(song, with, isImplicitlyShuffled())
@@ -201,10 +196,6 @@ constructor(
     fun shuffleAll() {
         logD("Shuffling all songs")
         playFromAllImpl(null, true)
-    }
-
-    fun playFromAlbum(song: Song) {
-        playFromAlbumImpl(song, isImplicitlyShuffled())
     }
 
     /**
@@ -229,32 +220,18 @@ constructor(
         playFromGenreImpl(song, genre, isImplicitlyShuffled())
     }
 
-    /**
-     * Play a [Song] from one of it's [Playlist]s.
-     *
-     * @param song The [Song] to play.
-     * @param playlist The [Playlist] to play from. Must be linked to the [Song].
-     */
-    fun playFromPlaylist(song: Song, playlist: Playlist) {
-        playFromPlaylistImpl(song, playlist, isImplicitlyShuffled())
-    }
-
     private fun isImplicitlyShuffled() =
         playbackManager.queue.isShuffled && playbackSettings.keepShuffle
 
     private fun playWithImpl(song: Song, with: PlaySong, shuffled: Boolean) {
         when (with) {
-            is PlaySong.ByItself -> playItselfImpl(song, shuffled)
             is PlaySong.FromAll -> playFromAllImpl(song, shuffled)
             is PlaySong.FromAlbum -> playFromAlbumImpl(song, shuffled)
             is PlaySong.FromArtist -> playFromArtistImpl(song, with.which, shuffled)
             is PlaySong.FromGenre -> playFromGenreImpl(song, with.which, shuffled)
             is PlaySong.FromPlaylist -> playFromPlaylistImpl(song, with.which, shuffled)
+            is PlaySong.ByItself -> playItselfImpl(song, shuffled)
         }
-    }
-
-    private fun playItselfImpl(song: Song, shuffled: Boolean) {
-        playImpl(song, listOf(song), shuffled)
     }
 
     private fun playFromAllImpl(song: Song?, shuffled: Boolean) {
@@ -294,6 +271,10 @@ constructor(
     private fun playFromPlaylistImpl(song: Song, playlist: Playlist, shuffled: Boolean) {
         logD("Playing $song from $playlist")
         playImpl(song, playlist, shuffled)
+    }
+
+    private fun playItselfImpl(song: Song, shuffled: Boolean) {
+        playImpl(song, listOf(song), shuffled)
     }
 
     private fun startPlaybackDecision(decision: PlaybackDecision) {

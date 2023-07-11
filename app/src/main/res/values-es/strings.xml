@@ -23,9 +23,9 @@
     <string name="lbl_playback">En reproducción</string>
     <string name="lbl_play">Reproducir</string>
     <string name="lbl_shuffle">Mezcla</string>
-    <string name="set_playback_mode_songs">Reproducir todo</string>
-    <string name="set_playback_mode_album">Reproducir por álbum</string>
-    <string name="set_playback_mode_artist">Reproducir por artista</string>
+    <string name="set_play_song_from_all">Reproducir todo</string>
+    <string name="set_play_song_from_album">Reproducir por álbum</string>
+    <string name="set_play_song_from_artist">Reproducir por artista</string>
     <string name="lbl_queue">Cola</string>
     <string name="lbl_play_next">Reproducir siguiente</string>
     <string name="lbl_queue_add">Agregar a la cola</string>
@@ -63,7 +63,7 @@
     <string name="set_replay_gain_mode_album">Por álbum</string>
     <string name="set_replay_gain_mode_dynamic">Preferir el álbum si se está en reproducción</string>
     <string name="set_personalize">Comportamiento</string>
-    <string name="set_library_song_playback_mode">Cuando se está reproduciendo de la biblioteca</string>
+    <string name="set_play_in_list_with">Cuando se está reproduciendo de la biblioteca</string>
     <string name="set_keep_shuffle">Recordar mezcla</string>
     <string name="set_keep_shuffle_desc">Mantener mezcla cuando se reproduce una nueva canción</string>
     <string name="set_rewind_prev">Rebobinar atrás</string>
@@ -149,7 +149,7 @@
     <string name="lbl_library_counts">Estadísticas de la biblioteca</string>
     <string name="set_pre_amp_without">Ajuste sin etiquetas</string>
     <string name="set_pre_amp_warning">Advertencia: Cambiar el pre-amp a un valor alto puede resultar en picos en algunas pistas de audio.</string>
-    <string name="set_playback_mode_none">Reproducir desde el elemento que se muestra</string>
+    <string name="set_play_song_none">Reproducir desde el elemento que se muestra</string>
     <string name="set_dirs_mode">Modo</string>
     <string name="set_dirs_mode_exclude">Excluir</string>
     <string name="set_dirs_mode_exclude_desc">La música<b>no</b> se cargará de las carpetas que añadas.</string>
@@ -171,7 +171,7 @@
     <string name="lbl_observing">Monitorizando la librería de música</string>
     <string name="lng_observing">Monitorizando cambios en tu librería de música…</string>
     <string name="cdc_ogg">Audio ogg</string>
-    <string name="set_detail_song_playback_mode">Cuando se reproduce desde los detalles</string>
+    <string name="set_play_in_parent_with">Cuando se reproduce desde los detalles</string>
     <string name="lbl_date_added">Fecha de añadido</string>
     <string name="lbl_props">Propiedades de la canción</string>
     <string name="lbl_sample_rate">Frecuencia de muestreo</string>
@@ -258,7 +258,7 @@
     <string name="lbl_shuffle_selected">Nodo aleatorio seleccionado</string>
     <string name="fmt_selected">%d seleccionado</string>
     <string name="lbl_play_selected">Reproducir los seleccionados</string>
-    <string name="set_playback_mode_genre">Reproducir desde el género</string>
+    <string name="set_play_song_from_genre">Reproducir desde el género</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Restablecer</string>

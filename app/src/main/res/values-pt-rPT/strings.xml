@@ -71,8 +71,8 @@
         <item quantity="many">%d Álbuns</item>
         <item quantity="other">%d Álbuns</item>
     </plurals>
-    <string name="set_playback_mode_none">Reproduzir a partir do item mostrado</string>
-    <string name="set_playback_mode_album">Reproduzir do álbum</string>
+    <string name="set_play_song_none">Reproduzir a partir do item mostrado</string>
+    <string name="set_play_song_from_album">Reproduzir do álbum</string>
     <string name="desc_artist_image">Imagem do artista para %s</string>
     <string name="def_genre">Gênero desconhecido</string>
     <string name="def_track">Nenhuma faixa</string>
@@ -93,7 +93,7 @@
     <string name="set_cover_mode_quality">Qualidade alta</string>
     <string name="set_bar_action">Ação da barra de reprodução personalizada</string>
     <string name="set_action_mode_repeat">Modo de repetição</string>
-    <string name="set_playback_mode_artist">Reproduzir do artista</string>
+    <string name="set_play_song_from_artist">Reproduzir do artista</string>
     <string name="set_repeat_pause">Pausar na repetição</string>
     <string name="err_no_perms">O Auxio precisa de permissão para ler a sua biblioteca de músicas</string>
     <string name="err_no_dirs">Sem pastas</string>
@@ -188,7 +188,7 @@
     <string name="set_replay_gain_mode">Estratégia do ganho de repetição</string>
     <string name="set_replay_gain_mode_album">Preferir álbum</string>
     <string name="set_pre_amp_desc">O pré-amplificador é aplicado ao ajuste existente durante a reprodução</string>
-    <string name="set_playback_mode_songs">Reproduzir de todas as músicas</string>
+    <string name="set_play_song_from_all">Reproduzir de todas as músicas</string>
     <string name="set_repeat_pause_desc">Pausa quando uma música se repete</string>
     <string name="set_wipe_desc">Limpe o estado de reprodução salvo anteriormente (se houver)</string>
     <string name="set_restore_state">Restaurar o estado de reprodução</string>
@@ -239,8 +239,8 @@
     <string name="set_hide_collaborators_desc">Mostrar apenas artistas que foram creditados diretamente no álbum (funciona melhor em músicas com metadados completos)</string>
     <string name="set_replay_gain_mode_track">Preferir faixa</string>
     <string name="set_pre_amp">Pré-amplificação da normalização de volume</string>
-    <string name="set_detail_song_playback_mode">Ao tocar a partir dos detalhes do item</string>
-    <string name="set_playback_mode_genre">Tocar a partir do gênero</string>
+    <string name="set_play_in_parent_with">Ao tocar a partir dos detalhes do item</string>
+    <string name="set_play_song_from_genre">Tocar a partir do gênero</string>
     <string name="set_rewind_prev_desc">Retrocede a música antes de voltar para a anterior</string>
     <string name="set_reindex">Recarregar música</string>
     <string name="fmt_list">%1$s, %2$s</string>
@@ -250,7 +250,7 @@
     <string name="err_did_not_restore">Nenhuma lista pode ser restaurada</string>
     <string name="desc_auxio_icon">Ícone do Auxio</string>
     <string name="lbl_shuffle_shortcut_long">Aleatorizar tudo</string>
-    <string name="set_library_song_playback_mode">Ao tocar da biblioteca</string>
+    <string name="set_play_in_list_with">Ao tocar da biblioteca</string>
     <string name="lbl_singles">Singles</string>
     <string name="lbl_single">Single</string>
     <string name="set_reindex_desc">Recarrega a biblioteca de músicas usando metadados salvos em cache quando possível</string>

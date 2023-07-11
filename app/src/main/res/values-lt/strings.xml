@@ -155,8 +155,8 @@
     <string name="set_rewind_prev">Persukti prieš šokant atgal</string>
     <string name="set_rewind_prev_desc">Persukti atgal prieš peršokant į ankstesnę dainą</string>
     <string name="set_repeat_pause">Pauzė ant kartojamo</string>
-    <string name="set_library_song_playback_mode">Kai grojant iš bibliotekos</string>
-    <string name="set_detail_song_playback_mode">Kai grojant iš elemento detalių</string>
+    <string name="set_play_in_list_with">Kai grojant iš bibliotekos</string>
+    <string name="set_play_in_parent_with">Kai grojant iš elemento detalių</string>
     <string name="desc_music_dir_delete">Pašalinti aplanką</string>
     <string name="lbl_genre">Žanras</string>
     <string name="lng_search_library">Ieškokite savo bibliotekoje…</string>
@@ -174,10 +174,10 @@
     <string name="set_dirs_mode_exclude_desc">Muzika <b>nebus</b> įkeliama iš pridėtų aplankų jūs pridėsite.</string>
     <string name="set_dirs_mode_include">Įtraukti</string>
     <string name="desc_remove_song">Pašalinti šią dainą</string>
-    <string name="set_playback_mode_songs">Groti iš visų dainų</string>
-    <string name="set_playback_mode_none">Groti iš parodyto elemento</string>
-    <string name="set_playback_mode_album">Groti iš albumo</string>
-    <string name="set_playback_mode_artist">Groti iš atlikėjo</string>
+    <string name="set_play_song_from_all">Groti iš visų dainų</string>
+    <string name="set_play_song_none">Groti iš parodyto elemento</string>
+    <string name="set_play_song_from_album">Groti iš albumo</string>
+    <string name="set_play_song_from_artist">Groti iš atlikėjo</string>
     <string name="lbl_state_wiped">Išvalyta būsena</string>
     <string name="set_dirs_mode_exclude">Neįtraukti</string>
     <string name="set_dirs_mode_include_desc">Muzika <b>bus</b> įkeliama iš aplankų jūs pridėsite.</string>
@@ -252,7 +252,7 @@
     <string name="fmt_selected">%d Pasirinkta</string>
     <string name="lbl_play_selected">Groti pasirinktą</string>
     <string name="lbl_shuffle_selected">Pasirinktas maišymas</string>
-    <string name="set_playback_mode_genre">Groti iš žanro</string>
+    <string name="set_play_song_from_genre">Groti iš žanro</string>
     <string name="lbl_wiki">Viki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Nustatyti iš naujo</string>

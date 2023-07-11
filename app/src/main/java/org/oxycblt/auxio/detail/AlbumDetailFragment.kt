@@ -44,7 +44,6 @@ import org.oxycblt.auxio.list.Menu
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.PlaylistDecision
@@ -180,12 +179,7 @@ class AlbumDetailFragment :
     }
 
     override fun onRealClick(item: Song) {
-        val mode = detailModel.playbackMode
-        if (mode != null) {
-            playbackModel.play(item, detailModel.playbackMode ?: MusicMode.ALBUMS)
-        } else {
-            playbackModel.playFromAlbum(item)
-        }
+        playbackModel.play(item, detailModel.playInAlbumWith)
     }
 
     override fun onOpenMenu(item: Song, anchor: View) {

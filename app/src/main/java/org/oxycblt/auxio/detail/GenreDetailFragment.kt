@@ -177,17 +177,7 @@ class GenreDetailFragment :
     override fun onRealClick(item: Music) {
         when (item) {
             is Artist -> detailModel.showArtist(item)
-            is Song -> {
-                val playbackMode = detailModel.playbackMode
-                if (playbackMode != null) {
-                    playbackModel.play(item, playbackMode)
-                } else {
-                    // When configured to play from the selected item, we already have an Genre
-                    // to play from.
-                    playbackModel.playFromGenre(
-                        item, unlikelyToBeNull(detailModel.currentGenre.value))
-                }
-            }
+            is Song -> playbackModel.play(item, detailModel.playInGenreWith)
             else -> error("Unexpected datatype: ${item::class.simpleName}")
         }
     }

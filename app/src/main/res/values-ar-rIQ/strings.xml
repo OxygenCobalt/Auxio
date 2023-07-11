@@ -23,9 +23,9 @@
     <string name="lbl_playback">يتم التشغيل الان</string>
     <string name="lbl_play">تشغيل</string>
     <string name="lbl_shuffle">عشوائي</string>
-    <string name="set_playback_mode_songs">تشغيل من جميع الاغاني</string>
-    <string name="set_playback_mode_album">تشغيل من البوم</string>
-    <string name="set_playback_mode_artist">تشغيل من فنان</string>
+    <string name="set_play_song_from_all">تشغيل من جميع الاغاني</string>
+    <string name="set_play_song_from_album">تشغيل من البوم</string>
+    <string name="set_play_song_from_artist">تشغيل من فنان</string>
     <string name="lbl_queue">طابور</string>
     <string name="lbl_play_next">شغل الاغنية التالية</string>
     <string name="lbl_queue_add">أضف إلى الطابور</string>
@@ -63,7 +63,7 @@
     <string name="set_replay_gain_mode_album">تفضيل الالبوم</string>
     <string name="set_replay_gain_mode_dynamic">ديناميكي</string>
     <string name="set_personalize">سلوك</string>
-    <string name="set_library_song_playback_mode">عند اختيار اغنية</string>
+    <string name="set_play_in_list_with">عند اختيار اغنية</string>
     <string name="set_keep_shuffle">تذكر الخلط</string>
     <string name="set_keep_shuffle_desc">إبقاء وضع الخلط عند تشغيل اغنية جديدة</string>
     <string name="set_rewind_prev">تشجيع قبل التخطي للخلف</string>

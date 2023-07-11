@@ -68,12 +68,12 @@
     <string name="set_lib_tabs_desc">Muuta kirjastovälilehtien näkyvyyttä ja järjestystä</string>
     <string name="set_action_mode_next">Siirry seuraavaan</string>
     <string name="set_action_mode_repeat">Kertaustila</string>
-    <string name="set_library_song_playback_mode">Kirjastosta toistettaessa</string>
-    <string name="set_detail_song_playback_mode">Kohteen tiedoista toistettaessa</string>
+    <string name="set_play_in_list_with">Kirjastosta toistettaessa</string>
+    <string name="set_play_in_parent_with">Kohteen tiedoista toistettaessa</string>
     <string name="set_keep_shuffle">Muista sekoitus</string>
-    <string name="set_playback_mode_songs">Toista kaikista kappaleista</string>
-    <string name="set_playback_mode_album">Toista albumilta</string>
-    <string name="set_playback_mode_genre">Toista tyylilajista</string>
+    <string name="set_play_song_from_all">Toista kaikista kappaleista</string>
+    <string name="set_play_song_from_album">Toista albumilta</string>
+    <string name="set_play_song_from_genre">Toista tyylilajista</string>
     <string name="set_separators">Moniarvoerottimet</string>
     <string name="set_exclude_non_music_desc">Ohita äänitiedostot, jotka eivät ole musiikkia, kuten podcastit</string>
     <string name="set_separators_and">Ja-merkki (&amp;)</string>
@@ -238,7 +238,7 @@
     <string name="def_genre">Tuntematon tyylilaji</string>
     <string name="clr_green">Vihreä</string>
     <string name="def_playback">Musiikkia ei toisteta</string>
-    <string name="set_playback_mode_artist">Toista esittäjältä</string>
+    <string name="set_play_song_from_artist">Toista esittäjältä</string>
     <string name="set_exclude_non_music">Ohita muu kuin musiikki</string>
     <string name="set_restore_desc">Palauta aiemmin tallennettu toiston tila (jos olemassa)</string>
     <string name="set_dirs_mode_exclude_desc">Musiikkia <b>ei</b> ladata valitsemistasi kansioista.</string>

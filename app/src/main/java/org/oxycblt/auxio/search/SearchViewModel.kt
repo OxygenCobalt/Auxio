@@ -38,6 +38,7 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.device.DeviceLibrary
 import org.oxycblt.auxio.music.user.UserLibrary
+import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.logD
 
@@ -63,9 +64,9 @@ constructor(
     val searchResults: StateFlow<List<Item>>
         get() = _searchResults
 
-    /** The [MusicMode] to use when playing a [Song] from the UI. */
-    val playbackMode: MusicMode
-        get() = playbackSettings.inListPlaybackMode
+    /** The [PlaySong] instructions to use when playing a [Song]. */
+    val playWith
+        get() = playbackSettings.playInListWith
 
     init {
         musicRepository.addUpdateListener(this)

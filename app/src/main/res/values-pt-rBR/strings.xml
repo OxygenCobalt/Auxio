@@ -163,8 +163,8 @@
     <string name="set_display">Exibição</string>
     <string name="set_round_mode_desc">Ativa cantos arredondados em elementos adicionais da interface do usuário</string>
     <string name="set_replay_gain_mode">Modo de normalização de volume (ReplayGain)</string>
-    <string name="set_playback_mode_none">Reproduzir a partir do item mostrado</string>
-    <string name="set_playback_mode_songs">Reproduzir de todas as músicas</string>
+    <string name="set_play_song_none">Reproduzir a partir do item mostrado</string>
+    <string name="set_play_song_from_all">Reproduzir de todas as músicas</string>
     <string name="set_replay_gain_mode_album">Preferir álbum</string>
     <string name="set_replay_gain_mode_dynamic">Prefira o álbum se estiver tocando</string>
     <string name="set_observing">Recarregamento automático</string>
@@ -183,7 +183,7 @@
     <string name="lng_observing">Monitorando alterações na sua biblioteca de músicas…</string>
     <string name="set_lib_tabs">Abas da biblioteca</string>
     <string name="lbl_genre">Gênero</string>
-    <string name="set_playback_mode_artist">Reproduzir do artista</string>
+    <string name="set_play_song_from_artist">Reproduzir do artista</string>
     <string name="set_restore_desc">Restaura a lista de reprodução salva anteriormente (se houver)</string>
     <string name="set_pre_amp_with">Ajuste em faixas com metadados</string>
     <string name="lbl_state_wiped">Lista limpa</string>
@@ -193,7 +193,7 @@
     <string name="lbl_observing">Monitorando a biblioteca de músicas</string>
     <string name="set_round_mode">Cantos arredondados</string>
     <string name="set_action_mode_next">Pular para o próximo</string>
-    <string name="set_playback_mode_album">Reproduzir do álbum</string>
+    <string name="set_play_song_from_album">Reproduzir do álbum</string>
     <string name="set_save_state">Salvar lista de reprodução</string>
     <string name="set_wipe_state">Limpar lista de reprodução</string>
     <string name="set_restore_state">Restaurar lista de reprodução</string>
@@ -211,8 +211,8 @@
     <string name="lbl_single_remix">Single remix</string>
     <string name="set_content">Conteúdo</string>
     <string name="lbl_track">Faixa</string>
-    <string name="set_library_song_playback_mode">Ao tocar da biblioteca</string>
-    <string name="set_detail_song_playback_mode">Ao tocar a partir dos detalhes do item</string>
+    <string name="set_play_in_list_with">Ao tocar da biblioteca</string>
+    <string name="set_play_in_parent_with">Ao tocar a partir dos detalhes do item</string>
     <string name="lbl_mixtapes">Mixtapes</string>
     <string name="lbl_mixtape">Mixtape</string>
     <string name="lbl_remix_group">Remixes</string>
@@ -259,7 +259,7 @@
     <string name="lbl_wiki">Wiki</string>
     <string name="lbl_reset">Redefinir</string>
     <string name="fmt_list">%1$s, %2$s</string>
-    <string name="set_playback_mode_genre">Tocar a partir do gênero</string>
+    <string name="set_play_song_from_genre">Tocar a partir do gênero</string>
     <string name="set_audio_desc">Configure o comportamento de som e reprodução</string>
     <string name="set_images">Imagens</string>
     <string name="set_ui_desc">Mude o tema e as cores do aplicativo</string>

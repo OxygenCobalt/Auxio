@@ -23,9 +23,9 @@
     <string name="lbl_playback">Ora in riproduzione</string>
     <string name="lbl_play">Riproduci</string>
     <string name="lbl_shuffle">Mescola</string>
-    <string name="set_playback_mode_songs">Riproduci da tutte le canzoni</string>
-    <string name="set_playback_mode_album">Riproduci dall\'album</string>
-    <string name="set_playback_mode_artist">Riproduci dall\'artista</string>
+    <string name="set_play_song_from_all">Riproduci da tutte le canzoni</string>
+    <string name="set_play_song_from_album">Riproduci dall\'album</string>
+    <string name="set_play_song_from_artist">Riproduci dall\'artista</string>
     <string name="lbl_queue">Coda</string>
     <string name="lbl_play_next">Riproduci successivo</string>
     <string name="lbl_queue_add">Accoda</string>
@@ -66,7 +66,7 @@
     <string name="set_replay_gain_mode_album">Preferisci album</string>
     <string name="set_replay_gain_mode_dynamic">Preferisci l\'album se in riproduzione</string>
     <string name="set_personalize">Comportamento</string>
-    <string name="set_library_song_playback_mode">Quando in riproduzione dalla libreria</string>
+    <string name="set_play_in_list_with">Quando in riproduzione dalla libreria</string>
     <string name="set_keep_shuffle">Mantieni mescolamento</string>
     <string name="set_keep_shuffle_desc">Mantiene il mescolamento anche se una nuova canzone è selezionata</string>
     <string name="set_rewind_prev">Riavvolgi prima di saltare indietro</string>
@@ -154,14 +154,14 @@
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="fmt_indexing">Caricamento libreria musicale… (%1$d/%2$d)</string>
-    <string name="set_detail_song_playback_mode">Quando in riproduzione dai dettagli dell\'elemento</string>
+    <string name="set_play_in_parent_with">Quando in riproduzione dai dettagli dell\'elemento</string>
     <string name="set_pre_amp_warning">Attenzione: impostare valore positivi alti può provocare distorsioni su alcune tracce.</string>
     <string name="set_pre_amp_without">Regolazione senza tag</string>
     <string name="lbl_shuffle_shortcut_short">Mescola</string>
     <string name="lbl_shuffle_shortcut_long">Mescola tutto</string>
     <string name="set_pre_amp_with">Regolazione con tag</string>
     <string name="set_pre_amp_desc">Il pre-amp è applicato alla regolazione esistente durante la riproduzione</string>
-    <string name="set_playback_mode_none">Riproduci dall\'elemento mostrato</string>
+    <string name="set_play_song_none">Riproduci dall\'elemento mostrato</string>
     <string name="set_dirs_desc">Gestisci le cartelle da dove caricare la musica</string>
     <string name="set_dirs">Cartelle musica</string>
     <string name="set_dirs_mode_exclude">Escludi</string>
@@ -258,7 +258,7 @@
     <string name="lbl_shuffle_selected">Mescola selezionati</string>
     <string name="lbl_play_selected">Riproduci selezionati</string>
     <string name="fmt_selected">%d selezionati</string>
-    <string name="set_playback_mode_genre">Riproduci dal genere</string>
+    <string name="set_play_song_from_genre">Riproduci dal genere</string>
     <string name="lbl_wiki">Wiki</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="lbl_reset">Ripristina</string>

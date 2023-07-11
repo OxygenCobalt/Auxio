@@ -54,7 +54,7 @@
     <string name="set_accent">カラースキーム</string>
     <string name="set_black_mode">黒基調</string>
     <string name="set_restore_state">再生状態を復元</string>
-    <string name="set_playback_mode_none">表示されたアイテムから再生</string>
+    <string name="set_play_song_none">表示されたアイテムから再生</string>
     <string name="desc_exit">再生停止</string>
     <string name="clr_red">赤</string>
     <string name="lbl_file_name">ファイル名</string>
@@ -151,11 +151,11 @@
     <string name="set_headset_autoplay_desc">ヘッドセット接続時に常時再生開始 (動作しない機種あり)</string>
     <string name="set_headset_autoplay">ヘッドセット自動再生</string>
     <string name="set_replay_gain">リプレイゲイン</string>
-    <string name="set_playback_mode_songs">すべての曲から再生</string>
-    <string name="set_playback_mode_album">アルバムから再生</string>
-    <string name="set_playback_mode_artist">アーティストから再生</string>
-    <string name="set_library_song_playback_mode">ライブラリからの再生時</string>
-    <string name="set_detail_song_playback_mode">アイテム詳細からの再生時</string>
+    <string name="set_play_song_from_all">すべての曲から再生</string>
+    <string name="set_play_song_from_album">アルバムから再生</string>
+    <string name="set_play_song_from_artist">アーティストから再生</string>
+    <string name="set_play_in_list_with">ライブラリからの再生時</string>
+    <string name="set_play_in_parent_with">アイテム詳細からの再生時</string>
     <string name="set_exclude_non_music">音楽以外を除外</string>
     <string name="set_dirs_mode_include_desc">ここに追加したフォルダから<b>のみ</b>音楽が読み込まれます。</string>
     <string name="set_restore_desc">前回保存された再生状態がある場合、再生状態を復元</string>
@@ -227,7 +227,7 @@
     </plurals>
     <string name="set_action_mode_next">次ヘスキップ</string>
     <string name="set_action_mode_repeat">繰り返しモード</string>
-    <string name="set_playback_mode_genre">ジャンルから再生</string>
+    <string name="set_play_song_from_genre">ジャンルから再生</string>
     <string name="set_keep_shuffle_desc">新しい曲の再生時にシャフルを保持</string>
     <string name="clr_dynamic">ダイナミック</string>
     <string name="err_did_not_wipe">再生状態を解除できません</string>

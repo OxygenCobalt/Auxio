@@ -208,13 +208,14 @@
     <string name="set_action_mode_next">Skip to next</string>
     <string name="set_action_mode_repeat">Repeat mode</string>
     <string name="set_behavior">Behavior</string>
-    <string name="set_library_song_playback_mode">When playing from the library</string>
-    <string name="set_detail_song_playback_mode">When playing from item details</string>
-    <string name="set_playback_mode_none">Play from shown item</string>
-    <string name="set_playback_mode_songs">Play from all songs</string>
-    <string name="set_playback_mode_album">Play from album</string>
-    <string name="set_playback_mode_artist">Play from artist</string>
-    <string name="set_playback_mode_genre">Play from genre</string>
+    <string name="set_play_in_list_with">When playing from the library</string>
+    <string name="set_play_in_parent_with">When playing from item details</string>
+    <string name="set_play_song_none">Play from shown item</string>
+    <string name="set_play_song_from_all">Play from all songs</string>
+    <string name="set_play_song_from_album">Play from album</string>
+    <string name="set_play_song_from_artist">Play from artist</string>
+    <string name="set_play_song_from_genre">Play from genre</string>
+    <string name="set_play_song_by_itself">Play song by itself</string>
     <string name="set_keep_shuffle">Remember shuffle</string>
     <string name="set_keep_shuffle_desc">Keep shuffle on when playing a new song</string>
 

@@ -22,18 +22,13 @@ import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.music.Playlist
 
 sealed interface PlaySong {
     val intCode: Int
 
-    object ByItself : PlaySong {
-        override val intCode = IntegerTable.PLAY_SONG_ITSELF
-    }
-
     object FromAll : PlaySong {
-        override val intCode = IntegerTable.PLAY_SONG_ITSELF
+        override val intCode = IntegerTable.PLAY_SONG_FROM_ALL
     }
 
     object FromAlbum : PlaySong {
@@ -52,19 +47,14 @@ sealed interface PlaySong {
         override val intCode = IntegerTable.PLAY_SONG_FROM_PLAYLIST
     }
 
-    companion object {
-        fun fromPlaybackModeTemporary(playbackMode: MusicMode) =
-            when (playbackMode) {
-                MusicMode.SONGS -> FromAll
-                MusicMode.ALBUMS -> FromAlbum
-                MusicMode.ARTISTS -> FromArtist(null)
-                MusicMode.GENRES -> FromGenre(null)
-                MusicMode.PLAYLISTS -> throw IllegalStateException()
-            }
+    object ByItself : PlaySong {
+        override val intCode = IntegerTable.PLAY_SONG_BY_ITSELF
+    }
 
+    companion object {
         fun fromIntCode(intCode: Int, inner: Music?): PlaySong? =
             when (intCode) {
-                IntegerTable.PLAY_SONG_ITSELF -> ByItself
+                IntegerTable.PLAY_SONG_BY_ITSELF -> ByItself
                 IntegerTable.PLAY_SONG_FROM_ALBUM -> FromAlbum
                 IntegerTable.PLAY_SONG_FROM_ARTIST ->
                     if (inner is Artist?) {

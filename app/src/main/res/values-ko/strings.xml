@@ -27,9 +27,9 @@
     <string name="lbl_playback">지금 재생 중</string>
     <string name="lbl_play">재생</string>
     <string name="lbl_shuffle">셔플</string>
-    <string name="set_playback_mode_songs">모든 곡에서 재생</string>
-    <string name="set_playback_mode_album">앨범에서 재생</string>
-    <string name="set_playback_mode_artist">아티스트에서 재생</string>
+    <string name="set_play_song_from_all">모든 곡에서 재생</string>
+    <string name="set_play_song_from_album">앨범에서 재생</string>
+    <string name="set_play_song_from_artist">아티스트에서 재생</string>
     <string name="lbl_queue">대기열</string>
     <string name="lbl_play_next">다음 곡 재생</string>
     <string name="lbl_queue_add">대기열에 추가</string>
@@ -78,7 +78,7 @@
     <string name="set_pre_amp_without">태그 없이 조정</string>
     <string name="set_pre_amp_warning">주의: 프리앰프를 높게 설정하면 일부 소리 트랙이 왜곡될 수 있습니다.</string>
     <string name="set_personalize">동작</string>
-    <string name="set_library_song_playback_mode">라이브러리에서 재생할 때</string>
+    <string name="set_play_in_list_with">라이브러리에서 재생할 때</string>
     <string name="set_keep_shuffle">무작위 재생 기억</string>
     <string name="set_keep_shuffle_desc">새로운 곡을 재생할 때 무작위 재생 유지</string>
     <string name="set_rewind_prev">이전 곡으로 가기 전에 되감기</string>
@@ -178,7 +178,7 @@
     <string name="lbl_mixes">DJ믹스</string>
     <string name="lbl_equalizer">이퀄라이저</string>
     <string name="lbl_shuffle_shortcut_short">셔플</string>
-    <string name="set_playback_mode_none">표시된 항목에서 재생</string>
+    <string name="set_play_song_none">표시된 항목에서 재생</string>
     <string name="lng_indexing">음악 라이브러리를 불러오는 중…</string>
     <string name="set_wipe_state">재생 상태 지우기</string>
     <string name="set_restore_state">재생 상태 복원</string>
@@ -238,7 +238,7 @@
     <string name="fmt_indexing">음악 라이브러리를 불러오는 중… (%1$d/%2$d)</string>
     <string name="lbl_genre">장르</string>
     <string name="set_separators_warning">경고: 이 설정을 사용하면 일부 태그가 여러 값을 갖는 것으로 잘못 해석될 수 있습니다. 구분자로 읽히지 않도록 하려면 해당 구분자 앞에 백슬래시 (\\)를 붙입니다.</string>
-    <string name="set_detail_song_playback_mode">항목 세부 정보에서 재생할 때</string>
+    <string name="set_play_in_parent_with">항목 세부 정보에서 재생할 때</string>
     <string name="lng_observing">음악 라이브러리의 변경사항을 추적하는 중…</string>
     <string name="set_action_mode_next">다음 곡으로 건너뛰기</string>
     <string name="set_exclude_non_music_desc">팟캐스트와 같이 음악이 아닌 소리 파일 무시</string>
@@ -256,7 +256,7 @@
     <string name="fmt_selected">%d 선택됨</string>
     <string name="lbl_reset">재설정</string>
     <string name="lbl_wiki">위키</string>
-    <string name="set_playback_mode_genre">장르에서 재생</string>
+    <string name="set_play_song_from_genre">장르에서 재생</string>
     <string name="fmt_list">%1$s, %2$s</string>
     <string name="set_replay_gain">리플레이게인</string>
     <string name="set_audio_desc">사운드 및 재생 동작 구성</string>

@@ -24,7 +24,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.MusicMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
 import org.oxycblt.auxio.settings.Settings
@@ -46,16 +45,13 @@ interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
     val replayGainMode: ReplayGainMode
     /** The current ReplayGain pre-amp configuration. */
     var replayGainPreAmp: ReplayGainPreAmp
+    /** How to play a song from a general list of songs, specified by [PlaySong] */
+    val playInListWith: PlaySong
     /**
-     * What type of MusicParent to play from when a Song is played from a list of other items. Null
-     * if to play from all Songs.
+     * How to play a song from a parent item, specified by [PlaySong]. Null if to delegate to the UI
+     * context.
      */
-    val inListPlaybackMode: MusicMode
-    /**
-     * What type of MusicParent to play from when a Song is played from within an item (ex. like in
-     * the detail view). Null if to play from the item it was played in.
-     */
-    val inParentPlaybackMode: MusicMode?
+    val inParentPlaybackMode: PlaySong?
     /** Whether to keep shuffle on when playing a new Song. */
     val keepShuffle: Boolean
     /** Whether to rewind when the skip previous button is pressed before skipping back. */
@@ -75,18 +71,20 @@ interface PlaybackSettings : Settings<PlaybackSettings.Listener> {
 
 class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Context) :
     Settings.Impl<PlaybackSettings.Listener>(context), PlaybackSettings {
-    override val inListPlaybackMode: MusicMode
+    override val playInListWith: PlaySong
         get() =
-            MusicMode.fromIntCode(
+            PlaySong.fromIntCode(
                 sharedPreferences.getInt(
-                    getString(R.string.set_key_in_list_playback_mode), Int.MIN_VALUE))
-                ?: MusicMode.SONGS
+                    getString(R.string.set_key_play_in_list_with), Int.MIN_VALUE),
+                null)
+                ?: PlaySong.FromAll
 
-    override val inParentPlaybackMode: MusicMode?
+    override val inParentPlaybackMode: PlaySong?
         get() =
-            MusicMode.fromIntCode(
+            PlaySong.fromIntCode(
                 sharedPreferences.getInt(
-                    getString(R.string.set_key_in_parent_playback_mode), Int.MIN_VALUE))
+                    getString(R.string.set_key_play_in_list_with), Int.MIN_VALUE),
+                null)
 
     override val barAction: ActionMode
         get() =
@@ -132,65 +130,44 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_repeat_pause), false)
 
     override fun migrate() {
-        // "Use alternate notification action" was converted to an ActionMode setting in 3.0.0.
-        if (sharedPreferences.contains(OLD_KEY_ALT_NOTIF_ACTION)) {
-            logD("Migrating $OLD_KEY_ALT_NOTIF_ACTION")
-
-            val mode =
-                if (sharedPreferences.getBoolean(OLD_KEY_ALT_NOTIF_ACTION, false)) {
-                    ActionMode.SHUFFLE
-                } else {
-                    ActionMode.REPEAT
-                }
-
-            sharedPreferences.edit {
-                putInt(getString(R.string.set_key_notif_action), mode.intCode)
-                remove(OLD_KEY_ALT_NOTIF_ACTION)
-                apply()
-            }
-        }
-
-        // PlaybackMode was converted to MusicMode in 3.0.0
-
-        fun Int.migratePlaybackMode() =
+        // MusicMode was converted to PlaySong in 3.2.0
+        fun Int.migrateMusicMode() =
             when (this) {
-                // Convert PlaybackMode into MusicMode
-                IntegerTable.PLAYBACK_MODE_ALL_SONGS -> MusicMode.SONGS
-                IntegerTable.PLAYBACK_MODE_IN_ARTIST -> MusicMode.ARTISTS
-                IntegerTable.PLAYBACK_MODE_IN_ALBUM -> MusicMode.ALBUMS
-                IntegerTable.PLAYBACK_MODE_IN_GENRE -> MusicMode.GENRES
+                IntegerTable.MUSIC_MODE_SONGS -> PlaySong.FromAll
+                IntegerTable.MUSIC_MODE_ALBUMS -> PlaySong.FromAlbum
+                IntegerTable.MUSIC_MODE_ARTISTS -> PlaySong.FromArtist(null)
+                IntegerTable.MUSIC_MODE_GENRES -> PlaySong.FromGenre(null)
                 else -> null
             }
 
-        if (sharedPreferences.contains(OLD_KEY_LIB_PLAYBACK_MODE)) {
-            logD("Migrating $OLD_KEY_LIB_PLAYBACK_MODE")
+        if (sharedPreferences.contains(OLD_KEY_LIB_MUSIC_PLAYBACK_MODE)) {
+            logD("Migrating $OLD_KEY_LIB_MUSIC_PLAYBACK_MODE")
 
             val mode =
                 sharedPreferences
-                    .getInt(OLD_KEY_LIB_PLAYBACK_MODE, IntegerTable.PLAYBACK_MODE_ALL_SONGS)
-                    .migratePlaybackMode()
-                    ?: MusicMode.SONGS
+                    .getInt(OLD_KEY_LIB_MUSIC_PLAYBACK_MODE, Int.MIN_VALUE)
+                    .migrateMusicMode()
 
             sharedPreferences.edit {
-                putInt(getString(R.string.set_key_in_list_playback_mode), mode.intCode)
-                remove(OLD_KEY_LIB_PLAYBACK_MODE)
+                putInt(
+                    getString(R.string.set_key_play_in_list_with), mode?.intCode ?: Int.MIN_VALUE)
+                remove(OLD_KEY_LIB_MUSIC_PLAYBACK_MODE)
                 apply()
             }
         }
 
-        if (sharedPreferences.contains(OLD_KEY_DETAIL_PLAYBACK_MODE)) {
-            logD("Migrating $OLD_KEY_DETAIL_PLAYBACK_MODE")
+        if (sharedPreferences.contains(OLD_KEY_DETAIL_MUSIC_PLAYBACK_MODE)) {
+            logD("Migrating $OLD_KEY_DETAIL_MUSIC_PLAYBACK_MODE")
 
             val mode =
                 sharedPreferences
-                    .getInt(OLD_KEY_DETAIL_PLAYBACK_MODE, Int.MIN_VALUE)
-                    .migratePlaybackMode()
+                    .getInt(OLD_KEY_DETAIL_MUSIC_PLAYBACK_MODE, Int.MIN_VALUE)
+                    .migrateMusicMode()
 
             sharedPreferences.edit {
                 putInt(
-                    getString(R.string.set_key_in_parent_playback_mode),
-                    mode?.intCode ?: Int.MIN_VALUE)
-                remove(OLD_KEY_DETAIL_PLAYBACK_MODE)
+                    getString(R.string.set_key_play_in_parent_with), mode?.intCode ?: Int.MIN_VALUE)
+                remove(OLD_KEY_DETAIL_MUSIC_PLAYBACK_MODE)
                 apply()
             }
         }
@@ -216,8 +193,7 @@ class PlaybackSettingsImpl @Inject constructor(@ApplicationContext context: Cont
     }
 
     private companion object {
-        const val OLD_KEY_ALT_NOTIF_ACTION = "KEY_ALT_NOTIF_ACTION"
-        const val OLD_KEY_LIB_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE2"
-        const val OLD_KEY_DETAIL_PLAYBACK_MODE = "auxio_detail_song_play_mode"
+        const val OLD_KEY_LIB_MUSIC_PLAYBACK_MODE = "auxio_library_playback_mode"
+        const val OLD_KEY_DETAIL_MUSIC_PLAYBACK_MODE = "auxio_detail_playback_mode"
     }
 }

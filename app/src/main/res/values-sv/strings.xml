@@ -124,8 +124,8 @@
     <string name="set_action_mode_next">Hoppa till nästa</string>
     <string name="set_action_mode_repeat">Upprepningsmodus</string>
     <string name="set_behavior">Beteende</string>
-    <string name="set_detail_song_playback_mode">När spelar från artikeluppgifter</string>
-    <string name="set_playback_mode_genre">Spela från genre</string>
+    <string name="set_play_in_parent_with">När spelar från artikeluppgifter</string>
+    <string name="set_play_song_from_genre">Spela från genre</string>
     <string name="set_keep_shuffle">Komma ihåg blandningsstatus</string>
     <string name="set_keep_shuffle_desc">Behåll blandning på när spelar en ny låt</string>
     <string name="set_content">Kontent</string>
@@ -141,11 +141,11 @@
     <string name="set_hide_collaborators">Dölj medarbetare</string>
     <string name="set_display">Skärm</string>
     <string name="set_lib_tabs">Bibliotekflikar</string>
-    <string name="set_library_song_playback_mode">När spelar från biblioteket</string>
-    <string name="set_playback_mode_none">Spela från visad artikel</string>
-    <string name="set_playback_mode_songs">Spela från alla låtar</string>
-    <string name="set_playback_mode_artist">Spela från konstnär</string>
-    <string name="set_playback_mode_album">Spela från album</string>
+    <string name="set_play_in_list_with">När spelar från biblioteket</string>
+    <string name="set_play_song_none">Spela från visad artikel</string>
+    <string name="set_play_song_from_all">Spela från alla låtar</string>
+    <string name="set_play_song_from_artist">Spela från konstnär</string>
+    <string name="set_play_song_from_album">Spela från album</string>
     <string name="set_separators_semicolon">Semikolon (;)</string>
     <string name="set_observing_desc">Ladda om musikbiblioteket när det ändras (kräver permanent meddelande)</string>
     <string name="set_separators_comma">Komma (,)</string>

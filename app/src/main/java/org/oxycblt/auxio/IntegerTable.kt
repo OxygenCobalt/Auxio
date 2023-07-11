@@ -65,14 +65,14 @@ object IntegerTable {
     const val REPEAT_MODE_ALL = 0xA101
     /** RepeatMode.TRACK */
     const val REPEAT_MODE_TRACK = 0xA102
-    /** PlaybackMode.IN_GENRE */
-    const val PLAYBACK_MODE_IN_GENRE = 0xA103
-    /** PlaybackMode.IN_ARTIST */
-    const val PLAYBACK_MODE_IN_ARTIST = 0xA104
-    /** PlaybackMode.IN_ALBUM */
-    const val PLAYBACK_MODE_IN_ALBUM = 0xA105
-    /** PlaybackMode.ALL_SONGS */
-    const val PLAYBACK_MODE_ALL_SONGS = 0xA106
+    //    /** PlaybackMode.IN_GENRE (No longer used but still reserved) */
+    //    const val PLAYBACK_MODE_IN_GENRE = 0xA103
+    //    /** PlaybackMode.IN_ARTIST (No longer used but still reserved) */
+    //    const val PLAYBACK_MODE_IN_ARTIST = 0xA104
+    //    /** PlaybackMode.IN_ALBUM (No longer used but still reserved) */
+    //    const val PLAYBACK_MODE_IN_ALBUM = 0xA105
+    //    /** PlaybackMode.ALL_SONGS (No longer used but still reserved) */
+    //    const val PLAYBACK_MODE_ALL_SONGS = 0xA106
     /** MusicMode.SONGS */
     const val MUSIC_MODE_SONGS = 0xA10B
     /** MusicMode.ALBUMS */
@@ -121,8 +121,8 @@ object IntegerTable {
     const val COVER_MODE_MEDIA_STORE = 0xA11D
     /** CoverMode.Quality */
     const val COVER_MODE_QUALITY = 0xA11E
-    /** PlaySong.Itself */
-    const val PLAY_SONG_ITSELF = 0xA11F
+    /** PlaySong.ByItself */
+    const val PLAY_SONG_BY_ITSELF = 0xA11F
     /** PlaySong.FromAll */
     const val PLAY_SONG_FROM_ALL = 0xA120
     /** PlaySong.FromAlbum */

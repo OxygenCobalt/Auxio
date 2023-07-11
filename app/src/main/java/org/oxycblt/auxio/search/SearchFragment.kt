@@ -174,7 +174,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
 
     override fun onRealClick(item: Music) {
         when (item) {
-            is Song -> playbackModel.play(item, searchModel.playbackMode)
+            is Song -> playbackModel.play(item, searchModel.playWith)
             is Album -> detailModel.showAlbum(item)
             is Artist -> detailModel.showArtist(item)
             is Genre -> detailModel.showGenre(item)

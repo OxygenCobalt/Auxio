@@ -34,6 +34,7 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaySong
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
@@ -102,9 +103,9 @@ constructor(
     val playlistsInstructions: Event<UpdateInstructions>
         get() = _playlistsInstructions
 
-    /** The [MusicMode] to use when playing a [Song] from the UI. */
-    val playbackMode: MusicMode
-        get() = playbackSettings.inListPlaybackMode
+    /** The [PlaySong] instructions to use when playing a [Song]. */
+    val playWith
+        get() = playbackSettings.playInListWith
 
     /**
      * A list of [MusicMode] corresponding to the current [Tab] configuration, excluding invisible

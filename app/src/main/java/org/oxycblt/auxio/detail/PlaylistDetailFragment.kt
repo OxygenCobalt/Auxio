@@ -229,7 +229,7 @@ class PlaylistDetailFragment :
     }
 
     override fun onRealClick(item: Song) {
-        playbackModel.playFromPlaylist(item, unlikelyToBeNull(detailModel.currentPlaylist.value))
+        playbackModel.play(item, detailModel.playInPlaylistWith)
     }
 
     override fun onPickUp(viewHolder: RecyclerView.ViewHolder) {
