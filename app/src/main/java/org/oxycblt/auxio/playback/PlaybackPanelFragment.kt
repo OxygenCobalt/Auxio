@@ -107,6 +107,8 @@ class PlaybackPanelFragment :
         binding.playbackCoverPager.apply {
             adapter = coverAdapter
             registerOnPageChangeCallback(OnCoverChangedCallback(queueModel))
+            val recycler = VP_RECYCLER_FIELD.get(this@apply) as RecyclerView
+            recycler.isNestedScrollingEnabled = false
         }
 
         // Set up marquee on song information, alongside click handlers that navigate to each
@@ -306,5 +308,9 @@ class PlaybackPanelFragment :
                 viewModel.goto(targetPosition)
             }
         }
+    }
+    
+    private companion object {
+        val VP_RECYCLER_FIELD: Field by lazyReflectedField(ViewPager2::class, "mRecyclerView")
     }
 }
