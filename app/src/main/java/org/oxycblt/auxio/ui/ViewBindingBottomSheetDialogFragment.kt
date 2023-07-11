@@ -18,13 +18,16 @@
  
 package org.oxycblt.auxio.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
+import androidx.annotation.StyleRes
 import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -39,13 +42,8 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
     BottomSheetDialogFragment() {
     private var _binding: VB? = null
 
-    /**
-     * Configure the [AlertDialog.Builder] during [onCreateDialog].
-     *
-     * @param builder The [AlertDialog.Builder] to configure.
-     * @see onCreateDialog
-     */
-    protected open fun onConfigDialog(builder: AlertDialog.Builder) {}
+    override fun onCreateDialog(savedInstanceState: Bundle?): BottomSheetDialog =
+        RealAnimationBottomSheetDialog(requireContext(), theme)
 
     /**
      * Inflate the [ViewBinding] during [onCreateView].
@@ -107,5 +105,34 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
         // Clear binding
         _binding = null
         logD("Fragment destroyed")
+    }
+
+    private inner class RealAnimationBottomSheetDialog
+    @JvmOverloads
+    constructor(context: Context, @StyleRes theme: Int = 0) : BottomSheetDialog(context, theme) {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            // The dialog already supplies an implementation for dismissing with the normal
+            // bottom sheet sliding, which is odd. It works well save the scrim not actually
+            // activating until the sheet is out of view, but that is tolerated for now.
+            // TODO: Replace with custom impl that runs the scrim animation and bottom sheet
+            //  animation in parallel. Might just switch back to the stock animation if I can
+            //  eliminate the opacity.
+            dismissWithAnimation = true
+        }
+
+        override fun onStart() {
+            super.onStart()
+            // We have to manually trigger a hidden -> expanded transition when the dialog
+            // is initially opened. Hence, we set the state to hidden now and then as soon
+            // as we're drawing updating it to expanded.
+            behavior.state = BottomSheetBehavior.STATE_HIDDEN
+            requireView().post { behavior.state = BottomSheetBehavior.STATE_EXPANDED }
+        }
+
+        override fun dismiss() {
+            super.dismiss()
+            behavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
     }
 }
