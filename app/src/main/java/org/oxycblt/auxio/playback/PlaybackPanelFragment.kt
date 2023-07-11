@@ -49,10 +49,12 @@ import org.oxycblt.auxio.playback.ui.StyledSeekBar
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
+import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.share
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
+import java.lang.reflect.Field
 
 /**
  * A [ViewBindingFragment] more information about the currently playing song, alongside all
