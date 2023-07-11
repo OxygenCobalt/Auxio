@@ -29,6 +29,7 @@ import org.oxycblt.auxio.util.logW
 
 /**
  * Manages the state information for [MenuDialogFragment] implementations.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @HiltViewModel
