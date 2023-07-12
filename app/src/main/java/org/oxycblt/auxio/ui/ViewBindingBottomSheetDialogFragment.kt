@@ -36,6 +36,9 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A lifecycle-aware [DialogFragment] that automatically manages the [ViewBinding] lifecycle as a
  * [BottomSheetDialogFragment].
  *
+ * TODO: Debug why menu RecyclerView believes it can scroll more than it actually can in
+ *  landscape.
+ *
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
@@ -43,7 +46,7 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
     private var _binding: VB? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): BottomSheetDialog =
-        RealAnimationBottomSheetDialog(requireContext(), theme)
+        TweakedBottomSheetDialog(requireContext(), theme)
 
     /**
      * Inflate the [ViewBinding] during [onCreateView].
@@ -107,32 +110,21 @@ abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
         logD("Fragment destroyed")
     }
 
-    private inner class RealAnimationBottomSheetDialog
+    private inner class TweakedBottomSheetDialog
     @JvmOverloads
     constructor(context: Context, @StyleRes theme: Int = 0) : BottomSheetDialog(context, theme) {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            // The dialog already supplies an implementation for dismissing with the normal
-            // bottom sheet sliding, which is odd. It works well save the scrim not actually
-            // activating until the sheet is out of view, but that is tolerated for now.
-            // TODO: Replace with custom impl that runs the scrim animation and bottom sheet
-            //  animation in parallel. Might just switch back to the stock animation if I can
-            //  eliminate the opacity.
-            dismissWithAnimation = true
+            // Collapsed state is bugged in phone landscape mode and shows only 10% of the dialog.
+            // Just disable it and go directly from expanded -> hidden.
+            behavior.skipCollapsed = true
         }
 
         override fun onStart() {
             super.onStart()
-            // We have to manually trigger a hidden -> expanded transition when the dialog
-            // is initially opened. Hence, we set the state to hidden now and then as soon
-            // as we're drawing updating it to expanded.
-            behavior.state = BottomSheetBehavior.STATE_HIDDEN
-            requireView().post { behavior.state = BottomSheetBehavior.STATE_EXPANDED }
-        }
-
-        override fun dismiss() {
-            super.dismiss()
-            behavior.state = BottomSheetBehavior.STATE_HIDDEN
+            // Manually trigger an expanded transition to make window insets actually apply to
+            // the dialog on the first layout pass. I don't know why this works.
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
 }
