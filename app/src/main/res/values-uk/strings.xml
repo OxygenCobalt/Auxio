@@ -303,4 +303,5 @@
     <string name="set_square_covers">Примусові квадратні обкладинки</string>
     <string name="lbl_song">Пісня</string>
     <string name="lbl_parent_detail">Переглянути</string>
+    <string name="set_play_song_by_itself">Відтворити трек окремо</string>
 </resources>
