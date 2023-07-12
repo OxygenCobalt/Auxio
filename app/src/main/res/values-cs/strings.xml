@@ -308,4 +308,5 @@
     <string name="set_square_covers_desc">Oříznout všechny covery alb na poměr stran 1:1</string>
     <string name="lbl_song">Skladba</string>
     <string name="lbl_parent_detail">Zobrazit</string>
+    <string name="set_play_song_by_itself">Přehrát skladbu samostatně</string>
 </resources>
