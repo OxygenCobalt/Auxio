@@ -296,4 +296,6 @@
     <string name="set_square_covers">Выкарыстоўваць квадратныя вокладкі альбомаў</string>
     <string name="set_square_covers_desc">Абрэзаць усе вокладкі альбомаў да суадносін бакоў 1:1</string>
     <string name="lbl_song">Песня</string>
+    <string name="set_play_song_by_itself">Прайграць песню самастойна</string>
+    <string name="lbl_parent_detail">Выгляд</string>
 </resources>
