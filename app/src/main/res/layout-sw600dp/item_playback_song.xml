@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <org.oxycblt.auxio.image.CoverView
+        android:id="@+id/playback_cover"
+        style="@style/Widget.Auxio.Image.Full"
+        android:layout_margin="@dimen/spacing_medium"
+        app:enablePlaybackIndicator="false"
+        app:enableSelectionBadge="false"
+        app:layout_constraintBottom_toTopOf="@id/playback_song"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/playback_song"
+        style="@style/Widget.Auxio.TextView.Primary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_medium"
+        android:layout_marginEnd="@dimen/spacing_medium"
+        app:layout_constraintBottom_toTopOf="@+id/playback_artist"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Song Name" />
+
+    <TextView
+        android:id="@+id/playback_artist"
+        style="@style/Widget.Auxio.TextView.Secondary.Marquee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_medium"
+        android:layout_marginEnd="@dimen/spacing_medium"
+        app:layout_constraintBottom_toTopOf="@+id/playback_album"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Artist Name" />
+
+    <TextView
+        android:id="@+id/playback_album"
+        style="@style/Widget.Auxio.TextView.Secondary.Marquee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_medium"
+        android:layout_marginEnd="@dimen/spacing_medium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Album Name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
 package org.oxycblt.auxio.playback
 
 import android.content.ActivityNotFoundException
@@ -33,7 +33,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -41,8 +40,8 @@ import org.oxycblt.auxio.detail.Show
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.resolveNames
-import org.oxycblt.auxio.playback.carousel.CoverCarouselAdapter
+import org.oxycblt.auxio.playback.pager.PlaybackPageListener
+import org.oxycblt.auxio.playback.pager.PlaybackPagerAdapter
 import org.oxycblt.auxio.playback.queue.QueueViewModel
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.ui.StyledSeekBar
@@ -55,6 +54,7 @@ import org.oxycblt.auxio.util.share
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import java.lang.reflect.Field
+import kotlin.math.abs
 
 /**
  * A [ViewBindingFragment] more information about the currently playing song, alongside all
@@ -68,13 +68,14 @@ import java.lang.reflect.Field
 class PlaybackPanelFragment :
     ViewBindingFragment<FragmentPlaybackPanelBinding>(),
     Toolbar.OnMenuItemClickListener,
-    StyledSeekBar.Listener {
+    StyledSeekBar.Listener,
+    PlaybackPageListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val queueModel: QueueViewModel by activityViewModels()
     private var equalizerLauncher: ActivityResultLauncher<Intent>? = null
-    private var coverAdapter: CoverCarouselAdapter? = null
+    private var coverAdapter: PlaybackPagerAdapter? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackPanelBinding.inflate(inflater)
@@ -105,32 +106,12 @@ class PlaybackPanelFragment :
         }
 
         // cover carousel adapter
-        coverAdapter = CoverCarouselAdapter()
+        coverAdapter = PlaybackPagerAdapter(this, viewLifecycleOwner)
         binding.playbackCoverPager.apply {
             adapter = coverAdapter
             registerOnPageChangeCallback(OnCoverChangedCallback(queueModel))
             val recycler = VP_RECYCLER_FIELD.get(this@apply) as RecyclerView
             recycler.isNestedScrollingEnabled = false
-        }
-
-        // Set up marquee on song information, alongside click handlers that navigate to each
-        // respective item.
-        binding.playbackSong.apply {
-            isSelected = true
-            setOnClickListener {
-                playbackModel.song.value?.let {
-                    detailModel.showAlbum(it)
-                    playbackModel.openMain()
-                }
-            }
-        }
-        binding.playbackArtist.apply {
-            isSelected = true
-            setOnClickListener { navigateToCurrentArtist() }
-        }
-        binding.playbackAlbum.apply {
-            isSelected = true
-            setOnClickListener { navigateToCurrentAlbum() }
         }
 
         binding.playbackSeekBar.listener = this
@@ -159,10 +140,6 @@ class PlaybackPanelFragment :
         equalizerLauncher = null
         coverAdapter = null
         binding.playbackToolbar.setOnMenuItemClickListener(null)
-        // Marquee elements leak if they are not disabled when the views are destroyed.
-        binding.playbackSong.isSelected = false
-        binding.playbackArtist.isSelected = false
-        binding.playbackAlbum.isSelected = false
     }
 
     override fun onMenuItemClick(item: MenuItem) =
@@ -235,12 +212,7 @@ class PlaybackPanelFragment :
         }
 
         val binding = requireBinding()
-        val context = requireContext()
         logD("Updating song display: $song")
-        //        binding.playbackCover.bind(song)
-        binding.playbackSong.text = song.name.resolve(context)
-        binding.playbackArtist.text = song.artists.resolveNames(context)
-        binding.playbackAlbum.text = song.album.name.resolve(context)
         binding.playbackSeekBar.durationDs = song.durationMs.msToDs()
     }
 
@@ -280,15 +252,23 @@ class PlaybackPanelFragment :
             is Show.AlbumArtistDecision,
             is Show.GenreDetails,
             is Show.PlaylistDetails,
-            null -> {}
+            null -> {
+            }
         }
     }
 
-    private fun navigateToCurrentArtist() {
+    override fun navigateToCurrentSong() {
+        playbackModel.song.value?.let {
+            detailModel.showAlbum(it)
+            playbackModel.openMain()
+        }
+    }
+
+    override fun navigateToCurrentArtist() {
         playbackModel.song.value?.let(detailModel::showArtist)
     }
 
-    private fun navigateToCurrentAlbum() {
+    override fun navigateToCurrentAlbum() {
         playbackModel.song.value?.let { detailModel.showAlbum(it.album) }
     }
 
@@ -306,12 +286,13 @@ class PlaybackPanelFragment :
             super.onPageScrollStateChanged(state)
             if (state == ViewPager2.SCROLL_STATE_IDLE &&
                 targetPosition != RecyclerView.NO_POSITION &&
-                targetPosition != viewModel.index.value) {
+                targetPosition != viewModel.index.value
+            ) {
                 viewModel.goto(targetPosition)
             }
         }
     }
-    
+
     private companion object {
         val VP_RECYCLER_FIELD: Field by lazyReflectedField(ViewPager2::class, "mRecyclerView")
     }
