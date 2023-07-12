@@ -6,13 +6,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:id="@+id/menu_handle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <org.oxycblt.auxio.image.CoverView
         android:id="@+id/menu_cover"
         style="@style/Widget.Auxio.Image.Full"
-        android:layout_marginVertical="@dimen/spacing_medium"
+        android:layout_marginBottom="@dimen/spacing_medium"
         android:layout_marginStart="@dimen/spacing_medium"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/menu_handle" />
 
     <TextView
         android:id="@+id/menu_type"
