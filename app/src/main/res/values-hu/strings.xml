@@ -102,8 +102,8 @@
     <string name="def_track">Nincs hangsáv</string>
     <string name="set_save_desc">Az aktuális lejátszási állapot mentése most</string>
     <string name="def_song_count">Nincs dal</string>
-    <string name="cdc_mp3">MPEG-1 audio</string>
-    <string name="cdc_mp4">MPEG-4 audio</string>
+    <string name="cdc_mp3">MPEG-1 hang</string>
+    <string name="cdc_mp4">MPEG-4 hang</string>
     <string name="desc_genre_image">%s műfaj képe</string>
     <string name="fmt_sample_rate">%d Hz</string>
     <string name="set_separators">Többértékű elválasztók</string>
@@ -222,7 +222,7 @@
     <string name="lbl_state_saved">Állapot mentve</string>
     <string name="desc_exit">Lejátszás megállítása</string>
     <string name="info_app_desc">Egyszerű, praktikus zenelejátszó androidra.</string>
-    <string name="cdc_mka">Matroska audio</string>
+    <string name="cdc_mka">Matroska hang</string>
     <string name="lbl_album">Album</string>
     <string name="lbl_singles">Kislemezek</string>
     <string name="lbl_single">Kislemez</string>
@@ -245,7 +245,7 @@
         <item quantity="one">%d előadó</item>
         <item quantity="other">%d előadó</item>
     </plurals>
-    <string name="lbl_equalizer">Equalizer</string>
+    <string name="lbl_equalizer">Ekvalizer</string>
     <string name="lbl_library_counts">Könyvtár statisztika</string>
     <string name="lng_playlist_renamed">Playlista átnevezve</string>
     <string name="lng_playlist_deleted">Playlista törölve</string>
@@ -256,7 +256,7 @@
     <string name="set_separators_desc">Több címkeértéket jelölő karakterek konfigurálása</string>
     <string name="set_separators_comma">Vessző (,)</string>
     <string name="set_separators_semicolon">Pontosvessző (;)</string>
-    <string name="set_separators_and">És (&amp;)</string>
+    <string name="set_separators_and">És jel (&amp;)</string>
     <string name="set_intelligent_sorting">Intelligens rendezés</string>
     <string name="set_hide_collaborators">Közreműködők elrejtése</string>
     <string name="set_hide_collaborators_desc">Csak az albumon közvetlenül feltüntetett előadók megjelenítése (a jól címkézett könyvtárakban működik a legjobban)</string>
@@ -298,4 +298,5 @@
     <string name="set_square_covers_desc">Az összes albumborító 1:1 arányra vágása</string>
     <string name="lbl_song">Dal</string>
     <string name="lbl_parent_detail">Megnéz</string>
+    <string name="set_play_song_by_itself">Dal lejátszása önmagában</string>
 </resources>
