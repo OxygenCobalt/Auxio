@@ -36,9 +36,6 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A lifecycle-aware [DialogFragment] that automatically manages the [ViewBinding] lifecycle as a
  * [BottomSheetDialogFragment].
  *
- * TODO: Debug why menu RecyclerView believes it can scroll more than it actually can in
- *  landscape.
- *
  * @author Alexander Capehart (OxygenCobalt)
  */
 abstract class ViewBindingBottomSheetDialogFragment<VB : ViewBinding> :
