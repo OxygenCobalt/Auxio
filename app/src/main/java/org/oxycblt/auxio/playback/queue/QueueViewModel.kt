@@ -19,10 +19,14 @@
 package org.oxycblt.auxio.playback.queue
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
@@ -55,6 +59,9 @@ class QueueViewModel @Inject constructor(private val playbackManager: PlaybackSt
     /** The index of the currently playing song in the queue. */
     val index: StateFlow<Int>
         get() = _index
+    /** Size of the current queue */
+    val queueSize: StateFlow<Int> =
+        _queue.map { it.size }.stateIn(viewModelScope, SharingStarted.Lazily, _queue.value.size)
 
     init {
         playbackManager.addListener(this)

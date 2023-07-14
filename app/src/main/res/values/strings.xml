@@ -391,6 +391,8 @@
     Do not use "and" or equivalents.
     -->
     <string name="fmt_list">%1$s, %2$s</string>
+    <!-- As in a label with position and total count -->
+    <string name="fmt_label_with_counter">%1$s (%2$d/%3$d)</string>
 
     <!-- As in an amount of items that are selected -->
     <string name="fmt_selected">%d Selected</string>

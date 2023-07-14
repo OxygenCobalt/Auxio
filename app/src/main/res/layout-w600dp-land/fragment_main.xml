@@ -51,6 +51,7 @@
                 app:layout_constraintStart_toEndOf="@+id/playback_panel_fragment">
 
                 <TextView
+                    android:id="@+id/queue_title"
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
                     android:gravity="center"

@@ -31,12 +31,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
-import com.google.android.material.R as MR
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import com.google.android.material.shape.MaterialShapeDrawable
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.max
-import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.list.ListViewModel
@@ -46,6 +43,7 @@ import org.oxycblt.auxio.playback.OpenPanel
 import org.oxycblt.auxio.playback.PlaybackBottomSheetBehavior
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.queue.QueueBottomSheetBehavior
+import org.oxycblt.auxio.playback.queue.QueueViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
@@ -55,6 +53,9 @@ import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.unlikelyToBeNull
+import kotlin.math.max
+import kotlin.math.min
+import com.google.android.material.R as MR
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and high-level navigation.
@@ -69,6 +70,7 @@ class MainFragment :
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val listModel: ListViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
+    private val queueModel: QueueViewModel by activityViewModels()
     private var sheetBackCallback: SheetBackPressedCallback? = null
     private var detailBackCallback: DetailBackPressedCallback? = null
     private var selectionBackCallback: SelectionBackPressedCallback? = null
@@ -155,6 +157,7 @@ class MainFragment :
         collectImmediately(listModel.selected, selectionBackCallback::invalidateEnabled)
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.openPanel.flow, ::handlePanel)
+        collectImmediately(queueModel.index, queueModel.queueSize, ::updateQueuePosition)
     }
 
     override fun onStart() {
@@ -309,6 +312,15 @@ class MainFragment :
             OpenPanel.QUEUE -> tryOpenQueuePanel()
         }
         playbackModel.openPanel.consume()
+    }
+
+    private fun updateQueuePosition(index: Int, size: Int) {
+        requireBinding().queueTitle.text = getString(
+            R.string.fmt_label_with_counter,
+            getString(R.string.lbl_queue),
+            index + 1,
+            size
+        )
     }
 
     private fun tryOpenPlaybackPanel() {
