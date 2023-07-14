@@ -24,13 +24,13 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.jvm.internal.Intrinsics
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemPlaybackSongBinding
 import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.resolveNames
 import org.oxycblt.auxio.util.inflater
-import kotlin.jvm.internal.Intrinsics
 
 class PlaybackPagerAdapter(
     private val listener: PlaybackPageListener,

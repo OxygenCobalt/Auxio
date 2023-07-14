@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback
 
 import android.content.ActivityNotFoundException
@@ -33,6 +33,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.reflect.Field
+import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -53,8 +55,6 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.share
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
-import java.lang.reflect.Field
-import kotlin.math.abs
 
 /**
  * A [ViewBindingFragment] more information about the currently playing song, alongside all
@@ -252,8 +252,7 @@ class PlaybackPanelFragment :
             is Show.AlbumArtistDecision,
             is Show.GenreDetails,
             is Show.PlaylistDetails,
-            null -> {
-            }
+            null -> {}
         }
     }
 
@@ -286,9 +285,8 @@ class PlaybackPanelFragment :
             super.onPageScrollStateChanged(state)
             if (state == ViewPager2.SCROLL_STATE_IDLE &&
                 targetPosition != RecyclerView.NO_POSITION &&
-                targetPosition != viewModel.index.value
-            ) {
-                viewModel.goto(targetPosition)
+                targetPosition != viewModel.index.value) {
+                viewModel.goto(targetPosition, playIfPaused = false)
             }
         }
     }
