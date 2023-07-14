@@ -25,4 +25,6 @@ interface PlaybackPageListener {
     fun navigateToCurrentAlbum()
 
     fun navigateToCurrentSong()
+
+    fun navigateToMenu()
 }

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback.pager
 
 import android.view.View
@@ -63,6 +63,7 @@ private constructor(
         binding.playbackSong.setOnClickListener(this)
         binding.playbackArtist.setOnClickListener(this)
         binding.playbackAlbum.setOnClickListener(this)
+        binding.playbackCover.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
@@ -70,6 +71,7 @@ private constructor(
             R.id.playback_album -> listener.navigateToCurrentAlbum()
             R.id.playback_artist -> listener.navigateToCurrentArtist()
             R.id.playback_song -> listener.navigateToCurrentSong()
+            R.id.playback_cover -> listener.navigateToMenu()
         }
     }
 

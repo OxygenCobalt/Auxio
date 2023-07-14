@@ -271,6 +271,10 @@ class PlaybackPanelFragment :
         playbackModel.song.value?.let { detailModel.showAlbum(it.album) }
     }
 
+    override fun navigateToMenu() {
+        binding?.playbackToolbar?.showOverflowMenu()
+    }
+
     private class OnCoverChangedCallback(private val viewModel: QueueViewModel) :
         OnPageChangeCallback() {
 
