@@ -293,4 +293,6 @@
     <string name="def_disc">Nėra disko</string>
     <string name="fmt_editing">Redaguojama %s</string>
     <string name="lbl_appears_on">Rodoma</string>
+    <string name="lbl_song">Daina</string>
+    <string name="lbl_parent_detail">Peržiūrėti</string>
 </resources>
