@@ -9,7 +9,7 @@
     <string name="lbl_name">Pavadinimas</string>
     <string name="lbl_date">Metai</string>
     <string name="lbl_duration">Trukmė</string>
-    <string name="lbl_song_count">Dainų skaičius</string>
+    <string name="lbl_song_count">Dainos skaičius</string>
     <string name="lbl_disc">Diskas</string>
     <string name="lbl_date_added">Pridėta data</string>
     <string name="lbl_sort_asc">Didėjantis</string>
@@ -48,7 +48,7 @@
     <string name="set_black_mode_desc">Naudoti grynai juodą tamsią temą</string>
     <string name="info_app_desc">Paprastas, racionalus Android muzikos grotuvas.</string>
     <string name="lbl_indexer">Muzika kraunama</string>
-    <string name="lng_widget">Peržiūrėti ir valdyti muzikos grojimą</string>
+    <string name="lng_widget">Peržiūrėk ir valdyk muzikos grojimą</string>
     <string name="lbl_genres">Žanrai</string>
     <string name="lbl_retry">Pakartoti</string>
     <string name="lbl_grant">Suteikti</string>
@@ -74,8 +74,8 @@
     <string name="lbl_observing">Stebėjimas muzikos biblioteka</string>
     <string name="lng_observing">Stebima tavo muzikos biblioteko dėl pakeitimų…</string>
     <string name="lbl_shuffle_shortcut_short">Maišyti</string>
-    <string name="lbl_shuffle_shortcut_long">Išmaišyti viską</string>
-    <string name="lbl_state_restored">Būsena atkurta</string>
+    <string name="lbl_shuffle_shortcut_long">Maišyti viską</string>
+    <string name="lbl_state_restored">Atkurta būsena</string>
     <string name="lbl_state_saved">Išsaugota būsena</string>
     <string name="lbl_cancel">Atšaukti</string>
     <string name="lbl_code">Šaltinio kodas</string>
@@ -203,7 +203,7 @@
     <string name="err_did_not_restore">Nepavyko atkurti būsenos</string>
     <string name="set_pre_amp">ReplayGain išankstinis stiprintuvas</string>
     <string name="set_save_state">Išsaugoti grojimo būseną</string>
-    <string name="set_dirs_desc">Tvarkyk, kur muzika turėtų būti įkeliama iš</string>
+    <string name="set_dirs_desc">Tvarkyti, kur muzika turėtų būti įkeliama iš</string>
     <string name="desc_genre_image">Žanro vaizdas %s</string>
     <string name="desc_shuffle">Įjungti maišymą arba išjungti</string>
     <string name="desc_track_number">Takelis %d</string>
@@ -257,10 +257,10 @@
     <string name="lbl_reset">Nustatyti iš naujo</string>
     <string name="set_library">Biblioteka</string>
     <string name="set_behavior">Elgesys</string>
-    <string name="set_ui_desc">Pakeisti programos temą ir spalvas</string>
+    <string name="set_ui_desc">Pakeisk programos temą ir spalvas</string>
     <string name="set_content_desc">Valdyk, kaip muzika ir vaizdai įkeliami</string>
     <string name="set_audio_desc">Konfigūruok garso ir grojimo elgesį</string>
-    <string name="set_personalize_desc">Pritaikyti UI valdiklius ir elgseną</string>
+    <string name="set_personalize_desc">Pritaikyk UI valdiklius ir elgseną</string>
     <string name="set_music">Muzika</string>
     <string name="set_images">Vaizdai</string>
     <string name="set_playback">Grojimas</string>
@@ -275,10 +275,10 @@
     <string name="desc_playlist_image">Grojaraščio vaizdas %s</string>
     <string name="desc_new_playlist">Sukurti naują grojaraštį</string>
     <string name="lbl_new_playlist">Naujas grojaraštis</string>
-    <string name="lbl_playlist_add">Įtraukti į grojaraštį</string>
+    <string name="lbl_playlist_add">Pridėti į grojaraštį</string>
     <string name="lng_playlist_added">Pridėta į grojaraštį</string>
     <string name="lbl_delete">Ištrinti</string>
-    <string name="fmt_deletion_info">Ištrinti %s\? To negalima atšaukti.</string>
+    <string name="fmt_deletion_info">Ištrinti %s\? To negalima atkurti.</string>
     <string name="lbl_rename">Pervadinti</string>
     <string name="lbl_rename_playlist">Pervadinti grojaraštį</string>
     <string name="lbl_confirm_delete_playlist">Ištrinti grojaraštį\?</string>
