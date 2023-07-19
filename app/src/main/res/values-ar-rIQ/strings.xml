@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Info namespace | App labels -->
-    <string name="info_app_desc">مشغل موسيقى بسيط ومعقول لنظام الاندرويد.</string>
+    <string name="info_app_desc">مشغل موسيقى بسيط ومعقول للأندرويد</string>
     <string name="lng_widget">عرض وتحكم بشتغيل الموسيقى</string>
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">إعادة المحاولة</string>
