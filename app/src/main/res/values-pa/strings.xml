@@ -291,4 +291,5 @@
     <string name="set_square_covers_desc">ਸਾਰੇ ਐਲਬਮ ਕਵਰਾਂ ਨੂੰ 1:1 ਦੇ ਆਕਾਰ ਅਨੁਪਾਤ ਤੱਕ ਕਾਂਟ-ਛਾਂਟ ਕਰੋ</string>
     <string name="lbl_song">ਗੀਤ</string>
     <string name="lbl_parent_detail">ਵੇਖੋ</string>
+    <string name="set_play_song_by_itself">ਇਸੇ ਗੀਤ ਨੂੰ ਚਲਾਓ</string>
 </resources>
