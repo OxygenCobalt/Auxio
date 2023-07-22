@@ -38,7 +38,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Field
@@ -102,10 +101,9 @@ class HomeFragment :
             // Orientation change will wipe whatever transition we were using prior, which will
             // result in no transition when the user navigates back. Make sure we re-initialize
             // our transitions.
-            when (val id = savedInstanceState.getInt(KEY_LAST_TRANSITION_ID, -2)) {
-                -2 -> {}
-                -1 -> applyFadeTransition()
-                else -> applyAxisTransition(id)
+            val axis = savedInstanceState.getInt(KEY_LAST_TRANSITION_ID, -1)
+            if (axis > -1) {
+                applyAxisTransition(axis)
             }
         }
     }
@@ -183,9 +181,9 @@ class HomeFragment :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        when (val transition = enterTransition) {
-            is MaterialFadeThrough -> outState.putInt(KEY_LAST_TRANSITION_ID, -1)
-            is MaterialSharedAxis -> outState.putInt(KEY_LAST_TRANSITION_ID, transition.axis)
+        val transition = enterTransition
+        if (transition is MaterialSharedAxis) {
+            outState.putInt(KEY_LAST_TRANSITION_ID, transition.axis)
         }
 
         super.onSaveInstanceState(outState)
@@ -224,14 +222,12 @@ class HomeFragment :
             }
             R.id.action_settings -> {
                 logD("Navigating to preferences")
-                applyFadeTransition()
-                findNavController().navigateSafe(HomeFragmentDirections.preferences())
+                homeModel.showSettings()
                 true
             }
             R.id.action_about -> {
                 logD("Navigating to about")
-                applyFadeTransition()
-                findNavController().navigateSafe(HomeFragmentDirections.about())
+                homeModel.showAbout()
                 true
             }
 
@@ -610,13 +606,6 @@ class HomeFragment :
         returnTransition = MaterialSharedAxis(axis, false)
         exitTransition = MaterialSharedAxis(axis, true)
         reenterTransition = MaterialSharedAxis(axis, false)
-    }
-
-    private fun applyFadeTransition() {
-        enterTransition = MaterialFadeThrough()
-        returnTransition = MaterialFadeThrough()
-        exitTransition = MaterialFadeThrough()
-        reenterTransition = MaterialFadeThrough()
     }
 
     /**

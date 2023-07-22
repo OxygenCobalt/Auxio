@@ -80,7 +80,7 @@ class SongMenuDialogFragment : MenuDialogFragment<Menu.ForSong>() {
                 requireContext().showToast(R.string.lng_queue_added)
             }
             R.id.action_artist_details -> detailModel.showArtist(menu.song)
-            R.id.action_album_details -> detailModel.showAlbum(menu.song)
+            R.id.action_album_details -> detailModel.showAlbum(menu.song.album)
             R.id.action_share -> requireContext().share(menu.song)
             R.id.action_playlist_add -> musicModel.addToPlaylist(menu.song)
             R.id.action_detail -> detailModel.showSong(menu.song)

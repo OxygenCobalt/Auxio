@@ -2,7 +2,7 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:duration="@integer/m3_sys_motion_duration_medium4"
     android:interpolator="@interpolator/m3_sys_motion_easing_emphasized">
-    <!-- Workaround for ugly default bottom sheet dialog transition -->
+    <!-- Replacement for ugly default bottom sheet dialog transition -->
     <translate
         android:fromYDelta="100%p"
         android:toYDelta="0" />

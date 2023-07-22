@@ -196,7 +196,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     override fun onRoundModeChanged() {
-        // TODO: Make this a recreate as soon as you can make the bottom sheet stop freaking out
         cornerRadiusRes = getCornerRadiusRes()
         applyBackgroundsToChildren()
         val cover = currentCover ?: return

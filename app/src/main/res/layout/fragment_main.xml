@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="org.oxycblt.auxio.ui.BottomSheetContentBehavior"
-        app:navGraph="@navigation/main"
+        app:navGraph="@navigation/inner"
         app:defaultNavHost="true"
         tools:layout="@layout/fragment_home" />
 

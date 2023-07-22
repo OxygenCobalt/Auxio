@@ -131,6 +131,10 @@ constructor(
     /** A marker for whether the user is fast-scrolling in the home view or not. */
     val isFastScrolling: StateFlow<Boolean> = _isFastScrolling
 
+    private val _showOuter = MutableEvent<Outer>()
+    val showOuter: Event<Outer>
+        get() = _showOuter
+
     init {
         musicRepository.addUpdateListener(this)
         homeSettings.registerListener(this)
@@ -265,6 +269,14 @@ constructor(
         _isFastScrolling.value = isFastScrolling
     }
 
+    fun showSettings() {
+        _showOuter.put(Outer.Settings)
+    }
+
+    fun showAbout() {
+        _showOuter.put(Outer.About)
+    }
+
     /**
      * Create a list of [MusicType]s representing a simpler version of the [Tab] configuration.
      *
@@ -273,4 +285,9 @@ constructor(
      */
     private fun makeTabTypes() =
         homeSettings.homeTabs.filterIsInstance<Tab.Visible>().map { it.type }
+}
+
+sealed interface Outer {
+    object Settings : Outer
+    object About : Outer
 }

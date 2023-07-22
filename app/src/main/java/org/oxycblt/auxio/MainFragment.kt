@@ -31,14 +31,18 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.R as MR
 import com.google.android.material.bottomsheet.BackportBottomSheetBehavior
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.home.HomeViewModel
+import org.oxycblt.auxio.home.Outer
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
@@ -53,6 +57,7 @@ import org.oxycblt.auxio.util.coordinatorLayoutBehavior
 import org.oxycblt.auxio.util.getAttrColorCompat
 import org.oxycblt.auxio.util.getDimen
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.navigateSafe
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -66,9 +71,10 @@ class MainFragment :
     ViewBindingFragment<FragmentMainBinding>(),
     ViewTreeObserver.OnPreDrawListener,
     NavController.OnDestinationChangedListener {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val listModel: ListViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
+    private val homeModel: HomeViewModel by activityViewModels()
+    private val listModel: ListViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     private var sheetBackCallback: SheetBackPressedCallback? = null
     private var detailBackCallback: DetailBackPressedCallback? = null
     private var selectionBackCallback: SelectionBackPressedCallback? = null
@@ -76,6 +82,12 @@ class MainFragment :
     private var lastInsets: WindowInsets? = null
     private var elevationNormal = 0f
     private var initialNavDestinationChange = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+    }
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentMainBinding.inflate(inflater)
 
@@ -152,6 +164,7 @@ class MainFragment :
 
         // --- VIEWMODEL SETUP ---
         collectImmediately(detailModel.editedPlaylist, detailBackCallback::invalidateEnabled)
+        collectImmediately(homeModel.showOuter.flow, ::handleShowOuter)
         collectImmediately(listModel.selected, selectionBackCallback::invalidateEnabled)
         collectImmediately(playbackModel.song, ::updateSong)
         collectImmediately(playbackModel.openPanel.flow, ::handlePanel)
@@ -290,6 +303,17 @@ class MainFragment :
             return
         }
         listModel.dropSelection()
+    }
+
+    private fun handleShowOuter(outer: Outer?) {
+        val directions =
+            when (outer) {
+                is Outer.Settings -> MainFragmentDirections.preferences()
+                is Outer.About -> MainFragmentDirections.about()
+                null -> return
+            }
+        findNavController().navigateSafe(directions)
+        homeModel.showOuter.consume()
     }
 
     private fun updateSong(song: Song?) {
