@@ -13,7 +13,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.bottomsheet.BottomSheetDragHandleView
             android:id="@+id/menu_handle"
@@ -70,7 +70,7 @@
             tools:text="Info A" />
 
         <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/menu_divider"
+            android:id="@+id/menu_mode_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
@@ -85,6 +85,6 @@
         android:layout_height="match_parent"
         android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/menu_divider"
+        app:layout_constraintTop_toBottomOf="@+id/menu_mode_group"
         tools:listitem="@layout/item_menu_option" />
 </LinearLayout>
