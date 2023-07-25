@@ -255,7 +255,7 @@
     <string name="lbl_reset">Resetiraj</string>
     <string name="set_replay_gain">ReplayGain izjednačavanje glasnoće</string>
     <string name="set_dirs_list">Mape</string>
-    <string name="lbl_sort_dec">Silazni</string>
+    <string name="lbl_sort_dsc">Silazni</string>
     <string name="set_ui_desc">Promijenite temu i boje aplikacije</string>
     <string name="set_personalize_desc">Prilagodite kontrole i ponašanje korisničkog sučelja</string>
     <string name="set_content_desc">Upravljajte učitavanjem glazbe i slika</string>

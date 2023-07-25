@@ -39,7 +39,7 @@
     <string name="lbl_track">Spår</string>
     <string name="lbl_date_added">Datum tillagt</string>
     <string name="lbl_sort_asc">Stigande</string>
-    <string name="lbl_sort_dec">Fallande</string>
+    <string name="lbl_sort_dsc">Fallande</string>
     <string name="lbl_playback">Nu spelar</string>
     <string name="lbl_equalizer">Utjämnare</string>
     <string name="lbl_play">Spela</string>

@@ -75,7 +75,7 @@
     <string name="info_app_desc">ਐਂਡਰੌਇਡ ਲਈ ਇੱਕ ਸਰਲ, ਤਰਕਸੰਗਤ ਸੰਗੀਤ ਪਲੇਅਰ।</string>
     <string name="lbl_search">ਖੋਜੋ</string>
     <string name="lbl_song_count">ਗੀਤ ਦੀ ਗਿਣਤੀ</string>
-    <string name="lbl_sort_dec">ਘਟਦੇ ਹੋਏ</string>
+    <string name="lbl_sort_dsc">ਘਟਦੇ ਹੋਏ</string>
     <string name="lbl_play_selected">ਚੁਣਿਆ ਹੋਇਆ ਚਲਾਓ</string>
     <string name="lbl_artist_details">ਕਲਾਕਾਰ \'ਤੇ ਜਾਓ</string>
     <string name="lbl_file_name">ਫਾਈਲ ਦਾ ਨਾਮ</string>

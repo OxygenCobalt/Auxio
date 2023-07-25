@@ -21,7 +21,6 @@ package org.oxycblt.auxio.detail
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -41,7 +40,6 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.Menu
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
@@ -109,7 +107,7 @@ class GenreDetailFragment :
             (layoutManager as GridLayoutManager).setFullWidthLookup {
                 if (it != 0) {
                     val item =
-                        detailModel.genreList.value.getOrElse(it - 1) {
+                        detailModel.genreSongList.value.getOrElse(it - 1) {
                             return@setFullWidthLookup false
                         }
                     item is Divider || item is Header
@@ -123,7 +121,7 @@ class GenreDetailFragment :
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setGenre(args.genreUid)
         collectImmediately(detailModel.currentGenre, ::updatePlaylist)
-        collectImmediately(detailModel.genreList, ::updateList)
+        collectImmediately(detailModel.genreSongList, ::updateList)
         collect(detailModel.toShow.flow, ::handleShow)
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
@@ -139,7 +137,7 @@ class GenreDetailFragment :
         binding.detailRecycler.adapter = null
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
-        detailModel.genreInstructions.consume()
+        detailModel.genreSongInstructions.consume()
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -182,7 +180,7 @@ class GenreDetailFragment :
         }
     }
 
-    override fun onOpenMenu(item: Music, anchor: View) {
+    override fun onOpenMenu(item: Music) {
         when (item) {
             is Artist -> listModel.openMenu(R.menu.item_parent, item)
             is Song -> listModel.openMenu(R.menu.item_song, item, detailModel.playInGenreWith)
@@ -198,31 +196,8 @@ class GenreDetailFragment :
         playbackModel.shuffle(unlikelyToBeNull(detailModel.currentGenre.value))
     }
 
-    override fun onOpenSortMenu(anchor: View) {
-        openMenu(anchor, R.menu.sort_genre) {
-            // Select the corresponding sort mode option
-            val sort = detailModel.genreSongSort
-            unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
-            // Select the corresponding sort direction option
-            val directionItemId =
-                when (sort.direction) {
-                    Sort.Direction.ASCENDING -> R.id.option_sort_asc
-                    Sort.Direction.DESCENDING -> R.id.option_sort_dec
-                }
-            unlikelyToBeNull(menu.findItem(directionItemId)).isChecked = true
-            setOnMenuItemClickListener { item ->
-                item.isChecked = !item.isChecked
-                detailModel.genreSongSort =
-                    when (item.itemId) {
-                        // Sort direction options
-                        R.id.option_sort_asc -> sort.withDirection(Sort.Direction.ASCENDING)
-                        R.id.option_sort_dec -> sort.withDirection(Sort.Direction.DESCENDING)
-                        // Any other option is a sort mode
-                        else -> sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
-                    }
-                true
-            }
-        }
+    override fun onOpenSortMenu() {
+        findNavController().navigateSafe(GenreDetailFragmentDirections.sort())
     }
 
     private fun updatePlaylist(genre: Genre?) {
@@ -236,7 +211,7 @@ class GenreDetailFragment :
     }
 
     private fun updateList(list: List<Item>) {
-        genreListAdapter.update(list, detailModel.genreInstructions.consume())
+        genreListAdapter.update(list, detailModel.genreSongInstructions.consume())
     }
 
     private fun handleShow(show: Show?) {

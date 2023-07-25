@@ -98,24 +98,19 @@ constructor(
     val currentAlbum: StateFlow<Album?>
         get() = _currentAlbum
 
-    private val _albumList = MutableStateFlow(listOf<Item>())
+    private val _albumSongList = MutableStateFlow(listOf<Item>())
     /** The current list data derived from [currentAlbum]. */
-    val albumList: StateFlow<List<Item>>
-        get() = _albumList
+    val albumSongList: StateFlow<List<Item>>
+        get() = _albumSongList
 
-    private val _albumInstructions = MutableEvent<UpdateInstructions>()
-    /** Instructions for updating [albumList] in the UI. */
-    val albumInstructions: Event<UpdateInstructions>
-        get() = _albumInstructions
+    private val _albumSongInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for updating [albumSongList] in the UI. */
+    val albumSongInstructions: Event<UpdateInstructions>
+        get() = _albumSongInstructions
 
-    /** The current [Sort] used for [Song]s in [albumList]. */
-    var albumSongSort: Sort
+    /** The current [Sort] used for [Song]s in [albumSongList]. */
+    val albumSongSort: Sort
         get() = musicSettings.albumSongSort
-        set(value) {
-            musicSettings.albumSongSort = value
-            // Refresh the album list to reflect the new sort.
-            currentAlbum.value?.let { refreshAlbumList(it, true) }
-        }
 
     /** The [PlaySong] instructions to use when playing a [Song] from [Album] details. */
     val playInAlbumWith
@@ -128,15 +123,16 @@ constructor(
     val currentArtist: StateFlow<Artist?>
         get() = _currentArtist
 
-    private val _artistList = MutableStateFlow(listOf<Item>())
+    private val _artistSongList = MutableStateFlow(listOf<Item>())
     /** The current list derived from [currentArtist]. */
-    val artistList: StateFlow<List<Item>> = _artistList
-    private val _artistInstructions = MutableEvent<UpdateInstructions>()
-    /** Instructions for updating [artistList] in the UI. */
-    val artistInstructions: Event<UpdateInstructions>
-        get() = _artistInstructions
+    val artistSongList: StateFlow<List<Item>> = _artistSongList
 
-    /** The current [Sort] used for [Song]s in [artistList]. */
+    private val _artistSongInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for updating [artistSongList] in the UI. */
+    val artistSongInstructions: Event<UpdateInstructions>
+        get() = _artistSongInstructions
+
+    /** The current [Sort] used for [Song]s in [artistSongList]. */
     var artistSongSort: Sort
         get() = musicSettings.artistSongSort
         set(value) {
@@ -156,15 +152,16 @@ constructor(
     val currentGenre: StateFlow<Genre?>
         get() = _currentGenre
 
-    private val _genreList = MutableStateFlow(listOf<Item>())
+    private val _genreSongList = MutableStateFlow(listOf<Item>())
     /** The current list data derived from [currentGenre]. */
-    val genreList: StateFlow<List<Item>> = _genreList
-    private val _genreInstructions = MutableEvent<UpdateInstructions>()
-    /** Instructions for updating [artistList] in the UI. */
-    val genreInstructions: Event<UpdateInstructions>
-        get() = _genreInstructions
+    val genreSongList: StateFlow<List<Item>> = _genreSongList
 
-    /** The current [Sort] used for [Song]s in [genreList]. */
+    private val _genreSongInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for updating [artistSongList] in the UI. */
+    val genreSongInstructions: Event<UpdateInstructions>
+        get() = _genreSongInstructions
+
+    /** The current [Sort] used for [Song]s in [genreSongList]. */
     var genreSongSort: Sort
         get() = musicSettings.genreSongSort
         set(value) {
@@ -184,13 +181,14 @@ constructor(
     val currentPlaylist: StateFlow<Playlist?>
         get() = _currentPlaylist
 
-    private val _playlistList = MutableStateFlow(listOf<Item>())
+    private val _playlistSongList = MutableStateFlow(listOf<Item>())
     /** The current list data derived from [currentPlaylist] */
-    val playlistList: StateFlow<List<Item>> = _playlistList
-    private val _playlistInstructions = MutableEvent<UpdateInstructions>()
-    /** Instructions for updating [playlistList] in the UI. */
-    val playlistInstructions: Event<UpdateInstructions>
-        get() = _playlistInstructions
+    val playlistSongList: StateFlow<List<Item>> = _playlistSongList
+
+    private val _playlistSongInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for updating [playlistSongList] in the UI. */
+    val playlistSongInstructions: Event<UpdateInstructions>
+        get() = _playlistSongInstructions
 
     private val _editedPlaylist = MutableStateFlow<List<Song>?>(null)
     /**
@@ -351,7 +349,7 @@ constructor(
     }
 
     /**
-     * Set a new [currentAlbum] from it's [Music.UID]. [currentAlbum] and [albumList] will be
+     * Set a new [currentAlbum] from it's [Music.UID]. [currentAlbum] and [albumSongList] will be
      * updated to align with the new [Album].
      *
      * @param uid The [Music.UID] of the [Album] to update [currentAlbum] to. Must be valid.
@@ -366,7 +364,17 @@ constructor(
     }
 
     /**
-     * Set a new [currentArtist] from it's [Music.UID]. [currentArtist] and [artistList] will be
+     * Apply a new [Sort] to [albumSongList].
+     *
+     * @param sort The [Sort] to apply.
+     */
+    fun applyAlbumSongSort(sort: Sort) {
+        musicSettings.albumSongSort = sort
+        _currentAlbum.value?.let { refreshAlbumList(it, true) }
+    }
+
+    /**
+     * Set a new [currentArtist] from it's [Music.UID]. [currentArtist] and [artistSongList] will be
      * updated to align with the new [Artist].
      *
      * @param uid The [Music.UID] of the [Artist] to update [currentArtist] to. Must be valid.
@@ -381,7 +389,17 @@ constructor(
     }
 
     /**
-     * Set a new [currentGenre] from it's [Music.UID]. [currentGenre] and [genreList] will be
+     * Apply a new [Sort] to [artistSongList].
+     *
+     * @param sort The [Sort] to apply.
+     */
+    fun applyArtistSongSort(sort: Sort) {
+        musicSettings.artistSongSort = sort
+        _currentArtist.value?.let { refreshArtistList(it, true) }
+    }
+
+    /**
+     * Set a new [currentGenre] from it's [Music.UID]. [currentGenre] and [genreSongList] will be
      * updated to align with the new album.
      *
      * @param uid The [Music.UID] of the [Genre] to update [currentGenre] to. Must be valid.
@@ -393,6 +411,16 @@ constructor(
         if (_currentGenre.value == null) {
             logW("Given genre UID was invalid")
         }
+    }
+
+    /**
+     * Apply a new [Sort] to [genreSongList].
+     *
+     * @param sort The [Sort] to apply.
+     */
+    fun applyGenreSongSort(sort: Sort) {
+        musicSettings.genreSongSort = sort
+        _currentGenre.value?.let { refreshGenreList(it, true) }
     }
 
     /**
@@ -544,8 +572,8 @@ constructor(
         }
 
         logD("Update album list to ${list.size} items with $instructions")
-        _albumInstructions.put(instructions)
-        _albumList.value = list
+        _albumSongInstructions.put(instructions)
+        _albumSongList.value = list
     }
 
     private fun refreshArtistList(artist: Artist, replace: Boolean = false) {
@@ -607,8 +635,8 @@ constructor(
         }
 
         logD("Updating artist list to ${list.size} items with $instructions")
-        _artistInstructions.put(instructions)
-        _artistList.value = list.toList()
+        _artistSongInstructions.put(instructions)
+        _artistSongList.value = list.toList()
     }
 
     private fun refreshGenreList(genre: Genre, replace: Boolean = false) {
@@ -633,8 +661,8 @@ constructor(
         list.addAll(genreSongSort.songs(genre.songs))
 
         logD("Updating genre list to ${list.size} items with $instructions")
-        _genreInstructions.put(instructions)
-        _genreList.value = list
+        _genreSongInstructions.put(instructions)
+        _genreSongList.value = list
     }
 
     private fun refreshPlaylistList(
@@ -653,8 +681,8 @@ constructor(
         }
 
         logD("Updating playlist list to ${list.size} items with $instructions")
-        _playlistInstructions.put(instructions)
-        _playlistList.value = list
+        _playlistSongInstructions.put(instructions)
+        _playlistSongList.value = list
     }
 
     /**

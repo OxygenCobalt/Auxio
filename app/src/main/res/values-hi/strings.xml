@@ -99,7 +99,7 @@
     <string name="set_play_song_from_all">सभी गीतों से चलाएं</string>
     <string name="fmt_deletion_info">%s हटाएँ\? इसे पूर्ववत नहीं किया जा सकता।</string>
     <string name="fmt_lib_song_count">लोड किए गए गाने: %d</string>
-    <string name="lbl_sort_dec">अवरोही</string>
+    <string name="lbl_sort_dsc">अवरोही</string>
     <string name="lbl_play_selected">चयनित चलाएँ</string>
     <string name="lbl_shuffle_selected">फेरबदल का चयन किया गया</string>
     <string name="lbl_state_wiped">स्थिति साफ की गई</string>

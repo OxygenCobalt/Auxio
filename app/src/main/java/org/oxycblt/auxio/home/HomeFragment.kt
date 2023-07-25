@@ -26,7 +26,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuCompat
 import androidx.core.view.isVisible
-import androidx.core.view.iterator
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -57,7 +56,6 @@ import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.Menu
 import org.oxycblt.auxio.list.SelectionFragment
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.IndexingProgress
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.Music
@@ -76,7 +74,6 @@ import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The starting [SelectionFragment] of Auxio. Shows the user's music library and enables navigation
@@ -172,7 +169,7 @@ class HomeFragment :
         // --- VIEWMODEL SETUP ---
         collect(homeModel.recreateTabs.flow, ::handleRecreate)
         collectImmediately(homeModel.currentTabType, ::updateCurrentTab)
-        collectImmediately(homeModel.songsList, homeModel.isFastScrolling, ::updateFab)
+        collectImmediately(homeModel.songList, homeModel.isFastScrolling, ::updateFab)
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(musicModel.indexingState, ::updateIndexerState)
@@ -232,41 +229,22 @@ class HomeFragment :
             }
 
             // Handle sort menu
-            R.id.submenu_sorting -> {
+            R.id.action_sort -> {
                 // Junk click event when opening the menu
-                true
-            }
-            R.id.option_sort_asc -> {
-                logD("Switching to ascending sorting")
-                item.isChecked = true
-                homeModel.setSortForCurrentTab(
-                    homeModel
-                        .getSortForTab(homeModel.currentTabType.value)
-                        .withDirection(Sort.Direction.ASCENDING))
-                true
-            }
-            R.id.option_sort_dec -> {
-                logD("Switching to descending sorting")
-                item.isChecked = true
-                homeModel.setSortForCurrentTab(
-                    homeModel
-                        .getSortForTab(homeModel.currentTabType.value)
-                        .withDirection(Sort.Direction.DESCENDING))
+                val directions =
+                    when (homeModel.currentTabType.value) {
+                        MusicType.SONGS -> HomeFragmentDirections.sortSongs()
+                        MusicType.ALBUMS -> HomeFragmentDirections.sortAlbums()
+                        MusicType.ARTISTS -> HomeFragmentDirections.sortArtists()
+                        MusicType.GENRES -> HomeFragmentDirections.sortGenres()
+                        MusicType.PLAYLISTS -> HomeFragmentDirections.sortPlaylists()
+                    }
+                findNavController().navigateSafe(directions)
                 true
             }
             else -> {
-                val newMode = Sort.Mode.fromItemId(item.itemId)
-                if (newMode != null) {
-                    // Sorting option was selected, mark it as selected and update the mode
-                    logD("Updating sort mode")
-                    item.isChecked = true
-                    homeModel.setSortForCurrentTab(
-                        homeModel.getSortForTab(homeModel.currentTabType.value).withMode(newMode))
-                    true
-                } else {
-                    logW("Unexpected menu item selected")
-                    false
-                }
+                logW("Unexpected menu item selected")
+                false
             }
         }
     }
@@ -300,61 +278,6 @@ class HomeFragment :
 
     private fun updateCurrentTab(tabType: MusicType) {
         val binding = requireBinding()
-        // Update the sort options to align with those allowed by the tab
-        val isVisible: (Int) -> Boolean =
-            when (tabType) {
-                // Disallow sorting by count for songs
-                MusicType.SONGS -> {
-                    logD("Using song-specific menu options")
-                    ({ id -> id != R.id.option_sort_count })
-                }
-                // Disallow sorting by album for albums
-                MusicType.ALBUMS -> {
-                    logD("Using album-specific menu options")
-                    ({ id -> id != R.id.option_sort_album })
-                }
-                // Only allow sorting by name, count, and duration for parents
-                else -> {
-                    logD("Using parent-specific menu options")
-                    ({ id ->
-                        id == R.id.option_sort_asc ||
-                            id == R.id.option_sort_dec ||
-                            id == R.id.option_sort_name ||
-                            id == R.id.option_sort_count ||
-                            id == R.id.option_sort_duration
-                    })
-                }
-            }
-
-        val sortMenu =
-            unlikelyToBeNull(binding.homeNormalToolbar.menu.findItem(R.id.submenu_sorting).subMenu)
-        val toHighlight = homeModel.getSortForTab(tabType)
-
-        for (option in sortMenu) {
-            val isCurrentMode = option.itemId == toHighlight.mode.itemId
-            val isCurrentlyAscending =
-                option.itemId == R.id.option_sort_asc &&
-                    toHighlight.direction == Sort.Direction.ASCENDING
-            val isCurrentlyDescending =
-                option.itemId == R.id.option_sort_dec &&
-                    toHighlight.direction == Sort.Direction.DESCENDING
-            // Check the corresponding direction and mode sort options to align with
-            // the current sort of the tab.
-            if (isCurrentMode || isCurrentlyAscending || isCurrentlyDescending) {
-                logD(
-                    "Checking $option option [mode: $isCurrentMode asc: $isCurrentlyAscending dec: $isCurrentlyDescending]")
-                // Note: We cannot inline this boolean assignment since it unchecks all other radio
-                // buttons (even when setting it to false), which would result in nothing being
-                // selected.
-                option.isChecked = true
-            }
-
-            // Disable options that are not allowed by the isVisible lambda
-            option.isVisible = isVisible(option.itemId)
-            if (!option.isVisible) {
-                logD("Hiding $option option")
-            }
-        }
 
         // Update the scrolling view in AppBarLayout to align with the current tab's
         // scrolling state. This prevents the lift state from being confused as one

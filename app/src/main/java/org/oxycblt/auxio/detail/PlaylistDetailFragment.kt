@@ -21,7 +21,6 @@ package org.oxycblt.auxio.detail
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -123,7 +122,7 @@ class PlaylistDetailFragment :
             (layoutManager as GridLayoutManager).setFullWidthLookup {
                 if (it != 0) {
                     val item =
-                        detailModel.playlistList.value.getOrElse(it - 1) {
+                        detailModel.playlistSongList.value.getOrElse(it - 1) {
                             return@setFullWidthLookup false
                         }
                     item is Divider || item is Header
@@ -137,7 +136,7 @@ class PlaylistDetailFragment :
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setPlaylist(args.playlistUid)
         collectImmediately(detailModel.currentPlaylist, ::updatePlaylist)
-        collectImmediately(detailModel.playlistList, ::updateList)
+        collectImmediately(detailModel.playlistSongList, ::updateList)
         collectImmediately(detailModel.editedPlaylist, ::updateEditedList)
         collect(detailModel.toShow.flow, ::handleShow)
         collect(listModel.menu.flow, ::handleMenu)
@@ -168,7 +167,7 @@ class PlaylistDetailFragment :
         binding.detailRecycler.adapter = null
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
-        detailModel.playlistInstructions.consume()
+        detailModel.playlistSongInstructions.consume()
     }
 
     override fun onDestinationChanged(
@@ -236,7 +235,7 @@ class PlaylistDetailFragment :
         requireNotNull(touchHelper) { "ItemTouchHelper was not available" }.startDrag(viewHolder)
     }
 
-    override fun onOpenMenu(item: Song, anchor: View) {
+    override fun onOpenMenu(item: Song) {
         listModel.openMenu(R.menu.item_playlist_song, item, detailModel.playInPlaylistWith)
     }
 
@@ -252,7 +251,7 @@ class PlaylistDetailFragment :
         detailModel.startPlaylistEdit()
     }
 
-    override fun onOpenSortMenu(anchor: View) {}
+    override fun onOpenSortMenu() {}
 
     private fun updatePlaylist(playlist: Playlist?) {
         if (playlist == null) {
@@ -278,7 +277,7 @@ class PlaylistDetailFragment :
     }
 
     private fun updateList(list: List<Item>) {
-        playlistListAdapter.update(list, detailModel.playlistInstructions.consume())
+        playlistListAdapter.update(list, detailModel.playlistSongInstructions.consume())
     }
 
     private fun updateEditedList(editedPlaylist: List<Song>?) {

@@ -275,7 +275,7 @@
     <string name="set_music">Muzyka</string>
     <string name="err_did_not_wipe">Nie można wyczyścić stanu odtwarzania</string>
     <string name="err_did_not_save">Nie można zapisać stanu odtwarzania</string>
-    <string name="lbl_sort_dec">Malejąco</string>
+    <string name="lbl_sort_dsc">Malejąco</string>
     <string name="lbl_playlists">Playlisty</string>
     <string name="lbl_playlist">Playlista</string>
     <string name="desc_playlist_image">Obraz playlisty %s</string>

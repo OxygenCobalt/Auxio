@@ -74,7 +74,7 @@
     <string name="lbl_ep_remix">Remix EP</string>
     <string name="lbl_name">Név</string>
     <string name="lbl_date">Dátum</string>
-    <string name="lbl_sort_dec">Csökkenő</string>
+    <string name="lbl_sort_dsc">Csökkenő</string>
     <string name="lbl_play_selected">Kiválasztott lejátszása</string>
     <string name="lbl_new_playlist">Új lejátszólista</string>
     <string name="def_genre">Ismeretlen műfaj</string>

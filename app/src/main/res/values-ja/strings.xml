@@ -60,7 +60,7 @@
     <string name="lbl_file_name">ファイル名</string>
     <string name="lbl_date_added">追加した日付け</string>
     <string name="lbl_sample_rate">サンプルレート</string>
-    <string name="lbl_sort_dec">降順</string>
+    <string name="lbl_sort_dsc">降順</string>
     <string name="lbl_play">再生</string>
     <string name="lbl_shuffle">シャフル</string>
     <string name="lbl_shuffle_selected">選択曲をシャフル</string>

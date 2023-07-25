@@ -124,7 +124,7 @@
     <string name="lbl_ep_live">EP en directo</string>
     <string name="lbl_ep_remix">EP remix</string>
     <string name="lbl_sort_asc">Ascendente</string>
-    <string name="lbl_sort_dec">Descendente</string>
+    <string name="lbl_sort_dsc">Descendente</string>
     <string name="lbl_equalizer">Ecualizador</string>
     <string name="lbl_shuffle_selected">Aleatorio seleccionado</string>
     <string name="lbl_sample_rate">Frecuencia de mostraxe</string>

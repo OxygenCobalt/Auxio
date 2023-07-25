@@ -21,7 +21,6 @@ package org.oxycblt.auxio.detail
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -41,7 +40,6 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.Menu
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
@@ -111,7 +109,7 @@ class ArtistDetailFragment :
             (layoutManager as GridLayoutManager).setFullWidthLookup {
                 if (it != 0) {
                     val item =
-                        detailModel.artistList.value.getOrElse(it - 1) {
+                        detailModel.artistSongList.value.getOrElse(it - 1) {
                             return@setFullWidthLookup false
                         }
                     item is Divider || item is Header
@@ -125,7 +123,7 @@ class ArtistDetailFragment :
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setArtist(args.artistUid)
         collectImmediately(detailModel.currentArtist, ::updateArtist)
-        collectImmediately(detailModel.artistList, ::updateList)
+        collectImmediately(detailModel.artistSongList, ::updateList)
         collect(detailModel.toShow.flow, ::handleShow)
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
@@ -141,7 +139,7 @@ class ArtistDetailFragment :
         binding.detailRecycler.adapter = null
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
-        detailModel.artistInstructions.consume()
+        detailModel.artistSongInstructions.consume()
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -184,7 +182,7 @@ class ArtistDetailFragment :
         }
     }
 
-    override fun onOpenMenu(item: Music, anchor: View) {
+    override fun onOpenMenu(item: Music) {
         when (item) {
             is Song ->
                 listModel.openMenu(R.menu.item_artist_song, item, detailModel.playInArtistWith)
@@ -201,33 +199,8 @@ class ArtistDetailFragment :
         playbackModel.shuffle(unlikelyToBeNull(detailModel.currentArtist.value))
     }
 
-    override fun onOpenSortMenu(anchor: View) {
-        openMenu(anchor, R.menu.sort_artist) {
-            // Select the corresponding sort mode option
-            val sort = detailModel.artistSongSort
-            unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
-            // Select the corresponding sort direction option
-            val directionItemId =
-                when (sort.direction) {
-                    Sort.Direction.ASCENDING -> R.id.option_sort_asc
-                    Sort.Direction.DESCENDING -> R.id.option_sort_dec
-                }
-            unlikelyToBeNull(menu.findItem(directionItemId)).isChecked = true
-            setOnMenuItemClickListener { item ->
-                item.isChecked = !item.isChecked
-
-                detailModel.artistSongSort =
-                    when (item.itemId) {
-                        // Sort direction options
-                        R.id.option_sort_asc -> sort.withDirection(Sort.Direction.ASCENDING)
-                        R.id.option_sort_dec -> sort.withDirection(Sort.Direction.DESCENDING)
-                        // Any other option is a sort mode
-                        else -> sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
-                    }
-
-                true
-            }
-        }
+    override fun onOpenSortMenu() {
+        findNavController().navigateSafe(ArtistDetailFragmentDirections.sort())
     }
 
     private fun updateArtist(artist: Artist?) {
@@ -253,7 +226,7 @@ class ArtistDetailFragment :
     }
 
     private fun updateList(list: List<Item>) {
-        artistListAdapter.update(list, detailModel.artistInstructions.consume())
+        artistListAdapter.update(list, detailModel.artistSongInstructions.consume())
     }
 
     private fun handleShow(show: Show?) {
