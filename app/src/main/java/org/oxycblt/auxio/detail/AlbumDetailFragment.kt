@@ -192,7 +192,7 @@ class AlbumDetailFragment :
     override fun onShuffle() {
         playbackModel.shuffle(unlikelyToBeNull(detailModel.currentAlbum.value))
     }
-    
+
     override fun onOpenSortMenu() {
         findNavController().navigateSafe(AlbumDetailFragmentDirections.sort())
     }

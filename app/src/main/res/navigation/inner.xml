@@ -210,9 +210,6 @@
         <action
             android:id="@+id/play_from_genre"
             app:destination="@id/play_from_genre_dialog" />
-        <action
-            android:id="@+id/sort"
-            app:destination="@id/sort_dialog" />
     </fragment>
 
     <dialog
