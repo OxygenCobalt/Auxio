@@ -182,7 +182,7 @@ class SearchFragment : ListFragment<Music, FragmentSearchBinding>() {
         }
     }
 
-    override fun onOpenMenu(item: Music, anchor: View) {
+    override fun onOpenMenu(item: Music) {
         when (item) {
             is Song -> listModel.openMenu(R.menu.item_song, item, searchModel.playWith)
             is Album -> listModel.openMenu(R.menu.item_album, item)

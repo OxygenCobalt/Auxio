@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2023 Auxio Project
- * GenreSongSortDialog.kt is part of Auxio.
+ * SongSortDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,40 +16,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.detail.sort
+package org.oxycblt.auxio.home.sort
 
-import android.os.Bundle
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import org.oxycblt.auxio.databinding.DialogSortBinding
-import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.sort.SortDialog
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.util.collectImmediately
-import org.oxycblt.auxio.util.logD
 
 /**
- * A [SortDialog] that controls the [Sort] of [DetailViewModel.genreSongSort].
+ * A [SortDialog] that controls the [Sort] of [HomeViewModel.songList].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
 @AndroidEntryPoint
-class GenreSongSortDialog : SortDialog() {
-    private val detailModel: DetailViewModel by activityViewModels()
+class SongSortDialog : SortDialog() {
+    private val homeModel: HomeViewModel by activityViewModels()
 
-    override fun onBindingCreated(binding: DialogSortBinding, savedInstanceState: Bundle?) {
-        super.onBindingCreated(binding, savedInstanceState)
-
-        // --- VIEWMODEL SETUP ---
-        collectImmediately(detailModel.currentGenre, ::updateGenre)
-    }
-
-    override fun getInitialSort() = detailModel.genreSongSort
+    override fun getInitialSort() = homeModel.songSort
 
     override fun applyChosenSort(sort: Sort) {
-        detailModel.applyGenreSongSort(sort)
+        homeModel.applySongSort(sort)
     }
 
     override fun getModeChoices() =
@@ -58,12 +45,6 @@ class GenreSongSortDialog : SortDialog() {
             Sort.Mode.ByArtist,
             Sort.Mode.ByAlbum,
             Sort.Mode.ByDate,
-            Sort.Mode.ByDuration)
-
-    private fun updateGenre(genre: Genre?) {
-        if (genre == null) {
-            logD("No genre to sort, navigating away")
-            findNavController().navigateUp()
-        }
-    }
+            Sort.Mode.ByDuration,
+            Sort.Mode.ByDateAdded)
 }

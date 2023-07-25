@@ -30,6 +30,11 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 
+/**
+ * A [SortDialog] that controls the [Sort] of [DetailViewModel.artistSongSort].
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 @AndroidEntryPoint
 class ArtistSongSortDialog : SortDialog() {
     private val detailModel: DetailViewModel by activityViewModels()

@@ -30,6 +30,11 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
 
+/**
+ * A [SortDialog] that controls the [Sort] of [DetailViewModel.albumSongSort].
+ *
+ * @author Alexander Capehart (OxygenCobalt)
+ */
 @AndroidEntryPoint
 class AlbumSongSortDialog : SortDialog() {
     private val detailModel: DetailViewModel by activityViewModels()

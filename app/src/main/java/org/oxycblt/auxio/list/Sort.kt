@@ -18,8 +18,6 @@
  
 package org.oxycblt.auxio.list
 
-import androidx.annotation.IdRes
-import java.lang.IllegalStateException
 import kotlin.math.max
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -164,8 +162,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
     sealed interface Mode {
         /** The integer representation of this sort mode. */
         val intCode: Int
-        /** The item ID of this sort mode in menu resources. */
-        val itemId: Int
         /** The string resource of the human-readable name of this sort mode. */
         val stringRes: Int
 
@@ -223,9 +219,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_NAME
 
-            override val itemId: Int
-                get() = R.id.option_sort_name
-
             override val stringRes: Int
                 get() = R.string.lbl_name
 
@@ -254,9 +247,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_ALBUM
 
-            override val itemId: Int
-                get() = R.id.option_sort_album
-
             override val stringRes: Int
                 get() = R.string.lbl_album
 
@@ -276,9 +266,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
         object ByArtist : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_ARTIST
-
-            override val itemId: Int
-                get() = R.id.option_sort_artist
 
             override val stringRes: Int
                 get() = R.string.lbl_artist
@@ -309,9 +296,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_YEAR
 
-            override val itemId: Int
-                get() = R.id.option_sort_year
-
             override val stringRes: Int
                 get() = R.string.lbl_date
 
@@ -333,9 +317,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
         object ByDuration : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_DURATION
-
-            override val itemId: Int
-                get() = R.id.option_sort_duration
 
             override val stringRes: Int
                 get() = R.string.lbl_duration
@@ -372,9 +353,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_COUNT
 
-            override val itemId: Int
-                get() = R.id.option_sort_count
-
             override val stringRes: Int
                 get() = R.string.lbl_song_count
 
@@ -406,9 +384,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_DISC
 
-            override val itemId: Int
-                get() = throw IllegalStateException()
-
             override val stringRes: Int
                 get() = R.string.lbl_disc
 
@@ -427,9 +402,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
         object ByTrack : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_TRACK
-
-            override val itemId: Int
-                get() = throw IllegalStateException()
 
             override val stringRes: Int
                 get() = R.string.lbl_track
@@ -450,9 +422,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
         object ByDateAdded : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_DATE_ADDED
-
-            override val itemId: Int
-                get() = R.id.option_sort_date_added
 
             override val stringRes: Int
                 get() = R.string.lbl_date_added
@@ -486,27 +455,6 @@ data class Sort(val mode: Mode, val direction: Direction) {
                     ByDisc.intCode -> ByDisc
                     ByTrack.intCode -> ByTrack
                     ByDateAdded.intCode -> ByDateAdded
-                    else -> null
-                }
-
-            /**
-             * Convert a menu item ID into a [Mode].
-             *
-             * @param itemId The menu resource ID to convert
-             * @return A [Mode] corresponding to the given ID, or null if the ID is invalid.
-             * @see itemId
-             */
-            fun fromItemId(@IdRes itemId: Int) =
-                when (itemId) {
-                    ByName.itemId -> ByName
-                    ByAlbum.itemId -> ByAlbum
-                    ByArtist.itemId -> ByArtist
-                    ByDate.itemId -> ByDate
-                    ByDuration.itemId -> ByDuration
-                    ByCount.itemId -> ByCount
-                    ByDisc.itemId -> ByDisc
-                    ByTrack.itemId -> ByTrack
-                    ByDateAdded.itemId -> ByDateAdded
                     else -> null
                 }
         }

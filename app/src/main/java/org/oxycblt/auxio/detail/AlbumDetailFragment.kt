@@ -21,7 +21,6 @@ package org.oxycblt.auxio.detail
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -111,7 +110,7 @@ class AlbumDetailFragment :
             adapter = ConcatAdapter(albumHeaderAdapter, albumListAdapter)
             (layoutManager as GridLayoutManager).setFullWidthLookup {
                 if (it != 0) {
-                    val item = detailModel.albumList.value[it - 1]
+                    val item = detailModel.albumSongList.value[it - 1]
                     item is Divider || item is Header || item is Disc
                 } else {
                     true
@@ -123,7 +122,7 @@ class AlbumDetailFragment :
         // DetailViewModel handles most initialization from the navigation argument.
         detailModel.setAlbum(args.albumUid)
         collectImmediately(detailModel.currentAlbum, ::updateAlbum)
-        collectImmediately(detailModel.albumList, ::updateList)
+        collectImmediately(detailModel.albumSongList, ::updateList)
         collect(detailModel.toShow.flow, ::handleShow)
         collect(listModel.menu.flow, ::handleMenu)
         collectImmediately(listModel.selected, ::updateSelection)
@@ -139,7 +138,7 @@ class AlbumDetailFragment :
         binding.detailRecycler.adapter = null
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
-        detailModel.albumInstructions.consume()
+        detailModel.albumSongInstructions.consume()
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -182,7 +181,7 @@ class AlbumDetailFragment :
         playbackModel.play(item, detailModel.playInAlbumWith)
     }
 
-    override fun onOpenMenu(item: Song, anchor: View) {
+    override fun onOpenMenu(item: Song) {
         listModel.openMenu(R.menu.item_album_song, item, detailModel.playInAlbumWith)
     }
 
@@ -194,7 +193,7 @@ class AlbumDetailFragment :
         playbackModel.shuffle(unlikelyToBeNull(detailModel.currentAlbum.value))
     }
 
-    override fun onOpenSortMenu(anchor: View) {
+    override fun onOpenSortMenu() {
         findNavController().navigateSafe(AlbumDetailFragmentDirections.sort())
     }
 
@@ -213,7 +212,7 @@ class AlbumDetailFragment :
     }
 
     private fun updateList(list: List<Item>) {
-        albumListAdapter.update(list, detailModel.albumInstructions.consume())
+        albumListAdapter.update(list, detailModel.albumSongInstructions.consume())
     }
 
     private fun handleShow(show: Show?) {
@@ -339,7 +338,7 @@ class AlbumDetailFragment :
 
     private fun scrollToAlbumSong(song: Song) {
         // Calculate where the item for the currently played song is
-        val pos = detailModel.albumList.value.indexOf(song)
+        val pos = detailModel.albumSongList.value.indexOf(song)
 
         if (pos != -1) {
             // Only scroll if the song is within this album.
