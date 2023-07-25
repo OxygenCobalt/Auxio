@@ -109,13 +109,8 @@ constructor(
         get() = _albumInstructions
 
     /** The current [Sort] used for [Song]s in [albumList]. */
-    var albumSongSort: Sort
+    val albumSongSort: Sort
         get() = musicSettings.albumSongSort
-        set(value) {
-            musicSettings.albumSongSort = value
-            // Refresh the album list to reflect the new sort.
-            currentAlbum.value?.let { refreshAlbumList(it, true) }
-        }
 
     /** The [PlaySong] instructions to use when playing a [Song] from [Album] details. */
     val playInAlbumWith
@@ -365,6 +360,11 @@ constructor(
         }
     }
 
+    fun applyAlbumSongSort(sort: Sort) {
+        musicSettings.albumSongSort = sort
+        _currentAlbum.value?.let { refreshAlbumList(it, true) }
+    }
+
     /**
      * Set a new [currentArtist] from it's [Music.UID]. [currentArtist] and [artistList] will be
      * updated to align with the new [Artist].
@@ -380,6 +380,11 @@ constructor(
         }
     }
 
+    fun applyArtistSongSort(sort: Sort) {
+        musicSettings.artistSongSort = sort
+        _currentArtist.value?.let { refreshArtistList(it, true) }
+    }
+
     /**
      * Set a new [currentGenre] from it's [Music.UID]. [currentGenre] and [genreList] will be
      * updated to align with the new album.
@@ -393,6 +398,11 @@ constructor(
         if (_currentGenre.value == null) {
             logW("Given genre UID was invalid")
         }
+    }
+
+    fun applyGenreSongSort(sort: Sort) {
+        musicSettings.genreSongSort = sort
+        _currentGenre.value?.let { refreshGenreList(it, true) }
     }
 
     /**

@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.list
 
 import androidx.annotation.IdRes
+import java.lang.IllegalStateException
 import kotlin.math.max
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -406,7 +407,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
                 get() = IntegerTable.SORT_BY_DISC
 
             override val itemId: Int
-                get() = R.id.option_sort_disc
+                get() = throw IllegalStateException()
 
             override val stringRes: Int
                 get() = R.string.lbl_disc
@@ -428,7 +429,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
                 get() = IntegerTable.SORT_BY_TRACK
 
             override val itemId: Int
-                get() = R.id.option_sort_track
+                get() = throw IllegalStateException()
 
             override val stringRes: Int
                 get() = R.string.lbl_track

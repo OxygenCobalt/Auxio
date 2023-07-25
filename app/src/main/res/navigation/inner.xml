@@ -139,6 +139,9 @@
             android:name="albumUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
         <action
+            android:id="@+id/sort"
+            app:destination="@+id/album_song_sort_dialog" />
+        <action
             android:id="@+id/show_song"
             app:destination="@id/song_detail_dialog" />
         <action
@@ -162,10 +165,13 @@
         <action
             android:id="@+id/play_from_genre"
             app:destination="@id/play_from_genre_dialog" />
-        <action
-            android:id="@+id/sort"
-            app:destination="@id/sort_dialog" />
     </fragment>
+
+    <dialog
+        android:id="@+id/album_song_sort_dialog"
+        android:name="org.oxycblt.auxio.detail.sort.AlbumSongSortDialog"
+        android:label="AlbumSongSortDialog"
+        tools:layout="@layout/dialog_sort" />
 
     <fragment
         android:id="@+id/artist_detail_fragment"
@@ -175,6 +181,9 @@
         <argument
             android:name="artistUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
+        <action
+            android:id="@+id/sort"
+            app:destination="@+id/artist_song_sort_dialog" />
         <action
             android:id="@+id/show_song"
             app:destination="@id/song_detail_dialog" />
@@ -198,6 +207,12 @@
             app:destination="@id/play_from_genre_dialog" />
     </fragment>
 
+    <dialog
+        android:id="@+id/artist_song_sort_dialog"
+        android:name="org.oxycblt.auxio.detail.sort.ArtistSongSortDialog"
+        android:label="ArtistSongSortDialog"
+        tools:layout="@layout/dialog_sort" />
+
     <fragment
         android:id="@+id/genre_detail_fragment"
         android:name="org.oxycblt.auxio.detail.GenreDetailFragment"
@@ -206,6 +221,9 @@
         <argument
             android:name="genreUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
+        <action
+            android:id="@+id/sort"
+            app:destination="@+id/genre_song_sort_dialog" />
         <action
             android:id="@+id/show_song"
             app:destination="@id/song_detail_dialog" />
@@ -231,6 +249,12 @@
             android:id="@+id/play_from_artist"
             app:destination="@id/play_from_artist_dialog" />
     </fragment>
+
+    <dialog
+        android:id="@+id/genre_song_sort_dialog"
+        android:name="org.oxycblt.auxio.detail.sort.GenreSongSortDialog"
+        android:label="GenreSongSortDialog"
+        tools:layout="@layout/dialog_sort" />
 
     <fragment
         android:id="@+id/playlist_detail_fragment"
@@ -391,10 +415,4 @@
             android:name="parcel"
             app:argType="org.oxycblt.auxio.list.Menu$ForPlaylist$Parcel" />
     </dialog>
-
-    <dialog
-        android:id="@+id/sort_dialog"
-        android:name="org.oxycblt.auxio.list.sort.SortDialog"
-        android:label="sort_dialog"
-        tools:layout="@layout/dialog_sort" />
 </navigation>

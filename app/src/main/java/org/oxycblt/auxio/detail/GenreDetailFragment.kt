@@ -41,7 +41,6 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.Menu
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
@@ -199,30 +198,7 @@ class GenreDetailFragment :
     }
 
     override fun onOpenSortMenu(anchor: View) {
-        openMenu(anchor, R.menu.sort_genre) {
-            // Select the corresponding sort mode option
-            val sort = detailModel.genreSongSort
-            unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
-            // Select the corresponding sort direction option
-            val directionItemId =
-                when (sort.direction) {
-                    Sort.Direction.ASCENDING -> R.id.option_sort_asc
-                    Sort.Direction.DESCENDING -> R.id.option_sort_dec
-                }
-            unlikelyToBeNull(menu.findItem(directionItemId)).isChecked = true
-            setOnMenuItemClickListener { item ->
-                item.isChecked = !item.isChecked
-                detailModel.genreSongSort =
-                    when (item.itemId) {
-                        // Sort direction options
-                        R.id.option_sort_asc -> sort.withDirection(Sort.Direction.ASCENDING)
-                        R.id.option_sort_dec -> sort.withDirection(Sort.Direction.DESCENDING)
-                        // Any other option is a sort mode
-                        else -> sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
-                    }
-                true
-            }
-        }
+        findNavController().navigateSafe(GenreDetailFragmentDirections.sort())
     }
 
     private fun updatePlaylist(genre: Genre?) {

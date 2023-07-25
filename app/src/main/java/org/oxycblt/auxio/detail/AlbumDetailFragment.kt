@@ -41,7 +41,6 @@ import org.oxycblt.auxio.list.Item
 import org.oxycblt.auxio.list.ListFragment
 import org.oxycblt.auxio.list.ListViewModel
 import org.oxycblt.auxio.list.Menu
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
@@ -196,30 +195,7 @@ class AlbumDetailFragment :
     }
 
     override fun onOpenSortMenu(anchor: View) {
-        openMenu(anchor, R.menu.sort_album) {
-            // Select the corresponding sort mode option
-            val sort = detailModel.albumSongSort
-            unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
-            // Select the corresponding sort direction option
-            val directionItemId =
-                when (sort.direction) {
-                    Sort.Direction.ASCENDING -> R.id.option_sort_asc
-                    Sort.Direction.DESCENDING -> R.id.option_sort_dec
-                }
-            unlikelyToBeNull(menu.findItem(directionItemId)).isChecked = true
-            setOnMenuItemClickListener { item ->
-                item.isChecked = !item.isChecked
-                detailModel.albumSongSort =
-                    when (item.itemId) {
-                        // Sort direction options
-                        R.id.option_sort_asc -> sort.withDirection(Sort.Direction.ASCENDING)
-                        R.id.option_sort_dec -> sort.withDirection(Sort.Direction.DESCENDING)
-                        // Any other option is a sort mode
-                        else -> sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
-                    }
-                true
-            }
-        }
+        findNavController().navigateSafe(AlbumDetailFragmentDirections.sort())
     }
 
     override fun onNavigateToParentArtist() {
