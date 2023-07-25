@@ -268,7 +268,7 @@
     <string name="set_dirs_list">文件夹</string>
     <string name="set_music">音乐</string>
     <string name="set_audio_desc">配置声音和播放行为</string>
-    <string name="lbl_sort_dec">降序</string>
+    <string name="lbl_sort_dsc">降序</string>
     <string name="lbl_playlist">播放列表</string>
     <string name="lbl_playlists">播放列表</string>
     <string name="desc_playlist_image">%s 的播放列表图片</string>

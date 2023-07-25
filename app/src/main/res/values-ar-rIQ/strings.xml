@@ -157,7 +157,7 @@
     <string name="lbl_shuffle_shortcut_long">تشغيل كل الاغاني بشكل عشوائي</string>
     <string name="lbl_ok">حسنا</string>
     <string name="lbl_state_restored">اعادة الحالة</string>
-    <string name="lbl_sort_dec">تنازلي</string>
+    <string name="lbl_sort_dsc">تنازلي</string>
     <string name="lbl_song_detail">عرض الخصائص</string>
     <string name="lbl_state_wiped">مسح الحالة</string>
     <string name="lbl_live_group">مباشر</string>

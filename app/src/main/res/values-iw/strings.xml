@@ -36,7 +36,7 @@
     <string name="lbl_date_added">תאריך הוספה</string>
     <string name="lbl_sort">מיון</string>
     <string name="lbl_sort_asc">עולה</string>
-    <string name="lbl_sort_dec">יורד</string>
+    <string name="lbl_sort_dsc">יורד</string>
     <string name="lbl_playback">מושמע כעת</string>
     <string name="lbl_equalizer">איקוולייזר</string>
     <string name="lbl_play">ניגון</string>

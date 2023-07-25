@@ -157,7 +157,7 @@
     <string name="lng_observing">Surveillance de votre bibliothèque musicale pour les changements…</string>
     <string name="set_round_mode">Couvertures arrondies</string>
     <string name="set_round_mode_desc">Activer les coins arrondis sur des éléments d\'interface utilisateur supplémentaires (nécessite que les couvertures d\'album soient arrondies)</string>
-    <string name="lbl_sort_dec">Descendant</string>
+    <string name="lbl_sort_dsc">Descendant</string>
     <string name="lbl_state_restored">Etat restauré</string>
     <string name="set_personalize_desc">Personnaliser les commandes et le comportement de l\'interface utilisateur</string>
     <string name="set_action_mode_next">Passer au suivant</string>

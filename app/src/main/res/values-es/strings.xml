@@ -274,7 +274,7 @@
     <string name="set_ui_desc">Cambiar el tema y los colores de la aplicación</string>
     <string name="set_personalize_desc">Personalizar los controles y el comportamiento de la interfaz de usuario</string>
     <string name="set_library">Biblioteca</string>
-    <string name="lbl_sort_dec">Descendente</string>
+    <string name="lbl_sort_dsc">Descendente</string>
     <string name="lbl_playlists">Listas de reproducción</string>
     <string name="desc_playlist_image">Imagen de la lista de reproducción para %s</string>
     <string name="lbl_playlist">Lista de reproducción</string>

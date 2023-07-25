@@ -260,7 +260,7 @@
         <item quantity="other">%d artistas</item>
     </plurals>
     <string name="set_replay_gain">Equalização de volume ReplayGain</string>
-    <string name="lbl_sort_dec">Descendente</string>
+    <string name="lbl_sort_dsc">Descendente</string>
     <string name="set_ui_desc">Mude o tema e as cores do app</string>
     <string name="set_personalize_desc">Personalize os controles e o comportamento da interface do usuário</string>
     <string name="set_content_desc">Controle como a música e as imagens são carregadas</string>

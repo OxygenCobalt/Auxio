@@ -22,6 +22,6 @@
             android:title="@string/lbl_sort_asc" />
         <item
             android:id="@+id/option_sort_dec"
-            android:title="@string/lbl_sort_dec" />
+            android:title="@string/lbl_sort_dsc" />
     </group>
 </menu>

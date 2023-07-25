@@ -201,7 +201,7 @@
         <item quantity="one">%d album</item>
         <item quantity="other">%d album</item>
     </plurals>
-    <string name="lbl_sort_dec">Synkende</string>
+    <string name="lbl_sort_dsc">Synkende</string>
     <string name="lbl_track">Spor</string>
     <string name="lbl_date_added">Dato tillagt</string>
     <string name="lbl_sort">Sorter</string>

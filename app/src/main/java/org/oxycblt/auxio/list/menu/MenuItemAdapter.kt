@@ -44,7 +44,7 @@ class MenuItemAdapter(private val listener: ClickableListListener<MenuItem>) :
 }
 
 /**
- * A [DialogRecyclerView.ViewHolder] that displays a list of menu options based on [MenuItem].
+ * A [DialogRecyclerView.ViewHolder] that displays a [MenuItem].
  *
  * @author Alexander Capehart (OxygenCobalt)
  */
@@ -54,7 +54,7 @@ class MenuItemViewHolder private constructor(private val binding: ItemMenuOption
      * Bind new data to this instance.
      *
      * @param item The new [MenuItem] to bind.
-     * @param listener An [ClickableListListener] to bind interactions to.
+     * @param listener A [ClickableListListener] to bind interactions to.
      */
     fun bind(item: MenuItem, listener: ClickableListListener<MenuItem>) {
         listener.bind(item, this)

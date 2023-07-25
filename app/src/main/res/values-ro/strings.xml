@@ -137,7 +137,7 @@
     <string name="lbl_play_selected">Redare selecție</string>
     <string name="lbl_playlist">Listă de redare</string>
     <string name="lbl_playlists">Liste de redare</string>
-    <string name="lbl_sort_dec">Descrescător</string>
+    <string name="lbl_sort_dsc">Descrescător</string>
     <string name="lbl_shuffle_selected">Selecție aleatorie aleasă</string>
     <string name="set_action_mode_next">Treceți la următoarea</string>
     <string name="set_play_song_from_artist">Redă de la artist</string>

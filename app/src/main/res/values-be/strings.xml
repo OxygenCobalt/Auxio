@@ -77,7 +77,7 @@
     <string name="lbl_shuffle_shortcut_short">Ператасаваць</string>
     <string name="lbl_cancel">Адмяніць</string>
     <string name="lbl_sort_asc">Па ўзрастанні</string>
-    <string name="lbl_sort_dec">Па змяншэнні</string>
+    <string name="lbl_sort_dsc">Па змяншэнні</string>
     <string name="lbl_play_next">Гуляць далей</string>
     <string name="lbl_queue_add">Дадаць у чаргу</string>
     <string name="lbl_equalizer">Эквалайзер</string>

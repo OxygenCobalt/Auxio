@@ -61,7 +61,7 @@
     <string name="lbl_date_added">تاريخ الإضافة</string>
     <string name="lbl_sort">فرز</string>
     <string name="lbl_sort_asc">تصاعدياً</string>
-    <string name="lbl_sort_dec">تنازلياً</string>
+    <string name="lbl_sort_dsc">تنازلياً</string>
     <string name="lbl_playback">يتم الآن تشغيل</string>
     <string name="lbl_equalizer">المُعادِل</string>
     <string name="lbl_play">تشغيل</string>

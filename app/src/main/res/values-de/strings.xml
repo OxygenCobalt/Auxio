@@ -270,7 +270,7 @@
     <string name="set_audio_desc">Ton und Wiedergabeverhalten konfigurieren</string>
     <string name="set_state">Persistenz</string>
     <string name="set_replay_gain">Lautstärkeanpassung ReplayGain</string>
-    <string name="lbl_sort_dec">Absteigend</string>
+    <string name="lbl_sort_dsc">Absteigend</string>
     <string name="desc_playlist_image">Wiedergabelistenbild für %s</string>
     <string name="lbl_playlist">Wiedergabeliste</string>
     <string name="lbl_playlists">Wiedergabelisten</string>

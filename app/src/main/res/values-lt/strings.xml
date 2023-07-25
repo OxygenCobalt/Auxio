@@ -267,7 +267,7 @@
     <string name="set_replay_gain">ReplayGain</string>
     <string name="set_dirs_list">Aplankalai</string>
     <string name="set_state">Pastovumas</string>
-    <string name="lbl_sort_dec">Mažėjantis</string>
+    <string name="lbl_sort_dsc">Mažėjantis</string>
     <string name="set_intelligent_sorting_desc">Teisingai surūšiuoti pavadinimus, kurie prasideda skaičiais arba žodžiais, tokiais kaip „the“ (geriausiai veikia su anglų kalbos muzika)</string>
     <string name="set_intelligent_sorting">Išmanusis rūšiavimas</string>
     <string name="lbl_playlist">Grojaraštis</string>

@@ -279,7 +279,7 @@
     <string name="set_playback">Přehrávání</string>
     <string name="set_library">Knihovna</string>
     <string name="set_state">Perzistence</string>
-    <string name="lbl_sort_dec">Sestupně</string>
+    <string name="lbl_sort_dsc">Sestupně</string>
     <string name="lbl_playlists">Seznamy skladeb</string>
     <string name="desc_playlist_image">Obrázek seznamu skladeb pro %s</string>
     <string name="lbl_playlist">Seznam skladeb</string>

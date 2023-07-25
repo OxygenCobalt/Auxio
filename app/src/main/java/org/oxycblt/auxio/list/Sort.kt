@@ -165,6 +165,8 @@ data class Sort(val mode: Mode, val direction: Direction) {
         val intCode: Int
         /** The item ID of this sort mode in menu resources. */
         val itemId: Int
+        /** The string resource of the human-readable name of this sort mode. */
+        val stringRes: Int
 
         /**
          * Get a [Comparator] that sorts [Song]s according to this [Mode].
@@ -223,6 +225,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val itemId: Int
                 get() = R.id.option_sort_name
 
+            override val stringRes: Int
+                get() = R.string.lbl_name
+
             override fun getSongComparator(direction: Direction) =
                 compareByDynamic(direction, BasicComparator.SONG)
 
@@ -251,6 +256,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val itemId: Int
                 get() = R.id.option_sort_album
 
+            override val stringRes: Int
+                get() = R.string.lbl_album
+
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(
                     compareByDynamic(direction, BasicComparator.ALBUM) { it.album },
@@ -270,6 +278,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
             override val itemId: Int
                 get() = R.id.option_sort_artist
+
+            override val stringRes: Int
+                get() = R.string.lbl_artist
 
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(
@@ -300,6 +311,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val itemId: Int
                 get() = R.id.option_sort_year
 
+            override val stringRes: Int
+                get() = R.string.lbl_date
+
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(
                     compareByDynamic(direction, NullableComparator.DATE_RANGE) { it.album.dates },
@@ -321,6 +335,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
             override val itemId: Int
                 get() = R.id.option_sort_duration
+
+            override val stringRes: Int
+                get() = R.string.lbl_duration
 
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(
@@ -357,6 +374,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val itemId: Int
                 get() = R.id.option_sort_count
 
+            override val stringRes: Int
+                get() = R.string.lbl_song_count
+
             override fun getAlbumComparator(direction: Direction): Comparator<Album> =
                 MultiComparator(
                     compareByDynamic(direction) { it.songs.size }, compareBy(BasicComparator.ALBUM))
@@ -388,6 +408,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
             override val itemId: Int
                 get() = R.id.option_sort_disc
 
+            override val stringRes: Int
+                get() = R.string.lbl_disc
+
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(
                     compareByDynamic(direction, NullableComparator.DISC) { it.disc },
@@ -406,6 +429,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
             override val itemId: Int
                 get() = R.id.option_sort_track
+
+            override val stringRes: Int
+                get() = R.string.lbl_track
 
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(
@@ -426,6 +452,9 @@ data class Sort(val mode: Mode, val direction: Direction) {
 
             override val itemId: Int
                 get() = R.id.option_sort_date_added
+
+            override val stringRes: Int
+                get() = R.string.lbl_date_added
 
             override fun getSongComparator(direction: Direction): Comparator<Song> =
                 MultiComparator(

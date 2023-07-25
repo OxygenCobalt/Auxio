@@ -277,7 +277,7 @@
     <string name="set_playback">Воспроизведение</string>
     <string name="set_dirs_list">Папки</string>
     <string name="set_state">Состояние воспроизведения</string>
-    <string name="lbl_sort_dec">По убыванию</string>
+    <string name="lbl_sort_dsc">По убыванию</string>
     <string name="lbl_playlist">Плейлист</string>
     <string name="lbl_playlists">Плейлисты</string>
     <string name="desc_playlist_image">Обложка плейлиста для %s</string>

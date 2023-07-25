@@ -33,7 +33,7 @@
     <string name="lbl_disc">Levy</string>
     <string name="lbl_track">Raita</string>
     <string name="lbl_date_added">Lisäyspäivä</string>
-    <string name="lbl_sort_dec">Laskevasti</string>
+    <string name="lbl_sort_dsc">Laskevasti</string>
     <string name="lbl_playback">Nyt toistetaan</string>
     <string name="lbl_equalizer">Taajuuskorjain</string>
     <string name="lbl_play">Toista</string>

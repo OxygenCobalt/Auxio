@@ -263,7 +263,7 @@
     <string name="set_playback">Oynatma</string>
     <string name="set_library">Kütüphane</string>
     <string name="set_state">Kalıcılık</string>
-    <string name="lbl_sort_dec">Azalan</string>
+    <string name="lbl_sort_dsc">Azalan</string>
     <string name="set_ui_desc">Uygulamanın temasını ve renklerini değiştirin</string>
     <string name="set_dirs_list">Klasörler</string>
     <string name="set_personalize_desc">Arayüz kontrollerini ve davranışını özelleştirin</string>

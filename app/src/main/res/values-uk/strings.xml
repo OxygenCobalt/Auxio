@@ -274,7 +274,7 @@
     <string name="set_state">Стан відтворення</string>
     <string name="set_audio_desc">Налаштуйте звук і поведінку при відтворенні</string>
     <string name="set_dirs_list">Папки</string>
-    <string name="lbl_sort_dec">За спаданням</string>
+    <string name="lbl_sort_dsc">За спаданням</string>
     <string name="desc_playlist_image">Зображення списку відтворення для %s</string>
     <string name="lbl_playlist">Список відтворення</string>
     <string name="lbl_playlists">Списки відтворення</string>

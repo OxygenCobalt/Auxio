@@ -246,7 +246,7 @@
     <string name="lbl_genre">Genre</string>
     <string name="set_separators_and">Ampersand (&amp;)</string>
     <string name="lbl_edit">Bewerken</string>
-    <string name="lbl_sort_dec">Aflopend</string>
+    <string name="lbl_sort_dsc">Aflopend</string>
     <string name="err_did_not_wipe">Kan status niet wissen</string>
     <string name="desc_playlist_image">Afspeellijst-afbeelding voor %s</string>
     <string name="def_song_count">Geen nummers</string>
