@@ -187,7 +187,7 @@
     <string name="set_separators_slash">स्लैश (/)</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="fmt_editing">संपादन %s</string>
-    <string name="set_separators_plus">Plus (+)</string>
+    <string name="set_separators_plus">पलॅस (+)</string>
     <string name="set_separators_and">ऐंपरसैंड (&amp;)</string>
     <string name="set_dirs_mode">मोड</string>
     <string name="desc_no_cover">एल्बम कवर</string>
@@ -298,4 +298,5 @@
     <string name="clr_pink">गुलाबी</string>
     <string name="set_intelligent_sorting">बुद्धिमान छंटाई</string>
     <string name="set_intelligent_sorting_desc">संख्याओं या \"the\" जैसे शब्दों से शुरू होने वाले नामों को सही ढंग से क्रमबद्ध करें (अंग्रेजी भाषा के संगीत के साथ सबसे अच्छा काम करता है)</string>
+    <string name="set_play_song_by_itself">इसी गीत को चलाएं</string>
 </resources>

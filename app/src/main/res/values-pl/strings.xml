@@ -302,4 +302,7 @@
     <string name="fmt_editing">Edytowanie %s</string>
     <string name="set_square_covers_desc">Przytnij okładki do formatu 1:1</string>
     <string name="set_square_covers">Wymuś kwadratowe okładki</string>
+    <string name="lbl_song">Piosenka</string>
+    <string name="set_play_song_by_itself">Odtwarzanie utworu samodzielnie</string>
+    <string name="lbl_parent_detail">Widok</string>
 </resources>

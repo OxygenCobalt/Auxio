@@ -210,6 +210,9 @@
         <action
             android:id="@+id/play_from_genre"
             app:destination="@id/play_from_genre_dialog" />
+        <action
+            android:id="@+id/sort"
+            app:destination="@id/sort_dialog" />
     </fragment>
 
     <dialog
@@ -460,4 +463,10 @@
             android:name="parcel"
             app:argType="org.oxycblt.auxio.list.Menu$ForPlaylist$Parcel" />
     </dialog>
+
+    <dialog
+        android:id="@+id/sort_dialog"
+        android:name="org.oxycblt.auxio.list.sort.SortDialog"
+        android:label="sort_dialog"
+        tools:layout="@layout/dialog_sort" />
 </navigation>
