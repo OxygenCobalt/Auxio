@@ -102,6 +102,7 @@ constructor(
     /** The current list data derived from [currentAlbum]. */
     val albumList: StateFlow<List<Item>>
         get() = _albumList
+
     private val _albumInstructions = MutableEvent<UpdateInstructions>()
     /** Instructions for updating [albumList] in the UI. */
     val albumInstructions: Event<UpdateInstructions>

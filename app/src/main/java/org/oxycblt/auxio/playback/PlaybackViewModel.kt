@@ -67,6 +67,7 @@ constructor(
     /** The currently playing song. */
     val song: StateFlow<Song?>
         get() = _song
+
     private val _parent = MutableStateFlow<MusicParent?>(null)
     /** The [MusicParent] currently being played. Null if playback is occurring from all songs. */
     val parent: StateFlow<MusicParent?> = _parent
@@ -74,6 +75,7 @@ constructor(
     /** Whether playback is ongoing or paused. */
     val isPlaying: StateFlow<Boolean>
         get() = _isPlaying
+
     private val _positionDs = MutableStateFlow(0L)
     /** The current position, in deci-seconds (1/10th of a second). */
     val positionDs: StateFlow<Long>
@@ -83,6 +85,7 @@ constructor(
     /** The current [RepeatMode]. */
     val repeatMode: StateFlow<RepeatMode>
         get() = _repeatMode
+
     private val _isShuffled = MutableStateFlow(false)
     /** Whether the queue is shuffled or not. */
     val isShuffled: StateFlow<Boolean>

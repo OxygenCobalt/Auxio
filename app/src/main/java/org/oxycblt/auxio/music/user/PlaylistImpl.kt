@@ -42,7 +42,9 @@ private constructor(
 
     override fun equals(other: Any?) =
         other is PlaylistImpl && uid == other.uid && name == other.name && songs == other.songs
+
     override fun hashCode() = hashCode
+
     override fun toString() = "Playlist(uid=$uid, name=$name)"
 
     /**

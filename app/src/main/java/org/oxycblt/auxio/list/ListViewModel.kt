@@ -225,6 +225,7 @@ sealed interface Menu {
     @get:MenuRes val res: Int
     /** A [Parcel] version of this instance that can be used as a navigation argument. */
     val parcel: Parcel
+
     sealed interface Parcel : Parcelable
 
     /** Navigate to a [Song] menu dialog. */
@@ -257,6 +258,7 @@ sealed interface Menu {
     class ForAlbum(@MenuRes override val res: Int, val album: Album) : Menu {
         override val parcel
             get() = Parcel(res, album.uid)
+
         @Parcelize data class Parcel(val res: Int, val albumUid: Music.UID) : Menu.Parcel
     }
 
@@ -264,6 +266,7 @@ sealed interface Menu {
     class ForArtist(@MenuRes override val res: Int, val artist: Artist) : Menu {
         override val parcel
             get() = Parcel(res, artist.uid)
+
         @Parcelize data class Parcel(val res: Int, val artistUid: Music.UID) : Menu.Parcel
     }
 
@@ -271,6 +274,7 @@ sealed interface Menu {
     class ForGenre(@MenuRes override val res: Int, val genre: Genre) : Menu {
         override val parcel
             get() = Parcel(res, genre.uid)
+
         @Parcelize data class Parcel(val res: Int, val genreUid: Music.UID) : Menu.Parcel
     }
 
@@ -278,6 +282,7 @@ sealed interface Menu {
     class ForPlaylist(@MenuRes override val res: Int, val playlist: Playlist) : Menu {
         override val parcel
             get() = Parcel(res, playlist.uid)
+
         @Parcelize data class Parcel(val res: Int, val playlistUid: Music.UID) : Menu.Parcel
     }
 }

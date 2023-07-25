@@ -622,6 +622,7 @@ class HomeFragment :
         lifecycleOwner: LifecycleOwner
     ) : FragmentStateAdapter(fragmentManager, lifecycleOwner.lifecycle) {
         override fun getItemCount() = tabs.size
+
         override fun createFragment(position: Int): Fragment =
             when (tabs[position]) {
                 MusicType.SONGS -> SongListFragment()

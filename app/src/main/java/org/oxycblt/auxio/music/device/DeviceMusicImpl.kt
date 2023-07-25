@@ -102,8 +102,10 @@ class SongImpl(private val rawSong: RawSong, musicSettings: MusicSettings) : Son
     private val hashCode = 31 * uid.hashCode() + rawSong.hashCode()
 
     override fun hashCode() = hashCode
+
     override fun equals(other: Any?) =
         other is SongImpl && uid == other.uid && rawSong == other.rawSong
+
     override fun toString() = "Song(uid=$uid, name=$name)"
 
     private val artistMusicBrainzIds = rawSong.artistMusicBrainzIds.parseMultiValue(musicSettings)
@@ -313,8 +315,10 @@ class AlbumImpl(
     }
 
     override fun hashCode() = hashCode
+
     override fun equals(other: Any?) =
         other is AlbumImpl && uid == other.uid && rawAlbum == other.rawAlbum && songs == other.songs
+
     override fun toString() = "Album(uid=$uid, name=$name)"
 
     /**

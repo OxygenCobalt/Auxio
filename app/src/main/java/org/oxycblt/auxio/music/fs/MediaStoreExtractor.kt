@@ -74,9 +74,13 @@ interface MediaStoreExtractor {
     /** A black-box interface representing a query from the media database. */
     interface Query {
         val projectedTotal: Int
+
         fun moveToNext(): Boolean
+
         fun close()
+
         fun populateFileInfo(rawSong: RawSong)
+
         fun populateTags(rawSong: RawSong)
     }
 
@@ -285,7 +289,9 @@ private abstract class BaseMediaStoreExtractor(
         private val albumArtistIndex = cursor.getColumnIndexOrThrow(AUDIO_COLUMN_ALBUM_ARTIST)
 
         final override val projectedTotal = cursor.count
+
         final override fun moveToNext() = cursor.moveToNext()
+
         final override fun close() = cursor.close()
 
         override fun populateFileInfo(rawSong: RawSong) {
@@ -524,6 +530,7 @@ private class Api29MediaStoreExtractor(context: Context, musicSettings: MusicSet
         storageManager: StorageManager
     ) : BaseApi29MediaStoreExtractor.Query(cursor, genreNamesMap, storageManager) {
         private val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
+
         override fun populateTags(rawSong: RawSong) {
             super.populateTags(rawSong)
             // This extractor is volume-aware, but does not support the modern track columns.

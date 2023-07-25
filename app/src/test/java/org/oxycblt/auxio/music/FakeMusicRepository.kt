@@ -25,8 +25,10 @@ import org.oxycblt.auxio.music.user.UserLibrary
 open class FakeMusicRepository : MusicRepository {
     override val indexingState: IndexingState?
         get() = throw NotImplementedError()
+
     override val deviceLibrary: DeviceLibrary?
         get() = throw NotImplementedError()
+
     override val userLibrary: UserLibrary?
         get() = throw NotImplementedError()
 

@@ -74,8 +74,11 @@ class Date private constructor(private val tokens: List<Int>) : Comparable<Date>
     }
 
     override fun equals(other: Any?) = other is Date && compareTo(other) == 0
+
     override fun hashCode() = tokens.hashCode()
+
     override fun toString() = StringBuilder().appendDate().toString()
+
     override fun compareTo(other: Date): Int {
         for (i in 0 until max(tokens.size, other.tokens.size)) {
             val ai = tokens.getOrNull(i)

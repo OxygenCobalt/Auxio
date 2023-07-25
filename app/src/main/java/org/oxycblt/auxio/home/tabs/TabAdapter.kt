@@ -42,7 +42,9 @@ class TabAdapter(private val listener: EditClickListListener<Tab>) :
         private set
 
     override fun getItemCount() = tabs.size
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TabViewHolder.from(parent)
+
     override fun onBindViewHolder(holder: TabViewHolder, position: Int) {
         holder.bind(tabs[position], listener)
     }

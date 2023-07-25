@@ -37,6 +37,7 @@ abstract class FlexibleListAdapter<T, VH : RecyclerView.ViewHolder>(
     diffCallback: DiffUtil.ItemCallback<T>
 ) : RecyclerView.Adapter<VH>() {
     @Suppress("LeakingThis") private val differ = FlexibleListDiffer(this, diffCallback)
+
     final override fun getItemCount() = differ.currentList.size
     /** The current list stored by the adapter's differ instance. */
     val currentList: List<T>
@@ -118,6 +119,7 @@ private class FlexibleListDiffer<T>(
 
     private class MainThreadExecutor : Executor {
         val mHandler = Handler(Looper.getMainLooper())
+
         override fun execute(command: Runnable) {
             mHandler.post(command)
         }

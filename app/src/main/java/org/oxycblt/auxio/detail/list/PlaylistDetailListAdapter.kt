@@ -211,6 +211,7 @@ private constructor(private val binding: ItemEditableSongBinding) :
     PlaylistDetailListAdapter.ViewHolder {
     override val enabled: Boolean
         get() = binding.songDragHandle.isVisible
+
     override val root = binding.root
     override val body = binding.body
     override val delete = binding.background

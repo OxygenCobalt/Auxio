@@ -132,7 +132,9 @@ sealed interface Name : Comparable<Name> {
      */
     data class Unknown(@StringRes val stringRes: Int) : Name {
         override val thumb = "?"
+
         override fun resolve(context: Context) = context.getString(stringRes)
+
         override fun compareTo(other: Name) =
             when (other) {
                 // Unknown names do not need any direct comparison right now.

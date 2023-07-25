@@ -100,6 +100,7 @@ private class CacheImpl(cachedSongs: List<CachedSong>) : Cache {
     }
 
     override var invalidated = false
+
     override fun populate(rawSong: RawSong): Boolean {
         // For a cached raw song to be used, it must exist within the cache and have matching
         // addition and modification timestamps. Technically the addition timestamp doesn't

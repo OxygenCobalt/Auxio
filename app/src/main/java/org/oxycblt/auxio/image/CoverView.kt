@@ -88,6 +88,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val playingDrawable: AnimationDrawable,
         val pausedDrawable: Drawable
     )
+
     private val playbackIndicator: PlaybackIndicator?
     private val selectionBadge: ImageView?
 
@@ -105,6 +106,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val desc: String,
         @DrawableRes val errorRes: Int
     )
+
     private var currentCover: Cover? = null
 
     init {

@@ -41,6 +41,7 @@ class ArtistDetailHeaderAdapter(private val listener: Listener) :
     DetailHeaderAdapter<Artist, ArtistDetailHeaderViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ArtistDetailHeaderViewHolder.from(parent)
+
     override fun onBindHeader(holder: ArtistDetailHeaderViewHolder, parent: Artist) =
         holder.bind(parent, listener)
 }

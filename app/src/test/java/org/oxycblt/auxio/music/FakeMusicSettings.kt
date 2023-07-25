@@ -23,40 +23,54 @@ import org.oxycblt.auxio.music.fs.MusicDirectories
 
 open class FakeMusicSettings : MusicSettings {
     override fun registerListener(listener: MusicSettings.Listener) = throw NotImplementedError()
+
     override fun unregisterListener(listener: MusicSettings.Listener) = throw NotImplementedError()
+
     override var musicDirs: MusicDirectories
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
+
     override val excludeNonMusic: Boolean
         get() = throw NotImplementedError()
+
     override val shouldBeObserving: Boolean
         get() = throw NotImplementedError()
+
     override var multiValueSeparators: String
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
+
     override val intelligentSorting: Boolean
         get() = throw NotImplementedError()
+
     override var songSort: Sort
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
+
     override var albumSort: Sort
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
+
     override var artistSort: Sort
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
+
     override var genreSort: Sort
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
+
     override var playlistSort: Sort
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
+
     override var albumSongSort: Sort
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
+
     override var artistSongSort: Sort
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()
+
     override var genreSongSort: Sort
         get() = throw NotImplementedError()
         set(_) = throw NotImplementedError()

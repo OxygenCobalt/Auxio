@@ -176,6 +176,7 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context
                 apply()
             }
         }
+
     override var albumSongSort: Sort
         get() {
             var sort =

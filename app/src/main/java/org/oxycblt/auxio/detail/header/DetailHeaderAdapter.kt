@@ -30,7 +30,9 @@ import org.oxycblt.auxio.util.logD
 abstract class DetailHeaderAdapter<T : MusicParent, VH : RecyclerView.ViewHolder> :
     RecyclerView.Adapter<VH>() {
     private var currentParent: T? = null
+
     final override fun getItemCount() = 1
+
     final override fun onBindViewHolder(holder: VH, position: Int) =
         onBindHeader(holder, requireNotNull(currentParent))
 

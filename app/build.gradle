@@ -6,7 +6,8 @@ plugins {
     id "kotlin-parcelize"
     id "dagger.hilt.android.plugin"
     id "kotlin-kapt"
-    id 'org.jetbrains.kotlin.android'
+    id "com.google.devtools.ksp"
+    id "org.jetbrains.kotlin.android"
 }
 
 android {
@@ -118,7 +119,9 @@ dependencies {
     // Database
     def room_version = '2.6.0-alpha02'
     implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    // I have no clue why, but using KSP breaks the playlist database definition.
+    //noinspection KaptUsageInsteadOfKsp
+    ksp "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
     // --- THIRD PARTY ---

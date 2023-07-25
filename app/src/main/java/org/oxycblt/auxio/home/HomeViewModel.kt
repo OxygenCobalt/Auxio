@@ -59,6 +59,7 @@ constructor(
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
     val songsList: StateFlow<List<Song>>
         get() = _songsList
+
     private val _songsInstructions = MutableEvent<UpdateInstructions>()
     /** Instructions for how to update [songsList] in the UI. */
     val songsInstructions: Event<UpdateInstructions>
@@ -68,6 +69,7 @@ constructor(
     /** A list of [Album]s, sorted by the preferred [Sort], to be shown in the home view. */
     val albumsList: StateFlow<List<Album>>
         get() = _albumsLists
+
     private val _albumsInstructions = MutableEvent<UpdateInstructions>()
     /** Instructions for how to update [albumsList] in the UI. */
     val albumsInstructions: Event<UpdateInstructions>
@@ -80,6 +82,7 @@ constructor(
      */
     val artistsList: MutableStateFlow<List<Artist>>
         get() = _artistsList
+
     private val _artistsInstructions = MutableEvent<UpdateInstructions>()
     /** Instructions for how to update [artistsList] in the UI. */
     val artistsInstructions: Event<UpdateInstructions>
@@ -89,6 +92,7 @@ constructor(
     /** A list of [Genre]s, sorted by the preferred [Sort], to be shown in the home view. */
     val genresList: StateFlow<List<Genre>>
         get() = _genresList
+
     private val _genresInstructions = MutableEvent<UpdateInstructions>()
     /** Instructions for how to update [genresList] in the UI. */
     val genresInstructions: Event<UpdateInstructions>
@@ -98,6 +102,7 @@ constructor(
     /** A list of [Playlist]s, sorted by the preferred [Sort], to be shown in the home view. */
     val playlistsList: StateFlow<List<Playlist>>
         get() = _playlistsList
+
     private val _playlistsInstructions = MutableEvent<UpdateInstructions>()
     /** Instructions for how to update [genresList] in the UI. */
     val playlistsInstructions: Event<UpdateInstructions>
@@ -289,5 +294,6 @@ constructor(
 
 sealed interface Outer {
     object Settings : Outer
+
     object About : Outer
 }

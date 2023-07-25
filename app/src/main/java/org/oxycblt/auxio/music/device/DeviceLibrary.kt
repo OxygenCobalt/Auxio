@@ -266,14 +266,19 @@ class DeviceLibraryImpl(
 
     // All other music is built from songs, so comparison only needs to check songs.
     override fun equals(other: Any?) = other is DeviceLibrary && other.songs == songs
+
     override fun hashCode() = songs.hashCode()
+
     override fun toString() =
         "DeviceLibrary(songs=${songs.size}, albums=${albums.size}, " +
             "artists=${artists.size}, genres=${genres.size})"
 
     override fun findSong(uid: Music.UID): Song? = songUidMap[uid]
+
     override fun findAlbum(uid: Music.UID): Album? = albumUidMap[uid]
+
     override fun findArtist(uid: Music.UID): Artist? = artistUidMap[uid]
+
     override fun findGenre(uid: Music.UID): Genre? = genreUidMap[uid]
 
     override fun findSongForUri(context: Context, uri: Uri) =
