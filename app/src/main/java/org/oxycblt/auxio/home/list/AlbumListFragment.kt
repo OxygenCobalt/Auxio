@@ -21,7 +21,6 @@ package org.oxycblt.auxio.home.list
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,7 +39,6 @@ import org.oxycblt.auxio.list.recycler.AlbumViewHolder
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -81,7 +79,7 @@ class AlbumListFragment :
             listener = this@AlbumListFragment
         }
 
-        collectImmediately(homeModel.albumsList, ::updateAlbums)
+        collectImmediately(homeModel.albumList, ::updateAlbums)
         collectImmediately(listModel.selected, ::updateSelection)
         collectImmediately(
             playbackModel.song, playbackModel.parent, playbackModel.isPlaying, ::updatePlayback)
@@ -97,9 +95,9 @@ class AlbumListFragment :
     }
 
     override fun getPopup(pos: Int): String? {
-        val album = homeModel.albumsList.value[pos]
+        val album = homeModel.albumList.value[pos]
         // Change how we display the popup depending on the current sort mode.
-        return when (homeModel.getSortForTab(MusicType.ALBUMS).mode) {
+        return when (homeModel.albumSort.mode) {
             // By Name -> Use Name
             is Sort.Mode.ByName -> album.name.thumb
 
@@ -141,12 +139,12 @@ class AlbumListFragment :
         detailModel.showAlbum(item)
     }
 
-    override fun onOpenMenu(item: Album, anchor: View) {
+    override fun onOpenMenu(item: Album) {
         listModel.openMenu(R.menu.item_album, item)
     }
 
     private fun updateAlbums(albums: List<Album>) {
-        albumAdapter.update(albums, homeModel.albumsInstructions.consume())
+        albumAdapter.update(albums, homeModel.albumInstructions.consume())
     }
 
     private fun updateSelection(selection: List<Music>) {

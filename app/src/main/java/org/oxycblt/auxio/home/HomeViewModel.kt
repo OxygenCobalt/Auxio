@@ -55,62 +55,82 @@ constructor(
     private val musicSettings: MusicSettings
 ) : ViewModel(), MusicRepository.UpdateListener, HomeSettings.Listener {
 
-    private val _songsList = MutableStateFlow(listOf<Song>())
+    private val _songList = MutableStateFlow(listOf<Song>())
     /** A list of [Song]s, sorted by the preferred [Sort], to be shown in the home view. */
-    val songsList: StateFlow<List<Song>>
-        get() = _songsList
+    val songList: StateFlow<List<Song>>
+        get() = _songList
 
-    private val _songsInstructions = MutableEvent<UpdateInstructions>()
-    /** Instructions for how to update [songsList] in the UI. */
-    val songsInstructions: Event<UpdateInstructions>
-        get() = _songsInstructions
+    private val _songInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for how to update [songList] in the UI. */
+    val songInstructions: Event<UpdateInstructions>
+        get() = _songInstructions
 
-    private val _albumsLists = MutableStateFlow(listOf<Album>())
-    /** A list of [Album]s, sorted by the preferred [Sort], to be shown in the home view. */
-    val albumsList: StateFlow<List<Album>>
-        get() = _albumsLists
-
-    private val _albumsInstructions = MutableEvent<UpdateInstructions>()
-    /** Instructions for how to update [albumsList] in the UI. */
-    val albumsInstructions: Event<UpdateInstructions>
-        get() = _albumsInstructions
-
-    private val _artistsList = MutableStateFlow(listOf<Artist>())
-    /**
-     * A list of [Artist]s, sorted by the preferred [Sort], to be shown in the home view. Note that
-     * if "Hide collaborators" is on, this list will not include collaborator [Artist]s.
-     */
-    val artistsList: MutableStateFlow<List<Artist>>
-        get() = _artistsList
-
-    private val _artistsInstructions = MutableEvent<UpdateInstructions>()
-    /** Instructions for how to update [artistsList] in the UI. */
-    val artistsInstructions: Event<UpdateInstructions>
-        get() = _artistsInstructions
-
-    private val _genresList = MutableStateFlow(listOf<Genre>())
-    /** A list of [Genre]s, sorted by the preferred [Sort], to be shown in the home view. */
-    val genresList: StateFlow<List<Genre>>
-        get() = _genresList
-
-    private val _genresInstructions = MutableEvent<UpdateInstructions>()
-    /** Instructions for how to update [genresList] in the UI. */
-    val genresInstructions: Event<UpdateInstructions>
-        get() = _genresInstructions
-
-    private val _playlistsList = MutableStateFlow(listOf<Playlist>())
-    /** A list of [Playlist]s, sorted by the preferred [Sort], to be shown in the home view. */
-    val playlistsList: StateFlow<List<Playlist>>
-        get() = _playlistsList
-
-    private val _playlistsInstructions = MutableEvent<UpdateInstructions>()
-    /** Instructions for how to update [genresList] in the UI. */
-    val playlistsInstructions: Event<UpdateInstructions>
-        get() = _playlistsInstructions
+    /** The current [Sort] used for [songList]. */
+    val songSort: Sort
+        get() = musicSettings.songSort
 
     /** The [PlaySong] instructions to use when playing a [Song]. */
     val playWith
         get() = playbackSettings.playInListWith
+
+    private val _albumList = MutableStateFlow(listOf<Album>())
+    /** A list of [Album]s, sorted by the preferred [Sort], to be shown in the home view. */
+    val albumList: StateFlow<List<Album>>
+        get() = _albumList
+
+    private val _albumInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for how to update [albumList] in the UI. */
+    val albumInstructions: Event<UpdateInstructions>
+        get() = _albumInstructions
+
+    /** The current [Sort] used for [albumList]. */
+    val albumSort: Sort
+        get() = musicSettings.albumSort
+
+    private val _artistList = MutableStateFlow(listOf<Artist>())
+    /**
+     * A list of [Artist]s, sorted by the preferred [Sort], to be shown in the home view. Note that
+     * if "Hide collaborators" is on, this list will not include collaborator [Artist]s.
+     */
+    val artistList: MutableStateFlow<List<Artist>>
+        get() = _artistList
+
+    private val _artistInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for how to update [artistList] in the UI. */
+    val artistInstructions: Event<UpdateInstructions>
+        get() = _artistInstructions
+
+    /** The current [Sort] used for [artistList]. */
+    val artistSort: Sort
+        get() = musicSettings.artistSort
+
+    private val _genreList = MutableStateFlow(listOf<Genre>())
+    /** A list of [Genre]s, sorted by the preferred [Sort], to be shown in the home view. */
+    val genreList: StateFlow<List<Genre>>
+        get() = _genreList
+
+    private val _genreInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for how to update [genreList] in the UI. */
+    val genreInstructions: Event<UpdateInstructions>
+        get() = _genreInstructions
+
+    /** The current [Sort] used for [genreList]. */
+    val genreSort: Sort
+        get() = musicSettings.genreSort
+
+    private val _playlistList = MutableStateFlow(listOf<Playlist>())
+    /** A list of [Playlist]s, sorted by the preferred [Sort], to be shown in the home view. */
+    val playlistList: StateFlow<List<Playlist>>
+        get() = _playlistList
+
+    private val _playlistInstructions = MutableEvent<UpdateInstructions>()
+    /** Instructions for how to update [genreList] in the UI. */
+    val playlistInstructions: Event<UpdateInstructions>
+        get() = _playlistInstructions
+
+    /** The current [Sort] used for [genreList]. */
+    val playlistSort: Sort
+        get() = musicSettings.playlistSort
 
     /**
      * A list of [MusicType] corresponding to the current [Tab] configuration, excluding invisible
@@ -157,12 +177,12 @@ constructor(
             logD("Refreshing library")
             // Get the each list of items in the library to use as our list data.
             // Applying the preferred sorting to them.
-            _songsInstructions.put(UpdateInstructions.Diff)
-            _songsList.value = musicSettings.songSort.songs(deviceLibrary.songs)
-            _albumsInstructions.put(UpdateInstructions.Diff)
-            _albumsLists.value = musicSettings.albumSort.albums(deviceLibrary.albums)
-            _artistsInstructions.put(UpdateInstructions.Diff)
-            _artistsList.value =
+            _songInstructions.put(UpdateInstructions.Diff)
+            _songList.value = musicSettings.songSort.songs(deviceLibrary.songs)
+            _albumInstructions.put(UpdateInstructions.Diff)
+            _albumList.value = musicSettings.albumSort.albums(deviceLibrary.albums)
+            _artistInstructions.put(UpdateInstructions.Diff)
+            _artistList.value =
                 musicSettings.artistSort.artists(
                     if (homeSettings.shouldHideCollaborators) {
                         logD("Filtering collaborator artists")
@@ -172,15 +192,15 @@ constructor(
                         logD("Using all artists")
                         deviceLibrary.artists
                     })
-            _genresInstructions.put(UpdateInstructions.Diff)
-            _genresList.value = musicSettings.genreSort.genres(deviceLibrary.genres)
+            _genreInstructions.put(UpdateInstructions.Diff)
+            _genreList.value = musicSettings.genreSort.genres(deviceLibrary.genres)
         }
 
         val userLibrary = musicRepository.userLibrary
         if (changes.userLibrary && userLibrary != null) {
             logD("Refreshing playlists")
-            _playlistsInstructions.put(UpdateInstructions.Diff)
-            _playlistsList.value = musicSettings.playlistSort.playlists(userLibrary.playlists)
+            _playlistInstructions.put(UpdateInstructions.Diff)
+            _playlistList.value = musicSettings.playlistSort.playlists(userLibrary.playlists)
         }
     }
 
@@ -199,59 +219,58 @@ constructor(
     }
 
     /**
-     * Get the preferred [Sort] for a given [Tab].
+     * Apply a new [Sort] to [songList].
      *
-     * @param tabType The [MusicType] of the [Tab] desired.
-     * @return The [Sort] preferred for that [Tab]
+     * @param sort The [Sort] to apply.
      */
-    fun getSortForTab(tabType: MusicType) =
-        when (tabType) {
-            MusicType.SONGS -> musicSettings.songSort
-            MusicType.ALBUMS -> musicSettings.albumSort
-            MusicType.ARTISTS -> musicSettings.artistSort
-            MusicType.GENRES -> musicSettings.genreSort
-            MusicType.PLAYLISTS -> musicSettings.playlistSort
-        }
+    fun applySongSort(sort: Sort) {
+        musicSettings.songSort = sort
+        _songInstructions.put(UpdateInstructions.Replace(0))
+        _songList.value = musicSettings.songSort.songs(_songList.value)
+    }
 
     /**
-     * Update the preferred [Sort] for the current [Tab]. Will update corresponding list.
+     * Apply a new [Sort] to [albumList].
      *
-     * @param sort The new [Sort] to apply. Assumed to be an allowed sort for the current [Tab].
+     * @param sort The [Sort] to apply.
      */
-    fun setSortForCurrentTab(sort: Sort) {
-        // Can simply re-sort the current list of items without having to access the library.
-        when (val type = _currentTabType.value) {
-            MusicType.SONGS -> {
-                logD("Updating song [$type] sort mode to $sort")
-                musicSettings.songSort = sort
-                _songsInstructions.put(UpdateInstructions.Replace(0))
-                _songsList.value = sort.songs(_songsList.value)
-            }
-            MusicType.ALBUMS -> {
-                logD("Updating album [$type] sort mode to $sort")
-                musicSettings.albumSort = sort
-                _albumsInstructions.put(UpdateInstructions.Replace(0))
-                _albumsLists.value = sort.albums(_albumsLists.value)
-            }
-            MusicType.ARTISTS -> {
-                logD("Updating artist [$type] sort mode to $sort")
-                musicSettings.artistSort = sort
-                _artistsInstructions.put(UpdateInstructions.Replace(0))
-                _artistsList.value = sort.artists(_artistsList.value)
-            }
-            MusicType.GENRES -> {
-                logD("Updating genre [$type] sort mode to $sort")
-                musicSettings.genreSort = sort
-                _genresInstructions.put(UpdateInstructions.Replace(0))
-                _genresList.value = sort.genres(_genresList.value)
-            }
-            MusicType.PLAYLISTS -> {
-                logD("Updating playlist [$type] sort mode to $sort")
-                musicSettings.playlistSort = sort
-                _playlistsInstructions.put(UpdateInstructions.Replace(0))
-                _playlistsList.value = sort.playlists(_playlistsList.value)
-            }
-        }
+    fun applyAlbumSort(sort: Sort) {
+        musicSettings.albumSort = sort
+        _albumInstructions.put(UpdateInstructions.Replace(0))
+        _albumList.value = musicSettings.albumSort.albums(_albumList.value)
+    }
+
+    /**
+     * Apply a new [Sort] to [artistList].
+     *
+     * @param sort The [Sort] to apply.
+     */
+    fun applyArtistSort(sort: Sort) {
+        musicSettings.artistSort = sort
+        _artistInstructions.put(UpdateInstructions.Replace(0))
+        _artistList.value = musicSettings.artistSort.artists(_artistList.value)
+    }
+
+    /**
+     * Apply a new [Sort] to [genreList].
+     *
+     * @param sort The [Sort] to apply.
+     */
+    fun applyGenreSort(sort: Sort) {
+        musicSettings.genreSort = sort
+        _genreInstructions.put(UpdateInstructions.Replace(0))
+        _genreList.value = musicSettings.genreSort.genres(_genreList.value)
+    }
+
+    /**
+     * Apply a new [Sort] to [playlistList].
+     *
+     * @param sort The [Sort] to apply.
+     */
+    fun applyPlaylistSort(sort: Sort) {
+        musicSettings.playlistSort = sort
+        _playlistInstructions.put(UpdateInstructions.Replace(0))
+        _playlistList.value = musicSettings.playlistSort.playlists(_playlistList.value)
     }
 
     /**
