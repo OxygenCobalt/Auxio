@@ -26,7 +26,6 @@ import com.google.android.material.button.MaterialButtonToggleGroup
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSortBinding
 import org.oxycblt.auxio.list.ClickableListListener
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.ui.ViewBindingBottomSheetDialogFragment
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -35,7 +34,7 @@ abstract class SortDialog :
     ViewBindingBottomSheetDialogFragment<DialogSortBinding>(),
     ClickableListListener<Sort.Mode>,
     MaterialButtonToggleGroup.OnButtonCheckedListener {
-    private val modeAdapter = SortModeAdapter(this)
+    private val modeAdapter = SortModeAdapter(@Suppress("LeakingThis") this)
 
     abstract fun getInitialSort(): Sort?
 

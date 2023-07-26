@@ -44,12 +44,12 @@ sealed interface PlaySong {
     val intCode: Int
 
     /** Play a Song from the entire library of songs. */
-    object FromAll : PlaySong {
+    data object FromAll : PlaySong {
         override val intCode = IntegerTable.PLAY_SONG_FROM_ALL
     }
 
     /** Play a song from it's album. */
-    object FromAlbum : PlaySong {
+    data object FromAlbum : PlaySong {
         override val intCode = IntegerTable.PLAY_SONG_FROM_ALBUM
     }
 
@@ -83,7 +83,7 @@ sealed interface PlaySong {
     }
 
     /** Only play the given song, include nothing else in the queue. */
-    object ByItself : PlaySong {
+    data object ByItself : PlaySong {
         override val intCode = IntegerTable.PLAY_SONG_BY_ITSELF
     }
 

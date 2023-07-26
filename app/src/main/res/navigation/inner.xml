@@ -469,10 +469,4 @@
             android:name="parcel"
             app:argType="org.oxycblt.auxio.list.Menu$ForPlaylist$Parcel" />
     </dialog>
-
-    <dialog
-        android:id="@+id/sort_dialog"
-        android:name="org.oxycblt.auxio.list.sort.SortDialog"
-        android:label="sort_dialog"
-        tools:layout="@layout/dialog_sort" />
 </navigation>

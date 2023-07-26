@@ -161,7 +161,6 @@
     <integer name="play_song_from_album">0xA120</integer>
     <integer name="play_song_from_artist">0xA121</integer>
     <integer name="play_song_from_genre">0xA122</integer>
-    <integer name="play_song_from_playlist">0xA123</integer>
     <integer name="play_song_by_itself">0xA124</integer>
 
     <integer name="replay_gain_track">0xA111</integer>

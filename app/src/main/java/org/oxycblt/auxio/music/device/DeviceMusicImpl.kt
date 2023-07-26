@@ -20,7 +20,7 @@ package org.oxycblt.auxio.music.device
 
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.extractor.CoverUri
-import org.oxycblt.auxio.list.Sort
+import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre

@@ -25,8 +25,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
-import android.os.Build
 import android.os.IBinder
+import androidx.core.content.ContextCompat
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -165,18 +165,8 @@ class PlaybackService :
                 addAction(WidgetProvider.ACTION_WIDGET_UPDATE)
             }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            registerReceiver(
-                systemReceiver,
-                intentFilter,
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    RECEIVER_NOT_EXPORTED
-                } else {
-                    0
-                })
-        } else {
-            registerReceiver(systemReceiver, intentFilter)
-        }
+        ContextCompat.registerReceiver(
+            this, systemReceiver, intentFilter, ContextCompat.RECEIVER_NOT_EXPORTED)
 
         logD("Service created")
     }

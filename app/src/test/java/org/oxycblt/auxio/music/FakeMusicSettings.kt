@@ -18,7 +18,7 @@
  
 package org.oxycblt.auxio.music
 
-import org.oxycblt.auxio.list.Sort
+import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.fs.MusicDirectories
 
 open class FakeMusicSettings : MusicSettings {

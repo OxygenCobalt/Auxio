@@ -172,7 +172,7 @@
     <string name="set_separators">मल्टी-मूल्य विभाजक</string>
     <string name="fmt_lib_genre_count">लोड की गई शैलियाँ: %d</string>
     <string name="fmt_lib_album_count">लोड किए गए एल्बम: %d</string>
-    <string name="fmt_indexing">आपकी संगीत लाइब्रेरी लोड कर रहे हैं... (%1$d/%2$d)</string>
+    <string name="fmt_indexing">आपकी संगीत लाइब्रेरी लोड कर रहे हैं… (%1$d/%2$d)</string>
     <string name="fmt_bitrate">%d kbps</string>
     <string name="lng_indexing">आपकी संगीत लाइब्रेरी लोड कर रहे हैं…</string>
     <string name="lng_playlist_created">प्लेलिस्ट बनाई गई</string>

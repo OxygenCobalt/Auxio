@@ -24,7 +24,7 @@ import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.list.Sort
+import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.fs.Directory
 import org.oxycblt.auxio.music.fs.MusicDirectories
 import org.oxycblt.auxio.settings.Settings
@@ -178,20 +178,11 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context
         }
 
     override var albumSongSort: Sort
-        get() {
-            var sort =
-                Sort.fromIntCode(
-                    sharedPreferences.getInt(
-                        getString(R.string.set_key_album_songs_sort), Int.MIN_VALUE))
-                    ?: Sort(Sort.Mode.ByDisc, Sort.Direction.ASCENDING)
-
-            // Correct legacy album sort modes to Disc
-            if (sort.mode is Sort.Mode.ByName) {
-                sort = sort.withMode(Sort.Mode.ByDisc)
-            }
-
-            return sort
-        }
+        get() =
+            Sort.fromIntCode(
+                sharedPreferences.getInt(
+                    getString(R.string.set_key_album_songs_sort), Int.MIN_VALUE))
+                ?: Sort(Sort.Mode.ByDisc, Sort.Direction.ASCENDING)
         set(value) {
             sharedPreferences.edit {
                 putInt(getString(R.string.set_key_album_songs_sort), value.intCode)

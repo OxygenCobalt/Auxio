@@ -57,7 +57,7 @@ sealed interface IndexingState {
  */
 sealed interface IndexingProgress {
     /** Other work is being done that does not have a defined progress. */
-    object Indeterminate : IndexingProgress
+    data object Indeterminate : IndexingProgress
 
     /**
      * Songs are currently being loaded.

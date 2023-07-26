@@ -70,7 +70,7 @@ abstract class FlexibleListAdapter<T, VH : RecyclerView.ViewHolder>(
  */
 sealed interface UpdateInstructions {
     /** Use an asynchronous diff. Useful for unpredictable updates, but looks chaotic and janky. */
-    object Diff : UpdateInstructions
+    data object Diff : UpdateInstructions
 
     /**
      * Visually replace all items from a given point. More visually coherent than [Diff].

@@ -121,7 +121,6 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
             // case, we will try to manually handle these cases before we try to launch the
             // browser.
             logD("Resolving browser activity for chooser")
-            @Suppress("DEPRECATION")
             val pkgName =
                 context.packageManager
                     .resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY)

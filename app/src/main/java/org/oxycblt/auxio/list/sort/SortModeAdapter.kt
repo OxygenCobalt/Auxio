@@ -23,7 +23,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import org.oxycblt.auxio.databinding.ItemSortModeBinding
 import org.oxycblt.auxio.list.ClickableListListener
-import org.oxycblt.auxio.list.Sort
 import org.oxycblt.auxio.list.adapter.FlexibleListAdapter
 import org.oxycblt.auxio.list.recycler.DialogRecyclerView
 import org.oxycblt.auxio.util.context

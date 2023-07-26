@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Auxio Project
+ * Copyright (c) 2023 Auxio Project
  * Sort.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.list
+package org.oxycblt.auxio.list.sort
 
 import kotlin.math.max
 import org.oxycblt.auxio.IntegerTable
@@ -25,7 +25,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.Date
@@ -41,22 +40,6 @@ import org.oxycblt.auxio.music.info.Disc
  * @author Alexander Capehart (OxygenCobalt)
  */
 data class Sort(val mode: Mode, val direction: Direction) {
-    /**
-     * Create a new [Sort] with the same [mode], but a different [Direction].
-     *
-     * @param direction The new [Direction] to sort in.
-     * @return A new sort with the same mode, but with the new [Direction] value applied.
-     */
-    fun withDirection(direction: Direction) = Sort(mode, direction)
-
-    /**
-     * Create a new [Sort] with the same [direction] value, but different [mode] value.
-     *
-     * @param mode Tbe new mode to use for the Sort.
-     * @return A new sort with the same [direction] value, but with the new [mode] applied.
-     */
-    fun withMode(mode: Mode) = Sort(mode, direction)
-
     /**
      * Sort a list of [Song]s.
      *
@@ -215,7 +198,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
          *
          * @see Music.name
          */
-        object ByName : Mode {
+        data object ByName : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_NAME
 
@@ -243,7 +226,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
          *
          * @see Album.name
          */
-        object ByAlbum : Mode {
+        data object ByAlbum : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_ALBUM
 
@@ -263,7 +246,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
          *
          * @see Artist.name
          */
-        object ByArtist : Mode {
+        data object ByArtist : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_ARTIST
 
@@ -292,7 +275,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
          * @see Song.date
          * @see Album.dates
          */
-        object ByDate : Mode {
+        data object ByDate : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_YEAR
 
@@ -314,7 +297,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
         }
 
         /** Sort by the duration of an item. */
-        object ByDuration : Mode {
+        data object ByDuration : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_DURATION
 
@@ -344,12 +327,8 @@ data class Sort(val mode: Mode, val direction: Direction) {
                     compareBy(BasicComparator.PLAYLIST))
         }
 
-        /**
-         * Sort by the amount of songs an item contains. Only available for [MusicParent]s.
-         *
-         * @see MusicParent.songs
-         */
-        object ByCount : Mode {
+        /** Sort by the amount of songs an item contains. Only available for MusicParents. */
+        data object ByCount : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_COUNT
 
@@ -380,7 +359,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
          *
          * @see Song.disc
          */
-        object ByDisc : Mode {
+        data object ByDisc : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_DISC
 
@@ -399,7 +378,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
          *
          * @see Song.track
          */
-        object ByTrack : Mode {
+        data object ByTrack : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_TRACK
 
@@ -419,7 +398,7 @@ data class Sort(val mode: Mode, val direction: Direction) {
          * @see Song.dateAdded
          * @see Album.dates
          */
-        object ByDateAdded : Mode {
+        data object ByDateAdded : Mode {
             override val intCode: Int
                 get() = IntegerTable.SORT_BY_DATE_ADDED
 

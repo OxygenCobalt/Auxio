@@ -51,7 +51,7 @@ abstract class UserMusicDatabase : RoomDatabase() {
  * @author Alexander Capehart (OxygenCobalt)
  */
 @Dao
-abstract class PlaylistDao() {
+abstract class PlaylistDao {
     /**
      * Read out all playlists stored in the database.
      *

@@ -24,7 +24,7 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.oxycblt.auxio.databinding.DialogSortBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.list.Sort
+import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.list.sort.SortDialog
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.util.collectImmediately

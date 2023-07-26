@@ -111,9 +111,7 @@ sealed interface ArtistShowChoices {
             newLibrary.findSong(uid)?.let { FromSong(it) }
     }
 
-    /**
-     * Backing implementation of [ArtistShowChoices] that is based on an [AlbumArtistShowChoices].
-     */
+    /** Backing implementation of [ArtistShowChoices] that is based on an [Album]. */
     data class FromAlbum(val album: Album) : ArtistShowChoices {
         override val uid = album.uid
         override val choices = album.artists

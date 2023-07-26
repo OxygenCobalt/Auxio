@@ -104,6 +104,8 @@
     <string name="lbl_date_added">Date added</string>
 
     <string name="lbl_sort">Sort</string>
+    <string name="lbl_sort_mode">Sort by</string>
+    <string name="lbl_sort_direction">Direction</string>
     <string name="lbl_sort_asc">Ascending</string>
     <string name="lbl_sort_dsc">Descending</string>
 

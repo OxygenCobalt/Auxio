@@ -37,6 +37,7 @@ import org.oxycblt.auxio.util.logD
 class MediaButtonReceiver : BroadcastReceiver() {
     @Inject lateinit var playbackManager: PlaybackStateManager
 
+    // TODO: Figure this out
     override fun onReceive(context: Context, intent: Intent) {
         if (playbackManager.queue.currentSong != null) {
             // We have a song, so we can assume that the service will start a foreground state.
