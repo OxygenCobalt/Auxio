@@ -298,4 +298,6 @@
     <string name="lbl_song">歌曲</string>
     <string name="lbl_parent_detail">查看</string>
     <string name="set_play_song_by_itself">自行播放歌曲</string>
+    <string name="lbl_sort_mode">排序依据</string>
+    <string name="lbl_sort_direction">说明</string>
 </resources>
