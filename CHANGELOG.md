@@ -3,7 +3,8 @@
 ## dev
 
 #### What's New
-- Menus have been refreshed with a cleaner look
+- Item and sort menus have been refreshed with a cleaner look
+- Added ability to sort playlists
 - Added option to play song by itself in library/item details
 
 #### What's Improved

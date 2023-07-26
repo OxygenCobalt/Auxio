@@ -310,6 +310,9 @@
             android:name="playlistUid"
             app:argType="org.oxycblt.auxio.music.Music$UID" />
         <action
+            android:id="@+id/sort"
+            app:destination="@+id/playlist_song_sort_dialog" />
+        <action
             android:id="@+id/show_song"
             app:destination="@id/song_detail_dialog" />
         <action
@@ -337,6 +340,12 @@
             android:id="@+id/play_from_genre"
             app:destination="@id/play_from_genre_dialog" />
     </fragment>
+
+    <dialog
+        android:id="@+id/playlist_song_sort_dialog"
+        android:name="org.oxycblt.auxio.detail.sort.PlaylistSongSortDialog"
+        android:label="PlaylistSongSortDialog"
+        tools:layout="@layout/dialog_sort" />
 
     <dialog
         android:id="@+id/new_playlist_dialog"

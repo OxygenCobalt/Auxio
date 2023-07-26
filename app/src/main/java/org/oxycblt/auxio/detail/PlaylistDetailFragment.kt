@@ -182,9 +182,12 @@ class PlaylistDetailFragment :
             initialNavDestinationChange = true
             return
         }
-        // Drop any pending playlist edits when navigating away. This could actually happen
-        // if the user is quick enough.
-        detailModel.dropPlaylistEdit()
+        if (destination.id != R.id.playlist_detail_fragment &&
+            destination.id != R.id.playlist_song_sort_dialog) {
+            // Drop any pending playlist edits when navigating away. This could actually happen
+            // if the user is quick enough.
+            detailModel.dropPlaylistEdit()
+        }
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -251,7 +254,9 @@ class PlaylistDetailFragment :
         detailModel.startPlaylistEdit()
     }
 
-    override fun onOpenSortMenu() {}
+    override fun onOpenSortMenu() {
+        findNavController().navigateSafe(PlaylistDetailFragmentDirections.sort())
+    }
 
     private fun updatePlaylist(playlist: Playlist?) {
         if (playlist == null) {

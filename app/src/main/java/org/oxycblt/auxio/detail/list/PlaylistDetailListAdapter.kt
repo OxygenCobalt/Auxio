@@ -170,10 +170,25 @@ private class EditHeaderViewHolder private constructor(private val binding: Item
             TooltipCompat.setTooltipText(this, contentDescription)
             setOnClickListener { listener.onStartEdit() }
         }
+        binding.headerSort.apply {
+            TooltipCompat.setTooltipText(this, contentDescription)
+            setOnClickListener { listener.onOpenSortMenu() }
+        }
     }
 
     override fun updateEditing(editing: Boolean) {
-        binding.headerEdit.isEnabled = !editing
+        binding.headerEdit.apply {
+            isVisible = !editing
+            isClickable = !editing
+            isFocusable = !editing
+            jumpDrawablesToCurrentState()
+        }
+        binding.headerSort.apply {
+            isVisible = editing
+            isClickable = editing
+            isFocusable = editing
+            jumpDrawablesToCurrentState()
+        }
     }
 
     companion object {

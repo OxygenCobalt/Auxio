@@ -481,6 +481,17 @@ constructor(
     }
 
     /**
+     * Apply a [Sort] to the edited playlist. Does nothing if not in an editing session.
+     *
+     * @param sort The [Sort] to apply.
+     */
+    fun applyPlaylistSongSort(sort: Sort) {
+        val playlist = _currentPlaylist.value ?: return
+        _editedPlaylist.value = sort.songs(_editedPlaylist.value ?: return)
+        refreshPlaylistList(playlist, UpdateInstructions.Replace(2))
+    }
+
+    /**
      * (Visually) move a song in the current playlist. Does nothing if not in an editing session.
      *
      * @param from The start position, in the list adapter data.
@@ -488,7 +499,6 @@ constructor(
      * @return true if the song was moved, false otherwise.
      */
     fun movePlaylistSongs(from: Int, to: Int): Boolean {
-        // TODO: Song re-sorting
         val playlist = _currentPlaylist.value ?: return false
         val editedPlaylist = (_editedPlaylist.value ?: return false).toMutableList()
         val realFrom = from - 2

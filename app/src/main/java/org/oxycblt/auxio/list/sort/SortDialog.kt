@@ -62,9 +62,10 @@ abstract class SortDialog :
         }
 
         // --- STATE SETUP ---
+        modeAdapter.update(getModeChoices(), UpdateInstructions.Diff)
+
         val initial = getInitialSort()
         if (initial != null) {
-            modeAdapter.update(getModeChoices(), UpdateInstructions.Diff)
             modeAdapter.setSelected(initial.mode)
             val directionId =
                 when (initial.direction) {
