@@ -27,12 +27,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
@@ -58,8 +58,8 @@ constructor(
     private val playbackManager: PlaybackStateManager,
     private val playbackSettings: PlaybackSettings,
     private val persistenceRepository: PersistenceRepository,
+    private val listSettings: ListSettings,
     private val musicRepository: MusicRepository,
-    private val musicSettings: MusicSettings
 ) : ViewModel(), PlaybackStateManager.Listener, PlaybackSettings.Listener {
     private var lastPositionJob: Job? = null
 
@@ -401,11 +401,11 @@ constructor(
         val deviceLibrary = musicRepository.deviceLibrary ?: return
         val queue =
             when (parent) {
-                is Genre -> musicSettings.genreSongSort.songs(parent.songs)
-                is Artist -> musicSettings.artistSongSort.songs(parent.songs)
-                is Album -> musicSettings.albumSongSort.songs(parent.songs)
+                is Genre -> listSettings.genreSongSort.songs(parent.songs)
+                is Artist -> listSettings.artistSongSort.songs(parent.songs)
+                is Album -> listSettings.albumSongSort.songs(parent.songs)
                 is Playlist -> parent.songs
-                null -> musicSettings.songSort.songs(deviceLibrary.songs)
+                null -> listSettings.songSort.songs(deviceLibrary.songs)
             }
         playbackManager.play(song, parent, queue, shuffled)
     }
@@ -464,7 +464,7 @@ constructor(
      */
     fun playNext(album: Album) {
         logD("Playing $album next")
-        playbackManager.playNext(musicSettings.albumSongSort.songs(album.songs))
+        playbackManager.playNext(listSettings.albumSongSort.songs(album.songs))
     }
 
     /**
@@ -474,7 +474,7 @@ constructor(
      */
     fun playNext(artist: Artist) {
         logD("Playing $artist next")
-        playbackManager.playNext(musicSettings.artistSongSort.songs(artist.songs))
+        playbackManager.playNext(listSettings.artistSongSort.songs(artist.songs))
     }
 
     /**
@@ -484,7 +484,7 @@ constructor(
      */
     fun playNext(genre: Genre) {
         logD("Playing $genre next")
-        playbackManager.playNext(musicSettings.genreSongSort.songs(genre.songs))
+        playbackManager.playNext(listSettings.genreSongSort.songs(genre.songs))
     }
 
     /**
@@ -524,7 +524,7 @@ constructor(
      */
     fun addToQueue(album: Album) {
         logD("Adding $album to queue")
-        playbackManager.addToQueue(musicSettings.albumSongSort.songs(album.songs))
+        playbackManager.addToQueue(listSettings.albumSongSort.songs(album.songs))
     }
 
     /**
@@ -534,7 +534,7 @@ constructor(
      */
     fun addToQueue(artist: Artist) {
         logD("Adding $artist to queue")
-        playbackManager.addToQueue(musicSettings.artistSongSort.songs(artist.songs))
+        playbackManager.addToQueue(listSettings.artistSongSort.songs(artist.songs))
     }
 
     /**
@@ -544,7 +544,7 @@ constructor(
      */
     fun addToQueue(genre: Genre) {
         logD("Adding $genre to queue")
-        playbackManager.addToQueue(musicSettings.genreSongSort.songs(genre.songs))
+        playbackManager.addToQueue(listSettings.genreSongSort.songs(genre.songs))
     }
 
     /**

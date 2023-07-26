@@ -36,6 +36,7 @@ import org.oxycblt.auxio.detail.list.SortHeader
 import org.oxycblt.auxio.list.BasicHeader
 import org.oxycblt.auxio.list.Divider
 import org.oxycblt.auxio.list.Item
+import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
@@ -43,7 +44,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.info.ReleaseType
@@ -66,9 +66,9 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 class DetailViewModel
 @Inject
 constructor(
+    private val listSettings: ListSettings,
     private val musicRepository: MusicRepository,
     private val audioPropertiesFactory: AudioProperties.Factory,
-    private val musicSettings: MusicSettings,
     private val playbackSettings: PlaybackSettings
 ) : ViewModel(), MusicRepository.UpdateListener {
     private val _toShow = MutableEvent<Show>()
@@ -110,7 +110,7 @@ constructor(
 
     /** The current [Sort] used for [Song]s in [albumSongList]. */
     val albumSongSort: Sort
-        get() = musicSettings.albumSongSort
+        get() = listSettings.albumSongSort
 
     /** The [PlaySong] instructions to use when playing a [Song] from [Album] details. */
     val playInAlbumWith
@@ -134,9 +134,9 @@ constructor(
 
     /** The current [Sort] used for [Song]s in [artistSongList]. */
     var artistSongSort: Sort
-        get() = musicSettings.artistSongSort
+        get() = listSettings.artistSongSort
         set(value) {
-            musicSettings.artistSongSort = value
+            listSettings.artistSongSort = value
             // Refresh the artist list to reflect the new sort.
             currentArtist.value?.let { refreshArtistList(it, true) }
         }
@@ -163,9 +163,9 @@ constructor(
 
     /** The current [Sort] used for [Song]s in [genreSongList]. */
     var genreSongSort: Sort
-        get() = musicSettings.genreSongSort
+        get() = listSettings.genreSongSort
         set(value) {
-            musicSettings.genreSongSort = value
+            listSettings.genreSongSort = value
             // Refresh the genre list to reflect the new sort.
             currentGenre.value?.let { refreshGenreList(it, true) }
         }
@@ -369,7 +369,7 @@ constructor(
      * @param sort The [Sort] to apply.
      */
     fun applyAlbumSongSort(sort: Sort) {
-        musicSettings.albumSongSort = sort
+        listSettings.albumSongSort = sort
         _currentAlbum.value?.let { refreshAlbumList(it, true) }
     }
 
@@ -394,7 +394,7 @@ constructor(
      * @param sort The [Sort] to apply.
      */
     fun applyArtistSongSort(sort: Sort) {
-        musicSettings.artistSongSort = sort
+        listSettings.artistSongSort = sort
         _currentArtist.value?.let { refreshArtistList(it, true) }
     }
 
@@ -419,7 +419,7 @@ constructor(
      * @param sort The [Sort] to apply.
      */
     fun applyGenreSongSort(sort: Sort) {
-        musicSettings.genreSongSort = sort
+        listSettings.genreSongSort = sort
         _currentGenre.value?.let { refreshGenreList(it, true) }
     }
 

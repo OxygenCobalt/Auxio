@@ -26,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.util.Event
 import org.oxycblt.auxio.util.MutableEvent
 import org.oxycblt.auxio.util.logD
@@ -39,8 +40,8 @@ import org.oxycblt.auxio.util.logD
 class MusicViewModel
 @Inject
 constructor(
+    private val listSettings: ListSettings,
     private val musicRepository: MusicRepository,
-    private val musicSettings: MusicSettings
 ) : ViewModel(), MusicRepository.UpdateListener, MusicRepository.IndexingListener {
 
     private val _indexingState = MutableStateFlow<IndexingState?>(null)
@@ -167,7 +168,7 @@ constructor(
      */
     fun addToPlaylist(album: Album, playlist: Playlist? = null) {
         logD("Adding $album to playlist")
-        addToPlaylist(musicSettings.albumSongSort.songs(album.songs), playlist)
+        addToPlaylist(listSettings.albumSongSort.songs(album.songs), playlist)
     }
 
     /**
@@ -178,7 +179,7 @@ constructor(
      */
     fun addToPlaylist(artist: Artist, playlist: Playlist? = null) {
         logD("Adding $artist to playlist")
-        addToPlaylist(musicSettings.artistSongSort.songs(artist.songs), playlist)
+        addToPlaylist(listSettings.artistSongSort.songs(artist.songs), playlist)
     }
 
     /**
@@ -189,7 +190,7 @@ constructor(
      */
     fun addToPlaylist(genre: Genre, playlist: Playlist? = null) {
         logD("Adding $genre to playlist")
-        addToPlaylist(musicSettings.genreSongSort.songs(genre.songs), playlist)
+        addToPlaylist(listSettings.genreSongSort.songs(genre.songs), playlist)
     }
 
     /**

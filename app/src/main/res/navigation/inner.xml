@@ -427,7 +427,7 @@
         tools:layout="@layout/dialog_menu">
         <argument
             android:name="parcel"
-            app:argType="org.oxycblt.auxio.list.Menu$ForSong$Parcel" />
+            app:argType="org.oxycblt.auxio.list.menu.Menu$ForSong$Parcel" />
     </dialog>
 
     <dialog
@@ -437,7 +437,7 @@
         tools:layout="@layout/dialog_menu">
         <argument
             android:name="parcel"
-            app:argType="org.oxycblt.auxio.list.Menu$ForAlbum$Parcel" />
+            app:argType="org.oxycblt.auxio.list.menu.Menu$ForAlbum$Parcel" />
     </dialog>
 
     <dialog
@@ -447,7 +447,7 @@
         tools:layout="@layout/dialog_menu">
         <argument
             android:name="parcel"
-            app:argType="org.oxycblt.auxio.list.Menu$ForArtist$Parcel" />
+            app:argType="org.oxycblt.auxio.list.menu.Menu$ForArtist$Parcel" />
     </dialog>
 
     <dialog
@@ -457,7 +457,7 @@
         tools:layout="@layout/dialog_menu">
         <argument
             android:name="parcel"
-            app:argType="org.oxycblt.auxio.list.Menu$ForGenre$Parcel" />
+            app:argType="org.oxycblt.auxio.list.menu.Menu$ForGenre$Parcel" />
     </dialog>
 
     <dialog
@@ -467,6 +467,6 @@
         tools:layout="@layout/dialog_menu">
         <argument
             android:name="parcel"
-            app:argType="org.oxycblt.auxio.list.Menu$ForPlaylist$Parcel" />
+            app:argType="org.oxycblt.auxio.list.menu.Menu$ForPlaylist$Parcel" />
     </dialog>
 </navigation>

@@ -30,7 +30,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.DialogMenuBinding
 import org.oxycblt.auxio.list.ClickableListListener
 import org.oxycblt.auxio.list.ListViewModel
-import org.oxycblt.auxio.list.Menu
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.ui.ViewBindingBottomSheetDialogFragment
 import org.oxycblt.auxio.util.collectImmediately

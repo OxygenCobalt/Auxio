@@ -24,13 +24,13 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.home.tabs.Tab
+import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.list.adapter.UpdateInstructions
 import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.MusicType
 import org.oxycblt.auxio.music.Playlist
 import org.oxycblt.auxio.music.Song
@@ -50,9 +50,9 @@ class HomeViewModel
 @Inject
 constructor(
     private val homeSettings: HomeSettings,
+    private val listSettings: ListSettings,
     private val playbackSettings: PlaybackSettings,
     private val musicRepository: MusicRepository,
-    private val musicSettings: MusicSettings
 ) : ViewModel(), MusicRepository.UpdateListener, HomeSettings.Listener {
 
     private val _songList = MutableStateFlow(listOf<Song>())
@@ -67,7 +67,7 @@ constructor(
 
     /** The current [Sort] used for [songList]. */
     val songSort: Sort
-        get() = musicSettings.songSort
+        get() = listSettings.songSort
 
     /** The [PlaySong] instructions to use when playing a [Song]. */
     val playWith
@@ -85,7 +85,7 @@ constructor(
 
     /** The current [Sort] used for [albumList]. */
     val albumSort: Sort
-        get() = musicSettings.albumSort
+        get() = listSettings.albumSort
 
     private val _artistList = MutableStateFlow(listOf<Artist>())
     /**
@@ -102,7 +102,7 @@ constructor(
 
     /** The current [Sort] used for [artistList]. */
     val artistSort: Sort
-        get() = musicSettings.artistSort
+        get() = listSettings.artistSort
 
     private val _genreList = MutableStateFlow(listOf<Genre>())
     /** A list of [Genre]s, sorted by the preferred [Sort], to be shown in the home view. */
@@ -116,7 +116,7 @@ constructor(
 
     /** The current [Sort] used for [genreList]. */
     val genreSort: Sort
-        get() = musicSettings.genreSort
+        get() = listSettings.genreSort
 
     private val _playlistList = MutableStateFlow(listOf<Playlist>())
     /** A list of [Playlist]s, sorted by the preferred [Sort], to be shown in the home view. */
@@ -130,7 +130,7 @@ constructor(
 
     /** The current [Sort] used for [genreList]. */
     val playlistSort: Sort
-        get() = musicSettings.playlistSort
+        get() = listSettings.playlistSort
 
     /**
      * A list of [MusicType] corresponding to the current [Tab] configuration, excluding invisible
@@ -178,12 +178,12 @@ constructor(
             // Get the each list of items in the library to use as our list data.
             // Applying the preferred sorting to them.
             _songInstructions.put(UpdateInstructions.Diff)
-            _songList.value = musicSettings.songSort.songs(deviceLibrary.songs)
+            _songList.value = listSettings.songSort.songs(deviceLibrary.songs)
             _albumInstructions.put(UpdateInstructions.Diff)
-            _albumList.value = musicSettings.albumSort.albums(deviceLibrary.albums)
+            _albumList.value = listSettings.albumSort.albums(deviceLibrary.albums)
             _artistInstructions.put(UpdateInstructions.Diff)
             _artistList.value =
-                musicSettings.artistSort.artists(
+                listSettings.artistSort.artists(
                     if (homeSettings.shouldHideCollaborators) {
                         logD("Filtering collaborator artists")
                         // Hide Collaborators is enabled, filter out collaborators.
@@ -193,14 +193,14 @@ constructor(
                         deviceLibrary.artists
                     })
             _genreInstructions.put(UpdateInstructions.Diff)
-            _genreList.value = musicSettings.genreSort.genres(deviceLibrary.genres)
+            _genreList.value = listSettings.genreSort.genres(deviceLibrary.genres)
         }
 
         val userLibrary = musicRepository.userLibrary
         if (changes.userLibrary && userLibrary != null) {
             logD("Refreshing playlists")
             _playlistInstructions.put(UpdateInstructions.Diff)
-            _playlistList.value = musicSettings.playlistSort.playlists(userLibrary.playlists)
+            _playlistList.value = listSettings.playlistSort.playlists(userLibrary.playlists)
         }
     }
 
@@ -224,9 +224,9 @@ constructor(
      * @param sort The [Sort] to apply.
      */
     fun applySongSort(sort: Sort) {
-        musicSettings.songSort = sort
+        listSettings.songSort = sort
         _songInstructions.put(UpdateInstructions.Replace(0))
-        _songList.value = musicSettings.songSort.songs(_songList.value)
+        _songList.value = listSettings.songSort.songs(_songList.value)
     }
 
     /**
@@ -235,9 +235,9 @@ constructor(
      * @param sort The [Sort] to apply.
      */
     fun applyAlbumSort(sort: Sort) {
-        musicSettings.albumSort = sort
+        listSettings.albumSort = sort
         _albumInstructions.put(UpdateInstructions.Replace(0))
-        _albumList.value = musicSettings.albumSort.albums(_albumList.value)
+        _albumList.value = listSettings.albumSort.albums(_albumList.value)
     }
 
     /**
@@ -246,9 +246,9 @@ constructor(
      * @param sort The [Sort] to apply.
      */
     fun applyArtistSort(sort: Sort) {
-        musicSettings.artistSort = sort
+        listSettings.artistSort = sort
         _artistInstructions.put(UpdateInstructions.Replace(0))
-        _artistList.value = musicSettings.artistSort.artists(_artistList.value)
+        _artistList.value = listSettings.artistSort.artists(_artistList.value)
     }
 
     /**
@@ -257,9 +257,9 @@ constructor(
      * @param sort The [Sort] to apply.
      */
     fun applyGenreSort(sort: Sort) {
-        musicSettings.genreSort = sort
+        listSettings.genreSort = sort
         _genreInstructions.put(UpdateInstructions.Replace(0))
-        _genreList.value = musicSettings.genreSort.genres(_genreList.value)
+        _genreList.value = listSettings.genreSort.genres(_genreList.value)
     }
 
     /**
@@ -268,9 +268,9 @@ constructor(
      * @param sort The [Sort] to apply.
      */
     fun applyPlaylistSort(sort: Sort) {
-        musicSettings.playlistSort = sort
+        listSettings.playlistSort = sort
         _playlistInstructions.put(UpdateInstructions.Replace(0))
-        _playlistList.value = musicSettings.playlistSort.playlists(_playlistList.value)
+        _playlistList.value = listSettings.playlistSort.playlists(_playlistList.value)
     }
 
     /**

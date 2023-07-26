@@ -24,7 +24,6 @@ import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.list.sort.Sort
 import org.oxycblt.auxio.music.fs.Directory
 import org.oxycblt.auxio.music.fs.MusicDirectories
 import org.oxycblt.auxio.settings.Settings
@@ -47,23 +46,6 @@ interface MusicSettings : Settings<MusicSettings.Listener> {
     var multiValueSeparators: String
     /** Whether to enable more advanced sorting by articles and numbers. */
     val intelligentSorting: Boolean
-    // TODO: Move sort settings to list module
-    /** The [Sort] mode used in [Song] lists. */
-    var songSort: Sort
-    /** The [Sort] mode used in [Album] lists. */
-    var albumSort: Sort
-    /** The [Sort] mode used in [Artist] lists. */
-    var artistSort: Sort
-    /** The [Sort] mode used in [Genre] lists. */
-    var genreSort: Sort
-    /** The [Sort] mode used in [Playlist] lists. */
-    var playlistSort: Sort
-    /** The [Sort] mode used in an [Album]'s [Song] list. */
-    var albumSongSort: Sort
-    /** The [Sort] mode used in an [Artist]'s [Song] list. */
-    var artistSongSort: Sort
-    /** The [Sort] mode used in a [Genre]'s [Song] list. */
-    var genreSongSort: Sort
 
     interface Listener {
         /** Called when a setting controlling how music is loaded has changed. */
@@ -116,105 +98,6 @@ class MusicSettingsImpl @Inject constructor(@ApplicationContext context: Context
 
     override val intelligentSorting: Boolean
         get() = sharedPreferences.getBoolean(getString(R.string.set_key_auto_sort_names), true)
-
-    override var songSort: Sort
-        get() =
-            Sort.fromIntCode(
-                sharedPreferences.getInt(getString(R.string.set_key_songs_sort), Int.MIN_VALUE))
-                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-        set(value) {
-            sharedPreferences.edit {
-                putInt(getString(R.string.set_key_songs_sort), value.intCode)
-                apply()
-            }
-        }
-
-    override var albumSort: Sort
-        get() =
-            Sort.fromIntCode(
-                sharedPreferences.getInt(getString(R.string.set_key_albums_sort), Int.MIN_VALUE))
-                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-        set(value) {
-            sharedPreferences.edit {
-                putInt(getString(R.string.set_key_albums_sort), value.intCode)
-                apply()
-            }
-        }
-
-    override var artistSort: Sort
-        get() =
-            Sort.fromIntCode(
-                sharedPreferences.getInt(getString(R.string.set_key_artists_sort), Int.MIN_VALUE))
-                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-        set(value) {
-            sharedPreferences.edit {
-                putInt(getString(R.string.set_key_artists_sort), value.intCode)
-                apply()
-            }
-        }
-
-    override var genreSort: Sort
-        get() =
-            Sort.fromIntCode(
-                sharedPreferences.getInt(getString(R.string.set_key_genres_sort), Int.MIN_VALUE))
-                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-        set(value) {
-            sharedPreferences.edit {
-                putInt(getString(R.string.set_key_genres_sort), value.intCode)
-                apply()
-            }
-        }
-
-    override var playlistSort: Sort
-        get() =
-            Sort.fromIntCode(
-                sharedPreferences.getInt(getString(R.string.set_key_playlists_sort), Int.MIN_VALUE))
-                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-        set(value) {
-            sharedPreferences.edit {
-                putInt(getString(R.string.set_key_playlists_sort), value.intCode)
-                apply()
-            }
-        }
-
-    override var albumSongSort: Sort
-        get() =
-            Sort.fromIntCode(
-                sharedPreferences.getInt(
-                    getString(R.string.set_key_album_songs_sort), Int.MIN_VALUE))
-                ?: Sort(Sort.Mode.ByDisc, Sort.Direction.ASCENDING)
-        set(value) {
-            sharedPreferences.edit {
-                putInt(getString(R.string.set_key_album_songs_sort), value.intCode)
-                apply()
-            }
-        }
-
-    override var artistSongSort: Sort
-        get() =
-            Sort.fromIntCode(
-                sharedPreferences.getInt(
-                    getString(R.string.set_key_artist_songs_sort), Int.MIN_VALUE))
-                ?: Sort(Sort.Mode.ByDate, Sort.Direction.DESCENDING)
-        set(value) {
-            sharedPreferences.edit {
-                putInt(getString(R.string.set_key_artist_songs_sort), value.intCode)
-                apply()
-            }
-        }
-
-    override var genreSongSort: Sort
-        get() =
-            Sort.fromIntCode(
-                sharedPreferences.getInt(
-                    getString(R.string.set_key_genre_songs_sort), Int.MIN_VALUE))
-                ?: Sort(Sort.Mode.ByName, Sort.Direction.ASCENDING)
-        set(value) {
-            sharedPreferences.edit {
-                putInt(getString(R.string.set_key_genre_songs_sort), value.intCode)
-                apply()
-            }
-        }
 
     override fun onSettingChanged(key: String, listener: MusicSettings.Listener) {
         // TODO: Differentiate "hard reloads" (Need the cache) and "Soft reloads"

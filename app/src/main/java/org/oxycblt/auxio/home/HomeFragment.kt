@@ -54,8 +54,8 @@ import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.home.tabs.AdaptiveTabStrategy
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.list.ListViewModel
-import org.oxycblt.auxio.list.Menu
 import org.oxycblt.auxio.list.SelectionFragment
+import org.oxycblt.auxio.list.menu.Menu
 import org.oxycblt.auxio.music.IndexingProgress
 import org.oxycblt.auxio.music.IndexingState
 import org.oxycblt.auxio.music.Music

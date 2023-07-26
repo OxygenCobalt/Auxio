@@ -47,8 +47,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.list.ListSettings
 import org.oxycblt.auxio.music.MusicRepository
-import org.oxycblt.auxio.music.MusicSettings
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackSettings
 import org.oxycblt.auxio.playback.persist.PersistenceRepository
@@ -99,8 +99,8 @@ class PlaybackService :
     @Inject lateinit var playbackManager: PlaybackStateManager
     @Inject lateinit var playbackSettings: PlaybackSettings
     @Inject lateinit var persistenceRepository: PersistenceRepository
+    @Inject lateinit var listSettings: ListSettings
     @Inject lateinit var musicRepository: MusicRepository
-    @Inject lateinit var musicSettings: MusicSettings
 
     // State
     private lateinit var foregroundManager: ForegroundManager
@@ -369,7 +369,7 @@ class PlaybackService :
             is InternalPlayer.Action.ShuffleAll -> {
                 logD("Shuffling all tracks")
                 playbackManager.play(
-                    null, null, musicSettings.songSort.songs(deviceLibrary.songs), true)
+                    null, null, listSettings.songSort.songs(deviceLibrary.songs), true)
             }
             // Open -> Try to find the Song for the given file and then play it from all songs
             is InternalPlayer.Action.Open -> {
@@ -378,7 +378,7 @@ class PlaybackService :
                     playbackManager.play(
                         song,
                         null,
-                        musicSettings.songSort.songs(deviceLibrary.songs),
+                        listSettings.songSort.songs(deviceLibrary.songs),
                         playbackManager.queue.isShuffled && playbackSettings.keepShuffle)
                 }
             }
