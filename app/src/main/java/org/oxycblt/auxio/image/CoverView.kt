@@ -76,7 +76,7 @@ import org.oxycblt.auxio.util.getInteger
 class CoverView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
-    FrameLayout(context, attrs, defStyleAttr), ImageSettings.Listener, UISettings.Listener {
+    FrameLayout(context, attrs, defStyleAttr) {
     @Inject lateinit var imageLoader: ImageLoader
     @Inject lateinit var uiSettings: UISettings
     @Inject lateinit var imageSettings: ImageSettings
@@ -154,9 +154,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             } else {
                 null
             }
-
-        imageSettings.registerListener(this)
-        uiSettings.registerListener(this)
     }
 
     override fun onFinishInflate() {
@@ -185,23 +182,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     updateMarginsRelative(bottom = spacing, end = spacing)
                 })
         }
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        imageSettings.unregisterListener(this)
-    }
-
-    override fun onImageSettingsChanged() {
-        val cover = currentCover ?: return
-        bind(cover.songs, cover.desc, cover.errorRes)
-    }
-
-    override fun onRoundModeChanged() {
-        cornerRadiusRes = getCornerRadiusRes()
-        applyBackgroundsToChildren()
-        val cover = currentCover ?: return
-        bind(cover.songs, cover.desc, cover.errorRes)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
