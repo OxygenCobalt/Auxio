@@ -297,4 +297,6 @@
     <string name="set_square_covers_desc">Apkarpyti visus albumų viršelius iki 1:1 kraštinių koeficiento</string>
     <string name="set_square_covers">Priversti kvadratinių albumų viršelius</string>
     <string name="set_play_song_by_itself">Groti dainą pačią</string>
+    <string name="lbl_sort_mode">Rūšiuoti pagal</string>
+    <string name="lbl_sort_direction">Kryptis</string>
 </resources>
