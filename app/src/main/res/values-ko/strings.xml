@@ -295,4 +295,11 @@
     <string name="def_disc">디스크 없음</string>
     <string name="lng_playlist_deleted">재생목록이 삭제되었습니다</string>
     <string name="fmt_editing">%s 수정 중</string>
+    <string name="lbl_song">노래</string>
+    <string name="lbl_parent_detail">보다</string>
+    <string name="set_square_covers">포스 스퀘어 앨범 커버</string>
+    <string name="set_square_covers_desc">모든 앨범 표지를 1:1 가로세로 비율로 자르기</string>
+    <string name="set_play_song_by_itself">노래 따로 재생</string>
+    <string name="lbl_sort_direction">방향</string>
+    <string name="lbl_sort_mode">정렬 기준</string>
 </resources>
