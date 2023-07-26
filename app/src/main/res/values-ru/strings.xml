@@ -148,15 +148,15 @@
     <string name="lbl_ok">ОК</string>
     <string name="set_play_in_parent_with">При воспроизведении из сведений</string>
     <string name="set_play_song_none">Воспроизведение с показанного элемента</string>
-    <string name="lbl_song_count">Номер песни</string>
+    <string name="lbl_song_count">Номер трека</string>
     <string name="lbl_bitrate">Битрейт</string>
     <string name="lbl_disc">Диск</string>
     <string name="lbl_track">Трек</string>
     <string name="lbl_state_restored">Позиция восстановлена</string>
     <string name="lbl_cancel">Отмена</string>
     <string name="set_pre_amp_warning">Внимание: Изменение предусиления на большое положительное значение может привести к появлению искажений на некоторых звуковых дорожках.</string>
-    <string name="lbl_song_detail">Свойства</string>
-    <string name="lbl_props">Свойства песни</string>
+    <string name="lbl_song_detail">Сведения</string>
+    <string name="lbl_props">Свойства трека</string>
     <string name="lbl_relative_path">Путь</string>
     <string name="lbl_format">Формат</string>
     <string name="lbl_size">Размер</string>
@@ -304,7 +304,9 @@
     <string name="lbl_share">Поделиться</string>
     <string name="set_square_covers">Использовать квадратные обложки альбомов</string>
     <string name="set_square_covers_desc">Обрезать все обложки альбомов до соотношения сторон 1:1</string>
-    <string name="lbl_song">Песня</string>
+    <string name="lbl_song">Трек</string>
     <string name="lbl_parent_detail">Вид</string>
     <string name="set_play_song_by_itself">Воспроизвести трек отдельно</string>
+    <string name="lbl_sort_mode">Сортировать по</string>
+    <string name="lbl_sort_direction">Направление</string>
 </resources>
