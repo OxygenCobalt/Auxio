@@ -309,4 +309,6 @@
     <string name="lbl_song">Skladba</string>
     <string name="lbl_parent_detail">Zobrazit</string>
     <string name="set_play_song_by_itself">Přehrát skladbu samostatně</string>
+    <string name="lbl_sort_direction">Směr</string>
+    <string name="lbl_sort_mode">Seřadit podle</string>
 </resources>
