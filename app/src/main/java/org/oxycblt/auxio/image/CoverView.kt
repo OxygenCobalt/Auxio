@@ -255,7 +255,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun getCornerRadiusRes() =
-        if (uiSettings.roundMode) {
+        if (!isInEditMode && uiSettings.roundMode) {
             SIZING_CORNER_RADII[sizing]
         } else {
             null
