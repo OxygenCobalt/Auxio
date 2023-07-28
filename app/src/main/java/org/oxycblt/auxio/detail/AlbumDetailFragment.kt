@@ -20,7 +20,6 @@ package org.oxycblt.auxio.detail
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -53,11 +52,9 @@ import org.oxycblt.auxio.util.canScroll
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.setFullWidthLookup
-import org.oxycblt.auxio.util.share
-import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -101,9 +98,11 @@ class AlbumDetailFragment :
 
         // --- UI SETUP --
         binding.detailNormalToolbar.apply {
-            inflateMenu(R.menu.toolbar_album)
             setNavigationOnClickListener { findNavController().navigateUp() }
-            setOnMenuItemClickListener(this@AlbumDetailFragment)
+            overrideOnOverflowMenuClick {
+                listModel.openMenu(
+                    R.menu.item_detail_album, unlikelyToBeNull(detailModel.currentAlbum.value))
+            }
         }
 
         binding.detailRecycler.apply {
@@ -139,42 +138,6 @@ class AlbumDetailFragment :
         // Avoid possible race conditions that could cause a bad replace instruction to be consumed
         // during list initialization and crash the app. Could happen if the user is fast enough.
         detailModel.albumSongInstructions.consume()
-    }
-
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        if (super.onMenuItemClick(item)) {
-            return true
-        }
-
-        val currentAlbum = unlikelyToBeNull(detailModel.currentAlbum.value)
-        return when (item.itemId) {
-            R.id.action_play_next -> {
-                playbackModel.playNext(currentAlbum)
-                requireContext().showToast(R.string.lng_queue_added)
-                true
-            }
-            R.id.action_queue_add -> {
-                playbackModel.addToQueue(currentAlbum)
-                requireContext().showToast(R.string.lng_queue_added)
-                true
-            }
-            R.id.action_artist_details -> {
-                onNavigateToParentArtist()
-                true
-            }
-            R.id.action_playlist_add -> {
-                musicModel.addToPlaylist(currentAlbum)
-                true
-            }
-            R.id.action_share -> {
-                requireContext().share(currentAlbum)
-                true
-            }
-            else -> {
-                logW("Unexpected menu item selected")
-                false
-            }
-        }
     }
 
     override fun onRealClick(item: Song) {
@@ -279,7 +242,7 @@ class AlbumDetailFragment :
         val directions =
             when (menu) {
                 is Menu.ForSong -> AlbumDetailFragmentDirections.openSongMenu(menu.parcel)
-                is Menu.ForAlbum,
+                is Menu.ForAlbum -> AlbumDetailFragmentDirections.openAlbumMenu(menu.parcel)
                 is Menu.ForArtist,
                 is Menu.ForGenre,
                 is Menu.ForPlaylist -> error("Unexpected menu $menu")

@@ -202,6 +202,9 @@
             android:id="@+id/open_song_menu"
             app:destination="@id/song_menu_dialog" />
         <action
+            android:id="@+id/open_album_menu"
+            app:destination="@id/album_menu_dialog" />
+        <action
             android:id="@+id/add_to_playlist"
             app:destination="@id/add_to_playlist_dialog" />
         <action
@@ -244,6 +247,9 @@
         <action
             android:id="@+id/open_album_menu"
             app:destination="@id/album_menu_dialog" />
+        <action
+            android:id="@+id/open_artist_menu"
+            app:destination="@id/artist_menu_dialog" />
         <action
             android:id="@+id/add_to_playlist"
             app:destination="@id/add_to_playlist_dialog" />
@@ -288,6 +294,9 @@
             android:id="@+id/open_artist_menu"
             app:destination="@id/artist_menu_dialog" />
         <action
+            android:id="@+id/open_genre_menu"
+            app:destination="@id/genre_menu_dialog" />
+        <action
             android:id="@+id/add_to_playlist"
             app:destination="@id/add_to_playlist_dialog" />
         <action
@@ -327,6 +336,9 @@
         <action
             android:id="@+id/open_song_menu"
             app:destination="@id/song_menu_dialog" />
+        <action
+            android:id="@+id/open_playlist_menu"
+            app:destination="@id/playlist_menu_dialog" />
         <action
             android:id="@+id/rename_playlist"
             app:destination="@id/rename_playlist_dialog" />

@@ -20,7 +20,6 @@ package org.oxycblt.auxio.detail
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -55,11 +54,9 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.setFullWidthLookup
-import org.oxycblt.auxio.util.share
-import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -103,9 +100,13 @@ class PlaylistDetailFragment :
 
         // --- UI SETUP ---
         binding.detailNormalToolbar.apply {
-            inflateMenu(R.menu.toolbar_playlist)
             setNavigationOnClickListener { findNavController().navigateUp() }
             setOnMenuItemClickListener(this@PlaylistDetailFragment)
+            overrideOnOverflowMenuClick {
+                listModel.openMenu(
+                    R.menu.item_detail_playlist,
+                    unlikelyToBeNull(detailModel.currentPlaylist.value))
+            }
         }
 
         binding.detailEditToolbar.apply {
@@ -190,46 +191,6 @@ class PlaylistDetailFragment :
         }
     }
 
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        if (super.onMenuItemClick(item)) {
-            return true
-        }
-
-        val currentPlaylist = unlikelyToBeNull(detailModel.currentPlaylist.value)
-        return when (item.itemId) {
-            R.id.action_play_next -> {
-                playbackModel.playNext(currentPlaylist)
-                requireContext().showToast(R.string.lng_queue_added)
-                true
-            }
-            R.id.action_queue_add -> {
-                playbackModel.addToQueue(currentPlaylist)
-                requireContext().showToast(R.string.lng_queue_added)
-                true
-            }
-            R.id.action_rename -> {
-                musicModel.renamePlaylist(currentPlaylist)
-                true
-            }
-            R.id.action_delete -> {
-                musicModel.deletePlaylist(currentPlaylist)
-                true
-            }
-            R.id.action_share -> {
-                requireContext().share(currentPlaylist)
-                true
-            }
-            R.id.action_save -> {
-                detailModel.savePlaylistEdit()
-                true
-            }
-            else -> {
-                logW("Unexpected menu item selected")
-                false
-            }
-        }
-    }
-
     override fun onRealClick(item: Song) {
         playbackModel.play(item, detailModel.playInPlaylistWith)
     }
@@ -265,17 +226,7 @@ class PlaylistDetailFragment :
             return
         }
         val binding = requireBinding()
-        binding.detailNormalToolbar.apply {
-            title = playlist.name.resolve(requireContext())
-            // Disable options that make no sense with an empty playlist
-            val playable = playlist.songs.isNotEmpty()
-            if (!playable) {
-                logD("Playlist is empty, disabling playback/share options")
-            }
-            menu.findItem(R.id.action_play_next).isEnabled = playable
-            menu.findItem(R.id.action_queue_add).isEnabled = playable
-            menu.findItem(R.id.action_share).isEnabled = playable
-        }
+        binding.detailNormalToolbar.title = playlist.name.resolve(requireContext())
         binding.detailEditToolbar.title =
             getString(R.string.fmt_editing, playlist.name.resolve(requireContext()))
         playlistHeaderAdapter.setParent(playlist)
@@ -349,10 +300,11 @@ class PlaylistDetailFragment :
         val directions =
             when (menu) {
                 is Menu.ForSong -> PlaylistDetailFragmentDirections.openSongMenu(menu.parcel)
+                is Menu.ForPlaylist ->
+                    PlaylistDetailFragmentDirections.openPlaylistMenu(menu.parcel)
                 is Menu.ForArtist,
                 is Menu.ForAlbum,
-                is Menu.ForGenre,
-                is Menu.ForPlaylist -> error("Unexpected menu $menu")
+                is Menu.ForGenre -> error("Unexpected menu $menu")
             }
         findNavController().navigateSafe(directions)
     }

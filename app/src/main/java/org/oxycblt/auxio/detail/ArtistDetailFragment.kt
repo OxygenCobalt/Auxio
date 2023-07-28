@@ -20,7 +20,6 @@ package org.oxycblt.auxio.detail
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -52,11 +51,9 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.navigateSafe
+import org.oxycblt.auxio.util.overrideOnOverflowMenuClick
 import org.oxycblt.auxio.util.setFullWidthLookup
-import org.oxycblt.auxio.util.share
-import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -99,9 +96,12 @@ class ArtistDetailFragment :
 
         // --- UI SETUP ---
         binding.detailNormalToolbar.apply {
-            inflateMenu(R.menu.toolbar_parent)
             setNavigationOnClickListener { findNavController().navigateUp() }
             setOnMenuItemClickListener(this@ArtistDetailFragment)
+            overrideOnOverflowMenuClick {
+                listModel.openMenu(
+                    R.menu.item_detail_parent, unlikelyToBeNull(detailModel.currentArtist.value))
+            }
         }
 
         binding.detailRecycler.apply {
@@ -142,38 +142,6 @@ class ArtistDetailFragment :
         detailModel.artistSongInstructions.consume()
     }
 
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        if (super.onMenuItemClick(item)) {
-            return true
-        }
-
-        val currentArtist = unlikelyToBeNull(detailModel.currentArtist.value)
-        return when (item.itemId) {
-            R.id.action_play_next -> {
-                playbackModel.playNext(currentArtist)
-                requireContext().showToast(R.string.lng_queue_added)
-                true
-            }
-            R.id.action_queue_add -> {
-                playbackModel.addToQueue(currentArtist)
-                requireContext().showToast(R.string.lng_queue_added)
-                true
-            }
-            R.id.action_playlist_add -> {
-                musicModel.addToPlaylist(currentArtist)
-                true
-            }
-            R.id.action_share -> {
-                requireContext().share(currentArtist)
-                true
-            }
-            else -> {
-                logW("Unexpected menu item selected")
-                false
-            }
-        }
-    }
-
     override fun onRealClick(item: Music) {
         when (item) {
             is Album -> detailModel.showAlbum(item)
@@ -209,19 +177,7 @@ class ArtistDetailFragment :
             findNavController().navigateUp()
             return
         }
-        requireBinding().detailNormalToolbar.apply {
-            title = artist.name.resolve(requireContext())
-
-            // Disable options that make no sense with an empty artist
-            val playable = artist.songs.isNotEmpty()
-            if (!playable) {
-                logD("Artist is empty, disabling playback/playlist/share options")
-            }
-            menu.findItem(R.id.action_play_next).isEnabled = playable
-            menu.findItem(R.id.action_queue_add).isEnabled = playable
-            menu.findItem(R.id.action_playlist_add).isEnabled = playable
-            menu.findItem(R.id.action_share).isEnabled = playable
-        }
+        requireBinding().detailNormalToolbar.title = artist.name.resolve(requireContext())
         artistHeaderAdapter.setParent(artist)
     }
 
@@ -282,7 +238,7 @@ class ArtistDetailFragment :
             when (menu) {
                 is Menu.ForSong -> ArtistDetailFragmentDirections.openSongMenu(menu.parcel)
                 is Menu.ForAlbum -> ArtistDetailFragmentDirections.openAlbumMenu(menu.parcel)
-                is Menu.ForArtist,
+                is Menu.ForArtist -> ArtistDetailFragmentDirections.openArtistMenu(menu.parcel)
                 is Menu.ForGenre,
                 is Menu.ForPlaylist -> error("Unexpected menu $menu")
             }

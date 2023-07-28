@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_playlist_add"
+        android:icon="@drawable/ic_playlist_add_24"
+        android:title="@string/lbl_playlist_add" />
+    <item
+        android:id="@+id/action_artist_details"
+        android:title="@string/lbl_artist_details"
+        android:icon="@drawable/ic_artist_24" />
+    <item
+        android:id="@+id/action_album_details"
+        android:title="@string/lbl_album_details"
+        android:icon="@drawable/ic_album_24"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_detail"
+        android:title="@string/lbl_song_detail"
+        android:icon="@drawable/ic_details_24"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/lbl_share"
+        android:icon="@drawable/ic_share_24" />
+</menu>

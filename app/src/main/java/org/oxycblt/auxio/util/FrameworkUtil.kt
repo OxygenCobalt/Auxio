@@ -25,16 +25,20 @@ import android.os.Build
 import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.RequiresApi
+import androidx.appcompat.view.menu.ActionMenuItemView
+import androidx.appcompat.widget.ActionMenuView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ShareCompat
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.children
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.appbar.MaterialToolbar
 import java.lang.IllegalArgumentException
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
@@ -102,6 +106,25 @@ val Drawable.isRtl: Boolean
 /** Get a [Context] from a [ViewBinding]'s root [View]. */
 val ViewBinding.context: Context
     get() = root.context
+
+/**
+ * Override the behavior of a [MaterialToolbar]'s overflow menu to do something else. This is
+ * extremely dumb, but required to hook overflow menus to bottom sheet menus.
+ */
+fun MaterialToolbar.overrideOnOverflowMenuClick(block: (View) -> Unit) {
+    for (toolbarChild in children) {
+        if (toolbarChild is ActionMenuView) {
+            for (menuChild in toolbarChild.children) {
+                // The overflow menu's view implementation is package-private, so test for the
+                // first child that isn't a plain action button.
+                if (menuChild !is ActionMenuItemView) {
+                    menuChild.setOnClickListener(block)
+                    return
+                }
+            }
+        }
+    }
+}
 
 /**
  * Compute if this [RecyclerView] can scroll through their items, or if the items can all fit on one
